@@ -1,0 +1,27 @@
+Écran 9 (540x1170)
+dessin @ 270,279
+texte « Close » @ 458,351
+texte « Song key » @ 212,351
+texte « Song key: C · Minor » @ 154,422
+texte « Scale » @ 61,478
+bouton « Major » @ 82,550
+bouton « Minor » @ 209,550
+bouton « Dorian » @ 344,550
+bouton « Minor penta » @ 127,631
+bouton « Major penta » @ 341,631
+bouton « Blues » @ 81,712
+bouton « Phrygian » @ 227,712
+bouton « Harmonic minor » @ 154,793
+texte « Key » @ 50,864
+bouton « C » @ 63,936
+bouton « C♯ » @ 150,936
+bouton « D » @ 237,936
+bouton « E♭ » @ 324,936
+bouton « E » @ 411,936
+bouton « F » @ 63,1017
+bouton « F♯ » @ 150,1017
+bouton « G » @ 237,1017
+bouton « A♭ » @ 324,1017
+bouton « A » @ 411,1017
+bouton « B♭ » @ 63,1098
+bouton « B » @ 150,1098

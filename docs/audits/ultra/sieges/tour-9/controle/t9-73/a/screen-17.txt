@@ -1,0 +1,34 @@
+Écran 17 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+texte « The kick Chapter 2/15 · Step 2/2 · Easy » @ 177,237
+icône (liste) « Chapters » @ 390,238
+icône ⌄ @ 483,238
+texte « Example skipped without listening. » @ 251,341
+texte « Your turn: on the “Studio bass drum” pad, tap the dotted cells. » @ 270,417
+texte « ▸ Why? » @ 270,492
+icône « Show less » ⌃ @ 270,546
+bouton (doigt qui touche) «   I'll do it » @ 270,675
+bouton ▶ «  Listen to the example » @ 142,773
+bouton (œil) «  Show me » @ 397,773
+icône ← «  Previous » @ 116,868
+icône « Next  » → @ 451,868
+icône ↶ « Undo » @ 61,953
+image ↷ @ 158,940
+bouton ▶ « the song » @ 264,953
+texte « 140 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

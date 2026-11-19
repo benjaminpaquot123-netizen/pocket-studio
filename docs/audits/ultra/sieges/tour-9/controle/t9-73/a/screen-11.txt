@@ -1,0 +1,45 @@
+Écran 11 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Part: A » ▾ @ 80,198
+bouton « Studio bass drum FX » @ 78,294
+bouton « 808 FX » @ 206,294
+bouton « Snare » @ 334,294
+bouton « Snare 2 » @ 462,294
+bouton « Handclap FX » @ 78,384
+bouton « Hi-hat L 30 » @ 206,384
+bouton « Open hi-hat R 30 » @ 334,384
+bouton « Low tom » @ 462,384
+bouton « Mid tom R 45 » @ 78,474
+bouton « High tom » @ 206,474
+bouton « Drum rim R 50 » @ 334,474
+bouton « Bell » @ 462,474
+bouton « Cymbal FX R 40 » @ 78,564
+bouton « Maracas L 50 » @ 206,564
+bouton « Conga » @ 334,564
+bouton « Laser » @ 462,564
+texte « Tap a pad to hear it; its cells hold the hits. Long press: change the sound. » [coupé] @ 429,632
+bouton ▾ « Kit: Studio + 808 » [coupé] @ 171,641
+texte « The song's speed and colour Chapter 1/15 · Done · Easy » @ 177,724
+icône (liste) « Chapters » @ 390,724
+icône ⌃ @ 483,724
+icône (coupe) « Well done, chapter finished! » ⌃ @ 270,857
+icône ↶ « Undo » @ 61,953
+image ↷ @ 158,940
+bouton ▶ « the song » @ 264,953
+texte « 140 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

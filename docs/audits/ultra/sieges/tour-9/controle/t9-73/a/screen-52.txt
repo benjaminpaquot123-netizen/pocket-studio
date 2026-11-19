@@ -1,0 +1,33 @@
+Écran 52 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Part: A » ▾ @ 80,193
+texte « The 808 Chapter 5/15 · Step 1/3 · Easy » @ 177,292
+icône (liste) « Chapters » @ 390,293
+icône ⌄ @ 483,293
+image (rond coché) @ 36,391
+texte « Listen to the 808 with the kick: it lands with it, holds for a long time, and twice slides up an octave (“woooh”). » @ 289,468
+texte « ▸ Why? » @ 270,589
+bouton « Next step   » → @ 270,756
+bouton ▶ «  Listen to the example » @ 238,854
+icône ← @ 57,854
+icône « Next  » → @ 451,854
+icône ↶ « Undo » @ 61,953
+image ↷ @ 158,940
+bouton ▶ « the song » @ 264,953
+texte « 140 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

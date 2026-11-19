@@ -1,0 +1,19 @@
+Écran 41 (540x1170)
+icône ✕ @ 486,256
+texte « Hit 13 » @ 234,256
+texte « Velocity » @ 74,321
+bouton « Strong » [sélectionné] @ 88,387
+bouton « Medium » @ 244,387
+bouton « Soft » @ 382,387
+texte « Roll » @ 43,452
+bouton « ×1 » [sélectionné] @ 58,518
+bouton « ×2 » @ 148,518
+bouton « ×3 » @ 240,518
+bouton « ×4 » @ 334,518
+bouton « ×6 » @ 427,518
+bouton « ×8 » @ 61,590
+texte « Triplet » @ 62,655
+bouton « 3 over 2 cells » @ 133,721
+bouton « ↗ Rising » [désactivé] @ 99,802
+bouton « Even » [désactivé, sélectionné] @ 244,802
+bouton « ↘ Falling » [désactivé] @ 393,802

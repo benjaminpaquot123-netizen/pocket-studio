@@ -1,0 +1,526 @@
+#0 SIEGE lang=en device=phone360 font=130 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:trap:1
+#0 PREMIER ECRAN reel_s=4.5 simule_s=2.4 jvm_s=10.5 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:trap:1
+#0 AMENEE > touche 270 809 (welcome_learn)
+#0 AMENEE > touche 270 702 (mode_card_simple)
+#0 AMENEE > touche 270 1096 (tuto_style_trap)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 49373b94de | project=p-b13f4a0a tuto=trap/Facile active=true step=ref done=0 chapters=- playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Part: A » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « Part: A Change part » 83 x 6 dp (touch 83 x 48)
+#1 > touche 270 784
+#1 DOIGT tuto_listen «  Listen to the example »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE bb64bb48ef | project=p-b13f4a0a tuto=trap/Facile active=true step=ref done=0 chapters=- playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > attends 7
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2c6a947bd8 | project=p-b13f4a0a tuto=trap/Facile active=true step=ref done=1 chapters=- playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 451 868
+#3 DOIGT tuto_next « Next  »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 33edc46897 | project=p-b13f4a0a tuto=trap/Facile active=true step=tempo done=1 chapters=- playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « 120 » over « The song's speed and colour » (38 x 24 dp)
+#4 LAYOUT OVERLAP « The song's speed and colour » over the touchable « Tempo: 120 beats per minute Change the t » (111 x 48 dp)
+#4 > touche 270 675
+#4 DOIGT tuto_do «   I'll do it »
+#5 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 52ac08ea00 | project=p-b13f4a0a tuto=trap/Facile active=true step=tempo done=1 chapters=- playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « Tempo » over the touchable « Close sheet » (82 x 32 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Close sheet » (9 x 18 dp)
+#5 LAYOUT OVERLAP « Close » over the touchable « Close sheet » (52 x 27 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Close sheet » (86 x 53 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « Close sheet » (50 x 31 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « Close sheet » (25 x 24 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « Close sheet » (25 x 24 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Close sheet » (38 x 24 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « Close sheet » (38 x 24 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « Close sheet » (38 x 24 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « Close sheet » (17 x 31 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « Close sheet » (26 x 31 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « Close sheet » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « Close sheet » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « Close sheet » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « Close sheet » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « Close sheet » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « Close sheet » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « Close sheet » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « Close sheet » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « Close sheet » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « Close sheet » (16 x 30 dp)
+#5 LAYOUT OVERLAP « OK » over the touchable « Close sheet » (37 x 30 dp)
+#5 LAYOUT OVERLAP « Tap in time » over the touchable « Close sheet » (107 x 31 dp)
+#5 LAYOUT OVERLAP « Tap here on each beat: the tempo follows. » over the touchable « Close sheet » (215 x 48 dp)
+#5 > touche 380 536
+#5 DOIGT tempo_preset_140 « 140 »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a80c8a556a | project=p-b13f4a0a tuto=trap/Facile active=true step=tempo done=2 chapters=- playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « Studio bass drum » ellipsized (« … »)
+#6 LAYOUT CUT « Tap a pad to hear it; its cells hold the hits. Long press: change the sound. » ellipsized (« … »)
+#6 > touche 270 857
+#6 DOIGT tuto_next_folded « Passed »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8bd827a941 | project=p-b13f4a0a tuto=trap/Facile active=true step=key done=2 chapters=- playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 140 » over « The song's speed and colour » (38 x 24 dp)
+#7 LAYOUT OVERLAP « The song's speed and colour » over the touchable « Tempo: 140 beats per minute Change the t » (111 x 38 dp)
+#7 > touche 270 675
+#7 DOIGT tuto_do «   I'll do it »
+#8 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 69245103d8 | project=p-b13f4a0a tuto=trap/Facile active=true step=key done=2 chapters=- playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Song key » over the touchable « Close sheet » (109 x 32 dp)
+#8 LAYOUT OVERLAP « Song key: none » over the touchable « Close sheet » (137 x 27 dp)
+#8 LAYOUT OVERLAP « Scale » over the touchable « Close sheet » (50 x 27 dp)
+#8 LAYOUT OVERLAP « Major » over the touchable « Close sheet » (53 x 31 dp)
+#8 LAYOUT OVERLAP « Minor » over the touchable « Close sheet » (57 x 31 dp)
+#8 LAYOUT OVERLAP « Dorian » over the touchable « Close sheet » (62 x 31 dp)
+#8 LAYOUT OVERLAP « Minor penta » over the touchable « Close sheet » (113 x 31 dp)
+#8 LAYOUT OVERLAP « Major penta » over the touchable « Close sheet » (112 x 31 dp)
+#8 LAYOUT OVERLAP « Blues » over the touchable « Close sheet » (52 x 31 dp)
+#8 LAYOUT OVERLAP « Phrygian » over the touchable « Close sheet » (83 x 31 dp)
+#8 LAYOUT OVERLAP « Harmonic minor » over the touchable « Close sheet » (150 x 31 dp)
+#8 LAYOUT OVERLAP « Key » over the touchable « Close sheet » (34 x 27 dp)
+#8 LAYOUT OVERLAP « C » over the touchable « Close sheet » (15 x 31 dp)
+#8 LAYOUT OVERLAP « C♯ » over the touchable « Close sheet » (26 x 31 dp)
+#8 LAYOUT OVERLAP « D » over the touchable « Close sheet » (15 x 31 dp)
+#8 LAYOUT OVERLAP « E♭ » over the touchable « Close sheet » (19 x 31 dp)
+#8 LAYOUT OVERLAP « E » over the touchable « Close sheet » (12 x 31 dp)
+#8 LAYOUT OVERLAP « F » over the touchable « Close sheet » (12 x 31 dp)
+#8 LAYOUT OVERLAP « F♯ » over the touchable « Close sheet » (23 x 31 dp)
+#8 LAYOUT OVERLAP « G » over the touchable « Close sheet » (15 x 31 dp)
+#8 LAYOUT OVERLAP « A♭ » over the touchable « Close sheet » (21 x 31 dp)
+#8 LAYOUT OVERLAP « A » over the touchable « Close sheet » (14 x 31 dp)
+#8 LAYOUT OVERLAP « B♭ » over the touchable « Close sheet » (20 x 31 dp)
+#8 LAYOUT OVERLAP « B » over the touchable « Close sheet » (13 x 31 dp)
+#8 > touche 209 550
+#8 DOIGT tuto_scale_Minor « Minor »
+#9 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 87ac5a4afb | project=p-b13f4a0a tuto=trap/Facile active=true step=key done=2 chapters=- playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Song key: C · Minor » over the touchable « Close sheet » (173 x 27 dp)
+#9 > touche 63 1017
+#9 DOIGT tuto_root_5 « F »
+#10 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 02fa1f862a | project=p-b13f4a0a tuto=trap/Facile active=true step=key done=3 chapters=1 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « Song key: F · Minor » over the touchable « Close sheet » (171 x 27 dp)
+#10 LAYOUT OVERLAP « Done! The song's colour is chosen. » over the touchable « Close sheet » (260 x 61 dp)
+#10 LAYOUT OVERLAP « Back to the tutorial » over the touchable « Close sheet » (173 x 27 dp)
+#10 > touche 270 1095
+#10 DOIGT tuto_key_continue « Back to the tutorial »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3394f607ff | project=p-b13f4a0a tuto=trap/Facile active=true step=key done=3 chapters=1 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 270 857
+#11 DOIGT tuto_chapter_end_folded « Well done, chapter finished! »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9b96a135c5 | project=p-b13f4a0a tuto=trap/Facile active=true step=key done=3 chapters=1 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 270 784
+#12 DOIGT tuto_next_big « Next chapter   »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a7cff8b075 | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_hear done=3 chapters=1 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 222 536
+#13 DOIGT tuto_kit_download « Download the Trap kit (2 MB) »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 528552fb6f | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_hear done=3 chapters=1 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 270 784
+#14 DOIGT tuto_listen «  Listen to the example »
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4070367b12 | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_hear done=3 chapters=1 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > touche 451 868
+#15 DOIGT tuto_next « Next  »
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a39fa1f0d2 | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 270 603
+#16 DOIGT tuto_text_more « Read on »
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2a29fce46e | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 270 675
+#17 DOIGT tuto_do «   I'll do it »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f27b48c35b | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « Your turn: on the “Studio bass drum” pad, tap the dotted cells. » ellipsized (« … »)
+#18 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 12 sp)
+#18 > touche 67 314
+#18 DOIGT step_0 « Step 1 »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 34b4340266 | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 472 314
+#19 DOIGT step_7 « Step 8 »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 809dd45141 | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 182 385
+#20 DOIGT step_10 « Step 11 »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bf7efdd176 | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_do done=5 chapters=1,2 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 270 857
+#21 DOIGT tuto_chapter_end_folded « Well done, chapter finished! »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ae90152969 | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_do done=5 chapters=1,2 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 270 784
+#22 DOIGT rien
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ae90152969 | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_do done=5 chapters=1,2 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 142 773
+#23 DOIGT tuto_play_mine «  Listen to my song »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e941d037c3 | project=p-b13f4a0a tuto=trap/Facile active=true step=kick_do done=5 chapters=1,2 playing=true
+#24 SON Son : la musique du projet joue en boucle.
+#24 > touche 270 675
+#24 DOIGT tuto_next_big « Next chapter   »
+#25 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 3e70c56076 | project=p-b13f4a0a tuto=trap/Facile active=true step=clap_do done=5 chapters=1,2 playing=true
+#25 SON Son : la musique du projet joue en boucle.
+#25 > touche 270 675
+#25 DOIGT tuto_do «   I'll do it »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f0b02566b5 | project=p-b13f4a0a tuto=trap/Facile active=true step=clap_do done=5 chapters=1,2 playing=true
+#26 SON Son : la musique du projet joue en boucle.
+#26 LAYOUT CUT « Your turn: on the “Trap · Handclap” pad, tap the dotted cells. » ellipsized (« … »)
+#26 LAYOUT CONTRAST « 3 » 2.43:1 (needs 4.5:1, 12 sp)
+#26 > touche 67 385
+#26 DOIGT step_8 « Step 9 »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dcfcdd64a8 | project=p-b13f4a0a tuto=trap/Facile active=true step=clap_do done=6 chapters=1,2,3 playing=true
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 270 857
+#27 DOIGT tuto_chapter_end_folded « Well done, chapter finished! »
+#28 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 1165c8a1da | project=p-b13f4a0a tuto=trap/Facile active=true step=clap_do done=6 chapters=1,2,3 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 LAYOUT CONTRAST « Trap · Handclap » 1.25:1 (needs 4.5:1, 13 sp)
+#28 > touche 270 675
+#28 DOIGT tuto_next_big « Next chapter   »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8aef13df92 | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_do done=6 chapters=1,2,3 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#29 > touche 182 314
+#29 DOIGT step_2 « Step 3 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 23bf8e5edb | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_do done=6 chapters=1,2,3 playing=true
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 270 675
+#30 DOIGT tuto_need «   Switch to 2 bars »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5bd22bc25a | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_do done=6 chapters=1,2,3 playing=true
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT CUT « Your turn: on the “Trap · Hi-hat” pad, tap the dotted cells of the 2 bars. » ellipsized (« … »)
+#31 LAYOUT CONTRAST « Bar » 1.24:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « 1 » 2.10:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#31 > touche 191 550
+#31 DOIGT fill_2 « 1/2 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4d0766988a | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_do done=6 chapters=1,2,3 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 LAYOUT CUT « Bar 1/2 · Trap · Hi-hat » ellipsized (« … »)
+#32 LAYOUT CONTRAST « 1/2 » 3.99:1 (needs 4.5:1, 14 sp)
+#32 > touche 213 243
+#32 DOIGT drum_page_1 « 2 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c4ce9d9db0 | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_do done=6 chapters=1,2,3 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 LAYOUT CONTRAST « 2 » 2.12:1 (needs 4.5:1, 14 sp)
+#33 > touche 124 469
+#33 DOIGT step_25 « Step 10 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2da6f84524 | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_do done=6 chapters=1,2,3 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 LAYOUT CONTRAST « 2 » 2.15:1 (needs 4.5:1, 14 sp)
+#34 > touche 356 469
+#34 DOIGT step_29 « Step 14 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 947893f19c | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_do done=6 chapters=1,2,3 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 472 469
+#35 DOIGT step_31 « Step 16 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 34cc7508ae | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_do done=7 chapters=1,2,3 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 270 857
+#36 DOIGT tuto_next_folded « Passed »
+#37 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 43cae0db2a | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_triplet done=7 chapters=1,2,3 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 LAYOUT OVERLAP « 140 » over « The hi-hats » (38 x 9 dp)
+#37 LAYOUT OVERLAP « The hi-hats » over the touchable « Tempo: 140 beats per minute Change the t » (105 x 21 dp)
+#37 > touche 270 675
+#37 DOIGT tuto_do «   I'll do it »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d9d999967c | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_triplet done=7 chapters=1,2,3 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT CUT « Your turn: bar 1, hold cells 13 and 15 of the “Trap · Hi-hat”, then “Triplet” › “3 over 2 cells”. » ellipsized (« … »)
+#38 LAYOUT CONTRAST « Bar 2/2 · Trap · Hi-hat » 1.29:1 (needs 4.5:1, 13 sp)
+#38 > glisse 270 450 270 650
+#38 DOIGT fill_4 « 1/4 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dc6291a8a2 | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_triplet done=7 chapters=1,2,3 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 LAYOUT CONTRAST « STEPS: TRAP · HI-HAT » 3.37:1 (needs 4.5:1, 12 sp)
+#39 LAYOUT CONTRAST « ? » 2.46:1 (needs 4.5:1, 12 sp)
+#39 LAYOUT CONTRAST « All pads » 2.02:1 (needs 4.5:1, 14 sp)
+#39 > touche 132 326
+#39 DOIGT drum_page_0 « 1 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 22e23689e5 | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_triplet done=7 chapters=1,2,3 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 > appui-long 298 561
+#40 DOIGT step_12 « Step 13 »
+#41 ROUTE dialogue:roll_menu | MODE simple | EMPREINTE f12220e8b1 | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_triplet done=7 chapters=1,2,3 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 > touche 133 721
+#41 DOIGT roll_triplet « 3 over 2 cells »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5056f742e9 | project=p-b13f4a0a tuto=trap/Facile active=true step=hat_triplet done=8 chapters=1,2,3 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 > touche 270 857
+#42 DOIGT tuto_next_folded « Passed »
+#43 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE ff7142aee2 | project=p-b13f4a0a tuto=trap/Facile active=true step=ohat_do done=8 chapters=1,2,3 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 270 675
+#43 DOIGT tuto_do «   I'll do it »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 443b5127a3 | project=p-b13f4a0a tuto=trap/Facile active=true step=ohat_do done=8 chapters=1,2,3 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 LAYOUT CUT « Your turn: on the “Trap · Open hi-hat” pad (a longer “tsss”), tap the dotted cell of bar 2. » ellipsized (« … »)
+#44 > touche 414 314
+#44 DOIGT step_22 « Step 7 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 87dc161731 | project=p-b13f4a0a tuto=trap/Facile active=true step=ohat_do done=9 chapters=1,2,3 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 270 857
+#45 DOIGT tuto_next_folded « Passed »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 54b073d65e | project=p-b13f4a0a tuto=trap/Facile active=true step=drums_hear done=9 chapters=1,2,3 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > attends 5
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 54b073d65e | project=p-b13f4a0a tuto=trap/Facile active=true step=drums_hear done=9 chapters=1,2,3 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 270 787
+#47 DOIGT tuto_listen «  Listen to the example »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2ea36ee116 | project=p-b13f4a0a tuto=trap/Facile active=true step=drums_hear done=9 chapters=1,2,3 playing=false
+#48 SON Son : l'exemple du tuto joue (encore 3 s).
+#48 > attends 4
+#49 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE cdae28ba10 | project=p-b13f4a0a tuto=trap/Facile active=true step=drums_hear done=10 chapters=1,2,3,4 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 270 675
+#49 DOIGT tuto_next_big « Next chapter   »
+#50 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a16c10ab38 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_hear done=10 chapters=1,2,3,4 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 270 784
+#50 DOIGT tuto_listen «  Listen to the example »
+#51 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a195eea7ae | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_hear done=10 chapters=1,2,3,4 playing=false
+#51 SON Son : l'exemple du tuto joue (encore 3 s).
+#51 > attends 10
+#52 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f325323293 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_hear done=11 chapters=1,2,3,4 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 451 868
+#52 DOIGT tuto_next « Next  »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE de596bf739 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_do done=11 chapters=1,2,3,4 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « Bar 2/2 · Trap · Open hi-hat » 1.21:1 (needs 4.5:1, 13 sp)
+#53 > touche 270 675
+#53 DOIGT tuto_need «   Create the 808 track »
+#54 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ea2bc3f8e1 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_do done=11 chapters=1,2,3,4 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT TARGET « G♭1 Play » 36 x 20 dp (touch 48 x 48)
+#54 LAYOUT TARGET « F1 Play » 36 x 20 dp (touch 48 x 48)
+#54 LAYOUT TARGET « E1 Play » 36 x 20 dp (touch 48 x 48)
+#54 > touche 172 606
+#54 DOIGT rien
+#55 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE af8c2c0aa1 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_do done=11 chapters=1,2,3,4 playing=false
+#55 SON Son : 1 note du synthé.
+#55 > touche 297 606
+#55 DOIGT rien
+#56 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0cbf1fc169 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_do done=11 chapters=1,2,3,4 playing=false
+#56 SON Son : 1 note du synthé.
+#56 > touche 408 606
+#56 DOIGT rien
+#57 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 993ed8dde3 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_do done=12 chapters=1,2,3,4 playing=false
+#57 SON Son : 1 note du synthé.
+#57 LAYOUT CUT « 4 more dotted notes, further on → » ellipsized (« … »)
+#57 > touche 270 857
+#57 DOIGT tuto_next_folded « Passed »
+#58 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE e046c42de4 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 270 675
+#58 DOIGT tuto_do «   I'll do it »
+#59 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 85cd9657af | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CUT « ↑ 3 more dotted notes to tap » ellipsized (« … »)
+#59 > touche 172 606
+#59 DOIGT rien
+#60 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c2128c9c00 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#60 SON Son : 1 note du synthé.
+#60 LAYOUT CUT « ↑ 2 more dotted notes to tap » ellipsized (« … »)
+#60 > touche 297 606
+#60 DOIGT rien
+#61 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f18435905e | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#61 SON Son : 1 note du synthé.
+#61 LAYOUT CUT « ↑ 1 more dotted note to tap » ellipsized (« … »)
+#61 > touche 408 606
+#61 DOIGT rien
+#62 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4d23e60c08 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#62 SON Son : 1 note du synthé.
+#62 LAYOUT CUT « 1 dotted note left, higher up ↑ » ellipsized (« … »)
+#62 > touche 414 452
+#62 DOIGT tuto_notes_left « 808 · bar 2/8 »
+#63 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e1ce51e81a | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT TARGET « G♭2 Play » 36 x 20 dp (touch 48 x 48)
+#63 LAYOUT TARGET « F2 Play » 36 x 20 dp (touch 48 x 48)
+#63 LAYOUT TARGET « E2 Play » 36 x 20 dp (touch 48 x 48)
+#63 > touche 466 606
+#63 DOIGT rien
+#64 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b5cb759761 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#64 SON Son : 1 note du synthé.
+#64 LAYOUT CUT « Pattern placed! Copy it to the rest: » ellipsized (« … »)
+#64 > touche 270 857
+#64 DOIGT tuto_need_folded « Copy to the next bars »
+#65 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9d29fa9f62 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=12 chapters=1,2,3,4 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 428 452
+#65 DOIGT tuto_roll_copy « Copy »
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2a2ec01191 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=13 chapters=1,2,3,4,5 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 61 953
+#66 DOIGT thumb_undo « Undo »
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e1fbf365b6 | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=13 chapters=1,2,3,4,5 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 270 857
+#67 DOIGT tuto_chapter_end_folded « Well done, chapter finished! »
+#68 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 5bb9c5e39a | project=p-b13f4a0a tuto=trap/Facile active=true step=bass_2 done=13 chapters=1,2,3,4,5 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 270 675
+#68 DOIGT tuto_next_big « Next chapter   »
+#69 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c9d2142e51 | project=p-b13f4a0a tuto=trap/Facile active=true step=pad_do done=13 chapters=1,2,3,4,5 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 158 953
+#69 DOIGT thumb_redo « Redo »
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 368a0a764e | project=p-b13f4a0a tuto=trap/Facile active=true step=pad_do done=13 chapters=1,2,3,4,5 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 270 675
+#70 DOIGT tuto_need «   Create the Chords track »
+#71 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4a03ef3911 | project=p-b13f4a0a tuto=trap/Facile active=true step=pad_do done=13 chapters=1,2,3,4,5 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CUT « ↓ Dotted chords to tap: 1 » ellipsized (« … »)
+#71 LAYOUT CUT « Your turn: tap the bottom dotted note of each chord in bar 1: the whole chord is placed. » ellipsized (« … »)
+#71 LAYOUT TARGET « A3 Play » 36 x 20 dp (touch 48 x 48)
+#71 LAYOUT TARGET « A♭3 Play » 36 x 20 dp (touch 48 x 48)
+#71 LAYOUT TARGET « G3 Play » 36 x 20 dp (touch 48 x 48)
+#71 > touche 414 452
+#71 DOIGT tuto_notes_left « Chords · bar 1/8 »
+#72 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5c1ea9e387 | project=p-b13f4a0a tuto=trap/Facile active=true step=pad_do done=13 chapters=1,2,3,4,5 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT TARGET « C4 Play » 36 x 7 dp (touch 48 x 48)
+#72 LAYOUT TARGET « B3 Play » 36 x 7 dp (touch 48 x 48)
+#72 LAYOUT TARGET « B♭3 Play » 36 x 7 dp (touch 48 x 48)
+#72 LAYOUT TARGET « A3 Play » 36 x 7 dp (touch 48 x 48)
+#72 LAYOUT TARGET « A♭3 Play » 36 x 7 dp (touch 48 x 48)
+#72 LAYOUT TARGET « G3 Play » 36 x 7 dp (touch 48 x 48)
+#72 LAYOUT TARGET « G♭3 Play » 36 x 7 dp (touch 48 x 48)
+#72 LAYOUT TARGET « F3 Play » 36 x 7 dp (touch 48 x 48)
+#72 > touche 300 642
+#72 DOIGT rien
+#73 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f535b4c3cd | project=p-b13f4a0a tuto=trap/Facile active=true step=pad_do done=14 chapters=1,2,3,4,5 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 270 857
+#73 DOIGT tuto_next_folded « Passed »
+#74 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 21f8d8ae0c | project=p-b13f4a0a tuto=trap/Facile active=true step=pad_end done=14 chapters=1,2,3,4,5 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 270 675
+#74 DOIGT tuto_need «   Copy to the next bars »
+#75 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 21f8d8ae0c | project=p-b13f4a0a tuto=trap/Facile active=true step=pad_end done=14 chapters=1,2,3,4,5 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 483 402
+#75 DOIGT tuto_fold
+#76 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6a32d6cf49 | project=p-b13f4a0a tuto=trap/Facile active=true step=pad_end done=14 chapters=1,2,3,4,5 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT TARGET « E3 Play » 36 x 7 dp (touch 48 x 48)
+#76 > touche 270 857
+#76 DOIGT tuto_need_folded « Copy to the next bars »
+#77 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0837ee9ab9 | project=p-b13f4a0a tuto=trap/Facile active=true step=pad_end done=15 chapters=1,2,3,4,5,6 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 270 857
+#77 DOIGT tuto_chapter_end_folded « Well done, chapter finished! »
+#78 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 8740e725c6 | project=p-b13f4a0a tuto=trap/Facile active=true step=pad_end done=15 chapters=1,2,3,4,5,6 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 270 675
+#78 DOIGT tuto_next_big « Next chapter   »
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 87a2bf5d39 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_hear done=15 chapters=1,2,3,4,5,6 playing=false
+#79 SON Son : rien ne joue.
+#79 LAYOUT CONTRAST « Chords » 2.16:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « Ghost bass » 1.29:1 (needs 4.5:1, 14 sp)
+#79 LAYOUT CONTRAST « In time 50% » 1.37:1 (needs 4.5:1, 14 sp)
+#79 > touche 270 784
+#79 DOIGT tuto_listen «  Listen to the example »
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 134d25a814 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_hear done=15 chapters=1,2,3,4,5,6 playing=false
+#80 SON Son : l'exemple du tuto joue (encore 3 s).
+#80 > attends 15
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 745cb5edbf | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_hear done=16 chapters=1,2,3,4,5,6 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 270 756
+#81 DOIGT tuto_next_big « Next step   »
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 35868995cc | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_do done=16 chapters=1,2,3,4,5,6 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 270 675
+#82 DOIGT tuto_need «   Create the Melody track »
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e65efb741c | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_do done=16 chapters=1,2,3,4,5,6 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT TARGET « E6 Play » 36 x 7 dp (touch 48 x 48)
+#83 LAYOUT TARGET « E♭6 Play » 36 x 7 dp (touch 48 x 48)
+#83 LAYOUT TARGET « D6 Play » 36 x 7 dp (touch 48 x 48)
+#83 LAYOUT TARGET « D♭6 Play » 36 x 7 dp (touch 48 x 48)
+#83 LAYOUT TARGET « C6 Play » 36 x 7 dp (touch 48 x 48)
+#83 LAYOUT TARGET « B5 Play » 36 x 7 dp (touch 48 x 48)
+#83 LAYOUT TARGET « B♭5 Play » 36 x 7 dp (touch 48 x 48)
+#83 LAYOUT TARGET « A5 Play » 36 x 7 dp (touch 48 x 48)
+#83 LAYOUT TARGET « A♭5 Play » 36 x 7 dp (touch 48 x 48)
+#83 > touche 270 603
+#83 DOIGT rien
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c008edcbe3 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_do done=16 chapters=1,2,3,4,5,6 playing=false
+#84 SON Son : 1 note du synthé.
+#84 > touche 372 648
+#84 DOIGT rien
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a62f76e87a | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_do done=16 chapters=1,2,3,4,5,6 playing=false
+#85 SON Son : 1 note du synthé.
+#85 LAYOUT CUT « 5 dotted notes left, higher up ↑ » ellipsized (« … »)
+#85 > touche 415 451
+#85 DOIGT tuto_notes_left « Melody · bar 1/8 »
+#86 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 32b2031ccb | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_do done=16 chapters=1,2,3,4,5,6 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT TARGET « A6 Play » 36 x 7 dp (touch 48 x 48)
+#86 LAYOUT TARGET « A♭6 Play » 36 x 7 dp (touch 48 x 48)
+#86 LAYOUT TARGET « G6 Play » 36 x 7 dp (touch 48 x 48)
+#86 LAYOUT TARGET « G♭6 Play » 36 x 7 dp (touch 48 x 48)
+#86 LAYOUT TARGET « F6 Play » 36 x 7 dp (touch 48 x 48)
+#86 > touche 148 604
+#86 DOIGT rien
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 276ed13c01 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_do done=17 chapters=1,2,3,4,5,6 playing=false
+#87 SON Son : 1 note du synthé.
+#87 > touche 270 857
+#87 DOIGT tuto_next_folded « Passed »
+#88 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE b10f9cc2b7 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_2 done=17 chapters=1,2,3,4,5,6 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 270 675
+#88 DOIGT tuto_do «   I'll do it »
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a8d4f73283 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_2 done=17 chapters=1,2,3,4,5,6 playing=false
+#89 SON Son : rien ne joue.
+#89 LAYOUT CUT « ↓ 3 more dotted notes to tap » ellipsized (« … »)
+#89 > touche 415 451
+#89 DOIGT tuto_notes_left « Melody · bar 2/8 »
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 424b6aed64 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_2 done=17 chapters=1,2,3,4,5,6 playing=false
+#90 SON Son : rien ne joue.
+#90 LAYOUT TARGET « E6 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « E♭6 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « D6 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « D♭6 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « C6 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « B5 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « B♭5 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « A5 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « A♭5 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « G5 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « G♭5 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « F5 Play » 36 x 5 dp (touch 48 x 48)
+#90 LAYOUT TARGET « E5 Play » 36 x 5 dp (touch 48 x 48)
+#90 > touche 148 646
+#90 DOIGT rien
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dc943da775 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_2 done=17 chapters=1,2,3,4,5,6 playing=false
+#91 SON Son : 1 note du synthé.
+#91 > touche 270 621
+#91 DOIGT rien
+#92 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 59d810c804 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_2 done=17 chapters=1,2,3,4,5,6 playing=false
+#92 SON Son : 1 note du synthé.
+#92 > touche 372 589
+#92 DOIGT rien
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5298c3d464 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_2 done=17 chapters=1,2,3,4,5,6 playing=false
+#93 SON Son : 1 note du synthé.
+#93 > touche 470 565
+#93 DOIGT rien
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE faf3962cb1 | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_2 done=17 chapters=1,2,3,4,5,6 playing=false
+#94 SON Son : 1 note du synthé.
+#94 > touche 270 857
+#94 DOIGT tuto_need_folded « Copy to the next bars »
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE eb377bd0fe | project=p-b13f4a0a tuto=trap/Facile active=true step=lead_2 done=18 chapters=1,2,3,4,5,6,7 playing=false
+#95 SON Son : rien ne joue.
+#95 > fin
+#95 BENCH-VERDICT ok where=seat.fin
+#95 FIN : fin

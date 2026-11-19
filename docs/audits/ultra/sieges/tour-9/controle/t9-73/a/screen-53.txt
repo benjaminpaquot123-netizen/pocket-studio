@@ -1,0 +1,42 @@
+Écran 53 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Part: A » ▾ @ 80,198
+texte « Bar 2/2 · Trap · Open hi-hat » [coupé] @ 225,240
+bouton « 1 » [coupé, état « empty »] @ 67,305
+bouton [coupé, état « empty »] @ 124,305
+bouton [coupé, état « empty »] @ 182,305
+bouton [coupé, état « empty »] @ 240,305
+bouton « 2 » [coupé, état « empty »] @ 298,305
+bouton [coupé, état « empty »] @ 356,305
+bouton [coupé, état « hit, strength 100 % »] @ 414,305
+bouton [coupé, état « empty »] @ 472,305
+texte « The 808 Chapter 5/15 · Step 2/3 · Easy » @ 177,401
+icône (liste) « Chapters » @ 390,402
+icône ⌄ @ 483,402
+texte « Your turn: tap “Create the 808 track”. » @ 270,531
+texte « ▸ Why? » @ 270,606
+bouton ⊕ «   Create the 808 track » @ 270,675
+bouton ▶ «  Listen to the example » @ 142,773
+bouton (œil) «  Show me » @ 397,773
+icône ← «  Previous » @ 116,868
+icône « Next  » → @ 451,868
+icône ↶ « Undo » @ 61,953
+image ↷ @ 158,940
+bouton ▶ « the song » @ 264,953
+texte « 140 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

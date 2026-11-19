@@ -1,0 +1,34 @@
+Écran 1 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 120  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Part: A » ▾ @ 80,172
+texte « The song's speed and colour Chapter 1/15 · Step 1/3 · Easy » @ 177,272
+icône (liste) « Chapters » @ 390,272
+icône ⌄ @ 483,272
+texte « Listen to a clip of a finished trap beat: the Intro (the bell alone), then the Chorus, where the 808 (the very deep bass) lands with the kick. » [coupé] @ 270,422
+bouton « Download the Trap kit (2 MB) » @ 222,536
+texte « Later » @ 465,536
+texte « ▸ Why? » @ 270,618
+icône « Read on » ⌄ @ 270,672
+bouton ▶ «  Listen to the example » @ 270,784
+icône ← «  Previous » [désactivé] @ 116,868
+icône « Next  » → @ 451,868
+icône ↶ « Undo » [désactivé] @ 61,953
+image ↷ @ 158,940
+bouton ▶ « the song » @ 264,953
+texte « 120 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

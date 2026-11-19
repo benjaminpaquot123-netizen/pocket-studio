@@ -1,0 +1,57 @@
+Écran 33 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ■ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+icône (flèches en boucle) « A bar 1/2 » [désactivé] @ 268,123
+bouton « ? » @ 495,123
+icône « Part: A » ▾ @ 80,198
+texte « Bar » [coupé] @ 64,242
+bouton « 1 » [coupé] @ 132,243
+bouton « 2 » [coupé, sélectionné] @ 213,243
+bouton « Follow » [coupé] @ 326,243
+texte « Bar 2/2 · Trap · Hi-hat » @ 191,295
+texte « 3 more dotted cells here » @ 226,333
+bouton « 1 » [état « hit, strength 100 % »] @ 67,398
+bouton [état « empty »] @ 124,398
+bouton [état « hit, strength 100 % »] @ 182,398
+bouton [état « empty »] @ 240,398
+bouton « 2 » [état « hit, strength 100 % »] @ 298,398
+bouton [état « empty »] @ 356,398
+bouton [état « hit, strength 100 % »] @ 414,398
+bouton [état « empty »] @ 472,398
+bouton « 3 » [état « hit, strength 100 % »] @ 67,469
+bouton [état « empty, dotted: tap it »] @ 124,469
+bouton [état « hit, strength 100 % »] @ 182,469
+bouton [état « empty »] @ 240,469
+bouton « 4 » [état « hit, strength 100 % »] @ 298,469
+bouton [état « empty, dotted: tap it »] @ 356,469
+bouton [état « hit, strength 100 % »] @ 414,469
+bouton [état « empty, dotted: tap it »] @ 472,469
+texte « all » @ 116,550
+texte « 1/2 » @ 191,550
+texte « 1/4 » @ 266,550
+texte « ◀ » @ 341,550
+texte « ▶ » @ 416,550
+texte « Fill » @ 59,550
+texte « Clear » @ 91,622
+texte « The hi-hats Chapter 4/15 · Step 1/4 · Easy » @ 177,726
+icône (liste) « Chapters » @ 390,727
+icône ⌃ @ 483,727
+icône « Your turn: on the “Trap · Hi-hat” pad, tap the dotted cells of the 2 bars. Read » ⌃ @ 270,857
+icône ↶ « Undo » @ 61,953
+image ↷ @ 158,940
+bouton ■ « the song » @ 264,953
+texte « 140 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

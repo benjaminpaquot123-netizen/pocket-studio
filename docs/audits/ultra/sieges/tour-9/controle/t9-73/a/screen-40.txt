@@ -1,0 +1,58 @@
+Écran 40 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ■ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+icône (flèches en boucle) « A bar 1/2 » [désactivé] @ 268,123
+bouton « ? » @ 495,123
+icône « Part: A » ▾ @ 80,198
+titre « STEPS: TRAP · HI-HAT » [coupé, état « Expanded »] @ 191,254
+bouton « ? » [coupé] @ 319,249
+bouton « All pads » [coupé] @ 419,250
+bouton « 1 » [sélectionné] @ 132,326
+bouton « 2 » @ 213,326
+bouton « Follow » @ 326,326
+texte « Bar » @ 64,326
+texte « Bar 1/2 · Trap · Hi-hat » @ 188,410
+bouton « 1 » [état « hit, strength 100 % »] @ 67,490
+bouton [état « empty »] @ 124,490
+bouton [état « hit, strength 100 % »] @ 182,490
+bouton [état « empty »] @ 240,490
+bouton « 2 » [état « hit, strength 100 % »] @ 298,490
+bouton [état « empty »] @ 356,490
+bouton [état « hit, strength 100 % »] @ 414,490
+bouton [état « empty »] @ 472,490
+bouton « 3 » [état « hit, strength 100 % »] @ 67,561
+bouton [état « empty »] @ 124,561
+bouton [état « hit, strength 100 % »] @ 182,561
+bouton [état « empty »] @ 240,561
+bouton « 4 » [état « hit, strength 100 % »] @ 298,561
+bouton [état « empty »] @ 356,561
+bouton [état « hit, strength 100 % »] @ 414,561
+bouton [état « empty »] @ 472,561
+texte « Fill » @ 59,641
+texte « all » [coupé] @ 116,635
+texte « 1/2 » [coupé] @ 191,635
+texte « 1/4 » [coupé] @ 266,635
+texte « ◀ » [coupé] @ 341,635
+texte « ▶ » [coupé] @ 416,635
+texte « The hi-hats Chapter 4/15 · Step 2/4 · Easy » @ 177,726
+icône (liste) « Chapters » @ 390,727
+icône ⌃ @ 483,727
+icône « Your turn: bar 1, hold cells 13 and 15 of the “Trap · Hi-hat”, then “Triplet” › “3 over 2 cells”. Read » ⌃ @ 270,857
+icône ↶ « Undo » @ 61,953
+image ↷ @ 158,940
+bouton ■ « the song » @ 264,953
+texte « 140 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

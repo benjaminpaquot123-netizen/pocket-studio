@@ -1,0 +1,52 @@
+Écran 21 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Part: A » ▾ @ 80,198
+texte « Studio bass drum » [coupé] @ 166,240
+bouton « 1 » [état « hit, strength 100 % »] @ 67,309
+bouton [état « empty »] @ 124,309
+bouton [état « empty »] @ 182,309
+bouton [état « empty »] @ 240,309
+bouton « 2 » [état « empty »] @ 298,309
+bouton [état « empty »] @ 356,309
+bouton [état « empty »] @ 414,309
+bouton [état « hit, strength 100 % »] @ 472,309
+bouton « 3 » [état « empty »] @ 67,380
+bouton [état « empty »] @ 124,380
+bouton [état « hit, strength 100 % »] @ 182,380
+bouton [état « empty »] @ 240,380
+bouton « 4 » [état « empty »] @ 298,380
+bouton [état « empty »] @ 356,380
+bouton [état « empty »] @ 414,380
+bouton [état « empty »] @ 472,380
+texte « all » @ 116,461
+texte « 1/2 » @ 191,461
+texte « 1/4 » @ 266,461
+texte « ◀ » @ 341,461
+texte « ▶ » @ 416,461
+texte « Fill » @ 59,461
+texte « Clear » @ 91,533
+texte « Tap a cell to add a hit, slide your finger to paint several. Long press on a hit: strength and rolls (×2 to ×8). » [coupé] @ 270,619
+texte « The kick Chapter 2/15 · Done · Easy » @ 177,726
+icône (liste) « Chapters » @ 390,727
+icône ⌃ @ 483,727
+icône (coupe) « Well done, chapter finished! » ⌃ @ 270,857
+icône ↶ « Undo » @ 61,953
+image ↷ @ 158,940
+bouton ▶ « the song » @ 264,953
+texte « 140 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

@@ -1,0 +1,49 @@
+Écran 48 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Part: A » ▾ @ 80,198
+texte « Bar 2/2 · Trap · Open hi-hat » [coupé] @ 225,240
+bouton « 1 » [état « empty »] @ 67,309
+bouton [état « empty »] @ 124,309
+bouton [état « empty »] @ 182,309
+bouton [état « empty »] @ 240,309
+bouton « 2 » [état « empty »] @ 298,309
+bouton [état « empty »] @ 356,309
+bouton [état « hit, strength 100 % »] @ 414,309
+bouton [état « empty »] @ 472,309
+bouton « 3 » [coupé, état « empty »] @ 67,354
+bouton [coupé, état « empty »] @ 124,354
+bouton [coupé, état « empty »] @ 182,354
+bouton [coupé, état « empty »] @ 240,354
+bouton « 4 » [coupé, état « empty »] @ 298,354
+bouton [coupé, état « empty »] @ 356,354
+bouton [coupé, état « empty »] @ 414,354
+bouton [coupé, état « empty »] @ 472,354
+texte « The hi-hats Chapter 4/15 · Step 4/4 · Easy » @ 177,429
+icône (liste) « Chapters » @ 390,430
+icône ⌄ @ 483,430
+texte « Listen to all your drums for a few seconds, then to the example's. » @ 270,559
+texte « ▸ Why? » @ 270,634
+bouton ▶ «   Listen to your result » @ 270,703
+bouton ■ «  Stop listening » @ 270,787
+icône ← «  Previous » @ 116,868
+icône « Next  » → @ 451,868
+icône ↶ « Undo » @ 61,953
+image ↷ @ 158,940
+bouton ▶ « the song » @ 264,953
+texte « 140 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

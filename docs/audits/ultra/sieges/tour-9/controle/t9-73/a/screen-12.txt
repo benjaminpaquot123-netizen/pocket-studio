@@ -1,0 +1,44 @@
+Écran 12 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Part: A » ▾ @ 80,198
+bouton « Studio bass drum FX » @ 78,294
+bouton « 808 FX » @ 206,294
+bouton « Snare » @ 334,294
+bouton « Snare 2 » @ 462,294
+bouton « Handclap FX » @ 78,384
+bouton « Hi-hat L 30 » @ 206,384
+bouton « Open hi-hat R 30 » @ 334,384
+bouton « Low tom » @ 462,384
+bouton « Mid tom R 45 » [coupé] @ 78,455
+bouton « High tom » [coupé] @ 206,455
+bouton « Drum rim R 50 » [coupé] @ 334,455
+bouton « Bell » [coupé] @ 462,455
+texte « The song's speed and colour Chapter 1/15 · Done · Easy » @ 177,549
+icône (liste) « Chapters » @ 390,549
+icône ⌄ @ 483,549
+image (coupe) @ 57,686
+texte « Well done, chapter finished! » @ 283,667
+texte « Next chapter: “The kick”. » @ 240,706
+bouton « Next chapter   » → @ 270,784
+icône ← @ 57,868
+bouton ▶ «  Listen to the example » @ 310,868
+icône ↶ « Undo » @ 61,953
+image ↷ @ 158,940
+bouton ▶ « the song » @ 264,953
+texte « 140 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

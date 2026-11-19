@@ -1,0 +1,55 @@
+Écran 92 (540x1170)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Simple » @ 251,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+onglet « Acid 303 Bass line » [coupé] @ 41,204
+bouton « 808 808 » @ 120,204
+bouton « Chords Strings » @ 251,204
+bouton « Melody FM bell » ⋮ @ 425,204
+image ← @ 10,205
+image → @ 529,205
+icône « Part: A » ▾ @ 80,283
+texte « − » [coupé] @ 155,320
+texte « + » [coupé] @ 329,320
+texte « In time 50% » [coupé] @ 448,370
+bouton « Chords » @ 116,370
+bouton « Ghost bass » [sélectionné] @ 294,370
+bouton « Melody · bar 2/8 2 more dotted notes to tap » @ 270,451
+texte « bar » @ 69,513
+bouton « 2 » @ 297,521
+dessin @ 69,558
+dessin @ 69,566
+dessin @ 69,574
+dessin @ 69,582
+dessin @ 69,590
+dessin @ 69,598
+dessin @ 69,606
+dessin @ 69,614
+dessin @ 69,622
+dessin @ 69,630
+dessin @ 69,638
+dessin @ 69,646
+dessin @ 69,654
+dessin [coupé] @ 297,606
+texte « The melody Chapter 7/15 · Step 3/3 · Easy » @ 177,726
+icône (liste) « Chapters » @ 390,727
+icône ⌃ @ 483,727
+icône « Your turn: write the 4 notes of bar 2. Read » ⌃ @ 270,857
+icône ↶ « Undo » @ 61,953
+image ↷ @ 158,940
+bouton ▶ « the song » @ 264,953
+texte « 140 Tempo » @ 376,953
+icône ⋮ « More » @ 479,953
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » @ 160,1050
+onglet (touches de piano) « Keyboard » [sélectionné] @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Note » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 138,1140

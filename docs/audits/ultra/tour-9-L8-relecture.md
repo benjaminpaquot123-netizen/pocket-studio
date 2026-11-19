@@ -1,5 +1,7 @@
 # Relecture neuve, tour 9, lot L8
 
+relu : 8ce4a1bf7
+
 Relecteur : sous-agent neuf (n'a pas écrit le code). Portée : 7455749a5..HEAD (eq/tour-9-L8), sans captures ni docs.
 Une première relecture (7455749a5..f603c4b94) avait donné 0 bloquant, 0 grave, 12 mineurs ; celle-ci couvre tout le lot, F125/F122/F121 compris.
 

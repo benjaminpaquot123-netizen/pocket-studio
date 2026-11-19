@@ -74,10 +74,11 @@ class Tour9L15GridLineTest {
             val layouts = mutableListOf<TextLayoutResult>()
             n.config.getOrNull(SemanticsActions.GetTextLayoutResult)?.action?.invoke(layouts)
             val r = layouts.firstOrNull() ?: return@mapNotNull null
-            // Squeezed: narrower than its longest word would need (one word per line, or a word split).
+            // Squeezed: a word split over two lines. (didOverflowWidth is left out: under Robolectric it is true for a
+            // one-line text far narrower than its room.)
             val words = r.layoutInput.text.text.split(' ').filter { it.isNotBlank() }
             val split = words.any { w -> (0 until r.lineCount).none { r.layoutInput.text.text.substring(r.getLineStart(it), r.getLineEnd(it)).contains(w) } }
-            if ((0 until r.lineCount).any { r.isLineEllipsized(it) } || r.didOverflowHeight || r.didOverflowWidth || split) "«${r.layoutInput.text}» ${r.size}" else null
+            if ((0 until r.lineCount).any { r.isLineEllipsized(it) } || r.didOverflowHeight || split) "«${r.layoutInput.text}» ${r.size} lines=${r.lineCount} ell=${(0 until r.lineCount).any { r.isLineEllipsized(it) }} oh=${r.didOverflowHeight} split=$split c=${r.layoutInput.constraints}" else null
         }
 
     @Test fun f050ReadsInFullAt200WithCellsHere() {

@@ -248,43 +248,79 @@ fun TutoBanner(modifier: Modifier = Modifier) {
 
 /**
  * The tutorial's line over the drum grid (testers, lot « tuto 5 »), always there while the tutorial
- * runs, one height: « Mesure 1/2 · Caisse », then « encore 2 cases » on this page, or « Mesure 2 ·
- * 3 cases → » when they are on another page (a touch goes there: the page never turns by itself),
- * what the screen just changed (« → Charley »), and « Copier » when it is the next thing to do.
+ * runs: « Mesure 1/2 », then, on the line nearest the cells, « Caisse · encore 2 cases » on this page,
+ * or « Mesure 2 · 3 cases → » when they are on another page (a touch goes there: the page never turns
+ * by itself), what the screen just changed (« Caisse · → Charley »), and « Copier » when it is the next
+ * thing to do. Its words wrap rather than being cut (tour 9, F048 and F050).
  * Nothing of it over the cells.
  */
 @Composable
 fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<Int, Int>?, go: (Int) -> Unit, copy: (() -> Unit)?, erasing: Boolean = false) {
     val said = TutoHints.banner
     androidx.compose.runtime.LaunchedEffect(said) { if (said != null) { kotlinx.coroutines.delay(TUTO_BANNER_MS); if (TutoHints.banner == said) TutoHints.banner = null } }
-    Row(
+    val status = when {
+        said != null -> said
+        // n° 34: a hit too many (crossed out) is said as such, not as a dotted cell to touch.
+        here > 0 && erasing -> trCount(here, "%d coup en trop ici (barré)", "%d coups en trop ici (barrés)")
+        here > 0 -> trCount(here, "Encore %d case en pointillé ici", "Encore %d cases en pointillé ici")
+        else -> null
+    }
+    // F048 (tour 9): the pad is on the line right over the cells, with what to do there, so it stays in sight even
+    // when the screen's fixed head covers the bar line above it, and while a message shows.
+    val near = if (status != null && pad.isNotBlank() && status.contains(pad)) status else listOfNotNull(pad.takeIf { it.isNotBlank() }, status).joinToString(" · ")
+    TutoLineBesideButton(
         Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Amber.copy(alpha = 0.10f)).padding(start = 10.dp, end = 4.dp)
             .spot(TUTO_GRID_LINE_SPOT).testTag("tuto_grid_line"),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.weight(1f)) {
-            Text(
-                (if (bars > 1) tr("Mesure %1\$d/%2\$d", bar + 1, bars) + " · " else "") + pad,
-                style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.testTag("tuto_grid_where"),
-            )
-            val status = when {
-                said != null -> said
-                // n° 34: a hit too many (crossed out) is said as such, not as a dotted cell to touch.
-                here > 0 && erasing -> trCount(here, "%d coup en trop ici (barré)", "%d coups en trop ici (barrés)")
-                here > 0 -> trCount(here, "Encore %d case en pointillé ici", "Encore %d cases en pointillé ici")
-                else -> null
-            }
-            if (status != null) Text(status, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Amber, maxLines = 1,
-                overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_grid_status"))
-        }
-        when {
-            copy != null -> Button(onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_grid_copy")) { Text(tr("Copier"), maxLines = 1) }
-            elsewhere != null && here == 0 -> TextButton(onClick = { go(elsewhere.first) }, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_bar_go")) {
-                Text(
-                    trCount(elsewhere.second, "Mesure %2\$d · %1\$d case", "Mesure %2\$d · %1\$d cases", elsewhere.second, elsewhere.first + 1) + (if (elsewhere.first > bar) " →" else ""),
-                    color = Neon.Amber, fontWeight = FontWeight.Bold, maxLines = 1,
+        line = {
+            // F050 (tour 9): every word reads in full at 200 %: the words wrap, never « … ».
+            Column(Modifier.padding(vertical = 4.dp)) {
+                if (bars > 1) Text(
+                    tr("Mesure %1\$d/%2\$d", bar + 1, bars),
+                    style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_grid_where"),
                 )
+                if (near.isNotEmpty()) Text(near, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Amber,
+                    modifier = Modifier.testTag("tuto_grid_status"))
+            }
+        },
+        button = {
+            when {
+                copy != null -> Button(onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_grid_copy")) { Text(tr("Copier"), maxLines = 1) }
+                elsewhere != null && here == 0 -> TextButton(onClick = { go(elsewhere.first) }, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_bar_go")) {
+                    Text(
+                        trCount(elsewhere.second, "Mesure %2\$d · %1\$d case", "Mesure %2\$d · %1\$d cases", elsewhere.second, elsewhere.first + 1) + (if (elsewhere.first > bar) " →" else ""),
+                        color = Neon.Amber, fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+        },
+    )
+}
+
+/**
+ * The tutorial line's words with its button at the end when both fit side by side, else the button under the words
+ * (at the end): the words are never squeezed into a sliver beside the button (F050, tour 9).
+ */
+@Composable
+private fun TutoLineBesideButton(modifier: Modifier, line: @Composable () -> Unit, button: @Composable () -> Unit) {
+    androidx.compose.ui.layout.Layout(contents = listOf(line, button), modifier = modifier) { (lines, buttons), constraints ->
+        val gap = 8.dp.roundToPx()
+        val loose = constraints.copy(minWidth = 0, minHeight = 0)
+        val buttonPlaced = buttons.firstOrNull()?.measure(loose)
+        val bw = buttonPlaced?.width ?: 0
+        val lineMeasurable = lines.first()
+        val beside = buttonPlaced == null || lineMeasurable.maxIntrinsicWidth(androidx.compose.ui.unit.Constraints.Infinity) + gap + bw <= constraints.maxWidth
+        val lineWidth = if (beside && buttonPlaced != null) (constraints.maxWidth - gap - bw).coerceAtLeast(0) else constraints.maxWidth
+        val linePlaced = lineMeasurable.measure(loose.copy(minWidth = 0, maxWidth = lineWidth))
+        val bh = buttonPlaced?.height ?: 0
+        val height = (if (beside) maxOf(linePlaced.height, bh) else linePlaced.height + bh).coerceIn(constraints.minHeight, constraints.maxHeight)
+        val width = constraints.maxWidth
+        layout(width, height) {
+            if (beside) {
+                linePlaced.placeRelative(0, (height - linePlaced.height) / 2)
+                buttonPlaced?.placeRelative(width - bw, (height - bh) / 2)
+            } else {
+                linePlaced.placeRelative(0, 0)
+                buttonPlaced?.placeRelative(width - bw, linePlaced.height)
             }
         }
     }

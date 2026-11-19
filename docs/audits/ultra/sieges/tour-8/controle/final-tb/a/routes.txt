@@ -1,0 +1,3 @@
+tuto_panel/tab_simple_Rythme
+tuto_panel/tab_simple_Morceau
+tab_simple_Morceau

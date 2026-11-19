@@ -1,0 +1,128 @@
+{
+ "name": "Nuit",
+ "drums": {
+  "steps": 16,
+  "lanes": [
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   }
+  ]
+ },
+ "acid": {
+  "length": 16,
+  "steps": [
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   }
+  ]
+ },
+ "synthEngine": 0,
+ "synthTrackName": "Synthé",
+ "synthNotes": {
+  "steps": 16,
+  "notes": []
+ },
+ "tracks": [],
+ "scenes": [],
+ "song": [],
+ "audioTracks": [],
+ "style": "lofi",
+ "guide": {
+  "start": "song",
+  "startMarks": {
+   "sound": 1,
+   "notes": 2,
+   "arrange": 3
+  }
+ }
+}

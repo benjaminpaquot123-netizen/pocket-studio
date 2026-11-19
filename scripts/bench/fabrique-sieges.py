@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """Banc fiable 2.3: the seats of a round, from <round>/sieges-proposes.tsv, written as start.txt and v2 briefs.
     fabrique-sieges.py <round folder> [--tour tour-N]
-sieges-proposes.tsv: lot, siege, lang, device, font, mode, options (« a=b;c=d » or -), mission, gestes, profil, promesse.
+sieges-proposes.tsv: lot, siege, lang, device, font, mode, options (« a=b;c=d » or -), mission, gestes, profil, promesse,
+niveau (lot « niveaux », PLAN-NIVEAUX §3: 0 curieux … 4 pro, or X for a seat of no level; a seat without one is refused,
+but a « libre » seat, which counts for no level and may not claim one).
 The promise field lists catalogue ids and free promises: « P093 ; P094 ; libre: Mes exports liste le .zip » (5 at
 most). An id is taken from docs/audits/ultra/promesses-catalogue.tsv (its text, as the screen writes it); a free one
 gets the id « tN-<lot><seat>-k ». The same id twice in one seat is refused. Writes <round>/lot<X>/<s>/start.txt,
 <round>/briefs/<X><s>.txt and <round>/sieges.tsv (with the resolved ids). Standard library only (round 5's fabrique.py,
 kept in the scratchpad until now, made general)."""
+import json
 import os
 import re
+import shutil
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -26,7 +30,15 @@ GOALS = {
     "remix-voix": "separe (la chanson est séparée), decoupe (la voix est découpée), pose (un bout sur un pad ou une piste)",
     "exports": "spotify (un fichier « streaming »), club (un fichier « club »), retrouve (retrouvés dans Mes exports)",
     "synthe": "son (un son de synthé choisi), regle (un réglage changé et entendu), garde (le son gardé sous un nom)",
+    # Lot « niveaux » (PLAN-NIVEAUX §2): what seat-metrics.py's level oracles read in the saved project.
+    "mon-morceau": "son (un son du morceau de l'assistant changé), melodie (ses notes changées), structure (ses parties changées)",
+    "boucle-imposee": "rythme (la batterie de la fiche), basse (la ligne de basse de la fiche), accords (les accords de la fiche)",
+    "projet-vide": "pistes (6 pistes qui jouent), parties (8 parties remplies), export (un fichier exporté)",
+    "pistes-separees": "fichiers (un fichier audio par piste qui joue), format (.wav ou .flac), duree (tous de la même durée)",
 }
+LEVELS = ("0", "1", "2", "3", "4", "X")
+# The fixture folder of the level oracles: the loop of « boucle-imposee » (its brief says it in words, the seat gets its sheet).
+LOOP = os.path.join(HERE, "oracles-niveaux", "boucle-imposee", "fiche.json")
 
 # Round 6, lot banc7 (point 6): the gestures a mission needs at least. A whole tutorial (15 chapters, « Bravo ») took the
 # seats of round 6 about 16 gestures a chapter: 120 ran out at chapter 7/15 (D a, H a). Refused below, never cut in silence.
@@ -75,7 +87,14 @@ def main(argv):
     os.makedirs(os.path.join(t, "briefs"), exist_ok=True)
     out = []
     for r in rows:
-        lot, seat, lang, device, font, mode, options, mission, gestes, profil, promesse = (r + [""] * 11)[:11]
+        lot, seat, lang, device, font, mode, options, mission, gestes, profil, promesse, niveau = [x.strip() for x in (r + [""] * 12)[:12]]
+        # Lot « niveaux »: « reprendre » has no oracle yet (the bench cannot move the clock 3 days): refused, never a « non ».
+        if mission == "reprendre":
+            raise SystemExit(f"{lot}{seat}: mission reprendre: oracle à écrire (horloge), hors du tour 8")
+        if mission == "libre" and niveau not in ("", "X"):
+            raise SystemExit(f"{lot}{seat}: mission libre with niveau {niveau}: libre counts for no level (X or empty)")
+        if mission != "libre" and niveau not in LEVELS:
+            raise SystemExit(f"{lot}{seat}: niveau « {niveau} »: 0 to 4 or X (12th column of sieges-proposes.tsv, PLAN-NIVEAUX §3)")
         d = os.path.join(t, f"lot{lot}", seat)
         os.makedirs(d, exist_ok=True)
         start = [f"lang={lang}", f"device={device}", f"font={font}"]
@@ -86,7 +105,12 @@ def main(argv):
         need = MIN_GESTES.get(mission, 0)
         if not gestes.isdigit() or int(gestes) < need:
             raise SystemExit(f"{lot}{seat}: mission {mission} with {gestes} gestures, {need} at least (a whole tutorial: sieges-proposes.tsv)")
-        start += [f"gestes.max={gestes}", f"mission={mission}", "timeout.minutes=30"]
+        start += [f"gestes.max={gestes}", f"mission={mission}", "timeout.minutes=30"] + ([f"niveau={niveau}"] if niveau else [])
+        loop = ""
+        if mission == "boucle-imposee":
+            shutil.copyfile(LOOP, os.path.join(d, "boucle.json"))
+            with open(LOOP, encoding="utf-8") as f:
+                loop = json.load(f).get("dit", "")
         with open(os.path.join(d, "start.txt"), "w", encoding="utf-8") as f:
             f.write("\n".join(start) + "\n")
         proms = promises(promesse, cat, tour, lot, seat)
@@ -95,6 +119,7 @@ def main(argv):
             f"SEAT={d} (seat {seat}, lot {lot}; lang {lang}, device {device}, font {font}, mode {mode}, options {options}, mission {mission}, budget {gestes} gestures).",
             f"Profile (id t{tour}-{lot}{seat}): {profil}. Act as this person (habits, patience, vocabulary).",
             f"Mission {mission}; its 3 goals (ids, the bench checks them): {GOALS.get(mission, 'but1, but2, but3')}.",
+        ] + ([f"The loop to rebuild (say it to yourself as a musician would read it): {loop}"] if loop else []) + [
             "Promises to check, one « promesse: » line each in your report, with its id (one line per id, never twice):",
         ] + [f"  - id={i} | {p}" for i, p in proms] + [
             f"Your report {d}/rapport.md already starts with two lines the bench wrote when it started (« code testé : … », « joué par : … »): keep them as its first two lines, write your block under them.",
@@ -102,9 +127,9 @@ def main(argv):
         ]
         with open(os.path.join(t, "briefs", f"{lot}{seat}.txt"), "w", encoding="utf-8") as f:
             f.write("\n".join(brief) + "\n")
-        out.append("\t".join([lot, seat, lang, device, font, mode, options, mission, gestes, profil, " ; ".join(i for i, _ in proms)]))
+        out.append("\t".join([lot, seat, lang, device, font, mode, options, mission, gestes, profil, " ; ".join(i for i, _ in proms), niveau]))
     with open(os.path.join(t, "sieges.tsv"), "w", encoding="utf-8") as f:
-        f.write("lot\tsiege\tlang\tdevice\tfont\tmode\toptions\tmission\tgestes\tprofil\tpromesses\n" + "\n".join(out) + "\n")
+        f.write("lot\tsiege\tlang\tdevice\tfont\tmode\toptions\tmission\tgestes\tprofil\tpromesses\tniveau\n" + "\n".join(out) + "\n")
     print(len(out), "sièges")
     return 0
 

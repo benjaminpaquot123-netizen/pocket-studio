@@ -1,5 +1,7 @@
 # Relecture neuve — lot tour-9-L9 (eq/tour-9-L9, 7455749a5..b350c86d)
 
+relu : b350c86d9c5b9508079813c42ecd27a06af350a6
+
 Périmètre : 12 commits, uniquement `app/src/test/**`, `scripts/bench/**` et un compte rendu dans `docs/`. Rien dans
 `app/src/main` ni `project-model/src/main`, aucun lien symbolique, pas d'identifiant de modèle dans les messages (seule la
 ligne d'attribution imposée). Aucun test désactivé ni `@Ignore`. Pas de Gradle lancé (consigne) ; lancés :

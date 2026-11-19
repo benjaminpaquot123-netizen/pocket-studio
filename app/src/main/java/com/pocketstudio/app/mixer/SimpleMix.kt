@@ -232,7 +232,11 @@ fun SimpleMixScreen(
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(Neon.Cyan.copy(alpha = 0.12f))
                 .drawStartBar(Neon.Cyan).padding(start = 12.dp, end = 8.dp, top = 6.dp, bottom = 6.dp).testTag("mix_hint"),
         )
-        androidx.compose.runtime.CompositionLocalProvider(LocalAloneResumes provides (ui.listening?.resume == true)) {
+        // Tour 9 (F026, F027): the heads' one size and height (a strip's head is 2 dp in from 6 dp of padding).
+        val heads = remember(ui.tracks, com.pocketstudio.model.i18n.I18n.lang) { ui.tracks.map { t -> (if (t.pads.isNotEmpty()) t.name + " ▸" else t.name) to (STRIP_W - 16.dp) } + (tr("Sortie") to STRIP_W) }
+        androidx.compose.runtime.CompositionLocalProvider(
+            LocalAloneResumes provides (ui.listening?.resume == true), LocalHeadLook provides rememberHeadLook(heads),
+        ) {
         val strips = rememberScrollState()
         Box {
         Row(Modifier.fillMaxWidth().fadingEdges(strips).horizontalScroll(strips), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -289,19 +293,60 @@ private val MINI_FADER_H = 120.dp
  */
 @Composable
 private fun StripHead(name: String, color: Color, modifier: Modifier = Modifier, atStart: Boolean = false) {
+    val look = LocalHeadLook.current
     Box(
-        modifier.fillMaxWidth().clip(RoundedCornerShape(6.dp))
+        modifier.fillMaxWidth().then(if (look != null) Modifier.height(look.height) else Modifier).testTag("mix_head").clip(RoundedCornerShape(6.dp))
             .background(Brush.verticalGradient(listOf(color.copy(alpha = 0.44f), color.copy(alpha = 0.28f))))
             .drawBehind { drawRect(color, Offset.Zero, Size(size.width, 3.dp.toPx())) }.padding(horizontal = 2.dp, vertical = 4.dp),
         contentAlignment = if (atStart) Alignment.CenterStart else Alignment.Center,
     ) {
         // Tour 6, lot 5 (R1: « Batteri / e ▸ », « Batteri / a » at 130 %, « आउटपुट » at 200 %): smaller before a word is cut
         // in two (FitText: WholeWordsText lets a Hindi word break before its vowel sign), as small as a 64 dp strip needs.
-        com.pocketstudio.ui.FitText(
-            name, if (atStart) Modifier.padding(start = 10.dp) else Modifier, style = MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp),
+        // Tour 9 (F026): every head at the one size the longest name needs, not each at its own.
+        // The open drums' head (a group's head over its strips) starts at the same size and stays where the strips start.
+        if (look != null && !atStart) Text(name, style = headStyle(look.size), maxLines = 2, textAlign = TextAlign.Center)
+        else com.pocketstudio.ui.FitText(
+            name, if (atStart) Modifier.padding(start = 10.dp) else Modifier,
+            style = if (look != null) headStyle(look.size) else MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp),
             fontWeight = FontWeight.Bold, maxLines = 2, textAlign = if (atStart) TextAlign.Start else TextAlign.Center,
-            min = 7.sp,
+            min = if (look != null) minOf(7f, look.size).sp else 7.sp,
         )
+    }
+}
+
+/** Tour 9 (F026, F027): the one text size and height every head of the Mix is drawn at. */
+private class HeadLook(val size: Float, val height: Dp)
+
+private val LocalHeadLook = androidx.compose.runtime.staticCompositionLocalOf<HeadLook?> { null }
+
+@Composable
+private fun headStyle(size: Float) = MaterialTheme.typography.labelMedium.let { base ->
+    base.copy(fontSize = size.sp, lineHeight = (14f * size / base.fontSize.value).sp, fontWeight = FontWeight.Bold)
+}
+
+/**
+ * The largest size at which each of [heads] (a name and the width it is drawn in) is whole on two lines at most, no word
+ * cut (tour 9, F026: « Batterie » smaller than « Basse » next to it), and the height of the tallest (F027: a head of
+ * two lines made its strip taller than the others; the drums' head was 40 dp, the others less).
+ */
+@Composable
+private fun rememberHeadLook(heads: List<Pair<String, Dp>>): HeadLook {
+    val measurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    val base = MaterialTheme.typography.labelMedium.fontSize.value
+    val style = headStyle(base)
+    return remember(heads, density, style) {
+        fun layout(text: String, w: Dp, size: Float) = measurer.measure(
+            text, style.copy(fontSize = size.sp, lineHeight = (14f * size / base).sp, textAlign = TextAlign.Center), maxLines = 2,
+            constraints = androidx.compose.ui.unit.Constraints(maxWidth = with(density) { w.roundToPx() }),
+        )
+        // Down to 7 sp as the phone's font draws it (FitText's floor), by half a point; 6 sp when a long name needs it
+        // at the phone's font at 200 % (« Perkusja ▸ » in a 60 dp head: still 12 sp drawn).
+        var size = base
+        val floor = 6f
+        while (size > floor && heads.any { (t, w) -> !com.pocketstudio.ui.WholeWordsAutoSize.fits(layout(t, w, size), t) }) size -= 0.5f
+        val tallest = heads.maxOfOrNull { (t, w) -> layout(t, w, size).size.height } ?: 0
+        HeadLook(size, maxOf(40.dp, with(density) { tallest.toDp() } + 8.dp))
     }
 }
 
@@ -343,7 +388,7 @@ private fun DrumsGroup(
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Box(
-            Modifier.width(if (open) STRIP_W + (MINI_W + 4.dp) * t.pads.size else STRIP_W - 12.dp).heightIn(min = 40.dp)
+            Modifier.width(if (open) STRIP_W + (MINI_W + 4.dp) * t.pads.size else STRIP_W - 12.dp)
                 .clip(RoundedCornerShape(6.dp))
                 .clickable(role = Role.Button, onClickLabel = if (open) tr("Replier") else tr("Voir ses sons"), onClick = toggle)
                 .semantics { stateDescription = if (open) tr("ouvert") else tr("fermé") }

@@ -68,6 +68,12 @@ import com.pocketstudio.ui.pillColors
 import kotlin.math.roundToInt
 import com.pocketstudio.model.i18n.tr
 
+/**
+ * Tour 9 (F136, « Pour : Pluck » on the Rhodes track): the name of the track whose effects are open, given by the
+ * sheet that opens them; the suggested chip says it (« Pour : Rhodes ») rather than the sound's family.
+ */
+val LocalFxTrackName = androidx.compose.runtime.compositionLocalOf<String?> { null }
+
 class QuickFxActions(
     val setMacro: (ch: Int, macro: Int, value: Float) -> Unit = { _, _, _ -> },
     val setMacroPair: (ch: Int, x: Int, xValue: Float, y: Int, yValue: Float) -> Unit = { _, _, _, _, _ -> },
@@ -91,6 +97,7 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions, kind: Sound
     val current = channel.matchingFx()
     val suggested = kind?.let { FxPresets.suggestedFor(it, ch) }.orEmpty()
     val favourites by actions.favourites.collectAsState()
+    val trackName = LocalFxTrackName.current
     // With suggestions, the families wait behind « Toutes » (unless the one in use is elsewhere).
     val startAll = suggested.isEmpty() || (current != null && current.id != FxPresets.NONE.id && current !in suggested)
     var category by rememberSaveable(ch, kind) {
@@ -102,7 +109,7 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions, kind: Sound
         WithHelp(Glossary.FX_PRESET) { Text(tr("Ambiances toutes prêtes"), style = MaterialTheme.typography.labelLarge, color = Neon.Magenta) }
         Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (kind != null) {
-                FilterChip(selected = category == SUGGESTED, onClick = { category = SUGGESTED }, label = { Text(tr("Pour : %s", tr(kind.label))) },
+                FilterChip(selected = category == SUGGESTED, onClick = { category = SUGGESTED }, label = { Text(tr("Pour : %s", trackName ?: tr(kind.label))) },
                     modifier = Modifier.testTag("fx_category_suggested"))
             }
             FilterChip(selected = category == FAVOURITES, onClick = { category = FAVOURITES }, label = { Text(tr("Favoris")) },

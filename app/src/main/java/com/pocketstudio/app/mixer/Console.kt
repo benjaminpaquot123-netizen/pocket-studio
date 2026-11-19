@@ -193,9 +193,10 @@ private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, action
                 .testTag("strip_more_$index"),
             contentAlignment = Alignment.Center,
         ) {
-            Text(
-                name, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center,
-                maxLines = 2, overflow = TextOverflow.Ellipsis, lineHeight = 14.sp,
+            // Tour 9 (F023, « Drum / s »): smaller before a word is cut in two, as the Mode simple's heads.
+            com.pocketstudio.ui.FitText(
+                name, style = MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp), fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center, maxLines = 2, min = 7.sp,
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -304,16 +305,24 @@ private fun StripSheet(
     val name = com.pocketstudio.model.DefaultNames.shown(info.name)
     val index = info.ch
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("strip_sheet")) {
-        Column(
-            Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+    // Tour 9 (F025): the track's name stays above what scrolls (it went out at the top, « XY… »), whole on two lines at most.
+    ScaledBottomSheet(
+        onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("strip_sheet"), scrolls = true,
+        header = {
+            Row(Modifier.padding(horizontal = 16.dp).padding(bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(width = 4.dp, height = 22.dp).background(info.color ?: Neon.Cyan, RoundedCornerShape(2.dp)))
-                Text(name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp).weight(1f).testTag("strip_sheet_title"))
+                com.pocketstudio.ui.WholeWordsText(
+                    name, Modifier.padding(start = 8.dp).weight(1f).testTag("strip_sheet_title"), style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
                 TextButton(onClick = close, modifier = Modifier.testTag("strip_sheet_close")) { Text(tr("Fermer")) }
             }
+        },
+    ) {
+        Column(
+            Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(selected = c.mute, onClick = { actions.toggleMute(index) }, label = { Text(tr("Muet")) }, colors = pillColors(Neon.Red), modifier = Modifier.testTag("sheet_mute_$index"))
                 FilterChip(selected = c.solo, onClick = { actions.toggleSolo(index) }, label = { Text(tr("Solo")) }, colors = pillColors(), modifier = Modifier.testTag("sheet_solo_$index"))
@@ -345,7 +354,7 @@ private fun StripSheet(
                 }
             }
             Text(tr("Effets"), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("effects_$index"))
-            EffectsBox(index, c, actions)
+            androidx.compose.runtime.CompositionLocalProvider(LocalFxTrackName provides name) { EffectsBox(index, c, actions) }
         }
     }
 }
@@ -378,15 +387,23 @@ internal fun MoreTracksTab(scroll: androidx.compose.foundation.ScrollState, tag:
 private fun PadSheet(channels: List<Channel>, actions: MixerActions, padNames: (Int) -> String, close: () -> Unit) {
     var lane by rememberSaveable { mutableStateOf(0) }
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("pad_sheet")) {
-        Column(
-            Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(tr("  Effets du pad").trim(), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+    // Tour 9 (F025, the same as a strip's sheet): the title stays above what scrolls.
+    ScaledBottomSheet(
+        onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("pad_sheet"), scrolls = true,
+        header = {
+            Row(Modifier.padding(horizontal = 16.dp).padding(bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                com.pocketstudio.ui.WholeWordsText(
+                    tr("  Effets du pad").trim(), Modifier.weight(1f).testTag("pad_sheet_head"), style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
                 TextButton(onClick = close, modifier = Modifier.testTag("pad_sheet_close")) { Text(tr("Fermer")) }
             }
+        },
+    ) {
+        Column(
+            Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 for (l in 0 until com.pocketstudio.model.DrumPattern.PAD_COUNT) {
                     FilterChip(
@@ -397,7 +414,9 @@ private fun PadSheet(channels: List<Channel>, actions: MixerActions, padNames: (
             }
             val ch = com.pocketstudio.model.Mixer.padChannel(lane)
             Text(tr("Effets · %s", tr("pad %1\$d (%2\$s)", lane + 1, padNames(lane))), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("pad_sheet_title"))
-            androidx.compose.runtime.key(lane) { EffectsBox(ch, channels.getOrElse(ch) { Channel() }, actions) }
+            androidx.compose.runtime.key(lane) {
+                androidx.compose.runtime.CompositionLocalProvider(LocalFxTrackName provides padNames(lane)) { EffectsBox(ch, channels.getOrElse(ch) { Channel() }, actions) }
+            }
         }
     }
 }

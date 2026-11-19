@@ -28,6 +28,7 @@ corrige: D17 | gravité: grave (douteux banc) | rejeu: t9-75-kit
 
 ## Ce qui n'est pas vert
 - Une amenée « tuto:gabber:7 » a échoué une fois au hasard (« les chapitres n'est jamais venu », faute connue du banc, voir BenchAmeneeLateKitCardTest) ; relancée sans rien changer, elle passe.
+- Après la fusion de l'intégration (L8 compris), des captures hors de mes écrans ne collent plus à leurs références : feuille du tempo (`tempo_sheet`, `nl_tempo_sheet`), barre des pistes (`tracks`), et sans doute les écrans Sons (`nav_sons`, `nav_sons_synth`, `nav_simple_keys`, `nav_simple_send`, `sons_synth_take`, et leurs `land_*`). Prouvé avec le code de la base seule pour `tempo_sheet`, `nl_tempo_sheet` et `tracks` : c'est L8 (TrackBar et TempoSheet changés sans nouvelles références). Pas réenregistrées ici, ce ne sont pas mes écrans.
 
 ## Demandes (hors de mes fichiers)
 Aucune.

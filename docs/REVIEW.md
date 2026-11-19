@@ -1213,3 +1213,32 @@ Rapport : `docs/audits/ultra/tour-5-banc6d-rapport.md`. Dette gardée :
 
 ## Tour 8 : garde-fous, partie B (2026-11-18)
 - `cutCurveCompositions` (`remix/CutScreen.kt`, lu par `CutPlayHeadTest.kt`) : compteur de test gardé dans le code de l'appli, **voulu** (le test n'a pas d'autre moyen de voir les recompositions ; coût nul en usage). Point mineur du tour 7 clos sans changement de code.
+
+## Tour 8 : revue de fin de phase (2026-11-19, T9-REVUE)
+Lecteur neuf, base `origin/main...e74dc1200` (210 commits ; 16 fichiers Kotlin de l'appli, tutos JSON et traductions ; **aucun fichier du moteur C++ touché**). Rien n'a été réparé (tour 9 : tester d'abord). Machine : `/opt/android-sdk/platforms` = `android-37.0` (script de préparation vu tourner).
+
+**Bloquant : 0. Grave : 0 dans l'appli** (callback audio intact ; « Je le fais » du tuto passe par `edit {}`, donc annulation et sauvegarde normales ; ni plantage ni fuite trouvés).
+
+**Grave (tests creux, 3)** : un retour du défaut ne serait pas vu.
+- `app/src/test/java/com/pocketstudio/app/ui/Tour8PlusRowsFitTest.kt:65` : le test s'arrête dès que la mise en page n'a pas choisi les grandes tuiles ; il ne vérifie donc que le cas déjà réussi. Vu de l'utilisateur : les tuiles « + » qui débordent pourraient revenir sans rouge (les étiquettes `plus_tiles_*` n'existent que dans le nouveau code : sans le correctif, chaque cas sort tôt et passe).
+- `app/src/test/java/com/pocketstudio/app/guide/Tour8GuideNoEmptyStepTest.kt:33,37` : compte les blocs `guide_step_block` au lieu de mesurer le vide de 6 dp. Vu de l'utilisateur : le trou vide dans le guide peut revenir (marge déplacée, étiquette retirée) sans rouge ; le cas « nommé sans étape » n'est pas couvert.
+- `app/src/test/java/com/pocketstudio/app/human/OrdinaryTestsLeaveNothingTest.kt:69-94` : le cas « démarre en retard » (300 ms) attend que le fil tourne avant de vérifier : identique au cas de la ligne 61. Un test qui laisse un fil lancé tard n'est toujours pas attrapé ; le `Thread{}.start()` n'est jamais rejoint.
+
+**À noter (appli)**
+- `project-model/src/main/resources/tutos/techno.json:417-418` : Intro 2, texte simple « sauf le riff », texte Pro « sauf la cymbale et le riff » (même écart dans les 14 traductions de `textPro`). Vu de l'utilisateur : la recette change selon le mode ; aligner sur la vérification `part:Intro 2:less+bass`.
+- `app/src/main/java/com/pocketstudio/app/ui/AppRoot.kt` (`mixerStrips`, vers 4095) : la piste 0 supprimée est maintenant cachée pour tous les appelants (export en pistes séparées, `AutomateSheet`, `AutoKnobsVm`, `PlayStrip`). Vu de l'utilisateur : une première piste supprimée ne sort plus en piste séparée (sans doute voulu, à confirmer).
+- `app/src/main/java/com/pocketstudio/app/export/ShareSheet.kt:817` : « N parties » compte les parties distinctes, plus les lignes du morceau. Vu de l'utilisateur : un morceau qui rejoue une partie annonce moins de parties qu'il n'a de lignes (sans doute voulu).
+- `project-model/src/main/kotlin/com/pocketstudio/model/tuto/TutoChecks.kt` (`withPartCurve`) : « Je le fais » retire toutes les courbes de la même cible, y compris une courbe du morceau dessinée par l'utilisateur ; et `.take(MAX_LANES)` peut jeter la nouvelle courbe quand tout est plein, l'étape ne se coche alors jamais (le second point existait avant).
+- `app/src/main/java/com/pocketstudio/app/remix/CutScreen.kt:~236-243` : le drapeau `arrived` ne se remet jamais à zéro ; l'écran peut défiler vers un vieux message.
+- `app/src/main/java/com/pocketstudio/app/rhythm/RhythmScreen.kt` (`AllPadsGrid`) : l'anneau du tuto ne tient pas compte des roulements (`covering()`), il peut se poser sur une case déjà couverte.
+- `app/src/main/java/com/pocketstudio/app/mixer/MixerScreen.kt` (`fitProbe`) : une liste allouée à chaque recomposition (fil de l'interface, coût faible).
+- `app/src/main/java/com/pocketstudio/app/synth/SynthScreen.kt` (grandes lettres) : `recordTall` garde sa valeur quand `record` redevient nul : espacement périmé possible.
+
+**À noter (banc et tests)**
+- `app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:939` : `reachTag` rend le centre d'une cible ni entière ni dans une liste défilante (avant : jusqu'à 8 balayages) : tape à l'aveugle.
+- `HumanTester.kt:969` : `aim()` avale toute exception (journal du banc nul hors banc).
+- `HumanTester.kt:926` : attente de `projects_loading` (40 × 0,5 s) qui continue en silence.
+- `app/src/test/java/com/pocketstudio/app/tuto/TutoJourneyTest.kt:458` : `assertNotNull("no way to do it")` assoupli ; un « Je le fais » cassé passe si le projet remplit déjà l'étape.
+- `app/src/test/java/com/pocketstudio/app/human/TutoAnchor.kt:16,26` : `built()` saute en silence une étape impossible (`skipped = {}` par défaut).
+- `Tour8PlusRowsFitTest.kt:59` (même forme dans `Tour8NewPartShownTest`, `Tour8RepeatsHelpTest`) : `if (reachTag(t) != null) tap(t)` saute une étape de l'assistant sans échec.
+- `settings.gradle.kts` : miroir Google de Maven Central ajouté en premier (voulu, faux 404).

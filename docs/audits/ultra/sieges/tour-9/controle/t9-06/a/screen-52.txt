@@ -1,0 +1,47 @@
+Écran 52 (1035x1243)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 373,42
+texte « 간단 » @ 774,42
+bouton ● @ 846,42
+bouton ▶ « 이 파트 » @ 918,42
+icône ⋮ @ 990,42
+bouton « 185  템포 » @ 69,114
+icône « 인트로 1/128마디 » ▾ @ 211,114
+bouton « ? » @ 990,114
+texte « 직접 해 보세요: 들려야 할 소리는 올리고, 방해되는 소리는 내리세요. ▶를 누르면 트랙 하나만 들을 수 있어요. » @ 520,174
+bouton « 드럼 ▸ » [état « 닫힘 »] @ 75,253
+curseur [état « 보통 », à 80 %] @ 84,430
+texte « 보통 » @ 84,590
+bouton (haut-parleur et ondes) [allumé, état « 켜짐 »] @ 56,655
+bouton ▶ @ 110,643
+texte « Acid 303 » @ 216,241
+curseur [état « 보통 », à 80 %] @ 216,406
+texte « 보통 » @ 216,566
+bouton (haut-parleur et ondes) [allumé, état « 켜짐 »] @ 191,631
+bouton ▶ @ 242,619
+texte « 신스 » @ 339,243
+curseur [état « 보통 », à 80 %] @ 339,410
+texte « 보통 » @ 339,570
+bouton (haut-parleur et ondes) [allumé, état « 켜짐 »] @ 314,635
+bouton ▶ @ 365,623
+texte « 출력 » @ 474,243
+curseur [état « −6 », à 60 %] @ 474,410
+texte « ▶ 누르기 » @ 474,587
+texte « 지금은 조언이 없어요: 귀를 믿으세요. » @ 193,752
+icône (liste) « 챕터 » @ 906,843
+texte « 믹스: 볼륨 10/11장 · 1/1단계 · 쉬움 » @ 445,843
+icône ⌃ @ 978,843
+icône « 직접 해 보세요: “믹스” 탭에서 303과 “손뼉” 패드의 슬라이더를 조금 내리세요. 읽기 » ⌃ @ 517,942
+icône ↶ « 실행 취소 » @ 147,1027
+image ↷ @ 329,1015
+bouton ▶ « 곡 » @ 512,1027
+texte « 185 템포 » @ 700,1027
+icône ⋮ « 더보기 » @ 889,1027
+onglet (lignes et note) « 내 곡 » @ 99,1123
+onglet (quatre carrés) « 리듬 » @ 309,1123
+onglet (touches de piano) « 건반 » @ 518,1123
+onglet (curseurs) « 믹스 » [sélectionné] @ 727,1123
+onglet (trois points reliés) « 공유 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  메모 » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « 피드백 모드 » @ 385,1213

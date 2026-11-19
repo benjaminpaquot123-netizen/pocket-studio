@@ -1,0 +1,49 @@
+Écran 23 (1035x1243)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 337,42
+texte « 간단 » @ 702,42
+icône ↷ @ 774,42
+bouton ● @ 846,42
+bouton ▶ « 이 파트 » @ 918,42
+icône ⋮ @ 990,42
+bouton « 185  템포 » @ 69,114
+icône « 인트로 1/2마디 » ▾ @ 210,114
+bouton « ? » @ 990,114
+texte « − / + : 반복 횟수. 회색: 길이 고정(추천 또는 Live) 또는 1회뿐. » [coupé] @ 263,153
+texte « 끝에 추가: » @ 86,189
+bouton « + A · 그루브 » @ 133,253
+bouton « + B · 인트로 » @ 325,253
+bouton « + C · 인트로 2 » @ 142,334
+bouton « + D · 드롭 » @ 334,334
+bouton « + E · 브레이크 » @ 142,415
+bouton « + F · 빌드업 » @ 341,415
+bouton « + G · 드롭 2 » @ 133,496
+bouton « + H · 끝 » @ 306,496
+bouton « + 새 파트 (H · 끝 복사) » @ 178,577
+bouton « + 빈 새 파트 » @ 132,658
+bouton (barres de son) «   곡에서 재생 중인 것 » @ 263,742
+titre « 내 트랙 » [état « 펼쳐짐 »] @ 604,204
+texte « 트랙 이름을 눌러 소리를 바꾸고, ▶로 따로 들어 보세요. » @ 765,248
+bouton « 드럼 사운드 바꾸기 » › @ 696,316
+bouton ▶ @ 882,316
+icône (curseurs) @ 957,316
+bouton « Acid 303 사운드 바꾸기 » › @ 696,426
+bouton ▶ @ 882,426
+icône (curseurs) @ 957,426
+icône (liste) « 챕터 » @ 906,843
+texte « 파트를 정리하세요 7/11장 · 1/2단계 · 쉬움 » @ 445,843
+icône ⌃ @ 978,843
+icône « 직접 해 보세요: “내 곡”의 “추가” 아래에서 인트로, 인트로 2, 드롭, 브레이크, 빌드업, 드롭 2, 끝을 순서대로 탭하세요. 읽기 » ⌃ @ 517,942
+icône ↶ « 실행 취소 » @ 147,1027
+icône ↷ « 다시 실행 » @ 329,1027
+bouton ▶ « 곡 » @ 512,1027
+texte « 185 템포 » @ 700,1027
+icône ⋮ « 더보기 » @ 889,1027
+onglet (lignes et note) « 내 곡 » [sélectionné] @ 99,1123
+onglet (quatre carrés) « 리듬 » @ 309,1123
+onglet (touches de piano) « 건반 » @ 518,1123
+onglet (curseurs) « 믹스 » @ 727,1123
+onglet (trois points reliés) « 공유 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  메모 » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « 피드백 모드 » @ 385,1213

@@ -1,0 +1,7 @@
+Écran 61 (1035x1243)
+texte « 내 곡 공유 · 내-곡-20261119-072645.m4a » @ 517,442
+bouton « WhatsApp » @ 517,513
+bouton « Messages » @ 517,585
+bouton « Gmail » @ 517,657
+bouton « Drive » @ 517,729
+bouton « Files » @ 517,801

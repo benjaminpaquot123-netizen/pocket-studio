@@ -8,6 +8,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.onNodeWithTag
@@ -124,5 +125,33 @@ class Tour9RollFinishTest {
         assertEquals(com.pocketstudio.model.guide.GuideSheets.soundName(fresh), trackSoundName(fresh))
         val freshPlaits = fresh.copy(engine = com.pocketstudio.model.InstrumentTrack.ENGINE_PLAITS)
         assertEquals(com.pocketstudio.model.guide.GuideSheets.soundName(freshPlaits), trackSoundName(freshPlaits))
+    }
+
+    /**
+     * F117 (seat t9-05, phone360, Korean, 200 %): « Le clavier tient à l'écran à 200 % et son « ? » explique ce qu'il
+     * fait. » The room above the tutorial's panel held the track's bar, the take's card and the keys' top only; the one
+     * « ? » near them was the take's (about recording).
+     */
+    @Test
+    fun theKeysFitAboveTheTutorialAndTheirHelpSaysWhatTheyDo() {
+        val room = 260.dp
+        val tracks = TracksUi(listOf(com.pocketstudio.model.InstrumentTrack(id = 0, name = "Acid 303")), selected = 0)
+        bigLetters {
+            Box(Modifier.fillMaxWidth().height(room).testTag("room")) {
+                SynthScreen(Project().synth, 4, SynthActions(), simple = true, tracks = tracks,
+                    record = { Box(Modifier.fillMaxWidth().height(56.dp)) })
+            }
+        }
+        compose.waitForIdle()
+        val box = compose.onNodeWithTag("room").fetchSemanticsNode().boundsInRoot
+        val keys = compose.onNodeWithTag("synth_keys_first").fetchSemanticsNode().boundsInRoot
+        val dp = compose.onNodeWithTag("room").fetchSemanticsNode().layoutInfo.density.density
+        assertEquals("the keys ($keys) inside the room ($box)", true, keys.top >= box.top - 0.5f && keys.bottom <= box.bottom + 0.5f)
+        assertEquals("the keys' height (${keys.height / dp} dp)", true, keys.height / dp >= 109.5f)
+        // The keyboard's own « ? » says what the keys do, in the scale or not.
+        val locked = com.pocketstudio.model.Harmony(scale = com.pocketstudio.model.Scale.Minor, lock = true)
+        assertEquals("Le clavier : joue, il reste dans la gamme du morceau : aucune fausse note possible.", keyboardHelp(locked, chordPads = false)?.text)
+        assertEquals("Le clavier : joue pour essayer des notes par-dessus le rythme.", keyboardHelp(com.pocketstudio.model.Harmony(), chordPads = false)?.text)
+        compose.onNodeWithTag("help_Clavier", useUnmergedTree = true).assertExists()
     }
 }

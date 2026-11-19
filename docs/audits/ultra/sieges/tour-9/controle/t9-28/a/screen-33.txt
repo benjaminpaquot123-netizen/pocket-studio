@@ -1,0 +1,26 @@
+Écran 33 (588x1278)
+icône ✕ @ 534,350
+texte « Pukulan 12 » @ 258,350
+texte « Velocity » @ 74,415
+bouton « Kuat » [sélectionné] @ 74,481
+bouton « Sedang » @ 212,481
+bouton « Lembut » @ 371,481
+texte « Roll » @ 43,546
+bouton « ×1 » [sélectionné] @ 58,612
+bouton « ×2 » @ 148,612
+bouton « ×3 » @ 240,612
+bouton « ×4 » @ 334,612
+bouton « ×6 » @ 427,612
+bouton « ×8 » @ 520,612
+texte « Triplet » @ 62,677
+bouton « 3 dalam 2 kotak » @ 150,743
+bouton « 6 dalam satu ketukan » @ 188,815
+bouton « ↗ Naik » [désactivé] @ 87,896
+bouton « Rata » [désactivé, sélectionné] @ 218,896
+bouton « ↘ Turun » [désactivé] @ 358,896
+texte « Seluruh ketukan ×2 (semburan 1/32) » @ 284,977
+texte « Peluang main » @ 110,1042
+bouton « 100% » [sélectionné] @ 81,1108
+bouton « 75% » @ 205,1108
+bouton « 50% » @ 323,1108
+bouton « 25% » @ 442,1108

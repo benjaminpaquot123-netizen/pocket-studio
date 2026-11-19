@@ -1,0 +1,542 @@
+#0 SIEGE lang=id device=phone font=130 mode=pro theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:gabber:8
+#0 PREMIER ECRAN reel_s=4.2 simule_s=2.4 jvm_s=9.7 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:gabber:8
+#0 AMENEE > touche 294 976 (launch_learn)
+#0 AMENEE > touche 294 1120 (mode_card_pro)
+#0 AMENEE > touche 294 1204 (tuto_style_gabber)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 459 499 (tuto_chapters)
+#0 AMENEE > touche 294 786 (tuto_chapter_7)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE f1b0555f55 | project=p-80e2383b tuto=gabber/Pro active=true step=make_intro done=10 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 783
+#1 DOIGT tuto_need «   Buat bagian “Intro” »
+#2 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE bf23882df2 | project=p-80e2383b tuto=gabber/Pro active=true step=make_intro done=11 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 294 783
+#2 DOIGT tuto_next_big « Langkah berikutnya   »
+#3 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 60b8c86d6a | project=p-80e2383b tuto=gabber/Pro active=true step=make_montee done=11 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 531 337
+#3 DOIGT tuto_fold
+#4 ROUTE session/tab_Structure | MODE pro | EMPREINTE bd565e1853 | project=p-80e2383b tuto=gabber/Pro active=true step=make_montee done=11 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 294 965
+#4 DOIGT tuto_need_folded « Buat bagian “Build-up” »
+#5 ROUTE session/tab_Structure | MODE pro | EMPREINTE 46e7313c64 | project=p-80e2383b tuto=gabber/Pro active=true step=make_montee done=12 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « + Bagian baru (salinan C · Build-up) » lines dropped (more lines than room)
+#5 > touche 294 965
+#5 DOIGT tuto_next_folded « Berhasil »
+#6 ROUTE tab_Structure | MODE pro | EMPREINTE 50871a4618 | project=p-80e2383b tuto=gabber/Pro active=true step=make_drop done=12 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 294 783
+#6 DOIGT tuto_need «   Buat bagian “Drop” »
+#7 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 73f15b736f | project=p-80e2383b tuto=gabber/Pro active=true step=make_drop done=13 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 294 783
+#7 DOIGT tuto_next_big « Langkah berikutnya   »
+#8 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 49e7bfd66a | project=p-80e2383b tuto=gabber/Pro active=true step=make_break done=13 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 433 881
+#8 DOIGT tuto_show «  Tunjukkan »
+#9 ROUTE session/tab_Structure | MODE pro | EMPREINTE 2b4d860382 | project=p-80e2383b tuto=gabber/Pro active=true step=make_break done=13 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « Stop » 3.91:1 (needs 4.5:1, 14 sp)
+#9 > attends 4
+#10 ROUTE session/tab_Structure | MODE pro | EMPREINTE 2954aaea37 | project=p-80e2383b tuto=gabber/Pro active=true step=make_break done=13 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 293 744
+#10 DOIGT tuto_need «   Buat bagian “Break” »
+#11 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 04fbb8961c | project=p-80e2383b tuto=gabber/Pro active=true step=make_break done=14 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 294 783
+#11 DOIGT tuto_next_big « Langkah berikutnya   »
+#12 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 2171d5c42f | project=p-80e2383b tuto=gabber/Pro active=true step=make_drop2 done=14 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 531 429
+#12 DOIGT tuto_fold
+#13 ROUTE session/tab_Structure | MODE pro | EMPREINTE c2beca1b28 | project=p-80e2383b tuto=gabber/Pro active=true step=make_drop2 done=14 playing=false
+#13 SON Son : rien ne joue.
+#13 > glisse 294 700 294 450
+#13 DOIGT rien
+#14 ROUTE session/tab_Structure | MODE pro | EMPREINTE c4a2cf1223 | project=p-80e2383b tuto=gabber/Pro active=true step=make_drop2 done=14 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « + Bagian baru (salinan E · Break) » lines dropped (more lines than room)
+#14 > touche 294 599
+#14 DOIGT add_part_new_copy « + Bagian baru (salinan E · Break) »
+#15 ROUTE session/tab_Structure | MODE pro | EMPREINTE 2b83f9aae7 | project=p-80e2383b tuto=gabber/Pro active=true step=make_drop2 done=14 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 79 1061
+#15 DOIGT thumb_undo « Urungkan »
+#16 ROUTE session/tab_Structure | MODE pro | EMPREINTE 31502d02bd | project=p-80e2383b tuto=gabber/Pro active=true step=make_drop2 done=14 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 294 965
+#16 DOIGT tuto_need_folded « Buat bagian “Drop 2” »
+#17 ROUTE session/tab_Structure | MODE pro | EMPREINTE 141bbf0138 | project=p-80e2383b tuto=gabber/Pro active=true step=make_drop2 done=15 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 294 965
+#17 DOIGT tuto_next_folded « Berhasil »
+#18 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 48abe0d8d1 | project=p-80e2383b tuto=gabber/Pro active=true step=make_fin done=15 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 294 783
+#18 DOIGT tuto_need «   Buat bagian “Akhir” »
+#19 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE ecd81a6143 | project=p-80e2383b tuto=gabber/Pro active=true step=make_fin done=16 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 294 783
+#19 DOIGT tuto_next_big « Bab berikutnya   »
+#20 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 85eeb4fe46 | project=p-80e2383b tuto=gabber/Pro active=true step=song_order done=16 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 531 383
+#20 DOIGT tuto_fold
+#21 ROUTE session/tab_Structure | MODE pro | EMPREINTE fe9a832130 | project=p-80e2383b tuto=gabber/Pro active=true step=song_order done=16 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « + Bagian baru (salinan G · Akhir) » lines dropped (more lines than room)
+#21 LAYOUT CUT « Giliranmu: di “Struktur”, tambahkan berurutan Intro, Build-up, Drop, Break, Build-up, Drop 2, dan Akhir. » ellipsized (« … »)
+#21 > touche 395 246
+#21 DOIGT add_part_1 « + B · Intro »
+#22 ROUTE session/tab_Structure | MODE pro | EMPREINTE e245210d87 | project=p-80e2383b tuto=gabber/Pro active=true step=song_order done=16 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 171 512
+#22 DOIGT add_part_2 « + C · Build-up »
+#23 ROUTE session/tab_Structure | MODE pro | EMPREINTE f6775327b4 | project=p-80e2383b tuto=gabber/Pro active=true step=song_order done=16 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 414 512
+#23 DOIGT add_part_3 « + D · Drop »
+#24 ROUTE session/tab_Structure | MODE pro | EMPREINTE 6ca878bbc7 | project=p-80e2383b tuto=gabber/Pro active=true step=song_order done=16 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 151 593
+#24 DOIGT add_part_4 « + E · Break »
+#25 ROUTE session/tab_Structure | MODE pro | EMPREINTE 340a7dce10 | project=p-80e2383b tuto=gabber/Pro active=true step=song_order done=16 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 171 512
+#25 DOIGT add_part_2 « + C · Build-up »
+#26 ROUTE session/tab_Structure | MODE pro | EMPREINTE 1a1ceed0ee | project=p-80e2383b tuto=gabber/Pro active=true step=song_order done=16 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 384 593
+#26 DOIGT add_part_5 « + F · Drop 2 »
+#27 ROUTE session/tab_Structure | MODE pro | EMPREINTE 8e53514f73 | project=p-80e2383b tuto=gabber/Pro active=true step=song_order done=16 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 150 674
+#27 DOIGT add_part_6 « + G · Akhir »
+#28 ROUTE session/tab_Structure | MODE pro | EMPREINTE e1f5f36425 | project=p-80e2383b tuto=gabber/Pro active=true step=song_order done=17 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 294 965
+#28 DOIGT tuto_next_folded « Berhasil »
+#29 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE e6e107170d | project=p-80e2383b tuto=gabber/Pro active=true step=song_phrases done=17 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « Sentuh untuk mengganti akor seluruh lagu. » 4.22:1 (needs 4.5:1, 13 sp)
+#29 > touche 294 811
+#29 DOIGT tuto_need «   Pakai durasi yang disarankan »
+#30 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE e8a682ab98 | project=p-80e2383b tuto=gabber/Pro active=true step=song_phrases done=18 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 294 892
+#30 DOIGT tuto_next_big « Bab berikutnya   »
+#31 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE e12f13e0fd | project=p-80e2383b tuto=gabber/Pro active=true step=fill done=18 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 294 783
+#31 DOIGT tuto_need «   Pergi ke bagian “Build-up” »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE 5fac67d813 | project=p-80e2383b tuto=gabber/Pro active=true step=fill done=18 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CUT « Giliranmu: di bagian “Build-up”, birama terakhir, pad “Snare”: tahan pukulan terakhir sebelum ketukan terakhir, lalu “Roll” ×4. » ellipsized (« … »)
+#32 > appui-long 261 765
+#32 DOIGT step_59 « Step 12 »
+#33 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 97abb554a2 | project=p-80e2383b tuto=gabber/Pro active=true step=fill done=18 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 334 612
+#33 DOIGT roll_4 « ×4 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE a7a645e2f3 | project=p-80e2383b tuto=gabber/Pro active=true step=fill done=19 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 294 965
+#34 DOIGT tuto_next_folded « Berhasil »
+#35 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 3a1853f1d8 | project=p-80e2383b tuto=gabber/Pro active=true step=gap done=19 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CUT « Bagian: C · Build-up » drawn past its parent's edge (down, 24 dp shown of 27)
+#35 > touche 531 418
+#35 DOIGT tuto_fold
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE f4c874f368 | project=p-80e2383b tuto=gabber/Pro active=true step=gap done=19 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « 4 ketukan kelebihan di sini (dicoret) » ellipsized (« … »)
+#36 LAYOUT CUT « Giliranmu: di bagian “Build-up”, birama terakhir, hapus pukulan di ketukan terakhir (sentuh tiap silang merah): satu ketukan hening tepat sebelum Drop. » ellipsized (« … »)
+#36 LAYOUT CONTRAST « 4 ketukan kelebihan di sini (dicoret) » 2.79:1 (needs 3.0:1, 14 sp)
+#36 > touche 325 535
+#36 DOIGT step_60 « Step 13 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 5a4c74e060 | project=p-80e2383b tuto=gabber/Pro active=true step=gap done=19 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « 3 ketukan kelebihan di sini (dicoret) » ellipsized (« … »)
+#37 LAYOUT CONTRAST « 3 ketukan kelebihan di sini (dicoret) » 2.79:1 (needs 3.0:1, 14 sp)
+#37 > touche 389 535
+#37 DOIGT step_61 « Step 14 »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE f4b87e40c4 | project=p-80e2383b tuto=gabber/Pro active=true step=gap done=19 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CUT « 2 ketukan kelebihan di sini (dicoret) » ellipsized (« … »)
+#38 LAYOUT CONTRAST « 2 ketukan kelebihan di sini (dicoret) » 2.79:1 (needs 3.0:1, 14 sp)
+#38 > touche 453 535
+#38 DOIGT step_62 « Step 15 »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 95bf22afe9 | project=p-80e2383b tuto=gabber/Pro active=true step=gap done=19 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CUT « 1 ketukan kelebihan di sini (dicoret) » ellipsized (« … »)
+#39 LAYOUT CONTRAST « 1 ketukan kelebihan di sini (dicoret) » 2.79:1 (needs 3.0:1, 14 sp)
+#39 > touche 517 535
+#39 DOIGT step_63 « Step 16 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 3389ceada4 | project=p-80e2383b tuto=gabber/Pro active=true step=gap done=20 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 294 965
+#40 DOIGT tuto_next_folded « Berhasil »
+#41 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 2f3f902f94 | project=p-80e2383b tuto=gabber/Pro active=true step=crash done=20 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 235 114
+#41 DOIGT top_scene « Bagian sekarang: C · Build-up. Sentuh un »
+#42 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE 3d307df272 | project=p-80e2383b tuto=gabber/Pro active=true step=crash done=20 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 376 464
+#42 DOIGT scene_pick_3 « D · Drop »
+#43 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 0dbab14d30 | project=p-80e2383b tuto=gabber/Pro active=true step=crash done=20 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CUT « Bagian: D · Drop » drawn past its parent's edge (down, 24 dp shown of 27)
+#43 > touche 531 418
+#43 DOIGT tuto_fold
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 6285c9c949 | project=p-80e2383b tuto=gabber/Pro active=true step=crash done=20 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CUT « Giliranmu: di bagian “Drop”, sentuh kotak paling pertama di pad simbal. » ellipsized (« … »)
+#44 LAYOUT CONTRAST « 1 » 3.91:1 (needs 4.5:1, 12 sp)
+#44 > touche 70 395
+#44 DOIGT step_0 « Step 1 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE f1be5efd02 | project=p-80e2383b tuto=gabber/Pro active=true step=crash done=21 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « 1 » 3.98:1 (needs 4.5:1, 12 sp)
+#45 LAYOUT CONTRAST « 2 » 3.61:1 (needs 4.5:1, 12 sp)
+#45 > touche 531 853
+#45 DOIGT tuto_fold
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 4cca24c282 | project=p-80e2383b tuto=gabber/Pro active=true step=crash done=21 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « 2 » 4.37:1 (needs 4.5:1, 12 sp)
+#46 > touche 294 783
+#46 DOIGT tuto_next_big « Bab berikutnya   »
+#47 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 21f71bd459 | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CUT « Bagian: D · Drop » lines cut (taller than its box)
+#47 > touche 294 783
+#47 DOIGT tuto_need «   Pergi ke bagian “Build-up” »
+#48 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 643fda0b19 | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CUT « Giliranmu: otomasi “Cutoff” trek “Akor” di Build-up: kurva yang naik sampai akhir. » ellipsized (« … »)
+#48 > touche 239 510
+#48 COUVERT « Drum » couvre «  Otomasi pengaturan »
+#48 REFUS doigt couvert : « Drum » couvre «  Otomasi pengaturan »
+#49 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bd099a68f9 | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 150 510
+#49 COUVERT « Drum » couvre «  Otomasi pengaturan »
+#49 REFUS doigt couvert : « Drum » couvre «  Otomasi pengaturan »
+#50 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bd099a68f9 | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#50 SON Son : rien ne joue.
+#50 > glisse 294 650 294 450
+#50 DOIGT rien (texte « Belum ada yang bergerak. Ide: filter pad »)
+#51 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 60f83c59c2 | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 239 334
+#51 COUVERT « Drum » couvre «  Otomasi pengaturan »
+#51 REFUS doigt couvert : « Drum » couvre «  Otomasi pengaturan »
+#52 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1548521a1f | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 174 1158
+#52 DOIGT tab_Sons « Suara »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 8ec424e364 | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 294 1158
+#53 DOIGT tab_Mix « Mix »
+#54 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 04dbbd188d | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST « ? » 3.92:1 (needs 4.5:1, 12 sp)
+#54 LAYOUT CONTRAST « +0,0 » 3.36:1 (needs 4.5:1, 12 sp)
+#54 > touche 324 379
+#54 COUVERT « Drum » couvre « Akor »
+#54 REFUS doigt couvert : « Drum » couvre « Akor »
+#55 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2cebc9726a | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 530 213
+#55 COUVERT « Drum » couvre « Apa itu “Mute dan solo”? »
+#55 REFUS doigt couvert : « Drum » couvre « Apa itu “Mute dan solo”? »
+#56 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2cebc9726a | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 531 853
+#56 DOIGT tuto_fold
+#57 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE bef3a08c96 | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 433 881
+#57 DOIGT tuto_show «  Tunjukkan »
+#58 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5989b8f252 | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#58 SON Son : rien ne joue.
+#58 > attends 5
+#59 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 643fda0b19 | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 239 510
+#59 COUVERT « Drum » couvre «  Otomasi pengaturan »
+#59 REFUS doigt couvert : « Drum » couvre «  Otomasi pengaturan »
+#60 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bd099a68f9 | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 531 853
+#60 DOIGT tuto_fold
+#61 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE cbc1ffdc9f | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=21 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 294 783
+#61 DOIGT tuto_do «   Aku yang buat »
+#62 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 584eff665a | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=22 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST « KURVA » 4.42:1 (needs 4.5:1, 12 sp)
+#62 LAYOUT CONTRAST « ? » 3.25:1 (needs 4.5:1, 12 sp)
+#62 LAYOUT CONTRAST « Rekam » 3.59:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Bikin pengaturan bergerak sendiri: pilih pengaturannya, lalu gambar kurvanya (dengan jari, atau garis dengan dua sentuhan). » 3.99:1 (needs 4.5:1, 13 sp)
+#62 LAYOUT CONTRAST «  Yang sedang main » 4.06:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Akor » 4.28:1 (needs 4.5:1, 13 sp)
+#62 LAYOUT CONTRAST « Kosongkan » 3.33:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Membuka (cerah) atau menutup (redam) suara: sweep filter. » 4.12:1 (needs 4.5:1, 13 sp)
+#62 > touche 294 965
+#62 DOIGT tuto_chapter_end_folded « Bagus, bab selesai! »
+#63 ROUTE tab_Mix | MODE pro | EMPREINTE 4616279a8a | project=p-80e2383b tuto=gabber/Pro active=true step=riser done=22 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 294 783
+#63 DOIGT tuto_next_big « Bab berikutnya   »
+#64 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 107141c330 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=22 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 531 383
+#64 DOIGT tuto_fold
+#65 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE ab9894e0e5 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=22 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CUT « Giliranmu: di Mix, turunkan sedikit slider trek “Akor” (hoover), lalu slider trek “Melodi”. » ellipsized (« … »)
+#65 > glisse 294 300 294 750
+#65 COUVERT « Drum » couvre « Volume Akor »
+#65 REFUS doigt couvert : « Drum » couvre « Volume Akor »
+#66 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c2a8266336 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=22 playing=false
+#66 SON Son : rien ne joue.
+#66 > glisse 317 263 317 310
+#66 COUVERT « Drum » couvre « Volume Akor »
+#66 REFUS doigt couvert : « Drum » couvre « Volume Akor »
+#67 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE c2a8266336 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=22 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 531 853
+#67 DOIGT tuto_fold
+#68 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 107141c330 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=22 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 294 783
+#68 DOIGT tuto_do «   Aku yang buat »
+#69 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 20afbdfc1f | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=22 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CONTRAST « +0,0 » 3.33:1 (needs 4.5:1, 12 sp)
+#69 LAYOUT CONTRAST « 1 » 3.85:1 (needs 4.5:1, 12 sp)
+#69 LAYOUT CONTRAST « 1 » 4.43:1 (needs 4.5:1, 12 sp)
+#69 > glisse 317 437 317 490
+#69 COUVERT « Drum » couvre « Volume Akor »
+#69 REFUS doigt couvert : « Drum » couvre « Volume Akor »
+#70 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0afa30b829 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=22 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 531 853
+#70 DOIGT tuto_fold
+#71 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 699966257d | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=22 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 458 976
+#71 DOIGT tuto_next « Berikutnya  »
+#72 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 29b276596b | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=22 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 458 976
+#72 DOIGT tuto_next « Berikutnya  »
+#73 ROUTE tab_Mix | MODE pro | EMPREINTE 8565d0b045 | project=p-80e2383b tuto=gabber/Pro active=true step=meters done=22 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 294 892
+#73 DOIGT tuto_mark «   Paham »
+#74 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE f1e70fa76c | project=p-80e2383b tuto=gabber/Pro active=true step=buses done=23 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 294 811
+#74 DOIGT tuto_mark «   Paham »
+#75 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE ce08ba09f4 | project=p-80e2383b tuto=gabber/Pro active=true step=buses done=24 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 294 783
+#75 DOIGT tuto_next_big « Langkah berikutnya   »
+#76 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE f4bb0198c7 | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=24 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT CUT « bagian » lines dropped (more lines than room)
+#76 LAYOUT CUT « C · Build-up » ellipsized (« … »)
+#76 LAYOUT CUT « E · Break » ellipsized (« … »)
+#76 > touche 531 310
+#76 DOIGT tuto_fold
+#77 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE eb516bd3ce | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=24 playing=false
+#77 SON Son : rien ne joue.
+#77 LAYOUT CUT « Output master punya limiter bawaan, selalu paling akhir di rantai (tidak muncul di “Efek”-nya): limiter ini mencegah suara melewati batas. Gabber sangat keras dan sangat terkompresi: itu wajar untuk gaya ini. Giliranmu: di “Output master”, atur “Target loudness” ke “Klub”: lagumu terdengar sekeras di klub. » ellipsized (« … »)
+#77 > touche 167 785
+#77 DOIGT rien
+#78 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE eb516bd3ce | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=24 playing=false
+#78 SON Son : rien ne joue.
+#78 > glisse 294 620 294 400
+#78 DOIGT rien
+#79 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 417222900d | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=24 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 167 615
+#79 COUVERT « Drum » couvre « Klub · −8 LUFS »
+#79 REFUS doigt couvert : « Drum » couvre « Klub · −8 LUFS »
+#80 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 161539f346 | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=24 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 531 853
+#80 DOIGT tuto_fold
+#81 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 49ce107f1b | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=24 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 294 783
+#81 DOIGT tuto_do «   Aku yang buat »
+#82 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE eb516bd3ce | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=24 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT CONTRAST « OUTPUT MASTER » 3.66:1 (needs 4.5:1, 12 sp)
+#82 LAYOUT CONTRAST « Volume: — » 3.24:1 (needs 4.5:1, 14 sp)
+#82 LAYOUT CONTRAST « −6,0 dB » 3.28:1 (needs 4.5:1, 14 sp)
+#82 LAYOUT CONTRAST « Tidak ada clipping: semua aman. » 4.06:1 (needs 4.5:1, 13 sp)
+#82 LAYOUT CONTRAST « Detail » 3.33:1 (needs 4.5:1, 13 sp)
+#82 LAYOUT CONTRAST « ? » 3.41:1 (needs 4.5:1, 12 sp)
+#82 LAYOUT CONTRAST « Otomatis (gaya) · −9 LUFS » 3.70:1 (needs 4.5:1, 14 sp)
+#82 LAYOUT CONTRAST « Klub · −8 LUFS » 3.54:1 (needs 4.5:1, 14 sp)
+#82 > touche 531 853
+#82 DOIGT tuto_fold
+#83 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE f4bb0198c7 | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=24 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT CONTRAST « OUTPUT MASTER » 3.61:1 (needs 4.5:1, 12 sp)
+#83 LAYOUT CONTRAST « ? » 3.20:1 (needs 4.5:1, 12 sp)
+#83 > touche 433 881
+#83 DOIGT tuto_show «  Tunjukkan »
+#84 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE ac3a6278c8 | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=24 playing=false
+#84 SON Son : rien ne joue.
+#84 > attends 4
+#85 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5dfafe2028 | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=24 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 167 763
+#85 DOIGT loudness_target_CLUB « Klub · −8 LUFS »
+#86 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 590ed06d0d | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=25 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 294 965
+#86 DOIGT tuto_chapter_end_folded « Bagus, bab selesai! »
+#87 ROUTE tab_Mix | MODE pro | EMPREINTE af63e80002 | project=p-80e2383b tuto=gabber/Pro active=true step=loudness done=25 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 294 783
+#87 DOIGT tuto_next_big « Bab berikutnya   »
+#88 ROUTE tab_Mix | MODE pro | EMPREINTE ad6f22785d | project=p-80e2383b tuto=gabber/Pro active=true step=formats done=25 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 294 892
+#88 DOIGT tuto_mark «   Paham »
+#89 ROUTE tab_Mix | MODE pro | EMPREINTE 5090f0187a | project=p-80e2383b tuto=gabber/Pro active=true step=share done=26 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 518 1060
+#89 DOIGT thumb_share « Bagikan laguku »
+#89 DIALOGUE 0.6 s
+#90 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE b1a1a4a6c4 | project=p-80e2383b tuto=gabber/Pro active=true step=share done=26 playing=false
+#90 SON Son : rien ne joue.
+#90 LAYOUT OVERLAP « Siap dibagikan? » over the touchable « Tutup sheet » (185 x 32 dp)
+#90 LAYOUT OVERLAP « Nama lagu (dan proyek) » over the touchable « Tutup sheet » (191 x 24 dp)
+#90 LAYOUT OVERLAP « “Bagikan” juga mengganti nama proyek “Proyekku 1”. » over the touchable « Tutup sheet » (314 x 48 dp)
+#90 LAYOUT OVERLAP « 3:17 » over the touchable « Tutup sheet » (55 x 30 dp)
+#90 LAYOUT OVERLAP « 6 bagian » over the touchable « Tutup sheet » (77 x 27 dp)
+#90 LAYOUT OVERLAP « Volume: −8,0, keras, seperti musik klub » over the touchable « Tutup sheet » (163 x 48 dp)
+#90 LAYOUT OVERLAP « detail » over the touchable « Tutup sheet » (37 x 14 dp)
+#90 LAYOUT OVERLAP « ? » over the touchable « Tutup sheet » (9 x 18 dp)
+#90 LAYOUT OVERLAP «  Dengar » over the touchable « Tutup sheet » (71 x 27 dp)
+#90 LAYOUT OVERLAP « Target loudness » over the touchable « Tutup sheet » (142 x 27 dp)
+#90 LAYOUT OVERLAP « Streaming » over the touchable « Tutup sheet » (93 x 27 dp)
+#90 LAYOUT OVERLAP « Klub » over the touchable « Tutup sheet » (41 x 27 dp)
+#90 LAYOUT OVERLAP « Otomatis (gaya) » over the touchable « Tutup sheet » (144 x 27 dp)
+#90 LAYOUT OVERLAP « M4A · untuk berbagi » over the touchable « Tutup sheet » (186 x 27 dp)
+#90 LAYOUT OVERLAP « WAV · kualitas maks » over the touchable « Tutup sheet » (183 x 27 dp)
+#90 LAYOUT OVERLAP «   Bagikan » over the touchable « Tutup sheet » (87 x 31 dp)
+#90 LAYOUT OVERLAP « File-ku » over the touchable « Tutup sheet » (62 x 27 dp)
+#90 LAYOUT OVERLAP « Temukan dan kirim lagi: M4A, WAV, video, .zip » over the touchable « Tutup sheet » (236 x 48 dp)
+#90 > touche 192 1009
+#90 DOIGT share_format_Wav « WAV · kualitas maks »
+#90 DIALOGUE 0.2 s
+#91 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 5dbad6e662 | project=p-80e2383b tuto=gabber/Pro active=true step=share done=26 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 294 1105
+#91 DOIGT share_go «   Bagikan »
+#91 DIALOGUE 0.3 s
+#92 ROUTE dialogue:share_progress | MODE pro | EMPREINTE d499ccd803 | project=p-80e2383b tuto=gabber/Pro active=true step=share done=26 playing=false
+#92 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#92 LAYOUT CONTRAST «   16% » 2.41:1 (needs 4.5:1, 14 sp)
+#92 LAYOUT CONTRAST « Lalu pilih aplikasi untuk mengirimnya. » 3.45:1 (needs 4.5:1, 13 sp)
+#92 LAYOUT CONTRAST « Batal » 1.80:1 (needs 4.5:1, 14 sp)
+#92 > attends 8
+#92 PARTAGE Laguku-lagu-klub-20261119-075420.wav
+#92 DIALOGUE 1.7 s
+#93 ROUTE dialogue:« Bagikan laguku · Laguku-lagu-k » | MODE pro | EMPREINTE fab8c8f01b | project=p-80e2383b tuto=gabber/Pro active=true step=share done=27 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 294 765
+#93 DOIGT vue « Drive »
+#93 DIALOGUE 0.2 s
+#94 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE d7efb925ca | project=p-80e2383b tuto=gabber/Pro active=true step=share done=27 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT CUT « Siap: Laguku-lagu-klub-20261119-075420.wav, salinannya juga ada di Music › BenStudio. » a word split over two lines
+#94 > touche 508 840
+#94 DOIGT share_bilan_ok « OK »
+#94 DIALOGUE 0.2 s
+#95 ROUTE tab_Mix | MODE pro | EMPREINTE a031b1ab90 | project=p-80e2383b tuto=gabber/Pro active=true step=share done=27 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 294 892
+#95 DOIGT tuto_next_big « Langkah berikutnya   »
+#96 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE ef2120a6f8 | project=p-80e2383b tuto=gabber/Pro active=true step=share done=27 playing=false
+#96 SON Son : rien ne joue.
+#96 LAYOUT CUT « Sudah siap: kick keras dari “Buatkan aku lagu” (909 terdistorsi habis-habisan, disetel ke F♯, preset “distortion”), hi-hat dan snare 909. » ellipsized (« … »)
+#96 LAYOUT CUT « Giliranmu: di “Atur suara trek” Melodi, naikkan “Ketebalan (detune)” minimal 15: riff-nya jadi lebih lebar dan lebih galak. » ellipsized (« … »)
+#96 LAYOUT CUT « Bata adalah loop dari satu instrumen (kick, bass). Bagian adalah beberapa bata yang bermain bersama. » ellipsized (« … »)
+#96 > glisse 294 950 294 650
+#96 DOIGT tuto_left_brick « Bab 7/14 · Memahami bagian »
+#97 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 55a28597ac | project=p-80e2383b tuto=gabber/Pro active=true step=share done=27 playing=false
+#97 SON Son : rien ne joue.
+#97 LAYOUT CUT « Lihat petanya: tiap kotak adalah satu bagian, dengan durasinya dalam birama. Kurvanya menunjukkan energi. » ellipsized (« … »)
+#97 > glisse 294 950 294 600
+#97 DOIGT tuto_end_back «  Kembali ke langkah »
+#98 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 55a28597ac | project=p-80e2383b tuto=gabber/Pro active=true step=share done=27 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 459 407
+#98 DOIGT tuto_chapters « Bab »
+#99 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE f3f7cf78d6 | project=p-80e2383b tuto=gabber/Pro active=true step=share done=27 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#99 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#99 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#99 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#99 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#99 LAYOUT CONTRAST « 6 » 3.63:1 (needs 4.5:1, 16 sp)
+#99 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#99 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#99 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#99 > glisse 294 800 294 500
+#99 DOIGT tuto_chapter_7 « 8 »
+#100 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 1fd43b7b6f | project=p-80e2383b tuto=gabber/Pro active=true step=share done=27 playing=false
+#100 SON Son : rien ne joue.
+#100 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#100 LAYOUT CONTRAST « 11 » 3.63:1 (needs 4.5:1, 16 sp)
+#100 LAYOUT CONTRAST « 12 » 3.63:1 (needs 4.5:1, 16 sp)
+#100 > touche 294 874
+#100 DOIGT tuto_chapter_11 « 12 »
+#101 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 107141c330 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=27 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 433 881
+#101 DOIGT tuto_show «  Tunjukkan »
+#102 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a88da3f280 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=27 playing=false
+#102 SON Son : rien ne joue.
+#102 > attends 5
+#103 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 20afbdfc1f | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=27 playing=false
+#103 SON Son : rien ne joue.
+#103 > glisse 317 437 317 485
+#103 COUVERT « Drum » couvre « Volume Akor »
+#103 REFUS doigt couvert : « Drum » couvre « Volume Akor »
+#104 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0afa30b829 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=27 playing=false
+#104 SON Son : rien ne joue.
+#104 > touche 317 500
+#104 COUVERT « Drum » couvre « Volume Akor »
+#104 REFUS doigt couvert : « Drum » couvre « Volume Akor »
+#105 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0afa30b829 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=27 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 324 270
+#105 COUVERT « Drum » couvre « Akor »
+#105 REFUS doigt couvert : « Drum » couvre « Akor »
+#106 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 0afa30b829 | project=p-80e2383b tuto=gabber/Pro active=true step=levels done=27 playing=false
+#106 SON Son : rien ne joue.
+#106 RIEN NE CHANGE (3 écrans identiques)
+#106 > fin
+#106 FIN : fin

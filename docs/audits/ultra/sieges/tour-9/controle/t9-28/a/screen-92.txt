@@ -1,0 +1,6 @@
+Écran 92 (588x1278)
+texte « Menyiapkan lagumu… » @ 244,481
+texte « Membuat suara sebagai WAV, kualitas studio. » @ 294,573
+texte «   16% » @ 515,646
+texte « Lalu pilih aplikasi untuk mengirimnya. » @ 260,697
+texte « Batal » @ 499,787

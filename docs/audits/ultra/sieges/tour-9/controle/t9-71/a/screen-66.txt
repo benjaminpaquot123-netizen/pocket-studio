@@ -1,0 +1,46 @@
+Écran 66 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 197,42
+bouton « Simple » @ 438,42
+icône ↶ @ 527,42
+bouton ● @ 599,42
+bouton ▶ « cette partie » @ 678,42
+bouton ▶ « le morceau » @ 776,42
+icône ⋮ @ 855,42
+bouton « 138  Tempo » @ 136,144
+bouton « ? » @ 855,144
+bouton « Basse Basse roulante » [coupé] @ 141,262
+bouton « Accords Supersaw » @ 390,262
+bouton « Mélodie Mélodie trance » ⋮ @ 699,262
+image ← @ 10,263
+image → @ 889,263
+icône « Partie : A » ▾ @ 121,356
+texte « En rythme 50 % » @ 214,439
+texte « 100 % » @ 467,439
+texte « Effacer » @ 635,439
+bouton « Mélodie · mesure 1/8 ↑ Encore 2 notes en pointillé à toucher Touche ici » @ 450,540
+texte « mes. » @ 84,625
+bouton « 1 » @ 486,625
+bouton « 2 » [coupé] @ 853,625
+texte « Mi♭ » [coupé] @ 84,675
+texte « Ré » @ 84,713
+texte « Ré♭ » @ 84,755
+texte « Do4 » @ 84,797
+texte « Si » @ 84,839
+texte « Si♭ » @ 84,881
+texte « La » @ 84,923
+texte « La♭ » @ 84,965
+texte « Sol » [coupé] @ 84,1003
+dessin [coupé] @ 492,839
+texte « La mélodie Chapitre 5/13 · Étape 2/3 · Facile » @ 355,1086
+icône (liste) « Chapitres » @ 748,1086
+icône ⌃ @ 843,1086
+icône « À toi : touche les 4 notes en pointillé de la mesure 1 : des notes longues. Lire » ⌃ @ 450,1229
+onglet (lignes et note) « Mon morceau » @ 85,1376
+onglet (quatre carrés) « Rythme » @ 268,1376
+onglet (touches de piano) « Clavier » [sélectionné] @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Partager » @ 815,1376
+texte « ●  REC » @ 626,1479
+texte « ✎  Noter » @ 749,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 291,1479

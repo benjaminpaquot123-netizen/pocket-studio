@@ -1,0 +1,50 @@
+Écran 18 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 138  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Partie : A » ▾ @ 121,240
+bouton « Trance · Grosse caisse 1 FX » @ 123,330
+bouton « Grosse caisse 2 » @ 341,330
+bouton « Caisse » @ 559,330
+bouton « Caisse 2 » @ 777,330
+bouton « Trance · Claquement de mains » @ 123,408
+bouton « Trance · Charley G 30 » @ 341,408
+bouton « Trance · Charley ouvert D 30 » @ 559,408
+bouton « Tom grave » @ 777,408
+bouton « Tom médium D 45 » @ 123,486
+bouton « Tom aigu » @ 341,486
+bouton « Bord de caisse D 50 » @ 559,486
+bouton « Cloche » @ 777,486
+bouton « Cymbale D 40 » @ 123,564
+bouton « Maracas G 50 » @ 341,564
+bouton « Conga » @ 559,564
+bouton « Laser » @ 777,564
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » [coupé] @ 603,643
+bouton « Kit : Trance » ▾ [coupé] @ 165,664
+texte « La vitesse et la couleur du morceau Chapitre 1/13 · Fait · Facile » @ 355,775
+icône (liste) « Chapitres » @ 748,775
+icône ⌄ @ 843,775
+image (coupe) @ 57,950
+texte « Bravo, chapitre fini ! » @ 282,924
+texte « Chapitre suivant : « La batterie ». » @ 385,978
+bouton « Chapitre suivant   » → @ 450,1065
+bouton ▶ «  Écouter l'exemple » @ 490,1151
+icône ← @ 57,1151
+texte « 138 Tempo » @ 672,1251
+icône ↶ « Annuler » @ 110,1251
+image ↷ @ 280,1231
+icône ▶ « le morceau » @ 477,1252
+icône ⋮ « Plus » @ 815,1251
+onglet (lignes et note) « Mon morceau » @ 85,1376
+onglet (quatre carrés) « Rythme » [sélectionné] @ 268,1376
+onglet (touches de piano) « Clavier » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Partager » @ 815,1376
+texte « ●  REC » @ 626,1479
+texte « ✎  Noter » @ 749,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 291,1479

@@ -1,0 +1,40 @@
+Écran 82 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 197,42
+bouton « Simple » @ 438,42
+icône ↶ @ 527,42
+bouton ● @ 599,42
+bouton ▶ « cette partie » @ 678,42
+bouton ▶ « le morceau » @ 776,42
+icône ⋮ @ 855,42
+bouton « 138  Tempo » @ 136,144
+bouton « ? » @ 855,144
+bouton « Basse Basse roulante » [coupé] @ 141,262
+bouton « Accords Supersaw » @ 390,262
+bouton « Mélodie Mélodie trance » ⋮ @ 699,262
+image ← @ 10,263
+image → @ 889,263
+icône « Partie : A » ▾ @ 121,356
+texte « En rythme 50 % » @ 214,439
+texte « 100 % » @ 467,439
+texte « Effacer » @ 635,439
+texte « mes. » [coupé] @ 84,505
+bouton « 2 » [coupé] @ 486,505
+bouton « 3 » [coupé] @ 853,505
+texte « Ta première partie : le Groove Chapitre 6/13 · Étape 1/2 · Facile » @ 355,589
+icône (liste) « Chapitres » @ 748,589
+icône ⌄ @ 843,589
+texte « Écoute ta boucle quelques secondes, puis l'exemple. Des accords qui respirent et une mélodie qu'on chante : c'est la trance. » @ 450,764
+texte « ▸ Pourquoi ? » @ 450,896
+bouton ▶ «   Écouter ton résultat » @ 450,1079
+bouton ■ «  Arrêter l'écoute » @ 450,1165
+icône ← «  Précédent » @ 156,1251
+icône « Suivant  » → @ 770,1251
+onglet (lignes et note) « Mon morceau » @ 85,1376
+onglet (quatre carrés) « Rythme » @ 268,1376
+onglet (touches de piano) « Clavier » [sélectionné] @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Partager » @ 815,1376
+texte « ●  REC » @ 626,1479
+texte « ✎  Noter » @ 749,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 291,1479

@@ -1,0 +1,60 @@
+Écran 28 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ■ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+icône (flèches en boucle) « A mesure 1/1 » [désactivé] @ 389,144
+bouton « 138  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Partie : A » ▾ @ 121,240
+titre « PAS : TRANCE · CLAQUEMENT DE MAINS » [coupé, état « Déplié »] @ 295,289
+texte « Trance · Claquement de mains » @ 336,351
+bouton « 1 » [état « vide »] @ 90,436
+bouton [état « vide »] @ 192,436
+bouton [état « vide »] @ 294,436
+bouton [état « vide »] @ 397,436
+bouton « 2 » [état « coup, force 100 % »] @ 500,436
+bouton [état « vide »] @ 603,436
+bouton [état « vide »] @ 706,436
+bouton [état « vide »] @ 809,436
+bouton « 3 » [état « vide »] @ 90,517
+bouton [état « vide »] @ 192,517
+bouton [état « vide »] @ 294,517
+bouton [état « vide »] @ 397,517
+bouton « 4 » [état « coup, force 100 % »] @ 500,517
+bouton [état « vide »] @ 603,517
+bouton [état « vide »] @ 706,517
+bouton [état « vide »] @ 809,517
+texte « tout » [coupé] @ 232,582
+texte « 1/2 » [coupé] @ 326,582
+texte « 1/4 » [coupé] @ 411,582
+texte « ◀ » [coupé] @ 492,582
+texte « ▶ » [coupé] @ 567,582
+texte « Effacer » [coupé] @ 687,582
+texte « Remplir » [coupé] @ 110,584
+texte « La batterie Chapitre 2/13 · Étape 3/6 · Facile » @ 355,657
+icône (liste) « Chapitres » @ 748,657
+icône ⌄ @ 843,657
+image (coupe) @ 57,830
+texte « Bravo, c'est réussi ! » @ 277,778
+texte « Écoute ton résultat, puis touche « Étape suivante » quand tu veux. » [coupé] @ 475,835
+icône « Lire la suite » ⌄ @ 450,899
+bouton « Étape suivante   » → @ 450,1009
+bouton ▶ «  Écouter l'exemple » @ 687,1123
+icône ← @ 57,1123
+bouton ■ «  Arrêter » @ 294,1123
+texte « 138 Tempo » @ 672,1251
+icône ↶ « Annuler » @ 110,1251
+image ↷ @ 280,1231
+icône ■ « le morceau » @ 477,1252
+icône ⋮ « Plus » @ 815,1251
+onglet (lignes et note) « Mon morceau » @ 85,1376
+onglet (quatre carrés) « Rythme » [sélectionné] @ 268,1376
+onglet (touches de piano) « Clavier » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Partager » @ 815,1376
+texte « ●  REC » @ 626,1479
+texte « ✎  Noter » @ 749,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 291,1479

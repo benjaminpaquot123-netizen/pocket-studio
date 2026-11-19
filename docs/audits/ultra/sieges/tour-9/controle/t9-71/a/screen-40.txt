@@ -1,0 +1,58 @@
+Écran 40 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 138  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Partie : A » ▾ @ 121,240
+texte « Maracas » @ 136,312
+bouton « 1 » [état « coup, force 100 % »] @ 90,397
+bouton [état « coup, force 100 % »] @ 192,397
+bouton [état « coup, force 100 % »] @ 294,397
+bouton [allumé, état « coup, force 100 % »] @ 397,397
+bouton « 2 » [état « coup, force 100 % »] @ 500,397
+bouton [état « coup, force 100 % »] @ 603,397
+bouton [état « coup, force 100 % »] @ 706,397
+bouton [état « coup, force 100 % »] @ 809,397
+bouton « 3 » [état « coup, force 100 % »] @ 90,478
+bouton [état « coup, force 100 % »] @ 192,478
+bouton [état « coup, force 100 % »] @ 294,478
+bouton [état « coup, force 100 % »] @ 397,478
+bouton « 4 » [état « coup, force 100 % »] @ 500,478
+bouton [état « coup, force 100 % »] @ 603,478
+bouton [état « coup, force 100 % »] @ 706,478
+bouton [état « coup, force 100 % »] @ 809,478
+texte « Remplir » @ 110,564
+texte « tout » @ 232,564
+texte « 1/2 » @ 326,564
+texte « 1/4 » @ 411,564
+texte « ◀ » @ 492,564
+texte « ▶ » @ 567,564
+texte « Effacer » @ 687,564
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » [coupé] @ 450,632
+texte « La basse Chapitre 3/13 · Étape 1/2 · Facile » @ 355,718
+icône (liste) « Chapitres » @ 748,718
+icône ⌄ @ 843,718
+texte « À toi : touche « Créer la piste Basse ». » @ 398,830
+texte « ▸ Pourquoi ? » @ 450,899
+bouton ⊕ «   Créer la piste Basse » @ 450,976
+bouton ▶ «  Écouter l'exemple » @ 232,1062
+bouton (œil) «  Montre-moi » @ 667,1062
+icône ← «  Précédent » @ 156,1148
+icône « Suivant  » → @ 770,1148
+texte « 138 Tempo » @ 672,1251
+icône ↶ « Annuler » @ 110,1251
+image ↷ @ 280,1231
+icône ▶ « le morceau » @ 477,1252
+icône ⋮ « Plus » @ 815,1251
+onglet (lignes et note) « Mon morceau » @ 85,1376
+onglet (quatre carrés) « Rythme » [sélectionné] @ 268,1376
+onglet (touches de piano) « Clavier » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Partager » @ 815,1376
+texte « ●  REC » @ 626,1479
+texte « ✎  Noter » @ 749,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 291,1479

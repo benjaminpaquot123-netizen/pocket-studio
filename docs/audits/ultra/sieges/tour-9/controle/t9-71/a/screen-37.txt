@@ -1,0 +1,50 @@
+Écran 37 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ■ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+icône (flèches en boucle) « A mesure 1/1 » [désactivé] @ 389,144
+bouton « 138  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Partie : A » ▾ @ 121,240
+texte « Maracas » @ 136,312
+bouton « 1 » [état « coup, force 100 % »] @ 90,397
+bouton [état « coup, force 100 % »] @ 192,397
+bouton [état « coup, force 100 % »] @ 294,397
+bouton [état « coup, force 100 % »] @ 397,397
+bouton « 2 » [état « coup, force 100 % »] @ 500,397
+bouton [état « coup, force 100 % »] @ 603,397
+bouton [état « coup, force 100 % »] @ 706,397
+bouton [état « coup, force 100 % »] @ 809,397
+bouton « 3 » [état « coup, force 100 % »] @ 90,478
+bouton [état « coup, force 100 % »] @ 192,478
+bouton [état « coup, force 100 % »] @ 294,478
+bouton [état « coup, force 100 % »] @ 397,478
+bouton « 4 » [état « coup, force 100 % »] @ 500,478
+bouton [allumé, état « coup, force 100 % »] @ 603,478
+bouton [état « coup, force 100 % »] @ 706,478
+bouton [état « coup, force 100 % »] @ 809,478
+texte « La batterie Chapitre 2/13 · Étape 6/6 · Facile » @ 355,594
+icône (liste) « Chapitres » @ 748,594
+icône ⌄ @ 843,594
+texte « Écoute toute ta batterie quelques secondes, puis celle de l'exemple. » @ 450,738
+texte « ▸ Pourquoi ? » @ 450,838
+bouton ■ «   Arrêter » @ 450,976
+bouton ▶ «  Écouter l'exemple » @ 450,1062
+icône ← «  Précédent » @ 156,1148
+icône « Suivant  » → @ 770,1148
+texte « 138 Tempo » @ 672,1251
+icône ↶ « Annuler » @ 110,1251
+image ↷ @ 280,1231
+icône ■ « le morceau » @ 477,1252
+icône ⋮ « Plus » @ 815,1251
+onglet (lignes et note) « Mon morceau » @ 85,1376
+onglet (quatre carrés) « Rythme » [sélectionné] @ 268,1376
+onglet (touches de piano) « Clavier » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Partager » @ 815,1376
+texte « ●  REC » @ 626,1479
+texte « ✎  Noter » @ 749,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 291,1479

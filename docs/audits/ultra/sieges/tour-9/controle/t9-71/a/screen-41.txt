@@ -1,0 +1,45 @@
+Écran 41 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 197,42
+bouton « Simple » @ 438,42
+icône ↶ @ 527,42
+bouton ● @ 599,42
+bouton ▶ « cette partie » @ 678,42
+bouton ▶ « le morceau » @ 776,42
+icône ⋮ @ 855,42
+bouton « 138  Tempo » @ 136,144
+bouton « ? » @ 855,144
+onglet « Acid 303 Ligne de basse » @ 187,262
+bouton « Basse Basse roulante » ⋮ @ 551,262
+icône ♪ « Son » @ 807,262
+image → @ 889,263
+icône « Partie : A » ▾ @ 121,356
+texte « En rythme 50 % » @ 214,439
+texte « 100 % » @ 467,439
+texte « Effacer » [désactivé] @ 635,439
+bouton « Basse · mesure 1/8 Encore 4 notes en pointillé à toucher » @ 450,540
+texte « mes. » @ 84,625
+bouton « 1 » @ 486,625
+bouton « 2 » [coupé] @ 853,625
+texte « Ré♭ » [coupé] @ 84,675
+texte « Do2 » @ 84,713
+texte « Si » @ 84,755
+texte « Si♭ » @ 84,797
+texte « La » @ 84,839
+texte « La♭ » @ 84,881
+texte « Sol » @ 84,923
+texte « Sol♭ » @ 84,965
+texte « Fa » [coupé] @ 84,1003
+dessin [coupé] @ 492,839
+texte « La basse Chapitre 3/13 · Étape 1/2 · Facile » @ 355,1086
+icône (liste) « Chapitres » @ 748,1086
+icône ⌃ @ 843,1086
+icône « À toi : touche les 4 notes en pointillé de la mesure 1, entre les kicks. Lire » ⌃ @ 450,1229
+onglet (lignes et note) « Mon morceau » @ 85,1376
+onglet (quatre carrés) « Rythme » @ 268,1376
+onglet (touches de piano) « Clavier » [sélectionné] @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Partager » @ 815,1376
+texte « ●  REC » @ 626,1479
+texte « ✎  Noter » @ 749,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 291,1479

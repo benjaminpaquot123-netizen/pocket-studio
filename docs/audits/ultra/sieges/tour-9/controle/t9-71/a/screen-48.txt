@@ -1,0 +1,44 @@
+Écran 48 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 197,42
+bouton « Simple » @ 438,42
+icône ↶ @ 527,42
+bouton ● @ 599,42
+bouton ▶ « cette partie » @ 678,42
+bouton ▶ « le morceau » @ 776,42
+icône ⋮ @ 855,42
+bouton « 138  Tempo » @ 136,144
+bouton « ? » @ 855,144
+onglet « Acid 303 Ligne de basse » @ 187,262
+bouton « Basse Basse roulante » ⋮ @ 551,262
+icône ♪ « Son » @ 807,262
+image → @ 889,263
+icône « Partie : A » ▾ @ 121,356
+texte « En rythme 50 % » @ 214,439
+texte « 100 % » @ 467,439
+texte « Effacer » @ 635,439
+bouton « Basse · mesure 1/8 Toutes les notes en pointillé sont posées » @ 450,540
+texte « mes. » @ 84,625
+bouton « 1 » @ 486,625
+bouton « 2 » [coupé] @ 853,625
+texte « La » [coupé] @ 84,675
+dessin [coupé] @ 492,675
+texte « La basse Chapitre 3/13 · Fait · Facile » @ 355,758
+icône (liste) « Chapitres » @ 748,758
+icône ⌄ @ 843,758
+image (coupe) @ 57,957
+texte « Bravo, chapitre fini ! » @ 282,879
+texte « Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « Les accords hachés ». » [coupé] @ 475,954
+icône « Lire la suite » ⌄ @ 450,1037
+bouton « Chapitre suivant   » → @ 450,1112
+bouton ▶ «  Écouter mon morceau » @ 294,1226
+bouton ▶ «  Écouter l'exemple » @ 687,1226
+icône ← @ 57,1226
+onglet (lignes et note) « Mon morceau » @ 85,1376
+onglet (quatre carrés) « Rythme » @ 268,1376
+onglet (touches de piano) « Clavier » [sélectionné] @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Partager » @ 815,1376
+texte « ●  REC » @ 626,1479
+texte « ✎  Noter » @ 749,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 291,1479

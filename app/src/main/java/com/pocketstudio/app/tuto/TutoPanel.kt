@@ -472,7 +472,9 @@ fun needLabel(need: TutoNeed, style: String? = null): String = when (need) {
 internal fun momentWords(ui: TutoUi): String? {
     val need = ui.need ?: return null
     if (ui.progress.level != com.pocketstudio.model.tuto.TutoLevel.Facile) return null
-    return tr("À toi : touche « %s ».", needLabel(need, ui.progress.style))
+    // Tour 9, F058: the button's own quotes (« Créer la partie « Intro » ») dropped inside the line's quotes.
+    val label = needLabel(need, ui.progress.style).filterNot { it in TUTO_OPEN || it in TUTO_CLOSE }.replace(Regex("\\s{2,}"), " ").trim()
+    return tr("À toi : touche « %s ».", label)
 }
 
 /** The panel's background: the screen's, tinted with the tutorial's colour (never a page card's grey). */

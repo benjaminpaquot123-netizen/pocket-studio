@@ -677,7 +677,10 @@ private fun StepGrid(
                 itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier.spot("step_pages").testTag("drum_pages"),
             ) {
-                Text(tr("Mesure"), style = MaterialTheme.typography.bodyMedium)
+                // Tour 9 (L4): one « ? » explains the bar's buttons (pages, ◀ ▶, « Vider · Mesure N », lengths).
+                com.pocketstudio.ui.WithHelp(Glossary.BAR, about = listOf("drum_page_*", "clear_bar", "drum_bars_*")) {
+                    Text(tr("Mesure"), style = MaterialTheme.typography.bodyMedium)
+                }
                 // Tour 9, F053: ◀ ▶ here turn the page only (the ▶ touched to reach bar 2 was the pad's rotate).
                 TextButton(onClick = { chosenBar = bar - 1; follow = false }, enabled = bar > 0, contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
                     modifier = Modifier.defaultMinSize(minWidth = 44.dp).semantics { contentDescription = tr("Mesure précédente") }.testTag("drum_page_prev")) { Text("◀") }

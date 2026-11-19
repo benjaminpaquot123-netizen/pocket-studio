@@ -21,7 +21,7 @@ import org.robolectric.annotation.GraphicsMode
  * Tour 9, lot L4, F049 / F050: on a 360 dp phone at 100, 130 and 200 %, every word of the Rythme screen reads in full:
  * no text cut by « … », clipped in height or squeezed narrower than itself (the pads' help sentence lost its end, the
  * « Effets » button and a « ? » were squeezed to nothing beside the chips).
- * The help dots' « ? » is left out: it overflows its 18 dp circle past 100 % in every screen (reported to the chef).
+ * The help dots' « ? » is read too: it holds whole in its 18 dp circle ([com.pocketstudio.ui.HelpDot], tour 9).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = "w360dp-h780dp")
@@ -46,8 +46,6 @@ class Tour9L4ReadsInFullTest {
             val layouts = mutableListOf<TextLayoutResult>()
             n.config.getOrNull(SemanticsActions.GetTextLayoutResult)?.action?.invoke(layouts)
             val r = layouts.firstOrNull() ?: return@mapNotNull null
-            // The « ? » of a help dot is a glyph in its drawn circle (ui-components' HelpDot), not words of this screen.
-            if (r.layoutInput.text.text == "?") return@mapNotNull null
             val squeezed = r.size.width < r.multiParagraph.maxIntrinsicWidth.coerceAtMost(r.layoutInput.constraints.maxWidth.toFloat()) - 2
             if ((0 until r.lineCount).any { r.isLineEllipsized(it) } || r.didOverflowHeight || squeezed) "«${r.layoutInput.text}» ${r.size}" else null
         }.distinct()

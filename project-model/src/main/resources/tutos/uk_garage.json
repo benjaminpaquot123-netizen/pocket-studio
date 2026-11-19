@@ -127,6 +127,7 @@
           "id": "snare_late",
           "levels": "p",
           "text": "À toi : sur le pad « Rim », règle « Décalage du coup » de chaque coup un peu en retard (5 à 10 ms) : la caisse traîne derrière le temps, ça boite encore mieux.",
+          "why": "La caisse un peu en retard traîne derrière le kick : le 2-step boite et se balance encore plus.",
           "check": "offset:snare:late",
           "spot": "rhythm.pattern",
           "target": "snare",

@@ -960,6 +960,12 @@ private fun StepGrid(
             TextButton(onClick = { actions.rotate(1) }, enabled = hits.isNotEmpty(), contentPadding = tight,
                 modifier = small.semantics { contentDescription = tr("Décaler les coups d'une case vers la droite") }.testTag("rotate_right")) { Text("⇢") }
             TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("clear_pad")) { Text(tr("Effacer"), maxLines = 1, softWrap = false) }
+            // Tour 9, S76: the bar shown emptied in one touch (this pad; the other bars keep theirs; one undo step).
+            if (bars > 1) {
+                val inBar = hits.keys.filter { it / per == bar }
+                TextButton(onClick = { inBar.forEach { actions.paintStep(it, false) }; actions.paintEnd() }, enabled = inBar.isNotEmpty(), contentPadding = tight,
+                    modifier = small.testTag("clear_bar")) { Text(tr("Effacer la mesure %d", bar + 1), maxLines = 1, softWrap = false) }
+            }
         }
         val pickedHit = hits[picked]?.takeIf { tool >= 2 }
         // Audit ultra round 3, n° 34 (seat D d): the hit's slider came under the Guide's bar, out of sight: a hit

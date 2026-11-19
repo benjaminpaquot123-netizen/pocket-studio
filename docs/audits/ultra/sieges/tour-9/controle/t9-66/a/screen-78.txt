@@ -1,0 +1,66 @@
+Écran 78 (1035x1243)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 373,42
+texte « 간단 » @ 774,42
+bouton ● @ 846,42
+bouton ■ « 이 파트 » @ 918,42
+icône ⋮ @ 990,42
+bouton « 126  템포 » @ 69,114
+icône (flèches en boucle) « A 1/2마디 » [désactivé] @ 210,114
+bouton « ? » @ 990,114
+icône « 파트: A » ▾ @ 66,180
+bouton « 스튜디오 큰북 FX » @ 75,282
+bouton « 큰북 2 » @ 200,282
+bouton « 스네어 » @ 325,282
+bouton « 스네어 2 » @ 450,282
+bouton « 손뼉 FX » @ 75,388
+bouton « 하이햇 L 30 » @ 200,388
+bouton « 오픈 하이햇 R 30 » @ 325,388
+bouton « 로우 탐 » @ 450,388
+texte « 2/2마디 · 마라카스 » [coupé] @ 642,223
+bouton « 1 » [état « 히트, 세기 100 % »] @ 575,296
+bouton [état « 히트, 세기 100 % »] @ 632,295
+bouton [état « 히트, 세기 100 % »] @ 688,295
+bouton [état « 히트, 세기 100 % »] @ 744,295
+bouton « 2 » [état « 히트, 세기 100 % »] @ 800,295
+bouton [état « 히트, 세기 100 % »] @ 856,295
+bouton [état « 히트, 세기 100 % »] @ 912,295
+bouton [état « 히트, 세기 100 % »] @ 968,295
+bouton « 3 » [état « 히트, 세기 100 % »] @ 575,366
+bouton [état « 히트, 세기 100 % »] @ 632,365
+bouton [état « 히트, 세기 100 % »] @ 688,365
+bouton [état « 비어 있음 »] @ 744,365
+bouton « 4 » [état « 히트, 세기 100 % »] @ 800,365
+bouton [état « 히트, 세기 100 % »] @ 856,365
+bouton [état « 히트, 세기 100 % »] @ 912,365
+bouton [état « 히트, 세기 100 % »] @ 968,365
+texte « 전체 » [coupé] @ 642,430
+texte « 1/2 » [coupé] @ 717,430
+texte « 1/4 » [coupé] @ 792,430
+texte « ◀ » [coupé] @ 867,430
+texte « ▶ » [coupé] @ 942,430
+texte « 채우기 » [coupé] @ 576,438
+texte « 드럼 2/13장 · 7/7단계 · 쉬움 » @ 445,492
+icône (liste) « 챕터 » @ 906,492
+icône ⌄ @ 978,492
+texte « 드럼 전체를 들어 보고, 예시의 드럼도 들어 보세요. » @ 272,573
+bouton « Tech house 킷 다운로드 (2 MB) » @ 471,648
+texte « 나중에 » @ 961,648
+texte « ▸ 왜요? » @ 517,714
+bouton ■ «   정지 » @ 517,778
+bouton ▶ «  예시 듣기 » @ 517,862
+icône ← «  이전 » @ 75,943
+icône « 다음  » → @ 960,943
+icône ↶ « 실행 취소 » @ 147,1027
+image ↷ @ 329,1015
+bouton ■ « 곡 » @ 512,1027
+texte « 126 템포 » @ 700,1027
+icône ⋮ « 더보기 » @ 889,1027
+onglet (lignes et note) « 내 곡 » @ 99,1123
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 309,1123
+onglet (touches de piano) « 건반 » @ 518,1123
+onglet (curseurs) « 믹스 » @ 727,1123
+onglet (trois points reliés) « 공유 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  메모 » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « 피드백 모드 » @ 385,1213

@@ -1,0 +1,663 @@
+#0 SIEGE lang=ko device=foldable font=100 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:tech_house:1
+#0 PREMIER ECRAN reel_s=3.8 simule_s=2.4 jvm_s=9.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:tech_house:1
+#0 AMENEE > touche 518 560 (welcome_learn)
+#0 AMENEE > touche 263 1122 (mode_card_simple)
+#0 AMENEE > touche 517 1178 (tuto_style_tech_house)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9cc9c26094 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=ref done=0 chapters=- playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ 왜요? » 662 x 21 dp (touch 662 x 48)
+#1 > touche 517 859
+#1 DOIGT tuto_listen «  예시 듣기 »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 73ab3f394b | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=ref done=0 chapters=- playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > attends 7
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c389a50335 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=ref done=1 chapters=- playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 960 943
+#3 DOIGT tuto_next « 다음  »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b145feacf1 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=tempo done=1 chapters=- playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 517 778
+#4 DOIGT tuto_do «   직접 할게요 »
+#5 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 19e00c868d | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=tempo done=1 chapters=- playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « 템포 » over the touchable « 시트 닫기 » (40 x 33 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « 시트 닫기 » (7 x 15 dp)
+#5 LAYOUT OVERLAP « 닫기 » over the touchable « 시트 닫기 » (25 x 21 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « 시트 닫기 » (86 x 53 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « 시트 닫기 » (39 x 24 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « 시트 닫기 » (21 x 19 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « 시트 닫기 » (21 x 19 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « 시트 닫기 » (32 x 19 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « 시트 닫기 » (32 x 19 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « 시트 닫기 » (32 x 19 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « 시트 닫기 » (14 x 24 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « 시트 닫기 » (21 x 24 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « 시트 닫기 » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « 시트 닫기 » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « 시트 닫기 » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « 시트 닫기 » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « 시트 닫기 » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « 시트 닫기 » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « 시트 닫기 » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « 시트 닫기 » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « 시트 닫기 » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « 시트 닫기 » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 확인 » over the touchable « 시트 닫기 » (40 x 33 dp)
+#5 LAYOUT OVERLAP « 박자에 맞춰 탭 » over the touchable « 시트 닫기 » (96 x 24 dp)
+#5 LAYOUT OVERLAP « 박마다 여기를 탭하세요. 템포가 따라와요. » over the touchable « 시트 닫기 » (215 x 19 dp)
+#5 LAYOUT CONTRAST « ? » 1.29:1 (needs 4.5:1, 12 sp)
+#5 > touche 211 817
+#5 DOIGT tempo_key_1 « 1 »
+#6 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE dd9ecac721 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=tempo done=1 chapters=- playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 1 » over the touchable « 시트 닫기 » (29 x 53 dp)
+#6 LAYOUT OVERLAP « 40~300 사이 » over the touchable « 시트 닫기 » (83 x 21 dp)
+#6 > touche 518 817
+#6 DOIGT tempo_key_2 « 2 »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE bd0b8bfee2 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=tempo done=1 chapters=- playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 12 » over the touchable « 시트 닫기 » (57 x 53 dp)
+#7 > touche 825 904
+#7 DOIGT tempo_key_6 « 6 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 51547ac617 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=tempo done=1 chapters=- playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 126 » over the touchable « 시트 닫기 » (86 x 53 dp)
+#8 > touche 825 1078
+#8 DOIGT tempo_key_ok « 확인 »
+#9 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1d8f6378be | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=tempo done=2 chapters=- playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « 메트로놈 » 3.16:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « 카운트인 » 4.42:1 (needs 4.5:1, 14 sp)
+#9 > touche 517 942
+#9 DOIGT tuto_next_folded « 성공 »
+#10 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE adf95ac04d | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=key done=2 chapters=- playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 517 778
+#10 DOIGT tuto_do «   직접 할게요 »
+#11 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 28c9ea847f | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=key done=2 chapters=- playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 곡의 키 » over the touchable « 시트 닫기 » (65 x 33 dp)
+#11 LAYOUT OVERLAP « 곡의 키: 없음 » over the touchable « 시트 닫기 » (75 x 21 dp)
+#11 LAYOUT OVERLAP « 스케일 » over the touchable « 시트 닫기 » (38 x 21 dp)
+#11 LAYOUT OVERLAP « 메이저 » over the touchable « 시트 닫기 » (44 x 24 dp)
+#11 LAYOUT OVERLAP « 마이너 » over the touchable « 시트 닫기 » (44 x 24 dp)
+#11 LAYOUT OVERLAP « 도리안 » over the touchable « 시트 닫기 » (44 x 24 dp)
+#11 LAYOUT OVERLAP « 마이너 펜타 » over the touchable « 시트 닫기 » (78 x 24 dp)
+#11 LAYOUT OVERLAP « 메이저 펜타 » over the touchable « 시트 닫기 » (78 x 24 dp)
+#11 LAYOUT OVERLAP « 블루스 » over the touchable « 시트 닫기 » (44 x 24 dp)
+#11 LAYOUT OVERLAP « 프리지안 » over the touchable « 시트 닫기 » (59 x 24 dp)
+#11 LAYOUT OVERLAP « 하모닉 마이너 » over the touchable « 시트 닫기 » (93 x 24 dp)
+#11 LAYOUT OVERLAP « 키 » over the touchable « 시트 닫기 » (13 x 21 dp)
+#11 LAYOUT OVERLAP « C » over the touchable « 시트 닫기 » (12 x 24 dp)
+#11 LAYOUT OVERLAP « C♯ » over the touchable « 시트 닫기 » (21 x 24 dp)
+#11 LAYOUT OVERLAP « D » over the touchable « 시트 닫기 » (11 x 24 dp)
+#11 LAYOUT OVERLAP « E♭ » over the touchable « 시트 닫기 » (15 x 24 dp)
+#11 LAYOUT OVERLAP « E » over the touchable « 시트 닫기 » (9 x 24 dp)
+#11 LAYOUT OVERLAP « F » over the touchable « 시트 닫기 » (9 x 24 dp)
+#11 LAYOUT OVERLAP « F♯ » over the touchable « 시트 닫기 » (18 x 24 dp)
+#11 LAYOUT OVERLAP « G » over the touchable « 시트 닫기 » (12 x 24 dp)
+#11 LAYOUT OVERLAP « A♭ » over the touchable « 시트 닫기 » (17 x 24 dp)
+#11 LAYOUT OVERLAP « A » over the touchable « 시트 닫기 » (11 x 24 dp)
+#11 LAYOUT OVERLAP « B♭ » over the touchable « 시트 닫기 » (16 x 24 dp)
+#11 LAYOUT OVERLAP « B » over the touchable « 시트 닫기 » (11 x 24 dp)
+#11 > touche 224 876
+#11 DOIGT tuto_scale_Minor « 마이너 »
+#12 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE fc417502d6 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=key done=2 chapters=- playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 곡의 키: C · 마이너 » over the touchable « 시트 닫기 » (110 x 21 dp)
+#12 > touche 710 1090
+#12 DOIGT tuto_root_7 « G »
+#13 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 17554d9fec | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=key done=3 chapters=1 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « 곡의 키: G · 마이너 » over the touchable « 시트 닫기 » (111 x 21 dp)
+#13 LAYOUT OVERLAP « 성공! 곡의 색깔을 골랐어요. » over the touchable « 시트 닫기 » (183 x 24 dp)
+#13 LAYOUT OVERLAP « 튜토리얼로 돌아가기 » over the touchable « 시트 닫기 » (118 x 21 dp)
+#13 > touche 518 1168
+#13 DOIGT tuto_key_continue « 튜토리얼로 돌아가기 »
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d43d8eb71a | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=key done=3 chapters=1 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 942
+#14 DOIGT tuto_chapter_end_folded « 잘했어요, 챕터 완료! »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6789822842 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=key done=3 chapters=1 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 517 859
+#15 DOIGT tuto_next_big « 다음 챕터   »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8765d6bc36 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=ready done=3 chapters=1 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 517 859
+#16 DOIGT tuto_mark «   알겠어요 »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b0592d5815 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « 스튜디오 큰북 » 3.85:1 (needs 4.5:1, 13 sp)
+#17 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#17 > touche 517 778
+#17 DOIGT tuto_do «   직접 할게요 »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ae24d4407d | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « 스튜디오 큰북 » 3.86:1 (needs 4.5:1, 13 sp)
+#18 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 2 » 4.16:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 3 » 4.20:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 4 » 4.20:1 (needs 4.5:1, 12 sp)
+#18 > touche 575 342
+#18 DOIGT step_0 « 스텝 1 »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6e3ccee86c | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « 1 » 4.42:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « 2 » 2.75:1 (needs 4.5:1, 12 sp)
+#19 > touche 800 341
+#19 DOIGT step_4 « 스텝 5 »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fa944305b7 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « 3 » 3.58:1 (needs 4.5:1, 12 sp)
+#20 > touche 575 412
+#20 DOIGT step_8 « 스텝 9 »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e08591a5e4 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « 4 » 3.58:1 (needs 4.5:1, 12 sp)
+#21 > touche 800 411
+#21 DOIGT step_12 « 스텝 13 »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fe47ac09eb | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 517 942
+#22 DOIGT tuto_next_folded « 성공 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 37e6ae866b | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=clap_do done=5 chapters=1 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « 손뼉 » 4.09:1 (needs 4.5:1, 14 sp)
+#23 LAYOUT CONTRAST « 손뼉 » 3.80:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#23 > touche 517 778
+#23 DOIGT tuto_need «   2마디로 바꾸기 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d9c6140dce | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=clap_do done=5 chapters=1 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 800 425
+#24 DOIGT step_4 « 스텝 5 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d8ad40d78d | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=clap_do done=5 chapters=1 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « 4 » 3.09:1 (needs 4.5:1, 12 sp)
+#25 > touche 800 495
+#25 DOIGT step_12 « 스텝 13 »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 131e5c79ef | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=clap_do done=5 chapters=1 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 714 262
+#26 DOIGT drum_page_1 « 2 »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE af4df5f8b0 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=clap_do done=5 chapters=1 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 800 425
+#27 DOIGT step_20 « 스텝 5 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 695762cf99 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=clap_do done=5 chapters=1 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 800 495
+#28 DOIGT step_28 « 스텝 13 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bf33e464ac | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=clap_do done=5 chapters=1 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 856 495
+#29 DOIGT step_29 « 스텝 14 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 538478f65d | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=clap_do done=6 chapters=1 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 517 942
+#30 DOIGT tuto_next_folded « 성공 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 32aff59a02 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « 1/2마디 · 하이햇 » 3.81:1 (needs 4.5:1, 13 sp)
+#31 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#31 > touche 517 778
+#31 DOIGT tuto_do «   직접 할게요 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0fff103ee1 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « 1/2마디 · 하이햇 » 3.82:1 (needs 4.5:1, 13 sp)
+#32 LAYOUT CONTRAST « 1 » 2.56:1 (needs 4.5:1, 12 sp)
+#32 LAYOUT CONTRAST « 2 » 3.73:1 (needs 4.5:1, 12 sp)
+#32 LAYOUT CONTRAST « 3 » 3.78:1 (needs 4.5:1, 12 sp)
+#32 LAYOUT CONTRAST « 4 » 3.78:1 (needs 4.5:1, 12 sp)
+#32 > touche 575 341
+#32 DOIGT step_0 « 스텝 1 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b86f534780 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 632 341
+#33 DOIGT step_1 « 스텝 2 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4f0d90de12 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 744 341
+#34 DOIGT step_3 « 스텝 4 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6a2f2cd95f | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « 2 » 3.23:1 (needs 4.5:1, 12 sp)
+#35 > touche 800 341
+#35 DOIGT step_4 « 스텝 5 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 096e857f19 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 856 341
+#36 DOIGT step_5 « 스텝 6 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 29f8d86273 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 968 341
+#37 DOIGT step_7 « 스텝 8 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1294111471 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « 3 » 3.27:1 (needs 4.5:1, 12 sp)
+#38 > touche 575 411
+#38 DOIGT step_8 « 스텝 9 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 61ad373d50 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 632 411
+#39 DOIGT step_9 « 스텝 10 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b9432f2eda | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 744 411
+#40 DOIGT step_11 « 스텝 12 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 12feb0e293 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « 4 » 3.27:1 (needs 4.5:1, 12 sp)
+#41 > touche 800 411
+#41 DOIGT step_12 « 스텝 13 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0bdd817c65 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 856 411
+#42 DOIGT step_13 « 스텝 14 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 71a57f66a4 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 968 411
+#43 DOIGT step_15 « 스텝 16 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2e85a7931c | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 902 262
+#44 DOIGT tuto_bar_go « 2마디 · 11칸 → »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 945d825046 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « 2/2마디 · 하이햇 » 3.87:1 (needs 4.5:1, 13 sp)
+#45 > touche 575 342
+#45 DOIGT step_16 « 스텝 1 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0b6a655370 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 632 341
+#46 DOIGT step_17 « 스텝 2 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 396dd38359 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 744 341
+#47 DOIGT step_19 « 스텝 4 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7bf5a1a0c7 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 800 341
+#48 DOIGT step_20 « 스텝 5 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f930eb64f2 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 856 341
+#49 DOIGT step_21 « 스텝 6 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9651961e25 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 968 341
+#50 DOIGT step_23 « 스텝 8 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d37d2b484e | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 575 412
+#51 DOIGT step_24 « 스텝 9 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 089d0b52fd | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 632 411
+#52 DOIGT step_25 « 스텝 10 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 569139eb84 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 744 411
+#53 DOIGT step_27 « 스텝 12 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d5d05fabd2 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 800 411
+#54 DOIGT step_28 « 스텝 13 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cc376f6168 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=6 chapters=1 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 856 411
+#55 DOIGT step_29 « 스텝 14 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8e2ccdde5c | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 517 942
+#56 DOIGT tuto_next_folded « 성공 »
+#57 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 331d200d82 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=7 chapters=1 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 517 778
+#57 DOIGT tuto_do «   직접 할게요 »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 96bf2bf9df | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=7 chapters=1 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 744 295
+#58 DOIGT step_3 « 스텝 4 »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0643246ca3 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=7 chapters=1 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 912 295
+#59 DOIGT step_6 « 스텝 7 »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7ef2171e12 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=7 chapters=1 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 744 365
+#60 DOIGT step_11 « 스텝 12 »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 058b0f69e8 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=7 chapters=1 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 912 365
+#61 DOIGT step_14 « 스텝 15 »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f62642cf05 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=7 chapters=1 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST « 1/2마디 · 북 테두리 » 1.31:1 (needs 4.5:1, 13 sp)
+#62 LAYOUT CONTRAST « 2마디 · 4칸 → » 1.48:1 (needs 3.0:1, 14 sp)
+#62 > touche 904 240
+#62 DOIGT tuto_bar_go « 2마디 · 4칸 → »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 555e95390b | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=7 chapters=1 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 744 295
+#63 DOIGT step_19 « 스텝 4 »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 412aa14312 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=7 chapters=1 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 912 295
+#64 DOIGT step_22 « 스텝 7 »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 47d5664b47 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=7 chapters=1 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 688 365
+#65 DOIGT step_26 « 스텝 11 »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b17a0d99de | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=7 chapters=1 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 856 365
+#66 DOIGT step_29 « 스텝 14 »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 57cb97f124 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=perc_do done=8 chapters=1 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CONTRAST « 2/2마디 · 북 테두리 » 1.33:1 (needs 4.5:1, 13 sp)
+#67 > touche 517 942
+#67 DOIGT tuto_next_folded « 성공 »
+#68 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f117991e90 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=shaker_do done=8 chapters=1 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « 1 » 3.55:1 (needs 4.5:1, 12 sp)
+#68 > touche 517 778
+#68 DOIGT tuto_do «   직접 할게요 »
+#69 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 832f06a5dc | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=shaker_do done=8 chapters=1 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CONTRAST « 1 » 2.73:1 (needs 4.5:1, 12 sp)
+#69 > glisse 575 295 968 295
+#69 DOIGT step_0 « 스텝 1 »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a172680340 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=shaker_do done=8 chapters=1 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « 3 » 3.61:1 (needs 4.5:1, 12 sp)
+#70 > glisse 575 365 688 365
+#70 DOIGT step_8 « 스텝 9 »
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a68f9de8f0 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=shaker_do done=8 chapters=1 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « 4 » 3.61:1 (needs 4.5:1, 12 sp)
+#71 > glisse 800 365 968 365
+#71 DOIGT step_12 « 스텝 13 »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 07136cef14 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=shaker_do done=8 chapters=1 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « 1/2마디 · 마라카스 » 1.31:1 (needs 4.5:1, 13 sp)
+#72 LAYOUT CONTRAST « 2마디 · 15칸 → » 1.48:1 (needs 3.0:1, 14 sp)
+#72 > touche 900 240
+#72 DOIGT tuto_bar_go « 2마디 · 15칸 → »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 12e6db3853 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=shaker_do done=8 chapters=1 playing=false
+#73 SON Son : rien ne joue.
+#73 > glisse 575 295 968 295
+#73 DOIGT step_16 « 스텝 1 »
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a172680340 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=shaker_do done=8 chapters=1 playing=false
+#74 SON Son : rien ne joue.
+#74 > glisse 575 365 688 365
+#74 DOIGT step_24 « 스텝 9 »
+#75 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a68f9de8f0 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=shaker_do done=8 chapters=1 playing=false
+#75 SON Son : rien ne joue.
+#75 > glisse 800 365 968 365
+#75 DOIGT step_28 « 스텝 13 »
+#76 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 30d135945d | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=shaker_do done=9 chapters=1 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « 2/2마디 · 마라카스 » 1.34:1 (needs 4.5:1, 13 sp)
+#76 > touche 517 942
+#76 DOIGT tuto_next_folded « 성공 »
+#77 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE aebb1a0f87 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=drums_hear done=9 chapters=1 playing=false
+#77 SON Son : rien ne joue.
+#77 LAYOUT CONTRAST « 2/2마디 · 마라카스 » 1.36:1 (needs 4.5:1, 13 sp)
+#77 > touche 517 778
+#77 DOIGT tuto_play_mine «   내 결과 듣기 »
+#78 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e129a7cb26 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=drums_hear done=9 chapters=1 playing=true
+#78 SON Son : la musique du projet joue en boucle.
+#78 > touche 517 862
+#78 DOIGT tuto_listen «  예시 듣기 »
+#79 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 43ce73e419 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=drums_hear done=9 chapters=1 playing=false
+#79 SON Son : l'exemple du tuto joue (encore 3 s).
+#79 > attends 4
+#80 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dc1acdc763 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=drums_hear done=10 chapters=1,2 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 517 859
+#80 DOIGT tuto_next_big « 다음 챕터   »
+#81 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b4a289c0ae | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_hear done=10 chapters=1,2 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 517 859
+#81 DOIGT tuto_listen «  예시 듣기 »
+#82 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4369a92243 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_hear done=10 chapters=1,2 playing=false
+#82 SON Son : l'exemple du tuto joue (encore 3 s).
+#82 > attends 7
+#83 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5b9ac558b1 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_hear done=11 chapters=1,2 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 517 859
+#83 DOIGT tuto_next_big « 다음 단계   »
+#84 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5823137efd | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 517 778
+#84 DOIGT tuto_need «   베이스 트랙 만들기 »
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d2782d69cc | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 238 700
+#85 DOIGT rien
+#86 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b1676295f1 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#86 SON Son : 1 note du synthé.
+#86 > touche 285 700
+#86 DOIGT rien
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3334a68b30 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#87 SON Son : 1 note du synthé.
+#87 > touche 418 700
+#87 DOIGT rien
+#88 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4c319f9290 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#88 SON Son : 1 note du synthé.
+#88 > touche 463 700
+#88 DOIGT rien
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 21c4b8b30c | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#89 SON Son : 1 note du synthé.
+#89 > touche 598 700
+#89 DOIGT rien
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 472a1ccf86 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#90 SON Son : 1 note du synthé.
+#90 > touche 643 700
+#90 DOIGT rien
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f1388e6f8b | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#91 SON Son : 1 note du synthé.
+#91 > touche 777 700
+#91 DOIGT rien
+#92 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a6611277b7 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#92 SON Son : 1 note du synthé.
+#92 > touche 958 700
+#92 DOIGT rien
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5a171277cd | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#93 SON Son : 1 note du synthé.
+#93 > touche 927 432
+#93 DOIGT tuto_notes_left « 베이스 · 1/8마디 »
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 07fc6d35a1 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 823 700
+#94 DOIGT rien
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1072dc2e24 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_do done=12 chapters=1,2 playing=false
+#95 SON Son : 1 note du synthé.
+#95 > touche 517 1014
+#95 DOIGT tuto_next_folded « 성공 »
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE aa0ac3d513 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_2 done=12 chapters=1,2 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 517 850
+#96 DOIGT tuto_do «   직접 할게요 »
+#97 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ac213f29ed | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_2 done=12 chapters=1,2 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 285 700
+#97 DOIGT rien
+#98 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c8da9dce75 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_2 done=12 chapters=1,2 playing=false
+#98 SON Son : 1 note du synthé.
+#98 > touche 418 700
+#98 DOIGT rien
+#99 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e6714c2538 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_2 done=12 chapters=1,2 playing=false
+#99 SON Son : 1 note du synthé.
+#99 > touche 463 700
+#99 DOIGT rien
+#100 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 52da4a850b | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_2 done=12 chapters=1,2 playing=false
+#100 SON Son : 1 note du synthé.
+#100 > touche 643 700
+#100 DOIGT rien
+#101 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 880f81dcaa | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_2 done=12 chapters=1,2 playing=false
+#101 SON Son : 1 note du synthé.
+#101 > touche 927 432
+#101 DOIGT tuto_notes_left « 베이스 · 2/8마디 »
+#102 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ccdd32d047 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_2 done=12 chapters=1,2 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 598 574
+#102 DOIGT rien
+#103 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f91d901a46 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_2 done=12 chapters=1,2 playing=false
+#103 SON Son : 1 note du synthé.
+#103 > touche 800 700
+#103 DOIGT rien
+#104 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 44eb6f46b4 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_2 done=12 chapters=1,2 playing=false
+#104 SON Son : 1 note du synthé.
+#104 > touche 517 1014
+#104 DOIGT tuto_need_folded « 다음 마디에 복사 »
+#105 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ad9aecef2a | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_2 done=13 chapters=1,2 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 517 1014
+#105 DOIGT tuto_next_folded « 성공 »
+#106 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 799419aac3 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 517 850
+#106 DOIGT tuto_do «   직접 할게요 »
+#107 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4644bcb16d | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#107 SON Son : rien ne joue.
+#107 > touche 238 700
+#107 DOIGT rien
+#108 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 760bb65917 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#108 SON Son : 1 note du synthé.
+#108 > touche 285 700
+#108 DOIGT rien
+#109 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ead4b9d562 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#109 SON Son : 1 note du synthé.
+#109 > touche 418 574
+#109 DOIGT rien
+#110 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 046bb38024 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#110 SON Son : 1 note du synthé.
+#110 > touche 463 700
+#110 DOIGT rien
+#111 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b171c7bb8a | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#111 SON Son : 1 note du synthé.
+#111 > touche 643 700
+#111 DOIGT rien
+#112 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8c746650cd | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#112 SON Son : 1 note du synthé.
+#112 > touche 823 700
+#112 DOIGT rien
+#113 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0997491c50 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#113 SON Son : 1 note du synthé.
+#113 > touche 927 432
+#113 DOIGT tuto_notes_left « 베이스 · 4/8마디 »
+#114 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fdd2f0f0e3 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 598 700
+#114 DOIGT rien
+#115 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 884e29f24a | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#115 SON Son : 1 note du synthé.
+#115 > touche 927 432
+#115 DOIGT tuto_notes_left « 베이스 · 4/8마디 »
+#116 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1ef3459ce4 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 755 700
+#116 DOIGT rien
+#117 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fdb1bb3c9b | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=13 chapters=1,2 playing=false
+#117 SON Son : 1 note du synthé.
+#117 > touche 517 1014
+#117 DOIGT tuto_need_folded « 다음 마디에 복사 »
+#118 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7a14a9071e | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=14 chapters=1,2,3 playing=false
+#118 SON Son : rien ne joue.
+#118 > touche 517 1014
+#118 DOIGT tuto_chapter_end_folded « 잘했어요, 챕터 완료! »
+#119 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ea39fa7c10 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=bass_3 done=14 chapters=1,2,3 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 517 931
+#119 DOIGT tuto_next_big « 다음 챕터   »
+#120 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7b818b10d0 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_do done=14 chapters=1,2,3 playing=false
+#120 SON Son : rien ne joue.
+#120 > touche 517 850
+#120 DOIGT tuto_need «   멜로디 트랙 만들기 »
+#121 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 15ff334cca | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_do done=14 chapters=1,2,3 playing=false
+#121 SON Son : rien ne joue.
+#121 > touche 150 700
+#121 DOIGT rien
+#122 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f67cf39fcf | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_do done=14 chapters=1,2,3 playing=false
+#122 SON Son : 1 note du synthé.
+#122 > touche 283 700
+#122 DOIGT rien
+#123 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4bb945a6ff | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_do done=14 chapters=1,2,3 playing=false
+#123 SON Son : 1 note du synthé.
+#123 > touche 620 700
+#123 DOIGT rien
+#124 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 319ea6dbbf | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_do done=15 chapters=1,2,3 playing=false
+#124 SON Son : 1 note du synthé.
+#124 > touche 517 1014
+#124 DOIGT tuto_next_folded « 성공 »
+#125 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e4a398c24b | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_2 done=15 chapters=1,2,3 playing=false
+#125 SON Son : rien ne joue.
+#125 > touche 517 850
+#125 DOIGT tuto_need «   다음 마디에 복사 »
+#126 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6b226fc752 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_2 done=15 chapters=1,2,3 playing=false
+#126 SON Son : rien ne joue.
+#126 > touche 508 700
+#126 DOIGT rien
+#127 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3cfb025ed4 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_2 done=15 chapters=1,2,3 playing=false
+#127 SON Son : 1 note du synthé.
+#127 > touche 642 700
+#127 DOIGT rien
+#128 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE df8f131f2f | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_2 done=15 chapters=1,2,3 playing=false
+#128 SON Son : 1 note du synthé.
+#128 > touche 517 1014
+#128 DOIGT tuto_need_folded « 다음 마디에 복사 »
+#129 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6d348a1fed | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_2 done=16 chapters=1,2,3,4 playing=false
+#129 SON Son : rien ne joue.
+#129 > touche 517 1014
+#129 DOIGT tuto_chapter_end_folded « 잘했어요, 챕터 완료! »
+#130 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0c6b0720e5 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=lead_2 done=16 chapters=1,2,3,4 playing=false
+#130 SON Son : rien ne joue.
+#130 > touche 517 931
+#130 DOIGT tuto_next_big « 다음 챕터   »
+#131 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c6cfc51ca9 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=pad_do done=16 chapters=1,2,3,4 playing=false
+#131 SON Son : rien ne joue.
+#131 > touche 517 850
+#131 DOIGT tuto_need «   코드 트랙 만들기 »
+#132 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b52f6b1567 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=pad_do done=16 chapters=1,2,3,4 playing=false
+#132 SON Son : rien ne joue.
+#132 > touche 927 432
+#132 DOIGT tuto_notes_left « 코드 · 1/8마디 »
+#133 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c527c9d53a | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=pad_do done=16 chapters=1,2,3,4 playing=false
+#133 SON Son : rien ne joue.
+#133 LAYOUT TARGET « F4 F 재생 » 56 x 18 dp (touch 56 x 48)
+#133 LAYOUT TARGET « E4 E 재생 » 56 x 18 dp (touch 56 x 48)
+#133 LAYOUT TARGET « E♭4 E♭ 재생 » 56 x 18 dp (touch 56 x 48)
+#133 LAYOUT TARGET « D4 D 재생 » 56 x 18 dp (touch 56 x 48)
+#133 LAYOUT TARGET « D♭4 D♭ 재생 » 56 x 18 dp (touch 56 x 48)
+#133 LAYOUT TARGET « C4 C4 재생 » 56 x 18 dp (touch 56 x 48)
+#133 LAYOUT TARGET « B3 B 재생 » 56 x 18 dp (touch 56 x 48)
+#133 LAYOUT TARGET « B♭3 B♭ 재생 » 56 x 18 dp (touch 56 x 48)
+#133 LAYOUT TARGET « A3 A 재생 » 56 x 18 dp (touch 56 x 48)
+#133 LAYOUT TARGET « A♭3 A♭ 재생 » 56 x 18 dp (touch 56 x 48)
+#133 LAYOUT TARGET « G3 G 재생 » 56 x 18 dp (touch 56 x 48)
+#133 > touche 305 835
+#133 DOIGT rien
+#134 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0356cffdf9 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=pad_do done=16 chapters=1,2,3,4 playing=false
+#134 SON Son : rien ne joue.
+#134 > touche 598 835
+#134 DOIGT rien
+#135 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6eff321eff | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=pad_do done=17 chapters=1,2,3,4 playing=false
+#135 SON Son : rien ne joue.
+#135 > touche 517 1014
+#135 DOIGT tuto_next_folded « 성공 »
+#136 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3b91feeb49 | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=pad_end done=17 chapters=1,2,3,4 playing=false
+#136 SON Son : rien ne joue.
+#136 > touche 517 850
+#136 DOIGT tuto_need «   다음 마디에 복사 »
+#137 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6f9eaab74b | project=p-f5f6b9e1 tuto=tech_house/Facile active=true step=pad_end done=18 chapters=1,2,3,4,5 playing=false
+#137 SON Son : rien ne joue.
+#137 > fin
+#137 BENCH-VERDICT ok where=seat.fin
+#137 FIN : fin

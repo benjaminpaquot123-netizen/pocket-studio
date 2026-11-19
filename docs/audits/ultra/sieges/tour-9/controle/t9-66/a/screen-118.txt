@@ -1,0 +1,47 @@
+Écran 118 (1035x1243)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 295,42
+texte « 간단 » @ 618,42
+icône ↶ @ 690,42
+bouton ● @ 762,42
+bouton ▶ « 이 파트 » @ 834,42
+bouton ▶ « 곡 » @ 918,42
+icône ⋮ @ 990,42
+bouton « 126  템포 » @ 69,114
+bouton « ? » @ 990,114
+onglet « Acid 303 베이스 라인 » @ 87,186
+bouton « 베이스 롤링 베이스 » ⋮ @ 261,186
+icône ♪ « 사운드 » @ 418,186
+bouton + «  트랙 » @ 559,186
+icône « 파트: A » ▾ @ 66,264
+texte « 박자 맞춤 50% » @ 391,351
+texte « 100% » @ 529,351
+texte « 지우기 » @ 627,351
+bouton « 코드 » @ 86,351
+bouton « 고스트 베이스 » [sélectionné] @ 217,351
+bouton « 베이스 · 4/8마디 점선 노트를 모두 놓았어요 » @ 517,432
+texte « 마디 » @ 84,491
+bouton « 4 » @ 486,501
+bouton « 5 » [coupé] @ 920,501
+texte « B » [coupé] @ 84,543
+texte « B♭ » @ 84,574
+texte « A » @ 84,616
+texte « A♭ » @ 84,658
+texte « G » @ 84,700
+texte « G♭ » @ 84,742
+texte « F » @ 84,784
+texte « E » @ 84,826
+texte « E♭ » [coupé] @ 84,857
+dessin [coupé] @ 559,700
+icône (liste) « 챕터 » @ 906,915
+texte « 베이스 3/13장 · 완료 · 쉬움 » @ 445,915
+icône ⌃ @ 978,915
+icône (coupe) « 잘했어요, 챕터 완료! » ⌃ @ 517,1014
+onglet (lignes et note) « 내 곡 » @ 99,1123
+onglet (quatre carrés) « 리듬 » @ 309,1123
+onglet (touches de piano) « 건반 » [sélectionné] @ 518,1123
+onglet (curseurs) « 믹스 » @ 727,1123
+onglet (trois points reliés) « 공유 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  메모 » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « 피드백 모드 » @ 385,1213

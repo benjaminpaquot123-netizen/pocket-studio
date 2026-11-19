@@ -1,0 +1,83 @@
+Écran 24 (1035x1243)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 373,42
+texte « 간단 » @ 774,42
+bouton ● @ 846,42
+bouton ▶ « 이 파트 » @ 918,42
+icône ⋮ @ 990,42
+bouton « 126  템포 » @ 69,114
+bouton « ? » @ 990,114
+icône « 파트: A » ▾ @ 66,180
+bouton « 스튜디오 큰북 FX » @ 75,282
+bouton « 큰북 2 » @ 200,282
+bouton « 스네어 » @ 325,282
+bouton « 스네어 2 » @ 450,282
+bouton « 손뼉 FX » @ 75,388
+bouton « 하이햇 L 30 » @ 200,388
+bouton « 오픈 하이햇 R 30 » @ 325,388
+bouton « 로우 탐 » @ 450,388
+bouton « 미드 탐 R 45 » @ 75,494
+bouton « 하이 탐 » @ 200,494
+bouton « 북 테두리 FX R 50 » @ 325,494
+bouton « 벨 » @ 450,494
+bouton « 심벌 R 40 » @ 75,600
+bouton « 마라카스 L 50 » @ 200,600
+bouton « 콩가 » @ 325,600
+bouton « 레이저 » @ 450,600
+bouton « 킷: 스튜디오 » ▾ @ 109,694
+texte « 패드는 소리를 내고, 칸은 히트를 저장해요. 길게 누르기: 사운드 바꾸기. » @ 360,694
+bouton « 메트로놈 » [coupé] @ 105,786
+bouton « 카운트인 » [coupé] @ 243,786
+bouton « ? » [coupé] @ 339,788
+texte « 마디 » @ 569,262
+bouton « 1 » [sélectionné] @ 633,262
+bouton « 2 » @ 714,262
+bouton « 따라가기 » @ 822,262
+texte « 1/2마디 · 손뼉 » @ 622,331
+texte « 여기 점선 칸이 2개 남았어요 » @ 688,360
+bouton « 1 » [état « 비어 있음 »] @ 575,426
+bouton [état « 비어 있음 »] @ 632,425
+bouton [état « 비어 있음 »] @ 688,425
+bouton [état « 비어 있음 »] @ 744,425
+bouton « 2 » [état « 비어 있음, 점선: 눌러요 »] @ 800,425
+bouton [état « 비어 있음 »] @ 856,425
+bouton [état « 비어 있음 »] @ 912,425
+bouton [état « 비어 있음 »] @ 968,425
+bouton « 3 » [état « 비어 있음 »] @ 575,496
+bouton [état « 비어 있음 »] @ 632,495
+bouton [état « 비어 있음 »] @ 688,495
+bouton [état « 비어 있음 »] @ 744,495
+bouton « 4 » [état « 비어 있음, 점선: 눌러요 »] @ 800,495
+bouton [état « 비어 있음 »] @ 856,495
+bouton [état « 비어 있음 »] @ 912,495
+bouton [état « 비어 있음 »] @ 968,495
+texte « 전체 » @ 642,576
+texte « 1/2 » @ 717,576
+texte « 1/4 » @ 792,576
+texte « ◀ » [désactivé] @ 867,576
+texte « ▶ » [désactivé] @ 942,576
+texte « 채우기 » @ 576,576
+texte « 지우기 » [désactivé] @ 591,648
+texte « 칸을 탭하면 히트가 들어가고, 손가락을 밀면 여러 개를 그려요. 히트를 길게 누르면: 세기와 롤 (×2~×8). » @ 771,723
+texte « 길이 » [coupé] @ 569,789
+bouton « 1마디 » [coupé] @ 645,785
+bouton « 2 » [coupé, sélectionné] @ 739,785
+bouton « 3 » [coupé] @ 820,785
+bouton « 4 » [coupé] @ 901,785
+icône (liste) « 챕터 » @ 906,843
+texte « 드럼 2/13장 · 3/7단계 · 쉬움 » @ 445,843
+icône ⌃ @ 978,843
+icône « 직접 해 보세요: “손뼉” 패드에서 2마디의 점선 칸을 탭하세요. 2박과 4박, 그리고 에코 하나. 읽기 » ⌃ @ 517,942
+icône ↶ « 실행 취소 » @ 147,1027
+image ↷ @ 329,1015
+bouton ▶ « 곡 » @ 512,1027
+texte « 126 템포 » @ 700,1027
+icône ⋮ « 더보기 » @ 889,1027
+onglet (lignes et note) « 내 곡 » @ 99,1123
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 309,1123
+onglet (touches de piano) « 건반 » @ 518,1123
+onglet (curseurs) « 믹스 » @ 727,1123
+onglet (trois points reliés) « 공유 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  메모 » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « 피드백 모드 » @ 385,1213

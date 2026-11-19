@@ -1,0 +1,45 @@
+Écran 1 (1035x1243)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 373,42
+texte « 간단 » @ 774,42
+bouton ● @ 846,42
+bouton ▶ « 이 파트 » @ 918,42
+icône ⋮ @ 990,42
+bouton « 120  템포 » @ 69,114
+bouton « ? » @ 990,114
+icône « 파트: A » ▾ @ 66,180
+bouton « 스튜디오 큰북 FX » @ 75,282
+bouton « 큰북 2 » @ 200,282
+bouton « 스네어 » @ 325,282
+bouton « 스네어 2 » @ 450,282
+bouton « 손뼉 FX » [coupé] @ 75,367
+bouton « 하이햇 L 30 » [coupé] @ 200,367
+bouton « 오픈 하이햇 R 30 » [coupé] @ 325,367
+bouton « 로우 탐 » [coupé] @ 450,367
+titre « 스텝: 스튜디오 큰북 » [état « 펼쳐짐 »] @ 706,294
+bouton « ? » @ 787,294
+bouton « 모든 패드 » @ 927,294
+texte « 스튜디오 큰북 » @ 620,378
+icône (liste) « 챕터 » @ 906,443
+icône ⌄ @ 978,443
+texte « 곡의 빠르기와 색깔 1/13장 · 1/3단계 · 쉬움 » @ 445,443
+texte « 완성된 테크 하우스를 잠깐 들어 보세요: 빌드업, 그다음 베이스와 보컬 한 마디가 후렴 전체를 만드는 드롭. » @ 517,542
+bouton « Tech house 킷 다운로드 (2 MB) » @ 471,635
+texte « 나중에 » @ 961,635
+texte « ▸ 왜요? » @ 517,701
+bouton ▶ «  예시 듣기 » @ 517,859
+icône ← «  이전 » [désactivé] @ 75,943
+icône « 다음  » → @ 960,943
+icône ↶ « 실행 취소 » [désactivé] @ 147,1027
+image ↷ @ 329,1015
+bouton ▶ « 곡 » @ 512,1027
+texte « 120 템포 » @ 700,1027
+icône ⋮ « 더보기 » @ 889,1027
+onglet (lignes et note) « 내 곡 » @ 99,1123
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 309,1123
+onglet (touches de piano) « 건반 » @ 518,1123
+onglet (curseurs) « 믹스 » @ 727,1123
+onglet (trois points reliés) « 공유 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  메모 » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « 피드백 모드 » @ 385,1213

@@ -1,0 +1,28 @@
+Écran 11 (1035x1243)
+dessin @ 517,621
+dessin @ 518,625
+texte « 곡의 키 » @ 474,697
+texte « 닫기 » @ 930,697
+texte « 곡의 키: 없음 » @ 118,763
+texte « 스케일 » @ 90,809
+bouton « 메이저 » @ 113,876
+bouton « 마이너 » @ 224,876
+bouton « 도리안 » @ 335,876
+bouton « 마이너 펜타 » @ 471,876
+bouton « 메이저 펜타 » @ 633,876
+bouton « 블루스 » @ 770,876
+bouton « 프리지안 » @ 892,876
+bouton « 하모닉 마이너 » @ 149,957
+texte « 키 » @ 71,1023
+bouton « C » @ 101,1090
+bouton « C♯ » @ 188,1090
+bouton « D » @ 275,1090
+bouton « E♭ » @ 362,1090
+bouton « E » @ 449,1090
+bouton « F » @ 536,1090
+bouton « F♯ » @ 623,1090
+bouton « G » @ 710,1090
+bouton « A♭ » @ 797,1090
+bouton « A » @ 884,1090
+bouton « B♭ » @ 101,1171
+bouton « B » @ 188,1171

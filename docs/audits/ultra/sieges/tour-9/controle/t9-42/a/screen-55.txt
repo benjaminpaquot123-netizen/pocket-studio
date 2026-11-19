@@ -1,0 +1,60 @@
+Écran 55 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 358,42
+bouton « Simple » @ 758,42
+bouton ● @ 846,42
+bouton ▶ « this part » @ 918,42
+icône ⋮ @ 990,42
+bouton « 165  Tempo » @ 83,114
+icône « Intro bar 1/128 » ▾ @ 241,114
+bouton « ? » @ 990,114
+icône « Part: C · Build-up » ▾ @ 123,180
+bouton « Studio bass drum FX » @ 75,282
+bouton « Bass drum 2 » @ 200,282
+bouton « Snare FX » @ 325,282
+bouton « Snare 2 » @ 450,282
+bouton « Handclap » @ 75,388
+bouton « Hi-hat L 30 » @ 200,388
+bouton « Open hi-hat R 30 » @ 325,388
+bouton « Low tom » @ 450,388
+texte « Bar 4/4 · Hi-hat » @ 640,242
+texte « → Hi-hat » @ 611,271
+bouton « 1 » [état « hit, strength 61 % »] @ 575,337
+bouton [état « empty »] @ 632,336
+bouton [état « hit, strength 41 % »] @ 688,336
+bouton [état « empty »] @ 744,336
+bouton « 2 » [état « hit, strength 52 % »] @ 800,336
+bouton [état « empty »] @ 856,336
+bouton [état « hit, strength 35 % »] @ 912,336
+bouton [état « empty »] @ 968,336
+bouton « 3 » [état « hit, strength 61 % »] @ 575,407
+bouton [état « empty »] @ 632,406
+bouton [état « empty »] @ 688,406
+bouton [état « empty »] @ 744,406
+bouton « 4 » [état « hit, strength 40 %, crossed out: take it away »] @ 800,406
+bouton [état « empty »] @ 856,406
+bouton [état « hit, strength 53 %, crossed out: take it away »] @ 912,406
+bouton [état « empty »] @ 968,406
+texte « Transitions Chapter 12/15 · Step 2/2 · Easy » @ 433,487
+icône (liste) « Chapters » @ 894,487
+icône ⌄ @ 978,487
+texte « Your turn: in the “Build-up” part, last bar, clear the hits on the last beat (tap each red cross): one beat of silence right before Drop 2. » @ 517,586
+texte « ▸ Why? » @ 517,646
+bouton (doigt qui touche) «   I'll do it » @ 517,778
+bouton ▶ «  Listen to the example » @ 266,862
+bouton (œil) «  Show me » @ 768,862
+icône ← «  Previous » @ 101,943
+icône « Next  » → @ 955,943
+icône ↶ « Undo » @ 147,1027
+image ↷ @ 329,1017
+bouton ▶ « the song » @ 512,1027
+texte « 165 Tempo » @ 700,1027
+icône ⋮ « More » @ 889,1027
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Note » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 385,1213

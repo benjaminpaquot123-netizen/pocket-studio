@@ -1,0 +1,43 @@
+Écran 22 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 358,42
+bouton « Simple » @ 758,42
+bouton ● @ 846,42
+bouton ■ « this part » @ 918,42
+icône ⋮ @ 990,42
+bouton « 165  Tempo » @ 83,114
+icône (flèches en boucle) « Intro bar 1/8 » [désactivé] @ 239,114
+bouton « ? » @ 990,114
+texte « Add: » @ 65,165
+bouton « + A · Groove » @ 141,228
+bouton « + B · Intro » @ 336,228
+bouton « + New part (copy of B · Intro) » @ 225,309
+bouton « + New empty part » [coupé] @ 169,380
+titre « MY TRACKS » [état « Expanded »] @ 635,204
+texte « Tap a track's name to change its sound; ▶ to hear it alone. » @ 771,261
+bouton « Drums Change the sound » › @ 696,342
+bouton ▶ @ 882,342
+icône (curseurs) @ 957,342
+texte « Build your parts Chapter 10/15 · Step 1/6 · Easy » @ 433,454
+icône (liste) « Chapters » @ 894,454
+icône ⌄ @ 978,454
+image (coupe) @ 57,558
+texte « Well done, you did it! » @ 198,544
+texte « Part “Intro” made (a copy of the Groove): without Cymbal, Chords, Melody. » @ 428,572
+bouton « Next step   » → @ 517,859
+icône ← @ 57,943
+bouton ■ «  Stop » @ 327,943
+bouton ▶ «  Listen to the example » @ 788,943
+icône ↶ « Undo » @ 147,1027
+image ↷ @ 329,1017
+bouton ■ « the song » @ 512,1027
+texte « 165 Tempo » @ 700,1027
+icône ⋮ « More » @ 889,1027
+onglet (lignes et note) « My song » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Note » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 385,1213

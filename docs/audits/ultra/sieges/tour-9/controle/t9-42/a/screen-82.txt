@@ -1,0 +1,9 @@
+Écran 82 (1035x1243)
+texte « It's ready » @ 215,459
+texte « Ready: My-jungle-song-20261119-080240.m4a, a copy is also in Music › BenStudio. » @ 517,537
+texte « Length: 3 min 6 s » @ 212,586
+texte « Level: like streaming music (−14) » @ 283,619
+texte « No clipping. » @ 188,652
+texte « M4A file: light, plays on every device. » @ 304,685
+texte « See my files » @ 721,771
+texte « OK » @ 857,771

@@ -1,0 +1,348 @@
+#0 SIEGE lang=hi device=foldable font=100 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:grime:6
+#0 PREMIER ECRAN reel_s=4.1 simule_s=2.4 jvm_s=9.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:grime:6
+#0 AMENEE > touche 518 557 (welcome_learn)
+#0 AMENEE > touche 263 1125 (mode_card_simple)
+#0 AMENEE > touche 517 1178 (tuto_style_grime)
+#0 AMENEE chapitres 1 à 5 construits dans le projet
+#0 AMENEE > touche 906 636 (tuto_chapters)
+#0 AMENEE > touche 517 549 (tuto_chapter_5)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c0500611c9 | project=p-82b26cb4 tuto=grime/Facile active=true step=groove_hear done=13 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ क्यों? » 662 x 21 dp (touch 662 x 48)
+#1 > touche 517 778
+#1 DOIGT tuto_play_mine «   अपना नतीजा सुनो »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b4608b9537 | project=p-82b26cb4 tuto=grime/Facile active=true step=groove_hear done=13 playing=true
+#2 SON Son : la musique du projet joue en boucle.
+#2 > touche 517 862
+#2 DOIGT tuto_listen «  उदाहरण सुनो »
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 56215f0f68 | project=p-82b26cb4 tuto=grime/Facile active=true step=groove_hear done=13 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 3 s).
+#3 > touche 471 648
+#3 DOIGT tuto_kit_download « किट Grime डाउनलोड करो (2 MB) »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4345b32680 | project=p-82b26cb4 tuto=grime/Facile active=true step=groove_hear done=14 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 1 s).
+#4 > attends 5
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE afaf72599d | project=p-82b26cb4 tuto=grime/Facile active=true step=groove_hear done=14 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 517 859
+#5 DOIGT tuto_next_big « अगला स्टेप   »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e6c42f63ff | project=p-82b26cb4 tuto=grime/Facile active=true step=groove_name done=14 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 517 778
+#6 DOIGT tuto_need «   पार्ट का नाम “मुखड़ा” रखो »
+#7 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0424ae1ba9 | project=p-82b26cb4 tuto=grime/Facile active=true step=groove_name done=15 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 517 859
+#7 DOIGT tuto_next_big « अगला अध्याय   »
+#8 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9eb04d474c | project=p-82b26cb4 tuto=grime/Facile active=true step=brick done=15 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « 8 » 4.28:1 (needs 4.5:1, 12 sp)
+#8 > touche 517 859
+#8 DOIGT tuto_mark «   समझ गया »
+#9 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 0559bb24e3 | project=p-82b26cb4 tuto=grime/Facile active=true step=map_intro done=16 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « इंट्रो » 4.15:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « 8 » 2.79:1 (needs 4.5:1, 12 sp)
+#9 > touche 517 859
+#9 DOIGT tuto_listen «  उदाहरण सुनो »
+#10 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d66ccdf52d | project=p-82b26cb4 tuto=grime/Facile active=true step=map_intro done=16 playing=false
+#10 SON Son : l'exemple du tuto joue (encore 3 s).
+#10 > attends 4
+#11 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c33f1feaea | project=p-82b26cb4 tuto=grime/Facile active=true step=map_intro done=17 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 517 859
+#11 DOIGT tuto_next_big « अगला स्टेप   »
+#12 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 6af1d822c8 | project=p-82b26cb4 tuto=grime/Facile active=true step=map_couplet done=17 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « अंतरा 2 » 4.15:1 (needs 4.5:1, 12 sp)
+#12 > touche 517 859
+#12 DOIGT tuto_listen «  उदाहरण सुनो »
+#13 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c0eb7d1a59 | project=p-82b26cb4 tuto=grime/Facile active=true step=map_couplet done=17 playing=false
+#13 SON Son : l'exemple du tuto joue (encore 7 s).
+#13 > attends 4
+#14 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e5fcacc248 | project=p-82b26cb4 tuto=grime/Facile active=true step=map_couplet done=18 playing=false
+#14 SON Son : l'exemple du tuto joue (encore 3 s).
+#14 > touche 517 859
+#14 DOIGT tuto_next_big « अगला स्टेप   »
+#15 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 136e95c19b | project=p-82b26cb4 tuto=grime/Facile active=true step=map_bars done=18 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 517 859
+#15 DOIGT tuto_mark «   समझ गया »
+#16 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 55d909547e | project=p-82b26cb4 tuto=grime/Facile active=true step=map_bars done=19 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 517 859
+#16 DOIGT tuto_next_big « अगला अध्याय   »
+#17 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f2a78eace5 | project=p-82b26cb4 tuto=grime/Facile active=true step=make_intro done=19 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 768 862
+#17 DOIGT tuto_show «  मुझे दिखाओ »
+#18 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE eea0cc67e4 | project=p-82b26cb4 tuto=grime/Facile active=true step=make_intro done=19 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « रोको » 3.91:1 (needs 4.5:1, 14 sp)
+#18 > attends 4
+#19 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 7e6d946d0b | project=p-82b26cb4 tuto=grime/Facile active=true step=make_intro done=19 playing=false
+#19 SON Son : rien ne joue.
+#19 > attends 3
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b6b7093eca | project=p-82b26cb4 tuto=grime/Facile active=true step=make_intro done=19 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 517 778
+#20 DOIGT tuto_need «   पार्ट “इंट्रो” बनाओ »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 7f3092c33a | project=p-82b26cb4 tuto=grime/Facile active=true step=make_intro done=20 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 517 859
+#21 DOIGT tuto_next_big « अगला स्टेप   »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e5f1bebaf9 | project=p-82b26cb4 tuto=grime/Facile active=true step=make_couplet done=20 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 517 778
+#22 DOIGT tuto_need «   पार्ट “अंतरा” बनाओ »
+#23 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 94d3a0d53d | project=p-82b26cb4 tuto=grime/Facile active=true step=make_couplet done=21 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 517 859
+#23 DOIGT tuto_next_big « अगला स्टेप   »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f2571238de | project=p-82b26cb4 tuto=grime/Facile active=true step=make_couplet2 done=21 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 517 712
+#24 DOIGT tuto_why « ▸ क्यों? »
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0cf93e65f6 | project=p-82b26cb4 tuto=grime/Facile active=true step=make_couplet2 done=21 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT TARGET « ▾ क्यों? » 662 x 21 dp (touch 662 x 48)
+#25 > touche 517 778
+#25 DOIGT tuto_need «   पार्ट “अंतरा 2” बनाओ »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 24b50c0fc3 | project=p-82b26cb4 tuto=grime/Facile active=true step=make_couplet2 done=22 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 327 943
+#26 DOIGT tuto_play_mine «  अपना नतीजा सुनो »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6fee286365 | project=p-82b26cb4 tuto=grime/Facile active=true step=make_couplet2 done=22 playing=true
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 517 859
+#27 DOIGT tuto_next_big « अगला स्टेप   »
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 62e375c328 | project=p-82b26cb4 tuto=grime/Facile active=true step=make_pont done=22 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 517 778
+#28 DOIGT tuto_need «   पार्ट “ब्रिज” बनाओ »
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d14a96a203 | project=p-82b26cb4 tuto=grime/Facile active=true step=make_pont done=23 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 LAYOUT CONTRAST « साउंड बदलो » 4.04:1 (needs 4.5:1, 13 sp)
+#29 > touche 517 859
+#29 DOIGT tuto_next_big « अगला अध्याय   »
+#30 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1d7a69b8bb | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 517 778
+#30 DOIGT tuto_do «   मैं करूँगा »
+#31 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 804d8e3f50 | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT CONTRAST « + A · मुखड़ा » 4.06:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + B · इंट्रो » 4.06:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + C · अंतरा » 4.16:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + D · अंतरा 2 » 4.16:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + E · ब्रिज » 4.25:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + नया पार्ट (E · ब्रिज की कॉपी) » 4.25:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + नया खाली पार्ट » 4.37:1 (needs 4.5:1, 14 sp)
+#31 > touche 305 310
+#31 DOIGT add_part_1 « + B · इंट्रो »
+#32 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE dec2a292b0 | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 LAYOUT CONTRAST « + A · मुखड़ा » 4.25:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + B · इंट्रो » 3.51:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + C · अंतरा » 4.25:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + D · अंतरा 2 » 4.25:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + E · ब्रिज » 4.30:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + नया पार्ट (E · ब्रिज की कॉपी) » 4.37:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + नया खाली पार्ट » 4.43:1 (needs 4.5:1, 14 sp)
+#32 > touche 131 436
+#32 DOIGT add_part_0 « + A · मुखड़ा »
+#33 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 28429fb95f | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 127 517
+#33 DOIGT add_part_2 « + C · अंतरा »
+#34 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f86c801ee8 | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 317 517
+#34 DOIGT add_part_3 « + D · अंतरा 2 »
+#35 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 8c5c8f1514 | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 131 436
+#35 DOIGT add_part_0 « + A · मुखड़ा »
+#36 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE dd10e0dc89 | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 127 517
+#36 DOIGT add_part_2 « + C · अंतरा »
+#37 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 4de031f5df | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 317 517
+#37 DOIGT add_part_3 « + D · अंतरा 2 »
+#38 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 10e1cbef19 | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 > touche 121 598
+#38 DOIGT add_part_4 « + E · ब्रिज »
+#39 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ccb012ae88 | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 131 436
+#39 DOIGT add_part_0 « + A · मुखड़ा »
+#40 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE b882611ed0 | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=23 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 > touche 305 436
+#40 DOIGT add_part_1 « + B · इंट्रो »
+#41 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 125aa52b88 | project=p-82b26cb4 tuto=grime/Facile active=true step=song_order done=24 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 > touche 517 943
+#41 DOIGT tuto_next_folded « हो गया »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE af6a8d41ed | project=p-82b26cb4 tuto=grime/Facile active=true step=song_phrases done=24 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 > touche 517 778
+#42 DOIGT tuto_need «   सुझाई गई लंबाइयाँ दो »
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 77fb818ed0 | project=p-82b26cb4 tuto=grime/Facile active=true step=song_phrases done=25 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 517 859
+#43 DOIGT tuto_next_big « अगला अध्याय   »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE eb5c87400b | project=p-82b26cb4 tuto=grime/Facile active=true step=gap done=25 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 517 778
+#44 DOIGT tuto_need «   पार्ट “अंतरा 2” में जाओ »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b322bf93f3 | project=p-82b26cb4 tuto=grime/Facile active=true step=gap done=25 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 LAYOUT CONTRAST « फ़ॉलो » 4.33:1 (needs 4.5:1, 14 sp)
+#45 > touche 517 778
+#45 DOIGT tuto_do «   मैं करूँगा »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2a7975de5b | project=p-82b26cb4 tuto=grime/Facile active=true step=gap done=25 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 LAYOUT CONTRAST « फ़ॉलो » 4.34:1 (needs 4.5:1, 14 sp)
+#46 > touche 856 508
+#46 DOIGT step_29 « स्टेप 14 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 745f13fcee | project=p-82b26cb4 tuto=grime/Facile active=true step=gap done=25 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CONTRAST « Grime · ताली » 4.28:1 (needs 4.5:1, 14 sp)
+#47 > touche 800 508
+#47 DOIGT step_28 « स्टेप 13 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6d91f3daec | project=p-82b26cb4 tuto=grime/Facile active=true step=gap done=26 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 517 943
+#48 DOIGT tuto_next_folded « हो गया »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 232b723647 | project=p-82b26cb4 tuto=grime/Facile active=true step=crash done=26 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 517 778
+#49 DOIGT tuto_need «   पार्ट “मुखड़ा” में जाओ »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a9b0ac7e21 | project=p-82b26cb4 tuto=grime/Facile active=true step=crash done=26 playing=true
+#50 SON Son : la musique du projet joue en boucle.
+#50 LAYOUT CONTRAST « बार » 1.73:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « 1 » 2.96:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « 2 » 1.86:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « फ़ॉलो » 1.75:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#50 > touche 517 778
+#50 DOIGT tuto_do «   मैं करूँगा »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5bd677c9ea | project=p-82b26cb4 tuto=grime/Facile active=true step=crash done=26 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 LAYOUT CONTRAST « 1 » 3.12:1 (needs 4.5:1, 14 sp)
+#51 LAYOUT CONTRAST « 2 » 1.84:1 (needs 4.5:1, 14 sp)
+#51 LAYOUT CONTRAST « फ़ॉलो » 1.77:1 (needs 4.5:1, 14 sp)
+#51 LAYOUT CONTRAST « 1 » 2.56:1 (needs 4.5:1, 12 sp)
+#51 > touche 575 412
+#51 DOIGT step_0 « स्टेप 1 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 90ae340d8c | project=p-82b26cb4 tuto=grime/Facile active=true step=crash done=27 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 > touche 517 943
+#52 DOIGT tuto_chapter_end_folded « शाबाश, अध्याय पूरा! »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6eab9bd5ea | project=p-82b26cb4 tuto=grime/Facile active=true step=crash done=27 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 LAYOUT CONTRAST « बार » 1.74:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « 1 » 2.97:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « 2 » 2.11:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « फ़ॉलो » 1.55:1 (needs 4.5:1, 14 sp)
+#53 > touche 517 859
+#53 DOIGT tuto_next_big « अगला अध्याय   »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7dbd8ea34a | project=p-82b26cb4 tuto=grime/Facile active=true step=reverb_hear done=27 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 LAYOUT CONTRAST « बार » 1.78:1 (needs 4.5:1, 14 sp)
+#54 > touche 517 859
+#54 DOIGT tuto_listen «  उदाहरण सुनो »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e2611dffcd | project=p-82b26cb4 tuto=grime/Facile active=true step=reverb_hear done=27 playing=false
+#55 SON Son : l'exemple du tuto joue (encore 7 s).
+#55 > attends 4
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cc8b5bf0f5 | project=p-82b26cb4 tuto=grime/Facile active=true step=reverb_hear done=28 playing=false
+#56 SON Son : l'exemple du tuto joue (encore 3 s).
+#56 > touche 517 859
+#56 DOIGT tuto_next_big « अगला अध्याय   »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bab683f8cc | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=28 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 727 1123
+#57 DOIGT tab_simple_Mix « मिक्स »
+#58 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 58d41b9024 | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=28 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « आउटपुट » 4.40:1 (needs 4.5:1, 13 sp)
+#58 > touche 517 778
+#58 DOIGT tuto_do «   मैं करूँगा »
+#59 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 8fe4d1cc76 | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=28 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « कॉर्ड्स » 3.76:1 (needs 4.5:1, 13 sp)
+#59 LAYOUT CONTRAST « आउटपुट » 4.33:1 (needs 4.5:1, 13 sp)
+#59 > glisse 469 325 469 343
+#59 DOIGT mix_fader_6 « कॉर्ड्स का वॉल्यूम »
+#60 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 8fe4d1cc76 | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=28 playing=false
+#60 SON Son : rien ne joue.
+#60 > glisse 469 325 469 360
+#60 DOIGT mix_fader_6 « कॉर्ड्स का वॉल्यूम »
+#61 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 3a7b2f157e | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=28 playing=false
+#61 SON Son : rien ne joue.
+#61 > glisse 469 334 469 362
+#61 DOIGT mix_fader_6 « कॉर्ड्स का वॉल्यूम »
+#62 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 3a7b2f157e | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=28 playing=false
+#62 SON Son : rien ne joue.
+#62 > glisse 469 340 469 380
+#62 DOIGT mix_fader_6 « कॉर्ड्स का वॉल्यूम »
+#63 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 3f3f63eeb7 | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=28 playing=false
+#63 SON Son : rien ne joue.
+#63 > glisse 469 355 469 335
+#63 DOIGT mix_fader_6 « कॉर्ड्स का वॉल्यूम »
+#64 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 3f3f63eeb7 | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=28 playing=false
+#64 SON Son : rien ne joue.
+#64 > glisse 469 355 469 327
+#64 DOIGT mix_fader_6 « कॉर्ड्स का वॉल्यूम »
+#65 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 3f0e092529 | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=28 playing=false
+#65 SON Son : rien ne joue.
+#65 > glisse 592 325 592 368
+#65 DOIGT mix_fader_7 « मेलोडी का वॉल्यूम »
+#66 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 4e5f609f53 | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=29 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 517 943
+#66 DOIGT tuto_chapter_end_folded « शाबाश, अध्याय पूरा! »
+#67 ROUTE tab_simple_Mix | MODE simple | EMPREINTE f4f8b8126f | project=p-82b26cb4 tuto=grime/Facile active=true step=levels done=29 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 517 859
+#67 DOIGT tuto_next_big « अगला अध्याय   »
+#68 ROUTE tab_simple_Mix | MODE simple | EMPREINTE d9b9bd84fe | project=p-82b26cb4 tuto=grime/Facile active=true step=share done=29 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 936 1123
+#68 DOIGT tab_simple_Envoyer « शेयर करो »
+#69 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE b6b060ea2a | project=p-82b26cb4 tuto=grime/Facile active=true step=share done=29 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 518 444
+#69 DOIGT share_go «   शेयर करो »
+#70 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 67fd966688 | project=p-82b26cb4 tuto=grime/Facile active=true step=share done=29 playing=false
+#70 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#70 > attends 10
+#70 PARTAGE मेरा-गाना-20261119-075158.m4a
+#71 ROUTE dialogue:« मेरा गाना शेयर करो · मेरा-गाना » | MODE simple | EMPREINTE 324a270333 | project=p-82b26cb4 tuto=grime/Facile active=true step=share done=30 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 517 801
+#71 DOIGT vue « Files »
+#72 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE e29fc4e1d9 | project=p-82b26cb4 tuto=grime/Facile active=true step=share done=30 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 842 757
+#72 DOIGT share_bilan_ok « OK »
+#73 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 4d35044933 | project=p-82b26cb4 tuto=grime/Facile active=true step=share done=30 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 517 859
+#73 DOIGT tuto_next_big « अगला स्टेप   »
+#74 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 7cb2b42838 | project=p-82b26cb4 tuto=grime/Facile active=true step=share done=30 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT CUT « मेरी फ़ाइलें » lines cut (taller than its box)
+#74 LAYOUT CUT « ? » lines cut (taller than its box)
+#74 LAYOUT TARGET « मेरी फ़ाइलें » 571 x 13 dp (touch 571 x 48)
+#74 LAYOUT TARGET « “मेरी फ़ाइलें” क्या है? ? » 29 x 13 dp (touch 48 x 48)
+#74 > fin
+#74 FIN : fin

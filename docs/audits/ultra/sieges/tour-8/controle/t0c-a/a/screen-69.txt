@@ -1,0 +1,38 @@
+Écran 69 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 132  Tempo » @ 83,114
+icône (flèches en boucle) « Montée mesure 3/4 » ▾ @ 248,114
+bouton « ? » @ 543,114
+icône « Partie : F · Montée » ▾ @ 129,162
+texte « Les transitions : les passages entre les parties Chapitre 12/15 · Étape 1/2 · Facile » @ 207,235
+icône (liste) « Chapitres » @ 444,236
+icône ⌄ @ 531,236
+texte « À toi : à la fin de la Montée, efface les 4 coups du pad « Claquement de mains » du dernier temps. » @ 294,360
+texte « C'est une transition (le passage vers la partie suivante) : un silence juste avant le Drop 2. Un temps de rien, et le Drop 2 paraît deux fois plus fort. » @ 294,468
+bouton « Télécharger le kit Techno (4 Mo) » @ 236,570
+texte « Plus tard » @ 503,570
+texte « ▾ Pourquoi ? » @ 294,636
+icône « Réduire » ⌃ @ 294,684
+bouton (doigt qui touche) «   Je le fais » @ 294,813
+bouton ▶ «  Écouter l'exemple » @ 154,897
+bouton (œil) «  Montre-moi » @ 433,897
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ■ « le morceau » @ 288,1062
+texte « 132 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

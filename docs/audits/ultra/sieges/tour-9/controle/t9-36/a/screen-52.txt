@@ -1,0 +1,43 @@
+Écran 52 (588x1278)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 150,42
+texte « 간단 » @ 327,42
+bouton ● @ 399,42
+bouton ▶ « 이 파트 » @ 471,42
+icône ⋮ @ 543,42
+bouton « 136  템포 » @ 69,114
+icône « 인트로 1/128마디 » ▾ @ 211,114
+bouton « ? » @ 543,114
+bouton « ▶ 파트 반복 » @ 352,192
+texte « 믹스 » @ 48,192
+texte «  · 내 프로젝트 1 » @ 144,192
+bouton « ? » @ 231,192
+bouton « ? » @ 448,192
+bouton « ↺ 모두 처음대로 » @ 112,273
+texte « 직접 해 보세요: 들려야 할 소리는 올리고, 방해되는 소리는 내리세요. ▶를 누르면 트랙 하나만 들을 수 있어요. » @ 297,363
+texte « 믹스: 볼륨 12/13장 · 1/1단계 · 쉬움 » @ 222,454
+icône (liste) « 챕터 » @ 459,454
+icône ⌄ @ 531,454
+texte « 직접 해 보세요: “믹스” 탭에서 “코드”와 “멜로디” 트랙의 슬라이더를 조금 내리세요. » @ 294,553
+texte « • 코드: 여러 음을 함께 연주한 것. » @ 150,612
+bouton « Industrial techno 킷 다운로드 (3 MB) » @ 247,683
+texte « 나중에 » @ 514,683
+texte « ▸ 왜요? » @ 294,749
+bouton (doigt qui touche) «   직접 할게요 » @ 294,813
+bouton ▶ «  예시 듣기 » @ 154,897
+bouton (œil) «  보여 주세요 » @ 433,897
+icône ← «  이전 » @ 75,978
+icône « 다음  » → @ 513,978
+icône ↶ « 실행 취소 » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 곡 » @ 288,1062
+texte « 136 템포 » @ 402,1062
+icône ⋮ « 더보기 » @ 516,1062
+onglet (lignes et note) « 내 곡 » @ 54,1158
+onglet (quatre carrés) « 리듬 » @ 174,1158
+onglet (touches de piano) « 건반 » @ 294,1158
+onglet (curseurs) « 믹스 » [sélectionné] @ 414,1158
+onglet (trois points reliés) « 공유 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  메모 » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « 피드백 모드 » @ 162,1248

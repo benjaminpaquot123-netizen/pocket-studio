@@ -1,0 +1,9 @@
+Écran 91 (540x1170)
+texte « È pronto » @ 143,181
+texte « Fatto: Il-mio-brano-20261119-115953.m4a, una copia è anche in Music › BenStudio. » @ 270,381
+texte « Durata: 2 min 50 s » @ 199,553
+texte « Livello: come la musica in streaming (−14) » @ 270,637
+texte « Nessuna saturazione. » @ 230,721
+texte « File M4A: leggero, si ascolta su tutti i dispositivi. » @ 270,831
+texte « Vedi i miei file » @ 246,985
+texte « OK » @ 456,985

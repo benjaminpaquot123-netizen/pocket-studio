@@ -1,0 +1,16 @@
+Écran 18 (540x1170)
+texte « La tua prima parte: il Ritornello Capitolo 6/13 · Fatto · Facile » @ 179,148
+icône (liste) « Capitoli » @ 392,148
+icône ⌄ @ 483,148
+image (coupe) @ 57,481
+texte « Bravo, capitolo finito! » @ 295,351
+texte « Ascolta il tuo brano così com'è ora, poi passa al capitolo successivo: “Capire le parti”. » @ 295,509
+bouton « Capitolo successivo   » → @ 270,830
+bouton ▶ «  Ascolta il mio brano » @ 142,944
+bouton ▶ «  Ascolta l'esempio » @ 397,944
+icône ← «  Indietro » @ 131,1058
+image ↷ @ 0,0
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

@@ -1,0 +1,27 @@
+Écran 1 (540x1170)
+texte « Il pad Capitolo 5/13 · Passo 1/2 · Facile » @ 179,92
+icône (liste) « Capitoli » @ 392,92
+icône ⌄ @ 483,92
+texte « Tocca a te: tocca “Crea la traccia Accordi”. » @ 270,262
+bouton « Scarica il kit Phonk (3 MB) » @ 202,391
+texte « Più tardi » @ 445,391
+texte « ▸ Perché? » @ 270,479
+bouton ⊕ «   Crea la traccia Accordi » @ 270,584
+bouton ▶ «  Ascolta l'esempio » @ 142,726
+bouton (œil) «  Mostrami » @ 397,726
+icône ← «  Indietro » @ 131,840
+icône « Avanti  » → @ 422,840
+texte « 130 Tempo » @ 381,943
+icône ↶ « Annulla » @ 52,944
+image ↷ @ 140,934
+icône ▶ « il brano » @ 251,944
+icône ⋮ « Altro » @ 489,943
+onglet (lignes et note) « Il mio brano » @ 49,1052
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 160,1052
+onglet (touches de piano) « Tastiera » @ 271,1052
+onglet (curseurs) « Mix » @ 381,1052
+onglet (trois points reliés) « Condividi » @ 491,1052
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

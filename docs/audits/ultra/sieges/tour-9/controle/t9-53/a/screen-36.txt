@@ -1,0 +1,26 @@
+Écran 36 (540x1170)
+texte « Ordina le tue parti Capitolo 9/13 · Passo 1/2 · Facile » @ 179,120
+icône (liste) « Capitoli » @ 392,120
+icône ⌄ @ 483,120
+texte « Tocca a te: sotto “Aggiungi”, tocca in ordine: Intro, Ritornello, Strofa, Pre-ritornello, Ritornello, Strofa, Pre-ritornello, Ritornello, poi Intro per finire. » [coupé] @ 270,349
+texte « ▸ Perché? » @ 270,481
+icône « Continua a leggere » ⌄ @ 270,544
+bouton (doigt qui touche) «   Lo faccio io » @ 270,664
+bouton ▶ «  Ascolta l'esempio » @ 142,778
+bouton (œil) «  Mostrami » @ 397,778
+icône ← «  Indietro » @ 131,892
+icône « Avanti  » → @ 422,892
+icône ↶ « Annulla » @ 56,988
+image ↷ @ 148,981
+icône ▶ « il brano » @ 264,988
+texte « 130 Tempo » @ 386,988
+icône ⋮ « Altro » @ 484,988
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 49,1071
+onglet (quatre carrés) « Ritmo » @ 160,1071
+onglet (touches de piano) « Tastiera » @ 271,1071
+onglet (curseurs) « Mix » @ 381,1071
+onglet (trois points reliés) « Condividi » @ 491,1071
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

@@ -1,0 +1,32 @@
+Écran 58 (540x1170)
+bouton (dossier ouvert) ✓ @ 98,42
+bouton « Semplice » @ 242,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+icône « Ritornello battuta 9/56 » ▾ @ 361,144
+bouton « 130  Tempo » @ 136,144
+bouton « ? » @ 495,144
+icône ▶ « D · Pre-ritornello × 1  ·  8 batt. » @ 162,311
+icône − [désactivé] @ 318,311
+icône + @ 390,311
+icône ⋮ @ 462,311
+texte « − / + : ripetizioni. Grigi: durata fissa (consigliata o Live) o 1 sola volta. » [coupé] @ 270,470
+texte « Ordina le tue parti Capitolo 9/13 · Passo 1/2 · Facile » @ 179,631
+icône (liste) « Capitoli » @ 392,631
+icône ⌃ @ 483,631
+icône « Tocca a te: sotto “Aggiungi”, tocca in ordine: Intro, Ritornello, Strofa, Pre-ritornello, Ritornello, Strofa, Pre-ritornello, Ritornello, poi Intro per finire. Leggi » ⌃ @ 270,828
+icône ↶ « Annulla » @ 56,946
+image ↷ @ 148,939
+icône ▶ « il brano » @ 264,946
+texte « 130 Tempo » @ 386,946
+icône ⋮ « Altro » @ 484,946
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 49,1050
+onglet (quatre carrés) « Ritmo » @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

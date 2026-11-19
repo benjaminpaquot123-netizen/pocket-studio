@@ -1,0 +1,38 @@
+Écran 6 (540x1170)
+bouton (dossier ouvert) ✓ @ 98,42
+bouton « Semplice » @ 242,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+bouton « 130  Tempo » @ 136,144
+bouton « ? » @ 495,144
+bouton « 808 808 » [coupé] @ 43,262
+bouton « Melodia Melodia » @ 176,262
+bouton « Accordi Pad » ⋮ @ 402,262
+image ← @ 10,263
+image → @ 529,263
+icône « Parte: A » ▾ @ 110,356
+dessin [coupé] @ 69,403
+dessin @ 69,430
+dessin @ 69,460
+dessin @ 69,490
+dessin [coupé] @ 69,516
+dessin [coupé] @ 297,460
+texte « Il pad Capitolo 5/13 · Passo 1/2 · Facile » @ 179,620
+icône (liste) « Capitoli » @ 392,620
+icône ⌃ @ 483,620
+icône « Tocca a te: tocca la nota bassa tratteggiata di ogni accordo della battuta 1: si mette tutto l'accordo. Leggi » ⌃ @ 270,789
+texte « 130 Tempo » @ 381,914
+icône ↶ « Annulla » @ 52,915
+image ↷ @ 140,905
+icône ▶ « il brano » @ 251,915
+icône ⋮ « Altro » @ 489,914
+onglet (lignes et note) « Il mio brano » @ 49,1038
+onglet (quatre carrés) « Ritmo » @ 160,1038
+onglet (touches de piano) « Tastiera » [sélectionné] @ 271,1038
+onglet (curseurs) « Mix » @ 381,1038
+onglet (trois points reliés) « Condividi » @ 491,1038
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

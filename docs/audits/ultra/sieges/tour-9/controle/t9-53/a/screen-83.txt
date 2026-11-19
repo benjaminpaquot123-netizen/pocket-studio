@@ -1,0 +1,40 @@
+Écran 83 (540x1170)
+bouton (dossier ouvert) ✓ @ 98,42
+bouton « Semplice » @ 242,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+icône « Ritornello battuta 9/92 » ▾ @ 361,144
+bouton « 130  Tempo » @ 136,144
+bouton « ? » @ 495,144
+curseur [état « Normale », à 80 %] @ 84,339
+texte « Normale » @ 84,500
+bouton (haut-parleur et ondes) [coupé, allumé, état « attivo »] @ 79,546
+bouton ▶ [coupé] @ 139,546
+curseur [état « Normale », à 80 %] @ 216,336
+texte « Normale » @ 216,490
+bouton (haut-parleur et ondes) [coupé, allumé, état « attivo »] @ 216,540
+curseur [coupé, état « Normale », à 80 %] @ 339,326
+texte « Normale » @ 339,470
+bouton (haut-parleur et ondes) [coupé, allumé, état « attivo »] @ 339,530
+curseur [coupé, état « −2 », à 71 %] @ 462,327
+texte « −2 » @ 462,481
+bouton (haut-parleur et ondes) [coupé, allumé, état « attivo »] @ 462,539
+texte « Il mix: i volumi Capitolo 12/13 · Passo 1/1 · Facile » @ 179,659
+icône (liste) « Capitoli » @ 392,659
+icône ⌃ @ 483,659
+icône « Tocca a te: nella scheda “Mix”, abbassa un po' gli slider “Accordi” e “Melodia”. Sotto lo slider, “Normale” diventa “−2”. Leggi » ⌃ @ 270,828
+icône ↶ « Annulla » @ 56,946
+image ↷ @ 148,939
+icône ▶ « il brano » @ 264,946
+texte « 130 Tempo » @ 386,946
+icône ⋮ « Altro » @ 484,946
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » [sélectionné] @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

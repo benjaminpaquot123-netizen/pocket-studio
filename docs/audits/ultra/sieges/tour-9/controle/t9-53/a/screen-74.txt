@@ -1,0 +1,25 @@
+Écran 74 (540x1170)
+texte « Le transizioni Capitolo 10/13 · Fatto · Facile » @ 179,126
+icône (liste) « Capitoli » @ 392,126
+icône ⌄ @ 483,126
+image (coupe) @ 57,403
+texte « Bravo, capitolo finito! » @ 295,273
+texte « Ascolta il tuo brano così com'è ora, poi passa al capitolo successivo: “Saturare tutto”. » @ 295,431
+bouton « Capitolo successivo   » → @ 270,622
+bouton ▶ «  Ascolta il mio brano » @ 142,736
+bouton ▶ «  Ascolta l'esempio » @ 397,736
+icône ← «  Indietro » @ 131,850
+icône ↶ « Annulla » @ 56,946
+image ↷ @ 148,939
+icône ▶ « il brano » @ 264,946
+texte « 130 Tempo » @ 386,946
+icône ⋮ « Altro » @ 484,946
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

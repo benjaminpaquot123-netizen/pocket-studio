@@ -1,0 +1,7 @@
+Écran 90 (540x1170)
+texte « Condividi il mio brano · Il-mio-brano-20261119-115953.m4a » @ 270,406
+bouton « WhatsApp » @ 270,511
+bouton « Messages » @ 270,583
+bouton « Gmail » @ 270,655
+bouton « Drive » @ 270,727
+bouton « Files » @ 270,799

@@ -1,0 +1,44 @@
+Écran 68 (540x1170)
+bouton (dossier ouvert) ✓ @ 98,42
+bouton « Semplice » @ 242,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+icône « Ritornello battuta 9/92 » ▾ @ 361,144
+bouton « 130  Tempo » @ 136,144
+bouton « ? » @ 495,144
+icône « Parte: A · Ritornello » ▾ @ 220,240
+bouton « Grancassa da studio FX » @ 78,336
+bouton « 808 FX » @ 206,336
+bouton « Rullante FX » @ 334,336
+bouton « Rullante 2 » @ 462,336
+bouton « Battimani FX » @ 78,426
+bouton « Hi-hat S 30 » @ 206,426
+bouton « Hi-hat aperto D 30 » @ 334,426
+bouton « Tom grave » @ 462,426
+bouton « Tom medio D 45 » @ 78,516
+bouton « Tom acuto » @ 206,516
+bouton « Bordo del tamburo D 50 » @ 334,516
+bouton « Campana » @ 462,516
+bouton « Piatto FX D 40 » [coupé] @ 78,565
+bouton « Maracas S 50 » [coupé] @ 206,565
+bouton « Conga » [coupé] @ 334,565
+bouton « Laser » [coupé] @ 462,565
+texte « Le transizioni Capitolo 10/13 · Passo 1/1 · Facile » @ 179,659
+icône (liste) « Capitoli » @ 392,659
+icône ⌃ @ 483,659
+icône « Tocca a te: sul pad “Piatto”, tocca la primissima casella. Leggi » ⌃ @ 270,828
+icône ↶ « Annulla » @ 56,946
+image ↷ @ 148,939
+icône ▶ « il brano » @ 264,946
+texte « 130 Tempo » @ 386,946
+icône ⋮ « Altro » @ 484,946
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

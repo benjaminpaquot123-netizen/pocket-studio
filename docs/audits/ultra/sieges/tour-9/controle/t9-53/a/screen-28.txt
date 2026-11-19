@@ -1,0 +1,28 @@
+Écran 28 (540x1170)
+texte « Capire le parti Capitolo 7/13 · Fatto · Facile » @ 179,118
+icône (liste) « Capitoli » @ 392,118
+icône ⌄ @ 483,118
+image (rond coché) @ 36,240
+texte « Ascolta la Strofa: il beat e la 808 continuano, la cowbell tace. » [coupé] @ 289,256
+bouton « Scarica il kit Phonk (3 MB) » @ 202,354
+texte « Più tardi » @ 445,354
+texte « ▸ Perché? » @ 270,442
+icône « Continua a leggere » ⌄ @ 270,505
+bouton « Capitolo successivo   » → @ 270,622
+bouton ▶ «  Ascolta il mio brano » @ 142,736
+bouton ▶ «  Ascolta l'esempio » @ 397,736
+icône ← «  Indietro » @ 131,850
+icône ↶ « Annulla » @ 56,946
+image ↷ @ 148,939
+icône ▶ « il brano » @ 264,946
+texte « 130 Tempo » @ 386,946
+icône ⋮ « Altro » @ 484,946
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 49,1050
+onglet (quatre carrés) « Ritmo » @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

@@ -1,0 +1,28 @@
+Écran 9 (540x1170)
+texte « Il pad Capitolo 5/13 · Passo 2/2 · Facile » @ 179,92
+icône (liste) « Capitoli » @ 392,92
+icône ⌄ @ 483,92
+texte « Tocca a te: tocca “Copia sulle battute successive”. » [coupé] @ 270,230
+bouton « Scarica il kit Phonk (3 MB) » @ 202,328
+texte « Più tardi » @ 445,328
+texte « ▸ Perché? » @ 270,416
+icône « Continua a leggere » ⌄ @ 270,479
+bouton ⊕ «   Copia sulle battute successive » @ 270,636
+bouton ▶ «  Ascolta l'esempio » @ 142,778
+bouton (œil) «  Mostrami » @ 397,778
+icône ← «  Indietro » @ 131,892
+icône « Avanti  » → @ 422,892
+icône ▶ « il brano » @ 251,996
+texte « 130 Tempo » @ 381,995
+icône ↶ « Annulla » @ 52,996
+image ↷ @ 140,986
+icône ⋮ « Altro » @ 489,995
+onglet (lignes et note) « Il mio brano » @ 49,1078
+onglet (quatre carrés) « Ritmo » @ 160,1078
+onglet (touches de piano) « Tastiera » [sélectionné] @ 271,1078
+onglet (curseurs) « Mix » @ 381,1078
+onglet (trois points reliés) « Condividi » @ 491,1078
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

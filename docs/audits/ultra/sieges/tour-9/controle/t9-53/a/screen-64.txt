@@ -1,0 +1,29 @@
+Écran 64 (540x1170)
+bouton (dossier ouvert) ✓ @ 98,42
+bouton « Semplice » @ 242,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+texte « Ordina le tue parti Capitolo 9/13 · Fatto · Facile » @ 179,184
+icône (liste) « Capitoli » @ 392,184
+icône ⌄ @ 483,184
+image (coupe) @ 57,489
+texte « Bravo, capitolo finito! » @ 295,359
+texte « Ascolta il tuo brano così com'è ora, poi passa al capitolo successivo: “Le transizioni”. » @ 295,517
+bouton « Capitolo successivo   » → @ 270,711
+bouton ▶ «  Ascolta il mio brano » @ 310,825
+icône ← @ 57,825
+icône ↶ « Annulla » @ 56,946
+image ↷ @ 148,939
+icône ▶ « il brano » @ 264,946
+texte « 130 Tempo » @ 386,946
+icône ⋮ « Altro » @ 484,946
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 49,1050
+onglet (quatre carrés) « Ritmo » @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

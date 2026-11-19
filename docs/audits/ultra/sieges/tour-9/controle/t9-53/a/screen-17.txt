@@ -1,0 +1,19 @@
+Écran 17 (540x1170)
+texte « La tua prima parte: il Ritornello Capitolo 6/13 · Passo 2/2 · Facile » @ 179,148
+icône (liste) « Capitoli » @ 392,148
+icône ⌄ @ 483,148
+texte « Tocca a te: tocca “Dai il nome “Ritornello” alla parte”. » [coupé] @ 270,342
+bouton « Scarica il kit Phonk (3 MB) » @ 202,440
+texte « Più tardi » @ 445,440
+texte « ▸ Perché? » @ 270,528
+icône « Continua a leggere » ⌄ @ 270,591
+bouton ⊕ «   Dai il nome “Ritornello” alla parte » @ 270,774
+bouton ▶ «  Ascolta l'esempio » @ 142,944
+bouton (œil) «  Mostrami » @ 397,944
+icône ← «  Indietro » @ 131,1058
+icône « Avanti  » → @ 422,1058
+image ↷ @ 0,0
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

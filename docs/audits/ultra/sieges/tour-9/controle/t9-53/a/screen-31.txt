@@ -1,0 +1,27 @@
+Écran 31 (540x1170)
+texte « Costruisci le tue parti Capitolo 8/13 · Passo 2/3 · Facile » @ 179,120
+icône (liste) « Capitoli » @ 392,120
+icône ⌄ @ 483,120
+texte « Tocca a te: tocca “Crea la parte “Strofa””. » @ 270,318
+bouton « Scarica il kit Phonk (3 MB) » @ 202,447
+texte « Più tardi » @ 445,447
+texte « ▸ Perché? » @ 270,535
+bouton ⊕ «   Crea la parte “Strofa” » @ 270,640
+bouton ▶ «  Ascolta l'esempio » @ 142,782
+bouton (œil) «  Mostrami » @ 397,782
+icône ← «  Indietro » @ 131,896
+icône « Avanti  » → @ 422,896
+icône ▶ « il brano » @ 264,992
+icône ↶ « Annulla » @ 56,992
+image ↷ @ 148,985
+texte « 130 Tempo » @ 386,992
+icône ⋮ « Altro » @ 484,992
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 49,1073
+onglet (quatre carrés) « Ritmo » @ 160,1073
+onglet (touches de piano) « Tastiera » @ 271,1073
+onglet (curseurs) « Mix » @ 381,1073
+onglet (trois points reliés) « Condividi » @ 491,1073
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

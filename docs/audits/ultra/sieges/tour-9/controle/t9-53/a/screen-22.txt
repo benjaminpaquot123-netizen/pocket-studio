@@ -1,0 +1,34 @@
+Écran 22 (540x1170)
+bouton (dossier ouvert) ✓ @ 98,42
+bouton « Semplice » @ 242,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+texte « Capire le parti Capitolo 7/13 · Passo 2/4 · Facile » @ 179,170
+icône (liste) « Capitoli » @ 392,170
+icône ⌄ @ 483,170
+image (rond coché) @ 36,292
+texte « Ascolta l'Intro: la cowbell da sola. » @ 289,340
+texte « Energia » [coupé] @ 95,426
+bouton « Scarica il kit Phonk (3 MB) » @ 202,507
+texte « Più tardi » @ 445,507
+texte « ▸ Perché? » @ 270,595
+icône « Continua a leggere » ⌄ @ 270,658
+bouton « Passo successivo   » → @ 270,733
+bouton ▶ «  Ascolta l'esempio » @ 209,836
+icône ← @ 57,836
+icône « Avanti  » → @ 422,836
+icône ↶ « Annulla » @ 56,946
+image ↷ @ 148,939
+icône ▶ « il brano » @ 264,946
+texte « 130 Tempo » @ 386,946
+icône ⋮ « Altro » @ 484,946
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 49,1050
+onglet (quatre carrés) « Ritmo » @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

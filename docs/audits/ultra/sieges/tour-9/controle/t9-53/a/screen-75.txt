@@ -1,0 +1,32 @@
+Écran 75 (540x1170)
+bouton (dossier ouvert) ✓ @ 98,42
+bouton « Semplice » @ 242,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+icône « Ritornello battuta 9/92 » ▾ @ 361,144
+bouton « 130  Tempo » @ 136,144
+bouton « ? » @ 495,144
+texte « Saturare tutto Capitolo 11/13 · Passo 1/1 · Facile » @ 179,245
+icône (liste) « Capitoli » @ 392,245
+icône ⌄ @ 483,245
+texte « Ascolta il Ritornello: la cowbell, la 808 e la batteria sono tutte saturate, come una vecchia cassetta spinta troppo forte. » [coupé] @ 270,446
+texte « ▸ Perché? » @ 270,578
+icône « Continua a leggere » ⌄ @ 270,641
+bouton ▶ «  Ascolta l'esempio » @ 270,761
+icône ← «  Indietro » @ 131,850
+icône « Avanti  » → @ 422,850
+icône ↶ « Annulla » @ 56,946
+image ↷ @ 148,939
+icône ▶ « il brano » @ 264,946
+texte « 130 Tempo » @ 386,946
+icône ⋮ « Altro » @ 484,946
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

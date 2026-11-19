@@ -1,0 +1,34 @@
+Écran 80 (540x1170)
+bouton (dossier ouvert) ✓ @ 98,42
+bouton « Semplice » @ 242,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+icône « Ritornello battuta 9/92 » ▾ @ 361,144
+bouton « 130  Tempo » @ 136,144
+bouton « ? » @ 495,144
+texte « Mix » @ 64,249
+texte «  · Il mio progetto 1 » @ 274,250
+bouton « ? » @ 460,249
+bouton « ▶ Parte in loop » @ 184,332
+bouton « ? » @ 371,332
+bouton « ↺ Tutto a zero » @ 176,421
+texte « Tocca a te: alza ciò che deve sentirsi, abbassa ciò che disturba. Tocca ▶ per ascoltare una traccia da sola. » [coupé] @ 273,526
+texte « Il mix: i volumi Capitolo 12/13 · Passo 1/1 · Facile » @ 179,659
+icône (liste) « Capitoli » @ 392,659
+icône ⌃ @ 483,659
+icône « Tocca a te: nella scheda “Mix”, abbassa un po' gli slider “Accordi” e “Melodia”. Sotto lo slider, “Normale” diventa “−2”. Leggi » ⌃ @ 270,828
+icône ↶ « Annulla » @ 56,946
+image ↷ @ 148,939
+icône ▶ « il brano » @ 264,946
+texte « 130 Tempo » @ 386,946
+icône ⋮ « Altro » @ 484,946
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » [sélectionné] @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

@@ -1,0 +1,26 @@
+Écran 11 (540x1170)
+texte « Il pad Capitolo 5/13 · Fatto · Facile » @ 179,92
+icône (liste) « Capitoli » @ 392,92
+icône ⌄ @ 483,92
+image (coupe) @ 57,395
+texte « Bravo, capitolo finito! » @ 295,239
+texte « Ascolta il tuo brano così com'è ora, poi passa al capitolo successivo: “La tua prima parte: il Ritornello”. » @ 295,410
+icône « Continua a leggere » ⌄ @ 270,589
+bouton « Capitolo successivo   » → @ 270,664
+bouton ▶ «  Ascolta il mio brano » @ 142,778
+bouton ▶ «  Ascolta l'esempio » @ 397,778
+icône ← «  Indietro » @ 131,892
+icône ▶ « il brano » @ 251,996
+texte « 130 Tempo » @ 381,995
+icône ↶ « Annulla » @ 52,996
+image ↷ @ 140,986
+icône ⋮ « Altro » @ 489,995
+onglet (lignes et note) « Il mio brano » @ 49,1078
+onglet (quatre carrés) « Ritmo » @ 160,1078
+onglet (touches de piano) « Tastiera » [sélectionné] @ 271,1078
+onglet (curseurs) « Mix » @ 381,1078
+onglet (trois points reliés) « Condividi » @ 491,1078
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

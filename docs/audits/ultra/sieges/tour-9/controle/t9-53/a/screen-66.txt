@@ -1,0 +1,35 @@
+Écran 66 (540x1170)
+bouton (dossier ouvert) ✓ @ 98,42
+bouton « Semplice » @ 242,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+icône « Ritornello battuta 9/92 » ▾ @ 361,144
+bouton « 130  Tempo » @ 136,144
+bouton « ? » @ 495,144
+icône ▶ « A · Ritornello 16 batt. » @ 162,299
+icône − [désactivé] @ 318,300
+icône + [désactivé] @ 390,300
+icône ⋮ @ 462,300
+icône ▶ « C · Strofa 14 batt. » @ 162,478
+icône − [désactivé] @ 318,479
+icône + [désactivé] @ 390,479
+icône ⋮ @ 462,479
+texte « Le transizioni Capitolo 10/13 · Passo 1/1 · Facile » @ 179,659
+icône (liste) « Capitoli » @ 392,659
+icône ⌃ @ 483,659
+icône « Tocca a te: sul pad “Piatto”, tocca la primissima casella. Leggi » ⌃ @ 270,828
+icône ↶ « Annulla » @ 56,946
+image ↷ @ 148,939
+icône ▶ « il brano » @ 264,946
+texte « 130 Tempo » @ 386,946
+icône ⋮ « Altro » @ 484,946
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 49,1050
+onglet (quatre carrés) « Ritmo » @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

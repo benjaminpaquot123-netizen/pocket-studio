@@ -1,0 +1,29 @@
+Écran 16 (540x1170)
+texte « La tua prima parte: il Ritornello Capitolo 6/13 · Passo 1/2 · Facile » @ 179,148
+icône (liste) « Capitoli » @ 392,148
+icône ⌄ @ 483,148
+image (rond coché) @ 36,326
+texte « Ascolta il tuo loop per qualche secondo (tutto quello che hai fatto), poi l'esempio. Suona tutto insieme: è il Ritornello, la parte più piena. » [coupé] @ 289,342
+bouton « Scarica il kit Phonk (3 MB) » @ 202,440
+texte « Più tardi » @ 445,440
+texte « ▸ Perché? » @ 270,528
+icône « Continua a leggere » ⌄ @ 270,591
+bouton « Passo successivo   » → @ 270,720
+bouton ▶ «  Ascolta l'esempio » @ 397,834
+bouton ▶ «  Ascolta il tuo risultato » @ 142,834
+icône ← «  Indietro » @ 131,948
+icône « Avanti  » → @ 422,948
+texte « 130 Tempo » @ 381,1051
+icône ↶ « Annulla » @ 52,1052
+image ↷ @ 140,1042
+icône ▶ « il brano » @ 251,1052
+icône ⋮ « Altro » @ 489,1051
+onglet (lignes et note) « Il mio brano » @ 49,1106
+onglet (quatre carrés) « Ritmo » @ 160,1106
+onglet (touches de piano) « Tastiera » [sélectionné] @ 271,1106
+onglet (curseurs) « Mix » @ 381,1106
+onglet (trois points reliés) « Condividi » @ 491,1106
+texte « ●  REC » @ 242,1140
+texte « ✎  Annota » @ 377,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 99,1140

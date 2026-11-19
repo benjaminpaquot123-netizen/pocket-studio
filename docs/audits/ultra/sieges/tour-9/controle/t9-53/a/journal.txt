@@ -1,0 +1,535 @@
+#0 SIEGE lang=it device=phone360 font=200 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:phonk:5
+#0 PREMIER ECRAN reel_s=4.5 simule_s=2.4 jvm_s=10.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:phonk:5
+#0 AMENEE > touche 270 1042 (welcome_learn)
+#0 AMENEE > touche 270 701 (mode_card_simple)
+#0 AMENEE > touche 270 1079 (tuto_style_phonk)
+#0 AMENEE chapitres 1 à 4 construits dans le projet
+#0 AMENEE > touche 392 178 (tuto_chapters)
+#0 AMENEE > touche 270 1078 (tuto_quit)
+#0 AMENEE > touche 135 795 (tuto_resume)
+#0 AMENEE chapitres 1 à 4 cochés (15 étapes)
+#0 AMENEE > touche 392 92 (tuto_chapters)
+#0 AMENEE > touche 270 596 (tuto_chapter_4)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4bf804457a | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_do done=15 chapters=1,2,3,4 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Il mio brano » drawn past its parent's edge (down, 50 dp shown of 56)
+#1 LAYOUT CUT « Modalità feedback » ellipsized (« … »)
+#1 LAYOUT OVERLAP « 130 » over « Capitolo 5/13 · Passo 1/2 · Facile » (54 x 34 dp)
+#1 LAYOUT OVERLAP « Capitolo 5/13 · Passo 1/2 · Facile » over the touchable « Modalità Semplice. Tocca per cambiare mo » (72 x 8 dp)
+#1 LAYOUT OVERLAP « Capitolo 5/13 · Passo 1/2 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 43 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 270 584
+#1 DOIGT tuto_need «   Crea la traccia Accordi »
+#2 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e834b40b87 | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_do done=15 chapters=1,2,3,4 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « Semplice » ellipsized (« … »)
+#2 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#2 LAYOUT CUT « Tocca a te: tocca la nota bassa tratteggiata di ogni accordo della battuta 1: si mette tutto l'accordo. » ellipsized (« … »)
+#2 > touche 483 620
+#2 DOIGT tuto_fold
+#3 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 482370a610 | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_do done=15 chapters=1,2,3,4 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « Il mio brano » drawn past its parent's edge (down, 51 dp shown of 56)
+#3 > touche 397 722
+#3 DOIGT tuto_show «  Mostrami »
+#4 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2e95cdc68a | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_do done=15 chapters=1,2,3,4 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Guarda, lo faccio io… » ellipsized (« … »)
+#4 LAYOUT CONTRAST « Ferma » 3.91:1 (needs 4.5:1, 14 sp)
+#4 > attends 6
+#5 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2870804381 | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_do done=15 chapters=1,2,3,4 playing=false
+#5 SON Son : 3 notes du synthé.
+#5 > glisse 270 500 270 200
+#5 DOIGT tuto_notes_left « Accordi · battuta 1/8 »
+#6 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f27522c4b6 | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_do done=15 chapters=1,2,3,4 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT TARGET « La2 Suona » 36 x 20 dp (touch 48 x 48)
+#6 LAYOUT TARGET « La♭2 Suona » 36 x 20 dp (touch 48 x 48)
+#6 LAYOUT TARGET « Sol2 Suona » 36 x 20 dp (touch 48 x 48)
+#6 > touche 297 460
+#6 DOIGT rien
+#7 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5128bf9de7 | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_do done=16 chapters=1,2,3,4 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « Passo successivo » lines dropped (more lines than room)
+#7 > touche 270 789
+#7 DOIGT tuto_next_folded « Riuscito »
+#8 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 7d4d27e7a6 | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_end done=16 chapters=1,2,3,4 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CUT « Il mio brano » drawn past its parent's edge (down, 19 dp shown of 28)
+#8 LAYOUT CUT « Ritmo » drawn past its parent's edge (down, 19 dp shown of 28)
+#8 LAYOUT CUT « Tastiera » drawn past its parent's edge (down, 19 dp shown of 28)
+#8 LAYOUT CUT « Mix » drawn past its parent's edge (down, 20 dp shown of 30)
+#8 LAYOUT CUT « Condividi » drawn past its parent's edge (down, 19 dp shown of 29)
+#8 LAYOUT OVERLAP « 130 » over « Capitolo 5/13 · Passo 2/2 · Facile » (54 x 34 dp)
+#8 LAYOUT OVERLAP « Capitolo 5/13 · Passo 2/2 · Facile » over the touchable « Modalità Semplice. Tocca per cambiare mo » (72 x 8 dp)
+#8 LAYOUT OVERLAP « Capitolo 5/13 · Passo 2/2 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 43 dp)
+#8 > touche 270 636
+#8 DOIGT tuto_need «   Copia sulle battute successive »
+#9 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 7d4d27e7a6 | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_end done=16 chapters=1,2,3,4 playing=false
+#9 SON Son : rien ne joue.
+#9 > attends 3
+#10 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 7d4d27e7a6 | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_end done=16 chapters=1,2,3,4 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 320 640
+#10 DOIGT tuto_need «   Copia sulle battute successive »
+#11 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 0cfc9ee604 | project=p-24a644c8 tuto=phonk/Facile active=true step=pad_end done=17 chapters=1,2,3,4,5 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 130 » over « Capitolo 5/13 · Fatto · Facile » (54 x 34 dp)
+#11 LAYOUT OVERLAP « Capitolo 5/13 · Fatto · Facile » over the touchable « Modalità Semplice. Tocca per cambiare mo » (57 x 8 dp)
+#11 LAYOUT OVERLAP « Capitolo 5/13 · Fatto · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 43 dp)
+#11 > touche 270 664
+#11 DOIGT tuto_next_big « Capitolo successivo   »
+#12 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE f654dcb6ca | project=p-24a644c8 tuto=phonk/Facile active=true step=groove_hear done=17 chapters=1,2,3,4,5 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 130 » over « La tua prima parte: il Ritornello » (54 x 34 dp)
+#12 LAYOUT OVERLAP « La tua prima parte: il Ritornello » over the touchable « Modalità Semplice. Tocca per cambiare mo » (45 x 45 dp)
+#12 LAYOUT OVERLAP « La tua prima parte: il Ritornello » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (157 x 48 dp)
+#12 LAYOUT TARGET « Il mio brano » 66 x 5 dp (touch 66 x 48)
+#12 LAYOUT TARGET « Ritmo » 66 x 5 dp (touch 66 x 48)
+#12 LAYOUT TARGET « Tastiera » 65 x 5 dp (touch 65 x 48)
+#12 LAYOUT TARGET « Mix » 65 x 5 dp (touch 65 x 48)
+#12 LAYOUT TARGET « Condividi » 65 x 5 dp (touch 65 x 48)
+#12 > touche 270 748
+#12 DOIGT tuto_play_mine «   Ascolta il tuo risultato »
+#13 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE f4e18e6e21 | project=p-24a644c8 tuto=phonk/Facile active=true step=groove_hear done=17 chapters=1,2,3,4,5 playing=true
+#13 SON Son : la musique du projet joue en boucle.
+#13 LAYOUT OVERLAP « Capitolo 6/13 · Passo 1/2 · Facile » over the touchable « Suona da una parte » (37 x 9 dp)
+#13 LAYOUT OVERLAP « Capitoli » over the touchable « Suona da una parte » (68 x 21 dp)
+#13 > attends 5
+#14 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE f4e18e6e21 | project=p-24a644c8 tuto=phonk/Facile active=true step=groove_hear done=17 chapters=1,2,3,4,5 playing=true
+#14 SON Son : la musique du projet joue en boucle.
+#14 > touche 270 862
+#14 DOIGT tuto_listen «  Ascolta l'esempio »
+#15 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE a2fc0a5030 | project=p-24a644c8 tuto=phonk/Facile active=true step=groove_hear done=17 chapters=1,2,3,4,5 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > attends 4
+#16 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE be86e752f4 | project=p-24a644c8 tuto=phonk/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 270 720
+#16 DOIGT tuto_next_big « Passo successivo   »
+#17 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 77c0b743c6 | project=p-24a644c8 tuto=phonk/Facile active=true step=groove_name done=18 chapters=1,2,3,4,5 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 300 774
+#17 DOIGT tuto_need «   Dai il nome “Ritornello” alla parte »
+#18 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a4f125b75f | project=p-24a644c8 tuto=phonk/Facile active=true step=groove_name done=19 chapters=1,2,3,4,5,6 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 270 830
+#18 DOIGT tuto_next_big « Capitolo successivo   »
+#19 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 0445d47206 | project=p-24a644c8 tuto=phonk/Facile active=true step=brick done=19 chapters=1,2,3,4,5,6 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « 130 » over « Capire le parti » (54 x 18 dp)
+#19 LAYOUT OVERLAP « 130 » over « Capitolo 7/13 · Passo 1/4 · Facile » (54 x 16 dp)
+#19 LAYOUT OVERLAP « Capire le parti » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 25 dp)
+#19 LAYOUT OVERLAP « Capitolo 7/13 · Passo 1/4 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 23 dp)
+#19 > touche 270 761
+#19 DOIGT tuto_mark «   Ho capito »
+#20 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 32054e4bc1 | project=p-24a644c8 tuto=phonk/Facile active=true step=map_intro done=20 chapters=1,2,3,4,5,6 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT OVERLAP « 130 » over « Capitolo 7/13 · Passo 2/4 · Facile » (54 x 16 dp)
+#20 LAYOUT OVERLAP « Capitolo 7/13 · Passo 2/4 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 23 dp)
+#20 > touche 270 761
+#20 DOIGT tuto_listen «  Ascolta l'esempio »
+#21 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 15f00be47b | project=p-24a644c8 tuto=phonk/Facile active=true step=map_intro done=20 chapters=1,2,3,4,5,6 playing=false
+#21 SON Son : l'exemple du tuto joue (encore 3 s).
+#21 > attends 4
+#22 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5d0a05ced8 | project=p-24a644c8 tuto=phonk/Facile active=true step=map_intro done=21 chapters=1,2,3,4,5,6 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 270 733
+#22 DOIGT tuto_next_big « Passo successivo   »
+#23 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 88e5c8f77e | project=p-24a644c8 tuto=phonk/Facile active=true step=map_refrain done=21 chapters=1,2,3,4,5,6 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT OVERLAP « 130 » over « Capitolo 7/13 · Passo 3/4 · Facile » (54 x 16 dp)
+#23 LAYOUT OVERLAP « Capitolo 7/13 · Passo 3/4 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 23 dp)
+#23 > touche 270 761
+#23 DOIGT tuto_listen «  Ascolta l'esempio »
+#24 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2b3f775e49 | project=p-24a644c8 tuto=phonk/Facile active=true step=map_refrain done=21 chapters=1,2,3,4,5,6 playing=false
+#24 SON Son : l'exemple du tuto joue (encore 3 s).
+#24 > attends 4
+#25 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 664009cf8f | project=p-24a644c8 tuto=phonk/Facile active=true step=map_refrain done=22 chapters=1,2,3,4,5,6 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 270 733
+#25 DOIGT tuto_next_big « Passo successivo   »
+#26 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a6acae4e72 | project=p-24a644c8 tuto=phonk/Facile active=true step=map_couplet done=22 chapters=1,2,3,4,5,6 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT OVERLAP « 130 » over « Capitolo 7/13 · Passo 4/4 · Facile » (54 x 34 dp)
+#26 LAYOUT OVERLAP « Capire le parti » over the touchable « Modalità Semplice. Tocca per cambiare mo » (67 x 28 dp)
+#26 LAYOUT OVERLAP « Capitolo 7/13 · Passo 4/4 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 48 dp)
+#26 > touche 270 761
+#26 DOIGT tuto_listen «  Ascolta l'esempio »
+#27 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a71761769a | project=p-24a644c8 tuto=phonk/Facile active=true step=map_couplet done=22 chapters=1,2,3,4,5,6 playing=false
+#27 SON Son : l'exemple du tuto joue (encore 3 s).
+#27 > attends 4
+#28 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 8207f16fa5 | project=p-24a644c8 tuto=phonk/Facile active=true step=map_couplet done=23 chapters=1,2,3,4,5,6,7 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « 130 » over « Capitolo 7/13 · Fatto · Facile » (54 x 34 dp)
+#28 LAYOUT OVERLAP « Capitolo 7/13 · Fatto · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 48 dp)
+#28 > touche 270 622
+#28 DOIGT tuto_next_big « Capitolo successivo   »
+#29 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 6487f4f9d4 | project=p-24a644c8 tuto=phonk/Facile active=true step=make_intro done=23 chapters=1,2,3,4,5,6,7 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CUT « Il mio brano » drawn past its parent's edge (down, 23 dp shown of 28)
+#29 LAYOUT CUT « Ritmo » drawn past its parent's edge (down, 23 dp shown of 28)
+#29 LAYOUT CUT « Tastiera » drawn past its parent's edge (down, 23 dp shown of 28)
+#29 LAYOUT CUT « Mix » drawn past its parent's edge (down, 23 dp shown of 28)
+#29 LAYOUT CUT « Condividi » drawn past its parent's edge (down, 23 dp shown of 28)
+#29 LAYOUT OVERLAP « 130 » over « Costruisci le tue parti » (54 x 3 dp)
+#29 LAYOUT OVERLAP « 130 » over « Capitolo 8/13 · Passo 1/3 · Facile » (54 x 31 dp)
+#29 LAYOUT OVERLAP « Costruisci le tue parti » over the touchable « Modalità Semplice. Tocca per cambiare mo » (72 x 45 dp)
+#29 LAYOUT OVERLAP « Costruisci le tue parti » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 11 dp)
+#29 LAYOUT OVERLAP « Capitolo 8/13 · Passo 1/3 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 37 dp)
+#29 > touche 300 640
+#29 DOIGT tuto_need «   Crea la parte “Intro” »
+#30 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c3086f55d8 | project=p-24a644c8 tuto=phonk/Facile active=true step=make_intro done=24 chapters=1,2,3,4,5,6,7 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 270 668
+#30 DOIGT tuto_next_big « Passo successivo   »
+#31 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 19aa7fd4a7 | project=p-24a644c8 tuto=phonk/Facile active=true step=make_couplet done=24 chapters=1,2,3,4,5,6,7 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT OVERLAP « 130 » over « Capitolo 8/13 · Passo 2/3 · Facile » (54 x 31 dp)
+#31 LAYOUT OVERLAP « Capitolo 8/13 · Passo 2/3 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 37 dp)
+#31 > touche 300 640
+#31 DOIGT tuto_need «   Crea la parte “Strofa” »
+#32 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3a34a8d3d1 | project=p-24a644c8 tuto=phonk/Facile active=true step=make_couplet done=25 chapters=1,2,3,4,5,6,7 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 270 668
+#32 DOIGT tuto_next_big « Passo successivo   »
+#33 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 1b1c29b7a1 | project=p-24a644c8 tuto=phonk/Facile active=true step=make_pre done=25 chapters=1,2,3,4,5,6,7 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT OVERLAP « 130 » over « Capitolo 8/13 · Passo 3/3 · Facile » (54 x 31 dp)
+#33 LAYOUT OVERLAP « Capitolo 8/13 · Passo 3/3 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 37 dp)
+#33 > touche 445 447
+#33 DOIGT tuto_kit_later « Più tardi »
+#34 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 1845cd523f | project=p-24a644c8 tuto=phonk/Facile active=true step=make_pre done=25 chapters=1,2,3,4,5,6,7 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 300 640
+#34 DOIGT tuto_need «   Crea la parte “Pre-ritornello” »
+#35 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE b52890f516 | project=p-24a644c8 tuto=phonk/Facile active=true step=make_pre done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT OVERLAP « 130 » over « Capitolo 8/13 · Fatto · Facile » (54 x 31 dp)
+#35 LAYOUT OVERLAP « Capitolo 8/13 · Fatto · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 37 dp)
+#35 > touche 270 668
+#35 DOIGT tuto_next_big « Capitolo successivo   »
+#36 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ab39030bf8 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « Il mio brano » drawn past its parent's edge (down, 24 dp shown of 28)
+#36 LAYOUT CUT « Ritmo » drawn past its parent's edge (down, 24 dp shown of 28)
+#36 LAYOUT CUT « Tastiera » drawn past its parent's edge (down, 24 dp shown of 28)
+#36 LAYOUT CUT « Mix » drawn past its parent's edge (down, 24 dp shown of 28)
+#36 LAYOUT CUT « Condividi » drawn past its parent's edge (down, 24 dp shown of 28)
+#36 LAYOUT OVERLAP « 130 » over « Ordina le tue parti » (54 x 3 dp)
+#36 LAYOUT OVERLAP « 130 » over « Capitolo 9/13 · Passo 1/2 · Facile » (54 x 31 dp)
+#36 LAYOUT OVERLAP « Ordina le tue parti » over the touchable « Modalità Semplice. Tocca per cambiare mo » (49 x 45 dp)
+#36 LAYOUT OVERLAP « Ordina le tue parti » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 11 dp)
+#36 LAYOUT OVERLAP « Capitolo 9/13 · Passo 1/2 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 37 dp)
+#36 > touche 483 120
+#36 DOIGT tuto_fold
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e3d305e652 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « Tocca a te: sotto “Aggiungi”, tocca in ordine: Intro, Ritornello, Strofa, Pre-ritornello, Ritornello, Strofa, Pre-ritornello, Ritornello, poi Intro per finire. » ellipsized (« … »)
+#37 > touche 171 381
+#37 DOIGT add_part_1 « + B · Intro »
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE de3adbc656 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CUT « battuta 1/8 » lines dropped (more lines than room)
+#38 > touche 218 292
+#38 DOIGT part_play_0 « B · Intro »
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f0fa03862d | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=true
+#39 SON Son : le morceau joue (partie « B »).
+#39 LAYOUT CONTRAST « × 1  ·  8 batt.  ·  suona » 4.28:1 (needs 4.5:1, 14 sp)
+#39 > touche 185 470
+#39 DOIGT rien (texte « − / + : ripetizioni. Grigi: durata fissa »)
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d37dc8e2c6 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=true
+#40 SON Son : le morceau joue (partie « B »).
+#40 LAYOUT CUT « battuta 2/8 » lines dropped (more lines than room)
+#40 LAYOUT CONTRAST « × 1  ·  8 batt.  ·  suona » 3.72:1 (needs 4.5:1, 14 sp)
+#40 > glisse 270 480 270 220
+#40 DOIGT rien (texte « − / + : ripetizioni. Grigi: durata fissa »)
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e25b9ef45a | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=true
+#41 SON Son : le morceau joue (partie « B »).
+#41 LAYOUT CUT « battuta 3/8 » lines dropped (more lines than room)
+#41 LAYOUT CONTRAST « × 1  ·  8 batt.  ·  suona » 2.99:1 (needs 4.5:1, 14 sp)
+#41 > touche 218 480
+#41 DOIGT add_part_0 « + A · Ritornello »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3dbd3482f8 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=true
+#42 SON Son : le morceau joue (partie « B »).
+#42 LAYOUT CUT « A · Ritornello » ellipsized (« … »)
+#42 LAYOUT CUT « battuta 4/16 » lines dropped (more lines than room)
+#42 > glisse 270 480 270 220
+#42 DOIGT rien (texte « − / + : ripetizioni. Grigi: durata fissa »)
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f3aff376f1 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=true
+#43 SON Son : le morceau joue (partie « B »).
+#43 LAYOUT CUT « battuta 5/16 » lines dropped (more lines than room)
+#43 > glisse 270 500 270 200
+#43 DOIGT add_part_1 « + B · Intro »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5c2c5409c5 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=true
+#44 SON Son : le morceau joue (partie « B »).
+#44 LAYOUT CUT « + Nuova parte (copia di B · Intro) » lines dropped (more lines than room)
+#44 LAYOUT CUT « battuta 7/16 » lines dropped (more lines than room)
+#44 > touche 185 350
+#44 DOIGT add_part_2 « + C · Strofa »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 265526a164 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=true
+#45 SON Son : le morceau joue (partie « B »).
+#45 LAYOUT CUT « battuta 8/24 » lines dropped (more lines than room)
+#45 > glisse 270 520 270 170
+#45 DOIGT rien
+#46 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0c716b8d17 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=true
+#46 SON Son : le morceau joue (partie « A »).
+#46 LAYOUT CUT « Ritornello » ellipsized (« … »)
+#46 LAYOUT CUT « battuta 9/24 » lines dropped (more lines than room)
+#46 LAYOUT CONTRAST « × 1  ·  8 batt.  ·  suona » 4.33:1 (needs 4.5:1, 14 sp)
+#46 > touche 264 946
+#46 DOIGT thumb_play « Ferma »
+#47 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bcf3b4e46f | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#47 SON Son : rien ne joue.
+#47 > glisse 270 520 270 170
+#47 DOIGT rien
+#48 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bcf3b4e46f | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#48 SON Son : rien ne joue.
+#48 > glisse 270 520 270 170
+#48 DOIGT rien
+#49 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bcf3b4e46f | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#49 SON Son : rien ne joue.
+#49 RIEN NE CHANGE (3 écrans identiques)
+#49 > glisse 100 490 100 90
+#49 DOIGT rien (texte « − / + : ripetizioni. Grigi: durata fissa »)
+#50 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d2f3777020 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 254 488
+#50 DOIGT add_part_3 « + D · Pre-ritornello »
+#51 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c923c4d70d | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT CUT « D · Pre-ritornello » ellipsized (« … »)
+#51 LAYOUT CUT « battuta 9/32 » lines dropped (more lines than room)
+#51 > glisse 100 490 100 90
+#51 DOIGT rien (texte « − / + : ripetizioni. Grigi: durata fissa »)
+#52 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1cced5cbe4 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 218 330
+#52 DOIGT add_part_0 « + A · Ritornello »
+#53 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ce7255e588 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CUT « battuta 9/40 » lines dropped (more lines than room)
+#53 > glisse 100 490 100 90
+#53 DOIGT rien (texte « − / + : ripetizioni. Grigi: durata fissa »)
+#54 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0682338082 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 185 482
+#54 DOIGT add_part_2 « + C · Strofa »
+#55 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 7f02d8856c | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CUT « battuta 9/48 » lines dropped (more lines than room)
+#55 > glisse 100 490 100 90
+#55 DOIGT rien (texte « − / + : ripetizioni. Grigi: durata fissa »)
+#56 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9fe06e8943 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#56 SON Son : rien ne joue.
+#56 > glisse 100 490 100 90
+#56 DOIGT add_part_2 « + C · Strofa »
+#57 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c0ecabb6e4 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « + Nuova parte (copia di A · Ritornello) » lines dropped (more lines than room)
+#57 LAYOUT CUT « + Nuova parte vuota » lines dropped (more lines than room)
+#57 LAYOUT CUT «   Cosa suona nel brano » ellipsized (« … »)
+#57 > touche 254 240
+#57 DOIGT add_part_3 « + D · Pre-ritornello »
+#58 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b3eba47b06 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CUT « battuta 9/56 » lines dropped (more lines than room)
+#58 > glisse 100 490 100 90
+#58 DOIGT rien (texte « − / + : ripetizioni. Grigi: durata fissa »)
+#59 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 658e6d8336 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 218 330
+#59 DOIGT add_part_0 « + A · Ritornello »
+#60 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2820b69d1e | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CUT « battuta 9/64 » lines dropped (more lines than room)
+#60 > glisse 100 490 100 90
+#60 DOIGT rien (texte « − / + : ripetizioni. Grigi: durata fissa »)
+#61 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f2fe308291 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 171 419
+#61 DOIGT add_part_1 « + B · Intro »
+#62 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ad3f6d0522 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_order done=27 chapters=1,2,3,4,5,6,7,8 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CUT « battuta 9/72 » lines dropped (more lines than room)
+#62 > touche 270 828
+#62 DOIGT tuto_next_folded « Riuscito »
+#63 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5201aec39f | project=p-24a644c8 tuto=phonk/Facile active=true step=song_phrases done=27 chapters=1,2,3,4,5,6,7,8 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT OVERLAP « 130 » over « Ordina le tue parti » (54 x 34 dp)
+#63 LAYOUT OVERLAP « Ordina le tue parti » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 48 dp)
+#63 LAYOUT OVERLAP « Capitolo 9/13 · Passo 2/2 · Facile » over the touchable « Suona da una parte » (43 x 4 dp)
+#63 LAYOUT OVERLAP « Capitoli » over the touchable « Suona da una parte » (68 x 7 dp)
+#63 LAYOUT CONTRAST « questa parte » 3.34:1 (needs 4.5:1, 5 sp)
+#63 > touche 300 650
+#63 DOIGT tuto_need «   Imposta le durate consigliate »
+#64 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 75f0edd1d9 | project=p-24a644c8 tuto=phonk/Facile active=true step=song_phrases done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 270 711
+#64 DOIGT tuto_next_big « Capitolo successivo   »
+#65 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE bfefd46bac | project=p-24a644c8 tuto=phonk/Facile active=true step=crash done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT OVERLAP « 130 » over « Capitolo 10/13 · Passo 1/1 · Facile » (54 x 34 dp)
+#65 LAYOUT OVERLAP « Le transizioni » over the touchable « Modalità Semplice. Tocca per cambiare mo » (59 x 36 dp)
+#65 LAYOUT OVERLAP « Capitolo 10/13 · Passo 1/1 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 48 dp)
+#65 LAYOUT OVERLAP « Capitolo 10/13 · Passo 1/1 · Facile » over the touchable « Suona da una parte » (32 x 61 dp)
+#65 > touche 483 106
+#65 DOIGT tuto_fold
+#66 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 68ae53f87f | project=p-24a644c8 tuto=phonk/Facile active=true step=crash done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CUT « battuta 9/92 » lines dropped (more lines than room)
+#66 LAYOUT CUT « Tocca a te: sul pad “Piatto”, tocca la primissima casella. » ellipsized (« … »)
+#66 > touche 160 1050
+#66 DOIGT tab_simple_Rythme « Ritmo »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 596b5c22af | project=p-24a644c8 tuto=phonk/Facile active=true step=crash done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT OVERLAP « Grancassa da studio » over « FX » (26 x 7 dp)
+#67 LAYOUT OVERLAP « 808 » over « FX » (20 x 9 dp)
+#67 LAYOUT OVERLAP « Rullante » over « FX » (24 x 2 dp)
+#67 LAYOUT OVERLAP « Hi-hat » over « S 30 » (44 x 7 dp)
+#67 LAYOUT OVERLAP « Hi-hat aperto » over « D 30 » (39 x 11 dp)
+#67 LAYOUT OVERLAP « Tom medio » over « D 45 » (37 x 11 dp)
+#67 LAYOUT OVERLAP « Bordo del tamburo » over « D 50 » (45 x 9 dp)
+#67 LAYOUT CONTRAST « Grancassa da studio » 4.05:1 (needs 4.5:1, 14 sp)
+#67 > touche 78 560
+#67 DOIGT rien
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 596b5c22af | project=p-24a644c8 tuto=phonk/Facile active=true step=crash done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#68 SON Son : rien ne joue.
+#68 > glisse 20 540 20 250
+#68 DOIGT pad_8 « Tom medio »
+#69 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE df23c88678 | project=p-24a644c8 tuto=phonk/Facile active=true step=crash done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CUT « D 40 » lines dropped (more lines than room)
+#69 LAYOUT CUT « I pad suonano, le caselle tengono i colpi. Pressione lunga: cambia il suono. » ellipsized (« … »)
+#69 LAYOUT OVERLAP « Piatto » over « FX » (26 x 7 dp)
+#69 LAYOUT OVERLAP « Piatto » over « D 40 » (13 x 7 dp)
+#69 LAYOUT OVERLAP « Maracas » over « S 50 » (44 x 2 dp)
+#69 LAYOUT CONTRAST « Tom medio » 1.23:1 (needs 4.5:1, 14 sp)
+#69 LAYOUT CONTRAST « Tom acuto » 1.23:1 (needs 4.5:1, 14 sp)
+#69 > touche 78 340
+#69 DOIGT pad_12 « Piatto »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b29c3e60f9 | project=p-24a644c8 tuto=phonk/Facile active=true step=crash done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#70 SON Son : le pad « Piatto » sonne.
+#70 > glisse 20 540 20 200
+#70 DOIGT rien
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 286faceec2 | project=p-24a644c8 tuto=phonk/Facile active=true step=crash done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CUT «  Tieni quello che ho appena suonato » ellipsized (« … »)
+#71 LAYOUT CUT « ? » lines cut (taller than its box)
+#71 LAYOUT CONTRAST «  1 » 2.39:1 (needs 4.5:1, 14 sp)
+#71 LAYOUT CONTRAST «  Tieni quello che ho appena suonato » 4.38:1 (needs 4.5:1, 14 sp)
+#71 > glisse 20 540 20 200
+#71 DOIGT rien
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cab05b69f9 | project=p-24a644c8 tuto=phonk/Facile active=true step=crash done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CUT « Ancora 1 casella tratteggiata qui » ellipsized (« … »)
+#72 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#72 > touche 67 451
+#72 DOIGT step_0 « Passo 1 »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d7b5c668dc | project=p-24a644c8 tuto=phonk/Facile active=true step=crash done=29 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 483 659
+#73 DOIGT tuto_fold
+#74 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2ddd498cdf | project=p-24a644c8 tuto=phonk/Facile active=true step=crash done=29 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT OVERLAP « 130 » over « Capitolo 10/13 · Fatto · Facile » (54 x 34 dp)
+#74 LAYOUT OVERLAP « Le transizioni » over the touchable « Modalità Semplice. Tocca per cambiare mo » (59 x 23 dp)
+#74 LAYOUT OVERLAP « Capitolo 10/13 · Fatto · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 48 dp)
+#74 LAYOUT OVERLAP « Capitolo 10/13 · Fatto · Facile » over the touchable « Suona da una parte » (12 x 61 dp)
+#74 > touche 270 622
+#74 DOIGT tuto_next_big « Capitolo successivo   »
+#75 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 273ad44b44 | project=p-24a644c8 tuto=phonk/Facile active=true step=dirt_hear done=29 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT OVERLAP « 130 » over « Saturare tutto » (54 x 3 dp)
+#75 LAYOUT OVERLAP «  Tempo » over « Saturare tutto » (94 x 3 dp)
+#75 LAYOUT OVERLAP « Saturare tutto » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 10 dp)
+#75 LAYOUT OVERLAP « Saturare tutto » over the touchable « Suona da una parte » (7 x 19 dp)
+#75 LAYOUT CONTRAST « battuta 9/92 » 3.64:1 (needs 4.5:1, 14 sp)
+#75 > touche 270 761
+#75 DOIGT tuto_listen «  Ascolta l'esempio »
+#76 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 80ef62bd1e | project=p-24a644c8 tuto=phonk/Facile active=true step=dirt_hear done=29 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#76 SON Son : l'exemple du tuto joue (encore 3 s).
+#76 > attends 4
+#77 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4582810054 | project=p-24a644c8 tuto=phonk/Facile active=true step=dirt_hear done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 270 622
+#77 DOIGT tuto_next_big « Capitolo successivo   »
+#78 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f0dd72c38c | project=p-24a644c8 tuto=phonk/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT OVERLAP « 130 » over « Capitolo 12/13 · Passo 1/1 · Facile » (54 x 34 dp)
+#78 LAYOUT OVERLAP « Il mix: i volumi » over the touchable « Modalità Semplice. Tocca per cambiare mo » (70 x 36 dp)
+#78 LAYOUT OVERLAP « Capitolo 12/13 · Passo 1/1 · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 48 dp)
+#78 LAYOUT OVERLAP « Capitolo 12/13 · Passo 1/1 · Facile » over the touchable « Suona da una parte » (32 x 61 dp)
+#78 > touche 381 1050
+#78 DOIGT tab_simple_Mix « Mix »
+#79 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 810b5c887c | project=p-24a644c8 tuto=phonk/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 483 106
+#79 DOIGT tuto_fold
+#80 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 7a7062b5e1 | project=p-24a644c8 tuto=phonk/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#80 SON Son : rien ne joue.
+#80 LAYOUT CUT « Tocca a te: nella scheda “Mix”, abbassa un po' gli slider “Accordi” e “Melodia”. Sotto lo slider, “Normale” diventa “−2”. » ellipsized (« … »)
+#80 > glisse 20 560 20 200
+#80 DOIGT rien
+#81 ROUTE tab_simple_Mix | MODE simple | EMPREINTE fab375ca93 | project=p-24a644c8 tuto=phonk/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#81 SON Son : rien ne joue.
+#81 > glisse 20 560 20 200
+#81 DOIGT rien
+#82 ROUTE tab_simple_Mix | MODE simple | EMPREINTE e00e0008fb | project=p-24a644c8 tuto=phonk/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#82 SON Son : rien ne joue.
+#82 > glisse 462 300 462 345
+#82 DOIGT mix_fader_6 « Volume di Accordi »
+#83 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 097e341910 | project=p-24a644c8 tuto=phonk/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#83 SON Son : rien ne joue.
+#83 > glisse 339 300 339 345
+#83 DOIGT mix_fader_5 « Volume di Melodia »
+#84 ROUTE tab_simple_Mix | MODE simple | EMPREINTE b672332972 | project=p-24a644c8 tuto=phonk/Facile active=true step=levels done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 483 659
+#84 DOIGT tuto_fold
+#85 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 49fd6e3900 | project=p-24a644c8 tuto=phonk/Facile active=true step=levels done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT OVERLAP « 130 » over « Capitolo 12/13 · Fatto · Facile » (54 x 34 dp)
+#85 LAYOUT OVERLAP « Il mix: i volumi » over the touchable « Modalità Semplice. Tocca per cambiare mo » (70 x 23 dp)
+#85 LAYOUT OVERLAP « Il mix: i volumi » over the touchable « Suona da una parte » (14 x 5 dp)
+#85 LAYOUT OVERLAP « Capitolo 12/13 · Fatto · Facile » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 48 dp)
+#85 LAYOUT OVERLAP « Capitolo 12/13 · Fatto · Facile » over the touchable « Suona da una parte » (12 x 61 dp)
+#85 > touche 270 622
+#85 DOIGT tuto_next_big « Capitolo successivo   »
+#86 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE bf313eab4e | project=p-24a644c8 tuto=phonk/Facile active=true step=share done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT OVERLAP « 130 » over « Esporta il tuo brano » (54 x 34 dp)
+#86 LAYOUT OVERLAP « Esporta il tuo brano » over the touchable « Tempo: 130 battiti al minuto Cambia il t » (161 x 47 dp)
+#86 > touche 491 1050
+#86 DOIGT tab_simple_Envoyer « Condividi »
+#87 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 57183795bb | project=p-24a644c8 tuto=phonk/Facile active=true step=share done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 483 217
+#87 DOIGT tuto_fold
+#88 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE ce1691df51 | project=p-24a644c8 tuto=phonk/Facile active=true step=share done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CUT « Tocca a te: condividi il tuo brano, l'app ne fa un file audio. “M4A” fa un file leggero per i tuoi amici, “WAV” tiene la qualità da studio. » ellipsized (« … »)
+#88 LAYOUT TARGET « I miei file » 291 x 21 dp (touch 291 x 48)
+#88 LAYOUT TARGET « Cos'è “I miei file”? ? » 29 x 21 dp (touch 48 x 48)
+#88 > touche 270 436
+#88 DOIGT share_go «   Condividi »
+#89 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 00d1688cc8 | project=p-24a644c8 tuto=phonk/Facile active=true step=share done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#89 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#89 > attends 10
+#89 PARTAGE Il-mio-brano-20261119-115953.m4a
+#90 ROUTE dialogue:« Condividi il mio brano · Il-mi » | MODE simple | EMPREINTE 3f04e8ffc0 | project=p-24a644c8 tuto=phonk/Facile active=true step=share done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 270 799
+#90 DOIGT vue « Files »
+#91 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 76357ac9cb | project=p-24a644c8 tuto=phonk/Facile active=true step=share done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT CUT « Fatto: Il-mio-brano-20261119-115953.m4a, una copia è anche in Music › BenStudio. » a word split over two lines
+#91 > touche 456 985
+#91 DOIGT share_bilan_ok « OK »
+#92 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 5ad877709d | project=p-24a644c8 tuto=phonk/Facile active=true step=share done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#92 SON Son : rien ne joue.
+#92 > fin
+#92 BENCH-VERDICT ok where=seat.fin
+#92 FIN : fin

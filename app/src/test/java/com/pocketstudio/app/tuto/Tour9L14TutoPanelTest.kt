@@ -192,6 +192,60 @@ class Tour9L14TutoPanelTest {
         }
     }
     /**
+     * F012 (t9-40, 130 %, chapter 10): on a short step done, « Bravo, c'est réussi ! » was cut and its explanation (« Partie
+     * « Montée » créée (copie du Groove) : sans … ») lay wholly under « Lire la suite »: the panel kept the step's height.
+     * The « Bravo » banner is read whole, nothing under « Lire la suite », at 100 and 130 %.
+     */
+    @Test
+    fun bravoReadsWhole() {
+        val made = "Partie « Montée » créée (copie du Groove) : sans Grosse caisse studio, Claquement de mains, Basse, Mélodie. " +
+            "Sa caisse claire accélère mesure après mesure."
+        // t9-40 (jump_up, Facile, « Construis tes parties »: the steps that make a part, their button says what it made),
+        // t9-52 and t9-68 (phonk Facile, techno Pro: a pad's step, « Bravo » and its plain line).
+        data class Case(val style: String, val level: TutoLevel, val pick: (String) -> Boolean, val made: String?)
+        val cases = listOf(
+            Case("jump_up", TutoLevel.Facile, { it.startsWith("make_") }, made),
+            Case("phonk", TutoLevel.Facile, { it == "pad_do" }, null),
+            Case("techno", TutoLevel.Pro, { it == "pad_do" }, null),
+        )
+        fun steps(c: Case): List<TutoUi> {
+            val chs = TutoCourse.of(c.style)!!.chaptersFor(c.level)
+            return chs.withIndex().flatMap { (ci, ch) -> ch.steps.withIndex().filter { c.pick(it.value.id) }.map { (si, st) ->
+                TutoUi(TutoProgress(c.style, c.level, current = st.id), chs, ci, si) } }
+        }
+        val all = cases.flatMap { c -> steps(c).map { it to c.made } }
+        assertTrue("the steps of t9-40, t9-52, t9-68 found", all.size >= 3)
+        var scale by mutableStateOf(1f)
+        var shown by mutableStateOf(ui(0, 0))
+        compose.setContent {
+            val local = LocalDensity.current
+            CompositionLocalProvider(LocalDensity provides Density(local.density, scale)) {
+                PocketStudioTheme { TutoPanel(shown, canShow = true, actions = TutoActions(), reducedMotion = true, mine = true) }
+            }
+        }
+        val faults = mutableListOf<String>()
+        for (grid in listOf(false, true)) for (s in listOf(1f, 1.3f, 2f)) for ((step, said) in all) {
+            scale = s
+            // On the pads' screen, the cells to touch (t9-52, t9-68: the words' low room over the grid).
+            TutoHints.gridInSight = grid
+            TutoHints.cells = if (grid) 0 to setOf(0, 4, 8, 12) else null
+            // The step first (its height taken), then ticked: « Bravo » in its words' place.
+            shown = ui(0, 0); compose.waitForIdle()
+            shown = step; compose.waitForIdle()
+            shown = step.copy(progress = step.progress.copy(done = setOf(step.current.id)), bravo = true, made = said); compose.waitForIdle()
+            val id = "${step.progress.style} ${step.current.id}${if (grid) " (grid)" else ""}"
+            val node = nodes("tuto_bravo").fetchSemanticsNodes().firstOrNull()
+            if (node == null) { faults += "font $s $id: no « Bravo »"; continue }
+            val seen = node.boundsInRoot.height
+            if (seen < node.size.height - 1f) faults += "font $s $id: « Bravo » seen ${seen.toInt()} of ${node.size.height} px"
+            if (has("tuto_text_more")) faults += "font $s $id: « Lire la suite » under « Bravo »"
+        }
+        TutoHints.gridInSight = false
+        TutoHints.cells = null
+        assertTrue(faults.joinToString("\n"), faults.isEmpty())
+    }
+
+    /**
      * F019 (t9-10, t9-18, t9-61, t9-63, t9-72): at the course's end the panel's head still said « Étape 3/3 » under a
      * finished tutorial. At the end: « Tuto fini », « Recommencer » and « Chapitres », no step counter, no « Suivant ».
      */

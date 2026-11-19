@@ -1,0 +1,26 @@
+Écran 137 (540x1170)
+texte « O baixo Capítulo 4/14 · Feito · Pro » @ 176,92
+icône (liste) « Capítulos » @ 389,92
+icône ⌄ @ 483,92
+image (coupe) @ 57,397
+texte « Muito bem, capítulo concluído! » @ 295,267
+texte « Ouça sua música como está agora e depois passe para o próximo capítulo: “O sino”. » [coupé] @ 295,410
+icône « Continuar lendo » ⌄ @ 270,533
+bouton « Próximo capítulo   » → @ 270,608
+bouton ▶ «  Ouvir o exemplo » @ 397,722
+bouton ▶ «  Ouvir minha música » @ 142,722
+icône ← «  Anterior » @ 136,836
+icône ▶ « a música » @ 199,940
+texte « 126 Andamento » @ 376,939
+icône ↶ « Desfazer » @ 34,940
+icône ↷ « Refazer » [désactivé] @ 92,940
+icône (trois points reliés) « Compartilhar » @ 505,940
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

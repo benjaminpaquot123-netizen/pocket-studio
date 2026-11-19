@@ -1,0 +1,27 @@
+Écran 11 (540x1170)
+dessin @ 270,91
+texte « Tonalidade da música » @ 186,194
+texte « Fechar » @ 432,194
+texte « Tom da música: nenhuma » @ 260,304
+texte « Escala » @ 85,375
+bouton « Maior » @ 98,454
+bouton « Menor » @ 264,454
+bouton « Dórico » @ 110,535
+bouton « Penta menor » @ 349,535
+bouton « Penta maior » @ 161,616
+bouton « Blues » @ 379,616
+bouton « Frígio » @ 98,697
+bouton « Menor harmônica » @ 218,778
+texte « Tônica » @ 87,857
+bouton « Dó » @ 69,936
+bouton « Dó♯ » @ 181,936
+bouton « Ré » @ 290,936
+bouton « Mi♭ » @ 392,936
+bouton « Mi » @ 66,1017
+bouton « Fá » @ 159,1017
+bouton « Fá♯ » @ 263,1017
+bouton « Sol » @ 375,1017
+bouton « Lá♭ » @ 73,1098
+bouton « Lá » @ 174,1098
+bouton « Si♭ » @ 269,1098
+bouton « Si » @ 361,1098

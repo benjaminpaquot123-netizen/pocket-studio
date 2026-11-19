@@ -440,4 +440,41 @@ class Tour9L14TutoPanelTest {
         assertTrue("« Revenir au tuto » not offered before the key is reached",
             compose.onAllNodesWithTag("tuto_key_continue").fetchSemanticsNodes().isEmpty())
     }
+
+    /**
+     * F021 (t9-33: the echo send set in the effects window, « la feuille d'effets couvre la carte, aucun retour visible »):
+     * a step ticked while that window covers the course's card is said over the window; on the screen itself, the card
+     * says it (no second word).
+     */
+    @Test
+    fun stepTickedUnderTheEffectsWindowSaysSo() {
+        TutoHints.active = true
+        try {
+            var windowed by mutableStateOf(true)
+            compose.mainClock.autoAdvance = false
+            compose.setContent {
+                PocketStudioTheme {
+                    if (windowed) androidx.compose.ui.window.Dialog(onDismissRequest = {}) {
+                        com.pocketstudio.app.mixer.QuickFxPanel(2, com.pocketstudio.model.Channel(), com.pocketstudio.app.mixer.QuickFxActions())
+                    } else com.pocketstudio.app.mixer.QuickFxPanel(2, com.pocketstudio.model.Channel(), com.pocketstudio.app.mixer.QuickFxActions())
+                }
+            }
+            compose.mainClock.advanceTimeBy(500)
+            fun toast() = compose.onAllNodesWithTag("tuto_ticked_toast").fetchSemanticsNodes()
+            assertTrue("nothing said before a step is ticked", toast().isEmpty())
+            TutoHints.ticked++
+            compose.mainClock.advanceTimeBy(500)
+            assertEquals("the step ticked under the window is said over it", 1, toast().size)
+            assertTrue(compose.onAllNodes(hasText("Bravo, c'est réussi !", substring = true)).fetchSemanticsNodes().isNotEmpty())
+            compose.mainClock.advanceTimeBy(5_000)
+            assertTrue("said a moment, then gone", toast().isEmpty())
+            windowed = false
+            compose.mainClock.advanceTimeBy(500)
+            TutoHints.ticked++
+            compose.mainClock.advanceTimeBy(500)
+            assertTrue("no window over the card: the card says it", toast().isEmpty())
+        } finally {
+            TutoHints.active = false
+        }
+    }
 }

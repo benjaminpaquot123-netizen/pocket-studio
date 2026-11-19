@@ -1000,7 +1000,9 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
  */
 private fun Modifier.fitWhole(): Modifier = this.then(
     Modifier.layout { measurable, constraints ->
-        val placeable = measurable.measure(Constraints())
+        // A finite width, the content's own: right-to-left lines measured in an endless width land off their box.
+        val natural = measurable.maxIntrinsicWidth(Constraints.Infinity)
+        val placeable = measurable.measure(Constraints(maxWidth = natural))
         val roomW = if (constraints.hasBoundedWidth) constraints.maxWidth else placeable.width
         val roomH = if (constraints.hasBoundedHeight) constraints.maxHeight else placeable.height
         val scale = minOf(1f, if (placeable.width > 0) roomW.toFloat() / placeable.width else 1f, if (placeable.height > 0) roomH.toFloat() / placeable.height else 1f)

@@ -3,6 +3,7 @@ package com.pocketstudio.app.synth
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +14,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipe
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.Note
@@ -185,5 +189,38 @@ class Tour9RollFinishTest {
             // Higher than its row, a name runs over its neighbours'; wider than its box, it is cut.
             assertEquals("« $said » cut or over its neighbours", true, com.pocketstudio.ui.WholeWordsAutoSize.fits(r.single(), said))
         }
+    }
+
+    /** F112: « L'en-tête du piano roll reste visible quoi que je fasse glisser. » (t9-20: a drag up on the roll scrolled the page) */
+    @Test
+    fun aDragOnTheRollLeavesItsHeaderInSight() {
+        val page = androidx.compose.foundation.ScrollState(0)
+        compose.setContent {
+            PocketStudioTheme {
+                androidx.compose.foundation.layout.Column(Modifier.height(700.dp).verticalScroll(page)) {
+                    PianoRoll(NoteClip(steps = 64), emptyList(), -1, PianoRollActions(), gridHeight = 300.dp, trackName = "Mélodie")
+                    Box(Modifier.height(600.dp))
+                }
+            }
+        }
+        compose.waitForIdle()
+        // The grid starts under the bars' ruler: drags on the keys there, the finger up then down.
+        val top = compose.onNodeWithTag("roll_bar_0").fetchSemanticsNode().boundsInRoot.bottom
+        val dp = compose.onRoot().fetchSemanticsNode().layoutInfo.density.density
+        fun drag(from: Float, to: Float) = compose.onRoot().performTouchInput {
+            swipe(androidx.compose.ui.geometry.Offset(18 * dp, top + from * dp), androidx.compose.ui.geometry.Offset(18 * dp, top + to * dp), 200)
+        }
+        repeat(20) { drag(250f, 30f) }
+        compose.waitForIdle()
+        assertEquals("the page under the roll did not scroll", 0, page.value)
+        // A drag down on the roll still brings a scrolled page back to the header.
+        compose.runOnIdle { kotlinx.coroutines.runBlocking { page.scrollTo(150) } }
+        compose.waitForIdle()
+        val back = compose.onNodeWithTag("roll_bar_0").fetchSemanticsNode().boundsInRoot.bottom.coerceAtLeast(0f)
+        repeat(20) { compose.onRoot().performTouchInput {
+            swipe(androidx.compose.ui.geometry.Offset(18 * dp, back + 30 * dp), androidx.compose.ui.geometry.Offset(18 * dp, back + 250 * dp), 200)
+        } }
+        compose.waitForIdle()
+        assertEquals("the header comes back", 0, page.value)
     }
 }

@@ -9,6 +9,8 @@
 #             length, play head, note takes, rename dialogs, Tout couper / ■, share, microphone, pads, amenées…), and
 #             every class that carries a @KnownDefect anywhere else in the unit tests (audit « banc crédible » A.3:
 #             ChallengeControllerTest today); the list is scripts/bench/selftest-attendus.py's;
+#   charge    the amenées and the flags of each failure path again, every processor busy (PS_SELFTEST_LOAD spinners,
+#             default: one per processor);
 #   scripts   scripts/bench/test_ultra_bench.py (fuser, metrics, dashboard).
 # Banc fiable 1.2: the verdict is read test by test from the JUnit results, not from Gradle's exit code. A red test
 # forbids the lot unless it is in scripts/bench/selftest-quarantaine.txt (named in the stamp); every skipped test is
@@ -85,6 +87,15 @@ if [ ${#profiles[@]} -gt 0 ]; then
 fi
 run_tests banc "${profile_arg[@]}" --tests 'com.pocketstudio.app.human.Bench*' --tests 'com.pocketstudio.app.human.Tour*AppProof*Test'
 run_tests renommage --tests 'com.pocketstudio.app.human.Tour*IdleTest'
+# Tour 9, banc A: the amenées once more with every processor busy, as when a whole round of seats shares the machine
+# (the refusal « les chapitres n'est jamais venu » of seats t9-16 and t9-38 only showed under load). The spinners are
+# this script's own children: stopped as soon as the pass ends, and by the trap whatever stops the script.
+spinners=()
+stop_load() { [ ${#spinners[@]} -eq 0 ] || kill "${spinners[@]}" 2>/dev/null || true; spinners=(); }
+trap stop_load EXIT
+for _ in $(seq "${PS_SELFTEST_LOAD:-$(nproc)}"); do ( while :; do :; done ) & spinners+=($!); done
+run_tests charge "${profile_arg[@]}" --tests 'com.pocketstudio.app.human.BenchAmenee*' --tests 'com.pocketstudio.app.human.BenchFlagPathsTest'
+stop_load
 defect_args=()
 while read -r pass cls; do
   [ "$pass" = defauts ] && defect_args+=(--tests "$cls")

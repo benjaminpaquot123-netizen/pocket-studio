@@ -368,7 +368,7 @@ abstract class HumanTester(private val seat: String) {
             val waitEnd = System.currentTimeMillis() + timeoutMs
             while (!cmdFile.isFile) {
                 if (System.currentTimeMillis() > waitEnd) { journal.appendText("#$n no gesture for too long: end\n"); end("abandon : plus de geste", want = "cmd-$n.txt", saw = "aucun geste en ${timeoutMs / 1000} s"); return }
-                Thread.sleep(100)
+                Thread.sleep(20)
             }
             var cmd = cmdFile.readText().trim()
             // Socle du banc, point 3: « touche <étiquette> » (and appui-long, double-touche) aims at the node of that test

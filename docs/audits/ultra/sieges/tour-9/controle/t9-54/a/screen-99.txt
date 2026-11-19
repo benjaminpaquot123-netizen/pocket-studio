@@ -1,0 +1,60 @@
+Écran 99 (1035x1243)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 301,42
+texte « Pro » @ 630,42
+icône ↶ @ 702,42
+icône ↷ [désactivé] @ 774,42
+bouton ● @ 846,42
+bouton ▶ « ta część » @ 918,42
+icône (trois points reliés) @ 990,42
+bouton « 116  BPM » @ 73,114
+bouton « ? » @ 990,114
+image (courbe) @ 0,0
+bouton « ? » @ 468,195
+texte « Głośności » @ 241,196
+texte « Przesuń fader, żeby zmienić głośność; dotknij nazwy ścieżki, żeby zobaczyć jej efekty i krzywe. » @ 263,263
+texte « Perkusja » @ 84,370
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 57,445
+bouton (casque) [état « wył. »] @ 111,445
+curseur [coupé, état « +0,0 dB », à 80 %] @ 84,496
+texte « Acid 303 » @ 204,370
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 177,445
+bouton (casque) [état « wył. »] @ 231,445
+curseur [coupé, état « +0,0 dB », à 80 %] @ 204,496
+texte « Akordy » @ 324,370
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 297,445
+bouton (casque) [état « wył. »] @ 351,445
+curseur [coupé, état « +0,0 dB », à 80 %] @ 324,496
+texte « Bas » @ 444,370
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 417,445
+bouton (casque) [état « wył. »] @ 471,445
+curseur [coupé, état « +0,0 dB », à 80 %] @ 444,496
+titre « KRZYWE » [état « Rozwinięte »] @ 695,222
+bouton « ? » @ 707,222
+bouton ● « Nagraj » @ 916,222
+texte « Spraw, żeby ustawienie ruszało się samo: wybierz je, potem narysuj krzywą (palcem albo linią w dwóch dotknięciach). » @ 771,310
+bouton + «  Automatyzuj ustawienie » @ 731,399
+bouton (vagues) «  Co gra » [coupé] @ 636,476
+icône (liste) « Rozdziały » @ 891,556
+texte « Bas Rozdział 6/16 · Zrobione · Pro » @ 431,556
+icône ⌄ @ 978,556
+image (coupe) @ 57,660
+texte « Brawo, rozdział ukończony! » @ 232,646
+texte « Posłuchaj swojego utworu w obecnej postaci, a potem przejdź do następnego rozdziału: „Hook”. » @ 528,674
+bouton « Następny rozdział   » → @ 517,859
+icône ← @ 57,943
+bouton ▶ «  Posłuchaj mojego utworu » @ 327,943
+bouton ▶ «  Posłuchaj przykładu » @ 788,943
+icône ↶ « Cofnij » @ 145,1027
+icône ↷ « Ponów » [désactivé] @ 326,1027
+bouton ▶ « utwór » @ 507,1027
+texte « 116 Tempo » @ 694,1027
+icône (trois points reliés) « Udostępnij » @ 885,1027
+onglet (ligne brisée et points) « Struktura » @ 99,1123
+onglet (touches de piano) « Dźwięki » @ 309,1123
+onglet (curseurs) « Miks » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Więcej » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Zanotuj » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Tryb uwag » @ 385,1213

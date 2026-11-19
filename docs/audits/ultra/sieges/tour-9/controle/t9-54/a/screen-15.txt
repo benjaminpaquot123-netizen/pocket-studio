@@ -1,0 +1,28 @@
+Écran 15 (1035x1243)
+dessin @ 517,621
+dessin @ 518,628
+texte « Tonacja utworu » @ 458,700
+texte « Zamknij » @ 914,700
+texte « Tonacja utworu: brak » @ 167,766
+texte « Skala » @ 90,811
+bouton « Durowa » @ 125,877
+bouton « Molowa » @ 260,877
+bouton « Dorycka » @ 396,877
+bouton « Penta mol » @ 544,877
+bouton « Penta dur » @ 699,877
+bouton « Blues » @ 830,877
+bouton « Frygijska » @ 131,958
+bouton « Molowa harmoniczna » @ 347,958
+texte « Tonacja » @ 102,1024
+bouton « C » @ 101,1090
+bouton « C♯ » @ 188,1090
+bouton « D » @ 275,1090
+bouton « E♭ » @ 362,1090
+bouton « E » @ 449,1090
+bouton « F » @ 536,1090
+bouton « F♯ » @ 623,1090
+bouton « G » @ 710,1090
+bouton « A♭ » @ 797,1090
+bouton « A » @ 884,1090
+bouton « B♭ » @ 101,1171
+bouton « B » @ 188,1171

@@ -1,0 +1,73 @@
+Écran 57 (1035x1243)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 262,42
+texte « Pro » @ 552,42
+bouton « A » ▾ @ 627,42
+icône ↶ @ 702,42
+icône ↷ [désactivé] @ 774,42
+bouton ● @ 846,42
+bouton ▶ « ta część » @ 918,42
+icône (trois points reliés) @ 990,42
+bouton « 116  BPM » @ 73,114
+bouton « ? » @ 990,114
+onglet « Perkusja 16 padów » [sélectionné] @ 86,183
+onglet « Acid 303 Linia basu » @ 245,183
+onglet « Wokal Mikrofon » @ 402,183
+onglet « Remix Rozdziel » @ 551,183
+bouton + «  Ścieżka » @ 722,183
+texte « Część: A » @ 65,243
+bouton « Kick FX » @ 75,330
+bouton « Kick 2 » @ 200,330
+bouton « Pop · Werbel FX » @ 325,330
+bouton « Werbel 2 » @ 450,330
+bouton « Pop · Clap FX » @ 75,436
+bouton « Pop · Hi-hat L 30 » @ 200,436
+bouton « Pop · Otwarty hi-hat P 30 » @ 325,436
+bouton « Niski tom » @ 450,436
+bouton « Średni tom P 45 » [coupé] @ 75,501
+bouton « Wysoki tom » [coupé] @ 200,501
+bouton « Rim P 50 » [coupé] @ 325,501
+bouton « Cowbell » [coupé] @ 450,501
+titre « KROKI: SHAKER » [coupé, état « Rozwinięte »] @ 665,265
+bouton « Wszystkie pady » [coupé] @ 887,265
+texte « Shaker » @ 599,311
+texte « 3 uderzenia za dużo tutaj (przekreślone) » @ 776,340
+bouton « 1 » [état « pusty »] @ 575,406
+bouton [état « pusty »] @ 632,405
+bouton [état « pusty »] @ 688,405
+bouton [état « pusty »] @ 744,405
+bouton « 2 » [état « uderzenie, siła 100 % »] @ 800,405
+bouton [état « pusty »] @ 856,405
+bouton [état « uderzenie, siła 100 %, przekreślone: do usunięcia »] @ 912,405
+bouton [état « pusty »] @ 968,405
+bouton « 3 » [état « pusty »] @ 575,476
+bouton [état « pusty »] @ 632,475
+bouton [état « uderzenie, siła 100 %, przekreślone: do usunięcia »] @ 688,475
+bouton [état « pusty »] @ 744,475
+bouton « 4 » [état « uderzenie, siła 100 % »] @ 800,475
+bouton [état « pusty »] @ 856,475
+bouton [allumé, état « uderzenie, siła 100 %, przekreślone: do usunięcia »] @ 912,475
+bouton [état « pusty »] @ 968,475
+icône (liste) « Rozdziały » @ 891,556
+texte « Hi-haty i perkusjonalia Rozdział 4/16 · Krok 4/5 · Pro » @ 431,556
+icône ⌄ @ 978,556
+texte « Twoja kolej: drugie perkusjonalium na 2 i 4, z clapem: mocniejszy shaker, tam gdzie płyty dają tamburyn. » @ 517,655
+texte « ▸ Dlaczego? » @ 517,715
+bouton (doigt qui touche) «   Zrobię to » @ 517,778
+bouton ▶ «  Posłuchaj przykładu » @ 266,862
+bouton (œil) «  Pokaż mi » @ 768,862
+icône ← «  Wstecz » @ 93,943
+icône « Dalej  » → @ 953,943
+icône ↶ « Cofnij » @ 145,1027
+icône ↷ « Ponów » [désactivé] @ 326,1027
+bouton ▶ « utwór » @ 507,1027
+texte « 116 Tempo » @ 694,1027
+icône (trois points reliés) « Udostępnij » @ 885,1027
+onglet (ligne brisée et points) « Struktura » @ 99,1123
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 309,1123
+onglet (curseurs) « Miks » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Więcej » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Zanotuj » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Tryb uwag » @ 385,1213

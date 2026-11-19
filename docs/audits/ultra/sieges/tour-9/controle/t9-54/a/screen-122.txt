@@ -1,0 +1,4 @@
+Écran 122 (1035x1243)
+texte « Część do edycji » @ 606,111
+icône ✓ « A » @ 643,168
+icône + « Nowa pusta część » @ 643,242

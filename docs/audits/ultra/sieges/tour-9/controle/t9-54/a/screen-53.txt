@@ -1,0 +1,83 @@
+Écran 53 (1035x1243)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 262,42
+texte « Pro » @ 552,42
+bouton « A » ▾ @ 627,42
+icône ↶ @ 702,42
+icône ↷ [désactivé] @ 774,42
+bouton ● @ 846,42
+bouton ▶ « ta część » @ 918,42
+icône (trois points reliés) @ 990,42
+bouton « 116  BPM » @ 73,114
+bouton « ? » @ 990,114
+onglet « Perkusja 16 padów » [sélectionné] @ 86,183
+onglet « Acid 303 Linia basu » @ 245,183
+onglet « Wokal Mikrofon » @ 402,183
+onglet « Remix Rozdziel » @ 551,183
+bouton + «  Ścieżka » @ 722,183
+texte « Część: A » @ 65,243
+bouton « Kick FX » @ 75,330
+bouton « Kick 2 » @ 200,330
+bouton « Pop · Werbel FX » @ 325,330
+bouton « Werbel 2 » @ 450,330
+bouton « Pop · Clap FX » @ 75,436
+bouton « Pop · Hi-hat L 30 » @ 200,436
+bouton « Pop · Otwarty hi-hat P 30 » @ 325,436
+bouton « Niski tom » @ 450,436
+bouton « Średni tom P 45 » @ 75,542
+bouton « Wysoki tom » @ 200,542
+bouton « Rim P 50 » @ 325,542
+bouton « Cowbell » @ 450,542
+bouton « Talerz FX P 40 » @ 75,648
+bouton « Shaker L 50 » @ 200,648
+bouton « Conga » @ 325,648
+bouton « Zap » @ 450,648
+bouton « Zestaw: Pop » ▾ @ 120,747
+texte « Pady grają dźwięk, komórki trzymają uderzenia. Przytrzymaj: zmień dźwięk. » @ 371,746
+bouton « Wszystkie pady » [coupé] @ 887,265
+texte « Rim » @ 583,326
+bouton « 1 » [état « pusty »] @ 575,406
+bouton [état « pusty »] @ 632,405
+bouton [état « uderzenie, siła 100 % »] @ 688,405
+bouton [état « pusty »] @ 744,405
+bouton « 2 » [état « pusty »] @ 800,405
+bouton [état « pusty »] @ 856,405
+bouton [état « uderzenie, siła 100 % »] @ 912,405
+bouton [état « pusty »] @ 968,405
+bouton « 3 » [état « pusty »] @ 575,476
+bouton [état « pusty »] @ 632,475
+bouton [état « uderzenie, siła 100 % »] @ 688,475
+bouton [état « pusty »] @ 744,475
+bouton « 4 » [état « pusty »] @ 800,475
+bouton [état « pusty »] @ 856,475
+bouton [allumé, état « uderzenie, siła 100 % »] @ 912,475
+bouton [état « pusty »] @ 968,475
+bouton « Uderzenia » [sélectionné] @ 626,556
+bouton « Rolki » @ 759,556
+bouton « Pan » @ 860,556
+bouton « Wysokość » [coupé] @ 952,556
+texte « wszystko » @ 697,640
+texte « 1/2 » @ 798,640
+texte « 1/4 » @ 873,640
+texte « ◀ » @ 948,640
+texte « Wypełnij » @ 591,640
+texte « ▶ » @ 586,712
+texte « Wyczyść » @ 684,712
+texte « Dotknij komórki, żeby dodać uderzenie, przesuń palec, żeby namalować kilka. Przytrzymaj uderzenie: siła i rolki (×2 do ×8). » [coupé] @ 771,778
+icône (liste) « Rozdziały » @ 891,844
+texte « Hi-haty i perkusjonalia Rozdział 4/16 · Krok 3/5 · Pro » @ 431,844
+icône ⌃ @ 978,844
+icône (rond coché) « Udało się Następny krok » → @ 517,943
+icône ↶ « Cofnij » @ 145,1027
+icône ↷ « Ponów » [désactivé] @ 326,1027
+bouton ▶ « utwór » @ 507,1027
+texte « 116 Tempo » @ 694,1027
+icône (trois points reliés) « Udostępnij » @ 885,1027
+onglet (ligne brisée et points) « Struktura » @ 99,1123
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 309,1123
+onglet (curseurs) « Miks » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Więcej » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Zanotuj » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Tryb uwag » @ 385,1213

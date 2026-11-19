@@ -1,0 +1,30 @@
+Écran 9 (1035x1243)
+dessin @ 518,416
+texte « Tempo » @ 117,488
+bouton « ? » @ 194,488
+texte « Zamknij » @ 914,488
+icône − @ 98,582
+texte « 10 » @ 489,582
+icône + @ 938,582
+texte «  BPM » @ 561,592
+texte « Od 40 do 300 » @ 518,655
+bouton « 70 » @ 102,724
+bouton « 90 » @ 191,724
+bouton « 120 » [sélectionné] @ 288,724
+bouton « 140 » @ 393,724
+bouton « 174 » @ 498,724
+bouton « ½ » @ 591,724
+bouton « ×2 » @ 675,724
+bouton « 1 » @ 211,817
+bouton « 2 » @ 518,817
+bouton « 3 » @ 825,817
+bouton « 4 » @ 211,904
+bouton « 5 » @ 518,904
+bouton « 6 » @ 825,904
+bouton « 7 » @ 211,991
+bouton « 8 » @ 518,991
+bouton « 9 » @ 825,991
+bouton ⌫ @ 211,1078
+bouton « 0 » @ 518,1078
+bouton « OK » [désactivé] @ 825,1078
+bouton (doigt qui touche) « Wystukaj tempo Dotykaj tu na każde uderzenie: tempo się dopasuje. » @ 518,1177

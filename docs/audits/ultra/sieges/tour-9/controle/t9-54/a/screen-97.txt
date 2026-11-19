@@ -1,0 +1,44 @@
+Écran 97 (1035x1243)
+dessin @ 518,36
+texte « Bas » @ 467,108
+texte « Zamknij » @ 914,108
+bouton « Wyciszona » @ 143,195
+bouton « Solo » @ 285,195
+texte « Głośność » @ 477,264
+texte « +0,0 dB » @ 933,264
+curseur [état « +0,0 dB », à 80 %] @ 518,333
+texte « Pan » @ 83,406
+bouton « ? » @ 125,405
+texte « Środek » @ 938,405
+curseur [état « Środek », à 50 %] @ 518,478
+bouton (barres de son) «  Co gra » @ 287,565
+bouton (courbe) «  Krzywe » @ 749,565
+texte « Efekty » @ 94,631
+texte « Aktywne efekty: 0 z 8 » @ 173,676
+texte « Jeszcze nic: dodaj efekt albo dotknij gotowego klimatu. » @ 314,710
+bouton + «   Dodaj efekt » @ 518,766
+texte « Gotowe klimaty » @ 142,839
+bouton « ? » @ 244,838
+bouton « Dla: Bas » @ 129,908
+bouton ★ « Ulubione » @ 288,908
+bouton « Atmosfera » @ 457,908
+bouton « Kolor » @ 596,908
+bouton « Brud » @ 706,908
+bouton « Ruch » @ 815,908
+bouton « Rytm » [sélectionné] @ 924,908
+bouton « Acid » @ 161,992
+bouton « Techno » @ 281,992
+bouton « DnB » @ 399,992
+bouton « Dubstep » @ 521,992
+bouton « House » @ 656,992
+bouton « Lo-fi » @ 772,992
+texte « Styl: » @ 83,992
+bouton « Sieczka » @ 127,1076
+bouton « Pompa » @ 261,1076
+bouton « Punch » @ 388,1076
+bouton « Pompa EDM » @ 542,1076
+bouton « Bez efektu » [sélectionné] @ 716,1076
+texte « Dźwięk bez zmian: żadnych efektów, makra w spoczynku. » @ 518,1151
+texte « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » @ 412,1203
+texte « Pad XY, góra-dół: » [coupé] @ 143,1240
+bouton « ? » [coupé] @ 254,1236

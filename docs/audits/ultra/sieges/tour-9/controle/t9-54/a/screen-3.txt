@@ -1,0 +1,55 @@
+Écran 3 (1035x1243)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 262,42
+texte « Pro » @ 552,42
+bouton « A » ▾ @ 627,42
+icône ↶ [désactivé] @ 702,42
+icône ↷ [désactivé] @ 774,42
+bouton ● @ 846,42
+bouton ▶ « ta część » @ 918,42
+icône (trois points reliés) @ 990,42
+bouton « 120  BPM » @ 73,114
+bouton « ? » @ 990,114
+onglet « Perkusja 16 padów » [sélectionné] @ 86,183
+onglet « Acid 303 Linia basu » @ 245,183
+onglet « Wokal Mikrofon » @ 402,183
+onglet « Remix Rozdziel » @ 551,183
+bouton + «  Ścieżka » @ 722,183
+texte « Część: A » @ 65,243
+bouton « Kick FX » @ 75,330
+bouton « Kick 2 » @ 200,330
+bouton « Werbel FX » @ 325,330
+bouton « Werbel 2 » @ 450,330
+bouton « Clap FX » [coupé] @ 75,410
+bouton « Hi-hat L 30 » [coupé] @ 200,410
+bouton « Otwarty hi-hat P 30 » [coupé] @ 325,410
+bouton « Niski tom » [coupé] @ 450,410
+titre « KROKI: KICK » [état « Rozwinięte »] @ 665,342
+bouton « ? » @ 748,342
+bouton « Wszystkie pady » @ 887,342
+texte « Kick » [coupé] @ 586,423
+icône (liste) « Rozdziały » @ 891,481
+texte « Tempo i tonacja Rozdział 1/16 · Krok 1/3 · Pro » @ 431,481
+icône ⌄ @ 978,481
+image (rond coché) @ 36,559
+texte « Posłuchaj fragmentu gotowego popu: Pre-chorus (rośnie), potem Refren (wszyscy śpiewają). To właśnie zbudujesz, klocek po klocku. » @ 537,580
+texte « Pobieranie zestawu… 0 % » @ 149,650
+texte « Później » @ 957,715
+texte « ▸ Dlaczego? » @ 517,781
+bouton « Następny krok   » → @ 517,859
+icône ← [désactivé] @ 57,943
+bouton ■ «  Przestań słuchać » @ 493,943
+icône « Dalej  » → @ 953,943
+icône ↶ « Cofnij » [désactivé] @ 145,1027
+icône ↷ « Ponów » [désactivé] @ 326,1027
+bouton ▶ « utwór » @ 507,1027
+texte « 120 Tempo » @ 694,1027
+icône (trois points reliés) « Udostępnij » @ 885,1027
+onglet (ligne brisée et points) « Struktura » @ 99,1123
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 309,1123
+onglet (curseurs) « Miks » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Więcej » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Zanotuj » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Tryb uwag » @ 385,1213

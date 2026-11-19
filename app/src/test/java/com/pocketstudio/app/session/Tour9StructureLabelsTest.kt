@@ -49,20 +49,28 @@ class Tour9StructureLabelsTest {
 
     private var labels = listOf("Intro", "Couplet", "Refrain", "Pont")
 
+    /** The language shown: a test going through every language sets the screen once and changes only this. */
+    private var shown: androidx.compose.runtime.MutableState<Lang>? = null
+
     private fun show(lang: Lang = Lang.FR, parts: Int = 0, playingAt: Int = -1, mixed: Boolean = false) {
         I18n.lang = lang
+        shown?.let { it.value = lang; compose.waitForIdle(); return }
+        val state = mutableStateOf(lang).also { shown = it }
         compose.setContent {
             var song by remember { mutableStateOf(List(parts) { SongPart(scene = it % labels.size, repeats = 2, from = if (mixed) mapOf("kick" to 1) else emptyMap()) }) }
-            CompositionLocalProvider(LocalLayoutDirection provides if (lang.rtl) LayoutDirection.Rtl else LayoutDirection.Ltr) {
-                PocketStudioTheme {
-                    SessionScreen(
-                        SessionScreenUi(
-                            scenes = List(Scene.MAX) { if (it < labels.size) Scene(name = Scene.NAMES[it], label = labels[it], drums = com.pocketstudio.model.DrumPattern(steps = 128), chords = if (it < 3) listOf(0, 5, 3, 4) else emptyList()) else null }, current = 2, pending = null,
-                            song = song, songIndex = playingAt, playing = playingAt >= 0, tempoBpm = 120.0,
-                        ),
-                        SessionActions(addPart = { s -> song = song + SongPart(scene = s, repeats = 2) }),
-                        arrangeOnly = true,
-                    )
+            val l = state.value
+            CompositionLocalProvider(LocalLayoutDirection provides if (l.rtl) LayoutDirection.Rtl else LayoutDirection.Ltr) {
+                androidx.compose.runtime.key(l) {
+                    PocketStudioTheme {
+                        SessionScreen(
+                            SessionScreenUi(
+                                scenes = List(Scene.MAX) { if (it < labels.size) Scene(name = Scene.NAMES[it], label = labels[it], drums = com.pocketstudio.model.DrumPattern(steps = 128), chords = if (it < 3) listOf(0, 5, 3, 4) else emptyList()) else null }, current = 2, pending = null,
+                                song = song, songIndex = playingAt, playing = playingAt >= 0, tempoBpm = 120.0,
+                            ),
+                            SessionActions(addPart = { s -> song = song + SongPart(scene = s, repeats = 2) }),
+                            arrangeOnly = true,
+                        )
+                    }
                 }
             }
         }

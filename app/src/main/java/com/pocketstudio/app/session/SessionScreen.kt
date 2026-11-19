@@ -2,7 +2,6 @@
 
 package com.pocketstudio.app.session
 
-import com.pocketstudio.ui.shrinkToFit
 import com.pocketstudio.ui.pressScale
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.relocation.bringIntoViewRequester
@@ -91,6 +90,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -441,7 +442,8 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
                 runCatching { lastRow.bringIntoView() }
             }
         }
-        Text(if (ui.song.isEmpty()) tr("Ajouter :") else tr("Ajouter à la fin :"), style = MaterialTheme.typography.bodyMedium)
+        // F100: one title before and after an add (« à la fin » and its change read as a new list).
+        Text(tr("Ajouter :"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
             modifier = Modifier.nestedScroll(noScroll, scroller).bringIntoViewRequester(addRow)
@@ -522,10 +524,11 @@ private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
 private fun NewPartButtons(ui: SessionScreenUi, enabled: Boolean, onNew: (Boolean) -> Unit) {
     val free = ui.scenes.count { it == null || it.isEmpty } > 0 || ui.scenes.size < Scene.MAX
     OutlinedButton(onClick = { onNew(true) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_copy")) {
-        Text(tr("+ Nouvelle partie (copie de %s)", ui.title(ui.current)), maxLines = 1, softWrap = false)
+        // F108: a long part name goes on a second line instead of being cut (Arabic, big font, small phone).
+        Text(tr("+ Nouvelle partie (copie de %s)", ui.title(ui.current)))
     }
     OutlinedButton(onClick = { onNew(false) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_empty")) {
-        Text(tr("+ Nouvelle partie vide"), maxLines = 1, softWrap = false)
+        Text(tr("+ Nouvelle partie vide"))
     }
 }
 
@@ -918,10 +921,11 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
     ) {
         // Audit stage 1: a short tile (a phone lying down, a big font, a tall script) shows its three lines
         // a little smaller instead of losing the last one (« 1 batt » cut under « Intro »).
-        Column(Modifier.shrinkToFit(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(Scene.NAMES[i], fontSize = 22.sp, fontWeight = FontWeight.Bold, color = content, lineHeight = 24.sp)
+        // F109/F110: too wide too (a big font, a long name, « 8 mes. »), the three lines shrink whole: never « .. » nor « 8 » alone.
+        Column(Modifier.fitWhole(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(Scene.NAMES[i], fontSize = 22.sp, fontWeight = FontWeight.Bold, color = content, lineHeight = 24.sp, maxLines = 1, softWrap = false)
             if (label.isNotBlank()) {
-                Text(Scene.shownLabel(label), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = content, maxLines = 1, overflow = TextOverflow.Ellipsis, lineHeight = 14.sp)
+                Text(Scene.shownLabel(label), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = content, maxLines = 1, softWrap = false, lineHeight = 14.sp)
             }
             Text(
                 when {
@@ -929,11 +933,31 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
                     empty -> tr("vide")
                     else -> barsLabel(scene!!.stepsFor(ui.stepsPerBar) / ui.stepsPerBar)
                 },
-                fontSize = 11.sp, color = content.copy(alpha = 0.8f), maxLines = 1, lineHeight = 13.sp,
+                fontSize = 11.sp, color = content.copy(alpha = 0.8f), maxLines = 1, softWrap = false, lineHeight = 13.sp,
             )
         }
     }
 }
+
+/**
+ * Content measured at its natural size, then drawn whole and smaller, centred, when it is wider or taller than the
+ * room given (`shrinkToFit` only looks at the height). Content that fits is untouched.
+ */
+private fun Modifier.fitWhole(): Modifier = this.then(
+    Modifier.layout { measurable, constraints ->
+        val placeable = measurable.measure(Constraints())
+        val roomW = if (constraints.hasBoundedWidth) constraints.maxWidth else placeable.width
+        val roomH = if (constraints.hasBoundedHeight) constraints.maxHeight else placeable.height
+        val scale = minOf(1f, if (placeable.width > 0) roomW.toFloat() / placeable.width else 1f, if (placeable.height > 0) roomH.toFloat() / placeable.height else 1f)
+        val w = minOf(placeable.width, roomW).coerceAtLeast(constraints.minWidth)
+        val h = minOf(placeable.height, roomH).coerceAtLeast(constraints.minHeight)
+        layout(w, h) {
+            val x = (w - placeable.width) / 2
+            val y = (h - placeable.height) / 2
+            if (scale == 1f) placeable.place(x, y) else placeable.placeWithLayer(x, y) { scaleX = scale; scaleY = scale }
+        }
+    },
+)
 
 /** Names scene [index]: a song section in one touch, or any name typed. */
 @Composable

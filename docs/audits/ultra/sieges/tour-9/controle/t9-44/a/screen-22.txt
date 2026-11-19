@@ -1,0 +1,33 @@
+Écran 22 (588x1278)
+image (courbe) @ 0,0
+bouton (dossier ouvert) ✓ @ 107,42
+bouton « Pro » @ 248,42
+icône ↶ @ 326,42
+bouton ● @ 398,42
+bouton ▶ « dit deel » @ 470,42
+icône (trois points reliés) @ 543,42
+texte « De piano Hoofdstuk 7/17 · Klaar · Pro » @ 201,221
+icône (liste) « Hoofdstukken » @ 438,221
+icône ⌄ @ 531,221
+image (coupe) @ 57,429
+texte « Goed gedaan, hoofdstuk klaar! » [coupé] @ 319,341
+texte « Luister naar je nummer zoals het nu is en ga dan naar het volgende hoofdstuk: ‘De bel die antwoordt’. » @ 319,485
+image ⌄ @ 553,662
+bouton « Volgend hoofdstuk   » → @ 294,737
+bouton ▶ «  Mijn nummer beluisteren » @ 154,840
+bouton ▶ «  Luister naar het voorbeeld » @ 433,840
+icône ← «  Vorige » @ 120,943
+icône ▶ « het nummer » @ 272,1047
+texte « 174 Tempo » @ 438,1046
+icône ↶ « Ongedaan maken » @ 46,1047
+icône ↷ « Opnieuw » [désactivé] @ 127,1047
+icône (trois points reliés) « Delen » @ 541,1047
+onglet (ligne brisée et points) « Structuur » @ 54,1158
+onglet (touches de piano) « Klanken » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Meer » @ 534,1158
+texte « ●  REC » @ 279,1248
+texte « ✎  Noteren » @ 419,1248
+texte « ⋯ » @ 540,1248
+texte « Feedbackmodus » @ 118,1248

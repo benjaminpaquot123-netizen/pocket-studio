@@ -1,0 +1,246 @@
+#0 SIEGE lang=nl device=phone font=200 mode=pro theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:liquid_dnb:7
+#0 PREMIER ECRAN reel_s=4.3 simule_s=2.4 jvm_s=10.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:liquid_dnb:7
+#0 AMENEE > touche 294 929 (launch_learn)
+#0 AMENEE > touche 294 1122 (mode_card_pro)
+#0 AMENEE > touche 294 1187 (tuto_style_liquid_dnb)
+#0 AMENEE chapitres 1 à 6 construits dans le projet
+#0 AMENEE > touche 438 254 (tuto_chapters)
+#0 AMENEE > touche 294 1186 (tuto_quit)
+#0 AMENEE > touche 147 899 (tuto_resume)
+#0 AMENEE chapitres 1 à 6 cochés (18 étapes)
+#0 AMENEE > touche 438 165 (tuto_chapters)
+#0 AMENEE > touche 294 760 (tuto_chapter_6)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5fcb943895 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_do done=18 chapters=1,2,3,4,5,6 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Ongedaan maken » ellipsized (« … »)
+#1 LAYOUT CUT « Feedbackmodus » ellipsized (« … »)
+#1 LAYOUT OVERLAP « 174 » over « Hoofdstuk 7/17 · Stap 1/3 · Pro » (54 x 33 dp)
+#1 LAYOUT OVERLAP « Hoofdstuk 7/17 · Stap 1/3 · Pro » over the touchable « Tempo: 174 BPM Tempo wijzigen » (132 x 41 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 552
+#1 DOIGT tuto_text_more « Verder lezen »
+#2 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5fcb943895 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_do done=18 chapters=1,2,3,4,5,6 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 550 552
+#2 DOIGT tuto_text_more « Verder lezen »
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5fcb943895 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_do done=18 chapters=1,2,3,4,5,6 playing=false
+#3 SON Son : rien ne joue.
+#3 RIEN NE CHANGE (3 écrans identiques)
+#3 > touche 294 303
+#3 DOIGT rien (texte « Nu jij: maak het spoor Akkoorden (‘FM-Rh »)
+#4 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5fcb943895 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_do done=18 chapters=1,2,3,4,5,6 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 294 709
+#4 DOIGT tuto_need «   Spoor Akkoorden maken »
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE c4bf7e531b | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_do done=18 chapters=1,2,3,4,5,6 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « Gestippelde akkoorden om aan te tikken: 1 » ellipsized (« … »)
+#5 LAYOUT CUT « A » ellipsized (« … »)
+#5 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#5 LAYOUT CUT « Nu jij: maak het spoor Akkoorden (‘FM-Rhodes’). ‘Akkoorden’ zet de drieklank met één tik neer: Am op de bas F (= Fmaj7) in maat 1, dan ‘Kopiëren naar de volgende maten’: G op de bas E (= Em7), C op de bas A (= Am7). » ellipsized (« … »)
+#5 > touche 294 610
+#5 DOIGT tuto_notes_left « Akkoorden · maat 1/8 »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE c4bf7e531b | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_do done=18 chapters=1,2,3,4,5,6 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Akkoorden · maat 1/8 » 3.74:1 (needs 4.5:1, 12 sp)
+#6 LAYOUT CONTRAST « Gestippelde akkoorden om aan te tikken: 1 » 4.18:1 (needs 4.5:1, 14 sp)
+#6 > glisse 294 640 294 480
+#6 DOIGT tuto_notes_left « Akkoorden · maat 1/8 »
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE 94f227e403 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_do done=18 chapters=1,2,3,4,5,6 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « Akkoorden · maat 1/8 » ellipsized (« … »)
+#7 LAYOUT CUT « ↑ Gestippelde akkoorden om aan te tikken: 1 » ellipsized (« … »)
+#7 LAYOUT CUT « 1 » drawn past its parent's edge (down, 32 dp shown of 37)
+#7 LAYOUT TARGET « B♭3 Afspelen » 36 x 20 dp (touch 48 x 48)
+#7 LAYOUT TARGET « A3 Afspelen » 36 x 20 dp (touch 48 x 48)
+#7 > touche 321 627
+#7 DOIGT rien
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE f4cfc3cc5a | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_do done=19 chapters=1,2,3,4,5,6 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CUT « Alle gestippelde noten staan erin » ellipsized (« … »)
+#8 > touche 294 921
+#8 DOIGT tuto_next_folded « Gelukt »
+#9 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d5962dcfc1 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_end done=19 chapters=1,2,3,4,5,6 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 174 » over « Hoofdstuk 7/17 · Stap 2/3 · Pro » (54 x 33 dp)
+#9 LAYOUT OVERLAP « Hoofdstuk 7/17 · Stap 2/3 · Pro » over the touchable « Tempo: 174 BPM Tempo wijzigen » (132 x 41 dp)
+#9 > touche 294 489
+#9 DOIGT tuto_why « ▸ Waarom? »
+#10 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 70439f5df3 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_end done=19 chapters=1,2,3,4,5,6 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 174 » over « Hoofdstuk 7/17 · Stap 2/3 · Pro » (54 x 34 dp)
+#10 LAYOUT OVERLAP « Hoofdstuk 7/17 · Stap 2/3 · Pro » over the touchable « Tempo: 174 BPM Tempo wijzigen » (132 x 48 dp)
+#10 > touche 294 709
+#10 DOIGT tuto_need «   Kopiëren naar de volgende maten »
+#11 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 70439f5df3 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_end done=19 chapters=1,2,3,4,5,6 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 300 740
+#11 DOIGT tuto_need «   Kopiëren naar de volgende maten »
+#12 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f06de4304f | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_end done=20 chapters=1,2,3,4,5,6 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 294 731
+#12 DOIGT tuto_next_big « Volgende stap   »
+#13 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c96221fc8b | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_chorus done=20 chapters=1,2,3,4,5,6 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « 174 » over « Hoofdstuk 7/17 · Stap 3/3 · Pro » (54 x 33 dp)
+#13 LAYOUT OVERLAP « De piano » over the touchable « Tempo: 174 BPM Tempo wijzigen » (111 x 9 dp)
+#13 LAYOUT OVERLAP « Hoofdstuk 7/17 · Stap 3/3 · Pro » over the touchable « Tempo: 174 BPM Tempo wijzigen » (132 x 39 dp)
+#13 > touche 294 1158
+#13 DOIGT tab_Mix « Mix »
+#14 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE bef3b4cb5a | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_chorus done=20 chapters=1,2,3,4,5,6 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 174 » over « De piano » (54 x 19 dp)
+#14 LAYOUT OVERLAP « De piano » over the touchable « Tempo: 174 BPM Tempo wijzigen » (111 x 26 dp)
+#14 > touche 531 221
+#14 DOIGT tuto_fold
+#15 ROUTE console/tab_Mix | MODE pro | EMPREINTE eec86b7902 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_chorus done=20 chapters=1,2,3,4,5,6 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CUT « ? » lines cut (taller than its box)
+#15 LAYOUT CUT « Drums » a word split over two lines
+#15 LAYOUT CUT « Akkoorden » ellipsized (« … »)
+#15 LAYOUT CUT « Nu jij: zet in Mix het effect ‘Chorus’ op het spoor ‘Akkoorden’: de piano golft zachtjes, als een oude Rhodes. » ellipsized (« … »)
+#15 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#15 > touche 541 577
+#15 DOIGT strip_more_6 « Akkoorden »
+#16 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 77f035ee7f | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_chorus done=20 chapters=1,2,3,4,5,6 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CUT «  Wat speelt » ellipsized (« … »)
+#16 LAYOUT OVERLAP « Akkoorden » over the touchable « Blad sluiten » (182 x 45 dp)
+#16 LAYOUT OVERLAP « Sluiten » over the touchable « Blad sluiten » (88 x 37 dp)
+#16 LAYOUT OVERLAP « Stil » over the touchable « Blad sluiten » (40 x 37 dp)
+#16 LAYOUT OVERLAP « Solo » over the touchable « Blad sluiten » (56 x 37 dp)
+#16 LAYOUT OVERLAP « Volume » over the touchable « Blad sluiten » (99 x 42 dp)
+#16 LAYOUT OVERLAP « +0,0 dB » over the touchable « Blad sluiten » (97 x 31 dp)
+#16 LAYOUT OVERLAP « Pan » over the touchable « Blad sluiten » (51 x 42 dp)
+#16 LAYOUT OVERLAP « ? » over the touchable « Blad sluiten » (13 x 18 dp)
+#16 LAYOUT OVERLAP « Midden » over the touchable « Blad sluiten » (94 x 31 dp)
+#16 LAYOUT OVERLAP «  Wat speelt » over the touchable « Blad sluiten » (102 x 37 dp)
+#16 LAYOUT OVERLAP «  Curven » over the touchable « Blad sluiten » (100 x 37 dp)
+#16 LAYOUT OVERLAP « Effecten » over the touchable « Blad sluiten » (105 x 37 dp)
+#16 LAYOUT OVERLAP « Effecten actief: 0 van 8 » over the touchable « Blad sluiten » (296 x 37 dp)
+#16 LAYOUT OVERLAP « Nog geen: voeg een effect toe, of tik op een kant-en-klare sfeer. » over the touchable « Blad sluiten » (317 x 104 dp)
+#16 LAYOUT OVERLAP «   Effect toevoegen » over the touchable « Blad sluiten » (231 x 37 dp)
+#16 LAYOUT OVERLAP « Kant-en-klare sferen » over the touchable « Blad sluiten » (264 x 37 dp)
+#16 LAYOUT OVERLAP « Voor: Pluck » over the touchable « Blad sluiten » (145 x 37 dp)
+#16 LAYOUT OVERLAP « Favorieten » over the touchable « Blad sluiten » (134 x 37 dp)
+#16 LAYOUT OVERLAP « Stijl: » over the touchable « Blad sluiten » (50 x 31 dp)
+#16 LAYOUT OVERLAP « Acid » over the touchable « Blad sluiten » (57 x 33 dp)
+#16 LAYOUT OVERLAP « Techno » over the touchable « Blad sluiten » (95 x 33 dp)
+#16 LAYOUT OVERLAP « DnB » over the touchable « Blad sluiten » (52 x 33 dp)
+#16 > touche 294 1014
+#16 DOIGT fx_add_6 «   Effect toevoegen »
+#17 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 679fb9ca7a | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_chorus done=20 chapters=1,2,3,4,5,6 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP «   Effectenlijst sluiten » over the touchable « Blad sluiten » (257 x 37 dp)
+#17 LAYOUT OVERLAP « Tik op de effecten die je wilt: ze worden na elkaar toegevoegd, op volgorde. » over the touchable « Blad sluiten » (343 x 104 dp)
+#17 LAYOUT OVERLAP « Vervorming & kleur » over the touchable « Blad sluiten » (243 x 35 dp)
+#17 > glisse 294 1150 294 400
+#17 DOIGT rien (texte « Tik op de effecten die je wilt: ze worde »)
+#18 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 16ff0d67a4 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_chorus done=20 chapters=1,2,3,4,5,6 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « Effecten actief: 0 van 8 » over the touchable « Blad sluiten » (296 x 5 dp)
+#18 LAYOUT OVERLAP « Vervorming & kleur » over the touchable « Blad sluiten » (243 x 37 dp)
+#18 LAYOUT OVERLAP « Equalizer » over the touchable « Blad sluiten » (117 x 37 dp)
+#18 LAYOUT OVERLAP « Saturatie » over the touchable « Blad sluiten » (114 x 37 dp)
+#18 LAYOUT OVERLAP « Bitcrusher » over the touchable « Blad sluiten » (132 x 37 dp)
+#18 LAYOUT OVERLAP « Parametrische EQ » over the touchable « Blad sluiten » (227 x 37 dp)
+#18 LAYOUT OVERLAP « Oud vinyl » over the touchable « Blad sluiten » (120 x 37 dp)
+#18 LAYOUT OVERLAP « Walkietalkie » over the touchable « Blad sluiten » (153 x 37 dp)
+#18 LAYOUT OVERLAP « Vervorming » over the touchable « Blad sluiten » (148 x 37 dp)
+#18 LAYOUT OVERLAP « Hoorbare bas » over the touchable « Blad sluiten » (171 x 37 dp)
+#18 LAYOUT OVERLAP « Filters & beweging » over the touchable « Blad sluiten » (234 x 37 dp)
+#18 LAYOUT OVERLAP « Chorus » over the touchable « Blad sluiten » (92 x 37 dp)
+#18 LAYOUT OVERLAP « Filter » over the touchable « Blad sluiten » (64 x 37 dp)
+#18 LAYOUT OVERLAP « Flanger » over the touchable « Blad sluiten » (95 x 23 dp)
+#18 LAYOUT OVERLAP « Phaser » over the touchable « Blad sluiten » (88 x 23 dp)
+#18 > touche 130 1196
+#18 DOIGT fx_pick_6_CHORUS « Chorus »
+#19 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE f82dc4ed5b | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_chorus done=21 chapters=1,2,3,4,5,6,7 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « Effecten actief: 1 van 8 » over the touchable « Blad sluiten » (289 x 5 dp)
+#19 LAYOUT OVERLAP « 1. Chorus » over the touchable « Blad sluiten » (92 x 75 dp)
+#19 LAYOUT OVERLAP « Snelheid » over the touchable « Blad sluiten » (106 x 37 dp)
+#19 LAYOUT OVERLAP « 0,20 Hz » over the touchable « Blad sluiten » (97 x 31 dp)
+#19 LAYOUT OVERLAP « Diepte » over the touchable « Blad sluiten » (80 x 37 dp)
+#19 LAYOUT OVERLAP « 50% » over the touchable « Blad sluiten » (59 x 31 dp)
+#19 LAYOUT OVERLAP « Vertraging » over the touchable « Blad sluiten » (129 x 37 dp)
+#19 LAYOUT OVERLAP « 40% » over the touchable « Blad sluiten » (59 x 31 dp)
+#19 LAYOUT OVERLAP « Mix » over the touchable « Blad sluiten » (43 x 37 dp)
+#19 LAYOUT OVERLAP « Ingang » over the touchable « Blad sluiten » (84 x 37 dp)
+#19 LAYOUT OVERLAP « Stereo » over the touchable « Blad sluiten » (82 x 31 dp)
+#19 LAYOUT OVERLAP « Bitcrusher » over the touchable « Blad sluiten » (132 x 19 dp)
+#19 > retour
+#19 RETOUR
+#20 ROUTE console/tab_Mix | MODE pro | EMPREINTE cf69e0483c | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_chorus done=21 chapters=1,2,3,4,5,6,7 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 294 921
+#20 DOIGT tuto_chapter_end_folded « Goed gedaan, hoofdstuk klaar! »
+#21 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE b6a0f21d03 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_chorus done=21 chapters=1,2,3,4,5,6,7 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 294 662
+#21 DOIGT tuto_text_more « Verder lezen »
+#22 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE b4dc67f614 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=pad_chorus done=21 chapters=1,2,3,4,5,6,7 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 294 737
+#22 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#23 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 6eeeb4dafe | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_hear done=21 chapters=1,2,3,4,5,6,7 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 294 826
+#23 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#24 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 19f8d5ee79 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_hear done=21 chapters=1,2,3,4,5,6,7 playing=false
+#24 SON Son : l'exemple du tuto joue (encore 3 s).
+#24 > attends 4
+#25 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 2ec1b317ab | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_hear done=22 chapters=1,2,3,4,5,6,7 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 294 854
+#25 DOIGT tuto_next_big « Volgende stap   »
+#26 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE fc7861bf3d | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6,7 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT OVERLAP « 174 » over « De bel die antwoordt » (54 x 34 dp)
+#26 LAYOUT OVERLAP « De bel die antwoordt » over the touchable « Tempo: 174 BPM Tempo wijzigen » (131 x 48 dp)
+#26 > touche 294 608
+#26 DOIGT tuto_text_more « Verder lezen »
+#27 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE fc7861bf3d | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6,7 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 514 457
+#27 DOIGT tuto_kit_later « Later »
+#28 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 57a4254212 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6,7 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 294 617
+#28 DOIGT tuto_text_more « Verder lezen »
+#29 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 57a4254212 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6,7 playing=false
+#29 SON Son : rien ne joue.
+#29 > glisse 294 360 294 480
+#29 DOIGT rien (texte « Nu jij: maak het spoor Melodie en schrij »)
+#30 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 015d5e7a9a | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6,7 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 294 737
+#30 DOIGT tuto_need «   Spoor Melodie maken »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE d026b01390 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6,7 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CUT « Nog 1 gestippelde noot om aan te tikken » ellipsized (« … »)
+#31 LAYOUT CUT « C5 » lines cut (taller than its box)
+#31 LAYOUT CUT « Nu jij: maak het spoor Melodie en schrijf de tegenmelodie: maat 1 (E, C, A, hij daalt door het akkoord), ‘Kopiëren’ herhaalt hem lager op Em, dan maat 3 en 4 met de hand: hij klimt weer (C, E, G) en landt op D. » ellipsized (« … »)
+#31 > touche 321 605
+#31 DOIGT rien
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE d026b01390 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6,7 playing=false
+#32 SON Son : rien ne joue.
+#32 > glisse 200 640 200 480
+#32 DOIGT tuto_toggle « De bel die antwoordt »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE d026b01390 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6,7 playing=false
+#33 SON Son : rien ne joue.
+#33 RIEN NE CHANGE (3 écrans identiques)
+#33 > glisse 200 724 200 1000
+#33 DOIGT tuto_toggle « De bel die antwoordt »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE d026b01390 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6,7 playing=false
+#34 SON Son : rien ne joue.
+#34 > glisse 294 450 294 250
+#34 DOIGT rien
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE d026b01390 | project=p-fc9e2cda tuto=liquid_dnb/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6,7 playing=false
+#35 SON Son : rien ne joue.
+#35 RIEN NE CHANGE (5 écrans identiques)
+#35 BENCH-FLAG where=seat.rien-ne-change want="un écran qui change" saw="5 écrans identiques" waited=717656 screen=tab_Sons
+#35 BENCH-VERDICT fail where=seat.rien-ne-change why="rien ne change (5 écrans identiques)"
+#35 FIN : rien ne change (5 écrans identiques)

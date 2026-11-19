@@ -1,0 +1,29 @@
+Écran 19 (588x1278)
+dessin @ 294,36
+texte « Effecten actief: 1 van 8 » [coupé] @ 241,76
+bouton « 1. Chorus » [sélectionné] @ 150,142
+icône ⏻ @ 312,142
+icône ⌃ [désactivé] @ 384,142
+icône ⌄ [désactivé] @ 456,142
+icône ✕ @ 528,142
+texte « Snelheid » @ 221,232
+texte « 0,20 Hz » @ 491,232
+curseur [état « 0,20 Hz », à 30 %] @ 294,296
+texte « Diepte » @ 249,360
+texte « 50% » @ 519,360
+curseur [état « 50% », à 50 %] @ 294,424
+texte « Vertraging » @ 249,488
+texte « 40% » @ 519,488
+curseur [état « 40% », à 40 %] @ 294,552
+texte « Mix » @ 249,616
+texte « 50% » @ 519,616
+curseur [état « 50% », à 50 %] @ 294,680
+texte « Ingang » @ 232,744
+texte « Stereo » @ 502,744
+curseur [état « Stereo », à 100 %] @ 294,808
+bouton ✕ «   Effectenlijst sluiten » @ 294,890
+texte « Tik op de effecten die je wilt: ze worden na elkaar toegevoegd, op volgorde. » @ 294,1014
+texte « Vervorming & kleur » @ 207,1129
+bouton + « Equalizer » @ 148,1202
+bouton + « Saturatie » @ 404,1202
+bouton + « Bitcrusher » [coupé] @ 159,1263

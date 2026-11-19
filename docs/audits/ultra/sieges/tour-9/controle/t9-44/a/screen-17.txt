@@ -1,0 +1,21 @@
+Écran 17 (588x1278)
+dessin @ 294,36
+texte « Akkoorden » @ 218,112
+texte « Sluiten » @ 479,112
+bouton « Stil » @ 78,203
+bouton « Solo » @ 211,203
+texte « Volume » @ 221,285
+texte « +0,0 dB » @ 491,285
+curseur [état « +0,0 dB », à 80 %] @ 294,368
+texte « Pan » @ 62,450
+bouton « ? » @ 121,450
+texte « Midden » @ 493,450
+curseur [état « Midden », à 50 %] @ 294,533
+bouton (barres de son) «  Wat speelt » @ 156,624
+bouton (courbe) «  Curven » @ 432,624
+texte « Effecten » @ 103,707
+texte « Effecten actief: 0 van 8 » @ 246,778
+texte « Nog geen: voeg een effect toe, of tik op een kant-en-klare sfeer. » @ 294,890
+bouton ✕ «   Effectenlijst sluiten » @ 294,1014
+texte « Tik op de effecten die je wilt: ze worden na elkaar toegevoegd, op volgorde. » @ 294,1138
+texte « Vervorming & kleur » @ 207,1251

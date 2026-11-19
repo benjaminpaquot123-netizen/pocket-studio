@@ -1,0 +1,30 @@
+Écran 10 (588x1278)
+icône « Mijn project 1 » ✓ @ 298,38
+bouton « Pro » @ 537,38
+texte « De piano Hoofdstuk 7/17 · Stap 2/3 · Pro » @ 201,190
+icône (liste) « Hoofdstukken » @ 438,190
+icône ⌄ @ 531,190
+texte « Het spoor ‘Akkoorden’ speelt op elektrische piano: dat is de jazzy kleur van liquid. Op de bas gezet wordt elk akkoord van 3 noten een rijk septiemakkoord. » [coupé] @ 294,343
+bouton « Kit Liquid DnB downloaden (2 MB) » @ 247,455
+texte « Later » @ 514,455
+texte « ▾ Waarom? » @ 294,543
+icône « Verder lezen » ⌄ @ 294,606
+bouton ⊕ «   Kopiëren naar de volgende maten » @ 294,709
+bouton ▶ «  Luister naar het voorbeeld » @ 154,840
+bouton (œil) «  Laat zien » @ 433,840
+icône ← «  Vorige » @ 120,943
+icône « Volgende  » → @ 439,943
+icône ▶ « het nummer » @ 272,1047
+texte « 174 Tempo » @ 438,1046
+icône ↶ « Ongedaan maken » @ 46,1047
+icône ↷ « Opnieuw » [désactivé] @ 127,1047
+icône (trois points reliés) « Delen » @ 541,1047
+onglet (ligne brisée et points) « Structuur » @ 54,1158
+onglet (touches de piano) « Klanken » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Meer » @ 534,1158
+texte « ●  REC » @ 279,1248
+texte « ✎  Noteren » @ 419,1248
+texte « ⋯ » @ 540,1248
+texte « Feedbackmodus » @ 118,1248

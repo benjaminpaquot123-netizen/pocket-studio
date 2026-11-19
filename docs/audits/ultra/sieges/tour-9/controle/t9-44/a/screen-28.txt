@@ -1,0 +1,33 @@
+Écran 28 (588x1278)
+image (courbe) @ 0,0
+bouton (dossier ouvert) ✓ @ 107,42
+bouton « Pro » @ 248,42
+icône ↶ @ 326,42
+bouton ● @ 398,42
+bouton ▶ « dit deel » @ 470,42
+icône (trois points reliés) @ 543,42
+texte « De bel die antwoordt Hoofdstuk 8/17 · Stap 2/3 · Pro » @ 201,193
+icône (liste) « Hoofdstukken » @ 438,193
+icône ⌄ @ 531,193
+texte « Nu jij: maak het spoor Melodie en schrijf de tegenmelodie: maat 1 (E, C, A, hij daalt door het akkoord), ‘Kopiëren’ herhaalt hem lager op Em, dan maat 3 en 4 met de hand: hij klimt weer (C, E, G) en landt op D. » [coupé] @ 294,422
+texte « ▸ Waarom? » @ 294,554
+icône « Verder lezen » ⌄ @ 294,617
+bouton ⊕ «   Spoor Melodie maken » @ 294,737
+bouton ▶ «  Luister naar het voorbeeld » @ 154,840
+bouton (œil) «  Laat zien » @ 433,840
+icône ← «  Vorige » @ 120,943
+icône « Volgende  » → @ 439,943
+icône ▶ « het nummer » @ 272,1047
+texte « 174 Tempo » @ 438,1046
+icône ↶ « Ongedaan maken » @ 46,1047
+icône ↷ « Opnieuw » [désactivé] @ 127,1047
+icône (trois points reliés) « Delen » @ 541,1047
+onglet (ligne brisée et points) « Structuur » @ 54,1158
+onglet (touches de piano) « Klanken » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Meer » @ 534,1158
+texte « ●  REC » @ 279,1248
+texte « ✎  Noteren » @ 419,1248
+texte « ⋯ » @ 540,1248
+texte « Feedbackmodus » @ 118,1248

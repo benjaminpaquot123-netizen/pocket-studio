@@ -1,0 +1,28 @@
+Écran 9 (588x1278)
+texte « De piano Hoofdstuk 7/17 · Stap 2/3 · Pro » @ 201,165
+icône (liste) « Hoofdstukken » @ 438,165
+icône ⌄ @ 531,165
+texte « Nu jij: tik op ‘Kopiëren naar de volgende maten’: de volgende akkoorden komen er vanzelf in. » [coupé] @ 294,303
+bouton « Kit Liquid DnB downloaden (2 MB) » @ 247,401
+texte « Later » @ 514,401
+texte « ▸ Waarom? » @ 294,489
+icône « Verder lezen » ⌄ @ 294,552
+bouton ⊕ «   Kopiëren naar de volgende maten » @ 294,709
+bouton ▶ «  Luister naar het voorbeeld » @ 154,840
+bouton (œil) «  Laat zien » @ 433,840
+icône ← «  Vorige » @ 120,943
+icône « Volgende  » → @ 439,943
+icône ▶ « het nummer » @ 272,1047
+texte « 174 Tempo » @ 438,1046
+icône ↶ « Ongedaan maken » @ 46,1047
+icône ↷ « Opnieuw » [désactivé] @ 127,1047
+icône (trois points reliés) « Delen » @ 541,1047
+onglet (ligne brisée et points) « Structuur » @ 54,1158
+onglet (touches de piano) « Klanken » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Meer » @ 534,1158
+texte « ●  REC » @ 279,1248
+texte « ✎  Noteren » @ 419,1248
+texte « ⋯ » @ 540,1248
+texte « Feedbackmodus » @ 118,1248

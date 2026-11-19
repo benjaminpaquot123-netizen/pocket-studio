@@ -71,11 +71,11 @@ run_tests() {
 }
 rm -f "$lot/selftest-gradle-echecs.txt"
 # Banc fiable 3.2 (control 13): the amenées are checked on the profiles of THIS lot's seats (their start.txt, the
-# bench's own keys), not only on round 1's ten.
+# bench's own keys), not only on round 1's ten; tour 9: a seat's own tutorial anchor (amenee=tuto:…) on its profile too.
 profiles=()
 for st in "$lot"/*/start.txt; do
   [ -f "$st" ] || continue
-  line="$({ grep -E '^(lang|device|font|mode|main|lit|theme)=' "$st" || true; } | tr '\n' ' ' | sed 's/ *$//')"
+  line="$({ grep -E '^(lang|device|font|mode|main|lit|theme)=|^amenee=tuto:' "$st" || true; } | tr '\n' ' ' | sed 's/ *$//')"
   [ -n "$line" ] && profiles+=("$line")
 done
 profile_arg=()

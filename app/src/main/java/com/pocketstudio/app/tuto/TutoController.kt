@@ -233,6 +233,9 @@ class TutoController(
     /** The step whose folded panel was opened because only its cells' softness was missing (once a step). */
     private var softSaid: String? = null
 
+    /** The user folded the panel ([toggleOpen]): a new step keeps it folded (an automatic fold does not count). */
+    private var userFolded = false
+
     /**
      * The looks at the project asked for and not begun ([look]): one waits at most (a second request meanwhile is the
      * same look), and [looks] makes them one at a time.
@@ -261,6 +264,7 @@ class TutoController(
     /** Starts (or restarts) [style]'s course at [level] in this project. */
     fun start(style: String, level: TutoLevel) {
         val p = TutoProgress(style, level)
+        userFolded = false
         store.save(projectId, p)
         show(p)
     }
@@ -296,8 +300,15 @@ class TutoController(
         show(u.progress.copy(level = level, current = u.current.id))
     }
 
-    /** Folds or unfolds the panel (kept while the step stays: the next one opens it again). */
-    fun toggleOpen() { _ui.value = _ui.value?.let { it.copy(open = !it.open) } }
+    /**
+     * Folds or unfolds the panel. Tour 9, F001 (seats t9-04, t9-28: « il se rouvre à chaque étape »): the user's own
+     * fold is kept on the steps after, until the user unfolds it.
+     */
+    fun toggleOpen() {
+        val u = _ui.value ?: return
+        userFolded = u.open
+        _ui.value = u.copy(open = !u.open)
+    }
 
     fun goTo(chapter: Int, step: Int = 0) {
         val u = _ui.value ?: return
@@ -820,7 +831,7 @@ class TutoController(
         look()
     }
 
-    /** [p] saved and shown on its current step (the first not done when none is named); a new step opens the panel, its « Bravo » kept while it stays. */
+    /** [p] saved and shown on its current step (the first not done when none is named); a new step opens the panel unless the user folded it, its « Bravo » kept while it stays. */
     private fun save(p: TutoProgress, chapters: List<TutoChapter> = _ui.value?.chapters.orEmpty(), bravo: Boolean = false, atEnd: Boolean = false) {
         val course = TutoCourse.of(p.style) ?: return
         val list = if (_ui.value?.progress?.level == p.level && chapters.isNotEmpty()) chapters else course.chaptersFor(p.level)
@@ -845,7 +856,7 @@ class TutoController(
         val same = kept != null && !moved
         val need = target?.let { TutoPlay.button(step, project.value, it, base(), saved.level) }
         _ui.value = TutoUi(
-            saved, list, chapter, list[chapter].steps.indexOf(step), open = if (same && !atEnd) kept!!.open else true, bravo = bravo || (same && kept!!.bravo),
+            saved, list, chapter, list[chapter].steps.indexOf(step), open = if (same && !atEnd) kept!!.open else !userFolded || atEnd, bravo = bravo || (same && kept!!.bravo),
             preparing = same && kept!!.preparing, playing = same && kept!!.playing, failed = same && kept!!.failed,
             need = need, partEmpty = TutoPlay.emptyPart(project.value, need),
             demo = if (same) kept!!.demo else null, demoCells = if (same) kept!!.demoCells else null, fade = if (same) kept!!.fade else 0f,

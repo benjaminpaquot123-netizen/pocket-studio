@@ -227,6 +227,14 @@ const val TUTO_TURN_MS = 450L
 /** The room of a step's words while its dotted cells are on the drum grid shown ([TutoHints.gridInSight]). */
 private val GRID_WORDS_MAX = 120.dp
 
+/**
+ * Tour 9 (D02, D13, D14; seats t9-44, t9-51, t9-65): the screen's least room above the tuto panel, under its top bar (a
+ * part's header, the grid's line and a whole row of cells, a pad row, the piano roll's notes), at 100 %; it grows with the
+ * font (up to 200 %), as what it holds does. The panel's ceiling is what leaves it: past it, the folded panel shows its
+ * compact form (the chapter's title and line give their room to the screen).
+ */
+val TUTO_SCREEN_LEAST = 200.dp
+
 /** How long [TutoHints.banner] stays. */
 const val TUTO_BANNER_MS = 1800L
 
@@ -502,6 +510,11 @@ fun TutoPanel(
     kit: (@Composable () -> Unit)? = null,
     /** Round 3, n° 29: the step's words with each pad named as it shows on the screen ([tutoPadNames]). */
     names: (String) -> String = { it },
+    /**
+     * Tour 9 (D02): the most height the panel may take and leave the screen its least room ([TUTO_SCREEN_LEAST]).
+     * Folded over it, the chapter's head gives its room (a progress bar and one row: the folded line, « Déplier »).
+     */
+    ceiling: androidx.compose.ui.unit.Dp = androidx.compose.ui.unit.Dp.Infinity,
 ) {
     val step = ui.current
     val chapter = ui.chapters[ui.chapter]
@@ -524,6 +537,12 @@ fun TutoPanel(
     val lowRoom = (TutoHints.gridInSight && (TutoHints.cells?.second?.isNotEmpty() == true || TutoHints.erase?.values?.any { it.isNotEmpty() } == true)) ||
         (TutoHints.soundButtonInSight && TutoHints.knobs.isNotEmpty())
     val cellsToTouch = lowRoom && !readAll
+    // Tour 9 (D02; seat t9-65, 360 dp, 200 %, Japanese): folded, the chapter's title and line (three lines each) and two
+    // lines of words made 262 dp: the rhythm grid kept 23 dp, no cell in sight. The panel's whole height, measured with its
+    // head; folded over the ceiling it goes compact, for the step, until it is unfolded.
+    val ceilingPx = if (ceiling == androidx.compose.ui.unit.Dp.Infinity) Int.MAX_VALUE else with(density) { ceiling.roundToPx() }
+    var fullHeight by remember(step.id, ui.open, ui.progress.level, end, ui.demo != null, done) { mutableIntStateOf(0) }
+    val compact = !ui.open && fullHeight > ceilingPx
     var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
@@ -580,10 +599,33 @@ fun TutoPanel(
     ) {
         Column(
             Modifier.then(if (holding) Modifier.height(with(density) { held.toDp() }) else Modifier)
-                .onSizeChanged { if (ui.open && held == 0 && it.height > 0 && ui.demo == null && !end) held = it.height }
+                .onSizeChanged {
+                    if (!compact && it.height > 0) fullHeight = it.height
+                    if (ui.open && held == 0 && it.height > 0 && ui.demo == null && !end) held = it.height
+                }
                 .padding(horizontal = 14.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
+            val fold: @Composable () -> Unit = {
+                IconButton(onClick = actions.toggle, modifier = Modifier.testTag("tuto_fold")) {
+                    Icon(if (ui.open) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess, contentDescription = if (ui.open) tr("Replier") else tr("Déplier"))
+                }
+            }
+            val progress: @Composable (Modifier) -> Unit = { m ->
+                LinearProgressIndicator(
+                    progress = { ui.doneCount / ui.total.coerceAtLeast(1).toFloat() }, color = Neon.Acid, trackColor = Neon.SurfaceHigh,
+                    modifier = m.height(6.dp).clip(RoundedCornerShape(3.dp)).testTag("tuto_progress"),
+                )
+            }
+            if (compact && !ui.open) {
+                // Compact and folded: the progress, then the folded line and « Déplier » in one row.
+                progress(Modifier.fillMaxWidth())
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("tuto_compact")) {
+                    Box(Modifier.weight(1f)) { FoldedLine(ui, done, actions, names) }
+                    fold()
+                }
+                return@Column
+            }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Tour 6 (N22 fallout): the school icon (22 dp and 8 dp, decorative) gave its room to « Chapitres »: the title
                 // and the chapter's line keep the room they had beside the bare list icon.
@@ -627,14 +669,9 @@ fun TutoPanel(
                     }
                     Text(name, style = fit, maxLines = 1, softWrap = false)
                 }
-                IconButton(onClick = actions.toggle, modifier = Modifier.testTag("tuto_fold")) {
-                    Icon(if (ui.open) Icons.Filled.ExpandMore else Icons.Filled.ExpandLess, contentDescription = if (ui.open) tr("Replier") else tr("Déplier"))
-                }
+                fold()
             }
-            LinearProgressIndicator(
-                progress = { ui.doneCount / ui.total.coerceAtLeast(1).toFloat() }, color = Neon.Acid, trackColor = Neon.SurfaceHigh,
-                modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)).testTag("tuto_progress"),
-            )
+            progress(Modifier.fillMaxWidth())
             if (!ui.open) {
                 FoldedLine(ui, done, actions, names)
                 return@Column

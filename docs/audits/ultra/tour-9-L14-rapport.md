@@ -57,3 +57,4 @@ Demande : F020 (t9-73), `project-model` `tuto/TutoChecks.kt` et `i18n/*/tuto.jso
 
 ## Captures regardées (écran entier)
 Voir la section ajoutée après la vérification Roborazzi.
+- `TutoScreenshotTest` (12 captures) : seule `tuto_key_sheet` change (F018) : plus de « Phrygienne » ni de « Fa » choisis d'avance, les deux puces attendues restent en pointillés ; le reste de la feuille (titre, Fermer, gammes, toniques) est identique et aligné. Réenregistrée.

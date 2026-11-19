@@ -144,7 +144,7 @@ abstract class PianoRollBigTextDotted {
      * written. Acceptance: « Un glissé qui part d'une note en pointillé la pose entière, comme un toucher ; le rouleau ne
      * défile pas. »
      */
-    protected fun dragAlongDottedNote(style: String, stepId: String, simple: Boolean) {
+    protected fun dragAlongDottedNote(style: String, stepId: String, simple: Boolean, beside: Boolean = false) {
         val target = TutoTarget.of(style)!!
         h.start(simple = simple, build = {
             session.edit { target.blank() }
@@ -159,10 +159,14 @@ abstract class PianoRollBigTextDotted {
             settle()
         }
         val before = leftNotes()
-        val n = before.first { place(it) != null }
-        val at = place(n)!!
         val canvas = node("piano_roll")
         val stepPx = canvas.size.width / h.vm.project.value.track(TutoHints.notes!!.first).notes.steps.toFloat()
+        // [beside] (tour 9 replay of S17): the finger lands a quarter of a step before the drawn note, where a touch
+        // still writes it (tutoTapTarget): the drag must write it too, « comme un toucher ».
+        val shift = if (beside) 0.75f * stepPx else 0f
+        val tickBefore: (Note) -> Int = { it.start - NoteClip.TICKS_PER_STEP / 4 }
+        val n = before.first { place(it) != null && (!beside || (tickBefore(it) >= 0 && tutoTapTarget(tickBefore(it), it.pitch, before) == it)) }
+        val at = place(n)!!.let { Offset(it.x - shift, it.y) }
         val origin = canvas.boundsInRoot.topLeft
         val roll = node("roll_view").boundsInRoot
         // Along the note, to its end and a little further (held a moment: a finger drawing, not a flick).
@@ -180,6 +184,12 @@ abstract class PianoRollBigTextDotted {
 
     @Test
     fun dragAlongDottedBassSimple() = dragAlongDottedNote("speed_garage", "bass_do", simple = true)
+
+    @Test
+    fun dragFromBesideDottedBassPro() = dragAlongDottedNote("speed_garage", "bass_do", simple = false, beside = true)
+
+    @Test
+    fun dragFromBesideDottedBassSimple() = dragAlongDottedNote("speed_garage", "bass_do", simple = true, beside = true)
 
     @Test
     fun speedGarageBassSimple() = touchEveryDottedNote("speed_garage", "bass_do", simple = true)

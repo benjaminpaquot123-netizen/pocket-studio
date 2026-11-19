@@ -1,0 +1,74 @@
+Écran 100 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 188,42
+texte « Pro » @ 403,42
+bouton « A » ▾ @ 478,42
+icône ↶ @ 553,42
+bouton ● @ 625,42
+bouton ▶ « bagian ini » @ 698,42
+bouton ▶ « lagu » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » [coupé] @ 54,186
+onglet « Acid 303 Bassline » @ 169,186
+onglet « Vokal Mikrofon » @ 322,186
+onglet « Remix Pisahkan » @ 473,186
+bouton « Akor Hoover » @ 612,186
+bouton « Melodi Synth » ⋮ @ 756,186
+icône « Suara » ♪ [coupé] @ 860,186
+image ← @ 10,187
+image → @ 889,187
+texte « Bagian: A » @ 68,249
+dessin @ 240,310
+texte « Envelope filter » @ 113,310
+texte « 40% » @ 413,310
+dessin @ 660,310
+texte « Attack » @ 494,310
+texte « 2 ms » @ 832,310
+curseur [état « 40% », à 40 %] @ 240,373
+curseur [état « 2 ms », à 5 %] @ 660,373
+dessin @ 240,436
+texte « Release » @ 81,436
+texte « 196 ms » @ 398,436
+dessin @ 660,436
+texte « Ketebalan (detune) » @ 556,436
+texte « 67% » @ 833,436
+curseur [état « 196 ms », à 62 %] @ 240,499
+curseur [état « 67% », à 66 %] @ 660,499
+dessin @ 240,562
+texte « Sub bass » @ 88,562
+texte « 0% » @ 420,562
+dessin @ 660,568
+texte « Unison (supersaw) » @ 555,569
+bouton « ? » @ 670,568
+texte « 1 suara » @ 819,568
+curseur [état « 0% », à 0 %] @ 240,625
+curseur [état « 1 suara », à 0 %] @ 660,638
+dessin @ 240,701
+texte « Lebar unison » @ 106,701
+texte « 30% » @ 413,701
+dessin @ 660,701
+texte « Volume » @ 498,701
+texte « 60% » @ 833,701
+curseur [état « 30% », à 30 %] @ 240,764
+curseur [état « 60% », à 60 %] @ 660,764
+icône ⌄ « Pengaturan lanjutan » [coupé] @ 182,832
+icône (liste) « Bab » @ 771,894
+texte « Bagian pertamamu: Groove Bab 6/14 · Langkah 2/2 · Pro » @ 378,894
+icône ⌄ @ 843,894
+texte « Giliranmu: beri nama scene ini “Groove”: loop lengkap, sumber bagian-bagian lainnya. » @ 450,993
+texte « ▸ Kenapa? » @ 450,1053
+bouton ⊕ «   Beri nama bagian “Groove” » @ 450,1116
+bouton ▶ «  Dengar contohnya » @ 232,1200
+bouton (œil) «  Tunjukkan » @ 667,1200
+icône ← «  Sebelumnya » @ 119,1281
+icône « Berikutnya  » → @ 789,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

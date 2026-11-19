@@ -1,0 +1,58 @@
+Écran 78 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 188,42
+texte « Pro » @ 403,42
+bouton « A » ▾ @ 478,42
+icône ↶ @ 553,42
+bouton ● @ 625,42
+bouton ▶ « bagian ini » @ 698,42
+bouton ▶ « lagu » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » [coupé] @ 54,186
+onglet « Acid 303 Bassline » @ 169,186
+onglet « Vokal Mikrofon » @ 322,186
+onglet « Remix Pisahkan » @ 473,186
+bouton « Akor Hoover » @ 612,186
+bouton « Melodi Lead square » ⋮ @ 779,186
+image ← @ 10,187
+image → @ 889,187
+texte « Bagian: A » @ 68,249
+bouton « Akor » @ 90,321
+bouton « Ghost bass » [sélectionné] @ 225,321
+texte « Sesuai irama 50% » @ 423,321
+texte « 100% » @ 586,321
+texte « Hapus » @ 689,321
+bouton « Melodi · birama 2/8 ↓ Masih 2 not bergaris putus untuk disentuh Ketuk di sini » @ 450,402
+texte « birama » @ 84,459
+bouton « 2 » @ 486,471
+bouton « 3 » [coupé] @ 853,471
+texte « C♯ » @ 84,525
+texte « C6 » @ 84,567
+texte « B » @ 84,609
+texte « A♯ » @ 84,651
+texte « A » @ 84,693
+texte « G♯ » @ 84,735
+texte « G » @ 84,777
+texte « F♯ » @ 84,819
+texte « F » @ 84,861
+texte « E » @ 84,903
+texte « D♯ » @ 84,945
+texte « D » @ 84,987
+texte « C♯ » @ 84,1029
+texte « C5 » @ 84,1071
+texte « B » @ 84,1113
+dessin [coupé] @ 492,819
+icône (liste) « Bab » @ 771,1182
+texte « Riff Bab 5/14 · Langkah 1/2 · Pro » @ 378,1182
+icône ⌃ @ 843,1182
+icône « Giliranmu: buat trek Melodi (suara “Lead square”): riff not 1/8 di F♯, dengan oktaf, C♯, dan A, lalu E yang ditahan. “Salin”. Baca » ⌃ @ 450,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

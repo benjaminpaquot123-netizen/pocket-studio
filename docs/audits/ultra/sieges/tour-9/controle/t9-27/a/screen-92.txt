@@ -1,0 +1,82 @@
+Écran 92 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 188,42
+texte « Pro » @ 403,42
+bouton « A » ▾ @ 478,42
+icône ↶ @ 553,42
+bouton ● @ 625,42
+bouton ▶ « bagian ini » @ 698,42
+bouton ▶ « lagu » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » [coupé] @ 54,186
+onglet « Acid 303 Bassline » @ 169,186
+onglet « Vokal Mikrofon » @ 322,186
+onglet « Remix Pisahkan » @ 473,186
+bouton « Akor Hoover » @ 612,186
+bouton « Melodi Synth » ⋮ @ 756,186
+icône « Suara » ♪ [coupé] @ 860,186
+image ← @ 10,187
+image → @ 889,187
+texte « Bagian: A » @ 68,249
+dessin [coupé] @ 240,276
+texte « Cutoff » [coupé] @ 73,276
+texte « 4,0 kHz » [coupé] @ 398,275
+dessin [coupé] @ 660,276
+texte « Resonance » [coupé] @ 517,276
+texte « 20% » [coupé] @ 833,275
+curseur [état « 4,0 kHz », à 78 %] @ 240,331
+curseur [état « 20% », à 20 %] @ 660,331
+dessin @ 240,394
+texte « Envelope filter » @ 113,394
+texte « 40% » @ 413,394
+dessin @ 660,394
+texte « Attack » @ 494,394
+texte « 2 ms » @ 832,394
+curseur [état « 40% », à 40 %] @ 240,457
+curseur [état « 2 ms », à 5 %] @ 660,457
+dessin @ 240,520
+texte « Release » @ 81,520
+texte « 196 ms » @ 398,520
+dessin @ 660,529
+texte « Ketebalan (detune) » @ 565,529
+texte « 67% » @ 824,529
+curseur [état « 67% », à 66 %] @ 660,580
+curseur [état « 196 ms », à 62 %] @ 240,583
+dessin @ 240,652
+texte « Sub bass » @ 88,652
+texte « 0% » @ 420,652
+dessin @ 660,658
+texte « Unison (supersaw) » @ 555,659
+bouton « ? » @ 670,658
+texte « 1 suara » @ 819,658
+curseur [état « 0% », à 0 %] @ 240,715
+curseur [état « 1 suara », à 0 %] @ 660,728
+dessin @ 240,791
+texte « Lebar unison » @ 106,791
+texte « 30% » @ 413,791
+dessin @ 660,791
+texte « Volume » @ 498,791
+texte « 60% » @ 833,791
+curseur [état « 30% », à 30 %] @ 240,854
+curseur [état « 60% », à 60 %] @ 660,854
+icône ⌄ « Pengaturan lanjutan » [coupé] @ 182,919
+texte « Riff Bab 5/14 · Selesai · Pro » @ 378,978
+icône (liste) « Bab » @ 771,978
+icône ⌄ @ 843,978
+image (coupe) @ 57,1095
+texte « Bagus, bab selesai! » @ 190,1068
+texte « Dengarkan lagumu seperti sekarang, lalu lanjut ke bab berikutnya: “Bagian pertamamu: Groove”. » @ 475,1110
+bouton « Bab berikutnya   » → @ 450,1197
+icône ← @ 57,1281
+bouton ▶ «  Dengarkan laguku » @ 294,1281
+bouton ▶ «  Dengar contohnya » @ 687,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

@@ -1,0 +1,71 @@
+Écran 63 (588x1278)
+icône « Mój projekt 1 » ✓ @ 298,36
+texte « Pro » @ 543,36
+bouton (dossier ouvert) @ 111,114
+bouton « D » ▾ @ 252,114
+icône ↶ @ 327,114
+bouton ● @ 399,114
+bouton ▶ « ta część » @ 471,114
+icône (trois points reliés) @ 543,114
+bouton « 142  BPM » @ 73,186
+icône (flèches en boucle) « Pre-chorus takt 1/8 » ▾ @ 241,186
+bouton (flèches en boucle) « Pętla » [allumé, état « wł. »] @ 439,186
+bouton « ? » @ 543,186
+onglet « Perkusja 16 padów » [sélectionné] @ 86,255
+onglet « Acid 303 Linia basu » @ 245,255
+onglet « Wokal Mikrofon » @ 402,255
+onglet « Remix Rozdziel » [coupé] @ 524,255
+image → @ 577,256
+image (flèches en boucle) @ 30,315
+texte « Część: D · Pre-chorus » @ 163,315
+texte « W pętli (⟳ Pętla). ▶ gra tylko tę część. » @ 194,343
+texte « Takt 2/2 · Hi-hat » [coupé] @ 135,370
+bouton « 1 » [état « uderzenie, siła 100 % »] @ 70,446
+bouton [état « pusty »] @ 133,446
+bouton [état « pusty »] @ 197,447
+bouton [état « uderzenie, siła 60 % »] @ 261,447
+bouton « 2 » [état « pusty »] @ 325,447
+bouton [état « pusty »] @ 389,447
+bouton [état « uderzenie, siła 60 % »] @ 453,447
+bouton [état « pusty »] @ 517,447
+bouton « 3 » [état « uderzenie, siła 100 % »] @ 70,525
+bouton [état « pusty »] @ 133,525
+bouton « ×3 » [état « uderzenie, siła 60 %, Powtórzenia: 3 »] @ 197,526
+bouton « ×4 » [état « uderzenie, siła 60 %, Powtórzenia: 4 »] @ 261,526
+bouton « 4 » [état « uderzenie, siła 60 % »] @ 325,526
+bouton [état « uderzenie, siła 70 % »] @ 389,526
+bouton [état « uderzenie, siła 80 % »] @ 453,526
+bouton [état « uderzenie, siła 90 % »] @ 517,526
+bouton « Uderzenia » [sélectionné] @ 118,611
+bouton « Rolki » @ 251,611
+bouton « Pan » @ 352,611
+bouton « Wysokość » @ 474,611
+texte « wszystko » @ 189,695
+texte « 1/2 » @ 290,695
+texte « 1/4 » @ 365,695
+texte « ◀ » @ 440,695
+texte « Wypełnij » @ 83,695
+texte « ▶ » @ 78,767
+texte « Wyczyść » @ 176,767
+texte « Dotknij komórki, żeby dodać uderzenie, przesuń palec, żeby namalować kilka. Przytrzymaj uderzenie: siła i rolki (×2 do ×8). » [coupé] @ 294,823
+icône (liste) « Rozdziały » @ 444,879
+texte « Przejścia Rozdział 12/16 · Krok 1/2 · Pro » @ 207,879
+icône ⌃ @ 531,879
+image (œil) @ 51,978
+texte « Stop » @ 523,978
+texte « Patrz, robię to… » @ 279,978
+icône ↶ « Cofnij » @ 71,1062
+icône ↷ « Ponów » [désactivé] @ 177,1062
+bouton ▶ « utwór » @ 284,1062
+texte « 142 Tempo » @ 396,1062
+icône (trois points reliés) « Udostępnij » @ 513,1062
+onglet (ligne brisée et points) « Struktura » @ 54,1158
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 174,1158
+onglet (curseurs) « Miks » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Więcej » @ 534,1158
+image (doigt qui touche) @ 303,512
+texte « ●  REC » @ 360,1248
+texte « ✎  Zanotuj » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Tryb uwag » @ 162,1248

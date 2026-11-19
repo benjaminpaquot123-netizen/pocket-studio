@@ -20,5 +20,10 @@
   "Pour partager : l'onglet Partager.": "Untuk berbagi: tab Bagikan.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Melanjutkan lagumu di perangkat lain: “Bagikan” › “Simpan lagu sebagai .zip” (.zip berisi semua suaranya), lalu di perangkat lain, Proyekku › “Impor proyek (.zip)”.",
   "La partie en cours, jouée sur %s.": "Bagian sekarang, diputar sepanjang %s.",
-  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "File .zip sudah siap: %s. Tapi salinan di Dokumen gagal dibuat: simpan lewat menu bagikan."
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "File .zip sudah siap: %s. Tapi salinan di Dokumen gagal dibuat: simpan lewat menu bagikan.",
+  "comme la musique en streaming (−14 LUFS, le niveau de Spotify et YouTube)": "seperti musik streaming (−14 LUFS, level Spotify dan YouTube)",
+  "le volume habituel de ton style": "volume biasa gayamu",
+  "Mesuré pendant l'écoute : %s LUFS · crête %s dBTP": "Diukur saat mendengarkan: %s LUFS · puncak %s dBTP",
+  "(avec les reprises : %d)": "(dengan pengulangan: %d)",
+  "Renommer aussi le projet": "Ganti nama proyek juga"
 }

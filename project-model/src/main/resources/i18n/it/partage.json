@@ -20,5 +20,10 @@
   "Pour partager : l'onglet Partager.": "Per condividere: la scheda Condividi.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "Riprendere il tuo brano su un altro dispositivo: “Condividi” › “Salva il brano in .zip” (uno .zip con tutti i suoi suoni), poi, sull'altro dispositivo, I miei progetti › “Importa un progetto (.zip)”.",
   "La partie en cours, jouée sur %s.": "La parte attuale, suonata su %s.",
-  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "Lo .zip è pronto: %s. Ma la copia in Documenti non è riuscita: conservalo dal menu di condivisione."
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "Lo .zip è pronto: %s. Ma la copia in Documenti non è riuscita: conservalo dal menu di condivisione.",
+  "comme la musique en streaming (−14 LUFS, le niveau de Spotify et YouTube)": "come la musica in streaming (−14 LUFS, il livello di Spotify e YouTube)",
+  "le volume habituel de ton style": "il volume abituale del tuo stile",
+  "Mesuré pendant l'écoute : %s LUFS · crête %s dBTP": "Misurato durante l'ascolto: %s LUFS · picco %s dBTP",
+  "(avec les reprises : %d)": "(con le ripetizioni: %d)",
+  "Renommer aussi le projet": "Rinomina anche il progetto"
 }

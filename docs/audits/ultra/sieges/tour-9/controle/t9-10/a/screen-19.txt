@@ -1,0 +1,50 @@
+Écran 19 (1035x1243)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 348,42
+bouton « Simple » @ 741,42
+bouton ● @ 831,42
+bouton ▶ « cette partie » @ 910,42
+icône ⋮ @ 990,42
+bouton « 105  Tempo » @ 98,123
+bouton « ? » @ 990,123
+icône « Partie : A · Refrain » ▾ @ 158,198
+bouton « Grosse caisse 1 FX » @ 75,300
+bouton « Grosse caisse 2 » @ 200,300
+bouton « Caisse FX » @ 325,300
+bouton « Caisse 2 » @ 450,300
+bouton « Claquement de mains » [coupé] @ 75,387
+bouton « Charley FX G 30 » [coupé] @ 200,387
+bouton « Charley ouvert D 30 » [coupé] @ 325,387
+bouton « Tom grave » [coupé] @ 450,387
+titre « PAS : GROSSE CAISSE 1 » [état « Déplié »] @ 654,324
+bouton « ? » @ 736,324
+bouton « Tous les pads » @ 875,324
+texte « Mesure » [coupé] @ 600,408
+bouton « 1 » [coupé, sélectionné] @ 695,406
+bouton « 2 » [coupé] @ 776,406
+bouton « Suivre » [coupé] @ 889,406
+texte « Construis tes parties Chapitre 10/15 · Étape 1/5 · Facile » @ 424,467
+icône (liste) « Chapitres » @ 885,468
+icône ⌄ @ 978,468
+texte « À toi : touche « Créer la partie « Intro » ». » @ 308,556
+bouton « Télécharger le kit Afrobeats (2 Mo) » @ 445,636
+texte « Plus tard » @ 935,636
+texte « ▸ Pourquoi ? » @ 517,707
+bouton ⊕ «   Créer la partie « Intro » » @ 517,776
+bouton ▶ «  Écouter l'exemple » @ 266,860
+bouton (œil) «  Montre-moi » @ 768,860
+icône ← «  Précédent » @ 127,941
+icône « Suivant  » → @ 927,941
+bouton ▶ « le morceau » @ 514,1026
+icône ↶ « Annuler » @ 139,1026
+image ↷ @ 317,1013
+texte « 105 Tempo » @ 717,1026
+icône ⋮ « Plus » @ 897,1026
+onglet (lignes et note) « Mon morceau » @ 99,1123
+onglet (quatre carrés) « Rythme » [sélectionné] @ 309,1123
+onglet (touches de piano) « Clavier » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Partager » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Noter » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode retours » @ 385,1213

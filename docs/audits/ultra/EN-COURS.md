@@ -2,27 +2,20 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`. L'histoire du 13 au 19 novembre (tours 6, 7 et 8) est dans `docs/archive/EN-COURS-2026-11-13-a-19.md` : elle ne se suit pas.
 
-- **Mise à jour** : 2026-11-19, 08 h 00 (heure belge).
+- **Mise à jour** : 2026-11-19, 15 h 45 (heure belge).
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
-- **Temps en cours** : TOUR 9 lancé (Benjamin : « A. Et termine tout avant de réparer. ») : balayage machine 37 tutos × 15 langues, puis 37 sièges « tuto entier », AUCUNE réparation avant la fin du tri. Avant : Tour 8 clôturé (`sieges/tour-8/controle/verdict-final.md`). Aucune vague de testeurs ne joue. Avant d'écrire le plan du tour 9 : `docs/audits/ultra/PREPARATION-TOUR-9.md`.
-- **Intégration** : branche `ccr-80af1a1b-mn0wec`, tête `26e315e22` ; dernière CI verte : 389, sur `c9d48c185` (l'écart n'est que du texte). Tour 7 dans `main` (PR 59) ; le tour 8 n'y est pas encore.
-- **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Contrôle final du tour 8 joué sur `c9d48c185`.
-- **Lots ouverts** : aucun. **File du portail** : vide. **Discussions du tour 8** : à fermer.
-- **Branches pas entrées** : (rangées le 19 novembre, 08 h) 9 branches de sièges du tour 8 (rapports seuls : `aud/tour-8-ctrl-t0b-d`, `-d2`, `-e`, `-e2`, `aud/tour-8-ctrl-t0c-a`, `-b`, `-c`, `-e`, `eq/tour-8-controle-t0a`) ; `eq/tour-8-guetteur` (essai sur un test du moteur, à laisser : le lot « machinerie » le remplace).
-
-## Discussions du tour 9 (19 novembre, 08 h)
-
-- 08 h 26 : T9-BALAYAGE fini (eq/tour-9-balayage 6cb53e072, archivé) : 3/3 connus retrouvés ; graves probables : grille cachée par le panneau (360 dp même à 100 %, toutes langues), « Déjà fait » faux sur 717 étapes (cause unique `TutoPlay.undone`), compte-faux maracas, 40 vélocités non vérifiées ; 305 finitions. Seul le rapport (docs) entre maintenant ; les 3 tests et `scripts/bench/tuto-sweep.sh` attendent la fin des vagues (rien n'entre dans le banc pendant une vague), puis une CI. Place libérée → siège t9-11.
-
-- 08 h 12 : T9-PLAN fini (b39201e84 fusionné → ab7fbf4e8, archivé) : 76 sièges t9-01 à t9-76 en 10 vagues, code testé ab7fbf4e8. Vague 1 envoyée : attente-01 à 08 = t9-01 à t9-08 (t9-02, t9-04 = preuve de l'amenée hors house/techno). Rotation : t9-09 session_014RxrDJygytJrYW5v5XvDEJ, t9-10 session_014RxrDM5RKsa62BdNuCT8AS. Ouvertes : 11 (balayage + 10 sièges).
-
-- 08 h 06 : T9-REVUE fini (7fd356dee fusionné, discussion archivée) : 0 bloquant, appli 0 grave ; 3 tests creux graves (PlusRowsFit:65, GuideNoEmptyStep:33-37, OrdinaryTestsLeaveNothing:69-94) ajoutés au lot « tests creux » de la réparation ; 15 à noter dans `docs/REVIEW.md`. Place libérée : 10 discussions ouvertes.
-
-Rotation (Benjamin) : **31 discussions au plus** (était 11 ; Benjamin, 08 h 33 : « Ouvre 20 discussion en plus »). Une discussion finie est archivée et une neuve prend sa place. Surveillance du chef : notifications, veilleur en arrière-plan (branches `aud/tour-9-*`, `eq/tour-9-*`, `rev/tour-8-*`, intégration, CI), une minuterie de secours < 1 h avec un seul `list_sessions(children)`.
-- T9-REVUE `session_014RxrDKB2N7gX4yxMKTtohb` (revue fin de phase tour 8, branche `rev/tour-8-fin-de-phase`)
-- T9-BALAYAGE `session_014RxrDJMkVzhuYV7LFeF1pQ` (37 tutos × 15 langues, `eq/tour-9-balayage`)
-- T9-PLAN `session_014RxrDLxKw1RRtXuZbwYQZB` (plan + fiche type des sièges, `eq/tour-9-plan`)
-- Sièges en attente de fiche (machine chauffée) : 01 `session_014RxrDLsqZWPq2K97S4NFUy`, 02 `session_014RxrDJmEtLG2eK7Tp3Q6nq`, 03 `session_014RxrDMkyaiUUNQ1soeFrKE`, 04 `session_014RxrDNFN9ejLJFqz19nXgh`, 05 `session_014RxrDKrNiqYWDc6771ST75`, 06 `session_014RxrDNs8hTMn3kJV6cVgPb`, 07 `session_014RxrDMMKnYLFnxSWf95h8x`, 08 `session_014RxrDLJ3ouVbfqqYCqexSW`
+- **Temps en cours** : RÉPARATION du tour 9. Liste gelée (Benjamin : « Objectif. Terminé Tout les défaut trouvé et stoppé ») : `docs/audits/ultra/tour-9-tri/` (défauts D01…D18, finitions F001…F136). Plus aucun siège qui cherche ; des testeurs neufs constatent seulement. Toute faute neuve vue pendant la réparation entre dans la liste. On s'arrête quand la liste est vide. Points à Benjamin seulement sur sa demande (on le tutoie).
+- **Intégration** : branche `ccr-80af1a1b-mn0wec`, tête poussée `7455749a5` (CI 44537768073 en cours) ; commits de texte locaux dans `/home/user/fx-int2` à pousser après elle.
+- **Lots ouverts** (un fichier = un lot) :
+  - L1 tuto-panneau (sous-agent du chef, `/home/user/wt-L1`, `eq/tour-9-L1`) : D02, D13 (visibilité), D14.
+  - L7 piano roll (sous-agent du chef, `/home/user/wt-L7`, `eq/tour-9-L7`) : D06, S17 ; selftest en cours.
+  - L6 Structure `session_014RxrDMkhUdqXCdciTjjS1T` (`eq/tour-9-L6`) : D08, D10 + F100…F111.
+  - L2 Mix `session_014RxrDMZBvLi55WqYcZy7t7` (`eq/tour-9-L2`) : D01, D11, D12, S30, S34 + F023…F030 (Mix), F130, F136.
+  - L8 feuilles et partage `session_014RxrDKvhB4oNgXkVj2tghN` (`eq/tour-9-L8`) : F127, F131 (graves) + F030 (Partage), F119…F135.
+  - L4 grille rythme `session_014RxrDNJtiS2AgPKRrbmdzj` (`eq/tour-9-L4`) : D04 (bloquant), S56, S76, F053 (graves) + F047…F057.
+- **Paquets** : 1 = L1, L7, L6 ; 2 = L2, L3, L4 ; puis L8, L5, secondes passes. L3 (validation, D03 D07 D09 D15 D18 S67) s'ouvre après L1 (le tuto est une seule zone) ; L5 (contenu des cours) après L3. Le message de repli muet des kits (D17, AppRoot) attend la fermeture de L1.
+- **Banc** : D17 = le banc (kits téléchargés non décodés sous Robolectric) ; à réparer dans un lot banc après les vagues.
+- **Branches de rapports pas entrées** : `aud/tour-9-*-r2`, `aud/tour-9-verif-d17`.
 
 ## En arrivant (toute discussion, avant toute mission)
 

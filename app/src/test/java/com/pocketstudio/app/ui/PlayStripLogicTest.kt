@@ -21,11 +21,18 @@ class PlayStripLogicTest {
 
     @Test
     fun stoppedTheStripSaysWhereTheSongStarts() {
-        assertEquals(PlayPosition("Intro", 1, 6), playPosition(song, playing = false, songIndex = -1, bar = -1, playFrom = 0, loopPart = false))
+        // Tour 9, F105: the start left at the song's start gives way to the part being edited (B), where it first plays.
+        assertEquals(PlayPosition("Refrain", 2, 6), playPosition(song, playing = false, songIndex = -1, bar = -1, playFrom = 0, loopPart = false))
         assertEquals(PlayPosition("Refrain", 2, 6), playPosition(song, false, -1, -1, playFrom = 1, loopPart = false))
         assertEquals(PlayPosition("Intro", 6, 6), playPosition(song, false, -1, -1, playFrom = 2, loopPart = false))
+        assertEquals(PlayPosition("Refrain", 2, 6), playPosition(song, false, -1, -1, playFrom = 7, loopPart = false))
+        // A shown: the start point when it is one of its parts; a start picked on another part (« Jouer depuis… ») stays said.
+        val a = song.switchScene(0)
+        assertEquals(PlayPosition("Intro", 1, 6), playPosition(a, false, -1, -1, playFrom = 0, loopPart = false))
+        assertEquals(PlayPosition("Intro", 6, 6), playPosition(a, false, -1, -1, playFrom = 2, loopPart = false))
+        assertEquals(PlayPosition("Refrain", 2, 6), playPosition(a, false, -1, -1, playFrom = 1, loopPart = false))
         // A start point gone with its part: the song's start.
-        assertEquals(PlayPosition("Intro", 1, 6), playPosition(song, false, -1, -1, playFrom = 7, loopPart = false))
+        assertEquals(PlayPosition("Intro", 1, 6), playPosition(a, false, -1, -1, playFrom = 7, loopPart = false))
         // « ⟳ Partie »: the scene shown, over its own bars.
         assertEquals(PlayPosition("Refrain", 1, 2, loop = true), playPosition(song, false, -1, -1, playFrom = 0, loopPart = true))
     }
@@ -50,7 +57,8 @@ class PlayStripLogicTest {
     @Test
     fun theEditorsSayWhichPartIsEditedAndWhenItLoops() {
         // Stopped, nothing to add.
-        assertEquals(PartHeaderUi("Partie : B · Refrain"), partHeader(song, playing = false, songPlaying = false, loopPart = false, armedBySelf = false))
+        // Tour 9, F103: B holds nothing yet, said as empty (its menu offers an empty part, not a copy).
+        assertEquals(PartHeaderUi("Partie : B · Refrain", empty = true), partHeader(song, playing = false, songPlaying = false, loopPart = false, armedBySelf = false))
         // The song plays and the screens follow it: a touch keeps the part.
         val following = partHeader(song, playing = true, songPlaying = true, loopPart = false, armedBySelf = false)
         assertEquals("Partie : B · Refrain", following.title)
@@ -65,7 +73,7 @@ class PlayStripLogicTest {
         assertTrue(loop.loop)
         assertTrue(loop.note!!.contains("⟳ Boucler"))
         // Without a song, « ⟳ Partie » means nothing: nothing said.
-        assertEquals(PartHeaderUi("Partie : A"), partHeader(Project(), playing = false, songPlaying = false, loopPart = true, armedBySelf = false))
+        assertEquals(PartHeaderUi("Partie : A", empty = true), partHeader(Project(), playing = false, songPlaying = false, loopPart = true, armedBySelf = false))
     }
 
     @Test

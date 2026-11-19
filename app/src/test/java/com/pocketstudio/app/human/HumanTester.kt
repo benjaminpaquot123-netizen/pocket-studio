@@ -2290,10 +2290,14 @@ abstract class HumanTester(private val seat: String) {
         val v = vm() ?: return@runCatching "no activity"
         val p = PrefsTutoStore(app).load(v.projectId)
         if (p == null) "project=${v.projectId} no tuto"
-        else "project=${v.projectId} tuto=${p.style}/${p.level} active=${p.active} step=${p.current} done=${p.done.size} playing=${v.transport.value.playing}"
+        else "project=${v.projectId} ${tutoState(p)} playing=${v.transport.value.playing}"
     }.getOrElse { "inside? ${it.message}" }
 
     companion object {
+        /** The journal's words on where the tutorial is ([inside]), read by a round's oracle. */
+        internal fun tutoState(p: com.pocketstudio.model.tuto.TutoProgress): String =
+            "tuto=${p.style}/${p.level} active=${p.active} step=${p.current} done=${p.done.size}"
+
         /** Socle du banc, point 3: the gestures that may name a test tag instead of pixels (« touche <étiquette> »). */
         val TAG_GESTURES = setOf("touche", "appui-long", "double-touche")
 

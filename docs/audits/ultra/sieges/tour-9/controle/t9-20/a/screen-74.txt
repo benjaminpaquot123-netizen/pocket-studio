@@ -1,0 +1,29 @@
+Écran 74 (588x1278)
+icône (dossier ouvert) ✓ @ 127,42
+bouton « Einfach » @ 297,42
+bouton ● @ 385,42
+bouton ▶ « dieser Teil » @ 464,42
+icône ⋮ @ 543,42
+texte « Ordne deine Teile Kapitel 9/13 · Erledigt · Einfach » @ 208,180
+icône (liste) « Kapitel » @ 445,180
+icône ⌄ @ 531,180
+image (coupe) @ 57,459
+texte « Bravo, Kapitel geschafft! » @ 319,355
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Die Übergänge“. » @ 319,515
+bouton « Nächstes Kapitel   » → @ 294,778
+bouton ▶ «  Meinen Song anhören » @ 334,892
+icône ← @ 57,892
+texte « 116 Tempo » @ 422,1020
+icône ↶ « Rückgängig » @ 56,1021
+image ↷ @ 152,1013
+icône ▶ « der Song » @ 280,1021
+icône ⋮ « Mehr » @ 533,1020
+onglet (lignes et note) « Mein Song » [sélectionné] @ 54,1145
+onglet (quatre carrés) « Rhythmus » @ 174,1145
+onglet (touches de piano) « Tastatur » @ 294,1145
+onglet (curseurs) « Mix » @ 414,1145
+onglet (trois points reliés) « Teilen » @ 534,1145
+texte « ●  REC » @ 272,1248
+texte « ✎  Notieren » @ 416,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback-Modus » @ 114,1248

@@ -1,0 +1,589 @@
+#0 SIEGE lang=de device=phone font=200 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:disco:5
+#0 PREMIER ECRAN reel_s=4.7 simule_s=2.4 jvm_s=10.3 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:disco:5
+#0 AMENEE > touche 294 1065 (welcome_learn)
+#0 AMENEE > touche 294 669 (mode_card_simple)
+#0 AMENEE > touche 294 1187 (tuto_style_disco)
+#0 AMENEE chapitres 1 à 4 construits dans le projet
+#0 AMENEE > touche 445 284 (tuto_chapters)
+#0 AMENEE > touche 294 724 (tuto_chapter_4)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0f74f94818 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Feedback-Modus » ellipsized (« … »)
+#1 LAYOUT OVERLAP « 116 » over « Die Streicher » (54 x 29 dp)
+#1 LAYOUT OVERLAP « 116 » over « Kapitel 5/13 · Schritt 1/2 · Einfach » (54 x 5 dp)
+#1 LAYOUT OVERLAP « Die Streicher » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 37 dp)
+#1 LAYOUT OVERLAP « Kapitel 5/13 · Schritt 1/2 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 11 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 661
+#1 DOIGT tuto_need «   Melodie-Spur erstellen »
+#2 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c8b64e7e72 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « Noch 1 gestrichelte Note zu tippen » ellipsized (« … »)
+#2 LAYOUT CUT « Takt » lines dropped (more lines than room)
+#2 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#2 LAYOUT CUT « Du bist dran: Tippe auf die 3 langen gestrichelten Noten in Takt 1 und 2. » ellipsized (« … »)
+#2 > glisse 294 600 294 300
+#2 DOIGT rien
+#3 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2cde366511 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT TARGET « A♯5 Spielen » 36 x 20 dp (touch 48 x 48)
+#3 LAYOUT TARGET « A5 Spielen » 36 x 20 dp (touch 48 x 48)
+#3 LAYOUT TARGET « G♯5 Spielen » 36 x 20 dp (touch 48 x 48)
+#3 LAYOUT TARGET « G5 Spielen » 36 x 20 dp (touch 48 x 48)
+#3 LAYOUT TARGET « F♯5 Spielen » 36 x 20 dp (touch 48 x 48)
+#3 LAYOUT TARGET « F5 Spielen » 36 x 20 dp (touch 48 x 48)
+#3 LAYOUT TARGET « E5 Spielen » 36 x 20 dp (touch 48 x 48)
+#3 > touche 531 726
+#3 DOIGT tuto_fold
+#4 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 9a181ef5e9 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « 116 » over « Die Streicher » (54 x 20 dp)
+#4 LAYOUT OVERLAP « 116 » over « Kapitel 5/13 · Schritt 1/2 · Einfach » (54 x 14 dp)
+#4 LAYOUT OVERLAP « Die Streicher » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 27 dp)
+#4 LAYOUT OVERLAP « Kapitel 5/13 · Schritt 1/2 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 21 dp)
+#4 > touche 294 689
+#4 DOIGT tuto_do «   Ich mach's »
+#5 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2cde366511 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#5 SON Son : rien ne joue.
+#5 > glisse 300 450 300 600
+#5 DOIGT rien
+#6 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 054d15fec1 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « C6 » lines cut (taller than its box)
+#6 LAYOUT TARGET « D6 Spielen » 36 x 20 dp (touch 48 x 48)
+#6 LAYOUT TARGET « C♯6 Spielen » 36 x 20 dp (touch 48 x 48)
+#6 LAYOUT TARGET « C6 C6 Spielen » 36 x 20 dp (touch 48 x 48)
+#6 LAYOUT TARGET « H5 Spielen » 36 x 20 dp (touch 48 x 48)
+#6 > touche 200 580
+#6 DOIGT rien
+#7 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d5f44d7c21 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#7 SON Son : 1 note du synthé.
+#7 > glisse 560 600 560 450
+#7 DOIGT rien
+#8 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2cde366511 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 430 487
+#8 DOIGT rien
+#9 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0533bd6861 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#9 SON Son : 1 note du synthé.
+#9 > glisse 500 520 150 520
+#9 DOIGT rien
+#10 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2cde366511 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 500 895
+#10 DOIGT tuto_folded_text « Du bist dran: Tippe auf die 3 langen ges »
+#11 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 9a181ef5e9 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 294 689
+#11 DOIGT tuto_do «   Ich mach's »
+#12 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2cde366511 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 430 515
+#12 DOIGT rien
+#13 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0533bd6861 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#13 SON Son : 1 note du synthé.
+#13 > glisse 560 600 560 420
+#13 DOIGT rien
+#14 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e62e1061ac | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « C5 » lines cut (taller than its box)
+#14 LAYOUT TARGET « D♯5 Spielen » 36 x 20 dp (touch 48 x 48)
+#14 LAYOUT TARGET « D5 Spielen » 36 x 20 dp (touch 48 x 48)
+#14 LAYOUT TARGET « C♯5 Spielen » 36 x 20 dp (touch 48 x 48)
+#14 LAYOUT TARGET « C5 C5 Spielen » 36 x 20 dp (touch 48 x 48)
+#14 LAYOUT TARGET « H4 Spielen » 36 x 20 dp (touch 48 x 48)
+#14 > attends 1
+#15 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e62e1061ac | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#15 SON Son : rien ne joue.
+#15 > glisse 560 450 560 560
+#15 DOIGT rien
+#16 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2390c92580 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#16 SON Son : rien ne joue.
+#16 > glisse 300 560 300 520
+#16 DOIGT rien
+#17 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b9c6c6e2c9 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#17 SON Son : rien ne joue.
+#17 > glisse 300 420 300 640
+#17 DOIGT rien
+#18 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b9c6c6e2c9 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#18 SON Son : rien ne joue.
+#18 > glisse 300 300 300 620
+#18 DOIGT rien
+#19 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b9c6c6e2c9 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 174 1145
+#19 DOIGT tab_simple_Rythme « Rhythmus »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2b551f2347 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « R 40 » lines dropped (more lines than room)
+#20 LAYOUT OVERLAP « Große Trommel Studio » over « FX » (24 x 4 dp)
+#20 LAYOUT OVERLAP « Snare » over « FX » (26 x 8 dp)
+#20 LAYOUT OVERLAP « Hi-Hat » over « L 30 » (42 x 7 dp)
+#20 LAYOUT OVERLAP « Offene Hi-Hat » over « R 30 » (35 x 11 dp)
+#20 LAYOUT OVERLAP « Mittleres Tom » over « R 45 » (42 x 11 dp)
+#20 LAYOUT OVERLAP « Becken » over « FX » (24 x 5 dp)
+#20 LAYOUT OVERLAP « Becken » over « R 40 » (12 x 5 dp)
+#20 LAYOUT OVERLAP « Maracas » over « L 50 » (42 x 3 dp)
+#20 LAYOUT CONTRAST « Große Trommel Studio » 2.85:1 (needs 4.5:1, 14 sp)
+#20 > touche 294 1145
+#20 DOIGT tab_simple_Clavier « Tastatur »
+#21 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2cde366511 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#21 SON Son : rien ne joue.
+#21 > glisse 530 600 110 600
+#21 DOIGT rien
+#22 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2cde366511 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=13 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 125 541
+#22 DOIGT rien
+#23 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 131bd528ab | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=14 playing=false
+#23 SON Son : 1 note du synthé.
+#23 LAYOUT CUT « Nächster Schritt » lines dropped (more lines than room)
+#23 > attends 2
+#24 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2b62762389 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_do done=14 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 294 895
+#24 DOIGT tuto_next_folded « Geschafft »
+#25 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE f0020eb8e5 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_2 done=14 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT OVERLAP « 116 » over « Kapitel 5/13 · Schritt 2/2 · Einfach » (54 x 34 dp)
+#25 LAYOUT OVERLAP « Die Streicher » over the touchable « Modus Einfach. Tippen, um den Modus zu w » (15 x 24 dp)
+#25 LAYOUT OVERLAP « Kapitel 5/13 · Schritt 2/2 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 48 dp)
+#25 > touche 294 661
+#25 DOIGT tuto_need «   Auf die nächsten Takte kopieren »
+#26 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE e0de49e496 | project=p-c2311c18 tuto=disco/Facile active=true step=lead_2 done=15 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT OVERLAP « 116 » over « Kapitel 5/13 · Erledigt · Einfach » (54 x 34 dp)
+#26 LAYOUT OVERLAP « Kapitel 5/13 · Erledigt · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 48 dp)
+#26 > touche 294 689
+#26 DOIGT tuto_next_big « Nächstes Kapitel   »
+#27 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE f356486bae | project=p-c2311c18 tuto=disco/Facile active=true step=groove_hear done=15 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT OVERLAP « 116 » over « Dein erster Teil: der Refrain » (54 x 20 dp)
+#27 LAYOUT OVERLAP « 116 » over « Kapitel 6/13 · Schritt 1/2 · Einfach » (54 x 14 dp)
+#27 LAYOUT OVERLAP « Dein erster Teil: der Refrain » over the touchable « Modus Einfach. Tippen, um den Modus zu w » (69 x 29 dp)
+#27 LAYOUT OVERLAP « Dein erster Teil: der Refrain » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 27 dp)
+#27 LAYOUT OVERLAP « Kapitel 6/13 · Schritt 1/2 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 21 dp)
+#27 > touche 294 717
+#27 DOIGT tuto_play_mine «   Dein Ergebnis anhören »
+#28 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE f2f8d94892 | project=p-c2311c18 tuto=disco/Facile active=true step=groove_hear done=15 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 LAYOUT OVERLAP « Dein erster Teil: der Refrain » over the touchable « Ab einem Teil spielen » (80 x 37 dp)
+#28 LAYOUT OVERLAP « Kapitel 6/13 · Schritt 1/2 · Einfach » over the touchable « Ab einem Teil spielen » (70 x 30 dp)
+#28 LAYOUT OVERLAP « Kapitel » over the touchable « Ab einem Teil spielen » (33 x 21 dp)
+#28 > attends 4
+#29 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE f2f8d94892 | project=p-c2311c18 tuto=disco/Facile active=true step=groove_hear done=15 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 294 831
+#29 DOIGT tuto_listen «  Beispiel anhören »
+#30 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE fbfe258297 | project=p-c2311c18 tuto=disco/Facile active=true step=groove_hear done=15 playing=false
+#30 SON Son : l'exemple du tuto joue (encore 3 s).
+#30 > attends 4
+#31 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 6ba3e50ef8 | project=p-c2311c18 tuto=disco/Facile active=true step=groove_hear done=16 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 294 689
+#31 DOIGT tuto_next_big « Nächster Schritt   »
+#32 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 68f53352a7 | project=p-c2311c18 tuto=disco/Facile active=true step=groove_name done=16 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT OVERLAP « 116 » over « Dein erster Teil: der Refrain » (54 x 34 dp)
+#32 LAYOUT OVERLAP « Dein erster Teil: der Refrain » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 48 dp)
+#32 > touche 294 689
+#32 DOIGT tuto_need «   Teil „Drop“ benennen »
+#33 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2ee6e8c9f0 | project=p-c2311c18 tuto=disco/Facile active=true step=groove_name done=17 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 294 689
+#33 DOIGT tuto_next_big « Nächstes Kapitel   »
+#34 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e84fc20596 | project=p-c2311c18 tuto=disco/Facile active=true step=map_groove done=17 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT OVERLAP « 116 » over « Die Teile verstehen » (54 x 9 dp)
+#34 LAYOUT OVERLAP «  Tempo » over « Die Teile verstehen » (94 x 9 dp)
+#34 LAYOUT OVERLAP « Die Teile verstehen » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 15 dp)
+#34 > touche 294 828
+#34 DOIGT tuto_listen «  Beispiel anhören »
+#35 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9da3d69c34 | project=p-c2311c18 tuto=disco/Facile active=true step=map_groove done=17 playing=false
+#35 SON Son : l'exemple du tuto joue (encore 3 s).
+#35 > attends 5
+#36 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 169c06fdaf | project=p-c2311c18 tuto=disco/Facile active=true step=map_groove done=18 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 294 778
+#36 DOIGT tuto_next_big « Nächster Schritt   »
+#37 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9994c1b2e4 | project=p-c2311c18 tuto=disco/Facile active=true step=map_drop done=18 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 294 828
+#37 DOIGT tuto_listen «  Beispiel anhören »
+#38 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3d9211fe97 | project=p-c2311c18 tuto=disco/Facile active=true step=map_drop done=18 playing=false
+#38 SON Son : l'exemple du tuto joue (encore 3 s).
+#38 > attends 5
+#39 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 58f193c690 | project=p-c2311c18 tuto=disco/Facile active=true step=map_drop done=19 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 294 778
+#39 DOIGT tuto_next_big « Nächster Schritt   »
+#40 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 7863cd64c5 | project=p-c2311c18 tuto=disco/Facile active=true step=map_break done=19 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 294 828
+#40 DOIGT tuto_listen «  Beispiel anhören »
+#41 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 73ca14322f | project=p-c2311c18 tuto=disco/Facile active=true step=map_break done=19 playing=false
+#41 SON Son : l'exemple du tuto joue (encore 3 s).
+#41 > attends 5
+#42 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 0d892ff7b7 | project=p-c2311c18 tuto=disco/Facile active=true step=map_break done=20 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 294 689
+#42 DOIGT tuto_next_big « Nächstes Kapitel   »
+#43 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e5cd6e300f | project=p-c2311c18 tuto=disco/Facile active=true step=make_intro done=20 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT OVERLAP « 116 » over « Bau deine Teile » (54 x 5 dp)
+#43 LAYOUT OVERLAP «  Tempo » over « Bau deine Teile » (94 x 5 dp)
+#43 LAYOUT OVERLAP « Bau deine Teile » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 11 dp)
+#43 > touche 294 689
+#43 DOIGT tuto_need «   Teil „Intro“ erstellen »
+#44 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e3d871ecfe | project=p-c2311c18 tuto=disco/Facile active=true step=make_intro done=21 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 294 689
+#44 DOIGT tuto_next_big « Nächster Schritt   »
+#45 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c591ecbe64 | project=p-c2311c18 tuto=disco/Facile active=true step=make_groove done=21 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT OVERLAP « 116 » over « Bau deine Teile » (54 x 29 dp)
+#45 LAYOUT OVERLAP « 116 » over « Kapitel 8/13 · Schritt 2/5 · Einfach » (54 x 5 dp)
+#45 LAYOUT OVERLAP « Bau deine Teile » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 37 dp)
+#45 LAYOUT OVERLAP « Kapitel 8/13 · Schritt 2/5 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 11 dp)
+#45 > touche 294 661
+#45 DOIGT tuto_need «   Teil „Groove“ erstellen »
+#46 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE b92c5938f1 | project=p-c2311c18 tuto=disco/Facile active=true step=make_groove done=22 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 294 689
+#46 DOIGT tuto_next_big « Nächster Schritt   »
+#47 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 276289645c | project=p-c2311c18 tuto=disco/Facile active=true step=make_montee done=22 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT OVERLAP « 116 » over « Kapitel 8/13 · Schritt 3/5 · Einfach » (54 x 5 dp)
+#47 LAYOUT OVERLAP « Kapitel 8/13 · Schritt 3/5 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 11 dp)
+#47 > touche 294 556
+#47 DOIGT tuto_why « ▸ Warum? »
+#48 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 49dedaae16 | project=p-c2311c18 tuto=disco/Facile active=true step=make_montee done=22 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT OVERLAP « 116 » over « Kapitel 8/13 · Schritt 3/5 · Einfach » (54 x 34 dp)
+#48 LAYOUT OVERLAP « Bau deine Teile » over the touchable « Modus Einfach. Tippen, um den Modus zu w » (43 x 29 dp)
+#48 LAYOUT OVERLAP « Kapitel 8/13 · Schritt 3/5 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 48 dp)
+#48 > touche 294 661
+#48 DOIGT tuto_need «   Teil „Build-up“ erstellen »
+#49 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE febf5aaf74 | project=p-c2311c18 tuto=disco/Facile active=true step=make_montee done=23 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 294 689
+#49 DOIGT tuto_next_big « Nächster Schritt   »
+#50 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e91986d79c | project=p-c2311c18 tuto=disco/Facile active=true step=make_break done=23 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 294 689
+#50 DOIGT tuto_need «   Teil „Break“ erstellen »
+#51 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 902da47ffb | project=p-c2311c18 tuto=disco/Facile active=true step=make_break done=24 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 294 689
+#51 DOIGT tuto_next_big « Nächster Schritt   »
+#52 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ff58fd28b8 | project=p-c2311c18 tuto=disco/Facile active=true step=make_fin done=24 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 294 689
+#52 DOIGT tuto_need «   Teil „Ende“ erstellen »
+#53 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ba96e046fa | project=p-c2311c18 tuto=disco/Facile active=true step=make_fin done=25 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 294 689
+#53 DOIGT tuto_next_big « Nächstes Kapitel   »
+#54 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ee5c40d1a9 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT OVERLAP « 116 » over « Ordne deine Teile » (54 x 20 dp)
+#54 LAYOUT OVERLAP « 116 » over « Kapitel 9/13 · Schritt 1/2 · Einfach » (54 x 14 dp)
+#54 LAYOUT OVERLAP « Ordne deine Teile » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 27 dp)
+#54 LAYOUT OVERLAP « Kapitel 9/13 · Schritt 1/2 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 21 dp)
+#54 > touche 294 689
+#54 DOIGT tuto_do «   Ich mach's »
+#55 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 99c2ffe9c3 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CUT « Du bist dran: Tippe in „Mein Song“ unter „Hinzufügen“ der Reihe nach auf Intro, Groove, Build-up, Drop, Groove, Drop, Break, Drop und Ende. » ellipsized (« … »)
+#55 LAYOUT CONTRAST « + A · Drop » 4.12:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « + B · Intro » 4.18:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « + C · Groove » 4.23:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « + D · Build-up » 4.25:1 (needs 4.5:1, 14 sp)
+#55 > touche 171 381
+#55 DOIGT add_part_1 « + B · Intro »
+#56 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5230074b12 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#56 SON Son : rien ne joue.
+#56 > glisse 294 600 294 250
+#56 DOIGT rien (texte « Am Ende hinzufügen: »)
+#57 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 86caf1d791 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 196 550
+#57 DOIGT add_part_2 « + C · Groove »
+#58 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5b5deb39e1 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CUT « Takt 1/16 » lines dropped (more lines than room)
+#58 > glisse 294 620 294 200
+#58 DOIGT rien (texte « Am Ende hinzufügen: »)
+#59 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b3ca63382f | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 208 569
+#59 DOIGT add_part_3 « + D · Build-up »
+#60 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 044da4fd4a | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CUT « Takt 1/24 » lines dropped (more lines than room)
+#60 > glisse 294 620 294 200
+#60 DOIGT rien (texte « − / + : Wiederholungen. Grau: feste Daue »)
+#61 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 808a3a7ad9 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 173 362
+#61 DOIGT add_part_0 « + A · Drop »
+#62 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3e5cb509dd | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CUT « Takt 1/32 » lines dropped (more lines than room)
+#62 > glisse 294 620 294 200
+#62 DOIGT rien (texte « Am Ende hinzufügen: »)
+#63 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a75c363983 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 196 480
+#63 DOIGT add_part_2 « + C · Groove »
+#64 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 12586e8838 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CUT « Takt 1/40 » lines dropped (more lines than room)
+#64 > glisse 294 620 294 200
+#64 DOIGT rien (texte « Am Ende hinzufügen: »)
+#65 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3ccb0f61a1 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 173 302
+#65 DOIGT add_part_0 « + A · Drop »
+#66 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2121a6e82f | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CUT « Takt 1/48 » lines dropped (more lines than room)
+#66 > glisse 294 620 294 150
+#66 DOIGT rien (texte « Am Ende hinzufügen: »)
+#67 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fabaebe3b0 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 180 595
+#67 DOIGT add_part_4 « + E · Break »
+#68 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2c09171eab | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CUT « Takt 1/56 » lines dropped (more lines than room)
+#68 > glisse 294 620 294 150
+#68 DOIGT rien (texte « Am Ende hinzufügen: »)
+#69 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 353521a66e | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 173 252
+#69 DOIGT add_part_0 « + A · Drop »
+#70 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6d446c4a32 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CUT « Takt 1/64 » lines dropped (more lines than room)
+#70 > glisse 294 620 294 100
+#70 DOIGT rien (texte « Am Ende hinzufügen: »)
+#71 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 942ce95811 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=25 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « + F · Ende » 2.60:1 (needs 4.5:1, 14 sp)
+#71 > touche 173 615
+#71 DOIGT add_part_5 « + F · Ende »
+#72 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 441a18dec9 | project=p-c2311c18 tuto=disco/Facile active=true step=song_order done=26 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CUT « Takt 1/72 » lines dropped (more lines than room)
+#72 > touche 294 895
+#72 DOIGT tuto_next_folded « Geschafft »
+#73 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9b1b07c32f | project=p-c2311c18 tuto=disco/Facile active=true step=song_phrases done=26 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT OVERLAP « 116 » over « Ordne deine Teile » (54 x 25 dp)
+#73 LAYOUT OVERLAP « 116 » over « Kapitel 9/13 · Schritt 2/2 · Einfach » (54 x 9 dp)
+#73 LAYOUT OVERLAP « Ordne deine Teile » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 32 dp)
+#73 LAYOUT OVERLAP « Ordne deine Teile » over the touchable « Ab einem Teil spielen » (54 x 37 dp)
+#73 LAYOUT OVERLAP « Kapitel 9/13 · Schritt 2/2 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 16 dp)
+#73 LAYOUT OVERLAP « Kapitel 9/13 · Schritt 2/2 · Einfach » over the touchable « Ab einem Teil spielen » (70 x 25 dp)
+#73 LAYOUT OVERLAP « Kapitel » over the touchable « Ab einem Teil spielen » (62 x 10 dp)
+#73 > touche 294 717
+#73 DOIGT tuto_need «   Empfohlene Längen setzen »
+#74 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9b439de16c | project=p-c2311c18 tuto=disco/Facile active=true step=song_phrases done=27 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT OVERLAP « 116 » over « Kapitel 9/13 · Erledigt · Einfach » (54 x 9 dp)
+#74 LAYOUT OVERLAP « Kapitel 9/13 · Erledigt · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 16 dp)
+#74 LAYOUT OVERLAP « Kapitel 9/13 · Erledigt · Einfach » over the touchable « Ab einem Teil spielen » (33 x 25 dp)
+#74 > touche 294 778
+#74 DOIGT tuto_next_big « Nächstes Kapitel   »
+#75 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f514d65bfc | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT OVERLAP « 116 » over « Kapitel 10/13 · Schritt 1/1 · Einfach » (54 x 34 dp)
+#75 LAYOUT OVERLAP « Die Übergänge » over the touchable « Modus Einfach. Tippen, um den Modus zu w » (39 x 24 dp)
+#75 LAYOUT OVERLAP « Die Übergänge » over the touchable « Ab einem Teil spielen » (21 x 4 dp)
+#75 LAYOUT OVERLAP « Kapitel 10/13 · Schritt 1/1 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 48 dp)
+#75 LAYOUT OVERLAP « Kapitel 10/13 · Schritt 1/1 · Einfach » over the touchable « Ab einem Teil spielen » (80 x 63 dp)
+#75 LAYOUT OVERLAP « Kapitel » over the touchable « Ab einem Teil spielen » (62 x 21 dp)
+#75 > touche 294 661
+#75 DOIGT tuto_need «   Zum Teil „Build-up“ gehen »
+#76 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 08a0cdbcb0 | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT CUT « Takt 1/96 » lines dropped (more lines than room)
+#76 LAYOUT CUT « Du bist dran: Ende des Build-ups, Pad „Snare“: Tippe auf die 4 Kästchen des letzten Schlags. » ellipsized (« … »)
+#76 > touche 325 615
+#76 DOIGT step_60 « Step 13 »
+#77 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 81ed277687 | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 389 615
+#77 DOIGT step_61 « Step 14 »
+#78 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6d56af626b | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 453 615
+#78 DOIGT step_62 « Step 15 »
+#79 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 13bdce36d5 | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 453 615
+#79 DOIGT step_62 « Step 15 »
+#80 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6d56af626b | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 517 615
+#80 DOIGT step_63 « Step 16 »
+#81 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a659448dc8 | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 517 615
+#81 DOIGT step_63 « Step 16 »
+#82 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6d56af626b | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 500 895
+#82 DOIGT tuto_folded_text « Du bist dran: Ende des Build-ups, Pad „S »
+#83 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7f058458cc | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT OVERLAP « 116 » over « Die Übergänge » (54 x 20 dp)
+#83 LAYOUT OVERLAP « 116 » over « Kapitel 10/13 · Schritt 1/1 · Einfach » (54 x 14 dp)
+#83 LAYOUT OVERLAP « Die Übergänge » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 27 dp)
+#83 LAYOUT OVERLAP « Die Übergänge » over the touchable « Ab einem Teil spielen » (21 x 37 dp)
+#83 LAYOUT OVERLAP « Kapitel 10/13 · Schritt 1/1 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 21 dp)
+#83 LAYOUT OVERLAP « Kapitel 10/13 · Schritt 1/1 · Einfach » over the touchable « Ab einem Teil spielen » (80 x 30 dp)
+#83 LAYOUT OVERLAP « Kapitel » over the touchable « Ab einem Teil spielen » (62 x 15 dp)
+#83 > touche 294 605
+#83 DOIGT tuto_text_more « Weiterlesen »
+#84 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 368725dd6c | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 294 689
+#84 DOIGT tuto_do «   Ich mach's »
+#85 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6d56af626b | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#85 SON Son : rien ne joue.
+#85 > glisse 560 600 560 380
+#85 DOIGT rien
+#86 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2157206ce3 | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT CONTRAST « Takt 4/4 · Snare » 1.94:1 (needs 4.5:1, 13 sp)
+#86 > touche 500 895
+#86 DOIGT tuto_folded_text « Du bist dran: Ende des Build-ups, Pad „S »
+#87 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7f058458cc | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 433 803
+#87 DOIGT tuto_show «  Zeig's mir »
+#88 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4d8dbeb476 | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CUT « Schau, ich mach's… » ellipsized (« … »)
+#88 LAYOUT CONTRAST « 4 » 1.36:1 (needs 4.5:1, 12 sp)
+#88 LAYOUT CONTRAST « Stoppen » 3.91:1 (needs 4.5:1, 14 sp)
+#88 > attends 4
+#89 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3062bea24e | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#89 SON Son : rien ne joue.
+#89 > attends 3
+#90 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6d56af626b | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#90 SON Son : rien ne joue.
+#90 > appui-long 517 615
+#90 DOIGT step_63 « Step 16 »
+#91 ROUTE dialogue:roll_menu | MODE simple | EMPREINTE 924974e57d | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=27 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 380 564
+#91 DOIGT roll_4 « ×4 »
+#92 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cda65e7d1d | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=28 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 294 895
+#92 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#93 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 99e3a43266 | project=p-c2311c18 tuto=disco/Facile active=true step=fill done=28 playing=false
+#93 SON Son : rien ne joue.
+#93 LAYOUT OVERLAP « 116 » over « Die Übergänge » (54 x 31 dp)
+#93 LAYOUT OVERLAP « 116 » over « Kapitel 10/13 · Erledigt · Einfach » (54 x 3 dp)
+#93 LAYOUT OVERLAP « Die Übergänge » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 37 dp)
+#93 LAYOUT OVERLAP « Kapitel 10/13 · Erledigt · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 10 dp)
+#93 LAYOUT OVERLAP « Kapitel 10/13 · Erledigt · Einfach » over the touchable « Ab einem Teil spielen » (33 x 19 dp)
+#93 LAYOUT OVERLAP « Kapitel » over the touchable « Ab einem Teil spielen » (62 x 4 dp)
+#93 > touche 294 689
+#93 DOIGT tuto_next_big « Nächstes Kapitel   »
+#94 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 008b1423a2 | project=p-c2311c18 tuto=disco/Facile active=true step=reverb_hear done=28 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT CUT « Teil: D · Build-up » lines cut (taller than its box)
+#94 LAYOUT TARGET « Teil: D · Build-up Teil wechseln » 233 x 7 dp (touch 233 x 48)
+#94 > touche 294 828
+#94 DOIGT tuto_listen «  Beispiel anhören »
+#95 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 828f4a4255 | project=p-c2311c18 tuto=disco/Facile active=true step=reverb_hear done=28 playing=false
+#95 SON Son : l'exemple du tuto joue (encore 7 s).
+#95 > touche 467 917
+#95 DOIGT tuto_next « Weiter  »
+#96 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 89e6ad721c | project=p-c2311c18 tuto=disco/Facile active=true step=reverb_hear done=29 playing=false
+#96 SON Son : l'exemple du tuto joue (encore 6 s).
+#96 > touche 294 689
+#96 DOIGT tuto_next_big « Nächstes Kapitel   »
+#97 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0d6505d7af | project=p-c2311c18 tuto=disco/Facile active=true step=levels done=29 playing=false
+#97 SON Son : rien ne joue.
+#97 LAYOUT OVERLAP « 116 » over « Der Mix: die Lautstärken » (54 x 20 dp)
+#97 LAYOUT OVERLAP « 116 » over « Kapitel 12/13 · Schritt 1/1 · Einfach » (54 x 14 dp)
+#97 LAYOUT OVERLAP « Der Mix: die Lautstärken » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (152 x 27 dp)
+#97 LAYOUT OVERLAP « Kapitel 12/13 · Schritt 1/1 · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 21 dp)
+#97 LAYOUT OVERLAP « Kapitel 12/13 · Schritt 1/1 · Einfach » over the touchable « Ab einem Teil spielen » (80 x 30 dp)
+#97 > touche 414 1145
+#97 DOIGT tab_simple_Mix « Mix »
+#98 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 28669dc043 | project=p-c2311c18 tuto=disco/Facile active=true step=levels done=29 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 294 689
+#98 DOIGT tuto_do «   Ich mach's »
+#99 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 0aaf8e2471 | project=p-c2311c18 tuto=disco/Facile active=true step=levels done=29 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT CUT « Du bist dran: Zieh im Tab „Mix“ den Fader der Spur „Melodie“ (die Streicher) etwas runter. » ellipsized (« … »)
+#99 LAYOUT CONTRAST « Melodie » 3.76:1 (needs 4.5:1, 13 sp)
+#99 > glisse 462 400 462 480
+#99 DOIGT mix_fader_6 « Lautstärke von Melodie »
+#100 ROUTE tab_simple_Mix | MODE simple | EMPREINTE ee409274bf | project=p-c2311c18 tuto=disco/Facile active=true step=levels done=30 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 294 895
+#100 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#101 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE ef915e394d | project=p-c2311c18 tuto=disco/Facile active=true step=levels done=30 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT OVERLAP « 116 » over « Kapitel 12/13 · Erledigt · Einfach » (54 x 14 dp)
+#101 LAYOUT OVERLAP « Kapitel 12/13 · Erledigt · Einfach » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 21 dp)
+#101 LAYOUT OVERLAP « Kapitel 12/13 · Erledigt · Einfach » over the touchable « Ab einem Teil spielen » (33 x 30 dp)
+#101 > touche 294 689
+#101 DOIGT tuto_next_big « Nächstes Kapitel   »
+#102 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 6ffea2e6ff | project=p-c2311c18 tuto=disco/Facile active=true step=share done=30 playing=false
+#102 SON Son : rien ne joue.
+#102 LAYOUT OVERLAP « Takt 1/96 » over « Exportiere deinen Track » (52 x 9 dp)
+#102 LAYOUT OVERLAP « Exportiere deinen Track » over the touchable « Ab einem Teil spielen » (58 x 12 dp)
+#102 > touche 534 1145
+#102 DOIGT tab_simple_Envoyer « Teilen »
+#103 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 7f1d8cdbe1 | project=p-c2311c18 tuto=disco/Facile active=true step=share done=30 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 294 828
+#103 DOIGT tuto_do «   Ich mach's »
+#104 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE e902864275 | project=p-c2311c18 tuto=disco/Facile active=true step=share done=30 playing=false
+#104 SON Son : rien ne joue.
+#104 LAYOUT CUT « ? » lines cut (taller than its box)
+#104 LAYOUT CUT « Du bist dran: Teile deinen Track, die App macht eine Audiodatei daraus. „M4A“ macht eine leichte Datei für deine Freunde, „WAV“ behält die Studioqualität. » ellipsized (« … »)
+#104 > touche 294 436
+#104 DOIGT share_go «   Teilen »
+#105 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 8ba4d554d5 | project=p-c2311c18 tuto=disco/Facile active=true step=share done=30 playing=false
+#105 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#105 LAYOUT CONTRAST «   25 % » 1.44:1 (needs 4.5:1, 14 sp)
+#105 LAYOUT CONTRAST « Wähl dann die App, mit der du es sendest. » 3.63:1 (needs 4.5:1, 13 sp)
+#105 LAYOUT CONTRAST « Abbrechen » 3.64:1 (needs 4.5:1, 14 sp)
+#105 > attends 5
+#105 PARTAGE Mein-Song-20261119-080423.m4a
+#106 ROUTE dialogue:« Meinen Song teilen · Mein-Song » | MODE simple | EMPREINTE a5df7b2302 | project=p-c2311c18 tuto=disco/Facile active=true step=share done=31 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 294 853
+#106 DOIGT vue « Files »
+#107 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 680c153f19 | project=p-c2311c18 tuto=disco/Facile active=true step=share done=31 playing=false
+#107 SON Son : rien ne joue.
+#107 LAYOUT CUT « Fertig: Mein-Song-20261119-080423.m4a, eine Kopie liegt auch in Musik › BenStudio. » a word split over two lines
+#107 > touche 504 936
+#107 DOIGT share_bilan_ok « OK »
+#108 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 21413df332 | project=p-c2311c18 tuto=disco/Facile active=true step=share done=31 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 294 895
+#108 DOIGT tuto_next_folded « Geschafft »
+#109 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 0614bc6569 | project=p-c2311c18 tuto=disco/Facile active=true step=share done=31 playing=false
+#109 SON Son : rien ne joue.
+#109 LAYOUT CUT « Kapitel 1/13 · Tempo und Farbe des Tracks » ellipsized (« … »)
+#109 LAYOUT CUT « Hör dir einen Ausschnitt eines fertigen Disco-Tracks an: das Schlagzeug, der laufende Bass, die Gitarre in kurzen Anschlägen und die Streicher, die im Refrain abheben. » ellipsized (« … »)
+#109 LAYOUT CUT « Bevor es losgeht: Das Disco-Kit ist geladen, ein trockenes Schlagzeuger-Kit. Du musst nichts einstellen. » ellipsized (« … »)
+#109 LAYOUT OVERLAP « Takt 1/96 » over « Exportiere deinen Track » (52 x 11 dp)
+#109 LAYOUT OVERLAP « Exportiere deinen Track » over the touchable « Tempo: 116 Schläge pro Minute Tempo ände » (161 x 4 dp)
+#109 LAYOUT OVERLAP « Exportiere deinen Track » over the touchable « Ab einem Teil spielen » (58 x 13 dp)
+#109 > fin
+#109 FIN : fin

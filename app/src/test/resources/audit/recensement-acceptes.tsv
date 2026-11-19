@@ -59,7 +59,7 @@ GuideScreenshotTest.review	TARGET	6	premier passage 2026-11-04 : cible sous 48 d
 GuideScreenshotTest.review	CONTRAST	1	premier passage 2026-11-04 : texte sous WCAG AA, à revoir (plusieurs déjà listés Moyen dans AUDIT-1)
 GuideScreenshotTest.simple	HELP	33	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 GuideScreenshotTest.spot	HELP	30	tour 1 (2026-11-04, intégration) : la barre du pouce (n° 21) : ↶, ↷, ▶, tempo, ⋯ ou Partager, les actions de la barre du haut (elle non plus sans « ? »), chacune avec son mot sous l'icône ; premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
-GuideScreenshotTest.spot	CONTRAST	25	premier passage 2026-11-04 : texte sous WCAG AA, à revoir (plusieurs déjà listés Moyen dans AUDIT-1)
+GuideScreenshotTest.spot	CONTRAST	26	premier passage 2026-11-04 : texte sous WCAG AA, à revoir (plusieurs déjà listés Moyen dans AUDIT-1) ; tour 8 T0c : +1, la ligne d aide « − / + » sous le voile du guide (3.02:1, comme ses voisines)
 LearnScreenshotTest.glossary	HELP	7	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)
 LearnScreenshotTest.glossary	CONTRAST	6	premier passage 2026-11-04 : texte sous WCAG AA, à revoir (plusieurs déjà listés Moyen dans AUDIT-1)
 LearnScreenshotTest.glossaryPlaying	HELP	2	premier passage 2026-11-04 : pas encore trié « évident / à expliquer » (agent léger du tour 0, AUDIT-ULTRA §1)

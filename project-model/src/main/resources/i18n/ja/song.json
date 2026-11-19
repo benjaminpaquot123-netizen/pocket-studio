@@ -404,5 +404,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "ノートを演奏:Acid 303 で鳴ります。止めるにはマスをもう一度タップ:ループは小節にそろいます。",
   "Le micro ne répond pas : réessaie.": "マイクが反応しません:もう一度試してね。",
   "Vider la case": "マスを空にする",
-  "Annuler possible": "取り消し可"
+  "Annuler possible": "取り消し可",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。"
 }

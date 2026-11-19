@@ -512,8 +512,8 @@
         {
           "id": "fill",
           "text": "À toi : dans la dernière mesure de la Montée, appui long sur le dernier coup de « Caisse », et « ×4 » sous « Roulement ».",
-          "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Caisse » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : la dernière rafale.",
-          "why": "Une transition (le passage d'une partie à l'autre) prévient l'oreille : un roulement, un silence. Ici, une dernière rafale avant le silence.",
+          "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Caisse » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4 : une rafale.",
+          "why": "Une transition (le passage d'une partie à l'autre) prévient l'oreille : un roulement, un silence. Ici, une rafale avant le silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "snare",

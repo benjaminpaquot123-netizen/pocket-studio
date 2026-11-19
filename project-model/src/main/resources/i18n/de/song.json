@@ -404,5 +404,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Spiel auf den Noten: Sie klingen auf der Acid 303. Tippe das Feld erneut an, um zu stoppen: Die Schleife rastet auf den Takt ein.",
   "Le micro ne répond pas : réessaie.": "Das Mikro antwortet nicht: Versuch es noch einmal.",
   "Vider la case": "Feld leeren",
-  "Annuler possible": "Rückgängig machbar"
+  "Annuler possible": "Rückgängig machbar",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : Wiederholungen. Grau: feste Dauer (empfohlen oder Live) oder nur 1-mal."
 }

@@ -404,5 +404,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Toque as notas: elas soam no Acid 303. Toque na casa de novo para parar: o loop se encaixa no compasso.",
   "Le micro ne répond pas : réessaie.": "O microfone não responde: tente de novo.",
   "Vider la case": "Limpar a casa",
-  "Annuler possible": "Dá para desfazer"
+  "Annuler possible": "Dá para desfazer",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : repetições. Cinza: duração fixa (sugerida ou Live) ou só 1 vez."
 }

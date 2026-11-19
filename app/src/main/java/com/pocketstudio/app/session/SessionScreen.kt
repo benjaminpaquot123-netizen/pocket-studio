@@ -409,6 +409,14 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
             PartRow(i, part, ui, actions, insertAfter = { inserting = it },
                 modifier = if (i == ui.song.lastIndex) Modifier.bringIntoViewRequester(lastRow) else Modifier)
         }
+        // Tour 8, T0c (seat 3a #14): why − / + can be greyed (a fixed length, or one repeat left), right under them;
+        // above the parts it pushed the first one off a phone's screen (SpacesTest).
+        if (ui.song.isNotEmpty()) {
+            Text(
+                tr("− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois."),
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("song_repeats_help"),
+            )
+        }
         // Testers (lot « tuto 3 »): each part added pushes these buttons down (a row more above, the chords' strip):
         // after an add they are brought back into view, never left under the bottom of the screen.
         val addRow = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }

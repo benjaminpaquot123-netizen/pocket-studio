@@ -417,7 +417,7 @@
         {
           "id": "fill",
           "levels": "p",
-          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Charley » : appui long sur le dernier coup, puis « Roulement » ×4 : une dernière rafale avant le retour de la 808.",
+          "text": "À toi : dans la partie « Pré-refrain », dernière mesure, pad « Charley » : appui long sur le dernier coup, puis « Roulement » ×4 : une rafale avant le retour de la 808.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "hat",

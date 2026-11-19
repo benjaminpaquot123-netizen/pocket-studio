@@ -404,5 +404,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Suona le note: suonano sulla Acid 303. Tocca di nuovo la casella per fermare: il loop si allinea alla battuta.",
   "Le micro ne répond pas : réessaie.": "Il microfono non risponde: riprova.",
   "Vider la case": "Svuota la casella",
-  "Annuler possible": "Si può annullare"
+  "Annuler possible": "Si può annullare",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : ripetizioni. Grigi: durata fissa (consigliata o Live) o 1 sola volta."
 }

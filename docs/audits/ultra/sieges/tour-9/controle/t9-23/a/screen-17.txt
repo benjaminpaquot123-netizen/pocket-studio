@@ -1,0 +1,56 @@
+Écran 17 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 178,42
+bouton « Pro » @ 390,42
+bouton « A » ▾ @ 475,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Perkusja 16 padów » [sélectionné] @ 132,262
+onglet « Acid 303 Linia basu » @ 388,262
+onglet « Wokal Mikrofon » @ 640,262
+onglet « Remix Rozdziel » [coupé] @ 822,262
+image → @ 889,263
+texte « Część: A » @ 104,354
+bouton « Kick studyjny FX » @ 123,442
+bouton « 808 FX » @ 341,442
+bouton « Werbel FX » @ 559,442
+bouton « Werbel 2 » @ 777,442
+bouton « Clap » @ 123,520
+bouton « Hi-hat L 30 » @ 341,520
+bouton « Otwarty hi-hat P 30 » @ 559,520
+bouton « Niski tom » @ 777,520
+bouton « Średni tom P 45 » @ 123,598
+bouton « Wysoki tom » @ 341,598
+bouton « Rim FX P 50 » @ 559,598
+bouton « Cowbell » @ 777,598
+bouton « Talerz FX P 40 » @ 123,676
+bouton « Shaker L 50 » @ 341,676
+bouton « Conga » @ 559,676
+bouton « Zap » @ 777,676
+texte « Pady grają dźwięk, komórki trzymają uderzenia. Przytrzymaj: zmień dźwięk. » @ 698,796
+bouton « Zestaw: Studio + 808 » ▾ @ 260,796
+titre « KROKI: KICK STUDYJNY » [coupé, état « Rozwinięte »] @ 274,926
+texte « ? » [coupé] @ 484,940
+bouton « Wszystkie pady » [coupé] @ 682,936
+texte « Tempo i tonacja Rozdział 1/16 · Zrobione · Pro » @ 356,1009
+icône (liste) « Rozdziały » @ 749,1009
+icône ⌃ @ 843,1009
+icône (coupe) « Brawo, rozdział ukończony! » ⌃ @ 450,1152
+icône ↶ « Cofnij » @ 100,1277
+icône ↷ « Ponów » [désactivé] @ 254,1277
+bouton ▶ « utwór » @ 409,1278
+texte « 142 Tempo » @ 567,1277
+icône (trois points reliés) « Udostępnij » @ 762,1277
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

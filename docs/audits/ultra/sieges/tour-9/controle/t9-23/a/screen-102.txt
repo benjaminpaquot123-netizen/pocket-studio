@@ -1,0 +1,57 @@
+Écran 102 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 172,42
+bouton « Pro » @ 378,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ▶ « ta część » @ 693,42
+bouton ▶ « utwór » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Acid 303 Linia basu » [coupé] @ 130,262
+onglet « Wokal Mikrofon » @ 364,262
+onglet « Remix Rozdziel » @ 600,262
+bouton « 808 808 » ⋮ @ 799,262
+image ← @ 10,263
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « 100% » @ 114,435
+texte « Wyczyść » @ 296,435
+texte « Do rytmu 50% » [coupé] @ 625,390
+texte « takt » @ 84,508
+bouton « 4 » @ 486,508
+bouton « 5 » [coupé] @ 853,508
+texte « G♯ » [coupé] @ 84,542
+texte « G » @ 84,557
+texte « F♯ » @ 84,585
+texte « F » @ 84,613
+texte « E » @ 84,641
+texte « E♭ » @ 84,669
+texte « D » @ 84,697
+texte « C♯ » @ 84,725
+texte « C2 » @ 84,753
+texte « B » @ 84,781
+texte « B♭ » @ 84,809
+texte « A » @ 84,837
+texte « G♯ » @ 84,865
+texte « G » @ 84,893
+texte « F♯ » @ 84,921
+texte « F » @ 84,949
+texte « E » @ 84,977
+texte « E♭ » @ 84,1005
+texte « D » @ 84,1032
+dessin [coupé] @ 492,793
+texte « Ślizgające się 808 Rozdział 5/16 · Zrobione · Pro » @ 356,1112
+icône (liste) « Rozdziały » @ 749,1112
+icône ⌃ @ 843,1112
+icône (coupe) « Brawo, rozdział ukończony! » ⌃ @ 450,1255
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

@@ -1,0 +1,69 @@
+Écran 69 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 178,42
+bouton « Pro » @ 390,42
+bouton « A » ▾ @ 475,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Perkusja 16 padów » [sélectionné] @ 132,262
+onglet « Acid 303 Linia basu » @ 388,262
+onglet « Wokal Mikrofon » @ 640,262
+onglet « Remix Rozdziel » [coupé] @ 822,262
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « Takt » @ 81,424
+bouton « 1 » [sélectionné] @ 166,424
+bouton « 2 » @ 247,424
+bouton « Podążaj » @ 393,424
+texte « Takt 2 · 2 pola → » @ 675,512
+texte « Takt 1/2 · Rim » @ 179,512
+bouton « 1 » [état « pusty »] @ 90,601
+bouton [état « pusty »] @ 192,601
+bouton [état « pusty »] @ 294,601
+bouton [état « pusty »] @ 397,601
+bouton « 2 » [état « pusty »] @ 500,601
+bouton [état « pusty »] @ 603,601
+bouton [état « uderzenie, siła 100 % »] @ 706,601
+bouton [état « pusty »] @ 809,601
+bouton « 3 » [état « pusty »] @ 90,682
+bouton [état « pusty »] @ 192,682
+bouton [état « pusty »] @ 294,682
+bouton [état « pusty »] @ 397,682
+bouton « 4 » [état « pusty »] @ 500,682
+bouton [état « pusty »] @ 603,682
+bouton [état « uderzenie, siła 100 % »] @ 706,682
+bouton [état « pusty »] @ 809,682
+bouton « Uderzenia » [sélectionné] @ 163,768
+bouton « Rolki » @ 361,768
+bouton « Pan » @ 498,768
+bouton « Wysokość » @ 689,768
+bouton « Siła » [coupé] @ 839,768
+texte « Wypełnij » @ 119,852
+texte « wszystko » @ 303,852
+texte « 1/2 » @ 450,852
+texte « 1/4 » @ 535,852
+texte « ◀ » @ 616,852
+texte « ▶ » @ 691,852
+texte « Wyczyść » [coupé] @ 142,918
+texte « Hi-haty i perkusjonalia Rozdział 4/16 · Krok 2/4 · Pro » @ 356,1009
+icône (liste) « Rozdziały » @ 749,1009
+icône ⌃ @ 843,1009
+icône « Twoja kolej: na padzie „Rim” (małe „tok”) dotknij kropkowanych pól w 2 taktach: odpowiada werblowi. Czytaj » ⌃ @ 450,1152
+icône ↶ « Cofnij » @ 100,1277
+icône ↷ « Ponów » [désactivé] @ 254,1277
+bouton ▶ « utwór » @ 409,1278
+texte « 142 Tempo » @ 567,1277
+icône (trois points reliés) « Udostępnij » @ 762,1277
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

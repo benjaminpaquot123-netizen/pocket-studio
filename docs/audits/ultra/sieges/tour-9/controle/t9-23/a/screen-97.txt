@@ -1,0 +1,53 @@
+Écran 97 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 172,42
+bouton « Pro » @ 378,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ▶ « ta część » @ 693,42
+bouton ▶ « utwór » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Acid 303 Linia basu » [coupé] @ 130,262
+onglet « Wokal Mikrofon » @ 364,262
+onglet « Remix Rozdziel » @ 600,262
+bouton « 808 808 » ⋮ @ 799,262
+image ← @ 10,263
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « 100% » @ 114,435
+texte « Wyczyść » @ 296,435
+texte « Do rytmu 50% » [coupé] @ 625,390
+bouton « 808 · takt 4/8 Jeszcze 1 kropkowana nuta do dotknięcia » @ 450,536
+texte « takt » @ 84,621
+bouton « 4 » @ 486,621
+bouton « 5 » [coupé] @ 853,621
+texte « F » @ 84,668
+texte « E » @ 84,696
+texte « E♭ » @ 84,724
+texte « D » @ 84,752
+texte « C♯ » @ 84,780
+texte « C2 » @ 84,808
+texte « B » @ 84,836
+texte « B♭ » @ 84,864
+texte « A » @ 84,892
+texte « G♯ » @ 84,920
+texte « G » @ 84,948
+texte « F♯ » @ 84,976
+texte « F » @ 84,1004
+texte « E » @ 84,1032
+dessin [coupé] @ 492,850
+texte « Ślizgające się 808 Rozdział 5/16 · Krok 3/4 · Pro » @ 356,1112
+icône (liste) « Rozdziały » @ 749,1112
+icône ⌃ @ 843,1112
+icône « Twoja kolej: dotknij „Kopiuj na kolejne takty”: zapisze się takt 3 (ten sam, wyżej). Potem 2 nuty w takcie 4 i znów „Kopiuj”. Czytaj » ⌃ @ 450,1255
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

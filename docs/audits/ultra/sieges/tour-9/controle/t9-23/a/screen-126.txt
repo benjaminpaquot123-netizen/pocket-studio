@@ -1,0 +1,53 @@
+Écran 126 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 172,42
+bouton « Pro » @ 378,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ▶ « ta część » @ 693,42
+bouton ▶ « utwór » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Remix Rozdziel » @ 121,262
+bouton « 808 808 » @ 291,262
+bouton « Akordy Smyczki » @ 466,262
+bouton « Melodia Pianino FM » ⋮ @ 730,262
+image ← @ 10,263
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « 100% » @ 114,435
+texte « Wyczyść » @ 296,435
+texte « Do rytmu 50% » [coupé] @ 625,390
+bouton « Melodia · takt 4/8 Wszystkie kropkowane nuty są położone » @ 450,536
+texte « takt » @ 84,621
+bouton « 4 » @ 486,621
+bouton « 5 » [coupé] @ 853,621
+texte « B » @ 84,668
+texte « B♭ » @ 84,696
+texte « A » @ 84,724
+texte « G♯ » @ 84,752
+texte « G » @ 84,780
+texte « F♯ » @ 84,808
+texte « F » @ 84,836
+texte « E » @ 84,864
+texte « E♭ » @ 84,892
+texte « D » @ 84,920
+texte « C♯ » @ 84,948
+texte « C5 » @ 84,976
+texte « B » @ 84,1004
+texte « B♭ » @ 84,1032
+dessin [coupé] @ 492,850
+texte « Melodia Rozdział 7/16 · Zrobione · Pro » @ 356,1112
+icône (liste) « Rozdziały » @ 749,1112
+icône ⌃ @ 843,1112
+icône (coupe) « Brawo, rozdział ukończony! » ⌃ @ 450,1255
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

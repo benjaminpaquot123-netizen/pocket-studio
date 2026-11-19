@@ -1,0 +1,44 @@
+Écran 40 (588x1278)
+icône « マイプロジェクト 1 » ✓ @ 298,36
+bouton « プロ » @ 538,36
+bouton (dossier ouvert) @ 103,114
+bouton « F » ▾ @ 236,114
+icône ↶ @ 311,114
+bouton ● @ 383,114
+bouton ▶ « このパート » @ 463,114
+icône (trois points reliés) @ 543,114
+bouton « 138  BPM » @ 83,195
+icône « イントロ 小節 1/128 » ▾ @ 263,195
+bouton (flèches en boucle) [état « オフ »] @ 462,195
+bouton « ? » @ 543,195
+onglet « ドラム 16パッド » [sélectionné] @ 90,277
+onglet « Acid 303 ベースライン » @ 277,277
+onglet « ボーカル マイク » @ 470,277
+onglet « リミックス 分離 » [coupé] @ 565,277
+image → @ 577,278
+texte « パート：F · ビルドアップ » @ 179,347
+texte « 小節 4/4 · シンバル » [coupé] @ 169,383
+texte « トランジション チャプター 8/12 · ステップ 2/2 · プロ » @ 201,485
+icône (liste) « チャプター » @ 438,485
+icône ⌄ @ 531,485
+texte « あなたの番：「ドロップ」パートで、シンバルのパッドのいちばん最初のマスをタップしよう。 » @ 294,638
+texte « ▸ なぜ？ » @ 294,736
+bouton ⊕ «   パート「ドロップ」へ移動 » @ 294,805
+bouton ▶ «  例を聴く » @ 154,889
+bouton (œil) «  見せて » @ 433,889
+icône ← «  前へ » @ 85,970
+icône « 次へ  » → @ 503,970
+icône ↶ « 元に戻す » @ 74,1058
+icône ↷ « やり直す » [désactivé] @ 190,1058
+bouton ▶ « 曲 » @ 300,1058
+texte « 138 テンポ » @ 410,1058
+icône (trois points reliés) « シェア » @ 520,1058
+onglet (ligne brisée et points) « 構成 » @ 54,1158
+onglet (touches de piano) « サウンド » [sélectionné] @ 174,1158
+onglet (curseurs) « ミックス » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « その他 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

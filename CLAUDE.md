@@ -1,7 +1,7 @@
 # Pocket Studio : règles permanentes
 
 Référence complète : `docs/SPEC.md` (le prompt d'origine ; ne le modifier que sur demande de Benjamin).
-Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues GitHub ouvertes (rapports de recette et bugs) ; regarder aussi le dernier passage de « Nightly real use » (`docs/TESTS-REELS.md`) et traiter un échec (seul, il ne teste que main : pendant la reprise, il est lancé à la main sur fx-int à chaque rangement).
+Au début de chaque session, le chef d'orchestre (ou une discussion sans fiche) lit ce fichier, `docs/PROGRESS.md` et les issues GitHub ouvertes (rapports de recette et bugs) ; il regarde aussi le dernier passage de « Nightly real use » (`docs/TESTS-REELS.md`) et traite un échec (seul, il ne teste que main : pendant la reprise, il est lancé à la main sur fx-int à chaque rangement). Une discussion qui reçoit une fiche du chef lit seulement ce fichier, `docs/audits/ultra/EN-COURS.md` et sa fiche (2026-11-19, lecture d'arrivée courte).
 À la fin de chaque session : commit poussé (même en plein travail) et `docs/PROGRESS.md` à jour.
 « continue » = reprendre la prochaine étape notée dans `docs/PROGRESS.md` (la première case non cochée de `docs/PLAN-REPRISE.md`), sans rien demander.
 
@@ -15,7 +15,7 @@ Au début de chaque session : lire ce fichier, `docs/PROGRESS.md` et les issues 
 - Retours de Benjamin (captures + explications de bug) : ne pas les analyser tout de suite. Les ranger dans `docs/RETOURS.md` (date, capture décrite, texte de Benjamin, une ligne par retour), répondre en une phrase « noté », et tout analyser d'un coup seulement quand Benjamin le demande (économie de quota). Après traitement, marquer chaque retour comme fait.
 - Tout le reste : décider, noter une ligne dans `docs/DECISIONS.md` (choix, raison, retour arrière), avancer.
 - Dire à Benjamin, en une ligne, quand on tourne en rond (même rouge ou même refus deux fois pour un même lot) ou quand une faute est compliquée (cause pas claire après une vraie recherche, rouge qui va et vient) : proposer Fable sur telle discussion pour tel sujet ; il décide (2026-11-14). Détail : `docs/audits/AUDIT-ULTRA.md` §13.11.
-- Un lot n'entre dans l'intégration que si sa propre CI complète est verte sur une tête qui contient l'intégration du moment (2026-11-14).
+- Un lot n'entre dans l'intégration que si une CI complète est verte sur une tête qui le contient avec l'intégration du moment : sa propre CI, ou celle de la branche de son paquet (2026-11-14, une seule CI par paquet depuis le 2026-11-19).
 - Mémoire courte (Benjamin, 2026-11-15 ; `docs/audits/ultra/METHODE-V4.md` §4). Le coût d'une action est à peu près la taille de la mémoire de la discussion. Donc :
   - un lot = une discussion neuve ou un sous-agent, fermé à la fin du lot ;
   - une discussion de plus de 200 k ne reçoit plus de travail neuf ;
@@ -56,7 +56,7 @@ Détail et raisons : `docs/audits/AUDIT-ULTRA.md` §13. État du moment, à lire
 - Audit et correction ne se mélangent pas : un siège joue un commit nommé et l'écrit (« code testé ») ; pendant une vague de testeurs, rien n'entre dans l'appli ni dans le banc ; un lot ne part que d'un tri fini.
 - Un fichier = un seul lot ouvert ; hors de sa liste de fichiers, on ne touche à rien, on le demande. Le tuto est une seule zone : un lot à la fois, et il n'entre que si un débutant neuf a rejoué ses chapitres sur la branche du lot (0 chapitre bloqué, 0 grave neuf).
 - Corriger : rejeu d'abord pour tout bloquant ou grave ; commit « rouge: sujet » avant la correction, puis « vert: même sujet » ; self-test et rejeux verts ; pré-vol PRÊT ; relecture neuve en dernier commit. Les deux fiches de `docs/AIDE-FUSIONS-TESTS.md` font foi.
-- Fusionner : paquets de trois lots au plus ; la CI part à la fin de chaque paquet ; rien d'autre n'entre avant qu'elle soit verte, téléphone simulé compris ; le juge du chantier ne monte pas. On ne fusionne jamais autre chose que la tête poussée.
+- Fusionner : paquets de trois lots au plus, réunis sur une branche de paquet hors de l'intégration ; la CI part sur cette branche à la fin du paquet, et elle vaut CI de chaque lot (2026-11-19) ; l'intégration n'avance que sur cette tête verte, téléphone simulé compris, sans seconde CI ; le juge du chantier ne monte pas. On ne fusionne jamais autre chose que la tête poussée.
 - Dire : chaque point à Benjamin se fait après lecture de la CI et finit par « Ce qui n'est pas vert ». Une APK pour son téléphone ne part que d'un commit à la CI verte.
 
 - Points d'étape pour Benjamin : heures belges ; un seul compteur, en trois lignes (« Bugs corrigés dans l'appli », « En salle d'attente », « Bugs encore à corriger ») ; « corrigé » seulement quand un testeur l'a constaté ; devant une CI rouge, lire l'artefact (test, message, classes d'avant) avant d'en parler. Détail : `docs/audits/AUDIT-ULTRA.md` § 13.10.
@@ -65,7 +65,8 @@ Détail et raisons : `docs/audits/AUDIT-ULTRA.md` §13. État du moment, à lire
 Raison : le 18 novembre, deux CI vertes ont attendu 36 minutes, une seule discussion travaillait pendant une heure de CI, et la fiche de reprise avait un tour de retard.
 - Aucune CI verte n'attend : chaque CI lancée par le chef a son réveil unique, posé au lancement, 50 minutes plus tard (une CI sur une branche sans PR ne prévient personne) ; si elle tourne encore, un seul rappel de 10 minutes. But : moins de 10 minutes entre une CI finie et l'action suivante.
 - Jamais d'heure creuse : avant de lancer une CI de paquet, le chef ouvre les lots suivants du plan qui ne touchent pas les mêmes fichiers. Tant qu'il reste un lot « immédiat », au moins deux discussions travaillent. Préparer n'est pas entrer : rien n'entre avant le vert.
-- La CI d'un lot part dès que sa tête poussée contient l'intégration du moment, sans attendre un travail local qui ne change pas le code (captures refaites, relecture). Si ce travail ne change rien, la CI est déjà la bonne.
+- La CI d'un paquet part dès que sa tête poussée contient l'intégration du moment, sans attendre un travail local qui ne change pas le code (captures refaites, relecture). Une CI verte sur un commit parent compte quand l'écart ne touche que `docs/` : pas de CI neuve pour du texte seul (2026-11-19).
+- Un lot n'attend pas sa CI : il pousse, écrit « fini » au chef et se tait (aucun réveil, aucune minuterie) ; le chef lit la CI et ne réveille le lot que si elle est rouge, avec l'extrait de l'artefact. Un commit « rouge: » se prouve par son test ciblé sur la machine du lot, jamais par une CI entière (2026-11-19).
 - L'ordre de fusion écrit dans le plan du tour se suit. Y déroger = une ligne dans `docs/DECISIONS.md` avec ce que ça coûte en heures, avant de le faire.
 - La fiche de reprise d'abord : `docs/audits/ultra/EN-COURS.md` et `docs/PROGRESS.md` sont mis à jour dans le même commit que chaque fusion de paquet, et toujours avant 150 k de mémoire. Une fiche plus vieille que la dernière fusion bloque la fusion suivante.
 - Une discussion dont le lot est entré et dont le paquet est vert se ferme tout de suite.

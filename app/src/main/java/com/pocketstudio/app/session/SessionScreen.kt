@@ -658,10 +658,10 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
             modifier = Modifier.weight(1f).heightIn(min = 56.dp).clip(shape),
         ) {
             // F104: ▶ plays from the part (a long press: its sheet, as before); a touch on the part opens its settings.
-            // As wide as the old icon and its margins (32 dp, the whole row's height: 56 dp), so the name keeps its room.
+            // A thumb wide (48 dp, review G2): the only « play from here » now a touch on the part opens it.
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.width(32.dp).heightIn(min = 56.dp).clip(shape)
+                modifier = Modifier.width(48.dp).heightIn(min = 56.dp).clip(shape)
                     .combinedClickable(
                         role = Role.Button, onClickLabel = tr("Jouer à partir de cette partie"),
                         onLongClickLabel = tr("Variation, fill, break…"), onLongClick = { sheetOpen = true },
@@ -695,7 +695,8 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
                         next -> "  ·  " + tr("ensuite")
                         else -> ""
                     },
-                    style = MonoStyle, maxLines = 2, min = 11.sp,
+                    // A third line at a big text size (review G2: the thumb-wide ▶ took 16 dp from it).
+                    style = MonoStyle, maxLines = 3, min = 11.sp,
                     color = when {
                         next -> Neon.Amber
                         active -> Neon.Magenta

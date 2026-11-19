@@ -117,11 +117,9 @@ fun playPosition(p: Project, playing: Boolean, songIndex: Int, bar: Int, playFro
         song.isEmpty() -> null
         loopPart -> PlayPosition(partName(p, p.scene), 1, sceneBars, loop = true)
         else -> {
-            // Tour 9, F105: the start point left at the song's start (« Intro mesure 1/84 » was said while Refrain was edited)
-    // gives way to the part being edited, where it first plays; a start picked elsewhere (« Jouer depuis… ») stays said.
-    val start = playFrom.takeIf { it in song.indices } ?: 0
-    val from = start.takeIf { it > 0 || song[it].scene == p.scene } ?: song.indexOfFirst { it.scene == p.scene }.takeIf { it >= 0 } ?: start
-    PlayPosition(partName(p, song[from].scene), p.songStepOf(from) / spb + 1, songBars)
+            // Stopped: where ▶ starts (review G1, tour 9: naming the edited part needs ▶ to start there too, the view model's).
+            val from = playFrom.takeIf { it in song.indices } ?: 0
+            PlayPosition(partName(p, song[from].scene), p.songStepOf(from) / spb + 1, songBars)
         }
     }
 }

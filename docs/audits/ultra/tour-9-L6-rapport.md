@@ -9,7 +9,7 @@ chemin: Structure, gestes (appui long, toucher une partie, liste qui défile) | 
 chemin: Structure, phrase d'aide visible quand le tuto montre les boutons d'ajout | test: Tour9HelpUnderTopTest#theHelpStaysInSightWithManyParts
 chemin: Barre du haut, nom du projet et « Sauvegardé » | test: Tour9TopBarSavedTest#theNameAndSavedFitTheBar
 chemin: Barre du haut, menu de la partie « Renommer » | test: Tour9RenameFromChipTest#theSceneMenuOffersRenameAndOpensTheNamingDialog
-chemin: Bande de lecture, indicateur de la partie éditée | test: Tour9PlayStripTest#stoppedItNamesThePartBeingEdited
+chemin: Bande de lecture, arrêtée : dit où ▶ démarre | test: Tour9PlayStripTest#stoppedItSaysWhereThePlayButtonStarts
 chemin: Bande de lecture, mesures lisibles à 200 % | test: Tour9PlayStripTest#theBarsReadWholeWithBigText
 chemin: Message « Fait » qui s'en va au geste suivant | test: Tour9DoneBarGoesTest#theNextTouchOnThePageLetsTheLineGoAndStillWorks
 
@@ -30,3 +30,4 @@ corrige: F110 | gravité: moyen
 - F101 : non reproduit côté Structure. Sur t9-53 écran 47, le doigt (270, 520) est dans une bande vide entre l'aide des répétitions (435) et l'en-tête du tuto (631) : les boutons d'ajout sont cachés par une couche invisible du tuto. Zone L1.
 - F111 : `DoneBar` prête (`doneGoesAtNextGesture`), la ligne d'AppRoot.kt attend l'entrée de L1.
 - D10 : la ligne `renameScene = rhythmVm::renameScene` dans AppRoot.kt n'est pas posée (refusée deux fois), à faire par le chef.
+- F105 : moitié seulement. Les mesures se lisent en entier ; nommer la partie éditée demande que ▶ y démarre (RhythmViewModel, hors du lot, relecture G1).

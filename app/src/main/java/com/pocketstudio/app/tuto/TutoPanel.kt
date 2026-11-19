@@ -643,7 +643,7 @@ fun TutoPanel(
             // Testers (lot « tuto 4 »): the end said nothing (or sent back to chapter 5): « Bravo » when all is
             // done, else the steps left, each one touch away; never « Je le fais » after the end.
             if (end) {
-                EndCard(ui, actions, names, mine, minePlaying)
+                EndCard(ui, actions, names, mine, minePlaying, Modifier.weight(1f, fill = false))
                 return@Column
             }
             // The step's words, or in their place « Bravo » or « Montre-moi »'s caption: never one more block.
@@ -1241,9 +1241,14 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
  * done; else the steps left (in Pro an example not listened to is not one), each one touch away.
  */
 @Composable
-private fun EndCard(ui: TutoUi, actions: TutoActions, names: (String) -> String = { it }, mine: Boolean = false, minePlaying: Boolean = false) {
+private fun EndCard(ui: TutoUi, actions: TutoActions, names: (String) -> String = { it }, mine: Boolean = false, minePlaying: Boolean = false, modifier: Modifier = Modifier) {
     val left = ui.left
-    Column(Modifier.fillMaxWidth().heightIn(max = 360.dp).verticalScroll(rememberScrollState()).testTag("tuto_end"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    // Tour 9 F007 (seats t9-12, t9-28…30): « … et 6 autres » was words to read, not a way to them: one touch lists them all.
+    var all by remember(left.size) { mutableStateOf(false) }
+    // Tour 9 F006 (seats t9-05, t9-12, t9-42, t9-63): « Revenir à l'étape » at the bottom of the scrolling list was cut at
+    // the panel's edge (200 %, a long list): pinned under the list, whole, the list scrolling above it.
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    Column(Modifier.weight(1f, fill = false).fillMaxWidth().heightIn(max = 360.dp).verticalScroll(rememberScrollState()).testTag("tuto_end"), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (left.isEmpty()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.EmojiEvents, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(28.dp))
@@ -1267,7 +1272,7 @@ private fun EndCard(ui: TutoUi, actions: TutoActions, names: (String) -> String 
         if (mine) PlayMineButton(actions, minePlaying)
         Text(trCount(left.size, "Il te reste %d étape. Touche-la pour y aller :", "Il te reste %d étapes. Touche-en une pour y aller :"), style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.testTag("tuto_left_count"))
-        left.take(END_LIST).forEach { s ->
+        left.take(if (all) left.size else END_LIST).forEach { s ->
             val (c, i) = ui.placeOf(s)
             Row(
                 Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(10.dp)).background(Neon.SurfaceHigh)
@@ -1281,11 +1286,14 @@ private fun EndCard(ui: TutoUi, actions: TutoActions, names: (String) -> String 
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
             }
         }
-        if (left.size > END_LIST) Text(trCount(left.size - END_LIST, "… et %d autre (liste ≡)", "… et %d autres (liste ≡)"), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        if (left.size > END_LIST && !all) TextButton(onClick = { all = true }, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_end_more")) {
+            Text(trCount(left.size - END_LIST, "… et %d autre (liste ≡)", "… et %d autres (liste ≡)"), style = MaterialTheme.typography.bodyMedium, color = Neon.Cyan)
+        }
+    }
         // N13: framed too (the end's card, one look for its buttons).
-        if (ui.atEnd) OutlinedButton(onClick = actions.leaveEnd, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_end_back")) {
+        if (ui.atEnd && left.isNotEmpty()) OutlinedButton(onClick = actions.leaveEnd, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_end_back")) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
-            Text(" " + tr("Revenir à l'étape"), maxLines = 1)
+            com.pocketstudio.ui.WholeWordsText(" " + tr("Revenir à l'étape"), textAlign = TextAlign.Center)
         }
     }
 }

@@ -57,7 +57,7 @@ class Tour9L8CapturesTest {
     }
 
     private val share: @Composable () -> Unit = {
-        ShareSheetContent(ShareSheetUi("Mon tube", seconds = 180, parts = 3, checks = emptyList()), ShareSheetActions())
+        ShareSheetContent(ShareSheetUi("Mon tube", seconds = 180, parts = 3, rows = 5, checks = emptyList(), projectName = "Mon projet 3", lufs = -14.4, exportLufs = -14.0), ShareSheetActions())
     }
     private val tempo: @Composable () -> Unit = { TempoSheet(124.0, TempoActions(), onClose = {}) }
     private val kit: @Composable () -> Unit = {

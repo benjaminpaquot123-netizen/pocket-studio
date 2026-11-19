@@ -18,7 +18,7 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 - 08 h 06 : T9-REVUE fini (7fd356dee fusionné, discussion archivée) : 0 bloquant, appli 0 grave ; 3 tests creux graves (PlusRowsFit:65, GuideNoEmptyStep:33-37, OrdinaryTestsLeaveNothing:69-94) ajoutés au lot « tests creux » de la réparation ; 15 à noter dans `docs/REVIEW.md`. Place libérée : 10 discussions ouvertes.
 
-Rotation (Benjamin) : **11 discussions au plus**. Une discussion finie est archivée et une neuve prend sa place. Surveillance du chef : notifications, veilleur en arrière-plan (branches `aud/tour-9-*`, `eq/tour-9-*`, `rev/tour-8-*`, intégration, CI), une minuterie de secours < 1 h avec un seul `list_sessions(children)`.
+Rotation (Benjamin) : **31 discussions au plus** (était 11 ; Benjamin, 08 h 33 : « Ouvre 20 discussion en plus »). Une discussion finie est archivée et une neuve prend sa place. Surveillance du chef : notifications, veilleur en arrière-plan (branches `aud/tour-9-*`, `eq/tour-9-*`, `rev/tour-8-*`, intégration, CI), une minuterie de secours < 1 h avec un seul `list_sessions(children)`.
 - T9-REVUE `session_014RxrDKB2N7gX4yxMKTtohb` (revue fin de phase tour 8, branche `rev/tour-8-fin-de-phase`)
 - T9-BALAYAGE `session_014RxrDJMkVzhuYV7LFeF1pQ` (37 tutos × 15 langues, `eq/tour-9-balayage`)
 - T9-PLAN `session_014RxrDLxKw1RRtXuZbwYQZB` (plan + fiche type des sièges, `eq/tour-9-plan`)

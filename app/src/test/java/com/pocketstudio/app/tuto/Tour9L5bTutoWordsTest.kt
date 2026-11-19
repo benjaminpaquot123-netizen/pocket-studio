@@ -86,4 +86,15 @@ class Tour9L5bTutoWordsTest {
             listOf(shown(l, title)).filter { name !in it }
         })
     }
+
+    /** F077: a step that opens « la fiche Tonalité » names that sheet by its title (« Tonalité du morceau »). */
+    @Test
+    fun f077KeySheetNamedByItsTitle() {
+        val keys = tutoTexts.filter { "fiche Tonalité" in it }
+        assertTrue("the key-sheet steps are found", keys.size > 10)
+        assertNoneLeft("step naming the key sheet otherwise than its title", others.associateWith { l ->
+            val sheet = I18n.table(l)["Tonalité du morceau"] ?: error("no sheet title in ${l.code}")
+            keys.map { shown(l, it) }.filter { sheet !in it }
+        })
+    }
 }

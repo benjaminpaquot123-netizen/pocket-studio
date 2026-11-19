@@ -18,6 +18,7 @@ chemin: Découpe, note « Aucune coupe trouvée » puis touche sur la courbe (vr
 
 rejeu: t9-75-kit | siège t9-75 (nl, tablette 8, 100 %, Pro, tuto uk_garage ch. 1) | tenu : la carte du kit charge le kit (« Kit: UK Garage », sans erreur) ; l'erreur dite reste couverte par T9L11KitErrorSaidTest
 corrige: D17 | gravité: grave | rejeu: t9-75-kit
+t9-75-kit : oracle tenu
 
 ## Ce qui change
 - F131 (tenté) : Retour déplie d'abord le panneau du tuto replié (puis ferme la feuille ou l'éditeur ouvert) ; il ne sort du projet qu'au dernier Retour (`ui/AppRoot.kt`).
@@ -31,7 +32,8 @@ corrige: D17 | gravité: grave | rejeu: t9-75-kit
 - Après la fusion de l'intégration (L8 compris), des captures hors de mes écrans ne collent plus à leurs références : feuille du tempo (`tempo_sheet`, `nl_tempo_sheet`), barre des pistes (`tracks`), et sans doute les écrans Sons (`nav_sons`, `nav_sons_synth`, `nav_simple_keys`, `nav_simple_send`, `sons_synth_take`, et leurs `land_*`). Prouvé avec le code de la base seule pour `tempo_sheet`, `nl_tempo_sheet` et `tracks` : c'est L8 (TrackBar et TempoSheet changés sans nouvelles références). Pas réenregistrées ici, ce ne sont pas mes écrans.
 
 ## Demandes (hors de mes fichiers)
-Aucune.
+- Registre `corrections.tsv` : le tri n'a pas écrit de ligne pour F131, D17, N1, N3 ni la garde F139 ; un lot ne peut pas en ajouter. Au chef (ou au trieur) de les poser ; mes preuves : F131 8b8bada5 T9F131BackUnfoldsTutoTest, D17 07b9d5dc rejeu t9-75-kit, N1 b028a173 T9L11SwitchStaysWholeTest, N3 42afe85b T9L11LiveBarWholeTest, F139 69695816 CutLocalNoteScrollTest.
+- Tuto : le lot change les tuto.json (chaînes de l'erreur du kit) ; siège de contrôle du tuto reporté à la grande vérification de fin (mode boost, PS_JUGE_BOOST=1).
 
 ## Captures regardées (écran entier)
 86 captures changent, toutes sur mes écrans : le Live (barre, rangée du haut, grille), la Structure en Parties (bascule sortie de la colonne, N1) et le cercle « ? » à 130 % et plus (Découpe, feuille du tempo). Regardées en entier : Live arabe 360 dp (`i18n/ar_live_fx`), Live Simple 100 % (`nav/live`), Live 130 % tablette (`tabA11/130_nav_live`), Structure Pro (`tabA11/nav_structure_parts`), feuille du tempo 130 % (`lying/tempo_sheet_text130`), Découpe 130 % (`cut_bout_130`), Guide sur la Structure (`guide_spot`). Rien de coupé, rien qui chevauche ; à 100 % le cercle « ? » est identique au pixel près (18 dp).

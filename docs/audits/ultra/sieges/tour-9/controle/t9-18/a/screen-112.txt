@@ -1,0 +1,7 @@
+Écran 112 (1035x1243)
+texte « Compartilhar minha música · Minha-música-club-20261119-075616.wav » @ 517,442
+bouton « WhatsApp » @ 517,509
+bouton « Messages » @ 517,581
+bouton « Gmail » @ 517,653
+bouton « Drive » @ 517,725
+bouton « Files » @ 517,797

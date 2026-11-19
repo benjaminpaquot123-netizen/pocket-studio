@@ -1,0 +1,51 @@
+Écran 115 (1035x1243)
+icône (dossier ouvert) ✓ « Minha música Salvo » @ 299,42
+texte « Pro » @ 625,42
+icône ↶ @ 697,42
+icône ↷ [désactivé] @ 769,42
+bouton ● @ 841,42
+bouton ▶ « esta parte » @ 915,42
+icône (trois points reliés) @ 990,42
+bouton « 126  BPM » @ 73,114
+icône « Drop comp. 33/120 » ▾ @ 242,114
+bouton (flèches en boucle) « Loop » [état « desligado »] @ 887,114
+bouton « ? » @ 990,114
+image (courbe) @ 0,0
+bouton « ? » @ 468,195
+texte « Volumes » @ 241,196
+texte « Deslize um fader para o volume; toque no nome de uma faixa para ver os efeitos e as curvas dela. » @ 263,250
+texte « Bateria » [coupé] @ 84,317
+texte « Acid 303 » [coupé] @ 204,317
+texte « Acordes » [coupé] @ 324,317
+texte « Baixo » [coupé] @ 444,317
+bouton « Criar o arquivo da música » [coupé] @ 771,162
+texte « Salvo em Música › BenStudio: Minha-música-club-20261119-075616.wav » @ 771,225
+texte « ✓ Pronto para compartilhar » @ 691,279
+texte « Duração: 3 min 49 s » @ 642,310
+texte « Nível: no alvo (Club) » [coupé] @ 643,327
+icône (liste) « Capítulos » @ 892,376
+texte « Exporte sua música Capítulo 14/14 · Etapa 2/2 · Pro » @ 431,376
+icône ⌄ @ 978,376
+texte « Quase lá! » @ 76,457
+bouton ▶ «  Ouvir minha música » @ 517,520
+texte « Faltam 7 etapas. Toque numa delas para ir até lá: » @ 264,580
+bouton « Capítulo 2/14 · A bateria Já pronto: o kit de “Faça uma música pra mim” para Detroit (caixa e hi-hats 909, kick afinado em Lá), volumes e efeitos, saturação leve na bateria. » → @ 517,641
+bouton « Capítulo 7/14 · Entender as partes Um bloco é o loop de um só instrumento (o kick, o baixo). Uma parte são vários blocos tocando juntos. » → @ 517,725
+bouton « Capítulo 7/14 · Entender as partes Olhe o mapa: cada quadro é uma parte, com sua duração em compassos. A curva mostra a energia. » → @ 517,809
+bouton « Capítulo 12/14 · A mixagem Sua vez: no Mix, abaixe um pouco o fader da faixa “Melodia”, depois o da faixa “Acordes”. » → @ 517,893
+texte « … e mais 3 (lista ≡) » @ 107,953
+bouton ← «  Voltar à etapa » [coupé] @ 517,977
+icône ↶ « Desfazer » @ 141,1027
+icône ↷ « Refazer » [désactivé] @ 317,1027
+bouton ▶ « a música » @ 494,1027
+texte « 126 Andamento » @ 681,1027
+icône (trois points reliés) « Compartilhar » @ 880,1027
+onglet (ligne brisée et points) « Estrutura » @ 99,1123
+onglet (touches de piano) « Sons » @ 309,1123
+onglet (curseurs) « Mix » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Mais » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Anotar » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentários » @ 385,1213

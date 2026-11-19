@@ -1,0 +1,586 @@
+#0 SIEGE lang=pt-BR device=foldable font=100 mode=pro theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:detroit:8
+#0 PREMIER ECRAN reel_s=4.1 simule_s=2.4 jvm_s=10.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:detroit:8
+#0 AMENEE > touche 518 1016 (launch_learn)
+#0 AMENEE > touche 771 1108 (mode_card_pro)
+#0 AMENEE > touche 517 367 (tuto_style_detroit)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 892 601 (tuto_chapters)
+#0 AMENEE > touche 517 711 (tuto_chapter_7)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE 6dcc2865a3 | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_intro done=13 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Por quê? » 662 x 20 dp (touch 662 x 48)
+#1 > touche 517 778
+#1 DOIGT tuto_need «   Criar a parte “Intro” »
+#2 ROUTE tab_Structure | MODE pro | EMPREINTE 5197c77c41 | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_intro done=14 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 517 859
+#2 DOIGT tuto_next_big « Próxima etapa   »
+#3 ROUTE tab_Structure | MODE pro | EMPREINTE 7753647631 | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_intro2 done=14 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 517 778
+#3 DOIGT tuto_need «   Criar a parte “Intro 2” »
+#4 ROUTE tab_Structure | MODE pro | EMPREINTE c9f933a16a | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_intro2 done=15 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 517 859
+#4 DOIGT tuto_next_big « Próxima etapa   »
+#5 ROUTE tab_Structure | MODE pro | EMPREINTE f9af1ee6aa | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_drop done=15 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 942 649
+#5 DOIGT tuto_kit_later « Mais tarde »
+#6 ROUTE tab_Structure | MODE pro | EMPREINTE 900b29277d | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_drop done=15 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 517 778
+#6 DOIGT tuto_need «   Criar a parte “Drop” »
+#7 ROUTE tab_Structure | MODE pro | EMPREINTE c3db542e58 | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_drop done=16 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 517 859
+#7 DOIGT tuto_next_big « Próxima etapa   »
+#8 ROUTE tab_Structure | MODE pro | EMPREINTE 8d310d55de | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_break done=16 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 517 778
+#8 DOIGT tuto_need «   Criar a parte “Break” »
+#9 ROUTE tab_Structure | MODE pro | EMPREINTE b619350f99 | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_break done=17 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 517 859
+#9 DOIGT tuto_next_big « Próxima etapa   »
+#10 ROUTE tab_Structure | MODE pro | EMPREINTE 9b1d45fef8 | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_drop2 done=17 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 517 712
+#10 DOIGT tuto_why « ▸ Por quê? »
+#11 ROUTE tab_Structure | MODE pro | EMPREINTE 507007cf9b | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_drop2 done=17 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT TARGET « ▾ Por quê? » 662 x 20 dp (touch 662 x 48)
+#11 > touche 517 778
+#11 DOIGT tuto_need «   Criar a parte “Drop 2” »
+#12 ROUTE tab_Structure | MODE pro | EMPREINTE 5e8212f256 | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_drop2 done=18 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 517 859
+#12 DOIGT tuto_next_big « Próxima etapa   »
+#13 ROUTE tab_Structure | MODE pro | EMPREINTE e2503654f3 | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_fin done=18 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 517 778
+#13 DOIGT tuto_need «   Criar a parte “Fim” »
+#14 ROUTE tab_Structure | MODE pro | EMPREINTE fb2c9f8282 | project=p-00de5bd3 tuto=detroit/Pro active=true step=make_fin done=19 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 859
+#14 DOIGT tuto_next_big « Próximo capítulo   »
+#15 ROUTE tab_Structure | MODE pro | EMPREINTE 132be19904 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=19 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 336 228
+#15 DOIGT add_part_1 « + B · Intro »
+#16 ROUTE tab_Structure | MODE pro | EMPREINTE 6bfe4eef82 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=19 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 137 465
+#16 DOIGT add_part_2 « + C · Intro 2 »
+#17 ROUTE tab_Structure | MODE pro | EMPREINTE 58766820b6 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=19 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 329 465
+#17 DOIGT add_part_3 « + D · Drop »
+#18 ROUTE tab_Structure | MODE pro | EMPREINTE 9c05ced62a | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=19 playing=false
+#18 SON Son : rien ne joue.
+#18 > glisse 260 470 260 250
+#18 DOIGT add_part_3 « + D · Drop »
+#19 ROUTE tab_Structure | MODE pro | EMPREINTE 79cbd28207 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=19 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « + Nova parte (cópia de G · Fim) » 3.22:1 (needs 4.5:1, 14 sp)
+#19 > touche 133 350
+#19 DOIGT add_part_4 « + E · Break »
+#20 ROUTE tab_Structure | MODE pro | EMPREINTE 2b158fe630 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=19 playing=false
+#20 SON Son : rien ne joue.
+#20 > glisse 260 470 260 250
+#20 DOIGT add_part_3 « + D · Drop »
+#21 ROUTE tab_Structure | MODE pro | EMPREINTE 83fe33ea61 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=19 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « + Nova parte (cópia de G · Fim) » 3.26:1 (needs 4.5:1, 14 sp)
+#21 > touche 328 350
+#21 DOIGT add_part_5 « + F · Drop 2 »
+#22 ROUTE tab_Structure | MODE pro | EMPREINTE e187884099 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=19 playing=false
+#22 SON Son : rien ne joue.
+#22 > glisse 260 470 260 250
+#22 DOIGT add_part_3 « + D · Drop »
+#23 ROUTE tab_Structure | MODE pro | EMPREINTE dfe5f7c9ac | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=19 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « + Nova parte (cópia de G · Fim) » 3.27:1 (needs 4.5:1, 14 sp)
+#23 > touche 124 431
+#23 DOIGT add_part_6 « + G · Fim »
+#24 ROUTE tab_Structure | MODE pro | EMPREINTE 47a6b66946 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=20 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 327 943
+#24 DOIGT tuto_play_mine «  Ouvir seu resultado »
+#25 ROUTE tab_Structure | MODE pro | EMPREINTE 91199ff377 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=20 playing=true
+#25 SON Son : le morceau joue (partie « B »).
+#25 > touche 327 943
+#25 DOIGT tuto_play_mine «  Parar »
+#26 ROUTE tab_Structure | MODE pro | EMPREINTE 47a6b66946 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_order done=20 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 517 859
+#26 DOIGT tuto_next_big « Próxima etapa   »
+#27 ROUTE tab_Structure | MODE pro | EMPREINTE 5c4d2ad70a | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT OVERLAP « Toque para mudar os acordes da música inteira. » over the touchable « Andamento: 126 BPM Mudar o andamento » (53 x 4 dp)
+#27 LAYOUT OVERLAP « Toque para mudar os acordes da música inteira. » over the touchable « Tocar a partir de uma parte » (109 x 4 dp)
+#27 LAYOUT CONTRAST « Toque para mudar os acordes da música inteira. » 3.89:1 (needs 4.5:1, 13 sp)
+#27 > touche 376 234
+#27 DOIGT dans:part_0
+#28 ROUTE tab_Structure | MODE pro | EMPREINTE 5406312266 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 376 330
+#28 DOIGT dans:part_1
+#29 ROUTE tab_Structure | MODE pro | EMPREINTE 71b25ffcdc | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 376 426
+#29 DOIGT dans:part_2
+#30 ROUTE tab_Structure | MODE pro | EMPREINTE 787aea61e9 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 376 426
+#30 DOIGT dans:part_2
+#31 ROUTE tab_Structure | MODE pro | EMPREINTE 50fb5bca4f | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 376 426
+#31 DOIGT dans:part_2
+#32 ROUTE tab_Structure | MODE pro | EMPREINTE a25878703d | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#32 SON Son : rien ne joue.
+#32 > glisse 160 460 160 250
+#32 DOIGT part_play_2 « D · Drop »
+#33 ROUTE tab_Structure | MODE pro | EMPREINTE dfb0f8fa70 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT OVERLAP « C · Intro 2 » over the touchable « Andamento: 126 BPM Mudar o andamento » (31 x 4 dp)
+#33 LAYOUT OVERLAP « C · Intro 2 » over the touchable « Tocar a partir de uma parte » (47 x 4 dp)
+#33 > touche 376 336
+#33 DOIGT dans:part_3
+#34 ROUTE tab_Structure | MODE pro | EMPREINTE 93e294366f | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 376 432
+#34 DOIGT dans:part_4
+#35 ROUTE tab_Structure | MODE pro | EMPREINTE dc94af5b3e | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 376 432
+#35 DOIGT dans:part_4
+#36 ROUTE tab_Structure | MODE pro | EMPREINTE 1ffb3c37a1 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 376 495
+#36 DOIGT rien
+#37 ROUTE tab_Structure | MODE pro | EMPREINTE 1ffb3c37a1 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#37 SON Son : rien ne joue.
+#37 > glisse 160 460 160 200
+#37 DOIGT part_play_4 « F · Drop 2 »
+#38 ROUTE tab_Structure | MODE pro | EMPREINTE e802735a52 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=20 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 376 292
+#38 DOIGT dans:part_5
+#39 ROUTE tab_Structure | MODE pro | EMPREINTE a5458a0505 | project=p-00de5bd3 tuto=detroit/Pro active=true step=song_phrases done=21 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 517 859
+#39 DOIGT tuto_next_big « Próximo capítulo   »
+#40 ROUTE tab_Structure | MODE pro | EMPREINTE 58fcd6778c | project=p-00de5bd3 tuto=detroit/Pro active=true step=gap done=21 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 517 778
+#40 DOIGT tuto_need «   Ir para a parte “Break” »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 8c4aecc9d4 | project=p-00de5bd3 tuto=detroit/Pro active=true step=gap done=21 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « PASSOS: HI-HAT · BREAK » 3.44:1 (needs 4.5:1, 12 sp)
+#41 LAYOUT CONTRAST « ? » 1.42:1 (needs 4.5:1, 12 sp)
+#41 LAYOUT CONTRAST « Todos os pads » 1.32:1 (needs 4.5:1, 14 sp)
+#41 > touche 800 497
+#41 DOIGT step_12 « Passo 13 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 7f83ea7c95 | project=p-00de5bd3 tuto=detroit/Pro active=true step=gap done=21 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 856 497
+#42 DOIGT step_13 « Passo 14 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE bcc4084b2c | project=p-00de5bd3 tuto=detroit/Pro active=true step=gap done=21 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 968 497
+#43 DOIGT step_15 « Passo 16 »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE eb07db4087 | project=p-00de5bd3 tuto=detroit/Pro active=true step=gap done=22 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 517 943
+#44 DOIGT tuto_next_folded « Feito »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE e4db10dc0c | project=p-00de5bd3 tuto=detroit/Pro active=true step=crash done=22 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « PASSOS: PRATO · BREAK » 1.38:1 (needs 4.5:1, 12 sp)
+#45 > touche 586 42
+#45 DOIGT top_scene « Parte atual: E · Break. Toque para troca »
+#46 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE 1fd00fabd5 | project=p-00de5bd3 tuto=detroit/Pro active=true step=crash done=22 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 643 384
+#46 DOIGT scene_pick_3 « D · Drop »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE df2d9b42b3 | project=p-00de5bd3 tuto=detroit/Pro active=true step=crash done=22 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#47 > touche 575 406
+#47 DOIGT step_0 « Passo 1 »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE 38b0e35e27 | project=p-00de5bd3 tuto=detroit/Pro active=true step=crash done=23 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 517 859
+#48 DOIGT tuto_next_big « Próximo capítulo   »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE c4c79a0336 | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=23 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 518 1123
+#49 DOIGT tab_Mix « Mix »
+#50 ROUTE tab_Mix | MODE pro | EMPREINTE 83d8ae2421 | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=23 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#50 > touche 84 343
+#50 COUVERT « Bateria » couvre « Bateria »
+#50 REFUS doigt couvert : « Bateria » couvre « Bateria »
+#51 ROUTE tab_Mix | MODE pro | EMPREINTE 389e33c8f9 | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=23 playing=false
+#51 SON Son : rien ne joue.
+#51 > glisse 440 343 80 343
+#51 COUVERT « Bateria » couvre « Baixo »
+#51 REFUS doigt couvert : « Bateria » couvre « Baixo »
+#52 ROUTE tab_Mix | MODE pro | EMPREINTE 389e33c8f9 | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=23 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 978 589
+#52 DOIGT tuto_fold
+#53 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7cd759cd1a | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=23 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 84 772
+#53 DOIGT rien
+#54 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7cd759cd1a | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=23 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 978 844
+#54 DOIGT tuto_fold
+#55 ROUTE tab_Mix | MODE pro | EMPREINTE 83d8ae2421 | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=23 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 768 862
+#55 DOIGT tuto_show «  Mostre-me »
+#56 ROUTE dialogue:effects_box_18 | MODE pro | EMPREINTE 63d6a7319f | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=23 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « Pad XY, cima-baixo: » 4.04:1 (needs 4.5:1, 13 sp)
+#56 LAYOUT CONTRAST « ? » 4.11:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « ← Sombrio » 2.62:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « ↓ Seco » 4.32:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « Deslize o dedo para distorcer o som ao vivo. Dois toques: volta ao som original. » 4.00:1 (needs 4.5:1, 13 sp)
+#56 LAYOUT CONTRAST « 0 » 1.60:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « Fechar » 3.26:1 (needs 4.5:1, 14 sp)
+#56 > glisse 517 1054 750 1054
+#56 DOIGT send_18_0 « Envio reverb »
+#57 ROUTE dialogue:effects_box_18 | MODE pro | EMPREINTE 63d6a7319f | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=23 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 892 1171
+#57 DOIGT fx_close « Fechar »
+#58 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE eaf726cdba | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=23 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « Parar » 3.91:1 (needs 4.5:1, 14 sp)
+#58 > touche 968 943
+#58 DOIGT tuto_show « Parar »
+#59 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e9977485d3 | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=24 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 84 343
+#59 COUVERT « Bateria » couvre « Bateria »
+#59 REFUS doigt couvert : « Bateria » couvre « Bateria »
+#60 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bd0fc70dfe | project=p-00de5bd3 tuto=detroit/Pro active=true step=reverb done=24 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 517 943
+#60 DOIGT tuto_next_folded « Feito »
+#61 ROUTE tab_Mix | MODE pro | EMPREINTE a52d3c7224 | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=24 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 517 778
+#61 DOIGT tuto_need «   Ir para a parte “Break” »
+#62 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 31678ef17f | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=24 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CUT « Sua vez: automatize o “Corte” da faixa “Acordes” no Break: “Automatizar um ajuste”, “Acordes”, “Filtro (varredura)”, “Por parte”, e desenhe uma curva que sobe até o fim do Break. » ellipsized (« … »)
+#62 > touche 722 399
+#62 DOIGT automation_add «  Automatizar um ajuste »
+#63 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 4ecfc40403 | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=24 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CONTRAST « Acordes » 3.92:1 (needs 4.5:1, 14 sp)
+#63 LAYOUT CONTRAST « Bateria » 1.76:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « Filtro (varredura) » 1.26:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « Volume » 1.21:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « Mais alto ou mais baixo: fades, entradas, cortes. » 2.50:1 (needs 4.5:1, 13 sp)
+#63 LAYOUT CONTRAST « Envio reverb » 2.54:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « Mais ou menos reverb: espaço, distância. » 2.58:1 (needs 4.5:1, 13 sp)
+#63 LAYOUT CONTRAST « Envio eco » 2.89:1 (needs 4.5:1, 16 sp)
+#63 LAYOUT CONTRAST « Mais ou menos eco: repetições no ritmo. » 1.20:1 (needs 4.5:1, 13 sp)
+#63 LAYOUT CONTRAST « Ver os outros 9 ajustes » 2.78:1 (needs 4.5:1, 14 sp)
+#63 > touche 473 304
+#63 DOIGT pick_track_2 « Acordes »
+#64 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE aab2a09f73 | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=24 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « Acordes » 1.24:1 (needs 4.5:1, 16 sp)
+#64 > touche 517 572
+#64 DOIGT pick_filter_2 « Filtro (varredura) »
+#65 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE eb96be4ec3 | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=24 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CUT « Abre (brilhante) ou fecha (abafado) o som: a varredura do filtro. » lines dropped (more lines than room)
+#65 > touche 743 483
+#65 DOIGT auto_mode_0_1 « Por parte »
+#66 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 7ca0bb1984 | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=24 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 728 600
+#66 DOIGT auto_len_part_0 « Sobre a parte inteira · 4 comp. »
+#67 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 19c6d7e6d5 | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=24 playing=false
+#67 SON Son : rien ne joue.
+#67 > glisse 771 700 771 250
+#67 DOIGT rien (texte « Para mudar este ajuste numa parte da mús »)
+#68 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE aa10ed28c6 | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=24 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#68 > glisse 771 450 771 250
+#68 DOIGT rien
+#69 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 37d5daad07 | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=24 playing=false
+#69 SON Son : rien ne joue.
+#69 > glisse 640 605 990 432
+#69 DOIGT rien
+#70 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bd0b2a697b | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=25 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 978 844
+#70 DOIGT tuto_fold
+#71 ROUTE tab_Mix | MODE pro | EMPREINTE da324ad9e3 | project=p-00de5bd3 tuto=detroit/Pro active=true step=filter done=25 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 517 859
+#71 DOIGT tuto_next_big « Próximo capítulo   »
+#72 ROUTE tab_Mix | MODE pro | EMPREINTE 4a142feeff | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#72 SON Son : rien ne joue.
+#72 > glisse 470 600 60 600
+#72 DOIGT rien
+#73 ROUTE tab_Mix | MODE pro | EMPREINTE 4a142feeff | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#73 SON Son : rien ne joue.
+#73 > glisse 444 230 60 230
+#73 COUVERT « Bateria » couvre « Volume de Baixo »
+#73 REFUS doigt couvert : « Bateria » couvre « Volume de Baixo »
+#74 ROUTE tab_Mix | MODE pro | EMPREINTE ce0ddd105d | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 768 862
+#74 DOIGT tuto_show «  Mostre-me »
+#75 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 127d467a4b | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT OVERLAP « Deslize um fader para o volume; toque no nome de uma faixa para ver os efeitos e as curvas dela. » over the touchable « Andamento: 126 BPM Mudar o andamento » (67 x 4 dp)
+#75 LAYOUT OVERLAP « Deslize um fader para o volume; toque no nome de uma faixa para ver os efeitos e as curvas dela. » over the touchable « Tocar a partir de uma parte » (128 x 4 dp)
+#75 > attends
+#76 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 95c47bffc2 | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#76 SON Son : rien ne joue.
+#76 > attends
+#77 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE dfb6b93f0e | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#77 SON Son : rien ne joue.
+#77 > glisse 444 418 444 470
+#77 COUVERT « Bateria » couvre « Volume de Melodia »
+#77 REFUS doigt couvert : « Bateria » couvre « Volume de Melodia »
+#78 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1ddbfcdfee | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#78 SON Son : rien ne joue.
+#78 > glisse 204 418 204 470
+#78 COUVERT « Bateria » couvre « Volume de Acordes »
+#78 REFUS doigt couvert : « Bateria » couvre « Volume de Acordes »
+#79 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1ddbfcdfee | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#79 SON Son : rien ne joue.
+#79 > glisse 444 560 444 600
+#79 COUVERT « Bateria » couvre « Volume de Melodia »
+#79 REFUS doigt couvert : « Bateria » couvre « Volume de Melodia »
+#80 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1ddbfcdfee | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#80 SON Son : rien ne joue.
+#80 RIEN NE CHANGE (3 écrans identiques)
+#80 > touche 92 252
+#80 COUVERT « Bateria » couvre « Acid 303 »
+#80 REFUS doigt couvert : « Bateria » couvre « Acid 303 »
+#81 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1ddbfcdfee | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#81 SON Son : rien ne joue.
+#81 > glisse 100 700 480 700
+#81 DOIGT rien
+#82 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c03a93ee4 | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#82 SON Son : rien ne joue.
+#82 > glisse 480 700 380 700
+#82 DOIGT rien
+#83 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE e5db84327c | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT CONTRAST « Bateria » 3.53:1 (needs 4.5:1, 13 sp)
+#83 LAYOUT CONTRAST « +0,0 » 3.39:1 (needs 4.5:1, 12 sp)
+#83 LAYOUT CONTRAST « 2 » 3.41:1 (needs 4.5:1, 12 sp)
+#83 LAYOUT CONTRAST « +0,0 » 3.60:1 (needs 4.5:1, 12 sp)
+#83 > glisse 482 418 482 470
+#83 COUVERT « Bateria » couvre « Volume de Melodia »
+#83 REFUS doigt couvert : « Bateria » couvre « Volume de Melodia »
+#84 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 669d41bdca | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#84 SON Son : rien ne joue.
+#84 > glisse 100 700 480 700
+#84 DOIGT rien
+#85 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 9c03a93ee4 | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#85 SON Son : rien ne joue.
+#85 > glisse 324 418 324 470
+#85 COUVERT « Bateria » couvre « Volume de Acordes »
+#85 REFUS doigt couvert : « Bateria » couvre « Volume de Acordes »
+#86 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d146b51670 | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#86 SON Son : rien ne joue.
+#86 > retour
+#86 RETOUR
+#87 ROUTE launch | MODE pro | EMPREINTE 0881e8a50a | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#87 SON Son : rien ne joue.
+#87 > glisse 324 418 324 470
+#87 DOIGT rien
+#88 ROUTE launch | MODE pro | EMPREINTE 0881e8a50a | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 868 294
+#88 DOIGT launch_continue « Continuar »
+#89 ROUTE session/tab_Structure | MODE pro | EMPREINTE dba1f745b9 | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#89 SON Son : rien ne joue.
+#89 LAYOUT CUT « Lá m  Lá m  Lá m  Lá m  Lá m  Lá m  Lá m  Lá m » ellipsized (« … »)
+#89 LAYOUT CUT « Lá m  Ré  Lá m  Ré  Lá m  Ré  Lá m  Ré » ellipsized (« … »)
+#89 LAYOUT CONTRAST « ? » 4.38:1 (needs 4.5:1, 12 sp)
+#89 > glisse 324 418 324 470
+#89 DOIGT rien
+#90 ROUTE session/tab_Structure | MODE pro | EMPREINTE dba1f745b9 | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 518 1130
+#90 DOIGT tab_Mix « Mix »
+#91 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 75103d18ee | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#91 SON Son : rien ne joue.
+#91 > glisse 324 418 324 470
+#91 DOIGT rien
+#92 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 75103d18ee | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#92 SON Son : rien ne joue.
+#92 > glisse 324 509 324 560
+#92 COUVERT « Bateria » couvre « Volume de Acordes »
+#92 REFUS doigt couvert : « Bateria » couvre « Volume de Acordes »
+#93 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a85362179f | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#93 SON Son : rien ne joue.
+#93 > glisse 84 509 84 540
+#93 COUVERT « Bateria » couvre « Volume de Bateria »
+#93 REFUS doigt couvert : « Bateria » couvre « Volume de Bateria »
+#94 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a85362179f | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 517 943
+#94 DOIGT tuto_folded_text « Sua vez: no Mix, abaixe um pouco o fader »
+#95 ROUTE tab_Mix | MODE pro | EMPREINTE c1a1106085 | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 936 943
+#95 DOIGT tuto_next « Próximo  »
+#96 ROUTE tab_Mix | MODE pro | EMPREINTE 0c9b573ce4 | project=p-00de5bd3 tuto=detroit/Pro active=true step=levels done=25 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 936 943
+#96 DOIGT tuto_next « Próximo  »
+#97 ROUTE tab_Mix | MODE pro | EMPREINTE 4dfc579165 | project=p-00de5bd3 tuto=detroit/Pro active=true step=meters done=25 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 936 943
+#97 DOIGT tuto_next « Próximo  »
+#98 ROUTE tab_Mix | MODE pro | EMPREINTE 9c56d8ac26 | project=p-00de5bd3 tuto=detroit/Pro active=true step=buses done=25 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 936 943
+#98 DOIGT tuto_next « Próximo  »
+#99 ROUTE tab_Mix | MODE pro | EMPREINTE f82e7b9fb4 | project=p-00de5bd3 tuto=detroit/Pro active=true step=loudness done=25 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT OVERLAP « 11 » over the touchable « Repetir a parte em vez de tocar a música » (11 x 4 dp)
+#99 LAYOUT OVERLAP « 13 » over the touchable « Repetir a parte em vez de tocar a música » (14 x 4 dp)
+#99 LAYOUT OVERLAP « 15 » over the touchable « Identificar a tela » (11 x 4 dp)
+#99 LAYOUT CONTRAST « 3 » 1.41:1 (needs 4.5:1, 12 sp)
+#99 LAYOUT CONTRAST « 5 » 1.27:1 (needs 4.5:1, 12 sp)
+#99 LAYOUT CONTRAST « 9 » 1.34:1 (needs 4.5:1, 12 sp)
+#99 LAYOUT CONTRAST « 15 » 1.24:1 (needs 4.5:1, 12 sp)
+#99 > touche 517 778
+#99 DOIGT tuto_do «   Eu faço »
+#100 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2ca83f34a2 | project=p-00de5bd3 tuto=detroit/Pro active=true step=loudness done=25 playing=false
+#100 SON Son : rien ne joue.
+#100 LAYOUT CUT « A saída master tem um limitador embutido, sempre o último da cadeia (ele não aparece nos “Efeitos” dela): ele impede o som de passar do limite. Sua vez: em “Saída master”, ajuste o “Volume-alvo” para “Club”: sua música soa tão alto quanto num clube. » ellipsized (« … »)
+#100 LAYOUT CONTRAST « SAÍDA MASTER » 3.66:1 (needs 4.5:1, 12 sp)
+#100 LAYOUT CONTRAST « ? » 3.25:1 (needs 4.5:1, 12 sp)
+#100 LAYOUT CONTRAST « Volume: — » 3.24:1 (needs 4.5:1, 14 sp)
+#100 LAYOUT CONTRAST « −6,0 dB » 3.28:1 (needs 4.5:1, 14 sp)
+#100 LAYOUT CONTRAST « Sem saturação: tudo certo. » 4.06:1 (needs 4.5:1, 13 sp)
+#100 LAYOUT CONTRAST « Detalhes » 3.33:1 (needs 4.5:1, 13 sp)
+#100 LAYOUT CONTRAST « ? » 3.41:1 (needs 4.5:1, 12 sp)
+#100 LAYOUT CONTRAST « Auto (estilo) · −9 LUFS » 3.70:1 (needs 4.5:1, 14 sp)
+#100 LAYOUT CONTRAST « Club · −8 LUFS » 3.70:1 (needs 4.5:1, 14 sp)
+#100 LAYOUT CONTRAST « Streaming · −14 LUFS » 3.70:1 (needs 4.5:1, 14 sp)
+#100 > glisse 770 700 770 350
+#100 DOIGT rien
+#101 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE bb36991b06 | project=p-00de5bd3 tuto=detroit/Pro active=true step=loudness done=25 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT CONTRAST « Teto −1,0 dB · ataque e liberação · graves em mono · escuta A/B · referência » 4.17:1 (needs 4.5:1, 13 sp)
+#101 > touche 650 391
+#101 DOIGT loudness_target_CLUB « Club · −8 LUFS »
+#102 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 00398fec7a | project=p-00de5bd3 tuto=detroit/Pro active=true step=loudness done=26 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 517 943
+#102 DOIGT tuto_chapter_end_folded « Muito bem, capítulo concluído! »
+#103 ROUTE tab_Mix | MODE pro | EMPREINTE e8dd481c04 | project=p-00de5bd3 tuto=detroit/Pro active=true step=loudness done=26 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 517 859
+#103 DOIGT tuto_next_big « Próximo capítulo   »
+#104 ROUTE tab_Mix | MODE pro | EMPREINTE 1196a73a35 | project=p-00de5bd3 tuto=detroit/Pro active=true step=formats done=26 playing=false
+#104 SON Son : rien ne joue.
+#104 > touche 936 943
+#104 DOIGT tuto_next « Próximo  »
+#105 ROUTE tab_Mix | MODE pro | EMPREINTE fc9dbab744 | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=26 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 880 1030
+#105 DOIGT thumb_share « Compartilhar minha música »
+#105 DIALOGUE 0.5 s
+#106 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 94d820bec3 | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=26 playing=false
+#106 SON Son : rien ne joue.
+#106 LAYOUT OVERLAP « Pronto para compartilhar? » over the touchable « Fechar planilha » (274 x 28 dp)
+#106 LAYOUT OVERLAP « Nome da música (e do projeto) » over the touchable « Fechar planilha » (187 x 18 dp)
+#106 LAYOUT OVERLAP « “Compartilhar” também renomeia o projeto “Meu projeto 1”. » over the touchable « Fechar planilha » (358 x 18 dp)
+#106 LAYOUT OVERLAP « 3:49 » over the touchable « Fechar planilha » (48 x 27 dp)
+#106 LAYOUT OVERLAP « 6 partes » over the touchable « Fechar planilha » (55 x 20 dp)
+#106 LAYOUT OVERLAP « Volume: −8,0, alto, como música de balada » over the touchable « Fechar planilha » (261 x 18 dp)
+#106 LAYOUT OVERLAP « detalhes » over the touchable « Fechar planilha » (47 x 9 dp)
+#106 LAYOUT OVERLAP « ? » over the touchable « Fechar planilha » (7 x 15 dp)
+#106 LAYOUT OVERLAP «  Ouvir » over the touchable « Fechar planilha » (41 x 20 dp)
+#106 LAYOUT OVERLAP « Volume-alvo » over the touchable « Fechar planilha » (83 x 20 dp)
+#106 LAYOUT OVERLAP « Streaming » over the touchable « Fechar planilha » (70 x 20 dp)
+#106 LAYOUT OVERLAP « Club » over the touchable « Fechar planilha » (32 x 20 dp)
+#106 LAYOUT OVERLAP « Auto (estilo) » over the touchable « Fechar planilha » (84 x 20 dp)
+#106 LAYOUT OVERLAP « Tudo pronto: nenhum solo esquecido, nenhuma faixa silenciada. » over the touchable « Fechar planilha » (424 x 20 dp)
+#106 LAYOUT OVERLAP «   Vídeo para as redes · 30 s » over the touchable « Fechar planilha » (9 x 20 dp)
+#106 LAYOUT OVERLAP « Outros arquivos » over the touchable « Fechar planilha » (108 x 20 dp)
+#106 LAYOUT OVERLAP « Faixa por faixa, MIDI, FLAC… em Mix » over the touchable « Fechar planilha » (221 x 18 dp)
+#106 LAYOUT OVERLAP « Compartilhar o projeto (.zip) » over the touchable « Fechar planilha » (190 x 20 dp)
+#106 LAYOUT OVERLAP « Para outro aparelho ou uma cópia de segurança » over the touchable « Fechar planilha » (291 x 18 dp)
+#106 LAYOUT OVERLAP « M4A · para compartilhar » over the touchable « Fechar planilha » (165 x 20 dp)
+#106 LAYOUT OVERLAP « WAV · qualidade máx. » over the touchable « Fechar planilha » (149 x 20 dp)
+#106 LAYOUT OVERLAP «   Compartilhar » over the touchable « Fechar planilha » (112 x 24 dp)
+#106 LAYOUT OVERLAP « Meus arquivos » over the touchable « Fechar planilha » (99 x 20 dp)
+#106 LAYOUT OVERLAP « Encontrar e enviar de novo: M4A, WAV, vídeo, .zip » over the touchable « Fechar planilha » (301 x 18 dp)
+#106 > touche 513 1003
+#106 DOIGT share_format_Wav « WAV · qualidade máx. »
+#106 DIALOGUE 0.2 s
+#107 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 4a6693c648 | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=26 playing=false
+#107 SON Son : rien ne joue.
+#107 > glisse 517 1000 517 400
+#107 DOIGT share_format_Wav « WAV · qualidade máx. »
+#107 DIALOGUE 0.2 s
+#108 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 4a6693c648 | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=26 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 517 1098
+#108 DOIGT share_go «   Compartilhar »
+#108 DIALOGUE 0.3 s
+#109 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 6a814b1e7f | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=26 playing=false
+#109 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#109 LAYOUT CONTRAST «   20% » 1.41:1 (needs 4.5:1, 14 sp)
+#109 LAYOUT CONTRAST « Depois, escolha o app para enviar. » 3.74:1 (needs 4.5:1, 13 sp)
+#109 > attends
+#109 DIALOGUE 0.2 s
+#110 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 6a814b1e7f | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=26 playing=false
+#110 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#110 LAYOUT CONTRAST «   62% » 1.41:1 (needs 4.5:1, 14 sp)
+#110 > attends
+#110 DIALOGUE 1.2 s
+#111 ROUTE dialogue:share_progress | MODE pro | EMPREINTE ccb9f82921 | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=26 playing=false
+#111 SON Son : rien ne joue.
+#111 > attends
+#111 PARTAGE Minha-música-club-20261119-075616.wav
+#111 DIALOGUE 0.7 s
+#112 ROUTE dialogue:« Compartilhar minha música · Mi » | MODE pro | EMPREINTE 03fbce4de3 | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=27 playing=false
+#112 SON Son : rien ne joue.
+#112 > touche 517 725
+#112 DOIGT vue « Drive »
+#112 DIALOGUE 0.2 s
+#113 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE c1e9cb46af | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=27 playing=false
+#113 SON Son : rien ne joue.
+#113 LAYOUT CONTRAST « −8,0 LUFS integrados · pico −3,5 dBTP » 3.74:1 (needs 4.5:1, 13 sp)
+#113 LAYOUT CONTRAST « WAV, 48 kHz, 24 bits · 3 min 49 s » 3.72:1 (needs 4.5:1, 13 sp)
+#113 > touche 857 755
+#113 DOIGT share_bilan_ok « OK »
+#113 DIALOGUE 0.2 s
+#114 ROUTE tab_Mix | MODE pro | EMPREINTE 897dd1ee7d | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=27 playing=false
+#114 SON Son : rien ne joue.
+#114 LAYOUT OVERLAP « Criar o arquivo da música » over the touchable « Repetir a parte em vez de tocar a música » (48 x 4 dp)
+#114 > touche 517 859
+#114 DOIGT tuto_next_big « Próxima etapa   »
+#115 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 3d431ea174 | project=p-00de5bd3 tuto=detroit/Pro active=true step=share done=27 playing=false
+#115 SON Son : rien ne joue.
+#115 LAYOUT CUT « Já pronto: o kit de “Faça uma música pra mim” para Detroit (caixa e hi-hats 909, kick afinado em Lá), volumes e efeitos, saturação leve na bateria. » ellipsized (« … »)
+#115 > fin
+#115 FIN : fin

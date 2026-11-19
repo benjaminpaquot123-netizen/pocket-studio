@@ -145,12 +145,18 @@ data class MixerActions(
 
 val EXPORT_BARS = listOf(1, 2, 4, 8, 16)
 
+/** The marks a locale's number may carry (Arabic letter mark, left-to-right and right-to-left marks). */
+private const val BIDI_MARKS = "\u061C\u200E\u200F"
+
 /** Fader position (0.8 = unity, quadratic law, as in the engine) shown in dB. */
 fun faderDb(v: Float): String {
-    if (v <= 0.001f) return "−∞ dB"
+    // Tour 9 (F030, « ∞− », « 12− » in Arabic): the whole value left to right, and no bidi mark from the locale's
+    // minus sign (Android's Arabic « ؜- » puts the sign after the digits).
+    if (v <= 0.001f) return com.pocketstudio.model.i18n.ltrNumber("−∞ dB")
     val gain = (v / 0.8f) * (v / 0.8f)
     val db = 20 * log10(gain)
-    return com.pocketstudio.model.i18n.ltrNumber((if (db >= 0) "+" else "") + String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db))
+    val shown = String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f dB", db).filterNot { it in BIDI_MARKS }
+    return com.pocketstudio.model.i18n.ltrNumber((if (db >= 0) "+" else "") + shown)
 }
 
 /**
@@ -300,7 +306,7 @@ fun MixerScreen(
  */
 @Composable
 private fun fitProbe(strips: List<StripInfo>, channels: List<Channel>, lanesOn: Map<Int, Int>, lanes: Int): @Composable (Dp, Boolean) -> Unit {
-    val atRest = channels.map { it.copy(volume = 0f) }
+    val atRest = channels.map { fitProbeRestLists++; it.copy(volume = 0f) }
     val probeChannels = androidx.compose.runtime.remember(atRest) { atRest }
     return androidx.compose.runtime.remember(strips, probeChannels, lanesOn, lanes) {
         { f: Dp, hint: Boolean ->
@@ -384,6 +390,10 @@ internal val LocalFitProbe = androidx.compose.runtime.staticCompositionLocalOf {
 /** How many times [FitFaders]' unseen probes were composed (tests: a new pane height must not compose them again). */
 @androidx.annotation.VisibleForTesting
 internal var fitProbeCompositions = 0
+
+/** Tour 9 (F141): how many times [fitProbe] built its list of channels at rest (one per channel and build). */
+@androidx.annotation.VisibleForTesting
+internal var fitProbeRestLists = 0
 
 /** What [FitFaders] measures by: whether to fit, the pane's size, the faders' height otherwise. */
 private data class FitPane(val fit: Boolean, val width: Dp, val height: Dp, val fallback: Dp)

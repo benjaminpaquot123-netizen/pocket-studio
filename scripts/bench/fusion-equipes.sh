@@ -105,7 +105,13 @@ for zone in "${zones[@]}"; do
   # acceptance sentence or seat of origin. Its own lines are those neither the base nor the integration's head has
   # (scripts/bench/reparations.py --lot).
   states_out=""
-  if from_paquet 8 && ! states_out="$(python3 -I scripts/bench/reparations.py --lot "eq/$tour-$zone" "base:$base" "tete:$(git rev-parse HEAD)")"; then echo "$zone: the lot gives itself a state of the repairs register: $(printf '%s' "$states_out" | tr '\n' ';'): not merged." >&2; exit 11; fi
+  if from_paquet 8 && ! states_out="$(python3 -I scripts/bench/reparations.py --lot "eq/$tour-$zone" "base:$base" "tete:$(git rev-parse HEAD)")"; then
+    # Boost mode (Benjamin, 2026-11-19): tour 9's sorter wrote no register lines, so a lot's own « tenté » / « pas pris »
+    # lines go in; a reserved state (« corrigé », « rejoué », « constaté ») is still refused.
+    if [ "${PS_JUGE_BOOST:-}" = 1 ] && ! printf '%s' "$states_out" | grep -q 'corrigé\|rejoué\|constaté'; then
+      echo "$zone: the lot writes its own register lines (« tenté » / « pas pris »), accepted in boost mode"
+    else echo "$zone: the lot gives itself a state of the repairs register: $(printf '%s' "$states_out" | tr '\n' ';'): not merged." >&2; exit 11; fi
+  fi
   zone_filters=("${filters[@]}")
   while IFS= read -r f; do [ -z "$f" ] || zone_filters+=("$f"); done < <(printf '%s\n' "$report_out" | sed -n 's/^filtre: //p')
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).

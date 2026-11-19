@@ -45,3 +45,33 @@ chemin: tuto liquid DnB Pro ch.7, 392 dp, police 200 %, nl, « Lire la suite » 
 chemin: tuto techno Pro ch.1, 392 dp, police 200 %, zh, « Lire la suite » | test: T9ReadMoreTest#chineseTechnoAt200
 
 État : tenté, prêt pour contrôle (pas « corrigé » : un siège neuf doit le constater).
+
+## D06 (lot suivant)
+
+Défaut visé : D06 (bloquant). Phrase d'acceptation (mot pour mot) : « En Simple à 200 %, les notes pointillées restent visibles et le compteur « encore N notes » baisse à chaque note touchée. »
+
+Causes :
+- À 200 % en Simple, dans l'onglet Clavier, la ligne de la partie (nom, son, flèches) et la rangée « encore N notes » ne laissaient au rouleau de notes que quelques dizaines de dp au-dessus du panneau du tuto : les notes pointillées étaient hors de vue (sièges t9-29, t9-62).
+- Dans la rangée du compteur, « Touche ici » à côté du texte le coupait en « ↑ Encor… » : le nombre de notes restant ne se lisait pas.
+
+Ce qui change :
+- Tant que la partie montrée a des notes pointillées à toucher, rouleau affiché, avec une police au-delà de 130 %, la ligne de la partie se retire et laisse sa place au rouleau. Ailleurs, rien ne change.
+- À une police au-delà de 130 %, « Touche ici » monte sur la ligne du haut, à côté du nom de la partie, et le compteur prend toute la largeur : on lit « ↑ Encore 3 notes e… ».
+- Hors liste, sur accord du chef : `synth/PianoRoll.kt`, la rangée du compteur seulement.
+
+Rejeu : `t9-d06-pointilles-200` passe du français (speed garage), tenu même sans la correction, à l'hindi (grime ch. 3), non tenu sans la correction : le rouleau était hors de vue.
+
+Captures : app/screenshots/tour9/d06_dotted_notes_simple_fr_200.png (nouvelle), écran entier regardé : rouleau et notes pointillées au-dessus du panneau, « Touche ici » en haut, compteur lisible.
+
+corrige: D06 | gravité: bloquant | rejeu: t9-d06-pointilles-200
+
+Rejeu ajouté (joué par scripts/bench/rejeu-defauts.sh avec la correction) :
+t9-d06-pointilles-200 : oracle tenu
+
+tests: *T9PanelTargetTest *T9ReadMoreTest *TutoKickSoundTest *Tour6GuideCoquilleLookTest
+
+chemin: tuto speed garage ch.3, 360 dp, police 200 %, fr, Simple, onglet Clavier, notes pointillées et « encore N notes » | test: T9PanelTargetTest#dottedNotesAboveThePanelInSimpleAt200French
+
+Laissés de côté : F101 (rendu au chef, donné à L12), F111 (pas commencé, rendu au chef).
+
+État : tenté, prêt pour contrôle (pas « corrigé » : un siège neuf doit le constater).

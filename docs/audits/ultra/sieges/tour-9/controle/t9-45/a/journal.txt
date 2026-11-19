@@ -1,0 +1,10 @@
+#0 SIEGE lang=nl device=phone360 font=100 mode=pro theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:liquid_dnb:12
+#0 PREMIER ECRAN reel_s=4.5 simule_s=2.4 jvm_s=11.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:liquid_dnb:12
+#0 AMENEE > touche 270 928 (launch_learn)
+#0 AMENEE > touche 270 1035 (mode_card_pro)
+#0 AMENEE > touche 270 1105 (tuto_style_liquid_dnb)
+#0 AMENEE chapitres 1 à 11 construits dans le projet
+#0 AMENEE > touche 391 492 (tuto_chapters)
+#0 BENCH-FLAG where=amenee.wait want="les chapitres" saw="après touche tuto_chapters@391,336" waited=124039 screen=tuto_panel/tab_Sons
+#0 BENCH-VERDICT fail where=amenee.wait why="amenée tuto:liquid_dnb:12 : les chapitres n'est jamais venu"

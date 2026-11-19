@@ -1,0 +1,52 @@
+Écran 73 (588x1278)
+icône (dossier ouvert) ✓ @ 456,42
+bouton « بسيط » @ 280,42
+bouton ● @ 191,42
+bouton ▶ « هذا الجزء » @ 118,42
+icône ⋮ @ 45,42
+icône « مقدمة المازورة 1/128 » ▾ @ 221,168
+bouton « 150  السرعة » @ 470,168
+bouton « ? » @ 45,168
+icône « الجزء: H · دروب 2 » ▾ @ 416,292
+bouton [coupé, état « فارغ »] @ 517,344
+bouton [coupé, état « فارغ »] @ 453,344
+bouton [coupé, état « فارغ »] @ 389,344
+bouton « 2 » [coupé, état « فارغ »] @ 325,344
+bouton [coupé, état « فارغ »] @ 261,344
+bouton [coupé, état « فارغ »] @ 197,344
+bouton [coupé, état « فارغ »] @ 133,343
+bouton « 1 » [coupé, état « ضربة، القوة 100 % »] @ 70,343
+bouton [état « فارغ »] @ 517,399
+bouton [état « فارغ »] @ 453,399
+bouton [état « فارغ »] @ 389,399
+bouton « 4 » [état « فارغ »] @ 325,399
+bouton [état « فارغ »] @ 261,399
+bouton [état « فارغ »] @ 197,399
+bouton [état « فارغ »] @ 133,398
+bouton « 3 » [état « فارغ »] @ 70,398
+texte « ▶ » @ 471,484
+texte « ◀ » @ 396,484
+texte « 1/4 » @ 315,484
+texte « 1/2 » @ 230,484
+texte « الكل » @ 144,484
+texte « ملء » @ 70,484
+texte « مسح » @ 91,556
+texte « اضغط خانة لإضافة ضربة، ومرّر إصبعك لرسم عدة ضربات. ضغطة مطوّلة على ضربة: القوة والرولات (×2 إلى ×8). » [coupé] @ 294,610
+texte « الانتقالات الفصل 10/13 · تم · سهل » @ 366,694
+icône (liste) « الفصول » @ 129,694
+icône ⌃ @ 57,694
+icône (coupe) « أحسنت، انتهى الفصل! » ⌃ @ 294,855
+texte « 150 السرعة » @ 183,994
+icône ↶ « تراجع » @ 519,994
+image ↷ @ 413,966
+bouton ▶ « الأغنية » @ 302,995
+icône ⋮ « المزيد » @ 70,994
+onglet (touches de piano) « لوحة المفاتيح » @ 294,1136
+onglet (lignes et note) « أغنيتي » @ 534,1136
+onglet (quatre carrés) « الإيقاع » [sélectionné] @ 414,1136
+onglet (curseurs) « المكس » @ 174,1136
+onglet (trois points reliés) « مشاركة » @ 54,1136
+texte « وضع الملاحظات » @ 435,1248
+texte « ●  REC » @ 238,1248
+texte « ✎  دوّن » @ 133,1248
+texte « ⋯ » @ 48,1248

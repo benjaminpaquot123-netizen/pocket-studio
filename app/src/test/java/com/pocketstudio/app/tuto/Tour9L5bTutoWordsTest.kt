@@ -60,4 +60,17 @@ class Tour9L5bTutoWordsTest {
         val v = I18n.table(Lang.HI)["Partie « %1\$s » créée (copie de « %2\$s ») : sans %3\$s."].orEmpty()
         assertTrue("hi: $v", "हटाए" in v && v.contains("%1\$s") && v.contains("%2\$s") && v.contains("%3\$s"))
     }
+
+    /** F075: a step that names the « Mix » tab writes it as the tab reads (Arabic said « مزج », the tab « المكس »). */
+    @Test
+    fun f075MixTabNamedAsTheTab() {
+        val keys = tutoTexts.filter { "« Mix »" in it }
+        assertTrue("the Mix steps are found", keys.isNotEmpty())
+        assertNoneLeft("step naming Mix otherwise than the tab", others.associateWith { l ->
+            val tab = I18n.table(l)["Mix"] ?: "Mix"
+            keys.map { shown(l, it) }.filter { tab !in it }
+        })
+        val title = shown(Lang.AR, "Le mix")
+        assertTrue("ar chapter « Le mix »: $title", I18n.table(Lang.AR)["Mix"].orEmpty() in title)
+    }
 }

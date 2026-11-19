@@ -30,6 +30,7 @@ chemin: Rouleau, copier une mesure puis « Coller » (indonésien, t9-27) | test
 chemin: Synthé, après un enregistrement, fiche de prise refermée | test: Tour9RollFinishTest#theKeysGetTheirHeightBackOnceTheTakesCardIsGone
 
 corrige: S17 | gravité: grave | rejeu: t9-s17-glisse-pointille
+controle: reporté (mode boost, grande vérification de fin)
 corrige: F112 | gravité: mineur
 corrige: F113 | gravité: mineur
 corrige: F114 | gravité: mineur

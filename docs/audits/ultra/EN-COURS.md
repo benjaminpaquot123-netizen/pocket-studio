@@ -27,6 +27,7 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 - `corrections.tsv` n'a pas les verdicts du contrôle final (17 « pas pris », 23 « tentés » jamais confirmés).
 - `scripts/bench/ci-etat.sh` ne répond pas (outil `gh` non connecté) : la garde « CI rouge ou en cours » du pré-vol ne voit rien.
 - Les 4 pilotes des niveaux et les sièges d'élargissement n'ont jamais été joués.
+- Le script de préparation de l'environnement est posé (19 novembre) mais pas encore vu tourner au démarrage d'une discussion neuve.
 - Sur une machine du cloud, `pre-vol.sh --ci --rapide` est recalé par `test_portail4.py` (historique git coupé) : faux rouge local, vert sur la CI ; à réparer dans le lot « machinerie ».
 
 ## Prochain départ (tour 9)

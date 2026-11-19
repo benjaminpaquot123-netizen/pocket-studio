@@ -26,7 +26,7 @@ Demande de Benjamin : « Pour le tour 9, vérifie que tout est optimisé. » Tro
 
 ## 3. Ce qui a été changé le 19 novembre
 
-1. **Machine prête à l'arrivée.** Un script de préparation de l'environnement « Parpocket-studio » installe le SDK Android et remplit le cache des tests (proposé à Benjamin par une carte à approuver). Mesuré ici en partant de zéro : voir §7. Avant, chaque discussion le faisait elle-même, ou travaillait sans test.
+1. **Machine prête à l'arrivée.** Un script de préparation de l'environnement « Parpocket-studio » installe le SDK Android et remplit le cache des tests (approuvé par Benjamin le 19 novembre). Mesuré ici en partant de zéro : voir §7. Avant, chaque discussion le faisait elle-même, ou travaillait sans test.
 2. **Fiches de reprise raccourcies.** `EN-COURS.md` : de 13 000 à 4 000 signes ; `PROGRESS.md` : de 66 000 à 1 500. L'histoire est dans `docs/archive/`.
 3. **Lecture d'arrivée.** Une discussion à fiche lit `CLAUDE.md`, `EN-COURS.md` et sa fiche, rien d'autre. `PROGRESS.md`, les issues et le test de nuit sont pour le chef.
 4. **Une seule CI par paquet.** La CI de la branche du paquet (intégration + trois lots au plus) vaut CI de chaque lot. Avant : une CI par lot, puis une CI du paquet (57 minutes deux fois de suite).
@@ -83,7 +83,7 @@ Jouée deux fois sur une machine vidée (SDK, cache et dossiers de compilation e
 - `Coquille2SeatTest.p5` capricieux ; 4 à 6 captures bougent d'une CI à l'autre.
 - La CI dure 58 minutes ; rien n'y a été changé aujourd'hui.
 - `ci-etat.sh` ne marche pas ; les règles 4 à 7 du §3 sont écrites mais aucun script ne les fait encore respecter.
-- Le script de préparation n'est actif qu'une fois approuvé par Benjamin ; il n'a pas encore été vu tourner au démarrage d'une vraie discussion neuve.
+- Le script de préparation est posé, mais il n'a pas encore été vu tourner au démarrage d'une vraie discussion neuve : la première discussion du tour 9 le prouve (`ls /opt/android-sdk/platforms`).
 - `test_constate.py` lancé par pytest donne 1 faux rouge (`ControlSeatsInTheRound`) ; lancé comme la CI le lance (unittest), 64 verts. À ne lancer que comme la CI.
 - Sur une machine du cloud (historique git coupé à 50 commits), `pre-vol.sh --ci --rapide` est recalé par `test_portail4.py` (`RealLots`, lots du tour 6) : le test trouve la fusion mais pas son point de départ, et rougit au lieu de passer son tour. Déjà vrai avant cette vérification ; vert sur la CI (historique entier). Pour le lot « machinerie » : faire passer son tour au test quand le point de départ manque.
 - Le coût du chef pendant le tour 8 n'est pas connu.

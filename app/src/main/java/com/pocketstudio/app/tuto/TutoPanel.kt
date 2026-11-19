@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.Canvas
@@ -945,6 +946,9 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions, names: (
     val shape = RoundedCornerShape(12.dp)
     val line = Modifier.fillMaxWidth().height(foldedLineHeight()).clip(shape)
     when {
+        // Tour 9, F002 (seats t9-47, t9-60): « Voilà ! À toi maintenant. » and « Arrêter » were all the line said, the step's
+        // button (« Créer la partie … ») unseen: once the demonstration hands over, its button is on the line.
+        ui.demo == TutoDemoPhase.FADING && ui.need != null -> NeedLine(line, shape, ui.need, ui.progress.style) { actions.stopDemo(); actions.need() }
         ui.demo != null -> Row(
             line.background(Neon.Amber.copy(alpha = 0.16f)).border(1.dp, Neon.Amber, shape).padding(start = 10.dp).testTag("tuto_demo_caption"),
             verticalAlignment = Alignment.CenterVertically,
@@ -965,15 +969,25 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions, names: (
             )
         }
         // n° 34: a chapter's end folded: « Bravo » first, unfolded by a touch (its music, then the next chapter), never skipped.
-        done && ui.chapterDoneNext() != null -> Box(line.background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, shape).testTag("tuto_bravo")) {
+        // Tour 9, F002 (seat t9-11): it said no « Chapitre suivant »; now beside « Bravo », one touch.
+        done && ui.chapterDoneNext() != null -> Row(line.background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, shape).testTag("tuto_bravo"),
+            verticalAlignment = Alignment.CenterVertically) {
             Row(
-                Modifier.fillMaxSize().clickable(onClick = actions.toggle).padding(horizontal = 10.dp).testTag("tuto_chapter_end_folded"),
+                Modifier.weight(1f).fillMaxHeight().clickable(onClickLabel = tr("Déplier"), onClick = actions.toggle).padding(start = 10.dp, end = 4.dp)
+                    .testTag("tuto_chapter_end_folded"),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(Icons.Filled.EmojiEvents, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(20.dp))
                 Text(tr("Bravo, chapitre fini !"), color = Neon.Acid, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
-                    maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).padding(start = 6.dp))
-                Icon(Icons.Filled.ExpandLess, contentDescription = tr("Déplier"), tint = Neon.Acid, modifier = Modifier.size(20.dp))
+                    maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(start = 6.dp))
+            }
+            Row(
+                Modifier.fillMaxHeight().clickable(onClick = actions.next).padding(horizontal = 10.dp).testTag("tuto_chapter_next_folded"),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(tr("Chapitre suivant"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2, textAlign = TextAlign.End,
+                    modifier = Modifier.widthIn(max = 120.dp))
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.padding(start = 4.dp).size(18.dp))
             }
         }
         done -> Box(line.background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, shape).testTag("tuto_bravo")) {
@@ -991,15 +1005,7 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions, names: (
         }
         // Testers (lot « tuto 5 »): the step's next button (« Copier sur les mesures suivantes »…) on the folded line
         // itself, one touch; it was hidden until the panel was unfolded.
-        ui.need != null -> Row(
-            line.background(Neon.Amber.copy(alpha = 0.14f)).border(1.dp, Neon.Amber, shape).clickable(onClick = actions.need).padding(horizontal = 10.dp)
-                .testTag("tuto_need_folded"),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(needLabel(ui.need, ui.progress.style), color = Neon.Amber, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2,
-                overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
-            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Amber, modifier = Modifier.size(18.dp))
-        }
+        ui.need != null -> NeedLine(line, shape, ui.need, ui.progress.style, actions.need)
         // Audit ultra round 1, n° 34 (seat A b, 200 %): « À toi : sur le pad « Clap », t… » said nothing; two lines of
         // the step, and « Lire » (a touch unfolds the rest).
         else -> Row(
@@ -1013,6 +1019,20 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions, names: (
                 Icon(Icons.Filled.ExpandLess, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
             }
         }
+    }
+}
+
+/** The step's button on the folded line ([TutoUi.need]), one touch. */
+@Composable
+private fun NeedLine(line: Modifier, shape: androidx.compose.ui.graphics.Shape, need: TutoNeed, style: String, onClick: () -> Unit) {
+    Row(
+        line.background(Neon.Amber.copy(alpha = 0.14f)).border(1.dp, Neon.Amber, shape).clickable(onClick = onClick).padding(horizontal = 10.dp)
+            .testTag("tuto_need_folded"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(needLabel(need, style), color = Neon.Amber, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2,
+            overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = Neon.Amber, modifier = Modifier.size(18.dp))
     }
 }
 

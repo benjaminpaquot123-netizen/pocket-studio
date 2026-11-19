@@ -38,3 +38,6 @@ defauts:
     symptome: texte-faux | gravite: finition | revu: oui: ecran 82 | banc?: non | promesse: -
 mots-faux:
 defauts-avant:
+
+fin-tranche: oui (ROUTE ligne 412)
+BENCH-VERDICT: #84 BENCH-VERDICT ok where=seat.fin

@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "Una raffica prima del rullante e un'altra a fine loop, non di più: il resto respira.",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "Una terzina subito prima del rullante è il rilancio tipico degli hi-hat drill.",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "Tocca a te: sul pad “Rim” (un piccolo “toc”), tocca le caselle tratteggiate delle 2 battute: risponde al rullante.",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Tocca a te: un po' di swing, 16% sullo slider “Swing” sotto la griglia: le semicrome tra i battiti arrivano un pelo in ritardo, gli hi-hat saltellano.",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Tocca a te: un po' di swing, 16% sullo slider “Swing”: le semicrome tra i battiti arrivano un pelo in ritardo, gli hi-hat saltellano.",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "I produttori drill mettono sugli hi-hat uno swing dall'8 al 15%: saltellano senza perdere la rigidità.",
   "La 808 qui glisse": "La 808 che scivola",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "Nella drill la 808 quasi canta: scivola più volte per battuta, verso l'ottava o la quinta, e chiude il suo loop con un lungo glide verso il basso.",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "Ascolta l'Intro: il piano da solo, come una minaccia.",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "Ascolta la Strofa: senza gli archi, il posto per la voce.",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "Ascolta il Ritornello: suona tutto, la 808 al massimo.",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "Buono a sapersi: nella drill il rapper conta una battuta quando l'app ne conta due (il rullante torna ogni 2 battute). La sua strofa da “16 battute” qui fa quindi 32 battute.",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "Buono a sapersi: nella drill il rapper conta una battuta quando l'app ne conta due (il rullante torna ogni 2 battute). La sua strofa da “16 battute” qui fa quindi 32 battute: Strofa 30 + Pre-ritornello 2 sulla mappa.",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "Una strofa da 16 battute dell'app durerebbe solo 27 secondi: un rapper non avrebbe il tempo di dire granché.",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "Tocca a te: crea l'Intro a partire dal Ritornello: il piano da solo.",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "Il piano da solo crea l'atmosfera; quando cade la 808, colpisce.",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "Tocca a te: ultima battuta, cancella i colpi di cassa e di rullante dell'ultimo battito.",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Tocca a te: battuta 2, pressione lunga sulla casella 13 dell'“Hi-hat”, poi “Terzina” › “3 su 2 caselle”.",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Tocca a te: battuta 1, pressione lunga sulle caselle 13 e 15 dell'“Hi-hat”, poi “Terzina” › “3 su 2 caselle”.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "Tocca a te: sotto la griglia, alza lo slider “Swing” fino al 27%.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "Tocca a te: sotto la griglia, alza lo slider “Swing” fino al 33%.",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "Tocca a te: alza lo slider “Swing” fino al 27%.",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "Tocca a te: alza lo slider “Swing” fino al 33%.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "Tocca a te: sotto “Aggiungi”, tocca in ordine: Intro, Strofa, Ritornello, Strofa, Ritornello, Strofa, Ritornello, poi Intro per finire.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "Tocca a te: dai a ogni parte la sua durata: Intro 4 battute, Strofa 16, Ritornello 8, Outro 4.",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "Tocca a te: dai a ogni parte la sua durata: Intro 8 battute, Ritornello 16, Strofa 30, Pre-ritornello 2, Outro 4.",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "Ascolta un estratto di lo-fi finito: accordi jazz al piano elettrico, una batteria ovattata che strascica un po', il crepitio di un vecchio disco.",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "Ascolta un estratto di phonk finito: la campana da sola nell'Intro, poi il Ritornello in cui tutto picchia.",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "Ascolta un estratto di trap finita: l'Intro (la campana da sola), poi il Ritornello, in cui la 808 (il basso gravissimo) cade con la cassa.",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Tocca a te: nella scheda “Mix”, abbassa un po' lo slider “Melodia”. Sotto lo slider, “Normale” diventa “−2”."
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Tocca a te: nella scheda “Mix”, abbassa un po' lo slider “Melodia”. Sotto lo slider, “Normale” diventa “−1”."
 }

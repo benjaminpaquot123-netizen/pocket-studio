@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "رشقة قبل السنير وأخرى في نهاية الحلقة، لا أكثر: الباقي يتنفس.",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "ثلاثية قبل السنير مباشرة: هذه الدفعة النموذجية لهاي هات الدريل.",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "دورك: على باد «ريم» (‏«طق» صغيرة)، اضغط الخانات المنقّطة في المازورتين: يجيب السنير.",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "دورك: قليل من التأرجح: ‏16 % تأرجح على منزلق «تأرجح» تحت الشبكة: أجزاء السادس عشر بين النبضات تصل متأخرة بشعرة، والهاي هات يتقافز.",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "دورك: قليل من التأرجح: ‏16 % تأرجح على منزلق «تأرجح»: أجزاء السادس عشر بين النبضات تصل متأخرة بشعرة، والهاي هات يتقافز.",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "منتجو الدريل يضعون تأرجح على الهاي هات من 8 إلى 15 %: التقافز دون فقدان الصلابة.",
   "La 808 qui glisse": "الـ808 التي تنزلق",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "في الدريل، الـ808 تكاد تغني: تنزلق عدة مرات في المازورة، نحو الأوكتاف أو الخامسة، وتنهي حلقتها بانزلاق طويل نحو الأسفل.",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "استمع إلى المقدمة: البيانو وحده، كتهديد.",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "استمع إلى المقطع: بلا الوتريات، مكان الصوت.",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "استمع إلى اللازمة: كل شيء يعزف، والـ808 في أقوى حالاتها.",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "من المفيد أن تعرف: في الدريل، يعدّ الرابر مازورة حين يعدّ التطبيق اثنتين (السنير يعود كل مازورتين). مقطعه من «16 مازورة» يساوي إذن 32 مازورة هنا.",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "من المفيد أن تعرف: في الدريل، يعدّ الرابر مازورة حين يعدّ التطبيق اثنتين (السنير يعود كل مازورتين). مقطعه من «16 مازورة» يساوي إذن 32 مازورة هنا: مقطع 30 + ما قبل اللازمة 2 على الخريطة.",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "مقطع من 16 مازورة في التطبيق لن يدوم إلا 27 ثانية: لن يجد الرابر وقتًا ليقول الكثير.",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "دورك: أنشئ المقدمة من اللازمة: البيانو وحده.",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "البيانو وحده يرسّخ الأجواء؛ وحين تسقط الـ808، تضرب.",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "دورك: في المازورة الأخيرة، امسح ضربات الكيك والسنير في النبضة الأخيرة.",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "دورك: المازورة 2، اضغط مطوّلًا على الخانة 13 في «هاي هات»، ثم «ثلاثية» › «3 على خانتين».",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "دورك: المازورة 1، اضغط مطوّلًا على الخانة 13 و15 في «هاي هات»، ثم «ثلاثية» › «3 على خانتين».",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "دورك: تحت الشبكة، ارفع منزلق «تأرجح» حتى 27 %.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "دورك: تحت الشبكة، ارفع منزلق «تأرجح» حتى 33 %.",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "دورك: ارفع منزلق «تأرجح» حتى 27 %.",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "دورك: ارفع منزلق «تأرجح» حتى 33 %.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "دورك: تحت «إضافة»، اضغط بالترتيب: مقدمة، مقطع، لازمة، مقطع، لازمة، مقطع، لازمة، ثم مقدمة للختام.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "دورك: أعطِ كل جزء طوله: مقدمة ‏4 مازورات، المقطع 16، اللازمة 8، الخاتمة ‏4.",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "دورك: أعطِ كل جزء طوله: مقدمة ‏8 مازورات، اللازمة 16، المقطع 30، ما قبل اللازمة ‏2، الخاتمة ‏4.",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "استمع إلى مقتطف من مقطوعة لو-فاي مكتملة: كوردات جاز على بيانو كهربائي، طبول مكتومة تتأخر قليلًا، وطقطقة أسطوانة قديمة.",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "استمع إلى مقتطف من مقطوعة فونك مكتملة: الجرس وحده في المقدمة، ثم اللازمة حيث يدق كل شيء.",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "استمع إلى مقتطف من مقطوعة تراب مكتملة: المقدمة (الجرس وحده)، ثم اللازمة، حيث تسقط الـ808 (البيس المنخفض جدًا) مع الكيك.",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "دورك: في تبويب «المكس»، اخفض قليلًا فيدر «اللحن». تحت الفيدر يصبح «عادي» «−2»."
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "دورك: في تبويب «المكس»، اخفض قليلًا فيدر «اللحن». تحت الفيدر يصبح «عادي» «−1»."
 }

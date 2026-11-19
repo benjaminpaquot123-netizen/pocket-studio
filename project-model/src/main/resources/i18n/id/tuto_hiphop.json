@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "Satu semburan sebelum snare dan satu lagi di akhir loop, tidak lebih: sisanya bernapas.",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "Triplet tepat sebelum snare, itulah pukulan susulan khas hi-hat drill.",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "Giliranmu: di pad “Rim” (“tok” kecil), sentuh kotak bergaris putus di 2 birama: ia menjawab snare.",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Giliranmu: sedikit swing, 16 % saja, di slider “Swing” di bawah grid: not 1/16 di antara ketukan datang sedikit terlambat, hi-hat melompat-lompat.",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Giliranmu: sedikit swing, 16 % saja, di slider “Swing”: not 1/16 di antara ketukan datang sedikit terlambat, hi-hat melompat-lompat.",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "Para produser drill memberi swing 8 sampai 15 % pada hi-hat: melompat-lompat tanpa kehilangan kekakuannya.",
   "La 808 qui glisse": "808 yang meluncur",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "Di drill, 808 nyaris bernyanyi: ia meluncur beberapa kali per birama, ke oktaf atau fifth, dan mengakhiri loop-nya dengan glide panjang ke bawah.",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "Dengarkan Intro: piano sendirian, seperti ancaman.",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "Dengarkan Verse: tanpa string, ruang untuk vokal.",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "Dengarkan Reff: semuanya main, 808 paling keras.",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "Perlu diketahui: di drill, rapper menghitung satu birama saat aplikasi menghitung dua (snare kembali tiap 2 birama). Jadi verse “16 birama”-nya di sini jadi 32 birama.",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "Perlu diketahui: di drill, rapper menghitung satu birama saat aplikasi menghitung dua (snare kembali tiap 2 birama). Jadi verse “16 birama”-nya di sini jadi 32 birama: Verse 30 + Pre-chorus 2 di peta.",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "Verse 16 birama versi aplikasi hanya berlangsung 27 detik: rapper tidak sempat bilang banyak.",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "Giliranmu: buat Intro dari Reff: piano sendirian.",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "Piano sendirian membangun suasana; saat 808 jatuh, terasa menghantam.",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "Giliranmu: birama terakhir, hapus pukulan kick dan snare di ketukan terakhir.",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Giliranmu: birama 2, tahan kotak 13 di “Hi-hat”, lalu “Triplet” › “3 dalam 2 kotak”.",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Giliranmu: birama 1, tahan kotak 13 dan 15 di “Hi-hat”, lalu “Triplet” › “3 dalam 2 kotak”.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "Giliranmu: di bawah grid, naikkan slider “Swing” sampai 27 %.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "Giliranmu: di bawah grid, naikkan slider “Swing” sampai 33 %.",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "Giliranmu: naikkan slider “Swing” sampai 27 %.",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "Giliranmu: naikkan slider “Swing” sampai 33 %.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "Giliranmu: di bawah “Tambah”, sentuh berurutan: Intro, Verse, Reff, Verse, Reff, Verse, Reff, lalu Intro untuk penutup.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "Giliranmu: beri tiap bagian durasinya: Intro 4 birama, Verse 16, Reff 8, Outro 4.",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "Giliranmu: beri tiap bagian durasinya: Intro 8 birama, Reff 16, Verse 30, Pre-chorus 2, Outro 4.",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "Dengarkan cuplikan lagu lo-fi yang sudah jadi: akor jazz di piano elektrik, drum yang lembut dan agak terseret, gemeresik piringan tua.",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "Dengarkan cuplikan lagu phonk yang sudah jadi: bel sendirian di Intro, lalu Reff tempat semuanya menghantam.",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "Dengarkan cuplikan lagu trap yang sudah jadi: Intro (bel sendirian), lalu Reff, tempat 808 (bass yang sangat rendah) jatuh bersama kick.",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Giliranmu: di tab “Mix”, turunkan sedikit slider “Melodi”. Di bawah slider, “Normal” jadi “−2”."
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Giliranmu: di tab “Mix”, turunkan sedikit slider “Melodi”. Di bawah slider, “Normal” jadi “−1”."
 }

@@ -364,7 +364,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».",
           "textPro": "À toi : dans Mix, baisse un peu « Mélodie » : les kicks et la 808 devant, les voix juste derrière.",
           "check": "changed:volumes:lead",
           "spot": "mixer.strip",

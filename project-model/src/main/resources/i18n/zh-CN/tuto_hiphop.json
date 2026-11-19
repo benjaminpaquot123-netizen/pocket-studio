@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "军鼓前一阵连发，循环末尾再来一阵，仅此而已：其余部分要留白。",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "军鼓之前的三连音，是 drill 踩镲典型的推进。",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "轮到你：在“鼓边”打击垫上（一声小小的“哒”），点 2 小节里的虚线格子：它回应军鼓。",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "轮到你：一点 Swing，网格下面的“Swing”推子设为 16 % swing：拍子之间的十六分音符稍微晚一丁点，踩镲跳跃起来。",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "轮到你：一点 Swing，“Swing”推子设为 16 % swing：拍子之间的十六分音符稍微晚一丁点，踩镲跳跃起来。",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "drill 制作人把踩镲 Swing 设在 8% 到 15%：跳跃，又不失硬朗。",
   "La 808 qui glisse": "滑动的 808",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "在 drill 里，808 几乎在唱歌：每小节滑好几次，滑向八度或五度，循环最后来一个长长的下滑。",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "听前奏：只有钢琴，像一种威胁。",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "听主歌：没有弦乐，给人声留出位置。",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "听副歌：全部播放，808 最响。",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "小知识：在 drill 里，应用数两小节，说唱歌手只数一小节（军鼓每 2 小节回来一次）。所以他“16 小节”的主歌在这里是 32 小节。",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "小知识：在 drill 里，应用数两小节，说唱歌手只数一小节（军鼓每 2 小节回来一次）。所以他“16 小节”的主歌在这里是 32 小节：地图上是主歌 30 + 预副歌 2。",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "一段应用里 16 小节的主歌只有 27 秒：说唱歌手来不及说什么。",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "轮到你：从副歌创建前奏：只有钢琴。",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "只有钢琴营造氛围；808 砸下来的时候，冲击就来了。",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "轮到你：在最后一小节，清除最后一拍上的底鼓和军鼓打击。",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "轮到你：第 2 小节，长按“踩镲”的第 13 格，然后选“三连音” › “2 格 3 下”。",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "轮到你：第 1 小节，长按“踩镲”的第 13 和 15 格，然后选“三连音” › “2 格 3 下”。",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "轮到你：在网格下面，把“Swing”推子调到 27%。",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "轮到你：在网格下面，把“Swing”推子调到 33%。",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "轮到你：把“Swing”推子调到 27%。",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "轮到你：把“Swing”推子调到 33%。",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "轮到你：在“添加”下面按顺序点：前奏、主歌、副歌、主歌、副歌、主歌、副歌，最后是前奏。",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "轮到你：给每个段落设好时长：前奏 4 小节、主歌 16、副歌 8、尾奏 4。",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "轮到你：给每个段落设好时长：前奏 8 小节、副歌 16、主歌 30、预副歌 2、尾奏 4。",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "听一段完整的 lo-fi：电钢琴弹的爵士和弦，稍微拖拍的柔和鼓，老唱片的噼啪声。",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "听一段完整的 phonk：前奏只有牛铃，然后是一切都在猛砸的副歌。",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "听一段完整的 trap：前奏（只有钟声），然后是副歌，808（非常低沉的贝斯）和底鼓一起砸下来。",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "轮到你：在“混音”标签里，把“旋律”推子稍微拉低一点。推子下方的“正常”会变成“−2”。"
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "轮到你：在“混音”标签里，把“旋律”推子稍微拉低一点。推子下方的“正常”会变成“−1”。"
 }

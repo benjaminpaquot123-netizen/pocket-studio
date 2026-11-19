@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "스네어 앞에 연타 한 번, 루프 끝에 한 번, 그 이상은 없어요. 나머지는 숨을 쉬어요.",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "스네어 바로 앞의 셋잇단, 드릴 하이햇의 전형적인 재추진이에요.",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "직접 해 보세요: “림” 패드(작은 “똑”)에서 2마디의 점선 칸을 탭하세요. 스네어에 대답해요.",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "직접 해 보세요: 스윙을 조금, 그리드 아래 “스윙” 슬라이더에서 16 % swing. 박 사이의 16분음표가 아주 살짝 늦게 오고, 하이햇이 통통 튀어요.",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "직접 해 보세요: 스윙을 조금, “스윙” 슬라이더에서 16 % swing. 박 사이의 16분음표가 아주 살짝 늦게 오고, 하이햇이 통통 튀어요.",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "드릴 프로듀서는 하이햇에 8~15% 스윙을 줘요. 딱딱함을 잃지 않으면서 통통 튀어요.",
   "La 808 qui glisse": "미끄러지는 808",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "드릴에서 808은 거의 노래해요. 마디마다 여러 번 옥타브나 5도로 미끄러지고, 길게 아래로 미끄러지며 루프를 끝내요.",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "인트로를 들어 보세요: 위협처럼 피아노 혼자.",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "벌스를 들어 보세요: 스트링 없이, 목소리의 자리예요.",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "후렴을 들어 보세요: 전부 연주하고, 808이 가장 세요.",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "알아 두세요: 드릴에서 래퍼는 앱이 두 마디를 셀 때 한 마디를 세요 (스네어가 2마디마다 돌아와요). 그래서 래퍼의 “16마디” 벌스는 여기서 32마디예요.",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "알아 두세요: 드릴에서 래퍼는 앱이 두 마디를 셀 때 한 마디를 세요 (스네어가 2마디마다 돌아와요). 그래서 래퍼의 “16마디” 벌스는 여기서 32마디예요: 맵에서는 벌스 30 + 프리코러스 2.",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "앱 기준 16마디 벌스는 27초뿐이에요. 래퍼가 할 말을 다 할 시간이 없어요.",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "직접 해 보세요: 후렴에서 인트로를 만드세요. 피아노 혼자.",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "피아노 혼자 분위기를 깔고, 808이 떨어지면 세게 때려요.",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "직접 해 보세요: 마지막 마디에서 마지막 박의 킥과 스네어 히트를 지우세요.",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "직접 해 보세요: 2마디에서 “하이햇”의 13번 칸을 길게 누르고 “셋잇단” › “2칸에 3번”을 고르세요.",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "직접 해 보세요: 1마디에서 “하이햇”의 13, 15번 칸을 길게 누르고 “셋잇단” › “2칸에 3번”을 고르세요.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "직접 해 보세요: 그리드 아래 “스윙” 슬라이더를 27%까지 올리세요.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "직접 해 보세요: 그리드 아래 “스윙” 슬라이더를 33%까지 올리세요.",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "직접 해 보세요: “스윙” 슬라이더를 27%까지 올리세요.",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "직접 해 보세요: “스윙” 슬라이더를 33%까지 올리세요.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "직접 해 보세요: “추가” 아래에서 순서대로 탭하세요: 인트로, 벌스, 후렴, 벌스, 후렴, 벌스, 후렴, 마지막으로 인트로.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "직접 해 보세요: 파트마다 길이를 정하세요. 인트로 4마디, 벌스 16, 후렴 8, 아웃트로 4.",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "직접 해 보세요: 파트마다 길이를 정하세요. 인트로 8마디, 후렴 16, 벌스 30, 프리코러스 2, 아웃트로 4.",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "완성된 로파이를 잠깐 들어 보세요: 일렉트릭 피아노의 재즈 코드, 살짝 끌리는 부드러운 드럼, 오래된 음반의 지직거림.",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "완성된 퐁크를 잠깐 들어 보세요: 인트로에서 벨 혼자, 그다음 모든 게 때리는 후렴.",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "완성된 트랩을 잠깐 들어 보세요: 인트로(벨 혼자), 그다음 808(아주 낮은 베이스)이 킥과 함께 떨어지는 후렴.",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "직접 해 보세요: “믹스” 탭에서 “멜로디” 슬라이더를 조금 내리세요. 슬라이더 아래 “보통”이 “−2”로 바뀌어요."
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "직접 해 보세요: “믹스” 탭에서 “멜로디” 슬라이더를 조금 내리세요. 슬라이더 아래 “보통”이 “−1”로 바뀌어요."
 }

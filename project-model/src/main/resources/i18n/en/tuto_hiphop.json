@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "One burst before the snare and another at the end of the loop, no more: the rest breathes.",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "A triplet just before the snare is the typical push of drill hi-hats.",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "Your turn: on the “Rim” pad (a little “tock”), tap the dotted cells of the 2 bars: it answers the snare.",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Your turn: a little swing, 16 % set on the “Swing” slider under the grid: the sixteenths between the beats arrive a hair late, the hi-hats skip.",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Your turn: a little swing, 16 % set on the “Swing” slider: the sixteenths between the beats arrive a hair late, the hi-hats skip.",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "Drill producers swing the hi-hats by 8 to 15%: the skip without losing the stiffness.",
   "La 808 qui glisse": "The sliding 808",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "In drill, the 808 almost sings: it slides several times per bar, to the octave or the fifth, and ends its loop with a long downward slide.",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "Listen to the Intro: the piano alone, like a threat.",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "Listen to the Verse: without the strings, room for the voice.",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "Listen to the Chorus: everything plays, the 808 at its loudest.",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "Good to know: in drill, the rapper counts one bar where the app counts two (the snare comes back every 2 bars). So his “16-bar” verse is 32 bars here.",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "Good to know: in drill, the rapper counts one bar where the app counts two (the snare comes back every 2 bars). So his “16-bar” verse is 32 bars here: Verse 30 + Pre-chorus 2 on the map.",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "A 16-bar verse in the app would only last 27 seconds: a rapper wouldn't have time to say much.",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "Your turn: create the Intro from the Chorus: the piano alone.",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "The piano alone sets the mood; when the 808 drops, it hits.",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "Your turn: last bar, clear the kick and snare hits on the last beat.",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Your turn: bar 2, hold cell 13 of the “Hi-hat”, then “Triplet” › “3 over 2 cells”.",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Your turn: bar 1, hold cells 13 and 15 of the “Hi-hat”, then “Triplet” › “3 over 2 cells”.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "Your turn: under the grid, raise the “Swing” slider to 27%.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "Your turn: under the grid, raise the “Swing” slider to 33%.",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "Your turn: raise the “Swing” slider to 27%.",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "Your turn: raise the “Swing” slider to 33%.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "Your turn: under “Add”, tap in order: Intro, Verse, Chorus, Verse, Chorus, Verse, Chorus, then Intro to finish.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "Your turn: give each part its length: Intro 4 bars, Verse 16, Chorus 8, Outro 4.",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "Your turn: give each part its length: Intro 8 bars, Chorus 16, Verse 30, Pre-chorus 2, Outro 4.",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "Listen to a clip of a finished lo-fi song: jazz chords on electric piano, mellow drums dragging a little, an old record's crackle.",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "Listen to a clip of a finished phonk song: the bell alone in the Intro, then the Chorus where everything pounds.",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "Listen to a clip of a finished trap beat: the Intro (the bell alone), then the Chorus, where the 808 (the very deep bass) lands with the kick.",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Your turn: in the “Mix” tab, lower the “Melody” slider a little. Under the slider, “Normal” becomes “−2”."
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Your turn: in the “Mix” tab, lower the “Melody” slider a little. Under the slider, “Normal” becomes “−1”."
 }

@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "Eine Salve vor der Snare und eine am Loop-Ende, nicht mehr: Der Rest atmet.",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "Eine Triole kurz vor der Snare ist der typische Antrieb der Drill-Hi-Hats.",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "Du bist dran: Tippe beim Pad „Rim“ (ein kleines „Tock“) auf die gestrichelten Kästchen der 2 Takte: Er antwortet der Snare.",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Du bist dran: ein bisschen Swing, 16 % stellst du am Regler „Swing“ unter dem Raster ein: Die Sechzehntel zwischen den Schlägen kommen ein Haar später, die Hi-Hats hüpfen.",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Du bist dran: ein bisschen Swing, 16 % stellst du am Regler „Swing“ ein: Die Sechzehntel zwischen den Schlägen kommen ein Haar später, die Hi-Hats hüpfen.",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "Drill-Produzenten swingen die Hi-Hats um 8 bis 15 %: das Hüpfen, ohne die Steifheit zu verlieren.",
   "La 808 qui glisse": "Die gleitende 808",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "Im Drill singt die 808 fast: Sie gleitet mehrmals pro Takt zur Oktave oder zur Quinte und beendet ihren Loop mit einem langen Gleiten nach unten.",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "Hör dir das Intro an: das Piano allein, wie eine Drohung.",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "Hör dir die Strophe an: ohne die Streicher, der Platz für die Stimme.",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "Hör dir den Refrain an: Alles spielt, die 808 am lautesten.",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "Gut zu wissen: Im Drill zählt der Rapper einen Takt, wo die App zwei zählt (die Snare kommt alle 2 Takte wieder). Seine Strophe von „16 Takten“ dauert hier also 32 Takte.",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "Gut zu wissen: Im Drill zählt der Rapper einen Takt, wo die App zwei zählt (die Snare kommt alle 2 Takte wieder). Seine Strophe von „16 Takten“ dauert hier also 32 Takte: Strophe 30 + Pre-Chorus 2 auf der Karte.",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "Eine Strophe von 16 App-Takten würde nur 27 Sekunden dauern: Ein Rapper hätte keine Zeit, viel zu sagen.",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "Du bist dran: Erstell das Intro aus dem Refrain: das Piano allein.",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "Das Piano allein baut die Stimmung auf; wenn die 808 einsetzt, schlägt es ein.",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "Du bist dran: Lösch im letzten Takt die Kick- und Snare-Schläge des letzten Schlags.",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Du bist dran: Drück in Takt 2 lange auf Feld 13 der „Hi-Hat“, dann „Triole“ › „3 auf 2 Felder“.",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Du bist dran: Drück in Takt 1 lange auf Feld 13 und 15 der „Hi-Hat“, dann „Triole“ › „3 auf 2 Felder“.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "Du bist dran: Dreh unter dem Raster den Regler „Swing“ auf 27 %.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "Du bist dran: Dreh unter dem Raster den Regler „Swing“ auf 33 %.",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "Du bist dran: Dreh den Regler „Swing“ auf 27 %.",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "Du bist dran: Dreh den Regler „Swing“ auf 33 %.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "Du bist dran: Tippe unter „Hinzufügen“ der Reihe nach: Intro, Strophe, Refrain, Strophe, Refrain, Strophe, Refrain, dann Intro zum Schluss.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "Du bist dran: Gib jedem Teil seine Länge: Intro 4 Takte, Strophe 16, Refrain 8, Outro 4.",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "Du bist dran: Gib jedem Teil seine Länge: Intro 8 Takte, Refrain 16, Strophe 30, Pre-Chorus 2, Outro 4.",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "Hör dir einen Ausschnitt eines fertigen Lo-Fi-Tracks an: Jazz-Akkorde auf dem E-Piano, ein gedämpftes Schlagzeug, das etwas schleppt, das Knistern einer alten Platte.",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "Hör dir einen Ausschnitt eines fertigen Phonk-Tracks an: die Glocke allein im Intro, dann der Refrain, in dem alles hämmert.",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "Hör dir einen Ausschnitt eines fertigen Trap-Tracks an: das Intro (die Glocke allein), dann der Refrain, in dem die 808 (der sehr tiefe Bass) mit der Kick einsetzt.",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Du bist dran: Zieh im Tab „Mix“ den Fader „Melodie“ etwas runter. Unter dem Fader wird „Normal“ zu „−2“."
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Du bist dran: Zieh im Tab „Mix“ den Fader „Melodie“ etwas runter. Unter dem Fader wird „Normal“ zu „−1“."
 }

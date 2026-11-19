@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "Seria przed werblem i druga na końcu pętli, nie więcej: reszta oddycha.",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "Triola tuż przed werblem to typowe podbicie drillowych hi-hatów.",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "Twoja kolej: na padzie „Rim” (małe „tok”) dotknij kropkowanych pól w 2 taktach: odpowiada werblowi.",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Twoja kolej: 16 % swingu na suwaku „Swing” pod siatką: szesnastki między ćwierćnutami przychodzą odrobinę później, hi-haty podskakują.",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Twoja kolej: 16 % swingu na suwaku „Swing”: szesnastki między ćwierćnutami przychodzą odrobinę później, hi-haty podskakują.",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "Producenci drillu swingują hi-haty o 8 do 15%: podskakiwanie bez utraty sztywności.",
   "La 808 qui glisse": "Ślizgające się 808",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "W drillu 808 prawie śpiewa: ślizga się kilka razy na takt, do oktawy albo kwinty, i kończy pętlę długim ślizgiem w dół.",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "Posłuchaj Intro: samo pianino, jak groźba.",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "Posłuchaj Zwrotki: bez smyczków, miejsce na głos.",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "Posłuchaj Refrenu: gra wszystko, 808 najmocniej.",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "Dobrze wiedzieć: w drillu raper liczy jeden takt, kiedy aplikacja liczy dwa (werbel wraca co 2 takty). Jego zwrotka „16 taktów” ma więc tutaj 32 takty.",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "Dobrze wiedzieć: w drillu raper liczy jeden takt, kiedy aplikacja liczy dwa (werbel wraca co 2 takty). Jego zwrotka „16 taktów” ma więc tutaj 32 takty: na mapie Zwrotka 30 + Pre-chorus 2.",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "Zwrotka na 16 taktów aplikacji trwałaby tylko 27 sekund: raper nie zdążyłby wiele powiedzieć.",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "Twoja kolej: utwórz Intro z Refrenu: samo pianino.",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "Samo pianino buduje atmosferę; kiedy wchodzi 808, uderza.",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "Twoja kolej: w ostatnim takcie wymaż uderzenia kicka i werbla z ostatniej ćwierćnuty.",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Twoja kolej: takt 2: przytrzymaj pole 13 „Hi-hat”, potem „Triola” › „3 na 2 pola”.",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Twoja kolej: takt 1: przytrzymaj pole 13 i 15 „Hi-hat”, potem „Triola” › „3 na 2 pola”.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "Twoja kolej: pod siatką podkręć suwak „Swing” do 27%.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "Twoja kolej: pod siatką podkręć suwak „Swing” do 33%.",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "Twoja kolej: podkręć suwak „Swing” do 27%.",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "Twoja kolej: podkręć suwak „Swing” do 33%.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "Twoja kolej: pod „Dodaj” dotknij po kolei: Intro, Zwrotka, Refren, Zwrotka, Refren, Zwrotka, Refren, potem Intro na koniec.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "Twoja kolej: nadaj każdej części jej długość: Intro 4 takty, Zwrotka 16, Refren 8, Outro 4.",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "Twoja kolej: nadaj każdej części jej długość: Intro 8 taktów, Refren 16, Zwrotka 30, Pre-chorus 2, Outro 4.",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "Posłuchaj fragmentu gotowego lo-fi: jazzowe akordy na elektrycznym pianinie, przytłumiona perkusja, która trochę się wlecze, trzeszczenie starej płyty.",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "Posłuchaj fragmentu gotowego phonku: sam dzwonek w Intro, potem Refren, w którym wszystko wali.",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "Posłuchaj fragmentu gotowego trapu: Intro (sam dzwonek), potem Refren, w którym 808 (bardzo niski bas) wchodzi z kickiem.",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Twoja kolej: w karcie „Miks” ścisz trochę suwak „Melodia”. Pod suwakiem „Normalnie” zmienia się w „−2”."
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Twoja kolej: w karcie „Miks” ścisz trochę suwak „Melodia”. Pod suwakiem „Normalnie” zmienia się w „−1”."
 }

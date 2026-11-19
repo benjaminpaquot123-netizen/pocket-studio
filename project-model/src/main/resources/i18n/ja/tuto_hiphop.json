@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "スネアの前に連打1つ、ループの終わりにもう1つ、それ以上はなし：ほかは息をさせる。",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "スネアの直前の3連符、これがドリルのハイハットの定番のフィル。",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "あなたの番：「リム」パッド（小さな「コッ」）で、2小節分の点線のマスをタップしよう：スネアに答える。",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "あなたの番：スウィングを少し、グリッドの下の「スウィング」スライダーで 16 % swing：拍の間の16分がほんの少し遅れて、ハイハットが弾む。",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "あなたの番：スウィングを少し、「スウィング」スライダーで 16 % swing：拍の間の16分がほんの少し遅れて、ハイハットが弾む。",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "ドリルのプロデューサーはハイハットに 8〜15 % のスウィングをかける：硬さをなくさずに弾ませる。",
   "La 808 qui glisse": "すべる 808",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "ドリルでは 808 はほとんど歌う：1小節に何度もオクターブや5度へすべり、ループの最後は長く下へすべる。",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "イントロを聴こう：脅しみたいに、ピアノだけ。",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "Aメロを聴こう：ストリングスなし、声のための場所。",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "サビを聴こう：全部鳴り、808 はいちばん大きく。",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "覚えておこう：ドリルでは、アプリが2小節と数えるところをラッパーは1小節と数える（スネアは2小節ごとに戻ってくる）。だからラッパーの「16小節」のヴァースは、ここでは32小節。",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "覚えておこう：ドリルでは、アプリが2小節と数えるところをラッパーは1小節と数える（スネアは2小節ごとに戻ってくる）。だからラッパーの「16小節」のヴァースは、ここでは32小節：マップでは Aメロ 30 + プレサビ 2。",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "アプリの16小節の Aメロだと27秒しかない：ラッパーはほとんど何も言えない。",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "あなたの番：サビからイントロを作ろう：ピアノだけ。",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "ピアノだけで雰囲気を作る。808 が落ちてくると、ガツンと来る。",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "あなたの番：最後の小節で、最後の拍のキックとスネアのヒットを消そう。",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "あなたの番：2小節目で、「ハイハット」の13マス目を長押しして、「3連符」›「2マスに3打」。",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "あなたの番：1小節目で、「ハイハット」の13と15マス目を長押しして、「3連符」›「2マスに3打」。",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "あなたの番：グリッドの下の「スウィング」スライダーを 27 % まで上げよう。",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "あなたの番：グリッドの下の「スウィング」スライダーを 33 % まで上げよう。",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "あなたの番：「スウィング」スライダーを 27 % まで上げよう。",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "あなたの番：「スウィング」スライダーを 33 % まで上げよう。",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "あなたの番：「追加」の下で、順にタップしよう：イントロ、Aメロ、サビ、Aメロ、サビ、Aメロ、サビ、最後にイントロ。",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "あなたの番：各パートの長さ：イントロ 4小節、Aメロ 16、サビ 8、アウトロ 4。",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "あなたの番：各パートの長さ：イントロ 8小節、サビ 16、Aメロ 30、プレサビ 2、アウトロ 4。",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "完成したローファイを聴いてみよう：エレピのジャズコード、少し遅れるやわらかなドラム、古いレコードのパチパチ音。",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "完成したフォンクを聴いてみよう：イントロはベルだけ、そして全部が叩きつけるサビ。",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "完成したトラップを聴いてみよう：イントロ（ベルだけ）、そして 808（とても低いベース）がキックといっしょに落ちてくるサビ。",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "あなたの番：「ミックス」タブで「メロディ」のスライダーを少し下げよう。下の「ふつう」が「−2」に。"
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "あなたの番：「ミックス」タブで「メロディ」のスライダーを少し下げよう。下の「ふつう」が「−1」に。"
 }

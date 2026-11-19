@@ -6,7 +6,7 @@
   "lines": {
     "bass": "0:A2:3:110 7:A2:1:80 10:A2:3:105 14:A3:2:90 16:F2:3:110 23:F2:1:80 26:F2:3:105 30:F3:2:90 32:D2:3:110 39:D2:1:80 42:D2:3:105 46:D3:2:90 48:E2:3:110 55:E2:1:80 58:E2:3:105 62:G2:2:90",
     "pad": "3:C4+E4+G4+B4:2:90 6:C4+E4+G4+B4:2:75 11:C4+E4+G4+B4:2:85 14:C4+E4+G4+B4:1:70 19:A3+C4+E4+G4:3:90 26:A3+C4+E4+G4:2:80 30:A3+C4+E4+G4:1:65 35:F3+A3+C4+E4:2:90 38:F3+A3+C4+E4:2:75 43:F3+A3+C4+E4:2:85 46:F3+A3+C4+E4:1:70 51:E3+G3+B3+D4:3:90 58:E3+G3+B3+D4:2:80 62:E3+G3+B3+D4:1:65",
-    "lead": "2:A4:1:100 5:E5:2:95 24:G4:1:80 27:C5:2:75 34:A4:1:100 37:E5:2:95 56:G4:1:80 59:C5:2:75 61:A4:2:70"
+    "lead": "2:A4:1:100 5:E5:2:95 24:G4:1:80 27:C5:2:75 34:A4:1:100 37:E5:2:95 56:G4:1:80 59:C5:2:75"
   },
   "lineBars": {
     "bass": 4,
@@ -331,7 +331,7 @@
           "text": "À toi : crée le Pont : sans kick ni basse ; les accords, les voix, le shaker et les charleys restent.",
           "check": "part:Pont:nokick+nobass",
           "spot": "song.parts",
-          "keep": "hat,perc,pad,lead",
+          "keep": "hat,open_hat,perc,pad,lead",
           "listen": "vs:Refrain:Pont"
         },
         {

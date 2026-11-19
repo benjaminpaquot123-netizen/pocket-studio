@@ -16,7 +16,7 @@ chemin: Live, barre et rangée du haut, fr, 360 dp, 130 % | test: T9L11LiveBarWh
 chemin: Live, compteur à la plus petite police, de, 360 dp, 85 % | test: T9L11LiveBarWholeTest#germanAtTheSmallestSize
 chemin: Découpe, note « Aucune coupe trouvée » puis touche sur la courbe (vrai chemin de F139) | test: CutLocalNoteScrollTest#theOldMessageBackUnderTheNoteDoesNotPullTheColumnDown
 
-rejeu: t9-75-kit | siège t9-75 (nl, tablette 8, 100 %, Pro, tuto uk_garage ch. 1) | tenu : la carte du kit charge le kit ou dit son erreur
+rejeu: t9-75-kit | siège t9-75 (nl, tablette 8, 100 %, Pro, tuto uk_garage ch. 1) | tenu : la carte du kit charge le kit (« Kit: UK Garage », sans erreur) ; l'erreur dite reste couverte par T9L11KitErrorSaidTest
 corrige: D17 | gravité: grave (douteux banc) | rejeu: t9-75-kit
 
 ## Ce qui change

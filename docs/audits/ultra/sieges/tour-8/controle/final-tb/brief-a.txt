@@ -1,0 +1,22 @@
+Seat: tour-8 final control T-b, seat a. SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-8/controle/final-tb/a
+Profile id: debutante-coreenne-petit-ecran. You are a Korean beginner (reads Korean only, no French, no English menus), small phone (phone360) with text at 130 %, both hands, patient but literal: you do exactly what the tutorial says and look for the exact word it names. Mode: Simple.
+Start: the app should open the Techno tutorial at chapter 9 (the bench's « amenée » tuto:techno:9).
+Mission: tuto-facile. Follow the tutorial from chapter 9 through the END of chapter 10 (all its steps), only by doing what each step asks (avoid « 다음 »/skip unless truly stuck; if you skip, say so and why).
+Goals (ids): finir-chapitre-9, finir-chapitre-10, -
+Budget: 120 gestures, 60 minutes. End with `fin`.
+
+Promises to check (one `promesse:` line each, text copied from the screen):
+- id=amenee-ch9 : the first tutorial screen is chapter 9 (the tutorial header shows 9/15 or chapter 9).
+- id=ch10-etape1 : chapter 10 step 1 asks you to create the « 인트로 » part; the screen shows a part/button named as the tutorial names it (« 인트로 »), touching it creates that part and the step is validated (성공 / next step) without « 다음 ».
+- id=ch10-fin : chapter 10 can be finished to its last step without being stuck.
+
+Defects to judge (rubric `defauts-avant:` of the report, one line each, one word: corrigé (with the screen number where you saw it) / autre (your words) / encore là / pas atteint):
+- D2 | acceptance: « the tutorial names the part exactly as the screen shows it (« 인트로 ») ; touching what it names makes the step succeed ».
+- ctrl-c-ch10 | acceptance: « chapter 10 is no longer blocked: you can go to its end ».
+- amenee-ch9 | acceptance: « the start tuto:techno:9 leads straight to chapter 9 (not chapter 1) ».
+Line format: « - <id> | corrigé | ecran: <n> | <one line> ».
+
+Report: $SEAT/rapport.md, exactly the template in the consignes, first two lines:
+code testé : c9d48c1855fdfd2943731ecdf1d4a7322b9b8474
+joué par : sous-agent neuf
+Also add a line `chapitres: ch9=<compris du premier coup|hésitation|bloqué> ; ch10=<…>` after the mission line, and the `defauts-avant:` block at the end.

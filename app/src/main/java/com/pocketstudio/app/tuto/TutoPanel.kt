@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.offset
@@ -73,6 +74,7 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -543,12 +545,25 @@ fun TutoPanel(
     val ceilingPx = if (ceiling == androidx.compose.ui.unit.Dp.Infinity) Int.MAX_VALUE else with(density) { ceiling.roundToPx() }
     var fullHeight by remember(step.id, ui.open, ui.progress.level, end, ui.demo != null, done) { mutableIntStateOf(0) }
     val compact = !ui.open && fullHeight > ceilingPx
-    var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch) { mutableIntStateOf(0) }
+    // Tour 9 (D14; seat t9-44, Dutch at 200 % on 392 dp: the step's instruction is 378 dp high, the open panel had 517 dp
+    // with its head and four rows of buttons; unfolded with no bound, it went past the screen's top and its buttons out
+    // of it). Unfolded by « Lire la suite » (upright), the panel reads: it may go up to the status bar, over the app's top
+    // bar, the time to read (« Réduire » or another step gives it back); its buttons are measured before the words, never
+    // cut. Where the whole instruction still does not fit, the panel lets go, one at a time ([shed]): its head (the
+    // chapter's title, « Chapitres », the fold), then « Pourquoi ? » and the kit offer, then the row of the example and
+    // « Montre-moi »; all come back with « Réduire ».
+    var bottomPx by remember { androidx.compose.runtime.mutableFloatStateOf(0f) }
+    val statusTop = androidx.compose.foundation.layout.WindowInsets.statusBars.getTop(density)
+    val reading = readAll && ui.open && !end && ceiling != androidx.compose.ui.unit.Dp.Infinity && bottomPx > statusTop + 1f
+    val reach = if (reading) with(density) { (bottomPx - statusTop).toDp() } else androidx.compose.ui.unit.Dp.Infinity
+    var shed by remember(step.id, ui.open, ui.progress.level, readAll) { mutableIntStateOf(0) }
+    val shedAt = if (reading) shed else 0
+    var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedAt) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
     val holding = ui.open && held > 0 && !end
     // How many times the height held was taken again for the words' least room ([WordsRoom]).
-    var regrown by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch) { mutableIntStateOf(0) }
+    var regrown by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedAt) { mutableIntStateOf(0) }
     // Tour 6 (N31): « Lire la suite » lay over « ▸ Pourquoi ? » (a touch there read on). « Pourquoi ? » and « Lire la
     // suite » are under the scrolling words, never in them: neither under the other, « Pourquoi ? » never cut by the
     // words' room (Arabic at 130 %), the panel's height as before. The words' scroll is the step's own (the step
@@ -595,13 +610,16 @@ fun TutoPanel(
     LaunchedEffect(whyOpen, why) { if (whyOpen && why != null) reason.bringIntoView() }
     Surface(
         color = panelColor(), shape = shape,
-        modifier = modifier.fillMaxWidth().border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel"),
+        modifier = modifier.fillMaxWidth().border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
+            .onGloballyPositioned { val b = it.boundsInWindow().bottom; if (b != bottomPx) bottomPx = b },
     ) {
         Column(
-            Modifier.then(if (holding) Modifier.height(with(density) { held.toDp() }) else Modifier)
+            Modifier.then(if (reading) Modifier.heightIn(max = reach) else Modifier)
+                .then(if (holding) Modifier.height(with(density) { held.toDp() }) else Modifier)
                 .onSizeChanged {
                     if (!compact && it.height > 0) fullHeight = it.height
-                    if (ui.open && held == 0 && it.height > 0 && ui.demo == null && !end) held = it.height
+                    // Reading (D14), the panel takes the words' height as it comes: it is held again once « Réduire »d.
+                    if (ui.open && held == 0 && it.height > 0 && ui.demo == null && !end && !reading) held = it.height
                 }
                 .padding(horizontal = 14.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -626,7 +644,7 @@ fun TutoPanel(
                 }
                 return@Column
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            if (shedAt < 1) Row(verticalAlignment = Alignment.CenterVertically) {
                 // Tour 6 (N22 fallout): the school icon (22 dp and 8 dp, decorative) gave its room to « Chapitres »: the title
                 // and the chapter's line keep the room they had beside the bare list icon.
                 Column(Modifier.weight(1f).clickable(onClick = actions.toggle).testTag("tuto_toggle")) {
@@ -671,7 +689,7 @@ fun TutoPanel(
                 }
                 fold()
             }
-            progress(Modifier.fillMaxWidth())
+            if (shedAt < 1) progress(Modifier.fillMaxWidth())
             if (!ui.open) {
                 FoldedLine(ui, done, actions, names)
                 return@Column
@@ -699,12 +717,15 @@ fun TutoPanel(
             // kit offer pinned under it or not (its card came once the packs' index was read and took the words' room):
             // there, the words' least room is their whole height, as far as the screen lets it.
             // Kept once measured (words that then fit scroll no more: their whole height is not read again).
-            val whole = if (lowRoom && readAll && words.maxValue in 1 until Int.MAX_VALUE) words.maxValue + words.viewportSize else 0
+            // Tour 9 (D14; seats t9-05, t9-44, t9-68, t9-69: at 200 % a touch moved the words by a line or three, or by
+            // nothing to the eye): on every step, « Lire la suite » unfolds the whole instruction the same way.
+            val whole = if (readAll && words.maxValue in 1 until Int.MAX_VALUE) words.maxValue + words.viewportSize else 0
             if (whole > wholeWords) SideEffect { wholeWords = maxOf(wholeWords, whole) }
-            val least = maxOf(lineAndHalf, if (lowRoom && readAll) wholeWords else 0)
+            val least = maxOf(lineAndHalf, if (readAll) wholeWords else 0)
             WordsRoom(
-                if (holding) Modifier.weight(1f) else Modifier, holding, most, least,
+                if (holding) Modifier.weight(1f) else if (reading) Modifier.weight(1f, fill = false) else Modifier, holding, most, least,
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
+                short = if (reading) { { if (shed == shedAt && shed < 3) shed++ } } else null,
             ) {
             Box {
             Column(
@@ -764,14 +785,16 @@ fun TutoPanel(
             // Pinned under the words, one row (« Télécharger le kit House (4 Mo) », « Plus tard »): always whole in sight.
             // It takes its room from the words above it, never from the buttons below (round 3, n° 28: an offer coming
             // late never moves the panel's buttons under a finger).
-            if (step.id != READY_STEP && kit != null && ui.demo == null && !ui.bravo) {
+            if (step.id != READY_STEP && kit != null && ui.demo == null && !ui.bravo && shedAt < 2) {
                 CompositionLocalProvider(LocalKitPinned provides true) { kit() }
             }
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
-            if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
+            if (why != null && pinned && shedAt < 2) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
-            if (scrolls) MoreWords(words.canScrollForward, Modifier.onSizeChanged { moreHeight = it.height }) {
-                if (cellsToTouch) readAll = true
+            // Reading (D14), only once the panel has let all it could go and the words still do not fit: they page on.
+            if (scrolls && (!reading || shedAt >= 3)) MoreWords(words.canScrollForward, Modifier.onSizeChanged { moreHeight = it.height }) {
+                // The first touch unfolds the whole instruction; where the screen is too short for it, the next ones page on.
+                if (!readAll) readAll = true
                 else {
                     // A page on, from the first line not wholly seen (never half a line at the top).
                     val next = lines.firstOrNull { it.second > words.value + words.viewportSize + 0.5f }?.first?.toInt()
@@ -780,9 +803,9 @@ fun TutoPanel(
                 }
             }
             // Control « tuto2 »: unfolded by « Lire la suite », the panel covers the cells to touch: « Réduire » gives them back.
-            if (lowRoom && readAll) LessWords { readAll = false }
+            if (readAll) LessWords { readAll = false }
             }
-            ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst)
+            ActionBar(ui, canShow, actions, mine, minePlaying, mineFirst, few = shedAt >= 3)
         }
     }
 }
@@ -795,7 +818,10 @@ fun TutoPanel(
  * held is too low).
  */
 @Composable
-private fun WordsRoom(modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, starved: () -> Unit, content: @Composable () -> Unit) {
+private fun WordsRoom(
+    modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, starved: () -> Unit,
+    short: (() -> Unit)? = null, content: @Composable () -> Unit,
+) {
     androidx.compose.ui.layout.Layout(content, modifier) { ms, c ->
         val gap = 6.dp.roundToPx()
         val wide = androidx.compose.ui.unit.Constraints(maxWidth = c.maxWidth)
@@ -806,6 +832,8 @@ private fun WordsRoom(modifier: Modifier, holding: Boolean, most: androidx.compo
         }
         val cap = if (holding && c.hasBoundedHeight) c.maxHeight else minOf(c.maxHeight, maxOf(most.roundToPx(), if (least > 0) fixed + least else 0))
         if (holding && least > 0 && cap - fixed < least) starved()
+        // Not held, the most the panel may take does not hold the words' least room: [short] is told.
+        if (!holding && short != null && least > 0 && c.hasBoundedHeight && c.maxHeight - fixed < least) short()
         val room = maxOf(cap - fixed, 0)
         val words = ms.firstOrNull()?.measure(wide.copy(maxHeight = room))
         val height = ((words?.height ?: 0) + fixed).coerceIn(if (holding) c.minHeight else minOf(52.dp.roundToPx(), cap), maxOf(cap, c.minHeight))
@@ -1116,7 +1144,7 @@ private fun primaryOf(ui: TutoUi, mineFirst: Boolean): Primary {
  * shares its width (two lines of text at 130 %), the arrows turn round in a right-to-left language.
  */
 @Composable
-private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: Boolean, minePlaying: Boolean, mineFirst: Boolean) {
+private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: Boolean, minePlaying: Boolean, mineFirst: Boolean, few: Boolean = false) {
     val step = ui.current
     val primary = primaryOf(ui, mineFirst)
     val busy = ui.preparing || ui.playing
@@ -1172,7 +1200,8 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
     }
     // The secondary buttons' words (what [besideFits] measures), each with its button.
     val words = ArrayList<String>()
-    val secondaries = buildList<@Composable RowScope.() -> Unit> {
+    // [few]: the panel reads a long instruction (Tour 9, D14): the example's and « Montre-moi »'s row lets it the room.
+    val secondaries = if (few) emptyList() else buildList<@Composable RowScope.() -> Unit> {
         // A step done: the user's own result first, then the example to compare.
         if (primary == Primary.NEXT && mine && (!step.listening || mineFirst || chapterEnd)) {
             val label = if (minePlaying) tr("Arrêter") else if (chapterEnd) tr("Écouter mon morceau") else tr("Écouter ton résultat")

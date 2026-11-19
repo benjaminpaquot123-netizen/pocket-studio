@@ -1,0 +1,11 @@
+#0 SIEGE lang=id device=foldable font=130 mode=pro theme=- fresh=non gestes.max=174 lit=oui main=both amenee=tuto:retro_techno:1
+#0 PREMIER ECRAN reel_s=3.4 simule_s=2.4 jvm_s=8.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:retro_techno:1
+#0 AMENEE > touche 518 982 (launch_learn)
+#0 AMENEE > touche 771 1085 (mode_card_pro)
+#0 AMENEE > touche 517 994 (tuto_style_retro_techno)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE b1fda89881 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=ref done=0 chapters=- playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Tersimpan » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)

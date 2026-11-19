@@ -1,0 +1,46 @@
+Écran 1 (1035x1243)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 251,42
+bouton « Pro » @ 532,42
+bouton « A » ▾ @ 610,42
+icône ↶ [désactivé] @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « bagian ini » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 120  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « Drum 16 pad » [sélectionné] @ 80,204
+onglet « Acid 303 Bassline » @ 245,204
+onglet « Vokal Mikrofon » @ 424,204
+onglet « Remix Pisahkan » @ 599,204
+bouton + «  Trek » @ 776,205
+texte « Bagian: A » @ 85,273
+bouton « Kick studio FX » [coupé] @ 75,333
+bouton « Kick 2 » [coupé] @ 200,333
+bouton « Snare FX » [coupé] @ 325,333
+bouton « Snare 2 » [coupé] @ 450,333
+titre « STEP: KICK STUDIO » [coupé, état « Terbuka »] @ 671,347
+texte « Tempo dan kunci nada Bab 1/13 · Langkah 1/3 · Pro » @ 445,399
+icône (liste) « Bab » @ 906,400
+icône ⌄ @ 978,400
+texte « Dengarkan cuplikan retro techno, rave Belgia tahun 1991: synth raksasa yang melolong (“hoover”, seperti penyedot debu) berputar di atas drum machine 909 yang kering. » @ 517,534
+bouton « Unduh kit Techno retro (6 MB) » @ 469,660
+texte « Nanti » @ 959,660
+texte « ▸ Kenapa? » @ 517,731
+bouton ▶ «  Dengar contohnya » @ 517,857
+icône ← «  Sebelumnya » [désactivé] @ 141,941
+icône « Berikutnya  » → @ 905,941
+bouton ▶ « lagu » @ 520,1026
+icône ↶ « Urungkan » [désactivé] @ 153,1026
+icône ↷ « Ulangi » [désactivé] @ 343,1026
+texte « 120 Tempo » @ 703,1026
+icône (trois points reliés) « Bagikan » @ 890,1026
+onglet (ligne brisée et points) « Struktur » @ 99,1123
+onglet (touches de piano) « Suara » [sélectionné] @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Lainnya » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Catat » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode masukan » @ 385,1213

@@ -1090,11 +1090,24 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
                 Box(Modifier.weight(1f))
                 Text(percent((project.swing / Project.MAX_SWING * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
             }
-            ProSlider(
-                value = (project.swing / Project.MAX_SWING).toFloat(),
-                onValueChange = { actions.setSwing(it * Project.MAX_SWING) },
-                label = tr("Swing"), valueText = percent((project.swing / Project.MAX_SWING * 100).roundToInt()),
-            )
+            // Tour 9, F057: « − » and « + » move the swing by one shown point, so the step's 25 % is reached exactly
+            // (a finger on the slider alone landed on 24 or 27).
+            val shown = (project.swing / Project.MAX_SWING * 100).roundToInt()
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(
+                    onClick = { actions.setSwing((shown - 1).coerceIn(0, 100) / 100.0 * Project.MAX_SWING) }, enabled = shown > 0,
+                    modifier = Modifier.semantics { contentDescription = tr("Swing") + " −1" }.testTag("swing_minus"),
+                ) { Text("−", style = MaterialTheme.typography.titleMedium) }
+                ProSlider(
+                    value = (project.swing / Project.MAX_SWING).toFloat(),
+                    onValueChange = { actions.setSwing(it * Project.MAX_SWING) },
+                    label = tr("Swing"), valueText = percent(shown), modifier = Modifier.weight(1f),
+                )
+                TextButton(
+                    onClick = { actions.setSwing((shown + 1).coerceIn(0, 100) / 100.0 * Project.MAX_SWING) }, enabled = shown < 100,
+                    modifier = Modifier.semantics { contentDescription = tr("Swing") + " +1" }.testTag("swing_plus"),
+                ) { Text("+", style = MaterialTheme.typography.titleMedium) }
+            }
         }
     }
 }

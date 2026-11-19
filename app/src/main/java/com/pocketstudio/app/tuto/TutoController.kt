@@ -944,6 +944,12 @@ class TutoController(
             // The Drop 2's bass written: what its button said (« à toi d'écrire ») is said no more under « Bravo ».
             if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
         }
+        // Tour 9, F037 (t9-42, t9-55): the step's work taken away while it is shown (Annuler took back the part it
+        // made): to do again, its « Bravo » and what was made said no more, its button back.
+        else if (_ui.value?.current?.id == u.current.id && u.current.id in now.progress.done && TutoPlay.undone(u.current, p, t)) {
+            save(now.progress.copy(done = now.progress.done - u.current.id))
+            _ui.value = _ui.value?.copy(bravo = false, already = false, made = null)
+        }
         else if (_ui.value?.current?.id == u.current.id && (_ui.value?.need != need || _ui.value?.partEmpty != TutoPlay.emptyPart(p, need))) {
             _ui.value = _ui.value?.copy(need = need, partEmpty = TutoPlay.emptyPart(p, need))
         }

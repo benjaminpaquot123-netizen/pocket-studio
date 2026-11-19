@@ -35,4 +35,4 @@ Demande : F032, synthwave, consigne du Perc sur la ligne « Rim » avec un son d
 Demande : F034, t9-08, t9-38, t9-65 : démo de création de partie qui pointe une zone vide, à rejouer dans un lot Structure.
 
 ## Captures regardées (écran entier)
-- Grille rythme et Acid réenregistrées pour ce lot : voir la ligne ajoutée au commit des captures.
+- Grille rythme (`rhythm`, `rhythmVelocity`, `rhythmTriplets`, `rhythm_after_wizard`), Acid (`acid`, `acid_editor`, `acid_panel`, `AcidScreenshotTest`) et tuto (`TutoScreenshotTest`, 12 vues) réenregistrées : aucune image de référence ne change. Grille et éditeur Acid regardés en entier : rien ne déborde, rien ne se chevauche.

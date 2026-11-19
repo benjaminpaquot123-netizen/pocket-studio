@@ -156,7 +156,10 @@ def check(branch, path, added=()):
         if not NONE.match(value):
             # Review of banc7 (grave 1): Gradle's --tests knows « Classe.méthode », not « Classe#méthode » (the form of a
             # path line and of the teams' sheet): translated, else no test is found and the merge is undone.
-            filters += [f.replace("#", ".") for f in re.split(r"[\s,`]+", value) if f]
+            # Tour 9 L10: a line copied from the Gradle command keeps only its filters (no task, no « --tests »,
+            # no quotes), else Gradle gets « --tests » with no argument.
+            words = [f.strip("'\"") for f in re.split(r"[\s,`]+", value)]
+            filters += [f.replace("#", ".") for f in words if f and f != "--tests" and not f.startswith(":")]
     return [], filters
 
 

@@ -1085,5 +1085,5 @@ private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) 
     )
 }
 
-/** F106: the Structure's help sentence, kept in sight with the add buttons when the tuto reveals them. */
+/** F106: the Structure's help sentence, named for the tuto's missions. */
 private const val SONG_HELP_SPOT = "song_help"

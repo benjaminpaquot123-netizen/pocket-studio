@@ -14,13 +14,11 @@ chemin: Bande de lecture, mesures lisibles à 200 % | test: Tour9PlayStripTest#t
 chemin: Message « Fait » qui s'en va au geste suivant | test: Tour9DoneBarGoesTest#theNextTouchOnThePageLetsTheLineGoAndStillWorks
 
 corrige: D08 | gravité: grave | rejeu impossible : le self-test du banc était rouge, les rejeux n'ont pas été joués ; preuve par Tour9AddKeepsPlaceTest et les captures
-corrige: D10 | gravité: grave | rejeu impossible : il manque la ligne renameScene dans AppRoot.kt, hors du lot ; preuve par Tour9RenameFromChipTest
 corrige: F100 | gravité: moyen
 corrige: F102 | gravité: moyen
 corrige: F103 | gravité: moyen
 corrige: F104 | gravité: moyen
 corrige: F105 | gravité: moyen
-corrige: F107 | gravité: moyen
 corrige: F108 | gravité: moyen
 corrige: F109 | gravité: moyen
 corrige: F110 | gravité: moyen
@@ -33,6 +31,6 @@ Demande accordée : Zone3JourneysTest.kt : F103 retire la copie d'une partie vid
 - F107 : moitié seulement. Le nom reste dans la ligne et peut être raccourci (« Mon prem… ») ; « Sauvegardé » est essayé plus petit, puis la coche seule (le mot reste dit à TalkBack). Le nom sur sa propre ligne prenait de la hauteur sur tous les écrans (touches coupées, étiquettes couchées).
 - F101 : non reproduit côté Structure. Sur t9-53 écran 47, le doigt (270, 520) est dans une bande vide entre l'aide des répétitions (435) et l'en-tête du tuto (631) : les boutons d'ajout sont cachés par une couche invisible du tuto. Zone L1.
 - F111 : `DoneBar` prête (`doneGoesAtNextGesture`), la ligne d'AppRoot.kt attend l'entrée de L1.
-- D10 : la ligne `renameScene = rhythmVm::renameScene` dans AppRoot.kt n'est pas posée (refusée deux fois), à faire par le chef.
+- D10 : tenté. Le menu « A ▾ » sait renommer (Tour9RenameFromChipTest), mais l'entrée « Renommer » reste cachée tant que la ligne `renameScene = rhythmVm::renameScene` n'est pas posée dans AppRoot.kt (hors du lot, refusée deux fois), à faire par le chef.
 - F105 : moitié seulement. Les mesures se lisent en entier ; nommer la partie éditée demande que ▶ y démarre (RhythmViewModel, hors du lot, relecture G1).
 - F106 : moitié seulement. La phrase d'aide reste visible avec 3 ou 4 parties (Mode simple, texte normal ou 200 %) ; avec 8 parties en Mode avancé, les boutons d'ajout remplissent la place au-dessus du panneau et la phrase sort par le haut. La garder avec eux (`revealFrom`) cassait le tuto « jump_up » Facile (cible absente après « Montre-moi »).

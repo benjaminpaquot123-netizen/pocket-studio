@@ -144,7 +144,8 @@ class TopBarActions(
     val selectScene: (Int) -> Unit = {},
     val newScene: () -> Unit = {},
     /** Tour 9, D10: « Renommer » in the scene chip's menu names a part (index, section or free name), as Structure does. */
-    val renameScene: (Int, String) -> Unit = { _, _ -> },
+    // Null: no « Renommer » in the menu (a name given there would go nowhere until the caller wires it).
+    val renameScene: ((Int, String) -> Unit)? = null,
     /** ⤴ « Prêt à partager ? »: the song checked, then shared (on every tab). */
     val share: () -> Unit = {},
     /**
@@ -296,7 +297,7 @@ fun TopBar(
     if (index != null && named != null) {
         // The same dialog as Structure's, given the part's saved name (as Structure does), not its title as shown.
         val shown = named.titles.getOrElse(index) { "" }.substringAfter(" · ", "")
-        nameDialog(index, storedSceneLabel(shown), { label -> actions.renameScene(index, label); naming = null }, { naming = null })
+        nameDialog(index, storedSceneLabel(shown), { label -> actions.renameScene?.invoke(index, label); naming = null }, { naming = null })
     }
 }
 
@@ -641,7 +642,7 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
                 modifier = Modifier.testTag("scene_new"),
             )
             // Tour 9, D10 (seats 27, 37, 08, 23, 48, 60, 63): the part was named from Structure only.
-            DropdownMenuItem(
+            if (actions.renameScene != null) DropdownMenuItem(
                 text = { Text(tr("Renommer")) },
                 leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null, tint = Neon.Cyan) },
                 onClick = {

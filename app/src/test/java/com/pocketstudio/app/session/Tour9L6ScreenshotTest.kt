@@ -49,7 +49,7 @@ class Tour9L6ScreenshotTest {
             var song by remember { mutableStateOf(List(5) { SongPart(scene = it % 2) }) }
             PocketStudioTheme {
                 Column {
-                    TopBar(TopBarUi(projectName = "Mon morceau", playing = false, canUndo = true, canRedo = false, scene = SceneChipUi(1, listOf("A · Intro", "B · Refrain", "C"), setOf(2))), TopBarActions())
+                    TopBar(TopBarUi(projectName = "Mon morceau", playing = false, canUndo = true, canRedo = false, scene = SceneChipUi(1, listOf("A · Intro", "B · Refrain", "C"), setOf(2))), TopBarActions(renameScene = { _, _ -> }))
                     // F105: the strip's indicator names the edited part, its bars whole.
                     PlayStrip(PlayStripUi(120.0, hasSong = true, loopPart = false, playing = false, position = { PlayPosition("Refrain", 2, 6) }, parts = listOf("A", "B"), helpOn = false), PlayStripActions())
                     SessionScreen(

@@ -454,6 +454,18 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
     }
 
     /**
+     * Tour 9 (banc-b, optimisation): every node of the unmerged tree, fetched once per [ScreenText]. A [ScreenText] is one
+     * look at the screen (the bench makes a new one at each use, see `HumanTester.screenText`), and a touch aimed at a tag
+     * asks [under] and [coverAt] at up to 82 points of that same look: one fetch instead of two per point. A fetch that
+     * fails is not kept (the next question asks again, as before).
+     */
+    private var everything: List<SemanticsNode>? = null
+
+    private fun everything(): List<SemanticsNode> = everything ?: runCatching {
+        compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("anything") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+    }.onSuccess { everything = it }.getOrDefault(emptyList())
+
+    /**
      * What is under a finger at ([x], [y]), for the journal: the smallest thing to touch there in the
      * window that gets the touch (« tag « words » », « désactivé tag … »), or « rien » (and the words there).
      */
@@ -461,9 +473,7 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         if (walked.isEmpty()) mark(shownWindows(), composeRoots())
         val win = runCatching { BenchWindows.windows().filter { it.touchable }.firstOrNull { w -> w.touchModal || w.drawn(screen).contains(x.toInt(), y.toInt()) } }.getOrNull()
             ?: return "rien"
-        val nodes = runCatching {
-            compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("anything") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
-        }.getOrDefault(emptyList()).filter { BenchWindows.windowOf(it)?.view === win.view && seen(it) && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
+        val nodes = everything().filter { BenchWindows.windowOf(it)?.view === win.view && seen(it) && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
         val hit = nodes.filter(::actionable).minByOrNull { val r = drawn(it); r.width * r.height }
         if (hit == null) {
             if (nodes.isEmpty()) viewUnder(win, x, y)?.let { return it }
@@ -486,9 +496,7 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         if (walked.isEmpty()) mark(shownWindows(), composeRoots())
         val win = runCatching { BenchWindows.windows().filter { it.touchable }.firstOrNull { w -> w.touchModal || w.drawn(screen).contains(x.toInt(), y.toInt()) } }.getOrNull()
             ?: return null
-        val here = runCatching {
-            compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("anything") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
-        }.getOrDefault(emptyList()).filter { BenchWindows.windowOf(it)?.view === win.view && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
+        val here = everything().filter { BenchWindows.windowOf(it)?.view === win.view && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
         val hit = here.filter { actionable(it) && seen(it) }.minByOrNull { val r = drawn(it); r.width * r.height } ?: return null
         val chain = generateSequence(hit) { it.parent }.map { it.id }.toSet()
         // A layer drawn on (almost) the whole window is a screen's body or a backdrop, not a card over the target: a
@@ -536,9 +544,7 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         if (walked.isEmpty()) mark(shownWindows(), composeRoots())
         val win = runCatching { BenchWindows.windows().filter { it.touchable }.firstOrNull { w -> w.touchModal || w.drawn(screen).contains(x.toInt(), y.toInt()) } }.getOrNull()
             ?: return null
-        return runCatching {
-            compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("anything") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
-        }.getOrDefault(emptyList())
+        return everything()
             .filter { BenchWindows.windowOf(it)?.view === win.view && seen(it) && actionable(it) && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
             .minByOrNull { val r = drawn(it); r.width * r.height }
     }

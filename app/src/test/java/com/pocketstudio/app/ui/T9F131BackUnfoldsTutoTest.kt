@@ -25,6 +25,8 @@ class T9F131BackUnfoldsTutoTest : HumanTester("t9f131") {
     private fun screen() = screenLines().joinToString("\n")
     private fun has(tag: String) = compose.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
     private fun route() = screenText().read().route
+    /** The tab under whatever page is drawn over it (the unfolded panel adds its own page to the route). */
+    private fun tab() = route().substringAfterLast('/')
     /** The panel folded: its one line under the header (the step's words, « Suivant » or the need) instead of the step. */
     private fun folded() = listOf("tuto_folded_text", "tuto_need_folded", "tuto_next_folded").any(::has)
 
@@ -39,11 +41,11 @@ class T9F131BackUnfoldsTutoTest : HumanTester("t9f131") {
         act("touche ${fold.first.toInt()} ${fold.second.toInt()}")
         act("attends 1")
         assertTrue("the panel not folded:\n" + screen(), folded())
-        val where = route()
+        val where = tab()
         act("retour")
         act("attends 1")
         assertTrue("Back left the project (route ${route()}) with the tutorial folded:\n" + screen(), route() != "launch" && !has("launch_learn"))
-        assertEquals("Back changed the tab:\n" + screen(), where, route())
+        assertEquals("Back changed the tab:\n" + screen(), where, tab())
         assertTrue("Back did not unfold the tutorial:\n" + screen(), !folded())
         // Unfolded, nothing else open: Back leaves the project last, as before.
         act("retour")

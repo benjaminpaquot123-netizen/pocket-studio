@@ -2304,6 +2304,9 @@ fun AppRoot() {
     val homeBackOn = studioFocused && !tutoKeySheet && !launch.open && !noProject && settings.guideSeen && !sheetOver && !showProjects && !wizardUi.open &&
         !tutoChooserOpen && modeAsk == null && !songVersionsOpen && fxChannel < 0 && !showLibrary
     androidx.compose.runtime.SideEffect { homeBack.value = homeBackOn }
+    // Tour 9, F131 (t9-09, t9-55): the tutorial's panel folded over the grid (« Je le fais », its « ⌄ ») is what is open:
+    // Back unfolds it, on the same tab; the project is left only by the next Back, the panel unfolded.
+    androidx.activity.compose.BackHandler(enabled = homeBackOn && tutoUi?.let { !it.open && it.demo == null } == true) { tuto.toggleOpen() }
     androidx.activity.compose.BackHandler(enabled = guideOpen && guideShown && !sheetOver) { guideOpen = false }
     androidx.activity.compose.BackHandler(enabled = guideSpot != null && !sheetOver) { guideSpot = null }
     androidx.activity.compose.BackHandler(enabled = helpLabels && !sheetOver) { helpLabels = false }

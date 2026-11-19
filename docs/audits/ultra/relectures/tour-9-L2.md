@@ -28,5 +28,6 @@ Rien de bloquant côté Compose : `capDrag` est en `pointerInput(Unit)` mais lit
 ## Suite donnée (correcteur)
 - Grave F136 : `EffectsUi.trackName` ajouté, `EffectsCard` le fournit (test `Tour9EffectsCardNameTest`). Le passage du nom depuis `AppRoot.kt` (hors lot) est confié au chef.
 - Mineur F024 : noté dans `docs/decisions/tour-9-L2.md`.
+- `trackName` placé avant `more` dans `EffectsUi` : les appels d'`AppRoot.kt` avec un lambda final compilent sans changement (tests ciblés verts).
 
 Verdict : 0 bloquant, 1 grave

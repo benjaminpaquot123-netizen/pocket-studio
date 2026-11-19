@@ -1,0 +1,66 @@
+Écran 59 (1035x1243)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 346,42
+bouton « Basit » @ 738,42
+bouton ● @ 828,42
+bouton ■ « bu bölüm » @ 909,42
+icône ⋮ @ 990,42
+icône (flèches en boucle) « Yükseliş ölçü 3/4 » ▾ @ 391,144
+bouton « 140  Tempo » @ 136,144
+bouton (flèches en boucle) « Döngü » [allumé, état « açık »] @ 849,144
+bouton « ? » @ 990,144
+icône (flèches en boucle) « Bölüm: C · Yükseliş » ▾ @ 234,240
+texte « Sen düzenlerken döngüde çalar. Şarkıya dönmek için üstteki ⟳ Döngü. » @ 517,322
+bouton « Büyük davul 1 FX » @ 75,446
+bouton « Büyük davul 2 » @ 200,446
+bouton « Trampet FX » @ 325,446
+bouton « Trampet 2 » @ 450,446
+bouton « El çırpma FX » @ 75,552
+bouton « Hi-hat L 30 » @ 200,552
+bouton « Açık hi-hat R 30 » @ 325,552
+bouton « Pes tom » @ 450,552
+bouton « Orta tom R 45 » [coupé] @ 75,643
+bouton « Tiz tom » [coupé] @ 200,643
+bouton « Davul kenarı FX R 50 » [coupé] @ 325,643
+bouton « Çan » [coupé] @ 450,643
+bouton « 1 » [coupé, état « vuruş, güç %90 »] @ 575,398
+bouton [coupé, état « vuruş, güç %91 »] @ 632,398
+bouton [coupé, état « vuruş, güç %92 »] @ 688,398
+bouton [coupé, état « vuruş, güç %93 »] @ 744,398
+bouton « 2 » [coupé, état « vuruş, güç %93 »] @ 800,398
+bouton [coupé, état « vuruş, güç %94 »] @ 856,398
+bouton [coupé, état « vuruş, güç %95 »] @ 912,398
+bouton [coupé, état « vuruş, güç %96 »] @ 968,398
+bouton « 3 » [état « vuruş, güç %97 »] @ 575,455
+bouton [état « vuruş, güç %98 »] @ 632,454
+bouton [état « vuruş, güç %98 »] @ 688,454
+bouton [état « vuruş, güç %99 »] @ 744,454
+bouton « 4 » [état « boş »] @ 800,454
+bouton [état « boş »] @ 856,454
+bouton [état « boş »] @ 912,454
+bouton [état « boş »] @ 968,454
+texte « Doldur » @ 610,535
+texte « tümü » @ 734,535
+texte « 1/2 » @ 839,535
+texte « 1/4 » @ 924,535
+texte « ◀ » @ 586,607
+texte « ▶ » @ 661,607
+texte « Temizle » @ 786,607
+texte « Vuruş eklemek için bir kutuya dokun, birkaç tane boyamak için parmağını kaydır. Bir vuruşa uzun bas: güç ve roll'lar (×2 ile ×8). » [coupé] @ 771,666
+texte « Geçişler Aşama 12/15 · Adım 1/2 · Kolay » @ 423,743
+icône (liste) « Aşamalar » @ 883,743
+icône ⌃ @ 978,743
+icône « Sıra sende: Yükseliş'in son ölçüsünde son kick darbesine uzun bas, ve “Roll” altında “×3”. Oku » ⌃ @ 517,886
+bouton ▶ « şarkı » @ 518,1012
+texte « 140 Tempo » @ 707,1011
+icône ↶ « Geri al » @ 144,1011
+image ↷ @ 337,991
+icône ⋮ « Diğer » @ 899,1011
+onglet (lignes et note) « Şarkım » @ 99,1123
+onglet (quatre carrés) « Ritim » [sélectionné] @ 309,1123
+onglet (touches de piano) « Klavye » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Paylaş » @ 936,1123
+texte « ●  REC » @ 757,1213
+texte « ✎  Not al » @ 882,1213
+texte « ⋯ » @ 987,1213
+texte « Geri bildirim modu » @ 357,1213

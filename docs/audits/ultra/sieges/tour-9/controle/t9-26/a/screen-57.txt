@@ -1,0 +1,41 @@
+Écran 57 (1035x1243)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 346,42
+bouton « Basit » @ 738,42
+bouton ● @ 828,42
+bouton ■ « bu bölüm » @ 909,42
+icône ⋮ @ 990,42
+icône (flèches en boucle) « Yükseliş ölçü 1/4 » ▾ @ 391,144
+bouton « 140  Tempo » @ 136,144
+bouton (flèches en boucle) « Döngü » [allumé, état « açık »] @ 849,144
+bouton « ? » @ 990,144
+icône (flèches en boucle) « Bölüm: C · Yükseliş » ▾ @ 234,240
+texte « Sen düzenlerken döngüde çalar. Şarkıya dönmek için üstteki ⟳ Döngü. » @ 517,296
+bouton « Büyük davul 1 FX » [coupé] @ 75,347
+bouton « Büyük davul 2 » [coupé] @ 200,347
+bouton « Trampet FX » [coupé] @ 325,347
+bouton « Trampet 2 » [coupé] @ 450,347
+texte « Ölçü 2/4 · Büyük davul 1 » [coupé] @ 776,338
+texte « Geçişler Aşama 12/15 · Adım 1/2 · Kolay » @ 423,415
+icône (liste) « Aşamalar » @ 883,415
+icône ⌄ @ 978,415
+texte « Sıra sende: Yükseliş'in son ölçüsünde son kick darbesine uzun bas, ve “Roll” altında “×3”. » @ 517,559
+texte « ▸ Neden? » @ 517,659
+bouton (doigt qui touche) «   Ben yaparım » @ 517,736
+bouton ▶ «  Örneği dinle » @ 266,822
+bouton (œil) «  Göster » @ 768,822
+icône ← «  Önceki » @ 125,908
+icône « İleri  » → @ 941,908
+bouton ▶ « şarkı » @ 518,1012
+texte « 140 Tempo » @ 707,1011
+icône ↶ « Geri al » @ 144,1011
+image ↷ @ 337,991
+icône ⋮ « Diğer » @ 899,1011
+onglet (lignes et note) « Şarkım » @ 99,1123
+onglet (quatre carrés) « Ritim » [sélectionné] @ 309,1123
+onglet (touches de piano) « Klavye » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Paylaş » @ 936,1123
+texte « ●  REC » @ 757,1213
+texte « ✎  Not al » @ 882,1213
+texte « ⋯ » @ 987,1213
+texte « Geri bildirim modu » @ 357,1213

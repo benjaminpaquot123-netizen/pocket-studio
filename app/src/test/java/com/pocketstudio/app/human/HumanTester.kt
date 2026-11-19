@@ -846,6 +846,18 @@ abstract class HumanTester(private val seat: String) {
                 play("attends 0.5")
             }
         }
+        /**
+         * Tour 9 (seats t9-16, t9-38): « les chapitres n'est jamais venu », one launch out of two. The touch on the
+         * tutorial's chapters is played again when the list has not come (said in the journal), before giving up.
+         */
+        fun openChapters() {
+            repeat(4) { again ->
+                if (again > 0) journal.appendText("#0 AMENEE liste des chapitres pas venue, touche rejouée ($again)\n")
+                tap("tuto_chapters")
+                repeat(20) { if (centerOf("tuto_chapter_list") != null) return; play("attends 0.5") }
+            }
+            error("amenée $name : les chapitres n'est jamais venu")
+        }
         fun chooseMode() {
             if (centerOf("mode_card_simple") != null) tap(if (options.simple == false) "mode_card_pro" else "mode_card_simple")
         }
@@ -873,8 +885,7 @@ abstract class HumanTester(private val seat: String) {
                     // never be finished from here. The tutorial is left, its kept progress ticked, then resumed: the
                     // app's own doors, since it only reads the store when it opens or resumes.
                     val course = com.pocketstudio.model.tuto.TutoCourse.of(style)?.chaptersFor(level) ?: error("amenée $name : pas de cours $style")
-                    tap("tuto_chapters")
-                    waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
+                    openChapters()
                     tap("tuto_quit")
                     waitFor("« Reprendre le tuto »") { centerOf("tuto_resume") != null }
                     val store = PrefsTutoStore(app)
@@ -884,8 +895,7 @@ abstract class HumanTester(private val seat: String) {
                     tap("tuto_resume")
                     waitFor("le tuto repris") { centerOf("tuto_chapters") != null }
                     journal.appendText("#0 AMENEE chapitres 1 à ${chapter - 1} cochés (${skipped.size} étapes)\n")
-                    tap("tuto_chapters")
-                    waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
+                    openChapters()
                     tap("tuto_chapter_${chapter - 1}")
                     waitFor("le chapitre $chapter") { centerOf("tuto_chapter_list") == null }
                     // Tour 7, control tuto2 (seat c): the seat never starts on another chapter than the one asked for.

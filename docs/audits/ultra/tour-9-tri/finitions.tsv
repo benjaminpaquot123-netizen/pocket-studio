@@ -125,11 +125,11 @@ F123	L8	app:export/ShareSheet.kt	t9-61, t9-74	Partager	Les boutons M4A et WAV se
 F124	L8	app:export/ShareSheet.kt	t9-70	Partager	« Annuler » gris pâle, à peine lisible	« Annuler » se lit bien sur le fond.
 F125	L8	app:export/ShareSheet.kt	t9-55	Partager	« 6 parties » ne correspond pas au morceau vu	Le nombre de parties dans Partager est celui du morceau.
 F126	L8	app:export/ShareSongUi.kt	t9-30, t9-57(r2)	Partager	Une image « rond coché » posée sans légende en haut à gauche	Chaque image de l'onglet Partager a un sens visible (texte ou bouton).
-F127	L8	app:mixer/AutomateSheet.kt	t9-59, t9-70, t9-45(r2)	Automation (dessin)	Le trait fait défiler la page au lieu de dessiner : courbe fausse	Dessiner une courbe d'automation ne fait jamais défiler la page.
-F128	L8	app:mixer/AutomateSheet.kt	t9-49, t9-59, t9-70	Automation	Étiquettes de l'axe coupées (« 18,0 kH », « 849 H »)	Les valeurs de l'axe se lisent en entier.
-F129	L8	app:mixer/AutomateSheet.kt	t9-18	Automation	« 4 mes. » mais axe de temps 1 à 15	La durée et l'axe de temps disent la même chose.
+F127	L2	app:mixer/AutomationCard.kt	t9-59, t9-70, t9-45(r2)	Automation (dessin)	Le trait fait défiler la page au lieu de dessiner : courbe fausse	Dessiner une courbe d'automation ne fait jamais défiler la page.
+F128	L2	app:mixer/AutomationCard.kt	t9-49, t9-59, t9-70	Automation	Étiquettes de l'axe coupées (« 18,0 kH », « 849 H »)	Les valeurs de l'axe se lisent en entier.
+F129	L2	app:mixer/AutomationCard.kt	t9-18	Automation	« 4 mes. » mais axe de temps 1 à 15	La durée et l'axe de temps disent la même chose.
 F130	L2	app:mixer/AutomationCard.kt	t9-70	Automation (option)	« Sur la batterie » proposé pour une piste mélodique	Les options d'automation nomment la piste éditée.
-F131	L8	app:ui/AppSpaces.kt, app:mixer/AutomateSheet.kt, app:rhythm/RhythmScreen.kt	t9-09, t9-55	Retour Android	Le bouton Retour sort du projet vers l'accueil « Que veux-tu faire ? »	Retour ferme d'abord la feuille ou l'éditeur ouvert ; il ne sort du projet qu'en dernier.
+F131	L10	app:ui/AppRoot.kt (homeBack)	t9-09, t9-55	Retour Android	Le bouton Retour sort du projet vers l'accueil « Que veux-tu faire ? »	Retour ferme d'abord la feuille ou l'éditeur ouvert ; il ne sort du projet qu'en dernier.
 F132	L8	app:padlive/PadSound.kt, model:PackKits.kt	t9-39	Liste des sons	« Drum & bass · Caisse FX » à côté de « Claquement de mains FX » (préfixe sur l'un, pas l'autre)	Les noms de sons d'un même kit suivent la même forme.
 F133	L8	model:NewTracks.kt, model:DefaultNames.kt	t9-23, t9-48	Nouvelle piste	Nom de piste doublé (« 808 808 », « Baixo Baixo pluck »)	Une piste neuve n'a jamais un mot répété dans son nom.
 F134	L8	app:synth/TrackAdd.kt, app:synth/TrackBar.kt	t9-35, t9-60	Barre des pistes	« + Piste » coupé au bord droit quand il y a 3 pistes	« + Piste » reste lisible, quel que soit le nombre de pistes.

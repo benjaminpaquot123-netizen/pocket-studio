@@ -1,0 +1,10 @@
+lang=de
+device=foldable
+font=200
+mode=simple
+amenee=tuto:neurofunk:1
+gestes.max=160
+mission=tuto-facile
+profil=moyen
+niveau=2
+timeout.minutes=30

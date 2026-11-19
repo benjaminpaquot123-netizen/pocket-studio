@@ -1,0 +1,10 @@
+lang=pl
+device=phone
+font=100
+mode=pro
+amenee=tuto:drill:9
+gestes.max=160
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

@@ -1,0 +1,10 @@
+lang=hi
+device=phone
+font=100
+mode=simple
+amenee=tuto:riddim:1
+gestes.max=200
+mission=tuto-facile
+profil=moyen
+niveau=2
+timeout.minutes=30

@@ -1,0 +1,10 @@
+lang=ko
+device=phone
+font=100
+mode=simple
+amenee=tuto:industrial_techno:7
+gestes.max=153
+mission=tuto-facile
+profil=débutant motivé
+niveau=1
+timeout.minutes=30

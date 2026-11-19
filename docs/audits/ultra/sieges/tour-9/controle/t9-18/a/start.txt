@@ -1,0 +1,10 @@
+lang=pt-BR
+device=foldable
+font=100
+mode=pro
+amenee=tuto:detroit:8
+gestes.max=150
+mission=tuto-pro
+profil=pro
+niveau=4
+timeout.minutes=30

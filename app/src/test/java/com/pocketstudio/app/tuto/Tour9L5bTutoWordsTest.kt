@@ -53,4 +53,11 @@ class Tour9L5bTutoWordsTest {
             keys.map { shown(l, it) }.filter { v !in it.substringAfterLast(',').substringAfterLast('،').substringAfterLast('，') }
         })
     }
+
+    /** F073: in Hindi the « part created » message says the listed instruments are removed (« हटाए »), not just listed. */
+    @Test
+    fun f073PartCopyMessageSaysWhatIsRemoved() {
+        val v = I18n.table(Lang.HI)["Partie « %1\$s » créée (copie de « %2\$s ») : sans %3\$s."].orEmpty()
+        assertTrue("hi: $v", "हटाए" in v && v.contains("%1\$s") && v.contains("%2\$s") && v.contains("%3\$s"))
+    }
 }

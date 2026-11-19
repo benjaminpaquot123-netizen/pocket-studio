@@ -1,0 +1,54 @@
+Écran 73 (540x1170)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 120,42
+bouton « Basit » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « bu bölüm » @ 423,42
+icône ⋮ @ 495,42
+bouton « 96  Tempo » @ 75,114
+icône (flèches en boucle) « Nakarat ölçü 1/8 » ▾ @ 228,114
+bouton (flèches en boucle) « Döngü » [allumé, état « açık »] @ 384,114
+bouton « ? » @ 495,114
+icône (flèches en boucle) « Bölüm: A · Nakarat » ▾ @ 145,180
+texte « Döngüde (⟳ Döngü). ▶ bu bölümü tek başına çalar. » @ 253,223
+texte « Ölçü 1/2 · Zil » [coupé] @ 116,250
+bouton « 1 » [état « vuruş, güç %100 »] @ 67,323
+bouton [état « boş »] @ 124,323
+bouton [état « boş »] @ 182,323
+bouton [état « boş »] @ 240,323
+bouton « 2 » [état « boş »] @ 298,323
+bouton [état « boş »] @ 356,323
+bouton [état « boş »] @ 414,323
+bouton [état « boş »] @ 472,323
+bouton « 3 » [coupé, état « boş »] @ 67,371
+bouton [coupé, état « boş »] @ 124,371
+bouton [coupé, état « boş »] @ 182,371
+bouton [coupé, état « boş »] @ 240,371
+bouton « 4 » [coupé, état « boş »] @ 298,371
+bouton [coupé, état « boş »] @ 356,371
+bouton [coupé, état « boş »] @ 414,371
+bouton [coupé, état « boş »] @ 472,371
+icône (liste) « Aşamalar » @ 398,429
+texte « Efektler Aşama 13/15 · Adım 1/1 · Kolay » @ 185,429
+icône ⌄ @ 483,429
+texte « Reverb'ü dinle: önce reverb'süz, sonra reverb'lü. Akorlara alan verir. » @ 270,528
+texte « • Akor: birlikte çalınan birkaç nota. » @ 178,586
+bouton « Reggaeton kitini indir (2 MB) » @ 223,657
+texte « Sonra » @ 466,657
+texte « ▸ Neden? » @ 270,723
+bouton ▶ «  Örneği dinle » @ 270,786
+icône ← «  Önceki » @ 91,870
+icône « İleri  » → @ 465,870
+icône ↶ « Geri al » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « şarkı » @ 264,954
+texte « 96 Tempo » @ 370,954
+icône ⋮ « Diğer » @ 476,954
+onglet (lignes et note) « Şarkım » @ 49,1050
+onglet (quatre carrés) « Ritim » [sélectionné] @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

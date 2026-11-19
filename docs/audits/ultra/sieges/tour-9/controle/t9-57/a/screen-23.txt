@@ -1,0 +1,56 @@
+Écran 23 (540x1170)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 120,42
+bouton « Basit » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « bu bölüm » @ 423,42
+icône ⋮ @ 495,42
+bouton « 96  Tempo » @ 75,114
+bouton « ? » @ 495,114
+texte « Ekle: » @ 66,165
+texte « Bölümleri anlamak Aşama 9/15 · Tamam · Kolay » @ 185,240
+icône (liste) « Aşamalar » @ 398,240
+icône ⌄ @ 483,240
+image (rond coché) @ 36,318
+texte « Köprüyü dinle: artık kick ve bas yok; güira, akorlar ve riff. » @ 289,339
+texte « Enerji » @ 50,396
+texte « 4 » @ 32,501
+texte « Kıta » @ 69,489
+texte « 8 » @ 69,513
+texte « 4 » @ 105,501
+texte « Nakarat » @ 164,489
+texte « 16 » @ 164,513
+texte « 4 » @ 222,501
+texte « Kıta » @ 259,489
+texte « 8 » @ 259,513
+texte « 4 » @ 295,501
+texte « 8 » @ 331,501
+texte « 8 » @ 379,501
+texte « Nakarat » @ 450,489
+texte « 16 » @ 450,513
+texte « 4 » @ 508,501
+texte «  Giriş » [coupé] @ 60,540
+texte «  Kıta » [coupé] @ 136,540
+texte «  Ön nakarat » [coupé] @ 241,540
+texte «  Nakarat » [coupé] @ 364,540
+bouton « Reggaeton kitini indir (2 MB) » @ 223,600
+texte « Sonra » @ 466,600
+texte « ▸ Neden? » @ 270,666
+icône « Devamını oku » ⌄ @ 270,714
+bouton « Sonraki bölüm   » → @ 270,786
+icône ← @ 57,870
+bouton ▶ «  Şarkımı dinle » @ 204,870
+bouton ▶ «  Örneği dinle » @ 417,870
+icône ↶ « Geri al » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « şarkı » @ 264,954
+texte « 96 Tempo » @ 370,954
+icône ⋮ « Diğer » @ 476,954
+onglet (lignes et note) « Şarkım » [sélectionné] @ 49,1050
+onglet (quatre carrés) « Ritim » @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

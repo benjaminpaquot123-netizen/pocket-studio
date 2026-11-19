@@ -1,0 +1,38 @@
+Écran 87 (540x1170)
+icône (dossier ouvert) ✓ « Şarkım Kaydedildi » @ 120,42
+bouton « Basit » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « bu bölüm » @ 423,42
+icône ⋮ @ 495,42
+bouton « 96  Tempo » @ 75,114
+icône (flèches en boucle) « Nakarat ölçü 1/8 » ▾ @ 228,114
+bouton (flèches en boucle) « Döngü » [allumé, état « açık »] @ 384,114
+bouton « ? » @ 495,114
+image (rond coché) @ 0,0
+bouton « M4A · paylaşmak için » [sélectionné] @ 164,198
+bouton « WAV · en yüksek kalite » @ 170,279
+bouton (trois points reliés) «   Paylaş » @ 270,375
+bouton (dossier) « Dosyalarım » › @ 248,430
+bouton « ? » @ 488,430
+texte « Parçanı dışa aktar Aşama 15/15 · Adım 1/1 · Kolay » @ 185,492
+icône (liste) « Aşamalar » @ 398,492
+icône ⌄ @ 483,492
+image (coupe) @ 42,609
+texte « Bravo, parçan bitti! Hepsini yeniden dinleyebilir ve değiştirmeye devam edebilirsin. » @ 297,609
+bouton ▶ «  Şarkımı dinle » @ 270,708
+bouton ↺ «  Eğitimi baştan başlat » @ 270,789
+bouton ✕ «  Eğitimi kapat » @ 270,870
+icône ↶ « Geri al » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « şarkı » @ 264,954
+texte « 96 Tempo » @ 370,954
+icône ⋮ « Diğer » @ 476,954
+onglet (lignes et note) « Şarkım » @ 49,1050
+onglet (quatre carrés) « Ritim » @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » [sélectionné] @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

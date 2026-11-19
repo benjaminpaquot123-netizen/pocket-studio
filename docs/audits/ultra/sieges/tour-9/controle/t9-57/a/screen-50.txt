@@ -1,0 +1,43 @@
+Écran 50 (540x1170)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 120,42
+bouton « Basit » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « bu bölüm » @ 423,42
+icône ⋮ @ 495,42
+bouton « 96  Tempo » @ 75,114
+icône « Giriş ölçü 1/88 » ▾ @ 223,114
+bouton « ? » @ 495,114
+bouton « Şarkı akorları B · Giriş Si m  Sol  Re  La  Si m  Sol  Re  La C · Kıta Si m  Sol  Re  La  Si m  Sol  Re  La D · Ön nakarat Si m  Sol  Re  La  Si m  Sol  Re  La A · Nakarat Si m  Sol  Re  La  Si m  Sol  Re  La E · Post-nakarat Si m  Sol  Re  La  Si m  Sol  Re  La F · Köprü Si m  Sol  Re  La  Si m  Sol  Re  La Tüm şarkının akorlarını değiştirmek için dokun. » [coupé] @ 270,162
+icône ▶ « B · Giriş × 1  ·  8 ölçü » @ 162,234
+icône − [désactivé] @ 318,234
+icône + @ 390,234
+icône ⋮ @ 462,234
+icône ▶ « C · Kıta × 1  ·  8 ölçü » [coupé] @ 162,312
+icône − [désactivé, coupé] @ 318,318
+icône + [coupé] @ 390,318
+icône ⋮ [coupé] @ 462,318
+texte « Bölümlerini sırala Aşama 11/15 · Adım 2/2 · Kolay » @ 185,384
+icône (liste) « Aşamalar » @ 398,384
+icône ⌄ @ 483,384
+texte « Sıra sende: “Önerilen süreleri ver” düğmesine dokun. » @ 270,483
+bouton « Reggaeton kitini indir (2 MB) » @ 223,576
+texte « Sonra » @ 466,576
+texte « ▸ Neden? » @ 270,642
+bouton ⊕ «   Önerilen süreleri ver » @ 270,705
+bouton (œil) «  Göster » @ 270,789
+icône ← «  Önceki » @ 91,870
+icône « İleri  » → @ 465,870
+icône ↶ « Geri al » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « şarkı » @ 264,954
+texte « 96 Tempo » @ 370,954
+icône ⋮ « Diğer » @ 476,954
+onglet (lignes et note) « Şarkım » [sélectionné] @ 49,1050
+onglet (quatre carrés) « Ritim » @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

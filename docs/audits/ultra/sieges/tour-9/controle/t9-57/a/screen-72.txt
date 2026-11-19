@@ -1,0 +1,60 @@
+Écran 72 (540x1170)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 120,42
+bouton « Basit » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « bu bölüm » @ 423,42
+icône ⋮ @ 495,42
+bouton « 96  Tempo » @ 75,114
+icône (flèches en boucle) « Nakarat ölçü 1/8 » ▾ @ 228,114
+bouton (flèches en boucle) « Döngü » [allumé, état « açık »] @ 384,114
+bouton « ? » @ 495,114
+icône (flèches en boucle) « Bölüm: A · Nakarat » ▾ @ 145,180
+texte « Döngüde (⟳ Döngü). ▶ bu bölümü tek başına çalar. » @ 253,223
+texte « Ölçü 1/2 · Zil » [coupé] @ 116,250
+bouton « 1 » [état « vuruş, güç %100 »] @ 67,323
+bouton [état « boş »] @ 124,323
+bouton [état « boş »] @ 182,323
+bouton [état « boş »] @ 240,323
+bouton « 2 » [état « boş »] @ 298,323
+bouton [état « boş »] @ 356,323
+bouton [état « boş »] @ 414,323
+bouton [état « boş »] @ 472,323
+bouton « 3 » [état « boş »] @ 67,394
+bouton [état « boş »] @ 124,394
+bouton [état « boş »] @ 182,394
+bouton [état « boş »] @ 240,394
+bouton « 4 » [état « boş »] @ 298,394
+bouton [état « boş »] @ 356,394
+bouton [état « boş »] @ 414,394
+bouton [état « boş »] @ 472,394
+texte « tümü » @ 146,475
+texte « 1/2 » @ 224,475
+texte « 1/4 » @ 299,475
+texte « ◀ » @ 374,475
+texte « ▶ » @ 449,475
+texte « Doldur » @ 73,475
+texte « Temizle » [coupé] @ 95,518
+texte « Geçişler Aşama 12/15 · Tamam · Kolay » @ 185,567
+icône (liste) « Aşamalar » @ 398,567
+icône ⌄ @ 483,567
+image (coupe) @ 57,684
+texte « Bravo, bölüm bitti! » @ 184,657
+texte « Şarkını şimdiki haliyle dinle, sonra bir sonraki bölüme geç: “Efektler”. » @ 295,699
+bouton « Sonraki bölüm   » → @ 270,786
+icône ← @ 57,870
+bouton ▶ «  Şarkımı dinle » @ 204,870
+bouton ▶ «  Örneği dinle » @ 417,870
+icône ↶ « Geri al » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « şarkı » @ 264,954
+texte « 96 Tempo » @ 370,954
+icône ⋮ « Diğer » @ 476,954
+onglet (lignes et note) « Şarkım » @ 49,1050
+onglet (quatre carrés) « Ritim » [sélectionné] @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

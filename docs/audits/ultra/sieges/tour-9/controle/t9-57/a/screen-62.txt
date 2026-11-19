@@ -1,0 +1,58 @@
+Écran 62 (540x1170)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 120,42
+bouton « Basit » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « bu bölüm » @ 423,42
+icône ⋮ @ 495,42
+bouton « 96  Tempo » @ 75,114
+icône (flèches en boucle) « Ön nakarat ölçü 1/8 » ▾ @ 230,114
+bouton (flèches en boucle) « Döngü » [allumé, état « açık »] @ 384,114
+bouton « ? » @ 495,114
+icône (flèches en boucle) « Bölüm: D · Ön nakarat » ▾ @ 160,180
+texte « Döngüde (⟳ Döngü). ▶ bu bölümü tek başına çalar. » @ 253,223
+bouton « Takip et » [coupé] @ 107,253
+texte « Ölçü 4/4 · Davul kenarı » @ 167,324
+bouton « 1 » [état « boş »] @ 67,404
+bouton [état « boş »] @ 124,404
+bouton [état « boş »] @ 182,404
+bouton [état « boş »] @ 240,404
+bouton « 2 » [état « boş »] @ 298,404
+bouton [état « boş »] @ 356,404
+bouton [état « boş »] @ 414,404
+bouton [état « boş »] @ 472,404
+bouton « 3 » [état « boş »] @ 67,475
+bouton [état « vuruş, güç %100 »] @ 124,475
+bouton [état « vuruş, güç %60 »] @ 182,475
+bouton [état « vuruş, güç %70 »] @ 240,475
+bouton « 4 » [état « vuruş, güç %80 »] @ 298,475
+bouton [état « vuruş, güç %90 »] @ 356,475
+bouton [état « boş »] @ 414,475
+bouton [état « boş »] @ 472,475
+texte « tümü » @ 146,556
+texte « 1/2 » @ 224,556
+texte « 1/4 » @ 299,556
+texte « ◀ » @ 374,556
+texte « ▶ » @ 449,556
+texte « Doldur » @ 73,556
+texte « Temizle » @ 95,628
+texte « Vuruş eklemek için bir kutuya dokun, birkaç tane boyamak için parmağını kaydır. Bir vuruşa uzun bas: güç ve roll'lar (×2 ile ×8). » [coupé] @ 270,699
+icône (liste) « Aşamalar » @ 398,771
+texte « Geçişler Aşama 12/15 · Adım 1/3 · Kolay » @ 185,771
+icône ⌃ @ 483,771
+image (œil) @ 51,870
+texte « Durdur » @ 465,870
+texte « Tamam. Eski haline getiriyorum… » @ 244,870
+icône ↶ « Geri al » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « şarkı » @ 264,954
+texte « 96 Tempo » @ 370,954
+icône ⋮ « Diğer » @ 476,954
+onglet (lignes et note) « Şarkım » @ 49,1050
+onglet (quatre carrés) « Ritim » [sélectionné] @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

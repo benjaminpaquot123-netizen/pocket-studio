@@ -1,0 +1,427 @@
+#0 SIEGE lang=tr device=phone360 font=100 mode=simple theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:reggaeton:8
+#0 PREMIER ECRAN reel_s=3.5 simule_s=2.4 jvm_s=8.5 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:reggaeton:8
+#0 AMENEE > touche 270 621 (welcome_learn)
+#0 AMENEE > touche 270 771 (mode_card_simple)
+#0 AMENEE > touche 270 1105 (tuto_style_reggaeton)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 398 492 (tuto_chapters)
+#0 AMENEE > touche 270 1110 (tuto_quit)
+#0 AMENEE > touche 135 882 (tuto_resume)
+#0 AMENEE chapitres 1 à 7 cochés (19 étapes)
+#0 AMENEE > touche 398 384 (tuto_chapters)
+#0 AMENEE > touche 270 711 (tuto_chapter_7)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 925f5a53ee | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=groove_hear done=19 chapters=1,2,3,4,5,6,7 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Neden? » 332 x 20 dp (touch 332 x 48)
+#1 > touche 270 705
+#1 DOIGT tuto_play_mine «   Sonucunu dinle »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ebb11ec434 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=groove_hear done=19 chapters=1,2,3,4,5,6,7 playing=true
+#2 SON Son : la musique du projet joue en boucle.
+#2 > attends 3
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2671c640d4 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=groove_hear done=19 chapters=1,2,3,4,5,6,7 playing=true
+#3 SON Son : la musique du projet joue en boucle.
+#3 > touche 270 789
+#3 DOIGT tuto_listen «  Örneği dinle »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5b2b6f447b | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=groove_hear done=19 chapters=1,2,3,4,5,6,7 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 3 s).
+#4 > attends 4
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6c0fc67727 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=groove_hear done=20 chapters=1,2,3,4,5,6,7 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 270 780
+#5 DOIGT tuto_next_big « Sonraki adım   »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 499acbeeb4 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=groove_name done=20 chapters=1,2,3,4,5,6,7 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 270 705
+#6 DOIGT tuto_need «   Bölüme “Nakarat” adını ver »
+#7 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 954c29d2cd | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=groove_name done=21 chapters=1,2,3,4,5,6,7,8 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 270 786
+#7 DOIGT tuto_next_big « Sonraki bölüm   »
+#8 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 22df0886f2 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=brick done=21 chapters=1,2,3,4,5,6,7,8 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « 4 » 3.56:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « 8 » 3.82:1 (needs 4.5:1, 12 sp)
+#8 LAYOUT CONTRAST « 8 » 4.28:1 (needs 4.5:1, 12 sp)
+#8 > touche 270 786
+#8 DOIGT tuto_mark «   Anladım »
+#9 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3d3d9f34bd | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_intro done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « 4 » 2.79:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST «  Giriş » 3.34:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST «  Kıta » 1.34:1 (needs 4.5:1, 13 sp)
+#9 LAYOUT CONTRAST «  Ön nakarat » 2.39:1 (needs 4.5:1, 13 sp)
+#9 > touche 270 786
+#9 DOIGT tuto_listen «  Örneği dinle »
+#10 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 6d7f3fca9e | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_intro done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#10 SON Son : l'exemple du tuto joue (encore 3 s).
+#10 > attends 6
+#11 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 8f202742ea | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_intro done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 270 786
+#11 DOIGT tuto_next_big « Sonraki adım   »
+#12 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2b4a5d2164 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_couplet done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Kıta » 4.15:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « 8 » 2.79:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST «  Giriş » 2.16:1 (needs 4.5:1, 13 sp)
+#12 LAYOUT CONTRAST «  Kıta » 2.01:1 (needs 4.5:1, 13 sp)
+#12 > touche 270 786
+#12 DOIGT tuto_listen «  Örneği dinle »
+#13 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5f51ec89e3 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_couplet done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#13 SON Son : l'exemple du tuto joue (encore 3 s).
+#13 > attends 6
+#14 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE aa1f888fc4 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_couplet done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 270 786
+#14 DOIGT tuto_next_big « Sonraki adım   »
+#15 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ffa51d2cd2 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_pre done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « 4 » 1.85:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST «  Ön nakarat » 4.43:1 (needs 4.5:1, 13 sp)
+#15 > touche 270 786
+#15 DOIGT tuto_listen «  Örneği dinle »
+#16 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 92a5dc4047 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_pre done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#16 SON Son : l'exemple du tuto joue (encore 3 s).
+#16 > attends 6
+#17 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c92f4d3dbf | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_pre done=25 chapters=1,2,3,4,5,6,7,8 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 270 786
+#17 DOIGT tuto_next_big « Sonraki adım   »
+#18 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 77876d396c | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_post done=25 chapters=1,2,3,4,5,6,7,8 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 270 786
+#18 DOIGT tuto_listen «  Örneği dinle »
+#19 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE b3b0be0cd9 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_post done=25 chapters=1,2,3,4,5,6,7,8 playing=false
+#19 SON Son : l'exemple du tuto joue (encore 3 s).
+#19 > attends 6
+#20 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE cdbc2fbe72 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_post done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 270 786
+#20 DOIGT tuto_next_big « Sonraki adım   »
+#21 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE de063d15e8 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_pont done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « 8 » 2.53:1 (needs 4.5:1, 12 sp)
+#21 > touche 270 786
+#21 DOIGT tuto_listen «  Örneği dinle »
+#22 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE efd0426b2e | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_pont done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#22 SON Son : l'exemple du tuto joue (encore 3 s).
+#22 > attends 6
+#23 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE fd119c145e | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=map_pont done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 270 786
+#23 DOIGT tuto_next_big « Sonraki bölüm   »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 28f630ee6e | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_intro done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 270 705
+#24 DOIGT tuto_need «   “Giriş” bölümünü oluştur »
+#25 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE bc2052e223 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_intro done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 270 780
+#25 DOIGT tuto_next_big « Sonraki adım   »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b9a3d6e615 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_couplet done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 397 789
+#26 DOIGT tuto_show «  Göster »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 81e1365d22 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_couplet done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « Durdur » 3.91:1 (needs 4.5:1, 14 sp)
+#27 > attends 3
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a6bf9afb03 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_couplet done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CUT « Tamam. Eski haline getiriyorum… » ellipsized (« … »)
+#28 > attends 3
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 7d9719ba15 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_couplet done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 270 705
+#29 DOIGT tuto_need «   “Kıta” bölümünü oluştur »
+#30 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 10e5abda71 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_couplet done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 270 780
+#30 DOIGT tuto_next_big « Sonraki adım   »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2ac9f781ff | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_pre done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 270 705
+#31 DOIGT tuto_need «   “Ön nakarat” bölümünü oluştur »
+#32 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 20b04ca9a2 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_pre done=30 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 270 780
+#32 DOIGT tuto_next_big « Sonraki adım   »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c89327ecf2 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_post done=30 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 270 705
+#33 DOIGT tuto_need «   “Post-nakarat” bölümünü oluştur »
+#34 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 53faebcdfa | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_post done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 270 780
+#34 DOIGT tuto_next_big « Sonraki adım   »
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9ca6cceb49 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_pont done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 270 705
+#35 DOIGT tuto_need «   “Köprü” bölümünü oluştur »
+#36 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e36d006b7f | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=make_pont done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 270 786
+#36 DOIGT tuto_next_big « Sonraki bölüm   »
+#37 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5aeb107a90 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 270 705
+#37 DOIGT tuto_do «   Ben yaparım »
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ef61e108d0 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CUT « Sıra sende: “Ekle” altında sırayla dokun: Giriş, Kıta, Ön nakarat, Nakarat, Post-nakarat, Kıta, Ön nakarat, Nakarat, Köprü, Nakarat, sonra bitiş için Giriş. » ellipsized (« … »)
+#38 LAYOUT CONTRAST « + A · Nakarat » 4.06:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + B · Giriş » 4.06:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + C · Kıta » 4.16:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + D · Ön nakarat » 4.16:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + E · Post-nakarat » 4.25:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + F · Köprü » 4.25:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + Yeni bölüm (F · Köprü kopyası) » 4.25:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + Yeni boş bölüm » 4.37:1 (needs 4.5:1, 14 sp)
+#38 > touche 342 237
+#38 DOIGT add_part_1 « + B · Giriş »
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 655c025a64 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « + A · Nakarat » 4.25:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « + B · Giriş » 4.25:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « + C · Kıta » 4.25:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « + D · Ön nakarat » 4.25:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « + E · Post-nakarat » 4.30:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « + F · Köprü » 4.30:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « + Yeni bölüm (F · Köprü kopyası) » 4.37:1 (needs 4.5:1, 14 sp)
+#39 LAYOUT CONTRAST « + Yeni boş bölüm » 4.43:1 (needs 4.5:1, 14 sp)
+#39 > touche 125 465
+#39 DOIGT add_part_2 « + C · Kıta »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e70e0087d4 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 335 465
+#40 DOIGT add_part_3 « + D · Ön nakarat »
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 666e735cb8 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT OVERLAP « D · Ön nakarat » over the touchable « Tempo: dakikada 96 vuruş Tempoyu değişti » (35 x 4 dp)
+#41 LAYOUT OVERLAP « D · Ön nakarat » over the touchable « Bir bölümden çal » (27 x 4 dp)
+#41 > touche 144 384
+#41 DOIGT add_part_0 « + A · Nakarat »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 34b537888b | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 170 546
+#42 DOIGT add_part_4 « + E · Post-nakarat »
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE be22ec8a96 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT OVERLAP « E · Post-nakarat » over the touchable « Tempo: dakikada 96 vuruş Tempoyu değişti » (35 x 4 dp)
+#43 LAYOUT OVERLAP « E · Post-nakarat » over the touchable « Bir bölümden çal » (75 x 4 dp)
+#43 > touche 125 470
+#43 DOIGT add_part_2 « + C · Kıta »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 68db83e0cf | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 335 470
+#44 DOIGT add_part_3 « + D · Ön nakarat »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a4f7231df6 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 144 390
+#45 DOIGT add_part_0 « + A · Nakarat »
+#46 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ae4fb8c5d3 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 399 552
+#46 DOIGT add_part_5 « + F · Köprü »
+#47 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d566e8c02d | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 144 390
+#47 DOIGT add_part_0 « + A · Nakarat »
+#48 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 951031e8c1 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=32 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 342 384
+#48 DOIGT add_part_1 « + B · Giriş »
+#49 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f1acbd7d6a | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_order done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 270 870
+#49 DOIGT tuto_next_folded « Başarıldı »
+#50 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 16d51538d7 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_phrases done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT OVERLAP « Tüm şarkının akorlarını değiştirmek için dokun. » over the touchable « Tempo: dakikada 96 vuruş Tempoyu değişti » (57 x 4 dp)
+#50 LAYOUT OVERLAP « Tüm şarkının akorlarını değiştirmek için dokun. » over the touchable « Bir bölümden çal » (97 x 4 dp)
+#50 LAYOUT OVERLAP « Tüm şarkının akorlarını değiştirmek için dokun. » over the touchable « Ekranı etiketle » (14 x 4 dp)
+#50 > touche 270 705
+#50 DOIGT tuto_need «   Önerilen süreleri ver »
+#51 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ed08d571e5 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_phrases done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 310 870
+#51 DOIGT tuto_play_mine «  Şarkımı dinle »
+#52 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 49af8a5f48 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=song_phrases done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#52 SON Son : le morceau joue (partie « B »).
+#52 LAYOUT CUT « Si m  Sol  Re  La  Si m  Sol  Re  La » ellipsized (« … »)
+#52 LAYOUT OVERLAP « F · Köprü » over the touchable « Tempo: dakikada 96 vuruş Tempoyu değişti » (57 x 4 dp)
+#52 LAYOUT OVERLAP « Si m  Sol  Re  La  Si m  Sol  Re  La » over the touchable « Bir bölümden çal » (89 x 4 dp)
+#52 LAYOUT OVERLAP « Si m  Sol  Re  La  Si m  Sol  Re  La » over the touchable « Ekranı etiketle » (14 x 4 dp)
+#52 LAYOUT CONTRAST « 4 ölçü  ·  çalıyor » 4.19:1 (needs 4.5:1, 14 sp)
+#52 > touche 270 786
+#52 DOIGT tuto_next_big « Sonraki bölüm   »
+#53 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c1b3769925 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#53 SON Son : le morceau joue (partie « B »).
+#53 LAYOUT CONTRAST « B · Giriş » 2.94:1 (needs 3.0:1, 18 sp)
+#53 LAYOUT CONTRAST « 4 ölçü  ·  çalıyor » 2.94:1 (needs 4.5:1, 14 sp)
+#53 > touche 270 705
+#53 DOIGT tuto_need «   “Ön nakarat” bölümüne git »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dc1e97467f | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 LAYOUT CUT « Ön nakarat » ellipsized (« … »)
+#54 LAYOUT CONTRAST « Takip et » 1.25:1 (needs 4.5:1, 14 sp)
+#54 > attends 2
+#55 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 10a3f72902 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#55 SON Son : la musique du projet joue en boucle.
+#55 LAYOUT CONTRAST « Takip et » 1.75:1 (needs 4.5:1, 14 sp)
+#55 > touche 270 705
+#55 DOIGT tuto_do «   Ben yaparım »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 451c12f384 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#56 SON Son : la musique du projet joue en boucle.
+#56 LAYOUT CUT « Sıra sende: son ölçüde, timbal pad'i: son vuruştan hemen önce art arda 3 kutuya dokun. » ellipsized (« … »)
+#56 > touche 124 502
+#56 DOIGT step_57 « Adım 10 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6f6ecd879f | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#57 SON Son : la musique du projet joue en boucle.
+#57 > touche 182 502
+#57 DOIGT step_58 « Adım 11 »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 60e18305d1 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#58 SON Son : la musique du projet joue en boucle.
+#58 > touche 240 502
+#58 DOIGT step_59 « Adım 12 »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 24c3ba8cc2 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#59 SON Son : la musique du projet joue en boucle.
+#59 > touche 483 771
+#59 DOIGT tuto_fold
+#60 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b6b6a714fb | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#60 SON Son : la musique du projet joue en boucle.
+#60 LAYOUT TARGET « döngüde Bölüm: D · Ön nakarat Bölüm değiştir » 190 x 20 dp (touch 190 x 48)
+#60 > touche 397 789
+#60 DOIGT tuto_show «  Göster »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8155131f96 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#61 SON Son : rien ne joue.
+#61 > attends 2
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE af46825a37 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#62 SON Son : rien ne joue.
+#62 > attends 3
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b0e7969e10 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 298 475
+#63 DOIGT step_60 « Adım 13 »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 03639907da | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=fill done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 270 870
+#64 DOIGT tuto_next_folded « Başarıldı »
+#65 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE ad5267bcfe | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=gap done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 270 705
+#65 DOIGT tuto_do «   Ben yaparım »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE eb1074102a | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=gap done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT OVERLAP « ×2↗ » over « 3 » (8 x 7 dp)
+#66 > touche 414 394
+#66 DOIGT step_62 « Adım 15 »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4247359787 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=gap done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CONTRAST « → Hi-hat » 2.90:1 (needs 3.0:1, 14 sp)
+#67 > touche 414 394
+#67 DOIGT step_62 « Adım 15 »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4e839880b7 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=gap done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « Ölçü 4/4 · Hi-hat » 1.28:1 (needs 4.5:1, 13 sp)
+#68 > touche 270 870
+#68 DOIGT tuto_next_folded « Başarıldı »
+#69 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7e2898d268 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=crash done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CONTRAST « Ölçü 4/4 · Zil » 1.35:1 (needs 4.5:1, 13 sp)
+#69 > touche 270 705
+#69 DOIGT tuto_need «   “Nakarat” bölümüne git »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7154e7a77b | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=crash done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#70 > touche 67 323
+#70 DOIGT step_0 « Adım 1 »
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c463b9206b | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=crash done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « Ölçü 1/2 · Zil » 1.32:1 (needs 4.5:1, 13 sp)
+#71 > touche 270 870
+#71 DOIGT tuto_chapter_end_folded « Bravo, bölüm bitti! »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a4916c5668 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=crash done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « Ölçü 1/2 · Zil » 1.31:1 (needs 4.5:1, 13 sp)
+#72 > touche 270 786
+#72 DOIGT tuto_next_big « Sonraki bölüm   »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 70773fa4c1 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=reverb_hear done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « Ölçü 1/2 · Zil » 1.26:1 (needs 4.5:1, 13 sp)
+#73 > touche 270 786
+#73 DOIGT tuto_listen «  Örneği dinle »
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE df806a47ca | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=reverb_hear done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#74 SON Son : l'exemple du tuto joue (encore 7 s).
+#74 > attends 6
+#75 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 201448dc9d | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=reverb_hear done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#75 SON Son : l'exemple du tuto joue (encore 1 s).
+#75 LAYOUT CONTRAST « Ölçü 1/2 · Zil » 1.45:1 (needs 4.5:1, 13 sp)
+#75 > touche 270 780
+#75 DOIGT tuto_next_big « Sonraki bölüm   »
+#76 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 05815b9610 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=levels done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « Ölçü 1/2 · Zil » 4.22:1 (needs 4.5:1, 13 sp)
+#76 > touche 381 1050
+#76 DOIGT tab_simple_Mix « Mix »
+#77 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 24ab727bd0 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=levels done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 270 705
+#77 DOIGT tuto_do «   Ben yaparım »
+#78 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 17ebebc5d5 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=levels done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT CUT « Sıra sende: “Mix” sekmesinde “Akorlar” ve “Melodi” sürgülerini biraz indir. Sürgünün altında “Normal”, “−2” olur. » ellipsized (« … »)
+#78 LAYOUT OVERLAP « Sıra sende: duyulması gerekeni aç, rahatsız edeni kıs. Bir parçayı tek başına dinlemek için ▶'ye dokun. » over the touchable « Tempo: dakikada 96 vuruş Tempoyu değişti » (71 x 4 dp)
+#78 LAYOUT OVERLAP « Sıra sende: duyulması gerekeni aç, rahatsız edeni kıs. Bir parçayı tek başına dinlemek için ▶'ye dokun. » over the touchable « Bir bölümden çal » (103 x 4 dp)
+#78 LAYOUT OVERLAP « Sıra sende: duyulması gerekeni aç, rahatsız edeni kıs. Bir parçayı tek başına dinlemek için ▶'ye dokun. » over the touchable « Şarkıyı çalmak yerine bölümü döngüye al  » (88 x 4 dp)
+#78 LAYOUT OVERLAP « Sıra sende: duyulması gerekeni aç, rahatsız edeni kıs. Bir parçayı tek başına dinlemek için ▶'ye dokun. » over the touchable « Ekranı etiketle » (18 x 4 dp)
+#78 LAYOUT CONTRAST « Akorlar » 3.97:1 (needs 4.5:1, 13 sp)
+#78 > glisse 339 375 339 410
+#78 DOIGT mix_fader_5 « Akorlar seviyesi »
+#79 ROUTE tab_simple_Mix | MODE simple | EMPREINTE e9b0d63743 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=levels done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#79 SON Son : rien ne joue.
+#79 > glisse 462 375 462 430
+#79 DOIGT mix_fader_6 « Melodi seviyesi »
+#80 ROUTE tab_simple_Mix | MODE simple | EMPREINTE b3410a96d9 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=levels done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 270 870
+#80 DOIGT tuto_chapter_end_folded « Bravo, bölüm bitti! »
+#81 ROUTE tab_simple_Mix | MODE simple | EMPREINTE b6e8f97740 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=levels done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 270 786
+#81 DOIGT tuto_next_big « Sonraki bölüm   »
+#82 ROUTE tab_simple_Mix | MODE simple | EMPREINTE df13ca3c2e | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=share done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 491 1050
+#82 DOIGT tab_simple_Envoyer « Paylaş »
+#83 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 225a622b64 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=share done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT CUT «   Paylaş » lines cut (taller than its box)
+#83 LAYOUT TARGET « Paylaş » 320 x 20 dp (touch 320 x 48)
+#83 > touche 270 330
+#83 DOIGT share_go «   Paylaş »
+#84 ROUTE dialogue:share_progress | MODE simple | EMPREINTE f639525600 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=share done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#84 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#84 > attends 8
+#84 PARTAGE Şarkım-şarkı-20261119-141602.m4a
+#85 ROUTE dialogue:« Şarkımı paylaş · Şarkım-şarkı- » | MODE simple | EMPREINTE 592b162d6e | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT TARGET « Dosyalarım » 291 x 18 dp (touch 291 x 48)
+#85 LAYOUT TARGET « “Dosyalarım” nedir? ? » 29 x 18 dp (touch 48 x 48)
+#85 > touche 270 777
+#85 DOIGT vue « Files »
+#86 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 1ac4bb2f41 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT CONTRAST « Doyma yok. » 1.76:1 (needs 4.5:1, 13 sp)
+#86 > touche 460 735
+#86 DOIGT share_bilan_ok « OK »
+#87 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE b2aa504f58 | project=p-1d5cddc8 tuto=reggaeton/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT CUT « ? » lines cut (taller than its box)
+#87 > fin
+#87 BENCH-VERDICT ok where=seat.fin
+#87 FIN : fin

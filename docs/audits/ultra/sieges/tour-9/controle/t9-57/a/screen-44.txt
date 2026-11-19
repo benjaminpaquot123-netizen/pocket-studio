@@ -1,0 +1,41 @@
+Écran 44 (540x1170)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 120,42
+bouton « Basit » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « bu bölüm » @ 423,42
+icône ⋮ @ 495,42
+bouton « 96  Tempo » @ 75,114
+icône « Giriş ölçü 1/48 » ▾ @ 223,114
+bouton « ? » @ 495,114
+icône ▶ « C · Kıta × 1  ·  8 ölçü » @ 162,186
+icône − [désactivé] @ 318,186
+icône + @ 390,186
+icône ⋮ @ 462,186
+texte « − / + : tekrar. Gri: sabit süre (önerilen ya da Live) ya da 1 kez. » @ 270,267
+texte « Sona ekle: » @ 93,321
+bouton « + A · Nakarat » @ 144,384
+bouton « + B · Giriş » @ 342,384
+bouton « + C · Kıta » @ 125,465
+bouton « + D · Ön nakarat » @ 335,465
+bouton « + E · Post-nakarat » @ 170,546
+bouton « + F · Köprü » @ 399,546
+bouton « + Yeni bölüm (F · Köprü kopyası) » @ 244,627
+bouton « + Yeni boş bölüm » [coupé] @ 167,697
+icône (liste) « Aşamalar » @ 398,771
+texte « Bölümlerini sırala Aşama 11/15 · Adım 1/2 · Kolay » @ 185,771
+icône ⌃ @ 483,771
+icône « Sıra sende: “Ekle” altında sırayla dokun: Giriş, Kıta, Ön nakarat, Nakarat, Post-nakarat, Kıta, Ön nakarat, Nakarat, Köprü, Nakarat, sonra bitiş için Giriş. Oku » ⌃ @ 270,870
+icône ↶ « Geri al » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « şarkı » @ 264,954
+texte « 96 Tempo » @ 370,954
+icône ⋮ « Diğer » @ 476,954
+onglet (lignes et note) « Şarkım » [sélectionné] @ 49,1050
+onglet (quatre carrés) « Ritim » @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

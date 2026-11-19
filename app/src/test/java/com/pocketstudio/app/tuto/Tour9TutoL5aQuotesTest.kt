@@ -33,6 +33,7 @@ class Tour9TutoL5aQuotesTest {
             add(Regex("«[^»]*«"))
             add(Regex("「[^」]*「"))
             if ('„' in t) add(Regex("„[^“”]*„")) else add(Regex("“[^”]*“"))
+            add(Regex("‘[^’]*‘"))
         }
         return families.any { it.containsMatchIn(t) }
     }

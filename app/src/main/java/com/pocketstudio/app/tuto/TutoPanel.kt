@@ -258,7 +258,7 @@ fun TutoBanner(modifier: Modifier = Modifier) {
 
 /**
  * The tutorial's line over the drum grid (testers, lot « tuto 5 »), always there while the tutorial
- * runs, one height: « Mesure 1/2 · Caisse », then « encore 2 cases » on this page, or « Mesure 2 ·
+ * runs, one height: « Mesure 1/2 · Caisse », then « encore 2 cases » on this page, and « Mesure 2 ·
  * 3 cases → » when they are on another page (a touch goes there: the page never turns by itself),
  * what the screen just changed (« → Charley »), and « Copier » when it is the next thing to do.
  * Nothing of it over the cells.
@@ -290,7 +290,8 @@ fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<In
         }
         when {
             copy != null -> Button(onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_grid_copy")) { Text(tr("Copier"), maxLines = 1) }
-            elsewhere != null && here == 0 -> TextButton(onClick = { go(elsewhere.first) }, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_bar_go")) {
+            // Tour 9 F046: the other bars' cells said from the start, not only once this page is done.
+            elsewhere != null -> TextButton(onClick = { go(elsewhere.first) }, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_bar_go")) {
                 Text(
                     trCount(elsewhere.second, "Mesure %2\$d · %1\$d case", "Mesure %2\$d · %1\$d cases", elsewhere.second, elsewhere.first + 1) + (if (elsewhere.first > bar) " →" else ""),
                     color = Neon.Amber, fontWeight = FontWeight.Bold, maxLines = 1,

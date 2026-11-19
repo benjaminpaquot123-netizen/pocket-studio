@@ -298,6 +298,55 @@ class Batch(unittest.TestCase):
         self.assertIn("captures non lues", out, "a comparison of 0 screenshot compared nothing")
         self.assertNotEqual(code, 0)
 
+    # -- the unit tests split over several machines (lot « ci-rapide ») -----------------------------------------------
+
+    def split_log(self, parts, missing=()):
+        """The build job's log as the real scripts/screenshot-diff.py prints it over one summary per machine."""
+        paths = []
+        for k, (total, changed, added) in enumerate(parts, 1):
+            path = os.path.join(self.tmp, f"screenshots-diff-part-{k}", "results-summary.json")
+            paths.append(path)
+            if k in missing:
+                continue
+            results = [{"type": "changed", "golden_file_path": f"app/screenshots/m{k}/c{i}.png"} for i in range(changed)]
+            results += [{"type": "added", "golden_file_path": f"app/screenshots/m{k}/a{i}.png"} for i in range(added)]
+            write(path, json.dumps({"summary": {"total": total, "changed": changed, "added": added}, "results": results}))
+        r = subprocess.run([sys.executable, "-I", os.path.join(ROOT, "scripts", "screenshot-diff.py"), *paths],
+                           capture_output=True, text=True, env={"PATH": os.environ["PATH"]})
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return r.stdout
+
+    def split(self, red=()):
+        jobs = self.ci["runs"][0]["jobs"]
+        for k in range(1, 5):
+            jobs.append(job(f"Unit tests and screenshots (part {k})", conclusion="failure" if k in red else "success"))
+        if red:
+            self.set_job(BUILD, conclusion="failure")
+
+    def test_a_red_machine_of_the_split_tests_is_named_with_the_job_that_gathers_them(self):
+        self.split(red=(2,))
+        code, out, err = self.run_it()
+        self.assertIn(f"CI 412 rouge ({BUILD}, Unit tests and screenshots (part 2))", out, err)
+        self.assertNotEqual(code, 0, "a red machine must not exit 0")
+
+    def test_the_screenshots_of_every_machine_are_read_as_one_count(self):
+        self.split()
+        self.set_job(BUILD, log=self.split_log([(250, 0, 0), (260, 0, 0), (254, 0, 0), (250, 0, 0)]))
+        code, out, err = self.run_it()
+        self.assertEqual(out, "paquet 2 : CI 412 verte ; juge 8 (avant 8) ; captures à jour", err)
+        self.assertEqual(code, 0, err)
+        self.set_job(BUILD, log=self.split_log([(250, 2, 0), (260, 0, 1), (254, 0, 0), (250, 1, 0)]))
+        code, out, _ = self.run_it()
+        self.assertIn("captures 4 périmées", out)
+        self.assertNotEqual(code, 0)
+
+    def test_a_machine_that_gave_no_screenshot_summary_is_screenshots_not_read(self):
+        self.split()
+        self.set_job(BUILD, log=self.split_log([(250, 0, 0), (260, 0, 0), (254, 0, 0), (250, 0, 0)], missing=(3,)))
+        code, out, _ = self.run_it()
+        self.assertIn("captures non lues", out, "three machines out of four are not the whole comparison")
+        self.assertNotEqual(code, 0)
+
     # -- GitHub, through the one door ---------------------------------------------------------------------------------
 
     def fake_gh(self, signed_in=True):

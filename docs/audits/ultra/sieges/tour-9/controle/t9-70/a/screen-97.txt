@@ -1,0 +1,68 @@
+Écran 97 (1035x1243)
+icône (dossier ouvert) ✓ « Warehouse 132 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 83,123
+icône « 高潮 小节 33/128 » ▾ @ 272,123
+bouton (flèches en boucle) « 循环 » [état « 关 »] @ 884,123
+bouton « ? » @ 990,123
+image (courbe) @ 0,0
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 55,181
+bouton (casque) [coupé, état « 关 »] @ 109,181
+curseur [état « +0.0 dB », à 80 %] @ 82,342
+texte « +0.0 » @ 82,497
+texte « 1 » @ 94,537
+image (étincelles) @ 75,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 175,181
+bouton (casque) [coupé, état « 关 »] @ 229,181
+curseur [état « -2.9 dB », à 67 %] @ 202,342
+texte « -2.9 » @ 202,497
+texte « 1 » @ 214,537
+image (étincelles) @ 195,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 295,181
+bouton (casque) [coupé, état « 关 »] @ 349,181
+curseur [état « -3.0 dB », à 67 %] @ 322,342
+texte « -3.0 » @ 322,497
+texte « 1 » @ 315,537
+texte « 1 » @ 353,537
+image (étincelles) @ 296,537
+image (courbe) @ 334,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 415,181
+bouton (casque) [coupé, état « 关 »] @ 469,181
+curseur [état « +0.0 dB », à 80 %] @ 442,342
+texte « +0.0 » @ 442,497
+texte « 已保存到 音乐 › BenStudio：Warehouse-132-歌曲-俱乐部-20261119-115909.wav » @ 771,216
+texte « ✓ 可以分享了 » @ 636,303
+texte « 时长：3 分 53 秒 » @ 647,345
+texte « 电平：达到目标（俱乐部） » @ 702,385
+texte « 峰值：低于上限，没有削波 » @ 702,425
+texte « WAV，48 kHz，24 位 » @ 679,465
+texte « 整体 −8.0 LUFS · 峰值 −3.2 dBTP » @ 744,517
+bouton « ? » @ 959,517
+texte « 目标：俱乐部 · −8 LUFS » [coupé] @ 689,558
+texte « 分享你的曲子 第 16/16 章 · 第 2/2 步 · 专业 » @ 445,616
+icône (liste) « 章节 » @ 906,616
+icône ⌄ @ 978,616
+image (coupe) @ 42,705
+texte « 太棒了，你的曲子完成了！你可以全部重听，继续修改。 » @ 450,705
+bouton ▶ «  听我的歌 » @ 517,773
+bouton ↺ «  重新开始教程 » @ 517,854
+bouton ✕ «  关闭教程 » @ 517,935
+icône ↶ « 撤销 » @ 147,1023
+icône ↷ « 重做 » [désactivé] @ 329,1023
+bouton ▶ « 歌曲 » @ 512,1023
+texte « 132 速度 » @ 700,1023
+icône (trois points reliés) « 分享 » @ 889,1023
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 806,1213
+texte « ✎  记一笔 » @ 902,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 385,1213

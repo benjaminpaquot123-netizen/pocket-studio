@@ -1,0 +1,67 @@
+Écran 57 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 212,42
+bouton « 专业 » @ 456,42
+bouton « D · 高潮 » ▾ @ 576,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 83,123
+icône « 高潮 小节 33/128 » ▾ @ 272,123
+bouton (flèches en boucle) « 循环 » [état « 关 »] @ 884,123
+bouton « ? » @ 990,123
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 105,205
+onglet « Acid 303 贝斯线 » @ 296,205
+onglet « 人声 麦克风 » @ 457,205
+onglet « Remix 分离 » @ 598,205
+bouton « 贝斯 Plaits » @ 733,205
+bouton « 和弦 Pluck » @ 857,205
+bouton « 旋律 Plaits » [coupé] @ 969,205
+image → @ 1024,206
+texte « 段落：D · 高潮 » @ 111,275
+bouton « 录音棚底鼓 FX » @ 75,368
+bouton « 底鼓 2 » @ 200,368
+bouton « 军鼓 » @ 325,368
+bouton « Rumble FX » @ 450,368
+bouton « 拍手 FX » @ 75,474
+bouton « 踩镲 左 30 » @ 200,474
+bouton « 开镲 右 30 » @ 325,474
+bouton « 低音嗵鼓 » @ 450,474
+bouton « 中音嗵鼓 右 45 » @ 75,580
+bouton « 高音嗵鼓 » @ 200,580
+bouton « 鼓边 FX 右 50 » @ 325,580
+bouton « 牛铃 » @ 450,580
+bouton « 镲片 右 40 » @ 75,686
+bouton « 沙锤 左 50 » @ 200,686
+bouton « 康加鼓 » @ 325,686
+bouton « Zap » @ 450,686
+texte « 打击垫只发声，格子保存打击。长按：更换音色。 » [coupé] @ 393,752
+texte « 拍手（合成） » @ 771,326
+bouton (notes sur une pile) «  更换音色 » @ 771,395
+bouton (curseurs) «  打击垫设置 » @ 771,479
+bouton (curseurs) « 打击垫效果 » @ 657,563
+bouton « 整套鼓 » @ 885,563
+texte « 打击垫音量 » @ 739,631
+texte « 80% » @ 961,632
+curseur [état « 80% », à 80 %] @ 771,700
+texte « 打击垫声像 » [coupé] @ 743,754
+texte « 居中 » [coupé] @ 965,754
+texte « 效果 第 13/16 章 · 第 1/2 步 · 专业 » @ 445,811
+icône (liste) « 章节 » @ 906,811
+icône ⌃ @ 978,811
+icône (rond coché) « 成功 下一步 » → @ 517,924
+icône ↶ « 撤销 » @ 147,1023
+icône ↷ « 重做 » [désactivé] @ 329,1023
+bouton ▶ « 歌曲 » @ 512,1023
+texte « 132 速度 » @ 700,1023
+icône (trois points reliés) « 分享 » @ 889,1023
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » [sélectionné] @ 309,1123
+onglet (curseurs) « 混音 » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 806,1213
+texte « ✎  记一笔 » @ 902,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 385,1213

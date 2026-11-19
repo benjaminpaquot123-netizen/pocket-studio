@@ -1,0 +1,8 @@
+Écran 96 (1035x1243)
+texte « 好了 » @ 172,449
+texte « 好了：Warehouse-132-歌曲-俱乐部-20261119-115909.wav，副本也在 音乐 › BenStudio 里。 » @ 517,543
+texte « 整体 −8.0 LUFS · 峰值 −3.2 dBTP » @ 327,608
+texte « WAV，48 kHz，24 位 · 3 分 53 秒 » @ 331,651
+texte « 目标：俱乐部 · −8 LUFS » @ 272,694
+texte « 查看我的文件 » @ 699,785
+texte « OK » @ 857,785

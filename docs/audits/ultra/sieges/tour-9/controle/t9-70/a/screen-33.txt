@@ -1,0 +1,26 @@
+Écran 33 (1035x1243)
+icône ✕ @ 715,326
+texte « 第 12 下 » @ 442,326
+texte « 力度 » @ 234,391
+bouton « 强 » [sélectionné] @ 243,457
+bouton « 中 » @ 326,457
+bouton « 柔和 » @ 424,457
+texte « 滚奏 » @ 234,522
+bouton « ×1 » [sélectionné] @ 245,588
+bouton « ×2 » @ 335,588
+bouton « ×3 » @ 427,588
+bouton « ×4 » @ 521,588
+bouton « ×6 » @ 614,588
+bouton « ×8 » @ 707,588
+texte « 三连音 » @ 248,653
+bouton « 2 格 3 下 » @ 286,719
+bouton « 一拍 6 下 » @ 457,719
+bouton « ↗ 上升 » [désactivé] @ 272,800
+bouton « 均匀 » [désactivé, sélectionné] @ 399,800
+bouton « ↘ 下降 » [désactivé] @ 525,800
+texte « 整拍 ×2（1/32 连发） » @ 363,881
+texte « 触发概率 » @ 262,946
+bouton « 100% » [sélectionné] @ 268,1012
+bouton « 75% » @ 392,1012
+bouton « 50% » @ 510,1012
+bouton « 25% » @ 629,1012

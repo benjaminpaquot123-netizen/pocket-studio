@@ -1,0 +1,62 @@
+Écran 35 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 199,42
+bouton « 专业 » @ 431,42
+bouton « F · 渐强段 » ▾ @ 563,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 83,123
+icône « 前奏 小节 1/128 » ▾ @ 263,123
+bouton (flèches en boucle) « 循环 » [état « 关 »] @ 884,123
+bouton « ? » @ 990,123
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 105,205
+onglet « Acid 303 贝斯线 » @ 296,205
+onglet « 人声 麦克风 » @ 457,205
+onglet « Remix 分离 » @ 598,205
+bouton « 贝斯 Plaits » @ 733,205
+bouton « 和弦 Pluck » @ 857,205
+bouton « 旋律 Plaits » [coupé] @ 969,205
+image → @ 1024,206
+texte « 段落：F · 渐强段 » @ 123,275
+bouton « 录音棚底鼓 FX » [coupé] @ 75,336
+bouton « 底鼓 2 » [coupé] @ 200,336
+bouton « 军鼓 » [coupé] @ 325,336
+bouton « Rumble FX » [coupé] @ 450,336
+texte « → 踩镲 » [coupé] @ 611,320
+bouton « 1 » [coupé, état « 打击，力度 35% »] @ 575,351
+bouton [coupé, état « 打击，力度 60% »] @ 632,351
+bouton [coupé, état « 空 »] @ 688,351
+bouton [coupé, état « 打击，力度 60% »] @ 744,351
+bouton « 2 » [coupé, état « 打击，力度 35% »] @ 800,351
+bouton [coupé, état « 打击，力度 60% »] @ 856,351
+bouton [coupé, état « 空 »] @ 912,351
+bouton [coupé, état « 打击，力度 60% »] @ 968,351
+texte « 过渡：从一段到下一段 第 12/16 章 · 第 2/3 步 · 专业 » @ 445,404
+icône (liste) « 章节 » @ 906,404
+icône ⌄ @ 978,404
+texte « 轮到你：在“渐强段”段落的最后一小节，删掉最后一拍上“踩镲”打击垫的 3 下敲击（点那 3 个红叉）：高潮 2 之前留出一拍安静。这就是过渡（预告下一段的那一小段）。 » [coupé] @ 517,493
+bouton « 下载 Techno 鼓组（4 MB） » @ 471,573
+texte « 稍后 » @ 961,573
+texte « ▸ 为什么？ » @ 517,644
+icône « 继续阅读 » ⌄ @ 517,698
+bouton (doigt qui touche) «   我来做 » @ 517,770
+bouton ▶ «  听示例 » @ 266,854
+bouton (œil) «  示范给我看 » @ 768,854
+icône ← «  上一步 » @ 99,935
+icône « 下一步  » → @ 936,935
+icône ↶ « 撤销 » @ 147,1023
+icône ↷ « 重做 » [désactivé] @ 329,1023
+bouton ▶ « 歌曲 » @ 512,1023
+texte « 132 速度 » @ 700,1023
+icône (trois points reliés) « 分享 » @ 889,1023
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » [sélectionné] @ 309,1123
+onglet (curseurs) « 混音 » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 806,1213
+texte « ✎  记一笔 » @ 902,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 385,1213

@@ -1,0 +1,33 @@
+Écran 19 (1035x1243)
+dessin @ 518,36
+texte « 段落 4 · E · 间奏 » @ 192,100
+texte « 关闭 » @ 927,121
+texte « 8 小节 » @ 103,148
+bouton (étincelles) « 变奏 » @ 287,226
+bouton (barres de son) « 结尾加花 » @ 749,226
+bouton ❚❚ « 之后间奏 · 4 小节 » @ 287,325
+bouton ❚❚ « 之后间奏 · 8 小节 » @ 749,325
+bouton (courbe qui monte) « 之前渐强段 · 4 小节 » @ 287,424
+bouton (courbe qui monte) « 之前渐强段 · 8 小节 » @ 749,424
+bouton (haut-parleur et ondes) « 淡入 » @ 287,523
+bouton (haut-parleur et une onde) « 淡出 » @ 749,523
+bouton (drapeau) « 加一个结尾 » @ 287,622
+texte « 能量：3 » @ 113,699
+bouton « 1 · Pad » @ 130,771
+bouton « 2 · + 贝斯 » @ 293,771
+bouton « 3 · + 鼓 » [sélectionné] @ 462,771
+bouton « 4 · 全开 » @ 618,771
+texte « 长度 » @ 90,842
+champ « 小节 » contenu « 12 » @ 306,933
+icône ✕ @ 353,941
+icône − [désactivé] @ 98,933
+icône + @ 179,933
+texte « 好 » @ 441,933
+texte « 段落 » @ 90,1023
+icône (crayon) « 重命名 » @ 139,1095
+icône (curseurs) « 正在播放的内容 » @ 357,1095
+icône ↑ « 上移 » @ 560,1095
+icône ↓ « 下移 » @ 693,1095
+icône (deux feuilles) « 复制 » @ 826,1095
+icône + « 在后面插入 » @ 167,1167
+icône (poubelle) « 移除 » @ 342,1167

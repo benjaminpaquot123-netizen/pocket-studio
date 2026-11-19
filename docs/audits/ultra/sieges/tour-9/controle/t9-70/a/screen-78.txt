@@ -1,0 +1,52 @@
+Écran 78 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 83,123
+icône « 高潮 小节 33/128 » ▾ @ 272,123
+bouton (flèches en boucle) « 循环 » [état « 关 »] @ 884,123
+bouton « ? » @ 990,123
+image (courbe) @ 0,0
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 55,181
+bouton (casque) [coupé, état « 关 »] @ 109,181
+curseur [coupé, état « +0.0 dB », à 80 %] @ 82,287
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 175,181
+bouton (casque) [coupé, état « 关 »] @ 229,181
+curseur [coupé, état « -2.9 dB », à 67 %] @ 202,287
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 295,181
+bouton (casque) [coupé, état « 关 »] @ 349,181
+curseur [coupé, état « -3.0 dB », à 67 %] @ 322,287
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 415,181
+bouton (casque) [coupé, état « 关 »] @ 469,181
+curseur [coupé, état « +0.0 dB », à 80 %] @ 442,287
+texte « 用手指画；快速点两下删除一个点。“平滑”可以抚平抖动的线条，“撤销”可以撤回。 » @ 771,235
+texte « 18.0 kHz » @ 589,332
+texte « 混音 第 14/16 章 · 第 3/3 步 · 专业 » @ 445,415
+icône (liste) « 章节 » @ 906,415
+icône ⌄ @ 978,415
+texte « 平衡参考：底鼓在最前面，Rumble 和贝斯紧随其后，拍手清晰，Stab 和 Riff 退后几个 dB。和示例曲子比一比。 » @ 517,527
+bouton « 下载 Techno 鼓组（4 MB） » @ 471,630
+texte « 稍后 » @ 961,630
+texte « ▸ 为什么？ » @ 517,701
+bouton ✓ «   明白了 » @ 517,770
+bouton ▶ «  听示例 » @ 517,854
+icône ← «  上一步 » @ 99,935
+icône « 下一步  » → @ 936,935
+icône ↶ « 撤销 » @ 147,1023
+icône ↷ « 重做 » [désactivé] @ 329,1023
+bouton ▶ « 歌曲 » @ 512,1023
+texte « 132 速度 » @ 700,1023
+icône (trois points reliés) « 分享 » @ 889,1023
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 806,1213
+texte « ✎  记一笔 » @ 902,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 385,1213

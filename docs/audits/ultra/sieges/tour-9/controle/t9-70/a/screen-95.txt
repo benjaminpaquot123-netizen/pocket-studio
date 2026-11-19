@@ -1,0 +1,7 @@
+Écran 95 (1035x1243)
+texte « 分享我的歌 · Warehouse-132-歌曲-俱乐部-20261119-115909.wav » @ 517,443
+bouton « WhatsApp » @ 517,538
+bouton « Messages » @ 517,610
+bouton « Gmail » @ 517,682
+bouton « Drive » @ 517,754
+bouton « Files » @ 517,826

@@ -1,0 +1,75 @@
+Écran 81 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 83,123
+icône « 高潮 小节 33/128 » ▾ @ 272,123
+bouton (flèches en boucle) « 循环 » [état « 关 »] @ 884,123
+bouton « ? » @ 990,123
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 55,181
+bouton (casque) [coupé, état « 关 »] @ 109,181
+curseur [état « +0.0 dB », à 80 %] @ 82,342
+texte « +0.0 » @ 82,497
+texte « 1 » @ 94,537
+image (étincelles) @ 75,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 175,181
+bouton (casque) [coupé, état « 关 »] @ 229,181
+curseur [état « -2.9 dB », à 67 %] @ 202,342
+texte « -2.9 » @ 202,497
+texte « 1 » @ 214,537
+image (étincelles) @ 195,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 295,181
+bouton (casque) [coupé, état « 关 »] @ 349,181
+curseur [état « -3.0 dB », à 67 %] @ 322,342
+texte « -3.0 » @ 322,497
+texte « 1 » @ 315,537
+texte « 1 » @ 353,537
+image (étincelles) @ 296,537
+image (courbe) @ 334,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 415,181
+bouton (casque) [coupé, état « 关 »] @ 469,181
+curseur [état « +0.0 dB », à 80 %] @ 442,342
+texte « +0.0 » @ 442,497
+image (courbe) @ 60,655
+texte « 曲线和效果 » @ 168,636
+texte « 1 个参数会自动变化。 » @ 215,677
+bouton « 查看曲线 » [coupé] @ 149,734
+bouton « 正在播放的内容 » [coupé] @ 376,734
+texte « 拍 » [coupé] @ 589,166
+texte « 1 » [coupé] @ 642,165
+texte « 2 » [coupé] @ 734,165
+texte « 3 » [coupé] @ 825,165
+texte « 4 » [coupé] @ 914,165
+titre « 总输出 » [état « 已展开 »] @ 632,255
+bouton « ? » @ 693,255
+texte « 音量：— » @ 606,309
+texte « 总音量 » @ 719,395
+texte « −6.0 dB » @ 940,395
+curseur [état « −6.0 dB », à 60 %] @ 771,466
+texte « 没有削波：一切正常。 » @ 676,532
+texte « 详情 » @ 594,599
+bouton « ? » @ 683,668
+texte « 目标响度 » @ 606,668
+bouton « 自动（按风格） · −9 LUFS » @ 743,737
+texte « 母带处理 第 15/16 章 · 第 1/1 步 · 专业 » @ 445,811
+icône (liste) « 章节 » @ 906,811
+icône ⌃ @ 978,811
+icône « 总输出带一个内置限制器，永远在链条的最后（它不会出现在“效果”里）：它防止声音过载。这里不用 OTT（一种很强的压缩器，把小声拉近大声）：它会压扁底鼓的起音。轮到你：在“总输出”里，把“目标响度”设为“俱乐部”：−8 LUFS（LUFS 是耳朵听到的响度，越接近 0 越响；流媒体在 −14），和俱乐部里一样响。 阅读 » ⌃ @ 517,924
+icône ↶ « 撤销 » @ 147,1023
+icône ↷ « 重做 » [désactivé] @ 329,1023
+bouton ▶ « 歌曲 » @ 512,1023
+texte « 132 速度 » @ 700,1023
+icône (trois points reliés) « 分享 » @ 889,1023
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 806,1213
+texte « ✎  记一笔 » @ 902,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 385,1213

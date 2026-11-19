@@ -1,0 +1,66 @@
+Écran 30 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 83,123
+icône « 前奏 小节 1/128 » ▾ @ 263,123
+bouton (flèches en boucle) « 循环 » [état « 关 »] @ 884,123
+bouton « ? » @ 990,123
+icône ▶ « D · 高潮 × 4  ·  32 小节 » [coupé] @ 155,205
+icône − [coupé] @ 304,187
+icône + [coupé] @ 376,187
+icône ⋮ [coupé] @ 448,187
+icône ▶ « E · 间奏 12 小节 » @ 155,304
+icône − [désactivé] @ 304,305
+icône + [désactivé] @ 376,305
+icône ⋮ @ 448,305
+icône ▶ « F · 渐强段 × 1  ·  4 小节 » @ 155,405
+icône − [désactivé] @ 304,406
+icône + @ 376,406
+icône ⋮ @ 448,406
+icône ▶ « G · 高潮 2 × 4  ·  32 小节 » @ 155,523
+icône − @ 304,527
+icône + @ 376,527
+icône ⋮ @ 448,527
+titre « 积木 » [état « 已展开 »] @ 620,225
+bouton « ? » @ 668,225
+texte « 一块积木 = 一个段落的鼓、Acid 和音符。歌曲的段落就是由它们组成的。点一块来编辑，按住拖动可以移动它。 » @ 771,313
+bouton « 8 » [sélectionné] @ 679,416
+bouton « 16 » @ 764,416
+bouton « 24 » @ 855,416
+texte « 显示： » @ 592,416
+bouton « A 律动 8 小节 » @ 600,506
+bouton « B 前奏 8 小节 » @ 714,506
+bouton « C 前奏 2 8 小节 » @ 828,506
+bouton « D 高潮 8 小节 » @ 942,506
+bouton « E 间奏 8 小节 » [coupé] @ 600,572
+bouton « F 渐强段 4 小节 » [coupé] @ 714,572
+bouton « G 高潮 2 8 小节 » [coupé] @ 828,572
+bouton « H 结束 8 小节 » [coupé] @ 942,572
+texte « 排列你的段落 第 11/16 章 · 已完成 · 专业 » @ 445,635
+icône (liste) « 章节 » @ 906,635
+icône ⌄ @ 978,635
+image (coupe) @ 57,752
+texte « 太棒了，本章完成！ » @ 216,733
+texte « 听听你现在的歌曲，然后进入下一章：“过渡：从一段到下一段”。 » @ 454,772
+bouton « 下一章   » → @ 517,851
+bouton ▶ «  听我的歌 » @ 558,935
+icône ← @ 57,935
+icône ↶ « 撤销 » @ 147,1023
+icône ↷ « 重做 » [désactivé] @ 329,1023
+bouton ▶ « 歌曲 » @ 512,1023
+texte « 132 速度 » @ 700,1023
+icône (trois points reliés) « 分享 » @ 889,1023
+onglet (ligne brisée et points) « 结构 » [sélectionné] @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 806,1213
+texte « ✎  记一笔 » @ 902,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 385,1213

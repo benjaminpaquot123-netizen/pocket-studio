@@ -1,0 +1,46 @@
+Écran 59 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 83,123
+icône « 高潮 小节 33/128 » ▾ @ 272,123
+bouton (flèches en boucle) « 循环 » [état « 关 »] @ 884,123
+bouton « ? » @ 990,123
+image (courbe) @ 0,0
+texte « 音量 » @ 241,213
+bouton « ? » @ 468,213
+texte « 滑动推子调音量；点音轨名称查看它的效果和曲线。 » @ 263,277
+titre « 曲线 » [état « 已展开 »] @ 700,240
+bouton « ? » @ 668,240
+bouton ● « 录音 » @ 922,240
+texte « 让一个参数自动变化：选好它，然后画出它的曲线（用手指，或点两下画一条直线）。 » [coupé] @ 771,303
+texte « 效果 第 13/16 章 · 第 2/2 步 · 专业 » @ 445,369
+icône (liste) « 章节 » @ 906,369
+icône ⌄ @ 978,369
+texte « 轮到你：在高潮上自动化“旋律”音轨的“截止”：“自动化一个参数”、“旋律”、“滤波器（扫频）”、“按段落”，然后在高潮的循环（1 小节）上画一条升到中间再降下来的曲线：滤波器每小节打开又关上。 » @ 517,504
+bouton « 下载 Techno 鼓组（4 MB） » @ 471,630
+texte « 稍后 » @ 961,630
+texte « ▸ 为什么？ » @ 517,701
+bouton (doigt qui touche) «   我来做 » @ 517,770
+bouton ▶ «  听示例 » @ 266,854
+bouton (œil) «  示范给我看 » @ 768,854
+icône ← «  上一步 » @ 99,935
+icône « 下一步  » → @ 936,935
+icône ↶ « 撤销 » @ 147,1023
+icône ↷ « 重做 » [désactivé] @ 329,1023
+bouton ▶ « 歌曲 » @ 512,1023
+texte « 132 速度 » @ 700,1023
+icône (trois points reliés) « 分享 » @ 889,1023
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 806,1213
+texte « ✎  记一笔 » @ 902,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 385,1213

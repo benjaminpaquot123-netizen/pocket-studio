@@ -278,13 +278,16 @@ fun TutoGridLine(
         Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Amber.copy(alpha = 0.10f)).padding(start = 10.dp, end = 4.dp)
             .spot(TUTO_GRID_LINE_SPOT).testTag("tuto_grid_line"),
         line = {
-            // F050 (tour 9): every word reads in full at 200 %: the words wrap, never « … ».
-            Column(Modifier.padding(vertical = 4.dp)) {
+            // F050 (tour 9): every word reads in full at 200 %: the words wrap, never « … ». With a very big font, the
+            // wrapped words a size smaller and no padding, so the line and the cells' two rows still fit between
+            // « Partie : A » and the panel (TutoBigFontTest: the cells' second row went under the panel).
+            val big = androidx.compose.ui.platform.LocalDensity.current.fontScale >= TUTO_LINE_BIG_FONT
+            Column(Modifier.padding(vertical = if (big) 0.dp else 4.dp)) {
                 if (bars > 1) Text(
                     tr("Mesure %1\$d/%2\$d", bar + 1, bars),
                     style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_grid_where"),
                 )
-                if (near.isNotEmpty()) Text(near, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Amber,
+                if (near.isNotEmpty()) Text(near, style = if (big) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Amber,
                     modifier = Modifier.testTag("tuto_grid_status"))
             }
         },
@@ -307,6 +310,9 @@ fun TutoGridLine(
         },
     )
 }
+
+/** The font scale from which the tutorial's grid line wraps its words a size smaller (as the spotlight's big font). */
+private const val TUTO_LINE_BIG_FONT = 1.5f
 
 /**
  * The tutorial line's words with its button at the end when both fit side by side, else the button under the words

@@ -1,10 +1,14 @@
 package com.pocketstudio.app.tuto
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.test.hasTestTag
@@ -64,8 +68,11 @@ class Tour9L13TutoNeverFullScreenTest {
                 ) {
                     val (c, i) = at
                     val shown = TutoUi(TutoProgress(style, TutoLevel.Facile, current = chapters[c].steps[i].id), chapters, c, i, open = open)
+                    // As in the app: the work above, the panel at the bottom of the whole screen.
                     PocketStudioTheme {
-                        TutoPanel(shown, canShow = true, actions = TutoActions(toggle = { toggles[0]++; open = !open }), reducedMotion = true, map = tutoMap(style))
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                            TutoPanel(shown, canShow = true, actions = TutoActions(toggle = { toggles[0]++; open = !open }), reducedMotion = true, map = tutoMap(style))
+                        }
                     }
                 }
             }

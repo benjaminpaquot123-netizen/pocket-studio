@@ -1,0 +1,47 @@
+Écran 71 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 212,42
+bouton « 간단 » @ 467,42
+icône ↶ @ 555,42
+bouton ● @ 627,42
+bouton ▶ « 이 파트 » @ 699,42
+bouton ▶ « 곡 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 136  템포 » @ 105,144
+bouton « ? » @ 855,144
+onglet « Acid 303 베이스 라인 » @ 133,266
+bouton « 코드 스웜 » ⋮ @ 340,265
+icône ♪ « 사운드 » @ 512,266
+bouton + «  트랙 » @ 697,265
+icône « 파트: A » ▾ @ 95,363
+texte « 100% » @ 114,446
+texte « 지우기 » @ 263,445
+texte « 박자 맞춤 50% » [coupé] @ 593,400
+texte « 마디 » @ 84,519
+bouton « 4 » @ 486,519
+bouton « 5 » [coupé] @ 853,519
+texte « G♭ » [coupé] @ 84,570
+texte « F » @ 84,610
+texte « E » @ 84,652
+texte « E♭ » @ 84,694
+texte « D » @ 84,736
+texte « D♭ » [coupé] @ 84,764
+dessin [coupé] @ 492,662
+texte « 쇳소리 한 방 5/13장 · 1/2단계 · 쉬움 » @ 378,840
+icône (liste) « 챕터 » @ 771,841
+icône ⌄ @ 843,841
+texte « 내 차례: “멜로디 트랙 만들기”를 누르세요. » @ 394,955
+texte « ▸ 왜요? » @ 450,1024
+bouton ⊕ «   멜로디 트랙 만들기 » @ 450,1102
+bouton ▶ «  예시 듣기 » @ 232,1189
+bouton (œil) «  보여 주세요 » @ 667,1189
+icône ← «  이전 » @ 94,1276
+icône « 다음  » → @ 805,1276
+onglet (lignes et note) « 내 곡 » @ 85,1389
+onglet (quatre carrés) « 리듬 » @ 268,1389
+onglet (touches de piano) « 건반 » [sélectionné] @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « 피드백 모드 » @ 303,1479
+texte « ●  REC » @ 649,1479
+texte « ✎  메모 » @ 760,1479
+texte « ⋯ » @ 852,1479

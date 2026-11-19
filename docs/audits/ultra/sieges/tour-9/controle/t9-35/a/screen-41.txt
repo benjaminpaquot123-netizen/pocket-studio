@@ -1,0 +1,61 @@
+Écran 41 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 290,42
+bouton « 간단 » @ 623,42
+bouton ● @ 711,42
+bouton ▶ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 136  템포 » @ 105,144
+bouton « ? » @ 855,144
+icône « 파트: A » ▾ @ 95,240
+titre « 스텝: 미드 탐 » [coupé, état « 펼쳐짐 »] @ 347,284
+bouton « ? » [coupé] @ 328,281
+bouton « 모든 패드 » [coupé] @ 755,285
+texte « 미드 탐 » @ 114,341
+texte « 여기 점선 칸이 4개 남았어요 » @ 289,397
+bouton « 1 » [état « 비어 있음 »] @ 90,475
+bouton [état « 비어 있음 »] @ 192,475
+bouton [allumé, état « 히트, 세기 100 % »] @ 294,475
+bouton [état « 비어 있음 »] @ 397,475
+bouton « 2 » [état « 비어 있음 »] @ 500,475
+bouton [état « 비어 있음, 점선: 눌러요 »] @ 603,475
+bouton [état « 비어 있음 »] @ 706,475
+bouton [état « 비어 있음, 점선: 눌러요 »] @ 809,475
+bouton « 3 » [état « 비어 있음 »] @ 90,556
+bouton [état « 비어 있음 »] @ 192,556
+bouton [état « 비어 있음, 점선: 눌러요 »] @ 294,556
+bouton [état « 비어 있음 »] @ 397,556
+bouton « 4 » [état « 비어 있음 »] @ 500,556
+bouton [état « 비어 있음, 점선: 눌러요 »] @ 603,556
+bouton [état « 비어 있음 »] @ 706,556
+bouton [état « 비어 있음 »] @ 809,556
+texte « 채우기 » @ 94,642
+texte « 전체 » @ 198,642
+texte « 1/2 » @ 290,642
+texte « 1/4 » @ 375,642
+texte « ◀ » @ 456,642
+texte « ▶ » @ 531,642
+texte « 지우기 » @ 637,642
+texte « 칸을 탭하면 히트가 들어가고, 손가락을 밀면 여러 개를 그려요. 히트를 길게 누르면: 세기와 롤 (×2~×8). » @ 450,744
+texte « 길이 » @ 78,846
+bouton « 1마디 » [sélectionné] @ 192,846
+bouton « 2 » @ 306,846
+bouton « 3 » @ 389,846
+bouton « 4 » @ 472,846
+texte « 기계들 3/13장 · 1/4단계 · 쉬움 » @ 378,995
+icône (liste) « 챕터 » @ 771,996
+icône ⌃ @ 843,996
+icône « 직접 해 보세요: “미드 탐” 패드에서 점선 칸을 탭하세요. 킥 사이에서 쿵쿵 때려요. 읽기 » ⌃ @ 450,1141
+texte « 136 템포 » @ 636,1272
+icône ↶ « 실행 취소 » @ 130,1272
+image ↷ @ 325,1247
+bouton ▶ « 곡 » @ 492,1273
+icône ⋮ « 더보기 » @ 789,1272
+onglet (lignes et note) « 내 곡 » @ 85,1389
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « 피드백 모드 » @ 303,1479
+texte « ●  REC » @ 649,1479
+texte « ✎  메모 » @ 760,1479
+texte « ⋯ » @ 852,1479

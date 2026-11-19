@@ -1,0 +1,60 @@
+Écran 50 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 290,42
+bouton « 간단 » @ 623,42
+bouton ● @ 711,42
+bouton ▶ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 136  템포 » @ 105,144
+bouton « ? » @ 855,144
+icône « 파트: A » ▾ @ 95,240
+titre « 스텝: 하이햇 » [coupé, état « 펼쳐짐 »] @ 347,284
+bouton « ? » [coupé] @ 315,281
+bouton « 모든 패드 » [coupé] @ 755,285
+texte « 하이햇 » @ 109,349
+bouton « 1 » [état « 비어 있음 »] @ 90,434
+bouton [état « 비어 있음 »] @ 192,434
+bouton [allumé, état « 히트, 세기 100 % »] @ 294,434
+bouton [état « 비어 있음 »] @ 397,434
+bouton « 2 » [état « 비어 있음 »] @ 500,434
+bouton [état « 비어 있음 »] @ 603,434
+bouton [état « 히트, 세기 100 % »] @ 706,434
+bouton [état « 비어 있음 »] @ 809,434
+bouton « 3 » [état « 비어 있음 »] @ 90,515
+bouton [état « 비어 있음 »] @ 192,515
+bouton [état « 히트, 세기 100 % »] @ 294,515
+bouton [état « 비어 있음 »] @ 397,515
+bouton « 4 » [état « 비어 있음 »] @ 500,515
+bouton [état « 비어 있음 »] @ 603,515
+bouton [état « 히트, 세기 100 % »] @ 706,515
+bouton [état « 비어 있음 »] @ 809,515
+texte « 채우기 » [coupé] @ 94,583
+texte « 전체 » [coupé] @ 198,582
+texte « 1/2 » [coupé] @ 290,582
+texte « 1/4 » [coupé] @ 375,582
+texte « ◀ » [coupé] @ 456,582
+texte « ▶ » [coupé] @ 531,582
+texte « 지우기 » [coupé] @ 637,582
+texte « 기계들 3/13장 · 2/4단계 · 쉬움 » @ 378,662
+icône (liste) « 챕터 » @ 771,663
+icône ⌄ @ 843,663
+image (coupe) @ 57,841
+texte « 잘했어요, 성공이에요! » @ 268,786
+texte « 결과를 들어 보고, 준비되면 “다음 단계”를 탭하세요. » @ 475,869
+bouton « 다음 단계   » → @ 450,1079
+bouton ▶ «  내 결과 듣기 » @ 294,1166
+bouton ▶ «  예시 듣기 » @ 687,1166
+icône ← @ 57,1167
+texte « 136 템포 » @ 636,1272
+icône ↶ « 실행 취소 » @ 130,1272
+image ↷ @ 325,1247
+bouton ▶ « 곡 » @ 492,1273
+icône ⋮ « 더보기 » @ 789,1272
+onglet (lignes et note) « 내 곡 » @ 85,1389
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « 피드백 모드 » @ 303,1479
+texte « ●  REC » @ 649,1479
+texte « ✎  메모 » @ 760,1479
+texte « ⋯ » @ 852,1479

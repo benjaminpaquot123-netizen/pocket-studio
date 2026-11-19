@@ -1,0 +1,48 @@
+Écran 123 (900x1509)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 230,42
+bouton « プロ » @ 488,42
+icône ↶ @ 561,42
+icône ↷ [désactivé] @ 633,42
+bouton ● @ 705,42
+bouton ▶ « このパート » @ 780,42
+icône (trois points reliés) @ 855,42
+bouton « 138  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « タイムライン » [désactivé] @ 108,192
+onglet « パート » [sélectionné] @ 246,192
+titre « 曲 » [état « 開いた状態 »] @ 96,285
+bouton « ? » @ 129,285
+texte « タイムラインはパートを順番に並べる。それぞれの長さは小節数。 順番に足してね。 » @ 408,333
+texte « 追加： » @ 73,374
+bouton « + A · グルーヴ » @ 147,438
+bouton « + 新しいパート（A · グルーヴのコピー） » @ 493,438
+bouton « + 新しい空のパート » @ 173,519
+bouton (barres de son) «   曲で鳴っているもの » @ 450,603
+titre « 曲の設定 » [état « 開いた状態 »] @ 450,669
+bouton « 止める » [sélectionné] @ 194,735
+bouton « やり直す » @ 327,735
+texte « 最後に： » @ 84,735
+icône (liste) « チャプター » @ 756,821
+icône ⌄ @ 843,821
+texte « 最初のパート：グルーヴ チャプター 4/12 · 完了 · プロ » @ 363,821
+image (coupe) @ 57,926
+texte « よくできました、章クリア！ » @ 226,911
+texte « 今の曲を聴いてから、次の章へ進もう：「パートを理解する」。 » @ 367,941
+bouton « 次の章   » → @ 450,1125
+icône ← @ 57,1209
+bouton ▶ «  自分の曲を聴く » @ 294,1209
+bouton ▶ «  例を聴く » @ 687,1209
+icône ↶ « 元に戻す » @ 124,1293
+icône ↷ « やり直す » [désactivé] @ 284,1293
+bouton ▶ « 曲 » @ 444,1293
+texte « 138 テンポ » @ 610,1293
+icône (trois points reliés) « シェア » @ 776,1293
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 85,1389
+onglet (touches de piano) « サウンド » @ 268,1389
+onglet (curseurs) « ミックス » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « その他 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  メモ » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « フィードバックモード » @ 318,1479

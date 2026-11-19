@@ -1,0 +1,82 @@
+Écran 113 (900x1509)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 191,42
+bouton « プロ » @ 410,42
+bouton « A » ▾ @ 486,42
+icône ↶ @ 561,42
+icône ↷ [désactivé] @ 633,42
+bouton ● @ 705,42
+bouton ▶ « このパート » @ 780,42
+icône (trois points reliés) @ 855,42
+bouton « 138  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « ドラム 16パッド » @ 79,183
+onglet « Acid 303 ベースライン » [sélectionné] @ 239,183
+onglet « ボーカル マイク » @ 403,183
+onglet « リミックス 分離 » @ 562,183
+bouton + «  トラック » @ 746,183
+texte « パート：A » @ 69,243
+titre « ベースライン · ルート A » [coupé, état « 開いた状態 »] @ 398,269
+bouton « ? » [coupé] @ 328,269
+bouton « C D E » [coupé, sélectionné] @ 806,270
+texte « 長さ » @ 62,336
+bouton « 1小節 » @ 141,336
+bouton « 2 » [sélectionné] @ 237,336
+bouton « 3 » @ 318,336
+bouton « 4 » @ 399,336
+bouton « 8 » @ 480,336
+texte « コピー → 1 » @ 424,420
+texte « 小節 » @ 62,420
+bouton « 1 » @ 127,420
+bouton « 2 » [sélectionné] @ 208,420
+bouton « 追従 » @ 299,420
+bouton « A » @ 90,525
+bouton « A ⌒ » @ 192,525
+bouton « A ↑ » @ 294,525
+bouton « – » @ 397,525
+bouton « A » @ 500,525
+bouton « A ↑ » @ 603,525
+bouton « – » @ 706,525
+bouton « C » @ 809,525
+bouton « A » @ 90,651
+bouton « – » @ 192,651
+bouton « A ↑ » @ 294,651
+bouton « A ⌒ » @ 397,651
+bouton « A# » @ 500,651
+bouton « – » @ 603,651
+bouton « A ↑⌒ » @ 706,651
+bouton « – » @ 809,651
+texte « ステップをタップで編集。塗りつぶし＝アクセント、⌒＝スライド、↑＝1オクターブ上（Up）、↓＝1オクターブ下（Down）、–＝休符、🔒＝ジェネレーターで固定。 » @ 450,747
+titre « ステップ 29 » [état « 開いた状態 »] @ 142,874
+bouton « ? » @ 221,874
+bouton (cadenas) « ロック » @ 783,874
+texte « A# » @ 65,942
+bouton « C » [coupé] @ 100,1018
+bouton « C# » @ 159,1016
+bouton « D » [coupé] @ 217,1018
+bouton « D# » @ 275,1016
+bouton « E » [coupé] @ 333,1018
+bouton « F » [coupé] @ 450,1018
+bouton « F# » @ 508,1016
+bouton « G » [coupé] @ 566,1018
+bouton « G# » @ 625,1016
+bouton « A » [coupé] @ 683,1018
+bouton « A# » @ 741,1016
+bouton « B » [coupé] @ 799,1018
+icône (liste) « チャプター » @ 756,1109
+icône ⌃ @ 843,1109
+texte « 303 チャプター 3/12 · ステップ 2/2 · プロ » @ 363,1109
+icône « あなたの番：「アシッド」タブを開いて、2小節のラインを1マスずつ書こう：点線のノート（A、そのオクターブ、C、G、E）、次にアクセント（!）を4マス、スライド（⌒）を3マス。2小節目はバリエーション：G の代わりに B♭、最後のマスは空ける。 読む » ⌃ @ 450,1208
+icône ↶ « 元に戻す » @ 124,1293
+icône ↷ « やり直す » [désactivé] @ 284,1293
+bouton ▶ « 曲 » @ 444,1293
+texte « 138 テンポ » @ 610,1293
+icône (trois points reliés) « シェア » @ 776,1293
+onglet (ligne brisée et points) « 構成 » @ 85,1389
+onglet (touches de piano) « サウンド » [sélectionné] @ 268,1389
+onglet (curseurs) « ミックス » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « その他 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  メモ » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « フィードバックモード » @ 318,1479

@@ -1,0 +1,75 @@
+Écran 95 (900x1509)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 191,42
+bouton « プロ » @ 410,42
+bouton « A » ▾ @ 486,42
+icône ↶ @ 561,42
+icône ↷ [désactivé] @ 633,42
+bouton ● @ 705,42
+bouton ▶ « このパート » @ 780,42
+icône (trois points reliés) @ 855,42
+bouton « 138  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « ドラム 16パッド » @ 79,183
+onglet « Acid 303 ベースライン » [sélectionné] @ 239,183
+onglet « ボーカル マイク » @ 403,183
+onglet « リミックス 分離 » @ 562,183
+bouton + «  トラック » @ 746,183
+texte « パート：A » @ 69,243
+bouton « A » [coupé] @ 90,314
+bouton « A ⌒ » [coupé] @ 192,314
+bouton « A » [coupé] @ 294,314
+bouton « – » [coupé] @ 397,314
+bouton « A » [coupé] @ 500,314
+bouton « A » [coupé] @ 603,314
+bouton « – » [coupé] @ 706,314
+bouton « C » [coupé] @ 809,314
+bouton « A » @ 90,432
+bouton « – » @ 192,432
+bouton « A ↑ » @ 294,432
+bouton « A ⌒ » @ 397,432
+bouton « G » @ 500,432
+bouton « – » @ 603,432
+bouton « A ↑⌒ » @ 706,432
+bouton « E » @ 809,432
+texte « ステップをタップで編集。塗りつぶし＝アクセント、⌒＝スライド、↑＝1オクターブ上（Up）、↓＝1オクターブ下（Down）、–＝休符、🔒＝ジェネレーターで固定。 » @ 450,528
+titre « ステップ 8 » [état « 開いた状態 »] @ 136,655
+bouton « ? » @ 209,655
+bouton (cadenas) « ロック » @ 783,655
+texte « C » @ 54,723
+bouton « C# » @ 159,797
+bouton « D# » @ 275,797
+bouton « F# » @ 508,797
+bouton « G# » @ 625,797
+bouton « A# » @ 741,797
+bouton « C » @ 100,827
+bouton « D » @ 217,827
+bouton « E » @ 333,827
+bouton « F » @ 450,827
+bouton « G » @ 566,827
+bouton « A » @ 683,827
+bouton « B » @ 799,827
+bouton « ノート » [sélectionné] @ 98,947
+bouton « アクセント » [sélectionné] @ 241,947
+bouton « スライド » @ 394,947
+icône − @ 736,1031
+icône + @ 822,1031
+texte « オクターブ（Down ↓ / Up ↑） » @ 371,1031
+texte « 0 » @ 779,1031
+icône (liste) « チャプター » @ 756,1109
+icône ⌃ @ 843,1109
+texte « 303 チャプター 3/12 · ステップ 2/2 · プロ » @ 363,1109
+icône « あなたの番：「アシッド」タブを開いて、2小節のラインを1マスずつ書こう：点線のノート（A、そのオクターブ、C、G、E）、次にアクセント（!）を4マス、スライド（⌒）を3マス。2小節目はバリエーション：G の代わりに B♭、最後のマスは空ける。 読む » ⌃ @ 450,1208
+icône ↶ « 元に戻す » @ 124,1293
+icône ↷ « やり直す » [désactivé] @ 284,1293
+bouton ▶ « 曲 » @ 444,1293
+texte « 138 テンポ » @ 610,1293
+icône (trois points reliés) « シェア » @ 776,1293
+onglet (ligne brisée et points) « 構成 » @ 85,1389
+onglet (touches de piano) « サウンド » [sélectionné] @ 268,1389
+onglet (curseurs) « ミックス » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « その他 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  メモ » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « フィードバックモード » @ 318,1479

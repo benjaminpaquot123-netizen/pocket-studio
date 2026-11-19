@@ -1,0 +1,15 @@
+#0 SIEGE lang=tr device=foldable font=200 mode=simple theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:dubstep:9
+#0 PREMIER ECRAN reel_s=3.4 simule_s=2.4 jvm_s=7.8 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:dubstep:9
+#0 AMENEE > touche 518 850 (welcome_learn)
+#0 AMENEE > touche 263 979 (mode_card_simple)
+#0 AMENEE > touche 517 1152 (tuto_style_dubstep)
+#0 AMENEE chapitres 1 à 8 construits dans le projet
+#0 AMENEE > touche 883 329 (tuto_chapters)
+#0 AMENEE > touche 517 893 (tuto_chapter_8)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e9e3c3aa7d | project=p-d4e30325 tuto=dubstep/Facile active=true step=brick done=15 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Kaydedildi » lines cut (taller than its box)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)

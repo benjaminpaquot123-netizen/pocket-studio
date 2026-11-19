@@ -1,0 +1,59 @@
+Écran 122 (588x1278)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 111,42
+texte « Pro » @ 250,42
+icône ↶ @ 322,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône (trois points reliés) @ 543,42
+bouton « 128  BPM » @ 73,114
+bouton « ? » @ 543,114
+onglet « Linha do tempo » [désactivé] @ 125,192
+onglet « Partes » [sélectionné] @ 283,192
+titre « A MÚSICA » [coupé, état « Expandido »] @ 139,282
+bouton « ? » [coupé] @ 214,282
+texte « Entender as partes Capítulo 7/14 · Etapa 4/5 · Pro » @ 208,348
+icône (liste) « Capítulos » @ 445,348
+icône ⌄ @ 531,348
+image (rond coché) @ 36,426
+texte « Ouça o Break: sem kick, o acorde e os ecos dele flutuam. » @ 313,447
+texte « Energia » @ 58,504
+texte « Intro » @ 56,597
+texte « 16 » @ 56,621
+texte « Intro 2 » @ 129,597
+texte « 16 » @ 129,621
+texte « Drop » @ 237,597
+texte « 32 » @ 238,621
+texte « 12 » @ 338,609
+texte « 4 » @ 376,609
+texte « Drop 2 » @ 441,597
+texte « 24 » @ 441,621
+texte « Fim » @ 532,597
+texte « 16 » @ 532,621
+texte «  Intro » [coupé] @ 60,648
+texte «  Intro 2 » [coupé] @ 146,648
+texte «  Drop » [coupé] @ 234,648
+texte «  Break » [coupé] @ 321,648
+texte «  Subida » [coupé] @ 417,648
+texte «  Drop 2 » [coupé] @ 517,648
+bouton « Baixar o kit Minimal (1 MB) » @ 228,708
+texte « Mais tarde » @ 495,708
+texte « ▸ Por quê? » @ 294,774
+icône « Continuar lendo » ⌄ @ 294,822
+bouton « Próxima etapa   » → @ 294,894
+icône ← @ 57,978
+bouton ▶ «  Ouvir o exemplo » @ 252,978
+icône « Próximo  » → @ 489,978
+icône ↶ « Desfazer » @ 66,1062
+icône ↷ « Refazer » [désactivé] @ 168,1062
+bouton ▶ « a música » @ 271,1062
+texte « 128 Andamento » @ 383,1062
+icône (trois points reliés) « Compartilhar » @ 508,1062
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Mais » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentários » @ 162,1248

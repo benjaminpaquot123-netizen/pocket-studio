@@ -1,0 +1,26 @@
+Écran 46 (588x1278)
+icône ✕ @ 534,126
+texte « Batida 5 » @ 289,126
+texte « Intensidade » @ 142,186
+bouton « Forte » @ 132,246
+bouton « Médio » @ 245,246
+bouton « Suave » [sélectionné] @ 364,246
+texte « Rufo » @ 105,306
+bouton « ×1 » [sélectionné] @ 117,366
+bouton « ×2 » @ 198,366
+bouton « ×3 » @ 281,366
+bouton « ×4 » @ 365,366
+bouton « ×6 » @ 448,366
+bouton « ×8 » @ 531,366
+texte « Tercina » @ 119,426
+bouton « 3 em 2 casas » @ 172,486
+bouton « 6 no tempo » @ 352,486
+bouton « ↗ Subindo » [désactivé] @ 159,567
+bouton « Igual » [désactivé, sélectionné] @ 294,567
+bouton « ↘ Descendo » [désactivé] @ 437,567
+texte « Tempo inteiro em ×2 (rajada de 1/32) » @ 287,648
+texte « Chance de tocar » @ 165,708
+bouton « 100% » [sélectionné] @ 135,768
+bouton « 75% » @ 243,768
+bouton « 50% » @ 346,768
+bouton « 25% » @ 449,768

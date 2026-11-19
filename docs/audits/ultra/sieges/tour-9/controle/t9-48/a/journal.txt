@@ -1,0 +1,651 @@
+#0 SIEGE lang=pt-BR device=phone font=100 mode=pro theme=- fresh=non gestes.max=174 lit=oui main=both amenee=tuto:minimal:1
+#0 PREMIER ECRAN reel_s=4.6 simule_s=2.4 jvm_s=10.7 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:minimal:1
+#0 AMENEE > touche 294 1036 (launch_learn)
+#0 AMENEE > touche 294 1143 (mode_card_pro)
+#0 AMENEE > touche 294 1213 (tuto_style_minimal)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE b6cb605263 | project=p-52d89fa8 tuto=minimal/Pro active=true step=ref done=0 chapters=- playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Por quê? » 364 x 20 dp (touch 364 x 48)
+#1 > touche 294 894
+#1 DOIGT tuto_listen «  Ouvir o exemplo »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE dbf47f6185 | project=p-52d89fa8 tuto=minimal/Pro active=true step=ref done=0 chapters=- playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 489 978
+#2 DOIGT tuto_next « Próximo  »
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c6d9a05608 | project=p-52d89fa8 tuto=minimal/Pro active=true step=tempo done=1 chapters=- playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 383 1062
+#3 DOIGT thumb_tempo « Andamento: 120 BPM »
+#4 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 2c4eafda82 | project=p-52d89fa8 tuto=minimal/Pro active=true step=tempo done=1 chapters=- playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « Andamento » over the touchable « Fechar planilha » (124 x 28 dp)
+#4 LAYOUT OVERLAP « ? » over the touchable « Fechar planilha » (7 x 15 dp)
+#4 LAYOUT OVERLAP « Fechar » over the touchable « Fechar planilha » (46 x 20 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « Fechar planilha » (86 x 53 dp)
+#4 LAYOUT OVERLAP «  BPM » over the touchable « Fechar planilha » (39 x 24 dp)
+#4 LAYOUT OVERLAP « 70 » over the touchable « Fechar planilha » (21 x 19 dp)
+#4 LAYOUT OVERLAP « 90 » over the touchable « Fechar planilha » (21 x 19 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « Fechar planilha » (32 x 19 dp)
+#4 LAYOUT OVERLAP « 140 » over the touchable « Fechar planilha » (32 x 19 dp)
+#4 LAYOUT OVERLAP « 174 » over the touchable « Fechar planilha » (32 x 19 dp)
+#4 LAYOUT OVERLAP « ½ » over the touchable « Fechar planilha » (14 x 24 dp)
+#4 LAYOUT OVERLAP « ×2 » over the touchable « Fechar planilha » (21 x 24 dp)
+#4 LAYOUT OVERLAP « 1 » over the touchable « Fechar planilha » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 2 » over the touchable « Fechar planilha » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 3 » over the touchable « Fechar planilha » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 4 » over the touchable « Fechar planilha » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 5 » over the touchable « Fechar planilha » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 6 » over the touchable « Fechar planilha » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 7 » over the touchable « Fechar planilha » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 8 » over the touchable « Fechar planilha » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 9 » over the touchable « Fechar planilha » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 0 » over the touchable « Fechar planilha » (14 x 27 dp)
+#4 LAYOUT OVERLAP « OK » over the touchable « Fechar planilha » (33 x 27 dp)
+#4 LAYOUT OVERLAP « Bater no ritmo » over the touchable « Fechar planilha » (110 x 24 dp)
+#4 LAYOUT OVERLAP « Toque aqui a cada tempo: o andamento acompanha. » over the touchable « Fechar planilha » (240 x 36 dp)
+#4 > touche 111 846
+#4 DOIGT tempo_key_1 « 1 »
+#5 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE c06d1a4338 | project=p-52d89fa8 tuto=minimal/Pro active=true step=tempo done=1 chapters=- playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « 1 » over the touchable « Fechar planilha » (29 x 53 dp)
+#5 LAYOUT OVERLAP « Entre 40 e 300 » over the touchable « Fechar planilha » (99 x 20 dp)
+#5 > touche 294 846
+#5 DOIGT tempo_key_2 « 2 »
+#6 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5e16e9135e | project=p-52d89fa8 tuto=minimal/Pro active=true step=tempo done=1 chapters=- playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 12 » over the touchable « Fechar planilha » (57 x 53 dp)
+#6 > touche 294 1020
+#6 DOIGT tempo_key_8 « 8 »
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 528e23112b | project=p-52d89fa8 tuto=minimal/Pro active=true step=tempo done=1 chapters=- playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 128 » over the touchable « Fechar planilha » (86 x 53 dp)
+#7 > touche 477 1107
+#7 DOIGT tempo_key_ok « OK »
+#8 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 204d3914bf | project=p-52d89fa8 tuto=minimal/Pro active=true step=tempo done=2 chapters=- playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 294 894
+#8 DOIGT tuto_next_big « Próxima etapa   »
+#9 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE af5e4753b8 | project=p-52d89fa8 tuto=minimal/Pro active=true step=key done=2 chapters=- playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 294 813
+#9 DOIGT tuto_do «   Eu faço »
+#10 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 34eff04cf5 | project=p-52d89fa8 tuto=minimal/Pro active=true step=key done=2 chapters=- playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « Tonalidade da música » over the touchable « Fechar planilha » (230 x 28 dp)
+#10 LAYOUT OVERLAP « Tom da música: nenhuma » over the touchable « Fechar planilha » (168 x 20 dp)
+#10 LAYOUT OVERLAP « Escala » over the touchable « Fechar planilha » (45 x 20 dp)
+#10 LAYOUT OVERLAP « Maior » over the touchable « Fechar planilha » (43 x 24 dp)
+#10 LAYOUT OVERLAP « Menor » over the touchable « Fechar planilha » (51 x 24 dp)
+#10 LAYOUT OVERLAP « Dórico » over the touchable « Fechar planilha » (49 x 24 dp)
+#10 LAYOUT OVERLAP « Penta menor » over the touchable « Fechar planilha » (95 x 24 dp)
+#10 LAYOUT OVERLAP « Penta maior » over the touchable « Fechar planilha » (89 x 24 dp)
+#10 LAYOUT OVERLAP « Blues » over the touchable « Fechar planilha » (42 x 24 dp)
+#10 LAYOUT OVERLAP « Frígio » over the touchable « Fechar planilha » (42 x 24 dp)
+#10 LAYOUT OVERLAP « Menor harmônica » over the touchable « Fechar planilha » (132 x 24 dp)
+#10 LAYOUT OVERLAP « Tônica » over the touchable « Fechar planilha » (46 x 20 dp)
+#10 LAYOUT OVERLAP « Dó » over the touchable « Fechar planilha » (21 x 24 dp)
+#10 LAYOUT OVERLAP « Dó♯ » over the touchable « Fechar planilha » (29 x 24 dp)
+#10 LAYOUT OVERLAP « Ré » over the touchable « Fechar planilha » (19 x 24 dp)
+#10 LAYOUT OVERLAP « Mi♭ » over the touchable « Fechar planilha » (24 x 24 dp)
+#10 LAYOUT OVERLAP « Mi » over the touchable « Fechar planilha » (19 x 24 dp)
+#10 LAYOUT OVERLAP « Fá » over the touchable « Fechar planilha » (18 x 24 dp)
+#10 LAYOUT OVERLAP « Fá♯ » over the touchable « Fechar planilha » (26 x 24 dp)
+#10 LAYOUT OVERLAP « Sol » over the touchable « Fechar planilha » (25 x 24 dp)
+#10 LAYOUT OVERLAP « Lá♭ » over the touchable « Fechar planilha » (23 x 24 dp)
+#10 LAYOUT OVERLAP « Lá » over the touchable « Fechar planilha » (18 x 24 dp)
+#10 LAYOUT OVERLAP « Si♭ » over the touchable « Fechar planilha » (19 x 24 dp)
+#10 LAYOUT OVERLAP « Si » over the touchable « Fechar planilha » (14 x 24 dp)
+#10 > touche 189 831
+#10 DOIGT tuto_scale_Minor « Menor »
+#11 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE abd6c4fcf3 | project=p-52d89fa8 tuto=minimal/Pro active=true step=key done=2 chapters=- playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Tom da música: Dó · Menor » over the touchable « Fechar planilha » (182 x 20 dp)
+#11 > touche 150 1206
+#11 DOIGT tuto_root_7 « Sol »
+#12 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 5310c71b24 | project=p-52d89fa8 tuto=minimal/Pro active=true step=key done=3 chapters=- playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Tom da música: Sol · Menor » over the touchable « Fechar planilha » (184 x 20 dp)
+#12 LAYOUT OVERLAP « Conseguiu! A cor da música está escolhida. » over the touchable « Fechar planilha » (258 x 48 dp)
+#12 LAYOUT OVERLAP « Voltar ao tutorial » over the touchable « Fechar planilha » (117 x 20 dp)
+#12 > touche 294 1203
+#12 DOIGT tuto_key_continue « Voltar ao tutorial »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 60590bb78d | project=p-52d89fa8 tuto=minimal/Pro active=true step=key done=3 chapters=- playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 294 978
+#13 DOIGT tuto_next_folded « Feito »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 11b77d0dae | project=p-52d89fa8 tuto=minimal/Pro active=true step=swing done=3 chapters=- playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « Efeitos » lines dropped (more lines than room)
+#14 LAYOUT CONTRAST « Metrônomo » 1.40:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Contagem » 1.47:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « ? » 1.88:1 (needs 4.5:1, 12 sp)
+#14 LAYOUT CONTRAST « Efeitos » 1.54:1 (needs 4.5:1, 14 sp)
+#14 > touche 531 456
+#14 DOIGT tuto_fold
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 5e1eb17b24 | project=p-52d89fa8 tuto=minimal/Pro active=true step=swing done=3 chapters=- playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CUT « Sua vez: coloque o swing em uns 20%: as batidinhas entre os tempos se arrastam, o groove começa a balançar. » ellipsized (« … »)
+#15 LAYOUT CONTRAST « Capturar a música inteira: » 1.91:1 (needs 4.5:1, 13 sp)
+#15 LAYOUT CONTRAST « 1 compasso » 1.70:1 (needs 4.5:1, 14 sp)
+#15 > touche 142 753
+#15 DOIGT dans:rhythm_swing « Swing »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE 25a8522d76 | project=p-52d89fa8 tuto=minimal/Pro active=true step=swing done=4 chapters=1 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 294 978
+#16 DOIGT tuto_chapter_end_folded « Muito bem, capítulo concluído! »
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 758a8f5c33 | project=p-52d89fa8 tuto=minimal/Pro active=true step=swing done=4 chapters=1 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « Capturar a música inteira: » 1.92:1 (needs 4.5:1, 13 sp)
+#17 > touche 294 894
+#17 DOIGT tuto_next_big « Próximo capítulo   »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE a17afc4e2c | project=p-52d89fa8 tuto=minimal/Pro active=true step=ready done=4 chapters=1 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « 1 compasso » 1.69:1 (needs 4.5:1, 14 sp)
+#18 > touche 294 894
+#18 DOIGT tuto_mark «   Entendi »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE 4d4535d48b | project=p-52d89fa8 tuto=minimal/Pro active=true step=kick_do done=5 chapters=1 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « 1 » 3.95:1 (needs 4.5:1, 12 sp)
+#19 > touche 70 419
+#19 DOIGT step_0 « Passo 1 »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE a41bf7e3d4 | project=p-52d89fa8 tuto=minimal/Pro active=true step=kick_do done=5 chapters=1 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « 2 » 3.58:1 (needs 4.5:1, 12 sp)
+#20 > touche 325 420
+#20 DOIGT step_4 « Passo 5 »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE d30c751d78 | project=p-52d89fa8 tuto=minimal/Pro active=true step=kick_do done=5 chapters=1 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 70 471
+#21 DOIGT step_8 « Passo 9 »
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE edfd9c8613 | project=p-52d89fa8 tuto=minimal/Pro active=true step=kick_do done=5 chapters=1 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 325 471
+#22 DOIGT step_12 « Passo 13 »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE 49f05e7639 | project=p-52d89fa8 tuto=minimal/Pro active=true step=kick_do done=6 chapters=1 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Kick de estúdio » 1.22:1 (needs 4.5:1, 13 sp)
+#23 LAYOUT CONTRAST « Intensidade » 2.29:1 (needs 4.5:1, 14 sp)
+#23 > touche 294 888
+#23 DOIGT tuto_next_big « Próxima etapa   »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 2e47077e8c | project=p-52d89fa8 tuto=minimal/Pro active=true step=hat_do done=6 chapters=1 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 197 420
+#24 DOIGT step_2 « Passo 3 »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 06c018d2c9 | project=p-52d89fa8 tuto=minimal/Pro active=true step=hat_do done=6 chapters=1 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 453 420
+#25 DOIGT step_6 « Passo 7 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE f7a61c04be | project=p-52d89fa8 tuto=minimal/Pro active=true step=hat_do done=6 chapters=1 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 197 471
+#26 DOIGT step_10 « Passo 11 »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE 5865d6b218 | project=p-52d89fa8 tuto=minimal/Pro active=true step=hat_do done=6 chapters=1 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 453 471
+#27 DOIGT step_14 « Passo 15 »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE f98bedbda6 | project=p-52d89fa8 tuto=minimal/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « Hi-hat » 1.21:1 (needs 4.5:1, 13 sp)
+#28 > touche 294 888
+#28 DOIGT tuto_next_big « Próxima etapa   »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 450bb0fc6e | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=7 chapters=1 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « Faltam 4 casas pontilhadas aqui » 2.92:1 (needs 3.0:1, 14 sp)
+#29 > touche 294 813
+#29 DOIGT tuto_need «   Passar para 2 compassos »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE ce06229576 | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=7 chapters=1 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « Compasso » 1.43:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « 1 » 1.94:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « 2 » 1.34:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « Seguir » 1.33:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « Intensidade » 2.26:1 (needs 4.5:1, 14 sp)
+#30 > touche 261 504
+#30 DOIGT step_3 « Passo 4 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE 53be800178 | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=7 chapters=1 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 453 504
+#31 DOIGT step_6 « Passo 7 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE 2c55fcf0ee | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=7 chapters=1 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 261 583
+#32 DOIGT step_11 « Passo 12 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 1bdc86a9f0 | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=7 chapters=1 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 389 583
+#33 DOIGT step_13 « Passo 14 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 12e2290007 | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=7 chapters=1 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 395 420
+#34 DOIGT tuto_bar_go « Compasso 2 · 4 casas → »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE 21bd67756f | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=7 chapters=1 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « 1 » 1.26:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « 2 » 1.95:1 (needs 4.5:1, 14 sp)
+#35 > touche 261 504
+#35 DOIGT step_19 « Passo 4 »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE 8a327de879 | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=7 chapters=1 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 453 504
+#36 DOIGT step_22 « Passo 7 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 9cde95f6e0 | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=7 chapters=1 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 197 583
+#37 DOIGT step_26 « Passo 11 »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE a4daf7d4e1 | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=7 chapters=1 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 389 583
+#38 DOIGT step_29 « Passo 14 »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 6820e1a0d0 | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc_do done=8 chapters=1 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 294 978
+#39 DOIGT tuto_next_folded « Feito »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 25e788448c | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 531 471
+#40 DOIGT tuto_fold
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 2d3b78788a | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « Faltam 3 casas pontilhadas aqui » 2.37:1 (needs 3.0:1, 14 sp)
+#41 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#41 > touche 325 420
+#41 DOIGT step_4 « Passo 5 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 2f5b6e2f87 | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « Faltam 2 casas pontilhadas aqui » 2.37:1 (needs 3.0:1, 14 sp)
+#42 LAYOUT CONTRAST « 4 » 3.04:1 (needs 4.5:1, 12 sp)
+#42 > touche 325 499
+#42 DOIGT step_12 « Passo 13 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE a33b05eaed | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « Falta 1 casa pontilhada aqui » 2.37:1 (needs 3.0:1, 14 sp)
+#43 > touche 517 499
+#43 DOIGT step_15 « Passo 16 »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 0b65911558 | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CUT « Compasso 1/2 · Clap » ellipsized (« … »)
+#44 LAYOUT CONTRAST « Compasso 1/2 · Clap » 1.25:1 (needs 4.5:1, 13 sp)
+#44 LAYOUT CONTRAST « Compasso 2 · 3 casas → » 1.27:1 (needs 3.0:1, 14 sp)
+#44 > appui-long 325 420
+#44 DOIGT step_4 « Passo 5 »
+#45 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 1da6e3aa41 | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 364 246
+#45 DOIGT roll_force_2 « Suave »
+#46 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 6267960d83 | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 534 126
+#46 DOIGT roll_close
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE 0b65911558 | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 395 354
+#47 DOIGT tuto_bar_go « Compasso 2 · 3 casas → »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE b99ce33c13 | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « 2 » 2.81:1 (needs 4.5:1, 12 sp)
+#48 > touche 325 420
+#48 DOIGT step_20 « Passo 5 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE 2f5b6e2f87 | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 325 499
+#49 DOIGT step_28 « Passo 13 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE a33b05eaed | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=8 chapters=1 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 517 499
+#50 DOIGT step_31 « Passo 16 »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE fe323503b3 | project=p-52d89fa8 tuto=minimal/Pro active=true step=clap_do done=9 chapters=1 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT CONTRAST « Compasso 2/2 · Clap » 1.26:1 (needs 4.5:1, 13 sp)
+#51 > touche 294 978
+#51 DOIGT tuto_next_folded « Feito »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE eb13f5bf16 | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc2_do done=9 chapters=1 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « Faltam 8 casas pontilhadas aqui » 2.26:1 (needs 3.0:1, 14 sp)
+#52 LAYOUT CONTRAST « 1 » 3.90:1 (needs 4.5:1, 12 sp)
+#52 > touche 531 528
+#52 DOIGT tuto_fold
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE d6b93e95d7 | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc2_do done=9 chapters=1 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « Faltam 8 casas pontilhadas aqui » 2.37:1 (needs 3.0:1, 14 sp)
+#53 > touche 250 668
+#53 DOIGT fill_2 « 1/2 »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 36cd4144ca | project=p-52d89fa8 tuto=minimal/Pro active=true step=perc2_do done=10 chapters=1,2 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST « Compasso 1/2 · Shaker » 1.26:1 (needs 4.5:1, 13 sp)
+#54 > touche 294 978
+#54 DOIGT tuto_next_folded « Feito »
+#55 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 2521d944dd | project=p-52d89fa8 tuto=minimal/Pro active=true step=drums_hear done=10 chapters=1,2 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « Compasso 1/2 · Shaker » 1.65:1 (needs 4.5:1, 13 sp)
+#55 > touche 294 813
+#55 DOIGT tuto_play_mine «   Ouvir seu resultado »
+#56 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 379c0a7058 | project=p-52d89fa8 tuto=minimal/Pro active=true step=drums_hear done=10 chapters=1,2 playing=true
+#56 SON Son : la musique du projet joue en boucle.
+#56 > touche 294 897
+#56 DOIGT tuto_listen «  Ouvir o exemplo »
+#57 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 167aec93a9 | project=p-52d89fa8 tuto=minimal/Pro active=true step=drums_hear done=10 chapters=1,2 playing=false
+#57 SON Son : l'exemple du tuto joue (encore 3 s).
+#57 > attends 4
+#58 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 2cd951dd7b | project=p-52d89fa8 tuto=minimal/Pro active=true step=drums_hear done=11 chapters=1,2 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 294 888
+#58 DOIGT tuto_next_big « Próximo capítulo   »
+#59 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 9c1fcb99aa | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « Compasso 1/2 · Shaker » 1.94:1 (needs 4.5:1, 13 sp)
+#59 > touche 294 813
+#59 DOIGT tuto_need «   Criar a faixa Baixo »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE 0bff56fcbc | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CUT « comp. » lines dropped (more lines than room)
+#60 LAYOUT CUT « Sua vez: crie a faixa Baixo (som “Baixo dedilhado”): 4 notas curtas em Sol entre os kicks, “Copiar”, depois o compasso 4 que passa por Fá, “Copiar”. » ellipsized (« … »)
+#60 LAYOUT TARGET « Si♭1 Tocar » 36 x 20 dp (touch 48 x 48)
+#60 LAYOUT TARGET « Lá1 Tocar » 36 x 20 dp (touch 48 x 48)
+#60 LAYOUT TARGET « Lá♭1 Tocar » 36 x 20 dp (touch 48 x 48)
+#60 LAYOUT TARGET « Sol1 Tocar » 36 x 20 dp (touch 48 x 48)
+#60 LAYOUT TARGET « Sol♭1 Tocar » 36 x 20 dp (touch 48 x 48)
+#60 LAYOUT TARGET « Fá1 Tocar » 36 x 20 dp (touch 48 x 48)
+#60 LAYOUT TARGET « Mi1 Tocar » 36 x 20 dp (touch 48 x 48)
+#60 > touche 180 703
+#60 DOIGT rien
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE ed8616c749 | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#61 SON Son : 1 note du synthé.
+#61 > touche 279 703
+#61 DOIGT rien
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE bf3554702c | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#62 SON Son : 1 note du synthé.
+#62 > touche 405 703
+#62 DOIGT rien
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 5a7146b45d | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#63 SON Son : 1 note du synthé.
+#63 > touche 475 703
+#63 DOIGT rien
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE fd8f44def2 | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#64 SON Son : 1 note du synthé.
+#64 > touche 478 474
+#64 DOIGT tuto_roll_copy « Copiar »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE 9b59fb4fa6 | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 180 703
+#65 DOIGT rien
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE e9c09acccd | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#66 SON Son : 1 note du synthé.
+#66 > touche 279 703
+#66 DOIGT rien
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE cde0e071ed | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#67 SON Son : 1 note du synthé.
+#67 > touche 405 763
+#67 DOIGT rien
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE d24f8e26d4 | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#68 SON Son : 1 note du synthé.
+#68 > touche 475 703
+#68 DOIGT rien
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 11ce2bd447 | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#69 SON Son : 1 note du synthé.
+#69 > touche 478 474
+#69 DOIGT tuto_roll_copy « Copiar »
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE c6108ddc60 | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=12 chapters=1,2,3 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 294 978
+#70 DOIGT tuto_chapter_end_folded « Muito bem, capítulo concluído! »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE 1a7e0f11c6 | project=p-52d89fa8 tuto=minimal/Pro active=true step=bass_do done=12 chapters=1,2,3 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 294 888
+#71 DOIGT tuto_next_big « Próximo capítulo   »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE afe0935824 | project=p-52d89fa8 tuto=minimal/Pro active=true step=pad_do done=12 chapters=1,2,3 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 294 813
+#72 DOIGT tuto_need «   Criar a faixa Acordes »
+#73 ROUTE tab_Sons | MODE pro | EMPREINTE ec89f0c820 | project=p-52d89fa8 tuto=minimal/Pro active=true step=pad_do done=12 chapters=1,2,3 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CUT « Sua vez: crie a faixa Acordes (som “Pluck”, eco “dub” já colocado): dois stabs de Sol menor no contratempo (passos 4 e 11), depois “Copiar”. » ellipsized (« … »)
+#73 LAYOUT TARGET « Ré3 Tocar » 36 x 20 dp (touch 48 x 48)
+#73 LAYOUT TARGET « Ré♭3 Tocar » 36 x 20 dp (touch 48 x 48)
+#73 LAYOUT TARGET « Dó3 Dó3 Tocar » 36 x 20 dp (touch 48 x 48)
+#73 LAYOUT TARGET « Si2 Tocar » 36 x 20 dp (touch 48 x 48)
+#73 LAYOUT TARGET « Si♭2 Tocar » 36 x 20 dp (touch 48 x 48)
+#73 LAYOUT TARGET « Lá2 Tocar » 36 x 20 dp (touch 48 x 48)
+#73 LAYOUT TARGET « Lá♭2 Tocar » 36 x 20 dp (touch 48 x 48)
+#73 LAYOUT TARGET « Sol2 Tocar » 36 x 20 dp (touch 48 x 48)
+#73 > touche 195 712
+#73 DOIGT rien
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 039775dfbc | project=p-52d89fa8 tuto=minimal/Pro active=true step=pad_do done=12 chapters=1,2,3 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 390 712
+#74 DOIGT rien
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE f510817723 | project=p-52d89fa8 tuto=minimal/Pro active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 294 978
+#75 DOIGT tuto_next_folded « Feito »
+#76 ROUTE tab_Sons | MODE pro | EMPREINTE 694115aa15 | project=p-52d89fa8 tuto=minimal/Pro active=true step=pad_end done=13 chapters=1,2,3 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 294 813
+#76 DOIGT tuto_need «   Copiar nos próximos compassos »
+#77 ROUTE tab_Sons | MODE pro | EMPREINTE 79953f3153 | project=p-52d89fa8 tuto=minimal/Pro active=true step=pad_end done=14 chapters=1,2,3,4 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 294 888
+#77 DOIGT tuto_next_big « Próximo capítulo   »
+#78 ROUTE tab_Sons | MODE pro | EMPREINTE 14620250e5 | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 294 813
+#78 DOIGT tuto_need «   Criar a faixa Melodia »
+#79 ROUTE tab_Sons | MODE pro | EMPREINTE d3e9ae3073 | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#79 SON Son : rien ne joue.
+#79 LAYOUT CUT « ↑ Faltam tocar 5 notas pontilhadas » ellipsized (« … »)
+#79 LAYOUT CUT « Sua vez: crie a faixa Melodia (som “Sino FM”): uma nota a cada 3 passos, 3 contra 4, em Sol com um Ré. “Copiar”. » ellipsized (« … »)
+#79 LAYOUT TARGET « Si♭3 Tocar » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Lá3 Tocar » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Lá♭3 Tocar » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Sol3 Tocar » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Sol♭3 Tocar » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Fá3 Tocar » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Mi3 Tocar » 36 x 20 dp (touch 48 x 48)
+#79 > touche 111 703
+#79 DOIGT rien
+#80 ROUTE tab_Sons | MODE pro | EMPREINTE 468f113195 | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#80 SON Son : 1 note du synthé.
+#80 LAYOUT CUT « ↑ Faltam tocar 4 notas pontilhadas » ellipsized (« … »)
+#80 > touche 195 703
+#80 DOIGT rien
+#81 ROUTE tab_Sons | MODE pro | EMPREINTE 22a7604eb4 | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#81 SON Son : 1 note du synthé.
+#81 LAYOUT CUT « ↑ Faltam tocar 3 notas pontilhadas » ellipsized (« … »)
+#81 > touche 279 703
+#81 DOIGT rien
+#82 ROUTE tab_Sons | MODE pro | EMPREINTE 40b417f8f3 | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#82 SON Son : 1 note du synthé.
+#82 LAYOUT CUT « ↑ Faltam tocar 2 notas pontilhadas » ellipsized (« … »)
+#82 > touche 363 703
+#82 DOIGT rien
+#83 ROUTE tab_Sons | MODE pro | EMPREINTE 3c4a720494 | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#83 SON Son : 1 note du synthé.
+#83 > touche 532 703
+#83 DOIGT rien
+#84 ROUTE tab_Sons | MODE pro | EMPREINTE 09394e03c0 | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#84 SON Son : 1 note du synthé.
+#84 LAYOUT CUT « Faltam 6 notas pontilhadas, mais acima ↑ » ellipsized (« … »)
+#84 > touche 465 474
+#84 DOIGT tuto_notes_left « Melodia · compasso 1/8 »
+#85 ROUTE tab_Sons | MODE pro | EMPREINTE b547db75b5 | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT TARGET « Fá4 Tocar » 36 x 20 dp (touch 48 x 48)
+#85 LAYOUT TARGET « Mi4 Tocar » 36 x 20 dp (touch 48 x 48)
+#85 LAYOUT TARGET « Mi♭4 Tocar » 36 x 20 dp (touch 48 x 48)
+#85 LAYOUT TARGET « Ré4 Tocar » 36 x 20 dp (touch 48 x 48)
+#85 LAYOUT TARGET « Ré♭4 Tocar » 36 x 20 dp (touch 48 x 48)
+#85 LAYOUT TARGET « Dó4 Dó4 Tocar » 36 x 20 dp (touch 48 x 48)
+#85 LAYOUT TARGET « Si3 Tocar » 36 x 20 dp (touch 48 x 48)
+#85 > touche 449 703
+#85 DOIGT rien
+#86 ROUTE tab_Sons | MODE pro | EMPREINTE 56ad8a50e2 | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#86 SON Son : 1 note du synthé.
+#86 LAYOUT CUT « Faltam 5 notas pontilhadas, mais adiante → » ellipsized (« … »)
+#86 > touche 465 474
+#86 DOIGT tuto_notes_left « Melodia · compasso 1/8 »
+#87 ROUTE tab_Sons | MODE pro | EMPREINTE acc2a87aab | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 167 703
+#87 DOIGT rien
+#88 ROUTE tab_Sons | MODE pro | EMPREINTE fff6d8e43d | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#88 SON Son : 1 note du synthé.
+#88 > touche 250 703
+#88 DOIGT rien
+#89 ROUTE tab_Sons | MODE pro | EMPREINTE bb97a5723b | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#89 SON Son : 1 note du synthé.
+#89 > touche 335 703
+#89 DOIGT rien
+#90 ROUTE tab_Sons | MODE pro | EMPREINTE c9d71b2a95 | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#90 SON Son : 1 note du synthé.
+#90 > touche 419 703
+#90 DOIGT rien
+#91 ROUTE tab_Sons | MODE pro | EMPREINTE e00c3ba6fc | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#91 SON Son : 1 note du synthé.
+#91 LAYOUT CUT « Falta 1 nota pontilhada, mais acima ↑ » ellipsized (« … »)
+#91 > touche 465 474
+#91 DOIGT tuto_notes_left « Melodia · compasso 2/8 »
+#92 ROUTE tab_Sons | MODE pro | EMPREINTE f13a86e9fc | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 503 703
+#92 DOIGT rien
+#93 ROUTE tab_Sons | MODE pro | EMPREINTE 6a4649e36e | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#93 SON Son : 1 note du synthé.
+#93 > touche 294 978
+#93 DOIGT tuto_need_folded « Copiar nos próximos compassos »
+#94 ROUTE tab_Sons | MODE pro | EMPREINTE 1f5b6031fd | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=15 chapters=1,2,3,4,5 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 294 978
+#94 DOIGT tuto_chapter_end_folded « Muito bem, capítulo concluído! »
+#95 ROUTE tab_Sons | MODE pro | EMPREINTE 25185a088d | project=p-52d89fa8 tuto=minimal/Pro active=true step=lead_do done=15 chapters=1,2,3,4,5 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 294 888
+#95 DOIGT tuto_next_big « Próximo capítulo   »
+#96 ROUTE tab_Sons | MODE pro | EMPREINTE 55f1a3d44d | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_hear done=15 chapters=1,2,3,4,5 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 476 104
+#96 DOIGT top_play « Tocar esta parte »
+#97 ROUTE tab_Sons | MODE pro | EMPREINTE 2cb780e93a | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_hear done=15 chapters=1,2,3,4,5 playing=true
+#97 SON Son : la musique du projet joue en boucle.
+#97 > attends 4
+#98 ROUTE tab_Sons | MODE pro | EMPREINTE bcb7f59a67 | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_hear done=15 chapters=1,2,3,4,5 playing=true
+#98 SON Son : la musique du projet joue en boucle.
+#98 > touche 294 897
+#98 DOIGT tuto_listen «  Ouvir o exemplo »
+#99 ROUTE tab_Sons | MODE pro | EMPREINTE 52469f392b | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_hear done=15 chapters=1,2,3,4,5 playing=false
+#99 SON Son : l'exemple du tuto joue (encore 3 s).
+#99 > attends 6
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE 42f913e7a7 | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_hear done=16 chapters=1,2,3,4,5 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 294 888
+#100 DOIGT tuto_next_big « Próxima etapa   »
+#101 ROUTE tab_Sons | MODE pro | EMPREINTE 336baca8c0 | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=16 chapters=1,2,3,4,5 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 247 114
+#101 DOIGT top_scene « Parte atual: A. Toque para trocar de par »
+#102 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE b683a614a4 | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=16 chapters=1,2,3,4,5 playing=false
+#102 SON Son : rien ne joue.
+#102 > appui-long 339 240
+#102 DOIGT scene_pick_0 « A »
+#103 ROUTE tab_Sons | MODE pro | EMPREINTE 336baca8c0 | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=16 chapters=1,2,3,4,5 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 433 897
+#103 DOIGT tuto_show «  Mostre-me »
+#104 ROUTE session/tab_Structure | MODE pro | EMPREINTE b35cffbe1b | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=16 chapters=1,2,3,4,5 playing=false
+#104 SON Son : rien ne joue.
+#104 LAYOUT CUT « Meu projeto 1 » ellipsized (« … »)
+#104 LAYOUT CONTRAST « Parar » 3.91:1 (needs 4.5:1, 14 sp)
+#104 > attends 4
+#105 ROUTE tab_Structure | MODE pro | EMPREINTE 02c10b245b | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=16 chapters=1,2,3,4,5 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 520 978
+#105 DOIGT tuto_next « Próximo  »
+#106 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 6c89df923a | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=16 chapters=1,2,3,4,5 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 125 192
+#106 DOIGT désactivé structure_timeline « Linha do tempo »
+#107 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 6c89df923a | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=16 chapters=1,2,3,4,5 playing=false
+#107 SON Son : rien ne joue.
+#107 > touche 531 366
+#107 DOIGT tuto_fold
+#108 ROUTE session/tab_Structure | MODE pro | EMPREINTE 7c1960254e | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=16 chapters=1,2,3,4,5 playing=false
+#108 SON Son : rien ne joue.
+#108 > glisse 294 700 294 350
+#108 DOIGT rien
+#109 ROUTE session/tab_Structure | MODE pro | EMPREINTE 1806df1584 | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=16 chapters=1,2,3,4,5 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 294 978
+#109 DOIGT tuto_need_folded « Nomear a parte “Groove” »
+#110 ROUTE session/tab_Structure | MODE pro | EMPREINTE bf40e3c403 | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=17 chapters=1,2,3,4,5,6 playing=false
+#110 SON Son : rien ne joue.
+#110 > touche 294 978
+#110 DOIGT tuto_chapter_end_folded « Muito bem, capítulo concluído! »
+#111 ROUTE tab_Structure | MODE pro | EMPREINTE 1468389a42 | project=p-52d89fa8 tuto=minimal/Pro active=true step=groove_name done=17 chapters=1,2,3,4,5,6 playing=false
+#111 SON Son : rien ne joue.
+#111 > touche 294 888
+#111 DOIGT tuto_next_big « Próximo capítulo   »
+#112 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 87a0bae3a8 | project=p-52d89fa8 tuto=minimal/Pro active=true step=brick done=17 chapters=1,2,3,4,5,6 playing=false
+#112 SON Son : rien ne joue.
+#112 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#112 LAYOUT CONTRAST « 12 » 4.28:1 (needs 4.5:1, 12 sp)
+#112 LAYOUT CONTRAST « 4 » 3.56:1 (needs 4.5:1, 12 sp)
+#112 LAYOUT CONTRAST « 24 » 3.82:1 (needs 4.5:1, 12 sp)
+#112 > touche 294 894
+#112 DOIGT tuto_mark «   Entendi »
+#113 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 1b3ff242ad | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_intro done=18 chapters=1,2,3,4,5,6 playing=false
+#113 SON Son : rien ne joue.
+#113 LAYOUT CONTRAST « Intro » 4.15:1 (needs 4.5:1, 12 sp)
+#113 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#113 > touche 61 634
+#113 DOIGT rien (texte «  Intro »)
+#114 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 1b3ff242ad | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_intro done=18 chapters=1,2,3,4,5,6 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 294 894
+#114 DOIGT tuto_listen «  Ouvir o exemplo »
+#115 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE e9e6b03f2a | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_intro done=18 chapters=1,2,3,4,5,6 playing=false
+#115 SON Son : l'exemple du tuto joue (encore 3 s).
+#115 > attends 3
+#116 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 4e647e776d | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_intro done=19 chapters=1,2,3,4,5,6 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 489 978
+#116 DOIGT tuto_next « Próximo  »
+#117 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 9876ff955c | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_drop done=19 chapters=1,2,3,4,5,6 playing=false
+#117 SON Son : rien ne joue.
+#117 LAYOUT CONTRAST « Drop » 3.09:1 (needs 4.5:1, 12 sp)
+#117 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#117 LAYOUT CONTRAST «  Drop » 1.46:1 (needs 4.5:1, 13 sp)
+#117 LAYOUT CONTRAST «  Break » 1.45:1 (needs 4.5:1, 13 sp)
+#117 LAYOUT CONTRAST «  Subida » 1.36:1 (needs 4.5:1, 13 sp)
+#117 > touche 294 894
+#117 DOIGT tuto_listen «  Ouvir o exemplo »
+#118 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 2c0b4d75dc | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_drop done=19 chapters=1,2,3,4,5,6 playing=false
+#118 SON Son : l'exemple du tuto joue (encore 3 s).
+#118 > attends 4
+#119 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 10fe6590a0 | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_drop done=20 chapters=1,2,3,4,5,6 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 489 978
+#119 DOIGT tuto_next « Próximo  »
+#120 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE b6f716caa6 | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_break done=20 chapters=1,2,3,4,5,6 playing=false
+#120 SON Son : rien ne joue.
+#120 LAYOUT CONTRAST « 12 » 2.53:1 (needs 4.5:1, 12 sp)
+#120 LAYOUT CONTRAST «  Drop » 1.20:1 (needs 4.5:1, 13 sp)
+#120 LAYOUT CONTRAST «  Break » 2.11:1 (needs 4.5:1, 13 sp)
+#120 > touche 294 894
+#120 DOIGT tuto_listen «  Ouvir o exemplo »
+#121 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE fcde1d7d5c | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_break done=20 chapters=1,2,3,4,5,6 playing=false
+#121 SON Son : l'exemple du tuto joue (encore 3 s).
+#121 > attends 4
+#122 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 2f30eebe5c | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_break done=21 chapters=1,2,3,4,5,6 playing=false
+#122 SON Son : rien ne joue.
+#122 > touche 489 978
+#122 DOIGT tuto_next « Próximo  »
+#123 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 380018cc7c | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_phrases done=21 chapters=1,2,3,4,5,6 playing=false
+#123 SON Son : rien ne joue.
+#123 > touche 294 894
+#123 DOIGT tuto_mark «   Entendi »
+#124 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 0102ae99d7 | project=p-52d89fa8 tuto=minimal/Pro active=true step=map_phrases done=22 chapters=1,2,3,4,5,6,7 playing=false
+#124 SON Son : rien ne joue.
+#124 > fin
+#124 BENCH-VERDICT ok where=seat.fin
+#124 FIN : fin

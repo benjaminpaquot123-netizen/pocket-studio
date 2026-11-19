@@ -1,0 +1,69 @@
+Écran 35 (588x1278)
+icône « Meu projeto 1 » ✓ @ 298,36
+texte « Pro » @ 543,36
+bouton (dossier ouvert) @ 108,114
+bouton « A » ▾ @ 247,114
+icône ↶ @ 322,114
+bouton ● @ 394,114
+bouton ▶ « esta parte » @ 468,114
+icône (trois points reliés) @ 543,114
+bouton « 128  BPM » @ 73,186
+bouton « ? » @ 543,186
+onglet « Bateria 16 pads » [sélectionné] @ 77,255
+onglet « Acid 303 Linha de baixo » @ 248,255
+onglet « Voz Microfone » @ 432,255
+onglet « Remix Separar » [coupé] @ 543,255
+image → @ 577,256
+texte « Parte: A » @ 61,315
+texte « Compasso » [coupé] @ 95,343
+bouton « 1 » [coupé] @ 194,348
+bouton « 2 » [coupé, sélectionné] @ 275,348
+bouton « Seguir » [coupé] @ 378,348
+texte « Compasso 2/2 · Rim » @ 152,405
+texte « Faltam 4 casas pontilhadas aqui » @ 224,434
+bouton « 1 » [état « vazio »] @ 70,503
+bouton [état « vazio »] @ 133,503
+bouton [état « vazio »] @ 197,504
+bouton [état « vazia, pontilhada: toque »] @ 261,504
+bouton « 2 » [état « vazio »] @ 325,504
+bouton [état « vazio »] @ 389,504
+bouton [état « vazia, pontilhada: toque »] @ 453,504
+bouton [état « vazio »] @ 517,504
+bouton « 3 » [état « vazio »] @ 70,582
+bouton [état « vazio »] @ 133,582
+bouton [état « vazia, pontilhada: toque »] @ 197,583
+bouton [état « vazio »] @ 261,583
+bouton « 4 » [état « vazio »] @ 325,583
+bouton [état « vazia, pontilhada: toque »] @ 389,583
+bouton [état « vazio »] @ 453,583
+bouton [état « vazio »] @ 517,583
+bouton « Batidas » [sélectionné] @ 105,668
+bouton « Rufos » @ 229,668
+bouton « Pan » @ 334,668
+bouton « Altura » @ 440,668
+bouton « Intensidade » [coupé] @ 524,668
+texte « tudo » @ 175,752
+texte « 1/2 » @ 250,752
+texte « 1/4 » @ 325,752
+texte « ◀ » @ 400,752
+texte « ▶ » @ 475,752
+texte « Preencher » @ 89,752
+texte « Limpar » [coupé] @ 90,812
+icône (liste) « Capítulos » @ 445,879
+texte « A bateria Capítulo 2/14 · Etapa 4/7 · Pro » @ 208,879
+icône ⌃ @ 531,879
+icône « Sua vez: o rim deslocado em 2 compassos: o 2º compasso difere em uma batida. Ler » ⌃ @ 294,978
+icône ↶ « Desfazer » @ 66,1062
+icône ↷ « Refazer » [désactivé] @ 168,1062
+bouton ▶ « a música » @ 271,1062
+texte « 128 Andamento » @ 383,1062
+icône (trois points reliés) « Compartilhar » @ 508,1062
+onglet (ligne brisée et points) « Estrutura » @ 54,1158
+onglet (touches de piano) « Sons » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Mais » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentários » @ 162,1248

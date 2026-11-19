@@ -1,0 +1,41 @@
+Écran 106 (588x1278)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 111,42
+texte « Pro » @ 250,42
+icône ↶ @ 322,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône (trois points reliés) @ 543,42
+bouton « 128  BPM » @ 73,114
+bouton « ? » @ 543,114
+onglet « Linha do tempo » [désactivé] @ 125,192
+onglet « Partes » [sélectionné] @ 283,192
+titre « A MÚSICA » [état « Expandido »] @ 139,285
+bouton « ? » @ 214,285
+texte « Sua primeira parte: o Groove Capítulo 6/14 · Etapa 2/2 · Pro » @ 208,366
+icône (liste) « Capítulos » @ 445,366
+icône ⌄ @ 531,366
+texte « Esta etapa ainda não foi feita. Toque de novo em “Próximo” para pular mesmo assim. » @ 294,459
+texte « Sua vez: dê o nome “Groove” a esta cena: o loop completo, de onde você vai tirar as outras partes. » [coupé] @ 294,534
+bouton « Baixar o kit Minimal (1 MB) » @ 228,627
+texte « Mais tarde » @ 495,627
+texte « ▸ Por quê? » @ 294,693
+icône « Continuar lendo » ⌄ @ 294,741
+bouton ⊕ «   Nomear a parte “Groove” » @ 294,813
+bouton ▶ «  Ouvir o exemplo » @ 154,897
+bouton (œil) «  Mostre-me » @ 433,897
+icône ← «  Anterior » @ 97,978
+icône « Próximo  » → @ 489,978
+icône ↶ « Desfazer » @ 66,1062
+icône ↷ « Refazer » [désactivé] @ 168,1062
+bouton ▶ « a música » @ 271,1062
+texte « 128 Andamento » @ 383,1062
+icône (trois points reliés) « Compartilhar » @ 508,1062
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Mais » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentários » @ 162,1248

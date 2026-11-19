@@ -1,0 +1,58 @@
+Écran 115 (588x1278)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 111,42
+texte « Pro » @ 250,42
+icône ↶ @ 322,42
+bouton ● @ 394,42
+bouton ▶ « esta parte » @ 468,42
+icône (trois points reliés) @ 543,42
+bouton « 128  BPM » @ 73,114
+bouton « ? » @ 543,114
+onglet « Linha do tempo » [désactivé] @ 125,192
+onglet « Partes » [sélectionné] @ 283,192
+titre « A MÚSICA » [état « Expandido »] @ 139,285
+bouton « ? » @ 214,285
+texte « Entender as partes Capítulo 7/14 · Etapa 2/5 · Pro » @ 208,360
+icône (liste) « Capítulos » @ 445,360
+icône ⌄ @ 531,360
+texte « Ouça a Intro: o kick, o tic e o rim. » @ 208,441
+texte « Energia » @ 58,480
+texte « Intro » @ 56,573
+texte « 16 » @ 56,597
+texte « Intro 2 » @ 129,573
+texte « 16 » @ 129,597
+texte « Drop » @ 237,573
+texte « 32 » @ 238,597
+texte « 12 » @ 338,585
+texte « 4 » @ 376,585
+texte « Drop 2 » @ 441,573
+texte « 24 » @ 441,597
+texte « Fim » @ 532,573
+texte « 16 » @ 532,597
+texte «  Intro » @ 61,634
+texte «  Intro 2 » @ 149,634
+texte «  Drop » @ 237,634
+texte «  Break » @ 322,634
+texte «  Subida » @ 417,634
+texte «  Drop 2 » @ 517,634
+texte «  Fim » @ 56,664
+texte « Cada número: a duração da parte em compassos. » @ 248,694
+bouton « Baixar o kit Minimal (1 MB) » @ 228,765
+texte « Mais tarde » @ 495,765
+texte « ▸ Por quê? » @ 294,831
+bouton ■ «  Parar de ouvir » @ 294,894
+icône ← «  Anterior » @ 97,978
+icône « Próximo  » → @ 489,978
+icône ↶ « Desfazer » @ 66,1062
+icône ↷ « Refazer » [désactivé] @ 168,1062
+bouton ▶ « a música » @ 271,1062
+texte « 128 Andamento » @ 383,1062
+icône (trois points reliés) « Compartilhar » @ 508,1062
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 54,1158
+onglet (touches de piano) « Sons » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Mais » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentários » @ 162,1248

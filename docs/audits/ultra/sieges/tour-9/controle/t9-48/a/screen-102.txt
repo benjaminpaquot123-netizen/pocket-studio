@@ -1,0 +1,4 @@
+Écran 102 (588x1278)
+texte « Parte a editar » @ 298,183
+icône ✓ « A » @ 339,240
+icône + « Nova parte vazia » @ 339,314

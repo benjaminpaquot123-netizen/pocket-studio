@@ -1,0 +1,29 @@
+Écran 4 (588x1278)
+dessin @ 294,412
+texte « Andamento » @ 118,484
+bouton « ? » @ 233,484
+texte « Fechar » @ 510,484
+texte « 120 » @ 264,578
+icône − @ 60,578
+icône + @ 528,578
+texte «  BPM » @ 358,588
+bouton « 70 » @ 64,672
+bouton « 90 » @ 153,672
+bouton « 120 » [sélectionné] @ 250,672
+bouton « 140 » @ 355,672
+bouton « 174 » @ 460,672
+bouton « ½ » @ 60,753
+bouton « ×2 » @ 144,753
+bouton « 1 » @ 111,846
+bouton « 2 » @ 294,846
+bouton « 3 » @ 477,846
+bouton « 4 » @ 111,933
+bouton « 5 » @ 294,933
+bouton « 6 » @ 477,933
+bouton « 7 » @ 111,1020
+bouton « 8 » @ 294,1020
+bouton « 9 » @ 477,1020
+bouton ⌫ [désactivé] @ 111,1107
+bouton « 0 » @ 294,1107
+bouton « OK » [désactivé] @ 477,1107
+bouton (doigt qui touche) « Bater no ritmo Toque aqui a cada tempo: o andamento acompanha. » @ 294,1209

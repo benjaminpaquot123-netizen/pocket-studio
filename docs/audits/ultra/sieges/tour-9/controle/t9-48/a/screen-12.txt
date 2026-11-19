@@ -1,0 +1,30 @@
+Écran 12 (588x1278)
+dessin @ 294,378
+texte « Tonalidade da música » @ 240,450
+texte « Fechar » @ 510,450
+texte « Tom da música: Sol · Menor » @ 162,516
+texte « Escala » @ 58,561
+bouton « Maior » @ 74,627
+bouton « Menor » @ 189,627
+bouton « Dórico » @ 309,627
+bouton « Penta menor » @ 463,627
+bouton « Penta maior » @ 109,708
+bouton « Blues » @ 252,708
+bouton « Frígio » @ 361,708
+bouton « Menor harmônica » @ 141,789
+texte « Tônica » @ 58,855
+bouton « Dó » @ 63,921
+bouton « Dó♯ » @ 151,921
+bouton « Ré » @ 239,921
+bouton « Mi♭ » @ 326,921
+bouton « Mi » @ 413,921
+bouton « Fá » @ 500,921
+bouton « Fá♯ » @ 63,1002
+bouton « Sol » @ 150,1002
+bouton « Lá♭ » @ 237,1002
+bouton « Lá » @ 324,1002
+bouton « Si♭ » @ 411,1002
+bouton « Si » @ 498,1002
+image (rond coché) @ 58,1101
+texte « Conseguiu! A cor da música está escolhida. » @ 316,1101
+bouton « Voltar ao tutorial » @ 294,1203

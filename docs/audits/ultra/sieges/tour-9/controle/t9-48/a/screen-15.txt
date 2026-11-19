@@ -1,0 +1,48 @@
+Écran 15 (588x1278)
+icône « Meu projeto 1 » ✓ @ 298,36
+texte « Pro » @ 543,36
+bouton (dossier ouvert) @ 108,114
+bouton « A » ▾ @ 247,114
+icône ↶ @ 322,114
+bouton ● @ 394,114
+bouton ▶ « esta parte » @ 468,114
+icône (trois points reliés) @ 543,114
+bouton « 128  BPM » @ 73,186
+bouton « ? » @ 543,186
+onglet « Bateria 16 pads » [sélectionné] @ 77,255
+onglet « Acid 303 Linha de baixo » @ 248,255
+onglet « Voz Microfone » @ 432,255
+onglet « Remix Separar » [coupé] @ 543,255
+image → @ 577,256
+texte « Parte: A » @ 61,315
+texte « Capturar a música inteira: » [coupé] @ 160,347
+texte « 1 compasso » [coupé] @ 366,355
+texte « 2 comp. » @ 102,416
+texte « 4 comp. » @ 231,416
+texte « Coloque seu próprio som neste pad: um arquivo do aparelho (MP3, WAV, FLAC, M4A…) ou o microfone. » @ 294,491
+bouton « Metrônomo » @ 125,614
+bouton « Contagem » @ 298,614
+bouton « ? » @ 409,614
+bouton « Efeitos » @ 494,614
+bouton « ? » @ 133,683
+texte « Swing » @ 77,684
+texte « 0% » @ 528,683
+curseur [état « 0% », à 0 %] @ 294,753
+icône (liste) « Capítulos » @ 445,879
+texte « O tempo e a tonalidade Capítulo 1/14 · Etapa 4/4 · Pro » @ 208,879
+icône ⌃ @ 531,879
+icône « Sua vez: coloque o swing em uns 20%: as batidinhas entre os tempos se arrastam, o groove começa a balançar. Ler » ⌃ @ 294,978
+icône ↶ « Desfazer » @ 66,1062
+icône ↷ « Refazer » [désactivé] @ 168,1062
+bouton ▶ « a música » @ 271,1062
+texte « 128 Andamento » @ 383,1062
+icône (trois points reliés) « Compartilhar » @ 508,1062
+onglet (ligne brisée et points) « Estrutura » @ 54,1158
+onglet (touches de piano) « Sons » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Mais » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentários » @ 162,1248

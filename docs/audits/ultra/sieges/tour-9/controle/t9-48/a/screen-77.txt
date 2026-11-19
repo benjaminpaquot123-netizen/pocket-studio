@@ -1,0 +1,45 @@
+Écran 77 (588x1278)
+icône « Meu projeto 1 » ✓ @ 298,36
+texte « Pro » @ 543,36
+bouton (dossier ouvert) @ 108,114
+bouton « A » ▾ @ 247,114
+icône ↶ @ 322,114
+bouton ● @ 394,114
+bouton ▶ « esta parte » @ 468,114
+icône (trois points reliés) @ 543,114
+bouton « 128  BPM » @ 73,186
+bouton « ? » @ 543,186
+onglet « Voz Microfone » [coupé] @ 51,258
+onglet « Remix Separar » @ 155,258
+bouton « Baixo Baixo pluck » @ 309,258
+bouton « Acordes Pluck » ⋮ @ 482,258
+image ← @ 10,259
+image → @ 577,259
+texte « Parte: A » @ 61,321
+bouton « Acordes » [coupé, sélectionné] @ 109,388
+bouton « Baixo fantasma » [coupé, sélectionné] @ 284,388
+texte « No ritmo 50% » [coupé] @ 468,385
+texte « O stab dub Capítulo 4/14 · Feito · Pro » @ 208,456
+icône (liste) « Capítulos » @ 445,456
+icône ⌄ @ 531,456
+image (coupe) @ 57,573
+texte « Muito bem, capítulo concluído! » @ 249,546
+texte « Ouça sua música como está agora e depois passe para o próximo capítulo: “O sino que se desloca”. » @ 319,588
+bouton « Próximo capítulo   » → @ 294,888
+icône ← @ 57,975
+bouton ▶ «  Ouvir minha música » @ 216,975
+bouton ▶ «  Ouvir o exemplo » @ 453,975
+icône ↶ « Desfazer » @ 66,1062
+icône ↷ « Refazer » [désactivé] @ 168,1062
+bouton ▶ « a música » @ 271,1062
+texte « 128 Andamento » @ 383,1062
+icône (trois points reliés) « Compartilhar » @ 508,1062
+onglet (ligne brisée et points) « Estrutura » @ 54,1158
+onglet (touches de piano) « Sons » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Mais » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Anotar » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentários » @ 162,1248

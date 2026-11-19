@@ -67,4 +67,6 @@ Mineurs :
 - m10. tour-9-L6-rapport.md:22 : « corrige: F105 » alors que la moitié « nommer la partie éditée » est abandonnée (décision G1) et seulement notée dans les restes. À écrire « tenté » ou « moitié » dans la ligne `corrige:` pour que le tri ne déclare pas F105 constaté en entier.
 - Restent ouverts, sans changement : m1 à m5 (D08) ; le branchement `renameScene` dans AppRoot.kt (D10) et la ligne `doneGoesAtNextGesture` (F111), hors lot, chez le chef.
 
+relu : d299eb05
+
 Verdict : 0 bloquant, 0 grave

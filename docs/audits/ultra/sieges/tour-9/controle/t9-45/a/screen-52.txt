@@ -1,0 +1,51 @@
+Écran 52 (540x1170)
+bouton (dossier ouvert) ✓ @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 174  BPM » @ 73,114
+icône « Intro maat 1/136 » ▾ @ 228,114
+bouton (flèches en boucle) [état « uit »] @ 414,114
+bouton « ? » @ 495,114
+image (courbe) @ 0,0
+bouton « ? » @ 482,195
+texte « Volumes » @ 248,196
+texte « Schuif een fader voor het volume; tik op de naam van een spoor voor zijn effecten en curves. » @ 270,250
+texte « Drums » @ 84,343
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 57,418
+bouton (casque) [état « uit »] @ 111,418
+curseur [état « +0,0 dB », à 80 %] @ 84,589
+texte « Acid 303 » @ 204,343
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 177,418
+bouton (casque) [état « uit »] @ 231,418
+curseur [état « +0,0 dB », à 80 %] @ 204,589
+texte « Bas » @ 324,343
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 297,418
+bouton (casque) [état « uit »] @ 351,418
+curseur [état « +0,0 dB », à 80 %] @ 324,589
+texte « Sub » @ 444,343
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 417,418
+bouton (casque) [état « uit »] @ 471,418
+curseur [état « +0,0 dB », à 80 %] @ 444,589
+texte « Akkoorden » [coupé] @ 517,343
+bouton (haut-parleur et ondes) [coupé, allumé, état « aan »] @ 517,418
+icône (liste) « Hoofdstukken » @ 391,771
+texte « De effecten Hoofdstuk 14/17 · Stap 1/2 · Pro » @ 178,771
+icône ⌃ @ 483,771
+icône « Nu jij: tik in Mix op de naam van het spoor ‘Akkoorden’, en zet dan in ‘Galm en echo’ de ‘Galm-send’ hoger. Doe hetzelfde op het kanaal van de pad ‘Snare’. In liquid zit de galm op de muziek, nauwelijks op de drums: de piano zweeft, de drums blijven strak. Lees » ⌃ @ 270,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

@@ -1,0 +1,16 @@
+Écran 61 (540x1170)
+texte « Wat wil je laten bewegen? » @ 270,189
+texte « 1. Kies het spoor: » @ 138,276
+bouton « Drums » @ 117,345
+bouton « Acid 303 » @ 270,345
+bouton « Bas » @ 408,345
+bouton « Sub » @ 103,426
+bouton « Akkoorden » [sélectionné] @ 253,426
+bouton « Melodie » @ 124,507
+bouton « Remix » @ 270,507
+bouton « Gedeelde galm en echo » @ 203,588
+texte « 2. Wat beweegt er op „Akkoorden”: » @ 227,657
+texte « Akkoorden » @ 133,708
+bouton « Filter (sweep) Zet een filter op dit spoor en laat het open- of dichtgaan: het effect dat je het meest hoort. » @ 270,802
+bouton « Volume Harder of zachter: fades, inzetten, onderbrekingen. » [coupé] @ 270,899
+texte « Sluiten » @ 434,992

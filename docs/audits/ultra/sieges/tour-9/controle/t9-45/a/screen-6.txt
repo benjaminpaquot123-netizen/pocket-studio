@@ -1,0 +1,42 @@
+Écran 6 (540x1170)
+bouton (dossier ouvert) ✓ @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 174  BPM » @ 73,114
+icône « Intro maat 1/8 » ▾ @ 218,114
+bouton (flèches en boucle) [état « uit »] @ 414,114
+bouton « ? » @ 495,114
+bouton « Akkoorden van het nummer B · Intro Am  G  C  C  Am  G  C  C Tik om de akkoorden van het hele nummer te wijzigen. » @ 270,257
+icône ▶ « B · Intro × 1  ·  8 maten » @ 162,389
+icône − [désactivé] @ 318,389
+icône + @ 390,389
+icône ⋮ @ 462,389
+texte « − / + : herhalingen. Grijs: vaste duur (aangeraden of Live) of maar 1 keer. » @ 270,470
+texte « Achteraan toevoegen: » @ 151,524
+bouton « + A · Groove » @ 141,587
+bouton « + B · Intro » @ 336,587
+bouton « + C · Opbouw » @ 148,668
+bouton « + D · Drop » @ 350,668
+bouton « + E · Break » [coupé] @ 133,721
+bouton « + F · Drop 2 » [coupé] @ 328,721
+icône (liste) « Hoofdstukken » @ 391,771
+texte « Zet je delen op volgorde Hoofdstuk 12/17 · Stap 1/2 · Pro » @ 178,771
+icône ⌃ @ 483,771
+icône « Nu jij: tik in ‘Structuur’, onder ‘Toevoegen’, op volgorde de knoppen die eindigen op Intro, Opbouw, Drop, Break, Opbouw, Drop 2 en Einde (bijvoorbeeld ‘+ B · Intro’). De lengtes kloppen nog niet: de volgende stap stelt ze in. Lees » ⌃ @ 270,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » [sélectionné] @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

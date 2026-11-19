@@ -1,0 +1,40 @@
+Écran 40 (540x1170)
+bouton (dossier ouvert) ✓ @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 174  BPM » @ 73,114
+icône « Intro maat 1/136 » ▾ @ 228,114
+bouton (flèches en boucle) [état « uit »] @ 414,114
+bouton « ? » @ 495,114
+image (courbe) @ 0,0
+texte « ? » [coupé] @ 482,177
+icône (liste) « Hoofdstukken » @ 391,228
+texte « De effecten Hoofdstuk 14/17 · Stap 1/2 · Pro » @ 178,228
+icône ⌄ @ 483,228
+texte « Nu jij: tik in Mix op de naam van het spoor ‘Akkoorden’, en zet dan in ‘Galm en echo’ de ‘Galm-send’ hoger. Doe hetzelfde op het kanaal van de pad ‘Snare’. In liquid zit de galm op de muziek, nauwelijks op de drums: de piano zweeft, de drums blijven strak. » [coupé] @ 270,363
+bouton « Kit Liquid DnB downloaden (2 MB) » @ 223,492
+texte « Later » @ 466,492
+texte « ▸ Waarom? » @ 270,558
+icône « Verder lezen » ⌄ @ 270,606
+bouton (doigt qui touche) «   Ik doe het » @ 270,699
+bouton ▶ «  Luister naar het voorbeeld » @ 142,786
+bouton (œil) «  Laat zien » @ 397,786
+icône ← «  Vorige » @ 89,870
+icône « Volgende  » → @ 436,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

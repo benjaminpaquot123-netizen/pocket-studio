@@ -1,0 +1,49 @@
+Écran 69 (540x1170)
+bouton (dossier ouvert) ✓ @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 174  BPM » @ 73,114
+icône « Intro maat 1/136 » ▾ @ 228,114
+bouton (flèches en boucle) [état « uit »] @ 414,114
+bouton « ? » @ 495,114
+image (courbe) @ 0,0
+texte « Lijn: tik het begin en dan het einde (of schuif van het ene naar het andere); een rechte helling verbindt ze. » [coupé] @ 270,174
+texte « 18,0 kHz » @ 81,225
+texte « 849 Hz » @ 85,315
+texte « 40 Hz » @ 91,405
+texte « tel » [coupé] @ 81,427
+texte « 1 » [coupé] @ 133,426
+texte « 3 » [coupé] @ 182,426
+texte « 5 » [coupé] @ 228,426
+texte « 7 » [coupé] @ 274,426
+texte « 9 » [coupé] @ 321,426
+texte « 11 » [coupé] @ 371,426
+texte « 13 » [coupé] @ 419,426
+texte « 15 » [coupé] @ 466,426
+icône (liste) « Hoofdstukken » @ 391,480
+texte « De effecten Hoofdstuk 14/17 · Klaar · Pro » @ 178,480
+icône ⌄ @ 483,480
+image (coupe) @ 57,597
+texte « Goed gedaan, hoofdstuk klaar! » @ 248,570
+texte « Luister naar je nummer zoals het nu is en ga dan naar het volgende hoofdstuk: ‘De mix’. » @ 295,612
+bouton « Volgend hoofdstuk   » → @ 270,699
+bouton ▶ «  Mijn nummer beluisteren » @ 142,786
+bouton ▶ «  Luister naar het voorbeeld » @ 397,786
+icône ← «  Vorige » @ 89,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

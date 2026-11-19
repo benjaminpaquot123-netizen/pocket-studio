@@ -1,0 +1,25 @@
+Écran 95 (540x1170)
+dessin @ 270,77
+icône ✕ @ 474,149
+texte « Klaar om te delen? » @ 234,149
+champ « Naam van het nummer (en van het project) » contenu « Nachtlijn » @ 270,252
+icône ✕ @ 474,259
+texte « ‘Delen’ geeft ook het project ‘Mijn project 1’ deze naam. » @ 270,346
+texte « 3:08 » @ 66,411
+texte « 6 delen » @ 153,416
+texte « Volume: −8,0, luid, zoals clubmuziek » @ 163,458
+bouton ▶ «  Luisteren » @ 409,460
+bouton « ? » @ 275,506
+texte « details » @ 211,507
+bouton « Streaming » @ 233,582
+bouton « Club » [sélectionné] @ 367,582
+texte « Doelvolume » @ 88,582
+bouton « Auto (stijl) » @ 108,663
+bouton « ? » @ 217,663
+image (rond coché) @ 45,734
+texte « Alles klaar: geen vergeten solo, geen gedempt spoor. » @ 292,747
+bouton « M4A · om te delen » @ 147,849
+bouton « WAV · max. kwaliteit » [sélectionné] @ 159,930
+bouton (trois points reliés) «   Delen » @ 270,1026
+bouton (dossier) « Mijn bestanden Terugvinden en opnieuw versturen: M4A, WAV, video, .zip » › @ 248,1128
+bouton « ? » @ 488,1128

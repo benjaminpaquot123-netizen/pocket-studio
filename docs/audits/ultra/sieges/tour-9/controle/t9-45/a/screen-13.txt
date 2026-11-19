@@ -1,0 +1,38 @@
+Écran 13 (540x1170)
+bouton (dossier ouvert) ✓ @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 174  BPM » @ 73,114
+icône « Intro maat 1/48 » ▾ @ 221,114
+bouton (flèches en boucle) [état « uit »] @ 414,114
+bouton « ? » @ 495,114
+bouton « Akkoorden van het nummer B · Intro Am  G  C  C  Am  G  C  C C · Opbouw Am  G  C  C D · Drop F  Em  Am  Am  F  Em  Am  Am E · Break Am  G  C  C  Am  G  C  C F · Drop 2 F  Em  Am  Am  F  Em  Am  Am G · Einde Am  G  C  C  Am  G  C  C Tik om de akkoorden van het hele nummer te wijzigen. » [coupé] @ 270,161
+icône ▶ « B · Intro × 1  ·  8 maten » [coupé] @ 162,191
+texte « Zet je delen op volgorde Hoofdstuk 12/17 · Stap 2/2 · Pro » @ 178,240
+icône (liste) « Hoofdstukken » @ 391,240
+icône ⌄ @ 483,240
+texte « Nu jij: geef elk deel zijn lengte: Intro 24, Opbouw 8, Drop 32, Break 16, Drop 2 32 en Einde 16. Tik op een deel, typ onder ‘Lengte’ het aantal maten en tik op ‘OK’. De knop ‘Aanbevolen lengtes invullen’ doet het in één keer. » @ 270,411
+bouton « Kit Liquid DnB downloaden (2 MB) » @ 223,576
+texte « Later » @ 466,576
+texte « ▸ Waarom? » @ 270,642
+bouton ⊕ «   Aanbevolen lengtes invullen » @ 270,705
+bouton (œil) «  Laat zien » @ 270,789
+icône ← «  Vorige » @ 89,870
+icône « Volgende  » → @ 436,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » [sélectionné] @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

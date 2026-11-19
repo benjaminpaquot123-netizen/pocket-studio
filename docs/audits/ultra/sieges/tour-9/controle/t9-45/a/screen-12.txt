@@ -1,0 +1,43 @@
+Écran 12 (540x1170)
+bouton (dossier ouvert) ✓ @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 174  BPM » @ 73,114
+icône « Intro maat 1/48 » ▾ @ 221,114
+bouton (flèches en boucle) [état « uit »] @ 414,114
+bouton « ? » @ 495,114
+icône ▶ « G · Einde × 1  ·  8 maten » @ 162,186
+icône − [désactivé] @ 318,186
+icône + @ 390,186
+icône ⋮ @ 462,186
+texte « − / + : herhalingen. Grijs: vaste duur (aangeraden of Live) of maar 1 keer. » @ 270,267
+texte « Achteraan toevoegen: » @ 151,321
+bouton « + A · Groove » @ 141,384
+bouton « + B · Intro » @ 336,384
+bouton « + C · Opbouw » @ 148,465
+bouton « + D · Drop » @ 350,465
+bouton « + E · Break » @ 133,546
+bouton « + F · Drop 2 » @ 328,546
+bouton « + G · Einde » @ 134,627
+bouton « + Nieuw deel (kopie van G · Einde) » [coupé] @ 254,697
+icône (liste) « Hoofdstukken » @ 391,771
+texte « Zet je delen op volgorde Hoofdstuk 12/17 · Stap 1/2 · Pro » @ 178,771
+icône ⌃ @ 483,771
+icône (rond coché) « Gelukt Volgende stap » → @ 270,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » [sélectionné] @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

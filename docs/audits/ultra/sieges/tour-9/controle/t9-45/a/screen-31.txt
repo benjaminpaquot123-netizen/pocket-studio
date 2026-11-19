@@ -1,0 +1,65 @@
+Écran 31 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+texte « Pro » @ 495,36
+bouton (dossier ouvert) @ 87,114
+bouton « C » ▾ @ 204,114
+icône ↶ @ 279,114
+bouton ● @ 351,114
+bouton ▶ « dit deel » @ 423,114
+icône (trois points reliés) @ 495,114
+bouton « 174  BPM » @ 73,186
+icône « Intro maat 1/136 » ▾ @ 228,186
+bouton (flèches en boucle) [état « uit »] @ 414,186
+bouton « ? » @ 495,186
+onglet « Drums 16 pads » [sélectionné] @ 76,255
+onglet « Acid 303 Baslijn » @ 223,255
+onglet « Zang Microfoon » @ 382,255
+onglet « Remix Splitsen » [coupé] @ 494,255
+image → @ 529,256
+texte « Deel: C · Opbouw » @ 109,315
+texte « 3 slagen te veel hier (doorgestreept) » @ 250,350
+bouton « 1 » [état « slag, kracht 58 % »] @ 67,416
+bouton [état « slag, kracht 29 % »] @ 124,416
+bouton [état « slag, kracht 58 % »] @ 182,416
+bouton [état « slag, kracht 28 % »] @ 240,416
+bouton « 2 » [état « slag, kracht 61 % »] @ 298,416
+bouton [état « slag, kracht 29 % »] @ 356,416
+bouton [état « slag, kracht 58 % »] @ 414,416
+bouton [état « slag, kracht 28 % »] @ 472,416
+bouton « 3 » [état « slag, kracht 59 % »] @ 67,487
+bouton [état « slag, kracht 30 % »] @ 124,487
+bouton [état « slag, kracht 55 % »] @ 182,487
+bouton [état « slag, kracht 27 % »] @ 240,487
+bouton « 4 » [état « leeg »] @ 298,487
+bouton [état « slag, kracht 30 %, doorgestreept: weghalen »] @ 356,487
+bouton [état « slag, kracht 55 %, doorgestreept: weghalen »] @ 414,487
+bouton [état « slag, kracht 28 %, doorgestreept: weghalen »] @ 472,487
+bouton « Slagen » [sélectionné] @ 102,568
+bouton « Rolls » @ 218,568
+bouton « Pan » @ 319,568
+bouton « Toonhoogte » [coupé] @ 434,568
+texte « alles » @ 140,652
+texte « 1/2 » @ 216,652
+texte « 1/4 » @ 291,652
+texte « ◀ » @ 366,652
+texte « ▶ » @ 441,652
+texte « Vullen » @ 71,652
+texte « Wissen » [coupé] @ 93,708
+icône (liste) « Hoofdstukken » @ 391,771
+texte « De overgangen Hoofdstuk 13/17 · Stap 2/3 · Pro » @ 178,771
+icône ⌃ @ 483,771
+icône « Nu jij: wis in het deel ‘Opbouw’, laatste maat, de slagen van de laatste tel (tik op elk rood kruisje): één tel stilte vlak voor de Drop. Lees » ⌃ @ 270,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

@@ -1,0 +1,44 @@
+Écran 62 (540x1170)
+bouton (dossier ouvert) ✓ @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 174  BPM » @ 73,114
+icône « Intro maat 1/136 » ▾ @ 228,114
+bouton (flèches en boucle) [état « uit »] @ 414,114
+bouton « ? » @ 495,114
+image (courbe) @ 0,0
+texte « Nieuwe curve: teken hem hieronder. » @ 239,171
+texte « Wissen » @ 345,231
+texte « Akkoorden » @ 140,214
+icône (poubelle) @ 450,231
+texte « Filter Cutoff » @ 114,251
+texte « Opent (helder) of sluit (dof) het geluid: de filtersweep. » @ 378,316
+bouton (curseurs) «  Toon de instelling » @ 198,402
+bouton « Loop » [sélectionné] @ 104,483
+bouton « Per deel » @ 230,483
+bouton « Nummer » @ 373,483
+texte « Dezelfde curve bij elke ronde van de loop (64 stappen). » @ 270,555
+texte « Om deze instelling over een deel van het nummer te veranderen (luider aan het begin…), kies „Nummer”. » @ 270,631
+bouton (pinceau) « Tekenen » [coupé, sélectionné] @ 134,708
+bouton (courbe) « Lijn » [coupé] @ 278,708
+icône (liste) « Hoofdstukken » @ 391,771
+texte « De effecten Hoofdstuk 14/17 · Stap 2/2 · Pro » @ 178,771
+icône ⌃ @ 483,771
+icône « Nu jij: automatiseer de ‘Cutoff’ van het filter van het spoor ‘Akkoorden’ in de Opbouw: ‘Een instelling automatiseren’, ‘Akkoorden’, ‘Filter (sweep)’, dan ‘Per deel’, en teken een curve die stijgt van begin tot eind van de Opbouw. Lees » ⌃ @ 270,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

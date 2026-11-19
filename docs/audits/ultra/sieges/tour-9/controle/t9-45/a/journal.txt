@@ -1,0 +1,652 @@
+#0 SIEGE lang=nl device=phone360 font=100 mode=pro theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:liquid_dnb:12
+#0 PREMIER ECRAN reel_s=5.6 simule_s=2.4 jvm_s=13.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:liquid_dnb:12
+#0 AMENEE > touche 270 928 (launch_learn)
+#0 AMENEE > touche 270 1035 (mode_card_pro)
+#0 AMENEE > touche 270 1105 (tuto_style_liquid_dnb)
+#0 AMENEE chapitres 1 à 11 construits dans le projet
+#0 AMENEE > touche 391 336 (tuto_chapters)
+#0 AMENEE > touche 270 1110 (tuto_quit)
+#0 AMENEE > touche 135 876 (tuto_resume)
+#0 AMENEE chapitres 1 à 11 cochés (39 étapes)
+#0 AMENEE > touche 391 234 (tuto_chapters)
+#0 AMENEE > touche 270 846 (tuto_chapter_11)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 9a50be0d62 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT OVERLAP « Zet je delen op volgorde » over the touchable « Tempo: 174 BPM Tempo wijzigen » (77 x 11 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Waarom? » 332 x 20 dp (touch 332 x 48)
+#1 > touche 49 1050
+#1 DOIGT tab_Structure « Structuur »
+#2 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 73135fe174 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 483 234
+#2 DOIGT tuto_fold
+#3 ROUTE tab_Structure | MODE pro | EMPREINTE 36222c332d | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « Nu jij: tik in ‘Structuur’, onder ‘Toevoegen’, op volgorde de knoppen die eindigen op Intro, Opbouw, Drop, Break, Opbouw, Drop 2 en Einde (bijvoorbeeld ‘+ B · Intro’). De lengtes kloppen nog niet: de volgende stap stelt ze in. » ellipsized (« … »)
+#3 > touche 336 463
+#3 DOIGT add_part_1 « + B · Intro »
+#4 ROUTE tab_Structure | MODE pro | EMPREINTE 04023bc48b | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Volgen » 4.06:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT TARGET « Geluid van Drums Geluid van Drums uit aan » 40 x 22 dp (touch 48 x 48)
+#4 LAYOUT TARGET « Spoor Drums solo uit » 40 x 22 dp (touch 48 x 48)
+#4 LAYOUT TARGET « Geluid van Bas Geluid van Bas uit aan » 40 x 22 dp (touch 48 x 48)
+#4 LAYOUT TARGET « Spoor Bas solo uit » 40 x 22 dp (touch 48 x 48)
+#4 LAYOUT TARGET « Geluid van Sub Geluid van Sub uit aan » 40 x 22 dp (touch 48 x 48)
+#4 LAYOUT TARGET « Spoor Sub solo uit » 40 x 22 dp (touch 48 x 48)
+#4 LAYOUT TARGET « Geluid van Akkoorden Geluid van Akkoorden uit aan » 40 x 22 dp (touch 48 x 48)
+#4 LAYOUT TARGET « Spoor Akkoorden solo uit » 40 x 22 dp (touch 48 x 48)
+#4 LAYOUT TARGET « Geluid van Melodie Geluid van Melodie uit aan » 40 x 22 dp (touch 48 x 48)
+#4 LAYOUT TARGET « Spoor Melodie solo uit » 40 x 22 dp (touch 48 x 48)
+#4 > touche 210 183
+#4 DOIGT structure_parts « Onderdelen »
+#5 ROUTE tab_Structure | MODE pro | EMPREINTE d80c6bd69b | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#5 SON Son : rien ne joue.
+#5 > glisse 270 650 270 350
+#5 DOIGT part_play_0 « B · Intro »
+#6 ROUTE tab_Structure | MODE pro | EMPREINTE 90fc3c175b | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 148 668
+#6 DOIGT add_part_2 « + C · Opbouw »
+#7 ROUTE tab_Structure | MODE pro | EMPREINTE fb7beb1ed8 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 350 465
+#7 DOIGT add_part_3 « + D · Drop »
+#8 ROUTE tab_Structure | MODE pro | EMPREINTE c0db985b68 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 133 546
+#8 DOIGT add_part_4 « + E · Break »
+#9 ROUTE tab_Structure | MODE pro | EMPREINTE 5d30b9dc11 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 148 465
+#9 DOIGT add_part_2 « + C · Opbouw »
+#10 ROUTE tab_Structure | MODE pro | EMPREINTE 89ced18b4b | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 328 546
+#10 DOIGT add_part_5 « + F · Drop 2 »
+#11 ROUTE tab_Structure | MODE pro | EMPREINTE 36fd68708e | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=39 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 134 627
+#11 DOIGT add_part_6 « + G · Einde »
+#12 ROUTE tab_Structure | MODE pro | EMPREINTE bd54c7fb12 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_order done=40 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 270 870
+#12 DOIGT tuto_next_folded « Gelukt »
+#13 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE f478b038b9 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_phrases done=40 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « Tik om de akkoorden van het hele nummer te wijzigen. » over the touchable « Tempo: 174 BPM Tempo wijzigen » (53 x 4 dp)
+#13 LAYOUT OVERLAP « Tik om de akkoorden van het hele nummer te wijzigen. » over the touchable « Afspelen vanaf een deel » (101 x 4 dp)
+#13 LAYOUT OVERLAP « Tik om de akkoorden van het hele nummer te wijzigen. » over the touchable « Het deel herhalen in plaats van het numm » (48 x 4 dp)
+#13 LAYOUT OVERLAP « Tik om de akkoorden van het hele nummer te wijzigen. » over the touchable « Het scherm labelen » (3 x 4 dp)
+#13 > touche 483 240
+#13 DOIGT tuto_fold
+#14 ROUTE tab_Structure | MODE pro | EMPREINTE 121eb09a00 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_phrases done=40 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 462 233
+#14 DOIGT part_menu_0
+#14 DIALOGUE 0.7 s
+#15 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE ce00e42d90 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_phrases done=40 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Deel 1 · B · Intro » over the touchable « Blad sluiten » (160 x 28 dp)
+#15 LAYOUT OVERLAP « 8 maten » over the touchable « Blad sluiten » (55 x 17 dp)
+#15 LAYOUT OVERLAP « Sluiten » over the touchable « Blad sluiten » (48 x 20 dp)
+#15 LAYOUT OVERLAP « Variatie » over the touchable « Blad sluiten » (52 x 20 dp)
+#15 LAYOUT OVERLAP « Fill aan het einde » over the touchable « Blad sluiten » (74 x 40 dp)
+#15 LAYOUT OVERLAP « Break erna · 4 maten » over the touchable « Blad sluiten » (94 x 40 dp)
+#15 LAYOUT OVERLAP « Break erna · 8 maten » over the touchable « Blad sluiten » (93 x 40 dp)
+#15 LAYOUT OVERLAP « Opbouw ervoor · 4 maten » over the touchable « Blad sluiten » (106 x 40 dp)
+#15 LAYOUT OVERLAP « Opbouw ervoor · 8 maten » over the touchable « Blad sluiten » (106 x 40 dp)
+#15 LAYOUT OVERLAP « Fade-in » over the touchable « Blad sluiten » (52 x 20 dp)
+#15 LAYOUT OVERLAP « Fade-out » over the touchable « Blad sluiten » (62 x 20 dp)
+#15 LAYOUT OVERLAP « Einde toevoegen » over the touchable « Blad sluiten » (71 x 40 dp)
+#15 LAYOUT OVERLAP « Energie: 3 » over the touchable « Blad sluiten » (68 x 20 dp)
+#15 LAYOUT OVERLAP « 1 · pads » over the touchable « Blad sluiten » (52 x 20 dp)
+#15 LAYOUT OVERLAP « 2 · + bas » over the touchable « Blad sluiten » (58 x 20 dp)
+#15 LAYOUT OVERLAP « 3 · + drums » over the touchable « Blad sluiten » (77 x 20 dp)
+#15 LAYOUT OVERLAP « 4 · alles erin » over the touchable « Blad sluiten » (83 x 20 dp)
+#15 LAYOUT OVERLAP « Lengte » over the touchable « Blad sluiten » (46 x 20 dp)
+#15 LAYOUT OVERLAP « maten » over the touchable « Blad sluiten » (38 x 18 dp)
+#15 LAYOUT OVERLAP « OK » over the touchable « Blad sluiten » (21 x 20 dp)
+#15 LAYOUT OVERLAP « Deel » over the touchable « Blad sluiten » (30 x 20 dp)
+#15 LAYOUT OVERLAP « Hernoemen » over the touchable « Blad sluiten » (80 x 20 dp)
+#15 LAYOUT OVERLAP « Wat speelt » over the touchable « Blad sluiten » (72 x 20 dp)
+#15 LAYOUT OVERLAP « Omhoog » over the touchable « Blad sluiten » (59 x 5 dp)
+#15 LAYOUT OVERLAP « Omlaag » over the touchable « Blad sluiten » (53 x 5 dp)
+#15 > touche 315 968
+#15 DOIGT name_clear
+#15 DIALOGUE 0.2 s
+#16 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE cca204bd82 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_phrases done=40 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « maten » over the touchable « Blad sluiten » (47 x 24 dp)
+#16 > ecris 24
+#16 DIALOGUE 0.2 s
+#17 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE c616ff34d9 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_phrases done=40 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 250 961
+#17 DOIGT part_bars_field « maten »
+#17 DIALOGUE 0.3 s
+#18 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE cca204bd82 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_phrases done=40 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#18 SON Son : rien ne joue.
+#18 > ecris 24
+#18 DIALOGUE 0.2 s
+#19 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE a20793017c | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_phrases done=40 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 403 961
+#19 DOIGT part_bars_ok « OK »
+#19 DIALOGUE 0.3 s
+#20 ROUTE tab_Structure | MODE pro | EMPREINTE 4942602930 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_phrases done=40 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT OVERLAP « × 1  ·  4 maten » over « Klaar: nieuwe lengte voor B · Intro » (99 x 6 dp)
+#20 LAYOUT OVERLAP « F · Drop 2 » over « Klaar: nieuwe lengte voor B · Intro » (83 x 11 dp)
+#20 LAYOUT OVERLAP « Klaar: nieuwe lengte voor B · Intro » over the touchable « Vanaf dit deel spelen » (132 x 13 dp)
+#20 LAYOUT OVERLAP « Klaar: nieuwe lengte voor B · Intro » over the touchable « Vanaf dit deel spelen » (132 x 19 dp)
+#20 LAYOUT OVERLAP « Annuleren » floats over the touchable « Eén herhaling meer » (31 x 5 dp)
+#20 LAYOUT OVERLAP « Annuleren » floats over the touchable « Meer acties » (40 x 5 dp)
+#20 LAYOUT CONTRAST « × 1  ·  4 maten » 1.39:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Annuleren » 3.63:1 (needs 4.5:1, 14 sp)
+#20 > touche 483 771
+#20 DOIGT tuto_fold
+#21 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 0bae764725 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_phrases done=40 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT OVERLAP « Tik om de akkoorden van het hele nummer te wijzigen. » over « Klaar: nieuwe lengte voor B · Intro » (181 x 13 dp)
+#21 LAYOUT OVERLAP « Tik om de akkoorden van het hele nummer te wijzigen. » over « Annuleren » (49 x 6 dp)
+#21 LAYOUT OVERLAP «  BPM » over « Klaar: nieuwe lengte voor B · Intro » (24 x 14 dp)
+#21 LAYOUT OVERLAP « Intro » over « Klaar: nieuwe lengte voor B · Intro » (33 x 4 dp)
+#21 LAYOUT OVERLAP « maat 1/64 » over « Klaar: nieuwe lengte voor B · Intro » (71 x 17 dp)
+#21 LAYOUT OVERLAP « ? » over « Annuleren » (5 x 6 dp)
+#21 LAYOUT OVERLAP « Klaar: nieuwe lengte voor B · Intro » over the touchable « Akkoorden van het nummer » (181 x 16 dp)
+#21 LAYOUT OVERLAP « Klaar: nieuwe lengte voor B · Intro » over the touchable « Tempo: 174 BPM Tempo wijzigen » (35 x 28 dp)
+#21 LAYOUT OVERLAP « Klaar: nieuwe lengte voor B · Intro » over the touchable « Afspelen vanaf een deel » (101 x 28 dp)
+#21 LAYOUT OVERLAP « Annuleren » over the touchable « Akkoorden van het nummer » (70 x 6 dp)
+#21 LAYOUT OVERLAP « Annuleren » over the touchable « Het deel herhalen in plaats van het numm » (39 x 18 dp)
+#21 LAYOUT OVERLAP « Annuleren » over the touchable « Het scherm labelen » (25 x 18 dp)
+#21 LAYOUT CONTRAST « Intro » 2.10:1 (needs 3.0:1, 14 sp)
+#21 > touche 270 705
+#21 DOIGT tuto_need «   Aanbevolen lengtes invullen »
+#22 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE a65e14d6b5 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=song_phrases done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT OVERLAP « maat 1/136 » over « Klaar: nieuwe lengte voor B · Intro » (80 x 17 dp)
+#22 LAYOUT OVERLAP « Tik om de akkoorden van het hele nummer te wijzigen. » over the touchable « Afspelen vanaf een deel » (110 x 4 dp)
+#22 LAYOUT OVERLAP « Klaar: nieuwe lengte voor B · Intro » over the touchable « Afspelen vanaf een deel » (110 x 28 dp)
+#22 > touche 270 786
+#22 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#23 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 6bab178a55 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=fill done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT OVERLAP « B · Intro » over « Klaar: nieuwe lengte voor B · Intro » (68 x 19 dp)
+#23 LAYOUT OVERLAP « 24 maten » over « Klaar: nieuwe lengte voor B · Intro » (65 x 17 dp)
+#23 LAYOUT OVERLAP « Klaar: nieuwe lengte voor B · Intro » over the touchable « Vanaf dit deel spelen » (132 x 40 dp)
+#23 LAYOUT OVERLAP « Annuleren » floats over the touchable « Eén herhaling meer » (31 x 35 dp)
+#23 LAYOUT OVERLAP « Annuleren » floats over the touchable « Meer acties » (40 x 35 dp)
+#23 > touche 270 699
+#23 DOIGT tuto_need «   Naar deel ‘Opbouw’ »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 3893d00254 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=fill done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CUT « Nu jij: in het deel ‘Opbouw’, laatste maat, pad van de kick: druk lang op de laatste slag vóór de laatste tel, dan ‘Roll’ ×3. » ellipsized (« … »)
+#24 > appui-long 240 690
+#24 DOIGT step_59 « Vakje 12 »
+#25 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 113d355053 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=fill done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 218 577
+#25 DOIGT roll_3 « ×3 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE ac25314120 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=fill done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 270 870
+#26 DOIGT tuto_next_folded « Gelukt »
+#27 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f2b7da7de6 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=gap done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CUT « Deel: C · Opbouw » lines cut (taller than its box)
+#27 > touche 483 357
+#27 DOIGT tuto_fold
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE 99f71345b6 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=gap done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CUT « Nu jij: wis in het deel ‘Opbouw’, laatste maat, de slagen van de laatste tel (tik op elk rood kruisje): één tel stilte vlak voor de Drop. » ellipsized (« … »)
+#28 LAYOUT CONTRAST « 2 slagen te veel hier (doorgestreept) » 2.40:1 (needs 3.0:1, 14 sp)
+#28 > touche 298 487
+#28 DOIGT step_60 « Vakje 13 »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 0b0d917cfb | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=gap done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « 1 slag te veel hier (doorgestreept) » 2.40:1 (needs 3.0:1, 14 sp)
+#29 > touche 414 487
+#29 DOIGT step_62 « Vakje 15 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 068fbba915 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=gap done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « → Hi-hat » 2.27:1 (needs 3.0:1, 14 sp)
+#30 > touche 298 487
+#30 DOIGT step_60 « Vakje 13 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE 8bf9d2f7f5 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=gap done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « 3 slagen te veel hier (doorgestreept) » 2.40:1 (needs 3.0:1, 14 sp)
+#31 > touche 356 487
+#31 DOIGT step_61 « Vakje 14 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE 2284490351 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=gap done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 414 487
+#32 DOIGT step_62 « Vakje 15 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 689d25a7fb | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=gap done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 472 487
+#33 DOIGT step_63 « Vakje 16 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE db52440f20 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=gap done=43 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « Maat 4/4 · Hi-hat » 1.26:1 (needs 4.5:1, 13 sp)
+#34 > touche 270 870
+#34 DOIGT tuto_next_folded « Gelukt »
+#35 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE eb94fbccf1 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=crash done=43 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT TARGET « Drums 16 pads » 86 x 20 dp (touch 86 x 48)
+#35 LAYOUT TARGET « Acid 303 Baslijn » 97 x 20 dp (touch 97 x 48)
+#35 LAYOUT TARGET « Zang Microfoon » 103 x 20 dp (touch 103 x 48)
+#35 > touche 270 699
+#35 DOIGT tuto_need «   Naar deel ‘Drop’ »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE 30630c636f | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=crash done=43 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « Nu jij: tik in het deel ‘Drop’ op het allereerste vakje van de pad ‘Bekken’ als het leeg is: een bekkenslag precies bij de start van de Drop. » ellipsized (« … »)
+#36 LAYOUT CONTRAST « Nog 1 gestippeld vakje hier » 2.26:1 (needs 3.0:1, 14 sp)
+#36 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#36 > touche 67 416
+#36 DOIGT step_0 « Vakje 1 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE af6a42ea8c | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=crash done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « Maat 1/2 · Bekken » 1.21:1 (needs 4.5:1, 13 sp)
+#37 > touche 483 771
+#37 DOIGT tuto_fold
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE fb81e90267 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=crash done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « Maat 1/2 · Bekken » 1.46:1 (needs 4.5:1, 13 sp)
+#38 > touche 270 699
+#38 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#39 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 29eae3a383 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT OVERLAP « De effecten » over the touchable « Tempo: 174 BPM Tempo wijzigen » (77 x 15 dp)
+#39 > touche 271 1050
+#39 DOIGT tab_Mix « Mix »
+#40 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 6d97570f07 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 483 228
+#40 DOIGT tuto_fold
+#41 ROUTE tab_Mix | MODE pro | EMPREINTE 29d1a91e1d | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CUT « Akkoorden » a word split over two lines
+#41 LAYOUT CUT « Nu jij: tik in Mix op de naam van het spoor ‘Akkoorden’, en zet dan in ‘Galm en echo’ de ‘Galm-send’ hoger. Doe hetzelfde op het kanaal van de pad ‘Snare’. In liquid zit de galm op de muziek, nauwelijks op de drums: de piano zweeft, de drums blijven strak. » ellipsized (« … »)
+#41 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#41 LAYOUT CONTRAST « Akkoorden » 3.44:1 (needs 4.5:1, 13 sp)
+#41 > touche 517 343
+#41 DOIGT strip_more_6 « Akkoorden »
+#42 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE ff7b1f2cc4 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT OVERLAP « Lo-Fi Tape » over the touchable « Blad sluiten » (73 x 20 dp)
+#42 LAYOUT OVERLAP « Geen effect » over the touchable « Blad sluiten » (78 x 20 dp)
+#42 LAYOUT OVERLAP « Tik op een sfeer om hem te proberen: je kunt altijd terug met Ongedaan maken. » over the touchable « Blad sluiten » (303 x 36 dp)
+#42 LAYOUT OVERLAP « Houd je vinger op een sfeer om hem te horen; laat los en je geluid komt terug. » over the touchable « Blad sluiten » (323 x 36 dp)
+#42 LAYOUT OVERLAP « XY-pad, op-neer: » over the touchable « Blad sluiten » (105 x 18 dp)
+#42 LAYOUT OVERLAP « ? » over the touchable « Blad sluiten » (7 x 15 dp)
+#42 LAYOUT OVERLAP « Ruimte » over the touchable « Blad sluiten » (48 x 20 dp)
+#42 LAYOUT OVERLAP « Vuil » over the touchable « Blad sluiten » (27 x 20 dp)
+#42 LAYOUT OVERLAP « Beweging » over the touchable « Blad sluiten » (68 x 20 dp)
+#42 LAYOUT OVERLAP « ↑ Ver weg » over the touchable « Blad sluiten » (68 x 16 dp)
+#42 LAYOUT OVERLAP « ← Donker » over the touchable « Blad sluiten » (61 x 16 dp)
+#42 LAYOUT OVERLAP « ↓ Droog » over the touchable « Blad sluiten » (53 x 16 dp)
+#42 LAYOUT OVERLAP « Helder → » over the touchable « Blad sluiten » (58 x 16 dp)
+#42 LAYOUT OVERLAP « Schuif met je vinger om het geluid live te vervormen. Twee keer tikken: terug naar het begingeluid. » over the touchable « Blad sluiten » (319 x 36 dp)
+#42 LAYOUT OVERLAP « Kleur » over the touchable « Blad sluiten » (31 x 24 dp)
+#42 LAYOUT OVERLAP « Neutraal » over the touchable « Blad sluiten » (28 x 14 dp)
+#42 LAYOUT OVERLAP « Vuil » over the touchable « Blad sluiten » (23 x 24 dp)
+#42 LAYOUT OVERLAP « 0 » over the touchable « Blad sluiten » (7 x 14 dp)
+#42 LAYOUT OVERLAP « Beweging » over the touchable « Blad sluiten » (58 x 24 dp)
+#42 LAYOUT OVERLAP « Ruimte » over the touchable « Blad sluiten » (41 x 24 dp)
+#42 LAYOUT OVERLAP « Gedeelde galm en echo » over the touchable « Blad sluiten » (159 x 20 dp)
+#42 LAYOUT OVERLAP « Akkoorden: hier instellen · Snare: daarna » over the touchable « Blad sluiten » (260 x 18 dp)
+#42 LAYOUT OVERLAP « galm-send » over the touchable « Blad sluiten » (71 x 20 dp)
+#42 LAYOUT OVERLAP « 0% » over the touchable « Blad sluiten » (23 x 17 dp)
+#42 > glisse 60 1125 230 1125
+#42 DOIGT send_6_0 « galm-send »
+#43 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 0f147504b4 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT OVERLAP « Akkoorden ✓ · Snare: hier instellen » over the touchable « Blad sluiten » (222 x 18 dp)
+#43 LAYOUT OVERLAP « 35% » over the touchable « Blad sluiten » (33 x 17 dp)
+#43 > glisse 270 900 270 500
+#43 DOIGT rien
+#44 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 9758eee167 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT OVERLAP « Houd je vinger op een sfeer om hem te horen; laat los en je geluid komt terug. » over the touchable « Blad sluiten » (323 x 33 dp)
+#44 LAYOUT OVERLAP « echo-send » over the touchable « Blad sluiten » (71 x 20 dp)
+#44 > retour
+#44 RETOUR
+#45 ROUTE tab_Mix | MODE pro | EMPREINTE 29d1a91e1d | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 84 343
+#45 DOIGT strip_more_0 « Drums »
+#46 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE e1e46147b2 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT OVERLAP « Drums » over the touchable « Blad sluiten » (70 x 28 dp)
+#46 LAYOUT OVERLAP « Stil » over the touchable « Blad sluiten » (22 x 20 dp)
+#46 LAYOUT OVERLAP « Solo » over the touchable « Blad sluiten » (31 x 20 dp)
+#46 LAYOUT OVERLAP « Volume » over the touchable « Blad sluiten » (57 x 24 dp)
+#46 LAYOUT OVERLAP « +0,0 dB » over the touchable « Blad sluiten » (54 x 17 dp)
+#46 LAYOUT OVERLAP « Pan » over the touchable « Blad sluiten » (28 x 24 dp)
+#46 LAYOUT OVERLAP « Midden » over the touchable « Blad sluiten » (51 x 17 dp)
+#46 LAYOUT OVERLAP «  Wat speelt » over the touchable « Blad sluiten » (75 x 20 dp)
+#46 LAYOUT OVERLAP «  Curven » over the touchable « Blad sluiten » (53 x 20 dp)
+#46 LAYOUT OVERLAP « Effecten » over the touchable « Blad sluiten » (56 x 20 dp)
+#46 LAYOUT OVERLAP « Effecten actief: 3 van 8 » over the touchable « Blad sluiten » (156 x 20 dp)
+#46 LAYOUT OVERLAP « 1. Compressor » over the touchable « Blad sluiten » (98 x 20 dp)
+#46 LAYOUT OVERLAP « Speelt in: » over the touchable « Blad sluiten » (56 x 18 dp)
+#46 LAYOUT OVERLAP « Alles » over the touchable « Blad sluiten » (34 x 20 dp)
+#46 LAYOUT OVERLAP « A · Groove » over the touchable « Blad sluiten » (71 x 20 dp)
+#46 LAYOUT OVERLAP « B · Intro » over the touchable « Blad sluiten » (52 x 20 dp)
+#46 LAYOUT OVERLAP « 2. Saturatie » over the touchable « Blad sluiten » (78 x 20 dp)
+#46 > glisse 270 1000 270 300
+#46 DOIGT rien
+#47 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE d3f3f0a317 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT OVERLAP « 3. Zachte clipper » over the touchable « Blad sluiten » (114 x 20 dp)
+#47 LAYOUT OVERLAP « Een effect kan in maar een paar delen spelen: tik op hun letters. » over the touchable « Blad sluiten » (313 x 36 dp)
+#47 LAYOUT OVERLAP «   Effect toevoegen » over the touchable « Blad sluiten » (121 x 20 dp)
+#47 LAYOUT OVERLAP « Kant-en-klare sferen » over the touchable « Blad sluiten » (142 x 20 dp)
+#47 LAYOUT OVERLAP « Voor: Drums » over the touchable « Blad sluiten » (86 x 20 dp)
+#47 LAYOUT OVERLAP « Favorieten » over the touchable « Blad sluiten » (71 x 20 dp)
+#47 LAYOUT OVERLAP « Sfeer » over the touchable « Blad sluiten » (36 x 20 dp)
+#47 LAYOUT OVERLAP « Stijl: » over the touchable « Blad sluiten » (26 x 18 dp)
+#47 LAYOUT OVERLAP « Acid » over the touchable « Blad sluiten » (31 x 20 dp)
+#47 LAYOUT OVERLAP « Techno » over the touchable « Blad sluiten » (51 x 20 dp)
+#47 LAYOUT OVERLAP « DnB » over the touchable « Blad sluiten » (28 x 20 dp)
+#47 LAYOUT OVERLAP « Dubstep » over the touchable « Blad sluiten » (52 x 20 dp)
+#47 LAYOUT OVERLAP « Punch » over the touchable « Blad sluiten » (44 x 20 dp)
+#47 LAYOUT OVERLAP « EDM-pomp » over the touchable « Blad sluiten » (77 x 20 dp)
+#47 LAYOUT OVERLAP « Krokant » over the touchable « Blad sluiten » (54 x 20 dp)
+#47 > glisse 270 1000 270 200
+#47 DOIGT rien
+#48 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE dbe10c51e0 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT OVERLAP « Kleine kamer » over the touchable « Blad sluiten » (89 x 20 dp)
+#48 LAYOUT OVERLAP « Schuif met je vinger om het geluid live te vervormen. Twee keer tikken: terug naar het begingeluid. » over the touchable « Blad sluiten » (319 x 34 dp)
+#48 > glisse 270 1000 270 200
+#48 DOIGT rien
+#49 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE dbe10c51e0 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#49 SON Son : rien ne joue.
+#49 > glisse 270 600 270 80
+#49 DOIGT rien (texte « Houd je vinger op een sfeer om hem te ho »)
+#50 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 10e8a361b5 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT OVERLAP « Tik op een sfeer om hem te proberen: je kunt altijd terug met Ongedaan maken. » over the touchable « Blad sluiten » (303 x 9 dp)
+#50 > tape 270 450 2 120
+#50 DOIGT rien
+#51 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE c309433810 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#51 SON Son : rien ne joue.
+#51 > retour
+#51 RETOUR
+#52 ROUTE tab_Mix | MODE pro | EMPREINTE 29d1a91e1d | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#52 SON Son : rien ne joue.
+#52 > glisse 450 500 60 500
+#52 DOIGT volume_5 « Volume van Sub »
+#53 ROUTE tab_Mix | MODE pro | EMPREINTE 6d2fee8327 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#53 SON Son : rien ne joue.
+#53 > glisse 450 500 60 500
+#53 DOIGT volume_3 « Volume van Remix »
+#54 ROUTE tab_Mix | MODE pro | EMPREINTE 6d2fee8327 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 483 771
+#54 DOIGT tuto_fold
+#55 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 6d97570f07 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 270 699
+#55 DOIGT tuto_do «   Ik doe het »
+#56 ROUTE dialogue:effects_box_18 | MODE pro | EMPREINTE d1484e6c60 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « Neutraal » 4.44:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « 0 » 4.44:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « Gedeelde galm en echo » 4.44:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « 30% » 3.63:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Sluiten » 3.63:1 (needs 4.5:1, 14 sp)
+#56 > touche 434 1098
+#56 DOIGT fx_close « Sluiten »
+#57 ROUTE tab_Mix | MODE pro | EMPREINTE b0b7a8f8cb | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=reverb done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 270 870
+#57 DOIGT tuto_next_folded « Gelukt »
+#58 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 35880d2b29 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 270 699
+#58 DOIGT tuto_need «   Naar deel ‘Opbouw’ »
+#59 ROUTE tab_Mix | MODE pro | EMPREINTE e2e0e62cf2 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CUT « Nu jij: automatiseer de ‘Cutoff’ van het filter van het spoor ‘Akkoorden’ in de Opbouw: ‘Een instelling automatiseren’, ‘Akkoorden’, ‘Filter (sweep)’, dan ‘Per deel’, en teken een curve die stijgt van begin tot eind van de Opbouw. » ellipsized (« … »)
+#59 > touche 245 429
+#59 DOIGT automation_add «  Een instelling automatiseren »
+#60 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 13b99b94bd | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST « 1. Kies het spoor: » 3.46:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « Acid 303 » 1.37:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « Gedeelde galm en echo » 1.77:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « 2. Wat beweegt er op „Drums”: » 1.80:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « Filter (sweep) » 4.10:1 (needs 4.5:1, 16 sp)
+#60 > touche 253 426
+#60 DOIGT pick_track_6 « Akkoorden »
+#61 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE c7f72b7a5b | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « 2. Wat beweegt er op „Akkoorden”: » 1.80:1 (needs 4.5:1, 14 sp)
+#61 > touche 270 802
+#61 DOIGT pick_filter_6 « Filter (sweep) »
+#62 ROUTE tab_Mix | MODE pro | EMPREINTE 77a12ac4e0 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 230 483
+#62 DOIGT auto_mode_0_1 « Per deel »
+#63 ROUTE tab_Mix | MODE pro | EMPREINTE bccb113457 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 266 645
+#63 DOIGT auto_tool_line_0 « Lijn »
+#64 ROUTE tab_Mix | MODE pro | EMPREINTE a10840671f | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#64 SON Son : rien ne joue.
+#64 > glisse 270 560 270 200
+#64 DOIGT rien (texte « Om deze instelling over een deel van het »)
+#65 ROUTE tab_Mix | MODE pro | EMPREINTE c7360f8a22 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#65 > glisse 270 470 270 200
+#65 DOIGT rien (texte « Lijn: tik het begin en dan het einde (of »)
+#66 ROUTE tab_Mix | MODE pro | EMPREINTE aca0fa9396 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT OVERLAP « ×1 » over the touchable « Tempo: 174 BPM Tempo wijzigen » (15 x 4 dp)
+#66 > touche 130 488
+#66 DOIGT rien
+#67 ROUTE tab_Mix | MODE pro | EMPREINTE aca0fa9396 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 494 318
+#67 DOIGT rien
+#68 ROUTE tab_Mix | MODE pro | EMPREINTE 81aaf62789 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=46 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT OVERLAP « Lijn: tik het begin en dan het einde (of schuif van het ene naar het andere); een rechte helling verbindt ze. » over the touchable « Tempo: 174 BPM Tempo wijzigen » (63 x 4 dp)
+#68 LAYOUT OVERLAP « Lijn: tik het begin en dan het einde (of schuif van het ene naar het andere); een rechte helling verbindt ze. » over the touchable « Afspelen vanaf een deel » (110 x 4 dp)
+#68 LAYOUT OVERLAP « Lijn: tik het begin en dan het einde (of schuif van het ene naar het andere); een rechte helling verbindt ze. » over the touchable « Het deel herhalen in plaats van het numm » (48 x 4 dp)
+#68 LAYOUT OVERLAP « Lijn: tik het begin en dan het einde (of schuif van het ene naar het andere); een rechte helling verbindt ze. » over the touchable « Het scherm labelen » (16 x 4 dp)
+#68 > touche 483 771
+#68 DOIGT tuto_fold
+#69 ROUTE tab_Mix | MODE pro | EMPREINTE 530cb9c78a | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=riser done=46 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 270 699
+#69 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#70 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 1335a125d1 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=levels done=46 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 483 306
+#70 DOIGT tuto_fold
+#71 ROUTE tab_Mix | MODE pro | EMPREINTE fd5ac26390 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=levels done=46 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CUT « Nu jij: zet in Mix de fader van de bel (‘Melodie’) en die van de piano (‘Akkoorden’) een beetje lager, net genoeg zodat de bas kan ademen. » ellipsized (« … »)
+#71 > glisse 270 600 270 750
+#71 DOIGT rien (texte « Curven en effecten »)
+#72 ROUTE tab_Mix | MODE pro | EMPREINTE e85dd97d19 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=levels done=46 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « Akkoorden » 3.53:1 (needs 4.5:1, 13 sp)
+#72 > glisse 450 204 150 204
+#72 DOIGT strip_more_5 « Sub »
+#73 ROUTE tab_Mix | MODE pro | EMPREINTE d80bc943d1 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=levels done=46 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « Bas » 3.47:1 (needs 4.5:1, 13 sp)
+#73 LAYOUT CONTRAST « +0,0 » 3.39:1 (needs 4.5:1, 12 sp)
+#73 LAYOUT CONTRAST « 1 » 2.49:1 (needs 4.5:1, 12 sp)
+#73 LAYOUT CONTRAST « Remix » 3.30:1 (needs 4.5:1, 13 sp)
+#73 LAYOUT CONTRAST « +0,0 » 3.36:1 (needs 4.5:1, 12 sp)
+#73 > glisse 264 410 264 445
+#73 DOIGT volume_6 « Volume van Akkoorden »
+#74 ROUTE tab_Mix | MODE pro | EMPREINTE dc9d6f07dd | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=levels done=46 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#74 SON Son : rien ne joue.
+#74 > glisse 384 410 384 445
+#74 DOIGT volume_7 « Volume van Melodie »
+#75 ROUTE tab_Mix | MODE pro | EMPREINTE 52be53cdcb | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=levels done=47 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 270 870
+#75 DOIGT tuto_next_folded « Gelukt »
+#76 ROUTE tab_Mix | MODE pro | EMPREINTE a93242eb41 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=meters done=47 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 270 786
+#76 DOIGT tuto_mark «   Begrepen »
+#77 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 12ddf8b178 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=buses done=48 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 270 705
+#77 DOIGT tuto_mark «   Begrepen »
+#78 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE a5349874b8 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=buses done=49 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT CUT «  Mijn nummer beluisteren » ellipsized (« … »)
+#78 LAYOUT CUT «  Luister naar het voorbeeld » ellipsized (« … »)
+#78 > touche 100 786
+#78 DOIGT tuto_play_mine «  Mijn nummer beluisteren »
+#79 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 13221b059a | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=buses done=49 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=true
+#79 SON Son : le morceau joue (partie « B »).
+#79 > touche 100 786
+#79 DOIGT tuto_play_mine «  Stoppen »
+#80 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE a5349874b8 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=buses done=49 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 270 699
+#80 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#81 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 86bf914f41 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=loudness done=49 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#81 SON Son : rien ne joue.
+#81 LAYOUT OVERLAP « tel » over the touchable « Tempo: 174 BPM Tempo wijzigen » (17 x 4 dp)
+#81 LAYOUT OVERLAP « 1 » over the touchable « Tempo: 174 BPM Tempo wijzigen » (5 x 4 dp)
+#81 LAYOUT OVERLAP « 2 » over the touchable « Afspelen vanaf een deel » (7 x 4 dp)
+#81 LAYOUT OVERLAP « 3 » over the touchable « Afspelen vanaf een deel » (8 x 4 dp)
+#81 LAYOUT OVERLAP « 4 » over the touchable « Afspelen vanaf een deel » (8 x 4 dp)
+#81 LAYOUT OVERLAP « 7 » over the touchable « Het deel herhalen in plaats van het numm » (7 x 4 dp)
+#81 LAYOUT OVERLAP « 8 » over the touchable « Het scherm labelen » (5 x 4 dp)
+#81 LAYOUT CONTRAST « 3 » 1.41:1 (needs 4.5:1, 12 sp)
+#81 LAYOUT CONTRAST « 5 » 1.27:1 (needs 4.5:1, 12 sp)
+#81 LAYOUT CONTRAST « 6 » 1.46:1 (needs 4.5:1, 12 sp)
+#81 LAYOUT CONTRAST « 8 » 1.46:1 (needs 4.5:1, 12 sp)
+#81 > touche 483 228
+#81 DOIGT tuto_fold
+#82 ROUTE tab_Mix | MODE pro | EMPREINTE b78527d945 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=loudness done=49 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT CUT « De hoofduitgang heeft een ingebouwde limiter, altijd de laatste van de keten (hij staat niet bij zijn ‘Effecten’): hij voorkomt dat het geluid oversteuurt. Hier geen OTT: die zou de attack van de kick pletten. Nu jij: zet in ‘Hoofduitgang’ het ‘Doelvolume’ op ‘Club’: je nummer klinkt zo luid als in een club. » ellipsized (« … »)
+#82 > touche 172 684
+#82 DOIGT loudness_target_AUTO « Auto (stijl) · −9 LUFS »
+#83 ROUTE tab_Mix | MODE pro | EMPREINTE 9feae6dbec | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=loudness done=49 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#83 SON Son : rien ne joue.
+#83 > glisse 300 684 60 684
+#83 DOIGT loudness_target_AUTO « Auto (stijl) · −9 LUFS »
+#84 ROUTE tab_Mix | MODE pro | EMPREINTE 9feae6dbec | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=loudness done=49 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#84 SON Son : rien ne joue.
+#84 > glisse 270 650 270 350
+#84 DOIGT rien
+#85 ROUTE tab_Mix | MODE pro | EMPREINTE ab3dd07aa3 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=loudness done=49 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 142 489
+#85 DOIGT loudness_target_CLUB « Club · −8 LUFS »
+#86 ROUTE tab_Mix | MODE pro | EMPREINTE 9db4f2d565 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=loudness done=50 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 483 771
+#86 DOIGT tuto_fold
+#87 ROUTE tab_Mix | MODE pro | EMPREINTE 2cdeb03db9 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=loudness done=50 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 270 699
+#87 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#88 ROUTE tab_Mix | MODE pro | EMPREINTE 99f2b89e78 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=formats done=50 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 270 786
+#88 DOIGT tuto_mark «   Begrepen »
+#89 ROUTE tab_Mix | MODE pro | EMPREINTE cc3618c6a7 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=51 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 484 954
+#89 DOIGT thumb_share « Mijn nummer delen »
+#89 DIALOGUE 0.3 s
+#90 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 80de2e420e | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=51 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#90 SON Son : rien ne joue.
+#90 LAYOUT OVERLAP « Klaar om te delen? » over the touchable « Blad sluiten » (196 x 28 dp)
+#90 LAYOUT OVERLAP « Naam van het nummer (en van het project) » over the touchable « Blad sluiten » (259 x 18 dp)
+#90 LAYOUT OVERLAP « ‘Delen’ geeft ook het project ‘Mijn project 1’ deze naam. » over the touchable « Blad sluiten » (294 x 36 dp)
+#90 LAYOUT OVERLAP « 3:08 » over the touchable « Blad sluiten » (48 x 27 dp)
+#90 LAYOUT OVERLAP « 6 delen » over the touchable « Blad sluiten » (49 x 20 dp)
+#90 LAYOUT OVERLAP « Volume: −8,0, luid, zoals clubmuziek » over the touchable « Blad sluiten » (148 x 36 dp)
+#90 LAYOUT OVERLAP « details » over the touchable « Blad sluiten » (35 x 9 dp)
+#90 LAYOUT OVERLAP «  Luisteren » over the touchable « Blad sluiten » (67 x 20 dp)
+#90 LAYOUT OVERLAP « Doelvolume » over the touchable « Blad sluiten » (78 x 20 dp)
+#90 LAYOUT OVERLAP « Streaming » over the touchable « Blad sluiten » (70 x 20 dp)
+#90 LAYOUT OVERLAP « Club » over the touchable « Blad sluiten » (32 x 20 dp)
+#90 LAYOUT OVERLAP « Auto (stijl) » over the touchable « Blad sluiten » (72 x 20 dp)
+#90 LAYOUT OVERLAP « M4A · om te delen » over the touchable « Blad sluiten » (123 x 20 dp)
+#90 LAYOUT OVERLAP « WAV · max. kwaliteit » over the touchable « Blad sluiten » (139 x 20 dp)
+#90 LAYOUT OVERLAP «   Delen » over the touchable « Blad sluiten » (53 x 24 dp)
+#90 LAYOUT OVERLAP « Mijn bestanden » over the touchable « Blad sluiten » (104 x 20 dp)
+#90 LAYOUT OVERLAP « Terugvinden en opnieuw versturen: M4A, WAV, video, .zip » over the touchable « Blad sluiten » (196 x 36 dp)
+#90 > touche 474 259
+#90 DOIGT name_clear
+#90 DIALOGUE 0.2 s
+#91 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 208eb00498 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=51 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT OVERLAP « Naam van het nummer (en van het project) » over the touchable « Blad sluiten » (259 x 48 dp)
+#91 > ecris Nachtlijn
+#91 DIALOGUE 0.2 s
+#92 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 06643a61b0 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=51 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 159 930
+#92 DOIGT share_format_Wav « WAV · max. kwaliteit »
+#92 DIALOGUE 0.2 s
+#93 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 131304733a | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=51 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 270 234
+#93 DOIGT share_name « Naam van het nummer (en van het project) »
+#93 DIALOGUE 0.2 s
+#94 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE d0effa52c3 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=51 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#94 SON Son : rien ne joue.
+#94 > ecris Nachtlijn
+#94 DIALOGUE 0.2 s
+#95 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f192366b55 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=51 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 270 1026
+#95 DOIGT share_go «   Delen »
+#95 DIALOGUE 0.4 s
+#96 ROUTE dialogue:share_progress | MODE pro | EMPREINTE da78ed6a8e | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=51 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#96 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#96 LAYOUT CONTRAST « Kies daarna de app om het te versturen. » 2.78:1 (needs 4.5:1, 13 sp)
+#96 LAYOUT CONTRAST « Annuleren » 1.43:1 (needs 4.5:1, 14 sp)
+#96 > attends
+#96 DIALOGUE 1.1 s
+#97 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 2f84b189e5 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=51 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#97 SON Son : rien ne joue.
+#97 > attends
+#97 PARTAGE Nachtlijn-nummer-club-20261119-142110.wav
+#97 DIALOGUE 1.0 s
+#98 ROUTE dialogue:« Mijn nummer delen · Nachtlijn- » | MODE pro | EMPREINTE 0292c52f0f | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=52 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 playing=false
+#98 SON Son : rien ne joue.
+#98 > attends
+#98 DIALOGUE 0.2 s
+#99 ROUTE dialogue:« Mijn nummer delen · Nachtlijn- » | MODE pro | EMPREINTE 0292c52f0f | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=52 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 270 705
+#99 DOIGT vue « Drive »
+#99 DIALOGUE 0.2 s
+#100 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE 0fc5e01569 | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=52 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 460 733
+#100 DOIGT share_bilan_ok « OK »
+#100 DIALOGUE 0.2 s
+#101 ROUTE tab_Mix | MODE pro | EMPREINTE 0ebf1106fd | project=p-96a28f1d tuto=liquid_dnb/Pro active=true step=share done=52 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT OVERLAP « Opgeslagen in Muziek › BenStudio: Nachtlijn-nummer-club-20261119-142110.wav » over the touchable « Tempo: 174 BPM Tempo wijzigen » (63 x 4 dp)
+#101 LAYOUT OVERLAP « Opgeslagen in Muziek › BenStudio: Nachtlijn-nummer-club-20261119-142110.wav » over the touchable « Afspelen vanaf een deel » (110 x 4 dp)
+#101 LAYOUT OVERLAP « Opgeslagen in Muziek › BenStudio: Nachtlijn-nummer-club-20261119-142110.wav » over the touchable « Het deel herhalen in plaats van het numm » (48 x 4 dp)
+#101 > fin
+#101 BENCH-VERDICT ok where=seat.fin
+#101 FIN : fin

@@ -1,0 +1,8 @@
+Écran 100 (540x1170)
+texte « Het is klaar » @ 133,424
+texte « Klaar: Nachtlijn-nummer-club-20261119-142110.wav, er staat ook een kopie in Muziek › BenStudio. » @ 270,517
+texte « −8,0 LUFS geïntegreerd · piek −3,2 dBTP » @ 222,581
+texte « WAV, 48 kHz, 24 bits · 3 min 8 s » @ 180,614
+texte « Doel: Club · −8 LUFS » @ 131,647
+texte « Mijn bestanden bekijken » @ 261,733
+texte « OK » @ 460,733

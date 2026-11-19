@@ -1,0 +1,35 @@
+Écran 43 (540x1170)
+dessin @ 270,36
+bouton « Breed en levendig » [coupé] @ 140,73
+bouton « Kleine kamer » [coupé] @ 356,73
+bouton « Lo-Fi Tape » @ 103,122
+bouton « Geen effect » @ 274,122
+texte « Tik op een sfeer om hem te proberen: je kunt altijd terug met Ongedaan maken. » @ 270,197
+texte « Houd je vinger op een sfeer om hem te horen; laat los en je geluid komt terug. » @ 270,263
+bouton « ? » @ 213,323
+texte « XY-pad, op-neer: » @ 103,323
+bouton « Ruimte » [sélectionné] @ 84,393
+bouton « Vuil » @ 199,393
+bouton « Beweging » @ 328,393
+texte « ↑ Ver weg » @ 270,453
+texte « ← Donker » @ 125,738
+texte « ↓ Droog » @ 269,738
+texte « Helder → » @ 414,738
+texte « Schuif met je vinger om het geluid live te vervormen. Twee keer tikken: terug naar het begingeluid. » @ 270,789
+curseur [état « Neutraal », à 50 %] @ 86,867
+texte « Kleur » @ 86,924
+texte « Neutraal » @ 85,952
+curseur [état « 0 », à 0 %] @ 209,867
+texte « Vuil » @ 209,924
+texte « 0 » @ 209,952
+curseur [état « 0 », à 0 %] @ 332,867
+texte « Beweging » @ 331,924
+texte « 0 » @ 332,952
+curseur [état « 0 », à 0 %] @ 455,867
+texte « Ruimte » @ 454,924
+texte « 0 » @ 455,952
+texte « Gedeelde galm en echo » @ 144,993
+texte « Akkoorden ✓ · Snare: hier instellen » @ 200,1045
+texte « galm-send » @ 245,1074
+texte « 35% » @ 482,1074
+curseur [état « 35% », à 35 %] @ 270,1125

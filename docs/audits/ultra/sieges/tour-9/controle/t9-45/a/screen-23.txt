@@ -1,0 +1,46 @@
+Écran 23 (540x1170)
+bouton (dossier ouvert) ✓ @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 174  BPM » @ 73,114
+icône « Intro maat 1/136 » ▾ @ 228,114
+bouton (flèches en boucle) [état « uit »] @ 414,114
+bouton « ? » @ 495,114
+bouton « Akkoorden van het nummer B · Intro Am  G  C  C  Am  G  C  C C · Opbouw Am  G  C  C D · Drop F  Em  Am  Am  F  Em  Am  Am E · Break Am  G  C  C  Am  G  C  C F · Drop 2 F  Em  Am  Am  F  Em  Am  Am G · Einde Am  G  C  C  Am  G  C  C Tik om de akkoorden van het hele nummer te wijzigen. » [coupé] @ 270,161
+icône ▶ « B · Intro 24 maten » @ 162,233
+icône − [désactivé] @ 318,233
+icône + [désactivé] @ 390,233
+icône ⋮ @ 462,233
+icône ▶ « C · Opbouw 8 maten » [coupé] @ 162,290
+image ✓ @ 33,234
+texte « Klaar: nieuwe lengte voor B · Intro » @ 221,240
+texte « Annuleren » @ 444,240
+texte « De overgangen Hoofdstuk 13/17 · Stap 1/3 · Pro » @ 178,342
+icône (liste) « Hoofdstukken » @ 391,342
+icône ⌄ @ 483,342
+texte « Nu jij: in het deel ‘Opbouw’, laatste maat, pad van de kick: druk lang op de laatste slag vóór de laatste tel, dan ‘Roll’ ×3. » @ 270,459
+bouton « Kit Liquid DnB downloaden (2 MB) » @ 223,570
+texte « Later » @ 466,570
+texte « ▸ Waarom? » @ 270,636
+bouton ⊕ «   Naar deel ‘Opbouw’ » @ 270,699
+bouton ▶ «  Luister naar het voorbeeld » @ 142,786
+bouton (œil) «  Laat zien » @ 397,786
+icône ← «  Vorige » @ 89,870
+icône « Volgende  » → @ 436,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » [sélectionné] @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

@@ -1,0 +1,44 @@
+Écran 35 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+texte « Pro » @ 495,36
+bouton (dossier ouvert) @ 87,114
+bouton « C » ▾ @ 204,114
+icône ↶ @ 279,114
+bouton ● @ 351,114
+bouton ▶ « dit deel » @ 423,114
+icône (trois points reliés) @ 495,114
+bouton « 174  BPM » @ 73,186
+icône « Intro maat 1/136 » ▾ @ 228,186
+bouton (flèches en boucle) [état « uit »] @ 414,186
+bouton « ? » @ 495,186
+onglet « Drums 16 pads » [sélectionné] @ 76,237
+onglet « Acid 303 Baslijn » @ 223,237
+onglet « Zang Microfoon » @ 382,237
+onglet « Remix Splitsen » [coupé] @ 494,237
+image → @ 529,237
+texte « De overgangen Hoofdstuk 13/17 · Stap 3/3 · Pro » @ 178,306
+icône (liste) « Hoofdstukken » @ 391,306
+icône ⌄ @ 483,306
+texte « Nu jij: tik in het deel ‘Drop’ op het allereerste vakje van de pad ‘Bekken’ als het leeg is: een bekkenslag precies bij de start van de Drop. » @ 270,441
+bouton « Kit Liquid DnB downloaden (2 MB) » @ 223,570
+texte « Later » @ 466,570
+texte « ▸ Waarom? » @ 270,636
+bouton ⊕ «   Naar deel ‘Drop’ » @ 270,699
+bouton ▶ «  Luister naar het voorbeeld » @ 142,786
+bouton (œil) «  Laat zien » @ 397,786
+icône ← «  Vorige » @ 89,870
+icône « Volgende  » → @ 436,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

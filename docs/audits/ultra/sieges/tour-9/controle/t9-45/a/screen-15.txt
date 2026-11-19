@@ -1,0 +1,30 @@
+Écran 15 (540x1170)
+dessin @ 270,36
+texte « Deel 1 · B · Intro » @ 145,96
+texte « Sluiten » @ 461,108
+texte « 8 maten » @ 65,129
+bouton (étincelles) « Variatie » @ 144,201
+bouton (barres de son) « Fill aan het einde » @ 396,201
+bouton ❚❚ « Break erna · 4 maten » @ 144,300
+bouton ❚❚ « Break erna · 8 maten » @ 396,300
+bouton (courbe qui monte) « Opbouw ervoor · 4 maten » [désactivé] @ 144,399
+bouton (courbe qui monte) « Opbouw ervoor · 8 maten » [désactivé] @ 396,399
+bouton (haut-parleur et ondes) « Fade-in » @ 144,498
+bouton (haut-parleur et une onde) « Fade-out » @ 396,498
+bouton (drapeau) « Einde toevoegen » @ 144,597
+texte « Energie: 3 » @ 75,669
+bouton « 1 · pads » @ 87,735
+bouton « 2 · + bas » @ 228,735
+bouton « 3 · + drums » [sélectionné] @ 388,735
+bouton « 4 · alles erin » @ 111,816
+texte « Lengte » @ 58,882
+champ « maten » contenu « 8 » @ 268,961
+icône ✕ @ 315,968
+icône − [désactivé] @ 60,961
+icône + @ 141,961
+texte « OK » [désactivé] @ 403,961
+texte « Deel » @ 46,1040
+icône (crayon) « Hernoemen » @ 119,1106
+icône (curseurs) « Wat speelt » @ 309,1106
+icône ↑ « Omhoog » [désactivé, coupé] @ 103,1156
+icône ↓ « Omlaag » [coupé] @ 262,1156

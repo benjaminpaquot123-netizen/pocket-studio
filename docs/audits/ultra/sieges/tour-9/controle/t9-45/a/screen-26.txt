@@ -1,0 +1,60 @@
+Écran 26 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+texte « Pro » @ 495,36
+bouton (dossier ouvert) @ 87,114
+bouton « C » ▾ @ 204,114
+icône ↶ @ 279,114
+bouton ● @ 351,114
+bouton ▶ « dit deel » @ 423,114
+icône (trois points reliés) @ 495,114
+bouton « 174  BPM » @ 73,186
+icône « Intro maat 1/136 » ▾ @ 228,186
+bouton (flèches en boucle) [état « uit »] @ 414,186
+bouton « ? » @ 495,186
+onglet « Drums 16 pads » [sélectionné] @ 76,255
+onglet « Acid 303 Baslijn » @ 223,255
+onglet « Zang Microfoon » @ 382,255
+onglet « Remix Splitsen » [coupé] @ 494,255
+image → @ 529,256
+texte « Deel: C · Opbouw » @ 109,315
+texte « Maat » @ 67,374
+bouton « 1 » @ 137,374
+bouton « 2 » @ 218,374
+bouton « 3 » @ 299,374
+bouton « 4 » [sélectionné] @ 380,374
+bouton « Volgen » @ 102,455
+texte « Maat 4/4 · Kick » @ 130,539
+bouton « 1 » [état « slag, kracht 90 % »] @ 67,619
+bouton [état « slag, kracht 91 % »] @ 124,619
+bouton [état « slag, kracht 92 % »] @ 182,619
+bouton [état « slag, kracht 93 % »] @ 240,619
+bouton « 2 » [état « slag, kracht 93 % »] @ 298,619
+bouton [état « slag, kracht 94 % »] @ 356,619
+bouton [état « slag, kracht 95 % »] @ 414,619
+bouton [état « slag, kracht 96 % »] @ 472,619
+bouton « 3 » [état « slag, kracht 97 % »] @ 67,690
+bouton [état « slag, kracht 98 % »] @ 124,690
+bouton [état « slag, kracht 98 % »] @ 182,690
+bouton « ×3 » [état « slag, kracht 99 %, 3 herhalingen »] @ 240,690
+bouton « 4 » [état « leeg »] @ 298,690
+bouton [état « leeg »] @ 356,690
+bouton [état « leeg »] @ 414,690
+bouton [état « leeg »] @ 472,690
+icône (liste) « Hoofdstukken » @ 391,771
+texte « De overgangen Hoofdstuk 13/17 · Stap 1/3 · Pro » @ 178,771
+icône ⌃ @ 483,771
+icône (rond coché) « Gelukt Volgende stap » → @ 270,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

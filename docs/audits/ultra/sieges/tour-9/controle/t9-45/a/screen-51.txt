@@ -1,0 +1,33 @@
+Écran 51 (540x1170)
+dessin @ 270,36
+texte « Tik op een sfeer om hem te proberen: je kunt altijd terug met Ongedaan maken. » [coupé] @ 270,79
+texte « Houd je vinger op een sfeer om hem te horen; laat los en je geluid komt terug. » @ 270,125
+texte « XY-pad, op-neer: » @ 103,185
+bouton « ? » @ 213,185
+bouton « Ruimte » [sélectionné] @ 84,255
+bouton « Vuil » @ 199,255
+bouton « Beweging » @ 328,255
+texte « ↑ Ver weg » @ 270,315
+texte « ← Donker » @ 125,600
+texte « ↓ Droog » @ 269,600
+texte « Helder → » @ 414,600
+texte « Schuif met je vinger om het geluid live te vervormen. Twee keer tikken: terug naar het begingeluid. » @ 270,651
+curseur [état « Neutraal », à 50 %] @ 86,729
+texte « Kleur » @ 86,786
+texte « Neutraal » @ 85,814
+curseur [état « 0 », à 0 %] @ 209,729
+texte « Vuil » @ 209,786
+texte « 0 » @ 209,814
+curseur [état « 0 », à 0 %] @ 332,729
+texte « Beweging » @ 331,786
+texte « 0 » @ 332,814
+curseur [état « 0 », à 0 %] @ 455,729
+texte « Ruimte » @ 454,786
+texte « 0 » @ 455,814
+texte « Gedeelde galm en echo » @ 144,855
+texte « galm-send » @ 252,900
+texte « 0% » @ 498,900
+curseur [état « 0% », à 0 %] @ 270,966
+texte « echo-send » @ 252,1032
+texte « 0% » @ 498,1032
+curseur [état « 0% », à 0 %] @ 270,1098

@@ -1,0 +1,64 @@
+Écran 75 (540x1170)
+bouton (dossier ouvert) ✓ @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 174  BPM » @ 73,114
+icône « Intro maat 1/136 » ▾ @ 228,114
+bouton (flèches en boucle) [état « uit »] @ 414,114
+bouton « ? » @ 495,114
+texte « Bas » [coupé] @ 46,204
+bouton (haut-parleur et ondes) [coupé, allumé, état « aan »] @ 19,279
+bouton (casque) [état « uit »] @ 51,279
+curseur [coupé, état « +0,0 dB », à 80 %] @ 42,450
+texte « +0,0 » [coupé] @ 31,601
+image (étincelles) [coupé] @ 23,633
+texte « 1 » @ 36,633
+texte « Sub » @ 144,204
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 117,279
+bouton (casque) [état « uit »] @ 171,279
+curseur [état « +0,0 dB », à 80 %] @ 144,450
+texte « +0,0 » @ 144,601
+image (étincelles) @ 138,633
+texte « 1 » @ 156,633
+texte « Akkoorden » @ 264,204
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 237,279
+bouton (casque) [état « uit »] @ 291,279
+curseur [état « -0,9 dB », à 75 %] @ 264,450
+texte « -0,9 » @ 264,601
+image (étincelles) @ 238,633
+texte « 2 » @ 258,633
+image (courbe) @ 277,633
+texte « 1 » @ 295,633
+texte « Melodie » @ 384,204
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 357,279
+bouton (casque) [état « uit »] @ 411,279
+curseur [état « -0,9 dB », à 75 %] @ 384,450
+texte « -0,9 » @ 384,601
+texte « Remix » [coupé] @ 487,204
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 477,279
+bouton (casque) [coupé, état « uit »] @ 514,279
+curseur [coupé, état « +0,0 dB », à 80 %] @ 492,450
+texte « +0,0 » @ 503,601
+image (courbe) @ 60,721
+texte « Curven en effecten » [coupé] @ 204,714
+icône (liste) « Hoofdstukken » @ 391,771
+texte « De mix Hoofdstuk 15/17 · Stap 1/3 · Pro » @ 178,771
+icône ⌃ @ 483,771
+icône (rond coché) « Gelukt Volgende stap » → @ 270,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

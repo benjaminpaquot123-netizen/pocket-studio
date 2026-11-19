@@ -1,0 +1,47 @@
+Écran 47 (540x1170)
+dessin @ 270,36
+bouton « 1. Compressor » [coupé] @ 270,76
+icône ⏻ @ 264,129
+icône ⌃ [désactivé] @ 336,129
+icône ⌄ @ 408,129
+icône ✕ @ 480,129
+texte « Speelt in: » @ 67,207
+bouton « Alles » [sélectionné] @ 169,207
+bouton « A · Groove » @ 307,207
+bouton « B · Intro » @ 455,207
+bouton « 2. Saturatie » @ 270,285
+icône ⏻ @ 264,357
+icône ⌃ @ 336,357
+icône ⌄ @ 408,357
+icône ✕ @ 480,357
+bouton « Alles » [sélectionné] @ 169,435
+bouton « A · Groove » @ 307,435
+bouton « B · Intro » @ 455,435
+texte « Speelt in: » @ 67,435
+bouton « 3. Zachte clipper » @ 270,513
+icône ⏻ @ 264,585
+icône ⌃ @ 336,585
+icône ⌄ [désactivé] @ 408,585
+icône ✕ @ 480,585
+bouton « Alles » [sélectionné] @ 169,663
+bouton « A · Groove » @ 307,663
+bouton « B · Intro » @ 455,663
+texte « Speelt in: » @ 67,663
+texte « Een effect kan in maar een paar delen spelen: tik op hun letters. » @ 270,732
+bouton + «   Effect toevoegen » @ 270,801
+texte « Kant-en-klare sferen » @ 131,874
+bouton « ? » @ 260,873
+bouton « Voor: Drums » [sélectionné] @ 113,943
+bouton ★ « Favorieten » @ 301,943
+bouton « Sfeer » @ 453,943
+bouton « Kleur » [coupé] @ 515,943
+bouton « Acid » @ 121,1027
+bouton « Techno » @ 241,1027
+bouton « DnB » @ 359,1027
+bouton « Dubstep » [coupé] @ 465,1027
+texte « Stijl: » @ 44,1027
+bouton « Punch » @ 81,1111
+bouton « EDM-pomp » @ 231,1111
+bouton « Krokant » @ 388,1111
+bouton « Lo-Fi Tape » [coupé] @ 103,1164
+bouton « Kleine kamer » [coupé] @ 282,1164

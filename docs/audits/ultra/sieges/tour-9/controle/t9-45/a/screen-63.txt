@@ -1,0 +1,47 @@
+Écran 63 (540x1170)
+bouton (dossier ouvert) ✓ @ 90,42
+texte « Pro » @ 207,42
+icône ↶ @ 279,42
+bouton ● @ 351,42
+bouton ▶ « dit deel » @ 423,42
+icône (trois points reliés) @ 495,42
+bouton « 174  BPM » @ 73,114
+icône « Intro maat 1/136 » ▾ @ 228,114
+bouton (flèches en boucle) [état « uit »] @ 414,114
+bouton « ? » @ 495,114
+image (courbe) @ 0,0
+texte « Akkoorden » @ 128,169
+texte « Wissen » @ 357,186
+icône (poubelle) @ 462,186
+texte « Filter Cutoff » @ 102,206
+texte « Opent (helder) of sluit (dof) het geluid: de filtersweep. » @ 378,271
+bouton (curseurs) «  Toon de instelling » @ 186,357
+bouton « Loop » @ 92,438
+bouton « Per deel » [sélectionné] @ 218,438
+bouton « Nummer » @ 361,438
+texte « Vakjes van deel C (elk deel heeft zijn eigen). » @ 244,496
+texte « Om deze instelling over een deel van het nummer te veranderen (luider aan het begin…), kies „Nummer”. » @ 270,559
+texte « Gladmaken » @ 407,645
+bouton (pinceau) « Tekenen » [sélectionné] @ 122,645
+bouton (courbe) « Lijn » @ 266,645
+icône (loupe −) [désactivé, coupé] @ 78,708
+icône (loupe +) [coupé] @ 178,708
+texte « ×1 » [coupé] @ 128,717
+icône (liste) « Hoofdstukken » @ 391,771
+texte « De effecten Hoofdstuk 14/17 · Stap 2/2 · Pro » @ 178,771
+icône ⌃ @ 483,771
+icône « Nu jij: automatiseer de ‘Cutoff’ van het filter van het spoor ‘Akkoorden’ in de Opbouw: ‘Een instelling automatiseren’, ‘Akkoorden’, ‘Filter (sweep)’, dan ‘Per deel’, en teken een curve die stijgt van begin tot eind van de Opbouw. Lees » ⌃ @ 270,870
+icône ↶ « Ongedaan maken » @ 67,954
+icône ↷ « Opnieuw » [désactivé] @ 169,954
+bouton ▶ « het nummer » @ 274,954
+texte « 174 Tempo » @ 385,954
+icône (trois points reliés) « Delen » @ 484,954
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noteren » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 138,1140

@@ -1,0 +1,31 @@
+Écran 48 (540x1170)
+dessin @ 270,36
+texte « Kant-en-klare sferen » @ 131,98
+bouton « ? » @ 260,97
+bouton « Voor: Drums » [sélectionné] @ 113,167
+bouton ★ « Favorieten » @ 301,167
+bouton « Sfeer » @ 453,167
+bouton « Kleur » [coupé] @ 515,167
+bouton « Acid » @ 121,251
+bouton « Techno » @ 241,251
+bouton « DnB » @ 359,251
+bouton « Dubstep » [coupé] @ 465,251
+texte « Stijl: » @ 44,251
+bouton « Punch » @ 81,335
+bouton « EDM-pomp » @ 231,335
+bouton « Krokant » @ 388,335
+bouton « Lo-Fi Tape » @ 103,407
+bouton « Kleine kamer » @ 282,407
+bouton « Geen effect » @ 107,479
+texte « Tik op een sfeer om hem te proberen: je kunt altijd terug met Ongedaan maken. » @ 270,554
+texte « Houd je vinger op een sfeer om hem te horen; laat los en je geluid komt terug. » @ 270,620
+bouton « ? » @ 213,680
+texte « XY-pad, op-neer: » @ 103,680
+bouton « Ruimte » [sélectionné] @ 84,750
+bouton « Vuil » @ 199,750
+bouton « Beweging » @ 328,750
+texte « ↑ Ver weg » @ 270,810
+texte « ← Donker » @ 125,1095
+texte « ↓ Droog » @ 269,1095
+texte « Helder → » @ 414,1095
+texte « Schuif met je vinger om het geluid live te vervormen. Twee keer tikken: terug naar het begingeluid. » @ 270,1144

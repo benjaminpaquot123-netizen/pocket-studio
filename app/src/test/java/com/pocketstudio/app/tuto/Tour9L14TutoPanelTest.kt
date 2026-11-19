@@ -482,4 +482,47 @@ class Tour9L14TutoPanelTest {
         }
     }
 
+    /**
+     * F015 (t9-03, t9-22, t9-26…: « la consigne est coupée dans le panneau replié »): folded, the step's longest words,
+     * narrow to wide, 100 to 200 %: cut, they end on « … » with « Lire » beside, inside the panel under its bar, and one
+     * touch on the line unfolds them.
+     */
+    @Test
+    fun foldedWordsUnfoldInOneTouch() {
+        var scale by mutableStateOf(1f)
+        var wide by mutableStateOf(392)
+        val longest = chapters.flatMapIndexed { c, ch -> ch.steps.indices.map { c to it } }
+            .sortedByDescending { (c, s) -> chapters[c].steps[s].textFor(TutoLevel.Facile).length }.take(3)
+        var at by mutableStateOf(longest[0])
+        var toggles = 0
+        compose.setContent {
+            val d = LocalDensity.current
+            CompositionLocalProvider(LocalDensity provides Density(d.density, scale)) {
+                PocketStudioTheme {
+                    Box(Modifier.width(wide.dp)) {
+                        TutoPanel(ui(at.first, at.second).copy(open = false), canShow = true, actions = TutoActions(toggle = { toggles++ }), reducedMotion = true)
+                    }
+                }
+            }
+        }
+        var seen = 0
+        val faults = mutableListOf<String>()
+        for (step in longest) for (w in listOf(320, 392)) for (f in listOf(1f, 1.3f, 2f)) {
+            at = step; wide = w; scale = f
+            compose.waitForIdle()
+            if (!has("tuto_folded_text")) continue
+            seen++
+            val line = nodes("tuto_folded_text")[0].fetchSemanticsNode().boundsInRoot
+            val more = nodes("tuto_folded_more")[0].fetchSemanticsNode().boundsInRoot
+            val bar = nodes("tuto_progress")[0].fetchSemanticsNode().boundsInRoot
+            val case = "step $step, ${w}dp, ${(f * 100).toInt()} %"
+            if (more.width <= 0f || more.right > line.right + 0.5f || more.top < line.top - 0.5f || more.bottom > line.bottom + 0.5f) faults += "$case: « Lire » not whole on the line"
+            if (line.top < bar.bottom - 0.5f) faults += "$case: the folded words under the panel's bar"
+            val before = toggles
+            nodes("tuto_folded_text")[0].performClick()
+            if (toggles != before + 1) faults += "$case: one touch did not unfold the words"
+        }
+        assertTrue("some folded words seen", seen >= 6)
+        assertTrue(faults.joinToString("\n"), faults.isEmpty())
+    }
 }

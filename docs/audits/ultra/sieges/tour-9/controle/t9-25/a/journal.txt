@@ -1,0 +1,12 @@
+#0 SIEGE lang=tr device=phone360 font=130 mode=simple theme=- fresh=non gestes.max=174 lit=oui main=both amenee=tuto:dubstep:1
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=10.0 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:dubstep:1
+#0 AMENEE > touche 270 722 (welcome_learn)
+#0 AMENEE > touche 270 702 (mode_card_simple)
+#0 AMENEE > touche 270 1096 (tuto_style_dubstep)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e915770132 | project=p-f864ffaa tuto=dubstep/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 270 784
+#1 DOIGT tuto_listen «  Örneği dinle »

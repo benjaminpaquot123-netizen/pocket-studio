@@ -18,3 +18,4 @@ Base 7455749a5, branche eq/tour-9-L8.
 - F132 : non fait. Le nom « Drum & bass · Caisse FX » vient de RhythmScreen.padName (interdit) ; changer DefaultNames.shownSample casserait le contrat du tuto (Lot6VmTutoKitNameTest « Techno · Kick ») et la lecture du kit (KitAndPadSheets.kt:85). À confier au lot qui tient RhythmScreen ou le tuto.
 - Vu sur capture, hors liste : « Mes fichiers » tronqué à 200 % (export/MyExports.kt:126) : à confier au lot qui tient ce fichier.
 - Lot6UiShareLevelTest : son attendu suit maintenant shareLevelWords (mêmes mots en Simple et en Pro, intention du lot 6 gardée).
+- Banc (selftest rouge « share_bars_8 ») : la phrase « renomme aussi le projet » devient l'étiquette de l'interrupteur (une ligne au lieu de deux), les cases de mesure restent entières à l'écran ; F126 ne fusionne plus que le rond vert « Tout est prêt » (les ⚠ restent à part, comme le banc les écrit). Retour arrière : revert de ce commit.

@@ -449,11 +449,15 @@ fun ShareSheetContent(
             modifier = Modifier.fillMaxWidth().testTag("share_name"),
         )
         // Testers (lot « tuto 4 »): « Mon projet 1 » became « Mon morceau » without a word.
-        ui.projectName?.let { DefaultNames.shown(it).trim() }?.takeIf { it.isNotEmpty() && it != ui.name.trim() }?.let { old ->
-            if (renames) Text(tr("« Partager » renomme aussi le projet « %s ».", old), style = MaterialTheme.typography.bodySmall,
-                color = Neon.TextSecondary, modifier = Modifier.testTag("share_renames"))
-            else Text(tr("Le projet garde son nom « %s ».", old), style = MaterialTheme.typography.bodySmall,
-                color = Neon.TextSecondary, modifier = Modifier.testTag("share_keeps_name"))
+        // Tour 9, F122: the sentence is the switch's own label (one line, not two): the bars under it stay whole in sight.
+        val old = ui.projectName?.let { DefaultNames.shown(it).trim() }?.takeIf { it.isNotEmpty() && it != ui.name.trim() }
+        val sentence: (@Composable (Modifier) -> Unit)? = old?.let {
+            { m: Modifier ->
+                if (renames) Text(tr("« Partager » renomme aussi le projet « %s ».", it), style = MaterialTheme.typography.bodySmall,
+                    color = Neon.TextSecondary, modifier = m.testTag("share_renames"))
+                else Text(tr("Le projet garde son nom « %s ».", it), style = MaterialTheme.typography.bodySmall,
+                    color = Neon.TextSecondary, modifier = m.testTag("share_keeps_name"))
+            }
         }
         if (canRename) Row(
             Modifier.fillMaxWidth().heightIn(min = 48.dp)
@@ -461,9 +465,10 @@ fun ShareSheetContent(
                 .testTag("share_rename_project"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(tr("Renommer aussi le projet"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+            if (sentence != null) sentence(Modifier.weight(1f))
+            else Text(tr("Renommer aussi le projet"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
             Switch(checked = ui.renameProject, onCheckedChange = null, modifier = Modifier.padding(start = 8.dp))
-        }
+        } else sentence?.invoke(Modifier)
         if (cramped) FormatChips(ui, actions)
         // How long it lasts, and one last listen (the saturation is checked while it plays).
         // Tour 8, R (seat 3a #64): one line whole or not at all; the edge cut it under the clock (hi, 130 %) and
@@ -541,7 +546,7 @@ fun ShareSheetContent(
         if (!simple || ui.checks.isEmpty()) ui.target?.let { SimpleTargetPicker(it, actions.chooseTarget, enabled = !ui.running) }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = (if (ui.checks.isEmpty()) Modifier.layoutId(WHOLE_LINE) else Modifier).testTag("share_checks")) {
             if (ui.checks.isEmpty()) {
-                CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok")
+                CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok", merged = true)
             }
             ui.checks.forEach { check -> CheckRow(check, ui, actions, simple) }
         }
@@ -781,10 +786,11 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
 }
 
 @Composable
-private fun CheckLine(icon: ImageVector, color: Color, text: String, tag: String) {
+private fun CheckLine(icon: ImageVector, color: Color, text: String, tag: String, merged: Boolean = false) {
     Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp),
-        // Tour 9, F126: the mark and its sentence read as one line, never a lone picture without a meaning.
-        modifier = Modifier.fillMaxWidth().testTag(tag).semantics(mergeDescendants = true) {}) {
+        // Tour 9, F126: the green check and its sentence read as one line, never a lone picture without a meaning.
+        // Warnings keep their ⚠ apart: the bench writes it before the sentence (BenchSelfTest).
+        modifier = Modifier.fillMaxWidth().testTag(tag).then(if (merged) Modifier.semantics(mergeDescendants = true) {} else Modifier)) {
         Icon(icon, contentDescription = null, tint = color, modifier = Modifier.padding(top = 1.dp).size(20.dp))
         Text(text, style = MaterialTheme.typography.bodyMedium, color = if (color == Neon.TextSecondary) Neon.TextPrimary else color, modifier = Modifier.weight(1f))
     }

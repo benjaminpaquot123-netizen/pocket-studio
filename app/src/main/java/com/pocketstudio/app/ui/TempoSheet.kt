@@ -187,20 +187,22 @@ private fun TempoTop(tempoBpm: Double, draft: TempoDraft, typed: (TempoDraft) ->
 private fun TempoRest(tempoBpm: Double, draft: TempoDraft, typed: (TempoDraft) -> Unit, actions: TempoActions, close: () -> Unit) {
     val current = Math.round(tempoBpm).toInt()
     val typing = draft.digits.isNotEmpty()
+    // Tour 9, F119: the range is always said on its own line (amber while the typed figures are out of it): the
+    // keypad below never moves while typing (it jumped down at the first figure, then up again at the third).
     val outOfRange: @Composable () -> Unit = {
-        if (typing && draft.bpm == null) {
-            Text(
-                tr("Entre %1\$d et %2\$d", Project.MIN_TEMPO.toInt(), Project.MAX_TEMPO.toInt()), style = MaterialTheme.typography.bodyMedium,
-                color = Neon.Amber, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(),
-            )
-        }
+        Text(
+            tr("Entre %1\$d et %2\$d", Project.MIN_TEMPO.toInt(), Project.MAX_TEMPO.toInt()), style = MaterialTheme.typography.bodyMedium,
+            color = if (typing && draft.bpm == null) Neon.Amber else Neon.TextSecondary, textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().testTag("tempo_range"),
+        )
     }
-    // One touch: the tempo, and the sheet closes. ½ and ×2 stay open (to try one after the other).
+    // One touch: the tempo, and the sheet closes. ½ and ×2 stay open (to try one after the other). While figures are
+    // typed, only the tempo they make is marked (F119: « 120 » stayed lit while 128 was typed).
     val presets: @Composable () -> Unit = {
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             TEMPO_PRESETS.forEach { bpm ->
                 FilterChip(
-                    selected = current == bpm, onClick = { actions.set(bpm.toDouble()); close() },
+                    selected = if (typing) draft.digits == "$bpm" else current == bpm, onClick = { actions.set(bpm.toDouble()); close() },
                     label = { Text("$bpm", style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold)) },
                     colors = pillColors(), modifier = Modifier.testTag("tempo_preset_$bpm"),
                 )

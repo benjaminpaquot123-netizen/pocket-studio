@@ -1,0 +1,9 @@
+Écran 67 (540x1170)
+texte « O que você quer fazer se mexer? » @ 270,194
+texte « 2. O que se mexe em “Acordes”: » [coupé] @ 268,284
+texte « Acordes » @ 129,339
+bouton « Filtro (varredura) Adiciona um filtro a esta faixa e o faz abrir ou fechar: o efeito que mais se ouve. » @ 270,457
+bouton « Volume Mais alto ou mais baixo: fades, entradas, cortes. » @ 270,623
+bouton « Envio reverb Mais ou menos reverb: espaço, distância. » @ 270,771
+bouton « Envio eco Mais ou menos eco: repetições no ritmo. » [coupé] @ 270,884
+texte « Fechar » @ 423,992

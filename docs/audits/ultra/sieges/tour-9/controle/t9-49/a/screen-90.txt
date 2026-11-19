@@ -1,0 +1,39 @@
+Écran 90 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/120 » ▾ @ 268,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+image (courbe) @ 0,0
+texte « Volume master » [coupé] @ 217,163
+curseur [état « −6,0 dB », à 60 %] @ 270,213
+texte « Sem saturação: tudo certo. » @ 204,279
+texte « Detalhes » @ 115,345
+texte « Volume-alvo » @ 126,414
+bouton « ? » @ 232,414
+bouton « Auto (estilo) · −9 LUFS » @ 219,484
+bouton « Club · −8 LUFS » [sélectionné] @ 168,565
+bouton « Streaming · −14 LUFS » @ 213,646
+texte « A masterização Capítulo 13/14 · Feito · Pro » @ 178,744
+icône (liste) « Capítulos » @ 391,745
+icône ⌃ @ 483,745
+icône (coupe) « Muito bem, capítulo concluído! » ⌃ @ 270,857
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

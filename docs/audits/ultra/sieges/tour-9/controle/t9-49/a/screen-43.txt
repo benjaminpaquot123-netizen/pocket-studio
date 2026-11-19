@@ -1,0 +1,41 @@
+Écran 43 (540x1170)
+icône « Meu projeto 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 79,114
+bouton « F » ▾ @ 189,114
+icône ↶ @ 264,114
+bouton ● @ 336,114
+bouton ▶ « esta parte » @ 415,114
+icône (trois points reliés) @ 495,114
+bouton « 128  BPM » @ 83,195
+icône « Intro comp. 1/120 » ▾ @ 268,195
+bouton (flèches en boucle) [état « desligado »] @ 414,195
+bouton « ? » @ 495,195
+onglet « Bateria 16 pads » [sélectionné] @ 89,260
+onglet « Acid 303 Linha de baixo » @ 292,260
+onglet « Voz Microfone » [coupé] @ 469,260
+image → @ 529,261
+texte « As transições Capítulo 10/14 · Etapa 2/2 · Pro » @ 178,355
+icône (liste) « Capítulos » @ 391,356
+icône ⌄ @ 483,356
+texte « Sua vez: na parte “Drop”, toque na primeiríssima casa do pad do prato: uma batida só, discreta. » @ 270,508
+texte « ▸ Por quê? » @ 270,606
+bouton ⊕ «   Ir para a parte “Drop” » @ 270,675
+bouton ▶ «  Ouvir o exemplo » @ 142,773
+bouton (œil) «  Mostre-me » @ 397,773
+icône ← «  Anterior » @ 112,868
+icône « Próximo  » → @ 427,868
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

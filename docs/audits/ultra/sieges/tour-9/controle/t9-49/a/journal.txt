@@ -1,0 +1,620 @@
+#0 SIEGE lang=pt-BR device=phone360 font=130 mode=pro theme=- fresh=non gestes.max=153 lit=oui main=both amenee=tuto:minimal:8
+#0 PREMIER ECRAN reel_s=4.4 simule_s=2.4 jvm_s=10.8 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:minimal:8
+#0 AMENEE > touche 270 864 (launch_learn)
+#0 AMENEE > touche 270 989 (mode_card_pro)
+#0 AMENEE > touche 270 1096 (tuto_style_minimal)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 391 312 (tuto_chapters)
+#0 AMENEE > touche 270 1093 (tuto_quit)
+#0 AMENEE > touche 135 863 (tuto_resume)
+#0 AMENEE chapitres 1 à 7 cochés (22 étapes)
+#0 AMENEE > touche 391 281 (tuto_chapters)
+#0 AMENEE > touche 270 785 (tuto_chapter_7)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE fce1af78e8 | project=p-0e25798c tuto=minimal/Pro active=true step=make_intro done=22 chapters=1,2,3,4,5,6,7 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT OVERLAP « Construa suas partes » over the touchable « Andamento: 128 BPM Mudar o andamento » (91 x 5 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 270 675
+#1 DOIGT tuto_need «   Criar a parte “Intro” »
+#2 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE f4802e101b | project=p-0e25798c tuto=minimal/Pro active=true step=make_intro done=23 chapters=1,2,3,4,5,6,7 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 270 675
+#2 DOIGT tuto_next_big « Próxima etapa   »
+#3 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c280d3ada2 | project=p-0e25798c tuto=minimal/Pro active=true step=make_intro2 done=23 chapters=1,2,3,4,5,6,7 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 270 675
+#3 DOIGT tuto_need «   Criar a parte “Intro 2” »
+#4 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE dc8a292bca | project=p-0e25798c tuto=minimal/Pro active=true step=make_intro2 done=24 chapters=1,2,3,4,5,6,7 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 270 675
+#4 DOIGT tuto_next_big « Próxima etapa   »
+#5 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 7ceb676442 | project=p-0e25798c tuto=minimal/Pro active=true step=make_drop done=24 chapters=1,2,3,4,5,6,7 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 270 675
+#5 DOIGT tuto_need «   Criar a parte “Drop” »
+#6 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 88cca2376d | project=p-0e25798c tuto=minimal/Pro active=true step=make_drop done=25 chapters=1,2,3,4,5,6,7 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 270 675
+#6 DOIGT tuto_next_big « Próxima etapa   »
+#7 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 908c739ac5 | project=p-0e25798c tuto=minimal/Pro active=true step=make_break done=25 chapters=1,2,3,4,5,6,7 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 428 524
+#7 DOIGT tuto_kit_later « Mais tarde »
+#8 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 1e4b1b979d | project=p-0e25798c tuto=minimal/Pro active=true step=make_break done=25 chapters=1,2,3,4,5,6,7 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 270 675
+#8 DOIGT tuto_need «   Criar a parte “Break” »
+#9 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 702d233141 | project=p-0e25798c tuto=minimal/Pro active=true step=make_break done=26 chapters=1,2,3,4,5,6,7 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 270 675
+#9 DOIGT tuto_next_big « Próxima etapa   »
+#10 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 51972235b9 | project=p-0e25798c tuto=minimal/Pro active=true step=make_montee done=26 chapters=1,2,3,4,5,6,7 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 270 675
+#10 DOIGT tuto_need «   Criar a parte “Subida” »
+#11 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 42d042f78d | project=p-0e25798c tuto=minimal/Pro active=true step=make_montee done=27 chapters=1,2,3,4,5,6,7 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 270 675
+#11 DOIGT tuto_next_big « Próxima etapa   »
+#12 ROUTE tab_Structure | MODE pro | EMPREINTE f0b856345e | project=p-0e25798c tuto=minimal/Pro active=true step=make_drop2 done=27 chapters=1,2,3,4,5,6,7 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 270 675
+#12 DOIGT tuto_need «   Criar a parte “Drop 2” »
+#13 ROUTE tab_Structure | MODE pro | EMPREINTE a1040150a0 | project=p-0e25798c tuto=minimal/Pro active=true step=make_drop2 done=28 chapters=1,2,3,4,5,6,7 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 270 675
+#13 DOIGT tuto_next_big « Próxima etapa   »
+#14 ROUTE tab_Structure | MODE pro | EMPREINTE 454b92efee | project=p-0e25798c tuto=minimal/Pro active=true step=make_fin done=28 chapters=1,2,3,4,5,6,7 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 270 675
+#14 DOIGT tuto_need «   Criar a parte “Fim” »
+#15 ROUTE tab_Structure | MODE pro | EMPREINTE c6e9404d5f | project=p-0e25798c tuto=minimal/Pro active=true step=make_fin done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 270 675
+#15 DOIGT tuto_next_big « Próximo capítulo   »
+#16 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c9eb26c927 | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 483 356
+#16 DOIGT tuto_fold
+#17 ROUTE tab_Structure | MODE pro | EMPREINTE c75f9653ed | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CUT « + Nova parte (cópia de H · Fim) » lines dropped (more lines than room)
+#17 LAYOUT CUT « Sua vez: em “Estrutura”, adicione na ordem Intro, Intro 2, Drop, Break, Subida, Drop 2 e Fim. » ellipsized (« … »)
+#17 > touche 395 246
+#17 DOIGT add_part_1 « + B · Intro »
+#18 ROUTE tab_Structure | MODE pro | EMPREINTE 8ae766c468 | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 158 540
+#18 DOIGT add_part_2 « + C · Intro 2 »
+#19 ROUTE tab_Structure | MODE pro | EMPREINTE dec70b5ca4 | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 387 540
+#19 DOIGT add_part_3 « + D · Drop »
+#20 ROUTE tab_Structure | MODE pro | EMPREINTE 70c1a3cddc | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 151 621
+#20 DOIGT add_part_4 « + E · Break »
+#21 ROUTE tab_Structure | MODE pro | EMPREINTE 66c1f080b0 | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#21 SON Son : rien ne joue.
+#21 > glisse 270 620 270 380
+#21 DOIGT rien
+#22 ROUTE tab_Structure | MODE pro | EMPREINTE dcfc27cc59 | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 158 486
+#22 DOIGT add_part_5 « + F · Subida »
+#23 ROUTE tab_Structure | MODE pro | EMPREINTE b572b4ec14 | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#23 SON Son : rien ne joue.
+#23 > glisse 270 620 270 380
+#23 DOIGT rien
+#24 ROUTE tab_Structure | MODE pro | EMPREINTE 390dfd2e8e | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 159 567
+#24 DOIGT add_part_6 « + G · Drop 2 »
+#25 ROUTE tab_Structure | MODE pro | EMPREINTE 391e104e39 | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#25 SON Son : rien ne joue.
+#25 > glisse 270 620 270 380
+#25 DOIGT rien
+#26 ROUTE tab_Structure | MODE pro | EMPREINTE bf2d6e0826 | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 381 567
+#26 DOIGT add_part_7 « + H · Fim »
+#27 ROUTE tab_Structure | MODE pro | EMPREINTE 5eb1cb5ce4 | project=p-0e25798c tuto=minimal/Pro active=true step=song_order done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 270 857
+#27 DOIGT tuto_next_folded « Feito »
+#28 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 517f8c7fd2 | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 483 218
+#28 DOIGT tuto_fold
+#29 ROUTE tab_Structure | MODE pro | EMPREINTE 08da66e959 | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 390 230
+#29 DOIGT dans:part_1
+#30 ROUTE tab_Structure | MODE pro | EMPREINTE c7800c5ad1 | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 462 478
+#30 DOIGT part_menu_3
+#30 DIALOGUE 0.5 s
+#31 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 9572d7cc71 | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CUT « compassos » a word split over two lines
+#31 LAYOUT OVERLAP « Parte 4 · E · Break » over the touchable « Fechar planilha » (205 x 32 dp)
+#31 LAYOUT OVERLAP « 8 comp. » over the touchable « Fechar planilha » (73 x 23 dp)
+#31 LAYOUT OVERLAP « Fechar » over the touchable « Fechar planilha » (62 x 27 dp)
+#31 LAYOUT OVERLAP « Variação » over the touchable « Fechar planilha » (79 x 27 dp)
+#31 LAYOUT OVERLAP « Virada no fim » over the touchable « Fechar planilha » (86 x 55 dp)
+#31 LAYOUT OVERLAP « Break depois · 4 comp. » over the touchable « Fechar planilha » (107 x 53 dp)
+#31 LAYOUT OVERLAP « Break depois · 8 comp. » over the touchable « Fechar planilha » (107 x 53 dp)
+#31 LAYOUT OVERLAP « Subida antes · 4 comp. » over the touchable « Fechar planilha » (106 x 53 dp)
+#31 LAYOUT OVERLAP « Subida antes · 8 comp. » over the touchable « Fechar planilha » (106 x 53 dp)
+#31 LAYOUT OVERLAP « Fade-in » over the touchable « Fechar planilha » (69 x 27 dp)
+#31 LAYOUT OVERLAP « Fade-out » over the touchable « Fechar planilha » (83 x 27 dp)
+#31 LAYOUT OVERLAP « Adicionar um final » over the touchable « Fechar planilha » (86 x 55 dp)
+#31 LAYOUT OVERLAP « Energia: 3 » over the touchable « Fechar planilha » (91 x 27 dp)
+#31 LAYOUT OVERLAP « 1 · pads » over the touchable « Fechar planilha » (68 x 27 dp)
+#31 LAYOUT OVERLAP « 2 · + baixo » over the touchable « Fechar planilha » (94 x 27 dp)
+#31 LAYOUT OVERLAP « 3 · + bateria » over the touchable « Fechar planilha » (109 x 27 dp)
+#31 LAYOUT OVERLAP « 4 · no máximo » over the touchable « Fechar planilha » (128 x 27 dp)
+#31 LAYOUT OVERLAP « Duração » over the touchable « Fechar planilha » (75 x 27 dp)
+#31 LAYOUT OVERLAP « compassos » over the touchable « Fechar planilha » (72 x 48 dp)
+#31 LAYOUT OVERLAP « OK » over the touchable « Fechar planilha » (28 x 27 dp)
+#31 LAYOUT OVERLAP « Parte » over the touchable « Fechar planilha » (48 x 3 dp)
+#31 > touche 315 1097
+#31 DOIGT name_clear
+#31 DIALOGUE 0.2 s
+#32 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE fc43aa1258 | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT OVERLAP « compassos » over the touchable « Fechar planilha » (75 x 61 dp)
+#32 > ecris 12
+#32 DIALOGUE 0.2 s
+#33 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 2f73790c66 | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 268 1099
+#33 DOIGT part_bars_field « compassos »
+#33 DIALOGUE 0.3 s
+#34 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 1b4420fca9 | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT OVERLAP « Parte 4 · E · Break » over the touchable « Fechar planilha » (205 x 29 dp)
+#34 LAYOUT OVERLAP « Parte » over the touchable « Fechar planilha » (48 x 7 dp)
+#34 > ecris 12
+#34 DIALOGUE 0.2 s
+#35 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE cb5f8688cc | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 403 1084
+#35 DOIGT part_bars_ok « OK »
+#35 DIALOGUE 0.3 s
+#36 ROUTE tab_Structure | MODE pro | EMPREINTE 59f2097076 | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT OVERLAP « F · Subida » over « Feito: nova duração para E · Break » (103 x 29 dp)
+#36 LAYOUT OVERLAP « × 1  ·  8 comp. » over « Feito: nova duração para E · Break » (73 x 45 dp)
+#36 LAYOUT OVERLAP « Feito: nova duração para E · Break » over the touchable « Tocar a partir desta parte » (132 x 75 dp)
+#36 LAYOUT OVERLAP « Cancelar » floats over the touchable « Uma repetição a mais » (40 x 38 dp)
+#36 LAYOUT OVERLAP « Cancelar » floats over the touchable « Mais ações » (40 x 38 dp)
+#36 LAYOUT CONTRAST « Cancelar » 3.63:1 (needs 4.5:1, 14 sp)
+#36 > touche 270 857
+#36 DOIGT tuto_need_folded « Dar as durações recomendadas »
+#37 ROUTE tab_Structure | MODE pro | EMPREINTE d509381488 | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « comp. 1/120 » lines dropped (more lines than room)
+#37 LAYOUT OVERLAP « 12 comp. » over « Feito: nova duração para E · Break » (85 x 17 dp)
+#37 LAYOUT OVERLAP « 4 comp. » over « Feito: nova duração para E · Break » (73 x 23 dp)
+#37 LAYOUT OVERLAP « Feito: nova duração para E · Break » over the touchable « Tocar a partir desta parte » (132 x 19 dp)
+#37 LAYOUT OVERLAP « Feito: nova duração para E · Break » over the touchable « Tocar a partir desta parte » (132 x 55 dp)
+#37 LAYOUT OVERLAP « Cancelar » floats over the touchable « Uma repetição a mais » (40 x 28 dp)
+#37 LAYOUT OVERLAP « Cancelar » floats over the touchable « Mais ações » (40 x 28 dp)
+#37 > touche 483 745
+#37 DOIGT tuto_fold
+#38 ROUTE tab_Structure | MODE pro | EMPREINTE c00b491b8e | project=p-0e25798c tuto=minimal/Pro active=true step=song_phrases done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT OVERLAP « 16 comp. » over « Feito: nova duração para E · Break » (85 x 17 dp)
+#38 LAYOUT OVERLAP « C · Intro 2 » over « Feito: nova duração para E · Break » (101 x 29 dp)
+#38 LAYOUT OVERLAP « 16 comp. » over « Feito: nova duração para E · Break » (85 x 23 dp)
+#38 > touche 270 784
+#38 DOIGT tuto_next_big « Próximo capítulo   »
+#39 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 093a4dde65 | project=p-0e25798c tuto=minimal/Pro active=true step=gap done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT OVERLAP « Toque para mudar os acordes da música inteira. » over « Feito: nova duração para E · Break » (146 x 10 dp)
+#39 LAYOUT OVERLAP « Pro » over « Feito: nova duração para E · Break » (30 x 6 dp)
+#39 LAYOUT OVERLAP «  BPM » over « Feito: nova duração para E · Break » (38 x 21 dp)
+#39 LAYOUT OVERLAP « Intro » over « Feito: nova duração para E · Break » (42 x 23 dp)
+#39 LAYOUT OVERLAP « comp. 1/120 » over « Feito: nova duração para E · Break » (55 x 23 dp)
+#39 LAYOUT OVERLAP « ? » over « Cancelar » (6 x 25 dp)
+#39 LAYOUT OVERLAP « Feito: nova duração para E · Break » over the touchable « Acordes da música » (146 x 10 dp)
+#39 LAYOUT OVERLAP « Feito: nova duração para E · Break » over the touchable « Modo Pro. Toque para mudar de modo. Muda » (51 x 16 dp)
+#39 LAYOUT OVERLAP « Feito: nova duração para E · Break » over the touchable « Andamento: 128 BPM Mudar o andamento » (49 x 48 dp)
+#39 LAYOUT OVERLAP « Feito: nova duração para E · Break » over the touchable « Tocar a partir de uma parte » (91 x 49 dp)
+#39 LAYOUT OVERLAP « Cancelar » over the touchable « Repetir a parte em vez de tocar a música » (48 x 27 dp)
+#39 LAYOUT OVERLAP « Cancelar » over the touchable « Identificar a tela » (25 x 27 dp)
+#39 LAYOUT CONTRAST « Toque para mudar os acordes da música inteira. » 1.87:1 (needs 4.5:1, 13 sp)
+#39 > touche 270 675
+#39 DOIGT tuto_need «   Ir para a parte “Subida” »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE eaa0fb4dc8 | project=p-0e25798c tuto=minimal/Pro active=true step=gap done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CUT « Sua vez: na parte “Subida”, último compasso, apague as batidas do último tempo (toque em cada X vermelho): um tempo de silêncio logo antes do Drop 2. » ellipsized (« … »)
+#40 LAYOUT CONTRAST « Compasso » 3.53:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « 1 » 2.22:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « Seguir » 2.42:1 (needs 4.5:1, 14 sp)
+#40 > touche 414 625
+#40 DOIGT step_30 « Passo 15 »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 4ad4672cdb | project=p-0e25798c tuto=minimal/Pro active=true step=gap done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 356 625
+#41 DOIGT step_29 « Passo 14 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 0e1aa60a4f | project=p-0e25798c tuto=minimal/Pro active=true step=gap done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 270 857
+#42 DOIGT tuto_next_folded « Feito »
+#43 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d9e99f7201 | project=p-0e25798c tuto=minimal/Pro active=true step=crash done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 270 675
+#43 DOIGT tuto_need «   Ir para a parte “Drop” »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE f702b5761f | project=p-0e25798c tuto=minimal/Pro active=true step=crash done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CUT « Sua vez: na parte “Drop”, toque na primeiríssima casa do pad do prato: uma batida só, discreta. » ellipsized (« … »)
+#44 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#44 LAYOUT CONTRAST « Altura » 3.46:1 (needs 4.5:1, 14 sp)
+#44 > touche 67 457
+#44 DOIGT step_0 « Passo 1 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE acdcb5028e | project=p-0e25798c tuto=minimal/Pro active=true step=crash done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « Compasso 1/2 · Prato » 1.39:1 (needs 4.5:1, 13 sp)
+#45 > touche 483 745
+#45 DOIGT tuto_fold
+#46 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 765217c319 | project=p-0e25798c tuto=minimal/Pro active=true step=crash done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CUT « 16 pads » lines cut (taller than its box)
+#46 LAYOUT CUT « Linha de baixo » lines cut (taller than its box)
+#46 LAYOUT CUT « Microfone » lines cut (taller than its box)
+#46 LAYOUT CONTRAST « 16 pads » 3.10:1 (needs 4.5:1, 12 sp)
+#46 LAYOUT CONTRAST « Linha de baixo » 3.10:1 (needs 4.5:1, 12 sp)
+#46 > touche 270 675
+#46 DOIGT tuto_next_big « Próximo capítulo   »
+#47 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE b0ecc00b92 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 271 1050
+#47 DOIGT tab_Mix « Mix »
+#48 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE e377ae7c1e | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « ? » 3.92:1 (needs 4.5:1, 12 sp)
+#48 > touche 483 356
+#48 DOIGT tuto_fold
+#49 ROUTE console/tab_Mix | MODE pro | EMPREINTE 4deba6c592 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT CUT « Acordes » a word split over two lines
+#49 LAYOUT CUT « Sua vez: no Mix, aumente o “Envio de eco” no canal do pad “Rim” (o rim): cada “toc” se repete no ritmo. » ellipsized (« … »)
+#49 LAYOUT CONTRAST « Melodia » 3.34:1 (needs 4.5:1, 13 sp)
+#49 > touche 84 415
+#49 DOIGT strip_more_0 « Bateria »
+#50 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 40939d96f5 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT «  O que toca » ellipsized (« … »)
+#50 LAYOUT OVERLAP « Bateria » over the touchable « Fechar planilha » (83 x 32 dp)
+#50 LAYOUT OVERLAP « Mudo » over the touchable « Fechar planilha » (52 x 27 dp)
+#50 LAYOUT OVERLAP « Solo » over the touchable « Fechar planilha » (40 x 27 dp)
+#50 LAYOUT OVERLAP « Volume » over the touchable « Fechar planilha » (70 x 31 dp)
+#50 LAYOUT OVERLAP « +0,0 dB » over the touchable « Fechar planilha » (70 x 23 dp)
+#50 LAYOUT OVERLAP « Pan » over the touchable « Fechar planilha » (36 x 31 dp)
+#50 LAYOUT OVERLAP « ? » over the touchable « Fechar planilha » (9 x 18 dp)
+#50 LAYOUT OVERLAP « Centro » over the touchable « Fechar planilha » (62 x 23 dp)
+#50 LAYOUT OVERLAP «  O que toca » over the touchable « Fechar planilha » (88 x 27 dp)
+#50 LAYOUT OVERLAP «  Curvas » over the touchable « Fechar planilha » (70 x 27 dp)
+#50 LAYOUT OVERLAP « Efeitos » over the touchable « Fechar planilha » (62 x 27 dp)
+#50 LAYOUT OVERLAP « Efeitos no lugar: 3 de 8 » over the touchable « Fechar planilha » (210 x 27 dp)
+#50 LAYOUT OVERLAP « 1. Compressor » over the touchable « Fechar planilha » (130 x 27 dp)
+#50 LAYOUT OVERLAP « Toca em: » over the touchable « Fechar planilha » (73 x 24 dp)
+#50 LAYOUT OVERLAP « Tudo » over the touchable « Fechar planilha » (45 x 27 dp)
+#50 LAYOUT OVERLAP « A · Groove » over the touchable « Fechar planilha » (95 x 27 dp)
+#50 LAYOUT OVERLAP « B · Intro » over the touchable « Fechar planilha » (14 x 27 dp)
+#50 LAYOUT OVERLAP « 2. Saturação » over the touchable « Fechar planilha » (115 x 27 dp)
+#50 LAYOUT CONTRAST « B · Intro » 2.33:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « B · Intro » 2.32:1 (needs 4.5:1, 14 sp)
+#50 > glisse 270 1000 270 300
+#50 DOIGT fx_chip_0_1 « 2. Saturação »
+#51 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 65ff338986 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT OVERLAP « 3. Soft clipper » over the touchable « Fechar planilha » (127 x 27 dp)
+#51 LAYOUT OVERLAP « Um efeito pode tocar só em algumas partes: toque nas letras delas. » over the touchable « Fechar planilha » (294 x 48 dp)
+#51 LAYOUT OVERLAP «   Adicionar um efeito » over the touchable « Fechar planilha » (186 x 27 dp)
+#51 LAYOUT OVERLAP « Climas prontos » over the touchable « Fechar planilha » (136 x 27 dp)
+#51 LAYOUT OVERLAP « Para: Bateria » over the touchable « Fechar planilha » (116 x 27 dp)
+#51 LAYOUT OVERLAP « Favoritos » over the touchable « Fechar planilha » (83 x 27 dp)
+#51 LAYOUT OVERLAP « Ambiência » over the touchable « Fechar planilha » (19 x 27 dp)
+#51 LAYOUT OVERLAP « Estilo: » over the touchable « Fechar planilha » (47 x 24 dp)
+#51 LAYOUT OVERLAP « Acid » over the touchable « Fechar planilha » (40 x 27 dp)
+#51 LAYOUT OVERLAP « Techno » over the touchable « Fechar planilha » (67 x 27 dp)
+#51 LAYOUT OVERLAP « DnB » over the touchable « Fechar planilha » (37 x 27 dp)
+#51 LAYOUT OVERLAP « Punch » over the touchable « Fechar planilha » (57 x 17 dp)
+#51 LAYOUT OVERLAP « Pump EDM » over the touchable « Fechar planilha » (99 x 17 dp)
+#51 LAYOUT CONTRAST « Ambiência » 3.00:1 (needs 4.5:1, 14 sp)
+#51 > glisse 270 1000 270 300
+#51 DOIGT fx_category_favourites « Favoritos »
+#52 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 212487f9d1 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT OVERLAP « Um efeito pode tocar só em algumas partes: toque nas letras delas. » over the touchable « Fechar planilha » (294 x 43 dp)
+#52 LAYOUT OVERLAP « Punch » over the touchable « Fechar planilha » (57 x 27 dp)
+#52 LAYOUT OVERLAP « Pump EDM » over the touchable « Fechar planilha » (99 x 27 dp)
+#52 LAYOUT OVERLAP « Crocante » over the touchable « Fechar planilha » (84 x 27 dp)
+#52 LAYOUT OVERLAP « Lo-Fi Tape » over the touchable « Fechar planilha » (96 x 27 dp)
+#52 LAYOUT OVERLAP « Sala pequena » over the touchable « Fechar planilha » (123 x 27 dp)
+#52 LAYOUT OVERLAP « Sem efeito » over the touchable « Fechar planilha » (98 x 27 dp)
+#52 LAYOUT OVERLAP « Toque num clima para experimentar: você sempre pode voltar com Desfazer. » over the touchable « Fechar planilha » (318 x 48 dp)
+#52 LAYOUT OVERLAP « Segure o dedo num clima para ouvi-lo; solte e seu som volta. » over the touchable « Fechar planilha » (310 x 48 dp)
+#52 LAYOUT OVERLAP « Pad XY, cima-baixo: » over the touchable « Fechar planilha » (161 x 24 dp)
+#52 LAYOUT OVERLAP « Espaço » over the touchable « Fechar planilha » (66 x 27 dp)
+#52 LAYOUT OVERLAP « Sujeira » over the touchable « Fechar planilha » (63 x 27 dp)
+#52 LAYOUT OVERLAP « Movimento » over the touchable « Fechar planilha » (102 x 27 dp)
+#52 LAYOUT OVERLAP « ↑ Distante » over the touchable « Fechar planilha » (89 x 21 dp)
+#52 > glisse 270 1000 270 300
+#52 DOIGT rien (texte « ↑ Distante »)
+#53 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE b7e7c3b209 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT OVERLAP « ← Sombrio » over the touchable « Fechar planilha » (89 x 21 dp)
+#53 LAYOUT OVERLAP « ↓ Seco » over the touchable « Fechar planilha » (60 x 21 dp)
+#53 LAYOUT OVERLAP « Brilhante → » over the touchable « Fechar planilha » (94 x 21 dp)
+#53 LAYOUT OVERLAP « Deslize o dedo para distorcer o som ao vivo. Dois toques: volta ao som original. » over the touchable « Fechar planilha » (316 x 48 dp)
+#53 LAYOUT OVERLAP « Cor » over the touchable « Fechar planilha » (27 x 31 dp)
+#53 LAYOUT OVERLAP « Neutro » over the touchable « Fechar planilha » (29 x 19 dp)
+#53 LAYOUT OVERLAP « Sujeira » over the touchable « Fechar planilha » (51 x 31 dp)
+#53 LAYOUT OVERLAP « 0 » over the touchable « Fechar planilha » (9 x 19 dp)
+#53 LAYOUT OVERLAP « Movimento » over the touchable « Fechar planilha » (79 x 31 dp)
+#53 LAYOUT OVERLAP « Espaço » over the touchable « Fechar planilha » (54 x 31 dp)
+#53 LAYOUT OVERLAP « Reverb e eco compartilhados » over the touchable « Fechar planilha » (265 x 27 dp)
+#53 LAYOUT OVERLAP « Envio reverb » over the touchable « Fechar planilha » (112 x 27 dp)
+#53 LAYOUT OVERLAP « 0% » over the touchable « Fechar planilha » (31 x 23 dp)
+#53 LAYOUT OVERLAP « Envio eco » over the touchable « Fechar planilha » (87 x 27 dp)
+#53 > retour
+#53 RETOUR
+#54 ROUTE console/tab_Mix | MODE pro | EMPREINTE 4deba6c592 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#54 SON Son : rien ne joue.
+#54 > glisse 480 415 60 415
+#54 DOIGT strip_more_5 « Acordes »
+#55 ROUTE console/tab_Mix | MODE pro | EMPREINTE 29c7721db4 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#55 SON Son : rien ne joue.
+#55 > glisse 480 415 60 415
+#55 DOIGT strip_more_3 « Remix »
+#56 ROUTE console/tab_Mix | MODE pro | EMPREINTE 29c7721db4 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#56 SON Son : rien ne joue.
+#56 > glisse 270 650 270 250
+#56 DOIGT rien
+#57 ROUTE console/tab_Mix | MODE pro | EMPREINTE e29c055f13 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 483 727
+#57 DOIGT tuto_fold
+#58 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 2203db7194 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 397 773
+#58 DOIGT tuto_show «  Mostre-me »
+#59 ROUTE dialogue:effects_box_26 | MODE pro | EMPREINTE 91db4dfb43 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « Neutro » 4.44:1 (needs 4.5:1, 12 sp)
+#59 LAYOUT CONTRAST « 0 » 4.44:1 (needs 4.5:1, 12 sp)
+#59 LAYOUT CONTRAST « Reverb e eco compartilhados » 4.44:1 (needs 4.5:1, 14 sp)
+#59 LAYOUT CONTRAST « 0% » 3.63:1 (needs 4.5:1, 14 sp)
+#59 LAYOUT CONTRAST « 25% » 3.63:1 (needs 4.5:1, 14 sp)
+#59 LAYOUT CONTRAST « Fechar » 3.63:1 (needs 4.5:1, 14 sp)
+#59 > glisse 166 981 300 981
+#59 DOIGT send_26_1 « Envio eco »
+#60 ROUTE dialogue:effects_box_26 | MODE pro | EMPREINTE 91db4dfb43 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST « 51% » 3.63:1 (needs 4.5:1, 14 sp)
+#60 > touche 423 1098
+#60 DOIGT fx_close « Fechar »
+#61 ROUTE console/tab_Mix | MODE pro | EMPREINTE 1c7d089c13 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « Parar » 3.91:1 (needs 4.5:1, 14 sp)
+#61 > attends 3
+#62 ROUTE console/tab_Mix | MODE pro | EMPREINTE 617e8290d8 | project=p-0e25798c tuto=minimal/Pro active=true step=delay done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 270 857
+#62 DOIGT tuto_next_folded « Feito »
+#63 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE ecc97b4470 | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 483 310
+#63 DOIGT tuto_fold
+#64 ROUTE console/tab_Mix | MODE pro | EMPREINTE f48868ed48 | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CUT « Sua vez: automatize o “Corte” da faixa “Acordes” no Drop: uma curva que sobe até o meio e depois desce de novo. » ellipsized (« … »)
+#64 > touche 253 510
+#64 DOIGT automation_add «  Automatizar um ajuste »
+#65 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 5bf4c689fc | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CUT « Reverb e eco compartilhados » lines dropped (more lines than room)
+#65 > touche 288 447
+#65 DOIGT pick_track_5 « Acordes »
+#66 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE ab8e2c6637 | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#66 SON Son : rien ne joue.
+#66 > glisse 270 880 270 450
+#66 DOIGT pick_filter_5 « Filtro (varredura) »
+#67 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 3373134efc | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CONTRAST « Filtro (varredura) » 2.97:1 (needs 4.5:1, 16 sp)
+#67 LAYOUT CONTRAST « Envio reverb » 1.77:1 (needs 4.5:1, 16 sp)
+#67 > touche 270 457
+#67 DOIGT pick_filter_5 « Filtro (varredura) »
+#68 ROUTE console/tab_Mix | MODE pro | EMPREINTE 2ced3de700 | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CUT « Abre (brilhante) ou fecha (abafado) o som: a varredura do filtro. » lines dropped (more lines than room)
+#68 > touche 267 557
+#68 DOIGT auto_mode_0_1 « Por parte »
+#69 ROUTE console/tab_Mix | MODE pro | EMPREINTE e124208e88 | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#69 SON Son : rien ne joue.
+#69 > glisse 270 600 270 200
+#69 DOIGT rien
+#70 ROUTE console/tab_Mix | MODE pro | EMPREINTE 2d31b5f71d | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 270 373
+#70 DOIGT auto_len_part_0 « Sobre a parte inteira · 4 comp. »
+#71 ROUTE console/tab_Mix | MODE pro | EMPREINTE 49b9883179 | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#71 SON Son : rien ne joue.
+#71 > glisse 270 600 270 200
+#71 DOIGT rien (texte « Para mudar este ajuste numa parte da mús »)
+#72 ROUTE console/tab_Mix | MODE pro | EMPREINTE 52743d2f0a | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#72 LAYOUT CUT « 849 Hz » lines dropped (more lines than room)
+#72 > glisse 270 600 270 300
+#72 DOIGT rien
+#73 ROUTE console/tab_Mix | MODE pro | EMPREINTE b0a11770b4 | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#73 SON Son : rien ne joue.
+#73 > glisse 130 630 312 450
+#73 DOIGT rien
+#74 ROUTE console/tab_Mix | MODE pro | EMPREINTE b0a11770b4 | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#74 SON Son : rien ne joue.
+#74 > glisse 312 450 498 630
+#74 DOIGT rien
+#75 ROUTE console/tab_Mix | MODE pro | EMPREINTE 15a6073ec2 | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT CUT « 1 » drawn past its parent's edge (down, 18 dp shown of 21)
+#75 LAYOUT CUT « 3 » drawn past its parent's edge (down, 18 dp shown of 21)
+#75 LAYOUT CUT « 5 » drawn past its parent's edge (down, 18 dp shown of 21)
+#75 LAYOUT CUT « 7 » drawn past its parent's edge (down, 18 dp shown of 21)
+#75 LAYOUT CUT « 9 » drawn past its parent's edge (down, 18 dp shown of 21)
+#75 LAYOUT CUT « 11 » drawn past its parent's edge (down, 18 dp shown of 21)
+#75 LAYOUT CUT « 13 » drawn past its parent's edge (down, 18 dp shown of 21)
+#75 LAYOUT CUT « 15 » drawn past its parent's edge (down, 18 dp shown of 21)
+#75 > touche 483 745
+#75 DOIGT tuto_fold
+#76 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 7b807c893e | project=p-0e25798c tuto=minimal/Pro active=true step=filter done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 270 675
+#76 DOIGT tuto_next_big « Próximo capítulo   »
+#77 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 70b13a0454 | project=p-0e25798c tuto=minimal/Pro active=true step=levels done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 483 356
+#77 DOIGT tuto_fold
+#78 ROUTE console/tab_Mix | MODE pro | EMPREINTE 230967dc7e | project=p-0e25798c tuto=minimal/Pro active=true step=levels done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT CUT « Sua vez: no Mix, abaixe um pouco o fader da faixa “Acordes”, depois o da faixa “Melodia”. » ellipsized (« … »)
+#78 LAYOUT CONTRAST « +0,0 » 3.40:1 (needs 4.5:1, 12 sp)
+#78 > glisse 270 250 270 600
+#78 DOIGT volume_2 « Volume de Baixo »
+#79 ROUTE console/tab_Mix | MODE pro | EMPREINTE 9b626c37fb | project=p-0e25798c tuto=minimal/Pro active=true step=levels done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 55 953
+#79 DOIGT thumb_undo « Desfazer »
+#80 ROUTE console/tab_Mix | MODE pro | EMPREINTE 1336a1bbbf | project=p-0e25798c tuto=minimal/Pro active=true step=levels done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#80 SON Son : rien ne joue.
+#80 > glisse 270 600 270 680
+#80 DOIGT rien
+#81 ROUTE console/tab_Mix | MODE pro | EMPREINTE c79df47cc5 | project=p-0e25798c tuto=minimal/Pro active=true step=levels done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#81 SON Son : rien ne joue.
+#81 LAYOUT CONTRAST « Melodia » 3.24:1 (needs 4.5:1, 13 sp)
+#81 > glisse 420 340 420 380
+#81 DOIGT volume_5 « Volume de Acordes »
+#82 ROUTE console/tab_Mix | MODE pro | EMPREINTE fbf63115df | project=p-0e25798c tuto=minimal/Pro active=true step=levels done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#82 SON Son : rien ne joue.
+#82 > glisse 512 340 512 380
+#82 DOIGT volume_6 « Volume de Melodia »
+#83 ROUTE console/tab_Mix | MODE pro | EMPREINTE d88ffd78a2 | project=p-0e25798c tuto=minimal/Pro active=true step=levels done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT CONTRAST « -1,4 » 3.40:1 (needs 4.5:1, 12 sp)
+#83 > touche 270 857
+#83 DOIGT tuto_next_folded « Feito »
+#84 ROUTE console/tab_Mix | MODE pro | EMPREINTE 555d323208 | project=p-0e25798c tuto=minimal/Pro active=true step=meters done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 270 784
+#84 DOIGT tuto_mark «   Entendi »
+#85 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 96bbaddb4f | project=p-0e25798c tuto=minimal/Pro active=true step=buses done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 270 703
+#85 DOIGT tuto_mark «   Entendi »
+#86 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 17475ee412 | project=p-0e25798c tuto=minimal/Pro active=true step=buses done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT CUT «  Ouvir minha música » ellipsized (« … »)
+#86 > touche 270 677
+#86 DOIGT tuto_next_big « Próximo capítulo   »
+#87 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 216b6f498f | project=p-0e25798c tuto=minimal/Pro active=true step=loudness done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT OVERLAP « 128 » over « A masterização » (38 x 9 dp)
+#87 LAYOUT OVERLAP « A masterização » over the touchable « Andamento: 128 BPM Mudar o andamento » (91 x 21 dp)
+#87 LAYOUT OVERLAP « A masterização » over the touchable « Tocar a partir de uma parte » (45 x 22 dp)
+#87 > touche 483 184
+#87 DOIGT tuto_fold
+#88 ROUTE console/tab_Mix | MODE pro | EMPREINTE 891f652066 | project=p-0e25798c tuto=minimal/Pro active=true step=loudness done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CUT « 1 » drawn past its parent's edge (down, 5 dp shown of 21)
+#88 LAYOUT CUT « 3 » drawn past its parent's edge (down, 5 dp shown of 21)
+#88 LAYOUT CUT « 5 » drawn past its parent's edge (down, 5 dp shown of 21)
+#88 LAYOUT CUT « 7 » drawn past its parent's edge (down, 5 dp shown of 21)
+#88 LAYOUT CUT « 9 » drawn past its parent's edge (down, 5 dp shown of 21)
+#88 LAYOUT CUT « 11 » drawn past its parent's edge (down, 5 dp shown of 21)
+#88 LAYOUT CUT « 13 » drawn past its parent's edge (down, 5 dp shown of 21)
+#88 LAYOUT CUT « 15 » drawn past its parent's edge (down, 5 dp shown of 21)
+#88 LAYOUT CUT « A saída master tem um limitador embutido, sempre o último da cadeia (ele não aparece nos “Efeitos” dela): ele impede o som de passar do limite. No minimal, a gente mantém a dinâmica: não passe de “Club”. Sua vez: em “Saída master”, ajuste o “Volume-alvo” para “Club”: sua música soa tão alto quanto num clube. » ellipsized (« … »)
+#88 > glisse 400 600 400 330
+#88 DOIGT rien
+#89 ROUTE console/tab_Mix | MODE pro | EMPREINTE f83656bc6a | project=p-0e25798c tuto=minimal/Pro active=true step=loudness done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 168 565
+#89 DOIGT loudness_target_CLUB « Club · −8 LUFS »
+#90 ROUTE console/tab_Mix | MODE pro | EMPREINTE 78654aac5f | project=p-0e25798c tuto=minimal/Pro active=true step=loudness done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 483 745
+#90 DOIGT tuto_fold
+#91 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 9513841f75 | project=p-0e25798c tuto=minimal/Pro active=true step=loudness done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 270 675
+#91 DOIGT tuto_next_big « Próximo capítulo   »
+#92 ROUTE console/tab_Mix | MODE pro | EMPREINTE 30d21afd97 | project=p-0e25798c tuto=minimal/Pro active=true step=formats done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 270 784
+#92 DOIGT tuto_mark «   Entendi »
+#93 ROUTE console/tab_Mix | MODE pro | EMPREINTE 7455a360da | project=p-0e25798c tuto=minimal/Pro active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 483 953
+#93 DOIGT thumb_share « Compartilhar minha música »
+#93 DIALOGUE 0.3 s
+#94 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 20c70d137a | project=p-0e25798c tuto=minimal/Pro active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT OVERLAP « Pronto para compartilhar? » over the touchable « Fechar planilha » (166 x 64 dp)
+#94 LAYOUT OVERLAP « Nome da música (e do projeto) » over the touchable « Fechar planilha » (246 x 24 dp)
+#94 LAYOUT OVERLAP « “Compartilhar” também renomeia o projeto “Meu projeto 1”. » over the touchable « Fechar planilha » (282 x 48 dp)
+#94 LAYOUT OVERLAP « 3:45 » over the touchable « Fechar planilha » (55 x 30 dp)
+#94 LAYOUT OVERLAP « 7 partes » over the touchable « Fechar planilha » (72 x 27 dp)
+#94 LAYOUT OVERLAP « Volume: −8,0, alto, como música de balada » over the touchable « Fechar planilha » (189 x 48 dp)
+#94 LAYOUT OVERLAP « detalhes » over the touchable « Fechar planilha » (62 x 14 dp)
+#94 LAYOUT OVERLAP «  Ouvir » over the touchable « Fechar planilha » (54 x 27 dp)
+#94 LAYOUT OVERLAP « M4A · para compartilhar » over the touchable « Fechar planilha » (220 x 27 dp)
+#94 LAYOUT OVERLAP « WAV · qualidade máx. » over the touchable « Fechar planilha » (197 x 27 dp)
+#94 LAYOUT OVERLAP «   Compartilhar » over the touchable « Fechar planilha » (137 x 31 dp)
+#94 LAYOUT OVERLAP « Meus arquivos » over the touchable « Fechar planilha » (131 x 27 dp)
+#94 LAYOUT OVERLAP « Encontrar e enviar de novo: M4A, WAV, vídeo, .zip » over the touchable « Fechar planilha » (171 x 72 dp)
+#94 > touche 202 865
+#94 DOIGT share_format_Wav « WAV · qualidade máx. »
+#94 DIALOGUE 0.2 s
+#95 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE eef7e41bc0 | project=p-0e25798c tuto=minimal/Pro active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 270 961
+#95 DOIGT share_go «   Compartilhar »
+#95 DIALOGUE 0.3 s
+#96 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 461e99fe4d | project=p-0e25798c tuto=minimal/Pro active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#96 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#96 LAYOUT CONTRAST « Depois, escolha o app para enviar. » 1.80:1 (needs 4.5:1, 13 sp)
+#96 LAYOUT CONTRAST « Cancelar » 3.17:1 (needs 4.5:1, 14 sp)
+#96 > attends 10
+#96 DIALOGUE 1.1 s
+#97 ROUTE dialogue:share_progress | MODE pro | EMPREINTE d951c1af2b | project=p-0e25798c tuto=minimal/Pro active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#97 SON Son : rien ne joue.
+#97 > attends 30
+#97 PARTAGE Minha-música-club-20261119-115930.wav
+#97 DIALOGUE 1.0 s
+#98 ROUTE dialogue:« Compartilhar minha música · Mi » | MODE pro | EMPREINTE 43eafcce48 | project=p-0e25798c tuto=minimal/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 270 783
+#98 DOIGT vue « Files »
+#98 DIALOGUE 0.2 s
+#99 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE 6cbadcdd86 | project=p-0e25798c tuto=minimal/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT CUT « Pronto: Minha-música-club-20261119-115930.wav, uma cópia também está em Música › BenStudio. » a word split over two lines
+#99 LAYOUT CONTRAST « Ver meus arquivos » 2.49:1 (needs 4.5:1, 14 sp)
+#99 > touche 460 786
+#99 DOIGT share_bilan_ok « OK »
+#99 DIALOGUE 0.2 s
+#100 ROUTE console/tab_Mix | MODE pro | EMPREINTE f88ffa0177 | project=p-0e25798c tuto=minimal/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#100 SON Son : rien ne joue.
+#100 LAYOUT CUT « Salvo em Música › BenStudio: Minha-música-club-20261119-115930.wav » a word split over two lines
+#100 > fin
+#100 BENCH-VERDICT ok where=seat.fin
+#100 FIN : fin

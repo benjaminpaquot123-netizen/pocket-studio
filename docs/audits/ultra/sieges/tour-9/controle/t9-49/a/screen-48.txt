@@ -1,0 +1,39 @@
+Écran 48 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/120 » ▾ @ 268,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+image (courbe) @ 0,0
+texte « Volumes » @ 248,213
+bouton « ? » @ 482,213
+texte « Deslize um fader para o volume; toque no nome de uma faixa para ver os efeitos e as curvas dela. » [coupé] @ 270,264
+texte « Os efeitos Capítulo 11/14 · Etapa 1/2 · Pro » @ 178,355
+icône (liste) « Capítulos » @ 391,356
+icône ⌄ @ 483,356
+texte « Sua vez: no Mix, aumente o “Envio de eco” no canal do pad “Rim” (o rim): cada “toc” se repete no ritmo. » @ 270,508
+texte « ▸ Por quê? » @ 270,606
+bouton (doigt qui touche) «   Eu faço » @ 270,675
+bouton ▶ «  Ouvir o exemplo » @ 142,773
+bouton (œil) «  Mostre-me » @ 397,773
+icône ← «  Anterior » @ 112,868
+icône « Próximo  » → @ 427,868
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

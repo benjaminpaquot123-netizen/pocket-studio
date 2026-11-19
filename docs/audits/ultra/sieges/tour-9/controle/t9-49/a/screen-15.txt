@@ -1,0 +1,38 @@
+Écran 15 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+bouton « ? » @ 495,123
+onglet « Linha do tempo » [désactivé] @ 152,210
+onglet « Partes » [sélectionné] @ 347,210
+titre « A MÚSICA » [état « Expandido »] @ 153,303
+bouton « ? » @ 242,303
+texte « Construa suas partes Capítulo 8/14 · Feito · Pro » @ 178,383
+icône (liste) « Capítulos » @ 391,384
+icône ⌄ @ 483,384
+image (coupe) @ 57,554
+texte « Muito bem, capítulo concluído! » @ 295,502
+texte « Parte “Fim” criada (cópia do Groove): sem Clap, Shaker, Baixo, Acordes, Melodia. » [coupé] @ 295,556
+icône « Continuar lendo » ⌄ @ 270,603
+bouton « Próximo capítulo   » → @ 270,675
+bouton ▶ «  Ouvir minha música » @ 142,773
+bouton ▶ «  Ouvir o exemplo » @ 397,773
+icône ← «  Anterior » @ 112,868
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

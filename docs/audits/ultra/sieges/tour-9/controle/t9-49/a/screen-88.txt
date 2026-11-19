@@ -1,0 +1,49 @@
+Écran 88 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/120 » ▾ @ 268,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+image (courbe) @ 0,0
+texte « tempo » [coupé] @ 81,166
+texte « 1 » [coupé] @ 134,165
+texte « 3 » [coupé] @ 184,165
+texte « 5 » [coupé] @ 229,165
+texte « 7 » [coupé] @ 276,165
+texte « 9 » [coupé] @ 323,165
+texte « 11 » [coupé] @ 373,165
+texte « 13 » [coupé] @ 422,165
+texte « 15 » [coupé] @ 468,165
+titre « SAÍDA MASTER » [état « Expandido »] @ 186,255
+bouton « ? » @ 308,255
+texte « Volume: — » @ 115,306
+texte « Volume master » @ 217,388
+texte « −6,0 dB » @ 445,388
+curseur [état « −6,0 dB », à 60 %] @ 270,459
+texte « Sem saturação: tudo certo. » @ 204,525
+texte « Detalhes » @ 115,591
+texte « Volume-alvo » [coupé] @ 126,649
+bouton « ? » [coupé] @ 232,648
+texte « A masterização Capítulo 13/14 · Etapa 1/1 · Pro » @ 178,726
+icône (liste) « Capítulos » @ 391,727
+icône ⌃ @ 483,727
+icône « A saída master tem um limitador embutido, sempre o último da cadeia (ele não aparece nos “Efeitos” dela): ele impede o som de passar do limite. No minimal, a gente mantém a dinâmica: não passe de “Club”. Sua vez: em “Saída master”, ajuste o “Volume-alvo” para “Club”: sua música soa tão alto quanto num clube. Ler » ⌃ @ 270,857
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

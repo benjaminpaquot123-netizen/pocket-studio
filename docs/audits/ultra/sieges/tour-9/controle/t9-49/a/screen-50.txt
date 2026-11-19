@@ -1,0 +1,35 @@
+Écran 50 (540x1170)
+dessin @ 270,36
+texte « Bateria » @ 213,108
+texte « Fechar » @ 450,108
+bouton « Mudo » @ 87,195
+bouton « Solo » @ 217,195
+texte « Volume » @ 217,269
+texte « +0,0 dB » @ 463,269
+curseur [état « +0,0 dB », à 80 %] @ 270,343
+texte « Pan » @ 51,417
+bouton « ? » @ 99,417
+texte « Centro » @ 469,417
+curseur [état « Centro », à 50 %] @ 270,491
+bouton (barres de son) «  O que toca » @ 144,578
+bouton (courbe) «  Curvas » @ 396,578
+texte « Efeitos » @ 71,649
+texte « Efeitos no lugar: 3 de 8 » @ 182,705
+bouton « 1. Compressor » @ 270,768
+icône ⏻ @ 264,840
+icône ⌃ [désactivé] @ 336,840
+icône ⌄ @ 408,840
+icône ✕ @ 480,840
+bouton « Tudo » [sélectionné] @ 202,918
+bouton « A · Groove » @ 366,918
+bouton « B · Intro » [coupé] @ 493,918
+texte « Toca em: » @ 79,918
+bouton « 2. Saturação » @ 270,996
+icône ⏻ @ 264,1068
+icône ⌃ @ 336,1068
+icône ⌄ @ 408,1068
+icône ✕ @ 480,1068
+texte « Toca em: » @ 79,1146
+bouton « Tudo » [sélectionné] @ 202,1146
+bouton « A · Groove » @ 366,1146
+bouton « B · Intro » [coupé] @ 493,1146

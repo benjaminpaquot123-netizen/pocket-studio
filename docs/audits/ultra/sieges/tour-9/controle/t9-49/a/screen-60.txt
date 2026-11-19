@@ -1,0 +1,26 @@
+Écran 60 (540x1170)
+texte « Efeitos · pad 11 (Rim) » @ 242,62
+texte « ← Sombrio » @ 136,388
+texte « ↓ Seco » @ 270,388
+texte « Brilhante → » @ 404,388
+texte « Deslize o dedo para distorcer o som ao vivo. Dois toques: volta ao som original. » @ 270,470
+curseur [état « Neutro », à 50 %] @ 106,575
+texte « Cor » @ 106,633
+texte « Neutro » @ 106,667
+curseur [état « 0 », à 0 %] @ 215,575
+texte « Sujeira » @ 214,633
+texte « 0 » @ 214,667
+curseur [état « 0 », à 0 %] @ 324,575
+texte « Movimento » @ 324,633
+texte « 0 » @ 324,667
+curseur [état « 0 », à 0 %] @ 434,575
+texte « Espaço » @ 434,633
+texte « 0 » @ 434,667
+texte « Reverb e eco compartilhados » @ 250,716
+texte « Envio reverb » @ 247,772
+texte « 0% » @ 466,773
+curseur [état « 0% », à 0 %] @ 270,844
+texte « Envio eco » @ 238,924
+texte « 51% » @ 448,925
+curseur [état « 51% », à 51 %] @ 270,981
+texte « Fechar » @ 423,1098

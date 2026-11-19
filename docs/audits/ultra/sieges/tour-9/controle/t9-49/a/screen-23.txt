@@ -1,0 +1,40 @@
+Écran 23 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/40 » ▾ @ 267,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+icône ▶ « F · Subida × 1  ·  8 comp. » @ 162,218
+icône − [désactivé] @ 318,218
+icône + @ 390,218
+icône ⋮ @ 462,218
+texte « − / + : repetições. Cinza: duração fixa (sugerida ou Live) ou só 1 vez. » @ 270,322
+texte « Adicionar no fim: » @ 155,390
+bouton « + A · Groove » @ 163,459
+bouton « + B · Intro » @ 395,459
+bouton « + C · Intro 2 » @ 158,540
+bouton « + D · Drop » @ 387,540
+bouton « + E · Break » @ 151,621
+texte « Organize suas partes Capítulo 9/14 · Etapa 1/2 · Pro » @ 178,726
+icône (liste) « Capítulos » @ 391,727
+icône ⌃ @ 483,727
+icône « Sua vez: em “Estrutura”, adicione na ordem Intro, Intro 2, Drop, Break, Subida, Drop 2 e Fim. Ler » ⌃ @ 270,857
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

@@ -1,0 +1,37 @@
+Écran 70 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/120 » ▾ @ 268,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+image (courbe) @ 0,0
+bouton « Música » @ 116,206
+bouton « Sobre a bateria · 2 comp. » [sélectionné] @ 236,287
+bouton « Sobre a parte inteira · 4 comp. » @ 270,373
+texte « Passos da parte D (cada parte tem os seus). » @ 270,459
+texte « Para mudar este ajuste numa parte da música (mais alto no começo…), escolha “Música”. » @ 270,558
+bouton (pinceau) « Desenhar » [coupé, sélectionné] @ 144,645
+bouton (courbe) « Linha » [coupé] @ 329,645
+texte « Os efeitos Capítulo 11/14 · Etapa 2/2 · Pro » @ 178,726
+icône (liste) « Capítulos » @ 391,727
+icône ⌃ @ 483,727
+icône « Sua vez: automatize o “Corte” da faixa “Acordes” no Drop: uma curva que sobe até o meio e depois desce de novo. Ler » ⌃ @ 270,857
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

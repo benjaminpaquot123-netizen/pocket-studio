@@ -1,0 +1,51 @@
+Écran 56 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/120 » ▾ @ 268,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+image (courbe) @ 0,0
+texte « Volumes » @ 248,213
+bouton « ? » @ 482,213
+texte « Deslize um fader para o volume; toque no nome de uma faixa para ver os efeitos e as curvas dela. » @ 270,295
+texte « Acid 303 » [coupé] @ 22,415
+bouton (casque) [coupé, état « desligado »] @ 22,490
+texte « Baixo » @ 96,415
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 69,490
+bouton (casque) [état « desligado »] @ 123,490
+curseur [coupé, état « +0,0 dB », à 80 %] @ 96,593
+texte « Acordes » @ 216,415
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 189,490
+bouton (casque) [état « desligado »] @ 243,490
+curseur [coupé, état « +0,0 dB », à 80 %] @ 216,593
+texte « Melodia » @ 336,415
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 309,490
+bouton (casque) [état « desligado »] @ 363,490
+curseur [coupé, état « +0,0 dB », à 80 %] @ 336,593
+texte « Remix » @ 456,415
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 429,490
+bouton (casque) [état « desligado »] @ 483,490
+curseur [coupé, état « +0,0 dB », à 80 %] @ 456,593
+texte « Os efeitos Capítulo 11/14 · Etapa 1/2 · Pro » @ 178,726
+icône (liste) « Capítulos » @ 391,727
+icône ⌃ @ 483,727
+icône « Sua vez: no Mix, aumente o “Envio de eco” no canal do pad “Rim” (o rim): cada “toc” se repete no ritmo. Ler » ⌃ @ 270,857
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

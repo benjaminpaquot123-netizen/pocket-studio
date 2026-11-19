@@ -1,0 +1,49 @@
+Écran 74 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/120 » ▾ @ 268,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+image (courbe) @ 0,0
+bouton (pinceau) « Desenhar » [coupé, sélectionné] @ 144,175
+bouton (courbe) « Linha » [coupé] @ 329,175
+texte « Suavizar » @ 119,242
+icône (loupe −) [désactivé] @ 242,242
+icône (loupe +) @ 350,242
+texte « ×1 » @ 296,242
+texte « Desenhe com o dedo; dois toques rápidos apagam um ponto. “Suavizar” acerta um traço tremido, “Desfazer” o desfaz. » @ 270,359
+texte « 18,0 kHz » @ 81,456
+texte « 849 Hz » @ 81,542
+texte « 40 Hz » @ 82,628
+texte « tempo » [coupé] @ 81,652
+texte « 1 » [coupé] @ 134,654
+texte « 3 » [coupé] @ 184,654
+texte « 5 » [coupé] @ 229,654
+texte « 7 » [coupé] @ 276,654
+texte « 9 » [coupé] @ 323,654
+texte « 11 » [coupé] @ 373,654
+texte « 13 » [coupé] @ 422,654
+texte « 15 » [coupé] @ 468,654
+texte « Os efeitos Capítulo 11/14 · Etapa 2/2 · Pro » @ 178,726
+icône (liste) « Capítulos » @ 391,727
+icône ⌃ @ 483,727
+icône « Sua vez: automatize o “Corte” da faixa “Acordes” no Drop: uma curva que sobe até o meio e depois desce de novo. Ler » ⌃ @ 270,857
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

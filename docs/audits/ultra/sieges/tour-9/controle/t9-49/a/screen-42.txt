@@ -1,0 +1,57 @@
+Écran 42 (540x1170)
+icône « Meu projeto 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 79,114
+bouton « F » ▾ @ 189,114
+icône ↶ @ 264,114
+bouton ● @ 336,114
+bouton ▶ « esta parte » @ 415,114
+icône (trois points reliés) @ 495,114
+bouton « 128  BPM » @ 83,195
+icône « Intro comp. 1/120 » ▾ @ 268,195
+bouton (flèches en boucle) [état « desligado »] @ 414,195
+bouton « ? » @ 495,195
+onglet « Bateria 16 pads » [sélectionné] @ 89,276
+onglet « Acid 303 Linha de baixo » @ 292,276
+onglet « Voz Microfone » [coupé] @ 469,276
+image → @ 529,277
+texte « Parte: F · Subida » @ 131,345
+texte « Compasso » [coupé] @ 113,389
+bouton « 1 » [coupé] @ 230,390
+bouton « 2 » [coupé, sélectionné] @ 311,390
+bouton « Seguir » [coupé] @ 425,390
+texte « Compasso 2/2 · Rim » @ 182,469
+bouton « 1 » [état « vazio »] @ 67,549
+bouton [état « vazio »] @ 124,549
+bouton [état « vazio »] @ 182,549
+bouton [état « batida, intensidade 60% »] @ 240,549
+bouton « 2 » [état « vazio »] @ 298,549
+bouton [état « vazio »] @ 356,549
+bouton [état « batida, intensidade 35% »] @ 414,549
+bouton [état « vazio »] @ 472,549
+bouton « 3 » [état « vazio »] @ 67,620
+bouton [état « vazio »] @ 124,620
+bouton [état « batida, intensidade 60% »] @ 182,620
+bouton [état « vazio »] @ 240,620
+bouton « 4 » [état « vazio »] @ 298,620
+bouton [état « vazio »] @ 356,620
+bouton [état « vazio »] @ 414,620
+bouton [état « vazio »] @ 472,620
+texte « As transições Capítulo 10/14 · Etapa 1/2 · Pro » @ 178,726
+icône (liste) « Capítulos » @ 391,727
+icône ⌃ @ 483,727
+icône (rond coché) « Feito Próxima etapa » → @ 270,857
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

@@ -1,0 +1,14 @@
+Écran 65 (540x1170)
+texte « O que você quer fazer se mexer? » @ 270,194
+texte « 1. Escolha a faixa: » @ 170,291
+bouton « Bateria » [sélectionné] @ 131,366
+bouton « Acid 303 » @ 314,366
+bouton « Baixo » @ 120,447
+bouton « Acordes » @ 288,447
+bouton « Melodia » @ 137,528
+bouton « Remix » @ 307,528
+bouton « Reverb e eco compartilhados » @ 270,609
+texte « 2. O que se mexe em “Bateria”: » @ 260,683
+texte « Bateria » @ 120,745
+bouton « Filtro (varredura) Adiciona um filtro a esta faixa e o faz abrir ou fechar: o efeito que mais se ouve. » [coupé] @ 270,847
+texte « Fechar » @ 423,992

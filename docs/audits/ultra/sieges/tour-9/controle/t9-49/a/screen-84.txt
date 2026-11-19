@@ -1,0 +1,53 @@
+Écran 84 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/120 » ▾ @ 268,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+image (courbe) @ 0,0
+texte « Bateria » [coupé] @ 64,175
+bouton (haut-parleur et ondes) [coupé, allumé, état « ligado »] @ 37,227
+bouton (casque) [état « desligado »] @ 87,227
+curseur [coupé, état « +0,0 dB », à 80 %] @ 60,308
+texte « Acid 303 » [coupé] @ 180,175
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 153,227
+bouton (casque) [état « desligado »] @ 207,227
+curseur [coupé, état « +0,0 dB », à 80 %] @ 180,308
+texte « Baixo » [coupé] @ 300,175
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 273,227
+bouton (casque) [état « desligado »] @ 327,227
+curseur [coupé, état « +0,0 dB », à 80 %] @ 300,308
+texte « Acordes » [coupé] @ 420,175
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 393,227
+bouton (casque) [état « desligado »] @ 447,227
+curseur [coupé, état « -1,4 dB », à 73 %] @ 420,308
+texte « Melodia » [coupé] @ 505,175
+bouton (haut-parleur et ondes) [coupé, allumé, état « ligado »] @ 505,227
+curseur [coupé, état « -1,4 dB », à 73 %] @ 510,308
+texte « A mixagem Capítulo 12/14 · Etapa 2/3 · Pro » @ 178,418
+icône (liste) « Capítulos » @ 391,419
+icône ⌄ @ 483,419
+texte « Referência: durante o Drop, os medidores do Mixer não devem ficar no vermelho. Se uma faixa ficar vermelha, abaixe o fader dela. » @ 270,594
+texte « ▸ Por quê? » @ 270,715
+bouton ✓ «   Entendi » @ 270,784
+icône ← «  Anterior » @ 112,868
+icône « Próximo  » → @ 427,868
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

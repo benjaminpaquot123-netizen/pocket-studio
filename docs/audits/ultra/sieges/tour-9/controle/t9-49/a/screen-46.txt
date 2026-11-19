@@ -1,0 +1,41 @@
+Écran 46 (540x1170)
+icône « Meu projeto 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 79,114
+bouton « D » ▾ @ 189,114
+icône ↶ @ 264,114
+bouton ● @ 336,114
+bouton ▶ « esta parte » @ 415,114
+icône (trois points reliés) @ 495,114
+bouton « 128  BPM » @ 83,195
+icône « Intro comp. 1/120 » ▾ @ 268,195
+bouton (flèches en boucle) [état « desligado »] @ 414,195
+bouton « ? » @ 495,195
+onglet « Bateria 16 pads » [sélectionné] @ 89,265
+onglet « Acid 303 Linha de baixo » @ 292,265
+onglet « Voz Microfone » [coupé] @ 469,265
+image → @ 529,266
+texte « As transições Capítulo 10/14 · Feito · Pro » @ 178,347
+icône (liste) « Capítulos » @ 391,348
+icône ⌄ @ 483,348
+image (coupe) @ 57,520
+texte « Muito bem, capítulo concluído! » @ 295,466
+texte « Ouça sua música como está agora e depois passe para o próximo capítulo: “Os efeitos”. » @ 295,561
+bouton « Próximo capítulo   » → @ 270,675
+bouton ▶ «  Ouvir minha música » @ 142,773
+bouton ▶ «  Ouvir o exemplo » @ 397,773
+icône ← «  Anterior » @ 112,868
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

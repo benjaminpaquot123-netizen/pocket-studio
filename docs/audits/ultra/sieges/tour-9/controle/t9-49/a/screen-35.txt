@@ -1,0 +1,26 @@
+Écran 35 (540x1170)
+dessin @ 270,36
+texte « Parte 4 · E · Break » [coupé] @ 178,93
+texte « Fechar » @ 450,108
+texte « 8 comp. » @ 78,132
+bouton (étincelles) « Variação » @ 144,206
+bouton (barres de son) « Virada no fim » @ 396,217
+bouton ❚❚ « Break depois · 4 comp. » @ 144,337
+bouton ❚❚ « Break depois · 8 comp. » @ 396,337
+bouton (courbe qui monte) « Subida antes · 4 comp. » @ 144,456
+bouton (courbe qui monte) « Subida antes · 8 comp. » @ 396,456
+bouton (haut-parleur et ondes) « Fade-in » @ 144,565
+bouton (haut-parleur et une onde) « Fade-out » @ 396,565
+bouton (drapeau) « Adicionar um final » @ 144,675
+texte « Energia: 3 » @ 92,763
+bouton « 1 · pads » @ 99,835
+bouton « 2 · + baixo » @ 279,835
+bouton « 3 · + bateria » [sélectionné] @ 130,916
+bouton « 4 · no máximo » @ 366,916
+texte « Duração » @ 81,987
+champ « compassos » contenu « 12 » @ 268,1084
+icône ✕ @ 315,1092
+icône − [désactivé] @ 60,1084
+icône + @ 141,1084
+texte « OK » @ 403,1084
+texte « Parte » [coupé] @ 60,1165

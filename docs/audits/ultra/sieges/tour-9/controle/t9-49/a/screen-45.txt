@@ -1,0 +1,62 @@
+Écran 45 (540x1170)
+icône « Meu projeto 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 79,114
+bouton « D » ▾ @ 189,114
+icône ↶ @ 264,114
+bouton ● @ 336,114
+bouton ▶ « esta parte » @ 415,114
+icône (trois points reliés) @ 495,114
+bouton « 128  BPM » @ 83,195
+icône « Intro comp. 1/120 » ▾ @ 268,195
+bouton (flèches en boucle) [état « desligado »] @ 414,195
+bouton « ? » @ 495,195
+onglet « Bateria 16 pads » [sélectionné] @ 89,276
+onglet « Acid 303 Linha de baixo » @ 292,276
+onglet « Voz Microfone » [coupé] @ 469,276
+image → @ 529,277
+texte « Parte: D · Drop » @ 118,345
+texte « Compasso 1/2 · Prato » [coupé] @ 188,381
+bouton « 1 » [état « batida, intensidade 100% »] @ 67,452
+bouton [état « vazio »] @ 124,452
+bouton [état « vazio »] @ 182,452
+bouton [état « vazio »] @ 240,452
+bouton « 2 » [état « vazio »] @ 298,452
+bouton [état « vazio »] @ 356,452
+bouton [état « vazio »] @ 414,452
+bouton [état « vazio »] @ 472,452
+bouton « 3 » [état « vazio »] @ 67,523
+bouton [état « vazio »] @ 124,523
+bouton [état « vazio »] @ 182,523
+bouton [état « vazio »] @ 240,523
+bouton « 4 » [état « vazio »] @ 298,523
+bouton [état « vazio »] @ 356,523
+bouton [état « vazio »] @ 414,523
+bouton [état « vazio »] @ 472,523
+bouton « Batidas » [sélectionné] @ 117,604
+bouton « Rufos » @ 262,604
+bouton « Pan » @ 382,604
+bouton « Altura » [coupé] @ 468,604
+texte « tudo » [coupé] @ 214,676
+texte « 1/2 » [coupé] @ 297,676
+texte « 1/4 » [coupé] @ 372,676
+texte « ◀ » [coupé] @ 447,676
+texte « Preencher » [coupé] @ 105,682
+texte « As transições Capítulo 10/14 · Feito · Pro » @ 178,744
+icône (liste) « Capítulos » @ 391,745
+icône ⌃ @ 483,745
+icône (coupe) « Muito bem, capítulo concluído! » ⌃ @ 270,857
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

@@ -1,0 +1,43 @@
+Écran 51 (540x1170)
+dessin @ 270,36
+bouton « 1. Compressor » @ 270,94
+icône ⏻ @ 264,164
+icône ⌃ [désactivé] @ 336,164
+icône ⌄ @ 408,164
+icône ✕ @ 480,164
+texte « Toca em: » @ 79,242
+bouton « Tudo » [sélectionné] @ 202,242
+bouton « A · Groove » @ 366,242
+bouton « B · Intro » [coupé] @ 493,242
+bouton « 2. Saturação » @ 270,320
+icône ⏻ @ 264,392
+icône ⌃ @ 336,392
+icône ⌄ @ 408,392
+icône ✕ @ 480,392
+bouton « Tudo » [sélectionné] @ 202,470
+bouton « A · Groove » @ 366,470
+bouton « B · Intro » [coupé] @ 493,470
+texte « Toca em: » @ 79,470
+bouton « 3. Soft clipper » @ 270,548
+icône ⏻ @ 264,620
+icône ⌃ @ 336,620
+icône ⌄ [désactivé] @ 408,620
+icône ✕ @ 480,620
+texte « Toca em: » @ 79,698
+bouton « Tudo » [sélectionné] @ 202,698
+bouton « A · Groove » @ 366,698
+bouton « B · Intro » [coupé] @ 493,698
+texte « Um efeito pode tocar só em algumas partes: toque nas letras delas. » @ 270,776
+bouton + «   Adicionar um efeito » @ 270,854
+texte « Climas prontos » @ 126,926
+bouton « ? » @ 250,926
+bouton « Para: Bateria » [sélectionné] @ 135,996
+bouton ★ « Favoritos » @ 355,996
+bouton « Ambiência » [coupé] @ 489,996
+bouton « Acid » @ 161,1080
+bouton « Techno » @ 300,1080
+bouton « DnB » @ 436,1080
+bouton « Dubstep » [coupé] @ 507,1080
+texte « Estilo: » @ 60,1080
+bouton « Punch » [coupé] @ 91,1155
+bouton « Pump EDM » [coupé] @ 267,1155

@@ -1,0 +1,46 @@
+Écran 61 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/120 » ▾ @ 268,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+curseur [état « +0,0 dB », à 80 %] @ 96,289
+texte « +0,0 » @ 96,440
+texte « 1 » @ 108,480
+image (étincelles) @ 89,480
+curseur [état « +0,0 dB », à 80 %] @ 216,289
+texte « +0,0 » @ 216,440
+texte « 2 » @ 228,480
+image (étincelles) @ 207,480
+curseur [état « +0,0 dB », à 80 %] @ 336,289
+texte « +0,0 » @ 336,440
+curseur [état « +0,0 dB », à 80 %] @ 456,289
+texte « +0,0 » @ 456,440
+image (courbe) @ 60,615
+texte « Curvas e efeitos » @ 212,579
+texte « Nada se mexe ainda: abra um filtro, suba um volume… » [coupé] @ 295,630
+texte « Os efeitos Capítulo 11/14 · Etapa 1/2 · Pro » @ 178,726
+icône (liste) « Capítulos » @ 391,727
+icône ⌃ @ 483,727
+image (œil) @ 51,857
+texte « Parar » @ 464,857
+texte « Pronto. Vou deixar como estava… » @ 243,857
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

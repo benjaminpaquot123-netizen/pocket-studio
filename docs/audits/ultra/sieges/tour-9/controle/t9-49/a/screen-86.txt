@@ -1,0 +1,51 @@
+Écran 86 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/120 » ▾ @ 268,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+image (courbe) @ 0,0
+texte « Bateria » [coupé] @ 64,175
+bouton (haut-parleur et ondes) [coupé, allumé, état « ligado »] @ 37,210
+bouton (casque) [coupé, état « desligado »] @ 87,210
+texte « Acid 303 » [coupé] @ 180,175
+bouton (haut-parleur et ondes) [coupé, allumé, état « ligado »] @ 153,210
+bouton (casque) [coupé, état « desligado »] @ 207,210
+texte « Baixo » [coupé] @ 300,175
+bouton (haut-parleur et ondes) [coupé, allumé, état « ligado »] @ 273,210
+bouton (casque) [coupé, état « desligado »] @ 327,210
+texte « Acordes » [coupé] @ 420,175
+bouton (haut-parleur et ondes) [coupé, allumé, état « ligado »] @ 393,210
+bouton (casque) [coupé, état « desligado »] @ 447,210
+texte « Melodia » [coupé] @ 505,175
+bouton (haut-parleur et ondes) [coupé, allumé, état « ligado »] @ 505,210
+texte « A mixagem Capítulo 12/14 · Feito · Pro » @ 178,273
+icône (liste) « Capítulos » @ 391,274
+icône ⌄ @ 483,274
+image (coupe) @ 57,464
+texte « Muito bem, capítulo concluído! » @ 295,392
+texte « Ouça sua música como está agora e depois passe para o próximo capítulo: “A masterização”. » @ 295,505
+bouton « Próximo capítulo   » → @ 270,677
+bouton ▶ «  Ouvir minha música » @ 100,774
+bouton ▶ «  Ouvir o exemplo » @ 270,774
+bouton ✓ «  Feito » @ 440,774
+icône ← «  Anterior » @ 112,868
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

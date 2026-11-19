@@ -1,0 +1,37 @@
+Écran 7 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 128  BPM » @ 83,123
+bouton « ? » @ 495,123
+onglet « Linha do tempo » [désactivé, coupé] @ 152,196
+onglet « Partes » [coupé, sélectionné] @ 347,196
+texte « Construa suas partes Capítulo 8/14 · Etapa 4/7 · Pro » @ 178,280
+icône (liste) « Capítulos » @ 391,281
+icône ⌄ @ 483,281
+texte « Sua vez: crie o Break: o rim e o acorde, sem kick nem baixo. » @ 270,410
+bouton « Baixar o kit Minimal (1 MB) » @ 185,524
+texte « Mais tarde » @ 428,524
+texte « ▸ Por quê? » @ 270,606
+bouton ⊕ «   Criar a parte “Break” » @ 270,675
+bouton ▶ «  Ouvir o exemplo » @ 142,773
+bouton (œil) «  Mostre-me » @ 397,773
+icône ← «  Anterior » @ 112,868
+icône « Próximo  » → @ 427,868
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

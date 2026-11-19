@@ -1,0 +1,39 @@
+Écran 39 (540x1170)
+bouton (dossier ouvert) ✓ @ 80,42
+bouton « Pro » @ 189,42
+icône ↶ @ 264,42
+bouton ● @ 336,42
+bouton ▶ « esta parte » @ 415,42
+icône (trois points reliés) @ 495,42
+image ✓ @ 33,110
+texte « Feito: nova duração para E · Break » @ 212,115
+texte « Cancelar » @ 436,116
+bouton « 128  BPM » @ 83,123
+icône « Intro comp. 1/120 » ▾ @ 268,123
+bouton (flèches en boucle) [état « desligado »] @ 414,123
+bouton « ? » @ 495,123
+bouton « Acordes da música B · Intro Sol m  Sol m  Sol m  Sol m  Sol m  Sol m  Sol m  Sol m C · Intro 2 Sol m  Sol m  Sol m  Fá  Sol m  Sol m  Sol m  Fá D · Drop Sol m  Sol m  Sol m  Sol m  Sol m  Sol m  Sol m  Sol m E · Break Sol m  Sol m  Sol m  Sol m  Sol m  Sol m  Sol m  Sol m F · Subida Sol m  Sol m  Sol m  Sol m  Sol m  Sol m  Sol m  Sol m G · Drop 2 Sol m  Sol m  Sol m  Sol m  Sol m  Sol m  Sol m  Sol m … e mais 1 parte Toque para mudar os acordes da música inteira. » [coupé] @ 270,178
+texte « As transições Capítulo 10/14 · Etapa 1/2 · Pro » @ 178,263
+icône (liste) « Capítulos » @ 391,264
+icône ⌄ @ 483,264
+texte « Sua vez: na parte “Subida”, último compasso, apague as batidas do último tempo (toque em cada X vermelho): um tempo de silêncio logo antes do Drop 2. » @ 270,462
+texte « ▸ Por quê? » @ 270,606
+bouton ⊕ «   Ir para a parte “Subida” » @ 270,675
+bouton ▶ «  Ouvir o exemplo » @ 142,773
+bouton (œil) «  Mostre-me » @ 397,773
+icône ← «  Anterior » @ 112,868
+icône « Próximo  » → @ 427,868
+icône ↶ « Desfazer » @ 55,953
+icône ↷ « Refazer » [désactivé] @ 149,953
+bouton ▶ « a música » @ 248,953
+texte « 128 Andamento » @ 367,953
+icône (trois points reliés) « Compartilhar » @ 483,953
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 308,1140
+texte « ✎  Anotar » @ 406,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 136,1140

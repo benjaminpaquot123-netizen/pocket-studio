@@ -1,0 +1,28 @@
+Écran 52 (540x1170)
+dessin @ 270,36
+texte « Um efeito pode tocar só em algumas partes: toque nas letras delas. » [coupé] @ 270,104
+bouton + «   Adicionar um efeito » @ 270,178
+texte « Climas prontos » @ 126,250
+bouton « ? » @ 250,250
+bouton « Para: Bateria » [sélectionné] @ 135,320
+bouton ★ « Favoritos » @ 355,320
+bouton « Ambiência » [coupé] @ 489,320
+texte « Estilo: » @ 60,404
+bouton « Acid » @ 161,404
+bouton « Techno » @ 300,404
+bouton « DnB » @ 436,404
+bouton « Dubstep » [coupé] @ 507,404
+bouton « Punch » @ 91,488
+bouton « Pump EDM » @ 267,488
+bouton « Crocante » @ 111,560
+bouton « Lo-Fi Tape » @ 304,560
+bouton « Sala pequena » @ 141,632
+bouton « Sem efeito » @ 365,632
+texte « Toque num clima para experimentar: você sempre pode voltar com Desfazer. » @ 270,716
+texte « Segure o dedo num clima para ouvi-lo; solte e seu som volta. » @ 270,800
+texte « Pad XY, cima-baixo: » @ 145,870
+bouton « ? » @ 297,869
+bouton « Espaço » [sélectionné] @ 98,939
+bouton « Sujeira » @ 253,939
+bouton « Movimento » @ 425,939
+texte « ↑ Distante » @ 270,1003

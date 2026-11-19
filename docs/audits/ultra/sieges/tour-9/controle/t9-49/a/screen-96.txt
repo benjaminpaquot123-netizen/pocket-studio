@@ -1,0 +1,6 @@
+Écran 96 (540x1170)
+texte « Preparando sua música… » @ 270,427
+texte « Criando o som em WAV, qualidade de estúdio. » @ 270,545
+texte «   16% » @ 467,618
+texte « Depois, escolha o app para enviar. » @ 242,669
+texte « Cancelar » @ 424,759

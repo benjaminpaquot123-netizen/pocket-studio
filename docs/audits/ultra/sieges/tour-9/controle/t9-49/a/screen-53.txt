@@ -1,0 +1,32 @@
+Écran 53 (540x1170)
+dessin @ 270,36
+texte « Toque num clima para experimentar: você sempre pode voltar com Desfazer. » [coupé] @ 270,74
+texte « Segure o dedo num clima para ouvi-lo; solte e seu som volta. » @ 270,124
+texte « Pad XY, cima-baixo: » @ 145,194
+bouton « ? » @ 297,193
+bouton « Espaço » [sélectionné] @ 98,263
+bouton « Sujeira » @ 253,263
+bouton « Movimento » @ 425,263
+texte « ↑ Distante » @ 270,327
+texte « ← Sombrio » @ 122,620
+texte « ↓ Seco » @ 270,620
+texte « Brilhante → » @ 417,620
+texte « Deslize o dedo para distorcer o som ao vivo. Dois toques: volta ao som original. » @ 270,684
+curseur [état « Neutro », à 50 %] @ 86,771
+texte « Cor » @ 86,833
+texte « Neutro » @ 86,871
+curseur [état « 0 », à 0 %] @ 209,771
+texte « Sujeira » @ 208,833
+texte « 0 » @ 208,871
+curseur [état « 0 », à 0 %] @ 332,771
+texte « Movimento » @ 332,833
+texte « 0 » @ 331,871
+curseur [état « 0 », à 0 %] @ 455,771
+texte « Espaço » @ 454,833
+texte « 0 » @ 454,871
+texte « Reverb e eco compartilhados » @ 223,920
+texte « Envio reverb » @ 247,976
+texte « 0% » @ 493,977
+curseur [état « 0% », à 0 %] @ 270,1048
+texte « Envio eco » @ 247,1119
+texte « 0% » @ 493,1120

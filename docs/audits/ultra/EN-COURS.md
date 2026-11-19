@@ -2,13 +2,13 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`. L'histoire du 13 au 19 novembre (tours 6, 7 et 8) est dans `docs/archive/EN-COURS-2026-11-13-a-19.md` : elle ne se suit pas.
 
-- **Mise à jour** : 2026-11-19, 07 h 30 (heure belge).
+- **Mise à jour** : 2026-11-19, 08 h 00 (heure belge).
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
-- **Temps en cours** : ENTRE DEUX TOURS. Tour 8 clôturé (`sieges/tour-8/controle/verdict-final.md`). Aucune vague de testeurs ne joue. Avant d'écrire le plan du tour 9 : `docs/audits/ultra/PREPARATION-TOUR-9.md`.
+- **Temps en cours** : TOUR 9 lancé (Benjamin : « A. Et termine tout avant de réparer. ») : balayage machine 37 tutos × 15 langues, puis 37 sièges « tuto entier », AUCUNE réparation avant la fin du tri. Avant : Tour 8 clôturé (`sieges/tour-8/controle/verdict-final.md`). Aucune vague de testeurs ne joue. Avant d'écrire le plan du tour 9 : `docs/audits/ultra/PREPARATION-TOUR-9.md`.
 - **Intégration** : branche `ccr-80af1a1b-mn0wec`, tête `26e315e22` ; dernière CI verte : 389, sur `c9d48c185` (l'écart n'est que du texte). Tour 7 dans `main` (PR 59) ; le tour 8 n'y est pas encore.
 - **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Contrôle final du tour 8 joué sur `c9d48c185`.
 - **Lots ouverts** : aucun. **File du portail** : vide. **Discussions du tour 8** : à fermer.
-- **Branches pas entrées** : 9 branches de sièges du tour 8 (rapports seuls : `aud/tour-8-ctrl-t0b-d`, `-d2`, `-e`, `-e2`, `aud/tour-8-ctrl-t0c-a`, `-b`, `-c`, `-e`, `eq/tour-8-controle-t0a`) ; `eq/tour-8-guetteur` (essai sur un test du moteur, à laisser : le lot « machinerie » le remplace).
+- **Branches pas entrées** : (rangées le 19 novembre, 08 h) 9 branches de sièges du tour 8 (rapports seuls : `aud/tour-8-ctrl-t0b-d`, `-d2`, `-e`, `-e2`, `aud/tour-8-ctrl-t0c-a`, `-b`, `-c`, `-e`, `eq/tour-8-controle-t0a`) ; `eq/tour-8-guetteur` (essai sur un test du moteur, à laisser : le lot « machinerie » le remplace).
 
 ## En arrivant (toute discussion, avant toute mission)
 

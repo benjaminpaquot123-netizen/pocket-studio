@@ -119,6 +119,18 @@ internal fun dottedTouch(dotted: Note, hints: List<Note>, clip: NoteClip, chordM
     else hints.filter { h -> h.start == dotted.start && clip.notes.none { it.pitch == h.pitch && it.start == h.start } }.ifEmpty { listOf(dotted) }
 
 /**
+ * Tour 9 (F118, seat t9-27): the bar a paste goes on. While playing, the bar playing; else the bar chosen (or the one
+ * after a copy) while it is in sight between [left] and [right] (pixels of the roll, [barPx] a bar) or just after it
+ * (the last bar in sight copied, pasted beside it, a short loop growing), else the bar at the middle of the roll: after the tutorial's copy of bars 1 to 5, the roll on bar 2 offered « Coller mes. 6 ».
+ */
+internal fun pasteBarFor(playBar: Int, targetBar: Int, left: Float, right: Float, barPx: Float, lastBar: Int): Int {
+    if (playBar >= 0) return playBar
+    if (right <= left || barPx <= 0f) return targetBar.coerceIn(0, lastBar)
+    val inSight = targetBar * barPx < right + barPx && (targetBar + 1) * barPx > left
+    return (if (inSight) targetBar else ((left + right) / 2f / barPx).toInt()).coerceIn(0, lastBar)
+}
+
+/**
  * Tour 9 (F113, seats 11, 15, 66): the dotted notes a touch is asked for. In the chords' mode a touch on a chord's
  * bottom note writes the whole chord, and the step says « the bottom dotted note of each chord »: only those are
  * aimed at (lit, brought into view); the roll lit the chord's top one. Otherwise every note of [left].
@@ -393,7 +405,14 @@ fun PianoRoll(
                 Text(tr("Piste gelée : elle joue son rendu audio dans le morceau. « Dégeler » (menu de la piste) pour modifier ses notes."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("roll_frozen"))
             }
-            val pasteBar = if (playBar >= 0) playBar else targetBar.coerceIn(0, NoteClip.MAX_STEPS / barSteps - 1)
+            val stepPxNow = with(LocalDensity.current) { stepWidth.toPx() }
+            // Read through a derived state: a scroll recomposes the roll only when the bar it names changes.
+            val pasteBar by remember(stepPxNow, barSteps) {
+                androidx.compose.runtime.derivedStateOf {
+                    pasteBarFor(playBar, targetBar, hScroll.value.toFloat(), hScroll.value.toFloat() + hScroll.viewportSize,
+                        stepPxNow * barSteps, NoteClip.MAX_STEPS / barSteps - 1)
+                }
+            }
             val paste: () -> NoteEdits.Result? = {
                 board?.let { b ->
                     NoteEdits.pasteOnBar(clip, b, pasteBar, barTicks).also { r ->

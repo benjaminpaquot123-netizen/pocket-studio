@@ -94,6 +94,8 @@ class Tour9RollFinishTest {
         assertEquals(1, pasteBarFor(playBar = -1, targetBar = 5, left = 300f, right = 600f, barPx = bar, lastBar = 7))
         // The target in sight is kept (copy bar 1, paste on bar 2 next to it).
         assertEquals(1, pasteBarFor(playBar = -1, targetBar = 1, left = 0f, right = 700f, barPx = bar, lastBar = 7))
+        // The bar just after the one in sight is kept (a one-bar loop copied, pasted beside it as it grows).
+        assertEquals(1, pasteBarFor(playBar = -1, targetBar = 1, left = 0f, right = 300f, barPx = bar, lastBar = 7))
         // Playing: the bar playing, whatever is in sight.
         assertEquals(4, pasteBarFor(playBar = 4, targetBar = 1, left = 0f, right = 700f, barPx = bar, lastBar = 7))
         // Nothing laid out yet (no width): the target as before.

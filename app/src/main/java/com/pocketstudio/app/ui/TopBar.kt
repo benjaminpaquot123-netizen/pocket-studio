@@ -248,14 +248,13 @@ private val PROJECT_NAME_TEXT = 56.dp
  * word that does not fit is set a size smaller, then tighter, before the tick is left alone (never « Sauv… »).
  */
 @Composable
-private fun SavedWord(modifier: Modifier = Modifier, word: Boolean = true, giveUp: () -> Unit = {}) = androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
+private fun SavedWord(modifier: Modifier = Modifier, word: Boolean = true) = androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
   // Tried again from the largest size when the room changes (the phone turned, a chip gone).
   var step by remember(maxWidth, word) { mutableStateOf(if (word) 0 else SAVED_STEPS + 1) }
-  androidx.compose.runtime.LaunchedEffect(step > SAVED_STEPS && word) { if (step > SAVED_STEPS && word) giveUp() }
   Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("top_saved")) {
     Icon(Icons.Filled.Check, contentDescription = if (step > SAVED_STEPS) tr("Sauvegardé") else null, tint = Neon.Acid, modifier = Modifier.size(if (step == 0) 16.dp else 14.dp))
     val base = if (step == 0) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall
-    if (step <= SAVED_STEPS || word) Text(
+    if (step <= SAVED_STEPS) Text(
         tr("Sauvegardé"), style = base.copy(letterSpacing = if (step >= 2) (-0.02).em else 0.sp, fontWeight = FontWeight.Bold), color = Neon.Acid,
         maxLines = 1, softWrap = false, overflow = TextOverflow.Clip, onTextLayout = { if (it.hasVisualOverflow && step <= SAVED_STEPS) step++ },
         modifier = Modifier.padding(start = if (step == 0) 2.dp else 1.dp).graphicsLayer { alpha = if (step > SAVED_STEPS) 0f else 1f },
@@ -337,15 +336,10 @@ private fun TopBarRow(ui: TopBarUi, actions: TopBarActions, onRename: () -> Unit
     // A narrow bar (the keys on a small phone at 130 %): « ▶ le morceau » goes up to the name's line, at its end.
     val songOnTop = ui.songButton && rowWidth - songRoom - PLAY_GAP - (if (ui.redoFirst) BUTTON else 0.dp) < ALWAYS_SHOWN + PROJECT_ICON
     val fitted = topBarLayout(if (songOnTop || !ui.songButton) rowWidth else rowWidth - songRoom - PLAY_GAP, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst, fontScale = androidx.compose.ui.platform.LocalDensity.current.fontScale)
-    // Tour 9, F107 (« Mon projet 1 » cut, « Sauvegardé » gone): a name that does not read whole in the row, even a size
-    // smaller, goes to its own line, the bar's whole width (tried again in the row when the room or the name changes).
+    // Tour 9, F107: the name keeps its place in the row (a line of its own took the screens' height, the keys and
+    // the labels lying down); « Sauvegardé » is tried smaller before its tick is left alone (SavedWord).
     val barWidth = maxWidth
-    var nameDown by remember(ui.projectName, barWidth, ui.mode, ui.scene != null, ui.undo, ui.songButton, ui.redoFirst, androidx.compose.ui.platform.LocalDensity.current.fontScale) { mutableStateOf(false) }
-    val layout = when {
-        songOnTop -> fitted.copy(projectName = false, modeInRow = false)
-        nameDown && fitted.projectName && fitted.nameShown -> fitted.copy(projectName = false)
-        else -> fitted
-    }
+    val layout = if (songOnTop) fitted.copy(projectName = false, modeInRow = false) else fitted
     val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
     // Squeezed (a small phone with a big text size): the project's name gets a line of its own
@@ -409,7 +403,7 @@ private fun TopBarRow(ui: TopBarUi, actions: TopBarActions, onRename: () -> Unit
                 var smaller by remember(ui.projectName, room) { mutableStateOf(false) }
                 Text(
                     ui.projectName, style = if (smaller) MaterialTheme.typography.titleSmall else MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
-                    maxLines = 1, overflow = TextOverflow.Ellipsis, onTextLayout = { if (it.hasVisualOverflow) { if (!smaller) smaller = true else nameDown = true } },
+                    maxLines = 1, overflow = TextOverflow.Ellipsis, onTextLayout = { if (!smaller && it.hasVisualOverflow) smaller = true },
                 )
                 if (ui.recordInto != null) {
                     Text(
@@ -419,8 +413,8 @@ private fun TopBarRow(ui: TopBarUi, actions: TopBarActions, onRename: () -> Unit
                 } else if (ui.saved) {
                     // Nothing to save by hand: said where the project is named, quietly.
                     // Audit ultra round 1, n° 26 (seat B b: « une minuscule coche »): the tick and its word larger, in the accent.
-                    // Its word does not fit under the name: both go to the name's own line.
-                    SavedWord(giveUp = { nameDown = true })
+                    // Its word does not fit under the name, even smaller: the tick alone (the word said to TalkBack).
+                    SavedWord()
                 }
             } }
         }

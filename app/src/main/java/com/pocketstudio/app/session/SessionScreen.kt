@@ -101,6 +101,7 @@ import androidx.compose.material.icons.filled.GraphicEq
 import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
+import com.pocketstudio.ui.HelpAbout
 import com.pocketstudio.ui.FoldSection
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
@@ -395,7 +396,10 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
             // F106 (seats t9-12, t9-36): the tuto's reveal of the add buttons keeps this sentence in sight with them.
-            modifier = Modifier.spot(SONG_HELP_SPOT).testTag("song_help"),
+            // Tour 9 L6: when it speaks of the parts, it explains their touch and their ▶ (no « ? » needed beside them).
+            modifier = Modifier.spot(SONG_HELP_SPOT)
+                .then(if (ui.song.isNotEmpty()) Modifier.semantics { set(HelpAbout, listOf("part_open_#", "part_play_#")) } else Modifier)
+                .testTag("song_help"),
         )
         // What Live takes put aside: one touch to see and bring back an earlier song.
         if (ui.versions > 0) {

@@ -30,8 +30,9 @@ import org.robolectric.annotation.GraphicsMode
 /**
  * Tour 9, lot L6, F107: « Le nom du projet et « Enregistré » tiennent dans la barre. » Seen on Structure: « Sauvegardé »
  * gone (its word hidden when cut), « Mon projet 1 » alone. On 360 and 411 dp phones, at the usual size, 130 % and 200 %, in
- * Simple and Pro, with and without the part chip: wherever the name shows, it reads whole and the word « Sauvegardé » reads
- * whole next to it (at 200 %, where one line cannot hold both and the mode chip, its tick still says it).
+ * Simple and Pro, with and without the part chip: « Sauvegardé » is never shown cut; it reads whole (tried a size smaller,
+ * then tighter) or its tick alone says it. The name keeps its place in the row: a line of its own took the screen's
+ * height (the keys, the labels lying down), so it may still read « Mon prem… » on a full row (F107 half, a reste).
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -79,11 +80,10 @@ class Tour9TopBarSavedTest {
             compose.waitForIdle()
             val names = compose.onAllNodesWithText("Mon projet 1", useUnmergedTree = true).fetchSemanticsNodes()
             if (names.isEmpty()) continue // the folder alone, its tick on it (no name in the bar)
-            for (n in names) if (cut(layout(n))) bad += "$case: the name is cut"
             val saved = compose.onAllNodesWithText("Sauvegardé", useUnmergedTree = true).fetchSemanticsNodes()
             val whole = saved.any { !cut(layout(it)) }
-            // At 200 % one line cannot hold the name, « Sauvegardé » and the mode chip: the name first, the tick says it.
-            val tick = f >= 2f && saved.isEmpty() && compose.onAllNodesWithContentDescription("Sauvegardé", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
+            // A row too full for the word: the tick alone says it (never the word cut).
+            val tick = saved.isEmpty() && compose.onAllNodesWithContentDescription("Sauvegardé", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
             if (!whole && !tick) bad += "$case: « Sauvegardé » ${if (saved.isEmpty()) "missing" else "cut"} next to the name"
         }
         assertTrue(bad.joinToString("\n"), bad.isEmpty())

@@ -26,7 +26,10 @@ corrige: F108 | gravité: moyen
 corrige: F109 | gravité: moyen
 corrige: F110 | gravité: moyen
 
+Demande accordée : Zone3JourneysTest.kt : F103 retire la copie d'une partie vide (lignes 98-99, `add_part_new_copy` devient `add_part_new_empty`).
+
 ## Restes
+- F107 : moitié seulement. Le nom reste dans la ligne et peut être raccourci (« Mon prem… ») ; « Sauvegardé » est essayé plus petit, puis la coche seule (le mot reste dit à TalkBack). Le nom sur sa propre ligne prenait de la hauteur sur tous les écrans (touches coupées, étiquettes couchées).
 - F101 : non reproduit côté Structure. Sur t9-53 écran 47, le doigt (270, 520) est dans une bande vide entre l'aide des répétitions (435) et l'en-tête du tuto (631) : les boutons d'ajout sont cachés par une couche invisible du tuto. Zone L1.
 - F111 : `DoneBar` prête (`doneGoesAtNextGesture`), la ligne d'AppRoot.kt attend l'entrée de L1.
 - D10 : la ligne `renameScene = rhythmVm::renameScene` dans AppRoot.kt n'est pas posée (refusée deux fois), à faire par le chef.

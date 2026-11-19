@@ -103,4 +103,26 @@ class Tour9RollFinishTest {
         // Never past the last bar a clip can hold.
         assertEquals(7, pasteBarFor(playBar = -1, targetBar = 9, left = 2100f, right = 2400f, barPx = bar, lastBar = 7))
     }
+    /**
+     * F116 (seats t9-27, t9-58, t9-69): a library sound, then a knob turned (the tutorial's step), the tab read « Melodi
+     * Synth » / « Mélodie Plaits »: the engine's name, the sound's lost. It keeps the sound's name; a fresh synth's stays.
+     */
+    @Test
+    fun aSoundWithAKnobTurnedKeepsItsNameOnTheTrack() {
+        fun Float.turned() = if (this < 0.5f) this + 0.3f else this - 0.3f
+        val lead = com.pocketstudio.model.SoundLibrary.SYNTH.first { it.category == "Leads" }
+        val synth = com.pocketstudio.model.SynthPatch.RESONANCE
+        val t = com.pocketstudio.model.InstrumentTrack(id = 0, name = "Mélodie", synth = lead.sound.with(synth, lead.sound.get(synth).turned()))
+        assertEquals("the engine's name before", t.soundLabel, com.pocketstudio.model.guide.GuideSheets.soundName(t))
+        assertEquals(lead.name, trackSoundName(t))
+        val pl = com.pocketstudio.model.SoundLibrary.PLAITS.first()
+        val tp = com.pocketstudio.model.InstrumentTrack(id = 0, name = "Mélodie", engine = com.pocketstudio.model.InstrumentTrack.ENGINE_PLAITS,
+            plaits = pl.sound.copy(timbre = pl.sound.timbre.turned()))
+        assertEquals(pl.name, trackSoundName(tp))
+        // A fresh track's sound is named as before, never after a library sound near it.
+        val fresh = com.pocketstudio.model.InstrumentTrack(id = 0, name = "Piste 1")
+        assertEquals(com.pocketstudio.model.guide.GuideSheets.soundName(fresh), trackSoundName(fresh))
+        val freshPlaits = fresh.copy(engine = com.pocketstudio.model.InstrumentTrack.ENGINE_PLAITS)
+        assertEquals(com.pocketstudio.model.guide.GuideSheets.soundName(freshPlaits), trackSoundName(freshPlaits))
+    }
 }

@@ -1,6 +1,8 @@
 package com.pocketstudio.app.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,7 +15,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,10 +52,12 @@ fun DoneBar(text: String?, undo: () -> Unit, dismiss: () -> Unit, modifier: Modi
         delay(DONE_MS)
         dismiss()
     }
+    DisposableEffect(Unit) { onDispose { DoneBarPlace.bounds = null } }
     val shape = RoundedCornerShape(12.dp)
     // Not a Surface: a Surface consumes every touch on its bounds, and the line floats over the page's buttons.
     Row(
         modifier.padding(horizontal = 12.dp, vertical = 8.dp).fillMaxWidth().testTag("done_bar")
+            .onGloballyPositioned { DoneBarPlace.bounds = it.boundsInRoot() }
             .shadow(6.dp, shape).clip(shape).background(Neon.SurfaceHigh)
             .padding(start = 14.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -57,3 +68,25 @@ fun DoneBar(text: String?, undo: () -> Unit, dismiss: () -> Unit, modifier: Modi
         TextButton(onClick = undo, modifier = Modifier.testTag("done_undo")) { Text(tr("Annuler")) }
     }
 }
+
+/** Where « Fait : … » shows, in the window, while it shows (one at a time in the app, read on the main thread only). */
+internal object DoneBarPlace {
+    var bounds: Rect? = null
+    var origin = androidx.compose.ui.geometry.Offset.Zero
+}
+
+/**
+ * Tour 9, F111: « Fait : … » goes at the next gesture. Put on the screen that holds [DoneBar] (AppRoot's Scaffold): a
+ * finger coming down anywhere but on the line lets it go through [dismiss]; it takes nothing, so the gesture does its
+ * work, and a message that gesture brings (its own « Fait : … ») shows after it. A finger on the line keeps it, so its
+ * « Annuler » still undoes.
+ */
+fun Modifier.doneGoesAtNextGesture(dismiss: () -> Unit): Modifier = this
+    .onGloballyPositioned { DoneBarPlace.origin = it.positionInRoot() }
+    .pointerInput(dismiss) {
+        awaitEachGesture {
+            val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+            val bar = DoneBarPlace.bounds ?: return@awaitEachGesture
+            if (!bar.contains(DoneBarPlace.origin + down.position)) dismiss()
+        }
+    }

@@ -46,14 +46,15 @@ class Tour9DoneBarGoesTest {
     private var presses by mutableIntStateOf(0)
     private var undos by mutableIntStateOf(0)
     private var dismissed by mutableIntStateOf(0)
+    private var brings = false
     private var text by mutableStateOf<String?>("Fait : nouvelle longueur pour B · Couplet")
 
-    /** As in AppRoot: the page in a Scaffold, the line in its snackbar place. */
+    /** As in AppRoot: the page in a Scaffold that lets the line go at the next gesture, the line in its snackbar place. */
     private fun app() = compose.setContent {
         PocketStudioTheme {
-            Scaffold(snackbarHost = { DoneBar(text, undo = { undos++; text = null }, dismiss = { dismissed++; text = null }) }) { pad ->
+            Scaffold(modifier = Modifier.doneGoesAtNextGesture { dismissed++; text = null }, snackbarHost = { DoneBar(text, undo = { undos++; text = null }, dismiss = { dismissed++; text = null }) }) { pad ->
                 Column(Modifier.padding(pad).fillMaxSize().verticalScroll(rememberScrollState()).testTag("page")) {
-                    Button(onClick = { presses++ }, modifier = Modifier.fillMaxWidth().height(80.dp).testTag("part_length")) { Text("8 mesures") }
+                    Button(onClick = { presses++; if (brings) text = "Fait : nouvelle longueur pour C · Refrain" }, modifier = Modifier.fillMaxWidth().height(80.dp).testTag("part_length")) { Text("8 mesures") }
                     Box(Modifier.height(1200.dp))
                 }
             }
@@ -69,6 +70,16 @@ class Tour9DoneBarGoesTest {
         assertEquals("the touch did not reach the page", 1, presses)
         assertNull("« ${text} » still shows after the next gesture", text)
         compose.onNodeWithTag("done_bar").assertDoesNotExist()
+    }
+
+    @Test
+    fun aGestureBringingItsOwnLineShowsIt() {
+        brings = true
+        app()
+        compose.onNodeWithTag("part_length").performClick()
+        compose.waitForIdle()
+        assertEquals("the new « Fait : … » was let go with the old one", "Fait : nouvelle longueur pour C · Refrain", text)
+        compose.onNodeWithTag("done_bar").assertExists()
     }
 
     @Test

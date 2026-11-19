@@ -76,7 +76,9 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.IntOffset
 import kotlin.math.roundToInt
 import androidx.compose.ui.Alignment
@@ -417,14 +419,23 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
                 style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("song_repeats_help"),
             )
         }
-        // Testers (lot « tuto 3 »): each part added pushes these buttons down (a row more above, the chords' strip):
-        // after an add they are brought back into view, never left under the bottom of the screen.
+        // Testers (lot « tuto 3 »): each part added pushes these buttons down (a row more above, the chords' strip).
+        // Tour 9, D08 (~19 seats): bringing them back into view after a frame made the list jump. Now the screen scrolls
+        // by what the add pushed them, in the same layout pass: the button touched stays under the finger.
         val addRow = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        val scroller = remember { androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher() }
+        val noScroll = remember { object : androidx.compose.ui.input.nestedscroll.NestedScrollConnection {} }
+        val songSize by rememberUpdatedState(ui.song.size)
+        // Where the buttons were (y in the root) and the song's size the add is waiting for.
+        var anchor by remember { mutableStateOf<Pair<Float, Int>?>(null) }
+        var addRowY by remember { mutableStateOf(0f) }
         var added by remember { mutableStateOf(false) }
+        fun touched() { added = true; anchor = addRowY to (ui.song.size + 1) }
         LaunchedEffect(ui.song.size) {
             if (added) {
                 added = false
-                kotlinx.coroutines.delay(50)
+                androidx.compose.runtime.withFrameNanos { }
+                anchor = null
                 runCatching { addRow.bringIntoView() }
                 // A no-op when both fit; otherwise the new part wins, the buttons start right under it.
                 runCatching { lastRow.bringIntoView() }
@@ -433,14 +444,25 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
         Text(if (ui.song.isEmpty()) tr("Ajouter :") else tr("Ajouter à la fin :"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
-            modifier = Modifier.bringIntoViewRequester(addRow).spot("song_add").testTag("song_add"),
+            modifier = Modifier.nestedScroll(noScroll, scroller).bringIntoViewRequester(addRow)
+                .onGloballyPositioned { c ->
+                    val y = c.positionInRoot().y
+                    val wait = anchor
+                    if (wait != null && songSize >= wait.second && kotlin.math.abs(y - wait.first) > 0.5f) {
+                        anchor = null
+                        // Content up by what it moved down: a drag of the same length upwards, given to the screen's scroll.
+                        val push = androidx.compose.ui.geometry.Offset(0f, wait.first - y)
+                        scroller.dispatchPostScroll(androidx.compose.ui.geometry.Offset.Zero, push, androidx.compose.ui.input.nestedscroll.NestedScrollSource.UserInput)
+                    } else addRowY = y
+                }
+                .spot("song_add").testTag("song_add"),
         ) {
             ui.scenes.forEachIndexed { i, s ->
-                if (s != null) OutlinedButton(onClick = { added = true; actions.addPart(i) }, enabled = ui.song.size < SongPart.MAX_PARTS, modifier = Modifier.testTag("add_part_$i")) {
+                if (s != null) OutlinedButton(onClick = { touched(); actions.addPart(i) }, enabled = ui.song.size < SongPart.MAX_PARTS, modifier = Modifier.testTag("add_part_$i")) {
                     Text("+ ${ui.title(i)}", maxLines = 1, softWrap = false)
                 }
             }
-            NewPartButtons(ui, enabled = ui.song.size < SongPart.MAX_PARTS) { copy -> added = true; actions.newPart(copy, null) }
+            NewPartButtons(ui, enabled = ui.song.size < SongPart.MAX_PARTS) { copy -> touched(); actions.newPart(copy, null) }
         }
         // ▶ in the top bar plays the song (a part touched above plays from it): no second button here.
         // Everything acting on the sound (effects, sends, curves), each with a way to where it is set.

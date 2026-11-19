@@ -66,6 +66,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -141,6 +142,8 @@ class TopBarActions(
     val toggleRecord: () -> Unit = {},
     val selectScene: (Int) -> Unit = {},
     val newScene: () -> Unit = {},
+    /** Tour 9, D10: « Renommer » in the scene chip's menu names a part (index, section or free name), as Structure does. */
+    val renameScene: (Int, String) -> Unit = { _, _ -> },
     /** ⤴ « Prêt à partager ? »: the song checked, then shared (on every tab). */
     val share: () -> Unit = {},
     /**
@@ -252,7 +255,28 @@ private val GLOSS = Brush.verticalGradient(0f to Color.White.copy(alpha = 0.2f),
  * play strip right under it.
  */
 @Composable
-fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.layout.BoxWithConstraints(
+fun TopBar(
+    ui: TopBarUi,
+    actions: TopBarActions,
+    // The naming dialog (index, name shown, done, dismiss): Structure's own. Under Robolectric a dialog holding a text
+    // field never goes idle, so a test draws the same fields without the window.
+    nameDialog: @Composable (Int, String, (String) -> Unit, () -> Unit) -> Unit = { i, shown, done, dismiss ->
+        com.pocketstudio.app.session.RenameSceneDialog(i, shown, done, dismiss)
+    },
+) {
+    // Tour 9, D10: « Renommer » in the scene menu opens it, outside the bar's BoxWithConstraints.
+    var naming by remember { mutableStateOf(false) }
+    TopBarRow(ui, actions, onRename = { naming = true })
+    val named = ui.scene
+    if (naming && named != null) {
+        // The same dialog as Structure's; the title "A · Refrain" carries the name shown.
+        val title = named.titles.getOrElse(named.current) { "" }
+        nameDialog(named.current, title.substringAfter(" · ", ""), { label -> actions.renameScene(named.current, label); naming = false }, { naming = false })
+    }
+}
+
+@Composable
+private fun TopBarRow(ui: TopBarUi, actions: TopBarActions, onRename: () -> Unit) = androidx.compose.foundation.layout.BoxWithConstraints(
     Modifier.fillMaxWidth()
         .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.Black, 0.12f), lerp(Neon.Background, Color.Black, 0.1f))))
         // A machined edge (lot « design pro »): a faint light line on top, a dark one then a light one at the foot.
@@ -358,7 +382,7 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
         }
         if (ui.mode != null && layout.modeInRow) ModeChip(ui.mode, actions.mode)
         if (ui.scene != null && layout.scene != SceneChipMode.Hidden) {
-            SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions)
+            SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions, onRename)
         }
         if (ui.undo) IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.spot("top_undo", tr("Annuler (défaire)")).testTag("top_undo")) {
             Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler la dernière action"))
@@ -516,7 +540,7 @@ private fun NamedPlay(word: String, style: androidx.compose.ui.text.TextStyle, t
 
 /** The scene being edited ("A · Intro ▾"): a touch lists every scene to pick another, or a new empty one. */
 @Composable
-private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: TopBarActions) {
+private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: TopBarActions, onRename: () -> Unit) {
     var open by remember { mutableStateOf(false) }
     val title = scene.titles.getOrElse(scene.current) { Scene.NAMES.getOrElse(scene.current) { "?" } }
     val letter = Scene.NAMES.getOrElse(scene.current) { "?" }
@@ -577,6 +601,16 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
                     actions.newScene()
                 },
                 modifier = Modifier.testTag("scene_new"),
+            )
+            // Tour 9, D10 (seats 27, 37, 08, 23, 48, 60, 63): the part was named from Structure only.
+            DropdownMenuItem(
+                text = { Text(tr("Renommer")) },
+                leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null, tint = Neon.Cyan) },
+                onClick = {
+                    open = false
+                    onRename()
+                },
+                modifier = Modifier.testTag("scene_rename"),
             )
         }
     }

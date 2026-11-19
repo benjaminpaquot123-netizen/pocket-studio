@@ -1110,10 +1110,10 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
     val filled = ButtonDefaults.buttonColors(containerColor = Neon.Cyan, contentColor = Neon.OnAccent)
     val chapterEnd = ui.chapterDoneNext() != null
     when (primary) {
-        Primary.NEXT -> Button(onClick = actions.next, colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Neon.OnAccent), modifier = big.testTag("tuto_next_big")) {
-            Text((if (chapterEnd) tr("Chapitre suivant") else tr("Étape suivante")) + "  ", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(20.dp))
-        }
+        // Tour 9 F004/F005 (seats t9-12, t9-74, t9-39, t9-40): the step done has one way on, in « Suivant → »'s own place
+        // (bottom, at the end): the finger aimed at « Suivant » when the example ended now finds « Étape suivante → »,
+        // not « Écouter l'exemple » come up in its place; never two « suivant » at once.
+        Primary.NEXT -> Unit
         Primary.NEED -> {
             // Tour 7 (audit « Fable », R-C): a chapter opened from the list on a project that lacks what the chapters
             // before make. One touch lays it; the other way is to go and make it.
@@ -1176,7 +1176,8 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
                 OutlinedButton(onClick = actions.listen, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_listen")) { ListenContent(ui, busy) }
             }
         }
-        if (step.manual && primary != Primary.MARK) {
+        // F005: « C'est fait » on a step already done said nothing it does.
+        if (step.manual && primary != Primary.MARK && primary != Primary.NEXT) {
             words += tr("C'est fait")
             add {
                 OutlinedButton(onClick = actions.markDone, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_mark")) {
@@ -1203,7 +1204,18 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
     // Audit ultra round 2, n° 23 (seat A a, 200 %): … when their words fit there whole; else (a big font, a long
     // language) they get a row of their own, « ← Précédent » and « Suivant → » in words under them (it was « Éco… »
     // twice and an arrow).
-    val beside = primary == Primary.NEXT && besideFits(words)
+    val nextWords = if (chapterEnd) tr("Chapitre suivant") else tr("Étape suivante")
+    val beside = primary == Primary.NEXT && besideFits(words, nextWords)
+    // The step done's one way on, filled, at the row's end where « Suivant → » stands while the step is on.
+    val nextBig: @Composable (Modifier) -> Unit = { m ->
+        Button(
+            onClick = actions.next, colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Neon.OnAccent),
+            contentPadding = SECONDARY_PADDING, modifier = m.heightIn(min = 48.dp).testTag("tuto_next_big"),
+        ) {
+            com.pocketstudio.ui.WholeWordsText("$nextWords ", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
+        }
+    }
     if (secondaries.isNotEmpty() && !beside) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
         secondaries.forEach { it() }
     }
@@ -1215,24 +1227,19 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Précédent"), modifier = Modifier.size(20.dp))
             }
             secondaries.forEach { it() }
-            // Tour 7 (D7): never « Suivant » beside « Chapitre suivant » (« 次の章 » and « 次へ », two ways on in one place),
-            // nor beside the « Bravo »'s own « Étape suivante ».
-            if (chapterEnd || ui.bravo) return@Row
-            // Testers (lot « tuto 5 »): « Suivant → » stays where it was (a quick touch there replayed the example).
-            TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
-                Text(tr("Suivant") + " ", maxLines = 1)
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
-            }
+            // Testers (lot « tuto 5 »): the way on stays where « Suivant → » was (a quick touch there replayed the example).
+            nextBig(Modifier.weight(1f, fill = false))
             return@Row
         }
         TextButton(onClick = actions.previous, enabled = back, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_prev")) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
             Text(" " + tr("Précédent"), maxLines = 1)
         }
-        Box(Modifier.weight(1f))
-        // Testers: two ways on (« Étape suivante » and « Suivant → ») puzzled them; the step done has only the big one
-        // (n° 23: « Suivant → » stays where it was when its row is the secondary buttons' own on a big font).
-        if (primary != Primary.NEXT || (secondaries.isNotEmpty() && !chapterEnd && !ui.bravo)) TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
+        // Testers: two ways on (« Étape suivante » and « Suivant → ») puzzled them; the step done has only the filled one,
+        // in « Suivant → »'s place (n° 23, F004).
+        if (primary == Primary.NEXT) Box(Modifier.weight(1f).padding(start = 8.dp), contentAlignment = Alignment.CenterEnd) { nextBig(Modifier) }
+        else Box(Modifier.weight(1f))
+        if (primary != Primary.NEXT) TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
             Text(tr("Suivant") + " ", maxLines = 1)
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
         }
@@ -1302,11 +1309,11 @@ private fun EndCard(ui: TutoUi, actions: TutoActions, names: (String) -> String 
 }
 
 /**
- * Whether « ← », the secondary buttons ([words]) and « Suivant → » fit on one row with each button's
+ * Whether « ← », the secondary buttons ([words]) and the way on ([nextWords]) fit on one row with each button's
  * longest word whole at the smallest size [com.pocketstudio.ui.WholeWordsText] would shrink it to.
  */
 @Composable
-private fun besideFits(words: List<String>): Boolean {
+private fun besideFits(words: List<String>, nextWords: String): Boolean {
     if (words.isEmpty()) return true
     val measurer = androidx.compose.ui.text.rememberTextMeasurer()
     val style = MaterialTheme.typography.labelLarge
@@ -1322,7 +1329,8 @@ private fun besideFits(words: List<String>): Boolean {
                 // Its icon, a space, its padding and border.
                 (longest * floor + (18.dp + 6.dp + 10.dp * 2 + 2.dp).toPx()).toDouble()
             }.toFloat()
-            val next = px(tr("Suivant") + " ") + (18.dp + 12.dp * 2).toPx()
+            // The filled way on (F004): its longest word, its arrow, its padding.
+            val next = (nextWords.split(' ', '\u00A0').filter { it.isNotBlank() }.maxOfOrNull { px(it) } ?: 0f) * floor + (18.dp + 6.dp + 10.dp * 2).toPx()
             // The panel's padding (14 dp each side), « ← » (48 dp), the gaps (6 dp).
             val room = (width - 28.dp - 48.dp - 6.dp * (words.size + 1)).toPx()
             buttons + next <= room

@@ -505,14 +505,14 @@ class TutoController(
         val made = if (from != null) {
             // A part that keeps everything says what plays in it, whatever its source is named (tour 7, L10 and seat d).
             if (out.isEmpty() && "*" in step.keep.split(',').map { it.trim() } && now.isNotEmpty()) com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s »).", name, from) + " " +
-                com.pocketstudio.model.i18n.tr("Dedans : %s.", now.map { brickName(after, it) }.distinct().joinToString(", "))
+                com.pocketstudio.model.i18n.tr("Dedans : %s.", listed(now.map { brickName(after, it) }.distinct()))
             else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s »).", name, from)
-            else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s ») : sans %3\$s.", name, from, out.joinToString(", "))
+            else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s ») : sans %3\$s.", name, from, listed(out))
         } else if (out.isEmpty() && ("*" !in step.keep.split(',').map { it.trim() } || now.isEmpty())) com.pocketstudio.model.i18n.tr("Partie « %s » créée (copie du Groove).", name)
         // Tour 7 (L10, seat 1d #45): what « tout le Groove » is, said by name (a Groove of a kick alone read as a full one).
         else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %s » créée : tout le Groove y joue.", name) + " " +
-            com.pocketstudio.model.i18n.tr("Dedans : %s.", now.map { brickName(after, it) }.distinct().joinToString(", "))
-        else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie du Groove) : sans %2\$s.", name, out.joinToString(", "))
+            com.pocketstudio.model.i18n.tr("Dedans : %s.", listed(now.map { brickName(after, it) }.distinct()))
+        else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie du Groove) : sans %2\$s.", name, listed(out))
         val more = when {
             writes -> com.pocketstudio.model.i18n.tr("Sa basse est à toi d'écrire : les notes en pointillé.")
             // The pad the part builds up (the Montée's snare, a clap, a hat…), named as the grid names it.
@@ -523,12 +523,25 @@ class TutoController(
         return listOfNotNull(made, more).joinToString(" ")
     }
 
+    /**
+     * Tour 9, F045: a list written as the language writes one (« 、 » in Chinese and Japanese, « ، » in Arabic):
+     * « sans 贝斯, 和弦 » read half in French.
+     */
+    internal fun listed(items: List<String>, lang: com.pocketstudio.model.i18n.Lang = com.pocketstudio.model.i18n.I18n.lang): String =
+        items.joinToString(
+            when (lang) {
+                com.pocketstudio.model.i18n.Lang.ZH_CN, com.pocketstudio.model.i18n.Lang.JA -> "、"
+                com.pocketstudio.model.i18n.Lang.AR -> "، "
+                else -> ", "
+            },
+        )
+
     /** « Posé : Clap, Basse. »: the lines and tracks « Poser ce qui manque » really changed from [before] to [after], null when none. */
     private fun laid(before: Project, after: Project): String? {
         val was = before.allScenes
         val names = LinkedHashSet<String>()
         after.allScenes.forEachIndexed { i, now -> names += changedBricks(was.getOrNull(i), now).map { brickName(after, it) } }
-        return if (names.isEmpty()) null else com.pocketstudio.model.i18n.tr("Posé : %s.", names.joinToString(", "))
+        return if (names.isEmpty()) null else com.pocketstudio.model.i18n.tr("Posé : %s.", listed(names.toList()))
     }
 
     /** The pads, tracks and 303 whose hits or notes are not in [now] as they were in [was] (null: a scene just made), as [TutoChecks.bricks] names them. */

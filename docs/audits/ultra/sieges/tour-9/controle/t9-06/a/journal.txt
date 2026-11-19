@@ -1,0 +1,330 @@
+#0 SIEGE lang=ko device=foldable font=100 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:acidcore:6
+#0 PREMIER ECRAN reel_s=3.9 simule_s=2.4 jvm_s=8.8 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:acidcore:6
+#0 AMENEE > touche 518 560 (welcome_learn)
+#0 AMENEE > touche 263 1122 (mode_card_simple)
+#0 AMENEE > touche 517 937 (tuto_style_acidcore)
+#0 AMENEE chapitres 1 à 5 construits dans le projet
+#0 AMENEE > touche 906 568 (tuto_chapters)
+#0 AMENEE > touche 517 549 (tuto_chapter_5)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ac5a11d5f5 | project=p-e9860310 tuto=acidcore/Facile active=true step=make_intro done=7 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ 왜요? » 662 x 21 dp (touch 662 x 48)
+#1 > touche 517 778
+#1 DOIGT tuto_need «   “인트로” 파트 만들기 »
+#2 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6b425eb3e1 | project=p-e9860310 tuto=acidcore/Facile active=true step=make_intro done=8 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 517 859
+#2 DOIGT tuto_next_big « 다음 단계   »
+#3 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0bcd1a2a5a | project=p-e9860310 tuto=acidcore/Facile active=true step=make_intro2 done=8 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 517 778
+#3 DOIGT tuto_need «   “인트로 2” 파트 만들기 »
+#4 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f3eb1c8389 | project=p-e9860310 tuto=acidcore/Facile active=true step=make_intro2 done=9 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « Acid 303 » 2.73:1 (needs 4.5:1, 14 sp)
+#4 > touche 517 859
+#4 DOIGT tuto_next_big « 다음 단계   »
+#5 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c202a71e10 | project=p-e9860310 tuto=acidcore/Facile active=true step=make_drop done=9 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 517 778
+#5 DOIGT tuto_need «   “드롭” 파트 만들기 »
+#6 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3a701ff14a | project=p-e9860310 tuto=acidcore/Facile active=true step=make_drop done=10 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 517 859
+#6 DOIGT tuto_next_big « 다음 단계   »
+#7 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4dc437d554 | project=p-e9860310 tuto=acidcore/Facile active=true step=make_break done=10 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 517 778
+#7 DOIGT tuto_need «   “브레이크” 파트 만들기 »
+#8 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c67743d141 | project=p-e9860310 tuto=acidcore/Facile active=true step=make_break done=11 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 517 859
+#8 DOIGT tuto_next_big « 다음 단계   »
+#9 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2bd8c38bd4 | project=p-e9860310 tuto=acidcore/Facile active=true step=make_montee done=11 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 517 778
+#9 DOIGT tuto_need «   “빌드업” 파트 만들기 »
+#10 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1d4c57ea7a | project=p-e9860310 tuto=acidcore/Facile active=true step=make_montee done=12 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 327 943
+#10 DOIGT tuto_play_mine «  내 결과 듣기 »
+#11 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 8b576e55ae | project=p-e9860310 tuto=acidcore/Facile active=true step=make_montee done=12 playing=true
+#11 SON Son : la musique du projet joue en boucle.
+#11 > touche 327 943
+#11 DOIGT tuto_play_mine «  정지 »
+#12 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1d4c57ea7a | project=p-e9860310 tuto=acidcore/Facile active=true step=make_montee done=12 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 517 859
+#12 DOIGT tuto_next_big « 다음 단계   »
+#13 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 40de7a8ba2 | project=p-e9860310 tuto=acidcore/Facile active=true step=make_drop2 done=12 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 517 778
+#13 DOIGT tuto_need «   “드롭 2” 파트 만들기 »
+#14 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 077e66b21c | project=p-e9860310 tuto=acidcore/Facile active=true step=make_drop2 done=13 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 859
+#14 DOIGT tuto_next_big « 다음 단계   »
+#15 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d968defc3e | project=p-e9860310 tuto=acidcore/Facile active=true step=make_fin done=13 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 517 778
+#15 DOIGT tuto_need «   “끝” 파트 만들기 »
+#16 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2914796a14 | project=p-e9860310 tuto=acidcore/Facile active=true step=make_fin done=14 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 517 859
+#16 DOIGT tuto_next_big « 다음 챕터   »
+#17 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE af537df9aa | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 517 778
+#17 DOIGT tuto_do «   직접 할게요 »
+#18 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 6b50899459 | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « + A · 그루브 » 4.06:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « + B · 인트로 » 4.06:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « + C · 인트로 2 » 4.12:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « + D · 드롭 » 4.12:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « + E · 브레이크 » 4.23:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « + F · 빌드업 » 4.18:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « + G · 드롭 2 » 4.25:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « + H · 끝 » 4.25:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « + 새 파트 (H · 끝 복사) » 4.30:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « + 빈 새 파트 » 4.37:1 (needs 4.5:1, 14 sp)
+#18 > touche 325 228
+#18 DOIGT add_part_1 « + B · 인트로 »
+#19 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f808af189b | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « + A · 그루브 » 4.23:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « + B · 인트로 » 4.26:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « + C · 인트로 2 » 4.25:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « + D · 드롭 » 4.25:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « + E · 브레이크 » 4.25:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « + F · 빌드업 » 4.25:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « + G · 드롭 2 » 4.30:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « + H · 끝 » 4.30:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « + 새 파트 (H · 끝 복사) » 4.37:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « + 빈 새 파트 » 4.43:1 (needs 4.5:1, 14 sp)
+#19 > touche 142 309
+#19 DOIGT rien
+#20 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f808af189b | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 334 309
+#20 DOIGT rien
+#21 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f808af189b | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#21 SON Son : rien ne joue.
+#21 RIEN NE CHANGE (3 écrans identiques)
+#21 > touche 142 390
+#21 DOIGT add_part_0 « + A · 그루브 »
+#22 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 62461e9281 | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 147 1027
+#22 DOIGT thumb_undo « 실행 취소 »
+#23 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 931b5effeb | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT OVERLAP « − / + : 반복 횟수. 회색: 길이 고정(추천 또는 Live) 또는 1회뿐. » over the touchable « 템포: 분당 185박 템포 바꾸기 » (58 x 4 dp)
+#23 LAYOUT OVERLAP « − / + : 반복 횟수. 회색: 길이 고정(추천 또는 Live) 또는 1회뿐. » over the touchable « 파트부터 재생 » (96 x 4 dp)
+#23 LAYOUT CONTRAST « − / + : 반복 횟수. 회색: 길이 고정(추천 또는 Live) 또는 1회뿐. » 3.13:1 (needs 4.5:1, 13 sp)
+#23 > touche 142 334
+#23 DOIGT add_part_2 « + C · 인트로 2 »
+#24 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 7f65082336 | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 334 467
+#24 DOIGT add_part_3 « + D · 드롭 »
+#25 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE e3f9461f09 | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 142 548
+#25 DOIGT add_part_4 « + E · 브레이크 »
+#26 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 220aaa5e32 | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 341 548
+#26 DOIGT add_part_5 « + F · 빌드업 »
+#27 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3efa55cbf2 | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 133 629
+#27 DOIGT add_part_6 « + G · 드롭 2 »
+#28 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1c1a790d5c | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=14 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 306 629
+#28 DOIGT add_part_7 « + H · 끝 »
+#29 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 48a5935628 | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=15 playing=false
+#29 SON Son : rien ne joue.
+#29 > glisse 250 200 250 600
+#29 DOIGT part_play_6 « H · 끝 »
+#30 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 383d787182 | project=p-e9860310 tuto=acidcore/Facile active=true step=song_order done=15 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT OVERLAP « D · 드롭 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (26 x 4 dp)
+#30 LAYOUT OVERLAP « D · 드롭 » over the touchable « 파트부터 재생 » (29 x 4 dp)
+#30 > touche 517 942
+#30 DOIGT tuto_next_folded « 성공 »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a326dc9bfc | project=p-e9860310 tuto=acidcore/Facile active=true step=song_phrases done=15 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT OVERLAP « 탭해서 곡 전체 코드를 바꿔요. » over the touchable « 템포: 분당 185박 템포 바꾸기 » (48 x 4 dp)
+#31 LAYOUT OVERLAP « 탭해서 곡 전체 코드를 바꿔요. » over the touchable « 파트부터 재생 » (96 x 4 dp)
+#31 > touche 517 714
+#31 DOIGT tuto_why « ▸ 왜요? »
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1551b93c9a | project=p-e9860310 tuto=acidcore/Facile active=true step=song_phrases done=15 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT TARGET « ▾ 왜요? » 662 x 21 dp (touch 662 x 48)
+#32 > touche 517 778
+#32 DOIGT tuto_need «   추천 길이 적용 »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 051b8b945f | project=p-e9860310 tuto=acidcore/Facile active=true step=song_phrases done=16 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT OVERLAP « 탭해서 곡 전체 코드를 바꿔요. » over the touchable « 파트부터 재생 » (98 x 4 dp)
+#33 > touche 517 859
+#33 DOIGT tuto_next_big « 다음 챕터   »
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c0664cb815 | project=p-e9860310 tuto=acidcore/Facile active=true step=gap done=16 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 517 778
+#34 DOIGT tuto_need «   “빌드업” 파트로 가기 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1e95a8a729 | project=p-e9860310 tuto=acidcore/Facile active=true step=gap done=16 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « 손뼉 » 4.09:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « 메트로놈 » 3.16:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « 카운트인 » 4.42:1 (needs 4.5:1, 14 sp)
+#35 LAYOUT CONTRAST « ? » 1.29:1 (needs 4.5:1, 12 sp)
+#35 LAYOUT CONTRAST « 스텝: 손뼉 · 빌드업 » 1.45:1 (needs 4.5:1, 12 sp)
+#35 LAYOUT CONTRAST « ? » 1.36:1 (needs 4.5:1, 12 sp)
+#35 LAYOUT CONTRAST « 모든 패드 » 1.51:1 (needs 4.5:1, 14 sp)
+#35 > touche 800 614
+#35 DOIGT step_60 « 스텝 13 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 21d8a0131a | project=p-e9860310 tuto=acidcore/Facile active=true step=gap done=16 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 856 614
+#36 DOIGT step_61 « 스텝 14 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6bb56c7c94 | project=p-e9860310 tuto=acidcore/Facile active=true step=gap done=16 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 912 614
+#37 DOIGT step_62 « 스텝 15 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ffce0f2ca5 | project=p-e9860310 tuto=acidcore/Facile active=true step=gap done=16 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 968 614
+#38 DOIGT step_63 « 스텝 16 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 74b7aa0215 | project=p-e9860310 tuto=acidcore/Facile active=true step=gap done=17 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 517 942
+#39 DOIGT tuto_next_folded « 성공 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 10e250fe6e | project=p-e9860310 tuto=acidcore/Facile active=true step=crash done=17 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 517 778
+#40 DOIGT tuto_need «   “드롭” 파트로 가기 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9d76f93152 | project=p-e9860310 tuto=acidcore/Facile active=true step=crash done=17 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#41 > touche 575 296
+#41 DOIGT step_0 « 스텝 1 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 84f69fee04 | project=p-e9860310 tuto=acidcore/Facile active=true step=crash done=18 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « 심벌 » 1.39:1 (needs 4.5:1, 13 sp)
+#42 > touche 517 942
+#42 DOIGT tuto_chapter_end_folded « 잘했어요, 챕터 완료! »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a71e28c20d | project=p-e9860310 tuto=acidcore/Facile active=true step=crash done=18 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « 심벌 » 4.34:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « 심벌 » 1.41:1 (needs 4.5:1, 13 sp)
+#43 > touche 327 943
+#43 DOIGT tuto_play_mine «  내 곡 듣기 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1737ffad8f | project=p-e9860310 tuto=acidcore/Facile active=true step=crash done=18 playing=true
+#44 SON Son : le morceau joue (partie « B »).
+#44 > touche 327 943
+#44 DOIGT tuto_listen «  예시 듣기 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 34511efb06 | project=p-e9860310 tuto=acidcore/Facile active=true step=crash done=18 playing=false
+#45 SON Son : l'exemple du tuto joue (encore 3 s).
+#45 > touche 517 859
+#45 DOIGT tuto_next_big « 다음 챕터   »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7f66c66b98 | project=p-e9860310 tuto=acidcore/Facile active=true step=filter_hear done=18 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 517 795
+#46 DOIGT tuto_why « ▸ 왜요? »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bef4add68f | project=p-e9860310 tuto=acidcore/Facile active=true step=filter_hear done=18 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 517 859
+#47 DOIGT tuto_listen «  예시 듣기 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f8edfbbccf | project=p-e9860310 tuto=acidcore/Facile active=true step=filter_hear done=18 playing=false
+#48 SON Son : l'exemple du tuto joue (encore 3 s).
+#48 > attends 4
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2038003027 | project=p-e9860310 tuto=acidcore/Facile active=true step=filter_hear done=19 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 517 859
+#49 DOIGT tuto_next_big « 다음 챕터   »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c806d8ee8f | project=p-e9860310 tuto=acidcore/Facile active=true step=levels done=19 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 517 778
+#50 DOIGT tuto_do «   직접 할게요 »
+#51 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 9b0c41aafb | project=p-e9860310 tuto=acidcore/Facile active=true step=levels done=19 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT CONTRAST « Acid 303 » 3.34:1 (needs 4.5:1, 13 sp)
+#51 LAYOUT CONTRAST « 출력 » 4.33:1 (needs 4.5:1, 13 sp)
+#51 > touche 727 1123
+#51 DOIGT tab_simple_Mix « 믹스 »
+#52 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 9b0c41aafb | project=p-e9860310 tuto=acidcore/Facile active=true step=levels done=19 playing=false
+#52 SON Son : rien ne joue.
+#52 > glisse 216 400 216 450
+#52 DOIGT mix_fader_1 « Acid 303 볼륨 »
+#53 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 5cf29b4004 | project=p-e9860310 tuto=acidcore/Facile active=true step=levels done=19 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 75 253
+#53 DOIGT mix_drums_expand « 드럼 ▸ »
+#54 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE b63bf1219c | project=p-e9860310 tuto=acidcore/Facile active=true step=levels done=19 playing=false
+#54 SON Son : rien ne joue.
+#54 > glisse 288 420 288 470
+#54 DOIGT mix_pad_fader_4 « 손뼉 볼륨 »
+#55 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE d37a36d7be | project=p-e9860310 tuto=acidcore/Facile active=true step=levels done=20 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 517 942
+#55 DOIGT tuto_chapter_end_folded « 잘했어요, 챕터 완료! »
+#56 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 8bdb0c48ed | project=p-e9860310 tuto=acidcore/Facile active=true step=levels done=20 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « 출력 » 4.34:1 (needs 4.5:1, 13 sp)
+#56 > touche 517 859
+#56 DOIGT tuto_next_big « 다음 챕터   »
+#57 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 5a82d7920d | project=p-e9860310 tuto=acidcore/Facile active=true step=share done=20 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « 출력 » 4.38:1 (needs 4.5:1, 13 sp)
+#57 > touche 517 859
+#57 DOIGT tuto_do «   직접 할게요 »
+#58 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 4566dd5466 | project=p-e9860310 tuto=acidcore/Facile active=true step=share done=20 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 936 1123
+#58 DOIGT tab_simple_Envoyer « 공유 »
+#59 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 4566dd5466 | project=p-e9860310 tuto=acidcore/Facile active=true step=share done=20 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 518 618
+#59 DOIGT share_go «   공유 »
+#60 ROUTE dialogue:share_progress | MODE simple | EMPREINTE e66111fa7e | project=p-e9860310 tuto=acidcore/Facile active=true step=share done=20 playing=false
+#60 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#60 LAYOUT CONTRAST « 취소 » 4.20:1 (needs 4.5:1, 14 sp)
+#60 > attends 10
+#60 PARTAGE 내-곡-20261119-072645.m4a
+#61 ROUTE dialogue:« 내 곡 공유 · 내-곡-20261119-072645.m » | MODE simple | EMPREINTE 7bdd756e5e | project=p-e9860310 tuto=acidcore/Facile active=true step=share done=21 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 517 801
+#61 DOIGT vue « Files »
+#62 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 7a1505b2bf | project=p-e9860310 tuto=acidcore/Facile active=true step=share done=21 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 847 762
+#62 DOIGT share_bilan_ok « OK »
+#63 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 6c9b668d96 | project=p-e9860310 tuto=acidcore/Facile active=true step=share done=21 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 517 942
+#63 DOIGT tuto_next_folded « 성공 »
+#64 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 136c7ba882 | project=p-e9860310 tuto=acidcore/Facile active=true step=share done=21 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CUT « 애시드코어를 잠깐 들어 보세요. 프리 파티의 애시드 하드코어예요. 처음엔 303 혼자, 그다음 185 BPM의 개버 킥이 합류해요. 이걸 만들 거예요. » ellipsized (« … »)
+#64 LAYOUT CUT « 시작하기 전에: 킷은 이미 애시드코어 킷(F♯에 맞춘 단단한 킥)이고, “Acid 303” 트랙에는 이미 “하울러” 사운드가 들어 있어요. 설정할 건 없어요. » ellipsized (« … »)
+#64 > touche 906 378
+#64 DOIGT tuto_chapters « 챕터 »
+#65 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE c98fde01c5 | project=p-e9860310 tuto=acidcore/Facile active=true step=share done=21 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 6 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 > fin
+#65 FIN : fin

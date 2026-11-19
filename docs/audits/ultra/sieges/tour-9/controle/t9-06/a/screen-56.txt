@@ -1,0 +1,67 @@
+Écran 56 (1035x1243)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 373,42
+texte « 간단 » @ 774,42
+bouton ● @ 846,42
+bouton ▶ « 이 파트 » @ 918,42
+icône ⋮ @ 990,42
+bouton « 185  템포 » @ 69,114
+icône « 인트로 1/128마디 » ▾ @ 211,114
+bouton « ? » @ 990,114
+texte « 직접 해 보세요: 들려야 할 소리는 올리고, 방해되는 소리는 내리세요. ▶를 누르면 트랙 하나만 들을 수 있어요. » @ 520,174
+bouton « 드럼 ▾ » [état « 열림 »] @ 276,253
+curseur [état « 보통 », à 80 %] @ 84,430
+texte « 단단한 큰북 » @ 192,321
+curseur [état « −1 », à 77 %] @ 192,440
+texte « −1 » @ 192,546
+bouton ▶ @ 192,589
+texte « 손뼉 » @ 288,317
+curseur [état « −4 », à 63 %] @ 288,433
+texte « −4 » @ 288,539
+bouton ▶ @ 288,585
+texte « 오픈 하이햇 » @ 384,321
+curseur [état « 보통 », à 80 %] @ 384,440
+texte « 보통 » @ 384,548
+bouton ▶ [coupé] @ 384,591
+texte « 심벌 » @ 480,317
+curseur [état « +3 », à 95 %] @ 480,433
+texte « +3 » @ 480,539
+bouton ▶ @ 480,585
+texte « 보통 » @ 84,590
+bouton (haut-parleur et ondes) [coupé, allumé, état « 켜짐 »] @ 56,615
+bouton ▶ [coupé] @ 110,615
+texte « Acid 303 » @ 600,241
+curseur [état « −2 », à 69 %] @ 600,406
+texte « −2 » @ 600,563
+bouton (haut-parleur et ondes) [coupé, allumé, état « 켜짐 »] @ 575,600
+bouton ▶ [coupé] @ 626,600
+texte « 신스 » @ 723,243
+curseur [état « 보통 », à 80 %] @ 723,410
+texte « 보통 » @ 723,570
+bouton (haut-parleur et ondes) [coupé, allumé, état « 켜짐 »] @ 698,605
+bouton ▶ [coupé] @ 749,605
+texte « 출력 » @ 858,243
+curseur [état « −6 », à 60 %] @ 858,410
+texte « ▶ 누르기 » @ 858,587
+icône (liste) « 챕터 » @ 906,665
+texte « 믹스: 볼륨 10/11장 · 완료 · 쉬움 » @ 445,665
+icône ⌄ @ 978,665
+image (coupe) @ 57,770
+texte « 잘했어요, 챕터 완료! » @ 177,755
+texte « 다음 챕터: “곡을 내보내세요”. » @ 205,785
+bouton « 다음 챕터   » → @ 517,859
+icône ← @ 57,943
+bouton ▶ «  예시 듣기 » @ 558,943
+icône ↶ « 실행 취소 » @ 147,1027
+image ↷ @ 329,1015
+bouton ▶ « 곡 » @ 512,1027
+texte « 185 템포 » @ 700,1027
+icône ⋮ « 더보기 » @ 889,1027
+onglet (lignes et note) « 내 곡 » @ 99,1123
+onglet (quatre carrés) « 리듬 » @ 309,1123
+onglet (touches de piano) « 건반 » @ 518,1123
+onglet (curseurs) « 믹스 » [sélectionné] @ 727,1123
+onglet (trois points reliés) « 공유 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  메모 » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « 피드백 모드 » @ 385,1213

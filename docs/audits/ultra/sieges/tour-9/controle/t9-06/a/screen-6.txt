@@ -1,0 +1,46 @@
+Écran 6 (1035x1243)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 373,42
+texte « 간단 » @ 774,42
+bouton ● @ 846,42
+bouton ▶ « 이 파트 » @ 918,42
+icône ⋮ @ 990,42
+bouton « 185  템포 » @ 69,114
+bouton « ? » @ 990,114
+texte « 추가: » @ 64,164
+bouton « + A · 그루브 » @ 133,228
+bouton « + B · 인트로 » @ 325,228
+bouton « + C · 인트로 2 » @ 142,309
+bouton « + D · 드롭 » @ 334,309
+bouton « + 새 파트 (D · 드롭 복사) » [coupé] @ 187,379
+titre « 내 트랙 » [état « 펼쳐짐 »] @ 604,204
+texte « 트랙 이름을 눌러 소리를 바꾸고, ▶로 따로 들어 보세요. » @ 765,248
+bouton « 드럼 사운드 바꾸기 » › @ 696,316
+bouton ▶ @ 882,316
+icône (curseurs) @ 957,316
+bouton › « Acid 303 사운드 바꾸기 » [coupé] @ 696,394
+bouton ▶ [coupé] @ 882,397
+icône (curseurs) [coupé] @ 957,400
+texte « 파트를 만들어 보세요 6/11장 · 3/7단계 · 쉬움 » @ 445,452
+icône (liste) « 챕터 » @ 906,452
+icône ⌄ @ 978,452
+image (coupe) @ 57,557
+texte « 잘했어요, 성공이에요! » @ 184,542
+texte « “드롭” 파트를 만들었어요: 그루브 전체가 연주돼요. 들어 있는 것: 단단한 큰북, 손뼉, 오픈 하이햇, Acid 303. » @ 511,572
+bouton « 다음 단계   » → @ 517,859
+icône ← @ 57,943
+bouton ▶ «  내 결과 듣기 » @ 327,943
+bouton ▶ «  예시 듣기 » @ 788,943
+icône ↶ « 실행 취소 » @ 147,1027
+image ↷ @ 329,1015
+bouton ▶ « 곡 » @ 512,1027
+texte « 185 템포 » @ 700,1027
+icône ⋮ « 더보기 » @ 889,1027
+onglet (lignes et note) « 내 곡 » [sélectionné] @ 99,1123
+onglet (quatre carrés) « 리듬 » @ 309,1123
+onglet (touches de piano) « 건반 » @ 518,1123
+onglet (curseurs) « 믹스 » @ 727,1123
+onglet (trois points reliés) « 공유 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  메모 » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « 피드백 모드 » @ 385,1213

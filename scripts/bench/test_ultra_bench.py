@@ -263,6 +263,7 @@ def main():
         fusion_forged(d)
         toy_batch_is_its_own(d)
         ci_state_reads_every_job(d)
+        ci_state_without_gh(d)
         portal_queue(d)
         portal_traces(d)
         zone_report(d)
@@ -3175,6 +3176,53 @@ def ci_state_reads_every_job(d):
     check(got.get("ci_build") == "rouge", f"red wins over running: {got}")
     got = state(emulator=("completed", "failure"), publish=("completed", "skipped"))
     check(got == {"ci_build": "vert", "ci_emulateur": "rouge"}, f"the emulator's job is ci_emulateur's, the skipped publication nobody's: {got}")
+CI_NO_GH = """#!/usr/bin/env bash
+# A gh that is not signed in (or absent): every call fails.
+exit 4
+"""
+
+CI_FAKE_CURL = """#!/usr/bin/env bash
+# Stand-in for curl on GitHub's public API (no token): the JSON GitHub sends, from the toy's files; the URL is noted.
+url="${@: -1}"
+echo "$url" >> "$PS_TOY_CI/urls"
+case "$url" in
+  *"/actions/runs?head_sha="*) cat "$PS_TOY_CI/runs.json" ;;
+  *"/actions/runs/"*"/jobs"*) cat "$PS_TOY_CI/jobs.json" ;;
+  *) exit 22 ;;
+esac
+"""
+
+
+def ci_state_without_gh(d):
+    """Tour 9, L9 (défaut 4): where gh is missing or not signed in (a lot's machine), ci-etat.sh answered « ? » and the
+    pre-flight said nothing of a red CI. It reads the same state from GitHub's public API with curl, no token."""
+    import json
+    toy = os.path.join(d, "ci-etat-curl")
+    for name, body in (("gh", CI_NO_GH), ("curl", CI_FAKE_CURL)):
+        write(os.path.join(toy, "bin", name), body)
+        os.chmod(os.path.join(toy, "bin", name), 0o755)
+    write(os.path.join(toy, "runs.json"), json.dumps({"total_count": 1, "workflow_runs": [
+        {"id": 7, "name": "CI", "status": "completed", "conclusion": "failure"}]}))
+    env = dict(os.environ, PATH=os.path.join(toy, "bin") + os.pathsep + os.environ["PATH"], PS_TOY_CI=toy)
+
+    def state(jobs):
+        write(os.path.join(toy, "jobs.json"), json.dumps({"total_count": len(jobs), "jobs": [
+            {"name": n, "status": st, "conclusion": c} for n, st, c in jobs]}))
+        out = subprocess.run(["bash", os.path.join(HERE, "ci-etat.sh")], env=env, capture_output=True, text=True).stdout
+        return dict(l.split("\t", 1) for l in out.splitlines() if l.startswith("ci_"))
+
+    green = [("Build, unit tests, screenshots", "completed", "success"), ("Emulator smoke test", "completed", "success"),
+             ("Publish APK", "completed", "skipped")]
+    got = state(green)
+    check(got == {"ci_build": "vert", "ci_emulateur": "vert"}, f"without gh, the public API read: every job green: {got}")
+    got = state([("Build, unit tests, screenshots", "completed", "failure"), ("Emulator smoke test", "completed", "success")])
+    check(got == {"ci_build": "rouge", "ci_emulateur": "vert"}, f"without gh, a red job read: {got}")
+    got = state([("Build, unit tests, screenshots", "in_progress", None), ("Emulator smoke test", "queued", None)])
+    check(got == {"ci_build": "en cours", "ci_emulateur": "en cours"}, f"without gh, a running job read (null conclusion): {got}")
+    urls = open(os.path.join(toy, "urls"), encoding="utf-8").read()
+    check("https://api.github.com/repos/" in urls and "head_sha=" in urls, f"the public API asked: {urls}")
+
+
 QUEUE_PORTAL = """#!/usr/bin/env bash
 # Stand-in for the portal: says what it was given, refuses the zone « refused », merges the others.
 tour="$1"; zone="$2"
@@ -3747,6 +3795,15 @@ def zone_report(d):
     code, out, asked, moved = merge("diese")
     check(code == 0 and moved and "--tests FooTest.works" in asked and "FooTest#works" not in asked,
           "« Classe#méthode » in « tests: » reaches Gradle as « Classe.méthode »:\n" + out + asked)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    # Tour 9 L10: a report that copies the Gradle command (« :app:testDebugUnitTest --tests '*Foo*' ») gives its bare
+    # filters, never « --tests » nor the task as a filter (else Gradle fails on « --tests » with no argument).
+    branch("commande", "# Rapport\n\ntests: :app:testDebugUnitTest --tests 'FooTest' --tests \"*Foo*\"\n\n"
+           "- chemin: Accueil | test: FooTest#works\n")
+    code, out, asked, moved = merge("commande")
+    check(code == 0 and moved and "--tests FooTest" in asked and "--tests *Foo*" in asked
+          and "--tests --tests" not in asked and "testDebugUnitTest --tests :app" not in asked and "'" not in asked,
+          "a « tests: » line copied from the Gradle command gives its bare filters:\n" + out + asked)
     git_toy(root, "reset", "-q", "--hard", "HEAD~2")
     branch("rapportok", good)
     code, out, asked, moved = merge("rapportok")

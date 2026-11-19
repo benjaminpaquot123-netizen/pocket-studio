@@ -104,7 +104,9 @@ internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit, seeFiles
  * What « C'est prêt » says under the file: the report in numbers (audit ultra round 1, n° 15), or in everyday
  * words in the Mode simple (audit ultra round 3, n° 14: LUFS, dBTP, kHz and kb/s were shown there).
  */
-internal fun shareReportLines(export: ExportUi, simple: Boolean): List<String> {
+internal fun shareReportLines(export: ExportUi, simple: Boolean): List<String> = reportLines(export, simple).map(::shareSigned)
+
+private fun reportLines(export: ExportUi, simple: Boolean): List<String> {
     if (!simple) return export.bilan?.lines().orEmpty()
     // Audit ultra round 5 (F a #11, A a #43): the level once, against the target when there is one (as Mix's card),
     // never also « très fort » for a file at its loud target.
@@ -179,7 +181,13 @@ fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Uni
             }
         },
         confirmButton = {
-            if (export.running) TextButton(onClick = cancel, modifier = Modifier.testTag("share_cancel")) { Text(tr("Annuler")) }
+            // Tour 9, F124: « Annuler » kept the window's own primary, read very pale on the dark by a seat (zh, 130 %):
+            // its colour and outline are said here, as the sheets' « Fermer ».
+            if (export.running) androidx.compose.material3.OutlinedButton(
+                onClick = cancel,
+                border = androidx.compose.foundation.BorderStroke(1.dp, Neon.TextSecondary.copy(alpha = 0.7f)),
+                modifier = Modifier.testTag("share_cancel"),
+            ) { Text(tr("Annuler"), color = Neon.TextPrimary) }
             else
  TextButton(onClick = dismiss, modifier = Modifier.testTag("share_dismiss")) { Text("OK") }
         },

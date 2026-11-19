@@ -25,3 +25,4 @@ BenchTutoAnchorTicksTest#drive | seat entry point, only with -Phuman.dir (inheri
 BenchAmeneeLateKitCardTest#drive | seat entry point, only with -Phuman.dir (inherited from HumanTester) | 2026-11-19 | lot « tour-9-banc-a » (new bench class)
 BenchFlagPathsTest#drive | seat entry point, only with -Phuman.dir (inherited from HumanTester) | 2026-11-19 | lot « tour-9-banc-a » (new bench class)
 BenchFlagTest#drive | seat entry point, only with -Phuman.dir (inherited from HumanTester) | 2026-11-19 | lot « tour-9-banc-b » (new bench class, entry missed)
+BenchTutoKitDownloadTest#drive | seat entry point, only with -Phuman.dir (inherited from HumanTester) | 2026-11-19 | lot « tour-9-L9 » (new bench class, D17)

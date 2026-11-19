@@ -35,9 +35,10 @@ class Lot6UiShareLevelTest {
     private val base = ShareSheetUi(name = "Nuit trap", seconds = 150, parts = 4, checks = emptyList(), projectName = "Nuit trap")
 
     // Tour 6, seat A c / control Ac-2 (E1): the Mode simple says the file's level as Pro does, same words, same number.
+    // Tour 9, F121: the words are the share sheet's own (shareLevelWords: « −14 LUFS, le niveau de Spotify et YouTube »).
     private fun expected(v: Double): String {
         I18n.lang = Lang.FR
-        return tr("Volume : %s, %s", String.format(Lang.FR.locale, "%.1f", v).replace('-', '−'), Loudness.describe(v))
+        return tr("Volume : %s, %s", String.format(Lang.FR.locale, "%.1f", v).replace('-', '−'), shareLevelWords(v, null))
     }
 
     @Test

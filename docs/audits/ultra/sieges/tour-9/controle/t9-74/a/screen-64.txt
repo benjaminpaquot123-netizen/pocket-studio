@@ -1,0 +1,44 @@
+Écran 64 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 351,42
+bouton « Simple » @ 747,42
+bouton ● @ 836,42
+bouton ▶ « this part » @ 913,42
+icône ⋮ @ 990,42
+icône « Intro bar 1/120 » ▾ @ 388,144
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+texte « Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own. » [coupé] @ 520,211
+bouton « Drums ▸ » [état « closed »] @ 75,288
+curseur [coupé, état « Normal », à 80 %] @ 84,361
+texte « 808 » @ 216,280
+curseur [coupé, état « Normal », à 80 %] @ 216,353
+texte « Chords » @ 339,273
+curseur [coupé, état « −1 », à 76 %] @ 339,346
+texte « Melody » @ 462,271
+curseur [coupé, état « −1 », à 73 %] @ 462,344
+texte « Output » @ 597,278
+curseur [coupé, état « −6 », à 60 %] @ 597,351
+texte « The mix: the volumes Chapter 14/15 · Done · Easy » @ 425,455
+icône (liste) « Chapters » @ 885,455
+icône ⌄ @ 978,455
+image (coupe) @ 57,628
+texte « Well done, chapter finished! » @ 358,576
+texte « Listen to your song as it is now, then go on to the next chapter: “Export your song”. » @ 543,656
+bouton « Next chapter   » → @ 517,769
+bouton ▶ «  Listen to the example » @ 788,883
+icône ← @ 57,883
+bouton ▶ «  Listen to my song » @ 327,883
+icône ▶ « the song » @ 503,1012
+texte « 140 Tempo » @ 719,1011
+icône ↶ « Undo » @ 131,1011
+image ↷ @ 303,991
+icône ⋮ « More » @ 905,1011
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » [sélectionné] @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 772,1213
+texte « ✎  Note » @ 889,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 364,1213

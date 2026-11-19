@@ -1,0 +1,36 @@
+Écran 5 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 351,42
+bouton « Simple » @ 747,42
+bouton ● @ 836,42
+bouton ▶ « this part » @ 913,42
+icône ⋮ @ 990,42
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+texte « Your first part: the Chorus Chapter 8/15 · Step 1/2 · Easy » @ 425,246
+icône (liste) « Chapters » @ 885,246
+icône ⌄ @ 978,246
+image (rond coché) @ 36,342
+texte « Listen to your loop for a few seconds (everything you've made), then to the example. Everything plays at once: it's the Chorus, the fullest part. » [coupé] @ 537,390
+bouton « Download the Trap kit (2 MB) » @ 470,510
+texte « Later » @ 961,510
+texte « ▸ Why? » @ 517,589
+icône « Read on » ⌄ @ 517,652
+bouton « Next step   » → @ 517,769
+bouton ▶ «  Listen to your result » @ 284,883
+bouton ▶ «  Listen to the example » @ 657,883
+icône « Next  » → @ 931,883
+icône ← @ 57,883
+icône ▶ « the song » @ 503,1012
+texte « 140 Tempo » @ 719,1011
+icône ↶ « Undo » @ 131,1011
+image ↷ @ 303,991
+icône ⋮ « More » @ 905,1011
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 772,1213
+texte « ✎  Note » @ 889,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 364,1213

@@ -1,0 +1,32 @@
+Écran 29 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 351,42
+bouton « Simple » @ 747,42
+bouton ● @ 836,42
+bouton ▶ « this part » @ 913,42
+icône ⋮ @ 990,42
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+texte « Build your parts Chapter 10/15 · Done · Easy » @ 425,258
+icône (liste) « Chapters » @ 885,258
+icône ⌄ @ 978,258
+image (coupe) @ 57,457
+texte « Well done, chapter finished! » @ 358,379
+texte « Part “Pre-chorus” made (a copy of “Chorus”): without Studio bass drum, Open hi-hat, 808, Chords. » @ 543,485
+bouton « Next chapter   » → @ 517,769
+bouton ▶ «  Listen to the example » @ 788,883
+icône ← @ 57,883
+bouton ▶ «  Listen to my song » @ 327,883
+icône ▶ « the song » @ 503,1012
+texte « 140 Tempo » @ 719,1011
+icône ↶ « Undo » @ 131,1011
+image ↷ @ 303,991
+icône ⋮ « More » @ 905,1011
+onglet (lignes et note) « My song » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 772,1213
+texte « ✎  Note » @ 889,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 364,1213

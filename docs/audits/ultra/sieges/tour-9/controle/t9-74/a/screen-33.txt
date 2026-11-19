@@ -1,0 +1,40 @@
+Écran 33 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 351,42
+bouton « Simple » @ 747,42
+bouton ● @ 836,42
+bouton ▶ « this part » @ 913,42
+icône ⋮ @ 990,42
+icône « Intro bar 1/16 » ▾ @ 375,144
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+icône ▶ « A · Chorus × 1  ·  8 bars » @ 155,311
+icône − [désactivé] @ 304,311
+icône + @ 376,311
+icône ⋮ @ 448,311
+texte « − / + : repeats. Grey: fixed length (suggested or Live) or just once. » @ 263,508
+texte « Add at the end: » @ 183,626
+bouton « + A · Chorus » [coupé] @ 197,671
+titre « MY TRACKS » [état « Expanded »] @ 694,270
+texte « Tap a track's name to change its sound; ▶ to hear it alone. » @ 771,384
+bouton « Drums Change the sound » › @ 696,554
+bouton ▶ @ 882,554
+icône (curseurs) @ 957,554
+bouton › « 808 Change the sound » [coupé] @ 696,668
+texte « Arrange your parts Chapter 11/15 · Step 1/2 · Easy » @ 425,743
+icône (liste) « Chapters » @ 885,743
+icône ⌃ @ 978,743
+icône « Your turn: under “Add”, tap in order: Intro, Chorus, Verse, Pre-chorus, Chorus, Verse, Pre-chorus, Chorus, then Intro to finish. Read » ⌃ @ 517,886
+icône ▶ « the song » @ 503,1012
+texte « 140 Tempo » @ 719,1011
+icône ↶ « Undo » @ 131,1011
+image ↷ @ 303,991
+icône ⋮ « More » @ 905,1011
+onglet (lignes et note) « My song » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 772,1213
+texte « ✎  Note » @ 889,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 364,1213

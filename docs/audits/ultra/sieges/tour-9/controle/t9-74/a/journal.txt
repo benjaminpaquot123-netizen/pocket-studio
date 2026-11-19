@@ -1,0 +1,338 @@
+#0 SIEGE lang=en device=foldable font=200 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:trap:8
+#0 PREMIER ECRAN reel_s=5.0 simule_s=2.4 jvm_s=11.2 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:trap:8
+#0 AMENEE > touche 518 822 (welcome_learn)
+#0 AMENEE > touche 263 951 (mode_card_simple)
+#0 AMENEE > touche 517 1152 (tuto_style_trap)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 885 329 (tuto_chapters)
+#0 AMENEE > touche 517 1179 (tuto_quit)
+#0 AMENEE > touche 258 920 (tuto_resume)
+#0 AMENEE chapitres 1 à 7 cochés (18 étapes)
+#0 AMENEE > touche 885 246 (tuto_chapters)
+#0 AMENEE > touche 517 903 (tuto_chapter_7)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE aa0e2b6f40 | project=p-f98da69c tuto=trap/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5,6,7 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Saved » lines cut (taller than its box)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 517 736
+#1 DOIGT tuto_play_mine «   Listen to your result »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 11ab1f17a8 | project=p-f98da69c tuto=trap/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5,6,7 playing=true
+#2 SON Son : la musique du projet joue en boucle.
+#2 > attends 4
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a33e0129a5 | project=p-f98da69c tuto=trap/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5,6,7 playing=true
+#3 SON Son : la musique du projet joue en boucle.
+#3 > touche 517 822
+#3 DOIGT tuto_listen «  Listen to the example »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fa9e79de89 | project=p-f98da69c tuto=trap/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5,6,7 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 3 s).
+#4 > attends 3
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7185193d56 | project=p-f98da69c tuto=trap/Facile active=true step=groove_hear done=19 chapters=1,2,3,4,5,6,7 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 931 908
+#5 DOIGT tuto_next « Next  »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0df9b4f46b | project=p-f98da69c tuto=trap/Facile active=true step=groove_name done=19 chapters=1,2,3,4,5,6,7 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 517 736
+#6 DOIGT tuto_need «   Name the part “Chorus” »
+#7 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f58408af01 | project=p-f98da69c tuto=trap/Facile active=true step=groove_name done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « + New part (copy of A · Chorus) » lines dropped (more lines than room)
+#7 > touche 517 769
+#7 DOIGT tuto_next_big « Next chapter   »
+#8 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2802483120 | project=p-f98da69c tuto=trap/Facile active=true step=brick done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Energy » 1.77:1 (needs 4.5:1, 12 sp)
+#8 > touche 517 744
+#8 DOIGT tuto_text_more « Read on »
+#9 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 67752fed5d | project=p-f98da69c tuto=trap/Facile active=true step=brick done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#9 > touche 517 819
+#9 DOIGT tuto_mark «   Got it »
+#10 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 43a943965a | project=p-f98da69c tuto=trap/Facile active=true step=map_intro done=21 chapters=1,2,3,4,5,6,7,8 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 517 819
+#10 DOIGT tuto_listen «  Listen to the example »
+#11 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d418599167 | project=p-f98da69c tuto=trap/Facile active=true step=map_intro done=21 chapters=1,2,3,4,5,6,7,8 playing=false
+#11 SON Son : l'exemple du tuto joue (encore 3 s).
+#11 > attends 4
+#12 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 0caa56ecb6 | project=p-f98da69c tuto=trap/Facile active=true step=map_intro done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 517 819
+#12 DOIGT tuto_next_big « Next step   »
+#13 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f6db295992 | project=p-f98da69c tuto=trap/Facile active=true step=map_couplet done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 517 819
+#13 DOIGT tuto_listen «  Listen to the example »
+#14 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c59b67e4d6 | project=p-f98da69c tuto=trap/Facile active=true step=map_couplet done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#14 SON Son : l'exemple du tuto joue (encore 3 s).
+#14 > attends 5
+#15 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 4b22ee49b2 | project=p-f98da69c tuto=trap/Facile active=true step=map_couplet done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 517 819
+#15 DOIGT tuto_next_big « Next step   »
+#16 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5194879570 | project=p-f98da69c tuto=trap/Facile active=true step=map_refrain done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 517 819
+#16 DOIGT tuto_listen «  Listen to the example »
+#17 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9afa5ed904 | project=p-f98da69c tuto=trap/Facile active=true step=map_refrain done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#17 SON Son : l'exemple du tuto joue (encore 3 s).
+#17 > attends 5
+#18 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ab3fe8c427 | project=p-f98da69c tuto=trap/Facile active=true step=map_refrain done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 517 819
+#18 DOIGT tuto_next_big « Next step   »
+#19 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 4ca6013bc0 | project=p-f98da69c tuto=trap/Facile active=true step=map_bars done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 517 819
+#19 DOIGT tuto_mark «   Got it »
+#20 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 38def8d3a7 | project=p-f98da69c tuto=trap/Facile active=true step=map_bars done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 517 825
+#20 DOIGT tuto_next_big « Next chapter   »
+#21 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 73b575732e | project=p-f98da69c tuto=trap/Facile active=true step=make_intro done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 768 822
+#21 DOIGT tuto_show «  Show me »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0de7a62858 | project=p-f98da69c tuto=trap/Facile active=true step=make_intro done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « + New part (copy of B · Intro) » lines dropped (more lines than room)
+#22 LAYOUT CUT «   What's playing in the song » ellipsized (« … »)
+#22 LAYOUT CONTRAST « Stop » 3.91:1 (needs 4.5:1, 14 sp)
+#22 > attends 3
+#23 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5c216443c6 | project=p-f98da69c tuto=trap/Facile active=true step=make_intro done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#23 SON Son : rien ne joue.
+#23 > attends 4
+#24 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c6601251db | project=p-f98da69c tuto=trap/Facile active=true step=make_intro done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « + A · Chorus » 1.52:1 (needs 4.5:1, 14 sp)
+#24 > touche 517 736
+#24 DOIGT tuto_need «   Create the “Intro” part »
+#25 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f3c5f2426c | project=p-f98da69c tuto=trap/Facile active=true step=make_intro done=26 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 517 769
+#25 DOIGT tuto_next_big « Next step   »
+#26 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 28690f6a97 | project=p-f98da69c tuto=trap/Facile active=true step=make_couplet done=26 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 517 736
+#26 DOIGT tuto_need «   Create the “Verse” part »
+#27 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a96ec30b72 | project=p-f98da69c tuto=trap/Facile active=true step=make_couplet done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 517 769
+#27 DOIGT tuto_next_big « Next step   »
+#28 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d687ee7319 | project=p-f98da69c tuto=trap/Facile active=true step=make_pre done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 517 736
+#28 DOIGT tuto_need «   Create the “Pre-chorus” part »
+#29 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 293b753d25 | project=p-f98da69c tuto=trap/Facile active=true step=make_pre done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 517 769
+#29 DOIGT tuto_next_big « Next chapter   »
+#30 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE cc37ac5ddc | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 517 736
+#30 DOIGT tuto_do «   I'll do it »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c3d08d323a | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CUT « + New part (copy of D · Pre-chorus) » lines dropped (more lines than room)
+#31 LAYOUT CUT « Your turn: under “Add”, tap in order: Intro, Chorus, Verse, Pre-chorus, Chorus, Verse, Pre-chorus, Chorus, then Intro to finish. » ellipsized (« … »)
+#31 LAYOUT CONTRAST « + A · Chorus » 4.16:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + B · Intro » 4.23:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + C · Verse » 4.25:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + D · Pre-chorus » 4.25:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + New part (copy of D · Pre-chorus) » 4.30:1 (needs 4.5:1, 14 sp)
+#31 > touche 171 381
+#31 DOIGT add_part_1 « + B · Intro »
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c6e9b206dd | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « + A · Chorus » 4.25:1 (needs 4.5:1, 14 sp)
+#32 > touche 197 641
+#32 DOIGT add_part_0 « + A · Chorus »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1d7296a3a0 | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#33 SON Son : rien ne joue.
+#33 > glisse 263 620 263 250
+#33 DOIGT rien (texte « Add at the end: »)
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0c76ac588a | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 182 538
+#34 DOIGT add_part_2 « + C · Verse »
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1cc06888de | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#35 SON Son : rien ne joue.
+#35 > glisse 263 620 263 250
+#35 DOIGT rien (texte « Add at the end: »)
+#36 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f8d98e39b4 | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 234 627
+#36 DOIGT add_part_3 « + D · Pre-chorus »
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 617523987d | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « D · Pre-chorus » ellipsized (« … »)
+#37 > touche 197 671
+#37 DOIGT add_part_0 « + A · Chorus »
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE da6b5a4c6d | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#38 SON Son : rien ne joue.
+#38 > glisse 263 620 263 250
+#38 DOIGT rien (texte « Add at the end: »)
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e86b578a62 | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 182 538
+#39 DOIGT add_part_2 « + C · Verse »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a038447003 | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#40 SON Son : rien ne joue.
+#40 > glisse 263 620 263 250
+#40 DOIGT rien (texte « Add at the end: »)
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 7f9b4add2f | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 234 627
+#41 DOIGT add_part_3 « + D · Pre-chorus »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 662d4137de | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 197 671
+#42 DOIGT add_part_0 « + A · Chorus »
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bf27b14828 | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#43 SON Son : rien ne joue.
+#43 > glisse 263 620 263 250
+#43 DOIGT rien (texte « Add at the end: »)
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 664cde51dd | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=28 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 171 449
+#44 DOIGT add_part_1 « + B · Intro »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c66271913b | project=p-f98da69c tuto=trap/Facile active=true step=song_order done=29 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 517 886
+#45 DOIGT tuto_next_folded « Passed »
+#46 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5f92b788f9 | project=p-f98da69c tuto=trap/Facile active=true step=song_phrases done=29 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 517 736
+#46 DOIGT tuto_need «   Set the suggested lengths »
+#47 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b3ae4fb942 | project=p-f98da69c tuto=trap/Facile active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 517 825
+#47 DOIGT tuto_next_big « Next chapter   »
+#48 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE aa73458ea5 | project=p-f98da69c tuto=trap/Facile active=true step=crash done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 517 659
+#48 DOIGT tuto_why « ▸ Why? »
+#49 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 19c59bfb1d | project=p-f98da69c tuto=trap/Facile active=true step=crash done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 517 736
+#49 DOIGT tuto_need «   Go to the “Chorus” part »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1c4bfc5126 | project=p-f98da69c tuto=trap/Facile active=true step=crash done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT « R 40 » lines dropped (more lines than room)
+#50 LAYOUT CUT « 1 more dotted cell here » ellipsized (« … »)
+#50 LAYOUT OVERLAP « Studio bass drum » over « FX » (26 x 6 dp)
+#50 LAYOUT OVERLAP « 808 » over « FX » (22 x 5 dp)
+#50 LAYOUT OVERLAP « Hi-hat » over « L 30 » (42 x 3 dp)
+#50 LAYOUT OVERLAP « Open hi-hat » over « R 30 » (39 x 10 dp)
+#50 LAYOUT OVERLAP « Drum rim » over « R 50 » (37 x 10 dp)
+#50 LAYOUT CONTRAST « Studio bass drum » 4.12:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « Cymbal » 4.34:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « STEPS: CYMBAL · CHORUS » 3.00:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#50 > touche 575 562
+#50 DOIGT step_0 « Step 1 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1ccf6daef3 | project=p-f98da69c tuto=trap/Facile active=true step=crash done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 517 886
+#51 DOIGT tuto_chapter_end_folded « Well done, chapter finished! »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 749f6678f8 | project=p-f98da69c tuto=trap/Facile active=true step=crash done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « STEPS: CYMBAL · CHORUS » 3.30:1 (needs 4.5:1, 12 sp)
+#52 > touche 327 883
+#52 DOIGT tuto_play_mine «  Listen to my song »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 317697ccaf | project=p-f98da69c tuto=trap/Facile active=true step=crash done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=true
+#53 SON Son : le morceau joue (partie « B »).
+#53 > touche 327 883
+#53 DOIGT tuto_play_mine «  Stop »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1e510df291 | project=p-f98da69c tuto=trap/Facile active=true step=crash done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST « Bar 1/2 · Cymbal » 1.97:1 (needs 4.5:1, 13 sp)
+#54 > touche 517 769
+#54 DOIGT tuto_next_big « Next chapter   »
+#55 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 99926245ba | project=p-f98da69c tuto=trap/Facile active=true step=reverb_hear done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CUT « Part: B · Intro » drawn past its parent's edge (down, 31 dp shown of 37)
+#55 > touche 517 819
+#55 DOIGT tuto_listen «  Listen to the example »
+#56 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 73bc7ba47f | project=p-f98da69c tuto=trap/Facile active=true step=reverb_hear done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#56 SON Son : l'exemple du tuto joue (encore 7 s).
+#56 > attends 8
+#57 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE eae9185aa5 | project=p-f98da69c tuto=trap/Facile active=true step=reverb_hear done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 517 769
+#57 DOIGT tuto_next_big « Next chapter   »
+#58 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 11409d687d | project=p-f98da69c tuto=trap/Facile active=true step=levels done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 727 1123
+#58 DOIGT tab_simple_Mix « Mix »
+#59 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE cf98552af5 | project=p-f98da69c tuto=trap/Facile active=true step=levels done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 517 736
+#59 DOIGT tuto_do «   I'll do it »
+#60 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 236c94f395 | project=p-f98da69c tuto=trap/Facile active=true step=levels done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CUT « Your turn: in the “Mix” tab, lower the “Chords” and “Melody” sliders a little. Under the slider, “Normal” becomes “−2”. » ellipsized (« … »)
+#60 LAYOUT CONTRAST « Chords » 3.99:1 (needs 4.5:1, 13 sp)
+#60 LAYOUT CONTRAST « Output » 4.40:1 (needs 4.5:1, 13 sp)
+#60 > glisse 347 363 347 395
+#60 DOIGT mix_fader_5 « Volume of Chords »
+#61 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 075b16e84e | project=p-f98da69c tuto=trap/Facile active=true step=levels done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#61 SON Son : rien ne joue.
+#61 > glisse 347 378 347 400
+#61 DOIGT mix_fader_5 « Volume of Chords »
+#62 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 075b16e84e | project=p-f98da69c tuto=trap/Facile active=true step=levels done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#62 SON Son : rien ne joue.
+#62 > glisse 469 360 469 400
+#62 DOIGT mix_fader_6 « Volume of Melody »
+#63 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 356329722d | project=p-f98da69c tuto=trap/Facile active=true step=levels done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 517 886
+#63 DOIGT tuto_chapter_end_folded « Well done, chapter finished! »
+#64 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 85bfc3cf4e | project=p-f98da69c tuto=trap/Facile active=true step=levels done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « Output » 4.45:1 (needs 4.5:1, 13 sp)
+#64 > touche 517 769
+#64 DOIGT tuto_next_big « Next chapter   »
+#65 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 8f4b919ddb | project=p-f98da69c tuto=trap/Facile active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CONTRAST « Output » 3.62:1 (needs 4.5:1, 13 sp)
+#65 > touche 936 1123
+#65 DOIGT tab_simple_Envoyer « Share »
+#66 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 222a6fed0b | project=p-f98da69c tuto=trap/Facile active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 517 819
+#66 DOIGT tuto_do «   I'll do it »
+#67 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 2fccdc057f | project=p-f98da69c tuto=trap/Facile active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CUT « ? » lines cut (taller than its box)
+#67 LAYOUT CUT « Your turn: share your song, the app turns it into a sound file. “M4A” makes a light file for your friends, “WAV” keeps studio quality. » ellipsized (« … »)
+#67 > touche 518 531
+#67 DOIGT share_go «   Share »
+#68 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 004d03c445 | project=p-f98da69c tuto=trap/Facile active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#68 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#68 > attends 10
+#68 PARTAGE My-song-20261119-115827.m4a
+#69 ROUTE dialogue:« Share my song · My-song-202611 » | MODE simple | EMPREINTE b871d2fc38 | project=p-f98da69c tuto=trap/Facile active=true step=share done=34 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 517 836
+#69 DOIGT vue « Files »
+#70 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 104683d6ec | project=p-f98da69c tuto=trap/Facile active=true step=share done=34 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 853 859
+#70 DOIGT share_bilan_ok « OK »
+#71 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 94f5fd02f5 | project=p-f98da69c tuto=trap/Facile active=true step=share done=34 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 517 886
+#71 DOIGT tuto_end_folded « Tutorial finished: well done! »
+#72 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 80429ccc6a | project=p-f98da69c tuto=trap/Facile active=true step=share done=34 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CUT « My files » lines cut (taller than its box)
+#72 LAYOUT TARGET « My files » 571 x 6 dp (touch 571 x 48)
+#72 LAYOUT TARGET « What is “My files”? ? » 29 x 6 dp (touch 48 x 48)
+#72 > fin
+#72 BENCH-VERDICT ok where=seat.fin
+#72 FIN : fin

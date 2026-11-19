@@ -1,0 +1,37 @@
+Écran 72 (1035x1243)
+icône (dossier ouvert) ✓ « My song Saved » @ 351,42
+bouton « Simple » @ 747,42
+bouton ● @ 836,42
+bouton ▶ « this part » @ 913,42
+icône ⋮ @ 990,42
+icône « Intro bar 1/120 » ▾ @ 388,144
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+image (rond coché) @ 0,0
+bouton « M4A · for sharing » [sélectionné] @ 258,258
+bouton « WAV · max quality » @ 657,258
+bouton (trois points reliés) «   Share » @ 518,355
+bouton (dossier) « My files » › @ 496,403
+texte « ? » @ 946,403
+texte « Export your song Chapter 15/15 · Step 1/1 · Easy » @ 425,474
+icône (liste) « Chapters » @ 885,474
+icône ⌄ @ 978,474
+image (coupe) @ 42,618
+texte « Well done, your song is finished! You can listen to it all again and keep changing it. » @ 544,618
+bouton ▶ «  Listen to my song » @ 517,730
+bouton ↺ «  Restart the tutorial » @ 517,819
+bouton ✕ «  Close the tutorial » @ 517,908
+icône ▶ « the song » @ 503,1012
+texte « 140 Tempo » @ 719,1011
+icône ↶ « Undo » @ 131,1011
+image ↷ @ 303,991
+icône ⋮ « More » @ 905,1011
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » [sélectionné] @ 936,1123
+texte « ●  REC » @ 772,1213
+texte « ✎  Note » @ 889,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 364,1213

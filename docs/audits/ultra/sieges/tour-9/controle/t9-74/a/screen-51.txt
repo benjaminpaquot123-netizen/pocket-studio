@@ -1,0 +1,71 @@
+Écran 51 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 351,42
+bouton « Simple » @ 747,42
+bouton ● @ 836,42
+bouton ▶ « this part » @ 913,42
+icône ⋮ @ 990,42
+icône « Intro bar 1/120 » ▾ @ 388,144
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+icône « Part: A · Chorus » ▾ @ 185,240
+bouton « Studio bass drum FX » @ 75,342
+bouton « 808 FX » @ 200,342
+bouton « Snare » @ 325,342
+bouton « Snare 2 » @ 450,342
+bouton « Handclap FX » @ 75,448
+bouton « Hi-hat L 30 » @ 200,448
+bouton « Open hi-hat R 30 » @ 325,448
+bouton « Low tom » @ 450,448
+bouton « Mid tom R 45 » @ 75,554
+bouton « High tom » @ 200,554
+bouton « Drum rim R 50 » @ 325,554
+bouton « Bell » @ 450,554
+bouton « Cymbal FX R 40 » [coupé] @ 75,644
+bouton « Maracas L 50 » [coupé] @ 200,644
+bouton « Conga » [coupé] @ 325,644
+bouton « Laser » [coupé] @ 450,644
+titre « STEPS: CYMBAL · CHORUS » [coupé, état « Expanded »] @ 671,294
+texte « Bar » @ 581,360
+bouton « 1 » [sélectionné] @ 658,360
+bouton « 2 » @ 739,360
+bouton « Follow » @ 871,360
+texte « Bar 1/2 · Cymbal » @ 714,444
+bouton « 1 » [état « hit, strength 100 % »] @ 575,524
+bouton [état « empty »] @ 632,523
+bouton [état « empty »] @ 688,523
+bouton [état « empty »] @ 744,523
+bouton « 2 » [état « empty »] @ 800,523
+bouton [état « empty »] @ 856,523
+bouton [état « empty »] @ 912,523
+bouton [état « empty »] @ 968,523
+bouton « 3 » [état « empty »] @ 575,594
+bouton [état « empty »] @ 632,593
+bouton [état « empty »] @ 688,593
+bouton [état « empty »] @ 744,593
+bouton « 4 » [état « empty »] @ 800,593
+bouton [état « empty »] @ 856,593
+bouton [état « empty »] @ 912,593
+bouton [état « empty »] @ 968,593
+texte « all » [coupé] @ 640,660
+texte « 1/2 » [coupé] @ 719,660
+texte « 1/4 » [coupé] @ 804,660
+texte « ◀ » [coupé] @ 885,660
+texte « Fill » [coupé] @ 575,662
+texte « Transitions Chapter 12/15 · Done · Easy » @ 425,743
+icône (liste) « Chapters » @ 885,743
+icône ⌃ @ 978,743
+icône (coupe) « Well done, chapter finished! » ⌃ @ 517,886
+icône ▶ « the song » @ 503,1012
+texte « 140 Tempo » @ 719,1011
+icône ↶ « Undo » @ 131,1011
+image ↷ @ 303,991
+icône ⋮ « More » @ 905,1011
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 772,1213
+texte « ✎  Note » @ 889,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 364,1213

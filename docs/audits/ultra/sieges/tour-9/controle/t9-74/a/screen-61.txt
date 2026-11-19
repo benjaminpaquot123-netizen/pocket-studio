@@ -1,0 +1,48 @@
+Écran 61 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 351,42
+bouton « Simple » @ 747,42
+bouton ● @ 836,42
+bouton ▶ « this part » @ 913,42
+icône ⋮ @ 990,42
+icône « Intro bar 1/120 » ▾ @ 388,144
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+texte « Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own. » [coupé] @ 520,211
+bouton « Drums ▸ » [état « closed »] @ 75,288
+curseur [état « Normal », à 80 %] @ 84,471
+texte « Normal » @ 84,637
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 80,671
+bouton ▶ [coupé] @ 140,671
+texte « 808 » @ 216,280
+curseur [état « Normal », à 80 %] @ 216,456
+texte « Normal » @ 216,619
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 216,661
+texte « Chords » @ 339,273
+curseur [état « −1 », à 76 %] @ 339,441
+texte « −1 » @ 339,610
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 339,659
+texte « Melody » @ 462,271
+curseur [état « Normal », à 80 %] @ 462,438
+texte « Normal » @ 462,601
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 462,652
+texte « Output » @ 597,278
+curseur [état « −6 », à 60 %] @ 597,451
+texte « Press ▶ » [coupé] @ 597,637
+texte « The mix: the volumes Chapter 14/15 · Step 1/1 · Easy » @ 425,743
+icône (liste) « Chapters » @ 885,743
+icône ⌃ @ 978,743
+icône « Your turn: in the “Mix” tab, lower the “Chords” and “Melody” sliders a little. Under the slider, “Normal” becomes “−2”. Read » ⌃ @ 517,886
+icône ▶ « the song » @ 503,1012
+texte « 140 Tempo » @ 719,1011
+icône ↶ « Undo » @ 131,1011
+image ↷ @ 303,991
+icône ⋮ « More » @ 905,1011
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » [sélectionné] @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 772,1213
+texte « ✎  Note » @ 889,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 364,1213

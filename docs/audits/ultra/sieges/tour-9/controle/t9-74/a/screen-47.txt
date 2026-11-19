@@ -1,0 +1,43 @@
+Écran 47 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 351,42
+bouton « Simple » @ 747,42
+bouton ● @ 836,42
+bouton ▶ « this part » @ 913,42
+icône ⋮ @ 990,42
+icône « Intro bar 1/120 » ▾ @ 388,144
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+bouton « Song chords B · Intro A♭  Fm  A♭  Fm  A♭  Fm  A♭  Fm A · Chorus Fm  Fm  D♭  E♭  Fm  Fm  D♭  E♭ C · Verse Fm  Fm  D♭  E♭  Fm  Fm  D♭  E♭ D · Pre-chorus A♭  Fm  A♭  Fm  A♭  Fm  A♭  Fm Tap to change the chords of the whole song. » [coupé] @ 263,222
+icône ▶ « B · Intro 4 bars » @ 155,305
+icône − [désactivé] @ 304,306
+icône + [désactivé] @ 376,306
+icône ⋮ @ 448,306
+icône ▶ « A · Chorus 16 bars » [coupé] @ 155,408
+icône − [désactivé, coupé] @ 304,435
+icône + [désactivé, coupé] @ 376,435
+icône ⋮ [coupé] @ 448,435
+titre « MY TRACKS » [état « Expanded »] @ 694,270
+texte « Tap a track's name to change its sound; ▶ to hear it alone. » [coupé] @ 771,375
+texte « Arrange your parts Chapter 11/15 · Done · Easy » @ 425,511
+icône (liste) « Chapters » @ 885,511
+icône ⌄ @ 978,511
+image (coupe) @ 57,684
+texte « Well done, chapter finished! » @ 358,632
+texte « Listen to your song as it is now, then go on to the next chapter: “Transitions”. » @ 543,712
+bouton « Next chapter   » → @ 517,825
+icône ← @ 57,911
+bouton ▶ «  Listen to my song » @ 558,911
+icône ▶ « the song » @ 503,1012
+texte « 140 Tempo » @ 719,1011
+icône ↶ « Undo » @ 131,1011
+image ↷ @ 303,991
+icône ⋮ « More » @ 905,1011
+onglet (lignes et note) « My song » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 772,1213
+texte « ✎  Note » @ 889,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 364,1213

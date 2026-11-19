@@ -1,0 +1,468 @@
+#0 SIEGE lang=hi device=phone font=100 mode=simple theme=- fresh=non gestes.max=200 lit=oui main=both amenee=tuto:riddim:1
+#0 PREMIER ECRAN reel_s=3.5 simule_s=2.4 jvm_s=8.8 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:riddim:1
+#0 AMENEE > touche 294 608 (welcome_learn)
+#0 AMENEE > touche 294 930 (mode_card_simple)
+#0 AMENEE > touche 294 1213 (tuto_style_riddim)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 362e084298 | project=p-e6af7fea tuto=riddim/Facile active=true step=ref done=0 chapters=- playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ क्यों? » 364 x 21 dp (touch 364 x 48)
+#1 > touche 294 894
+#1 DOIGT tuto_listen «  उदाहरण सुनो »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 109961952e | project=p-e6af7fea tuto=riddim/Facile active=true step=ref done=0 chapters=- playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 505 978
+#2 DOIGT tuto_next « अगला  »
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e90645a3bf | project=p-e6af7fea tuto=riddim/Facile active=true step=tempo done=1 chapters=- playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 67 126
+#3 DOIGT top_tempo « टेम्पो: 120 थाप प्रति मिनट »
+#4 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE e3b6005fe6 | project=p-e6af7fea tuto=riddim/Facile active=true step=tempo done=1 chapters=- playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « टेम्पो » over the touchable « शीट बंद करें » (39 x 31 dp)
+#4 LAYOUT OVERLAP « ? » over the touchable « शीट बंद करें » (7 x 15 dp)
+#4 LAYOUT OVERLAP « बंद करो » over the touchable « शीट बंद करें » (41 x 20 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « शीट बंद करें » (86 x 53 dp)
+#4 LAYOUT OVERLAP «  BPM » over the touchable « शीट बंद करें » (39 x 24 dp)
+#4 LAYOUT OVERLAP « 70 » over the touchable « शीट बंद करें » (21 x 19 dp)
+#4 LAYOUT OVERLAP « 90 » over the touchable « शीट बंद करें » (21 x 19 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « शीट बंद करें » (32 x 19 dp)
+#4 LAYOUT OVERLAP « 140 » over the touchable « शीट बंद करें » (32 x 19 dp)
+#4 LAYOUT OVERLAP « 174 » over the touchable « शीट बंद करें » (32 x 19 dp)
+#4 LAYOUT OVERLAP « ½ » over the touchable « शीट बंद करें » (14 x 24 dp)
+#4 LAYOUT OVERLAP « ×2 » over the touchable « शीट बंद करें » (21 x 24 dp)
+#4 LAYOUT OVERLAP « 1 » over the touchable « शीट बंद करें » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 2 » over the touchable « शीट बंद करें » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 3 » over the touchable « शीट बंद करें » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 4 » over the touchable « शीट बंद करें » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 5 » over the touchable « शीट बंद करें » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 6 » over the touchable « शीट बंद करें » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 7 » over the touchable « शीट बंद करें » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 8 » over the touchable « शीट बंद करें » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 9 » over the touchable « शीट बंद करें » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 0 » over the touchable « शीट बंद करें » (14 x 27 dp)
+#4 LAYOUT OVERLAP « OK » over the touchable « शीट बंद करें » (33 x 27 dp)
+#4 LAYOUT OVERLAP « बीट पर टैप करो » over the touchable « शीट बंद करें » (97 x 24 dp)
+#4 LAYOUT OVERLAP « हर बीट पर यहाँ टैप करो: टेम्पो साथ चलेगा। » over the touchable « शीट बंद करें » (196 x 18 dp)
+#4 > touche 355 678
+#4 DOIGT tempo_preset_140 « 140 »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2d97d9fb44 | project=p-e6af7fea tuto=riddim/Facile active=true step=tempo done=2 chapters=- playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 514 490
+#5 DOIGT rien
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2d97d9fb44 | project=p-e6af7fea tuto=riddim/Facile active=true step=tempo done=2 chapters=- playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 294 894
+#6 DOIGT tuto_next_big « अगला स्टेप   »
+#7 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 24e5fee4e4 | project=p-e6af7fea tuto=riddim/Facile active=true step=key done=2 chapters=- playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 294 813
+#7 DOIGT tuto_do «   मैं करूँगा »
+#8 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 67551322a5 | project=p-e6af7fea tuto=riddim/Facile active=true step=key done=2 chapters=- playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « गाने की स्केल » over the touchable « शीट बंद करें » (112 x 31 dp)
+#8 LAYOUT OVERLAP « गाने की key: कोई नहीं » over the touchable « शीट बंद करें » (116 x 20 dp)
+#8 LAYOUT OVERLAP « स्केल » over the touchable « शीट बंद करें » (28 x 20 dp)
+#8 LAYOUT OVERLAP « मेजर » over the touchable « शीट बंद करें » (28 x 24 dp)
+#8 LAYOUT OVERLAP « माइनर » over the touchable « शीट बंद करें » (41 x 24 dp)
+#8 LAYOUT OVERLAP « Dorian » over the touchable « शीट बंद करें » (49 x 24 dp)
+#8 LAYOUT OVERLAP « माइनर पेंटा » over the touchable « शीट बंद करें » (62 x 24 dp)
+#8 LAYOUT OVERLAP « मेजर पेंटा » over the touchable « शीट बंद करें » (54 x 24 dp)
+#8 LAYOUT OVERLAP « Blues » over the touchable « शीट बंद करें » (42 x 24 dp)
+#8 LAYOUT OVERLAP « Phrygian » over the touchable « शीट बंद करें » (66 x 24 dp)
+#8 LAYOUT OVERLAP « हार्मोनिक माइनर » over the touchable « शीट बंद करें » (91 x 24 dp)
+#8 LAYOUT OVERLAP « Key » over the touchable « शीट बंद करें » (25 x 20 dp)
+#8 LAYOUT OVERLAP « C » over the touchable « शीट बंद करें » (12 x 24 dp)
+#8 LAYOUT OVERLAP « C♯ » over the touchable « शीट बंद करें » (21 x 24 dp)
+#8 LAYOUT OVERLAP « D » over the touchable « शीट बंद करें » (11 x 24 dp)
+#8 LAYOUT OVERLAP « E♭ » over the touchable « शीट बंद करें » (15 x 24 dp)
+#8 LAYOUT OVERLAP « E » over the touchable « शीट बंद करें » (9 x 24 dp)
+#8 LAYOUT OVERLAP « F » over the touchable « शीट बंद करें » (9 x 24 dp)
+#8 LAYOUT OVERLAP « F♯ » over the touchable « शीट बंद करें » (18 x 24 dp)
+#8 LAYOUT OVERLAP « G » over the touchable « शीट बंद करें » (12 x 24 dp)
+#8 LAYOUT OVERLAP « A♭ » over the touchable « शीट बंद करें » (17 x 24 dp)
+#8 LAYOUT OVERLAP « A » over the touchable « शीट बंद करें » (11 x 24 dp)
+#8 LAYOUT OVERLAP « B♭ » over the touchable « शीट बंद करें » (16 x 24 dp)
+#8 LAYOUT OVERLAP « B » over the touchable « शीट बंद करें » (11 x 24 dp)
+#8 > touche 159 831
+#8 DOIGT tuto_scale_Minor « माइनर »
+#9 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 04dd96b69f | project=p-e6af7fea tuto=riddim/Facile active=true step=key done=2 chapters=- playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « गाने की key: C · माइनर » over the touchable « शीट बंद करें » (127 x 20 dp)
+#9 > touche 324 1125
+#9 DOIGT tuto_root_3 « E♭ »
+#10 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 201fa6cda7 | project=p-e6af7fea tuto=riddim/Facile active=true step=key done=3 chapters=1 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « गाने की key: E♭ · माइनर » over the touchable « शीट बंद करें » (131 x 21 dp)
+#10 LAYOUT OVERLAP « हो गया! गाने का रंग चुन लिया गया। » over the touchable « शीट बंद करें » (217 x 24 dp)
+#10 LAYOUT OVERLAP « ट्यूटोरियल पर वापस जाओ » over the touchable « शीट बंद करें » (144 x 20 dp)
+#10 > touche 294 1203
+#10 DOIGT tuto_key_continue « ट्यूटोरियल पर वापस जाओ »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bf4323af52 | project=p-e6af7fea tuto=riddim/Facile active=true step=key done=3 chapters=1 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 531 879
+#11 DOIGT tuto_fold
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dc2805b10f | project=p-e6af7fea tuto=riddim/Facile active=true step=key done=3 chapters=1 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 294 894
+#12 DOIGT tuto_next_big « अगला अध्याय   »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8790c293d5 | project=p-e6af7fea tuto=riddim/Facile active=true step=ready done=3 chapters=1 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 294 894
+#13 DOIGT tuto_mark «   समझ गया »
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 21fe73ef7a | project=p-e6af7fea tuto=riddim/Facile active=true step=kick_hear done=4 chapters=1 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 294 894
+#14 DOIGT tuto_listen «  उदाहरण सुनो »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1e43ab6544 | project=p-e6af7fea tuto=riddim/Facile active=true step=kick_hear done=4 chapters=1 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > touche 505 978
+#15 DOIGT tuto_next « अगला  »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8182c29d37 | project=p-e6af7fea tuto=riddim/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « बड़ा ढोल 1 » 2.46:1 (needs 4.5:1, 13 sp)
+#16 LAYOUT CONTRAST « 1 » 3.95:1 (needs 4.5:1, 12 sp)
+#16 > touche 70 357
+#16 DOIGT step_0 « स्टेप 1 »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4111f7d2fb | project=p-e6af7fea tuto=riddim/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « 3 » 4.00:1 (needs 4.5:1, 12 sp)
+#17 > touche 70 436
+#17 DOIGT step_8 « स्टेप 9 »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c66bd2f477 | project=p-e6af7fea tuto=riddim/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « बड़ा ढोल 1 » 4.03:1 (needs 4.5:1, 13 sp)
+#18 > touche 294 894
+#18 DOIGT tuto_next_big « अगला अध्याय   »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cead76e856 | project=p-e6af7fea tuto=riddim/Facile active=true step=snare_do done=6 chapters=1,2 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « स्नेयर » 2.27:1 (needs 4.5:1, 13 sp)
+#19 LAYOUT CONTRAST « 3 » 3.44:1 (needs 4.5:1, 12 sp)
+#19 > touche 70 436
+#19 DOIGT step_8 « स्टेप 9 »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 65192bc81f | project=p-e6af7fea tuto=riddim/Facile active=true step=snare_do done=7 chapters=1,2 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « स्नेयर » 3.86:1 (needs 4.5:1, 13 sp)
+#20 > touche 216 978
+#20 DOIGT tuto_play_mine «  अपना नतीजा सुनो »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0bcf30b36f | project=p-e6af7fea tuto=riddim/Facile active=true step=snare_do done=7 chapters=1,2 playing=true
+#21 SON Son : la musique du projet joue en boucle.
+#21 > touche 294 894
+#21 DOIGT tuto_next_big « अगला स्टेप   »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 51ca2a4c3c | project=p-e6af7fea tuto=riddim/Facile active=true step=clap_do done=7 chapters=1,2 playing=true
+#22 SON Son : la musique du projet joue en boucle.
+#22 LAYOUT CONTRAST « ताली » 2.55:1 (needs 4.5:1, 13 sp)
+#22 > touche 70 436
+#22 DOIGT step_8 « स्टेप 9 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e8121313bd | project=p-e6af7fea tuto=riddim/Facile active=true step=clap_do done=8 chapters=1,2,3 playing=true
+#23 SON Son : la musique du projet joue en boucle.
+#23 LAYOUT CONTRAST « ताली » 4.03:1 (needs 4.5:1, 13 sp)
+#23 > touche 294 894
+#23 DOIGT tuto_next_big « अगला अध्याय   »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0354c02b9c | project=p-e6af7fea tuto=riddim/Facile active=true step=hat_do done=8 chapters=1,2,3 playing=true
+#24 SON Son : la musique du projet joue en boucle.
+#24 LAYOUT CONTRAST « हाई-हैट » 2.53:1 (needs 4.5:1, 13 sp)
+#24 > touche 197 358
+#24 DOIGT step_2 « स्टेप 3 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b876b341ae | project=p-e6af7fea tuto=riddim/Facile active=true step=hat_do done=8 chapters=1,2,3 playing=true
+#25 SON Son : la musique du projet joue en boucle.
+#25 > touche 453 358
+#25 DOIGT step_6 « स्टेप 7 »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3fe1239184 | project=p-e6af7fea tuto=riddim/Facile active=true step=hat_do done=8 chapters=1,2,3 playing=true
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 197 437
+#26 DOIGT step_10 « स्टेप 11 »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 40d5145dfa | project=p-e6af7fea tuto=riddim/Facile active=true step=hat_do done=8 chapters=1,2,3 playing=true
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 453 437
+#27 DOIGT step_14 « स्टेप 15 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e233bf0561 | project=p-e6af7fea tuto=riddim/Facile active=true step=hat_do done=9 chapters=1,2,3 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 LAYOUT CONTRAST « हाई-हैट » 4.19:1 (needs 4.5:1, 13 sp)
+#28 > touche 294 894
+#28 DOIGT tuto_next_big « अगला स्टेप   »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 604d32ed93 | project=p-e6af7fea tuto=riddim/Facile active=true step=perc_do done=9 chapters=1,2,3 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 LAYOUT CONTRAST « ढोल का किनारा » 2.55:1 (needs 4.5:1, 13 sp)
+#29 > touche 261 358
+#29 DOIGT step_3 « स्टेप 4 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1bf3c2d309 | project=p-e6af7fea tuto=riddim/Facile active=true step=perc_do done=9 chapters=1,2,3 playing=true
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 453 358
+#30 DOIGT step_6 « स्टेप 7 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ec3aa126ac | project=p-e6af7fea tuto=riddim/Facile active=true step=perc_do done=9 chapters=1,2,3 playing=true
+#31 SON Son : la musique du projet joue en boucle.
+#31 > touche 133 436
+#31 DOIGT step_9 « स्टेप 10 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 38d10175cd | project=p-e6af7fea tuto=riddim/Facile active=true step=perc_do done=9 chapters=1,2,3 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 LAYOUT CONTRAST « 4 » 3.61:1 (needs 4.5:1, 12 sp)
+#32 > touche 325 437
+#32 DOIGT step_12 « स्टेप 13 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE db9dd771eb | project=p-e6af7fea tuto=riddim/Facile active=true step=perc_do done=9 chapters=1,2,3 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 517 437
+#33 DOIGT step_15 « स्टेप 16 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bd6b74d23b | project=p-e6af7fea tuto=riddim/Facile active=true step=perc_do done=10 chapters=1,2,3 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 LAYOUT CONTRAST « ढोल का किनारा » 4.03:1 (needs 4.5:1, 13 sp)
+#34 > touche 294 894
+#34 DOIGT tuto_next_big « अगला स्टेप   »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 226388cf2e | project=p-e6af7fea tuto=riddim/Facile active=true step=drums_hear done=10 chapters=1,2,3 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > attends 4
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5b65062f51 | project=p-e6af7fea tuto=riddim/Facile active=true step=drums_hear done=10 chapters=1,2,3 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 294 897
+#36 DOIGT tuto_listen «  उदाहरण सुनो »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7ac1add665 | project=p-e6af7fea tuto=riddim/Facile active=true step=drums_hear done=10 chapters=1,2,3 playing=false
+#37 SON Son : l'exemple du tuto joue (encore 3 s).
+#37 > attends 4
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0d455fbf03 | project=p-e6af7fea tuto=riddim/Facile active=true step=drums_hear done=11 chapters=1,2,3,4 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 294 894
+#38 DOIGT tuto_next_big « अगला अध्याय   »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 952b1a0767 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_hear done=11 chapters=1,2,3,4 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « ढोल का किनारा » 4.04:1 (needs 4.5:1, 13 sp)
+#39 > touche 294 894
+#39 DOIGT tuto_listen «  उदाहरण सुनो »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6ce9c1b4e7 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_hear done=11 chapters=1,2,3,4 playing=false
+#40 SON Son : l'exemple du tuto joue (encore 3 s).
+#40 > attends 6
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 688a4e657b | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_hear done=12 chapters=1,2,3,4 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 505 978
+#41 DOIGT tuto_next « अगला  »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f75a5fd0f6 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_do done=12 chapters=1,2,3,4 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 294 813
+#42 DOIGT tuto_need «   बेस ट्रैक बनाओ »
+#43 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 091867af73 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_do done=12 chapters=1,2,3,4 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT TARGET « G2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#43 LAYOUT TARGET « G♭2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#43 LAYOUT TARGET « F2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#43 LAYOUT TARGET « E2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#43 LAYOUT TARGET « E♭2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#43 LAYOUT TARGET « D2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#43 LAYOUT TARGET « D♭2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#43 LAYOUT TARGET « C2 C2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#43 LAYOUT TARGET « C♭1 बजाओ » 36 x 20 dp (touch 48 x 48)
+#43 > touche 140 694
+#43 DOIGT rien
+#44 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2f2436f16d | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_do done=12 chapters=1,2,3,4 playing=false
+#44 SON Son : 1 note du synthé.
+#44 > touche 250 694
+#44 DOIGT rien
+#45 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6218270094 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_do done=12 chapters=1,2,3,4 playing=false
+#45 SON Son : 1 note du synthé.
+#45 > touche 475 456
+#45 DOIGT tuto_notes_left « बेस · बार 1/8 »
+#46 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 74fbde830f | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_do done=12 chapters=1,2,3,4 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT TARGET « G3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#46 LAYOUT TARGET « G♭3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#46 LAYOUT TARGET « F3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#46 LAYOUT TARGET « E3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#46 LAYOUT TARGET « E♭3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#46 LAYOUT TARGET « D3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#46 LAYOUT TARGET « D♭3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#46 LAYOUT TARGET « C3 C3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#46 LAYOUT TARGET « C♭2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#46 > touche 462 694
+#46 DOIGT rien
+#47 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8b0a4ee068 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_do done=13 chapters=1,2,3,4 playing=false
+#47 SON Son : 1 note du synthé.
+#47 > touche 294 978
+#47 DOIGT tuto_next_folded « हो गया »
+#48 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a6b74c9a37 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_2 done=13 chapters=1,2,3,4 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 294 813
+#48 DOIGT tuto_do «   मैं करूँगा »
+#49 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a64f10176d | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_2 done=13 chapters=1,2,3,4 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 140 694
+#49 DOIGT rien
+#50 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bc2d2b63d3 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_2 done=13 chapters=1,2,3,4 playing=false
+#50 SON Son : 1 note du synthé.
+#50 > touche 250 694
+#50 DOIGT rien
+#51 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5081bdabb7 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_2 done=13 chapters=1,2,3,4 playing=false
+#51 SON Son : 1 note du synthé.
+#51 > touche 404 604
+#51 DOIGT rien
+#52 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2523caadc8 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_2 done=13 chapters=1,2,3,4 playing=false
+#52 SON Son : 1 note du synthé.
+#52 > touche 475 456
+#52 DOIGT tuto_notes_left « बेस · बार 2/8 »
+#53 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 717ef1cb8e | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_2 done=13 chapters=1,2,3,4 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 462 694
+#53 DOIGT rien
+#54 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0a3fa3f9ee | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_2 done=13 chapters=1,2,3,4 playing=false
+#54 SON Son : 1 note du synthé.
+#54 > touche 294 978
+#54 DOIGT tuto_need_folded « अगले बार पर कॉपी करो »
+#55 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4aebb28c6c | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_2 done=14 chapters=1,2,3,4,5 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 294 978
+#55 DOIGT tuto_chapter_end_folded « शाबाश, अध्याय पूरा! »
+#56 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2b54ffa279 | project=p-e6af7fea tuto=riddim/Facile active=true step=bass_2 done=14 chapters=1,2,3,4,5 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 294 894
+#56 DOIGT tuto_next_big « अगला अध्याय   »
+#57 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fa22eef9f4 | project=p-e6af7fea tuto=riddim/Facile active=true step=pad_do done=14 chapters=1,2,3,4,5 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 294 813
+#57 DOIGT tuto_need «   कॉर्ड्स ट्रैक बनाओ »
+#58 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 99c8c45e49 | project=p-e6af7fea tuto=riddim/Facile active=true step=pad_do done=14 chapters=1,2,3,4,5 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT TARGET « B♭3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#58 LAYOUT TARGET « A3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#58 LAYOUT TARGET « A♭3 बजाओ » 36 x 20 dp (touch 48 x 48)
+#58 > touche 300 784
+#58 DOIGT rien
+#59 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 660fa1a425 | project=p-e6af7fea tuto=riddim/Facile active=true step=pad_do done=15 chapters=1,2,3,4,5 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 294 978
+#59 DOIGT tuto_next_folded « हो गया »
+#60 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f74a032859 | project=p-e6af7fea tuto=riddim/Facile active=true step=pad_end done=15 chapters=1,2,3,4,5 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 514 683
+#60 DOIGT tuto_kit_later « बाद में »
+#61 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 76a1a5085a | project=p-e6af7fea tuto=riddim/Facile active=true step=pad_end done=15 chapters=1,2,3,4,5 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 294 813
+#61 DOIGT tuto_need «   अगले बार पर कॉपी करो »
+#62 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f7a960b07f | project=p-e6af7fea tuto=riddim/Facile active=true step=pad_end done=16 chapters=1,2,3,4,5,6 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 294 894
+#62 DOIGT tuto_next_big « अगला अध्याय   »
+#63 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 13e19db148 | project=p-e6af7fea tuto=riddim/Facile active=true step=groove_hear done=16 chapters=1,2,3,4,5,6 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 294 813
+#63 DOIGT tuto_play_mine «   अपना नतीजा सुनो »
+#64 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e03e5e1608 | project=p-e6af7fea tuto=riddim/Facile active=true step=groove_hear done=16 chapters=1,2,3,4,5,6 playing=true
+#64 SON Son : la musique du projet joue en boucle.
+#64 > attends 4
+#65 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9578ab9a7f | project=p-e6af7fea tuto=riddim/Facile active=true step=groove_hear done=16 chapters=1,2,3,4,5,6 playing=true
+#65 SON Son : la musique du projet joue en boucle.
+#65 > touche 294 897
+#65 DOIGT tuto_listen «  उदाहरण सुनो »
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bee87557f6 | project=p-e6af7fea tuto=riddim/Facile active=true step=groove_hear done=16 chapters=1,2,3,4,5,6 playing=false
+#66 SON Son : l'exemple du tuto joue (encore 3 s).
+#66 > attends 4
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE cd535eab66 | project=p-e6af7fea tuto=riddim/Facile active=true step=groove_hear done=17 chapters=1,2,3,4,5,6 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 294 888
+#67 DOIGT tuto_next_big « अगला स्टेप   »
+#68 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4a0b876ac1 | project=p-e6af7fea tuto=riddim/Facile active=true step=groove_name done=17 chapters=1,2,3,4,5,6 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 63 288
+#68 DOIGT part_header_pick « पार्ट: A »
+#69 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE bd8ffcb1f8 | project=p-e6af7fea tuto=riddim/Facile active=true step=groove_name done=17 chapters=1,2,3,4,5,6 playing=false
+#69 SON Son : rien ne joue.
+#69 > retour
+#69 RETOUR
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4a0b876ac1 | project=p-e6af7fea tuto=riddim/Facile active=true step=groove_name done=17 chapters=1,2,3,4,5,6 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 294 813
+#70 DOIGT tuto_need «   पार्ट का नाम “ग्रूव” रखो »
+#71 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 50ee2b9c0b | project=p-e6af7fea tuto=riddim/Facile active=true step=groove_name done=18 chapters=1,2,3,4,5,6,7 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 294 894
+#71 DOIGT tuto_next_big « अगला अध्याय   »
+#72 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 1a0c1546ae | project=p-e6af7fea tuto=riddim/Facile active=true step=brick done=18 chapters=1,2,3,4,5,6,7 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « 8 » 3.56:1 (needs 4.5:1, 12 sp)
+#72 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#72 LAYOUT CONTRAST « 16 » 4.28:1 (needs 4.5:1, 12 sp)
+#72 > touche 294 894
+#72 DOIGT tuto_mark «   समझ गया »
+#73 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 7ccc49093f | project=p-e6af7fea tuto=riddim/Facile active=true step=map_intro done=19 chapters=1,2,3,4,5,6,7 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « इंट्रो » 4.15:1 (needs 4.5:1, 12 sp)
+#73 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#73 > touche 294 894
+#73 DOIGT tuto_listen «  उदाहरण सुनो »
+#74 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a76a196f90 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_intro done=19 chapters=1,2,3,4,5,6,7 playing=false
+#74 SON Son : l'exemple du tuto joue (encore 3 s).
+#74 > attends 8
+#75 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 79180f71e8 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_intro done=20 chapters=1,2,3,4,5,6,7 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 294 894
+#75 DOIGT tuto_next_big « अगला स्टेप   »
+#76 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9e0de86bae | project=p-e6af7fea tuto=riddim/Facile active=true step=map_montee done=20 chapters=1,2,3,4,5,6,7 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « 8 » 1.85:1 (needs 4.5:1, 12 sp)
+#76 > touche 294 894
+#76 DOIGT tuto_listen «  उदाहरण सुनो »
+#77 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f5e79adf20 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_montee done=20 chapters=1,2,3,4,5,6,7 playing=false
+#77 SON Son : l'exemple du tuto joue (encore 3 s).
+#77 > attends 5
+#78 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9a179021f4 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_montee done=21 chapters=1,2,3,4,5,6,7 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 294 894
+#78 DOIGT tuto_next_big « अगला स्टेप   »
+#79 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE dafd6c07d7 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_fake done=21 chapters=1,2,3,4,5,6,7 playing=false
+#79 SON Son : rien ne joue.
+#79 LAYOUT CONTRAST « 4 » 2.79:1 (needs 4.5:1, 12 sp)
+#79 > touche 294 894
+#79 DOIGT tuto_listen «  उदाहरण सुनो »
+#80 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e804311606 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_fake done=21 chapters=1,2,3,4,5,6,7 playing=false
+#80 SON Son : l'exemple du tuto joue (encore 3 s).
+#80 > attends 5
+#81 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5cf348b944 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_fake done=22 chapters=1,2,3,4,5,6,7 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 294 894
+#81 DOIGT tuto_next_big « अगला स्टेप   »
+#82 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b3dab5b1f0 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_drop done=22 chapters=1,2,3,4,5,6,7 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT CONTRAST « ड्रॉप » 3.09:1 (needs 4.5:1, 12 sp)
+#82 LAYOUT CONTRAST « 16 » 2.08:1 (needs 4.5:1, 12 sp)
+#82 > touche 294 894
+#82 DOIGT tuto_listen «  उदाहरण सुनो »
+#83 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f68893e846 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_drop done=22 chapters=1,2,3,4,5,6,7 playing=false
+#83 SON Son : l'exemple du tuto joue (encore 3 s).
+#83 > attends 5
+#84 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 8ada475447 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_drop done=23 chapters=1,2,3,4,5,6,7 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 294 894
+#84 DOIGT tuto_next_big « अगला स्टेप   »
+#85 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ddd6023778 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_break done=23 chapters=1,2,3,4,5,6,7 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT CONTRAST « ब्रेक » 3.78:1 (needs 4.5:1, 12 sp)
+#85 LAYOUT CONTRAST « 16 » 2.53:1 (needs 4.5:1, 12 sp)
+#85 > touche 294 894
+#85 DOIGT tuto_listen «  उदाहरण सुनो »
+#86 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE caf71f7615 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_break done=23 chapters=1,2,3,4,5,6,7 playing=false
+#86 SON Son : l'exemple du tuto joue (encore 3 s).
+#86 > attends 5
+#87 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ac813fd158 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_break done=24 chapters=1,2,3,4,5,6,7 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 294 894
+#87 DOIGT tuto_next_big « अगला स्टेप   »
+#88 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c8a03b10cb | project=p-e6af7fea tuto=riddim/Facile active=true step=map_drop2 done=24 chapters=1,2,3,4,5,6,7 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CONTRAST « ड्रॉप 2 » 3.09:1 (needs 4.5:1, 12 sp)
+#88 > touche 294 894
+#88 DOIGT tuto_listen «  उदाहरण सुनो »
+#89 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5522ceadef | project=p-e6af7fea tuto=riddim/Facile active=true step=map_drop2 done=24 chapters=1,2,3,4,5,6,7 playing=false
+#89 SON Son : l'exemple du tuto joue (encore 3 s).
+#89 > attends 5
+#90 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3bfb129d05 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_drop2 done=25 chapters=1,2,3,4,5,6,7 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 294 894
+#90 DOIGT tuto_next_big « अगला स्टेप   »
+#91 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f13365b495 | project=p-e6af7fea tuto=riddim/Facile active=true step=map_phrases done=25 chapters=1,2,3,4,5,6,7 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 294 894
+#91 DOIGT tuto_mark «   समझ गया »
+#92 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 1f4ebe43db | project=p-e6af7fea tuto=riddim/Facile active=true step=map_phrases done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#92 SON Son : rien ne joue.
+#92 > fin
+#92 BENCH-VERDICT ok where=seat.fin
+#92 FIN : fin

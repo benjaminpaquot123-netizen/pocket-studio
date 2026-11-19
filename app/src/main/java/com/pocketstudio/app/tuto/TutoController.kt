@@ -483,10 +483,6 @@ class TutoController(
                 com.pocketstudio.model.i18n.tr("%1\$s : encore +%2\$d", com.pocketstudio.app.synth.SYNTH_LABELS.firstOrNull { it.first == k }?.second ?: "?", left)
             }.ifEmpty { null }
         }
-        // Tour 9, F031: the cells all hit, only their softness missing: how to make a hit soft, whatever the words say.
-        if (s.check.startsWith("lane:") && TutoChecks.onlySoftnessMissing(s, p, t)) {
-            return com.pocketstudio.model.i18n.tr("Un appui long sur la case ouvre un menu : « Doux » est sous « Force » (la force du coup). « Roulement » (des coups très rapides) et « Triolet » (trois coups serrés) ne servent pas ici.")
-        }
         if (s.check != "tempo" || TutoChecks.done(s, p, t)) return null
         return com.pocketstudio.model.i18n.tr("Un morceau neuf démarre à %d BPM : c'est toi qui lui donnes la vitesse du style.", kotlin.math.round(t.startTempo).toInt())
     }

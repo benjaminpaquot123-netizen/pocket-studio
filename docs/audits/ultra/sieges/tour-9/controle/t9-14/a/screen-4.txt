@@ -1,0 +1,52 @@
+Écran 4 (1035x1243)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 202,42
+bouton « Pro » @ 437,42
+bouton « A » ▾ @ 522,42
+icône ↶ @ 602,42
+icône ↷ [désactivé] @ 674,42
+bouton ● @ 746,42
+bouton ▶ « dit deel » @ 818,42
+bouton ▶ « het nummer » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 92  BPM » @ 100,144
+bouton « ? » @ 990,144
+onglet « Remix Splitsen » [coupé] @ 64,262
+bouton « Bas Ronde bas » @ 241,262
+bouton « Akkoorden Elektrische piano » @ 556,262
+bouton « Melodie FM-piano » ⋮ @ 879,262
+image ← @ 10,263
+image → @ 1024,263
+texte « Deel: A » @ 87,354
+texte « In de maat 50% » @ 209,435
+texte « 100% » @ 452,435
+texte « Wissen » @ 617,435
+bouton « Melodie · maat 1/8 Nog 2 gestippelde noten om aan te tikken » @ 517,536
+texte « mt » @ 84,621
+bouton « 1 » @ 486,621
+bouton « 2 » [coupé] @ 920,621
+dessin [coupé] @ 84,658
+dessin @ 84,667
+dessin @ 84,678
+dessin @ 84,689
+dessin @ 84,700
+dessin @ 84,711
+dessin @ 84,722
+dessin @ 84,733
+dessin @ 84,744
+dessin @ 84,755
+dessin @ 84,766
+dessin [coupé] @ 84,776
+dessin [coupé] @ 559,717
+texte « De melodie Hoofdstuk 5/14 · Stap 1/1 · Pro » @ 424,846
+icône (liste) « Hoofdstukken » @ 885,846
+icône ⌃ @ 978,846
+icône « Nu jij: maak het spoor Melodie (elektrische piano): D, A, F, dan een lange D. ‘Kopiëren’: het antwoord een kwint lager, binnen de toonladder (A, E, C, dan een lange A), dat als 9e en 7e op de akkoorden valt. Lees » ⌃ @ 517,989
+onglet (ligne brisée et points) « Structuur » @ 99,1123
+onglet (touches de piano) « Klanken » [sélectionné] @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Meer » @ 936,1123
+texte « ●  REC » @ 726,1213
+texte « ✎  Noteren » @ 866,1213
+texte « ⋯ » @ 987,1213
+texte « Feedbackmodus » @ 341,1213

@@ -1,0 +1,40 @@
+Écran 41 (1035x1243)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 295,42
+bouton « Pro » @ 623,42
+icône ↶ @ 701,42
+icône ↷ [désactivé] @ 773,42
+bouton ● @ 845,42
+bouton ▶ « dit deel » @ 917,42
+icône (trois points reliés) @ 990,42
+icône « Intro maat 1/16 » ▾ @ 320,144
+bouton « 92  BPM » @ 100,144
+bouton (flèches en boucle) « Lus » [état « uit »] @ 878,144
+bouton « ? » @ 990,144
+texte « − / + : herhalingen. Grijs: vaste duur (aangeraden of Live) of maar 1 keer. » [coupé] @ 263,207
+texte « Achteraan toevoegen: » @ 245,250
+bouton « + A · Refrein » @ 195,330
+bouton « + B · Intro » @ 171,419
+bouton « + C · Couplet » @ 203,508
+bouton « + Nieuw deel (kopie van C · Couplet) » @ 263,597
+bouton « + Nieuw leeg deel » [coupé] @ 249,661
+titre « BLOKKEN » [état « Uitgeklapt »] @ 690,270
+bouton « ? » @ 809,270
+texte « Een blok = de drums, de acid en de noten van een deel. De delen van het nummer zijn ermee gemaakt. Tik erop om het aan te passen, houd vast en sleep om het te verplaatsen. » [coupé] @ 771,491
+texte « Zet je delen op volgorde Hoofdstuk 9/14 · Stap 1/2 · Pro » @ 424,743
+icône (liste) « Hoofdstukken » @ 885,743
+icône ⌃ @ 978,743
+icône « Nu jij: tik in ‘Structuur’, onder ‘Toevoegen’, op volgorde de knoppen die eindigen op Intro, Couplet, Refrein, Couplet, Refrein, Couplet, Refrein, en dan Intro voor de Outro. De volgende stap geeft ze hun lengte. Lees » ⌃ @ 517,886
+icône ▶ « het nummer » @ 590,1012
+texte « 92 Tempo » @ 792,1011
+icône ↶ « Ongedaan maken » @ 152,1012
+icône ↷ « Opnieuw » [désactivé] @ 374,1011
+icône (trois points reliés) « Delen » @ 942,1011
+onglet (ligne brisée et points) « Structuur » [sélectionné] @ 99,1123
+onglet (touches de piano) « Klanken » @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Meer » @ 936,1123
+texte « ●  REC » @ 726,1213
+texte « ✎  Noteren » @ 866,1213
+texte « ⋯ » @ 987,1213
+texte « Feedbackmodus » @ 341,1213

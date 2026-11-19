@@ -430,7 +430,8 @@ fun SynthScreen(
                 tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
                 if (bigLetters) {
                     record?.let { r -> Box(Modifier.onSizeChanged { recordTall = it.height }) { r(false) } }
-                    val above = with(LocalDensity.current) { recordTall.toDp() } + if (record != null) 10.dp else 0.dp
+                    // Tour 9 (F142): the take's card gone, its height goes too (it kept the keys short after a take).
+                    val above = if (record != null) with(LocalDensity.current) { recordTall.toDp() } + 10.dp else 0.dp
                     val keysHigh = (screenHigh - 12.dp - above - 6.dp).coerceIn(110.dp, 150.dp)
                     Box(trackKeyboard.testTag("synth_keys_first")) {
                         if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keysHigh)

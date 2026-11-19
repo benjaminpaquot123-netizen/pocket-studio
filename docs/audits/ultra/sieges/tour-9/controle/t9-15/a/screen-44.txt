@@ -1,0 +1,67 @@
+Écran 44 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 288,42
+bouton « Simple » @ 618,42
+bouton ● @ 706,42
+bouton ■ « esta parte » @ 780,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 83,114
+icône (flèches en boucle) « A compás 1/1 » [désactivé] @ 239,114
+bouton « ? » @ 855,114
+icône « Parte: A » ▾ @ 76,180
+titre « PASOS: TOM MEDIO » [coupé, état « Desplegado »] @ 347,227
+bouton « ? » [coupé] @ 316,227
+bouton « Todos los pads » [coupé] @ 755,228
+texte « Tom medio » @ 110,300
+bouton « 1 » [état « vacío »] @ 90,385
+bouton [état « vacío »] @ 192,385
+bouton [état « golpe, fuerza 100 % »] @ 294,385
+bouton [état « vacío »] @ 397,385
+bouton « 2 » [état « vacío »] @ 500,385
+bouton [état « vacío »] @ 603,385
+bouton [état « vacío »] @ 706,385
+bouton [état « vacío »] @ 809,385
+bouton « 3 » [état « golpe, fuerza 100 % »] @ 90,466
+bouton [état « vacío »] @ 192,466
+bouton [état « golpe, fuerza 100 % »] @ 294,466
+bouton [état « vacío »] @ 397,466
+bouton « 4 » [état « vacío »] @ 500,466
+bouton [état « vacío »] @ 603,466
+bouton [état « vacío »] @ 706,466
+bouton [état « vacío »] @ 809,466
+texte « Rellenar » @ 79,552
+texte « todo » @ 156,552
+texte « 1/2 » @ 231,552
+texte « 1/4 » @ 306,552
+texte « ◀ » @ 381,552
+texte « ▶ » @ 456,552
+texte « Borrar » @ 539,552
+texte « Toca una casilla para añadir un golpe, desliza el dedo para pintar varios. Mantén pulsado un golpe: fuerza y redobles (×2 a ×8). » @ 450,627
+bouton « 1 compás » [coupé, sélectionné] @ 213,693
+bouton « 2 » [coupé] @ 331,693
+bouton « 3 » [coupé] @ 412,693
+bouton « 4 » [coupé] @ 493,693
+texte « Duración » [coupé] @ 86,697
+texte « La batería Capítulo 2/13 · Paso 6/7 · Fácil » @ 364,756
+icône (liste) « Capítulos » @ 757,756
+icône ⌄ @ 843,756
+image (coupe) @ 57,860
+texte « ¡Bravo, lo has conseguido! » @ 226,846
+texte « Escucha tu resultado y toca “Paso siguiente” cuando quieras. » @ 369,874
+bouton « Paso siguiente   » → @ 450,1125
+icône ← @ 57,1209
+bouton ■ «  Detener » @ 294,1209
+bouton ▶ «  Escuchar el ejemplo » @ 687,1209
+icône ↶ « Deshacer » @ 123,1293
+image ↷ @ 282,1283
+bouton ■ « la canción » @ 444,1293
+texte « 120 Tempo » @ 612,1293
+icône ⋮ « Más » @ 777,1293
+onglet (lignes et note) « Mi canción » @ 85,1389
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 268,1389
+onglet (touches de piano) « Teclado » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Compartir » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Anotar » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 318,1479

@@ -1,0 +1,31 @@
+Écran 8 (900x1509)
+dessin @ 450,754
+dessin @ 450,726
+texte « Cerrar » @ 825,798
+texte « Tonalidad del tema » @ 399,798
+texte « Tonalidad del tema: Fa · Dórico » @ 178,864
+texte « Escala » @ 58,909
+bouton « Mayor » @ 77,975
+bouton « Menor » @ 194,975
+bouton « Dórico » @ 315,975
+bouton « Penta menor » @ 471,975
+bouton « Penta mayor » @ 658,975
+bouton « Blues » @ 805,975
+bouton « Frigio » @ 74,1056
+bouton « Menor armónica » @ 243,1056
+texte « Tónica » @ 58,1122
+bouton « Do » @ 63,1188
+bouton « Do♯ » @ 151,1188
+bouton « Re » @ 239,1188
+bouton « Mi♭ » @ 326,1188
+bouton « Mi » @ 413,1188
+bouton « Fa » @ 500,1188
+bouton « Fa♯ » @ 587,1188
+bouton « Sol » @ 674,1188
+bouton « La♭ » @ 761,1188
+bouton « La » @ 63,1269
+bouton « Si♭ » @ 150,1269
+bouton « Si » @ 237,1269
+image (rond coché) @ 58,1350
+texte « ¡Logrado! El color de la canción está elegido. » @ 351,1350
+bouton « Volver al tutorial » @ 450,1434

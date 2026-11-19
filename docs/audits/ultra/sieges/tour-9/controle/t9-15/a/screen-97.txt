@@ -1,0 +1,57 @@
+Écran 97 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 206,42
+bouton « Simple » @ 455,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ■ « esta parte » @ 689,42
+bouton ■ « la canción » @ 779,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 83,114
+icône (flèches en boucle) « A compás 4/8 » [désactivé] @ 239,114
+bouton « ? » @ 855,114
+onglet « Acid 303 Línea de bajo » @ 104,186
+bouton « Bajo Bajo redondo » @ 292,186
+bouton « Acordes Piano FM » @ 456,186
+bouton « Melodía Voz robot » ⋮ @ 620,186
+icône ♪ « Sonido » @ 784,186
+bouton + «  Pista » [coupé] @ 869,186
+image → @ 889,187
+icône « Parte: A » ▾ @ 76,264
+texte « A tiempo 50 % » @ 472,351
+texte « 100 % » @ 619,351
+texte « Borrar » @ 723,351
+bouton « Acordes » @ 109,351
+bouton « Bajo fantasma » [sélectionné] @ 278,351
+texte « comp. » @ 84,408
+bouton « 4 » @ 486,420
+bouton « 5 » [coupé] @ 853,420
+texte « Mi♭ » [coupé] @ 84,466
+texte « Re » @ 84,501
+texte « Re♭ » @ 84,543
+texte « Do4 » @ 84,585
+texte « Si » @ 84,627
+texte « Si♭ » @ 84,669
+texte « La » @ 84,711
+texte « La♭ » @ 84,753
+texte « Sol » @ 84,795
+texte « Sol♭ » [coupé] @ 84,831
+dessin [coupé] @ 492,649
+icône (liste) « Capítulos » @ 757,894
+texte « Tu primera parte: el Groove Capítulo 6/13 · Paso 1/2 · Fácil » @ 364,894
+icône ⌄ @ 843,894
+texte « Escucha tu bucle unos segundos y luego el ejemplo. » @ 319,975
+texte « • Bucle: un pasaje que se repite sin parar. » @ 211,1015
+texte « ▸ ¿Por qué? » @ 450,1053
+bouton ■ «   Detener » @ 450,1116
+bouton ▶ «  Escuchar el ejemplo » @ 450,1200
+icône ← «  Anterior » @ 97,1281
+icône « Siguiente  » → @ 795,1281
+onglet (lignes et note) « Mi canción » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Teclado » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Compartir » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Anotar » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 318,1479

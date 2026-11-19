@@ -1,0 +1,65 @@
+Écran 9 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 288,42
+bouton « Simple » @ 618,42
+bouton ● @ 706,42
+bouton ▶ « esta parte » @ 780,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 855,114
+icône « Parte: A » ▾ @ 76,180
+bouton « Bombo de estudio FX » @ 123,280
+bouton « Bombo 2 » @ 341,280
+bouton « Caja » @ 559,280
+bouton « Caja 2 » @ 777,280
+bouton « Palmada FX » @ 123,379
+bouton « Hi-hat I 30 » @ 341,379
+bouton « Hi-hat abierto D 30 » @ 559,379
+bouton « Tom grave » @ 777,379
+bouton « Tom medio D 45 » @ 123,478
+bouton « Tom agudo » @ 341,478
+bouton « Aro del tambor D 50 » @ 559,478
+bouton « Campana » @ 777,478
+bouton « Platillo FX D 40 » @ 123,577
+bouton « Maracas I 50 » @ 341,577
+bouton « Conga » @ 559,577
+bouton « Láser » @ 777,577
+bouton « Kit: Estudio » ▾ @ 115,666
+texte « Los pads suenan, las casillas guardan los golpes. Mantén pulsado: cambiar el sonido. » @ 553,666
+titre « PASOS: BOMBO DE ESTUDIO » [état « Desplegado »] @ 347,774
+bouton « ? » @ 403,774
+bouton « Todos los pads » @ 755,774
+texte « Bombo de estudio » @ 144,858
+bouton « 1 » [état « vacío »] @ 90,943
+bouton [état « vacío »] @ 192,943
+bouton [état « vacío »] @ 294,943
+bouton [état « vacío »] @ 397,943
+bouton « 2 » [état « vacío »] @ 500,943
+bouton [état « vacío »] @ 603,943
+bouton [état « vacío »] @ 706,943
+bouton [état « vacío »] @ 809,943
+bouton « 3 » [état « vacío »] @ 90,1024
+bouton [état « vacío »] @ 192,1024
+bouton [état « vacío »] @ 294,1024
+bouton [état « vacío »] @ 397,1024
+bouton « 4 » [état « vacío »] @ 500,1024
+bouton [état « vacío »] @ 603,1024
+bouton [état « vacío »] @ 706,1024
+bouton [état « vacío »] @ 809,1024
+icône (liste) « Capítulos » @ 757,1110
+texte « La velocidad y el color del tema Capítulo 1/13 · Hecho · Fácil » @ 364,1110
+icône ⌃ @ 843,1110
+icône (coupe) « ¡Bravo, capítulo terminado! » ⌃ @ 450,1209
+icône ↶ « Deshacer » @ 123,1293
+image ↷ @ 282,1283
+bouton ▶ « la canción » @ 444,1293
+texte « 120 Tempo » @ 612,1293
+icône ⋮ « Más » @ 777,1293
+onglet (lignes et note) « Mi canción » @ 85,1389
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 268,1389
+onglet (touches de piano) « Teclado » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Compartir » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Anotar » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 318,1479

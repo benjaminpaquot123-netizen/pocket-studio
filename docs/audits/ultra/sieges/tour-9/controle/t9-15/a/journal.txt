@@ -13,3 +13,467 @@
 #1 DOIGT tuto_listen «  Escuchar el ejemplo »
 #2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 97171151c7 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=ref done=0 playing=false
 #2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 795 1209
+#2 DOIGT tuto_next « Siguiente  »
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1408d523be | project=p-8a08abf9 tuto=deep_house/Facile active=true step=tempo done=1 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 83 114
+#3 DOIGT top_tempo « Tempo: 100 golpes por minuto »
+#4 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE b38c26df1f | project=p-8a08abf9 tuto=deep_house/Facile active=true step=tempo done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « Tempo » over the touchable « Cerrar hoja » (73 x 28 dp)
+#4 LAYOUT OVERLAP « ? » over the touchable « Cerrar hoja » (7 x 15 dp)
+#4 LAYOUT OVERLAP « Cerrar » over the touchable « Cerrar hoja » (43 x 20 dp)
+#4 LAYOUT OVERLAP « 100 » over the touchable « Cerrar hoja » (86 x 53 dp)
+#4 LAYOUT OVERLAP «  BPM » over the touchable « Cerrar hoja » (39 x 24 dp)
+#4 LAYOUT OVERLAP « 70 » over the touchable « Cerrar hoja » (21 x 19 dp)
+#4 LAYOUT OVERLAP « 90 » over the touchable « Cerrar hoja » (21 x 19 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « Cerrar hoja » (32 x 19 dp)
+#4 LAYOUT OVERLAP « 140 » over the touchable « Cerrar hoja » (32 x 19 dp)
+#4 LAYOUT OVERLAP « 174 » over the touchable « Cerrar hoja » (32 x 19 dp)
+#4 LAYOUT OVERLAP « ½ » over the touchable « Cerrar hoja » (14 x 24 dp)
+#4 LAYOUT OVERLAP « ×2 » over the touchable « Cerrar hoja » (21 x 24 dp)
+#4 LAYOUT OVERLAP « 1 » over the touchable « Cerrar hoja » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 2 » over the touchable « Cerrar hoja » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 3 » over the touchable « Cerrar hoja » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 4 » over the touchable « Cerrar hoja » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 5 » over the touchable « Cerrar hoja » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 6 » over the touchable « Cerrar hoja » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 7 » over the touchable « Cerrar hoja » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 8 » over the touchable « Cerrar hoja » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 9 » over the touchable « Cerrar hoja » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 0 » over the touchable « Cerrar hoja » (14 x 27 dp)
+#4 LAYOUT OVERLAP « OK » over the touchable « Cerrar hoja » (33 x 27 dp)
+#4 LAYOUT OVERLAP « Marcar el ritmo » over the touchable « Cerrar hoja » (118 x 24 dp)
+#4 LAYOUT OVERLAP « Toca aquí en cada tiempo: el tempo te sigue. » over the touchable « Cerrar hoja » (271 x 18 dp)
+#4 > touche 250 990
+#4 DOIGT tempo_preset_120 « 120 »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c700b815da | project=p-8a08abf9 tuto=deep_house/Facile active=true step=tempo done=2 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 450 1125
+#5 DOIGT tuto_next_big « Paso siguiente   »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 735cac1ab0 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=key done=2 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 450 1044
+#6 DOIGT tuto_do «   Lo hago yo »
+#7 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE e11dc291ff | project=p-8a08abf9 tuto=deep_house/Facile active=true step=key done=2 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « Tonalidad del tema » over the touchable « Cerrar hoja » (200 x 28 dp)
+#7 LAYOUT OVERLAP « Tonalidad del tema: ninguna » over the touchable « Cerrar hoja » (185 x 20 dp)
+#7 LAYOUT OVERLAP « Escala » over the touchable « Cerrar hoja » (45 x 20 dp)
+#7 LAYOUT OVERLAP « Mayor » over the touchable « Cerrar hoja » (47 x 24 dp)
+#7 LAYOUT OVERLAP « Menor » over the touchable « Cerrar hoja » (49 x 24 dp)
+#7 LAYOUT OVERLAP « Dórico » over the touchable « Cerrar hoja » (52 x 24 dp)
+#7 LAYOUT OVERLAP « Penta menor » over the touchable « Cerrar hoja » (95 x 24 dp)
+#7 LAYOUT OVERLAP « Penta mayor » over the touchable « Cerrar hoja » (93 x 24 dp)
+#7 LAYOUT OVERLAP « Blues » over the touchable « Cerrar hoja » (42 x 24 dp)
+#7 LAYOUT OVERLAP « Frigio » over the touchable « Cerrar hoja » (42 x 24 dp)
+#7 LAYOUT OVERLAP « Menor armónica » over the touchable « Cerrar hoja » (123 x 24 dp)
+#7 LAYOUT OVERLAP « Tónica » over the touchable « Cerrar hoja » (46 x 20 dp)
+#7 LAYOUT OVERLAP « Do » over the touchable « Cerrar hoja » (21 x 24 dp)
+#7 LAYOUT OVERLAP « Do♯ » over the touchable « Cerrar hoja » (29 x 24 dp)
+#7 LAYOUT OVERLAP « Re » over the touchable « Cerrar hoja » (19 x 24 dp)
+#7 LAYOUT OVERLAP « Mi♭ » over the touchable « Cerrar hoja » (24 x 24 dp)
+#7 LAYOUT OVERLAP « Mi » over the touchable « Cerrar hoja » (19 x 24 dp)
+#7 LAYOUT OVERLAP « Fa » over the touchable « Cerrar hoja » (18 x 24 dp)
+#7 LAYOUT OVERLAP « Fa♯ » over the touchable « Cerrar hoja » (26 x 24 dp)
+#7 LAYOUT OVERLAP « Sol » over the touchable « Cerrar hoja » (23 x 24 dp)
+#7 LAYOUT OVERLAP « La♭ » over the touchable « Cerrar hoja » (23 x 24 dp)
+#7 LAYOUT OVERLAP « La » over the touchable « Cerrar hoja » (18 x 24 dp)
+#7 LAYOUT OVERLAP « Si♭ » over the touchable « Cerrar hoja » (19 x 24 dp)
+#7 LAYOUT OVERLAP « Si » over the touchable « Cerrar hoja » (14 x 24 dp)
+#7 > touche 500 1356
+#7 DOIGT tuto_root_5 « Fa »
+#8 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 4418de50b1 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=key done=3 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Tonalidad del tema: Fa · Dórico » over the touchable « Cerrar hoja » (205 x 20 dp)
+#8 LAYOUT OVERLAP « ¡Logrado! El color de la canción está elegido. » over the touchable « Cerrar hoja » (352 x 24 dp)
+#8 LAYOUT OVERLAP « Volver al tutorial » over the touchable « Cerrar hoja » (116 x 20 dp)
+#8 > touche 450 1434
+#8 DOIGT tuto_key_continue « Volver al tutorial »
+#9 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE d88981b08c | project=p-8a08abf9 tuto=deep_house/Facile active=true step=key done=3 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 450 1209
+#9 DOIGT tuto_chapter_end_folded « ¡Bravo, capítulo terminado! »
+#10 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0d1559d244 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=key done=3 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 450 1125
+#10 DOIGT tuto_next_big « Capítulo siguiente   »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 78e6d02072 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=ready done=3 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 450 1125
+#11 DOIGT tuto_mark «   Entendido »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8c47f2e4b8 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=kick_do done=4 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « PASOS: BOMBO DE ESTUDIO » 1.27:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « ? » 1.36:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « Todos los pads » 1.28:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#12 > touche 90 385
+#12 DOIGT step_0 « Paso 1 »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3e2ff06833 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=kick_do done=4 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « 2 » 3.58:1 (needs 4.5:1, 12 sp)
+#13 > touche 500 385
+#13 DOIGT step_4 « Paso 5 »
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c3fe1c0191 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=kick_do done=4 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 12 sp)
+#14 > touche 90 466
+#14 DOIGT step_8 « Paso 9 »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b318062035 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=kick_do done=4 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « 4 » 4.00:1 (needs 4.5:1, 12 sp)
+#15 > touche 500 466
+#15 DOIGT step_12 « Paso 13 »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 01d6cb84ab | project=p-8a08abf9 tuto=deep_house/Facile active=true step=kick_do done=5 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « PASOS: BOMBO DE ESTUDIO » 1.25:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « Todos los pads » 1.26:1 (needs 4.5:1, 14 sp)
+#16 > touche 450 1125
+#16 DOIGT tuto_next_big « Paso siguiente   »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a69b29b1c4 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=clap_do done=5 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « PASOS: PALMADA » 1.34:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#17 > touche 810 840
+#17 DOIGT tuto_kit_later « Más tarde »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1089943231 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=clap_do done=5 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 500 385
+#18 DOIGT step_4 « Paso 5 »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 767bb13c8a | project=p-8a08abf9 tuto=deep_house/Facile active=true step=clap_do done=5 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « 4 » 3.44:1 (needs 4.5:1, 12 sp)
+#19 > touche 500 466
+#19 DOIGT step_12 « Paso 13 »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 712416b753 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=clap_do done=6 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 294 1209
+#20 DOIGT tuto_play_mine «  Escuchar tu resultado »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d8df425f37 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=clap_do done=6 playing=true
+#21 SON Son : la musique du projet joue en boucle.
+#21 > touche 450 1125
+#21 DOIGT tuto_next_big « Paso siguiente   »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5f0b3f07c3 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#22 SON Son : la musique du projet joue en boucle.
+#22 LAYOUT CONTRAST « PASOS: HI-HAT » 1.29:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#22 > touche 90 385
+#22 DOIGT step_0 « Paso 1 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2ed11edf38 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 294 385
+#23 DOIGT step_2 « Paso 3 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7505f88a9c | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#24 SON Son : la musique du projet joue en boucle.
+#24 > touche 397 385
+#24 DOIGT step_3 « Paso 4 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d1cf5185af | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#25 SON Son : la musique du projet joue en boucle.
+#25 LAYOUT CONTRAST « 2 » 3.23:1 (needs 4.5:1, 12 sp)
+#25 > touche 500 385
+#25 DOIGT step_4 « Paso 5 »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9d43ddb359 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 706 385
+#26 DOIGT step_6 « Paso 7 »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8ea86d1887 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 809 385
+#27 DOIGT step_7 « Paso 8 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3ea8335e8a | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 LAYOUT CONTRAST « 3 » 3.27:1 (needs 4.5:1, 12 sp)
+#28 > touche 90 466
+#28 DOIGT step_8 « Paso 9 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 974c6debc3 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 294 466
+#29 DOIGT step_10 « Paso 11 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 538dce5168 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 397 466
+#30 DOIGT step_11 « Paso 12 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE be4d073cdd | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT CONTRAST « 4 » 3.64:1 (needs 4.5:1, 12 sp)
+#31 > touche 500 466
+#31 DOIGT step_12 « Paso 13 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dfea06ebd2 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 > touche 706 466
+#32 DOIGT step_14 « Paso 15 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3277af4c57 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=6 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 809 466
+#33 DOIGT step_15 « Paso 16 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e7572976b5 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=hat_do done=7 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 450 1125
+#34 DOIGT tuto_next_big « Paso siguiente   »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d748e701a5 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=perc_do done=7 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 LAYOUT CONTRAST « PASOS: ARO DEL TAMBOR » 1.27:1 (needs 4.5:1, 12 sp)
+#35 > touche 397 385
+#35 DOIGT step_3 « Paso 4 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 583ef7cecd | project=p-8a08abf9 tuto=deep_house/Facile active=true step=perc_do done=7 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 706 385
+#36 DOIGT step_6 « Paso 7 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1b00865792 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=perc_do done=7 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 294 466
+#37 DOIGT step_10 « Paso 11 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 86ca29fe9a | project=p-8a08abf9 tuto=deep_house/Facile active=true step=perc_do done=7 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 > touche 603 466
+#38 DOIGT step_13 « Paso 14 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 559071129e | project=p-8a08abf9 tuto=deep_house/Facile active=true step=perc_do done=7 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 809 466
+#39 DOIGT step_15 « Paso 16 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 76f2c8a9b6 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=perc_do done=8 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 > touche 450 1125
+#40 DOIGT tuto_next_big « Paso siguiente   »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 038b588419 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=tom_do done=8 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 LAYOUT CONTRAST « PASOS: TOM MEDIO » 1.29:1 (needs 4.5:1, 12 sp)
+#41 > touche 294 385
+#41 DOIGT step_2 « Paso 3 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 293b28301c | project=p-8a08abf9 tuto=deep_house/Facile active=true step=tom_do done=8 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 LAYOUT CONTRAST « 3 » 3.22:1 (needs 4.5:1, 12 sp)
+#42 > touche 90 466
+#42 DOIGT step_8 « Paso 9 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3cedb57426 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=tom_do done=8 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 294 466
+#43 DOIGT step_10 « Paso 11 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ff19b7a7ac | project=p-8a08abf9 tuto=deep_house/Facile active=true step=tom_do done=9 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 450 1125
+#44 DOIGT tuto_next_big « Paso siguiente   »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9a678eaba8 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=drums_hear done=9 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > attends 4
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9a678eaba8 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=drums_hear done=9 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 450 1128
+#46 DOIGT tuto_listen «  Escuchar el ejemplo »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4f6b044091 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=drums_hear done=9 playing=false
+#47 SON Son : l'exemple du tuto joue (encore 3 s).
+#47 > attends 4
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0ec9ec5273 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=drums_hear done=10 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 450 1125
+#48 DOIGT tuto_next_big « Capítulo siguiente   »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e6d7dfbc04 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_hear done=10 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 450 1125
+#49 DOIGT tuto_listen «  Escuchar el ejemplo »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5e1a8c9fdc | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_hear done=10 playing=false
+#50 SON Son : l'exemple du tuto joue (encore 3 s).
+#50 > attends 8
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dd627392d6 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_hear done=11 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 450 1125
+#51 DOIGT tuto_next_big « Paso siguiente   »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6dcf16200b | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_do done=11 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 450 1044
+#52 DOIGT tuto_need «   Crear la pista Bajo »
+#53 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE bcb9effdff | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_do done=11 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 260 833
+#53 DOIGT rien
+#54 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 57b3e5959f | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_do done=11 playing=false
+#54 SON Son : 1 note du synthé.
+#54 > touche 440 833
+#54 DOIGT rien
+#55 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 6b84ec652b | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_do done=11 playing=false
+#55 SON Son : 1 note du synthé.
+#55 > touche 620 833
+#55 DOIGT rien
+#56 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 3001c79af1 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_do done=11 playing=false
+#56 SON Son : 1 note du synthé.
+#56 > touche 733 833
+#56 DOIGT rien
+#57 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE fc95c1a673 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_do done=11 playing=false
+#57 SON Son : 1 note du synthé.
+#57 > touche 783 432
+#57 DOIGT tuto_notes_left « Bajo · compás 1/8 »
+#58 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE bf917832f9 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_do done=11 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 800 833
+#58 DOIGT rien
+#59 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 73a52cd1c9 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_do done=12 playing=false
+#59 SON Son : 1 note du synthé.
+#59 > touche 450 1281
+#59 DOIGT tuto_next_folded « Conseguido »
+#60 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9eac845d42 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_2 done=12 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 440 690
+#60 DOIGT rien
+#61 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6ac69f161b | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_2 done=12 playing=false
+#61 SON Son : 1 note du synthé.
+#61 > touche 620 690
+#61 DOIGT rien
+#62 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0a7f27a69e | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_2 done=12 playing=false
+#62 SON Son : 1 note du synthé.
+#62 > touche 733 690
+#62 DOIGT rien
+#63 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2e2d6d3624 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_2 done=12 playing=false
+#63 SON Son : 1 note du synthé.
+#63 > touche 800 563
+#63 DOIGT rien
+#64 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE db1d7bc9c3 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_2 done=12 playing=false
+#64 SON Son : 1 note du synthé.
+#64 > touche 783 432
+#64 DOIGT tuto_notes_left « Bajo · compás 2/8 »
+#65 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b0fc7aadbe | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_2 done=12 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 260 690
+#65 DOIGT rien
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4f0c8c8977 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_2 done=12 playing=false
+#66 SON Son : 1 note du synthé.
+#66 > touche 450 1116
+#66 DOIGT tuto_need «   Copiar en los compases siguientes »
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 200d9d4c51 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_2 done=12 playing=false
+#67 SON Son : rien ne joue.
+#67 > attends 2
+#68 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 200d9d4c51 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_2 done=12 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 790 432
+#68 DOIGT tuto_roll_copy « Copiar »
+#69 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a63b2979f5 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=bass_2 done=13 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 450 1197
+#69 DOIGT tuto_next_big « Capítulo siguiente   »
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bb323b8c44 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_hear done=13 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 450 1197
+#70 DOIGT tuto_listen «  Escuchar el ejemplo »
+#71 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c3eb1dc8fa | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_hear done=13 playing=false
+#71 SON Son : l'exemple du tuto joue (encore 3 s).
+#71 > attends 8
+#72 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE be1de7177c | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_hear done=14 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 450 1197
+#72 DOIGT tuto_next_big « Paso siguiente   »
+#73 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0904945394 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=14 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 450 1116
+#73 DOIGT tuto_need «   Crear la pista Acordes »
+#74 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 3f93c4fc6b | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=14 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 260 1110
+#74 DOIGT rien
+#75 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 11c9b98567 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=14 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 395 1110
+#75 DOIGT rien
+#76 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 44db0d9f16 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=14 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 620 1110
+#76 DOIGT rien
+#77 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE a65f7917c9 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=14 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 733 1110
+#77 DOIGT rien
+#78 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE d4963d4492 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=14 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 783 432
+#78 DOIGT tuto_notes_left « Acordes · compás 1/8 »
+#79 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE dcfee143de | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=14 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 260 1110
+#79 DOIGT rien
+#80 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 463c523584 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=14 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 395 1110
+#80 DOIGT rien
+#81 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 6c36476e29 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=14 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 643 1110
+#81 DOIGT rien
+#82 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 7d1a65cab1 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=14 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 800 1110
+#82 DOIGT rien
+#83 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE fd33fe764a | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_do done=15 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 450 1281
+#83 DOIGT tuto_next_folded « Conseguido »
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 878db80464 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_end done=15 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 450 1116
+#84 DOIGT tuto_need «   Copiar en los compases siguientes »
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 878db80464 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_end done=15 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 790 432
+#85 DOIGT tuto_roll_copy « Copiar »
+#86 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c298ce3171 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=pad_end done=16 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 450 1197
+#86 DOIGT tuto_next_big « Capítulo siguiente   »
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE cba5040ba5 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=lead_do done=16 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 450 1116
+#87 DOIGT tuto_need «   Crear la pista Melodía »
+#88 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE fa0bea84f1 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=lead_do done=16 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 260 960
+#88 DOIGT rien
+#89 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 4134c2d22e | project=p-8a08abf9 tuto=deep_house/Facile active=true step=lead_do done=16 playing=false
+#89 SON Son : 1 note du synthé.
+#89 > touche 450 432
+#89 DOIGT tuto_notes_left « Melodía · compás 1/8 »
+#90 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 2d5cd8403a | project=p-8a08abf9 tuto=deep_house/Facile active=true step=lead_do done=16 playing=false
+#90 SON Son : rien ne joue.
+#90 LAYOUT CONTRAST « Quedan 2 notas punteadas por tocar » 4.18:1 (needs 4.5:1, 14 sp)
+#90 > touche 530 666
+#90 DOIGT rien
+#91 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 7e865617e2 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=lead_do done=16 playing=false
+#91 SON Son : 1 note du synthé.
+#91 > touche 670 834
+#91 DOIGT rien
+#92 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE cb5d5c66b4 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=lead_do done=16 playing=false
+#92 SON Son : 1 note du synthé.
+#92 > touche 450 1281
+#92 DOIGT tuto_need_folded « Copiar en los compases siguientes »
+#93 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 643ac1ee6a | project=p-8a08abf9 tuto=deep_house/Facile active=true step=lead_do done=17 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 843 1182
+#93 DOIGT tuto_fold
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e50bfd3731 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=lead_do done=17 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 450 1197
+#94 DOIGT tuto_next_big « Capítulo siguiente   »
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1697b70dd3 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=groove_hear done=17 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 450 1116
+#95 DOIGT tuto_play_mine «   Escuchar tu resultado »
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 46f2e1e3b7 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=groove_hear done=17 playing=true
+#96 SON Son : la musique du projet joue en boucle.
+#96 > attends 4
+#97 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4fe4845196 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=groove_hear done=17 playing=true
+#97 SON Son : la musique du projet joue en boucle.
+#97 > touche 450 1200
+#97 DOIGT tuto_listen «  Escuchar el ejemplo »
+#98 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a930ced871 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=groove_hear done=17 playing=false
+#98 SON Son : l'exemple du tuto joue (encore 3 s).
+#98 > attends 8
+#99 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 054ff18541 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=groove_hear done=18 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 450 1197
+#99 DOIGT tuto_next_big « Paso siguiente   »
+#100 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3709d8bc0b | project=p-8a08abf9 tuto=deep_house/Facile active=true step=groove_name done=18 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 450 1116
+#100 DOIGT tuto_need «   Nombrar la parte “Groove” »
+#101 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 939bf6084b | project=p-8a08abf9 tuto=deep_house/Facile active=true step=groove_name done=19 playing=false
+#101 SON Son : rien ne joue.
+#101 > fin
+#101 FIN : fin

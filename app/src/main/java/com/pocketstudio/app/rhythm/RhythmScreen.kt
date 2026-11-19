@@ -915,6 +915,7 @@ private fun StepGrid(
                             RollMenu(hit, step % per + 1, close = { rollStep = -1 },
                                 force = { actions.setHitVelocity(step, it) }, roll = { n, r -> actions.setRoll(step, n, r) }, burst = { actions.burst(step, it) },
                                 chance = { actions.setHitChance(step, it) }, simple = simple,
+                                offset = { actions.setHitOffset(step, it) },
                                 spread = { n, m, r -> actions.setSpread(step, n, m, r) }, roomFor = { m -> step + m <= spreadsTo })
                         }
                     }
@@ -1069,6 +1070,8 @@ private fun RollMenu(
     /** A triplet: (hits, steps, ramp). [roomFor]: whether the pad's loop has that many steps from this one. */
     spread: (Int, Int, Int) -> Unit = { _, _, _ -> },
     roomFor: (Int) -> Boolean = { true },
+    /** The hit early or late, in ms (tour 9, D04: the uk_garage « caisse en retard » is done from this sheet). */
+    offset: (Float) -> Unit = {},
 ) {
     val chips = pillColors()
     ScaledDropdownMenu(expanded = true, onDismissRequest = close, modifier = Modifier.testTag("roll_menu")) {
@@ -1085,6 +1088,10 @@ private fun RollMenu(
                         modifier = Modifier.testTag("roll_force_${(v * 10).roundToInt()}"))
                 }
             }
+            // Tour 9, D04: the long press is where testers look for a hit's settings; its timing is here too (in every mode).
+            LabeledSlider(tr("Décalage du coup %d", beatStep), "%+d ms".format(hit.offset.roundToInt()), hit.offset,
+                -com.pocketstudio.model.Hit.MAX_OFFSET_MS..com.pocketstudio.model.Hit.MAX_OFFSET_MS,
+                modifier = Modifier.testTag("roll_offset")) { offset(it) }
             Text(tr("Roulement"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 com.pocketstudio.model.DrumPattern.ROLLS.forEach { n ->
@@ -1472,13 +1479,14 @@ private fun LabeledSlider(
     v: Float,
     range: ClosedFloatingPointRange<Float>,
     steps: Int = 0,
+    modifier: Modifier = Modifier,
     onChange: (Float) -> Unit,
 ) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    ProSlider(value = v.coerceIn(range), onValueChange = onChange, valueRange = range, steps = steps, label = label, valueText = value)
+    ProSlider(value = v.coerceIn(range), onValueChange = onChange, valueRange = range, steps = steps, label = label, valueText = value, modifier = modifier)
 }
 
 @Composable

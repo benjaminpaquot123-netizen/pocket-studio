@@ -1,0 +1,49 @@
+{
+  "siege": "a",
+  "niveau": "2",
+  "options": {
+    "lang": "fr",
+    "device": "tablet8",
+    "font": "100",
+    "mode": "simple",
+    "amenee": "tuto:jump_up:1",
+    "gestes.max": "174",
+    "mission": "tuto-facile",
+    "profil": "moyen",
+    "niveau": "2",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 92,
+    "images": 11,
+    "gestes_premier_son": 2,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 12,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 101,
+    "ecrans_revisites": 19,
+    "defilements_sans_toucher": 0,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 93,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 3.9,
+      "simule": 2.4,
+      "jvm": 9.5,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-facile",
+  "resultat": "reussie",
+  "pourquoi": "« jump_up » en Facile : 22 étape(s), 8 chapitre(s) entier(s) sur 15"
+}

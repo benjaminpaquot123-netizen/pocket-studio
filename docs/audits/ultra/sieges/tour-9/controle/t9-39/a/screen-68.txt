@@ -1,0 +1,55 @@
+Écran 68 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 198,42
+bouton « Simple » @ 439,42
+icône ↶ @ 527,42
+bouton ● @ 599,42
+bouton ▶ « cette partie » @ 678,42
+bouton ▶ « le morceau » @ 776,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+onglet « Acid 303 Ligne de basse » @ 112,186
+bouton « Basse Basse growl » ⋮ @ 322,186
+icône ♪ « Son » @ 482,186
+bouton + «  Piste » @ 620,186
+icône « Partie : A » ▾ @ 82,264
+texte « En rythme 50 % » @ 515,351
+texte « 100 % » @ 668,351
+texte « Effacer » @ 777,351
+bouton « Accords » @ 109,351
+bouton « Basse en fantôme » [sélectionné] @ 296,351
+texte « Basse · mesure 4/8 » @ 151,417
+bouton « Copier » @ 790,432
+texte « Motif posé ! La suite se copie : » @ 213,444
+texte « mes. » @ 84,489
+bouton « 4 » @ 486,501
+bouton « 5 » [coupé] @ 853,501
+texte « Sol » [coupé] @ 84,547
+texte « Sol♭ » @ 84,582
+texte « Fa » @ 84,624
+texte « Mi » @ 84,666
+texte « Mi♭ » @ 84,708
+texte « Ré » @ 84,750
+texte « Ré♭ » @ 84,792
+texte « Do2 » @ 84,834
+texte « Si » @ 84,876
+texte « Si♭ » @ 84,918
+texte « La » @ 84,960
+texte « La♭ » @ 84,1002
+texte « Sol » @ 84,1044
+texte « Sol♭ » @ 84,1086
+texte « Fa » [coupé] @ 84,1120
+dessin [coupé] @ 492,834
+icône (liste) « Chapitres » @ 756,1182
+texte « La basse Chapitre 5/15 · Étape 4/4 · Facile » @ 363,1182
+icône ⌃ @ 843,1182
+bouton « Copier sur les mesures suivantes » → @ 450,1281
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » @ 268,1389
+onglet (touches de piano) « Clavier » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

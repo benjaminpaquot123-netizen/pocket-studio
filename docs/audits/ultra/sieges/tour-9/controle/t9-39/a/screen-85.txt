@@ -1,0 +1,55 @@
+Écran 85 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 198,42
+bouton « Simple » @ 439,42
+icône ↶ @ 527,42
+bouton ● @ 599,42
+bouton ▶ « cette partie » @ 678,42
+bouton ▶ « le morceau » @ 776,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+onglet « Acid 303 Ligne de basse » @ 112,186
+bouton « Basse Basse growl » @ 304,186
+bouton « Accords Nappe » ⋮ @ 479,186
+icône ♪ « Son » @ 624,186
+bouton + «  Piste » @ 762,186
+icône « Partie : A » ▾ @ 82,264
+texte « En rythme 50 % » @ 515,351
+texte « 100 % » @ 668,351
+texte « Effacer » @ 777,351
+bouton « Accords » [sélectionné] @ 109,351
+bouton « Basse en fantôme » [sélectionné] @ 296,351
+texte « mes. » @ 84,408
+bouton « 4 » @ 486,420
+bouton « 5 » [coupé] @ 853,420
+texte « Fa » [coupé] @ 84,456
+texte « Mi » @ 84,480
+texte « Mi♭ » @ 84,522
+texte « Ré » @ 84,564
+texte « Ré♭ » @ 84,606
+texte « Do4 » @ 84,648
+texte « Si » @ 84,690
+texte « Si♭ » @ 84,732
+texte « La » @ 84,774
+texte « La♭ » @ 84,816
+texte « Sol » @ 84,858
+dessin [coupé] @ 492,666
+texte « La mélodie Chapitre 7/15 · Étape 2/3 · Facile » @ 363,927
+icône (liste) « Chapitres » @ 756,927
+icône ⌄ @ 843,927
+texte « À toi : touche « Créer la piste Mélodie ». » @ 249,1008
+texte « ▸ Pourquoi ? » @ 450,1050
+bouton ⊕ «   Créer la piste Mélodie » @ 450,1116
+bouton ▶ «  Écouter l'exemple » @ 232,1200
+bouton (œil) «  Montre-moi » @ 667,1200
+icône ← «  Précédent » @ 107,1281
+icône « Suivant  » → @ 805,1281
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » @ 268,1389
+onglet (touches de piano) « Clavier » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

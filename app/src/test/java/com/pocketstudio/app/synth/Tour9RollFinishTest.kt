@@ -154,4 +154,36 @@ class Tour9RollFinishTest {
         assertEquals("Le clavier : joue pour essayer des notes par-dessus le rythme.", keyboardHelp(com.pocketstudio.model.Harmony(), chordPads = false)?.text)
         compose.onNodeWithTag("help_Clavier", useUnmergedTree = true).assertExists()
     }
+    /** F115: « Les noms de touches et de mesures se lisent sans se chevaucher, même à 200 %. » (tablet: every key named) */
+    @Test
+    @Config(qualifiers = "w800dp-h1280dp-port-mdpi")
+    fun theRollsKeyAndBarNamesFitTheirPlaceAtTwoHundredPercentOnATablet() = rollNamesFit()
+
+    /** F115 on a phone: the C's names and « mes. » in the 36 dp wide keys. */
+    @Test
+    fun theRollsKeyAndBarNamesFitTheirPlaceAtTwoHundredPercentOnAPhone() = rollNamesFit()
+
+    private fun rollNamesFit() {
+        bigLetters { PianoRoll(NoteClip(steps = 64), emptyList(), -1, PianoRollActions(), trackName = "Mélodie") }
+        compose.waitForIdle()
+        val texts = compose.onAllNodes(
+            androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.hasTestTag("roll_keys")) and
+                androidx.compose.ui.test.SemanticsMatcher.keyIsDefined(androidx.compose.ui.semantics.SemanticsActions.GetTextLayoutResult),
+            useUnmergedTree = true,
+        ).fetchSemanticsNodes()
+        assertEquals("some keys are named", true, texts.isNotEmpty())
+        val bar = compose.onAllNodes(
+            androidx.compose.ui.test.hasText("mes.") and
+                androidx.compose.ui.test.SemanticsMatcher.keyIsDefined(androidx.compose.ui.semantics.SemanticsActions.GetTextLayoutResult),
+            useUnmergedTree = true,
+        ).fetchSemanticsNodes()
+        assertEquals("the bars' label is there", 1, bar.size)
+        (texts + bar).forEach { n ->
+            val r = mutableListOf<androidx.compose.ui.text.TextLayoutResult>()
+            n.config[androidx.compose.ui.semantics.SemanticsActions.GetTextLayoutResult].action!!.invoke(r)
+            val said = r.single().layoutInput.text.text
+            // Higher than its row, a name runs over its neighbours'; wider than its box, it is cut.
+            assertEquals("« $said » cut or over its neighbours", true, com.pocketstudio.ui.WholeWordsAutoSize.fits(r.single(), said))
+        }
+    }
 }

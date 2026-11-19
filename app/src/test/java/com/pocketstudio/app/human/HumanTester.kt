@@ -825,6 +825,9 @@ abstract class HumanTester(private val seat: String) {
      * [play] never applies it), each way in is the welcome's (first opening, Mode simple) or « Que veux-tu faire ? »'s
      * (Mode Pro: its guide seen), and the target is scrolled into view where it is (BenchAmeneesProfilesTest).
      */
+    /** The safety net of an amenée's waits, in real milliseconds (the bench's own tests shorten it). */
+    internal var ameneeCapMs = 120_000L
+
     internal fun amenee(name: String, journal: File) {
         benchJournal = journal
         journal.appendText("#0 AMENEE $name\n")
@@ -840,7 +843,7 @@ abstract class HumanTester(private val seat: String) {
             return tag
         }
         fun waitFor(what: String, done: () -> Boolean) {
-            val until = System.currentTimeMillis() + 120_000
+            val until = System.currentTimeMillis() + ameneeCapMs
             while (!done()) {
                 if (System.currentTimeMillis() > until) error("amenée $name : $what n'est jamais venu")
                 play("attends 0.5")

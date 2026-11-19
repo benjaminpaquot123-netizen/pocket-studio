@@ -35,15 +35,15 @@ Captures : aucune réenregistrée. Le lot ne change ni la mise en page ni les te
 
 Décisions : docs/decisions/tour-9-L3.md.
 
-Preuves : un commit « rouge: » puis « vert: » pour chaque défaut tenté (F031, F033, F037, F043, F045, F138) ; tests ciblés app `com.pocketstudio.app.tuto.*` et project-model `com.pocketstudio.model.tuto.*` verts après la fusion de l'intégration ; rejeu du self-test vert.
+Preuves : un commit « rouge: » puis « vert: » pour chaque défaut tenté (F031, F033, F037, F043, F045, F138), dont, dans project-model, `Tour9TutoSoftWordsTest#stepsThatAskForSoftHitsCheckTheirStrength` (F031) et `Tour9TutoCurveKeepsMineTest#theStepTicksWithEveryCurveLaneTaken` (F138) ; tests ciblés app `com.pocketstudio.app.tuto.*` et project-model `com.pocketstudio.model.tuto.*` verts après la fusion de l'intégration ; rejeu du self-test vert.
 
 tests: *Tour9Tuto* *Tour8TutoGesturesDoItTest* *TutoLot4Test* *TutoJourneyTest* *Tour6TutoCellsPanel100Test* *TutoAppScreenshotTest*
 
-chemin: tuto detroit, étape du charley aux coups doux | test: Tour9TutoSoftWordsTest#stepsThatAskForSoftHitsCheckTheirStrength
+chemin: tuto detroit, étape du charley aux coups doux | test: TutoJourneyTest#theWholeCourse
 chemin: tuto, étape d'envoi ou d'insert, « Je le fais » | test: Tour9TutoDoItLeavesTheGestureTest#doItGoesThereAndLeavesTheGestureToTheUser
 chemin: tuto, « Créer la partie » puis Annuler | test: Tour9TutoUndoMakesItToDoAgainTest#undoingThePartMakesTheStepToDoAgain
 chemin: tuto techno, étape basse, « Créer la piste » sur la piste 0 | test: Tour9TutoNewTrackShownTest#aTrackMadeForTheStepIsShown
 chemin: tuto en zh, ja, ar, message « partie créée » | test: Tour9TutoPartMadeInItsLanguageTest#whatThePartLeavesOutIsListedWithTheLanguagesOwnCommas
-chemin: tuto, étape de courbe, « Je le fais » avec toutes les pistes de courbe prises | test: Tour9TutoCurveKeepsMineTest#theStepTicksWithEveryCurveLaneTaken
+chemin: tuto, étape de courbe, « Je le fais » avec toutes les pistes de courbe prises | test: Tour8TutoGesturesDoItTest#theCurvesDoItChangesOnlyTheCurveAndItsFilter
 
 État : tenté (pas « corrigé » : un siège neuf doit le constater).

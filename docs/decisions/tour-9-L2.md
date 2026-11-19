@@ -1,0 +1,11 @@
+# Tour 9, lot L2 (Mix) : décisions
+
+- 2026-11-19 D01 / D11 = banc : sans banc, un doigt Compose (360 dp, police 200 %) bouge le fader du Mix pro et du Mode simple, et ouvre les effets d'une tranche (`Tour9MixFaderNoBenchTest` d01 / d11 verts). Rien de changé dans l'appli pour eux.
+- 2026-11-19 F024 (option A du chef) : un fader ne se prend qu'à ±32 dp de son bouton, le pad XY qu'à son point ; ailleurs le doigt fait défiler la page. Le banc lit désormais le bouton d'un fader dans la lecture d'écran (`ScreenText`, « poignée ») et le tire de là. Retour arrière : enlever la zone de prise dans `Console.kt` / `SimpleMix.kt` / `QuickFx.kt`.
+- 2026-11-19 F127 : un trait de courbe qui commence jusqu'à 14 dp sous la toile (`CURVE_EDGE`) dessine au lieu de faire défiler. Retour arrière : `CURVE_EDGE = 0.dp`.
+- 2026-11-19 F129 : une boucle de plus d'une mesure se compte en mesures sous sa courbe, une boucle d'une mesure garde ses temps.
+- 2026-11-19 F026 / F027 : les têtes du Mode simple partagent une seule taille, plancher 6 sp avant de couper.
+- 2026-11-19 F136 : corrigé dans `QuickFx.kt` (feuille du pad, repère `pad_sheet_head`) ; le chemin depuis le Rythme (`AppRoot.kt:3304`) reste hors lot, signalé au chef.
+- 2026-11-19 Régression trouvée par bisection (ac693964) : le bouton « Effets du pad » de 48 dp grandissait la ligne de titre, et couché à 130 % le premier fader sortait de son volet (`TabletLyingTest`). Le bouton est dessiné à la hauteur du titre et touché sur 48 dp, comme le « ? ». Retour arrière : revenir au `TextButton`.
+- 2026-11-19 F028 : un anneau `Neon.Outline` (au moins 3:1 sur la carte, les deux thèmes) est dessiné derrière le rail de `LabeledSlider` (`EffectsPanel.kt`) ; `ProSlider` (ui-components) n'est pas touché. Il vaut pour les envois, les réglages de bus, `EffectsBox` et le Remix. AudioTracks, TrackSheet et Rythme ont leur propre `LabeledSlider` privé, hors de mes fichiers : ils gardent l'ancien rail, signalé au chef. Retour arrière : enlever le `drawBehind`.
+- 2026-11-19 Banc des gestes (accord du chef) : `GestureBudget.slide` (`AppHarness.kt`) pose le doigt sur le bouton du fader (lu dans sa valeur) au lieu du bord ; même compte de gestes, même assertion. Retour arrière : revenir à `swipeUp` / `swipeDown`.

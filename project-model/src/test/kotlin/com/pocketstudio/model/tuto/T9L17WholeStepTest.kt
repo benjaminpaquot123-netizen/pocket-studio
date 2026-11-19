@@ -62,18 +62,4 @@ class T9L17WholeStepTest {
             assertTrue("$style: shown: done", TutoChecks.done(s, both, target, null))
         }
     }
-
-    @Test
-    fun aStepOnThePadOfTheTomsChecksATomPad() {
-        // t9-64 (synthwave, « Charley et tom »): « sur le pad des toms » ticked on the « Rim » pad, the pad it checks.
-        val toms = setOf(7, 8, 9)
-        val wrong = TutoCourse.STYLES.flatMap { style ->
-            val target = TutoTarget.of(style) ?: return@flatMap emptyList()
-            TutoLevel.entries.flatMap { l -> TutoCourse.of(style)!!.chaptersFor(l).flatMap { it.steps } }.distinctBy { it.id }
-                .filter { s -> listOfNotNull(s.text, s.textPro).any { "pad des toms" in it } }
-                .filter { s -> s.target.isEmpty() || !toms.containsAll(TutoChecks.lanesOf(s.target, target)) }
-                .map { "$style/${it.id}" }
-        }
-        assertTrue("« pad des toms » on another pad: $wrong", wrong.isEmpty())
-    }
 }

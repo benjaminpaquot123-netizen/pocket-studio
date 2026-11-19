@@ -1,0 +1,10 @@
+Écran 42 (588x1278)
+texte « Bagian yang diedit » @ 336,187
+texte « A · Groove » @ 376,248
+texte « B · Intro » @ 376,320
+icône ✓ « C · Build-up » @ 376,392
+texte « D · Drop » @ 376,464
+texte « E · Break » @ 376,536
+texte « F · Drop 2 » @ 376,608
+texte « G · Akhir » @ 376,680
+icône + « Bagian kosong baru » @ 376,754

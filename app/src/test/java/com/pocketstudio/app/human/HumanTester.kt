@@ -868,6 +868,9 @@ abstract class HumanTester(private val seat: String) {
     /** How many times an amenée touches again a target that moved under the finger (tests: 0 = the tour 9 refusal). */
     internal var ameneeRetaps = AMENEE_RETAPS
 
+    /** The bench's own tests: called between an amenée's aim at a tag and its touch (where a real screen may move). */
+    internal var ameneeAfterAim: ((String) -> Unit)? = null
+
     /** Where the screen is, for a flag: never throws (a flag is written while something else is failing). */
     private fun routeNow(): String = runCatching { screenText().read().route }.getOrDefault("?")
 
@@ -909,6 +912,7 @@ abstract class HumanTester(private val seat: String) {
         var retaps = 0
         fun tap(tag: String, again: Boolean = false) {
             val at = reachTag(tag) ?: refuse("amenee.tag", "« $tag » à l'écran", "$tag absent", "« $tag » introuvable")
+            ameneeAfterAim?.invoke(tag)
             if (!again) retaps = 0
             lastTag = tag
             lastAt = centerOf(tag)

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.AutoCut
 import com.pocketstudio.model.SongCuts
 import com.pocketstudio.ui.PocketStudioTheme
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -52,8 +53,13 @@ class CutLocalNoteScrollTest {
     /** The router as it is: a message from before, and auto cuts that find nothing (a stem almost silent). */
     private class Shown(message: String?) : StemBoardActions by NoStemBoardActions {
         override val state = MutableStateFlow(StemBoardState(message = message))
+        /** The search takes its time, as on the phone: it ends when the test says so. */
+        val searched = CompletableDeferred<Unit>()
         override fun savedCuts(setId: String, frames: Long) = SongCuts("song", emptyList())
-        override suspend fun autoCuts(setId: String, stem: Int, mode: AutoCut, from: Long, to: Long): List<LongRange> = emptyList()
+        override suspend fun autoCuts(setId: String, stem: Int, mode: AutoCut, from: Long, to: Long): List<LongRange> {
+            searched.await()
+            return emptyList()
+        }
     }
 
     private val column get() = compose.onNode(SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange), useUnmergedTree = true)
@@ -81,6 +87,9 @@ class CutLocalNoteScrollTest {
                 }
             }
         }
+        settle()
+        assertEquals("a message from before moved the column on arrival", 0f, scrolled())
+        shown.searched.complete(Unit)
         settle()
         // The screen's first cuts found nothing: its note is said, and the column came down to it (a message of now).
         assertTrue("the note « Aucune coupe trouvée » is not said (said: ${said()})", "Aucune coupe" in said())

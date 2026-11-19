@@ -10,7 +10,7 @@ import org.junit.Test
  * that no text spoke of. The notes dotted when a step opens are the ones its text counts, in the bars it names.
  */
 class Tour9TutoL5aDottedTest {
-    private val said = Regex("(?:les )?(\\d+) notes en pointillé (?:de la mesure (\\d+)|des mesures (\\d+) et (\\d+))")
+    private val said = Regex("(?:les )?(\\d+) notes en pointillé (?:de la mesure (\\d+)(?: et les (\\d+) de la mesure (\\d+))?|des mesures (\\d+) et (\\d+))")
 
     @Test
     fun theNotesDottedAreTheOnesTheTextCounts() {
@@ -29,10 +29,11 @@ class Tour9TutoL5aDottedTest {
                     val (track, dotted) = ghosts
                     val have = TutoChecks.notesOf(p, track).map { it.pitch to it.start }.toSet()
                     val left = dotted.filter { (it.pitch to it.start) !in have }
-                    val bars = m.groupValues.drop(2).filter { it.isNotEmpty() }.map { it.toInt() }.toSet()
+                    val g = m.groupValues
+                    val bars = listOf(g[2], g[4], g[5], g[6]).filter { it.isNotEmpty() }.map { it.toInt() }.toSet()
                     val bar = p.stepsPerBar * NoteClip.TICKS_PER_STEP
                     val leftBars = left.map { it.start / bar + 1 }.toSet()
-                    val n = m.groupValues[1].toInt()
+                    val n = g[1].toInt() + (g[3].toIntOrNull() ?: 0)
                     if (left.size != n || !bars.containsAll(leftBars)) {
                         bad += "$style/${level.name}/${s.id}: « ${m.value} », dotted ${left.size} in bars $leftBars"
                     }

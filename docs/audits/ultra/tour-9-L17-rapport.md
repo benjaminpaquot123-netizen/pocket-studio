@@ -4,16 +4,18 @@ Branche : eq/tour-9-L17, partie de l'intégration ccr-80af1a1b-mn0wec (tête 4dd
 Défauts visés : F032, F034, F036, F039, F040, F042, F044, F046. Tous « tentés », aucun « corrigé » (un testeur neuf le dira).
 
 tests: :project-model:test --tests '*T9L17*' ; :app:testDebugUnitTest --tests '*T9L17*'
-chemin: tuto trap Pro, triolets | test: T9L17WholeStepTest#trapsTripletWantsCells13And15
-chemin: tuto, crash sur Drop et Drop 2 | test: T9L17WholeStepTest#aCymbalOnTheDropAndTheDrop2WantsBoth
-chemin: tuto drill/phonk Pro, « Montre-moi » d'un fill à roulement | test: T9L17DemoShowsTheGestureTest#aFillAskingForARollShowsARoll
 chemin: tuto Structure, « Créer la partie » pendant la démo | test: T9L17PartAfterDemoTest#theNeedTouchedWhileTheDemoHoldsMakesThePartAndKeepsIt
 chemin: tuto, étape d'écoute du kick, pad joué | test: T9L17KickPadHeardTest#playingTheKickPadTicksListenToTheKick
 chemin: éditeur Acid, case muette touchée | test: T9L17AcidTapTest#touchingASilentCellPutsANote
 chemin: tuto house, conseil de réverbe | test: T9L17SendNoteNamesStripsTest#theHouseReverbNoteNamesTheClapNotTheSnare
-chemin: tuto uk_garage Pro, la basse | test: T9L17ChapterDoneNoDottedTest#ukGarageBassChapterDoneLeavesNoDottedNote
 chemin: grille rythme, compteur sur deux mesures | test: T9L17GridLineCountsEveryBarTest#cellsLeftHereAndInBar2BothSaid
 controle: reporté (mode boost, grande vérification de fin)
+
+Tests du modèle (project-model/src/test, hors des lignes « chemin ») :
+- tuto trap Pro, triolets | test: T9L17WholeStepTest#trapsTripletWantsCells13And15
+- tuto, crash sur Drop et Drop 2 | test: T9L17WholeStepTest#aCymbalOnTheDropAndTheDrop2WantsBoth
+- tuto drill/phonk Pro, « Montre-moi » d'un fill à roulement | test: T9L17DemoShowsTheGestureTest#aFillAskingForARollShowsARoll
+- tuto uk_garage Pro, la basse | test: T9L17ChapterDoneNoDottedTest#ukGarageBassChapterDoneLeavesNoDottedNote
 
 ## Ce qui change
 - F032 (tenté) : les triolets ne valident qu'avec les deux cases demandées ; le crash qu'avec Drop et Drop 2.

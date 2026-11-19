@@ -577,7 +577,10 @@ fun TutoPanel(
     LaunchedEffect(whyOpen, why) { if (whyOpen && why != null) reason.bringIntoView() }
     Surface(
         color = panelColor(), shape = shape,
-        modifier = modifier.fillMaxWidth().border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel"),
+        // Tour 9 F003 (seats t9-11, t9-29, t9-41, t9-56): at 200 % the unfolded panel covered the whole work area (the
+        // piano under it gone). Upright, it takes at most [PANEL_MAX_SHARE] of the screen's height; the words scroll in
+        // what is left (their room is weighted below), the buttons stay whole.
+        modifier = modifier.fillMaxWidth().then(panelCap()).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel"),
     ) {
         Column(
             Modifier.then(if (holding) Modifier.height(with(density) { held.toDp() }) else Modifier)
@@ -667,7 +670,7 @@ fun TutoPanel(
             if (whole > wholeWords) SideEffect { wholeWords = maxOf(wholeWords, whole) }
             val least = maxOf(lineAndHalf, if (lowRoom && readAll) wholeWords else 0)
             WordsRoom(
-                if (holding) Modifier.weight(1f) else Modifier, holding, most, least,
+                if (holding) Modifier.weight(1f) else Modifier.weight(1f, fill = false), holding, most, least,
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
             ) {
             Box {
@@ -1329,6 +1332,16 @@ private fun besideFits(words: List<String>): Boolean {
 
 /** The steps the end lists by name (the others: the chapters' list). */
 private const val END_LIST = 4
+
+/** Tour 9 F003: the most of the screen's height the unfolded panel takes, upright. */
+internal const val PANEL_MAX_SHARE = 0.6f
+
+/** The panel's height cap: [PANEL_MAX_SHARE] of an upright screen (on its side, the panel is as before). */
+@Composable
+private fun panelCap(): Modifier {
+    val conf = androidx.compose.ui.platform.LocalConfiguration.current
+    return if (conf.screenHeightDp >= conf.screenWidthDp) Modifier.heightIn(max = (conf.screenHeightDp * PANEL_MAX_SHARE).dp) else Modifier
+}
 
 /** The secondary buttons' inner room: their words on one line on a phone, two at 130 %. */
 private val SECONDARY_PADDING = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp)

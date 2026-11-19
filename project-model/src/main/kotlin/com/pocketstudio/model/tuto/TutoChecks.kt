@@ -681,7 +681,7 @@ object TutoChecks {
      * ("pad,clap": a track's or a pad's strip each), else the reverb's the « Accords » track and the
      * snare's pad, the echo's the lead.
      */
-    internal fun sendChannels(p: Project, bus: Int, step: TutoStep? = null): List<Int> {
+    fun sendChannels(p: Project, bus: Int, step: TutoStep? = null): List<Int> {
         val roles = step?.target?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() }.orEmpty()
         // Any target but the jump up's own reverb (« pad »: its chords and its snare) names the strips (the echo on the bass alone).
         if (roles.isNotEmpty() && !(bus == 0 && roles == listOf("pad"))) return roles.mapNotNull { r -> stripOf(p, r) }
@@ -846,6 +846,18 @@ object TutoChecks {
     /** Whether one of [lanes] holds a triplet ([Hit.isTriplet]) inside the loop. */
     internal fun hasTriplet(d: DrumPattern, lanes: Set<Int>): Boolean =
         lanes.any { l -> d.lanes.getOrNull(l)?.hits?.any { (s, h) -> s < d.steps && h.isTriplet } == true }
+
+    /**
+     * "triplet:<role>" done in [d]: every triplet the style's line has on that pad where it fits (trap's hats: cells 13
+     * and 15, tour 9, F032: cell 13 alone passed), else any triplet ([hasTriplet]).
+     */
+    internal fun tripletsDone(d: DrumPattern, role: String, target: TutoTarget): Boolean {
+        val lane = laneOf(role)
+        val wanted = target.line(role)?.let { StarterWizard.hits(it, d.steps) }.orEmpty().filter { (s, h) -> h.isTriplet && s + h.span <= d.steps }
+        if (wanted.isEmpty()) return hasTriplet(d, lanesOf(role, target))
+        val have = d.lanes.getOrNull(lane)?.hits.orEmpty()
+        return wanted.keys.all { s -> have[s]?.isTriplet == true }
+    }
 
     /**
      * « Montre-moi » of "triplet:<role>": the triplets of the style's line on that pad where they fit

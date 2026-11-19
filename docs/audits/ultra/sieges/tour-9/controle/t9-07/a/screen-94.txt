@@ -1,0 +1,56 @@
+Écran 94 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 178,42
+bouton « 专业 » @ 388,42
+bouton « A » ▾ @ 468,42
+icône ↶ @ 544,42
+bouton ● @ 616,42
+bouton ▶ « 这个段落 » @ 693,42
+bouton ▶ « 歌曲 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « 鼓 16 个打击垫 » @ 108,205
+onglet « Acid 303 贝斯线 » @ 293,205
+onglet « 人声 麦克风 » @ 454,205
+onglet « Remix 分离 » @ 595,205
+bouton « 贝斯 Pluck 贝斯 » ⋮ @ 776,205
+image ← @ 10,206
+image → @ 889,206
+texte « 段落：A » @ 71,275
+texte « 对齐 50% » @ 398,353
+texte « 100% » @ 540,353
+texte « 清除 » @ 647,353
+bouton « 和弦 » @ 95,353
+bouton « 幽灵贝斯 » [sélectionné] @ 232,353
+bouton « 贝斯 · 第 2/8 小节 还有 3 个虚线音符要点 » @ 450,435
+texte « 小节 » @ 84,499
+bouton « 2 » @ 486,506
+bouton « 3 » [coupé] @ 853,506
+texte « B » @ 84,560
+texte « A♯ » @ 84,602
+texte « A » @ 84,644
+texte « G♯ » @ 84,686
+texte « G » @ 84,728
+texte « F♯ » @ 84,770
+texte « F » @ 84,812
+texte « E » @ 84,854
+texte « D♯ » @ 84,896
+texte « D » @ 84,938
+texte « C♯ » @ 84,980
+texte « C2 » @ 84,1022
+texte « B » @ 84,1064
+texte « A♯ » [coupé] @ 84,1095
+dessin [coupé] @ 492,822
+texte « 贝斯 第 3/14 章 · 第 2/3 步 · 专业 » @ 378,1157
+icône (liste) « 章节 » @ 771,1157
+icône ⌃ @ 843,1157
+icône « 轮到你：创建贝斯音轨。两小节在 E 上（第 2 小节升到五度 B），然后“复制”：同样的乐句放到 A 和 G 上。 阅读 » ⌃ @ 450,1270
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 671,1479
+texte « ✎  记一笔 » @ 767,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 317,1479

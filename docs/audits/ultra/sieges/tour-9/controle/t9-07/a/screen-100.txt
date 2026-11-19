@@ -1,0 +1,56 @@
+Écran 100 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 178,42
+bouton « 专业 » @ 388,42
+bouton « A » ▾ @ 468,42
+icône ↶ @ 544,42
+bouton ● @ 616,42
+bouton ▶ « 这个段落 » @ 693,42
+bouton ▶ « 歌曲 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « 鼓 16 个打击垫 » @ 108,205
+onglet « Acid 303 贝斯线 » @ 293,205
+onglet « 人声 麦克风 » @ 454,205
+onglet « Remix 分离 » @ 595,205
+bouton « 贝斯 Pluck 贝斯 » ⋮ @ 776,205
+image ← @ 10,206
+image → @ 889,206
+texte « 段落：A » @ 71,275
+texte « 对齐 50% » @ 398,353
+texte « 100% » @ 540,353
+texte « 清除 » @ 647,353
+bouton « 和弦 » @ 95,353
+bouton « 幽灵贝斯 » [sélectionné] @ 232,353
+texte « 小节 » @ 84,415
+bouton « 2 » @ 486,422
+bouton « 3 » [coupé] @ 853,422
+texte « B » @ 84,476
+texte « A♯ » @ 84,518
+texte « A » @ 84,560
+texte « G♯ » @ 84,602
+texte « G » @ 84,644
+texte « F♯ » @ 84,686
+texte « F » @ 84,728
+texte « E » @ 84,770
+texte « D♯ » [coupé] @ 84,800
+dessin [coupé] @ 492,632
+texte « 贝斯 第 3/14 章 · 第 3/3 步 · 专业 » @ 378,860
+icône (liste) « 章节 » @ 771,860
+icône ⌄ @ 843,860
+texte « 轮到你：在混音里，给贝斯音轨加上“抽吸”效果：它在每个底鼓时让开。 » @ 450,972
+texte « ▸ 为什么？ » @ 450,1047
+bouton (doigt qui touche) «   我来做 » @ 450,1116
+bouton ▶ «  听示例 » @ 232,1200
+bouton (œil) «  示范给我看 » @ 667,1200
+icône ← «  上一步 » @ 99,1281
+icône « 下一步  » → @ 801,1281
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 671,1479
+texte « ✎  记一笔 » @ 767,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 317,1479

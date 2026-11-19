@@ -1,0 +1,46 @@
+Écran 103 (900x1509)
+texte « 效果 · 贝斯 » @ 143,64
+texte « 已放置的效果：1 / 8 » @ 178,137
+bouton « 1. 抽吸 » @ 306,200
+icône ⏻ @ 597,200
+icône ⌃ [désactivé] @ 669,200
+icône ⌄ [désactivé] @ 741,200
+icône ✕ @ 813,200
+bouton + «   添加效果 » @ 450,278
+texte « 现成的氛围 » @ 122,350
+bouton « ? » @ 214,350
+bouton « 用于：贝斯 » [sélectionné] @ 146,420
+bouton ★ « 收藏 » @ 315,420
+bouton « 氛围 » @ 442,420
+bouton « 色彩 » @ 557,420
+bouton « 脏度 » @ 672,420
+bouton « 动感 » @ 787,420
+bouton « Acid » @ 192,504
+bouton « Techno » @ 331,504
+bouton « DnB » @ 467,504
+bouton « Dubstep » @ 610,504
+bouton « House » @ 769,504
+bouton « Lo-fi » [coupé] @ 848,504
+texte « 风格： » @ 89,504
+bouton « 肥厚贝斯 » @ 132,588
+bouton « Growl » @ 286,588
+bouton « Dubstep Wob » @ 476,588
+bouton « DnB Reese » @ 700,588
+bouton « EDM 抽吸 » @ 139,660
+bouton « 抽吸 » @ 289,660
+bouton « 脆 » @ 389,660
+bouton « 失真 » @ 490,660
+bouton « 无效果 » @ 619,660
+texte « 点一个氛围试试：随时可以用撤销回去。 » @ 450,744
+texte « 手指按住一个氛围来试听；松手，原来的声音就回来了。 » @ 366,810
+texte « XY 打击垫，上下： » @ 160,862
+bouton « ? » @ 300,862
+bouton « 空间 » [sélectionné] @ 104,932
+bouton « 脏度 » @ 219,932
+bouton « 动感 » @ 334,932
+texte « ↑ 遥远 » @ 450,997
+texte « ← 暗 » @ 235,1292
+texte « ↓ 干 » @ 450,1292
+texte « 明亮 → » @ 664,1292
+texte « 滑动手指，实时折腾声音。点两下：回到原始声音。 » @ 341,1339
+texte « 关闭 » @ 802,1437

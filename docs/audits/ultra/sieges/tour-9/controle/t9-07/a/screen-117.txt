@@ -1,0 +1,59 @@
+Écran 117 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 178,42
+bouton « 专业 » @ 388,42
+bouton « A » ▾ @ 468,42
+icône ↶ @ 544,42
+bouton ● @ 616,42
+bouton ▶ « 这个段落 » @ 693,42
+bouton ▶ « 歌曲 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « 鼓 16 个打击垫 » [coupé] @ 30,205
+onglet « Acid 303 贝斯线 » @ 136,205
+onglet « 人声 麦克风 » @ 297,205
+onglet « Remix 分离 » @ 438,205
+bouton « 贝斯 Pluck 贝斯 » @ 601,205
+bouton « 和弦 温暖 Pad » ⋮ @ 787,205
+image ← @ 10,206
+image → @ 889,206
+texte « 段落：A » @ 71,275
+texte « 对齐 50% » @ 398,353
+texte « 100% » @ 540,353
+texte « 清除 » @ 647,353
+bouton « 和弦 » [sélectionné] @ 95,353
+bouton « 幽灵贝斯 » [sélectionné] @ 232,353
+bouton « 和弦 · 第 4/8 小节 所有虚线音符都放好了 » @ 450,435
+texte « 小节 » @ 84,499
+bouton « 4 » @ 486,506
+bouton « 5 » [coupé] @ 853,506
+texte « C4 » [coupé] @ 84,549
+texte « B » @ 84,581
+texte « A♯ » @ 84,623
+texte « A » @ 84,665
+texte « G♯ » @ 84,707
+texte « G » @ 84,749
+texte « F♯ » @ 84,791
+texte « F » @ 84,833
+texte « E » @ 84,875
+texte « D♯ » [coupé] @ 84,913
+dessin [coupé] @ 492,734
+texte « 铺底 第 4/14 章 · 已完成 · 专业 » @ 378,981
+icône (liste) « 章节 » @ 771,981
+icône ⌄ @ 843,981
+image (coupe) @ 57,1098
+texte « 太棒了，本章完成！ » @ 216,1079
+texte « 听听你现在的歌曲，然后进入下一章：“马林巴”。 » @ 366,1118
+bouton « 下一章   » → @ 450,1197
+icône ← @ 57,1281
+bouton ▶ «  听我的歌 » @ 294,1281
+bouton ▶ «  听示例 » @ 687,1281
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 671,1479
+texte « ✎  记一笔 » @ 767,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 317,1479

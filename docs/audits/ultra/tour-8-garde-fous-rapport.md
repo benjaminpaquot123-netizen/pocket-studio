@@ -34,3 +34,7 @@ CI 387 (run 44427624462) sur le commit rouge : seuls les rouges attendus. Aucun 
 ## Pas pris (clôture du tour 8)
 
 - house, étape `levels` (Facile) : « (+4 fort, −∞ muet) », alors que le curseur du Mode simple écrit « Muet », pas « −∞ » (`MixerScreen.levelWords`). Texte du tuto : hors de ce lot.
+
+## Relecture neuve
+
+Sous-agent neuf (n'a pas écrit le code), sur `d27fd0244..d32416fa5` : aucun défaut. Les plafonds valent les comptes (52 moments, 409 cas) ; le pli rougit sans cas coupé ; la règle des volumes rejouée hors Gradle : 36 étapes, français + 14 langues, 0 écart. Seule remarque, corrigée ici : le commentaire disait « 13 autres langues » au lieu de 14.

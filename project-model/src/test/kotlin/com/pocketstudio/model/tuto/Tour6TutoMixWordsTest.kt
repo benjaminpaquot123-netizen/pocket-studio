@@ -37,7 +37,7 @@ class Tour6TutoMixWordsTest {
 
     /**
      * Tour 8, garde-fous: the volume steps without « sous le curseur » were not read at all. Every volume step, in
-     * French and in each of the 13 other languages, is translated and names each track its check asks to lower (the
+     * French and in each of the 14 other languages, is translated and names each track its check asks to lower (the
      * name as the Mix shows it in that language).
      */
     @Test

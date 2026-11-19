@@ -606,6 +606,39 @@ class RealLots(unittest.TestCase):
             self.assertEqual((code, out), (0, ""), zone)
 
 
+class CutHistory(unittest.TestCase):
+    """Tour 9, L9: a clone cut short (« --depth ») can hold a merge of tour 6 and both its parents but not where they
+    part: merge-base answered nothing, rapport-zone.py refused its empty « base: » (exit 2) and the pre-flight was red on
+    a history, not on a rule. There, the test says so and how to get the history back."""
+
+    def test_a_merge_whose_base_was_cut_says_to_deepen(self):
+        global ROOT
+        tmp = tempfile.mkdtemp(prefix="portail4-cut-")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        full, cut = os.path.join(tmp, "full"), os.path.join(tmp, "cut")
+        os.makedirs(full)
+        git(full, "init", "-q", "-b", "int")
+        write(os.path.join(full, "a.txt"), "base\n")
+        git(full, "add", "a.txt")
+        git(full, "commit", "-q", "-m", "base")
+        git(full, "checkout", "-q", "-b", "lot")
+        write(os.path.join(full, "b.txt"), "lot\n")
+        git(full, "add", "b.txt")
+        git(full, "commit", "-q", "-m", "lot")
+        git(full, "checkout", "-q", "int")
+        write(os.path.join(full, "c.txt"), "int\n")
+        git(full, "add", "c.txt")
+        git(full, "commit", "-q", "-m", "int")
+        git(full, "merge", "-q", "--no-ff", "-m", "merge", "lot")
+        git(tmp, "clone", "-q", "--depth", "2", "--no-local", "file://" + full, cut)
+        self.assertEqual(git(cut, "rev-parse", "--is-shallow-repository"), "true")
+        saved, ROOT = ROOT, cut
+        self.addCleanup(lambda: globals().__setitem__("ROOT", saved))
+        with self.assertRaises(unittest.SkipTest) as said:
+            RealLots().rule(git(cut, "rev-parse", "HEAD"), "z")
+        self.assertIn("git fetch --deepen", str(said.exception))
+
+
 class Hooks(unittest.TestCase):
     """This file is run where the bench's other script tests are: the self-test and pre-vol.sh --ci."""
 

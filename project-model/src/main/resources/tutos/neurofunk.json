@@ -71,8 +71,8 @@
         },
         {
           "id": "kick_do",
-          "text": "À toi : sur le pad du kick, touche les cases en pointillé des 2 mesures. Un coup arrive plus tôt : c'est voulu.",
-          "textPro": "À toi : sur le pad du kick, touche les cases en pointillé des 2 mesures : le two-step, et dans la 2e mesure le kick avancé avant le 3 avec son rebond.",
+          "text": "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures. Un coup arrive plus tôt : c'est voulu.",
+          "textPro": "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures : le two-step, et dans la 2e mesure le kick avancé avant le 3 avec son rebond.",
           "check": "lane:kick",
           "spot": "rhythm.pattern",
           "target": "kick",
@@ -132,7 +132,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad de percussion, touche les cases en pointillé des 2 mesures : des petits bruits décalés.",
+          "text": "À toi : sur le pad « Rim », touche les cases en pointillé des 2 mesures : des petits bruits décalés.",
           "why": "Décalés par rapport aux temps, ils sonnent comme une machine qui cliquette.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",

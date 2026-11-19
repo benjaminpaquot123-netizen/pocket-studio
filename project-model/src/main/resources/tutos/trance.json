@@ -113,8 +113,8 @@
         },
         {
           "id": "perc2_do",
-          "text": "À toi : sur le pad du shaker, touche les cases en pointillé : des doubles croches légères qui font rouler le Drop.",
-          "textPro": "À toi : le shaker en doubles croches, pour le Drop.",
+          "text": "À toi : sur le pad « Shaker », touche les cases en pointillé : des doubles croches légères qui font rouler le Drop.",
+          "textPro": "À toi : le pad « Shaker » en doubles croches, pour le Drop.",
           "check": "lane:perc2",
           "spot": "rhythm.pattern",
           "target": "perc2",

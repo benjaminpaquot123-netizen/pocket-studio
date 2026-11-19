@@ -237,7 +237,8 @@ fun PianoRoll(
     val barTicks = barSteps * NoteClip.TICKS_PER_STEP
     var newSteps by rememberSaveable { mutableIntStateOf(2) }
     var chordMode by rememberSaveable { mutableStateOf(false) }
-    var showGhosts by rememberSaveable { mutableStateOf(true) }
+    // Tour 9 (F114): off until asked: ticked on a melody or a chords track, the bass shown under it puzzled testers.
+    var showGhosts by rememberSaveable { mutableStateOf(false) }
     // Lot « tuto-flèches » (seats H a and D a, the riff after the chords): a step of the tutorial whose dotted notes come one
     // at a time begins with « Accords » off (it stayed on from the chords' step: a touch beside a dotted note wrote a chord,
     // and nothing said why). Once a step: turned on again by the user, it stays.

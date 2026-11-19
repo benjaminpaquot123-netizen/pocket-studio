@@ -186,6 +186,8 @@ object TutoHints {
      * moment over the grid (testers, lot « tuto 4 »: the page turned without a word, the hits seemed gone).
      */
     var banner by mutableStateOf<String?>(null)
+    /** A swing step's aim, in % as the Rythme slider shows it (Tour 9, F057): the slider says it. */
+    var swing by mutableStateOf<Int?>(null)
     /**
      * The drum grid with its tutorial line is on the screen (RhythmScreen): with dotted cells to touch on it, the panel
      * leaves their rows room (replay t6-ha19-cases-panneau: at 100 % the first row was cut under the open panel).
@@ -212,7 +214,7 @@ object TutoHints {
      */
     @androidx.annotation.VisibleForTesting
     fun reset() {
-        cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; focusTouched = -1; demo = false
+        swing = null; cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; focusTouched = -1; demo = false
         erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null; gridInSight = false; soundButtonInSight = false
         step = null; copy = null; page = null; copyOnGrid = false
     }

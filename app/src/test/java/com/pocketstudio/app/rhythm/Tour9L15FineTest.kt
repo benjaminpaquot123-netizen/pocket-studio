@@ -4,8 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -25,7 +27,8 @@ import org.robolectric.annotation.Config
 /**
  * Tour 9, lot L15, on the Rythme screen:
  * - F052 (seat t9-41): « Le repère vers une autre mesure dit s'il faut y ajouter ou y enlever une case. »
- * - F057 (seats t9-23, t9-25, t9-41), its half on this screen: the Swing reaches any value to 1 % (« − » and « + »).
+ * - F057 (seats t9-23, t9-25, t9-41), its half on this screen: the Swing reaches any value to 1 % (« − » and « + »),
+ *   and a tutorial's swing step says the value to reach over the slider (« Cible : 25 % »).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = "w360dp-h1800dp")
@@ -96,5 +99,20 @@ class Tour9L15FineTest {
         project = Project().copy(swing = Project.MAX_SWING)
         compose.waitForIdle()
         compose.onNodeWithTag("swing_plus").performScrollTo().assertIsNotEnabled()
+    }
+
+    @Test
+    fun f057SwingStepSaysItsAim() {
+        TutoHints.active = true
+        TutoHints.swing = 25
+        show()
+        compose.onNodeWithTag("swing_aim").performScrollTo().assertTextContains(tr("Cible : %s", com.pocketstudio.model.i18n.percent(25)))
+    }
+
+    @Test
+    fun f057NoAimOutsideASwingStep() {
+        TutoHints.active = true
+        show()
+        compose.onAllNodesWithTag("swing_aim").assertCountEquals(0)
     }
 }

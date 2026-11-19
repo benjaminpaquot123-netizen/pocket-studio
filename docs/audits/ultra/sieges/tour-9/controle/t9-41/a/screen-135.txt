@@ -1,0 +1,25 @@
+Écran 135 (540x1170)
+texte « The hoover Chapter 7/15 · Step 3/3 · Easy » @ 177,113
+icône (liste) « Chapters » @ 390,113
+icône ⌄ @ 483,113
+texte « Your turn: write the 2 notes at the end of bar 2. » @ 270,314
+texte « ▸ Why? » @ 270,446
+bouton (doigt qui touche) «   I'll do it » @ 270,629
+bouton ▶ «  Listen to the example » @ 142,732
+bouton (œil) «  Show me » @ 397,732
+icône ← «  Previous » @ 141,835
+icône « Next  » → @ 436,835
+icône ▶ « the song » @ 249,939
+texte « 165 Tempo » @ 388,938
+icône ↶ « Undo » @ 47,939
+image ↷ @ 130,921
+icône ⋮ « More » @ 492,939
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » @ 160,1050
+onglet (touches de piano) « Keyboard » [sélectionné] @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 277,1140
+texte « ✎  Note » @ 394,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 117,1140

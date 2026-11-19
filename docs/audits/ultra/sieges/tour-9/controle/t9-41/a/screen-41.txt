@@ -1,0 +1,33 @@
+Écran 41 (540x1170)
+bouton (dossier ouvert) ✓ @ 104,42
+bouton « Simple » @ 252,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 165  Tempo » @ 136,144
+bouton « ? » @ 495,144
+texte « The Amen snare Chapter 3/15 · Step 1/1 · Easy » @ 177,284
+icône (liste) « Chapters » @ 390,284
+icône ⌄ @ 483,284
+texte « Your turn: on the “Jungle · Snare” pad, tap the dotted cells of each bar. One hit comes late: that's on purpose. » [coupé] @ 270,422
+texte « ▸ Why? » @ 270,491
+icône « Read on » ⌄ @ 270,554
+bouton (doigt qui touche) «   I'll do it » @ 270,629
+bouton ▶ «  Listen to the example » @ 142,732
+bouton (œil) «  Show me » @ 397,732
+icône ← «  Previous » @ 141,835
+icône « Next  » → @ 436,835
+icône ▶ « the song » @ 249,939
+texte « 165 Tempo » @ 388,938
+icône ↶ « Undo » @ 47,939
+image ↷ @ 130,921
+icône ⋮ « More » @ 492,939
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 277,1140
+texte « ✎  Note » @ 394,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 117,1140

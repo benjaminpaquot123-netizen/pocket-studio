@@ -3146,6 +3146,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             // The selected instrument track's sound and notes, where the synth screen looks.
                             val project = remember(fullProject, selectedTrack) { fullProject.viewOfTrack(selectedTrack) }
                             val shownTrack = if (fullProject.tracks.any { it.id == selectedTrack }) selectedTrack else 0
+                            // Tour 9 (D06): the shown track has dotted notes to touch.
+                            val rollToTouch = com.pocketstudio.app.tuto.TutoHints.notes?.takeIf { it.first == shownTrack }?.second?.isNotEmpty() == true
                             val playUi by rhythmVm.play.collectAsStateWithLifecycle()
                             val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
                             val liveState = rhythmVm.live.collectAsStateWithLifecycle()
@@ -3161,7 +3163,10 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             val noteClipboard by rhythmVm.noteClipboard.collectAsStateWithLifecycle()
                             val freezing by rhythmVm.freezing.collectAsStateWithLifecycle()
                             val frozenTracks = remember(fullProject) { com.pocketstudio.model.Freeze.frozenIds(fullProject) }
-WithPartHeader(rhythmVm, simple) { partModifier ->
+                            // Tour 9 (D06; seats t9-29, t9-62, 360 dp at 200 % in Simple): the roll kept 66 dp under « encore N notes », its dotted
+                            // notes out of sight. While its notes are to touch at a large font, the part's line gives the roll its room.
+                            val rollFirst = rollToTouch && com.pocketstudio.app.synth.NotesView.shown && androidx.compose.ui.platform.LocalDensity.current.fontScale > 1.3f
+WithPartHeader(rhythmVm, simple, shown = !rollFirst) { partModifier ->
                                                         SynthScreen(
                                 modifier = partModifier,
                                 record = { compact ->
@@ -4617,7 +4622,7 @@ internal fun TimelineRoute(
  * what part is edited, and whether it loops or the song plays (see [partHeader]).
  */
 @Composable
-private fun WithPartHeader(vm: RhythmViewModel, simple: Boolean, content: @Composable (Modifier) -> Unit) {
+private fun WithPartHeader(vm: RhythmViewModel, simple: Boolean, shown: Boolean = true, content: @Composable (Modifier) -> Unit) {
     val project by vm.project.collectAsStateWithLifecycle()
     val transport by vm.transport.collectAsStateWithLifecycle()
     val sessionUi by vm.sessionUi.collectAsStateWithLifecycle()
@@ -4629,7 +4634,7 @@ private fun WithPartHeader(vm: RhythmViewModel, simple: Boolean, content: @Compo
     val lying = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Column(Modifier.fillMaxSize()) {
         // Audit final (20 M16): the Mode simple's top bar has no part chip; the part is chosen here.
-        if (!lying || header.note != null) {
+        if (shown && (!lying || header.note != null)) {
             if (simple && !lying) PartHeader(
                 header, parts = project.allScenes.indices.map { project.sceneTitle(it) }, current = project.scene, pick = vm::selectScene,
                 newPart = { vm.newSongPart(copy = true) },

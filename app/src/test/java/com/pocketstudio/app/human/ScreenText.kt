@@ -520,10 +520,48 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
     class Finger(val under: String, val lines: List<String>, val refused: Boolean)
 
     /** Tour 8, banc9 (point i, review #1): the finger fails on a covered target, and its lines say who covers whom. */
-    fun finger(n: Int, x: Float, y: Float): Finger {
+    fun finger(n: Int, x: Float, y: Float, action: String = "touche"): Finger {
         val under = under(x, y)
         val cover = coverAt(x, y) ?: return Finger(under, listOf("#$n DOIGT $under"), false)
-        return Finger(under, listOf("#$n COUVERT $cover", "#$n REFUS doigt couvert : $cover"), true)
+        // Tour 9 (banc-b, « drapeaux »): the refusal's flag, with who covers what, and where.
+        val flag = BenchFlag.line(
+            n, action, under, found = true, why = BenchFlag.COVERED, coveredBy = BenchFlag.coverName(cover) ?: cover,
+            bounds = hitAt(x, y)?.let { h -> drawn(h).let { BenchFlag.bounds(it.left, it.top, it.right, it.bottom) } }, at = x to y,
+        )
+        return Finger(under, listOf("#$n COUVERT $cover", "#$n REFUS doigt couvert : $cover", flag), true)
+    }
+
+    /** The thing to touch that [under] names at ([x], [y]) (the smallest one in the window that gets the touch), or null. */
+    private fun hitAt(x: Float, y: Float): SemanticsNode? {
+        if (walked.isEmpty()) mark(shownWindows(), composeRoots())
+        val win = runCatching { BenchWindows.windows().filter { it.touchable }.firstOrNull { w -> w.touchModal || w.drawn(screen).contains(x.toInt(), y.toInt()) } }.getOrNull()
+            ?: return null
+        return runCatching {
+            compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("anything") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+        }.getOrDefault(emptyList())
+            .filter { BenchWindows.windowOf(it)?.view === win.view && seen(it) && actionable(it) && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
+            .minByOrNull { val r = drawn(it); r.width * r.height }
+    }
+
+    /**
+     * Tour 9 (banc-b, « drapeaux »): what the screen offers to touch, for the flag of a target that is not there: the
+     * tags a finger can see (« tag « words » »), in reading order, [max] at most (« +N » says how many more).
+     */
+    fun tagged(max: Int = 30): String {
+        if (walked.isEmpty()) mark(shownWindows(), composeRoots())
+        val all = runCatching {
+            compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("tagged") { SemanticsProperties.TestTag in it.config }, useUnmergedTree = true)
+                .fetchSemanticsNodes(atLeastOneRootRequired = false)
+        }.getOrDefault(emptyList())
+            .filter { seen(it) && placed(it) && drawn(it).let { r -> r.width > 1f && r.height > 1f && r.bottom > 0f && r.top < screen.heightPixels && r.right > 0f && r.left < screen.widthPixels } }
+            .sortedWith(compareBy({ drawn(it).top.toInt() }, { drawn(it).left.toInt() }))
+            .map { n ->
+                val words = n.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" ")
+                    ?: n.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text } ?: textBelow(n)
+                n.config[SemanticsProperties.TestTag] + (words?.takeIf { it.isNotBlank() }?.let { " « ${it.take(20)} »" } ?: "")
+            }.distinct()
+        if (all.isEmpty()) return "aucune étiquette"
+        return all.take(max).joinToString(", ") + (if (all.size > max) " +${all.size - max}" else "")
     }
 
     /** [a] is drawn after [b]: at their lowest common parent, [a]'s branch comes later (children are in drawing order). */

@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertWidthIsAtLeast
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.longClick
@@ -88,6 +90,13 @@ class Tour9StructureGesturesTest {
         compose.waitForIdle()
         compose.onNodeWithTag("part_sheet").assertIsDisplayed()
         assertEquals("a touch on the part played it", emptyList<Int>(), played)
+    }
+
+    /** Review G2: a touch on the part opens it, so its ▶ is the only « play from here »: a thumb wide (48 dp). */
+    @Test @Config(qualifiers = "w360dp-h640dp", fontScale = 2f)
+    fun thePlayButtonIsAThumbWide() {
+        show()
+        compose.onNodeWithTag("part_play_1").performScrollTo().assertWidthIsAtLeast(48.dp)
     }
 
     @Test

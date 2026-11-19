@@ -21,11 +21,11 @@ class PlayStripLogicTest {
 
     @Test
     fun stoppedTheStripSaysWhereTheSongStarts() {
-        // Tour 9, F105: the start left at the song's start gives way to the part being edited (B), where it first plays.
-        assertEquals(PlayPosition("Refrain", 2, 6), playPosition(song, playing = false, songIndex = -1, bar = -1, playFrom = 0, loopPart = false))
+        // Review G1 (tour 9): stopped, the strip says where ▶ starts, even while another part (B) is edited.
+        assertEquals(PlayPosition("Intro", 1, 6), playPosition(song, playing = false, songIndex = -1, bar = -1, playFrom = 0, loopPart = false))
         assertEquals(PlayPosition("Refrain", 2, 6), playPosition(song, false, -1, -1, playFrom = 1, loopPart = false))
         assertEquals(PlayPosition("Intro", 6, 6), playPosition(song, false, -1, -1, playFrom = 2, loopPart = false))
-        assertEquals(PlayPosition("Refrain", 2, 6), playPosition(song, false, -1, -1, playFrom = 7, loopPart = false))
+        assertEquals(PlayPosition("Intro", 1, 6), playPosition(song, false, -1, -1, playFrom = 7, loopPart = false))
         // A shown: the start point when it is one of its parts; a start picked on another part (« Jouer depuis… ») stays said.
         val a = song.switchScene(0)
         assertEquals(PlayPosition("Intro", 1, 6), playPosition(a, false, -1, -1, playFrom = 0, loopPart = false))

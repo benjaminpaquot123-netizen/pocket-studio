@@ -45,11 +45,12 @@ class Tour9PlayStripTest {
         song = listOf(SongPart(0), SongPart(1, 2), SongPart(0)),
     ).sanitized()
 
+    /** Review G1: ▶ starts at the start point, so the strip says that one (naming the edited part needs ▶ to follow it). */
     @Test
-    fun stoppedItNamesThePartBeingEdited() {
-        // Refrain edited, the start point left on Intro (the part was switched to otherwise than by picking it).
+    fun stoppedItSaysWhereThePlayButtonStarts() {
+        // Refrain edited, the start point left on Intro (the song ended, a version came back): ▶ plays Intro.
         val pos = playPosition(song.switchScene(1), playing = false, songIndex = -1, bar = -1, playFrom = 0, loopPart = false)
-        assertEquals(PlayPosition("Refrain", 2, 6), pos)
+        assertEquals(PlayPosition("Intro", 1, 6), pos)
         // The start point already one of its parts: that one.
         assertEquals(PlayPosition("Intro", 6, 6), playPosition(song.switchScene(0), false, -1, -1, playFrom = 2, loopPart = false))
     }

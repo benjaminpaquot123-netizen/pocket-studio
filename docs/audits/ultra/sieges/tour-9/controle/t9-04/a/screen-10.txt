@@ -1,0 +1,35 @@
+Écran 10 (588x1278)
+bouton (dossier ouvert) ✓ @ 101,42
+bouton « プロ » @ 234,42
+icône ↶ @ 311,42
+bouton ● @ 383,42
+bouton ▶ « このパート » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 138  BPM » @ 83,123
+bouton « ? » @ 543,123
+onglet « タイムライン » [désactivé] @ 129,210
+onglet « パート » [sélectionné] @ 299,210
+texte « パートを作ろう チャプター 6/12 · ステップ 4/7 · プロ » @ 201,342
+icône (liste) « チャプター » @ 438,342
+icône ⌄ @ 531,342
+image (coupe) @ 57,531
+texte « よくできました、成功！ » @ 244,458
+texte « パート「ブレイク」を作りました（グルーヴのコピー）：スタジオキック, クラップ, オープンハイハット, シンバル なし。 » @ 319,551
+bouton « 次のステップ   » → @ 294,805
+bouton ▶ «  結果を聴く » @ 154,889
+bouton ▶ «  例を聴く » @ 433,889
+icône ← «  前へ » @ 85,970
+icône ↶ « 元に戻す » @ 74,1058
+icône ↷ « やり直す » [désactivé] @ 190,1058
+bouton ▶ « 曲 » @ 300,1058
+texte « 138 テンポ » @ 410,1058
+icône (trois points reliés) « シェア » @ 520,1058
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 54,1158
+onglet (touches de piano) « サウンド » @ 174,1158
+onglet (curseurs) « ミックス » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « その他 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

@@ -1,4 +1,4 @@
-Seat: tour-8 final control T-b, seat a. SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-8/controle/final/tb/a
+Seat: tour-8 final control T-b, seat a. SEAT=/home/user/fx-int/docs/audits/ultra/sieges/tour-8/controle/final-tb/a
 Profile id: debutante-coreenne-petit-ecran. You are a Korean beginner (reads Korean only, no French, no English menus), small phone (phone360) with text at 130 %, both hands, patient but literal: you do exactly what the tutorial says and look for the exact word it names. Mode: Simple.
 Start: the app should open the Techno tutorial at chapter 9 (the bench's « amenée » tuto:techno:9).
 Mission: tuto-facile. Follow the tutorial from chapter 9 through the END of chapter 10 (all its steps), only by doing what each step asks (avoid « 다음 »/skip unless truly stuck; if you skip, say so and why).

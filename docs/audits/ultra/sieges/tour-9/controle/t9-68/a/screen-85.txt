@@ -1,0 +1,39 @@
+Écran 85 (588x1278)
+icône « 我的项目 1 » ✓ @ 298,38
+bouton « 专业 » @ 538,38
+bouton (dossier ouvert) @ 102,119
+icône ↶ @ 316,119
+bouton ● @ 388,119
+bouton ▶ « 这个段落 » @ 465,119
+icône (trois points reliés) @ 543,119
+bouton « A » ▾ @ 238,119
+bouton « 132  BPM » @ 114,221
+bouton « ? » @ 543,221
+onglet « 人声 麦克风 » @ 106,342
+onglet « Remix 分离 » @ 283,343
+bouton « 贝斯 Plaits » ⋮ @ 471,342
+image ← @ 10,343
+image → @ 577,343
+texte « 段落：A » @ 92,438
+texte « 对齐 50% » [coupé] @ 464,519
+bouton « 和弦 » @ 106,520
+bouton « 幽灵贝斯 » [sélectionné] @ 276,520
+bouton « 贝斯 · 第 1/8 小节 还有 1 个虚线音符要点 » [coupé] @ 294,606
+texte « 贝斯 第 5/16 章 · 第 2/4 步 · 专业 » @ 222,738
+icône (liste) « 章节 » @ 459,739
+icône ⌃ @ 531,739
+icône « 轮到你：创建贝斯音轨（“Plaits”音色，抽吸已经加好），然后在钢琴卷帘里写第 1 小节：每两个底鼓之间两个十六分音符，全在 F 上。 阅读 » ⌃ @ 294,910
+texte « 132 速度 » @ 402,1041
+icône ↶ « 撤销 » @ 72,1041
+icône ↷ « 重做 » [désactivé] @ 180,1041
+bouton ▶ « 歌曲 » @ 288,1042
+icône (trois points reliés) « 分享 » @ 516,1041
+onglet (ligne brisée et points) « 结构 » @ 54,1158
+onglet (touches de piano) « 音色 » [sélectionné] @ 174,1158
+onglet (curseurs) « 混音 » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « 更多 » @ 534,1158
+texte « 反馈模式 » @ 130,1248
+texte « ●  REC » @ 303,1248
+texte « ✎  记一笔 » @ 431,1248
+texte « ⋯ » @ 540,1248

@@ -1,0 +1,27 @@
+Écran 11 (588x1278)
+dessin @ 294,411
+texte « 歌曲调性 » @ 236,487
+texte « 关闭 » @ 506,487
+texte « 曲子的调：C · 弗里几亚 » @ 230,571
+texte « 音阶 » @ 63,643
+bouton « 大调 » @ 84,723
+bouton « 小调 » @ 213,723
+bouton « 多利亚 » @ 363,723
+bouton « 小调五声 » @ 126,804
+bouton « 大调五声 » @ 339,804
+bouton « Blues » @ 96,885
+bouton « 弗里几亚 » @ 279,885
+bouton « 和声小调 » @ 126,966
+texte « 主音 » @ 63,1045
+bouton « C » @ 63,1125
+bouton « C♯ » @ 156,1125
+bouton « D » @ 249,1125
+bouton « E♭ » @ 336,1125
+bouton « E » @ 423,1125
+bouton « F » @ 510,1125
+bouton « F♯ » @ 66,1206
+bouton « G » @ 156,1206
+bouton « A♭ » @ 244,1206
+bouton « A » @ 332,1206
+bouton « B♭ » @ 419,1206
+bouton « B » @ 506,1206

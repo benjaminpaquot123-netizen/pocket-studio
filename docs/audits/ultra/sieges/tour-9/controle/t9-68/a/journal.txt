@@ -1,0 +1,565 @@
+#0 SIEGE lang=zh-CN device=phone font=200 mode=pro theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:techno:1
+#0 PREMIER ECRAN reel_s=4.1 simule_s=2.4 jvm_s=10.0 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:techno:1
+#0 AMENEE > touche 294 979 (launch_learn)
+#0 AMENEE > touche 294 1073 (mode_card_pro)
+#0 AMENEE > touche 294 404 (tuto_style_techno)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 76ec680a7b | project=p-e6ef925c tuto=techno/Pro active=true step=ref done=0 chapters=- playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « A » ellipsized (« … »)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT OVERLAP « 120 » over « 速度和调性 » (54 x 4 dp)
+#1 LAYOUT OVERLAP «  BPM » over « 速度和调性 » (65 x 4 dp)
+#1 LAYOUT OVERLAP « 速度和调性 » over the touchable « 速度：120 BPM 修改速度 » (130 x 11 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 842
+#1 DOIGT tuto_listen «  听示例 »
+#2 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 16808e6790 | project=p-e6ef925c tuto=techno/Pro active=true step=ref done=0 chapters=- playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 471 932
+#2 DOIGT tuto_next « 下一步  »
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE de3c24697f | project=p-e6ef925c tuto=techno/Pro active=true step=tempo done=1 chapters=- playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT OVERLAP « 120 » over « 速度和调性 » (54 x 12 dp)
+#3 LAYOUT OVERLAP « 120 » over « 第 1/16 章 · 第 2/4 步 · 专业 » (54 x 22 dp)
+#3 LAYOUT OVERLAP « 速度和调性 » over the touchable « 速度：120 BPM 修改速度 » (130 x 19 dp)
+#3 LAYOUT OVERLAP « 第 1/16 章 · 第 2/4 步 · 专业 » over the touchable « 速度：120 BPM 修改速度 » (132 x 29 dp)
+#3 > touche 294 758
+#3 DOIGT tuto_do «   我来做 »
+#4 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE ae80b84fa5 | project=p-e6ef925c tuto=techno/Pro active=true step=tempo done=1 chapters=- playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « ? » lines cut (taller than its box)
+#4 LAYOUT OVERLAP « 速度 » over the touchable « 关闭工作表 » (69 x 51 dp)
+#4 LAYOUT OVERLAP « ? » over the touchable « 关闭工作表 » (13 x 18 dp)
+#4 LAYOUT OVERLAP « 关闭 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « 关闭工作表 » (96 x 61 dp)
+#4 LAYOUT OVERLAP «  BPM » over the touchable « 关闭工作表 » (70 x 42 dp)
+#4 LAYOUT OVERLAP « 70 » over the touchable « 关闭工作表 » (36 x 34 dp)
+#4 LAYOUT OVERLAP « 90 » over the touchable « 关闭工作表 » (36 x 34 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « 关闭工作表 » (54 x 34 dp)
+#4 LAYOUT OVERLAP « 140 » over the touchable « 关闭工作表 » (54 x 34 dp)
+#4 LAYOUT OVERLAP « 174 » over the touchable « 关闭工作表 » (54 x 34 dp)
+#4 LAYOUT OVERLAP « ½ » over the touchable « 关闭工作表 » (25 x 42 dp)
+#4 LAYOUT OVERLAP « ×2 » over the touchable « 关闭工作表 » (36 x 42 dp)
+#4 LAYOUT OVERLAP « 1 » over the touchable « 关闭工作表 » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 2 » over the touchable « 关闭工作表 » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 3 » over the touchable « 关闭工作表 » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 4 » over the touchable « 关闭工作表 » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 5 » over the touchable « 关闭工作表 » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 6 » over the touchable « 关闭工作表 » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 7 » over the touchable « 关闭工作表 » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 8 » over the touchable « 关闭工作表 » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 9 » over the touchable « 关闭工作表 » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 0 » over the touchable « 关闭工作表 » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 好 » over the touchable « 关闭工作表 » (35 x 51 dp)
+#4 LAYOUT OVERLAP « 跟着节奏点击 » over the touchable « 关闭工作表 » (168 x 42 dp)
+#4 LAYOUT OVERLAP « 每一拍点一下这里：速度会跟着你。 » over the touchable « 关闭工作表 » (273 x 72 dp)
+#4 > touche 111 765
+#4 DOIGT tempo_key_1 « 1 »
+#5 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE c29bd330d9 | project=p-e6ef925c tuto=techno/Pro active=true step=tempo done=1 chapters=- playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « 1 » over the touchable « 关闭工作表 » (32 x 61 dp)
+#5 LAYOUT OVERLAP « 40 到 300 之间 » over the touchable « 关闭工作表 » (183 x 38 dp)
+#5 > touche 477 765
+#5 DOIGT tempo_key_3 « 3 »
+#6 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 007fcbd5e1 | project=p-e6ef925c tuto=techno/Pro active=true step=tempo done=1 chapters=- playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 13 » over the touchable « 关闭工作表 » (64 x 61 dp)
+#6 > touche 294 765
+#6 DOIGT tempo_key_2 « 2 »
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE a4a4e592af | project=p-e6ef925c tuto=techno/Pro active=true step=tempo done=1 chapters=- playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 132 » over the touchable « 关闭工作表 » (96 x 61 dp)
+#7 > touche 477 1026
+#7 DOIGT tempo_key_ok « 好 »
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE c6360d0f83 | project=p-e6ef925c tuto=techno/Pro active=true step=tempo done=2 chapters=- playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 录音棚底鼓 » over « FX » (26 x 3 dp)
+#8 LAYOUT OVERLAP « Rumble » over « FX » (25 x 5 dp)
+#8 LAYOUT OVERLAP « 拍手 » over « FX » (15 x 11 dp)
+#8 LAYOUT OVERLAP « 踩镲 » over « 左 30 » (40 x 17 dp)
+#8 LAYOUT OVERLAP « 开镲 » over « 右 30 » (40 x 17 dp)
+#8 > touche 294 910
+#8 DOIGT tuto_next_folded « 成功 »
+#9 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f82108781a | project=p-e6ef925c tuto=techno/Pro active=true step=key done=2 chapters=- playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 132 » over « 速度和调性 » (54 x 12 dp)
+#9 LAYOUT OVERLAP « 132 » over « 第 1/16 章 · 第 3/4 步 · 专业 » (54 x 22 dp)
+#9 LAYOUT OVERLAP « 速度和调性 » over the touchable « 速度：132 BPM 修改速度 » (130 x 19 dp)
+#9 LAYOUT OVERLAP « 第 1/16 章 · 第 3/4 步 · 专业 » over the touchable « 速度：132 BPM 修改速度 » (132 x 29 dp)
+#9 > touche 294 758
+#9 DOIGT tuto_do «   我来做 »
+#10 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE e3c6caff7b | project=p-e6ef925c tuto=techno/Pro active=true step=key done=2 chapters=- playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 歌曲调性 » over the touchable « 关闭工作表 » (137 x 51 dp)
+#10 LAYOUT OVERLAP « 曲子的调：无 » over the touchable « 关闭工作表 » (156 x 38 dp)
+#10 LAYOUT OVERLAP « 音阶 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#10 LAYOUT OVERLAP « 大调 » over the touchable « 关闭工作表 » (56 x 42 dp)
+#10 LAYOUT OVERLAP « 小调 » over the touchable « 关闭工作表 » (56 x 42 dp)
+#10 LAYOUT OVERLAP « 多利亚 » over the touchable « 关闭工作表 » (84 x 42 dp)
+#10 LAYOUT OVERLAP « 小调五声 » over the touchable « 关闭工作表 » (112 x 42 dp)
+#10 LAYOUT OVERLAP « 大调五声 » over the touchable « 关闭工作表 » (112 x 42 dp)
+#10 LAYOUT OVERLAP « Blues » over the touchable « 关闭工作表 » (72 x 42 dp)
+#10 LAYOUT OVERLAP « 弗里几亚 » over the touchable « 关闭工作表 » (112 x 42 dp)
+#10 LAYOUT OVERLAP « 和声小调 » over the touchable « 关闭工作表 » (112 x 42 dp)
+#10 LAYOUT OVERLAP « 主音 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#10 LAYOUT OVERLAP « C » over the touchable « 关闭工作表 » (21 x 42 dp)
+#10 LAYOUT OVERLAP « C♯ » over the touchable « 关闭工作表 » (36 x 42 dp)
+#10 LAYOUT OVERLAP « D » over the touchable « 关闭工作表 » (20 x 42 dp)
+#10 LAYOUT OVERLAP « E♭ » over the touchable « 关闭工作表 » (27 x 42 dp)
+#10 LAYOUT OVERLAP « E » over the touchable « 关闭工作表 » (17 x 42 dp)
+#10 LAYOUT OVERLAP « F » over the touchable « 关闭工作表 » (17 x 42 dp)
+#10 LAYOUT OVERLAP « F♯ » over the touchable « 关闭工作表 » (32 x 42 dp)
+#10 LAYOUT OVERLAP « G » over the touchable « 关闭工作表 » (21 x 42 dp)
+#10 LAYOUT OVERLAP « A♭ » over the touchable « 关闭工作表 » (29 x 42 dp)
+#10 LAYOUT OVERLAP « A » over the touchable « 关闭工作表 » (19 x 42 dp)
+#10 LAYOUT OVERLAP « B♭ » over the touchable « 关闭工作表 » (28 x 42 dp)
+#10 LAYOUT OVERLAP « B » over the touchable « 关闭工作表 » (18 x 42 dp)
+#10 > touche 279 885
+#10 DOIGT tuto_scale_Phrygian « 弗里几亚 »
+#11 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 1fbef0ef00 | project=p-e6ef925c tuto=techno/Pro active=true step=key done=2 chapters=- playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 曲子的调：C · 弗里几亚 » over the touchable « 关闭工作表 » (275 x 38 dp)
+#11 > touche 510 1125
+#11 DOIGT tuto_root_5 « F »
+#12 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 88db595c3a | project=p-e6ef925c tuto=techno/Pro active=true step=key done=3 chapters=- playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 曲子的调：F · 弗里几亚 » over the touchable « 关闭工作表 » (271 x 38 dp)
+#12 LAYOUT OVERLAP « 成功！歌曲的色彩选好了。 » over the touchable « 关闭工作表 » (280 x 84 dp)
+#12 LAYOUT OVERLAP « 返回教程 » over the touchable « 关闭工作表 » (105 x 38 dp)
+#12 > touche 294 1201
+#12 DOIGT tuto_key_continue « 返回教程 »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 2f36dd442e | project=p-e6ef925c tuto=techno/Pro active=true step=key done=3 chapters=- playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 294 910
+#13 DOIGT tuto_next_folded « 成功 »
+#14 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e167b63500 | project=p-e6ef925c tuto=techno/Pro active=true step=swing done=3 chapters=- playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 132 » over « 第 1/16 章 · 第 4/4 步 · 专业 » (54 x 22 dp)
+#14 LAYOUT OVERLAP « 第 1/16 章 · 第 4/4 步 · 专业 » over the touchable « 速度：132 BPM 修改速度 » (132 x 29 dp)
+#14 > touche 294 758
+#14 DOIGT tuto_do «   我来做 »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 33a408692f | project=p-e6ef925c tuto=techno/Pro active=true step=swing done=3 chapters=- playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CUT « 轮到你：加一点点 Swing（7%；4% 到 10% 都算）：小踩镲稍微拖后一点，节奏在呼吸，但不会瘸。 » ellipsized (« … »)
+#15 LAYOUT CONTRAST « 节拍器 » 1.90:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « 倒数 » 1.90:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « ? » 1.97:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 效果 » 2.17:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « ? » 3.47:1 (needs 4.5:1, 12 sp)
+#15 LAYOUT CONTRAST « 0% » 3.47:1 (needs 4.5:1, 14 sp)
+#15 > touche 100 630
+#15 DOIGT dans:rhythm_swing « Swing »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE dd8dee482a | project=p-e6ef925c tuto=techno/Pro active=true step=swing done=4 chapters=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « 8% » 3.47:1 (needs 4.5:1, 14 sp)
+#16 > touche 294 910
+#16 DOIGT tuto_chapter_end_folded « 太棒了，本章完成！ »
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 146ee3f595 | project=p-e6ef925c tuto=techno/Pro active=true step=swing done=4 chapters=1 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CUT « 段落：A » lines cut (taller than its box)
+#17 > touche 294 848
+#17 DOIGT tuto_next_big « 下一章   »
+#18 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 401fc6eb40 | project=p-e6ef925c tuto=techno/Pro active=true step=ready done=4 chapters=1 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « 132 » over « 底鼓和轰鸣 » (54 x 4 dp)
+#18 LAYOUT OVERLAP «  BPM » over « 底鼓和轰鸣 » (65 x 4 dp)
+#18 LAYOUT OVERLAP « 底鼓和轰鸣 » over the touchable « 速度：132 BPM 修改速度 » (130 x 11 dp)
+#18 > touche 294 725
+#18 DOIGT tuto_text_more « 继续阅读 »
+#19 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 401fc6eb40 | project=p-e6ef925c tuto=techno/Pro active=true step=ready done=4 chapters=1 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 294 725
+#19 DOIGT tuto_text_more « 继续阅读 »
+#20 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5169885a4b | project=p-e6ef925c tuto=techno/Pro active=true step=ready done=4 chapters=1 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 294 725
+#20 DOIGT tuto_why « ▸ 为什么？ »
+#21 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ddff842f27 | project=p-e6ef925c tuto=techno/Pro active=true step=ready done=4 chapters=1 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 294 842
+#21 DOIGT tuto_mark «   明白了 »
+#22 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 41da88420c | project=p-e6ef925c tuto=techno/Pro active=true step=kick_hear done=5 chapters=1 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 514 620
+#22 DOIGT tuto_kit_later « 稍后 »
+#23 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE cf4bfb04c7 | project=p-e6ef925c tuto=techno/Pro active=true step=kick_hear done=5 chapters=1 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 294 842
+#23 DOIGT tuto_listen «  听示例 »
+#24 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f20ae19f3a | project=p-e6ef925c tuto=techno/Pro active=true step=kick_hear done=5 chapters=1 playing=false
+#24 SON Son : l'exemple du tuto joue (encore 3 s).
+#24 > attends 8
+#25 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 820aa64809 | project=p-e6ef925c tuto=techno/Pro active=true step=kick_hear done=6 chapters=1 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 471 932
+#25 DOIGT tuto_next « 下一步  »
+#26 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 48986f6caf | project=p-e6ef925c tuto=techno/Pro active=true step=kick_do done=6 chapters=1 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CUT « 鼓 » lines cut (taller than its box)
+#26 LAYOUT CUT « Acid 303 » lines cut (taller than its box)
+#26 LAYOUT CUT « 人声 » lines cut (taller than its box)
+#26 LAYOUT CONTRAST « 人声 » 3.10:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT TARGET « 鼓 16 个打击垫 » 175 x 12 dp (touch 175 x 48)
+#26 LAYOUT TARGET « Acid 303 贝斯线 » 149 x 12 dp (touch 149 x 48)
+#26 > touche 294 758
+#26 DOIGT tuto_do «   我来做 »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE 49fe61c7c3 | project=p-e6ef925c tuto=techno/Pro active=true step=kick_do done=6 chapters=1 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CUT « 轮到你：在“录音棚底鼓”打击垫上，点虚线格子：four-on-the-floor，每拍一个底鼓。 » ellipsized (« … »)
+#27 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 12 sp)
+#27 LAYOUT CONTRAST « 2 » 4.16:1 (needs 4.5:1, 12 sp)
+#27 LAYOUT CONTRAST « 3 » 4.16:1 (needs 4.5:1, 12 sp)
+#27 LAYOUT CONTRAST « 4 » 4.16:1 (needs 4.5:1, 12 sp)
+#27 > touche 70 508
+#27 DOIGT step_0 « 第 1 步 »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE 2bdd665819 | project=p-e6ef925c tuto=techno/Pro active=true step=kick_do done=6 chapters=1 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « 2 » 2.75:1 (needs 4.5:1, 12 sp)
+#28 > touche 325 509
+#28 DOIGT step_4 « 第 5 步 »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 17a438c570 | project=p-e6ef925c tuto=techno/Pro active=true step=kick_do done=6 chapters=1 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « 3 » 3.38:1 (needs 4.5:1, 12 sp)
+#29 > touche 70 586
+#29 DOIGT step_8 « 第 9 步 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 2d160c5d7a | project=p-e6ef925c tuto=techno/Pro active=true step=kick_do done=6 chapters=1 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « 4 » 3.58:1 (needs 4.5:1, 12 sp)
+#30 > touche 325 587
+#30 DOIGT step_12 « 第 13 步 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE edfd57abce | project=p-e6ef925c tuto=techno/Pro active=true step=kick_do done=7 chapters=1 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « 1 » 2.23:1 (needs 4.5:1, 12 sp)
+#31 LAYOUT CONTRAST « 2 » 3.62:1 (needs 4.5:1, 12 sp)
+#31 > touche 294 910
+#31 DOIGT tuto_next_folded « 成功 »
+#32 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 09e36019fe | project=p-e6ef925c tuto=techno/Pro active=true step=rumble_do done=7 chapters=1 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 294 758
+#32 DOIGT tuto_do «   我来做 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 11166eacae | project=p-e6ef925c tuto=techno/Pro active=true step=rumble_do done=7 chapters=1 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CUT « 轮到你：在“Rumble”打击垫上，每拍放一下：第二个长底鼓，泡在混响里并加饱和，滤到 200 Hz 以下，每次底鼓时被泵压下去。 » ellipsized (« … »)
+#33 LAYOUT CONTRAST « 1 » 2.42:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « 2 » 3.50:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « 3 » 3.51:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « 4 » 2.77:1 (needs 4.5:1, 12 sp)
+#33 > touche 70 533
+#33 DOIGT step_0 « 第 1 步 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 8093827dc4 | project=p-e6ef925c tuto=techno/Pro active=true step=rumble_do done=7 chapters=1 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « 2 » 2.42:1 (needs 4.5:1, 12 sp)
+#34 > touche 325 534
+#34 DOIGT step_4 « 第 5 步 »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE 64ac68734a | project=p-e6ef925c tuto=techno/Pro active=true step=rumble_do done=7 chapters=1 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « 3 » 3.04:1 (needs 4.5:1, 12 sp)
+#35 LAYOUT CONTRAST « 4 » 3.70:1 (needs 4.5:1, 12 sp)
+#35 > touche 70 610
+#35 DOIGT step_8 « 第 9 步 »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE 931d95670d | project=p-e6ef925c tuto=techno/Pro active=true step=rumble_do done=7 chapters=1 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « 4 » 2.57:1 (needs 4.5:1, 12 sp)
+#36 > touche 325 610
+#36 DOIGT step_12 « 第 13 步 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE db485cfce9 | project=p-e6ef925c tuto=techno/Pro active=true step=rumble_do done=8 chapters=1,2 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « 滚奏 » 1.61:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « 声像 » 1.61:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « 音高 » 1.61:1 (needs 4.5:1, 14 sp)
+#37 > touche 294 910
+#37 DOIGT tuto_chapter_end_folded « 太棒了，本章完成！ »
+#38 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE a1cd8ddd0a | project=p-e6ef925c tuto=techno/Pro active=true step=rumble_do done=8 chapters=1,2 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT TARGET « 鼓 16 个打击垫 » 175 x 21 dp (touch 175 x 48)
+#38 LAYOUT TARGET « Acid 303 贝斯线 » 149 x 21 dp (touch 149 x 48)
+#38 > touche 294 758
+#38 DOIGT tuto_next_big « 下一章   »
+#39 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE bef7d24b88 | project=p-e6ef925c tuto=techno/Pro active=true step=clap_do done=8 chapters=1,2 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 294 758
+#39 DOIGT tuto_do «   我来做 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 1db51348f2 | project=p-e6ef925c tuto=techno/Pro active=true step=clap_do done=8 chapters=1,2 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CUT « 轮到你：在“拍手”打击垫上放第 2 拍和第 4 拍，再放一个幽灵音：长按最后一格，就在下一小节之前；这一下会放好并打开它的菜单：在“力度”下点“柔和”。 » ellipsized (« … »)
+#40 LAYOUT CONTRAST « 4 » 3.50:1 (needs 4.5:1, 12 sp)
+#40 > touche 325 509
+#40 DOIGT step_4 « 第 5 步 »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE e4834f0e66 | project=p-e6ef925c tuto=techno/Pro active=true step=clap_do done=8 chapters=1,2 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « 4 » 2.42:1 (needs 4.5:1, 12 sp)
+#41 > touche 325 587
+#41 DOIGT step_12 « 第 13 步 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 894ac6e38f | project=p-e6ef925c tuto=techno/Pro active=true step=clap_do done=8 chapters=1,2 playing=false
+#42 SON Son : rien ne joue.
+#42 > appui-long 517 587
+#42 DOIGT step_15 « 第 16 步 »
+#43 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE d8d5fdca5f | project=p-e6ef925c tuto=techno/Pro active=true step=clap_do done=8 chapters=1,2 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 270 273
+#43 DOIGT roll_force_2 « 柔和 »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE fe0be3a87b | project=p-e6ef925c tuto=techno/Pro active=true step=clap_do done=9 chapters=1,2,3 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CUT « 16 个打击垫 » lines cut (taller than its box)
+#44 LAYOUT CUT « 贝斯线 » lines cut (taller than its box)
+#44 LAYOUT CUT « 麦克风 » lines cut (taller than its box)
+#44 > touche 294 758
+#44 DOIGT tuto_next_big « 下一章   »
+#45 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f1932e0e79 | project=p-e6ef925c tuto=techno/Pro active=true step=open_hat_do done=9 chapters=1,2,3 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 294 758
+#45 DOIGT tuto_do «   我来做 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 2d59c82547 | project=p-e6ef925c tuto=techno/Pro active=true step=open_hat_do done=9 chapters=1,2,3 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CUT « 轮到你：在“开镲”打击垫上，放在反拍上（两拍之间，正好在两个底鼓中间）。 » ellipsized (« … »)
+#46 > touche 197 509
+#46 DOIGT step_2 « 第 3 步 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE d412841447 | project=p-e6ef925c tuto=techno/Pro active=true step=open_hat_do done=9 chapters=1,2,3 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 453 509
+#47 DOIGT step_6 « 第 7 步 »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE bdc5377ce2 | project=p-e6ef925c tuto=techno/Pro active=true step=open_hat_do done=9 chapters=1,2,3 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 197 587
+#48 DOIGT step_10 « 第 11 步 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE 216dd19c78 | project=p-e6ef925c tuto=techno/Pro active=true step=open_hat_do done=9 chapters=1,2,3 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 453 587
+#49 DOIGT step_14 « 第 15 步 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE 63314d9ed5 | project=p-e6ef925c tuto=techno/Pro active=true step=open_hat_do done=10 chapters=1,2,3 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST « 1 » 2.00:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « 2 » 2.40:1 (needs 4.5:1, 12 sp)
+#50 > touche 294 910
+#50 DOIGT tuto_next_folded « 成功 »
+#51 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e173573317 | project=p-e6ef925c tuto=techno/Pro active=true step=hat_do done=10 chapters=1,2,3 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 294 758
+#51 DOIGT tuto_do «   我来做 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 59401309c8 | project=p-e6ef925c tuto=techno/Pro active=true step=hat_do done=10 chapters=1,2,3 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CUT « 轮到你：在“踩镲”打击垫上放十六分音符，反拍除外（那里已经有“开镲”），底鼓下面弱一点。 » ellipsized (« … »)
+#52 LAYOUT CONTRAST « 1 » 2.55:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « 2 » 3.71:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « 3 » 3.71:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « 4 » 3.71:1 (needs 4.5:1, 12 sp)
+#52 > glisse 70 508 517 508
+#52 DOIGT step_0 « 第 1 步 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 2bc610a51d | project=p-e6ef925c tuto=techno/Pro active=true step=hat_do done=10 chapters=1,2,3 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « 3 » 3.08:1 (needs 4.5:1, 12 sp)
+#53 > touche 197 509
+#53 DOIGT step_2 « 第 3 步 »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE c1669f0682 | project=p-e6ef925c tuto=techno/Pro active=true step=hat_do done=10 chapters=1,2,3 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 453 509
+#54 DOIGT step_6 « 第 7 步 »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE 8b535133ac | project=p-e6ef925c tuto=techno/Pro active=true step=hat_do done=10 chapters=1,2,3 playing=false
+#55 SON Son : rien ne joue.
+#55 > glisse 70 586 133 586
+#55 DOIGT step_8 « 第 9 步 »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE cde48dc8c5 | project=p-e6ef925c tuto=techno/Pro active=true step=hat_do done=10 chapters=1,2,3 playing=false
+#56 SON Son : rien ne joue.
+#56 > glisse 261 587 389 587
+#56 DOIGT step_11 « 第 12 步 »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 37a51bca9a | project=p-e6ef925c tuto=techno/Pro active=true step=hat_do done=10 chapters=1,2,3 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 517 587
+#57 DOIGT step_15 « 第 16 步 »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE 09cadde5a7 | project=p-e6ef925c tuto=techno/Pro active=true step=hat_do done=11 chapters=1,2,3 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « 1 » 3.71:1 (needs 4.5:1, 12 sp)
+#58 > touche 294 910
+#58 DOIGT tuto_next_folded « 成功 »
+#59 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5a03b9e751 | project=p-e6ef925c tuto=techno/Pro active=true step=perc_do done=11 chapters=1,2,3 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 294 758
+#59 DOIGT tuto_do «   我来做 »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE 46a9ecce07 | project=p-e6ef925c tuto=techno/Pro active=true step=perc_do done=11 chapters=1,2,3 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CUT « 轮到你：在“鼓边”打击垫上放那个错位的一下，就是循环里那个小小的节奏钩子。 » ellipsized (« … »)
+#60 > touche 261 509
+#60 DOIGT step_3 « 第 4 步 »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE ef5bae1a58 | project=p-e6ef925c tuto=techno/Pro active=true step=perc_do done=11 chapters=1,2,3 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 453 509
+#61 DOIGT step_6 « 第 7 步 »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE 5ff269b29c | project=p-e6ef925c tuto=techno/Pro active=true step=perc_do done=11 chapters=1,2,3 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 197 587
+#62 DOIGT step_10 « 第 11 步 »
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 6203e54e8a | project=p-e6ef925c tuto=techno/Pro active=true step=perc_do done=11 chapters=1,2,3 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 389 587
+#63 DOIGT step_13 « 第 14 步 »
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE 758ca6c1d6 | project=p-e6ef925c tuto=techno/Pro active=true step=perc_do done=12 chapters=1,2,3 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 294 910
+#64 DOIGT tuto_next_folded « 成功 »
+#65 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 8f8ff28a37 | project=p-e6ef925c tuto=techno/Pro active=true step=ride_do done=12 chapters=1,2,3 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 294 758
+#65 DOIGT tuto_do «   我来做 »
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE 0f80d7bb25 | project=p-e6ef925c tuto=techno/Pro active=true step=ride_do done=12 chapters=1,2,3 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CUT « 轮到你：在“镲片”打击垫（ride）上放八分音符，给高潮用。 » ellipsized (« … »)
+#66 > touche 70 509
+#66 DOIGT step_0 « 第 1 步 »
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 0ba185486e | project=p-e6ef925c tuto=techno/Pro active=true step=ride_do done=12 chapters=1,2,3 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 197 509
+#67 DOIGT step_2 « 第 3 步 »
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE e8964414a8 | project=p-e6ef925c tuto=techno/Pro active=true step=ride_do done=12 chapters=1,2,3 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « 2 » 3.22:1 (needs 4.5:1, 12 sp)
+#68 > touche 325 509
+#68 DOIGT step_4 « 第 5 步 »
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 066aeaad8c | project=p-e6ef925c tuto=techno/Pro active=true step=ride_do done=12 chapters=1,2,3 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 453 509
+#69 DOIGT step_6 « 第 7 步 »
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE 4680a4bb71 | project=p-e6ef925c tuto=techno/Pro active=true step=ride_do done=12 chapters=1,2,3 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 70 587
+#70 DOIGT step_8 « 第 9 步 »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE e3bef822e5 | project=p-e6ef925c tuto=techno/Pro active=true step=ride_do done=12 chapters=1,2,3 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 197 587
+#71 DOIGT step_10 « 第 11 步 »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE b3ec9b577f | project=p-e6ef925c tuto=techno/Pro active=true step=ride_do done=12 chapters=1,2,3 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « 4 » 3.22:1 (needs 4.5:1, 12 sp)
+#72 > touche 325 587
+#72 DOIGT step_12 « 第 13 步 »
+#73 ROUTE tab_Sons | MODE pro | EMPREINTE 30a75a715b | project=p-e6ef925c tuto=techno/Pro active=true step=ride_do done=12 chapters=1,2,3 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 453 587
+#73 DOIGT step_14 « 第 15 步 »
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 50f0584166 | project=p-e6ef925c tuto=techno/Pro active=true step=ride_do done=13 chapters=1,2,3,4 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 294 910
+#74 DOIGT tuto_next_folded « 成功 »
+#75 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE cc6761e8c9 | project=p-e6ef925c tuto=techno/Pro active=true step=drums_hear done=13 chapters=1,2,3,4 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 294 758
+#75 DOIGT tuto_play_mine «   听你的成果 »
+#76 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 8ed46e2556 | project=p-e6ef925c tuto=techno/Pro active=true step=drums_hear done=13 chapters=1,2,3,4 playing=true
+#76 SON Son : la musique du projet joue en boucle.
+#76 LAYOUT OVERLAP « 小节 1/1 » over « 踩镲和打击乐 » (12 x 9 dp)
+#76 LAYOUT OVERLAP « 踩镲和打击乐 » over the touchable « 从某个段落开始播放 » (18 x 11 dp)
+#76 > attends 5
+#77 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 8ed46e2556 | project=p-e6ef925c tuto=techno/Pro active=true step=drums_hear done=13 chapters=1,2,3,4 playing=true
+#77 SON Son : la musique du projet joue en boucle.
+#77 > touche 294 845
+#77 DOIGT tuto_listen «  听示例 »
+#78 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 0649947562 | project=p-e6ef925c tuto=techno/Pro active=true step=drums_hear done=13 chapters=1,2,3,4 playing=false
+#78 SON Son : l'exemple du tuto joue (encore 3 s).
+#78 > attends 8
+#79 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 682eea726d | project=p-e6ef925c tuto=techno/Pro active=true step=drums_hear done=14 chapters=1,2,3,4 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 294 758
+#79 DOIGT tuto_next_big « 下一章   »
+#80 ROUTE tab_Sons | MODE pro | EMPREINTE c9fec1a0f5 | project=p-e6ef925c tuto=techno/Pro active=true step=bass_hear done=14 chapters=1,2,3,4 playing=false
+#80 SON Son : rien ne joue.
+#80 LAYOUT CUT « 16 个打击垫 » drawn past its parent's edge (down, 31 dp shown of 36)
+#80 LAYOUT CUT « 贝斯线 » drawn past its parent's edge (down, 32 dp shown of 36)
+#80 LAYOUT CUT « 麦克风 » drawn past its parent's edge (down, 31 dp shown of 36)
+#80 > touche 294 842
+#80 DOIGT tuto_listen «  听示例 »
+#81 ROUTE tab_Sons | MODE pro | EMPREINTE 5b1ecaef18 | project=p-e6ef925c tuto=techno/Pro active=true step=bass_hear done=14 chapters=1,2,3,4 playing=false
+#81 SON Son : l'exemple du tuto joue (encore 3 s).
+#81 > attends 8
+#82 ROUTE tab_Sons | MODE pro | EMPREINTE beb4416566 | project=p-e6ef925c tuto=techno/Pro active=true step=bass_hear done=15 chapters=1,2,3,4 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 471 932
+#82 DOIGT tuto_next « 下一步  »
+#83 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 550124e7bf | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT OVERLAP « 132 » over « 贝斯 » (50 x 12 dp)
+#83 LAYOUT OVERLAP « 132 » over « 第 5/16 章 · 第 2/4 步 · 专业 » (54 x 22 dp)
+#83 LAYOUT OVERLAP « 贝斯 » over the touchable « 速度：132 BPM 修改速度 » (52 x 19 dp)
+#83 LAYOUT OVERLAP « 第 5/16 章 · 第 2/4 步 · 专业 » over the touchable « 速度：132 BPM 修改速度 » (132 x 29 dp)
+#83 > touche 294 758
+#83 DOIGT tuto_need «   创建贝斯音轨 »
+#84 ROUTE tab_Sons | MODE pro | EMPREINTE c95ff46c1b | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT CUT « 轮到你：创建贝斯音轨（“Plaits”音色，抽吸已经加好），然后在钢琴卷帘里写第 1 小节：每两个底鼓之间两个十六分音符，全在 F 上。 » ellipsized (« … »)
+#84 > touche 294 606
+#84 DOIGT tuto_notes_left « 贝斯 · 第 1/8 小节 »
+#85 ROUTE tab_Sons | MODE pro | EMPREINTE c95ff46c1b | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#85 SON Son : rien ne joue.
+#85 > glisse 294 620 294 470
+#85 DOIGT tuto_notes_left « 贝斯 · 第 1/8 小节 »
+#86 ROUTE tab_Sons | MODE pro | EMPREINTE ddd6200ce9 | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT CUT « 小节 » lines dropped (more lines than room)
+#86 LAYOUT CUT « 1 » drawn past its parent's edge (down, 32 dp shown of 37)
+#86 > glisse 294 640 294 470
+#86 DOIGT rien
+#87 ROUTE tab_Sons | MODE pro | EMPREINTE ec174d75ff | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 531 739
+#87 DOIGT tuto_fold
+#88 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 3b77e47d4e | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 294 758
+#88 DOIGT tuto_do «   我来做 »
+#89 ROUTE tab_Sons | MODE pro | EMPREINTE ec174d75ff | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 321 587
+#89 DOIGT roll_bar_0 « 1 »
+#90 ROUTE tab_Sons | MODE pro | EMPREINTE ec174d75ff | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#90 SON Son : rien ne joue.
+#90 > glisse 222 700 222 1000
+#90 DOIGT tuto_toggle « 贝斯 »
+#91 ROUTE tab_Sons | MODE pro | EMPREINTE ec174d75ff | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#91 SON Son : rien ne joue.
+#91 RIEN NE CHANGE (3 écrans identiques)
+#91 > touche 531 739
+#91 DOIGT tuto_fold
+#92 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 3b77e47d4e | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 433 845
+#92 DOIGT tuto_show «  示范给我看 »
+#93 ROUTE tab_Sons | MODE pro | EMPREINTE d9d7c91dae | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#93 SON Son : rien ne joue.
+#93 LAYOUT CONTRAST « 停止 » 3.91:1 (needs 4.5:1, 14 sp)
+#93 > attends 8
+#94 ROUTE tab_Sons | MODE pro | EMPREINTE ddad269a45 | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#94 SON Son : 6 notes du synthé.
+#94 > attends 10
+#95 ROUTE tab_Sons | MODE pro | EMPREINTE 902729978f | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#95 SON Son : 2 notes du synthé.
+#95 > glisse 300 440 300 200
+#95 DOIGT rien
+#96 ROUTE tab_Sons | MODE pro | EMPREINTE ec174d75ff | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#96 SON Son : rien ne joue.
+#96 > glisse 300 635 300 540
+#96 DOIGT rien
+#97 ROUTE tab_Sons | MODE pro | EMPREINTE 32fc24f6de | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 321 632
+#97 DOIGT rien
+#98 ROUTE tab_Sons | MODE pro | EMPREINTE 25c953cbe0 | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#98 SON Son : 1 note du synthé.
+#98 > touche 54 1158
+#98 DOIGT tab_Structure « 结构 »
+#99 ROUTE tab_Structure | MODE pro | EMPREINTE 845348fdec | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 174 1158
+#99 DOIGT tab_Sons « 音色 »
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE d47ae6393b | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 546 342
+#100 DOIGT track_0 « 贝斯 »
+#101 ROUTE dialogue:track_menu_sheet | MODE pro | EMPREINTE 3a8bf70faf | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#101 SON Son : rien ne joue.
+#101 > retour
+#101 RETOUR
+#102 ROUTE tab_Sons | MODE pro | EMPREINTE d47ae6393b | project=p-e6ef925c tuto=techno/Pro active=true step=bass_do done=15 chapters=1,2,3,4 playing=false
+#102 SON Son : rien ne joue.
+#102 > fin
+#102 BENCH-VERDICT ok where=seat.fin
+#102 FIN : fin

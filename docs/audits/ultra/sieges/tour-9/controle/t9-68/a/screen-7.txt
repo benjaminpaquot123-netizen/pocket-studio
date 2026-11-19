@@ -1,0 +1,29 @@
+Écran 7 (588x1278)
+dessin @ 294,311
+texte « 速度 » @ 76,387
+texte « 关闭 » @ 506,387
+bouton « ? » @ 150,387
+texte « 132 » @ 242,491
+icône − @ 60,492
+texte «  BPM » @ 366,493
+icône + @ 528,492
+bouton « 70 » @ 75,591
+bouton « 90 » @ 186,591
+bouton « 120 » [sélectionné] @ 310,591
+bouton « 140 » @ 448,591
+bouton « 174 » @ 88,672
+bouton « ½ » @ 204,672
+bouton « ×2 » @ 307,672
+bouton « 1 » @ 111,765
+bouton « 2 » @ 294,765
+bouton « 3 » @ 477,765
+bouton « 4 » @ 111,852
+bouton « 5 » @ 294,852
+bouton « 6 » @ 477,852
+bouton « 7 » @ 111,939
+bouton « 8 » @ 294,939
+bouton « 9 » @ 477,939
+bouton ⌫ @ 111,1026
+bouton « 0 » @ 294,1026
+bouton « 好 » @ 477,1026
+bouton (doigt qui touche) « 跟着节奏点击 每一拍点一下这里：速度会跟着你。 » @ 294,1168

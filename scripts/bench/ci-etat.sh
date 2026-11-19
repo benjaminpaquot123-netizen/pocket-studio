@@ -3,13 +3,31 @@
 #   scripts/bench/ci-etat.sh [<commit>] [--ecris <hors-banc.tsv>]
 # Prints one line per workflow run of that commit (« <workflow>\t<conclusion> »), then « ci_build <état> » and
 # « ci_emulateur <état> » where <état> is vert | rouge | en cours | absent. With --ecris, rewrites those two lines in
-# the given hors-banc.tsv (the dashboard reads them). Needs the gh CLI signed in; prints « ? » lines when it is not.
+# the given hors-banc.tsv (the dashboard reads them). Reads GitHub with the gh CLI when it is signed in, else with curl
+# on GitHub's public API, no token (tour 9, L9: a lot's machine has no gh); prints « ? » lines when neither answers.
 set -euo pipefail
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 sha="$(git -C "$root" rev-parse "${1:-HEAD}" 2>/dev/null || echo "")"
 out=""
 for a in "$@"; do if [ "${prev:-}" = "--ecris" ]; then out="$a"; fi; prev="$a"; done
 repo="$(git -C "$root" remote get-url origin | sed -E 's#.*github.com[:/]##; s#\.git$##')"
+# « gh api <path> --jq … » lines, or the same lines from the public API (curl, then python3 for the jq part).
+api_lines() {  # <path> <runs|jobs>
+  local json
+  if gh api "$1" --jq "$( [ "$2" = runs ] && echo '.workflow_runs[] | "\(.id)\t\(.name)\t\(.status)\t\(.conclusion)"' || echo '.jobs[] | "\(.name)\t\(.status)\t\(.conclusion)"')" 2>/dev/null; then
+    return 0
+  fi
+  json="$(curl -fsS --max-time 20 -H 'Accept: application/vnd.github+json' "${PS_GITHUB_API:-https://api.github.com}/$1" 2>/dev/null)" || return 1
+  python3 -I -c '
+import json, sys
+d = json.loads(sys.stdin.read())
+s = lambda v: "null" if v is None else str(v)
+if sys.argv[1] == "runs":
+    for r in d["workflow_runs"]: print("\t".join(s(r.get(k)) for k in ("id", "name", "status", "conclusion")))
+else:
+    for j in d["jobs"]: print("\t".join(s(j.get(k)) for k in ("name", "status", "conclusion")))
+' "$2" <<<"$json"
+}
 state_of() {  # <status> <conclusion>
   case "$1/$2" in
     completed/success) echo vert ;;
@@ -20,14 +38,14 @@ state_of() {  # <status> <conclusion>
 }
 build="absent"; emu="absent"
 # The CI workflow holds the emulator smoke test and every other check as jobs; audit-emulator.yml is a workflow of its own.
-if [ -n "$sha" ] && runs="$(gh api "repos/$repo/actions/runs?head_sha=$sha&per_page=20" --jq '.workflow_runs[] | "\(.id)\t\(.name)\t\(.status)\t\(.conclusion)"' 2>/dev/null)"; then
+if [ -n "$sha" ] && runs="$(api_lines "repos/$repo/actions/runs?head_sha=$sha&per_page=20" runs)"; then
   while IFS=$'\t' read -r id name status conclusion; do
     [ -n "$name" ] || continue
     printf '%s\t%s\n' "$name" "${conclusion:-$status}"
     case "$name" in
       *mulat*) emu="$(state_of "$status" "$conclusion")" ;;
     esac
-    jobs="$(gh api "repos/$repo/actions/runs/$id/jobs" --jq '.jobs[] | "\(.name)\t\(.status)\t\(.conclusion)"' 2>/dev/null || true)"
+    jobs="$(api_lines "repos/$repo/actions/runs/$id/jobs" jobs || true)"
     while IFS=$'\t' read -r jname jstatus jconclusion; do
       [ -n "$jname" ] && printf '  %s\t%s\n' "$jname" "${jconclusion:-$jstatus}"
       case "$jname" in

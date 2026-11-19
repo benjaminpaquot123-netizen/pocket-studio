@@ -1,0 +1,542 @@
+#0 SIEGE lang=de device=tablet8 font=130 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:disco:1
+#0 PREMIER ECRAN reel_s=3.8 simule_s=2.4 jvm_s=8.2 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:disco:1
+#0 AMENEE > touche 450 653 (welcome_learn)
+#0 AMENEE > touche 229 1307 (mode_card_simple)
+#0 AMENEE > touche 450 1435 (tuto_style_disco)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8a7ca60a3c | project=p-5d289fcf tuto=disco/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Gespeichert » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1123
+#1 DOIGT tuto_listen «  Beispiel anhören »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2960e8f4f6 | project=p-5d289fcf tuto=disco/Facile active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 392 926
+#2 DOIGT tuto_kit_download « Kit Disco / Funk laden (2 MB) »
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fbe01a36ae | project=p-5d289fcf tuto=disco/Facile active=true step=ref done=1 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > attends 5
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e2d0c83ce2 | project=p-5d289fcf tuto=disco/Facile active=true step=ref done=1 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 1 s).
+#4 LAYOUT CUT « Disco / Funk · Große Trommel 1 » ellipsized (« … »)
+#4 > touche 450 1123
+#4 DOIGT tuto_next_big « Nächster Schritt   »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 278e5b34f4 | project=p-5d289fcf tuto=disco/Facile active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 450 1042
+#5 DOIGT tuto_do «   Ich mach's »
+#6 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 5f9daaf48f | project=p-5d289fcf tuto=disco/Facile active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « Tempo » over the touchable « Tabelle schließen » (82 x 32 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « Tabelle schließen » (9 x 18 dp)
+#6 LAYOUT OVERLAP « Schließen » over the touchable « Tabelle schließen » (90 x 27 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#6 LAYOUT OVERLAP «  BPM » over the touchable « Tabelle schließen » (50 x 31 dp)
+#6 LAYOUT OVERLAP « 70 » over the touchable « Tabelle schließen » (25 x 24 dp)
+#6 LAYOUT OVERLAP « 90 » over the touchable « Tabelle schließen » (25 x 24 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « Tabelle schließen » (38 x 24 dp)
+#6 LAYOUT OVERLAP « 140 » over the touchable « Tabelle schließen » (38 x 24 dp)
+#6 LAYOUT OVERLAP « 174 » over the touchable « Tabelle schließen » (38 x 24 dp)
+#6 LAYOUT OVERLAP « ½ » over the touchable « Tabelle schließen » (17 x 31 dp)
+#6 LAYOUT OVERLAP « ×2 » over the touchable « Tabelle schließen » (26 x 31 dp)
+#6 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 2 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 3 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 4 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 5 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 6 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 7 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 8 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 9 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 0 » over the touchable « Tabelle schließen » (16 x 30 dp)
+#6 LAYOUT OVERLAP « OK » over the touchable « Tabelle schließen » (37 x 30 dp)
+#6 LAYOUT OVERLAP « Im Takt tippen » over the touchable « Tabelle schließen » (138 x 31 dp)
+#6 LAYOUT OVERLAP « Tippe hier auf jeden Schlag: Das Tempo folgt. » over the touchable « Tabelle schließen » (364 x 24 dp)
+#6 > touche 163 1083
+#6 DOIGT tempo_key_1 « 1 »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE bb11900bc9 | project=p-5d289fcf tuto=disco/Facile active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 1 » over the touchable « Tabelle schließen » (29 x 53 dp)
+#7 LAYOUT OVERLAP « Zwischen 40 und 300 » over the touchable « Tabelle schließen » (196 x 27 dp)
+#7 > touche 737 1170
+#7 DOIGT tempo_key_6 « 6 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 6e12afb4a1 | project=p-5d289fcf tuto=disco/Facile active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 16 » over the touchable « Tabelle schließen » (57 x 53 dp)
+#8 > touche 737 1170
+#8 DOIGT tempo_key_6 « 6 »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE cfec7b27e9 | project=p-5d289fcf tuto=disco/Facile active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 166 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#9 > touche 163 1344
+#9 DOIGT tempo_key_erase « Ziffer löschen »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 6e12afb4a1 | project=p-5d289fcf tuto=disco/Facile active=true step=tempo done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 163 1344
+#10 DOIGT tempo_key_erase « Ziffer löschen »
+#11 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE bb11900bc9 | project=p-5d289fcf tuto=disco/Facile active=true step=tempo done=1 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 163 1083
+#11 DOIGT tempo_key_1 « 1 »
+#12 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE a042edbfe4 | project=p-5d289fcf tuto=disco/Facile active=true step=tempo done=1 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 11 » over the touchable « Tabelle schließen » (57 x 53 dp)
+#12 > touche 737 1170
+#12 DOIGT tempo_key_6 « 6 »
+#13 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 6f3186b0b7 | project=p-5d289fcf tuto=disco/Facile active=true step=tempo done=1 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « 116 » over the touchable « Tabelle schließen » (86 x 53 dp)
+#13 > touche 737 1344
+#13 DOIGT tempo_key_ok « OK »
+#14 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 12bf709b6c | project=p-5d289fcf tuto=disco/Facile active=true step=tempo done=2 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 450 1196
+#14 DOIGT tuto_next_folded « Geschafft »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 614bba2cb2 | project=p-5d289fcf tuto=disco/Facile active=true step=key done=2 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 450 1042
+#15 DOIGT tuto_do «   Ich mach's »
+#16 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE bdb1ae4091 | project=p-5d289fcf tuto=disco/Facile active=true step=key done=2 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « Tonart des Tracks » over the touchable « Tabelle schließen » (213 x 32 dp)
+#16 LAYOUT OVERLAP « Tonart des Tracks: keine » over the touchable « Tabelle schließen » (217 x 27 dp)
+#16 LAYOUT OVERLAP « Tonleiter » over the touchable « Tabelle schließen » (79 x 27 dp)
+#16 LAYOUT OVERLAP « Dur » over the touchable « Tabelle schließen » (34 x 31 dp)
+#16 LAYOUT OVERLAP « Moll » over the touchable « Tabelle schließen » (39 x 31 dp)
+#16 LAYOUT OVERLAP « Dorisch » over the touchable « Tabelle schließen » (76 x 31 dp)
+#16 LAYOUT OVERLAP « Moll-Penta » over the touchable « Tabelle schließen » (103 x 31 dp)
+#16 LAYOUT OVERLAP « Dur-Penta » over the touchable « Tabelle schließen » (97 x 31 dp)
+#16 LAYOUT OVERLAP « Blues » over the touchable « Tabelle schließen » (52 x 31 dp)
+#16 LAYOUT OVERLAP « Phrygisch » over the touchable « Tabelle schließen » (94 x 31 dp)
+#16 LAYOUT OVERLAP « Harmonisch Moll » over the touchable « Tabelle schließen » (158 x 31 dp)
+#16 LAYOUT OVERLAP « Grundton » over the touchable « Tabelle schließen » (85 x 27 dp)
+#16 LAYOUT OVERLAP « C » over the touchable « Tabelle schließen » (15 x 31 dp)
+#16 LAYOUT OVERLAP « C♯ » over the touchable « Tabelle schließen » (26 x 31 dp)
+#16 LAYOUT OVERLAP « D » over the touchable « Tabelle schließen » (15 x 31 dp)
+#16 LAYOUT OVERLAP « E♭ » over the touchable « Tabelle schließen » (19 x 31 dp)
+#16 LAYOUT OVERLAP « E » over the touchable « Tabelle schließen » (12 x 31 dp)
+#16 LAYOUT OVERLAP « F » over the touchable « Tabelle schließen » (12 x 31 dp)
+#16 LAYOUT OVERLAP « F♯ » over the touchable « Tabelle schließen » (23 x 31 dp)
+#16 LAYOUT OVERLAP « G » over the touchable « Tabelle schließen » (15 x 31 dp)
+#16 LAYOUT OVERLAP « A♭ » over the touchable « Tabelle schließen » (21 x 31 dp)
+#16 LAYOUT OVERLAP « A » over the touchable « Tabelle schließen » (15 x 31 dp)
+#16 LAYOUT OVERLAP « B » over the touchable « Tabelle schließen » (13 x 31 dp)
+#16 LAYOUT OVERLAP « H » over the touchable « Tabelle schließen » (15 x 31 dp)
+#16 > touche 299 1132
+#16 DOIGT tuto_scale_Dorian « Dorisch »
+#17 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE a9724343ad | project=p-5d289fcf tuto=disco/Facile active=true step=key done=2 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « Tonart des Tracks: C · Dorisch » over the touchable « Tabelle schließen » (269 x 27 dp)
+#17 > touche 63 1437
+#17 DOIGT tuto_root_9 « A »
+#18 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE c2a67ec9db | project=p-5d289fcf tuto=disco/Facile active=true step=key done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « Tonart des Tracks: A · Dorisch » over the touchable « Tabelle schließen » (268 x 27 dp)
+#18 LAYOUT OVERLAP « Geschafft! Die Farbe des Songs ist gewählt. » over the touchable « Tabelle schließen » (426 x 31 dp)
+#18 LAYOUT OVERLAP « Zurück zum Tutorial » over the touchable « Tabelle schließen » (184 x 27 dp)
+#18 > touche 450 1434
+#18 DOIGT tuto_key_continue « Zurück zum Tutorial »
+#19 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 42784f741c | project=p-5d289fcf tuto=disco/Facile active=true step=key done=3 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 450 1196
+#19 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f848d0afcb | project=p-5d289fcf tuto=disco/Facile active=true step=key done=3 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1123
+#20 DOIGT tuto_next_big « Nächstes Kapitel   »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bf537cb586 | project=p-5d289fcf tuto=disco/Facile active=true step=ready done=3 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 450 1123
+#21 DOIGT tuto_mark «   Verstanden »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 61d79e9718 | project=p-5d289fcf tuto=disco/Facile active=true step=kick_do done=4 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « STEPS: DISCO / FUNK · GROSSE TROMMEL 1 » 2.02:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « ? » 1.79:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « Alle Pads » 1.39:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 1 » 3.38:1 (needs 4.5:1, 12 sp)
+#22 > touche 90 408
+#22 DOIGT step_0 « Step 1 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cb44703061 | project=p-5d289fcf tuto=disco/Facile active=true step=kick_do done=4 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « 2 » 3.58:1 (needs 4.5:1, 12 sp)
+#23 > touche 500 408
+#23 DOIGT step_4 « Step 5 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f6384f9797 | project=p-5d289fcf tuto=disco/Facile active=true step=kick_do done=4 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 12 sp)
+#24 > touche 90 489
+#24 DOIGT step_8 « Step 9 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bec9abb4b8 | project=p-5d289fcf tuto=disco/Facile active=true step=kick_do done=4 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « 4 » 3.60:1 (needs 4.5:1, 12 sp)
+#25 > touche 500 489
+#25 DOIGT step_12 « Step 13 »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5fa76fc479 | project=p-5d289fcf tuto=disco/Facile active=true step=kick_do done=5 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « STEPS: DISCO / FUNK · GROSSE TROMMEL 1 » 2.12:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « ? » 1.76:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST « Alle Pads » 1.41:1 (needs 4.5:1, 14 sp)
+#26 > touche 450 1123
+#26 DOIGT tuto_next_big « Nächster Schritt   »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4fdec68307 | project=p-5d289fcf tuto=disco/Facile active=true step=snare_do done=5 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « STEPS: DISCO / FUNK · SNARE » 1.43:1 (needs 4.5:1, 12 sp)
+#27 LAYOUT CONTRAST « Alle Pads » 1.35:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#27 > touche 500 408
+#27 DOIGT step_4 « Step 5 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a315b23828 | project=p-5d289fcf tuto=disco/Facile active=true step=snare_do done=5 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 397 489
+#28 DOIGT step_11 « Step 12 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a7a07ba395 | project=p-5d289fcf tuto=disco/Facile active=true step=snare_do done=5 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « 4 » 3.06:1 (needs 4.5:1, 12 sp)
+#29 > touche 500 489
+#29 DOIGT step_12 « Step 13 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cfc386bddf | project=p-5d289fcf tuto=disco/Facile active=true step=snare_do done=5 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 809 489
+#30 DOIGT step_15 « Step 16 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 03ea5db2d8 | project=p-5d289fcf tuto=disco/Facile active=true step=snare_do done=6 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 294 1207
+#31 DOIGT tuto_play_mine «  Dein Ergebnis anhören »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cedb4a3a7c | project=p-5d289fcf tuto=disco/Facile active=true step=snare_do done=6 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 > touche 450 1123
+#32 DOIGT tuto_next_big « Nächster Schritt   »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c326d73ce9 | project=p-5d289fcf tuto=disco/Facile active=true step=ohat_do done=6 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 LAYOUT CONTRAST « STEPS: DISCO / FUNK · OFFENE HI-HAT » 1.38:1 (needs 4.5:1, 12 sp)
+#33 > touche 294 408
+#33 DOIGT step_2 « Step 3 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 05aa2fbff8 | project=p-5d289fcf tuto=disco/Facile active=true step=ohat_do done=6 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 706 408
+#34 DOIGT step_6 « Step 7 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0a31d8e029 | project=p-5d289fcf tuto=disco/Facile active=true step=ohat_do done=6 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 294 489
+#35 DOIGT step_10 « Step 11 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6eeb54fc9d | project=p-5d289fcf tuto=disco/Facile active=true step=ohat_do done=6 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 706 489
+#36 DOIGT step_14 « Step 15 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a351757037 | project=p-5d289fcf tuto=disco/Facile active=true step=ohat_do done=7 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 450 1123
+#37 DOIGT tuto_next_big « Nächster Schritt   »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 92244d09ed | project=p-5d289fcf tuto=disco/Facile active=true step=hat_do done=7 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT CONTRAST « STEPS: DISCO / FUNK · HI-HAT » 1.38:1 (needs 4.5:1, 12 sp)
+#38 LAYOUT CONTRAST « 1 » 3.09:1 (needs 4.5:1, 12 sp)
+#38 > touche 90 408
+#38 DOIGT step_0 « Step 1 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 222f1c7c58 | project=p-5d289fcf tuto=disco/Facile active=true step=hat_do done=7 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 397 408
+#39 DOIGT step_3 « Step 4 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0b1b6ce87a | project=p-5d289fcf tuto=disco/Facile active=true step=hat_do done=7 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 LAYOUT CONTRAST « 2 » 3.23:1 (needs 4.5:1, 12 sp)
+#40 > touche 500 408
+#40 DOIGT step_4 « Step 5 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 24fbe783ac | project=p-5d289fcf tuto=disco/Facile active=true step=hat_do done=7 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 > touche 809 408
+#41 DOIGT step_7 « Step 8 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 13288c536b | project=p-5d289fcf tuto=disco/Facile active=true step=hat_do done=7 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 LAYOUT CONTRAST « 3 » 3.23:1 (needs 4.5:1, 12 sp)
+#42 > touche 90 489
+#42 DOIGT step_8 « Step 9 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e9a32c96bb | project=p-5d289fcf tuto=disco/Facile active=true step=hat_do done=7 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 397 489
+#43 DOIGT step_11 « Step 12 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE caf7a35800 | project=p-5d289fcf tuto=disco/Facile active=true step=hat_do done=7 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 LAYOUT CONTRAST « 4 » 3.23:1 (needs 4.5:1, 12 sp)
+#44 > touche 500 489
+#44 DOIGT step_12 « Step 13 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4bcf12913a | project=p-5d289fcf tuto=disco/Facile active=true step=hat_do done=7 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 809 489
+#45 DOIGT step_15 « Step 16 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 14a5a16f7c | project=p-5d289fcf tuto=disco/Facile active=true step=hat_do done=8 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 450 1123
+#46 DOIGT tuto_next_big « Nächster Schritt   »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ea29278223 | project=p-5d289fcf tuto=disco/Facile active=true step=perc_do done=8 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CONTRAST « STEPS: TROMMELRAND » 1.29:1 (needs 4.5:1, 12 sp)
+#47 > touche 397 408
+#47 DOIGT step_3 « Step 4 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 41a1c89704 | project=p-5d289fcf tuto=disco/Facile active=true step=perc_do done=8 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 706 408
+#48 DOIGT step_6 « Step 7 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE db06dbbb6a | project=p-5d289fcf tuto=disco/Facile active=true step=perc_do done=8 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 397 489
+#49 DOIGT step_11 « Step 12 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e28b21c200 | project=p-5d289fcf tuto=disco/Facile active=true step=perc_do done=8 playing=true
+#50 SON Son : la musique du projet joue en boucle.
+#50 > touche 603 489
+#50 DOIGT step_13 « Step 14 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cd9821f826 | project=p-5d289fcf tuto=disco/Facile active=true step=perc_do done=9 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 > touche 450 1123
+#51 DOIGT tuto_next_big « Nächster Schritt   »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 39cc0896db | project=p-5d289fcf tuto=disco/Facile active=true step=tamb_do done=9 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 LAYOUT CONTRAST « STEPS: MARACAS » 1.29:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « 1 » 3.35:1 (needs 4.5:1, 12 sp)
+#52 > touche 246 575
+#52 DOIGT fill_2 « 1/2 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 47b57f4489 | project=p-5d289fcf tuto=disco/Facile active=true step=tamb_do done=10 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 > touche 450 1123
+#53 DOIGT tuto_next_big « Nächster Schritt   »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a98875540c | project=p-5d289fcf tuto=disco/Facile active=true step=drums_hear done=10 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 LAYOUT CONTRAST « STEPS: MARACAS » 1.35:1 (needs 4.5:1, 12 sp)
+#54 LAYOUT CONTRAST « ? » 1.73:1 (needs 4.5:1, 12 sp)
+#54 LAYOUT CONTRAST « Alle Pads » 1.42:1 (needs 4.5:1, 14 sp)
+#54 > touche 450 1126
+#54 DOIGT tuto_listen «  Beispiel anhören »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 686637b3d9 | project=p-5d289fcf tuto=disco/Facile active=true step=drums_hear done=10 playing=false
+#55 SON Son : l'exemple du tuto joue (encore 3 s).
+#55 > touche 798 1207
+#55 DOIGT tuto_next « Weiter  »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 77eec697ef | project=p-5d289fcf tuto=disco/Facile active=true step=drums_hear done=11 playing=false
+#56 SON Son : l'exemple du tuto joue (encore 1 s).
+#56 > touche 450 1123
+#56 DOIGT tuto_next_big « Nächstes Kapitel   »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c3321006d2 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_hear done=11 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « STEPS: MARACAS » 1.31:1 (needs 4.5:1, 12 sp)
+#57 > touche 450 1123
+#57 DOIGT tuto_listen «  Beispiel anhören »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 35bfefca2c | project=p-5d289fcf tuto=disco/Facile active=true step=bass_hear done=11 playing=false
+#58 SON Son : l'exemple du tuto joue (encore 3 s).
+#58 > attends 4
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bc1d4c5995 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_hear done=12 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 450 1123
+#59 DOIGT tuto_next_big « Nächster Schritt   »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 95b263b231 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=12 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 450 1042
+#60 DOIGT tuto_need «   Bass-Spur erstellen »
+#61 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 3ecf59ab74 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=12 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 172 995
+#61 DOIGT rien
+#62 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE b81f599f48 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=12 playing=false
+#62 SON Son : 1 note du synthé.
+#62 > touche 328 995
+#62 DOIGT rien
+#63 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 900c361e54 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=12 playing=false
+#63 SON Son : 1 note du synthé.
+#63 > touche 508 995
+#63 DOIGT rien
+#64 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 40fa5d2169 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=12 playing=false
+#64 SON Son : 1 note du synthé.
+#64 > touche 598 868
+#64 DOIGT rien
+#65 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 6b7141e634 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=12 playing=false
+#65 SON Son : 1 note du synthé.
+#65 > touche 688 700
+#65 DOIGT rien
+#66 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE c0042fb6f4 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=12 playing=false
+#66 SON Son : 1 note du synthé.
+#66 > touche 778 575
+#66 DOIGT rien
+#67 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 68066b2e44 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=12 playing=false
+#67 SON Son : 1 note du synthé.
+#67 > touche 760 451
+#67 DOIGT tuto_notes_left « Bass · Takt 1/8 »
+#68 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE e85dbe45bd | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=12 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 418 830
+#68 DOIGT rien
+#69 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 165bc8e2c9 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=12 playing=false
+#69 SON Son : 1 note du synthé.
+#69 > touche 822 830
+#69 DOIGT rien
+#70 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 0ff7c47d6c | project=p-5d289fcf tuto=disco/Facile active=true step=bass_do done=13 playing=false
+#70 SON Son : 1 note du synthé.
+#70 > touche 450 1270
+#70 DOIGT tuto_next_folded « Geschafft »
+#71 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE da1652c3c7 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_2 done=13 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 395 598
+#71 DOIGT rien
+#72 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d9d948f7a7 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_2 done=13 playing=false
+#72 SON Son : 1 note du synthé.
+#72 > touche 733 598
+#72 DOIGT rien
+#73 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1a40ba2ae0 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_2 done=13 playing=false
+#73 SON Son : 1 note du synthé.
+#73 > touche 643 682
+#73 DOIGT rien
+#74 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 70cc618776 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_2 done=13 playing=false
+#74 SON Son : 1 note du synthé.
+#74 > touche 553 724
+#74 DOIGT rien
+#75 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f71f1a5ea6 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_2 done=13 playing=false
+#75 SON Son : 1 note du synthé.
+#75 > touche 760 451
+#75 DOIGT tuto_notes_left « Bass · Takt 2/8 »
+#76 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fc7767f847 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_2 done=13 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 283 682
+#76 DOIGT rien
+#77 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 811998348a | project=p-5d289fcf tuto=disco/Facile active=true step=bass_2 done=13 playing=false
+#77 SON Son : 1 note du synthé.
+#77 > touche 463 682
+#77 DOIGT rien
+#78 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0796693ee5 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_2 done=13 playing=false
+#78 SON Son : 1 note du synthé.
+#78 > touche 822 682
+#78 DOIGT rien
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 062cae854d | project=p-5d289fcf tuto=disco/Facile active=true step=bass_2 done=13 playing=false
+#79 SON Son : 1 note du synthé.
+#79 > touche 450 1116
+#79 DOIGT tuto_need «   Auf die nächsten Takte kopieren »
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ddab4cc7e1 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_2 done=14 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 450 1197
+#80 DOIGT tuto_next_big « Nächster Schritt   »
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b64faa9953 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=14 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 450 1116
+#81 DOIGT tuto_do «   Ich mach's »
+#82 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE b94c12810f | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=14 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 238 705
+#82 DOIGT rien
+#83 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 24ad1e990a | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=14 playing=false
+#83 SON Son : 1 note du synthé.
+#83 > touche 328 663
+#83 DOIGT rien
+#84 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE d166e304b1 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=14 playing=false
+#84 SON Son : 1 note du synthé.
+#84 > touche 440 580
+#84 DOIGT rien
+#85 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE cc6e720771 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=14 playing=false
+#85 SON Son : 1 note du synthé.
+#85 > touche 508 1080
+#85 DOIGT rien
+#86 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 0e2f6a6bc1 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=14 playing=false
+#86 SON Son : 1 note du synthé.
+#86 > touche 598 663
+#86 DOIGT rien
+#87 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE c6f99d3399 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=14 playing=false
+#87 SON Son : 1 note du synthé.
+#87 > touche 688 705
+#87 DOIGT rien
+#88 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE e5554c9941 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=14 playing=false
+#88 SON Son : 1 note du synthé.
+#88 > touche 778 790
+#88 DOIGT rien
+#89 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE aeca500bc6 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=14 playing=false
+#89 SON Son : 1 note du synthé.
+#89 > touche 450 1270
+#89 DOIGT tuto_need_folded « Auf die nächsten Takte kopieren »
+#90 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 51deb8ac4b | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=15 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 450 1270
+#90 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE cc3d48d583 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=15 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 294 1281
+#91 DOIGT tuto_play_mine «  Meinen Song anhören »
+#92 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e874624e37 | project=p-5d289fcf tuto=disco/Facile active=true step=bass_3 done=15 playing=true
+#92 SON Son : la musique du projet joue en boucle.
+#92 > touche 450 1197
+#92 DOIGT tuto_next_big « Nächstes Kapitel   »
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2695e398ec | project=p-5d289fcf tuto=disco/Facile active=true step=pad_hear done=15 playing=true
+#93 SON Son : la musique du projet joue en boucle.
+#93 > touche 450 1197
+#93 DOIGT tuto_listen «  Beispiel anhören »
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 57656ec6d9 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_hear done=15 playing=false
+#94 SON Son : l'exemple du tuto joue (encore 3 s).
+#94 > attends 4
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7ea3ee4f49 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_hear done=16 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 450 1197
+#95 DOIGT tuto_next_big « Nächster Schritt   »
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fc5ac39c2e | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 450 1116
+#96 DOIGT tuto_need «   Akkorde-Spur erstellen »
+#97 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 55e15e69a4 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#97 SON Son : rien ne joue.
+#97 LAYOUT CUT « Du bist dran: Tippe in Takt 1 und 2 auf den tiefsten Ton jedes gestrichelten Akkords: Der ganze Akkord wird gesetzt. 6 Schläge pro Takt. » ellipsized (« … »)
+#97 > touche 238 1080
+#97 DOIGT rien
+#98 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 275792af69 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 328 1080
+#98 DOIGT rien
+#99 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 31b2a3fa2c | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 418 1080
+#99 DOIGT rien
+#100 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 2f762f13f1 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 598 1080
+#100 DOIGT rien
+#101 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 3ea5fdf051 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 688 1080
+#101 DOIGT rien
+#102 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 2a5e77bd1e | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 778 1080
+#102 DOIGT rien
+#103 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE b07de8cfc8 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 450 451
+#103 DOIGT tuto_notes_left « Akkorde · Takt 1/8 »
+#104 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 946585e988 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#104 SON Son : rien ne joue.
+#104 > touche 238 1080
+#104 DOIGT rien
+#105 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE d7a8d13629 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 328 1080
+#105 DOIGT rien
+#106 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 89513f60b7 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 418 1080
+#106 DOIGT rien
+#107 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE dc4d1244c3 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#107 SON Son : rien ne joue.
+#107 > touche 598 1080
+#107 DOIGT rien
+#108 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 29c7c899e2 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 688 1080
+#108 DOIGT rien
+#109 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE de4db11651 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=16 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 778 1080
+#109 DOIGT rien
+#110 ROUTE synth/tab_simple_Clavier | MODE simple | EMPREINTE 15165240e9 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_do done=17 playing=false
+#110 SON Son : rien ne joue.
+#110 > touche 450 1270
+#110 DOIGT tuto_next_folded « Geschafft »
+#111 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8890b89896 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_2 done=17 playing=false
+#111 SON Son : rien ne joue.
+#111 > touche 450 1116
+#111 DOIGT tuto_need «   Auf die nächsten Takte kopieren »
+#112 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f3b2cb9a81 | project=p-5d289fcf tuto=disco/Facile active=true step=pad_2 done=18 playing=false
+#112 SON Son : rien ne joue.
+#112 > fin
+#112 FIN : fin

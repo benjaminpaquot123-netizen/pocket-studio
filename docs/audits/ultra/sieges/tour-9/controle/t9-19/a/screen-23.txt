@@ -1,0 +1,63 @@
+Écran 23 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 281,42
+bouton « Einfach » @ 607,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône ⋮ @ 855,42
+bouton « 116  Tempo » @ 98,123
+bouton « ? » @ 855,123
+icône « Teil: A » ▾ @ 77,198
+titre « STEPS: DISCO / FUNK · GROSSE TROMMEL 1 » [coupé, état « Aufgeklappt »] @ 362,250
+bouton « ? » [coupé] @ 661,245
+bouton « Alle Pads » [coupé] @ 770,246
+texte « Disco / Funk · Große Trommel 1 » @ 250,300
+texte « Noch 3 gestrichelte Kästchen hier » @ 293,338
+bouton « 1 » [état « Schlag, Stärke 100 % »] @ 90,408
+bouton [état « leer »] @ 192,408
+bouton [état « leer »] @ 294,408
+bouton [état « leer »] @ 397,408
+bouton « 2 » [état « leer, gestrichelt: antippen »] @ 500,408
+bouton [état « leer »] @ 603,408
+bouton [état « leer »] @ 706,408
+bouton [état « leer »] @ 809,408
+bouton « 3 » [état « leer, gestrichelt: antippen »] @ 90,489
+bouton [état « leer »] @ 192,489
+bouton [état « leer »] @ 294,489
+bouton [état « leer »] @ 397,489
+bouton « 4 » [état « leer, gestrichelt: antippen »] @ 500,489
+bouton [état « leer »] @ 603,489
+bouton [état « leer »] @ 706,489
+bouton [état « leer »] @ 809,489
+texte « Füllen » @ 79,575
+texte « alles » @ 163,575
+texte « 1/2 » @ 246,575
+texte « 1/4 » @ 321,575
+texte « ◀ » @ 396,575
+texte « ▶ » @ 471,575
+texte « Löschen » @ 581,575
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,674
+texte « Die Drums Kapitel 2/13 · Schritt 2/8 · Einfach » @ 366,775
+icône (liste) « Kapitel » @ 759,776
+icône ⌄ @ 843,776
+texte « Du bist dran: Tippe beim Pad „Disco / Funk · Große Trommel 1“ auf die 4 gestrichelten Kästchen: ein Schlag auf jeden Schlag. » [coupé] @ 450,864
+texte « ▸ Warum? » @ 450,916
+icône « Weiterlesen » ⌄ @ 450,970
+bouton (doigt qui touche) «   Ich mach's » @ 450,1042
+bouton ▶ «  Beispiel anhören » @ 232,1126
+bouton (œil) «  Zeig's mir » @ 667,1126
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+image ↷ @ 317,1279
+bouton ▶ « der Song » @ 494,1292
+texte « 116 Tempo » @ 650,1292
+icône ⋮ « Mehr » @ 796,1292
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

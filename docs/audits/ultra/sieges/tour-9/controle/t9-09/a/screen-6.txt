@@ -1,0 +1,30 @@
+Écran 6 (540x1170)
+dessin @ 270,262
+texte « Fermer » @ 461,334
+texte « Tempo » @ 79,334
+bouton « ? » @ 156,334
+texte « 10 » @ 241,428
+icône − @ 60,428
+icône + @ 480,428
+texte «  BPM » @ 313,438
+texte « Entre 40 et 300 » @ 270,501
+bouton « 70 » @ 64,570
+bouton « 90 » @ 153,570
+bouton « 120 » [sélectionné] @ 250,570
+bouton « 140 » @ 355,570
+bouton « 174 » @ 460,570
+bouton « ½ » @ 60,651
+bouton « ×2 » @ 144,651
+bouton « 1 » @ 103,744
+bouton « 2 » @ 270,744
+bouton « 3 » @ 437,744
+bouton « 4 » @ 103,831
+bouton « 5 » @ 270,831
+bouton « 6 » @ 437,831
+bouton « 7 » @ 103,918
+bouton « 8 » @ 270,918
+bouton « 9 » @ 437,918
+bouton ⌫ @ 103,1005
+bouton « 0 » @ 270,1005
+bouton « OK » [désactivé] @ 437,1005
+bouton (doigt qui touche) « Taper en rythme Touche ici à chaque temps : le tempo suit. » @ 270,1104

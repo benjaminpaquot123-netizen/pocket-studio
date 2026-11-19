@@ -1,0 +1,40 @@
+Écran 9 (540x1170)
+bouton (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 103,42
+bouton « Simple » @ 248,42
+bouton ● @ 336,42
+bouton ▶ « cette partie » @ 415,42
+icône ⋮ @ 495,42
+bouton « 105  Tempo » @ 83,114
+bouton « ? » @ 495,114
+icône « Partie : A » ▾ @ 82,180
+bouton « Grosse caisse 1 FX » [coupé] @ 78,243
+bouton « Grosse caisse 2 » [coupé] @ 206,243
+bouton « Caisse FX » [coupé] @ 334,243
+bouton « Caisse 2 » [coupé] @ 462,243
+texte « La vitesse et la couleur du morceau Chapitre 1/15 · Étape 3/3 · Facile » @ 183,307
+icône (liste) « Chapitres » @ 396,308
+icône ⌄ @ 483,308
+texte « À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés. » @ 270,414
+texte « • Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre. » @ 270,486
+bouton « Télécharger le kit Afrobeats (2 Mo) » @ 212,570
+texte « Plus tard » @ 455,570
+texte « ▸ Pourquoi ? » @ 270,636
+bouton (doigt qui touche) «   Je le fais » @ 270,699
+bouton ▶ «  Écouter l'exemple » @ 142,786
+bouton (œil) «  Montre-moi » @ 397,786
+icône ← «  Précédent » @ 107,870
+icône « Suivant  » → @ 445,870
+icône ↶ « Annuler » @ 61,954
+image ↷ @ 159,944
+bouton ▶ « le morceau » @ 264,954
+texte « 105 Tempo » @ 375,954
+icône ⋮ « Plus » @ 479,954
+onglet (lignes et note) « Mon morceau » @ 49,1050
+onglet (quatre carrés) « Rythme » [sélectionné] @ 160,1050
+onglet (touches de piano) « Clavier » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Partager » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noter » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Mode retours » @ 138,1140

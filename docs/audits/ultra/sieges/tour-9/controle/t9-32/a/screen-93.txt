@@ -1,0 +1,33 @@
+Écran 93 (588x1278)
+icône (dossier ouvert) ✓ @ 456,42
+bouton « بسيط » @ 280,42
+bouton ● @ 191,42
+bouton ▶ « هذا الجزء » @ 118,42
+icône ⋮ @ 45,42
+icône « مقدمة المازورة 1/128 » ▾ @ 221,168
+bouton « 150  السرعة » @ 470,168
+bouton « ? » @ 45,168
+image (rond coché) @ 0,0
+bouton « M4A · للمشاركة » [sélectionné] @ 409,306
+bouton « WAV · أعلى جودة » @ 392,387
+bouton (trois points reliés) «   مشاركة » @ 294,489
+bouton (dossier) « ملفاتي » › @ 315,551
+bouton « ? » @ 51,551
+texte « صدّر مقطوعتك الفصل 13/13 · الخطوة 1/1 · سهل » @ 366,668
+icône (liste) « الفصول » @ 129,668
+icône ⌃ @ 57,668
+icône (rond coché) « نجحت الخطوة التالية » → @ 294,855
+texte « 150 السرعة » @ 183,994
+icône ↶ « تراجع » @ 519,994
+image ↷ @ 413,966
+bouton ▶ « الأغنية » @ 302,995
+icône ⋮ « المزيد » @ 70,994
+onglet (touches de piano) « لوحة المفاتيح » @ 294,1136
+onglet (lignes et note) « أغنيتي » @ 534,1136
+onglet (quatre carrés) « الإيقاع » @ 414,1136
+onglet (curseurs) « المكس » @ 174,1136
+onglet (trois points reliés) « مشاركة » [sélectionné] @ 54,1136
+texte « وضع الملاحظات » @ 435,1248
+texte « ●  REC » @ 238,1248
+texte « ✎  دوّن » @ 133,1248
+texte « ⋯ » @ 48,1248

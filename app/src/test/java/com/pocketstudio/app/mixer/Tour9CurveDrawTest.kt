@@ -1,6 +1,7 @@
 package com.pocketstudio.app.mixer
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -64,6 +65,8 @@ class Tour9CurveDrawTest {
     private fun stroke(from: Offset, to: Offset) {
         card()
         val curve = compose.onNodeWithTag("lane_${volume.pack()}").performScrollTo()
+        // The curve in the middle of the screen, the row under it in sight too (as a finger finds it).
+        compose.runOnIdle { kotlinx.coroutines.runBlocking { scroll.scrollBy(compose.density.run { 160.dp.toPx() }) } }
         compose.waitForIdle()
         val before = scroll.value
         points.clear()

@@ -743,6 +743,8 @@ abstract class HumanTester(private val seat: String) {
         runCatching { scenario?.onActivity { v = ViewModelProvider(it)[RhythmViewModel::class.java] } }
         // An example of 8 s to hear (Robolectric has no engine to render it).
         v?.let { if (it.guideRenderForTest == null) it.guideRenderForTest = { _, _ -> FloatArray(OfflineExport.SAMPLE_RATE * 8) { k -> 0.3f * kotlin.math.sin(k * 0.05f) } to FloatArray(2) } }
+        // Tour 9, D17: the tutorial's kit, downloaded in the middle of a wait, decoded as on a phone ([BenchFlac.readable]).
+        v?.let { if (it.tutoKitDecodeForTest == null) it.tutoKitDecodeForTest = flac::readable }
         // The built-in sounds as the phone's engine renders them (Robolectric has none: « Ce son n'a pas pu être lu »).
         runCatching {
             scenario?.onActivity { a ->
@@ -1052,11 +1054,24 @@ abstract class HumanTester(private val seat: String) {
      * « Pad Live » was touched below the screen. The bench scrolls its container to it (as a swipe on it would),
      * then swipes on the target's own column if it is still at an edge.
      */
+    /**
+     * « Mes projets » says « Chargement de la liste… » until it has read its list: [tag] is not looked for there, the list is
+     * waited for. At least 20 s of the phone's time, and at least [LIST_WAIT_REAL_MS] of real time: the reading may wait in
+     * real time (a closing save polled with `delay`) where no worker runs, and on a loaded machine 40 « attends 0.5 » pass in
+     * a few real seconds (Tour 9, L9, CI 382). Returns the number of waits.
+     */
+    internal fun waitWhileListLoads(tag: String): Int {
+        var waits = 0
+        val until = System.currentTimeMillis() + LIST_WAIT_REAL_MS
+        while (centerOf(tag) == null && centerOf("projects_loading") != null && waits < 400 &&
+            (waits < 40 || System.currentTimeMillis() < until)) { play("attends 0.5"); waits++ }
+        return waits
+    }
+
     internal fun reachTag(tag: String): Pair<Float, Float>? {
         // Tour 8, banc9 (point j): « Mes projets » still loading shows its wheel, not its rows (as Coquille2SeatTest waits).
-        var waits = 0
-        while (waits < 40 && centerOf(tag) == null && centerOf("projects_loading") != null) { play("attends 0.5"); waits++ }
-        if (waits >= 40) benchJournal?.appendText(BenchFlags.flag(turnNow, "reach.loading", "« $tag » après le chargement", "projects_loading encore là", waits * 500L, routeNow()) + "\n")
+        val waits = waitWhileListLoads(tag)
+        if (centerOf(tag) == null && centerOf("projects_loading") != null) benchJournal?.appendText(BenchFlags.flag(turnNow, "reach.loading", "« $tag » après le chargement", "projects_loading encore là", waits * 500L, routeNow()) + "\n")
         val first = centerOf(tag) ?: return null
         if (tag.startsWith("vue_")) return first
         // PLAN-RESTE R.6 (re-reads of banc-r1): an element the screen shows whole is touched where it is, as a finger does.
@@ -2440,6 +2455,9 @@ abstract class HumanTester(private val seat: String) {
     }.getOrElse { "inside? ${it.message}" }
 
     companion object {
+        /** Real time « Mes projets » is waited for at least while it still reads its list ([waitWhileListLoads]). */
+        internal const val LIST_WAIT_REAL_MS = 60_000L
+
         /** The journal's words on where the tutorial is ([inside]), read by a round's oracle. */
         internal fun tutoState(p: com.pocketstudio.model.tuto.TutoProgress): String =
             "tuto=${p.style}/${p.level} active=${p.active} step=${p.current} done=${p.done.size} chapters=${chaptersOver(p)}"

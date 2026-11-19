@@ -122,4 +122,13 @@ class Tour9L5bTutoWordsTest {
                 offenders(Lang.AR, countryside) { rave.containsMatchIn(it) && !it.contains("riff", ignoreCase = true) },
         ))
     }
+
+    /** F090: the cells to erase are shown struck through (« barré »), never « red crosses » (ja, nl). */
+    @Test
+    fun f090CellsToEraseAreStruckThrough() {
+        assertNoneLeft("red crosses", mapOf(
+            Lang.JA to offenders(Lang.JA, Regex("赤い×")),
+            Lang.NL to offenders(Lang.NL, Regex("(?i)rood kruisje|rode kruisjes")),
+        ))
+    }
 }

@@ -1,0 +1,13 @@
+fusion: 571c5abd6b641941c8ba1186a82f55f0543c852a
+branche: eq/tour-9-L5b
+tete: ee2ba69a1acb0f9f7d1efa419e7afbd5edc8fd19
+relecture: docs/audits/ultra/tour-9-L5b-relecture.md
+relu: c0fa9174f834c8ecf0931b188da9541a13772e52
+filtres: *Tour9L5bTutoWordsTest* *I18nCatalogTest* *LangTest* *TutoPadNamesTest* *Tour9TutoSweepTextTest*
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu

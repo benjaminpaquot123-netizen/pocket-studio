@@ -1553,3 +1553,5 @@
 - 2026-11-19 · Benjamin : « Tu te stop après les réparations » : après la dernière fusion du tour 9 (lot des miettes compris), point final et arrêt ; pas de CI complète, de testeurs ni de PR vers main sans nouvel ordre. Retour : Benjamin relance la suite.
 - 2026-11-19 · lot « L8 » (tour-9) : 17 décision(s) dans `docs/decisions/tour-9-L8.md`
 - 2026-11-19 · Portail en mode boost : un lot du tour 9 peut ajouter ses propres lignes « tenté » / « pas pris » au registre des réparations (le trieur du tour 9 n'en a écrit aucune) ; un état réservé (corrigé, rejoué, constaté) reste refusé. Retour arrière : enlever PS_JUGE_BOOST.
+- 2026-11-19 · lot « L5b » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-L5b.md`
+- 2026-11-19 · lot « L1 » (tour-9) : 10 décision(s) dans `docs/decisions/tour-9-L1.md`

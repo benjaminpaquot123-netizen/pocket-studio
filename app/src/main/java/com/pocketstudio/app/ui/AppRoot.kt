@@ -1428,10 +1428,13 @@ fun AppRoot() {
     }
     // Audit ultra round 1, n° 25 (seats B b, C c): a tab touched by hand folds the Guide's panel (it stayed over
     // half of « Envoyer », over « Enregistrer » of Ma voix); its bar stays, one touch from it.
+    // Tour 9 (D02; seat t9-51, chapter 14 on a tablet): the same for the tuto's panel unfolded to read, while its step asks
+    // for a touch: « Mix » touched by hand, the panel stayed over the strips' ▶ (« Je le fais » folds it, the tab did not).
+    var tutoTabTouched by remember { mutableIntStateOf(0) }
     val navEntries: List<NavEntry> = if (simple) {
-        SimpleTab.entries.map { st -> NavEntry("simple_${st.name}", st.label, st.hint, st.icon, selected = SimpleTab.of(tab) == st) { guideOpen = false; go(st.tab) } }
+        SimpleTab.entries.map { st -> NavEntry("simple_${st.name}", st.label, st.hint, st.icon, selected = SimpleTab.of(tab) == st) { guideOpen = false; tutoTabTouched++; go(st.tab) } }
     } else {
-        Space.entries.map { sp -> NavEntry(sp.name, sp.label, sp.hint, sp.icon, selected = tab.space == sp && tab != AppTab.Envoyer) { guideOpen = false; goSpace(sp) } }
+        Space.entries.map { sp -> NavEntry(sp.name, sp.label, sp.hint, sp.icon, selected = tab.space == sp && tab != AppTab.Envoyer) { guideOpen = false; tutoTabTouched++; goSpace(sp) } }
     }
     androidx.activity.compose.BackHandler(enabled = showLive) { closeLive() }
     // The live pads on the whole screen (from Morceau or the Live page), above everything. Leaving
@@ -2050,6 +2053,12 @@ fun AppRoot() {
     // Testers (lot « tuto 4 »): the tutorial's panel has the bottom of the screen (no floating keyboard over its
     // rings), a step ticked closes a hit's menu (its first touch on « Étape suivante » was lost closing it).
     LaunchedEffect(tutoUi == null) { com.pocketstudio.app.tuto.TutoHints.active = tutoUi != null }
+    LaunchedEffect(tutoTabTouched) {
+        val u = tuto.ui.value
+        // Only a step « Je le fais » does (its control on a screen): a step to hear or to read stays as it was.
+        if (tutoTabTouched > 0 && u != null && u.open && !u.atEnd && !u.finished && u.demo == null && !u.bravo && u.need == null &&
+            u.current.spot.isNotEmpty() && u.current.id !in u.progress.done) tuto.toggleOpen()
+    }
     // n° 19: a tuto or a control pointed at by the Guide: every card open, the target never folded away.
     androidx.compose.runtime.SideEffect { com.pocketstudio.ui.FoldOverride.openAll = tutoUi != null || guideSpot != null }
     DisposableEffect(Unit) { onDispose { com.pocketstudio.ui.FoldOverride.openAll = false } }
@@ -2102,7 +2111,7 @@ fun AppRoot() {
     LaunchedEffect(tutoUi?.current?.id) {
         val open = tuto.place()?.open ?: return@LaunchedEffect
         val g = com.pocketstudio.app.guide.GuideNav.go(open, rhythmVm.project.value, SettingsStore.state.value.simpleMode)
-        if (g is com.pocketstudio.app.guide.GuideGo.Tab && g.tab == tab && g.spots.isNotEmpty()) tutoReveal = g.spots
+        if (g is com.pocketstudio.app.guide.GuideGo.Tab && g.tab == tab && g.spots.isNotEmpty()) tutoReveal = tutoPlaceFor(g.spots, tutoUi?.current?.check)
     }
     LaunchedEffect(tutoUi?.demo != null) { com.pocketstudio.app.tuto.TutoHints.demo = tutoUi?.demo != null }
     // The send a step asks for, dotted in the effects box (« Je le fais » opens the right one).
@@ -2292,7 +2301,7 @@ fun AppRoot() {
                 g.open != null -> {
                     guideGo(com.pocketstudio.app.guide.GuideNav.go(g.open, rhythmVm.project.value, simpleNow))
                     // No card to close (owner: « Le Guide t'attend… » + « Compris » each time): a ring that goes by itself.
-                    val lit = guideSpot
+                    val lit = tutoPlaceFor(guideSpot, tuto.ui.value?.current?.check)
                     guideSpot = null
                     if (g.spot) tutoSpot = lit else tutoReveal = lit
                 }
@@ -2380,6 +2389,10 @@ fun AppRoot() {
     // A new mode draws every screen again (their names and words change; the project does not).
     androidx.compose.runtime.key(simple) {
     Box(Modifier.fillMaxSize()) {
+    // Tour 9 (D02, D13, D14): the screen's top bar ends here and the tuto panel's bottom is there (window px, neither depends
+    // on the panel's height): the panel never takes more than what leaves the screen its least room ([TutoPanel]'s ceiling).
+    var tutoTopEnd by remember { androidx.compose.runtime.mutableFloatStateOf(0f) }
+    var tutoPanelEnd by remember { androidx.compose.runtime.mutableFloatStateOf(0f) }
     Scaffold(
         // « Mes projets » is a dialog above: behind it, a plain background, so the studio never flashes
         // through while the screens are rebuilt on another project; « Que veux-tu faire ? » is drawn over it
@@ -2388,7 +2401,7 @@ fun AppRoot() {
             .then(if (launchShown) Modifier.clearAndSetSemantics {} else Modifier),
         containerColor = Neon.Background,
         // One under the other (the slot alone would draw them on top of each other).
-        topBar = { Column {
+        topBar = { Column(Modifier.onGloballyPositioned { tutoTopEnd = it.boundsInWindow().bottom }) {
             if (!showLive && !showTimeline && !showLivePads) {
             val topProject by rhythmVm.project.collectAsStateWithLifecycle()
             val topTransport by rhythmVm.transport.collectAsStateWithLifecycle()
@@ -2625,7 +2638,14 @@ fun AppRoot() {
                         ),
                         // n° 19: what the panel covers; a control revealed goes above it.
                         modifier = (if (landscape) Modifier.navigationBarsPadding() else Modifier)
-                            .onGloballyPositioned { spots.coverTop = if (landscape) Float.MAX_VALUE else it.boundsInWindow().top },
+                            .onGloballyPositioned {
+                                spots.coverTop = if (landscape) Float.MAX_VALUE else it.boundsInWindow().top
+                                tutoPanelEnd = it.boundsInWindow().bottom
+                            },
+                        ceiling = with(androidx.compose.ui.platform.LocalDensity.current) {
+                            if (landscape || tutoPanelEnd <= tutoTopEnd) androidx.compose.ui.unit.Dp.Infinity
+                            else (tutoPanelEnd - tutoTopEnd).toDp() - com.pocketstudio.app.tuto.TUTO_SCREEN_LEAST * fontScale.coerceIn(1f, 2f)
+                        },
                         map = remember(tutoNow.progress.style) { com.pocketstudio.app.tuto.tutoMap(tutoNow.progress.style) },
                         mine = mine, minePlaying = tutoTransport.playing, mineFirst = mineFirst,
                         kit = kitBlock,
@@ -3141,6 +3161,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             // The selected instrument track's sound and notes, where the synth screen looks.
                             val project = remember(fullProject, selectedTrack) { fullProject.viewOfTrack(selectedTrack) }
                             val shownTrack = if (fullProject.tracks.any { it.id == selectedTrack }) selectedTrack else 0
+                            // Tour 9 (D06): the shown track has dotted notes to touch.
+                            val rollToTouch = com.pocketstudio.app.tuto.TutoHints.notes?.takeIf { it.first == shownTrack }?.second?.isNotEmpty() == true
                             val playUi by rhythmVm.play.collectAsStateWithLifecycle()
                             val octave by rhythmVm.keyboardOctave.collectAsStateWithLifecycle()
                             val liveState = rhythmVm.live.collectAsStateWithLifecycle()
@@ -3156,7 +3178,10 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                             val noteClipboard by rhythmVm.noteClipboard.collectAsStateWithLifecycle()
                             val freezing by rhythmVm.freezing.collectAsStateWithLifecycle()
                             val frozenTracks = remember(fullProject) { com.pocketstudio.model.Freeze.frozenIds(fullProject) }
-WithPartHeader(rhythmVm, simple) { partModifier ->
+                            // Tour 9 (D06; seats t9-29, t9-62, 360 dp at 200 % in Simple): the roll kept 66 dp under « encore N notes », its dotted
+                            // notes out of sight. While its notes are to touch at a large font, the part's line gives the roll its room.
+                            val rollFirst = rollToTouch && com.pocketstudio.app.synth.NotesView.shown && androidx.compose.ui.platform.LocalDensity.current.fontScale > 1.3f
+WithPartHeader(rhythmVm, simple, shown = !rollFirst) { partModifier ->
                                                         SynthScreen(
                                 modifier = partModifier,
                                 record = { compact ->
@@ -4617,7 +4642,7 @@ internal fun TimelineRoute(
  * what part is edited, and whether it loops or the song plays (see [partHeader]).
  */
 @Composable
-private fun WithPartHeader(vm: RhythmViewModel, simple: Boolean, content: @Composable (Modifier) -> Unit) {
+private fun WithPartHeader(vm: RhythmViewModel, simple: Boolean, shown: Boolean = true, content: @Composable (Modifier) -> Unit) {
     val project by vm.project.collectAsStateWithLifecycle()
     val transport by vm.transport.collectAsStateWithLifecycle()
     val sessionUi by vm.sessionUi.collectAsStateWithLifecycle()
@@ -4629,7 +4654,7 @@ private fun WithPartHeader(vm: RhythmViewModel, simple: Boolean, content: @Compo
     val lying = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     Column(Modifier.fillMaxSize()) {
         // Audit final (20 M16): the Mode simple's top bar has no part chip; the part is chosen here.
-        if (!lying || header.note != null) {
+        if (shown && (!lying || header.note != null)) {
             if (simple && !lying) PartHeader(
                 header, parts = project.allScenes.indices.map { project.sceneTitle(it) }, current = project.scene, pick = vm::selectScene,
                 newPart = { vm.newSongPart(copy = true) },
@@ -4959,6 +4984,17 @@ private const val TUTO_SPOT_MS = 2600L
 private const val TUTO_MINE_HEARD_MS = 600L
 /** The synth's « Réglages du son » card ([com.pocketstudio.app.synth.SoundCard]). */
 internal const val SYNTH_SETTINGS_SPOT = "synth_settings"
+
+/** Tour 9 (D13): the « Volume visé » chips of the master card (mixer/MasterLoudness.kt), a loudness step's own place. */
+internal const val LOUDNESS_TARGET_SPOT = "mixer_target"
+
+/**
+ * Tour 9 (D13; seat t9-14, Dutch at 200 % on a foldable): the master card, taller than the room above the tuto's panel, came
+ * top first, and the « Volume visé » chips at its foot stayed half under the panel. A loudness step brings the chips first
+ * (the card itself when it is folded and they are not there).
+ */
+internal fun tutoPlaceFor(ids: List<String>?, check: String?): List<String>? =
+    if (ids != null && check?.startsWith("loudness:") == true && "mixer_master" in ids) listOf(LOUDNESS_TARGET_SPOT) + ids else ids
 
 /**
  * [content] with the engine's position ([RhythmViewModel.live], new about 30 times a second) read

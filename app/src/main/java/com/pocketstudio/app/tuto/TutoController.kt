@@ -448,13 +448,7 @@ class TutoController(
     /** Where the user's parts stand against the order [s] asks for: what is still to add, or the first one out of place. */
     private fun orderText(s: TutoStep, p: Project): String {
         val (wanted, have) = TutoChecks.orderOf(s, p)
-        val shown = { l: String -> com.pocketstudio.model.Scene.shownLabel(l) }
-        val k = have.indices.firstOrNull { have[it] != wanted.getOrNull(it) }
-        return when {
-            k == null -> com.pocketstudio.model.i18n.tr("Encore : %s.", wanted.drop(have.size).joinToString(", ", transform = shown))
-            k == 0 -> com.pocketstudio.model.i18n.tr("Pas dans l'ordre : le morceau commence par « %s ».", shown(wanted[0]))
-            else -> com.pocketstudio.model.i18n.tr("Pas dans l'ordre : après « %1\$s » vient « %2\$s ». Le menu ⋮ d'une partie la retire, ou en insère une autre après.", shown(wanted[k - 1]), shown(wanted[k]))
-        }
+        return orderLine(wanted, have)
     }
 
     /**
@@ -963,6 +957,17 @@ class TutoController(
     }
 
     companion object {
+        /** Where [have] (the user's parts) stands against [wanted] (the order a step asks for), as [orderText] says it. */
+        internal fun orderLine(wanted: List<String>, have: List<String>): String {
+            val shown = { l: String -> com.pocketstudio.model.Scene.shownLabel(l) }
+            val k = have.indices.firstOrNull { have[it] != wanted.getOrNull(it) }
+            return when {
+                k == null -> com.pocketstudio.model.i18n.tr("Encore : %s.", wanted.drop(have.size).joinToString(", ", transform = shown))
+                k == 0 -> com.pocketstudio.model.i18n.tr("Pas dans l'ordre : le morceau commence par « %s ».", shown(wanted[0]))
+                else -> com.pocketstudio.model.i18n.tr("Pas dans l'ordre : après « %1\$s » vient « %2\$s ». Le menu ⋮ d'une partie la retire, ou en insère une autre après.", shown(wanted[k - 1]), shown(wanted[k]))
+            }
+        }
+
         /** A send counts from here (as [TutoChecks.done]). */
         private const val SENT = 0.05f
 

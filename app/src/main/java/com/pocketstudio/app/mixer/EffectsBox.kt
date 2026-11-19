@@ -87,15 +87,20 @@ fun EffectsBox(ch: Int, channel: Channel, actions: MixerActions, compact: Boolea
     }
 }
 
-/** The strip whose effects a screen shows under its sound, and what the box does. [more]: the whole box. */
-class EffectsUi(val ch: Int, val channel: Channel, val actions: MixerActions, val more: (() -> Unit)? = null)
+/**
+ * The strip whose effects a screen shows under its sound, and what the box does. [more]: the whole box.
+ * [trackName]: the track's own name, said by the suggested ambiences (« Pour : Rhodes », F136).
+ */
+class EffectsUi(val ch: Int, val channel: Channel, val actions: MixerActions, val more: (() -> Unit)? = null, val trackName: String? = null)
 
 /** The effects box in a card of its own, right under a sound (Synthé, Acide). */
 @Composable
 fun EffectsCard(ui: EffectsUi) {
     NeonCard(accent = Neon.Magenta, modifier = Modifier.testTag("effects_card")) {
         SectionLabel(tr("Effets"), color = Neon.Magenta, help = Glossary.FX_PRESET, foldKey = "Effets du son")
-        EffectsBox(ui.ch, ui.channel, ui.actions, compact = true, more = ui.more)
+        androidx.compose.runtime.CompositionLocalProvider(LocalFxTrackName provides (ui.trackName ?: LocalFxTrackName.current)) {
+            EffectsBox(ui.ch, ui.channel, ui.actions, compact = true, more = ui.more)
+        }
     }
 }
 

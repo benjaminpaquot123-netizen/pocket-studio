@@ -1,6 +1,6 @@
 # Tour 9, lot L3 (zone tuto) : rapport
 
-Branche : eq/tour-9-L3, avec l'intégration ccr-80af1a1b-mn0wec fusionnée (tête b81c56d3).
+Branche : eq/tour-9-L3, avec l'intégration ccr-80af1a1b-mn0wec fusionnée (tête ddf08286).
 Défauts visés : F031, F033, F035, F037, F038, F041, F043, F045, F138.
 
 Phrases d'acceptation (mot pour mot, `tour-9-tri/finitions.tsv`) :
@@ -34,7 +34,7 @@ Captures : aucune réenregistrée. Le lot ne change ni la mise en page ni les te
 
 Décisions : docs/decisions/tour-9-L3.md.
 
-Preuves : un commit « rouge: » puis « vert: » pour chaque défaut tenté (F033, F037, F043, F045, F138), dont, dans project-model, `Tour9TutoCurveKeepsMineTest#theStepTicksWithEveryCurveLaneTaken` (F138) ; tests ciblés app `com.pocketstudio.app.tuto.*` et project-model `com.pocketstudio.model.tuto.*` verts après la fusion de l'intégration ; rejeu du self-test vert.
+Preuves : un commit « rouge: » puis « vert: » pour chaque défaut tenté (F033, F037, F043, F045, F138), dont, dans project-model, `Tour9TutoCurveKeepsMineTest#theStepTicksWithEveryCurveLaneTaken` (F138) ; tests ciblés app `com.pocketstudio.app.tuto.*` et project-model `com.pocketstudio.model.tuto.*` verts après la fusion de l'intégration b81c56d3 ; après celle de ddf08286 : project-model 220 verts, app 378 dont 2 rouges dans `TutoReadabilityBudgetTest` (12 consignes Facile de/hi hors budget, cliquet Pro 3749 > 3725), rouges à l'identique sur l'intégration ddf08286 seule (venus des textes du lot L5b, pas de ce lot) ; rejeu du self-test vert (6 oracles tenus, 0 rouge).
 
 tests: *Tour9Tuto* *Tour8TutoGesturesDoItTest* *TutoLot4Test* *TutoJourneyTest* *Tour6TutoCellsPanel100Test* *TutoAppScreenshotTest*
 

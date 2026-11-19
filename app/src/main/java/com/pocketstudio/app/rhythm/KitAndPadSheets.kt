@@ -108,6 +108,20 @@ internal fun KitSheet(current: String, kits: List<KitChoice>, choose: (String) -
     }
 }
 
+/**
+ * Tour 9, F120: the sheet's « Fermer », framed and 12 dp away from the text beside it (a bare text button read as
+ * the end of the hint), at least 48 dp tall.
+ */
+@Composable
+private fun SheetClose(close: () -> Unit, tag: String) {
+    Spacer(Modifier.width(12.dp))
+    OutlinedButton(
+        onClick = close,
+        border = BorderStroke(1.dp, Neon.TextSecondary.copy(alpha = 0.7f)),
+        modifier = Modifier.heightIn(min = 48.dp).testTag(tag),
+    ) { Text(tr("Fermer"), color = Neon.TextPrimary) }
+}
+
 @Composable
 fun KitSheetContent(current: String, kits: List<KitChoice>, choose: (String) -> Unit, close: () -> Unit) {
     Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -116,7 +130,7 @@ fun KitSheetContent(current: String, kits: List<KitChoice>, choose: (String) -> 
                 Text(tr("Kit de batterie"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Text(tr("Touche un kit : il remplace les sons des 16 pads. Annuler le remet."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
             }
-            TextButton(onClick = close, modifier = Modifier.testTag("kit_sheet_close")) { Text(tr("Fermer")) }
+            SheetClose(close, "kit_sheet_close")
         }
         listOf(
             KitChoice.BUILT_IN to tr("Dans l'appli"),
@@ -225,7 +239,7 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Pad %1\$d · %2\$s", ui.lane + 1, ui.name), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color,
                 maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("pad_sheet_title"))
-            TextButton(onClick = close, modifier = Modifier.testTag("pad_sheet_close")) { Text(tr("Fermer")) }
+            SheetClose(close, "pad_sheet_close")
         }
         actions.listenAlone?.let { AloneButton(ui.alone, tr("Écouter seul"), ui.name, "pad_alone", toggle = it) }
         if (ui.alone) Text(tr("Joue en boucle, tout seul : change le son pour comparer."), style = MaterialTheme.typography.bodySmall, color = Neon.Acid)

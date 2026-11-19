@@ -21,3 +21,4 @@ BenchTour1Test#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lo
 BenchTour3Test#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
 BenchTour4Test#drive | seat entry point, only with -Phuman.dir | 2026-11-09 | lot 1 « Le juge »
 BenchReplayReadableTest#drive | seat entry point, only with -Phuman.dir (inherited from HumanTester) | 2026-11-11 | lot banc7
+BenchTutoAnchorTicksTest#drive | seat entry point, only with -Phuman.dir (inherited from HumanTester) | 2026-11-19 | lot « tour-9-cause-commune » (new bench class)

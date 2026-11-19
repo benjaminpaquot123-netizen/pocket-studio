@@ -50,3 +50,21 @@ Mineurs :
 - Restent ouverts, non bloquants : m1 à m5 (D08) ; le branchement `renameScene` dans AppRoot.kt (hors lot) est toujours nécessaire avant de dire D10 corrigé.
 
 Verdict : 0 bloquant, 0 grave
+
+## Relecture 3 (après G1 et G2)
+
+Relu : `git diff 7455749a5..HEAD` (app/src/main, décisions), surtout 3008f2e8 (rouge) et ec94c578 (vert), avec Tour9*, PlayStripLogicTest et SongArrangementTest.
+
+G1 (PlayStrip.kt:119-123) : corrigé. Arrêtée, la bande calcule `playFrom.takeIf { it in song.indices } ?: 0`, exactement l'expression de `RhythmViewModel.playFromNow()` (RhythmViewModel.kt:3251) qu'utilise `startPlaying` : ce qui est dit est ce que ▶ joue. Le code revient au comportement de la base, sans reste de l'ancienne règle « partie éditée ». Les tests ne sont pas creux : `Tour9PlayStripTest.stoppedItSaysWhereThePlayButtonStarts` et `PlayStripLogicTest` (B éditée, départ 0 → « Intro 1/6 » ; départ disparu → « Intro 1/6 ») échouaient sur la version précédente (rouge 3008f2e8). Seuls appelants : UnderTopBar.kt:114 et ReportWiring.kt:113, même signature.
+
+G2 (SessionScreen.kt:664) : corrigé. Le ▶ fait 48 dp de large sur 56 dp de haut ; `Tour9StructureGesturesTest.thePlayButtonIsAThumbWide` (360 dp, 200 %) échoue à 32 dp. Le détail passe à `maxLines = 3` (FitText, 11 sp mini) ; capture 360 dp 200 % : « × 1 · / 1 mes. » entier. Appui court (jouer) et appui long (fiche) inchangés, pas de conflit avec `part_open_N`.
+
+Rien dans le callback audio ni dans le moteur ; aucun texte d'interface ajouté hors `tr(...)` en français.
+
+Mineurs :
+- m8. SessionScreen.kt:663-664 : les 16 dp pris par le ▶ sortent de la colonne du nom. À 360 dp et 200 %, le titre (18 sp, soit 36 sp, gras, 2 lignes) n'a plus qu'environ 130 dp à côté des trois boutons de 48 dp : un nom de section long (« C · Refrain », « Couplet 2 ») risque « Refr… » en seconde ligne. `Tour9StructureLabelsTest.rowsReadWell` ne vérifie que la lettre du titre, pas l'absence de « … » : il passerait. Conséquence : nom de partie coupé pour un grand texte. Remède : vérifier le titre entier dans `rowsReadWell` (même `cut(l)` que pour la longueur) et, s'il casse, 3 lignes ou une taille mini pour le titre.
+- m9. SessionScreen.kt:631 : la KDoc de `PartRow` dit encore « a touch plays from it » ; depuis F104 un toucher ouvre la fiche et seul ▶ joue. Pas d'effet utilisateur, piège pour le prochain lecteur.
+- m10. tour-9-L6-rapport.md:22 : « corrige: F105 » alors que la moitié « nommer la partie éditée » est abandonnée (décision G1) et seulement notée dans les restes. À écrire « tenté » ou « moitié » dans la ligne `corrige:` pour que le tri ne déclare pas F105 constaté en entier.
+- Restent ouverts, sans changement : m1 à m5 (D08) ; le branchement `renameScene` dans AppRoot.kt (D10) et la ligne `doneGoesAtNextGesture` (F111), hors lot, chez le chef.
+
+Verdict : 0 bloquant, 0 grave

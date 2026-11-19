@@ -1,0 +1,37 @@
+Écran 86 (1035x1243)
+icône (dossier ouvert) « مشروعي 1 تم الحفظ » ✓ @ 758,42
+bouton « بسيط » @ 436,42
+icône ↶ @ 347,42
+bouton ● @ 275,42
+bouton ▶ « هذا الجزء » @ 202,42
+bouton ▶ « الأغنية » @ 117,42
+icône ⋮ @ 45,42
+bouton « 130  السرعة » @ 917,168
+bouton « ? » @ 45,168
+onglet « Acid 303 خط باص » @ 911,323
+bouton « باص باص متكلم » ⋮ @ 674,323
+icône ♪ « الصوت » @ 468,323
+bouton + «  المسار » @ 278,323
+icône « الجزء: A » ▾ @ 937,434
+bouton « 2 » [coupé] @ 920,507
+bouton « 1 » @ 486,507
+texte « مازورة » @ 84,507
+dessin [coupé] @ 559,640
+texte « لا » [coupé] @ 84,558
+texte « لا♭ » @ 84,598
+texte « صول » @ 84,640
+texte « صول♭ » @ 84,682
+texte « فا » @ 84,722
+texte « البيس الذي يتكلم الفصل 3/13 · الخطوة 2/4 · سهل » @ 589,819
+icône (liste) « الفصول » @ 129,819
+icône ⌃ @ 57,819
+icône « دورك: اضغط النوتات المنقّطة الـ4 في المازورة 1. اقرأ » ⌃ @ 517,980
+onglet (lignes et note) « أغنيتي » @ 936,1121
+onglet (quatre carrés) « الإيقاع » @ 726,1121
+onglet (touches de piano) « لوحة المفاتيح » [sélectionné] @ 516,1121
+onglet (curseurs) « المكس » @ 307,1121
+onglet (trois points reliés) « مشاركة » @ 98,1121
+texte « وضع الملاحظات » @ 658,1213
+texte « ●  REC » @ 238,1213
+texte « ✎  دوّن » @ 133,1213
+texte « ⋯ » @ 48,1213

@@ -1,0 +1,61 @@
+Écran 65 (1035x1243)
+icône (dossier ouvert) « مشروعي 1 تم الحفظ » ✓ @ 680,42
+bouton « بسيط » @ 280,42
+bouton ● @ 191,42
+bouton ▶ « هذا الجزء » @ 118,42
+icône ⋮ @ 45,42
+bouton « 130  السرعة » @ 917,168
+bouton « ? » @ 45,168
+icône « الجزء: A » ▾ @ 937,292
+bouton « طبل كبير للاستوديو FX » @ 959,398
+bouton « الطبل الكبير 2 » @ 835,398
+bouton « Speed garage · سنير FX » @ 710,398
+bouton « سنير 2 » @ 585,398
+bouton « تصفيق FX » @ 959,504
+bouton « Speed garage · هاي هات L 30 » @ 835,504
+bouton « Speed garage · هاي هات مفتوح R 30 » @ 710,504
+bouton « توم منخفض » @ 585,504
+bouton « توم متوسط R 45 » [coupé] @ 959,592
+bouton « توم عالٍ » [coupé] @ 835,592
+bouton « Speed garage · حافة الطبل FX R 50 » [coupé] @ 710,592
+bouton « جرس » [coupé] @ 585,592
+bouton « تتبّع » [coupé] @ 359,344
+bouton « 2 » [coupé, sélectionné] @ 261,341
+bouton « 1 » [coupé] @ 180,341
+texte « مازورة » [coupé] @ 88,344
+texte « المازورة 2/2 · Speed garage · هاي هات » @ 268,402
+texte « بقيت هنا 9 خانات منقّطة » @ 237,468
+bouton [état « فارغة، منقّطة: المسها »] @ 460,545
+bouton [état « فارغ »] @ 404,545
+bouton [état « فارغة، منقّطة: المسها »] @ 348,545
+bouton « 2 » [état « فارغة، منقّطة: المسها »] @ 292,545
+bouton [état « ضربة، القوة 100 % »] @ 236,545
+bouton [état « فارغ »] @ 180,545
+bouton [état « ضربة، القوة 100 % »] @ 124,545
+bouton « 1 » [état « ضربة، القوة 100 % »] @ 67,546
+bouton [coupé, état « فارغة، منقّطة: المسها »] @ 460,603
+bouton [coupé, état « فارغ »] @ 404,603
+bouton [coupé, état « فارغة، منقّطة: المسها »] @ 348,603
+bouton « 4 » [coupé, état « فارغة، منقّطة: المسها »] @ 292,603
+bouton [coupé, état « فارغة، منقّطة: المسها »] @ 236,603
+bouton [coupé, état « فارغ »] @ 180,603
+bouton [coupé, état « فارغة، منقّطة: المسها »] @ 124,603
+bouton « 3 » [coupé, état « فارغة، منقّطة: المسها »] @ 67,603
+texte « الطبول الفصل 2/13 · الخطوة 5/6 · سهل » @ 589,700
+icône (liste) « الفصول » @ 129,700
+icône ⌃ @ 57,700
+icône « دورك: على باد «Speed garage · هاي هات»، اضغط الخانات المنقّطة: ضربات سريعة تتمايل. اقرأ » ⌃ @ 517,861
+bouton ▶ « الأغنية » @ 525,1001
+texte « 130 السرعة » @ 332,1000
+icône ↶ « تراجع » @ 891,1000
+image ↷ @ 711,972
+icône ⋮ « المزيد » @ 144,1000
+onglet (lignes et note) « أغنيتي » @ 936,1121
+onglet (quatre carrés) « الإيقاع » [sélectionné] @ 726,1121
+onglet (touches de piano) « لوحة المفاتيح » @ 516,1121
+onglet (curseurs) « المكس » @ 307,1121
+onglet (trois points reliés) « مشاركة » @ 98,1121
+texte « وضع الملاحظات » @ 658,1213
+texte « ●  REC » @ 238,1213
+texte « ✎  دوّن » @ 133,1213
+texte « ⋯ » @ 48,1213

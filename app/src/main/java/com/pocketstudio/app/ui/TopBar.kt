@@ -54,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -242,6 +243,28 @@ private val PROJECT_FOLDER_ROOM = 52.dp
 /** Next to the mode chip, the name keeps this much text at the usual size (« Mon prem… »), more as the text grows. */
 private val PROJECT_NAME_TEXT = 56.dp
 
+/**
+ * « ✓ Sauvegardé » under (or next to) the project's name. Tour 9, F107 (« Enregistré » gone, « Mon projet 1 » alone): a
+ * word that does not fit is set a size smaller, then tighter, before the tick is left alone (never « Sauv… »).
+ */
+@Composable
+private fun SavedWord(modifier: Modifier = Modifier, word: Boolean = true, giveUp: () -> Unit = {}) = androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
+  // Tried again from the largest size when the room changes (the phone turned, a chip gone).
+  var step by remember(maxWidth, word) { mutableStateOf(if (word) 0 else SAVED_STEPS + 1) }
+  androidx.compose.runtime.LaunchedEffect(step > SAVED_STEPS && word) { if (step > SAVED_STEPS && word) giveUp() }
+  Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("top_saved")) {
+    Icon(Icons.Filled.Check, contentDescription = if (step > SAVED_STEPS) tr("Sauvegardé") else null, tint = Neon.Acid, modifier = Modifier.size(if (step == 0) 16.dp else 14.dp))
+    val base = if (step == 0) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall
+    if (step <= SAVED_STEPS || word) Text(
+        tr("Sauvegardé"), style = base.copy(letterSpacing = if (step >= 2) (-0.02).em else 0.sp, fontWeight = FontWeight.Bold), color = Neon.Acid,
+        maxLines = 1, softWrap = false, overflow = TextOverflow.Clip, onTextLayout = { if (it.hasVisualOverflow && step <= SAVED_STEPS) step++ },
+        modifier = Modifier.padding(start = if (step == 0) 2.dp else 1.dp).graphicsLayer { alpha = if (step > SAVED_STEPS) 0f else 1f },
+    )
+  }
+}
+
+private const val SAVED_STEPS = 2
+
 private val TOP_SHEEN = Color.White.copy(alpha = 0.06f)
 private val FOOT_SHADE = Color.Black.copy(alpha = 0.32f)
 private val FOOT_LIGHT = Color.White.copy(alpha = 0.07f)
@@ -314,7 +337,15 @@ private fun TopBarRow(ui: TopBarUi, actions: TopBarActions, onRename: () -> Unit
     // A narrow bar (the keys on a small phone at 130 %): « ▶ le morceau » goes up to the name's line, at its end.
     val songOnTop = ui.songButton && rowWidth - songRoom - PLAY_GAP - (if (ui.redoFirst) BUTTON else 0.dp) < ALWAYS_SHOWN + PROJECT_ICON
     val fitted = topBarLayout(if (songOnTop || !ui.songButton) rowWidth else rowWidth - songRoom - PLAY_GAP, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst, fontScale = androidx.compose.ui.platform.LocalDensity.current.fontScale)
-    val layout = if (songOnTop) fitted.copy(projectName = false, modeInRow = false) else fitted
+    // Tour 9, F107 (« Mon projet 1 » cut, « Sauvegardé » gone): a name that does not read whole in the row, even a size
+    // smaller, goes to its own line, the bar's whole width (tried again in the row when the room or the name changes).
+    val barWidth = maxWidth
+    var nameDown by remember(ui.projectName, barWidth, ui.mode, ui.scene != null, ui.undo, ui.songButton, ui.redoFirst, androidx.compose.ui.platform.LocalDensity.current.fontScale) { mutableStateOf(false) }
+    val layout = when {
+        songOnTop -> fitted.copy(projectName = false, modeInRow = false)
+        nameDown && fitted.projectName && fitted.nameShown -> fitted.copy(projectName = false)
+        else -> fitted
+    }
     val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
     // Squeezed (a small phone with a big text size): the project's name gets a line of its own
@@ -329,14 +360,18 @@ private fun TopBarRow(ui: TopBarUi, actions: TopBarActions, onRename: () -> Unit
                 .testTag("top_project_line"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            // The name first: on a line too short for both (a big text), « Sauvegardé » leaves its tick alone, never the name cut.
+            var wordOff by remember(ui.projectName, barWidth) { mutableStateOf(false) }
             Text(
                 ui.projectName, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                onTextLayout = { if (it.hasVisualOverflow) wordOff = true },
                 modifier = Modifier.weight(1f),
             )
             if (ui.recordInto != null) {
                 Text(tr("REC dans %s", ui.recordInto), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.RedText, maxLines = 1, modifier = Modifier.testTag("top_record_into"))
             } else if (ui.saved) {
-                Icon(Icons.Filled.Check, contentDescription = tr("Sauvegardé"), tint = Neon.Acid, modifier = Modifier.size(16.dp).testTag("top_saved"))
+                // Tour 9, F107: the word too, as in the row (the line has the bar's whole width).
+                SavedWord(Modifier.padding(start = 6.dp), word = !wordOff)
             }
             if (ui.mode != null && !layout.modeInRow) ModeChip(ui.mode, actions.mode)
             if (songOnTop) NamedPlay(tr("le morceau"), songStyle, tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)
@@ -368,12 +403,13 @@ private fun TopBarRow(ui: TopBarUi, actions: TopBarActions, onRename: () -> Unit
                 // Tour 5, moyens2: the folder alone (no name in the bar), « ✓ Sauvegardé » and « REC dans … » stay, on it.
                 if (!layout.nameShown) FolderStatus(ui, Modifier.align(Alignment.BottomEnd).offset(x = 3.dp, y = 3.dp))
             }
-            if (layout.projectName && layout.nameShown) androidx.compose.foundation.layout.Column {
-                // Testers (lot « tuto 4 »): « Mon pro… »: a name that does not fit is set a size smaller first.
-                var smaller by remember(ui.projectName) { mutableStateOf(false) }
+            if (layout.projectName && layout.nameShown) androidx.compose.foundation.layout.BoxWithConstraints nameBox@{ val room = this@nameBox.maxWidth; androidx.compose.foundation.layout.Column {
+                // Testers (lot « tuto 4 »): « Mon pro… »: a name that does not fit is set a size smaller first (tried
+                // again at its usual size when the room changes).
+                var smaller by remember(ui.projectName, room) { mutableStateOf(false) }
                 Text(
                     ui.projectName, style = if (smaller) MaterialTheme.typography.titleSmall else MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
-                    maxLines = 1, overflow = TextOverflow.Ellipsis, onTextLayout = { if (!smaller && it.hasVisualOverflow) smaller = true },
+                    maxLines = 1, overflow = TextOverflow.Ellipsis, onTextLayout = { if (it.hasVisualOverflow) { if (!smaller) smaller = true else nameDown = true } },
                 )
                 if (ui.recordInto != null) {
                     Text(
@@ -383,18 +419,10 @@ private fun TopBarRow(ui: TopBarUi, actions: TopBarActions, onRename: () -> Unit
                 } else if (ui.saved) {
                     // Nothing to save by hand: said where the project is named, quietly.
                     // Audit ultra round 1, n° 26 (seat B b: « une minuscule coche »): the tick and its word larger, in the accent.
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("top_saved")) {
-                        Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(16.dp))
-                        // Too narrow for the word (a small phone): the tick alone, never "E…".
-                        var cut by remember { mutableStateOf(false) }
-                        Text(
-                            tr("Sauvegardé"), style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 0.sp, fontWeight = FontWeight.Bold), color = Neon.Acid,
-                            maxLines = 1, softWrap = false, overflow = TextOverflow.Clip, onTextLayout = { cut = it.hasVisualOverflow },
-                            modifier = Modifier.padding(start = 2.dp).graphicsLayer { alpha = if (cut) 0f else 1f },
-                        )
-                    }
+                    // Its word does not fit under the name: both go to the name's own line.
+                    SavedWord(giveUp = { nameDown = true })
                 }
-            }
+            } }
         }
         if (ui.mode != null && layout.modeInRow) ModeChip(ui.mode, actions.mode)
         if (ui.scene != null && layout.scene != SceneChipMode.Hidden) {

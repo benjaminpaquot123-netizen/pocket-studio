@@ -1,0 +1,705 @@
+#0 SIEGE lang=nl device=phone360 font=130 mode=pro theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:boom_bap:1
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=9.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:boom_bap:1
+#0 AMENEE > touche 270 888 (launch_learn)
+#0 AMENEE > touche 270 989 (mode_card_pro)
+#0 AMENEE > touche 270 1096 (tuto_style_boom_bap)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 0f583dfa95 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 270 784
+#1 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#2 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 6e2e248df9 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 222 536
+#2 DOIGT tuto_kit_download « Kit Boom bap downloaden (7 MB) »
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 07807ec6f3 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=ref done=1 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > attends 8
+#4 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 2ec8613a99 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=ref done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 270 758
+#4 DOIGT tuto_next_big « Volgende stap   »
+#5 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d7cea5bf9f | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « Tempo en toonsoort » over the touchable « Tempo: 120 BPM Tempo wijzigen » (91 x 11 dp)
+#5 > touche 83 195
+#5 DOIGT top_tempo « Tempo: 120 BPM »
+#6 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 07a4342b5b | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « Tempo » over the touchable « Blad sluiten » (82 x 32 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « Blad sluiten » (9 x 18 dp)
+#6 LAYOUT OVERLAP « Sluiten » over the touchable « Blad sluiten » (63 x 27 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « Blad sluiten » (86 x 53 dp)
+#6 LAYOUT OVERLAP «  BPM » over the touchable « Blad sluiten » (50 x 31 dp)
+#6 LAYOUT OVERLAP « 70 » over the touchable « Blad sluiten » (25 x 24 dp)
+#6 LAYOUT OVERLAP « 90 » over the touchable « Blad sluiten » (25 x 24 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « Blad sluiten » (38 x 24 dp)
+#6 LAYOUT OVERLAP « 140 » over the touchable « Blad sluiten » (38 x 24 dp)
+#6 LAYOUT OVERLAP « 174 » over the touchable « Blad sluiten » (38 x 24 dp)
+#6 LAYOUT OVERLAP « ½ » over the touchable « Blad sluiten » (17 x 31 dp)
+#6 LAYOUT OVERLAP « ×2 » over the touchable « Blad sluiten » (26 x 31 dp)
+#6 LAYOUT OVERLAP « 1 » over the touchable « Blad sluiten » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 2 » over the touchable « Blad sluiten » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 3 » over the touchable « Blad sluiten » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 4 » over the touchable « Blad sluiten » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 5 » over the touchable « Blad sluiten » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 6 » over the touchable « Blad sluiten » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 7 » over the touchable « Blad sluiten » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 8 » over the touchable « Blad sluiten » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 9 » over the touchable « Blad sluiten » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 0 » over the touchable « Blad sluiten » (16 x 30 dp)
+#6 LAYOUT OVERLAP « OK » over the touchable « Blad sluiten » (37 x 30 dp)
+#6 LAYOUT OVERLAP « Tik in de maat » over the touchable « Blad sluiten » (136 x 31 dp)
+#6 LAYOUT OVERLAP « Tik hier op elke tel: het tempo volgt. » over the touchable « Blad sluiten » (238 x 48 dp)
+#6 > touche 437 884
+#6 DOIGT tempo_key_9 « 9 »
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 8e51efa9ed | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 9 » over the touchable « Blad sluiten » (29 x 53 dp)
+#7 LAYOUT OVERLAP « Tussen 40 en 300 » over the touchable « Blad sluiten » (161 x 27 dp)
+#7 > touche 270 710
+#7 DOIGT tempo_key_2 « 2 »
+#8 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE a8bfb691d8 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 92 » over the touchable « Blad sluiten » (57 x 53 dp)
+#8 > touche 437 971
+#8 DOIGT tempo_key_ok « OK »
+#9 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 53394bad44 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=tempo done=2 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Tempo en toonsoort » over the touchable « Tempo: 92 BPM Tempo wijzigen » (79 x 11 dp)
+#9 > touche 270 756
+#9 DOIGT tuto_next_big « Volgende stap   »
+#10 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 057866bce2 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=key done=2 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 92 » over « Tempo en toonsoort » (25 x 18 dp)
+#10 LAYOUT OVERLAP « 92 » over « Hoofdstuk 1/14 · Stap 3/3 · Pro » (25 x 6 dp)
+#10 LAYOUT OVERLAP « Tempo en toonsoort » over the touchable « Tempo: 92 BPM Tempo wijzigen » (79 x 27 dp)
+#10 LAYOUT OVERLAP « Hoofdstuk 1/14 · Stap 3/3 · Pro » over the touchable « Tempo: 92 BPM Tempo wijzigen » (79 x 18 dp)
+#10 > touche 270 677
+#10 DOIGT tuto_do «   Ik doe het »
+#11 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 0ce9fff8e4 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=key done=2 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Toonsoort van het nummer » over the touchable « Blad sluiten » (216 x 64 dp)
+#11 LAYOUT OVERLAP « Toonsoort van het nummer: geen » over the touchable « Blad sluiten » (296 x 27 dp)
+#11 LAYOUT OVERLAP « Toonladder » over the touchable « Blad sluiten » (101 x 27 dp)
+#11 LAYOUT OVERLAP « Majeur » over the touchable « Blad sluiten » (65 x 31 dp)
+#11 LAYOUT OVERLAP « Mineur » over the touchable « Blad sluiten » (69 x 31 dp)
+#11 LAYOUT OVERLAP « Dorisch » over the touchable « Blad sluiten » (73 x 31 dp)
+#11 LAYOUT OVERLAP « Mineur-penta » over the touchable « Blad sluiten » (127 x 31 dp)
+#11 LAYOUT OVERLAP « Majeur-penta » over the touchable « Blad sluiten » (127 x 31 dp)
+#11 LAYOUT OVERLAP « Blues » over the touchable « Blad sluiten » (52 x 31 dp)
+#11 LAYOUT OVERLAP « Frygisch » over the touchable « Blad sluiten » (81 x 31 dp)
+#11 LAYOUT OVERLAP « Harmonisch mineur » over the touchable « Blad sluiten » (184 x 31 dp)
+#11 LAYOUT OVERLAP « Grondtoon » over the touchable « Blad sluiten » (96 x 27 dp)
+#11 LAYOUT OVERLAP « C » over the touchable « Blad sluiten » (15 x 31 dp)
+#11 LAYOUT OVERLAP « C♯ » over the touchable « Blad sluiten » (26 x 31 dp)
+#11 LAYOUT OVERLAP « D » over the touchable « Blad sluiten » (15 x 31 dp)
+#11 LAYOUT OVERLAP « E♭ » over the touchable « Blad sluiten » (19 x 31 dp)
+#11 LAYOUT OVERLAP « E » over the touchable « Blad sluiten » (12 x 31 dp)
+#11 LAYOUT OVERLAP « F » over the touchable « Blad sluiten » (12 x 31 dp)
+#11 LAYOUT OVERLAP « F♯ » over the touchable « Blad sluiten » (23 x 31 dp)
+#11 LAYOUT OVERLAP « G » over the touchable « Blad sluiten » (15 x 31 dp)
+#11 LAYOUT OVERLAP « A♭ » over the touchable « Blad sluiten » (21 x 31 dp)
+#11 LAYOUT OVERLAP « A » over the touchable « Blad sluiten » (14 x 31 dp)
+#11 LAYOUT OVERLAP « B♭ » over the touchable « Blad sluiten » (20 x 31 dp)
+#11 LAYOUT OVERLAP « B » over the touchable « Blad sluiten » (13 x 31 dp)
+#11 > touche 236 550
+#11 DOIGT tuto_scale_Minor « Mineur »
+#12 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 9d154cf48b | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=key done=2 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Toonsoort van het nummer: C · Mineur » over the touchable « Blad sluiten » (276 x 55 dp)
+#12 > touche 237 936
+#12 DOIGT tuto_root_2 « D »
+#13 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 89b049b260 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=key done=3 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « Toonsoort van het nummer: D · Mineur » over the touchable « Blad sluiten » (276 x 55 dp)
+#13 LAYOUT OVERLAP « Gelukt! De kleur van het nummer is gekozen. » over the touchable « Blad sluiten » (233 x 61 dp)
+#13 LAYOUT OVERLAP « Terug naar de tutorial » over the touchable « Blad sluiten » (198 x 27 dp)
+#13 > touche 270 1136
+#13 DOIGT tuto_key_continue « Terug naar de tutorial »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE a77d85f9fe | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=key done=3 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « Boom bap · Kick » ellipsized (« … »)
+#14 LAYOUT CUT « E-mu SP-1200 · Snare » ellipsized (« … »)
+#14 LAYOUT CUT « Akai MPC60 · Hi-hat » ellipsized (« … »)
+#14 LAYOUT CUT « Boom bap · Open hi-hat » ellipsized (« … »)
+#14 > touche 270 857
+#14 DOIGT tuto_chapter_end_folded « Goed gedaan, hoofdstuk klaar! »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE fe2eb3e9ac | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=key done=3 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 270 756
+#15 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#16 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 103523bf2f | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 270 605
+#16 DOIGT tuto_text_more « Verder lezen »
+#17 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d583336dfb | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « 92 » over « Hoofdstuk 2/14 · Stap 1/8 · Pro » (25 x 21 dp)
+#17 LAYOUT OVERLAP « Hoofdstuk 2/14 · Stap 1/8 · Pro » over the touchable « Huidig deel: A. Tik om een ander deel te » (49 x 3 dp)
+#17 LAYOUT OVERLAP « Hoofdstuk 2/14 · Stap 1/8 · Pro » over the touchable « Tempo: 92 BPM Tempo wijzigen » (79 x 33 dp)
+#17 > touche 270 677
+#17 DOIGT tuto_need «   Naar 2 maten »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 977593f5a9 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « Nu jij: ‘Naar 2 maten’, en dan op de pad ‘Boom bap · Kick’: de 1, de stuiters net na de 2 en de 3, en de kleine spookkick in maat 2, net vóór een tel. » ellipsized (« … »)
+#18 LAYOUT CONTRAST « Maat » 1.22:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 1 » 2.12:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « Volgen » 1.29:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#18 > touche 67 536
+#18 DOIGT step_0 « Vakje 1 »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE fe2e5d145a | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=3 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 414 536
+#19 DOIGT step_6 « Vakje 7 »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE 18e5e7453d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=3 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 182 607
+#20 DOIGT step_10 « Vakje 11 »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE afc277a38a | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=3 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « Maat 1/2 · Boom bap · Kick » ellipsized (« … »)
+#21 > touche 234 381
+#21 DOIGT drum_page_1 « 2 »
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 822afe1ebf | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=3 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « 2 » 2.11:1 (needs 4.5:1, 14 sp)
+#22 > touche 67 536
+#22 DOIGT step_16 « Vakje 1 »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE a3dd6e5809 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=3 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « 2 » 2.17:1 (needs 4.5:1, 14 sp)
+#23 > touche 182 536
+#23 DOIGT step_18 « Vakje 3 »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE b35c3ad37c | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=3 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 182 607
+#24 DOIGT step_26 « Vakje 11 »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE fae53d575b | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=3 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 356 607
+#25 DOIGT step_29 « Vakje 14 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE 29c7052c3d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=kick_do done=4 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 270 857
+#26 DOIGT tuto_next_folded « Gelukt »
+#27 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 13513cc4c8 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_do done=4 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CUT « 16 pads » lines cut (taller than its box)
+#27 LAYOUT CUT « Baslijn » lines cut (taller than its box)
+#27 LAYOUT CUT « Microfoon » lines cut (taller than its box)
+#27 LAYOUT CONTRAST « 16 pads » 3.10:1 (needs 4.5:1, 12 sp)
+#27 LAYOUT CONTRAST « Microfoon » 3.47:1 (needs 4.5:1, 12 sp)
+#27 > touche 270 677
+#27 DOIGT tuto_do «   Ik doe het »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE ab150af3e5 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_do done=4 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CUT « Nu jij: op de pad ‘E-mu SP-1200 · Snare’: 2 en 4, en de twee (zachte) ghost notes van maat 2 die de groove laten rollen. » ellipsized (« … »)
+#28 LAYOUT CONTRAST « 2 » 2.42:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « 4 » 3.51:1 (needs 4.5:1, 12 sp)
+#28 > touche 298 452
+#28 DOIGT step_4 « Vakje 5 »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 12743468f2 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_do done=4 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « 4 » 2.43:1 (needs 4.5:1, 12 sp)
+#29 > touche 298 523
+#29 DOIGT step_12 « Vakje 13 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 0fd38eb2d0 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_do done=4 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CUT « Maat 1/2 · E-mu SP-1200 · Snare » ellipsized (« … »)
+#30 > touche 338 387
+#30 DOIGT tuto_bar_go « Maat 2 · 4 vakjes → »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE 650f1dc277 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_do done=4 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#31 > touche 298 452
+#31 DOIGT step_20 « Vakje 5 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE ef0047fd02 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_do done=4 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 240 523
+#32 DOIGT step_27 « Vakje 12 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 592857a4f8 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_do done=4 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « 4 » 3.04:1 (needs 4.5:1, 12 sp)
+#33 > touche 298 523
+#33 DOIGT step_28 « Vakje 13 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE d04880ac0b | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_do done=4 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 472 523
+#34 DOIGT step_31 « Vakje 16 »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE 0b2cb1c1e7 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_do done=5 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 270 857
+#35 DOIGT tuto_next_folded « Gelukt »
+#36 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE bb4a441120 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 270 677
+#36 DOIGT tuto_do «   Ik doe het »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 236be1d650 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « Nu jij: tik op de pad ‘Akai MPC60 · Hi-hat’ de gestippelde vakjes aan: achtsten, en twee kleine extra noten. » ellipsized (« … »)
+#37 LAYOUT CONTRAST « 1 » 2.55:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « 2 » 3.71:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « 3 » 3.73:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « 4 » 3.73:1 (needs 4.5:1, 12 sp)
+#37 > touche 67 452
+#37 DOIGT step_0 « Vakje 1 »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 6013792abd | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 182 452
+#38 DOIGT step_2 « Vakje 3 »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 2206b11f19 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « 2 » 3.22:1 (needs 4.5:1, 12 sp)
+#39 > touche 298 452
+#39 DOIGT step_4 « Vakje 5 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE cdfb90b8e1 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 414 452
+#40 DOIGT step_6 « Vakje 7 »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE c6b3b5cd99 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 472 452
+#41 DOIGT step_7 « Vakje 8 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 3f32d09762 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « 3 » 3.23:1 (needs 4.5:1, 12 sp)
+#42 > touche 67 523
+#42 DOIGT step_8 « Vakje 9 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE 7ab104f654 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 182 523
+#43 DOIGT step_10 « Vakje 11 »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE afad4a5ee4 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST « 4 » 3.23:1 (needs 4.5:1, 12 sp)
+#44 > touche 298 523
+#44 DOIGT step_12 « Vakje 13 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 601bd9091d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 414 523
+#45 DOIGT step_14 « Vakje 15 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 34f75cb6d2 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 472 523
+#46 DOIGT step_15 « Vakje 16 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE 332ca7d734 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CUT « Maat 1/2 · Akai MPC60 · Hi-hat » ellipsized (« … »)
+#47 > touche 332 387
+#47 DOIGT tuto_bar_go « Maat 2 · 10 vakjes → »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE 236be1d650 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#48 > touche 67 452
+#48 DOIGT step_16 « Vakje 1 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE 6013792abd | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 182 452
+#49 DOIGT step_18 « Vakje 3 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE 2206b11f19 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 298 452
+#50 DOIGT step_20 « Vakje 5 »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE cdfb90b8e1 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 414 452
+#51 DOIGT step_22 « Vakje 7 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE c6b3b5cd99 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 472 452
+#52 DOIGT step_23 « Vakje 8 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 3f32d09762 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 67 523
+#53 DOIGT step_24 « Vakje 9 »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 7ab104f654 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 182 523
+#54 DOIGT step_26 « Vakje 11 »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE afad4a5ee4 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 298 523
+#55 DOIGT step_28 « Vakje 13 »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE 601bd9091d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 414 523
+#56 DOIGT step_30 « Vakje 15 »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 34f75cb6d2 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=5 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 472 523
+#57 DOIGT step_31 « Vakje 16 »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE 9c632d691b | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=hat_do done=6 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 270 857
+#58 DOIGT tuto_next_folded « Gelukt »
+#59 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 80ae346b0e | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=swing done=6 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT OVERLAP « 92 » over « De drums » (25 x 11 dp)
+#59 LAYOUT OVERLAP « 92 » over « Hoofdstuk 2/14 · Stap 4/8 · Pro » (25 x 13 dp)
+#59 LAYOUT OVERLAP « De drums » over the touchable « Tempo: 92 BPM Tempo wijzigen » (79 x 23 dp)
+#59 LAYOUT OVERLAP « Hoofdstuk 2/14 · Stap 4/8 · Pro » over the touchable « Tempo: 92 BPM Tempo wijzigen » (79 x 25 dp)
+#59 > touche 270 677
+#59 DOIGT tuto_do «   Ik doe het »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE cfb46ba3ed | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=swing done=6 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CUT « Nu jij: 27 % swing op de schuif van de app, ofwel 60 % swing op een MPC (58% voor het klassieke geluid, 62% voor een jazzier geluid). Hij vertraagt om de andere zestiende. » ellipsized (« … »)
+#60 LAYOUT CONTRAST « ? » 3.47:1 (needs 4.5:1, 12 sp)
+#60 LAYOUT CONTRAST « 0% » 3.33:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT TARGET « Effecten » 10 x 40 dp (touch 48 x 48)
+#60 > glisse 32 580 160 580
+#60 DOIGT dans:rhythm_swing « Swing »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE cfb46ba3ed | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=swing done=6 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 160 580
+#61 DOIGT dans:rhythm_swing « Swing »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE 14cccfedf3 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=swing done=6 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 179 580
+#62 DOIGT dans:rhythm_swing « Swing »
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 1695c8691b | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=swing done=7 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 270 857
+#63 DOIGT tuto_next_folded « Gelukt »
+#64 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 7256b0dd10 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT OVERLAP « 92 » over « De drums » (25 x 3 dp)
+#64 LAYOUT OVERLAP «  BPM » over « De drums » (40 x 3 dp)
+#64 LAYOUT OVERLAP « De drums » over the touchable « Tempo: 92 BPM Tempo wijzigen » (79 x 15 dp)
+#64 > touche 270 677
+#64 DOIGT tuto_do «   Ik doe het »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE d259bec52d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CUT « Nu jij: de snare ‘te laat’. Druk op de pad ‘E-mu SP-1200 · Snare’ lang op elke harde slag, dan ‘Verschuiving van slag’ op +10 ms: hij komt een haartje na de tel, nonchalant. » ellipsized (« … »)
+#65 LAYOUT CONTRAST « Maat 2/2 · Akai MPC60 · Hi-hat » 1.32:1 (needs 4.5:1, 13 sp)
+#65 > glisse 270 420 270 680
+#65 DOIGT rien
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE 1b53f67224 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#66 SON Son : rien ne joue.
+#66 > glisse 270 420 270 680
+#66 DOIGT fold_Pas « VAKJES: AKAI MPC60 · HI-HAT »
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 0a0280717d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CUT « Pads klinken, vakjes bewaren de slagen. Lang drukken: klank wijzigen. » ellipsized (« … »)
+#67 > glisse 270 400 270 600
+#67 DOIGT rien
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE 1e64115c50 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « FX » 4.41:1 (needs 4.5:1, 9 sp)
+#68 LAYOUT CONTRAST « Akai MPC60 · Hi-hat » 4.06:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « Pads klinken, vakjes bewaren de slagen. Lang drukken: klank wijzigen. » 3.02:1 (needs 4.5:1, 13 sp)
+#68 > glisse 270 400 270 600
+#68 DOIGT rien
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 4980dbbf71 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CONTRAST « Akai MPC60 · Hi-hat » 4.41:1 (needs 4.5:1, 14 sp)
+#69 > touche 334 432
+#69 DOIGT pad_2 « E-mu SP-1200 · Snare »
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE 815928f46d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#70 SON Son : le pad « E-mu SP-1200 · Snare » sonne.
+#70 LAYOUT CONTRAST « E-mu SP-1200 · Snare » 3.66:1 (needs 4.5:1, 14 sp)
+#70 > glisse 270 680 270 330
+#70 DOIGT tuto_toggle « De drums »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE 4980dbbf71 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#71 SON Son : rien ne joue.
+#71 > glisse 270 675 270 360
+#71 DOIGT tuto_toggle « De drums »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE 4980dbbf71 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 270 857
+#72 DOIGT tuto_folded_text « Nu jij: de snare ‘te laat’. Druk op de p »
+#73 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 7256b0dd10 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 270 677
+#73 DOIGT tuto_do «   Ik doe het »
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE c7494f3eb5 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT CONTRAST « Maat » 4.23:1 (needs 4.5:1, 14 sp)
+#74 LAYOUT CONTRAST « 1 » 2.70:1 (needs 4.5:1, 14 sp)
+#74 LAYOUT CONTRAST « 2 » 4.45:1 (needs 4.5:1, 14 sp)
+#74 LAYOUT CONTRAST « Volgen » 2.78:1 (needs 4.5:1, 14 sp)
+#74 > appui-long 298 554
+#74 DOIGT step_20 « Vakje 5 »
+#75 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE dd15615861 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#75 SON Son : rien ne joue.
+#75 > glisse 270 850 270 300
+#75 DOIGT rien
+#76 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE dd15615861 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#76 SON Son : rien ne joue.
+#76 > glisse 500 820 500 180
+#76 DOIGT rien
+#77 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE dd15615861 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#77 SON Son : rien ne joue.
+#77 RIEN NE CHANGE (3 écrans identiques)
+#77 > touche 486 143
+#77 DOIGT roll_close
+#78 ROUTE tab_Sons | MODE pro | EMPREINTE c7494f3eb5 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 270 857
+#78 DOIGT tuto_folded_text « Nu jij: de snare ‘te laat’. Druk op de p »
+#79 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 7256b0dd10 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 397 774
+#79 DOIGT tuto_show «  Laat zien »
+#80 ROUTE tab_Sons | MODE pro | EMPREINTE 8456f5fbdd | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#80 SON Son : rien ne joue.
+#80 LAYOUT CONTRAST « Stoppen » 3.91:1 (needs 4.5:1, 14 sp)
+#80 > attends 4
+#81 ROUTE tab_Sons | MODE pro | EMPREINTE e1ebc59366 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#81 SON Son : rien ne joue.
+#81 > appui-long 298 625
+#81 DOIGT step_28 « Vakje 13 »
+#82 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE e13c4fa966 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#82 SON Son : rien ne joue.
+#82 > glisse 270 900 270 400
+#82 DOIGT rien
+#83 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE e13c4fa966 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 486 214
+#83 DOIGT roll_close
+#84 ROUTE tab_Sons | MODE pro | EMPREINTE c7494f3eb5 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 270 857
+#84 DOIGT tuto_folded_text « Nu jij: de snare ‘te laat’. Druk op de p »
+#85 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 7256b0dd10 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 418 868
+#85 DOIGT tuto_next « Volgende  »
+#86 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c159ed3d3d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=snare_late done=7 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 418 868
+#86 DOIGT tuto_next « Volgende  »
+#87 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE bf23779f17 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=ohat_do done=7 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 270 677
+#87 DOIGT tuto_do «   Ik doe het »
+#88 ROUTE tab_Sons | MODE pro | EMPREINTE 13590af32f | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=ohat_do done=7 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CUT « Nu jij: op de pad ‘Boom bap · Open hi-hat’ het gestippelde vakje helemaal aan het eind van maat 2: hij geeft de loop een zet. » ellipsized (« … »)
+#88 > touche 414 523
+#88 DOIGT step_30 « Vakje 15 »
+#89 ROUTE tab_Sons | MODE pro | EMPREINTE d99ed7779d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=ohat_do done=8 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 270 857
+#89 DOIGT tuto_next_folded « Gelukt »
+#90 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE b8c75ae356 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=8 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 270 677
+#90 DOIGT tuto_do «   Ik doe het »
+#91 ROUTE tab_Sons | MODE pro | EMPREINTE 6dd4263f3c | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=8 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT CUT « Nu jij: op de pad ‘Shaker’ de 8 gestippelde vakjes, tussen de tellen: een bescheiden shaker die pas in het Refrein komt. » ellipsized (« … »)
+#91 > touche 182 428
+#91 DOIGT step_2 « Vakje 3 »
+#92 ROUTE tab_Sons | MODE pro | EMPREINTE f2fd00bb3d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=8 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 414 428
+#92 DOIGT step_6 « Vakje 7 »
+#93 ROUTE tab_Sons | MODE pro | EMPREINTE b25f9a9a0b | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=8 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 182 499
+#93 DOIGT step_10 « Vakje 11 »
+#94 ROUTE tab_Sons | MODE pro | EMPREINTE f706376f43 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=8 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT CONTRAST « Nog 1 gestippeld vakje hier » 1.22:1 (needs 3.0:1, 14 sp)
+#94 > touche 414 499
+#94 DOIGT step_14 « Vakje 15 »
+#95 ROUTE tab_Sons | MODE pro | EMPREINTE d734ba6779 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=8 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 338 375
+#95 DOIGT tuto_bar_go « Maat 2 · 4 vakjes → »
+#96 ROUTE tab_Sons | MODE pro | EMPREINTE 6836149e67 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=8 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 182 428
+#96 DOIGT step_18 « Vakje 3 »
+#97 ROUTE tab_Sons | MODE pro | EMPREINTE f2fd00bb3d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=8 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 414 428
+#97 DOIGT step_22 « Vakje 7 »
+#98 ROUTE tab_Sons | MODE pro | EMPREINTE b25f9a9a0b | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=8 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 182 499
+#98 DOIGT step_26 « Vakje 11 »
+#99 ROUTE tab_Sons | MODE pro | EMPREINTE f706376f43 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=8 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 414 499
+#99 DOIGT step_30 « Vakje 15 »
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE 5e5af10005 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=shaker_do done=9 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 270 857
+#100 DOIGT tuto_next_folded « Gelukt »
+#101 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e9ce925a23 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=drums_hear done=9 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT CUT « Drums » lines cut (taller than its box)
+#101 LAYOUT CUT « Acid 303 » lines cut (taller than its box)
+#101 LAYOUT CUT « Zang » lines cut (taller than its box)
+#101 LAYOUT CONTRAST « Acid 303 » 3.10:1 (needs 4.5:1, 14 sp)
+#101 LAYOUT CONTRAST « Zang » 3.10:1 (needs 4.5:1, 14 sp)
+#101 LAYOUT TARGET « Drums 16 pads » 101 x 8 dp (touch 101 x 48)
+#101 LAYOUT TARGET « Acid 303 Baslijn » 117 x 8 dp (touch 117 x 48)
+#101 > touche 270 703
+#101 DOIGT tuto_play_mine «   Luister naar je resultaat »
+#102 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e2f83f3321 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=drums_hear done=9 playing=true
+#102 SON Son : la musique du projet joue en boucle.
+#102 > touche 270 787
+#102 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#103 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 7741b8e964 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=drums_hear done=9 playing=false
+#103 SON Son : l'exemple du tuto joue (encore 3 s).
+#103 > attends 4
+#104 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 90a0755694 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=drums_hear done=10 playing=false
+#104 SON Son : rien ne joue.
+#104 > touche 418 868
+#104 DOIGT tuto_next « Volgende  »
+#105 ROUTE tab_Sons | MODE pro | EMPREINTE 250fc3da13 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_hear done=10 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 270 784
+#105 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#106 ROUTE tab_Sons | MODE pro | EMPREINTE 7ace71ade9 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_hear done=10 playing=false
+#106 SON Son : l'exemple du tuto joue (encore 3 s).
+#106 > attends 5
+#107 ROUTE tab_Sons | MODE pro | EMPREINTE 806ca80df2 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_hear done=11 playing=false
+#107 SON Son : rien ne joue.
+#107 LAYOUT CUT « Deel: A » lines cut (taller than its box)
+#107 > touche 270 758
+#107 DOIGT tuto_next_big « Volgende stap   »
+#108 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 091213dca6 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_do done=11 playing=false
+#108 SON Son : rien ne joue.
+#108 LAYOUT OVERLAP « 92 » over « De bas » (25 x 18 dp)
+#108 LAYOUT OVERLAP « 92 » over « Hoofdstuk 3/14 · Stap 2/3 · Pro » (25 x 6 dp)
+#108 LAYOUT OVERLAP « De bas » over the touchable « Tempo: 92 BPM Tempo wijzigen » (63 x 27 dp)
+#108 LAYOUT OVERLAP « Hoofdstuk 3/14 · Stap 2/3 · Pro » over the touchable « Tempo: 92 BPM Tempo wijzigen » (79 x 18 dp)
+#108 > touche 270 677
+#108 DOIGT tuto_need «   Spoor Bas maken »
+#109 ROUTE tab_Sons | MODE pro | EMPREINTE ce9a241ee4 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_do done=11 playing=false
+#109 SON Son : rien ne joue.
+#109 LAYOUT CUT « Nog 3 gestippelde noten om aan te tikken » ellipsized (« … »)
+#109 LAYOUT CUT « Nu jij: maak het spoor Bas. Maat 1: D3 op de kicks, korte noten. ‘Kopiëren’: maat 2 zakt naar B♭ (het VI-akkoord), maat 3 komt terug op D. Maat 4: B♭, dan C die terugklimt naar D. ‘Kopiëren’. » ellipsized (« … »)
+#109 LAYOUT TARGET « D2 Afspelen » 36 x 20 dp (touch 48 x 48)
+#109 > touche 160 632
+#109 DOIGT rien
+#110 ROUTE tab_Sons | MODE pro | EMPREINTE 53283fc8c7 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_do done=11 playing=false
+#110 SON Son : 1 note du synthé.
+#110 LAYOUT CUT « Nog 2 gestippelde noten om aan te tikken » ellipsized (« … »)
+#110 > touche 272 632
+#110 DOIGT rien
+#111 ROUTE tab_Sons | MODE pro | EMPREINTE a197f74cb6 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_do done=11 playing=false
+#111 SON Son : 1 note du synthé.
+#111 LAYOUT CUT « Nog 1 gestippelde noot om aan te tikken » ellipsized (« … »)
+#111 > touche 397 632
+#111 DOIGT rien
+#112 ROUTE tab_Sons | MODE pro | EMPREINTE 73434b3fc1 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_do done=12 playing=false
+#112 SON Son : 1 note du synthé.
+#112 LAYOUT CUT « Alle gestippelde noten staan erin » ellipsized (« … »)
+#112 > touche 270 857
+#112 DOIGT tuto_next_folded « Gelukt »
+#113 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 6f722552e3 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_end done=12 playing=false
+#113 SON Son : rien ne joue.
+#113 LAYOUT OVERLAP « 92 » over « De bas » (25 x 21 dp)
+#113 LAYOUT OVERLAP « Hoofdstuk 3/14 · Stap 3/3 · Pro » over the touchable « Tempo: 92 BPM Tempo wijzigen » (79 x 6 dp)
+#113 > touche 270 663
+#113 DOIGT tuto_need «   Kopiëren naar de volgende maten »
+#114 ROUTE tab_Sons | MODE pro | EMPREINTE 67fd5292f5 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_end done=12 playing=false
+#114 SON Son : rien ne joue.
+#114 LAYOUT CUT « ↑ Nog 2 gestippelde noten om aan te tikken » ellipsized (« … »)
+#114 LAYOUT CUT « Nu jij: tik op ‘Kopiëren naar de volgende maten’: maat 2 en 3 worden geschreven. Tik daarna op de 3 noten van maat 4, en nog eens ‘Kopiëren’. » ellipsized (« … »)
+#114 LAYOUT TARGET « B♭1 Afspelen » 36 x 20 dp (touch 48 x 48)
+#114 > touche 270 504
+#114 DOIGT tuto_notes_left « Bas · maat 4/8 »
+#115 ROUTE tab_Sons | MODE pro | EMPREINTE 9caaddef9c | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_end done=12 playing=false
+#115 SON Son : rien ne joue.
+#115 LAYOUT TARGET « C2 Afspelen » 36 x 8 dp (touch 48 x 48)
+#115 LAYOUT TARGET « B1 Afspelen » 36 x 8 dp (touch 48 x 48)
+#115 LAYOUT TARGET « B♭1 Afspelen » 36 x 8 dp (touch 48 x 48)
+#115 > touche 160 644
+#115 DOIGT rien
+#116 ROUTE tab_Sons | MODE pro | EMPREINTE 5f904ef122 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_end done=12 playing=false
+#116 SON Son : 1 note du synthé.
+#116 > touche 272 644
+#116 DOIGT rien
+#117 ROUTE tab_Sons | MODE pro | EMPREINTE 25b33ea20e | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_end done=12 playing=false
+#117 SON Son : 1 note du synthé.
+#117 > touche 397 619
+#117 DOIGT rien
+#118 ROUTE tab_Sons | MODE pro | EMPREINTE ed7234fc2d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_end done=12 playing=false
+#118 SON Son : 1 note du synthé.
+#118 LAYOUT CUT « Patroon staat erin! De rest wordt gekopieerd: » ellipsized (« … »)
+#118 > touche 403 505
+#118 DOIGT tuto_roll_copy « Kopiëren »
+#119 ROUTE tab_Sons | MODE pro | EMPREINTE 9eae017792 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_end done=13 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 270 857
+#119 DOIGT tuto_chapter_end_folded « Goed gedaan, hoofdstuk klaar! »
+#120 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 8d66865612 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=bass_end done=13 playing=false
+#120 SON Son : rien ne joue.
+#120 LAYOUT CUT « Remix » lines cut (taller than its box)
+#120 LAYOUT CUT « Bas » lines cut (taller than its box)
+#120 LAYOUT TARGET « Remix Splitsen » 105 x 10 dp (touch 105 x 48)
+#120 LAYOUT TARGET « Opties voor Bas Bas Ronde bas » 142 x 10 dp (touch 142 x 48)
+#120 > touche 270 675
+#120 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#121 ROUTE tab_Sons | MODE pro | EMPREINTE a2f01a8d2d | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_hear done=13 playing=false
+#121 SON Son : rien ne joue.
+#121 > touche 270 784
+#121 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#122 ROUTE tab_Sons | MODE pro | EMPREINTE f0cc648e0a | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_hear done=13 playing=false
+#122 SON Son : l'exemple du tuto joue (encore 3 s).
+#122 > attends 5
+#123 ROUTE tab_Sons | MODE pro | EMPREINTE df4d8e48ee | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_hear done=14 playing=false
+#123 SON Son : rien ne joue.
+#123 > touche 270 758
+#123 DOIGT tuto_next_big « Volgende stap   »
+#124 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE bda1f93832 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_do done=14 playing=false
+#124 SON Son : rien ne joue.
+#124 LAYOUT OVERLAP « 92 » over « De loop » (25 x 18 dp)
+#124 LAYOUT OVERLAP « 92 » over « Hoofdstuk 4/14 · Stap 2/3 · Pro » (25 x 6 dp)
+#124 LAYOUT OVERLAP « De loop » over the touchable « Tempo: 92 BPM Tempo wijzigen » (69 x 27 dp)
+#124 LAYOUT OVERLAP « Hoofdstuk 4/14 · Stap 2/3 · Pro » over the touchable « Tempo: 92 BPM Tempo wijzigen » (79 x 18 dp)
+#124 > touche 270 677
+#124 DOIGT tuto_need «   Spoor Akkoorden maken »
+#125 ROUTE tab_Sons | MODE pro | EMPREINTE f9d97128cf | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_do done=14 playing=false
+#125 SON Son : rien ne joue.
+#125 LAYOUT CUT « ↓ Gestippelde akkoorden om aan te tikken: 3 » ellipsized (« … »)
+#125 LAYOUT CUT « Nu jij: maak het spoor Akkoorden. Maat 1: Dm9 zonder grondtoon (F, A, C, E), 3 keer, de laatste vóór de tel. ‘Kopiëren’: maat 2 in B♭maj9 (D, F, A, C), en dan herhaalt de loop van 2 maten zich. » ellipsized (« … »)
+#125 LAYOUT TARGET « D♭4 Afspelen » 36 x 8 dp (touch 48 x 48)
+#125 LAYOUT TARGET « C4 Afspelen » 36 x 8 dp (touch 48 x 48)
+#125 LAYOUT TARGET « B3 Afspelen » 36 x 8 dp (touch 48 x 48)
+#125 > touche 270 504
+#125 DOIGT tuto_notes_left « Akkoorden · maat 1/8 »
+#126 ROUTE tab_Sons | MODE pro | EMPREINTE 8e6c141f89 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_do done=14 playing=false
+#126 SON Son : rien ne joue.
+#126 LAYOUT TARGET « B♭3 Afspelen » 36 x 8 dp (touch 48 x 48)
+#126 LAYOUT TARGET « A3 Afspelen » 36 x 8 dp (touch 48 x 48)
+#126 > touche 185 613
+#126 DOIGT rien
+#127 ROUTE tab_Sons | MODE pro | EMPREINTE fa995e97fc | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_do done=14 playing=false
+#127 SON Son : rien ne joue.
+#127 LAYOUT CUT « ↓ Gestippelde akkoorden om aan te tikken: 2 » ellipsized (« … »)
+#127 > touche 347 613
+#127 DOIGT rien
+#128 ROUTE tab_Sons | MODE pro | EMPREINTE f4bfc4ffbc | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_do done=14 playing=false
+#128 SON Son : rien ne joue.
+#128 LAYOUT CUT « ↓ Gestippelde akkoorden om aan te tikken: 1 » ellipsized (« … »)
+#128 > touche 433 613
+#128 DOIGT rien
+#129 ROUTE tab_Sons | MODE pro | EMPREINTE ebc37b1cf6 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_do done=15 playing=false
+#129 SON Son : rien ne joue.
+#129 > touche 270 857
+#129 DOIGT tuto_next_folded « Gelukt »
+#130 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 4850f46751 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_end done=15 playing=false
+#130 SON Son : rien ne joue.
+#130 LAYOUT CUT « Akkoorden » lines cut (taller than its box)
+#130 LAYOUT TARGET « Bas Ronde bas » 118 x 10 dp (touch 118 x 48)
+#130 LAYOUT TARGET « Opties voor Akkoorden Akkoorden Elektrische piano » 199 x 10 dp (touch 199 x 48)
+#130 > touche 270 663
+#130 DOIGT tuto_need «   Kopiëren naar de volgende maten »
+#131 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 4850f46751 | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_end done=15 playing=false
+#131 SON Son : rien ne joue.
+#131 > touche 270 663
+#131 DOIGT tuto_need «   Kopiëren naar de volgende maten »
+#132 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f7cf6ed06f | project=p-5cd4f14e tuto=boom_bap/Pro active=true step=pad_end done=16 playing=false
+#132 SON Son : rien ne joue.
+#132 > fin
+#132 FIN : fin

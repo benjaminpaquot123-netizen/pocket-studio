@@ -1,0 +1,82 @@
+Écran 83 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 195,42
+texte « Pro » @ 417,42
+bouton « A » ▾ @ 492,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « dit deel » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drums 16 pads » [sélectionné] @ 76,183
+onglet « Acid 303 Baslijn » @ 223,183
+onglet « Zang Microfoon » @ 382,183
+onglet « Remix Splitsen » @ 537,183
+bouton + «  Spoor » @ 697,183
+texte « Deel: A » @ 56,243
+texte « Maat » @ 67,279
+bouton « 1 » [coupé, sélectionné] @ 137,283
+bouton « 2 » [coupé] @ 218,283
+bouton « Volgen » [coupé] @ 323,283
+texte « Maat 1/2 · Rim » @ 124,363
+bouton « 1 » [état « slag, kracht 100 % »] @ 90,448
+bouton [état « slag, kracht 100 % »] @ 192,448
+bouton [état « slag, kracht 100 % »] @ 294,448
+bouton [état « slag, kracht 100 % »] @ 397,448
+bouton « 2 » [état « slag, kracht 100 % »] @ 500,448
+bouton [état « slag, kracht 100 % »] @ 603,448
+bouton [état « slag, kracht 100 % »] @ 706,448
+bouton [état « slag, kracht 100 % »] @ 809,448
+bouton « 3 » [état « slag, kracht 100 % »] @ 90,529
+bouton [état « slag, kracht 100 % »] @ 192,529
+bouton [état « slag, kracht 100 % »] @ 294,529
+bouton [état « slag, kracht 100 % »] @ 397,529
+bouton « 4 » [état « slag, kracht 100 % »] @ 500,529
+bouton [état « slag, kracht 100 % »] @ 603,529
+bouton [état « slag, kracht 100 % »] @ 706,529
+bouton [état « slag, kracht 100 % »] @ 809,529
+bouton « Slagen » [sélectionné] @ 102,615
+bouton « Rolls » @ 218,615
+bouton « Pan » @ 319,615
+bouton « Toonhoogte » @ 456,615
+bouton « Kracht » @ 607,615
+texte « alles » @ 140,699
+texte « 1/2 » @ 216,699
+texte « 1/4 » @ 291,699
+texte « ◀ » @ 366,699
+texte « ▶ » @ 441,699
+texte « Wissen » @ 531,699
+texte « Vullen » @ 71,699
+texte « Tik op een vakje voor een slag, schuif je vinger om er meerdere te tekenen. Lang drukken op een slag: kracht en rolls (×2 tot ×8). » @ 450,774
+bouton « 1 maat » @ 176,849
+bouton « 2 » [sélectionné] @ 278,849
+bouton « 3 » @ 359,849
+bouton « 4 » @ 440,849
+texte « Lengte » @ 76,849
+texte « − » @ 326,933
+texte « + » [désactivé] @ 530,933
+texte « Deze pad herhaalt over » @ 158,933
+texte « 32 stappen » @ 428,933
+titre « GELUID VAN DE PAD » [coupé, état « Uitgeklapt »] @ 190,1045
+bouton « ? » [coupé] @ 317,1045
+icône (liste) « Hoofdstukken » @ 751,1110
+texte « De 2-stepbeat Hoofdstuk 2/14 · Stap 9/10 · Pro » @ 358,1110
+icône ⌃ @ 843,1110
+image (œil) @ 51,1209
+texte « Stoppen » @ 817,1209
+texte « Zo! Nu jij. » @ 417,1209
+icône ↶ « Ongedaan maken » @ 140,1293
+icône ↷ « Opnieuw » [désactivé] @ 316,1293
+bouton ▶ « het nummer » @ 474,1293
+texte « 132 Tempo » @ 638,1293
+icône (trois points reliés) « Delen » @ 790,1293
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noteren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 318,1479

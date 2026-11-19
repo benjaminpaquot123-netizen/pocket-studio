@@ -1,0 +1,62 @@
+Écran 122 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 179,42
+texte « Pro » @ 386,42
+bouton « A » ▾ @ 461,42
+icône ↶ @ 536,42
+bouton ● @ 608,42
+bouton ▶ « dit deel » @ 680,42
+bouton ▶ « het nummer » @ 773,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drums 16 pads » [coupé] @ 36,186
+onglet « Acid 303 Baslijn » @ 134,186
+onglet « Zang Microfoon » @ 293,186
+onglet « Remix Splitsen » @ 448,186
+bouton « Bas Ronde bas » @ 598,186
+bouton « Sub Zuivere sub » ⋮ @ 780,186
+image ← @ 10,187
+image → @ 889,187
+texte « Deel: A » @ 56,249
+bouton « Akkoorden » @ 122,321
+bouton « Bas als schaduw » [sélectionné] @ 317,321
+texte « In de maat 50% » @ 530,321
+texte « 100% » @ 679,321
+texte « Wissen » @ 787,321
+texte « mt » @ 84,378
+bouton « 1 » @ 486,390
+bouton « 2 » [coupé] @ 853,390
+texte « D♭ » [coupé] @ 84,435
+texte « C3 » @ 84,468
+texte « B » @ 84,510
+texte « B♭ » @ 84,552
+texte « A » @ 84,594
+texte « A♭ » @ 84,636
+texte « G » @ 84,678
+texte « G♭ » @ 84,720
+texte « F » @ 84,762
+texte « E » @ 84,804
+texte « E♭ » @ 84,846
+texte « D » @ 84,888
+texte « D♭ » @ 84,930
+texte « C2 » [coupé] @ 84,955
+dessin [coupé] @ 492,691
+texte « De akkoorden Hoofdstuk 4/14 · Stap 1/3 · Pro » @ 358,1008
+icône (liste) « Hoofdstukken » @ 751,1008
+icône ⌄ @ 843,1008
+image (rond coché) @ 36,1086
+texte « Luister naar de akkoorden alleen: vier kleuren, één per maat. » @ 403,1089
+texte « ▸ Waarom? » @ 450,1131
+bouton « Volgende stap   » → @ 450,1197
+icône ← @ 57,1281
+bouton ▶ «  Luister naar het voorbeeld » @ 403,1281
+icône « Volgende  » → @ 796,1281
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noteren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 318,1479

@@ -1,0 +1,61 @@
+Écran 95 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 195,42
+texte « Pro » @ 417,42
+bouton « A » ▾ @ 492,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « dit deel » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drums 16 pads » [sélectionné] @ 76,183
+onglet « Acid 303 Baslijn » @ 223,183
+onglet « Zang Microfoon » @ 382,183
+onglet « Remix Splitsen » @ 537,183
+bouton + «  Spoor » @ 697,183
+texte « Deel: A » @ 56,243
+texte « alles » [coupé] @ 140,290
+texte « 1/2 » [coupé] @ 216,290
+texte « 1/4 » [coupé] @ 291,290
+texte « ◀ » [coupé] @ 366,290
+texte « ▶ » [coupé] @ 441,290
+texte « Wissen » [coupé] @ 531,290
+texte « Vullen » @ 71,287
+texte « Tik op een vakje voor een slag, schuif je vinger om er meerdere te tekenen. Lang drukken op een slag: kracht en rolls (×2 tot ×8). » @ 450,362
+bouton « 1 maat » @ 176,437
+bouton « 2 » [sélectionné] @ 278,437
+bouton « 3 » @ 359,437
+bouton « 4 » @ 440,437
+texte « Lengte » @ 76,437
+texte « − » @ 326,521
+texte « + » [désactivé] @ 530,521
+texte « Deze pad herhaalt over » @ 158,521
+texte « 32 stappen » @ 428,521
+titre « GELUID VAN DE PAD » [coupé, état « Uitgeklapt »] @ 190,629
+bouton « ? » [coupé] @ 317,629
+texte « De 2-stepbeat Hoofdstuk 2/14 · Stap 9/10 · Pro » @ 358,690
+icône (liste) « Hoofdstukken » @ 751,690
+icône ⌄ @ 843,690
+texte « Deze stap is nog niet gedaan. Tik nog eens op ‘Volgende’ om hem toch over te slaan. » @ 442,768
+texte « Nu jij: zet op de pad ‘Rim’ de ‘Verschuiving van slag’ van elke slag een beetje later (5 tot 10 ms): de snare sleept achter de tel aan, het hinkt nog beter. » @ 450,846
+texte « ▸ Waarom? » @ 450,924
+bouton (doigt qui touche) «   Ik doe het » @ 450,1044
+bouton ▶ «  Luister naar het voorbeeld » @ 232,1128
+bouton (œil) «  Laat zien » @ 667,1128
+icône ← «  Vorige » @ 89,1209
+icône « Volgende  » → @ 796,1209
+icône ↶ « Ongedaan maken » @ 140,1293
+icône ↷ « Opnieuw » [désactivé] @ 316,1293
+bouton ▶ « het nummer » @ 474,1293
+texte « 132 Tempo » @ 638,1293
+icône (trois points reliés) « Delen » @ 790,1293
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noteren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 318,1479

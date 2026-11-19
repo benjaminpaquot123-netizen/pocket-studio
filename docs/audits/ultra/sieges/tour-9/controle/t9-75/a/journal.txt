@@ -1,0 +1,661 @@
+#0 SIEGE lang=nl device=tablet8 font=100 mode=pro theme=- fresh=non gestes.max=153 lit=oui main=both amenee=tuto:uk_garage:1
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=8.4 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:uk_garage:1
+#0 AMENEE > touche 450 1282 (launch_learn)
+#0 AMENEE > touche 670 1356 (mode_card_pro)
+#0 AMENEE > touche 450 1444 (tuto_style_uk_garage)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE 260820b151 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ref done=0 chapters=7 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Waarom? » 572 x 20 dp (touch 572 x 48)
+#1 > touche 450 1125
+#1 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE b6c9a8a348 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ref done=0 chapters=7 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > attends 8
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE df2eaf998a | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ref done=1 chapters=7 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 403 939
+#3 DOIGT tuto_kit_download « Kit UK Garage downloaden (3 MB) »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE d2913e5fb2 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ref done=1 chapters=7 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 450 1125
+#4 DOIGT tuto_next_big « Volgende stap   »
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE 51a7eddc4f | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=tempo done=1 chapters=7 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 73 114
+#5 DOIGT top_tempo « Tempo: 120 BPM »
+#6 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE e20ef770f2 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=tempo done=1 chapters=7 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « Tempo » over the touchable « Blad sluiten » (73 x 28 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « Blad sluiten » (7 x 15 dp)
+#6 LAYOUT OVERLAP « Sluiten » over the touchable « Blad sluiten » (48 x 20 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « Blad sluiten » (86 x 53 dp)
+#6 LAYOUT OVERLAP «  BPM » over the touchable « Blad sluiten » (39 x 24 dp)
+#6 LAYOUT OVERLAP « 70 » over the touchable « Blad sluiten » (21 x 19 dp)
+#6 LAYOUT OVERLAP « 90 » over the touchable « Blad sluiten » (21 x 19 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « Blad sluiten » (32 x 19 dp)
+#6 LAYOUT OVERLAP « 140 » over the touchable « Blad sluiten » (32 x 19 dp)
+#6 LAYOUT OVERLAP « 174 » over the touchable « Blad sluiten » (32 x 19 dp)
+#6 LAYOUT OVERLAP « ½ » over the touchable « Blad sluiten » (14 x 24 dp)
+#6 LAYOUT OVERLAP « ×2 » over the touchable « Blad sluiten » (21 x 24 dp)
+#6 LAYOUT OVERLAP « 1 » over the touchable « Blad sluiten » (14 x 27 dp)
+#6 LAYOUT OVERLAP « 2 » over the touchable « Blad sluiten » (14 x 27 dp)
+#6 LAYOUT OVERLAP « 3 » over the touchable « Blad sluiten » (14 x 27 dp)
+#6 LAYOUT OVERLAP « 4 » over the touchable « Blad sluiten » (14 x 27 dp)
+#6 LAYOUT OVERLAP « 5 » over the touchable « Blad sluiten » (14 x 27 dp)
+#6 LAYOUT OVERLAP « 6 » over the touchable « Blad sluiten » (14 x 27 dp)
+#6 LAYOUT OVERLAP « 7 » over the touchable « Blad sluiten » (14 x 27 dp)
+#6 LAYOUT OVERLAP « 8 » over the touchable « Blad sluiten » (14 x 27 dp)
+#6 LAYOUT OVERLAP « 9 » over the touchable « Blad sluiten » (14 x 27 dp)
+#6 LAYOUT OVERLAP « 0 » over the touchable « Blad sluiten » (14 x 27 dp)
+#6 LAYOUT OVERLAP « OK » over the touchable « Blad sluiten » (33 x 27 dp)
+#6 LAYOUT OVERLAP « Tik in de maat » over the touchable « Blad sluiten » (108 x 24 dp)
+#6 LAYOUT OVERLAP « Tik hier op elke tel: het tempo volgt. » over the touchable « Blad sluiten » (215 x 18 dp)
+#6 > touche 163 1083
+#6 DOIGT tempo_key_1 « 1 »
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 1a5119e91f | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=tempo done=1 chapters=7 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 1 » over the touchable « Blad sluiten » (29 x 53 dp)
+#7 LAYOUT OVERLAP « Tussen 40 en 300 » over the touchable « Blad sluiten » (120 x 20 dp)
+#7 > touche 737 1083
+#7 DOIGT tempo_key_3 « 3 »
+#8 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 1f05b3a226 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=tempo done=1 chapters=7 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 13 » over the touchable « Blad sluiten » (57 x 53 dp)
+#8 > touche 450 1083
+#8 DOIGT tempo_key_2 « 2 »
+#9 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 21e749c4b9 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=tempo done=1 chapters=7 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 132 » over the touchable « Blad sluiten » (86 x 53 dp)
+#9 > touche 737 1344
+#9 DOIGT tempo_key_ok « OK »
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE 055a4f652d | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=tempo done=2 chapters=7 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 450 1125
+#10 DOIGT tuto_next_big « Volgende stap   »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE 74b425ba15 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=key done=2 chapters=7 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 450 1044
+#11 DOIGT tuto_do «   Ik doe het »
+#12 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 1b0320a780 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=key done=2 chapters=7 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Toonsoort van het nummer » over the touchable « Blad sluiten » (286 x 28 dp)
+#12 LAYOUT OVERLAP « Toonsoort van het nummer: geen » over the touchable « Blad sluiten » (219 x 20 dp)
+#12 LAYOUT OVERLAP « Toonladder » over the touchable « Blad sluiten » (77 x 20 dp)
+#12 LAYOUT OVERLAP « Majeur » over the touchable « Blad sluiten » (52 x 24 dp)
+#12 LAYOUT OVERLAP « Mineur » over the touchable « Blad sluiten » (55 x 24 dp)
+#12 LAYOUT OVERLAP « Dorisch » over the touchable « Blad sluiten » (58 x 24 dp)
+#12 LAYOUT OVERLAP « Mineur-penta » over the touchable « Blad sluiten » (102 x 24 dp)
+#12 LAYOUT OVERLAP « Majeur-penta » over the touchable « Blad sluiten » (101 x 24 dp)
+#12 LAYOUT OVERLAP « Blues » over the touchable « Blad sluiten » (42 x 24 dp)
+#12 LAYOUT OVERLAP « Frygisch » over the touchable « Blad sluiten » (65 x 24 dp)
+#12 LAYOUT OVERLAP « Harmonisch mineur » over the touchable « Blad sluiten » (148 x 24 dp)
+#12 LAYOUT OVERLAP « Grondtoon » over the touchable « Blad sluiten » (72 x 20 dp)
+#12 LAYOUT OVERLAP « C » over the touchable « Blad sluiten » (12 x 24 dp)
+#12 LAYOUT OVERLAP « C♯ » over the touchable « Blad sluiten » (21 x 24 dp)
+#12 LAYOUT OVERLAP « D » over the touchable « Blad sluiten » (11 x 24 dp)
+#12 LAYOUT OVERLAP « E♭ » over the touchable « Blad sluiten » (15 x 24 dp)
+#12 LAYOUT OVERLAP « E » over the touchable « Blad sluiten » (9 x 24 dp)
+#12 LAYOUT OVERLAP « F » over the touchable « Blad sluiten » (9 x 24 dp)
+#12 LAYOUT OVERLAP « F♯ » over the touchable « Blad sluiten » (18 x 24 dp)
+#12 LAYOUT OVERLAP « G » over the touchable « Blad sluiten » (12 x 24 dp)
+#12 LAYOUT OVERLAP « A♭ » over the touchable « Blad sluiten » (17 x 24 dp)
+#12 LAYOUT OVERLAP « A » over the touchable « Blad sluiten » (12 x 24 dp)
+#12 LAYOUT OVERLAP « B♭ » over the touchable « Blad sluiten » (16 x 24 dp)
+#12 LAYOUT OVERLAP « B » over the touchable « Blad sluiten » (11 x 24 dp)
+#12 > touche 206 1143
+#12 DOIGT tuto_scale_Minor « Mineur »
+#13 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 55d92dfa46 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=key done=2 chapters=7 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « Toonsoort van het nummer: C · Mineur » over the touchable « Blad sluiten » (254 x 20 dp)
+#13 > touche 63 1437
+#13 DOIGT tuto_root_9 « A »
+#14 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE b6ae38fe52 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=key done=3 chapters=1,7 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « Toonsoort van het nummer: A · Mineur » over the touchable « Blad sluiten » (253 x 20 dp)
+#14 LAYOUT OVERLAP « Gelukt! De kleur van het nummer is gekozen. » over the touchable « Blad sluiten » (350 x 24 dp)
+#14 LAYOUT OVERLAP « Terug naar de tutorial » over the touchable « Blad sluiten » (150 x 20 dp)
+#14 > touche 450 1434
+#14 DOIGT tuto_key_continue « Terug naar de tutorial »
+#15 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 83e4b447e0 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=key done=3 chapters=1,7 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 450 1209
+#15 DOIGT tuto_chapter_end_folded « Goed gedaan, hoofdstuk klaar! »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE 619cdcba61 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=key done=3 chapters=1,7 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1125
+#16 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 77991cbf66 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ready done=3 chapters=1,7 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 450 1125
+#17 DOIGT tuto_mark «   Begrepen »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 88e091a3ab | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=kick_do done=4 chapters=1,7 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « VAKJES: STUDIOKICK » 1.22:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « ? » 1.36:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « Alle pads » 1.34:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#18 > touche 450 1044
+#18 DOIGT tuto_need «   Naar 2 maten »
+#19 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 46e6028437 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=kick_do done=4 chapters=1,7 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Alle pads » 1.26:1 (needs 4.5:1, 14 sp)
+#19 > touche 90 517
+#19 DOIGT step_0 « Vakje 1 »
+#20 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 524244bf19 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=kick_do done=4 chapters=1,7 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 294 598
+#20 DOIGT step_10 « Vakje 11 »
+#21 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 43862c0a4e | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=kick_do done=4 chapters=1,7 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 218 348
+#21 DOIGT drum_page_1 « 2 »
+#22 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE c2695aa55c | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=kick_do done=4 chapters=1,7 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 90 517
+#22 DOIGT step_16 « Vakje 1 »
+#23 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 99690c930b | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=kick_do done=4 chapters=1,7 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 294 598
+#23 DOIGT step_26 « Vakje 11 »
+#24 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE d2801aca06 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=kick_do done=4 chapters=1,7 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 809 598
+#24 DOIGT step_31 « Vakje 16 »
+#25 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE a3c84686ce | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=kick_do done=5 chapters=1,7 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 450 1209
+#25 DOIGT tuto_next_folded « Gelukt »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE 6fc1ffa260 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=5 chapters=1,7 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#26 > touche 500 481
+#26 DOIGT step_4 « Vakje 5 »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE 1a15909478 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=5 chapters=1,7 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 809 481
+#27 DOIGT step_7 « Vakje 8 »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE f326c2c772 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=5 chapters=1,7 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « 4 » 3.41:1 (needs 4.5:1, 12 sp)
+#28 > touche 500 562
+#28 DOIGT step_12 « Vakje 13 »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 0b8be67214 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=5 chapters=1,7 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 218 312
+#29 DOIGT drum_page_1 « 2 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 741b51383d | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=5 chapters=1,7 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 500 481
+#30 DOIGT step_20 « Vakje 5 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE 484ccea417 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=5 chapters=1,7 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 809 481
+#31 DOIGT step_23 « Vakje 8 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE f6c6a9d912 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=5 chapters=1,7 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 397 562
+#32 DOIGT step_27 « Vakje 12 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 2184234989 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=5 chapters=1,7 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 500 562
+#33 DOIGT step_28 « Vakje 13 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 6612f8b177 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=5 chapters=1,7 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 706 562
+#34 DOIGT step_30 « Vakje 15 »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE 76acac3544 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=6 chapters=1,7 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 607 648
+#35 DOIGT velocity_tool « Kracht »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE 75c109444b | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=6 chapters=1,7 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 102 648
+#36 DOIGT dans:rhythm « Slagen »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 76acac3544 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_do done=6 chapters=1,7 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 450 1125
+#37 DOIGT tuto_next_big « Volgende stap   »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 23fa1423eb | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=clap_do done=6 chapters=1,7 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 500 481
+#38 DOIGT step_4 « Vakje 5 »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE aca7d87798 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=clap_do done=6 chapters=1,7 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 500 562
+#39 DOIGT step_12 « Vakje 13 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 693766eee2 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=clap_do done=6 chapters=1,7 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 218 312
+#40 DOIGT drum_page_1 « 2 »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 09f4f43dd5 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=clap_do done=6 chapters=1,7 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 500 481
+#41 DOIGT step_20 « Vakje 5 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 8913d81db7 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=clap_do done=6 chapters=1,7 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 500 562
+#42 DOIGT step_28 « Vakje 13 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE ff883069db | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=clap_do done=7 chapters=1,7 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 450 1125
+#43 DOIGT tuto_next_big « Volgende stap   »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE b4a61dea9f | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#44 > touche 90 481
+#44 DOIGT step_0 « Vakje 1 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 47065c60f1 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 192 481
+#45 DOIGT step_1 « Vakje 2 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 99b886b2a8 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 397 481
+#46 DOIGT step_3 « Vakje 4 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE cb4ed57ffc | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 603 481
+#47 DOIGT step_5 « Vakje 6 »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE aea42adf15 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « 3 » 3.23:1 (needs 4.5:1, 12 sp)
+#48 > touche 90 562
+#48 DOIGT step_8 « Vakje 9 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE fd6800a0ca | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 192 562
+#49 DOIGT step_9 « Vakje 10 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE a5cc31012a | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 397 562
+#50 DOIGT step_11 « Vakje 12 »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE d48b1ddd77 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 603 562
+#51 DOIGT step_13 « Vakje 14 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE bdb484f286 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 218 312
+#52 DOIGT drum_page_1 « 2 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 3b92ff6ad4 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#53 SON Son : rien ne joue.
+#53 > glisse 90 481 192 481
+#53 DOIGT step_16 « Vakje 1 »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 326d42aab3 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 397 481
+#54 DOIGT step_19 « Vakje 4 »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE 0fb31891db | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 603 481
+#55 DOIGT step_21 « Vakje 6 »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE ffcc556534 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#56 SON Son : rien ne joue.
+#56 > glisse 90 562 192 562
+#56 DOIGT step_24 « Vakje 9 »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 346e170036 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 397 562
+#57 DOIGT step_27 « Vakje 12 »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE 139058dcff | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=7 chapters=1,7 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 603 562
+#58 DOIGT step_29 « Vakje 14 »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE 657aa8957c | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=hat_do done=8 chapters=1,7 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 450 1125
+#59 DOIGT tuto_next_big « Volgende stap   »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE ce54d298f9 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ohat_do done=8 chapters=1,7 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 294 562
+#60 DOIGT step_10 « Vakje 11 »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE 98e5456b2e | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ohat_do done=8 chapters=1,7 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 294 562
+#61 DOIGT step_10 « Vakje 11 »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE ce54d298f9 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ohat_do done=8 chapters=1,7 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 294 481
+#62 DOIGT step_2 « Vakje 3 »
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 866e89c2fe | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ohat_do done=8 chapters=1,7 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 706 481
+#63 DOIGT step_6 « Vakje 7 »
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE dabcd4bd43 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ohat_do done=8 chapters=1,7 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 706 562
+#64 DOIGT step_14 « Vakje 15 »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE c06c43ed8c | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ohat_do done=8 chapters=1,7 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 218 312
+#65 DOIGT drum_page_1 « 2 »
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE 1b94b88f1d | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ohat_do done=8 chapters=1,7 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 294 481
+#66 DOIGT step_18 « Vakje 3 »
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 8a5dcef57a | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ohat_do done=8 chapters=1,7 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 706 481
+#67 DOIGT step_22 « Vakje 7 »
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE c6bd7bdb0a | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ohat_do done=8 chapters=1,7 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 706 562
+#68 DOIGT step_30 « Vakje 15 »
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 0977fc8521 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=ohat_do done=9 chapters=1,7 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 450 1125
+#69 DOIGT tuto_next_big « Volgende stap   »
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE d1f59560c0 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=perc_do done=9 chapters=1,7 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « 1 » 3.55:1 (needs 4.5:1, 12 sp)
+#70 > touche 140 732
+#70 DOIGT fill_1 « alles »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE 59dc6a1c43 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=perc_do done=10 chapters=1,7 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 450 1125
+#71 DOIGT tuto_next_big « Volgende stap   »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE 4c5db184a6 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=swing done=10 chapters=1,7 playing=false
+#72 SON Son : rien ne joue.
+#72 > glisse 40 660 367 660
+#72 DOIGT dans:rhythm_swing « Swing »
+#73 ROUTE tab_Sons | MODE pro | EMPREINTE 4c5db184a6 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=swing done=10 chapters=1,7 playing=false
+#73 SON Son : rien ne joue.
+#73 > glisse 63 660 372 660
+#73 DOIGT dans:rhythm_swing « Swing »
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 8e9f021e41 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=swing done=11 chapters=1,7 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 450 1125
+#74 DOIGT tuto_next_big « Volgende stap   »
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE 23dad2ae9a | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT CONTRAST « Maat 1/2 · Rim » 1.24:1 (needs 4.5:1, 13 sp)
+#75 > touche 450 1044
+#75 DOIGT tuto_do «   Ik doe het »
+#76 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 79a1becce9 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#76 SON Son : rien ne joue.
+#76 > glisse 450 1000 450 450
+#76 DOIGT rien
+#77 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE a8f36e54c8 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#77 SON Son : rien ne joue.
+#77 LAYOUT CONTRAST « Lengte » 1.32:1 (needs 4.5:1, 14 sp)
+#77 LAYOUT CONTRAST « 2 » 1.65:1 (needs 4.5:1, 14 sp)
+#77 > touche 450 657
+#77 DOIGT pad_settings «  Padinstellingen »
+#78 ROUTE dialogue:pad_sheet | MODE pro | EMPREINTE 6cbc3fb8d4 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT OVERLAP « Pad 11 · Rim » over the touchable « Blad sluiten » (121 x 28 dp)
+#78 LAYOUT OVERLAP « Apart beluisteren » over the touchable « Blad sluiten » (123 x 20 dp)
+#78 LAYOUT OVERLAP « Geluid » over the touchable « Blad sluiten » (44 x 20 dp)
+#78 LAYOUT OVERLAP « Snare » over the touchable « Blad sluiten » (39 x 20 dp)
+#78 LAYOUT OVERLAP « Snare 2 » over the touchable « Blad sluiten » (52 x 20 dp)
+#78 LAYOUT OVERLAP « Rim » over the touchable « Blad sluiten » (26 x 20 dp)
+#78 LAYOUT OVERLAP « Alle klanken… » over the touchable « Blad sluiten » (43 x 20 dp)
+#78 LAYOUT OVERLAP « Volume van de pad » over the touchable « Blad sluiten » (127 x 20 dp)
+#78 LAYOUT OVERLAP « 80% » over the touchable « Blad sluiten » (33 x 17 dp)
+#78 LAYOUT OVERLAP « Pan van de pad » over the touchable « Blad sluiten » (103 x 20 dp)
+#78 LAYOUT OVERLAP « R 50 » over the touchable « Blad sluiten » (32 x 17 dp)
+#78 LAYOUT OVERLAP « Deze pad dempen » over the touchable « Blad sluiten » (122 x 20 dp)
+#78 > glisse 450 1300 450 750
+#78 DOIGT rien
+#79 ROUTE dialogue:pad_sheet | MODE pro | EMPREINTE 6cbc3fb8d4 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 821 759
+#79 DOIGT pad_sheet_close « Sluiten »
+#80 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE a8f36e54c8 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 450 1209
+#80 DOIGT tuto_folded_text « Nu jij: zet op de pad ‘Rim’ de ‘Verschui »
+#81 ROUTE tab_Sons | MODE pro | EMPREINTE 576d8d90bd | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 667 1128
+#81 DOIGT tuto_show «  Laat zien »
+#82 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 626dcab32f | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT CONTRAST « Maat » 3.75:1 (needs 4.5:1, 14 sp)
+#82 LAYOUT CONTRAST « 1 » 3.24:1 (needs 4.5:1, 14 sp)
+#82 LAYOUT CONTRAST « 2 » 2.43:1 (needs 4.5:1, 14 sp)
+#82 LAYOUT CONTRAST « Volgen » 2.93:1 (needs 4.5:1, 14 sp)
+#82 LAYOUT CONTRAST « Stoppen » 3.91:1 (needs 4.5:1, 14 sp)
+#82 > attends 4
+#83 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE e04e5780f7 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#83 SON Son : rien ne joue.
+#83 > appui-long 500 450
+#83 DOIGT step_4 « Vakje 5 »
+#84 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE d67ea65695 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#84 SON Son : rien ne joue.
+#84 > glisse 250 1150 250 650
+#84 DOIGT rien
+#85 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE d67ea65695 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 495 540
+#85 DOIGT roll_close
+#86 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE 2fa895ef9f | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#86 SON Son : rien ne joue.
+#86 > glisse 450 900 450 500
+#86 DOIGT rien
+#87 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE a41236bb30 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 243 954
+#87 DOIGT pad_effects « Pad-effecten »
+#88 ROUTE dialogue:effects_box_26 | MODE pro | EMPREINTE 21a95fa0ea | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CONTRAST « Effecten actief: 0 van 8 » 4.44:1 (needs 4.5:1, 14 sp)
+#88 LAYOUT CONTRAST « Kant-en-klare sferen » 4.44:1 (needs 4.5:1, 14 sp)
+#88 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#88 LAYOUT CONTRAST « Sluiten » 3.63:1 (needs 4.5:1, 14 sp)
+#88 > retour
+#88 RETOUR
+#89 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE a41236bb30 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 450 870
+#89 DOIGT pad_settings «  Padinstellingen »
+#90 ROUTE dialogue:pad_sheet | MODE pro | EMPREINTE 6cbc3fb8d4 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#90 SON Son : rien ne joue.
+#90 > glisse 450 1150 450 600
+#90 DOIGT rien (texte « Volume van de pad »)
+#91 ROUTE dialogue:pad_sheet | MODE pro | EMPREINTE 6cbc3fb8d4 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#91 SON Son : rien ne joue.
+#91 > glisse 450 690 450 150
+#91 DOIGT rien
+#92 ROUTE dialogue:pad_sheet | MODE pro | EMPREINTE 6cbc3fb8d4 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#92 SON Son : rien ne joue.
+#92 RIEN NE CHANGE (3 écrans identiques)
+#92 > touche 821 759
+#92 DOIGT pad_sheet_close « Sluiten »
+#93 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE a41236bb30 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 450 1209
+#93 DOIGT tuto_folded_text « Nu jij: zet op de pad ‘Rim’ de ‘Verschui »
+#94 ROUTE tab_Sons | MODE pro | EMPREINTE 871e9215de | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT CONTRAST « alles » 3.53:1 (needs 4.5:1, 14 sp)
+#94 LAYOUT CONTRAST « 1/2 » 3.56:1 (needs 4.5:1, 14 sp)
+#94 LAYOUT CONTRAST « 1/4 » 3.40:1 (needs 4.5:1, 14 sp)
+#94 LAYOUT CONTRAST « ◀ » 2.92:1 (needs 4.5:1, 14 sp)
+#94 LAYOUT CONTRAST « ▶ » 3.40:1 (needs 4.5:1, 14 sp)
+#94 LAYOUT CONTRAST « Wissen » 3.01:1 (needs 4.5:1, 14 sp)
+#94 > touche 796 1209
+#94 DOIGT tuto_next « Volgende  »
+#95 ROUTE tab_Sons | MODE pro | EMPREINTE eb56749c0b | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#95 SON Son : rien ne joue.
+#95 LAYOUT CONTRAST « alles » 3.58:1 (needs 4.5:1, 14 sp)
+#95 LAYOUT CONTRAST « 1/2 » 3.58:1 (needs 4.5:1, 14 sp)
+#95 LAYOUT CONTRAST « 1/4 » 3.45:1 (needs 4.5:1, 14 sp)
+#95 LAYOUT CONTRAST « ◀ » 3.45:1 (needs 4.5:1, 14 sp)
+#95 LAYOUT CONTRAST « ▶ » 3.45:1 (needs 4.5:1, 14 sp)
+#95 LAYOUT CONTRAST « Wissen » 3.52:1 (needs 4.5:1, 14 sp)
+#95 > touche 450 924
+#95 DOIGT tuto_why « ▸ Waarom? »
+#96 ROUTE tab_Sons | MODE pro | EMPREINTE 076c263ea6 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=snare_late done=11 chapters=1,7 playing=false
+#96 SON Son : rien ne joue.
+#96 LAYOUT CONTRAST « ? » 1.52:1 (needs 4.5:1, 12 sp)
+#96 LAYOUT TARGET « ▾ Waarom? » 572 x 20 dp (touch 572 x 48)
+#96 > touche 796 1209
+#96 DOIGT tuto_next « Volgende  »
+#97 ROUTE tab_Sons | MODE pro | EMPREINTE 3484398315 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=drums_hear done=11 chapters=1,7 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 450 1044
+#97 DOIGT tuto_play_mine «   Luister naar je resultaat »
+#98 ROUTE tab_Sons | MODE pro | EMPREINTE 923c947b4b | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=drums_hear done=11 chapters=1,7 playing=true
+#98 SON Son : la musique du projet joue en boucle.
+#98 > attends 6
+#99 ROUTE tab_Sons | MODE pro | EMPREINTE 776704caa7 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=drums_hear done=11 chapters=1,7 playing=true
+#99 SON Son : la musique du projet joue en boucle.
+#99 > touche 450 1044
+#99 DOIGT tuto_play_mine «   Stoppen »
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE 3484398315 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=drums_hear done=11 chapters=1,7 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 796 1209
+#100 DOIGT tuto_next « Volgende  »
+#101 ROUTE tab_Sons | MODE pro | EMPREINTE fea137ecb6 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=drums_hear done=12 chapters=1,7 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 450 1125
+#101 DOIGT tuto_next_big « Volgende stap   »
+#102 ROUTE tab_Sons | MODE pro | EMPREINTE afc0e98de3 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_hear done=12 chapters=1,7 playing=false
+#102 SON Son : rien ne joue.
+#102 LAYOUT CONTRAST « alles » 3.56:1 (needs 4.5:1, 14 sp)
+#102 LAYOUT CONTRAST « ◀ » 3.40:1 (needs 4.5:1, 14 sp)
+#102 LAYOUT CONTRAST « Wissen » 3.50:1 (needs 4.5:1, 14 sp)
+#102 > touche 450 1125
+#102 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#103 ROUTE tab_Sons | MODE pro | EMPREINTE e43b81eba0 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_hear done=12 chapters=1,7 playing=false
+#103 SON Son : l'exemple du tuto joue (encore 3 s).
+#103 > touche 450 1125
+#103 DOIGT tuto_listen «  Stoppen met luisteren »
+#104 ROUTE tab_Sons | MODE pro | EMPREINTE afc0e98de3 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_hear done=12 chapters=1,7 playing=false
+#104 SON Son : rien ne joue.
+#104 > touche 796 1209
+#104 DOIGT tuto_next « Volgende  »
+#105 ROUTE tab_Sons | MODE pro | EMPREINTE 106aa2c73d | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#105 SON Son : rien ne joue.
+#105 LAYOUT CONTRAST « alles » 3.03:1 (needs 4.5:1, 14 sp)
+#105 LAYOUT CONTRAST « 1/2 » 3.06:1 (needs 4.5:1, 14 sp)
+#105 LAYOUT CONTRAST « 1/4 » 2.92:1 (needs 4.5:1, 14 sp)
+#105 LAYOUT CONTRAST « ▶ » 2.92:1 (needs 4.5:1, 14 sp)
+#105 > touche 450 1044
+#105 DOIGT tuto_need «   Spoor Bas maken »
+#106 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b231a1107f | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#106 SON Son : rien ne joue.
+#106 LAYOUT CUT « Nu jij: maak het spoor Bas. Maat 1 met de kick (vakje 1 en 11) en het octaaf als antwoord; ‘Kopiëren’ laat hem de akkoorden volgen (F, D); maat 4 op E, die eindigt op G om terug te gaan naar A. » ellipsized (« … »)
+#106 > touche 195 819
+#106 DOIGT rien
+#107 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7b4b3e23d7 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#107 SON Son : 1 note du synthé.
+#107 > touche 463 819
+#107 DOIGT rien
+#108 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a1005156cb | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#108 SON Son : 1 note du synthé.
+#108 > touche 643 819
+#108 DOIGT rien
+#109 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 93190ae5c3 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#109 SON Son : 1 note du synthé.
+#109 > touche 793 402
+#109 DOIGT tuto_notes_left « Bas · maat 1/8 »
+#110 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7124987035 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#110 SON Son : rien ne joue.
+#110 > touche 800 819
+#110 DOIGT rien
+#111 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 96266a6beb | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#111 SON Son : 1 note du synthé.
+#111 > touche 450 1281
+#111 DOIGT tuto_need_folded « Kopiëren naar de volgende maten »
+#112 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 95c1d26aad | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#112 SON Son : rien ne joue.
+#112 > touche 195 819
+#112 DOIGT rien
+#113 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e35d9a4dd4 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#113 SON Son : 1 note du synthé.
+#113 > touche 463 819
+#113 DOIGT rien
+#114 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d87b0f4c9f | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#114 SON Son : 1 note du synthé.
+#114 > touche 643 819
+#114 DOIGT rien
+#115 ROUTE synth/tab_Sons | MODE pro | EMPREINTE facbbd5c3c | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#115 SON Son : 1 note du synthé.
+#115 > touche 800 692
+#115 DOIGT rien
+#116 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a246ff201b | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=13 chapters=1,7 playing=false
+#116 SON Son : 1 note du synthé.
+#116 > touche 450 1281
+#116 DOIGT tuto_need_folded « Kopiëren naar de volgende maten »
+#117 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 0ec6ae0c2d | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_do done=14 chapters=1,7 playing=false
+#117 SON Son : rien ne joue.
+#117 > touche 450 1281
+#117 DOIGT tuto_next_folded « Gelukt »
+#118 ROUTE tab_Sons | MODE pro | EMPREINTE 11f9b6a043 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_sub done=14 chapters=1,7 playing=false
+#118 SON Son : rien ne joue.
+#118 > touche 450 1116
+#118 DOIGT tuto_need «   Bas een octaaf lager kopiëren »
+#119 ROUTE tab_Sons | MODE pro | EMPREINTE 6daf9848f7 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=bass_sub done=15 chapters=1,3,7 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 450 1196
+#119 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#120 ROUTE tab_Sons | MODE pro | EMPREINTE e1354883f9 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_hear done=15 chapters=1,3,7 playing=false
+#120 SON Son : rien ne joue.
+#120 > touche 450 1197
+#120 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#121 ROUTE tab_Sons | MODE pro | EMPREINTE 448d21cc73 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_hear done=15 chapters=1,3,7 playing=false
+#121 SON Son : l'exemple du tuto joue (encore 3 s).
+#121 > attends 8
+#122 ROUTE tab_Sons | MODE pro | EMPREINTE 8baa387d87 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_hear done=16 chapters=1,3,7 playing=false
+#122 SON Son : rien ne joue.
+#122 > touche 796 1281
+#122 DOIGT tuto_next « Volgende  »
+#123 ROUTE tab_Sons | MODE pro | EMPREINTE 3fe04b8a21 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_do done=16 chapters=1,3,7 playing=false
+#123 SON Son : rien ne joue.
+#123 > touche 450 1116
+#123 DOIGT tuto_need «   Spoor Akkoorden maken »
+#124 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 939ce13c3a | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_do done=16 chapters=1,3,7 playing=false
+#124 SON Son : rien ne joue.
+#124 LAYOUT CUT « Nu jij: maak het spoor Akkoorden. Zonder grondtoon (die heeft de bas): Am9 (C E G B), dan Fmaj9 (A C E G), net na de tellen; ‘Kopiëren’ zet die twee maten een kwint lager: Dm9 (F A C E), Em7 (E G B D). De ‘chord planing’ van garage. » ellipsized (« … »)
+#124 > touche 305 524
+#124 DOIGT rien
+#125 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a62e942c15 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_do done=16 chapters=1,3,7 playing=false
+#125 SON Son : rien ne joue.
+#125 > touche 440 524
+#125 DOIGT rien
+#126 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1ce390fcfc | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_do done=16 chapters=1,3,7 playing=false
+#126 SON Son : rien ne joue.
+#126 > touche 665 524
+#126 DOIGT rien
+#127 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c76594a734 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_do done=16 chapters=1,3,7 playing=false
+#127 SON Son : rien ne joue.
+#127 > touche 778 524
+#127 DOIGT rien
+#128 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 50be15fe9e | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_do done=16 chapters=1,3,7 playing=false
+#128 SON Son : rien ne joue.
+#128 > touche 793 402
+#128 DOIGT tuto_notes_left « Akkoorden · maat 1/8 »
+#129 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f97367f18b | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_do done=16 chapters=1,3,7 playing=false
+#129 SON Son : rien ne joue.
+#129 > touche 328 692
+#129 DOIGT rien
+#130 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1a71018f3d | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_do done=16 chapters=1,3,7 playing=false
+#130 SON Son : rien ne joue.
+#130 > touche 620 692
+#130 DOIGT rien
+#131 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a3b76f0c01 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_do done=16 chapters=1,3,7 playing=false
+#131 SON Son : rien ne joue.
+#131 > touche 778 692
+#131 DOIGT rien
+#132 ROUTE synth/tab_Sons | MODE pro | EMPREINTE fd3f548503 | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_do done=17 chapters=1,3,7 playing=false
+#132 SON Son : rien ne joue.
+#132 > touche 450 1281
+#132 DOIGT tuto_next_folded « Gelukt »
+#133 ROUTE tab_Sons | MODE pro | EMPREINTE 06c5c8759f | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_end done=17 chapters=1,3,7 playing=false
+#133 SON Son : rien ne joue.
+#133 > touche 450 1116
+#133 DOIGT tuto_need «   Kopiëren naar de volgende maten »
+#134 ROUTE tab_Sons | MODE pro | EMPREINTE 06c5c8759f | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_end done=17 chapters=1,3,7 playing=false
+#134 SON Son : rien ne joue.
+#134 > touche 778 402
+#134 DOIGT tuto_roll_copy « Kopiëren »
+#135 ROUTE tab_Sons | MODE pro | EMPREINTE 5a748c4b1a | project=p-1efeb5b1 tuto=uk_garage/Pro active=true step=pad_end done=18 chapters=1,3,4,7 playing=false
+#135 SON Son : rien ne joue.
+#135 > fin
+#135 BENCH-VERDICT ok where=seat.fin
+#135 FIN : fin

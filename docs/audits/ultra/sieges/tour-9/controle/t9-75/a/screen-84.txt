@@ -1,0 +1,26 @@
+Écran 84 (900x1509)
+icône ✕ @ 495,540
+texte « Slag 5 » @ 250,540
+texte « Kracht » @ 76,600
+bouton « Sterk » [sélectionné] @ 93,660
+bouton « Middel » @ 210,660
+bouton « Zacht » @ 330,660
+texte « Roll » @ 62,720
+bouton « ×1 » [sélectionné] @ 78,780
+bouton « ×2 » @ 159,780
+bouton « ×3 » @ 242,780
+bouton « ×4 » @ 326,780
+bouton « ×6 » @ 409,780
+bouton « ×8 » @ 492,780
+texte « Triool » @ 72,840
+bouton « 3 over 2 vakjes » @ 143,900
+bouton « 6 over de tel » @ 337,900
+bouton « ↗ Stijgend » [désactivé] @ 120,981
+bouton « Gelijk » [désactivé, sélectionné] @ 258,981
+bouton « ↘ Dalend » [désactivé] @ 389,981
+texte « Hele tel op ×2 (1/32-salvo) » @ 196,1062
+texte « Kans om te spelen » @ 137,1122
+bouton « 100% » [sélectionné] @ 96,1182
+bouton « 75% » @ 204,1182
+bouton « 50% » @ 307,1182
+bouton « 25% » @ 410,1182

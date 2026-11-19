@@ -1,0 +1,48 @@
+Écran 88 (900x1509)
+texte « Effecten · pad 11 (Rim) » @ 240,60
+texte « Effecten actief: 0 van 8 » @ 169,123
+texte « Nog geen: voeg een effect toe, of tik op een kant-en-klare sfeer. » @ 341,157
+bouton + «   Effect toevoegen » @ 450,213
+bouton « ? » @ 287,285
+texte « Kant-en-klare sferen » @ 158,286
+bouton « Voor: Drums » [sélectionné] @ 140,355
+bouton ★ « Favorieten » @ 328,355
+bouton « Sfeer » @ 480,355
+bouton « Kleur » @ 593,355
+bouton « Vuil » @ 699,355
+bouton « Beweging » [coupé] @ 801,355
+texte « Stijl: » @ 71,439
+bouton « Acid » @ 148,439
+bouton « Techno » @ 268,439
+bouton « DnB » @ 386,439
+bouton « Dubstep » @ 508,439
+bouton « House » @ 643,439
+bouton « Lo-fi » @ 759,439
+bouton « Punch » @ 108,523
+bouton « EDM-pomp » @ 258,523
+bouton « Krokant » @ 415,523
+bouton « Lo-Fi Tape » @ 568,523
+bouton « Kleine kamer » @ 747,523
+bouton « Gedreun » @ 119,595
+bouton « Geen effect » [sélectionné] @ 280,595
+texte « Het geluid zoals het is: geen effecten meer, macro's in rust. » @ 450,670
+texte « Houd je vinger op een sfeer om hem te horen; laat los en je geluid komt terug. » @ 403,722
+bouton « ? » @ 240,769
+texte « XY-pad, op-neer: » @ 130,769
+bouton « Ruimte » [sélectionné] @ 111,839
+bouton « Vuil » @ 226,839
+bouton « Beweging » @ 355,839
+texte « ↑ Ver weg » @ 450,899
+texte « ← Donker » @ 228,1184
+texte « ↓ Droog » @ 449,1184
+texte « Helder → » @ 671,1184
+texte « Schuif met je vinger om het geluid live te vervormen. Twee keer tikken: terug naar het begingeluid. » @ 450,1235
+curseur [état « Neutraal », à 50 %] @ 151,1313
+texte « Kleur » [coupé] @ 151,1358
+curseur [état « 0 », à 0 %] @ 350,1313
+texte « Vuil » [coupé] @ 350,1358
+curseur [état « 0 », à 0 %] @ 549,1313
+texte « Beweging » [coupé] @ 549,1358
+curseur [état « 0 », à 0 %] @ 749,1313
+texte « Ruimte » [coupé] @ 749,1358
+texte « Sluiten » @ 794,1437

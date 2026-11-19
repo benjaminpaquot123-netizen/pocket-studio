@@ -1,0 +1,73 @@
+Écran 15 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 195,42
+texte « Pro » @ 417,42
+bouton « A » ▾ @ 492,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « dit deel » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drums 16 pads » [sélectionné] @ 76,183
+onglet « Acid 303 Baslijn » @ 223,183
+onglet « Zang Microfoon » @ 382,183
+onglet « Remix Splitsen » @ 537,183
+bouton + «  Spoor » @ 697,183
+texte « Deel: A » @ 56,243
+bouton « Studiokick FX » @ 123,322
+bouton « Kick 2 » @ 341,322
+bouton « Snare FX » @ 559,322
+bouton « Snare 2 » @ 777,322
+bouton « Clap FX » @ 123,409
+bouton « Hi-hat L 30 » @ 341,409
+bouton « Open hi-hat R 30 » @ 559,409
+bouton « Lage tom » @ 777,409
+bouton « Midtom R 45 » @ 123,496
+bouton « Hoge tom » @ 341,496
+bouton « Rim R 50 » @ 559,496
+bouton « Koebel » @ 777,496
+bouton « Bekken FX R 40 » @ 123,583
+bouton « Shaker L 50 » @ 341,583
+bouton « Conga » @ 559,583
+bouton « Zap » @ 777,583
+bouton « Kit: Studio » ▾ @ 110,666
+texte « Pads klinken, vakjes bewaren de slagen. Lang drukken: klank wijzigen. » @ 548,666
+titre « VAKJES: STUDIOKICK » [état « Uitgeklapt »] @ 377,774
+bouton « ? » @ 334,774
+bouton « Alle pads » @ 785,774
+texte « Studiokick » @ 108,858
+bouton « 1 » [état « leeg »] @ 90,943
+bouton [état « leeg »] @ 192,943
+bouton [état « leeg »] @ 294,943
+bouton [état « leeg »] @ 397,943
+bouton « 2 » [état « leeg »] @ 500,943
+bouton [état « leeg »] @ 603,943
+bouton [état « leeg »] @ 706,943
+bouton [état « leeg »] @ 809,943
+bouton « 3 » [état « leeg »] @ 90,1024
+bouton [état « leeg »] @ 192,1024
+bouton [état « leeg »] @ 294,1024
+bouton [état « leeg »] @ 397,1024
+bouton « 4 » [état « leeg »] @ 500,1024
+bouton [état « leeg »] @ 603,1024
+bouton [état « leeg »] @ 706,1024
+bouton [état « leeg »] @ 809,1024
+icône (liste) « Hoofdstukken » @ 751,1110
+texte « Tempo en toonsoort Hoofdstuk 1/14 · Klaar · Pro » @ 358,1110
+icône ⌃ @ 843,1110
+icône (coupe) « Goed gedaan, hoofdstuk klaar! » ⌃ @ 450,1209
+icône ↶ « Ongedaan maken » @ 140,1293
+icône ↷ « Opnieuw » [désactivé] @ 316,1293
+bouton ▶ « het nummer » @ 474,1293
+texte « 132 Tempo » @ 638,1293
+icône (trois points reliés) « Delen » @ 790,1293
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noteren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 318,1479

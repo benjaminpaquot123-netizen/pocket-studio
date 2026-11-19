@@ -1,0 +1,76 @@
+Écran 75 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 195,42
+texte « Pro » @ 417,42
+bouton « A » ▾ @ 492,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « dit deel » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drums 16 pads » [sélectionné] @ 76,183
+onglet « Acid 303 Baslijn » @ 223,183
+onglet « Zang Microfoon » @ 382,183
+onglet « Remix Splitsen » @ 537,183
+bouton + «  Spoor » @ 697,183
+texte « Deel: A » @ 56,243
+texte « Maat 1/2 · Rim » [coupé] @ 124,271
+bouton « 1 » [état « slag, kracht 100 % »] @ 90,349
+bouton [état « slag, kracht 100 % »] @ 192,349
+bouton [état « slag, kracht 100 % »] @ 294,349
+bouton [état « slag, kracht 100 % »] @ 397,349
+bouton « 2 » [état « slag, kracht 100 % »] @ 500,349
+bouton [état « slag, kracht 100 % »] @ 603,349
+bouton [état « slag, kracht 100 % »] @ 706,349
+bouton [état « slag, kracht 100 % »] @ 809,349
+bouton « 3 » [état « slag, kracht 100 % »] @ 90,430
+bouton [état « slag, kracht 100 % »] @ 192,430
+bouton [état « slag, kracht 100 % »] @ 294,430
+bouton [état « slag, kracht 100 % »] @ 397,430
+bouton « 4 » [état « slag, kracht 100 % »] @ 500,430
+bouton [état « slag, kracht 100 % »] @ 603,430
+bouton [état « slag, kracht 100 % »] @ 706,430
+bouton [état « slag, kracht 100 % »] @ 809,430
+bouton « Slagen » [sélectionné] @ 102,516
+bouton « Rolls » @ 218,516
+bouton « Pan » @ 319,516
+bouton « Toonhoogte » @ 456,516
+bouton « Kracht » @ 607,516
+texte « alles » @ 140,600
+texte « 1/2 » @ 216,600
+texte « 1/4 » @ 291,600
+texte « ◀ » @ 366,600
+texte « ▶ » @ 441,600
+texte « Wissen » @ 531,600
+texte « Vullen » @ 71,600
+texte « Tik op een vakje voor een slag, schuif je vinger om er meerdere te tekenen. Lang drukken op een slag: kracht en rolls (×2 tot ×8). » @ 450,675
+texte « Lengte » [coupé] @ 76,736
+bouton « 1 maat » [coupé] @ 176,732
+bouton « 2 » [coupé, sélectionné] @ 278,732
+bouton « 3 » [coupé] @ 359,732
+bouton « 4 » [coupé] @ 440,732
+icône (liste) « Hoofdstukken » @ 751,786
+texte « De 2-stepbeat Hoofdstuk 2/14 · Stap 9/10 · Pro » @ 358,786
+icône ⌄ @ 843,786
+texte « Nu jij: zet op de pad ‘Rim’ de ‘Verschuiving van slag’ van elke slag een beetje later (5 tot 10 ms): de snare sleept achter de tel aan, het hinkt nog beter. » @ 450,903
+texte « ▸ Waarom? » @ 450,981
+bouton (doigt qui touche) «   Ik doe het » @ 450,1044
+bouton ▶ «  Luister naar het voorbeeld » @ 232,1128
+bouton (œil) «  Laat zien » @ 667,1128
+icône ← «  Vorige » @ 89,1209
+icône « Volgende  » → @ 796,1209
+icône ↶ « Ongedaan maken » @ 140,1293
+icône ↷ « Opnieuw » [désactivé] @ 316,1293
+bouton ▶ « het nummer » @ 474,1293
+texte « 132 Tempo » @ 638,1293
+icône (trois points reliés) « Delen » @ 790,1293
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noteren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 318,1479

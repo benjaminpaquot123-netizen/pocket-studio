@@ -1,0 +1,58 @@
+Écran 126 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 179,42
+texte « Pro » @ 386,42
+bouton « A » ▾ @ 461,42
+icône ↶ @ 536,42
+bouton ● @ 608,42
+bouton ▶ « dit deel » @ 680,42
+bouton ▶ « het nummer » @ 773,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Acid 303 Baslijn » [coupé] @ 29,186
+onglet « Zang Microfoon » @ 123,186
+onglet « Remix Splitsen » @ 278,186
+bouton « Bas Ronde bas » @ 428,186
+bouton « Sub Zuivere sub » @ 592,186
+bouton « Akkoorden FM-Rhodes » ⋮ @ 780,186
+image ← @ 10,187
+image → @ 889,187
+texte « Deel: A » @ 56,249
+bouton « Akkoorden » [sélectionné] @ 122,321
+bouton « Bas als schaduw » [sélectionné] @ 317,321
+texte « In de maat 50% » @ 530,321
+texte « 100% » @ 679,321
+texte « Wissen » @ 787,321
+bouton « Akkoorden · maat 1/8 Gestippelde akkoorden om aan te tikken: 5 » @ 450,402
+texte « mt » @ 84,459
+bouton « 1 » @ 486,471
+bouton « 2 » [coupé] @ 853,471
+texte « B » @ 84,525
+texte « B♭ » @ 84,567
+texte « A » @ 84,609
+texte « A♭ » @ 84,651
+texte « G » @ 84,693
+texte « G♭ » @ 84,735
+texte « F » @ 84,777
+texte « E » @ 84,819
+texte « E♭ » @ 84,861
+texte « D » @ 84,903
+texte « D♭ » @ 84,945
+texte « C4 » @ 84,987
+texte « B » @ 84,1029
+texte « B♭ » @ 84,1071
+texte « A » @ 84,1113
+dessin [coupé] @ 492,819
+icône (liste) « Hoofdstukken » @ 751,1182
+texte « De akkoorden Hoofdstuk 4/14 · Stap 2/3 · Pro » @ 358,1182
+icône ⌃ @ 843,1182
+icône « Nu jij: maak het spoor Akkoorden. Zonder grondtoon (die heeft de bas): Am9 (C E G B), dan Fmaj9 (A C E G), net na de tellen; ‘Kopiëren’ zet die twee maten een kwint lager: Dm9 (F A C E), Em7 (E G B D). De ‘chord planing’ van garage. Lees » ⌃ @ 450,1281
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noteren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 318,1479

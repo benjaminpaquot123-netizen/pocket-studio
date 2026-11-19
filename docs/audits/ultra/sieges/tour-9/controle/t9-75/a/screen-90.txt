@@ -1,0 +1,17 @@
+Écran 90 (900x1509)
+dessin @ 450,687
+texte « Sluiten » @ 821,759
+texte « Pad 11 · Rim » @ 395,759
+bouton ▶ « Apart beluisteren » @ 160,846
+texte « Geluid » @ 57,912
+bouton « Snare » @ 234,984
+bouton « Snare 2 » @ 666,984
+bouton ✓ « Rim » [sélectionné] @ 234,1080
+bouton (notes sur une pile) « Alle klanken… » @ 666,1080
+texte « Volume van de pad » @ 425,1152
+texte « 80% » @ 851,1152
+curseur [état « 80% », à 80 %] @ 450,1218
+texte « Pan van de pad » @ 426,1284
+texte « R 50 » @ 852,1284
+curseur [état « R 50 », à 75 %] @ 450,1350
+bouton « Deze pad dempen » @ 140,1437

@@ -1,0 +1,58 @@
+Écran 119 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 179,42
+texte « Pro » @ 386,42
+bouton « A » ▾ @ 461,42
+icône ↶ @ 536,42
+bouton ● @ 608,42
+bouton ▶ « dit deel » @ 680,42
+bouton ▶ « het nummer » @ 773,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drums 16 pads » [coupé] @ 36,186
+onglet « Acid 303 Baslijn » @ 134,186
+onglet « Zang Microfoon » @ 293,186
+onglet « Remix Splitsen » @ 448,186
+bouton « Bas Ronde bas » @ 598,186
+bouton « Sub Zuivere sub » ⋮ @ 780,186
+image ← @ 10,187
+image → @ 889,187
+texte « Deel: A » @ 56,249
+bouton « Akkoorden » @ 122,321
+bouton « Bas als schaduw » [sélectionné] @ 317,321
+texte « In de maat 50% » @ 530,321
+texte « 100% » @ 679,321
+texte « Wissen » @ 787,321
+bouton « Sub · maat 1/8 Nog 1 gestippelde noot om aan te tikken » @ 450,402
+texte « mt » @ 84,459
+bouton « 1 » @ 486,471
+bouton « 2 » [coupé] @ 853,471
+texte « D♭ » [coupé] @ 84,516
+texte « C3 » @ 84,549
+texte « B » @ 84,591
+texte « B♭ » @ 84,633
+texte « A » @ 84,675
+texte « A♭ » @ 84,717
+texte « G » @ 84,759
+texte « G♭ » @ 84,801
+texte « F » [coupé] @ 84,834
+dessin [coupé] @ 492,675
+icône (liste) « Hoofdstukken » @ 751,894
+texte « De bas Hoofdstuk 3/14 · Klaar · Pro » @ 358,894
+icône ⌄ @ 843,894
+image (coupe) @ 57,1011
+texte « Goed gedaan, hoofdstuk klaar! » @ 248,984
+texte « Luister naar je nummer zoals het nu is en ga dan naar het volgende hoofdstuk: ‘De akkoorden’. » @ 475,1026
+bouton « Volgend hoofdstuk   » → @ 450,1197
+icône ← @ 57,1281
+bouton ▶ «  Mijn nummer beluisteren » @ 294,1281
+bouton ▶ «  Luister naar het voorbeeld » @ 687,1281
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noteren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 318,1479

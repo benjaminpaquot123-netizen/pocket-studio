@@ -1,0 +1,61 @@
+Écran 17 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 195,42
+texte « Pro » @ 417,42
+bouton « A » ▾ @ 492,42
+icône ↶ @ 567,42
+icône ↷ [désactivé] @ 639,42
+bouton ● @ 711,42
+bouton ▶ « dit deel » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drums 16 pads » [sélectionné] @ 76,183
+onglet « Acid 303 Baslijn » @ 223,183
+onglet « Zang Microfoon » @ 382,183
+onglet « Remix Splitsen » @ 537,183
+bouton + «  Spoor » @ 697,183
+texte « Deel: A » @ 56,243
+bouton « Studiokick FX » @ 123,318
+bouton « Kick 2 » @ 341,318
+bouton « Snare FX » @ 559,318
+bouton « Snare 2 » @ 777,318
+bouton « Clap FX » @ 123,396
+bouton « Hi-hat L 30 » @ 341,396
+bouton « Open hi-hat R 30 » @ 559,396
+bouton « Lage tom » @ 777,396
+bouton « Midtom R 45 » @ 123,474
+bouton « Hoge tom » @ 341,474
+bouton « Rim R 50 » @ 559,474
+bouton « Koebel » @ 777,474
+bouton « Bekken FX R 40 » @ 123,552
+bouton « Shaker L 50 » @ 341,552
+bouton « Conga » @ 559,552
+bouton « Zap » @ 777,552
+bouton « Kit: Studio » ▾ @ 110,630
+texte « Pads klinken, vakjes bewaren de slagen. Lang drukken: klank wijzigen. » @ 548,630
+titre « VAKJES: STUDIOKICK » [état « Uitgeklapt »] @ 377,738
+bouton « ? » @ 334,738
+bouton « Alle pads » @ 785,738
+texte « Studiokick » @ 108,822
+texte « De 2-stepbeat Hoofdstuk 2/14 · Stap 1/10 · Pro » @ 358,903
+icône (liste) « Hoofdstukken » @ 751,903
+icône ⌄ @ 843,903
+texte « Al klaar voor je: de kit van de stijl, zijn effecten en zijn plaatsing. De app speelt de hi-hats al een beetje te laat, zoals op de platen. » @ 450,1002
+texte « ▸ Waarom? » @ 450,1062
+bouton ✓ «   Begrepen » @ 450,1125
+icône ← «  Vorige » @ 89,1209
+icône « Volgende  » → @ 796,1209
+icône ↶ « Ongedaan maken » @ 140,1293
+icône ↷ « Opnieuw » [désactivé] @ 316,1293
+bouton ▶ « het nummer » @ 474,1293
+texte « 132 Tempo » @ 638,1293
+icône (trois points reliés) « Delen » @ 790,1293
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noteren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 318,1479

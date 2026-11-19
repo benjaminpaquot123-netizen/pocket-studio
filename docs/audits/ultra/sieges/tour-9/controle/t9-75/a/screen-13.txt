@@ -1,0 +1,28 @@
+Écran 13 (900x1509)
+dessin @ 450,754
+dessin @ 450,894
+texte « Toonsoort van het nummer » @ 395,966
+texte « Sluiten » @ 821,966
+texte « Toonsoort van het nummer: C · Mineur » @ 214,1032
+texte « Toonladder » @ 82,1077
+bouton « Majeur » @ 81,1143
+bouton « Mineur » @ 206,1143
+bouton « Dorisch » @ 337,1143
+bouton « Mineur-penta » @ 503,1143
+bouton « Majeur-penta » @ 701,1143
+bouton « Blues » @ 73,1224
+bouton « Frygisch » @ 199,1224
+bouton « Harmonisch mineur » @ 404,1224
+texte « Grondtoon » @ 78,1290
+bouton « C » @ 63,1356
+bouton « C♯ » @ 150,1356
+bouton « D » @ 237,1356
+bouton « E♭ » @ 324,1356
+bouton « E » @ 411,1356
+bouton « F » @ 498,1356
+bouton « F♯ » @ 585,1356
+bouton « G » @ 672,1356
+bouton « A♭ » @ 759,1356
+bouton « A » @ 63,1437
+bouton « B♭ » @ 150,1437
+bouton « B » @ 237,1437

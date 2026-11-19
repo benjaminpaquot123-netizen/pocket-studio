@@ -1,0 +1,71 @@
+Écran 57 (1035x1243)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 346,42
+bouton « Semplice » @ 737,42
+bouton ● @ 827,42
+bouton ▶ « questa parte » @ 908,42
+icône ⋮ @ 990,42
+bouton « 174  Tempo » @ 98,123
+icône « Intro battuta 1/128 » ▾ @ 312,123
+bouton « ? » @ 990,123
+icône « Parte: B · Intro » ▾ @ 131,198
+texte « Il brano suona: tocca la griglia e questa parte resta sotto le tue dita, in loop. » @ 468,246
+bouton « Grancassa da studio FX » @ 75,336
+bouton « Grancassa 2 » @ 200,336
+bouton « Drum & bass · Rullante FX » @ 325,336
+bouton « Rullante 2 » @ 450,336
+bouton « Battimani » @ 75,442
+bouton « Drum & bass · Hi-hat S 30 » @ 200,442
+bouton « Drum & bass · Hi-hat aperto D 30 » @ 325,442
+bouton « Tom grave » @ 450,442
+bouton « Tom medio D 45 » [coupé] @ 75,528
+bouton « Tom acuto » [coupé] @ 200,528
+bouton « Drum & bass · Bordo del tamburo FX D 50 » [coupé] @ 325,528
+bouton « Campana » [coupé] @ 450,528
+bouton « 1 » [coupé, état « colpo, forza 35 % »] @ 575,293
+bouton [coupé, état « vuoto »] @ 632,293
+bouton [coupé, état « colpo, forza 60 % »] @ 688,293
+bouton [coupé, état « vuoto »] @ 744,293
+bouton « 2 » [coupé, état « colpo, forza 35 % »] @ 800,293
+bouton [coupé, état « vuoto »] @ 856,293
+bouton [coupé, état « colpo, forza 60 % »] @ 912,293
+bouton [coupé, état « vuoto »] @ 968,293
+bouton « 3 » [état « colpo, forza 35 % »] @ 575,355
+bouton [état « vuoto »] @ 632,354
+bouton [état « colpo, forza 60 % »] @ 688,354
+bouton [état « vuoto »] @ 744,354
+bouton « 4 » [état « colpo, forza 35 % »] @ 800,354
+bouton [état « vuoto »] @ 856,354
+bouton [état « vuoto »] @ 912,354
+bouton [état « vuoto »] @ 968,354
+texte « tutto » @ 680,435
+texte « 1/2 » @ 764,435
+texte « 1/4 » @ 839,435
+texte « ◀ » @ 914,435
+texte « Riempi » @ 591,435
+texte « ▶ » @ 586,507
+texte « Cancella » @ 697,507
+texte « Tocca una casella per aggiungere un colpo, fai scorrere il dito per dipingerne diversi. Pressione lunga su un colpo: forza e rullate (×2 a ×8). » [coupé] @ 771,555
+texte « Le transizioni Capitolo 12/15 · Fatto · Facile » @ 430,606
+icône (liste) « Capitoli » @ 890,607
+icône ⌄ @ 978,607
+image (coupe) @ 57,741
+texte « Bravo, capitolo finito! » @ 236,704
+texte « Ascolta il tuo brano così com'è ora, poi passa al capitolo successivo: “Gli effetti”. » @ 543,761
+bouton « Capitolo successivo   » → @ 517,857
+icône ← @ 57,941
+bouton ■ «  Ferma » @ 327,941
+bouton ▶ «  Ascolta l'esempio » @ 788,941
+bouton ■ « il brano » @ 521,1026
+icône ↶ « Annulla » @ 142,1026
+image ↷ @ 330,1013
+texte « 174 Tempo » @ 709,1026
+icône ⋮ « Altro » @ 893,1026
+onglet (lignes et note) « Il mio brano » @ 99,1123
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 309,1123
+onglet (touches de piano) « Tastiera » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Condividi » @ 936,1123
+texte « ●  REC » @ 799,1213
+texte « ✎  Annota » @ 899,1213
+texte « ⋯ » @ 987,1213
+texte « Modalità feedback » @ 381,1213

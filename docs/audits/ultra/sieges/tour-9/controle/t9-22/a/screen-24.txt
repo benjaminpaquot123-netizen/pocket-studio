@@ -1,0 +1,40 @@
+Écran 24 (1035x1243)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 346,42
+bouton « Semplice » @ 737,42
+bouton ● @ 827,42
+bouton ▶ « questa parte » @ 908,42
+icône ⋮ @ 990,42
+bouton « 174  Tempo » @ 98,123
+bouton « ? » @ 990,123
+texte « Aggiungi: » [coupé] @ 105,180
+bouton « + A · Groove » @ 163,246
+bouton « + B · Intro » @ 144,327
+bouton « + C · Build-up » [coupé] @ 171,380
+titre « LE MIE TRACCE » [état « Espanso »] @ 674,222
+texte « Tocca il nome di una traccia per cambiarne il suono; ▶ per ascoltarla da sola. » @ 771,306
+bouton › « Batteria Cambia il suono » [coupé] @ 696,378
+bouton ▶ [coupé] @ 882,381
+texte « Costruisci le tue parti Capitolo 10/15 · Passo 2/6 · Facile » @ 430,434
+icône (liste) « Capitoli » @ 890,435
+icône ⌄ @ 978,435
+image (coupe) @ 57,587
+texte « Bravo, ce l'hai fatta! » @ 225,532
+texte « Parte “Build-up” creata (copia del Groove): senza Grancassa da studio, Drum & bass · Hi-hat aperto, Piatto, Basso, Melodia. Il suo rullante accelera battuta dopo battuta. » @ 543,607
+bouton « Passo successivo   » → @ 517,857
+icône ← @ 57,941
+bouton ▶ «  Ascolta il tuo risultato » @ 327,941
+bouton ▶ «  Ascolta l'esempio » @ 788,941
+bouton ▶ « il brano » @ 521,1026
+icône ↶ « Annulla » @ 142,1026
+image ↷ @ 330,1013
+texte « 174 Tempo » @ 709,1026
+icône ⋮ « Altro » @ 893,1026
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Ritmo » @ 309,1123
+onglet (touches de piano) « Tastiera » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Condividi » @ 936,1123
+texte « ●  REC » @ 799,1213
+texte « ✎  Annota » @ 899,1213
+texte « ⋯ » @ 987,1213
+texte « Modalità feedback » @ 381,1213

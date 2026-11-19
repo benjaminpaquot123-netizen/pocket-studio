@@ -278,7 +278,7 @@ Toutes remplies : non
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 27 (projects, new_project, wizard, padlive, padlive_party, live_screen, live_grid, live_pads_full, timeline_screen, piano_roll, audio_tracks, instrument_panel, master_pro_panel, video_sheet, remix_project, cut_screen, board, library, midi, plus, settings, help_page, glossary, latency, recette, studio, guide_panel), 36, ?, ? / ? | 0, 0, 0, ≥ 16 / ≤ 3 | ? |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |
 
-Réparations (registre corrections.tsv) : constaté 0, rejoué 0, tenté 0, pas pris 0 — réparés : 0 sur 0 pris (seul « constaté » se dit corrigé ; les pas pris à part)
+Réparations (registre corrections.tsv) : constaté 0, rejoué 0, tenté 13, pas pris 8 — réparés : 0 sur 13 pris (seul « constaté » se dit corrigé ; les pas pris à part)
 
 Toutes remplies : non
 

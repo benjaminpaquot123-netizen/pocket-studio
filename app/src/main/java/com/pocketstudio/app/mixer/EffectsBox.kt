@@ -91,7 +91,7 @@ fun EffectsBox(ch: Int, channel: Channel, actions: MixerActions, compact: Boolea
  * The strip whose effects a screen shows under its sound, and what the box does. [more]: the whole box.
  * [trackName]: the track's own name, said by the suggested ambiences (« Pour : Rhodes », F136).
  */
-class EffectsUi(val ch: Int, val channel: Channel, val actions: MixerActions, val more: (() -> Unit)? = null, val trackName: String? = null)
+class EffectsUi(val ch: Int, val channel: Channel, val actions: MixerActions, val trackName: String? = null, val more: (() -> Unit)? = null)
 
 /** The effects box in a card of its own, right under a sound (Synthé, Acide). */
 @Composable

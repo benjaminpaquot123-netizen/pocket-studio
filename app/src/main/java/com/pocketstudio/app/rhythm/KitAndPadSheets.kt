@@ -81,8 +81,11 @@ fun kitName(p: Project): String {
         p.kitVersion >= Project.KIT_V2 -> tr("Studio")
         else -> tr("Classique")
     }
-    val kit = samples.map { it.substringBefore(" · ", "") }.toSet().singleOrNull()?.takeIf { it.isNotBlank() } ?: return tr("Perso")
-    return DefaultNames.shownSample(samples.first()).substringBefore(" · ").ifBlank { kit }
+    // Tour 9, F061 (t9-35): the tutorial's kit keeps a studio voice's name on its pad (« Rumble », « 808 »): the kit
+    // is still the pack's, not « Perso ».
+    val named = samples.filterNot { it in com.pocketstudio.model.PadVoice.NAMES }.ifEmpty { samples }
+    val kit = named.map { it.substringBefore(" · ", "") }.toSet().singleOrNull()?.takeIf { it.isNotBlank() } ?: return tr("Perso")
+    return DefaultNames.shownSample(named.first()).substringBefore(" · ").ifBlank { kit }
 }
 
 /** « Kit : Studio ▾ » at the head of the drums: a touch lists the kits. */

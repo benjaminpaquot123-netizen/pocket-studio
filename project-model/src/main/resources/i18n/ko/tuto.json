@@ -157,5 +157,10 @@
   "Posé : %s.": "놓은 것: %s.",
   "Il te manque ce que font les chapitres d'avant.": "앞 장에서 만드는 것이 아직 없어요.",
   "Aller au chapitre %d": "%d장으로 가기",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "곡에 “%s” 파트가 없어요. 이 단계는 그 파트 안에서 해요."
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "곡에 “%s” 파트가 없어요. 이 단계는 그 파트 안에서 해요.",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "시작하기 전에: 패드에는 앱의 드럼 사운드가 이 스타일에 맞게 들어 있어요. 스타일의 킷은 아직 패드에 없어요. 뒤에서 킷 카드가 나오면 “나중에”로 충분해요. 튜토리얼은 이 사운드로 진행돼요. 설정할 건 없어요.",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303: 작은 베이스 머신, 끽끽대고 으르렁대는 소리가 바로 애시드예요.",
+  "Accent : une note jouée plus fort que les autres.": "악센트: 다른 음보다 세게 연주하는 음.",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "슬라이드: 음이 뛰지 않고 다음 음으로 미끄러져요.",
+  "Glide : le son glisse doucement d'une note à l'autre.": "글라이드: 소리가 한 음에서 다른 음으로 부드럽게 미끄러져요."
 }

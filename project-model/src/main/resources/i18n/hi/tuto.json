@@ -157,5 +157,10 @@
   "Posé : %s.": "रखा गया: %s।",
   "Il te manque ce que font les chapitres d'avant.": "पिछले अध्यायों में जो बनता है, वह तुम्हारे पास नहीं है।",
   "Aller au chapitre %d": "अध्याय %d पर जाएँ",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "तुम्हारे गाने में पार्ट “%s” नहीं है: यह चरण उसी में होता है।"
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "तुम्हारे गाने में पार्ट “%s” नहीं है: यह चरण उसी में होता है।",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "शुरू करने से पहले: तुम्हारे पैड्स में ऐप के ड्रम साउंड्स हैं, इस स्टाइल के लिए सेट किए हुए। स्टाइल का किट अभी तुम्हारे पैड्स पर नहीं है: उसका कार्ड आगे तुम्हें यह देगा, और “बाद में” काफ़ी है, ट्यूटोरियल इन्हीं साउंड्स से चलता है। तुम्हें कुछ सेट नहीं करना।",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303: एक छोटी बेस मशीन; इसकी चीं-चीं और गुर्राती आवाज़ ही एसिड है।",
+  "Accent : une note jouée plus fort que les autres.": "एक्सेंट: बाकी नोट से ज़्यादा ज़ोर से बजा नोट।",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "स्लाइड: नोट कूदने के बजाय अगले नोट तक फिसलता है।",
+  "Glide : le son glisse doucement d'une note à l'autre.": "ग्लाइड: आवाज़ एक नोट से दूसरे तक धीरे से फिसलती है।"
 }

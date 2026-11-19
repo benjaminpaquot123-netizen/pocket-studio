@@ -157,5 +157,10 @@
   "Posé : %s.": "Neergezet: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Je mist wat de vorige hoofdstukken maken.",
   "Aller au chapitre %d": "Ga naar hoofdstuk %d",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Je nummer heeft geen deel ‘%s’: deze stap doe je daarin."
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Je nummer heeft geen deel ‘%s’: deze stap doe je daarin.",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "Voor je begint: je pads hebben de drumgeluiden van de app, ingesteld voor deze stijl. De kit van de stijl staat nog niet op je pads: de kaart ervan biedt hem je verderop aan, en ‘Later’ is genoeg, de tutorial werkt met deze geluiden. Je hoeft niets in te stellen.",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303: een kleine basmachine; zijn piepende, grommende klank is acid.",
+  "Accent : une note jouée plus fort que les autres.": "Accent: een noot die harder klinkt dan de andere.",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "Slide: de noot glijdt naar de volgende in plaats van te springen.",
+  "Glide : le son glisse doucement d'une note à l'autre.": "Glide: de klank glijdt zacht van de ene noot naar de andere."
 }

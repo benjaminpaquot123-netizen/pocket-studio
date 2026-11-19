@@ -157,5 +157,10 @@
   "Posé : %s.": "Dipasang: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Kamu belum punya yang dibuat di bab-bab sebelumnya.",
   "Aller au chapitre %d": "Buka bab %d",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Lagumu tidak punya bagian “%s”: langkah ini dikerjakan di dalamnya."
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Lagumu tidak punya bagian “%s”: langkah ini dikerjakan di dalamnya.",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "Sebelum mulai: pad-mu punya suara drum bawaan aplikasi, sudah diatur untuk gaya ini. Kit gaya ini belum ada di pad-mu: kartunya akan menawarkannya nanti, dan “Nanti” saja cukup, tutorial berjalan dengan suara ini. Tidak ada yang perlu kamu atur.",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303: mesin bass kecil; suaranya yang mencicit dan menggeram itulah acid.",
+  "Accent : une note jouée plus fort que les autres.": "Aksen: nada yang dimainkan lebih keras dari yang lain.",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "Slide: nada meluncur ke nada berikutnya, bukan melompat.",
+  "Glide : le son glisse doucement d'une note à l'autre.": "Glide: suara meluncur pelan dari satu nada ke nada lain."
 }

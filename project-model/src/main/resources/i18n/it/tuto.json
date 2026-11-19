@@ -157,5 +157,10 @@
   "Posé : %s.": "Messo: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Ti manca ciò che fanno i capitoli precedenti.",
   "Aller au chapitre %d": "Vai al capitolo %d",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Nel tuo brano non c'è la parte “%s”: questo passo si fa lì dentro."
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Nel tuo brano non c'è la parte “%s”: questo passo si fa lì dentro.",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "Prima di cominciare: i tuoi pad hanno i suoni di batteria dell'app, regolati per questo stile. Il kit dello stile non è ancora sui tuoi pad: la sua scheda te lo propone più avanti, e basta “Più tardi”, il tutorial funziona con questi suoni. Non hai niente da regolare.",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303: una piccola macchina per bassi; il suo suono che stride e ringhia è l'acid.",
+  "Accent : une note jouée plus fort que les autres.": "Accento: una nota suonata più forte delle altre.",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "Slide: la nota scivola fino alla successiva invece di saltare.",
+  "Glide : le son glisse doucement d'une note à l'autre.": "Glide: il suono scivola dolcemente da una nota all'altra."
 }

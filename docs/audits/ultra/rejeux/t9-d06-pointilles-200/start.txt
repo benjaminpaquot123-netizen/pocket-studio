@@ -1,0 +1,9 @@
+lang=hi
+device=phone360
+font=200
+mode=simple
+amenee=tuto:grime:3
+gestes.max=40
+mission=tuto-facile
+profil=moyen
+niveau=2

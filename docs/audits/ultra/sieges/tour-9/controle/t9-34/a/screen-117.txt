@@ -1,0 +1,28 @@
+Écran 117 (1035x1243)
+dessin @ 518,66
+texte « シェアの準備はいい？ » @ 482,138
+icône ✕ @ 932,138
+champ « 曲名（プロジェクト名にもなります） » contenu « マイソング » @ 518,247
+icône ✕ @ 932,255
+texte « 「シェア」でプロジェクト「マイプロジェクト 1」の名前も変わります。 » @ 518,338
+texte « 3:09 » @ 109,397
+texte « 6 パート » @ 219,399
+bouton ▶ «  試聴 » @ 886,442
+texte « 音量：−8.0、大きめ、クラブ音楽並み » @ 430,438
+texte « 詳細 » @ 715,483
+bouton « ? » @ 770,483
+bouton « ストリーミング » @ 396,563
+bouton « クラブ » [sélectionné] @ 596,563
+texte « 目標ラウドネス » @ 166,563
+bouton « オート（スタイル） » @ 219,644
+bouton « ? » @ 401,644
+image (rond coché) @ 83,715
+texte « 準備OK：ソロの消し忘れも、ミュートしたトラックもありません。 » @ 540,718
+bouton (clap de cinéma) «   SNS 用の動画 · 30秒 » @ 518,793
+bouton (notes sur une pile) « ほかのファイル トラックごと、MIDI、FLAC…はミックスで » › @ 496,889
+bouton « ? » @ 946,889
+bouton « M4A · シェア向け » [sélectionné] @ 207,1003
+bouton « WAV · 最高品質 » @ 484,1003
+bouton (trois points reliés) «   シェア » @ 518,1099
+bouton (dossier) « マイファイル 探してもう一度送る：M4A、WAV、動画、.zip » › @ 496,1201
+bouton « ? » @ 946,1201

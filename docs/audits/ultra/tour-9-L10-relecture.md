@@ -6,8 +6,8 @@ Diff lu : c79d3442..99f9df46 (FitText.kt, CutScreen.kt, FitTextBoxTest, CutStale
 rouge constaté : 6042f7e4 : rejoué sur e988fee0 : avec le `CutScreen.kt` d'e988fee0, `CutCurrentMessageScrollTest#theOldMessageLeftUnderAWorkDoesNotPullTheColumnDown` est rouge (« the column ran down to it expected:<0.0> but was:<1910.0> »), `aNewMessageStillBringsTheColumnDown` reste vert ; fichier remis, `git status` propre.
 
 ## Réponses à la première relecture
-- grave 1 tenu : `CutStaleMessageTest.kt` est identique à c79d3442 (diff vide) ; `staleMessageKeepsTheInstructionOnTop` est vert sur 99f9df46 (le « drive » du banc est sauté, normal).
-- grave 2 tenu : `shrinkToFit` est revenu à la base (diff vide sur cette fonction) ; `aShrunkContentWiderThanItsBoxStaysInside` est déclaré « garde » dans le test, le rapport et les décisions.
+- grave 1 de la première relecture **corrigé** (99f9df46) : `CutStaleMessageTest.kt` est identique à c79d3442 (diff vide) ; `staleMessageKeepsTheInstructionOnTop` est vert sur 99f9df46 (le « drive » du banc est sauté, normal).
+- grave 2 de la première relecture **corrigé** (99f9df46) : `shrinkToFit` est revenu à la base (diff vide sur cette fonction) ; `aShrunkContentWiderThanItsBoxStaysInside` est déclaré « garde » dans le test, le rapport et les décisions.
 
 ## Constats
 1. **moyen** : le scénario du rouge F139 (un travail en cours avec l'ancien message gardé dessous) ne sort jamais du vrai routeur : `launchWork` vide le message au départ (`StemBoardRouter.kt:525`), donc après un travail la Découpe suit bien le résultat, comme voulu. Le chemin réel corrigé par le même mécanisme est la note locale (« Aucune coupe trouvée… » puis effacée au toucher : la colonne redescendait vers l'ancien message) ; il n'a pas de test. Le testeur neuf dira si c'est bien le cas du siège.

@@ -554,6 +554,8 @@ private fun StepGrid(
     project: Project, lane: Int, live: () -> LiveUi, playing: Boolean, actions: RhythmActions, simple: Boolean = false,
     /** A cell's height at most. */
     cellMax: androidx.compose.ui.unit.Dp = 110.dp,
+    /** The interface reads right to left (Arabic): the grid, kept left to right, says where it starts (tour 9, F051). */
+    rtl: Boolean = androidx.compose.ui.platform.LocalLayoutDirection.current == androidx.compose.ui.unit.LayoutDirection.Rtl,
 ) = com.pocketstudio.ui.LeftToRight {
     val haptics = LocalHapticFeedback.current
     val hits = project.drums.lanes[lane].hits
@@ -713,6 +715,7 @@ private fun StepGrid(
         val latestHits by rememberUpdatedState(hits)
         val latestActions by rememberUpdatedState(actions)
         val loopSteps = project.drums.steps
+        if (rtl) Text("1 →", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.testTag("grid_reading_dir"))
         Box { Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             // Revealed with the bar pages and the tuto's line over it (where the cells left are, a touch away).

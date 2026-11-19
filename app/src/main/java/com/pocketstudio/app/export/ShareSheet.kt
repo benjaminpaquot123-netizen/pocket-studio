@@ -387,6 +387,9 @@ fun ShareSheetContent(
     // alone, so that what scrolls above (the name, the duration) keeps a line more.
     androidx.compose.foundation.layout.BoxWithConstraints(modifier.fillMaxWidth()) {
     val short = constraints.hasBoundedHeight && maxHeight < 500.dp
+    // Tour 9, F123 (seat t9-74, en, 200 %): so narrow that M4A and WAV take a line each, the pinned chips left what
+    // scrolls a band where the name field showed only its label. There, M4A / WAV scroll with the rest, under the name.
+    val cramped = constraints.hasBoundedHeight && maxHeight < 380.dp && maxWidth < 300.dp
     // Tour 8, captures8: the sheet ends where « Mes fichiers » does (a 12 dp empty band lay under it, in both modes).
     Column(
         Modifier.fillMaxWidth().then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
@@ -441,6 +444,7 @@ fun ShareSheetContent(
             else Text(tr("Le projet garde son nom « %s ».", old), style = MaterialTheme.typography.bodySmall,
                 color = Neon.TextSecondary, modifier = Modifier.testTag("share_keeps_name"))
         }
+        if (cramped) FormatChips(ui, actions)
         // How long it lasts, and one last listen (the saturation is checked while it plays).
         // Tour 8, R (seat 3a #64): one line whole or not at all; the edge cut it under the clock (hi, 130 %) and
         // « ▶ सुनो » showed as an empty outline.
@@ -565,18 +569,7 @@ fun ShareSheetContent(
     }
         // Testers (lot « tuto 4 »): M4A or WAV stays in sight with « Partager » (a short page, the tutorial's
         // panel under it, cut the chips in half at the scroll's edge).
-        FlowRow(
-            Modifier.padding(horizontal = 20.dp), itemVerticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            // The chips say what they are (« M4A · pour partager »): on one line on a phone, no « Format » before them.
-            listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (format, label) ->
-                FilterChip(
-                    selected = ui.format == format, onClick = { actions.setFormat(format) }, label = { Text(label) },
-                    colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_format_${format.name}"),
-                )
-            }
-        }
+        if (!cramped) FormatChips(ui, actions, Modifier.padding(horizontal = 20.dp))
         ui.rightsProject?.let { com.pocketstudio.app.remix.RightsLine(it, Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) }
         Button(
             onClick = actions.share, enabled = ui.name.isNotBlank() && !ui.running,
@@ -589,6 +582,22 @@ fun ShareSheetContent(
         // without scrolling in both modes (it was the last line of what scrolls, drawn as a plain sentence).
         MyExportsButton("share_my_exports", Modifier.padding(horizontal = 20.dp), compact = short)
     }
+    }
+}
+
+/** M4A or WAV: the chips say what they are (« M4A · pour partager »), on one line on a phone, no « Format » before them. */
+@Composable
+private fun FormatChips(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Modifier = Modifier) {
+    FlowRow(
+        modifier, itemVerticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (format, label) ->
+            FilterChip(
+                selected = ui.format == format, onClick = { actions.setFormat(format) }, label = { Text(label) },
+                colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_format_${format.name}"),
+            )
+        }
     }
 }
 

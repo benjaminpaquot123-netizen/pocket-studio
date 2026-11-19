@@ -1,6 +1,10 @@
 package com.pocketstudio.app.tuto
 
 import com.pocketstudio.model.DefaultNames
+import com.pocketstudio.model.Harmony
+import com.pocketstudio.model.PadVoice
+import com.pocketstudio.model.StarterWizard
+import com.pocketstudio.model.StudioDrums
 import com.pocketstudio.model.i18n.I18n
 import com.pocketstudio.model.i18n.Lang
 import com.pocketstudio.model.tuto.TutoCourse
@@ -11,6 +15,7 @@ import org.junit.Test
 /**
  * Tour 9 lot L5a: the course's words against what the screen shows.
  * F066 (ja, acid techno): the step said « open the アシッド tab », the tab reads « Acid 303 ».
+ * F067 (ja, acid techno, ch. 2): the intro promised a « crunch » 909 kick; the pad reads « Kick studio » (スタジオキック).
  */
 class Tour9TutoL5aWordsTest {
     private fun texts(): List<Pair<String, String>> = buildList {
@@ -41,5 +46,24 @@ class Tour9TutoL5aWordsTest {
             }
         }
         assertTrue("the acid tab is called « ${DefaultNames.ACID} » on screen (F066):\n" + bad.take(20).joinToString("\n") { it.take(160) }, bad.isEmpty())
+    }
+
+    @Test
+    fun theAcidTechnoIntroNamesTheKickThePadShows() {
+        val style = StarterWizard.style("acid_techno")!!
+        val kick = StudioDrums.kickVoice(style, Harmony(style.melody.root))!!
+        val pad = PadVoice.NAMES[kick.kind]
+        val course = TutoCourse.of("acid_techno")!!
+        val bad = ArrayList<String>()
+        for (level in TutoLevel.entries) {
+            val fr = course.chaptersFor(level).flatMap { it.steps }.first { it.id == "ready" }.textFor(level)
+            for (lang in Lang.entries) {
+                val table = I18n.table(lang)
+                val shown = if (lang == Lang.FR) fr else table[fr]?.takeIf { it.isNotBlank() } ?: continue
+                val name = if (lang == Lang.FR) pad else table[pad] ?: pad
+                if (name !in shown || "crunch" in shown.lowercase()) bad += "${lang.code} $level: $shown"
+            }
+        }
+        assertTrue("the intro names the kick as its pad shows it, « $pad » (F067):\n" + bad.take(20).joinToString("\n") { it.take(160) }, bad.isEmpty())
     }
 }

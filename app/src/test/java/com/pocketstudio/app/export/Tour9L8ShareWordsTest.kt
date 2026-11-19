@@ -83,7 +83,7 @@ class Tour9L8ShareWordsTest {
         assertEquals(false, asked)
         compose.onNodeWithTag("share_rename_project").assertIsOff()
         assertTrue(texts("share_keeps_name").contains("Mon projet 3"))
-        assertTrue(compose.onAllNodes(hasTestTag("share_renames")).fetchSemanticsNodes().isEmpty())
+        assertTrue(compose.onAllNodes(hasTestTag("share_renames"), useUnmergedTree = true).fetchSemanticsNodes().isEmpty())
     }
 
     @Test

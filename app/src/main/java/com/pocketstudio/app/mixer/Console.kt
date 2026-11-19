@@ -125,13 +125,20 @@ internal fun Console(
             Text(tr("Volumes"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             HelpDot(Glossary.MUTE_SOLO)
             // Tour 9 (D12): the pads' own effects and sends, one touch away from the Mix.
-            TextButton(
-                onClick = { padsOpen = true },
-                modifier = Modifier.weight(1f).wrapContentWidth(Alignment.End).heightIn(min = 48.dp).testTag("console_pads"),
-                colors = androidx.compose.material3.ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+            // As the HelpDot beside it: drawn no taller than the title (a 48 dp row pushed the first fader out of its pane
+            // lying down at 130 %), touched over 48 dp (Compose widens a small target's touch).
+            Row(
+                Modifier.weight(1f).wrapContentWidth(Alignment.End).clip(RoundedCornerShape(8.dp))
+                    .clickable(role = androidx.compose.ui.semantics.Role.Button) { padsOpen = true }
+                    .padding(horizontal = 8.dp, vertical = 4.dp).testTag("console_pads"),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
-                Text(" " + tr("  Effets du pad").trim(), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 2, textAlign = TextAlign.End)
+                // One line, smaller before it wraps.
+                com.pocketstudio.ui.FitText(
+                    " " + tr("  Effets du pad").trim(), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface, textAlign = TextAlign.End, min = 10.sp,
+                )
             }
         }
         if (hint) Text(

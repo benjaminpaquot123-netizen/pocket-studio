@@ -70,5 +70,9 @@ class BenchAmeneeLateKitCardTest : HumanTester("amenee-kit-tardif") {
         // The trap is real: the card is there and it moved the button the bench had aimed at.
         assertTrue("the kit card moved « Chapitres » (aimed at $aimedAt, now ${centerOf("tuto_chapters")})\n$told", centerOf("tuto_kit") != null && centerOf("tuto_chapters") != aimedAt)
         assertTrue(told, failed == null && lines.last().startsWith("#0 AMENEE prête"))
+        // The touch that went beside its target is said, once, where and why (tour 9, banc A: drapeaux).
+        val missed = lines.mapNotNull { BenchFlags.parse(it) }.filter { it["where"] == "amenee.tap-missed" }
+        assertTrue("one « amenee.tap-missed » flag naming the button and both places\n$told", missed.size == 1 && missed[0]["saw"]!!.startsWith("tuto_chapters visé ") && "puis tuto_chapters@" in missed[0]["saw"]!!)
+        assertTrue("no verdict from an amenée that is ready\n$told", lines.none { BenchFlags.VERDICT in it })
     }
 }

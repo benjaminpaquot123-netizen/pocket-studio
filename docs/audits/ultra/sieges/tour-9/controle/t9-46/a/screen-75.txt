@@ -1,0 +1,61 @@
+Écran 75 (1035x1243)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 348,42
+bouton « Simple » @ 741,42
+bouton ● @ 831,42
+bouton ■ « esta parte » @ 910,42
+icône ⋮ @ 990,42
+bouton « 84  Tempo » @ 88,123
+icône (flèches en boucle) « A compás 7/8 » [désactivé] @ 267,123
+bouton « ? » @ 990,123
+icône « Parte: A » ▾ @ 89,198
+bouton « Cuenta atrás » @ 372,291
+bouton « Metrónomo » @ 145,286
+texte « Swing » @ 85,367
+bouton « ? » @ 150,367
+texte « 34 % » @ 448,367
+curseur [état « 34 % », à 34 %] @ 263,438
+texte « Compás 2/2 · Aro del tambor » [coupé] @ 744,248
+bouton « 1 » [état « vacío »] @ 575,325
+bouton [état « vacío »] @ 632,324
+bouton [état « vacío »] @ 688,324
+bouton [état « golpe, fuerza 100 % »] @ 744,324
+bouton « 2 » [état « vacío »] @ 800,324
+bouton [état « vacío »] @ 856,324
+bouton [état « vacío »] @ 912,324
+bouton [état « golpe, fuerza 100 % »] @ 968,324
+bouton « 3 » [état « vacío »] @ 575,395
+bouton [état « vacío »] @ 632,394
+bouton [état « vacío »] @ 688,394
+bouton [état « golpe, fuerza 100 % »] @ 744,394
+bouton « 4 » [état « vacío »] @ 800,394
+bouton [état « vacío »] @ 856,394
+bouton [état « vacío »] @ 912,394
+bouton [état « golpe, fuerza 100 % »] @ 968,394
+texte « todo » @ 694,475
+texte « 1/2 » @ 777,475
+texte « 1/4 » @ 852,475
+texte « ◀ » @ 927,475
+texte « Rellenar » @ 599,475
+texte « La batería aterciopelada Capítulo 3/13 · Paso 6/6 · Fácil » @ 426,566
+icône (liste) « Capítulos » @ 886,567
+icône ⌄ @ 978,567
+texte « Escucha toda tu batería unos segundos y luego la del ejemplo. » @ 460,655
+texte « ▸ ¿Por qué? » @ 517,707
+bouton ■ «   Detener » @ 517,776
+bouton ▶ «  Escuchar el ejemplo » @ 517,860
+icône ← «  Anterior » @ 112,941
+icône « Siguiente  » → @ 913,941
+bouton ■ « la canción » @ 527,1026
+icône ↶ « Deshacer » @ 147,1026
+image ↷ @ 334,1013
+texte « 84 Tempo » @ 722,1026
+icône ⋮ « Más » @ 899,1026
+onglet (lignes et note) « Mi canción » @ 99,1123
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 309,1123
+onglet (touches de piano) « Teclado » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Compartir » @ 936,1123
+texte « ●  REC » @ 803,1213
+texte « ✎  Anotar » @ 901,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentarios » @ 383,1213

@@ -1,0 +1,509 @@
+#0 SIEGE lang=es device=foldable font=130 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:lofi:1
+#0 PREMIER ECRAN reel_s=4.2 simule_s=2.4 jvm_s=10.2 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:lofi:1
+#0 AMENEE > touche 518 653 (welcome_learn)
+#0 AMENEE > touche 263 1062 (mode_card_simple)
+#0 AMENEE > touche 517 1169 (tuto_style_lofi)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f10153857c | project=p-09e4dd1b tuto=lofi/Facile active=true step=ref done=0 chapters=- playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Guardado » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « Hi-hat » 3.50:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 517 857
+#1 DOIGT tuto_listen «  Escuchar el ejemplo »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6eb040e1ad | project=p-09e4dd1b tuto=lofi/Facile active=true step=ref done=0 chapters=- playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 436 717
+#2 DOIGT tuto_kit_download « Descargar el kit Lo-fi hip-hop (3 MB) »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 14248d4705 | project=p-09e4dd1b tuto=lofi/Facile active=true step=ref done=1 chapters=- playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > attends 8
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 97c4c62265 | project=p-09e4dd1b tuto=lofi/Facile active=true step=ref done=1 chapters=- playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Lo-fi hip-hop · Caja » ellipsized (« … »)
+#4 > touche 517 857
+#4 DOIGT tuto_next_big « Paso siguiente   »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1065a4e007 | project=p-09e4dd1b tuto=lofi/Facile active=true step=tempo done=1 chapters=- playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 98 123
+#5 DOIGT top_tempo « Tempo: 120 golpes por minuto »
+#6 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 30fb395285 | project=p-09e4dd1b tuto=lofi/Facile active=true step=tempo done=1 chapters=- playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « Tempo » over the touchable « Cerrar hoja » (82 x 32 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « Cerrar hoja » (9 x 18 dp)
+#6 LAYOUT OVERLAP « Cerrar » over the touchable « Cerrar hoja » (59 x 27 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « Cerrar hoja » (86 x 53 dp)
+#6 LAYOUT OVERLAP «  BPM » over the touchable « Cerrar hoja » (50 x 31 dp)
+#6 LAYOUT OVERLAP « 70 » over the touchable « Cerrar hoja » (25 x 24 dp)
+#6 LAYOUT OVERLAP « 90 » over the touchable « Cerrar hoja » (25 x 24 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « Cerrar hoja » (38 x 24 dp)
+#6 LAYOUT OVERLAP « 140 » over the touchable « Cerrar hoja » (38 x 24 dp)
+#6 LAYOUT OVERLAP « 174 » over the touchable « Cerrar hoja » (38 x 24 dp)
+#6 LAYOUT OVERLAP « ½ » over the touchable « Cerrar hoja » (17 x 31 dp)
+#6 LAYOUT OVERLAP « ×2 » over the touchable « Cerrar hoja » (26 x 31 dp)
+#6 LAYOUT OVERLAP « 1 » over the touchable « Cerrar hoja » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 2 » over the touchable « Cerrar hoja » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 3 » over the touchable « Cerrar hoja » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 4 » over the touchable « Cerrar hoja » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 5 » over the touchable « Cerrar hoja » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 6 » over the touchable « Cerrar hoja » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 7 » over the touchable « Cerrar hoja » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 8 » over the touchable « Cerrar hoja » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 9 » over the touchable « Cerrar hoja » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 0 » over the touchable « Cerrar hoja » (16 x 30 dp)
+#6 LAYOUT OVERLAP « OK » over the touchable « Cerrar hoja » (37 x 30 dp)
+#6 LAYOUT OVERLAP « Marcar el ritmo » over the touchable « Cerrar hoja » (147 x 31 dp)
+#6 LAYOUT OVERLAP « Toca aquí en cada tiempo: el tempo te sigue. » over the touchable « Cerrar hoja » (357 x 24 dp)
+#6 > touche 518 991
+#6 DOIGT tempo_key_8 « 8 »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 3297b9f484 | project=p-09e4dd1b tuto=lofi/Facile active=true step=tempo done=1 chapters=- playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 8 » over the touchable « Cerrar hoja » (29 x 53 dp)
+#7 LAYOUT OVERLAP « Entre 40 y 300 » over the touchable « Cerrar hoja » (133 x 27 dp)
+#7 > touche 211 904
+#7 DOIGT tempo_key_4 « 4 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE b67cd1cda5 | project=p-09e4dd1b tuto=lofi/Facile active=true step=tempo done=1 chapters=- playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 84 » over the touchable « Cerrar hoja » (57 x 53 dp)
+#8 > touche 825 1078
+#8 DOIGT tempo_key_ok « OK »
+#9 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cf6d2c771a | project=p-09e4dd1b tuto=lofi/Facile active=true step=tempo done=2 chapters=- playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 517 857
+#9 DOIGT tuto_next_big « Paso siguiente   »
+#10 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ffd44f2fad | project=p-09e4dd1b tuto=lofi/Facile active=true step=key done=2 chapters=- playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT CUT « Lo-fi hip-hop · Hi-hat » ellipsized (« … »)
+#10 > touche 517 776
+#10 DOIGT tuto_do «   Lo hago yo »
+#11 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 79e4c015f2 | project=p-09e4dd1b tuto=lofi/Facile active=true step=key done=2 chapters=- playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Tonalidad del tema » over the touchable « Cerrar hoja » (222 x 32 dp)
+#11 LAYOUT OVERLAP « Tonalidad del tema: ninguna » over the touchable « Cerrar hoja » (250 x 27 dp)
+#11 LAYOUT OVERLAP « Escala » over the touchable « Cerrar hoja » (58 x 27 dp)
+#11 LAYOUT OVERLAP « Mayor » over the touchable « Cerrar hoja » (61 x 31 dp)
+#11 LAYOUT OVERLAP « Menor » over the touchable « Cerrar hoja » (61 x 31 dp)
+#11 LAYOUT OVERLAP « Dórico » over the touchable « Cerrar hoja » (62 x 31 dp)
+#11 LAYOUT OVERLAP « Penta menor » over the touchable « Cerrar hoja » (119 x 31 dp)
+#11 LAYOUT OVERLAP « Penta mayor » over the touchable « Cerrar hoja » (118 x 31 dp)
+#11 LAYOUT OVERLAP « Blues » over the touchable « Cerrar hoja » (52 x 31 dp)
+#11 LAYOUT OVERLAP « Frigio » over the touchable « Cerrar hoja » (52 x 31 dp)
+#11 LAYOUT OVERLAP « Menor armónica » over the touchable « Cerrar hoja » (154 x 31 dp)
+#11 LAYOUT OVERLAP « Tónica » over the touchable « Cerrar hoja » (59 x 27 dp)
+#11 LAYOUT OVERLAP « Do » over the touchable « Cerrar hoja » (27 x 31 dp)
+#11 LAYOUT OVERLAP « Do♯ » over the touchable « Cerrar hoja » (38 x 31 dp)
+#11 LAYOUT OVERLAP « Re » over the touchable « Cerrar hoja » (24 x 31 dp)
+#11 LAYOUT OVERLAP « Mi♭ » over the touchable « Cerrar hoja » (29 x 31 dp)
+#11 LAYOUT OVERLAP « Mi » over the touchable « Cerrar hoja » (23 x 31 dp)
+#11 LAYOUT OVERLAP « Fa » over the touchable « Cerrar hoja » (23 x 31 dp)
+#11 LAYOUT OVERLAP « Fa♯ » over the touchable « Cerrar hoja » (34 x 31 dp)
+#11 LAYOUT OVERLAP « Sol » over the touchable « Cerrar hoja » (29 x 31 dp)
+#11 LAYOUT OVERLAP « La♭ » over the touchable « Cerrar hoja » (29 x 31 dp)
+#11 LAYOUT OVERLAP « La » over the touchable « Cerrar hoja » (23 x 31 dp)
+#11 LAYOUT OVERLAP « Si♭ » over the touchable « Cerrar hoja » (24 x 31 dp)
+#11 LAYOUT OVERLAP « Si » over the touchable « Cerrar hoja » (17 x 31 dp)
+#11 > touche 126 866
+#11 DOIGT tuto_scale_Major « Mayor »
+#12 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 35bdfa65b1 | project=p-09e4dd1b tuto=lofi/Facile active=true step=key done=2 chapters=- playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Tonalidad del tema: Do · Mayor » over the touchable « Cerrar hoja » (275 x 27 dp)
+#12 > touche 553 1090
+#12 DOIGT tuto_root_5 « Fa »
+#13 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 25c4163aeb | project=p-09e4dd1b tuto=lofi/Facile active=true step=key done=3 chapters=1 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « Tonalidad del tema: Fa · Mayor » over the touchable « Cerrar hoja » (272 x 27 dp)
+#13 LAYOUT OVERLAP « ¡Logrado! El color de la canción está elegido. » over the touchable « Cerrar hoja » (433 x 31 dp)
+#13 LAYOUT OVERLAP « Volver al tutorial » over the touchable « Cerrar hoja » (151 x 27 dp)
+#13 > touche 518 1168
+#13 DOIGT tuto_key_continue « Volver al tutorial »
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c801199b64 | project=p-09e4dd1b tuto=lofi/Facile active=true step=key done=3 chapters=1 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « Los pads suenan, las casillas guardan los golpes. Mantén pulsado: cambiar el sonido. » ellipsized (« … »)
+#14 > touche 517 930
+#14 DOIGT tuto_chapter_end_folded « ¡Bravo, capítulo terminado! »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7e2cafa033 | project=p-09e4dd1b tuto=lofi/Facile active=true step=key done=3 chapters=1 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 517 857
+#15 DOIGT tuto_next_big « Capítulo siguiente   »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 14f1f07674 | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_hear done=3 chapters=1 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 517 857
+#16 DOIGT tuto_listen «  Escuchar el ejemplo »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fcc42d49f5 | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_hear done=3 chapters=1 playing=false
+#17 SON Son : l'exemple du tuto joue (encore 3 s).
+#17 > attends 10
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 657dc6d2c1 | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_hear done=4 chapters=1 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 517 857
+#18 DOIGT tuto_next_big « Paso siguiente   »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e3d8a7fe57 | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_do done=4 chapters=1 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Tom medio » 3.09:1 (needs 4.5:1, 14 sp)
+#19 > touche 517 776
+#19 DOIGT tuto_need «   Crear la pista Acordes »
+#20 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d7bff09d5e | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_do done=4 chapters=1 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 300 820
+#20 DOIGT rien
+#21 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 06a5c2de1c | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_do done=4 chapters=1 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 710 820
+#21 DOIGT rien
+#22 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a9d5812b03 | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_do done=5 chapters=1 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 517 1004
+#22 DOIGT tuto_next_folded « Conseguido »
+#23 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2974096931 | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_end done=5 chapters=1 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 517 850
+#23 DOIGT tuto_need «   Copiar en los compases siguientes »
+#24 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2974096931 | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_end done=5 chapters=1 playing=false
+#24 SON Son : rien ne joue.
+#24 > attends 2
+#25 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2974096931 | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_end done=5 chapters=1 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 517 850
+#25 DOIGT tuto_need «   Copiar en los compases siguientes »
+#26 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f44b15a2ce | project=p-09e4dd1b tuto=lofi/Facile active=true step=pad_end done=6 chapters=1,2 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 517 931
+#26 DOIGT tuto_next_big « Capítulo siguiente   »
+#27 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1bcc1a8081 | project=p-09e4dd1b tuto=lofi/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 517 850
+#27 DOIGT tuto_need «   Pasar a 2 compases »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b6fce5b3d9 | project=p-09e4dd1b tuto=lofi/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CUT « Quedan 3 casillas punteadas aquí » ellipsized (« … »)
+#28 LAYOUT CONTRAST « PASOS: BOMBO 1 » 1.27:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « Toca una casilla para añadir un golpe, desliza el dedo para pintar varios. Mantén pulsado un golpe: fuerza y redobles (×2 a ×8). » 1.83:1 (needs 4.5:1, 13 sp)
+#28 > touche 575 487
+#28 DOIGT step_0 « Paso 1 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 437d7be29c | project=p-09e4dd1b tuto=lofi/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CUT « Quedan 2 casillas punteadas aquí » ellipsized (« … »)
+#29 > touche 968 486
+#29 DOIGT step_7 « Paso 8 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 71ccb02f85 | project=p-09e4dd1b tuto=lofi/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 688 556
+#30 DOIGT step_10 « Paso 11 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 851a6f1d7a | project=p-09e4dd1b tuto=lofi/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CUT « Compás 1/2 · Bombo 1 » ellipsized (« … »)
+#31 > touche 787 318
+#31 DOIGT drum_page_1 « 2 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8c96c7e9af | project=p-09e4dd1b tuto=lofi/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 575 487
+#32 DOIGT step_16 « Paso 1 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e152574a4c | project=p-09e4dd1b tuto=lofi/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 688 486
+#33 DOIGT step_18 « Paso 3 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8a8f6ed49a | project=p-09e4dd1b tuto=lofi/Facile active=true step=kick_do done=6 chapters=1,2 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 688 556
+#34 DOIGT step_26 « Paso 11 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e9f44b9be6 | project=p-09e4dd1b tuto=lofi/Facile active=true step=kick_do done=7 chapters=1,2 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 517 930
+#35 DOIGT tuto_next_folded « Conseguido »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE df4addc5bc | project=p-09e4dd1b tuto=lofi/Facile active=true step=snare_do done=7 chapters=1,2 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « Lo-fi hip-hop · Caja » 3.71:1 (needs 4.5:1, 14 sp)
+#36 LAYOUT CONTRAST « Compás 1/2 · Lo-fi hip-hop · Caja » 4.45:1 (needs 4.5:1, 13 sp)
+#36 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#36 > touche 800 368
+#36 DOIGT step_4 « Paso 5 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d6cca9df0f | project=p-09e4dd1b tuto=lofi/Facile active=true step=snare_do done=7 chapters=1,2 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « 4 » 3.06:1 (needs 4.5:1, 12 sp)
+#37 > touche 800 438
+#37 DOIGT step_12 « Paso 13 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d0eabebb6c | project=p-09e4dd1b tuto=lofi/Facile active=true step=snare_do done=7 chapters=1,2 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CUT « Compás 1/2 · Lo-fi hip-hop · Caja » ellipsized (« … »)
+#38 > touche 803 284
+#38 DOIGT tuto_bar_go « Compás 2 · 2 casillas → »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE de6b482ea5 | project=p-09e4dd1b tuto=lofi/Facile active=true step=snare_do done=7 chapters=1,2 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « Compás 2/2 · Lo-fi hip-hop · Caja » 4.45:1 (needs 4.5:1, 13 sp)
+#39 > touche 800 368
+#39 DOIGT step_20 « Paso 5 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0d4d5ee772 | project=p-09e4dd1b tuto=lofi/Facile active=true step=snare_do done=7 chapters=1,2 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 800 438
+#40 DOIGT step_28 « Paso 13 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 79917fdd55 | project=p-09e4dd1b tuto=lofi/Facile active=true step=snare_do done=8 chapters=1,2 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 327 941
+#41 DOIGT tuto_play_mine «  Escuchar tu resultado »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 381e0ae284 | project=p-09e4dd1b tuto=lofi/Facile active=true step=snare_do done=8 chapters=1,2 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 > touche 517 857
+#42 DOIGT tuto_next_big « Paso siguiente   »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a7b9cbe1be | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 LAYOUT CUT « Compás 1/2 · Lo-fi hip-hop · Hi-hat » ellipsized (« … »)
+#43 LAYOUT CUT « Quedan 11 casillas punteadas aquí » ellipsized (« … »)
+#43 LAYOUT CONTRAST « Lo-fi hip-hop · Hi-hat » 4.06:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#43 > touche 575 330
+#43 DOIGT step_0 « Paso 1 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6debc288c2 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 LAYOUT CUT « Quedan 10 casillas punteadas aquí » ellipsized (« … »)
+#44 > touche 688 329
+#44 DOIGT step_2 « Paso 3 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bbff94be19 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 LAYOUT CUT « Quedan 9 casillas punteadas aquí » ellipsized (« … »)
+#45 > touche 744 329
+#45 DOIGT step_3 « Paso 4 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 56bc021a7c | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 LAYOUT CUT « Quedan 8 casillas punteadas aquí » ellipsized (« … »)
+#46 LAYOUT CONTRAST « 2 » 3.23:1 (needs 4.5:1, 12 sp)
+#46 > touche 800 329
+#46 DOIGT step_4 « Paso 5 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 717caea42f | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CUT « Quedan 7 casillas punteadas aquí » ellipsized (« … »)
+#47 > touche 912 329
+#47 DOIGT step_6 « Paso 7 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 368a2cb531 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 LAYOUT CUT « Quedan 6 casillas punteadas aquí » ellipsized (« … »)
+#48 LAYOUT CONTRAST « 3 » 3.23:1 (needs 4.5:1, 12 sp)
+#48 > touche 575 400
+#48 DOIGT step_8 « Paso 9 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8814b26f65 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 LAYOUT CUT « Quedan 5 casillas punteadas aquí » ellipsized (« … »)
+#49 > touche 688 399
+#49 DOIGT step_10 « Paso 11 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6cb631b022 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#50 SON Son : la musique du projet joue en boucle.
+#50 LAYOUT CUT « Quedan 4 casillas punteadas aquí » ellipsized (« … »)
+#50 > touche 744 399
+#50 DOIGT step_11 « Paso 12 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 01bf72fc0d | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 LAYOUT CONTRAST « 4 » 3.23:1 (needs 4.5:1, 12 sp)
+#51 > touche 800 399
+#51 DOIGT step_12 « Paso 13 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 52bba43bb4 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 > touche 912 399
+#52 DOIGT step_14 « Paso 15 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 066de43076 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 > touche 968 399
+#53 DOIGT step_15 « Paso 16 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c7dad3ee06 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 LAYOUT CONTRAST « Compás 1/2 · Lo-fi hip-hop · Hi-hat » 2.78:1 (needs 4.5:1, 13 sp)
+#54 > touche 800 257
+#54 DOIGT tuto_bar_go « Compás 2 · 11 casillas → »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 20860f6b37 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#55 SON Son : la musique du projet joue en boucle.
+#55 LAYOUT CUT « Compás 2/2 · Lo-fi hip-hop · Hi-hat » ellipsized (« … »)
+#55 > glisse 688 329 800 329
+#55 DOIGT step_18 « Paso 3 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 991d50a9f9 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#56 SON Son : la musique du projet joue en boucle.
+#56 > touche 575 330
+#56 DOIGT step_16 « Paso 1 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 21aad0b87f | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#57 SON Son : la musique du projet joue en boucle.
+#57 > touche 912 329
+#57 DOIGT step_22 « Paso 7 »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 413764bf1c | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#58 SON Son : la musique du projet joue en boucle.
+#58 > glisse 688 399 800 399
+#58 DOIGT step_26 « Paso 11 »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a19d5561c1 | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#59 SON Son : la musique du projet joue en boucle.
+#59 > glisse 912 399 968 399
+#59 DOIGT step_30 « Paso 15 »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0ab5d2e24f | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=8 chapters=1,2 playing=true
+#60 SON Son : la musique du projet joue en boucle.
+#60 > touche 575 400
+#60 DOIGT step_24 « Paso 9 »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a98212e93e | project=p-09e4dd1b tuto=lofi/Facile active=true step=hat_do done=9 chapters=1,2 playing=true
+#61 SON Son : la musique du projet joue en boucle.
+#61 LAYOUT CONTRAST « Compás 2/2 · Lo-fi hip-hop · Hi-hat » 2.78:1 (needs 4.5:1, 13 sp)
+#61 > touche 517 857
+#61 DOIGT tuto_next_big « Paso siguiente   »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a63d5dd9cf | project=p-09e4dd1b tuto=lofi/Facile active=true step=perc_do done=9 chapters=1,2 playing=true
+#62 SON Son : la musique du projet joue en boucle.
+#62 > touche 744 329
+#62 DOIGT step_3 « Paso 4 »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 720a4e649c | project=p-09e4dd1b tuto=lofi/Facile active=true step=perc_do done=9 chapters=1,2 playing=true
+#63 SON Son : la musique du projet joue en boucle.
+#63 > touche 968 329
+#63 DOIGT step_7 « Paso 8 »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f7feefdc5c | project=p-09e4dd1b tuto=lofi/Facile active=true step=perc_do done=9 chapters=1,2 playing=true
+#64 SON Son : la musique du projet joue en boucle.
+#64 > touche 744 399
+#64 DOIGT step_11 « Paso 12 »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 807e1ece86 | project=p-09e4dd1b tuto=lofi/Facile active=true step=perc_do done=9 chapters=1,2 playing=true
+#65 SON Son : la musique du projet joue en boucle.
+#65 > touche 968 399
+#65 DOIGT step_15 « Paso 16 »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4d114c1527 | project=p-09e4dd1b tuto=lofi/Facile active=true step=perc_do done=9 chapters=1,2 playing=true
+#66 SON Son : la musique du projet joue en boucle.
+#66 LAYOUT CUT « Compás 1/2 · Aro del tambor » ellipsized (« … »)
+#66 LAYOUT CONTRAST « Compás 1/2 · Aro del tambor » 2.55:1 (needs 4.5:1, 13 sp)
+#66 > touche 803 257
+#66 DOIGT tuto_bar_go « Compás 2 · 4 casillas → »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 74bae7ae15 | project=p-09e4dd1b tuto=lofi/Facile active=true step=perc_do done=9 chapters=1,2 playing=true
+#67 SON Son : la musique du projet joue en boucle.
+#67 > touche 744 329
+#67 DOIGT step_19 « Paso 4 »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ab04958f29 | project=p-09e4dd1b tuto=lofi/Facile active=true step=perc_do done=9 chapters=1,2 playing=true
+#68 SON Son : la musique du projet joue en boucle.
+#68 > touche 968 329
+#68 DOIGT step_23 « Paso 8 »
+#69 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 80226af04d | project=p-09e4dd1b tuto=lofi/Facile active=true step=perc_do done=9 chapters=1,2 playing=true
+#69 SON Son : la musique du projet joue en boucle.
+#69 > touche 744 399
+#69 DOIGT step_27 « Paso 12 »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b6af9c4b24 | project=p-09e4dd1b tuto=lofi/Facile active=true step=perc_do done=9 chapters=1,2 playing=true
+#70 SON Son : la musique du projet joue en boucle.
+#70 > touche 968 399
+#70 DOIGT step_31 « Paso 16 »
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1d915bf3e7 | project=p-09e4dd1b tuto=lofi/Facile active=true step=perc_do done=10 chapters=1,2 playing=true
+#71 SON Son : la musique du projet joue en boucle.
+#71 LAYOUT CONTRAST « Compás 2/2 · Aro del tambor » 2.18:1 (needs 4.5:1, 13 sp)
+#71 > touche 517 857
+#71 DOIGT tuto_next_big « Paso siguiente   »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a0ec9d1492 | project=p-09e4dd1b tuto=lofi/Facile active=true step=swing done=10 chapters=1,2 playing=true
+#72 SON Son : la musique du projet joue en boucle.
+#72 LAYOUT CONTRAST « Metrónomo » 1.97:1 (needs 4.5:1, 14 sp)
+#72 > glisse 63 393 195 393
+#72 DOIGT dans:rhythm_swing « Swing »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 139147300c | project=p-09e4dd1b tuto=lofi/Facile active=true step=swing done=10 chapters=1,2 playing=true
+#73 SON Son : la musique du projet joue en boucle.
+#73 > glisse 195 393 225 393
+#73 DOIGT dans:rhythm_swing « Swing »
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d50d1a4216 | project=p-09e4dd1b tuto=lofi/Facile active=true step=swing done=11 chapters=1,2 playing=true
+#74 SON Son : la musique du projet joue en boucle.
+#74 > touche 517 857
+#74 DOIGT tuto_next_big « Paso siguiente   »
+#75 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e15dd0058e | project=p-09e4dd1b tuto=lofi/Facile active=true step=drums_hear done=11 chapters=1,2 playing=true
+#75 SON Son : la musique du projet joue en boucle.
+#75 LAYOUT CONTRAST « Compás 2/2 · Aro del tambor » 2.82:1 (needs 4.5:1, 13 sp)
+#75 > touche 517 860
+#75 DOIGT tuto_listen «  Escuchar el ejemplo »
+#76 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4b1a8ca3b9 | project=p-09e4dd1b tuto=lofi/Facile active=true step=drums_hear done=11 chapters=1,2 playing=false
+#76 SON Son : l'exemple du tuto joue (encore 3 s).
+#76 > attends 10
+#77 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 88bd0936cb | project=p-09e4dd1b tuto=lofi/Facile active=true step=drums_hear done=12 chapters=1,2,3 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 517 857
+#77 DOIGT tuto_next_big « Capítulo siguiente   »
+#78 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ac53dae2e2 | project=p-09e4dd1b tuto=lofi/Facile active=true step=bass_do done=12 chapters=1,2,3 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 517 776
+#78 DOIGT tuto_need «   Crear la pista Bajo »
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f0a2f7937b | project=p-09e4dd1b tuto=lofi/Facile active=true step=bass_do done=12 chapters=1,2,3 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 900 451
+#79 DOIGT tuto_notes_left « Bajo · compás 1/8 »
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 207af25a78 | project=p-09e4dd1b tuto=lofi/Facile active=true step=bass_do done=12 chapters=1,2,3 playing=false
+#80 SON Son : rien ne joue.
+#80 LAYOUT TARGET « Fa1 Fa Reproducir » 56 x 21 dp (touch 56 x 48)
+#80 LAYOUT TARGET « Mi1 Mi Reproducir » 56 x 21 dp (touch 56 x 48)
+#80 LAYOUT TARGET « Mi♭1 Mi♭ Reproducir » 56 x 21 dp (touch 56 x 48)
+#80 LAYOUT TARGET « Re1 Re Reproducir » 56 x 21 dp (touch 56 x 48)
+#80 LAYOUT TARGET « Re♭1 Re♭ Reproducir » 56 x 21 dp (touch 56 x 48)
+#80 LAYOUT TARGET « Do1 Do1 Reproducir » 56 x 21 dp (touch 56 x 48)
+#80 LAYOUT TARGET « Si0 Si Reproducir » 56 x 21 dp (touch 56 x 48)
+#80 LAYOUT TARGET « Si♭0 Si♭ Reproducir » 56 x 21 dp (touch 56 x 48)
+#80 > touche 350 805
+#80 DOIGT rien
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5f5a0ba41d | project=p-09e4dd1b tuto=lofi/Facile active=true step=bass_do done=12 chapters=1,2,3 playing=false
+#81 SON Son : 1 note du synthé.
+#81 > touche 620 805
+#81 DOIGT rien
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c5e81d8967 | project=p-09e4dd1b tuto=lofi/Facile active=true step=bass_do done=12 chapters=1,2,3 playing=false
+#82 SON Son : 1 note du synthé.
+#82 > touche 755 588
+#82 DOIGT rien
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3dc5c70b6b | project=p-09e4dd1b tuto=lofi/Facile active=true step=bass_do done=13 chapters=1,2,3 playing=false
+#83 SON Son : 1 note du synthé.
+#83 > touche 517 1004
+#83 DOIGT tuto_next_folded « Conseguido »
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3dc445300e | project=p-09e4dd1b tuto=lofi/Facile active=true step=bass_2 done=13 chapters=1,2,3 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT CONTRAST « Si » 1.41:1 (needs 4.5:1, 12 sp)
+#84 > touche 517 850
+#84 DOIGT tuto_need «   Copiar en los compases siguientes »
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3dc445300e | project=p-09e4dd1b tuto=lofi/Facile active=true step=bass_2 done=13 chapters=1,2,3 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 517 850
+#85 DOIGT tuto_need «   Copiar en los compases siguientes »
+#86 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c595aa320d | project=p-09e4dd1b tuto=lofi/Facile active=true step=bass_2 done=14 chapters=1,2,3,4 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT TARGET « La0 La Reproducir » 56 x 21 dp (touch 56 x 48)
+#86 > touche 517 931
+#86 DOIGT tuto_next_big « Capítulo siguiente   »
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1fb8d612b7 | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 517 850
+#87 DOIGT tuto_need «   Crear la pista Melodía »
+#88 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5ee99c5e6a | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CONTRAST « Fa » 1.41:1 (needs 4.5:1, 12 sp)
+#88 LAYOUT TARGET « Mi4 Mi Reproducir » 56 x 21 dp (touch 56 x 48)
+#88 LAYOUT TARGET « Mi♭4 Mi♭ Reproducir » 56 x 21 dp (touch 56 x 48)
+#88 LAYOUT TARGET « Re4 Re Reproducir » 56 x 21 dp (touch 56 x 48)
+#88 LAYOUT TARGET « Re♭4 Re♭ Reproducir » 56 x 21 dp (touch 56 x 48)
+#88 LAYOUT TARGET « Do4 Do4 Reproducir » 56 x 21 dp (touch 56 x 48)
+#88 LAYOUT TARGET « Si3 Si Reproducir » 56 x 21 dp (touch 56 x 48)
+#88 LAYOUT TARGET « Si♭3 Si♭ Reproducir » 56 x 21 dp (touch 56 x 48)
+#88 LAYOUT TARGET « La3 La Reproducir » 56 x 21 dp (touch 56 x 48)
+#88 LAYOUT TARGET « La♭3 La♭ Reproducir » 56 x 21 dp (touch 56 x 48)
+#88 > touche 395 697
+#88 DOIGT rien
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5a2e50dfd1 | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#89 SON Son : 1 note du synthé.
+#89 > touche 665 790
+#89 DOIGT rien
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7cf87eefce | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_do done=15 chapters=1,2,3,4 playing=false
+#90 SON Son : 1 note du synthé.
+#90 > touche 517 1004
+#90 DOIGT tuto_next_folded « Conseguido »
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a8510dc17d | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_end done=15 chapters=1,2,3,4 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 517 850
+#91 DOIGT tuto_need «   Copiar en los compases siguientes »
+#92 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 692b9b5d87 | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_end done=16 chapters=1,2,3,4 playing=false
+#92 SON Son : rien ne joue.
+#92 LAYOUT TARGET « Sol3 Sol Reproducir » 56 x 21 dp (touch 56 x 48)
+#92 > attends 2
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 692b9b5d87 | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_end done=16 chapters=1,2,3,4 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 517 931
+#93 DOIGT tuto_next_big « Paso siguiente   »
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5484815376 | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_end_2 done=16 chapters=1,2,3,4 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 517 850
+#94 DOIGT tuto_do «   Lo hago yo »
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9a50300fe8 | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_end_2 done=16 chapters=1,2,3,4 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 490 790
+#95 DOIGT rien
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 84b833f013 | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_end_2 done=16 chapters=1,2,3,4 playing=false
+#96 SON Son : 1 note du synthé.
+#96 > touche 517 1004
+#96 DOIGT tuto_need_folded « Copiar en los compases siguientes »
+#97 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3cf0d2ee94 | project=p-09e4dd1b tuto=lofi/Facile active=true step=lead_end_2 done=17 chapters=1,2,3,4,5 playing=false
+#97 SON Son : rien ne joue.
+#97 > fin
+#97 BENCH-VERDICT ok where=seat.fin
+#97 FIN : fin

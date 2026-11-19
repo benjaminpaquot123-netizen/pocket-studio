@@ -1,0 +1,50 @@
+Écran 81 (1035x1243)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 263,42
+bouton « Simple » @ 571,42
+icône ↶ @ 661,42
+bouton ● @ 733,42
+bouton ▶ « esta parte » @ 812,42
+bouton ▶ « la canción » @ 911,42
+icône ⋮ @ 990,42
+bouton « 84  Tempo » @ 88,123
+bouton « ? » @ 990,123
+onglet « Acid 303 Línea de bajo » @ 122,204
+bouton « Acordes Rhodes FM » @ 334,204
+bouton « Bajo Bajo redondo » ⋮ @ 558,204
+icône ♪ « Sonido » @ 768,205
+bouton + «  Pista » @ 934,205
+image → @ 1024,205
+icône « Parte: A » ▾ @ 89,283
+texte « A tiempo 50 % » @ 571,370
+texte « 100 % » @ 753,370
+texte « Borrar » @ 878,370
+bouton « Acordes » @ 123,370
+bouton « Bajo fantasma » [sélectionné] @ 329,370
+bouton « Bajo · compás 1/8 Quedan 2 notas punteadas por tocar » @ 517,451
+texte « comp. » @ 84,513
+bouton « 1 » @ 486,521
+bouton « 2 » [coupé] @ 920,521
+texte « Sol♭ » [coupé] @ 84,563
+texte « Fa » @ 84,588
+texte « Mi » @ 84,619
+texte « Mi♭ » @ 84,650
+texte « Re » @ 84,681
+texte « Re♭ » @ 84,712
+texte « Do1 » @ 84,743
+texte « Si » @ 84,774
+texte « Si♭ » @ 84,805
+texte « La » [coupé] @ 84,831
+dessin [coupé] @ 559,697
+texte « El bajo Capítulo 4/13 · Paso 1/2 · Fácil » @ 426,891
+icône (liste) « Capítulos » @ 886,892
+icône ⌃ @ 978,892
+icône « Te toca: toca las 3 notas punteadas del compás 1. Leer » ⌃ @ 517,1004
+onglet (lignes et note) « Mi canción » @ 99,1123
+onglet (quatre carrés) « Ritmo » @ 309,1123
+onglet (touches de piano) « Teclado » [sélectionné] @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Compartir » @ 936,1123
+texte « ●  REC » @ 803,1213
+texte « ✎  Anotar » @ 901,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentarios » @ 383,1213

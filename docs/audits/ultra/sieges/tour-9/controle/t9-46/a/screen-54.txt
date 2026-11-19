@@ -1,0 +1,62 @@
+Écran 54 (1035x1243)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 348,42
+bouton « Simple » @ 741,42
+bouton ● @ 831,42
+bouton ■ « esta parte » @ 910,42
+icône ⋮ @ 990,42
+bouton « 84  Tempo » @ 88,123
+icône (flèches en boucle) « A compás 1/8 » [désactivé] @ 267,123
+bouton « ? » @ 990,123
+icône « Parte: A » ▾ @ 89,198
+bouton « Bombo 1 FX » @ 75,300
+bouton « Bombo 2 » @ 200,300
+bouton « Lo-fi hip-hop · Caja FX » @ 325,300
+bouton « Caja 2 » @ 450,300
+bouton « Palmada » [coupé] @ 75,395
+bouton « Lo-fi hip-hop · Hi-hat I 30 » [coupé] @ 200,395
+bouton « Hi-hat abierto D 30 » [coupé] @ 325,395
+bouton « Tom grave » [coupé] @ 450,395
+texte « Compás 1/2 · Lo-fi hip-hop · Hi-hat » [coupé] @ 589,248
+texte « Compás 2 · 11 casillas → » [coupé] @ 800,257
+bouton « 1 » [état « golpe, fuerza 100 % »] @ 575,325
+bouton [état « vacío »] @ 632,324
+bouton [état « golpe, fuerza 100 % »] @ 688,324
+bouton [état « golpe, fuerza 100 % »] @ 744,324
+bouton « 2 » [état « golpe, fuerza 100 % »] @ 800,324
+bouton [état « vacío »] @ 856,324
+bouton [état « golpe, fuerza 100 % »] @ 912,324
+bouton [état « vacío »] @ 968,324
+bouton « 3 » [état « golpe, fuerza 100 % »] @ 575,395
+bouton [état « vacío »] @ 632,394
+bouton [état « golpe, fuerza 100 % »] @ 688,394
+bouton [état « golpe, fuerza 100 % »] @ 744,394
+bouton « 4 » [état « golpe, fuerza 100 % »] @ 800,394
+bouton [état « vacío »] @ 856,394
+bouton [état « golpe, fuerza 100 % »] @ 912,394
+bouton [état « golpe, fuerza 100 % »] @ 968,394
+texte « La batería aterciopelada Capítulo 3/13 · Paso 3/6 · Fácil » @ 426,482
+icône (liste) « Capítulos » @ 886,483
+icône ⌄ @ 978,483
+texte « Te toca: en el pad “Lo-fi hip-hop · Hi-hat”, toca las casillas punteadas. » @ 513,571
+texte « • Hi-hat: el platillo pequeño que hace “tss”, el tictac del ritmo. » @ 390,621
+texte « • Pad: un cuadrado que tocas para que suene un sonido. » @ 363,660
+texte « ▸ ¿Por qué? » @ 517,707
+bouton (doigt qui touche) «   Lo hago yo » @ 517,776
+bouton ▶ «  Escuchar el ejemplo » @ 266,860
+bouton (œil) «  Muéstramelo » @ 768,860
+icône ← «  Anterior » @ 112,941
+icône « Siguiente  » → @ 913,941
+bouton ■ « la canción » @ 527,1026
+icône ↶ « Deshacer » @ 147,1026
+image ↷ @ 334,1013
+texte « 84 Tempo » @ 722,1026
+icône ⋮ « Más » @ 899,1026
+onglet (lignes et note) « Mi canción » @ 99,1123
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 309,1123
+onglet (touches de piano) « Teclado » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Compartir » @ 936,1123
+texte « ●  REC » @ 803,1213
+texte « ✎  Anotar » @ 901,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentarios » @ 383,1213

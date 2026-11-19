@@ -1,0 +1,46 @@
+Écran 94 (1035x1243)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 263,42
+bouton « Simple » @ 571,42
+icône ↶ @ 661,42
+bouton ● @ 733,42
+bouton ▶ « esta parte » @ 812,42
+bouton ▶ « la canción » @ 911,42
+icône ⋮ @ 990,42
+bouton « 84  Tempo » @ 88,123
+bouton « ? » @ 990,123
+onglet « Acid 303 Línea de bajo » @ 122,204
+bouton « Acordes Rhodes FM » @ 334,204
+bouton « Bajo Bajo redondo » @ 540,204
+bouton « Melodía Piano FM » ⋮ @ 752,204
+icône ♪ « Sonido » @ 936,205
+image → @ 1024,205
+icône « Parte: A » ▾ @ 89,283
+texte « A tiempo 50 % » @ 571,370
+texte « 100 % » @ 753,370
+texte « Borrar » @ 878,370
+bouton « Acordes » @ 123,370
+bouton « Bajo fantasma » [sélectionné] @ 329,370
+bouton « Melodía · compás 4/8 Queda 1 nota punteada por tocar » @ 517,451
+texte « comp. » @ 84,513
+bouton « 4 » @ 486,521
+bouton « 5 » [coupé] @ 920,521
+texte « La melodía Capítulo 5/13 · Paso 3/3 · Fácil » @ 426,595
+icône (liste) « Capítulos » @ 886,596
+icône ⌄ @ 978,596
+texte « Te toca: toca la nota larga del compás 4 y luego “Copiar” otra vez. » @ 486,684
+texte « • Compás: una vuelta del ritmo, cuatro tiempos; se cuenta “1, 2, 3, 4”. » @ 437,734
+texte « ▸ ¿Por qué? » @ 517,781
+bouton (doigt qui touche) «   Lo hago yo » @ 517,850
+bouton ▶ «  Escuchar el ejemplo » @ 266,934
+bouton (œil) «  Muéstramelo » @ 768,934
+icône ← «  Anterior » @ 112,1015
+icône « Siguiente  » → @ 913,1015
+onglet (lignes et note) « Mi canción » @ 99,1123
+onglet (quatre carrés) « Ritmo » @ 309,1123
+onglet (touches de piano) « Teclado » [sélectionné] @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Compartir » @ 936,1123
+texte « ●  REC » @ 803,1213
+texte « ✎  Anotar » @ 901,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentarios » @ 383,1213

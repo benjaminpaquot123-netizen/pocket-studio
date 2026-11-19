@@ -1,0 +1,78 @@
+Écran 31 (1035x1243)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 348,42
+bouton « Simple » @ 741,42
+bouton ● @ 831,42
+bouton ▶ « esta parte » @ 910,42
+icône ⋮ @ 990,42
+bouton « 84  Tempo » @ 88,123
+bouton « ? » @ 990,123
+icône « Parte: A » ▾ @ 89,198
+bouton « Bombo 1 FX » @ 75,300
+bouton « Bombo 2 » @ 200,300
+bouton « Lo-fi hip-hop · Caja FX » @ 325,300
+bouton « Caja 2 » @ 450,300
+bouton « Palmada » @ 75,406
+bouton « Lo-fi hip-hop · Hi-hat I 30 » @ 200,406
+bouton « Hi-hat abierto D 30 » @ 325,406
+bouton « Tom grave » @ 450,406
+bouton « Tom medio D 45 » @ 75,512
+bouton « Tom agudo » @ 200,512
+bouton « Aro del tambor D 50 » @ 325,512
+bouton « Campana » @ 450,512
+bouton « Platillo FX D 40 » @ 75,618
+bouton « Maracas I 50 » @ 200,618
+bouton « Conga » @ 325,618
+bouton « Láser » @ 450,618
+texte « Los pads suenan, las casillas guardan los golpes. Mantén pulsado: cambiar el sonido. » [coupé] @ 423,721
+bouton « Kit: Lo-fi hip-hop » ▾ @ 172,730
+titre « PASOS: BOMBO 1 » [coupé, état « Desplegado »] @ 645,252
+bouton « ? » [coupé] @ 719,239
+bouton « Todos los pads » [coupé] @ 867,240
+texte « Compás » @ 605,318
+bouton « 1 » [sélectionné] @ 706,318
+bouton « 2 » @ 787,318
+bouton « Seguir » @ 901,318
+texte « Compás 2 · 3 casillas → » @ 803,402
+texte « Compás 1/2 · Bombo 1 » @ 592,402
+bouton « 1 » [état « golpe, fuerza 100 % »] @ 575,482
+bouton [état « vacío »] @ 632,481
+bouton [état « vacío »] @ 688,481
+bouton [état « vacío »] @ 744,481
+bouton « 2 » [état « vacío »] @ 800,481
+bouton [état « vacío »] @ 856,481
+bouton [état « vacío »] @ 912,481
+bouton [état « golpe, fuerza 100 % »] @ 968,481
+bouton « 3 » [état « vacío »] @ 575,552
+bouton [état « vacío »] @ 632,551
+bouton [état « golpe, fuerza 100 % »] @ 688,551
+bouton [état « vacío »] @ 744,551
+bouton « 4 » [état « vacío »] @ 800,551
+bouton [état « vacío »] @ 856,551
+bouton [état « vacío »] @ 912,551
+bouton [état « vacío »] @ 968,551
+texte « todo » @ 694,632
+texte « 1/2 » @ 777,632
+texte « 1/4 » @ 852,632
+texte « ◀ » @ 927,632
+texte « Rellenar » @ 599,632
+texte « ▶ » @ 586,704
+texte « Borrar » @ 680,704
+texte « Toca una casilla para añadir un golpe, desliza el dedo para pintar varios. Mantén pulsado un golpe: fuerza y redobles (×2 a ×8). » [coupé] @ 771,759
+texte « La batería aterciopelada Capítulo 3/13 · Paso 1/6 · Fácil » @ 426,817
+icône (liste) « Capítulos » @ 886,818
+icône ⌃ @ 978,818
+icône « Te toca: en el pad “Bombo 1”, toca las casillas punteadas de los 2 compases. Leer » ⌃ @ 517,930
+bouton ▶ « la canción » @ 527,1026
+icône ↶ « Deshacer » @ 147,1026
+image ↷ @ 334,1013
+texte « 84 Tempo » @ 722,1026
+icône ⋮ « Más » @ 899,1026
+onglet (lignes et note) « Mi canción » @ 99,1123
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 309,1123
+onglet (touches de piano) « Teclado » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Compartir » @ 936,1123
+texte « ●  REC » @ 803,1213
+texte « ✎  Anotar » @ 901,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentarios » @ 383,1213

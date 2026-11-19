@@ -1,0 +1,37 @@
+Écran 67 (900x1509)
+icône (dossier ouvert) ✓ « Mi canción Guardado » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ▶ « esta parte » @ 775,42
+icône ⋮ @ 855,42
+icône « Intro compás 1/64 » ▾ @ 392,144
+bouton « 84  Tempo » @ 122,144
+bouton « ? » @ 855,144
+image (rond coché) @ 0,0
+bouton « M4A · para compartir » [sélectionné] @ 256,261
+bouton « WAV · calidad máx. » @ 236,342
+bouton (trois points reliés) «   Compartir » @ 450,439
+bouton (dossier) « Mis archivos » › @ 428,543
+bouton « ? » @ 848,543
+texte « Exporta tu tema Capítulo 13/13 · Paso 1/1 · Fácil » @ 356,651
+icône (liste) « Capítulos » @ 749,651
+icône ⌄ @ 843,651
+image (coupe) @ 42,827
+texte « ¡Bravo, tu tema está terminado! Puedes volver a escucharlo todo y seguir cambiándolo. » @ 477,826
+bouton ▶ «  Escuchar mi canción » @ 450,970
+bouton ↺ «  Empezar de nuevo el tutorial » @ 450,1059
+bouton ✕ «  Cerrar el tutorial » @ 450,1148
+texte « 84 Tempo » @ 680,1251
+icône ↶ « Deshacer » @ 119,1251
+image ↷ @ 304,1231
+icône ▶ « la canción » @ 496,1252
+icône ⋮ « Más » @ 819,1251
+onglet (lignes et note) « Mi canción » @ 85,1376
+onglet (quatre carrés) « Ritmo » @ 268,1376
+onglet (touches de piano) « Teclado » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Compartir » [sélectionné] @ 815,1376
+texte « ●  REC » @ 609,1479
+texte « ✎  Anotar » @ 740,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 283,1479

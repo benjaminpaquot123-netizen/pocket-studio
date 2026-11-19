@@ -1,0 +1,6 @@
+Écran 64 (900x1509)
+texte « Preparando tu canción… » @ 383,562
+texte « Creando el sonido y comprimiéndolo en M4A. » @ 450,678
+texte «   25 % » @ 774,774
+texte « Luego elige la app para enviarlo. » @ 357,840
+texte « Cancelar » @ 730,942

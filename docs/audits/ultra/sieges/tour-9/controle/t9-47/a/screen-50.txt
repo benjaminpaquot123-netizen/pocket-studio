@@ -1,0 +1,55 @@
+Écran 50 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ▶ « esta parte » @ 775,42
+icône ⋮ @ 855,42
+icône « Intro compás 1/64 » ▾ @ 392,144
+bouton « 84  Tempo » @ 122,144
+bouton « ? » @ 855,144
+icône « Parte: C · Estrofa » ▾ @ 196,240
+titre « PASOS: LO-FI HIP-HOP · CAJA · ESTROFA » [coupé, état « Desplegado »] @ 282,294
+texte « Compás » @ 118,360
+bouton « 1 » @ 240,360
+bouton « 2 » [sélectionné] @ 321,360
+bouton « Seguir » @ 453,360
+texte « Compás 2/2 · Lo-fi hip-hop · Caja » @ 363,444
+bouton « 1 » [état « vacío »] @ 90,529
+bouton [état « vacío »] @ 192,529
+bouton [état « vacío »] @ 294,529
+bouton [état « vacío »] @ 397,529
+bouton « 2 » [état « golpe, fuerza 60 % »] @ 500,529
+bouton [état « vacío »] @ 603,529
+bouton [état « vacío »] @ 706,529
+bouton [état « vacío »] @ 809,529
+bouton « 3 » [coupé, état « vacío »] @ 90,592
+bouton [coupé, état « vacío »] @ 192,592
+bouton [coupé, état « vacío »] @ 294,592
+bouton [coupé, état « vacío »] @ 397,592
+bouton « 4 » [coupé, état « vacío »] @ 500,592
+bouton [coupé, état « vacío »] @ 603,592
+bouton [coupé, état « vacío »] @ 706,592
+bouton [coupé, état « vacío »] @ 809,592
+texte « Los efectos Capítulo 11/13 · Paso 1/1 · Fácil » @ 356,677
+icône (liste) « Capítulos » @ 749,677
+icône ⌄ @ 843,677
+texte « Escucha la reverb: la caja y los acordes, primero sin y luego con. » @ 450,821
+texte « • Acorde: varias notas tocadas a la vez. » @ 376,919
+texte « ▸ ¿Por qué? » @ 450,982
+bouton ▶ «  Escuchar el ejemplo » @ 450,1059
+icône ← «  Anterior » @ 136,1148
+icône « Siguiente  » → @ 752,1148
+texte « 84 Tempo » @ 680,1251
+icône ↶ « Deshacer » @ 119,1251
+image ↷ @ 304,1231
+icône ▶ « la canción » @ 496,1252
+icône ⋮ « Más » @ 819,1251
+onglet (lignes et note) « Mi canción » @ 85,1376
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 268,1376
+onglet (touches de piano) « Teclado » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Compartir » @ 815,1376
+texte « ●  REC » @ 609,1479
+texte « ✎  Anotar » @ 740,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 283,1479

@@ -1,0 +1,39 @@
+Écran 42 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ▶ « esta parte » @ 775,42
+icône ⋮ @ 855,42
+icône « Intro compás 1/64 » ▾ @ 392,144
+bouton « 84  Tempo » @ 122,144
+bouton « ? » @ 855,144
+icône ▶ « B · Intro × 1  ·  8 comp. » @ 342,257
+icône − [désactivé] @ 678,258
+icône + @ 750,258
+icône ⋮ @ 822,258
+texte « − / + : repeticiones. Gris: duración fija (sugerida o Live) o 1 sola vez. » @ 450,375
+texte « Añadir al final: » [coupé] @ 172,454
+texte « Ordena tus partes Capítulo 9/13 · Paso 1/2 · Fácil » @ 356,536
+icône (liste) « Capítulos » @ 749,536
+icône ⌄ @ 843,536
+image (coupe) @ 57,709
+texte « ¡Bravo, lo has conseguido! » @ 343,657
+texte « Escucha tu resultado y toca “Paso siguiente” cuando quieras. » @ 475,737
+bouton « Paso siguiente   » → @ 450,1009
+bouton ▶ «  Escuchar tu resultado » @ 294,1123
+bouton ▶ «  Escuchar el ejemplo » @ 687,1123
+icône ← @ 57,1123
+texte « 84 Tempo » @ 680,1251
+icône ↶ « Deshacer » @ 119,1251
+image ↷ @ 304,1231
+icône ▶ « la canción » @ 496,1252
+icône ⋮ « Más » @ 819,1251
+onglet (lignes et note) « Mi canción » [sélectionné] @ 85,1376
+onglet (quatre carrés) « Ritmo » @ 268,1376
+onglet (touches de piano) « Teclado » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Compartir » @ 815,1376
+texte « ●  REC » @ 609,1479
+texte « ✎  Anotar » @ 740,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 283,1479

@@ -1,0 +1,37 @@
+Écran 11 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ▶ « esta parte » @ 775,42
+icône ⋮ @ 855,42
+bouton « 84  Tempo » @ 122,144
+bouton « ? » @ 855,144
+texte « Añadir: » [coupé] @ 107,222
+bouton « + A · Estribillo » @ 210,292
+bouton « + Nueva parte (copia de A · Estribillo) » @ 433,381
+texte « Entender las partes Capítulo 7/13 · Paso 3/4 · Fácil » @ 356,494
+icône (liste) « Capítulos » @ 749,494
+icône ⌄ @ 843,494
+texte « Escucha la Estrofa: sin la melodía, el sitio de la voz. » @ 450,638
+texte « Energía » @ 95,734
+bouton « Descargar el kit Lo-fi hip-hop (3 MB) » @ 370,842
+texte « Más tarde » @ 793,842
+texte « ▸ ¿Por qué? » @ 450,921
+icône « Seguir leyendo » ⌄ @ 450,984
+bouton ▶ «  Escuchar el ejemplo » @ 450,1059
+icône ← «  Anterior » @ 136,1148
+icône « Siguiente  » → @ 752,1148
+texte « 84 Tempo » @ 680,1251
+icône ↶ « Deshacer » @ 119,1251
+image ↷ @ 304,1231
+icône ▶ « la canción » @ 496,1252
+icône ⋮ « Más » @ 819,1251
+onglet (lignes et note) « Mi canción » [sélectionné] @ 85,1376
+onglet (quatre carrés) « Ritmo » @ 268,1376
+onglet (touches de piano) « Teclado » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Compartir » @ 815,1376
+texte « ●  REC » @ 609,1479
+texte « ✎  Anotar » @ 740,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 283,1479

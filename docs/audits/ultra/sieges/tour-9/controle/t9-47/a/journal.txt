@@ -1,0 +1,298 @@
+#0 SIEGE lang=es device=tablet8 font=200 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:lofi:6
+#0 PREMIER ECRAN reel_s=3.8 simule_s=2.4 jvm_s=8.7 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:lofi:6
+#0 AMENEE > touche 450 822 (welcome_learn)
+#0 AMENEE > touche 229 1123 (mode_card_simple)
+#0 AMENEE > touche 450 1418 (tuto_style_lofi)
+#0 AMENEE chapitres 1 à 5 construits dans le projet
+#0 AMENEE > touche 749 569 (tuto_chapters)
+#0 AMENEE > touche 450 1445 (tuto_quit)
+#0 AMENEE > touche 225 1132 (tuto_resume)
+#0 AMENEE chapitres 1 à 5 cochés (17 étapes)
+#0 AMENEE > touche 749 486 (tuto_chapters)
+#0 AMENEE > touche 450 697 (tuto_chapter_5)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 36d7dc1cd3 | project=p-4c63c135 tuto=lofi/Facile active=true step=groove_hear done=17 chapters=1,2,3,4,5 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Guardado » lines cut (taller than its box)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT OVERLAP « Bombo 1 » over « FX » (12 x 11 dp)
+#1 LAYOUT OVERLAP « Hi-hat » over « I 30 » (12 x 11 dp)
+#1 LAYOUT OVERLAP « Hi-hat abierto » over « D 30 » (43 x 7 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 976
+#1 DOIGT tuto_play_mine «   Escuchar tu resultado »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 95875e4c85 | project=p-4c63c135 tuto=lofi/Facile active=true step=groove_hear done=17 chapters=1,2,3,4,5 playing=true
+#2 SON Son : la musique du projet joue en boucle.
+#2 > touche 450 1062
+#2 DOIGT tuto_listen «  Escuchar el ejemplo »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f72df66066 | project=p-4c63c135 tuto=lofi/Facile active=true step=groove_hear done=17 chapters=1,2,3,4,5 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 3 s).
+#3 > touche 752 1148
+#3 DOIGT tuto_next « Siguiente  »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8104f85f3f | project=p-4c63c135 tuto=lofi/Facile active=true step=groove_name done=18 chapters=1,2,3,4,5 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 450 920
+#4 DOIGT tuto_need «   Nombrar la parte “Estribillo” »
+#5 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 245b16b3ff | project=p-4c63c135 tuto=lofi/Facile active=true step=groove_name done=19 chapters=1,2,3,4,5,6 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « + Nueva parte (copia de A · Estribillo) » 2.54:1 (needs 4.5:1, 14 sp)
+#5 > touche 450 1009
+#5 DOIGT tuto_next_big « Capítulo siguiente   »
+#6 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c4a15b07d1 | project=p-4c63c135 tuto=lofi/Facile active=true step=brick done=19 chapters=1,2,3,4,5,6 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Energía » 1.77:1 (needs 4.5:1, 12 sp)
+#6 > touche 450 984
+#6 DOIGT tuto_text_more « Seguir leyendo »
+#7 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 877b5be536 | project=p-4c63c135 tuto=lofi/Facile active=true step=brick done=19 chapters=1,2,3,4,5,6 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « 8 » 3.82:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « 8 » 4.28:1 (needs 4.5:1, 12 sp)
+#7 > touche 450 1059
+#7 DOIGT tuto_mark «   Entendido »
+#8 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f1a9ac0899 | project=p-4c63c135 tuto=lofi/Facile active=true step=map_intro done=20 chapters=1,2,3,4,5,6 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « 4 » 2.79:1 (needs 4.5:1, 12 sp)
+#8 > touche 450 1059
+#8 DOIGT tuto_listen «  Escuchar el ejemplo »
+#9 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE afcaf40097 | project=p-4c63c135 tuto=lofi/Facile active=true step=map_intro done=20 chapters=1,2,3,4,5,6 playing=false
+#9 SON Son : l'exemple du tuto joue (encore 3 s).
+#9 > attends 4
+#10 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3b2f43d618 | project=p-4c63c135 tuto=lofi/Facile active=true step=map_intro done=21 chapters=1,2,3,4,5,6 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 450 1059
+#10 DOIGT tuto_next_big « Paso siguiente   »
+#11 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f29bd74398 | project=p-4c63c135 tuto=lofi/Facile active=true step=map_couplet done=21 chapters=1,2,3,4,5,6 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 450 1059
+#11 DOIGT tuto_listen «  Escuchar el ejemplo »
+#12 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 121fc52c56 | project=p-4c63c135 tuto=lofi/Facile active=true step=map_couplet done=21 chapters=1,2,3,4,5,6 playing=false
+#12 SON Son : l'exemple du tuto joue (encore 3 s).
+#12 > attends 4
+#13 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 484f588d22 | project=p-4c63c135 tuto=lofi/Facile active=true step=map_couplet done=22 chapters=1,2,3,4,5,6 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 1059
+#13 DOIGT tuto_next_big « Paso siguiente   »
+#14 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE cca7b6eb51 | project=p-4c63c135 tuto=lofi/Facile active=true step=map_pont done=22 chapters=1,2,3,4,5,6 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 450 1059
+#14 DOIGT tuto_listen «  Escuchar el ejemplo »
+#15 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ab7f5f1882 | project=p-4c63c135 tuto=lofi/Facile active=true step=map_pont done=22 chapters=1,2,3,4,5,6 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > attends 4
+#16 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c75b375cb4 | project=p-4c63c135 tuto=lofi/Facile active=true step=map_pont done=23 chapters=1,2,3,4,5,6,7 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1009
+#16 DOIGT tuto_next_big « Capítulo siguiente   »
+#17 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 66c84fb35b | project=p-4c63c135 tuto=lofi/Facile active=true step=make_intro done=23 chapters=1,2,3,4,5,6,7 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 667 1034
+#17 DOIGT tuto_show «  Muéstramelo »
+#18 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 557faee1d2 | project=p-4c63c135 tuto=lofi/Facile active=true step=make_intro done=23 chapters=1,2,3,4,5,6,7 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « ? » lines cut (taller than its box)
+#18 LAYOUT CONTRAST « Detener » 3.91:1 (needs 4.5:1, 14 sp)
+#18 > attends 4
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1d25b7084d | project=p-4c63c135 tuto=lofi/Facile active=true step=make_intro done=23 chapters=1,2,3,4,5,6,7 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 843 983
+#19 DOIGT rien
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a5748e25c4 | project=p-4c63c135 tuto=lofi/Facile active=true step=make_intro done=23 chapters=1,2,3,4,5,6,7 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 920
+#20 DOIGT tuto_need «   Crear la parte “Intro” »
+#21 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 96bb876a7e | project=p-4c63c135 tuto=lofi/Facile active=true step=make_intro done=24 chapters=1,2,3,4,5,6,7 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 450 1009
+#21 DOIGT tuto_next_big « Paso siguiente   »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 7ab9fd58aa | project=p-4c63c135 tuto=lofi/Facile active=true step=make_couplet done=24 chapters=1,2,3,4,5,6,7 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 450 920
+#22 DOIGT tuto_need «   Crear la parte “Estrofa” »
+#23 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 048fd17521 | project=p-4c63c135 tuto=lofi/Facile active=true step=make_couplet done=25 chapters=1,2,3,4,5,6,7 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 450 1009
+#23 DOIGT tuto_next_big « Paso siguiente   »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4604e36dfc | project=p-4c63c135 tuto=lofi/Facile active=true step=make_pont done=25 chapters=1,2,3,4,5,6,7 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 370 764
+#24 DOIGT tuto_kit_download « Descargar el kit Lo-fi hip-hop (3 MB) »
+#25 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 02e9fb8454 | project=p-4c63c135 tuto=lofi/Facile active=true step=make_pont done=25 chapters=1,2,3,4,5,6,7 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 450 920
+#25 DOIGT tuto_need «   Crear la parte “Puente” »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2be11886f0 | project=p-4c63c135 tuto=lofi/Facile active=true step=make_pont done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 450 1009
+#26 DOIGT tuto_next_big « Capítulo siguiente   »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fe1977d504 | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 516 292
+#27 DOIGT add_part_1 « + B · Intro »
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ce17a35a5e | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#28 SON Son : rien ne joue.
+#28 > glisse 450 430 450 230
+#28 DOIGT rien
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 699de8a70f | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 210 371
+#29 DOIGT add_part_0 « + A · Estribillo »
+#30 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a592ade2d5 | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#30 SON Son : rien ne joue.
+#30 > glisse 450 430 450 230
+#30 DOIGT rien
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f43031bbec | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 196 440
+#31 DOIGT add_part_2 « + C · Estrofa »
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e777ca43bb | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#32 SON Son : rien ne joue.
+#32 > glisse 450 430 450 230
+#32 DOIGT rien
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4fdfc4cbee | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 210 371
+#33 DOIGT add_part_0 « + A · Estribillo »
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE eccd900364 | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#34 SON Son : rien ne joue.
+#34 > glisse 450 430 450 230
+#34 DOIGT rien
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 182115efda | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 511 440
+#35 DOIGT add_part_3 « + D · Puente »
+#36 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4f97177da7 | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#36 SON Son : rien ne joue.
+#36 > glisse 450 430 450 230
+#36 DOIGT rien
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f3aeda6b27 | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 196 440
+#37 DOIGT add_part_2 « + C · Estrofa »
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 70dfa88a5e | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#38 SON Son : rien ne joue.
+#38 > glisse 450 430 450 230
+#38 DOIGT rien
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 58f53feb61 | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 210 371
+#39 DOIGT add_part_0 « + A · Estribillo »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0e811895fc | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#40 SON Son : rien ne joue.
+#40 > glisse 450 430 450 230
+#40 DOIGT rien
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b75423ac01 | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 516 371
+#41 DOIGT add_part_1 « + B · Intro »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE de02317c74 | project=p-4c63c135 tuto=lofi/Facile active=true step=song_order done=27 chapters=1,2,3,4,5,6,7,8 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 450 1009
+#42 DOIGT tuto_next_big « Paso siguiente   »
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fa73e6a12e | project=p-4c63c135 tuto=lofi/Facile active=true step=song_phrases done=27 chapters=1,2,3,4,5,6,7,8 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 450 976
+#43 DOIGT tuto_need «   Poner las duraciones recomendadas »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e4d67e11f0 | project=p-4c63c135 tuto=lofi/Facile active=true step=song_phrases done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 450 1065
+#44 DOIGT tuto_next_big « Capítulo siguiente   »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e19c101074 | project=p-4c63c135 tuto=lofi/Facile active=true step=gap done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 450 843
+#45 DOIGT tuto_why « ▸ ¿Por qué? »
+#46 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b0e388dc11 | project=p-4c63c135 tuto=lofi/Facile active=true step=gap done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 450 920
+#46 DOIGT tuto_need «   Ir a la parte “Estrofa” »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 132439d368 | project=p-4c63c135 tuto=lofi/Facile active=true step=gap done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CUT « Te toca: último compás, borra los golpes de kick y de caja del último tiempo. » ellipsized (« … »)
+#47 LAYOUT CONTRAST « PASOS: LO-FI HIP-HOP · CAJA · ESTROFA » 3.11:1 (needs 4.5:1, 12 sp)
+#47 > touche 500 646
+#47 DOIGT step_28 « Paso 13 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ac06a3f167 | project=p-4c63c135 tuto=lofi/Facile active=true step=gap done=29 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 843 983
+#48 DOIGT tuto_fold
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3c20468afc | project=p-4c63c135 tuto=lofi/Facile active=true step=gap done=29 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT CONTRAST « PASOS: LO-FI HIP-HOP · CAJA · ESTROFA » 3.32:1 (needs 4.5:1, 12 sp)
+#49 > touche 450 1009
+#49 DOIGT tuto_next_big « Capítulo siguiente   »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9e321b04c0 | project=p-4c63c135 tuto=lofi/Facile active=true step=reverb_hear done=29 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST « PASOS: LO-FI HIP-HOP · CAJA · ESTROFA » 3.35:1 (needs 4.5:1, 12 sp)
+#50 > touche 450 1059
+#50 DOIGT tuto_listen «  Escuchar el ejemplo »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 79f1ef2c7c | project=p-4c63c135 tuto=lofi/Facile active=true step=reverb_hear done=29 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#51 SON Son : l'exemple du tuto joue (encore 7 s).
+#51 > attends 5
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2ecfec4b0a | project=p-4c63c135 tuto=lofi/Facile active=true step=reverb_hear done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#52 SON Son : l'exemple du tuto joue (encore 2 s).
+#52 > touche 450 1009
+#52 DOIGT tuto_next_big « Capítulo siguiente   »
+#53 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c0f14730c6 | project=p-4c63c135 tuto=lofi/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « PASOS: LO-FI HIP-HOP · CAJA · ESTROFA » 3.52:1 (needs 4.5:1, 12 sp)
+#53 > touche 633 1376
+#53 DOIGT tab_simple_Mix « Mix »
+#54 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 8583802606 | project=p-4c63c135 tuto=lofi/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 843 475
+#54 DOIGT tuto_fold
+#55 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 640ce67450 | project=p-4c63c135 tuto=lofi/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CUT « Te toca: en la pestaña “Mix”, baja un poco los faders “Acordes” y “Melodía”. Bajo el fader, “Normal” pasa a “−2”. » ellipsized (« … »)
+#55 > glisse 224 716 224 745
+#55 DOIGT mix_fader_2 « Volumen de Acordes »
+#56 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 640ce67450 | project=p-4c63c135 tuto=lofi/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#56 SON Son : rien ne joue.
+#56 > glisse 224 720 224 800
+#56 DOIGT mix_fader_2 « Volumen de Acordes »
+#57 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 3c5f59a9bc | project=p-4c63c135 tuto=lofi/Facile active=true step=levels done=30 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#57 SON Son : rien ne joue.
+#57 > glisse 470 716 470 760
+#57 DOIGT mix_fader_6 « Volumen de Melodía »
+#58 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 85329cae14 | project=p-4c63c135 tuto=lofi/Facile active=true step=levels done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 843 983
+#58 DOIGT tuto_fold
+#59 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 656269d280 | project=p-4c63c135 tuto=lofi/Facile active=true step=levels done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 294 1123
+#59 DOIGT tuto_play_mine «  Escuchar mi canción »
+#60 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 2e6a12c59d | project=p-4c63c135 tuto=lofi/Facile active=true step=levels done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=true
+#60 SON Son : le morceau joue (partie « B »).
+#60 > touche 294 1123
+#60 DOIGT tuto_play_mine «  Detener »
+#61 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 656269d280 | project=p-4c63c135 tuto=lofi/Facile active=true step=levels done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 450 1009
+#61 DOIGT tuto_next_big « Capítulo siguiente   »
+#62 ROUTE tab_simple_Mix | MODE simple | EMPREINTE ba975b28fe | project=p-4c63c135 tuto=lofi/Facile active=true step=share done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 815 1376
+#62 DOIGT tab_simple_Envoyer « Compartir »
+#63 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE a40946cc2e | project=p-4c63c135 tuto=lofi/Facile active=true step=share done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 450 436
+#63 DOIGT share_go «   Compartir »
+#64 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 3c1efab2f8 | project=p-4c63c135 tuto=lofi/Facile active=true step=share done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#64 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#64 LAYOUT CONTRAST « Cancelar » 1.46:1 (needs 4.5:1, 14 sp)
+#64 > attends 10
+#64 PARTAGE Mi-canción-20261119-115502.m4a
+#65 ROUTE dialogue:« Compartir mi canción · Mi-canc » | MODE simple | EMPREINTE 055f6147d9 | project=p-4c63c135 tuto=lofi/Facile active=true step=share done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 450 681
+#65 DOIGT vue « WhatsApp »
+#66 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 8e110d8179 | project=p-4c63c135 tuto=lofi/Facile active=true step=share done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 786 1046
+#66 DOIGT share_bilan_ok « OK »
+#67 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE ebab5a1caf | project=p-4c63c135 tuto=lofi/Facile active=true step=share done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#67 SON Son : rien ne joue.
+#67 > fin
+#67 BENCH-VERDICT ok where=seat.fin
+#67 FIN : fin

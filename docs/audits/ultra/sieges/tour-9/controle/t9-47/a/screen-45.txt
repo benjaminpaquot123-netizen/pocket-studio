@@ -1,0 +1,46 @@
+Écran 45 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ▶ « esta parte » @ 775,42
+icône ⋮ @ 855,42
+icône « Intro compás 1/64 » ▾ @ 392,144
+bouton « 84  Tempo » @ 122,144
+bouton « ? » @ 855,144
+bouton « Acordes de la canción B · Intro Fa  Do  La m  Re m  Fa  Do  La m  Re m A · Estribillo Si♭  Fa  Re m  Sol m  Si♭  Fa  Re m  Sol m C · Estrofa Si♭  Fa  Re m  Sol m  Si♭  Fa  Re m  Sol m D · Puente Si♭  Fa  Re m  Sol m  Si♭  Fa  Re m  Sol m Toca para cambiar los acordes de toda la canción. » [coupé] @ 450,222
+icône ▶ « B · Intro 4 comp. » @ 342,305
+icône − [désactivé] @ 678,306
+icône + [désactivé] @ 750,306
+icône ⋮ @ 822,306
+icône ▶ « A · Estribillo 8 comp. » @ 342,424
+icône − [désactivé] @ 678,425
+icône + [désactivé] @ 750,425
+icône ⋮ @ 822,425
+icône ▶ « C · Estrofa 16 comp. » @ 342,543
+icône − [désactivé] @ 678,544
+icône + [désactivé] @ 750,544
+icône ⋮ @ 822,544
+texte « Las transiciones Capítulo 10/13 · Paso 1/1 · Fácil » @ 356,662
+icône (liste) « Capítulos » @ 749,662
+icône ⌄ @ 843,662
+texte « Te toca: toca “Ir a la parte “Estrofa””. » @ 387,774
+texte « ▸ ¿Por qué? » @ 450,843
+bouton ⊕ «   Ir a la parte “Estrofa” » @ 450,920
+bouton ▶ «  Escuchar el ejemplo » @ 232,1034
+bouton (œil) «  Muéstramelo » @ 667,1034
+icône ← «  Anterior » @ 136,1148
+icône « Siguiente  » → @ 752,1148
+texte « 84 Tempo » @ 680,1251
+icône ↶ « Deshacer » @ 119,1251
+image ↷ @ 304,1231
+icône ▶ « la canción » @ 496,1252
+icône ⋮ « Más » @ 819,1251
+onglet (lignes et note) « Mi canción » [sélectionné] @ 85,1376
+onglet (quatre carrés) « Ritmo » @ 268,1376
+onglet (touches de piano) « Teclado » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Compartir » @ 815,1376
+texte « ●  REC » @ 609,1479
+texte « ✎  Anotar » @ 740,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 283,1479

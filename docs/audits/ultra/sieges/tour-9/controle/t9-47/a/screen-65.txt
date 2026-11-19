@@ -1,0 +1,7 @@
+Écran 65 (900x1509)
+texte « Compartir mi canción · Mi-canción-20261119-115502.m4a » @ 450,576
+bouton « WhatsApp » @ 450,681
+bouton « Messages » @ 450,753
+bouton « Gmail » @ 450,825
+bouton « Drive » @ 450,897
+bouton « Files » @ 450,969

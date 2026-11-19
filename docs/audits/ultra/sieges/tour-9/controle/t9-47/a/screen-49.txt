@@ -1,0 +1,56 @@
+Écran 49 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ▶ « esta parte » @ 775,42
+icône ⋮ @ 855,42
+icône « Intro compás 1/64 » ▾ @ 392,144
+bouton « 84  Tempo » @ 122,144
+bouton « ? » @ 855,144
+icône « Parte: C · Estrofa » ▾ @ 196,240
+titre « PASOS: LO-FI HIP-HOP · CAJA · ESTROFA » [coupé, état « Desplegado »] @ 282,294
+texte « Compás » @ 118,360
+bouton « 1 » @ 240,360
+bouton « 2 » [sélectionné] @ 321,360
+bouton « Seguir » @ 453,360
+texte « Compás 2/2 · Lo-fi hip-hop · Caja » @ 363,444
+bouton « 1 » [état « vacío »] @ 90,529
+bouton [état « vacío »] @ 192,529
+bouton [état « vacío »] @ 294,529
+bouton [état « vacío »] @ 397,529
+bouton « 2 » [état « golpe, fuerza 60 % »] @ 500,529
+bouton [état « vacío »] @ 603,529
+bouton [état « vacío »] @ 706,529
+bouton [état « vacío »] @ 809,529
+bouton « 3 » [coupé, état « vacío »] @ 90,575
+bouton [coupé, état « vacío »] @ 192,575
+bouton [coupé, état « vacío »] @ 294,575
+bouton [coupé, état « vacío »] @ 397,575
+bouton « 4 » [coupé, état « vacío »] @ 500,575
+bouton [coupé, état « vacío »] @ 603,575
+bouton [coupé, état « vacío »] @ 706,575
+bouton [coupé, état « vacío »] @ 809,575
+texte « Las transiciones Capítulo 10/13 · Hecho · Fácil » @ 356,643
+icône (liste) « Capítulos » @ 749,643
+icône ⌄ @ 843,643
+image (coupe) @ 57,842
+texte « ¡Bravo, capítulo terminado! » @ 349,764
+texte « Escucha tu canción tal como está ahora y luego pasa al capítulo siguiente: “Los efectos”. » @ 475,870
+bouton « Capítulo siguiente   » → @ 450,1009
+bouton ▶ «  Escuchar mi canción » @ 294,1123
+bouton ▶ «  Escuchar el ejemplo » @ 687,1123
+icône ← @ 57,1123
+texte « 84 Tempo » @ 680,1251
+icône ↶ « Deshacer » @ 119,1251
+image ↷ @ 304,1231
+icône ▶ « la canción » @ 496,1252
+icône ⋮ « Más » @ 819,1251
+onglet (lignes et note) « Mi canción » @ 85,1376
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 268,1376
+onglet (touches de piano) « Teclado » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Compartir » @ 815,1376
+texte « ●  REC » @ 609,1479
+texte « ✎  Anotar » @ 740,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 283,1479

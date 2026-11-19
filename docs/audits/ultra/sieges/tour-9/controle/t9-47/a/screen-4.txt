@@ -1,0 +1,40 @@
+Écran 4 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ▶ « esta parte » @ 775,42
+icône ⋮ @ 855,42
+bouton « 84  Tempo » @ 122,144
+bouton « ? » @ 855,144
+icône « Parte: A » ▾ @ 110,240
+bouton « Bombo 1 FX » @ 123,330
+bouton « Bombo 2 » @ 341,330
+bouton « Caja FX » @ 559,330
+bouton « Caja 2 » @ 777,330
+texte « Tu primera parte: el Estribillo Capítulo 6/13 · Paso 2/2 · Fácil » @ 356,435
+icône (liste) « Capítulos » @ 749,435
+icône ⌄ @ 843,435
+texte « Ejemplo saltado sin escucharlo. » @ 311,544
+texte « Te toca: toca “Nombrar la parte “Estribillo””. » @ 450,644
+bouton « Descargar el kit Lo-fi hip-hop (3 MB) » @ 370,764
+texte « Más tarde » @ 793,764
+texte « ▸ ¿Por qué? » @ 450,843
+bouton ⊕ «   Nombrar la parte “Estribillo” » @ 450,920
+bouton ▶ «  Escuchar el ejemplo » @ 232,1034
+bouton (œil) «  Muéstramelo » @ 667,1034
+icône ← «  Anterior » @ 136,1148
+icône « Siguiente  » → @ 752,1148
+texte « 84 Tempo » @ 680,1251
+icône ↶ « Deshacer » @ 119,1251
+image ↷ @ 304,1231
+icône ▶ « la canción » @ 496,1252
+icône ⋮ « Más » @ 819,1251
+onglet (lignes et note) « Mi canción » @ 85,1376
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 268,1376
+onglet (touches de piano) « Teclado » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Compartir » @ 815,1376
+texte « ●  REC » @ 609,1479
+texte « ✎  Anotar » @ 740,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 283,1479

@@ -1,0 +1,37 @@
+Écran 63 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 281,42
+bouton « Simple » @ 607,42
+bouton ● @ 696,42
+bouton ▶ « esta parte » @ 775,42
+icône ⋮ @ 855,42
+icône « Intro compás 1/64 » ▾ @ 392,144
+bouton « 84  Tempo » @ 122,144
+bouton « ? » @ 855,144
+image (rond coché) @ 0,0
+bouton « M4A · para compartir » [sélectionné] @ 256,258
+bouton « WAV · calidad máx. » @ 236,339
+bouton (trois points reliés) «   Compartir » @ 450,436
+bouton (dossier) « Mis archivos » › @ 428,513
+bouton « ? » @ 848,513
+texte « Exporta tu tema Capítulo 13/13 · Paso 1/1 · Fácil » @ 356,612
+icône (liste) « Capítulos » @ 749,612
+icône ⌄ @ 843,612
+texte « Te toca: comparte tu tema, la app lo convierte en un archivo de sonido. “M4A” hace un archivo ligero para tus amigos, “WAV” mantiene la calidad de estudio. » @ 450,819
+texte « ▸ ¿Por qué? » @ 450,982
+bouton (doigt qui touche) «   Lo hago yo » @ 450,1059
+icône ← «  Anterior » @ 136,1148
+icône « Siguiente  » → @ 752,1148
+texte « 84 Tempo » @ 680,1251
+icône ↶ « Deshacer » @ 119,1251
+image ↷ @ 304,1231
+icône ▶ « la canción » @ 496,1252
+icône ⋮ « Más » @ 819,1251
+onglet (lignes et note) « Mi canción » @ 85,1376
+onglet (quatre carrés) « Ritmo » @ 268,1376
+onglet (touches de piano) « Teclado » @ 451,1376
+onglet (curseurs) « Mix » @ 633,1376
+onglet (trois points reliés) « Compartir » [sélectionné] @ 815,1376
+texte « ●  REC » @ 609,1479
+texte « ✎  Anotar » @ 740,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 283,1479

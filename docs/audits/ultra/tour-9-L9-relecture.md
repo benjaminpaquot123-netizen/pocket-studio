@@ -1,6 +1,6 @@
 # Relecture neuve — lot tour-9-L9 (eq/tour-9-L9, 7455749a5..b350c86d)
 
-relu : b350c86d9c5b9508079813c42ecd27a06af350a6
+relu : 37c5817544dbfdf4d50f94912c23d478af75f799
 
 Périmètre : 12 commits, uniquement `app/src/test/**`, `scripts/bench/**` et un compte rendu dans `docs/`. Rien dans
 `app/src/main` ni `project-model/src/main`, aucun lien symbolique, pas d'identifiant de modèle dans les messages (seule la
@@ -71,5 +71,15 @@ ligne d'attribution imposée). Aucun test désactivé ni `@Ignore`. Pas de Gradl
   qui reste orpheline (deux blocs de doc d'affilée).
 - **mineur** le nouveau test coûte au moins 40 s réelles à chaque suite (la retenue s'applique aussi aux opérations
   suivantes du même modèle).
+
+Verdict : 0 bloquant, 0 grave
+
+## Seconde relecture neuve (b350c86d9..37c58175, demandée par le portail)
+
+Relancé : `selftest-attendus.py --sauts-connus` (rc 0), `test_ultra_bench.py` (OK), `test_portail4.py` (60 OK, 2 sautés : clone court). Pas de Gradle : tests ciblés verts après fusion, CI 44571785042 verte sur 37c58175.
+- 3a953578 : une ligne `BenchTutoKitDownloadTest#drive` ; la classe hérite de HumanTester, `drive` est son entrée de siège. Mineur : « vert: » sans commit « rouge: », le rouge est le selftest de 4ef94d89 (une ligne de liste).
+- 1c99548d : les 8 tests « chemin: » et les 6 classes « tests: » existent en `@Test` sous app/src/test ; relecture déplacée, contenu identique.
+- 37c58175 (fusion de c79d3442) : `git diff c79d3442 37c58175` identique octet pour octet aux seuls changements du lot ; rien dans app/src/main ni project-model/src/main.
+- Mineur : « cinq passages verts d'affilée » (Coquille2 p5) est une affirmation du lot, non rejouée ici.
 
 Verdict : 0 bloquant, 0 grave

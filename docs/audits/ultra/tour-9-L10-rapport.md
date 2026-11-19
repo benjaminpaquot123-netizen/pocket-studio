@@ -31,3 +31,8 @@ chemin: Structure, onglets, tablette, 200 % | test: Tour9TabsWholeTest#tablet200
 ## Demandes (hors de mes fichiers)
 Demande : N1, la coupe vue par le siège vient de la colonne de session défilée (`session/SessionScreen.kt`, `ui/AppRoot.kt`) : à rejouer dans un lot de cette zone.
 Demande : N3, d'autres titres du Live débordent en ar à 360 dp et 200 % (`live/LiveDock.kt:70` libellé BPM 88 px dans 35 ; aides « ? » 88 dans 54 ; `live_quantum` « مازورة واحدة » 132 dans 126 ; `live_cases` « الخانات » 132 dans 126) : lot `live/*`.
+
+## Captures regardées (écran entier)
+- Live, 360 dp, 200 %, ar et fr : briques, compteur et lignes dans leurs cases ; le sous-titre du compteur (« مازورة », « mesure ») est très petit mais entier. Restent coupés, hors de mes fichiers : « BPM » sous le tempo (Demande N3).
+- Découpe (`cut_screen`, `cut_bout`, `cut_bout_130`), Live (`live_grid`) et session (`session`) réenregistrées : aucune image de référence ne change.
+- Tablette, Structure (`tablet/nav_structure_parts`) : onglets « Ligne du temps » et « Parties » entiers.

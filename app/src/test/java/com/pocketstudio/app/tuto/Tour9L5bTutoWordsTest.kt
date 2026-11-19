@@ -153,4 +153,10 @@ class Tour9L5bTutoWordsTest {
         assertNoneLeft("Post-nakarat", mapOf(Lang.TR to (offenders(Lang.TR, Regex("Post-nakarat")) +
             I18n.table(Lang.TR).values.filter { "Post-nakarat" in it })))
     }
+
+    /** F098: Turkish « Sürgünün altındaki “Normal” » (the one under the slider), not « altında ». */
+    @Test
+    fun f098TurkishUnderTheSliderReadsRight() {
+        assertNoneLeft("altında “", mapOf(Lang.TR to offenders(Lang.TR, Regex("Sürgünün altında “"))))
+    }
 }

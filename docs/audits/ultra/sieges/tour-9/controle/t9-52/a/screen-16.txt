@@ -1,0 +1,46 @@
+Écran 16 (588x1278)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 122,42
+bouton « Semplice » @ 290,42
+bouton ● @ 380,42
+bouton ▶ « questa parte » @ 461,42
+icône ⋮ @ 543,42
+bouton « 130  Tempo » @ 98,123
+bouton « ? » @ 543,123
+icône « Parte: A » ▾ @ 89,198
+bouton « Phonk · Grancassa 1 FX » @ 84,294
+bouton « 808 FX » @ 224,294
+bouton « Phonk · Rullante FX » @ 364,294
+bouton « Rullante 2 » @ 504,294
+bouton « Phonk · Battimani FX » @ 84,384
+bouton « Phonk · Hi-hat S 30 » @ 224,384
+bouton « Hi-hat aperto D 30 » @ 364,384
+bouton « Tom grave » @ 504,384
+bouton « Tom medio D 45 » @ 84,474
+bouton « Tom acuto » @ 224,474
+bouton « Bordo del tamburo D 50 » @ 364,474
+bouton « Campana » @ 504,474
+bouton « Piatto FX D 40 » @ 84,564
+bouton « Maracas S 50 » @ 224,564
+bouton « Conga » @ 364,564
+bouton « Laser » @ 504,564
+texte « I pad suonano, le caselle tengono i colpi. Pressione lunga: cambia il suono. » @ 408,666
+bouton « Kit: Phonk » ▾ @ 126,666
+titre « PASSI: PHONK · GRANCASSA 1 » [coupé, état « Espanso »] @ 203,760
+texte « La velocità e il colore del brano Capitolo 1/13 · Fatto · Facile » @ 206,832
+icône (liste) « Capitoli » @ 443,832
+icône ⌃ @ 531,832
+icône (coupe) « Bravo, capitolo finito! » ⌃ @ 294,965
+icône ↶ « Annulla » @ 68,1061
+image ↷ @ 181,1048
+bouton ▶ « il brano » @ 298,1061
+texte « 130 Tempo » @ 411,1061
+icône ⋮ « Altro » @ 520,1061
+onglet (lignes et note) « Il mio brano » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Tastiera » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Condividi » @ 534,1158
+texte « ●  REC » @ 352,1248
+texte « ✎  Annota » @ 452,1248
+texte « ⋯ » @ 540,1248
+texte « Modalità feedback » @ 158,1248

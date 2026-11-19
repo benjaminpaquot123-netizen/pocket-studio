@@ -1,0 +1,58 @@
+Écran 42 (588x1278)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 122,42
+bouton « Semplice » @ 290,42
+bouton ● @ 380,42
+bouton ■ « questa parte » @ 461,42
+icône ⋮ @ 543,42
+bouton « 130  Tempo » @ 98,123
+icône (flèches en boucle) « A battuta 1/2 » [désactivé] @ 281,123
+bouton « ? » @ 543,123
+icône « Parte: A » ▾ @ 89,198
+texte « Battuta » [coupé] @ 89,242
+bouton « 1 » [coupé] @ 182,243
+bouton « 2 » [coupé, sélectionné] @ 263,243
+bouton « Segui » [coupé] @ 371,243
+texte « Battuta 2/2 · Phonk · Hi-hat » @ 225,295
+texte « Ancora 6 caselle tratteggiate qui » @ 283,333
+bouton « 1 » [état « colpo, forza 100 % »] @ 70,401
+bouton [état « vuoto »] @ 133,401
+bouton [état « colpo, forza 100 % »] @ 197,402
+bouton [état « vuoto »] @ 261,402
+bouton « 2 » [état « colpo, forza 100 % »] @ 325,402
+bouton [état « vuoto »] @ 389,402
+bouton [état « vuota, tratteggiata: toccala »] @ 453,402
+bouton [état « vuoto »] @ 517,402
+bouton « 3 » [état « vuota, tratteggiata: toccala »] @ 70,480
+bouton [état « vuoto »] @ 133,480
+bouton [état « vuota, tratteggiata: toccala »] @ 197,481
+bouton [état « vuoto »] @ 261,481
+bouton « 4 » [état « vuota, tratteggiata: toccala »] @ 325,481
+bouton [état « vuoto »] @ 389,481
+bouton [état « vuota, tratteggiata: toccala »] @ 453,481
+bouton [état « vuota, tratteggiata: toccala »] @ 517,481
+texte « tutto » @ 172,566
+texte « 1/2 » @ 256,566
+texte « 1/4 » @ 331,566
+texte « ◀ » @ 406,566
+texte « ▶ » @ 481,566
+texte « Riempi » @ 83,566
+texte « Cancella » @ 114,638
+texte « Tocca una casella per aggiungere un colpo, fai scorrere il dito per dipingerne diversi. Pressione lunga su un colpo: forza e rullate (×2 a ×8). » [coupé] @ 294,726
+texte « La batteria Capitolo 2/13 · Passo 4/6 · Facile » @ 206,834
+icône (liste) « Capitoli » @ 443,835
+icône ⌃ @ 531,835
+icône « Tocca a te: sul pad “Phonk · Hi-hat”, tocca le caselle tratteggiate delle 2 battute. Leggi » ⌃ @ 294,965
+icône ↶ « Annulla » @ 68,1061
+image ↷ @ 181,1048
+bouton ■ « il brano » @ 298,1061
+texte « 130 Tempo » @ 411,1061
+icône ⋮ « Altro » @ 520,1061
+onglet (lignes et note) « Il mio brano » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Tastiera » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Condividi » @ 534,1158
+texte « ●  REC » @ 352,1248
+texte « ✎  Annota » @ 452,1248
+texte « ⋯ » @ 540,1248
+texte « Modalità feedback » @ 158,1248

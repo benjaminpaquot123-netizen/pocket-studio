@@ -1,0 +1,35 @@
+Écran 6 (588x1278)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 122,42
+bouton « Semplice » @ 290,42
+bouton ● @ 380,42
+bouton ▶ « questa parte » @ 461,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 98,123
+bouton « ? » @ 543,123
+icône « Parte: A » ▾ @ 89,172
+texte « La velocità e il colore del brano Capitolo 1/13 · Passo 2/3 · Facile » @ 206,271
+icône (liste) « Capitoli » @ 443,271
+icône ⌄ @ 531,271
+texte « Tocca a te: imposta il tempo (la velocità del brano) a 130 BPM, 130 battiti al minuto. “Lo faccio io” apre la scheda Tempo. » @ 294,467
+texte « Un brano nuovo parte a 120 BPM: sei tu a dargli la velocità dello stile. » [coupé] @ 294,598
+texte « ▾ Perché? » @ 294,657
+icône « Continua a leggere » ⌄ @ 294,711
+bouton (doigt qui touche) «   Lo faccio io » @ 294,783
+bouton ▶ «  Ascolta l'esempio » @ 154,881
+bouton (œil) «  Mostrami » @ 433,881
+icône ← «  Indietro » @ 109,976
+icône « Avanti  » → @ 488,976
+icône ↶ « Annulla » @ 68,1061
+image ↷ @ 181,1048
+bouton ▶ « il brano » @ 298,1061
+texte « 120 Tempo » @ 411,1061
+icône ⋮ « Altro » @ 520,1061
+onglet (lignes et note) « Il mio brano » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Tastiera » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Condividi » @ 534,1158
+texte « ●  REC » @ 352,1248
+texte « ✎  Annota » @ 452,1248
+texte « ⋯ » @ 540,1248
+texte « Modalità feedback » @ 158,1248

@@ -1,0 +1,29 @@
+Écran 7 (588x1278)
+dessin @ 294,384
+texte « Chiudi » @ 502,456
+texte « Tempo » @ 86,456
+bouton « ? » @ 169,456
+icône − @ 60,550
+texte « 120 » @ 256,550
+icône + @ 528,550
+texte «  BPM » @ 358,555
+bouton « 70 » @ 67,644
+bouton « 90 » @ 162,644
+bouton « 120 » [sélectionné] @ 266,644
+bouton « 140 » @ 380,644
+bouton « 174 » @ 494,644
+bouton « ½ » @ 61,725
+bouton « ×2 » @ 150,725
+bouton « 1 » @ 111,818
+bouton « 2 » @ 294,818
+bouton « 3 » @ 477,818
+bouton « 4 » @ 111,905
+bouton « 5 » @ 294,905
+bouton « 6 » @ 477,905
+bouton « 7 » @ 111,992
+bouton « 8 » @ 294,992
+bouton « 9 » @ 477,992
+bouton ⌫ [désactivé] @ 111,1079
+bouton « 0 » @ 294,1079
+bouton « OK » [désactivé] @ 477,1079
+bouton (doigt qui touche) « Batti a tempo Tocca qui a ogni battito: il tempo segue. » @ 294,1195

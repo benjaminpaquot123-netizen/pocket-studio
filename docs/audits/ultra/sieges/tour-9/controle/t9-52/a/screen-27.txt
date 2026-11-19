@@ -1,0 +1,52 @@
+Écran 27 (588x1278)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 122,42
+bouton « Semplice » @ 290,42
+bouton ● @ 380,42
+bouton ■ « questa parte » @ 461,42
+icône ⋮ @ 543,42
+bouton « 130  Tempo » @ 98,123
+icône (flèches en boucle) « A battuta 1/1 » [désactivé] @ 281,123
+bouton « ? » @ 543,123
+icône « Parte: A » ▾ @ 89,198
+texte « Phonk · Rullante » [coupé] @ 157,240
+bouton « 1 » [état « vuoto »] @ 70,312
+bouton [état « vuoto »] @ 133,312
+bouton [état « vuoto »] @ 197,313
+bouton [état « vuoto »] @ 261,313
+bouton « 2 » [état « vuoto »] @ 325,313
+bouton [état « vuoto »] @ 389,313
+bouton [état « vuoto »] @ 453,313
+bouton [état « vuoto »] @ 517,313
+bouton « 3 » [coupé, état « vuoto »] @ 70,379
+bouton [coupé, état « vuoto »] @ 133,379
+bouton [coupé, état « vuoto »] @ 197,379
+bouton [coupé, état « vuoto »] @ 261,379
+bouton « 4 » [coupé, état « colpo, forza 100 % »] @ 325,379
+bouton [coupé, état « vuoto »] @ 389,379
+bouton [coupé, état « vuoto »] @ 453,379
+bouton [coupé, état « vuoto »] @ 517,379
+texte « La batteria Capitolo 2/13 · Passo 3/6 · Facile » @ 206,471
+icône (liste) « Capitoli » @ 443,472
+icône ⌄ @ 531,472
+image (coupe) @ 57,624
+texte « Bravo, ce l'hai fatta! » @ 225,587
+texte « Ascolta il tuo risultato, poi tocca “Passo successivo” quando vuoi. » [coupé] @ 319,627
+icône « Continua a leggere » ⌄ @ 294,680
+bouton « Passo successivo   » → @ 294,783
+bouton ■ «  Ferma » @ 154,881
+bouton ▶ «  Ascolta l'esempio » @ 433,881
+icône ← «  Indietro » @ 109,976
+icône ↶ « Annulla » @ 68,1061
+image ↷ @ 181,1048
+bouton ■ « il brano » @ 298,1061
+texte « 130 Tempo » @ 411,1061
+icône ⋮ « Altro » @ 520,1061
+onglet (lignes et note) « Il mio brano » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Tastiera » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Condividi » @ 534,1158
+texte « ●  REC » @ 352,1248
+texte « ✎  Annota » @ 452,1248
+texte « ⋯ » @ 540,1248
+texte « Modalità feedback » @ 158,1248

@@ -1,0 +1,52 @@
+Écran 26 (588x1278)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 122,42
+bouton « Semplice » @ 290,42
+bouton ● @ 380,42
+bouton ■ « questa parte » @ 461,42
+icône ⋮ @ 543,42
+bouton « 130  Tempo » @ 98,123
+icône (flèches en boucle) « A battuta 1/1 » [désactivé] @ 281,123
+bouton « ? » @ 543,123
+icône « Parte: A » ▾ @ 89,198
+texte « Ancora 1 casella tratteggiata qui » [coupé] @ 279,252
+bouton « 1 » [état « vuoto »] @ 70,317
+bouton [état « vuoto »] @ 133,317
+bouton [état « vuoto »] @ 197,318
+bouton [état « vuoto »] @ 261,318
+bouton « 2 » [état « vuoto »] @ 325,318
+bouton [état « vuoto »] @ 389,318
+bouton [état « vuoto »] @ 453,318
+bouton [état « vuoto »] @ 517,318
+bouton « 3 » [coupé, état « vuoto »] @ 70,382
+bouton [coupé, état « vuoto »] @ 133,382
+bouton [coupé, état « vuoto »] @ 197,382
+bouton [coupé, état « vuoto »] @ 261,382
+bouton « 4 » [coupé, état « vuota, tratteggiata: toccala »] @ 325,382
+bouton [coupé, état « vuoto »] @ 389,382
+bouton [coupé, état « vuoto »] @ 453,382
+bouton [coupé, état « vuoto »] @ 517,382
+texte « La batteria Capitolo 2/13 · Passo 3/6 · Facile » @ 206,471
+icône (liste) « Capitoli » @ 443,472
+icône ⌄ @ 531,472
+texte « Tocca a te: sul pad “Phonk · Rullante”, la casella tratteggiata: proprio sotto il 2° clap. » [coupé] @ 294,578
+texte « ▸ Perché? » @ 294,630
+icône « Continua a leggere » ⌄ @ 294,684
+bouton (doigt qui touche) «   Lo faccio io » @ 294,783
+bouton ▶ «  Ascolta l'esempio » @ 154,881
+bouton (œil) «  Mostrami » @ 433,881
+icône ← «  Indietro » @ 109,976
+icône « Avanti  » → @ 488,976
+icône ↶ « Annulla » @ 68,1061
+image ↷ @ 181,1048
+bouton ■ « il brano » @ 298,1061
+texte « 130 Tempo » @ 411,1061
+icône ⋮ « Altro » @ 520,1061
+onglet (lignes et note) « Il mio brano » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Tastiera » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Condividi » @ 534,1158
+texte « ●  REC » @ 352,1248
+texte « ✎  Annota » @ 452,1248
+texte « ⋯ » @ 540,1248
+texte « Modalità feedback » @ 158,1248

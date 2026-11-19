@@ -1,0 +1,30 @@
+Écran 15 (588x1278)
+dessin @ 294,325
+texte « Tonalità del brano » @ 232,397
+texte « Chiudi » @ 502,397
+texte « Tonalità del brano: Fa · Frigia » @ 217,468
+texte « Scala » @ 61,524
+bouton « Maggiore » @ 108,596
+bouton « Minore » @ 269,596
+bouton « Dorica » @ 409,596
+bouton « Penta minore » @ 135,677
+bouton « Penta maggiore » @ 383,677
+bouton « Blues » @ 81,758
+bouton « Frigia » @ 206,758
+bouton « Minore armonica » @ 411,758
+texte « Tonica » @ 69,829
+bouton « Do » @ 63,901
+bouton « Do♯ » @ 157,901
+bouton « Re » @ 252,901
+bouton « Mi♭ » @ 340,901
+bouton « Mi » @ 428,901
+bouton « Fa » @ 515,901
+bouton « Fa♯ » @ 68,982
+bouton « Sol » @ 161,982
+bouton « La♭ » @ 250,982
+bouton « La » @ 338,982
+bouton « Si♭ » @ 425,982
+bouton « Si » @ 512,982
+image (rond coché) @ 58,1091
+texte « Fatto! Il colore del brano è scelto. » @ 316,1091
+bouton « Torna al tutorial » @ 294,1203

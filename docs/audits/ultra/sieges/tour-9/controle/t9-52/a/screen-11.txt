@@ -1,0 +1,32 @@
+Écran 11 (588x1278)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 122,42
+bouton « Semplice » @ 290,42
+bouton ● @ 380,42
+bouton ▶ « questa parte » @ 461,42
+icône ⋮ @ 543,42
+bouton « 130  Tempo » @ 98,123
+bouton « ? » @ 543,123
+icône « Parte: A » ▾ @ 89,172
+texte « La velocità e il colore del brano Capitolo 1/13 · Passo 2/3 · Facile » @ 206,271
+icône (liste) « Capitoli » @ 443,271
+icône ⌄ @ 531,271
+image (coupe) @ 57,444
+texte « Bravo, ce l'hai fatta! » @ 225,407
+texte « Tocca “Passo successivo” quando vuoi. » @ 319,464
+bouton « Passo successivo   » → @ 294,892
+icône ← @ 57,976
+bouton ▶ «  Ascolta l'esempio » @ 334,976
+icône ↶ « Annulla » @ 68,1061
+image ↷ @ 181,1048
+bouton ▶ « il brano » @ 298,1061
+texte « 130 Tempo » @ 411,1061
+icône ⋮ « Altro » @ 520,1061
+onglet (lignes et note) « Il mio brano » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Tastiera » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Condividi » @ 534,1158
+texte « ●  REC » @ 352,1248
+texte « ✎  Annota » @ 452,1248
+texte « ⋯ » @ 540,1248
+texte « Modalità feedback » @ 158,1248

@@ -1,0 +1,476 @@
+#0 SIEGE lang=it device=phone font=130 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:phonk:1
+#0 PREMIER ECRAN reel_s=4.2 simule_s=2.4 jvm_s=10.2 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:phonk:1
+#0 AMENEE > touche 294 701 (welcome_learn)
+#0 AMENEE > touche 294 810 (mode_card_simple)
+#0 AMENEE > touche 294 1204 (tuto_style_phonk)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9829cd9796 | project=p-9ca3948d tuto=phonk/Facile active=true step=ref done=0 chapters=- playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Grancassa da studio » ellipsized (« … »)
+#1 LAYOUT CUT « Il mio progetto 1 » ellipsized (« … »)
+#1 LAYOUT CUT « Salvato » lines cut (taller than its box)
+#1 LAYOUT CUT « Semplice » ellipsized (« … »)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 225 695
+#1 DOIGT tuto_kit_download « Scarica il kit Phonk (3 MB) »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d1638d929e | project=p-9ca3948d tuto=phonk/Facile active=true step=ref done=0 chapters=- playing=false
+#2 SON Son : rien ne joue.
+#2 > attends 5
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 051aa4b3f7 | project=p-9ca3948d tuto=phonk/Facile active=true step=ref done=0 chapters=- playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « Phonk · Grancassa 1 » ellipsized (« … »)
+#3 > touche 294 892
+#3 DOIGT tuto_listen «  Ascolta l'esempio »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 13b5021191 | project=p-9ca3948d tuto=phonk/Facile active=true step=ref done=0 chapters=- playing=false
+#4 SON Son : l'exemple du tuto joue (encore 7 s).
+#4 > touche 294 667
+#4 DOIGT tuto_why « ▸ Perché? »
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fc0b6bb6c7 | project=p-9ca3948d tuto=phonk/Facile active=true step=ref done=1 chapters=- playing=false
+#5 SON Son : l'exemple du tuto joue (encore 6 s).
+#5 > touche 294 892
+#5 DOIGT tuto_next_big « Passo successivo   »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE debf4b1a02 | project=p-9ca3948d tuto=phonk/Facile active=true step=tempo done=1 chapters=- playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « Parte: A » lines cut (taller than its box)
+#6 LAYOUT TARGET « Parte: A Cambia parte » 95 x 5 dp (touch 95 x 48)
+#6 > touche 98 123
+#6 DOIGT top_tempo « Tempo: 120 battiti al minuto »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE b143f5e3aa | project=p-9ca3948d tuto=phonk/Facile active=true step=tempo done=1 chapters=- playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « Tempo » over the touchable « Chiudi il foglio » (82 x 32 dp)
+#7 LAYOUT OVERLAP « ? » over the touchable « Chiudi il foglio » (9 x 18 dp)
+#7 LAYOUT OVERLAP « Chiudi » over the touchable « Chiudi il foglio » (58 x 27 dp)
+#7 LAYOUT OVERLAP « 120 » over the touchable « Chiudi il foglio » (86 x 53 dp)
+#7 LAYOUT OVERLAP «  BPM » over the touchable « Chiudi il foglio » (50 x 31 dp)
+#7 LAYOUT OVERLAP « 70 » over the touchable « Chiudi il foglio » (25 x 24 dp)
+#7 LAYOUT OVERLAP « 90 » over the touchable « Chiudi il foglio » (25 x 24 dp)
+#7 LAYOUT OVERLAP « 120 » over the touchable « Chiudi il foglio » (38 x 24 dp)
+#7 LAYOUT OVERLAP « 140 » over the touchable « Chiudi il foglio » (38 x 24 dp)
+#7 LAYOUT OVERLAP « 174 » over the touchable « Chiudi il foglio » (38 x 24 dp)
+#7 LAYOUT OVERLAP « ½ » over the touchable « Chiudi il foglio » (17 x 31 dp)
+#7 LAYOUT OVERLAP « ×2 » over the touchable « Chiudi il foglio » (26 x 31 dp)
+#7 LAYOUT OVERLAP « 1 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 2 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 3 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 4 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 5 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 6 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 7 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 8 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 9 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#7 LAYOUT OVERLAP « 0 » over the touchable « Chiudi il foglio » (16 x 30 dp)
+#7 LAYOUT OVERLAP « OK » over the touchable « Chiudi il foglio » (37 x 30 dp)
+#7 LAYOUT OVERLAP « Batti a tempo » over the touchable « Chiudi il foglio » (128 x 31 dp)
+#7 LAYOUT OVERLAP « Tocca qui a ogni battito: il tempo segue. » over the touchable « Chiudi il foglio » (259 x 48 dp)
+#7 > touche 111 818
+#7 DOIGT tempo_key_1 « 1 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE a69166d4ad | project=p-9ca3948d tuto=phonk/Facile active=true step=tempo done=1 chapters=- playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 1 » over the touchable « Chiudi il foglio » (29 x 53 dp)
+#8 LAYOUT OVERLAP « Tra 40 e 300 » over the touchable « Chiudi il foglio » (116 x 27 dp)
+#8 > touche 477 818
+#8 DOIGT tempo_key_3 « 3 »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE e77e109a81 | project=p-9ca3948d tuto=phonk/Facile active=true step=tempo done=1 chapters=- playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 13 » over the touchable « Chiudi il foglio » (57 x 53 dp)
+#9 > touche 294 1079
+#9 DOIGT tempo_key_0 « 0 »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 3d36a9d12b | project=p-9ca3948d tuto=phonk/Facile active=true step=tempo done=1 chapters=- playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 130 » over the touchable « Chiudi il foglio » (86 x 53 dp)
+#10 > touche 477 1079
+#10 DOIGT tempo_key_ok « OK »
+#11 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE ee46d762d7 | project=p-9ca3948d tuto=phonk/Facile active=true step=tempo done=2 chapters=- playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 294 892
+#11 DOIGT tuto_next_big « Passo successivo   »
+#12 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a15b474cd0 | project=p-9ca3948d tuto=phonk/Facile active=true step=key done=2 chapters=- playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 294 783
+#12 DOIGT tuto_do «   Lo faccio io »
+#13 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 991ad314f3 | project=p-9ca3948d tuto=phonk/Facile active=true step=key done=2 chapters=- playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « Tonalità del brano » over the touchable « Chiudi il foglio » (210 x 32 dp)
+#13 LAYOUT OVERLAP « Tonalità del brano: nessuna » over the touchable « Chiudi il foglio » (245 x 27 dp)
+#13 LAYOUT OVERLAP « Scala » over the touchable « Chiudi il foglio » (49 x 27 dp)
+#13 LAYOUT OVERLAP « Maggiore » over the touchable « Chiudi il foglio » (88 x 31 dp)
+#13 LAYOUT OVERLAP « Minore » over the touchable « Chiudi il foglio » (65 x 31 dp)
+#13 LAYOUT OVERLAP « Dorica » over the touchable « Chiudi il foglio » (62 x 31 dp)
+#13 LAYOUT OVERLAP « Penta minore » over the touchable « Chiudi il foglio » (124 x 31 dp)
+#13 LAYOUT OVERLAP « Penta maggiore » over the touchable « Chiudi il foglio » (147 x 31 dp)
+#13 LAYOUT OVERLAP « Blues » over the touchable « Chiudi il foglio » (52 x 31 dp)
+#13 LAYOUT OVERLAP « Frigia » over the touchable « Chiudi il foglio » (54 x 31 dp)
+#13 LAYOUT OVERLAP « Minore armonica » over the touchable « Chiudi il foglio » (158 x 31 dp)
+#13 LAYOUT OVERLAP « Tonica » over the touchable « Chiudi il foglio » (59 x 27 dp)
+#13 LAYOUT OVERLAP « Do » over the touchable « Chiudi il foglio » (27 x 31 dp)
+#13 LAYOUT OVERLAP « Do♯ » over the touchable « Chiudi il foglio » (38 x 31 dp)
+#13 LAYOUT OVERLAP « Re » over the touchable « Chiudi il foglio » (24 x 31 dp)
+#13 LAYOUT OVERLAP « Mi♭ » over the touchable « Chiudi il foglio » (29 x 31 dp)
+#13 LAYOUT OVERLAP « Mi » over the touchable « Chiudi il foglio » (23 x 31 dp)
+#13 LAYOUT OVERLAP « Fa » over the touchable « Chiudi il foglio » (23 x 31 dp)
+#13 LAYOUT OVERLAP « Fa♯ » over the touchable « Chiudi il foglio » (34 x 31 dp)
+#13 LAYOUT OVERLAP « Sol » over the touchable « Chiudi il foglio » (29 x 31 dp)
+#13 LAYOUT OVERLAP « La♭ » over the touchable « Chiudi il foglio » (29 x 31 dp)
+#13 LAYOUT OVERLAP « La » over the touchable « Chiudi il foglio » (23 x 31 dp)
+#13 LAYOUT OVERLAP « Si♭ » over the touchable « Chiudi il foglio » (24 x 31 dp)
+#13 LAYOUT OVERLAP « Si » over the touchable « Chiudi il foglio » (17 x 31 dp)
+#13 > touche 206 982
+#13 DOIGT tuto_scale_Phrygian « Frigia »
+#14 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 18809bd873 | project=p-9ca3948d tuto=phonk/Facile active=true step=key done=2 chapters=- playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « Tonalità del brano: Do · Frigia » over the touchable « Chiudi il foglio » (260 x 27 dp)
+#14 > touche 515 1125
+#14 DOIGT tuto_root_5 « Fa »
+#15 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE bc9555885d | project=p-9ca3948d tuto=phonk/Facile active=true step=key done=3 chapters=1 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Tonalità del brano: Fa · Frigia » over the touchable « Chiudi il foglio » (257 x 27 dp)
+#15 LAYOUT OVERLAP « Fatto! Il colore del brano è scelto. » over the touchable « Chiudi il foglio » (249 x 61 dp)
+#15 LAYOUT OVERLAP « Torna al tutorial » over the touchable « Chiudi il foglio » (144 x 27 dp)
+#15 > touche 294 1203
+#15 DOIGT tuto_key_continue « Torna al tutorial »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ee93e06384 | project=p-9ca3948d tuto=phonk/Facile active=true step=key done=3 chapters=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CUT « Phonk · Battimani » ellipsized (« … »)
+#16 LAYOUT CUT « Bordo del tamburo » ellipsized (« … »)
+#16 > touche 294 965
+#16 DOIGT tuto_chapter_end_folded « Bravo, capitolo finito! »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 52d91e33bc | project=p-9ca3948d tuto=phonk/Facile active=true step=key done=3 chapters=1 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 294 892
+#17 DOIGT tuto_next_big « Capitolo successivo   »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4e6db8e17c | project=p-9ca3948d tuto=phonk/Facile active=true step=kick_do done=3 chapters=1 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#18 > touche 70 317
+#18 DOIGT step_0 « Passo 1 »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7796227e21 | project=p-9ca3948d tuto=phonk/Facile active=true step=kick_do done=3 chapters=1 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 453 318
+#19 DOIGT step_6 « Passo 7 »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e7f9fdf8da | project=p-9ca3948d tuto=phonk/Facile active=true step=kick_do done=3 chapters=1 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 197 395
+#20 DOIGT step_10 « Passo 11 »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5364d63876 | project=p-9ca3948d tuto=phonk/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 294 783
+#21 DOIGT tuto_next_big « Passo successivo   »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 84463e4db6 | project=p-9ca3948d tuto=phonk/Facile active=true step=clap_do done=4 chapters=1 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#22 > touche 325 318
+#22 DOIGT step_4 « Passo 5 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 71d9b18825 | project=p-9ca3948d tuto=phonk/Facile active=true step=clap_do done=4 chapters=1 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 325 382
+#23 DOIGT step_12 « Passo 13 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f79405d071 | project=p-9ca3948d tuto=phonk/Facile active=true step=clap_do done=5 chapters=1 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 154 881
+#24 DOIGT tuto_play_mine «  Ascolta il tuo risultato »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7cb5442db9 | project=p-9ca3948d tuto=phonk/Facile active=true step=clap_do done=5 chapters=1 playing=true
+#25 SON Son : la musique du projet joue en boucle.
+#25 > touche 294 783
+#25 DOIGT tuto_next_big « Passo successivo   »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 16416daade | project=p-9ca3948d tuto=phonk/Facile active=true step=snare_do done=5 chapters=1 playing=true
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 325 382
+#26 DOIGT step_12 « Passo 13 »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b68cd6d146 | project=p-9ca3948d tuto=phonk/Facile active=true step=snare_do done=6 chapters=1 playing=true
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 294 783
+#27 DOIGT tuto_next_big « Passo successivo   »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 624d0073e3 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#28 > touche 294 783
+#28 DOIGT tuto_need «   Passa a 2 battute »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bc1207f888 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 LAYOUT CUT « Tocca a te: sul pad “Phonk · Hi-hat”, tocca le caselle tratteggiate delle 2 battute. » ellipsized (« … »)
+#29 LAYOUT CONTRAST « Battuta » 1.24:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « 1 » 1.62:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « 2 » 1.20:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Segui » 1.35:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#29 > touche 70 401
+#29 DOIGT step_0 « Passo 1 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1828872344 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 197 402
+#30 DOIGT step_2 « Passo 3 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 85791eb1b2 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT CONTRAST « 2 » 3.23:1 (needs 4.5:1, 12 sp)
+#31 > touche 325 402
+#31 DOIGT step_4 « Passo 5 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dc92552061 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 > touche 453 402
+#32 DOIGT step_6 « Passo 7 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2797ae5d67 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 LAYOUT CONTRAST « 3 » 3.23:1 (needs 4.5:1, 12 sp)
+#33 > touche 70 480
+#33 DOIGT step_8 « Passo 9 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE def633d658 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 197 481
+#34 DOIGT step_10 « Passo 11 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 536759ee86 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 LAYOUT CONTRAST « 4 » 3.23:1 (needs 4.5:1, 12 sp)
+#35 > touche 325 481
+#35 DOIGT step_12 « Passo 13 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3fe67cd6c2 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 453 481
+#36 DOIGT step_14 « Passo 15 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7ae77ed18a | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 517 481
+#37 DOIGT step_15 « Passo 16 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cdb6359918 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT CUT « Battuta 1/2 · Phonk · Hi-hat » ellipsized (« … »)
+#38 LAYOUT CONTRAST « Segui » 1.43:1 (needs 4.5:1, 14 sp)
+#38 > touche 367 313
+#38 DOIGT tuto_bar_go « Battuta 2 · 9 caselle → »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 993af83ead | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 LAYOUT CONTRAST « 2 » 1.62:1 (needs 4.5:1, 14 sp)
+#39 > touche 70 401
+#39 DOIGT step_16 « Passo 1 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5dc6c3f320 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 > touche 197 402
+#40 DOIGT step_18 « Passo 3 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8ca813f50d | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 > touche 325 402
+#41 DOIGT step_20 « Passo 5 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 05a5602234 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 > touche 453 402
+#42 DOIGT step_22 « Passo 7 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6fe751fd5f | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 70 480
+#43 DOIGT step_24 « Passo 9 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 44fe9d8df3 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 197 481
+#44 DOIGT step_26 « Passo 11 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 58088729b4 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 325 481
+#45 DOIGT step_28 « Passo 13 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cbdcddcc96 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 453 481
+#46 DOIGT step_30 « Passo 15 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fba1a01f48 | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=6 chapters=1 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 517 481
+#47 DOIGT step_31 « Passo 16 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e9f06d7f0e | project=p-9ca3948d tuto=phonk/Facile active=true step=hat_do done=7 chapters=1 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 294 965
+#48 DOIGT tuto_next_folded « Riuscito »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e892763df3 | project=p-9ca3948d tuto=phonk/Facile active=true step=ohat_do done=7 chapters=1 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 453 382
+#49 DOIGT step_14 « Passo 15 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 128f87f4f3 | project=p-9ca3948d tuto=phonk/Facile active=true step=ohat_do done=7 chapters=1 playing=true
+#50 SON Son : la musique du projet joue en boucle.
+#50 LAYOUT CUT « Battuta 1/2 · Hi-hat aperto » ellipsized (« … »)
+#50 > touche 294 783
+#50 DOIGT tuto_do «   Lo faccio io »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 58a425321a | project=p-9ca3948d tuto=phonk/Facile active=true step=ohat_do done=7 chapters=1 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 LAYOUT CUT « Tocca a te: sul pad “Hi-hat aperto”, la casella tratteggiata alla fine di ogni battuta. » ellipsized (« … »)
+#51 > touche 371 249
+#51 DOIGT tuto_bar_go « Battuta 2 · 1 casella → »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b6e01c1d7f | project=p-9ca3948d tuto=phonk/Facile active=true step=ohat_do done=7 chapters=1 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 > touche 453 397
+#52 DOIGT step_30 « Passo 15 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e78313f010 | project=p-9ca3948d tuto=phonk/Facile active=true step=ohat_do done=8 chapters=1 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 > touche 294 965
+#53 DOIGT tuto_next_folded « Riuscito »
+#54 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE bb3bdb2167 | project=p-9ca3948d tuto=phonk/Facile active=true step=drums_hear done=8 chapters=1 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 > attends 4
+#55 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7cd9ac384e | project=p-9ca3948d tuto=phonk/Facile active=true step=drums_hear done=8 chapters=1 playing=true
+#55 SON Son : la musique du projet joue en boucle.
+#55 > touche 294 895
+#55 DOIGT tuto_listen «  Ascolta l'esempio »
+#56 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 513987d04a | project=p-9ca3948d tuto=phonk/Facile active=true step=drums_hear done=8 chapters=1 playing=false
+#56 SON Son : l'exemple du tuto joue (encore 3 s).
+#56 > attends 4
+#57 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 486e52a2c9 | project=p-9ca3948d tuto=phonk/Facile active=true step=drums_hear done=9 chapters=1,2 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 294 783
+#57 DOIGT tuto_next_big « Capitolo successivo   »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 02c60990e2 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_hear done=9 chapters=1,2 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 294 892
+#58 DOIGT tuto_listen «  Ascolta l'esempio »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8f865d6924 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_hear done=9 chapters=1,2 playing=false
+#59 SON Son : l'exemple du tuto joue (encore 3 s).
+#59 > touche 294 823
+#59 DOIGT tuto_why « ▸ Perché? »
+#60 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2ebfea8eb3 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_hear done=10 chapters=1,2 playing=false
+#60 SON Son : l'exemple du tuto joue (encore 1 s).
+#60 > touche 294 892
+#60 DOIGT tuto_next_big « Passo successivo   »
+#61 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a154962f38 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « Battuta 2/2 · Hi-hat aperto » 1.83:1 (needs 4.5:1, 13 sp)
+#61 > touche 294 783
+#61 DOIGT tuto_need «   Crea la traccia 808 »
+#62 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 16ba4797e7 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CUT « ↑ Ancora 3 note tratteggiate da toccare » ellipsized (« … »)
+#62 LAYOUT CUT « batt. » lines dropped (more lines than room)
+#62 LAYOUT TARGET « La♭0 Suona » 36 x 20 dp (touch 48 x 48)
+#62 LAYOUT TARGET « Sol0 Suona » 36 x 20 dp (touch 48 x 48)
+#62 LAYOUT TARGET « Sol♭0 Suona » 36 x 20 dp (touch 48 x 48)
+#62 LAYOUT TARGET « Fa0 Suona » 36 x 20 dp (touch 48 x 48)
+#62 LAYOUT TARGET « Mi0 Suona » 36 x 20 dp (touch 48 x 48)
+#62 LAYOUT TARGET « Mi♭0 Suona » 36 x 20 dp (touch 48 x 48)
+#62 LAYOUT TARGET « Re0 Suona » 36 x 20 dp (touch 48 x 48)
+#62 > touche 180 660
+#62 DOIGT rien
+#63 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bb9b83b920 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#63 SON Son : 1 note du synthé.
+#63 LAYOUT CUT « ↑ Ancora 2 note tratteggiate da toccare » ellipsized (« … »)
+#63 > touche 320 660
+#63 DOIGT rien
+#64 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7c61407a75 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#64 SON Son : 1 note du synthé.
+#64 LAYOUT CUT « ↑ Ancora 1 nota tratteggiata da toccare » ellipsized (« … »)
+#64 > touche 405 660
+#64 DOIGT rien
+#65 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bf7b90e266 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#65 SON Son : 1 note du synthé.
+#65 LAYOUT CUT « Ancora 2 note tratteggiate, più in alto ↑ » ellipsized (« … »)
+#65 > touche 455 451
+#65 DOIGT tuto_notes_left « 808 · battuta 1/8 »
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fd66d30436 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT TARGET « Mi♭1 Suona » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « Re1 Suona » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « Re♭1 Suona » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « Do1 Do1 Suona » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « Si0 Suona » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « Si♭0 Suona » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « La0 Suona » 36 x 20 dp (touch 48 x 48)
+#66 > touche 475 660
+#66 DOIGT rien
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE df1b17793e | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#67 SON Son : 1 note du synthé.
+#67 LAYOUT CUT « Ancora 1 nota tratteggiata, più in alto ↑ » ellipsized (« … »)
+#67 > touche 455 451
+#67 DOIGT tuto_notes_left « 808 · battuta 1/8 »
+#68 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 004881b0b2 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CUT « Ancora 1 nota tratteggiata da toccare » ellipsized (« … »)
+#68 LAYOUT TARGET « La♭1 Suona » 36 x 20 dp (touch 48 x 48)
+#68 LAYOUT TARGET « Sol1 Suona » 36 x 20 dp (touch 48 x 48)
+#68 LAYOUT TARGET « Sol♭1 Suona » 36 x 20 dp (touch 48 x 48)
+#68 LAYOUT TARGET « Fa1 Suona » 36 x 20 dp (touch 48 x 48)
+#68 LAYOUT TARGET « Mi1 Suona » 36 x 20 dp (touch 48 x 48)
+#68 > touche 515 660
+#68 DOIGT rien
+#69 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f872933ac8 | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#69 SON Son : 1 note du synthé.
+#69 LAYOUT CUT « Tutte le note tratteggiate sono state messe » ellipsized (« … »)
+#69 > touche 294 965
+#69 DOIGT tuto_next_folded « Riuscito »
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 833e856afe | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_2 done=11 chapters=1,2 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 294 783
+#70 DOIGT tuto_need «   Copia sulle battute successive »
+#71 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 833e856afe | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_2 done=11 chapters=1,2 playing=false
+#71 SON Son : rien ne joue.
+#71 > attends 3
+#72 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 833e856afe | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_2 done=11 chapters=1,2 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 294 783
+#72 DOIGT tuto_need «   Copia sulle battute successive »
+#73 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a139b6649a | project=p-9ca3948d tuto=phonk/Facile active=true step=bass_2 done=12 chapters=1,2,3 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 294 783
+#73 DOIGT tuto_next_big « Capitolo successivo   »
+#74 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6139d2cb43 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_hear done=12 chapters=1,2,3 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 294 892
+#74 DOIGT tuto_listen «  Ascolta l'esempio »
+#75 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dc5e8abedc | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_hear done=12 chapters=1,2,3 playing=false
+#75 SON Son : l'exemple du tuto joue (encore 3 s).
+#75 > touche 294 823
+#75 DOIGT tuto_why « ▸ Perché? »
+#76 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7c4f202c3a | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_hear done=13 chapters=1,2,3 playing=false
+#76 SON Son : l'exemple du tuto joue (encore 1 s).
+#76 > touche 294 892
+#76 DOIGT tuto_next_big « Passo successivo   »
+#77 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c5388e6d78 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 294 783
+#77 DOIGT tuto_need «   Crea la traccia Melodia »
+#78 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 99990a99e2 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT CUT « Ancora 6 note tratteggiate da toccare » ellipsized (« … »)
+#78 LAYOUT TARGET « La3 Suona » 36 x 20 dp (touch 48 x 48)
+#78 LAYOUT TARGET « La♭3 Suona » 36 x 20 dp (touch 48 x 48)
+#78 LAYOUT TARGET « Sol3 Suona » 36 x 20 dp (touch 48 x 48)
+#78 LAYOUT TARGET « Sol♭3 Suona » 36 x 20 dp (touch 48 x 48)
+#78 LAYOUT TARGET « Fa3 Suona » 36 x 20 dp (touch 48 x 48)
+#78 LAYOUT TARGET « Mi3 Suona » 36 x 20 dp (touch 48 x 48)
+#78 LAYOUT TARGET « Mi♭3 Suona » 36 x 20 dp (touch 48 x 48)
+#78 > touche 126 690
+#78 DOIGT rien
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9706902f34 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#79 SON Son : 1 note du synthé.
+#79 LAYOUT CUT « Ancora 5 note tratteggiate da toccare » ellipsized (« … »)
+#79 > touche 207 690
+#79 DOIGT rien
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 95d50ad820 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#80 SON Son : 1 note du synthé.
+#80 LAYOUT CUT « Ancora 4 note tratteggiate da toccare » ellipsized (« … »)
+#80 > touche 292 690
+#80 DOIGT rien
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fb7473e706 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#81 SON Son : 1 note du synthé.
+#81 LAYOUT CUT « Ancora 3 note tratteggiate da toccare » ellipsized (« … »)
+#81 > touche 348 600
+#81 DOIGT rien
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 48d043e5d0 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#82 SON Son : 1 note du synthé.
+#82 LAYOUT CUT « Ancora 2 note tratteggiate da toccare » ellipsized (« … »)
+#82 > touche 432 600
+#82 DOIGT rien
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ea9f4ba7e7 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#83 SON Son : 1 note du synthé.
+#83 > touche 516 660
+#83 DOIGT rien
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2b24fecd05 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_do done=14 chapters=1,2,3 playing=false
+#84 SON Son : 1 note du synthé.
+#84 > touche 294 965
+#84 DOIGT tuto_next_folded « Riuscito »
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c8a8413bba | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_2 done=14 chapters=1,2,3 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 294 783
+#85 DOIGT tuto_need «   Copia sulle battute successive »
+#86 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 69748254b9 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_2 done=15 chapters=1,2,3,4 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 154 881
+#86 DOIGT tuto_play_mine «  Ascolta il mio brano »
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dd0741c702 | project=p-9ca3948d tuto=phonk/Facile active=true step=lead_2 done=15 chapters=1,2,3,4 playing=true
+#87 SON Son : la musique du projet joue en boucle.
+#87 > fin
+#87 BENCH-VERDICT ok where=seat.fin
+#87 FIN : fin

@@ -50,8 +50,8 @@
       "steps": [
         {
           "id": "ready",
-          "text": "Avant de commencer : ton kit est déjà celui de l'acid techno (une 909), et la piste « Acid 303 » a déjà le son du style. Tu n'as rien à régler.",
-          "textPro": "Déjà prêt : la 909 de « Fais-moi un morceau » (kick « crunch », charleys 909), et la 303 avec son son du style (sans notes) : saturation, écho et pompe sur sa tranche."
+          "text": "Avant de commencer : ton kit est déjà celui de l'acid techno, avec le pad « Kick studio » accordé sur la tonalité, et la piste « Acid 303 » a déjà le son du style. Sa ligne est encore vide : les notes que tu vois dans sa grille sont des guides, tu les écriras plus tard. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt : le kit de « Fais-moi un morceau » pour l'acid techno (le pad « Kick studio », accordé sur La), et la 303 avec le son du style : saturation, écho et pompe sur sa tranche. Sa ligne est vide : les notes de sa grille sont des guides, tu les écriras plus tard."
         },
         {
           "id": "kick_do",

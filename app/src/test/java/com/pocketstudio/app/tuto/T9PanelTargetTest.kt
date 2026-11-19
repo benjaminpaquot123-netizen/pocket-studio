@@ -10,6 +10,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import com.github.takahirom.roborazzi.captureRoboImage
 import com.pocketstudio.app.human.TutoAnchor
 import com.pocketstudio.app.nav.AppHarness
 import com.pocketstudio.model.i18n.Lang
@@ -196,5 +197,15 @@ class T9PanelTargetTest {
             "ch. 3 (fr, 360 dp, 200 %, simple): « encore N notes » not wholly above the panel at $top (${left?.boundsInRoot})",
             left != null && whole(left) && left.boundsInRoot.bottom <= top + 1f,
         )
+        compose.onRoot().captureRoboImage("screenshots/tour9/d06_dotted_notes_simple_fr_200.png")
+        // The count itself must be read: « ↑ Encor… » hid N behind « Touche ici ».
+        val counter = tagged(Regex("tuto_notes_left_text")).first()
+        val layouts = mutableListOf<androidx.compose.ui.text.TextLayoutResult>()
+        counter.config.getOrNull(androidx.compose.ui.semantics.SemanticsActions.GetTextLayoutResult)?.action?.invoke(layouts)
+        val full = counter.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ").orEmpty()
+        val n = Regex("\\d+").find(full)?.value
+        // What is drawn: the text up to the ellipsis (the visible end) of the last line shown.
+        val drawn = layouts.firstOrNull()?.let { r -> r.layoutInput.text.text.substring(0, r.getLineEnd(r.lineCount - 1, visibleEnd = true)) }.orEmpty()
+        assertTrue("ch. 3 (fr, 360 dp, 200 %, simple): « encore N notes » drawn as « $drawn » of « $full »", n != null && n in drawn)
     }
 }

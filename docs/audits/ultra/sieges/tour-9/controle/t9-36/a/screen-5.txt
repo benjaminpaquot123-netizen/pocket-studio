@@ -1,0 +1,57 @@
+Écran 5 (588x1278)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 150,42
+texte « 간단 » @ 327,42
+bouton ● @ 399,42
+bouton ▶ « 이 파트 » @ 471,42
+icône ⋮ @ 543,42
+bouton « 136  템포 » @ 69,114
+bouton « ? » @ 543,114
+icône « 파트: A · 그루브 » ▾ @ 104,180
+bouton « 단단한 큰북 » [coupé] @ 84,267
+bouton « 큰북 2 » [coupé] @ 224,267
+bouton « 스네어 FX » [coupé] @ 364,267
+bouton « 낮은 울림 FX » [coupé] @ 504,267
+texte « 파트 이해하기 7/13장 · 3/5단계 · 쉬움 » @ 222,348
+icône (liste) « 챕터 » @ 459,348
+icône ⌄ @ 531,348
+texte « 드롭을 들어 보세요: 전부 돌아가고, 드론과 쇳소리가 더해져요. » @ 294,447
+texte « 에너지 » @ 48,506
+texte « 인트로 » @ 53,601
+texte « 16 » @ 53,627
+texte « 16 » @ 121,613
+texte « 드롭 » @ 190,601
+texte « 16 » @ 190,627
+texte « 8 » @ 242,613
+texte « 8 » @ 278,613
+texte « 16 » @ 331,613
+texte « 드롭 2 » @ 433,601
+texte « 32 » @ 433,627
+texte « 끝 » @ 535,601
+texte « 16 » @ 534,627
+texte «  인트로 » [coupé] @ 65,649
+texte «  인트로 2 » [coupé] @ 162,649
+texte «  드롭 » [coupé] @ 250,649
+texte «  Drop B » [coupé] @ 335,649
+texte «  브레이크 » [coupé] @ 438,649
+texte «  드롭 2 » [coupé] @ 535,649
+bouton « Industrial techno 킷 다운로드 (3 MB) » @ 247,707
+texte « 나중에 » @ 514,707
+texte « ▸ 왜요? » @ 294,773
+icône « 계속 읽기 » ⌄ @ 294,822
+bouton ▶ «  예시 듣기 » @ 294,894
+icône ← «  이전 » @ 75,978
+icône « 다음  » → @ 513,978
+icône ↶ « 실행 취소 » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 곡 » @ 288,1062
+texte « 136 템포 » @ 402,1062
+icône ⋮ « 더보기 » @ 516,1062
+onglet (lignes et note) « 내 곡 » @ 54,1158
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 174,1158
+onglet (touches de piano) « 건반 » @ 294,1158
+onglet (curseurs) « 믹스 » @ 414,1158
+onglet (trois points reliés) « 공유 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  메모 » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « 피드백 모드 » @ 162,1248

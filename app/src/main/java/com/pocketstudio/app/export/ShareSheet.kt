@@ -753,7 +753,9 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
 
 @Composable
 private fun CheckLine(icon: ImageVector, color: Color, text: String, tag: String) {
-    Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth().testTag(tag)) {
+    Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp),
+        // Tour 9, F126: the mark and its sentence read as one line, never a lone picture without a meaning.
+        modifier = Modifier.fillMaxWidth().testTag(tag).semantics(mergeDescendants = true) {}) {
         Icon(icon, contentDescription = null, tint = color, modifier = Modifier.padding(top = 1.dp).size(20.dp))
         Text(text, style = MaterialTheme.typography.bodyMedium, color = if (color == Neon.TextSecondary) Neon.TextPrimary else color, modifier = Modifier.weight(1f))
     }

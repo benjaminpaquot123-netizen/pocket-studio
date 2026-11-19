@@ -203,7 +203,10 @@ for zone in "${zones[@]}"; do
   if [ -n "$judge_why" ]; then
     # (The judge's lines of this merge stay in the lot, the trace folder going away with the merge.)
     cp "$trace/selftest-chantier.txt" "$lot/selftest-chantier-apres.txt"
-    if from_paquet 4; then clean_merge; echo "$zone: $judge_why: undone (kept in $lot)." >&2; exit 9; fi
+    # Boost mode of the tour 9 repair (Benjamin, 2026-11-19, « 1A »): the last portal trace is from tour 6, so the
+    # judge's gaps already on the integration count as new; with PS_JUGE_BOOST=1 a judge gone up is said, not refused.
+    if [ "${PS_JUGE_BOOST:-}" = 1 ]; then echo "$zone: $judge_why — said, not refused (PS_JUGE_BOOST, boost mode)"
+    elif from_paquet 4; then clean_merge; echo "$zone: $judge_why: undone (kept in $lot)." >&2; exit 9; fi
     echo "$zone: $judge_why — refused from batch 4 (batch in progress: ${paquet:-1})"
   fi
   # Socle du banc, point 2: the lot's decisions file, listed once at the end of docs/DECISIONS.md.

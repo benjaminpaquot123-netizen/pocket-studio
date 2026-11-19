@@ -1,0 +1,76 @@
+Écran 39 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 112,42
+bouton « Pro » @ 257,42
+bouton « F · Break » ▾ @ 407,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Intro birama 1/120 » ▾ @ 377,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+onglet « Drum 16 pad » [sélectionné] @ 103,262
+onglet « Acid 303 Bassline » @ 316,262
+onglet « Vokal Mikrofon » @ 552,262
+onglet « Remix Pisahkan » [coupé] @ 778,262
+image → @ 889,263
+texte « Bagian: F · Break » @ 180,354
+titre « STEP: HI-HAT · BREAK » [coupé, état « Terbuka »] @ 319,400
+bouton « ? » [coupé] @ 563,399
+bouton « Semua pad » [coupé] @ 727,402
+texte « Birama » @ 106,472
+bouton « 1 » @ 215,472
+bouton « 2 » @ 296,472
+bouton « 3 » @ 379,472
+bouton « 4 » [sélectionné] @ 462,472
+bouton « Ikuti » @ 575,472
+texte « Birama 4/4 · Hi-hat » @ 232,546
+texte « 3 ketukan kelebihan di sini (dicoret) » @ 402,600
+bouton « 1 » [état « pukulan, kekuatan 60 % »] @ 90,677
+bouton [état « pukulan, kekuatan 35 % »] @ 192,677
+bouton [état « kosong »] @ 294,677
+bouton [état « pukulan, kekuatan 35 % »] @ 397,677
+bouton « 2 » [état « pukulan, kekuatan 60 % »] @ 500,677
+bouton [état « pukulan, kekuatan 35 % »] @ 603,677
+bouton [état « kosong »] @ 706,677
+bouton [état « pukulan, kekuatan 35 % »] @ 809,677
+bouton « 3 » [état « pukulan, kekuatan 60 % »] @ 90,758
+bouton [état « pukulan, kekuatan 35 % »] @ 192,758
+bouton [état « kosong »] @ 294,758
+bouton [état « pukulan, kekuatan 35 % »] @ 397,758
+bouton « 4 » [état « pukulan, kekuatan 60 %, dicoret: hapus »] @ 500,758
+bouton [état « pukulan, kekuatan 35 %, dicoret: hapus »] @ 603,758
+bouton [état « kosong »] @ 706,758
+bouton [état « pukulan, kekuatan 35 %, dicoret: hapus »] @ 809,758
+bouton « Pukulan » [sélectionné] @ 143,844
+bouton « Roll » @ 309,844
+bouton « Pan » @ 435,844
+bouton « Pitch » @ 575,844
+bouton « Velocity » @ 756,844
+texte « semua » [coupé] @ 162,920
+texte « 1/2 » [coupé] @ 281,920
+texte « 1/4 » [coupé] @ 366,920
+texte « ◀ » [coupé] @ 447,920
+texte « ▶ » [coupé] @ 522,920
+texte « Hapus » [coupé] @ 634,920
+texte « Isi » [coupé] @ 62,922
+texte « Transisi Bab 9/13 · Langkah 1/2 · Pro » @ 378,1009
+icône (liste) « Bab » @ 771,1009
+icône ⌃ @ 843,1009
+icône « Giliranmu: di bagian “Break”, birama terakhir, hapus pukulan di ketukan terakhir (sentuh tiap silang merah): satu ketukan hening tepat sebelum Drop 2. Baca » ⌃ @ 450,1152
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

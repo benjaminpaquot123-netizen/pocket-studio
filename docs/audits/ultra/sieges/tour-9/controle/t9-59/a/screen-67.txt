@@ -1,0 +1,52 @@
+Écran 67 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Drop birama 33/120 » ▾ @ 389,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+image (courbe) @ 0,0
+texte « Haluskan » @ 561,248
+bouton (pinceau) « Gambar » [sélectionné] @ 153,248
+bouton (courbe) « Garis » @ 359,248
+icône (loupe −) [désactivé] @ 78,330
+icône (loupe +) @ 200,330
+texte « ×1 » @ 139,330
+texte « Gambar dengan jarimu; ketuk dua kali untuk menghapus titik. “Haluskan” merapikan garis yang goyang, “Urungkan” membatalkannya. » @ 450,479
+texte « 18,0 kHz » @ 81,616
+texte « 849 Hz » @ 81,694
+texte « 40 Hz » @ 81,772
+texte « ketukan » @ 81,823
+texte « 1 » @ 137,823
+texte « 3 » @ 233,823
+texte « 5 » @ 323,823
+texte « 7 » @ 415,823
+texte « 9 » @ 507,823
+texte « 11 » @ 605,823
+texte « 13 » @ 699,823
+texte « 15 » @ 791,823
+titre « OUTPUT MASTER » [coupé, état « Terbuka »] @ 262,926
+bouton « ? » [coupé] @ 461,928
+texte « Efek Bab 10/13 · Selesai · Pro » @ 378,1009
+icône (liste) « Bab » @ 771,1009
+icône ⌃ @ 843,1009
+icône (coupe) « Bagus, bab selesai! » ⌃ @ 450,1152
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

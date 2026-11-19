@@ -1,0 +1,44 @@
+Écran 78 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Drop birama 33/120 » ▾ @ 389,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+image (courbe) @ 0,0
+texte « Tidak ada clipping: semua aman. » [coupé] @ 335,207
+texte « Detail » @ 114,260
+texte « Target loudness » @ 190,338
+bouton « ? » @ 360,338
+bouton « Otomatis (gaya) · −9 LUFS » @ 316,414
+bouton « Klub · −8 LUFS » @ 207,495
+bouton « Streaming · −14 LUFS » @ 609,495
+bouton « Apple Music · −16 LUFS » @ 290,576
+bouton « Bebas » @ 631,576
+bouton « Mati » [sélectionné] @ 790,576
+texte « Loudness tetap seperti yang kamu atur; output hanya dilindungi dari distorsi. » @ 450,676
+bouton « Lanjutan: master pro Batas atas −1,0 dB · attack dan release · bass mono · dengar A/B · referensi » ⌄ @ 450,829
+bouton ⌄ « Efek Tidak ada » [coupé] @ 450,936
+texte « Mastering Bab 12/13 · Langkah 1/1 · Pro » @ 378,1009
+icône (liste) « Bab » @ 771,1009
+icône ⌃ @ 843,1009
+icône « Output master punya limiter bawaan, selalu paling akhir di rantai (tidak muncul di “Efek”-nya): limiter ini mencegah suara melewati batas. Giliranmu: di “Output master”, atur “Target loudness” ke “Klub”: lagumu terdengar sekeras di klub. Baca » ⌃ @ 450,1152
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

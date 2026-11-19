@@ -1,0 +1,51 @@
+Écran 74 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Drop birama 33/120 » ▾ @ 389,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+image (courbe) @ 0,0
+bouton (haut-parleur et ondes) [coupé, allumé, état « aktif »] @ 57,223
+bouton (casque) [coupé, état « mati »] @ 111,223
+curseur [coupé, état « +0,0 dB », à 80 %] @ 84,370
+bouton (haut-parleur et ondes) [coupé, allumé, état « aktif »] @ 177,230
+bouton (casque) [coupé, état « mati »] @ 231,230
+curseur [coupé, état « +0,0 dB », à 80 %] @ 204,377
+bouton (haut-parleur et ondes) [coupé, allumé, état « aktif »] @ 297,223
+bouton (casque) [coupé, état « mati »] @ 351,223
+curseur [coupé, état « -1,5 dB », à 73 %] @ 324,370
+bouton (haut-parleur et ondes) [coupé, allumé, état « aktif »] @ 417,230
+bouton (casque) [coupé, état « mati »] @ 471,230
+curseur [coupé, état « -1,5 dB », à 73 %] @ 444,377
+bouton (haut-parleur et ondes) [coupé, allumé, état « aktif »] @ 537,230
+bouton (casque) [coupé, état « mati »] @ 591,230
+curseur [coupé, état « +0,0 dB », à 80 %] @ 564,377
+texte « Mix Bab 11/13 · Langkah 3/3 · Pro » @ 378,555
+icône (liste) « Bab » @ 771,555
+icône ⌄ @ 843,555
+texte « Patokan: kick di depan, hoover raksasa tapi tepat di belakangnya, drum kering, sedikit reverb hanya di clap. Bandingkan dengan lagu contoh. » @ 450,762
+texte « ▸ Kenapa? » @ 450,925
+bouton ✓ «   Paham » @ 450,1002
+bouton ▶ «  Dengar contohnya » @ 450,1088
+icône ← «  Sebelumnya » @ 176,1174
+icône « Berikutnya  » → @ 739,1174
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

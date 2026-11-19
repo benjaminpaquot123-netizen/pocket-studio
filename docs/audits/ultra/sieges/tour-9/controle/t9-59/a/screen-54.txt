@@ -1,0 +1,63 @@
+Écran 54 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Drop birama 33/120 » ▾ @ 389,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+image (courbe) @ 0,0
+texte « Volume » @ 428,262
+bouton « ? » @ 842,262
+texte « Geser fader untuk volume; sentuh nama trek untuk efek dan kurvanya. » @ 450,348
+texte « Drum » @ 84,466
+bouton (haut-parleur et ondes) [allumé, état « aktif »] @ 57,541
+bouton (casque) [état « mati »] @ 111,541
+curseur [état « +0,0 dB », à 80 %] @ 84,712
+texte « +0,0 » @ 84,875
+texte « 3 » [coupé] @ 96,924
+image (étincelles) @ 70,930
+texte « Acid 303 » @ 204,473
+bouton (haut-parleur et ondes) [allumé, état « aktif »] @ 177,555
+bouton (casque) [état « mati »] @ 231,555
+curseur [état « +0,0 dB », à 80 %] @ 204,726
+texte « +0,0 » @ 204,889
+texte « Bass » @ 324,466
+bouton (haut-parleur et ondes) [allumé, état « aktif »] @ 297,541
+bouton (casque) [état « mati »] @ 351,541
+curseur [état « +0,0 dB », à 80 %] @ 324,712
+texte « +0,0 » @ 324,875
+texte « Melodi » @ 444,473
+bouton (haut-parleur et ondes) [allumé, état « aktif »] @ 417,555
+bouton (casque) [état « mati »] @ 471,555
+curseur [état « +0,0 dB », à 80 %] @ 444,726
+texte « +0,0 » @ 444,889
+texte « Remix » @ 564,473
+bouton (haut-parleur et ondes) [allumé, état « aktif »] @ 537,555
+bouton (casque) [état « mati »] @ 591,555
+curseur [état « +0,0 dB », à 80 %] @ 564,726
+texte « +0,0 » @ 564,889
+texte « Efek Bab 10/13 · Langkah 1/2 · Pro » @ 378,1009
+icône (liste) « Bab » @ 771,1009
+icône ⌃ @ 843,1009
+image (œil) @ 51,1152
+texte « Stop » @ 816,1152
+texte « Nah. Aku kembalikan seperti semula… » @ 416,1152
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

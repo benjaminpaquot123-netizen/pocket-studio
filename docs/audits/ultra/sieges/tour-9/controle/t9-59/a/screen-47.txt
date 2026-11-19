@@ -1,0 +1,58 @@
+Écran 47 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 114,42
+bouton « Pro » @ 261,42
+bouton « D · Drop » ▾ @ 409,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Drop birama 33/120 » ▾ @ 389,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+onglet « Drum 16 pad » [sélectionné] @ 103,262
+onglet « Acid 303 Bassline » @ 316,262
+onglet « Vokal Mikrofon » @ 552,262
+onglet « Remix Pisahkan » [coupé] @ 778,262
+image → @ 889,263
+texte « Bagian: D · Drop » @ 173,354
+texte « Birama » @ 106,424
+bouton « 1 » [sélectionné] @ 215,424
+bouton « 2 » @ 296,424
+bouton « 3 » @ 379,424
+bouton « 4 » @ 462,424
+bouton « Ikuti » @ 575,424
+texte « Birama 1/4 · Simbal » @ 232,508
+bouton « 1 » [coupé, état « pukulan, kekuatan 100 % »] @ 90,575
+bouton [coupé, état « kosong »] @ 192,575
+bouton [coupé, état « kosong »] @ 294,575
+bouton [coupé, état « kosong »] @ 397,575
+bouton « 2 » [coupé, état « kosong »] @ 500,575
+bouton [coupé, état « kosong »] @ 603,575
+bouton [coupé, état « kosong »] @ 706,575
+bouton [coupé, état « kosong »] @ 809,575
+texte « Transisi Bab 9/13 · Selesai · Pro » @ 378,660
+icône (liste) « Bab » @ 771,660
+icône ⌄ @ 843,660
+image (coupe) @ 57,833
+texte « Bagus, bab selesai! » @ 276,781
+texte « Dengarkan lagumu seperti sekarang, lalu lanjut ke bab berikutnya: “Efek”. » @ 475,861
+bouton « Bab berikutnya   » → @ 450,1035
+bouton ▶ «  Dengarkan laguku » @ 294,1149
+bouton ▶ «  Dengar contohnya » @ 687,1149
+icône ← @ 57,1149
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

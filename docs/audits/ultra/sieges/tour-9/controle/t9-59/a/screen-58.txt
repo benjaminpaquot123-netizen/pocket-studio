@@ -1,0 +1,15 @@
+Écran 58 (900x1509)
+texte « Apa yang mau kamu gerakkan? » @ 450,244
+texte « 1. Pilih trek: » @ 157,368
+bouton « Drum » [sélectionné] @ 134,450
+bouton « Acid 303 » @ 345,450
+bouton « Bass » @ 550,450
+bouton « Melodi » @ 733,450
+bouton « Remix » @ 141,531
+bouton « Reverb dan echo bersama » @ 519,531
+texte « 2. Yang bergerak di “Drum”: » @ 312,613
+texte « Drum » @ 124,690
+bouton « Filter (sweep) Menambah filter ke trek ini dan membuatnya membuka atau menutup: efek yang paling terdengar. » @ 450,849
+bouton « Volume Lebih keras atau lebih pelan: fade, masuk, potongan. » @ 450,1072
+bouton « Send reverb Reverb lebih banyak atau sedikit: ruang, kesan jauh. » [coupé] @ 450,1197
+texte « Tutup » @ 775,1297

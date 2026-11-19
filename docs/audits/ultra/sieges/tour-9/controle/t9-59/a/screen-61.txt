@@ -1,0 +1,8 @@
+Écran 61 (900x1509)
+texte « Apa yang mau kamu gerakkan? » @ 450,244
+bouton « Filter (sweep) Menambah filter ke trek ini dan membuatnya membuka atau menutup: efek yang paling terdengar. » [coupé] @ 450,442
+bouton « Volume Lebih keras atau lebih pelan: fade, masuk, potongan. » @ 450,646
+bouton « Send reverb Reverb lebih banyak atau sedikit: ruang, kesan jauh. » @ 450,843
+bouton « Send echo Echo lebih banyak atau sedikit: pengulangan sesuai irama. » @ 450,1040
+bouton « Pan Suara ke kiri atau ke kanan. » [coupé] @ 450,1181
+texte « Tutup » @ 775,1297

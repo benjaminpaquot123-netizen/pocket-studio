@@ -1,0 +1,46 @@
+Écran 81 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Drop birama 33/120 » ▾ @ 389,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+image (courbe) @ 0,0
+texte « Tidak ada clipping: semua aman. » [coupé] @ 335,207
+texte « Detail » @ 114,260
+texte « Target loudness » @ 190,338
+bouton « ? » @ 360,338
+bouton « Otomatis (gaya) · −9 LUFS » @ 316,414
+bouton « Klub · −8 LUFS » [sélectionné] @ 207,495
+bouton « Streaming · −14 LUFS » @ 609,495
+bouton « Apple Music · −16 LUFS » @ 290,576
+bouton « Bebas » @ 631,576
+bouton « Mati » @ 790,576
+texte « Keras, seperti di klub (−8 LUFS), diukur pada bagian paling keras. Keluaran naik perlahan untuk mencapainya; ekspor mendekatinya sebisa mungkin tanpa menekan suara. » [coupé] @ 450,629
+texte « Ekspor lagumu Bab 13/13 · Langkah 1/2 · Pro » @ 378,701
+icône (liste) « Bab » @ 771,701
+icône ⌄ @ 843,701
+texte « WAV untuk DJ (kualitas studio), M4A untuk teman-temanmu (file ringan), trek terpisah untuk remix. » @ 450,876
+texte « ▸ Kenapa? » @ 450,1008
+bouton ✓ «   Paham » @ 450,1085
+icône ← «  Sebelumnya » @ 176,1174
+icône « Berikutnya  » → @ 739,1174
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

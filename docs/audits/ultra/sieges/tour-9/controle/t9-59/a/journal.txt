@@ -1,0 +1,568 @@
+#0 SIEGE lang=id device=tablet8 font=200 mode=pro theme=- fresh=non gestes.max=153 lit=oui main=both amenee=tuto:retro_techno:7
+#0 PREMIER ECRAN reel_s=4.5 simule_s=2.4 jvm_s=10.9 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:retro_techno:7
+#0 AMENEE > touche 450 1216 (launch_learn)
+#0 AMENEE > touche 670 1189 (mode_card_pro)
+#0 AMENEE > touche 450 1289 (tuto_style_retro_techno)
+#0 AMENEE chapitres 1 à 6 construits dans le projet
+#0 AMENEE > touche 771 595 (tuto_chapters)
+#0 AMENEE > touche 450 1445 (tuto_quit)
+#0 AMENEE > touche 225 1186 (tuto_resume)
+#0 AMENEE chapitres 1 à 6 cochés (22 étapes)
+#0 AMENEE > touche 771 645 (tuto_chapters)
+#0 AMENEE > touche 450 805 (tuto_chapter_6)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE 2848f9a1a1 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_intro done=22 chapters=1,2,3,4,5,6 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Proyekku 1 » ellipsized (« … »)
+#1 LAYOUT CUT « Tersimpan » wider than its box (by 60.3 dp)
+#1 LAYOUT CUT « A · Groove » ellipsized (« … »)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT OVERLAP « Kick studio » over « FX » (25 x 11 dp)
+#1 LAYOUT OVERLAP « Hi-hat » over « L 30 » (17 x 11 dp)
+#1 LAYOUT OVERLAP « Hi-hat terbuka » over « R 30 » (43 x 7 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1002
+#1 DOIGT tuto_need «   Buat bagian “Intro” »
+#2 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 6b3e9a2a3f | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_intro done=23 chapters=1,2,3,4,5,6 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « ? » lines cut (taller than its box)
+#2 LAYOUT CUT « Tersimpan » lines cut (taller than its box)
+#2 > touche 450 1035
+#2 DOIGT tuto_next_big « Langkah berikutnya   »
+#3 ROUTE tab_Structure | MODE pro | EMPREINTE 047f87b2fc | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_intro2 done=23 chapters=1,2,3,4,5,6 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 843 582
+#3 DOIGT tuto_fold
+#4 ROUTE tab_Structure | MODE pro | EMPREINTE 8236c80b95 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_intro2 done=23 chapters=1,2,3,4,5,6 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 450 1152
+#4 DOIGT tuto_need_folded « Buat bagian “Intro 2” »
+#5 ROUTE tab_Structure | MODE pro | EMPREINTE 9c38f361b8 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_intro2 done=24 chapters=1,2,3,4,5,6 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 450 1152
+#5 DOIGT tuto_next_folded « Berhasil »
+#6 ROUTE tab_Structure | MODE pro | EMPREINTE f94184440b | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_drop done=24 chapters=1,2,3,4,5,6 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 450 1002
+#6 DOIGT tuto_need «   Buat bagian “Drop” »
+#7 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE f1cb07c2b6 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_drop done=25 chapters=1,2,3,4,5,6 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 450 1035
+#7 DOIGT tuto_next_big « Langkah berikutnya   »
+#8 ROUTE tab_Structure | MODE pro | EMPREINTE 137ce72a17 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_mini done=25 chapters=1,2,3,4,5,6 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 824 846
+#8 DOIGT tuto_kit_later « Nanti »
+#9 ROUTE tab_Structure | MODE pro | EMPREINTE 85fad9c2da | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_mini done=25 chapters=1,2,3,4,5,6 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 450 1002
+#9 DOIGT tuto_need «   Buat bagian “Mini-break” »
+#10 ROUTE tab_Structure | MODE pro | EMPREINTE 7a8e608e5b | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_mini done=26 chapters=1,2,3,4,5,6 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 450 1035
+#10 DOIGT tuto_next_big « Langkah berikutnya   »
+#11 ROUTE tab_Structure | MODE pro | EMPREINTE cc1c4968b2 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_break done=26 chapters=1,2,3,4,5,6 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 450 1002
+#11 DOIGT tuto_need «   Buat bagian “Break” »
+#12 ROUTE tab_Structure | MODE pro | EMPREINTE 4112d5fe45 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_break done=27 chapters=1,2,3,4,5,6 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 450 1035
+#12 DOIGT tuto_next_big « Langkah berikutnya   »
+#13 ROUTE tab_Structure | MODE pro | EMPREINTE 8b05bf9f78 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_drop2 done=27 chapters=1,2,3,4,5,6 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 1002
+#13 DOIGT tuto_need «   Buat bagian “Drop 2” »
+#14 ROUTE tab_Structure | MODE pro | EMPREINTE ff69232782 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_drop2 done=28 chapters=1,2,3,4,5,6 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 450 1035
+#14 DOIGT tuto_next_big « Langkah berikutnya   »
+#15 ROUTE tab_Structure | MODE pro | EMPREINTE c13e6acd04 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_fin done=28 chapters=1,2,3,4,5,6 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 450 1002
+#15 DOIGT tuto_need «   Buat bagian “Akhir” »
+#16 ROUTE tab_Structure | MODE pro | EMPREINTE 5a26aa83e4 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=make_fin done=29 chapters=1,2,3,4,5,6,7 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1035
+#16 DOIGT tuto_next_big « Bab berikutnya   »
+#17 ROUTE tab_Structure | MODE pro | EMPREINTE 2524152c9d | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 488 292
+#17 DOIGT add_part_1 « + B · Intro »
+#18 ROUTE tab_Structure | MODE pro | EMPREINTE 42eaa1aaab | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « Loop » drawn past its parent's edge (down, 32 dp shown of 37)
+#18 > touche 843 618
+#18 DOIGT tuto_fold
+#19 ROUTE tab_Structure | MODE pro | EMPREINTE 0fd0721302 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CUT « Giliranmu: di “Struktur”, tambahkan berurutan Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2, dan Akhir. » ellipsized (« … »)
+#19 > touche 189 636
+#19 DOIGT add_part_2 « + C · Intro 2 »
+#20 ROUTE tab_Structure | MODE pro | EMPREINTE 79aa0c25a0 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 477 636
+#20 DOIGT add_part_3 « + D · Drop »
+#21 ROUTE tab_Structure | MODE pro | EMPREINTE f6b7984872 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 229 725
+#21 DOIGT add_part_4 « + E · Mini-break »
+#22 ROUTE tab_Structure | MODE pro | EMPREINTE 94b29f384e | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 477 636
+#22 DOIGT add_part_3 « + D · Drop »
+#23 ROUTE tab_Structure | MODE pro | EMPREINTE a24eb923fa | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 562 725
+#23 DOIGT add_part_5 « + F · Break »
+#24 ROUTE tab_Structure | MODE pro | EMPREINTE 7446a7b154 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 191 814
+#24 DOIGT add_part_6 « + G · Drop 2 »
+#25 ROUTE tab_Structure | MODE pro | EMPREINTE f2a32f4543 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_order done=29 chapters=1,2,3,4,5,6,7 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 485 814
+#25 DOIGT add_part_7 « + H · Akhir »
+#26 ROUTE tab_Structure | MODE pro | EMPREINTE 1e2bfad37d | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_order done=30 chapters=1,2,3,4,5,6,7 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 450 1152
+#26 DOIGT tuto_next_folded « Berhasil »
+#27 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE e3d7bacf26 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 750 306
+#27 DOIGT dans:part_0
+#28 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 4bc2848866 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 843 512
+#28 DOIGT tuto_fold
+#29 ROUTE tab_Structure | MODE pro | EMPREINTE fc7950edec | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 822 663
+#29 DOIGT part_menu_3
+#29 DIALOGUE 0.6 s
+#30 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE e7916c6f28 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CUT « birama » a word split over two lines
+#30 LAYOUT OVERLAP « Bagian 4 · E · Mini-break » over the touchable « Tutup sheet » (397 x 45 dp)
+#30 LAYOUT OVERLAP « 8 birama » over the touchable « Tutup sheet » (109 x 31 dp)
+#30 LAYOUT OVERLAP « Tutup » over the touchable « Tutup sheet » (74 x 37 dp)
+#30 LAYOUT OVERLAP « Variasi » over the touchable « Tutup sheet » (85 x 37 dp)
+#30 LAYOUT OVERLAP « Fill di akhir » over the touchable « Tutup sheet » (136 x 37 dp)
+#30 LAYOUT OVERLAP « Break sesudah · 4 birama » over the touchable « Tutup sheet » (226 x 75 dp)
+#30 LAYOUT OVERLAP « Break sesudah · 8 birama » over the touchable « Tutup sheet » (226 x 75 dp)
+#30 LAYOUT OVERLAP « Build-up sebelum · 4 birama » over the touchable « Tutup sheet » (223 x 75 dp)
+#30 LAYOUT OVERLAP « Build-up sebelum · 8 birama » over the touchable « Tutup sheet » (223 x 75 dp)
+#30 LAYOUT OVERLAP « Fade-in » over the touchable « Tutup sheet » (97 x 37 dp)
+#30 LAYOUT OVERLAP « Fade-out » over the touchable « Tutup sheet » (116 x 37 dp)
+#30 LAYOUT OVERLAP « Tambah penutup » over the touchable « Tutup sheet » (214 x 37 dp)
+#30 LAYOUT OVERLAP « Energi: 3 » over the touchable « Tutup sheet » (111 x 37 dp)
+#30 LAYOUT OVERLAP « 1 · pad » over the touchable « Tutup sheet » (80 x 37 dp)
+#30 LAYOUT OVERLAP « 2 · + bass » over the touchable « Tutup sheet » (122 x 37 dp)
+#30 LAYOUT OVERLAP « 3 · + drum » over the touchable « Tutup sheet » (129 x 37 dp)
+#30 LAYOUT OVERLAP « 4 · full » over the touchable « Tutup sheet » (79 x 37 dp)
+#30 LAYOUT OVERLAP « Panjang » over the touchable « Tutup sheet » (100 x 37 dp)
+#30 LAYOUT OVERLAP « birama » over the touchable « Tutup sheet » (67 x 69 dp)
+#30 LAYOUT OVERLAP « OK » over the touchable « Tutup sheet » (38 x 37 dp)
+#30 LAYOUT OVERLAP « Bagian » over the touchable « Tutup sheet » (85 x 37 dp)
+#30 LAYOUT OVERLAP « Ganti nama » over the touchable « Tutup sheet » (143 x 37 dp)
+#30 LAYOUT OVERLAP « Yang sedang main » over the touchable « Tutup sheet » (232 x 37 dp)
+#30 LAYOUT OVERLAP « Naikkan » over the touchable « Tutup sheet » (103 x 37 dp)
+#30 LAYOUT OVERLAP « Turunkan » over the touchable « Tutup sheet » (120 x 37 dp)
+#30 LAYOUT OVERLAP « Duplikat » over the touchable « Tutup sheet » (104 x 37 dp)
+#30 LAYOUT OVERLAP « Sisipkan sesudah » over the touchable « Tutup sheet » (221 x 37 dp)
+#30 LAYOUT OVERLAP « Hapus » over the touchable « Tutup sheet » (81 x 37 dp)
+#30 > touche 315 1122
+#30 DOIGT name_clear
+#30 DIALOGUE 0.2 s
+#31 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE a26ef62c9c | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT OVERLAP « birama » over the touchable « Tutup sheet » (75 x 84 dp)
+#31 LAYOUT OVERLAP « Sisipkan sesudah » over the touchable « Tutup sheet » (221 x 17 dp)
+#31 LAYOUT OVERLAP « Hapus » over the touchable « Tutup sheet » (81 x 17 dp)
+#31 > ecris 2
+#31 DIALOGUE 0.2 s
+#32 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 53e8d96e5f | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 268 1127
+#32 DOIGT part_bars_field « birama »
+#32 DIALOGUE 0.3 s
+#33 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 5df3e05a33 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7 playing=false
+#33 SON Son : rien ne joue.
+#33 > ecris 2
+#33 DIALOGUE 0.2 s
+#34 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE ab7bab07f9 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 407 1110
+#34 DOIGT part_bars_ok « OK »
+#34 DIALOGUE 0.2 s
+#35 ROUTE tab_Structure | MODE pro | EMPREINTE 2b82db9841 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=30 chapters=1,2,3,4,5,6,7 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT OVERLAP « × 1  ·  8 birama » over « Selesai: panjang baru untuk E · Mini-break » (183 x 15 dp)
+#35 LAYOUT OVERLAP « F · Break » over « Selesai: panjang baru untuk E · Mini-break » (126 x 40 dp)
+#35 LAYOUT OVERLAP « × 1  ·  8 birama » over « Selesai: panjang baru untuk E · Mini-break » (183 x 12 dp)
+#35 LAYOUT OVERLAP « Selesai: panjang baru untuk E · Mini-break » over the touchable « Putar dari bagian ini » (372 x 15 dp)
+#35 LAYOUT OVERLAP « Selesai: panjang baru untuk E · Mini-break » over the touchable « Putar dari bagian ini » (372 x 52 dp)
+#35 LAYOUT OVERLAP « Batal » floats over the touchable « Tambah satu ulangan » (25 x 25 dp)
+#35 LAYOUT OVERLAP « Batal » floats over the touchable « Aksi lain » (40 x 25 dp)
+#35 LAYOUT CONTRAST « Batal » 3.63:1 (needs 4.5:1, 14 sp)
+#35 > touche 450 1152
+#35 DOIGT tuto_need_folded « Pakai durasi yang disarankan »
+#36 ROUTE tab_Structure | MODE pro | EMPREINTE b9a910d900 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT OVERLAP « 14 birama » over « Selesai: panjang baru untuk E · Mini-break » (125 x 15 dp)
+#36 LAYOUT OVERLAP « 16 birama » over « Selesai: panjang baru untuk E · Mini-break » (125 x 12 dp)
+#36 > touche 450 1152
+#36 DOIGT tuto_chapter_end_folded « Bagus, bab selesai! »
+#37 ROUTE tab_Structure | MODE pro | EMPREINTE 46d33a1896 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=song_phrases done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT OVERLAP « 16 birama » over « Selesai: panjang baru untuk E · Mini-break » (125 x 11 dp)
+#37 LAYOUT OVERLAP « E · Mini-break » over « Selesai: panjang baru untuk E · Mini-break » (202 x 40 dp)
+#37 LAYOUT OVERLAP « 2 birama » over « Selesai: panjang baru untuk E · Mini-break » (109 x 16 dp)
+#37 LAYOUT OVERLAP « Selesai: panjang baru untuk E · Mini-break » over the touchable « Putar dari bagian ini » (372 x 11 dp)
+#37 LAYOUT OVERLAP « Selesai: panjang baru untuk E · Mini-break » over the touchable « Putar dari bagian ini » (372 x 56 dp)
+#37 LAYOUT OVERLAP « Batal » floats over the touchable « Tambah satu ulangan » (25 x 29 dp)
+#37 LAYOUT OVERLAP « Batal » floats over the touchable « Aksi lain » (40 x 29 dp)
+#37 > touche 450 1091
+#37 DOIGT tuto_next_big « Bab berikutnya   »
+#38 ROUTE tab_Structure | MODE pro | EMPREINTE 8f99a99687 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=gap done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT OVERLAP « C · Intro 2 » over « Selesai: panjang baru untuk E · Mini-break » (141 x 40 dp)
+#38 LAYOUT OVERLAP « 16 birama » over « Selesai: panjang baru untuk E · Mini-break » (125 x 27 dp)
+#38 LAYOUT OVERLAP « Selesai: panjang baru untuk E · Mini-break » over the touchable « Putar dari bagian ini » (372 x 67 dp)
+#38 LAYOUT OVERLAP « Batal » floats over the touchable « Tambah satu ulangan » (25 x 40 dp)
+#38 LAYOUT OVERLAP « Batal » floats over the touchable « Aksi lain » (40 x 40 dp)
+#38 > touche 450 1002
+#38 DOIGT tuto_need «   Pergi ke bagian “Break” »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 55f5b0153b | project=p-fa069d2a tuto=retro_techno/Pro active=true step=gap done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CUT « F · Break » ellipsized (« … »)
+#39 LAYOUT CUT « Giliranmu: di bagian “Break”, birama terakhir, hapus pukulan di ketukan terakhir (sentuh tiap silang merah): satu ketukan hening tepat sebelum Drop 2. » ellipsized (« … »)
+#39 LAYOUT CONTRAST « STEP: HI-HAT · BREAK » 1.74:1 (needs 4.5:1, 12 sp)
+#39 LAYOUT CONTRAST « ? » 1.95:1 (needs 4.5:1, 12 sp)
+#39 LAYOUT CONTRAST « Semua pad » 1.68:1 (needs 4.5:1, 14 sp)
+#39 > touche 500 758
+#39 DOIGT step_60 « Step 13 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 155e9ae189 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=gap done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 603 758
+#40 DOIGT step_61 « Step 14 »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 55c9ca0b55 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=gap done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 809 758
+#41 DOIGT step_63 « Step 16 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 00fa8d3de3 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=gap done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « ? » 3.19:1 (needs 4.5:1, 12 sp)
+#42 LAYOUT CONTRAST « Semua pad » 2.67:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « Hapus » 4.11:1 (needs 4.5:1, 14 sp)
+#42 > touche 706 782
+#42 DOIGT step_62 « Step 15 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE 3ab9a71d42 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=gap done=32 chapters=1,2,3,4,5,6,7,8 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 450 1152
+#43 DOIGT tuto_next_folded « Berhasil »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE a9b90ff44d | project=p-fa069d2a tuto=retro_techno/Pro active=true step=crash done=32 chapters=1,2,3,4,5,6,7,8 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 407 42
+#44 DOIGT top_scene « Bagian sekarang: F · Break. Sentuh untuk »
+#45 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE 4c03e22563 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=crash done=32 chapters=1,2,3,4,5,6,7,8 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 509 408
+#45 DOIGT scene_pick_3 « D · Drop »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE ce6b650a7f | project=p-fa069d2a tuto=retro_techno/Pro active=true step=crash done=32 chapters=1,2,3,4,5,6,7,8 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CUT « Tersimpan » wider than its box (by 57.6 dp)
+#46 > touche 90 604
+#46 DOIGT step_0 « Step 1 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE 639196f650 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=crash done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 450 1035
+#47 DOIGT tuto_next_big « Bab berikutnya   »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE 5e7062c196 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=reverb done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 451 1389
+#48 DOIGT tab_Mix « Mix »
+#49 ROUTE tab_Mix | MODE pro | EMPREINTE 57a9d3e530 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=reverb done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT CUT « Melodi » a word split over two lines
+#49 LAYOUT CUT « Remix » a word split over two lines
+#49 LAYOUT CONTRAST « ? » 3.92:1 (needs 4.5:1, 12 sp)
+#49 > touche 84 466
+#49 DOIGT strip_more_0 « Drum »
+#50 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 9a7bed1f48 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=reverb done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT «  Yang sedang main » ellipsized (« … »)
+#50 LAYOUT OVERLAP « Drum » over the touchable « Tutup sheet » (91 x 45 dp)
+#50 LAYOUT OVERLAP « Senyap » over the touchable « Tutup sheet » (94 x 37 dp)
+#50 LAYOUT OVERLAP « Solo » over the touchable « Tutup sheet » (56 x 37 dp)
+#50 LAYOUT OVERLAP « Volume » over the touchable « Tutup sheet » (99 x 42 dp)
+#50 LAYOUT OVERLAP « +0,0 dB » over the touchable « Tutup sheet » (97 x 31 dp)
+#50 LAYOUT OVERLAP « Pan » over the touchable « Tutup sheet » (51 x 42 dp)
+#50 LAYOUT OVERLAP « ? » over the touchable « Tutup sheet » (13 x 18 dp)
+#50 LAYOUT OVERLAP « Tengah » over the touchable « Tutup sheet » (93 x 31 dp)
+#50 LAYOUT OVERLAP «  Yang sedang main » over the touchable « Tutup sheet » (202 x 37 dp)
+#50 LAYOUT OVERLAP «  Kurva » over the touchable « Tutup sheet » (81 x 37 dp)
+#50 LAYOUT OVERLAP « Efek » over the touchable « Tutup sheet » (55 x 37 dp)
+#50 LAYOUT OVERLAP « Efek terpasang: 3 dari 8 » over the touchable « Tutup sheet » (302 x 37 dp)
+#50 LAYOUT OVERLAP « 1. Kompresor » over the touchable « Tutup sheet » (165 x 37 dp)
+#50 LAYOUT OVERLAP « Main di: » over the touchable « Tutup sheet » (93 x 35 dp)
+#50 LAYOUT OVERLAP « Semua » over the touchable « Tutup sheet » (87 x 37 dp)
+#50 LAYOUT OVERLAP « A · Groove » over the touchable « Tutup sheet » (132 x 37 dp)
+#50 LAYOUT OVERLAP « B · Intro » over the touchable « Tutup sheet » (98 x 37 dp)
+#50 LAYOUT OVERLAP « C · Intro 2 » over the touchable « Tutup sheet » (17 x 37 dp)
+#50 LAYOUT OVERLAP « 2. Saturasi » over the touchable « Tutup sheet » (134 x 37 dp)
+#50 LAYOUT OVERLAP « 3. Soft clipper » over the touchable « Tutup sheet » (177 x 37 dp)
+#50 LAYOUT OVERLAP « Efek bisa main di bagian tertentu saja: sentuh hurufnya. » over the touchable « Tutup sheet » (539 x 69 dp)
+#50 LAYOUT OVERLAP «   Tambah efek » over the touchable « Tutup sheet » (177 x 37 dp)
+#50 LAYOUT OVERLAP « Nuansa siap pakai » over the touchable « Tutup sheet » (230 x 16 dp)
+#50 LAYOUT OVERLAP « ? » over the touchable « Tutup sheet » (13 x 6 dp)
+#50 LAYOUT CONTRAST « C · Intro 2 » 2.66:1 (needs 4.5:1, 14 sp)
+#50 > touche 802 112
+#50 DOIGT strip_sheet_close « Tutup »
+#51 ROUTE tab_Mix | MODE pro | EMPREINTE 57a9d3e530 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=reverb done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 667 1088
+#51 DOIGT tuto_show «  Tunjukkan »
+#52 ROUTE dialogue:effects_box_20 | MODE pro | EMPREINTE 2f2478be7a | project=p-fa069d2a tuto=retro_techno/Pro active=true step=reverb done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « Netral » 4.44:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « 0 » 4.44:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « Reverb dan echo bersama » 4.44:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « 30% » 3.63:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « Tutup » 3.63:1 (needs 4.5:1, 14 sp)
+#52 > glisse 300 1312 600 1312
+#52 DOIGT send_20_0 « Send reverb »
+#53 ROUTE dialogue:effects_box_20 | MODE pro | EMPREINTE 2f2478be7a | project=p-fa069d2a tuto=retro_techno/Pro active=true step=reverb done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « 67% » 3.63:1 (needs 4.5:1, 14 sp)
+#53 > touche 775 1433
+#53 DOIGT fx_close « Tutup »
+#54 ROUTE tab_Mix | MODE pro | EMPREINTE 76c7dc7aa0 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=reverb done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST « Stop » 3.91:1 (needs 4.5:1, 14 sp)
+#54 > attends 5
+#55 ROUTE tab_Mix | MODE pro | EMPREINTE 37df74277b | project=p-fa069d2a tuto=retro_techno/Pro active=true step=reverb done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 450 1152
+#55 DOIGT tuto_next_folded « Berhasil »
+#56 ROUTE tab_Mix | MODE pro | EMPREINTE e91d6705d8 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 843 618
+#56 DOIGT tuto_fold
+#57 ROUTE tab_Mix | MODE pro | EMPREINTE 05eb1dc199 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « Giliranmu: otomasi “Cutoff” trek “Melodi” di Drop: kurva yang naik sampai tengah lalu turun lagi. » ellipsized (« … »)
+#57 > touche 295 620
+#57 DOIGT automation_add «  Otomasi pengaturan »
+#58 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE f823aa211f | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « Lebih keras atau lebih pelan: fade, masuk, potongan. » 3.64:1 (needs 4.5:1, 13 sp)
+#58 > touche 733 450
+#58 DOIGT pick_track_5 « Melodi »
+#59 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 5b66ca206f | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#59 SON Son : rien ne joue.
+#59 > glisse 450 1150 450 700
+#59 DOIGT pick_20480 « Volume »
+#60 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE d84ca5d821 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 283 1181
+#60 DOIGT pick_group_5_more « Lihat 1 pengaturan lain »
+#61 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 3b95246e90 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 450 470
+#61 DOIGT pick_filter_5 « Filter (sweep) »
+#62 ROUTE tab_Mix | MODE pro | EMPREINTE 96f57f5af6 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST « Garis » 1.63:1 (needs 4.5:1, 14 sp)
+#62 > touche 332 649
+#62 DOIGT auto_mode_0_1 « Per bagian »
+#63 ROUTE tab_Mix | MODE pro | EMPREINTE d781aa467f | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#63 SON Son : rien ne joue.
+#63 > glisse 450 800 450 300
+#63 DOIGT rien
+#64 ROUTE tab_Mix | MODE pro | EMPREINTE b07121eed3 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#64 LAYOUT CUT « 849 Hz » lines dropped (more lines than room)
+#64 LAYOUT CUT « 40 Hz » lines dropped (more lines than room)
+#64 LAYOUT CUT « ketukan » lines dropped (more lines than room)
+#64 LAYOUT CUT « 1 » lines cut (taller than its box)
+#64 LAYOUT CUT « 3 » lines cut (taller than its box)
+#64 LAYOUT CUT « 5 » lines cut (taller than its box)
+#64 LAYOUT CUT « 7 » lines cut (taller than its box)
+#64 LAYOUT CUT « 9 » lines cut (taller than its box)
+#64 LAYOUT CUT « 11 » lines cut (taller than its box)
+#64 LAYOUT CUT « 13 » lines cut (taller than its box)
+#64 LAYOUT CUT « 15 » lines cut (taller than its box)
+#64 > glisse 130 885 465 720
+#64 DOIGT rien
+#65 ROUTE tab_Mix | MODE pro | EMPREINTE 750a4e1330 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#65 SON Son : rien ne joue.
+#65 > glisse 465 720 830 885
+#65 DOIGT rien
+#66 ROUTE tab_Mix | MODE pro | EMPREINTE 750a4e1330 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#66 SON Son : rien ne joue.
+#66 > glisse 135 790 490 605
+#66 DOIGT rien
+#67 ROUTE tab_Mix | MODE pro | EMPREINTE 7f38a21d7b | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#67 SON Son : rien ne joue.
+#67 > glisse 490 605 850 790
+#67 DOIGT rien
+#68 ROUTE tab_Mix | MODE pro | EMPREINTE 7f38a21d7b | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 450 1152
+#68 DOIGT tuto_chapter_end_folded « Bagus, bab selesai! »
+#69 ROUTE tab_Mix | MODE pro | EMPREINTE 5a164d3884 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=filter done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 450 1035
+#69 DOIGT tuto_next_big « Bab berikutnya   »
+#70 ROUTE tab_Mix | MODE pro | EMPREINTE 34e877a387 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=levels done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#70 SON Son : rien ne joue.
+#70 > glisse 444 398 444 440
+#70 DOIGT volume_5 « Volume Melodi »
+#71 ROUTE tab_Mix | MODE pro | EMPREINTE f39d868be1 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=levels done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#71 SON Son : rien ne joue.
+#71 > glisse 324 384 324 426
+#71 DOIGT volume_2 « Volume Bass »
+#72 ROUTE tab_Mix | MODE pro | EMPREINTE c7deed9fcf | project=p-fa069d2a tuto=retro_techno/Pro active=true step=levels done=36 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 450 1035
+#72 DOIGT tuto_next_big « Langkah berikutnya   »
+#73 ROUTE tab_Mix | MODE pro | EMPREINTE 5bbd6e1e00 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=meters done=36 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 450 1085
+#73 DOIGT tuto_mark «   Paham »
+#74 ROUTE tab_Mix | MODE pro | EMPREINTE cfabd4052b | project=p-fa069d2a tuto=retro_techno/Pro active=true step=buses done=37 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 450 1002
+#74 DOIGT tuto_mark «   Paham »
+#75 ROUTE tab_Mix | MODE pro | EMPREINTE 0b3a957563 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=buses done=38 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 450 1035
+#75 DOIGT tuto_next_big « Bab berikutnya   »
+#76 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 4a78522ae2 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=loudness done=38 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 843 512
+#76 DOIGT tuto_fold
+#77 ROUTE tab_Mix | MODE pro | EMPREINTE 2e50ccf4bc | project=p-fa069d2a tuto=retro_techno/Pro active=true step=loudness done=38 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#77 SON Son : rien ne joue.
+#77 LAYOUT CUT « Output master punya limiter bawaan, selalu paling akhir di rantai (tidak muncul di “Efek”-nya): limiter ini mencegah suara melewati batas. Giliranmu: di “Output master”, atur “Target loudness” ke “Klub”: lagumu terdengar sekeras di klub. » ellipsized (« … »)
+#77 > glisse 450 800 450 350
+#77 DOIGT rien
+#78 ROUTE tab_Mix | MODE pro | EMPREINTE 6991935353 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=loudness done=38 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 207 495
+#78 DOIGT loudness_target_CLUB « Klub · −8 LUFS »
+#79 ROUTE tab_Mix | MODE pro | EMPREINTE 93c5ce7faa | project=p-fa069d2a tuto=retro_techno/Pro active=true step=loudness done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 450 1152
+#79 DOIGT tuto_chapter_end_folded « Bagus, bab selesai! »
+#80 ROUTE tab_Mix | MODE pro | EMPREINTE bf354e3057 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=loudness done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 450 1035
+#80 DOIGT tuto_next_big « Bab berikutnya   »
+#81 ROUTE tab_Mix | MODE pro | EMPREINTE 09cd028203 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=formats done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 450 1085
+#81 DOIGT tuto_mark «   Paham »
+#82 ROUTE tab_Mix | MODE pro | EMPREINTE 873eece6e6 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 781 1277
+#82 DOIGT thumb_share « Bagikan laguku »
+#82 DIALOGUE 0.3 s
+#83 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 035bccd6f1 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT OVERLAP « Siap dibagikan? » over the touchable « Tutup sheet » (262 x 45 dp)
+#83 LAYOUT OVERLAP « Nama lagu (dan proyek) » over the touchable « Tutup sheet » (284 x 35 dp)
+#83 LAYOUT OVERLAP « “Bagikan” juga mengganti nama proyek “Proyekku 1”. » over the touchable « Tutup sheet » (466 x 69 dp)
+#83 LAYOUT OVERLAP « 3:45 » over the touchable « Tutup sheet » (77 x 43 dp)
+#83 LAYOUT OVERLAP « 7 bagian » over the touchable « Tutup sheet » (105 x 37 dp)
+#83 LAYOUT OVERLAP « Volume: −8,0, keras, seperti musik klub » over the touchable « Tutup sheet » (333 x 69 dp)
+#83 LAYOUT OVERLAP « detail » over the touchable « Tutup sheet » (63 x 23 dp)
+#83 LAYOUT OVERLAP «  Dengar » over the touchable « Tutup sheet » (99 x 37 dp)
+#83 LAYOUT OVERLAP « Target loudness » over the touchable « Tutup sheet » (198 x 37 dp)
+#83 LAYOUT OVERLAP « Streaming » over the touchable « Tutup sheet » (129 x 37 dp)
+#83 LAYOUT OVERLAP « Klub » over the touchable « Tutup sheet » (57 x 37 dp)
+#83 LAYOUT OVERLAP « Otomatis (gaya) » over the touchable « Tutup sheet » (202 x 37 dp)
+#83 LAYOUT OVERLAP « M4A · untuk berbagi » over the touchable « Tutup sheet » (259 x 37 dp)
+#83 LAYOUT OVERLAP « WAV · kualitas maks » over the touchable « Tutup sheet » (255 x 37 dp)
+#83 LAYOUT OVERLAP «   Bagikan » over the touchable « Tutup sheet » (123 x 42 dp)
+#83 LAYOUT OVERLAP « File-ku » over the touchable « Tutup sheet » (87 x 37 dp)
+#83 LAYOUT OVERLAP « Temukan dan kirim lagi: M4A, WAV, video, .zip » over the touchable « Tutup sheet » (419 x 69 dp)
+#83 > touche 246 1190
+#83 DOIGT share_format_Wav « WAV · kualitas maks »
+#83 DIALOGUE 0.2 s
+#84 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 7ff33abe44 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 450 1287
+#84 DOIGT share_go «   Bagikan »
+#84 DIALOGUE 0.3 s
+#85 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 885bea7d4f | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#85 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#85 LAYOUT CONTRAST « Lalu pilih aplikasi untuk mengirimnya. » 2.41:1 (needs 4.5:1, 13 sp)
+#85 > attends 10
+#85 DIALOGUE 1.2 s
+#86 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 2e066c34d2 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#86 SON Son : rien ne joue.
+#86 > attends 30
+#86 PARTAGE Laguku-lagu-klub-20261119-115845.wav
+#86 DIALOGUE 1.2 s
+#87 ROUTE dialogue:« Bagikan laguku · Laguku-lagu-k » | MODE pro | EMPREINTE bb02f86408 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 450 897
+#87 DOIGT vue « Drive »
+#87 DIALOGUE 0.2 s
+#88 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE aa579a9e8e | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 786 991
+#88 DOIGT share_bilan_ok « OK »
+#88 DIALOGUE 0.2 s
+#89 ROUTE tab_Mix | MODE pro | EMPREINTE f7ac93affd | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 450 996
+#89 DOIGT tuto_end_play «  Dengarkan laguku »
+#90 ROUTE tab_Mix | MODE pro | EMPREINTE f3f75c82f0 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=true
+#90 SON Son : le morceau joue (partie « B »).
+#90 > touche 781 1277
+#90 DOIGT thumb_share « Bagikan laguku »
+#90 DIALOGUE 0.3 s
+#91 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 752aad3b4a | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=true
+#91 SON Son : le morceau joue (partie « B »).
+#91 LAYOUT OVERLAP « Volume: −8,0, keras, seperti musik klub » over the touchable « Tutup sheet » (409 x 69 dp)
+#91 LAYOUT OVERLAP «  Stop » over the touchable « Tutup sheet » (65 x 37 dp)
+#91 LAYOUT OVERLAP « Semua siap: tidak ada solo yang tertinggal, tidak ada trek yang di-mute. » over the touchable « Tutup sheet » (527 x 75 dp)
+#91 > touche 552 605
+#91 DOIGT share_details « detail »
+#91 DIALOGUE 0.2 s
+#92 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 72c4f8374c | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=true
+#92 SON Son : le morceau joue (partie « B »).
+#92 LAYOUT OVERLAP « sembunyikan » over the touchable « Tutup sheet » (162 x 23 dp)
+#92 LAYOUT OVERLAP « −14,4 LUFS · puncak −9,5 dBTP » over the touchable « Tutup sheet » (369 x 29 dp)
+#92 > touche 834 152
+#92 DOIGT share_close
+#92 DIALOGUE 0.2 s
+#93 ROUTE tab_Mix | MODE pro | EMPREINTE 9442b859e0 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=true
+#93 SON Son : le morceau joue (partie « B »).
+#93 > touche 855 42
+#93 DOIGT top_share
+#93 DIALOGUE 0.3 s
+#94 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 752aad3b4a | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=true
+#94 SON Son : le morceau joue (partie « B »).
+#94 > touche 834 196
+#94 DOIGT share_close
+#94 DIALOGUE 0.2 s
+#95 ROUTE tab_Mix | MODE pro | EMPREINTE 755895f397 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=true
+#95 SON Son : le morceau joue (partie « B »).
+#95 > touche 815 1389
+#95 DOIGT tab_Plus « Lainnya »
+#96 ROUTE tab_Plus | MODE pro | EMPREINTE 5cde9d7b22 | project=p-fa069d2a tuto=retro_techno/Pro active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=true
+#96 SON Son : le morceau joue (partie « B »).
+#96 > touche 450 1174
+#96 DOIGT tuto_end_close «  Tutup tutorial »
+#97 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 515ebaf033 | project=p-fa069d2a tuto=retro_techno/Pro active=false step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=true
+#97 SON Son : le morceau joue (partie « B »).
+#97 > fin
+#97 BENCH-VERDICT ok where=seat.fin
+#97 FIN : fin

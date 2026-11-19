@@ -1,0 +1,45 @@
+Écran 22 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Intro birama 1/32 » ▾ @ 364,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+icône ▶ « E · Mini-break × 1  ·  8 birama » @ 342,257
+icône − [désactivé] @ 678,258
+icône + @ 750,258
+icône ⋮ @ 822,258
+texte « − / + : ulangan. Abu: durasi tetap (saran atau Live) atau 1 kali. » @ 450,375
+texte « Tambah di akhir: » @ 194,467
+bouton « + A · Groove » @ 196,547
+bouton « + B · Intro » @ 488,547
+bouton « + C · Intro 2 » @ 189,636
+bouton « + D · Drop » @ 477,636
+bouton « + E · Mini-break » @ 229,725
+bouton « + F · Break » @ 562,725
+bouton « + G · Drop 2 » @ 191,814
+bouton « + H · Akhir » @ 485,814
+bouton « + Bagian baru (salinan H · Akhir) » @ 384,903
+texte « Susun bagian-bagianmu Bab 8/13 · Langkah 1/2 · Pro » @ 378,1009
+icône (liste) « Bab » @ 771,1009
+icône ⌃ @ 843,1009
+icône « Giliranmu: di “Struktur”, tambahkan berurutan Intro, Intro 2, Drop, Mini-break, Drop, Break, Drop 2, dan Akhir. Baca » ⌃ @ 450,1152
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

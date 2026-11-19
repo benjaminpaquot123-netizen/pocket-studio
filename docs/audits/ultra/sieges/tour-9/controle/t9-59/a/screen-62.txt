@@ -1,0 +1,46 @@
+Écran 62 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Drop birama 33/120 » ▾ @ 389,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+image (courbe) @ 0,0
+texte « Kurva baru: gambar di bawah. » @ 339,244
+texte « Melodi » @ 150,312
+texte « Kosongkan » @ 637,342
+icône (poubelle) @ 810,342
+texte « Filter Cutoff » @ 166,374
+texte « Membuka (cerah) atau menutup (redam) suara: sweep filter. » @ 558,463
+bouton (curseurs) «  Lihat pengaturan » @ 270,564
+bouton « Loop » [sélectionné] @ 126,649
+bouton « Per bagian » @ 332,649
+bouton « Lagu » @ 538,649
+texte « Kurva yang sama di tiap putaran loop (64 step). » @ 450,746
+texte « Untuk mengubah pengaturan ini di sebagian lagu (lebih keras di awal…), pilih “Lagu”. » @ 450,859
+bouton (pinceau) « Gambar » [coupé, sélectionné] @ 165,937
+bouton (courbe) « Garis » [coupé] @ 371,937
+texte « Haluskan » [coupé] @ 573,931
+texte « Efek Bab 10/13 · Langkah 2/2 · Pro » @ 378,1009
+icône (liste) « Bab » @ 771,1009
+icône ⌃ @ 843,1009
+icône « Giliranmu: otomasi “Cutoff” trek “Melodi” di Drop: kurva yang naik sampai tengah lalu turun lagi. Baca » ⌃ @ 450,1152
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

@@ -1,0 +1,57 @@
+Écran 70 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Drop birama 33/120 » ▾ @ 389,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+image (courbe) @ 0,0
+bouton (haut-parleur et ondes) [coupé, allumé, état « aktif »] @ 57,223
+bouton (casque) [coupé, état « mati »] @ 111,223
+curseur [état « +0,0 dB », à 80 %] @ 84,384
+texte « +0,0 » [coupé] @ 84,538
+bouton (haut-parleur et ondes) [coupé, allumé, état « aktif »] @ 177,230
+bouton (casque) [coupé, état « mati »] @ 231,230
+curseur [état « +0,0 dB », à 80 %] @ 204,398
+texte « +0,0 » [coupé] @ 204,545
+bouton (haut-parleur et ondes) [coupé, allumé, état « aktif »] @ 297,223
+bouton (casque) [coupé, état « mati »] @ 351,223
+curseur [état « +0,0 dB », à 80 %] @ 324,384
+texte « +0,0 » [coupé] @ 324,538
+bouton (haut-parleur et ondes) [coupé, allumé, état « aktif »] @ 417,230
+bouton (casque) [coupé, état « mati »] @ 471,230
+curseur [état « +0,0 dB », à 80 %] @ 444,398
+texte « +0,0 » [coupé] @ 444,545
+bouton (haut-parleur et ondes) [coupé, allumé, état « aktif »] @ 537,230
+bouton (casque) [coupé, état « mati »] @ 591,230
+curseur [état « +0,0 dB », à 80 %] @ 564,398
+texte « +0,0 » [coupé] @ 564,545
+texte « Mix Bab 11/13 · Langkah 1/3 · Pro » @ 378,618
+icône (liste) « Bab » @ 771,618
+icône ⌄ @ 843,618
+texte « Giliranmu: di Mix, turunkan sedikit slider trek “Melodi” (hoover), lalu slider trek “Bass”. » @ 450,793
+texte « ▸ Kenapa? » @ 450,925
+bouton (doigt qui touche) «   Aku yang buat » @ 450,1002
+bouton ▶ «  Dengar contohnya » @ 232,1088
+bouton (œil) «  Tunjukkan » @ 667,1088
+icône ← «  Sebelumnya » @ 176,1174
+icône « Berikutnya  » → @ 739,1174
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

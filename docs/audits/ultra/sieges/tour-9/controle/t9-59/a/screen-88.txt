@@ -1,0 +1,8 @@
+Écran 88 (900x1509)
+texte « Sudah siap » @ 208,513
+texte « Siap: Laguku-lagu-klub-20261119-115845.wav, salinannya juga ada di Music › BenStudio. » @ 450,657
+texte « −8,0 LUFS terintegrasi · puncak −3,6 dBTP » @ 445,773
+texte « WAV, 48 kHz, 24-bit · 3 mnt 45 dtk » @ 374,831
+texte « Target: Klub · −8 LUFS » @ 267,889
+texte « Lihat file-ku » @ 594,991
+texte « OK » @ 786,991

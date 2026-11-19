@@ -1,0 +1,11 @@
+Écran 45 (900x1509)
+texte « Bagian yang diedit » @ 507,123
+texte « A · Groove » @ 509,192
+texte « B · Intro » @ 509,264
+texte « C · Intro 2 » @ 509,336
+texte « D · Drop » @ 509,408
+texte « E · Mini-break » @ 509,480
+icône ✓ « F · Break » @ 509,552
+texte « G · Drop 2 » @ 509,624
+texte « H · Akhir » @ 509,696
+icône + « Bagian kosong baru » @ 509,790

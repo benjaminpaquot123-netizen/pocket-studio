@@ -1,0 +1,44 @@
+Écran 76 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Drop birama 33/120 » ▾ @ 389,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+image (courbe) @ 0,0
+texte « ketukan » [coupé] @ 81,208
+titre « OUTPUT MASTER » [état « Terbuka »] @ 262,300
+bouton « ? » @ 461,300
+texte « Volume: — » @ 142,359
+texte « Volume master » [coupé] @ 377,435
+texte « −6,0 dB » [coupé] @ 785,439
+texte « Mastering Bab 12/13 · Langkah 1/1 · Pro » @ 378,512
+icône (liste) « Bab » @ 771,512
+icône ⌄ @ 843,512
+texte « Output master punya limiter bawaan, selalu paling akhir di rantai (tidak muncul di “Efek”-nya): limiter ini mencegah suara melewati batas. Giliranmu: di “Output master”, atur “Target loudness” ke “Klub”: lagumu terdengar sekeras di klub. » [coupé] @ 450,687
+texte « ▸ Kenapa? » @ 450,819
+icône « Baca selanjutnya » ⌄ @ 450,882
+bouton (doigt qui touche) «   Aku yang buat » @ 450,1002
+bouton ▶ «  Dengar contohnya » @ 232,1088
+bouton (œil) «  Tunjukkan » @ 667,1088
+icône ← «  Sebelumnya » @ 176,1174
+icône « Berikutnya  » → @ 739,1174
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

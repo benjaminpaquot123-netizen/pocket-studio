@@ -1,0 +1,45 @@
+Écran 69 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Drop birama 33/120 » ▾ @ 389,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+image (courbe) @ 0,0
+texte « Haluskan » @ 561,248
+bouton (pinceau) « Gambar » [sélectionné] @ 153,248
+bouton (courbe) « Garis » @ 359,248
+icône (loupe −) [désactivé] @ 78,330
+icône (loupe +) @ 200,330
+texte « ×1 » @ 139,330
+texte « Gambar dengan jarimu; ketuk dua kali untuk menghapus titik. “Haluskan” merapikan garis yang goyang, “Urungkan” membatalkannya. » @ 450,479
+texte « 18,0 kHz » @ 81,616
+texte « Efek Bab 10/13 · Selesai · Pro » @ 378,721
+icône (liste) « Bab » @ 771,721
+icône ⌄ @ 843,721
+image (coupe) @ 57,894
+texte « Bagus, bab selesai! » @ 276,842
+texte « Dengarkan lagumu seperti sekarang, lalu lanjut ke bab berikutnya: “Mix”. » @ 475,922
+bouton « Bab berikutnya   » → @ 450,1035
+bouton ▶ «  Dengarkan laguku » @ 294,1149
+bouton ▶ «  Dengar contohnya » @ 687,1149
+icône ← @ 57,1149
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

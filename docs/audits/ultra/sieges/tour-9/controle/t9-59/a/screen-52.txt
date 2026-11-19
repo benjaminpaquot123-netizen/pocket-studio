@@ -1,0 +1,31 @@
+Écran 52 (900x1509)
+texte « Efek · pad 5 (Clap) » @ 283,72
+texte « Sentuh nuansa untuk mencobanya: kamu selalu bisa kembali dengan Urungkan. » [coupé] @ 450,158
+texte « Tahan jarimu di satu nuansa untuk mendengarnya; lepas, suaramu kembali. » @ 450,248
+texte « Pad XY, atas-bawah: » @ 238,338
+bouton « ? » @ 455,338
+bouton « Ruang » [sélectionné] @ 136,412
+bouton « Kotor » @ 306,412
+bouton « Gerak » @ 472,412
+texte « ↑ Jauh » @ 450,484
+texte « ← Gelap » @ 205,793
+texte « ↓ Kering » @ 450,793
+texte « Cerah → » @ 695,793
+texte « Geser jarimu untuk mengacak suara secara live. Ketuk dua kali: kembali ke suara awal. » @ 450,881
+curseur [état « Netral », à 50 %] @ 151,984
+texte « Warna » @ 150,1053
+texte « Netral » @ 151,1104
+curseur [état « 0 », à 0 %] @ 350,984
+texte « Kotor » @ 350,1053
+texte « 0 » @ 350,1104
+curseur [état « 0 », à 0 %] @ 549,984
+texte « Gerak » @ 549,1053
+texte « 0 » @ 549,1104
+curseur [état « 0 », à 0 %] @ 749,984
+texte « Ruang » @ 749,1053
+texte « 0 » @ 749,1104
+texte « Reverb dan echo bersama » @ 299,1168
+texte « Send reverb » @ 405,1248
+texte « 30% » @ 795,1248
+curseur [état « 30% », à 30 %] @ 450,1312
+texte « Tutup » @ 775,1433

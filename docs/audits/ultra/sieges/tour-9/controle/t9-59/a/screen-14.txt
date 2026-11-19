@@ -1,0 +1,41 @@
+Écran 14 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 128  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Timeline » [désactivé] @ 129,252
+onglet « Bagian » [sélectionné] @ 323,252
+titre « LAGUNYA » [état « Terbuka »] @ 184,348
+bouton « ? » @ 305,348
+texte « Garis waktu menyusun bagianmu secara berurutan, masing-masing dengan panjangnya dalam birama. Tambahkan secara berurutan. » @ 450,488
+texte « Tambah: » [coupé] @ 121,609
+texte « Bangun bagian-bagianmu Bab 7/13 · Langkah 6/7 · Pro » @ 378,681
+icône (liste) « Bab » @ 771,681
+icône ⌄ @ 843,681
+image (coupe) @ 57,854
+texte « Bagus, berhasil! » @ 245,802
+texte « Bagian “Drop 2” dibuat (salinan Groove): tanpa Rim. » [coupé] @ 475,856
+icône « Baca selanjutnya » ⌄ @ 450,918
+bouton « Langkah berikutnya   » → @ 450,1035
+bouton ▶ «  Dengar contohnya » @ 687,1149
+bouton ▶ «  Dengar hasilmu » @ 294,1149
+icône ← @ 57,1149
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

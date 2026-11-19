@@ -1,0 +1,32 @@
+Écran 32 (900x1509)
+dessin @ 450,36
+texte « Bagian 4 · E · Mini-break » @ 322,105
+texte « Tutup » @ 802,129
+texte « 8 birama » @ 105,162
+bouton (étincelles) « Variasi » @ 234,243
+bouton (barres de son) « Fill di akhir » @ 666,243
+bouton ❚❚ « Break sesudah · 4 birama » @ 234,368
+bouton ❚❚ « Break sesudah · 8 birama » @ 666,368
+bouton (courbe qui monte) « Build-up sebelum · 4 birama » @ 234,519
+bouton (courbe qui monte) « Build-up sebelum · 8 birama » @ 666,519
+bouton (haut-parleur et ondes) « Fade-in » @ 234,644
+bouton (haut-parleur et une onde) « Fade-out » @ 666,644
+bouton (drapeau) « Tambah penutup » @ 234,743
+texte « Energi: 3 » @ 107,828
+bouton « 1 · pad » @ 109,907
+bouton « 2 · + bass » @ 319,907
+bouton « 3 · + drum » [sélectionné] @ 566,907
+bouton « 4 · full » @ 781,907
+texte « Panjang » @ 99,986
+champ « birama » contenu «  » @ 268,1127
+texte « OK » [désactivé] @ 407,1128
+icône − [désactivé] @ 60,1128
+icône + @ 141,1128
+texte « Bagian » @ 88,1269
+icône (crayon) « Ganti nama » @ 166,1352
+icône (curseurs) « Yang sedang main » @ 524,1352
+icône ↑ « Naikkan » @ 136,1432
+icône ↓ « Turunkan » @ 379,1432
+icône (deux feuilles) « Duplikat » @ 624,1432
+icône + « Sisipkan sesudah » [coupé] @ 225,1490
+icône (poubelle) « Hapus » [coupé] @ 528,1490

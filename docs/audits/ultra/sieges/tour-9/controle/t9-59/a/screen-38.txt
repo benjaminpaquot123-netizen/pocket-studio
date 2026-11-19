@@ -1,0 +1,48 @@
+Écran 38 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Intro birama 1/120 » ▾ @ 377,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+bouton « Akor lagu B · Intro Dm  Dm  Dm  Dm  Dm  Dm  Dm  Dm C · Intro 2 Dm  Dm  B♭  C  Dm  Dm  B♭  C D · Drop Dm  Dm  B♭  C  Dm  Dm  B♭  C E · Mini-break Dm  Dm  B♭  C  Dm  Dm  B♭  C F · Break Dm  Dm  B♭  C  Dm  Dm  B♭  C G · Drop 2 Dm  Dm  B♭  C  Dm  Dm  B♭  C … dan 1 bagian lain Sentuh untuk mengganti akor seluruh lagu. » [coupé] @ 450,222
+icône ▶ « B · Intro 16 birama » @ 342,305
+icône − [désactivé] @ 678,306
+icône + [désactivé] @ 750,306
+icône ⋮ @ 822,306
+icône ▶ « C · Intro 2 16 birama » @ 342,424
+icône − [désactivé] @ 678,425
+icône + [désactivé] @ 750,425
+icône ⋮ @ 822,425
+image ✓ @ 33,409
+texte « Selesai: panjang baru untuk E · Mini-break » @ 406,415
+texte « Batal » @ 809,415
+texte « Transisi Bab 9/13 · Langkah 1/2 · Pro » @ 378,555
+icône (liste) « Bab » @ 771,555
+icône ⌄ @ 843,555
+texte « Giliranmu: di bagian “Break”, birama terakhir, hapus pukulan di ketukan terakhir (sentuh tiap silang merah): satu ketukan hening tepat sebelum Drop 2. » @ 450,762
+texte « ▸ Kenapa? » @ 450,925
+bouton ⊕ «   Pergi ke bagian “Break” » @ 450,1002
+bouton ▶ «  Dengar contohnya » @ 232,1088
+bouton (œil) «  Tunjukkan » @ 667,1088
+icône ← «  Sebelumnya » @ 176,1174
+icône « Berikutnya  » → @ 739,1174
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

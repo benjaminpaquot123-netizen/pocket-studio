@@ -1,0 +1,51 @@
+Écran 50 (900x1509)
+dessin @ 450,36
+texte « Drum » @ 385,112
+texte « Tutup » @ 802,112
+bouton « Senyap » @ 119,203
+bouton « Solo » @ 293,203
+texte « Volume » @ 377,285
+texte « +0,0 dB » @ 803,285
+curseur [état « +0,0 dB », à 80 %] @ 450,368
+texte « Pan » @ 62,450
+bouton « ? » @ 121,450
+texte « Tengah » @ 806,450
+curseur [état « Tengah », à 50 %] @ 450,533
+bouton (barres de son) «  Yang sedang main » @ 234,624
+bouton (courbe) «  Kurva » @ 666,624
+texte « Efek » @ 66,707
+texte « Efek terpasang: 3 dari 8 » @ 251,778
+bouton « 1. Kompresor » @ 306,848
+icône ⏻ @ 624,848
+icône ⌃ [désactivé] @ 696,848
+icône ⌄ @ 768,848
+icône ✕ @ 840,848
+bouton « Semua » [sélectionné] @ 265,926
+bouton « A · Groove » @ 488,926
+bouton « B · Intro » @ 719,926
+bouton « C · Intro 2 » [coupé] @ 851,926
+texte « Main di: » @ 95,926
+bouton « 2. Saturasi » @ 306,1004
+icône ⏻ @ 624,1004
+icône ⌃ @ 696,1004
+icône ⌄ @ 768,1004
+icône ✕ @ 840,1004
+texte « Main di: » @ 95,1082
+bouton « Semua » [sélectionné] @ 265,1082
+bouton « A · Groove » @ 488,1082
+bouton « B · Intro » @ 719,1082
+bouton « C · Intro 2 » [coupé] @ 851,1082
+bouton « 3. Soft clipper » @ 306,1160
+icône ⏻ @ 624,1160
+icône ⌃ @ 696,1160
+icône ⌄ [désactivé] @ 768,1160
+icône ✕ @ 840,1160
+texte « Main di: » @ 95,1238
+bouton « Semua » [sélectionné] @ 265,1238
+bouton « A · Groove » @ 488,1238
+bouton « B · Intro » @ 719,1238
+bouton « C · Intro 2 » [coupé] @ 851,1238
+texte « Efek bisa main di bagian tertentu saja: sentuh hurufnya. » @ 450,1332
+bouton + «   Tambah efek » @ 450,1430
+texte « Nuansa siap pakai » [coupé] @ 197,1497
+bouton « ? » [coupé] @ 392,1500

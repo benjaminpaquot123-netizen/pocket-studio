@@ -1,0 +1,45 @@
+Écran 27 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 220,42
+bouton « Pro » @ 473,42
+icône ↶ @ 551,42
+icône ↷ [désactivé] @ 623,42
+bouton ● @ 695,42
+bouton ▶ « bagian ini » @ 775,42
+icône (trois points reliés) @ 855,42
+icône « Intro birama 1/64 » ▾ @ 364,144
+bouton « 128  BPM » @ 114,144
+bouton (flèches en boucle) « Loop » [état « mati »] @ 730,144
+bouton « ? » @ 855,144
+bouton « Akor lagu B · Intro Dm  Dm  Dm  Dm  Dm  Dm  Dm  Dm C · Intro 2 Dm  Dm  B♭  C  Dm  Dm  B♭  C D · Drop Dm  Dm  B♭  C  Dm  Dm  B♭  C E · Mini-break Dm  Dm  B♭  C  Dm  Dm  B♭  C F · Break Dm  Dm  B♭  C  Dm  Dm  B♭  C G · Drop 2 Dm  Dm  B♭  C  Dm  Dm  B♭  C … dan 1 bagian lain Sentuh untuk mengganti akor seluruh lagu. » [coupé] @ 450,222
+icône ▶ « B · Intro × 1  ·  8 birama » @ 342,305
+icône − [désactivé] @ 678,306
+icône + @ 750,306
+icône ⋮ @ 822,306
+icône ▶ « C · Intro 2 × 1  ·  8 birama » [coupé] @ 342,408
+icône − [désactivé, coupé] @ 678,420
+icône + [coupé] @ 750,420
+icône ⋮ [coupé] @ 822,420
+texte « Susun bagian-bagianmu Bab 8/13 · Langkah 2/2 · Pro » @ 378,512
+icône (liste) « Bab » @ 771,512
+icône ⌄ @ 843,512
+texte « Giliranmu: durasinya: Intro 16 birama, Intro 2 16, Drop 16, Mini-break 2, Drop 14, Break 16, Drop 2 24, dan Akhir 16 (“Pakai durasi yang disarankan” melakukannya sekaligus). » [coupé] @ 450,687
+texte « ▸ Kenapa? » @ 450,819
+icône « Baca selanjutnya » ⌄ @ 450,882
+bouton ⊕ «   Pakai durasi yang disarankan » @ 450,1002
+bouton (œil) «  Tunjukkan » @ 450,1088
+icône ← «  Sebelumnya » @ 176,1174
+icône « Berikutnya  » → @ 739,1174
+icône ↶ « Urungkan » @ 133,1277
+icône ↷ « Ulangi » [désactivé] @ 316,1277
+bouton ▶ « lagu » @ 458,1278
+texte « 128 Tempo » @ 605,1277
+icône (trois points reliés) « Bagikan » @ 781,1277
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 628,1479
+texte « ✎  Catat » @ 750,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 292,1479

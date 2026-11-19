@@ -1,0 +1,6 @@
+tab_simple_Rythme
+dialogue:part_header_menu
+session/tab_simple_Morceau
+dialogue:tuto_chapter_list
+tab_simple_Morceau
+tuto_panel/tab_simple_Rythme

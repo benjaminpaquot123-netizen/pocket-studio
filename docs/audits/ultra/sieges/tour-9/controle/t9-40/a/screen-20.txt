@@ -1,0 +1,38 @@
+Écran 20 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 174  Tempo » @ 98,123
+bouton « ? » @ 543,123
+texte « Ajouter : » [coupé] @ 98,180
+bouton « + A · Groove » @ 163,246
+bouton « + B · Intro » @ 395,246
+bouton « + Nouvelle partie (copie de B · Intro) » [coupé] @ 294,305
+texte « Construis tes parties Chapitre 10/15 · Étape 2/8 · Facile » @ 201,388
+icône (liste) « Chapitres » @ 438,389
+icône ⌄ @ 531,389
+texte « À toi : touche « Créer la partie « Montée » ». » @ 294,518
+bouton « Télécharger le kit Jump up DnB (2 Mo) » @ 221,632
+texte « Plus tard » @ 488,632
+texte « ▸ Pourquoi ? » @ 294,714
+bouton ⊕ «   Créer la partie « Montée » » @ 294,783
+bouton ▶ «  Écouter l'exemple » @ 154,881
+bouton (œil) «  Montre-moi » @ 433,881
+icône ← «  Précédent » @ 127,976
+icône « Suivant  » → @ 480,976
+icône ↶ « Annuler » @ 65,1061
+image ↷ @ 168,1048
+bouton ▶ « le morceau » @ 291,1061
+texte « 174 Tempo » @ 419,1061
+icône ⋮ « Plus » @ 524,1061
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

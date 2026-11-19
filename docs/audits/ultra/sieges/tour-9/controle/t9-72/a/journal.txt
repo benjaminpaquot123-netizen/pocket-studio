@@ -1,0 +1,31 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:trance:7
+#0 PREMIER ECRAN reel_s=3.9 simule_s=2.4 jvm_s=9.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:trance:7
+#0 AMENEE > touche 294 621 (welcome_learn)
+#0 AMENEE > touche 294 915 (mode_card_simple)
+#0 AMENEE > touche 294 1087 (tuto_style_trance)
+#0 AMENEE chapitres 1 à 6 construits dans le projet
+#0 AMENEE > touche 444 477 (tuto_chapters)
+#0 AMENEE > touche 294 1218 (tuto_quit)
+#0 AMENEE > touche 147 990 (tuto_resume)
+#0 AMENEE chapitres 1 à 6 cochés (19 étapes)
+#0 AMENEE > touche 444 348 (tuto_chapters)
+#0 AMENEE > touche 294 630 (tuto_chapter_6)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e951aad18e | project=p-a0d15bc0 tuto=trance/Facile active=true step=brick done=19 chapters=1,2,3,4,5,6 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 8 » 3.56:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 24 » 4.28:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#1 > touche 294 894
+#1 DOIGT tuto_mark «   J'ai compris »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 12ed452da7 | project=p-a0d15bc0 tuto=trance/Facile active=true step=map_intro done=20 chapters=1,2,3,4,5,6 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Intro » 4.15:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#2 > touche 294 894
+#2 DOIGT tuto_listen «  Écouter l'exemple »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE eb016e08f1 | project=p-a0d15bc0 tuto=trance/Facile active=true step=map_intro done=20 chapters=1,2,3,4,5,6 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 3 s).

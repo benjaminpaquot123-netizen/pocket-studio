@@ -14,6 +14,13 @@ Fiche : `docs/audits/ultra/tour-8-fiches/fiche-garde-fous.md`, partie A (la part
 
 tests: com.pocketstudio.app.tuto.TutoReadabilityBudgetTest com.pocketstudio.app.tuto.Tour7TutoPanelFoldTest com.pocketstudio.model.tuto.TutoValidationMomentTest com.pocketstudio.model.tuto.Tour6TutoMixWordsTest
 
+## Chemins
+
+chemin: panneau du tuto Facile, toutes leçons, langues, tailles et largeurs | test: TutoReadabilityBudgetTest#everyFacileExceptionStillMisses
+chemin: panneau du tuto, texte replié « Lire la suite » | test: Tour7TutoPanelFoldTest#theBlocksFoldInOrderTheKitStaysAndWhyIsTouchable
+chemin: validation des consignes (un moment par consigne) | test: TutoValidationMomentTest#everyExceptionStillBreaksTheRuleAndTheListOnlyShrinks
+chemin: étapes de volume du tuto Facile, 14 langues | test: Tour6TutoMixWordsTest#everyVolumeStepNamesItsTracksInEveryLanguage
+
 ## Entrées retirées
 
 Aucune : à la CI 387, les deux tests ne nomment que la fausse entrée. Après T0c, aucune entrée réelle n'est périmée (52 moments, 409 cas de lisibilité).

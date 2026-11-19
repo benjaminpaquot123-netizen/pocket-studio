@@ -1,10 +1,11 @@
 # Tour 9, lot L5b : rapport (contenu des cours, mots)
 
 Tentés : 13 / 21 (F068, F073, F075, F076, F077, F082, F085, F088, F090, F094, F096, F097, F098).
-Laissés de côté (hors fiche) : F078, F081, F084, F086, F087, F089, F093, F099 (voir `docs/decisions/tour-9-L5b.md`).
+Rendus au chef non commencés (équipes neuves, 2026-11-19) : F078, F081, F084, F086, F087, F089, F093, F099 (voir `docs/decisions/tour-9-L5b.md`).
 Finitions : pas de rejeu, la preuve est un test (un commit « rouge: » puis « vert: » par défaut).
 
 tests: :app:testDebugUnitTest --tests '*Tour9L5bTutoWordsTest*' --tests '*I18nCatalogTest*' --tests '*LangTest*' --tests '*TutoPadNamesTest*' --tests '*Tour9TutoSweepTextTest*'
+controle: reporté (mode boost, grande vérification de fin)
 
 chemin: tuto basse, consigne Roll (en, de, 11 langues) | test: Tour9L5bTutoWordsTest#f068RollStepNamesTheTap
 chemin: tuto, message de copie de partie (hi) | test: Tour9L5bTutoWordsTest#f073PartCopyMessageSaysWhatIsRemoved

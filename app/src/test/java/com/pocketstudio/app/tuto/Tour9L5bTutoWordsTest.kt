@@ -73,4 +73,17 @@ class Tour9L5bTutoWordsTest {
         val title = shown(Lang.AR, "Le mix")
         assertTrue("ar chapter « Le mix »: $title", I18n.table(Lang.AR)["Mix"].orEmpty() in title)
     }
+
+    /** F076: the disco chapter « le refrain » asks to name the part « Drop »: its title names that same part. */
+    @Test
+    fun f076DiscoChapterNamesTheDropPart() {
+        val step = "À toi : nomme cette partie « Drop » : c'est ton refrain, le moment où tout joue."
+        val title = "Ta première partie : le refrain"
+        assertTrue("disco still has that chapter", step in tutoTexts && title in tutoTexts)
+        val quote = Regex("""[«“„‘「]\s*([^»”“’」]+?)\s*[»”“’」]""")
+        assertNoneLeft("chapter title without the part's name", others.associateWith { l ->
+            val name = quote.find(shown(l, step))?.groupValues?.get(1) ?: error("no quoted name in ${l.code}")
+            listOf(shown(l, title)).filter { name !in it }
+        })
+    }
 }

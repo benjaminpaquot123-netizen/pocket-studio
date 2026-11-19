@@ -409,4 +409,3 @@ jungle/levels ja GRID 100% 360dp 5/3
 jungle/levels ja OPEN 130% 360dp 7/5
 jungle/levels ko GRID 100% 360dp 4/3
 jungle/levels zh-CN GRID 100% 360dp 4/3
-techno/tempo fr OPEN 100% 360dp 1/8

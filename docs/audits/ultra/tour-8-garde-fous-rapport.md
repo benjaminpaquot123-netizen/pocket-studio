@@ -7,16 +7,20 @@ Fiche : `docs/audits/ultra/tour-8-fiches/fiche-garde-fous.md`, partie A (la part
 
 | Point | Test | Rouge d'abord |
 |---|---|---|
-| MOYEN, exceptions périmées (moments) | `TutoOneMomentTest.everyExceptionStillBreaksTheRuleItExcuses` : chaque entrée doit encore être un problème mesuré ; plafond `CEILING` | fausse entrée `techno/tempo engine` (commit rouge 94221107f, CI 387) |
-| MOYEN, exceptions périmées (lisibilité Facile) | `TutoReadabilityBudgetTest.everyFacileExceptionStillMisses` ; plafond `FACILE_FROZEN` baissé au compte mesuré | fausse entrée `techno/tempo fr OPEN 100% 360dp` (même CI) |
-| Mineur, repli du panneau | `Tour7TutoPanelFoldTest` : compteur de cas coupés (« Lire la suite »), rouge s'il vaut 0 | — (garde ; vert attendu) |
-| Mineur, étapes de volume | `Tour6TutoMixWordsTest.everyVolumeStepNamesItsTracksInEveryLanguage` : les 36 étapes, 14 langues, traduites et nommant chaque piste à baisser | règle rejouée hors Gradle (Python, mêmes fichiers) : 0 écart ; une piste retirée d'un texte la fait rougir |
+| MOYEN, exceptions périmées (moments) | déjà couvert par `TutoValidationMomentTest.everyExceptionStillBreaksTheRuleAndTheListOnlyShrinks` (la revue du tour 7 l'avait manqué) ; son plafond `FROZEN` passe de 368 au compte, 52. Le doublon ajouté dans `TutoOneMomentTest` au commit rouge est retiré | fausse entrée `techno/tempo engine` : les deux tests rouges à la CI 387 (94221107f) |
+| MOYEN, exceptions périmées (lisibilité Facile) | `TutoReadabilityBudgetTest.everyFacileExceptionStillMisses` ; `FACILE_FROZEN` reste 409, déjà le compte exact (410 avec la fausse entrée) | fausse entrée `techno/tempo fr OPEN 100% 360dp` : rouge à la CI 387, seule entrée nommée |
+| Mineur, repli du panneau | `Tour7TutoPanelFoldTest` : compteur de cas coupés (« Lire la suite »), rouge s'il vaut 0 | — (garde ; vert à la CI 387) |
+| Mineur, étapes de volume | `Tour6TutoMixWordsTest.everyVolumeStepNamesItsTracksInEveryLanguage` : les 36 étapes, 14 langues, traduites et nommant chaque piste à baisser | règle rejouée hors Gradle (Python, mêmes fichiers) : 0 écart ; une piste retirée d'un texte la fait rougir ; vert à la CI 387 |
 
 ## Entrées retirées
 
-À remplir avec les listes de la CI 387.
+Aucune : à la CI 387, les deux tests ne nomment que la fausse entrée. Après T0c, aucune entrée réelle n'est périmée (52 moments, 409 cas de lisibilité).
 
 Effet pour l'élève : aucun. `tuto-moment-exceptions.txt` n'est lu que par la validation (`TutoValidation`) ; une entrée périmée n'excuse plus rien, la retirer ne change aucun texte ni aucun écran.
+
+## Mesure
+
+CI 387 (run 44427624462) sur le commit rouge : seuls les rouges attendus. Aucun changement de `build.gradle.kts` : le test déjà présent était vert à la base, donc la seule entrée périmée était la fausse.
 
 ## Pas pris (clôture du tour 8)
 

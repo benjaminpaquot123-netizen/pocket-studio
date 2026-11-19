@@ -119,6 +119,14 @@ internal fun dottedTouch(dotted: Note, hints: List<Note>, clip: NoteClip, chordM
     else hints.filter { h -> h.start == dotted.start && clip.notes.none { it.pitch == h.pitch && it.start == h.start } }.ifEmpty { listOf(dotted) }
 
 /**
+ * Tour 9 (F113, seats 11, 15, 66): the dotted notes a touch is asked for. In the chords' mode a touch on a chord's
+ * bottom note writes the whole chord, and the step says « the bottom dotted note of each chord »: only those are
+ * aimed at (lit, brought into view); the roll lit the chord's top one. Otherwise every note of [left].
+ */
+internal fun aimedNotes(left: List<Note>, chordMode: Boolean): List<Note> =
+    if (!chordMode) left else left.filter { n -> left.none { it.start == n.start && it.pitch < n.pitch } }
+
+/**
  * The dotted note a tap means while the tutorial shows some: the one under the tap ([tick] in its span, same row),
  * or — when the tap just missed it — the nearest one still to write, within one step in time and one row in pitch.
  * A tutorial's dotted note drawn as a sliver at the view's edge (control seat, tuto Facile, chapter 7: the last
@@ -816,19 +824,20 @@ private fun Grid(
             left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + view.width, top = vScroll.value + seen.start, bottom = vScroll.value + seen.endInclusive,
             stepPx = stepPx, rowPx = rowPx, high = high,
         )
-        com.pocketstudio.model.tuto.TutoRollHint.next(left, shown, barSteps) ?: return@LaunchedEffect
+        val aimed = aimedNotes(left, chordMode)
+        com.pocketstudio.model.tuto.TutoRollHint.next(aimed, shown, barSteps) ?: return@LaunchedEffect
         // Tour 8, T0a: the dotted notes of the time in sight too far apart for the rows (house bass, its two « La »): the
         // rows fold so that they all fit, then the notes are framed (below), instead of going from one to the other.
         val fold = if (touched) com.pocketstudio.model.tuto.TutoRollHint.folded(left, shown, barSteps, with(density) { MIN_ROW.dp.toPx() }) else null
         if (fold != null) {
-            folding = com.pocketstudio.model.tuto.TutoRollHint.aside(left, shown, barSteps)
+            folding = com.pocketstudio.model.tuto.TutoRollHint.aside(aimed, shown, barSteps)
             // A whole number of pixels a row ([rowHeight] rounds): a little under, never over the row that fits.
             zoomBy(1f, (fold - 0.45f) / rowPx)
             return@LaunchedEffect
         }
-        val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(left, shown, barSteps, touched)
+        val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(aimed, shown, barSteps, touched)
         // The note the touch brings from out of the rows is the one lit (control « tuto2 », seat a), once in sight.
-        lit = com.pocketstudio.model.tuto.TutoRollHint.lit(left, shown, barSteps, touched, vScroll.value.toFloat(), (vScroll.maxValue - vScroll.value).toFloat())
+        lit = com.pocketstudio.model.tuto.TutoRollHint.lit(aimed, shown, barSteps, touched, vScroll.value.toFloat(), (vScroll.maxValue - vScroll.value).toFloat())
         if (dx != 0f) hScroll.animateScrollTo((hScroll.value + dx).roundToInt().coerceIn(0, hScroll.maxValue))
         if (dy != 0f) vScroll.animateScrollTo((vScroll.value + dy).roundToInt().coerceIn(0, vScroll.maxValue))
     }

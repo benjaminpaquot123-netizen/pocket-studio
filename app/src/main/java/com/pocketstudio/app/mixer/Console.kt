@@ -50,6 +50,8 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.contentDescription
@@ -211,9 +213,15 @@ internal fun VerticalFader(
     // (kept apart from the value given back: a slide moves it by as much as the finger goes).
     val travel = remember { floatArrayOf(1f) }
     val held = remember { floatArrayOf(Float.NaN) }
+    // The touch slop the drag waits for is not given in its first delta: added back, the cap follows
+    // the finger from where it went down (no dead zone, then no jump).
+    val slop = LocalViewConfiguration.current.touchSlop
+    val fresh = remember { booleanArrayOf(false) }
     val state = rememberDraggableState { dy ->
         val from = if (held[0].isNaN()) latest else held[0]
-        val now = (from - dy / travel[0]).coerceIn(0f, 1f)
+        val moved = if (fresh[0] && dy != 0f) dy + kotlin.math.sign(dy) * slop else dy
+        if (dy != 0f) fresh[0] = false
+        val now = (from - moved / travel[0]).coerceIn(0f, 1f)
         held[0] = now
         change(now)
     }
@@ -225,7 +233,8 @@ internal fun VerticalFader(
     val cap = Neon.TextPrimary
     Canvas(
         modifier.width(56.dp).height(height)
-            .draggable(state, Orientation.Vertical, onDragStarted = { held[0] = latest }, onDragStopped = { held[0] = Float.NaN })
+            .onSizeChanged { travel[0] = it.height.toFloat().coerceAtLeast(1f) }
+            .draggable(state, Orientation.Vertical, onDragStarted = { held[0] = latest; fresh[0] = true }, onDragStopped = { held[0] = Float.NaN })
             .semantics {
                 contentDescription = description
                 stateDescription = faderDb(value)

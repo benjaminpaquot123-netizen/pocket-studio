@@ -54,6 +54,9 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
@@ -471,9 +474,16 @@ private fun MixFader(
     val reset by rememberUpdatedState(onReset)
     val travel = remember { floatArrayOf(1f) }
     val held = remember { floatArrayOf(Float.NaN) }
+    // The touch slop the drag waits for is not given in its first delta: added back, the cap follows
+    // the finger from where it went down (no dead zone, then no jump).
+    val slop = LocalViewConfiguration.current.touchSlop
+    val padPx = with(LocalDensity.current) { 6.dp.toPx() }
+    val fresh = remember { booleanArrayOf(false) }
     val state = rememberDraggableState { dy ->
         val from = if (held[0].isNaN()) latest else held[0]
-        val now = (from - dy / travel[0]).coerceIn(0f, 1f)
+        val moved = if (fresh[0] && dy != 0f) dy + kotlin.math.sign(dy) * slop else dy
+        if (dy != 0f) fresh[0] = false
+        val now = (from - moved / travel[0]).coerceIn(0f, 1f)
         held[0] = now
         change(now)
     }
@@ -516,7 +526,8 @@ private fun MixFader(
                     }
                 }
             }
-            .draggable(state, Orientation.Vertical, onDragStarted = { held[0] = latest }, onDragStopped = { held[0] = Float.NaN })
+            .onSizeChanged { travel[0] = (it.height - 2 * padPx).coerceAtLeast(1f) }
+            .draggable(state, Orientation.Vertical, onDragStarted = { held[0] = latest; fresh[0] = true }, onDragStopped = { held[0] = Float.NaN })
             .semantics {
                 contentDescription = description
                 stateDescription = said

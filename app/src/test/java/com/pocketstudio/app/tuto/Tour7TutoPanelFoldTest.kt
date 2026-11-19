@@ -75,6 +75,8 @@ class Tour7TutoPanelFoldTest {
             }
         }
         val wrong = ArrayList<String>()
+        // Tour 8, garde-fous: the fold is only proven where the words are cut; no cut case at all proves nothing.
+        var cut = 0
         fun node(tag: String) = compose.onAllNodes(hasTestTag(tag), useUnmergedTree = true).fetchSemanticsNodes().firstOrNull()
         for (l in listOf(Lang.FR, Lang.AR)) for (s in listOf(1f, 1.3f)) for (p in places) {
             I18n.lang = l
@@ -84,6 +86,7 @@ class Tour7TutoPanelFoldTest {
             compose.waitForIdle()
             val where = "${l.code} ${(s * 100).toInt()} % ${chapters[p.first].steps[p.second].id}"
             val more = node("tuto_text_more")?.boundsInRoot
+            if (more != null) cut++
             // The examples fold before the words are cut.
             val ex = node("wizard_plain_words")
             if (more != null && ex != null && ex.boundsInRoot.height > 0.5f) wrong += "$where: words cut, examples still in sight"
@@ -103,5 +106,6 @@ class Tour7TutoPanelFoldTest {
             }
         }
         assertTrue("Panel fold:\n" + wrong.joinToString("\n"), wrong.isEmpty())
+        assertTrue("no case with the words cut (« Lire la suite »): the fold was not tested", cut > 0)
     }
 }

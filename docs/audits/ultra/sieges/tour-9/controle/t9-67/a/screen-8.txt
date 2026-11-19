@@ -1,0 +1,57 @@
+Écran 8 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 300,42
+bouton « 간단 » @ 633,42
+bouton ● @ 711,42
+bouton ▶ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 126  템포 » @ 78,123
+bouton « ? » @ 855,123
+bouton « 멜로디 사운드 바꾸기 » › [coupé] @ 304,182
+bouton ▶ « 이것만 듣기 » [coupé] @ 676,179
+icône (curseurs) [coupé] @ 822,176
+bouton « 코드 사운드 바꾸기 » › @ 304,270
+bouton ▶ « 이것만 듣기 » @ 676,270
+icône (curseurs) @ 822,270
+titre « 곡 » [état « 펼쳐짐 »] @ 98,399
+bouton « ? » @ 132,399
+texte « 타임라인은 파트를 순서대로 놓아요. 각각 마디 단위 길이가 있어요. 순서대로 추가하세요. » @ 450,469
+texte « 파트 이해하기 7/13장 · 1/4단계 · 쉬움 » @ 378,568
+icône (liste) « 챕터 » @ 771,568
+icône ⌄ @ 843,568
+texte « 인트로를 들어 보세요: DJ를 위한 드럼 혼자. » @ 296,657
+texte « 에너지 » @ 55,706
+texte « 24 » @ 118,816
+texte « 8 » @ 250,816
+texte « 16 » @ 350,816
+texte « 16 » @ 482,816
+texte « 8 » @ 581,816
+texte « 8 » @ 648,816
+texte « 16 » @ 748,816
+texte « 8 » @ 847,816
+texte «  인트로 » [coupé] @ 75,857
+texte «  빌드업 » [coupé] @ 183,857
+texte «  드롭 » [coupé] @ 280,857
+texte «  Drop B » [coupé] @ 383,857
+texte «  브레이크 » [coupé] @ 509,857
+texte «  끝 » [coupé] @ 606,857
+bouton « Tech house 킷 다운로드 (2 MB) » @ 398,920
+texte « 나중에 » @ 821,920
+texte « ▸ 왜요? » @ 450,991
+icône « 계속 읽기 » ⌄ @ 450,1045
+bouton ▶ «  예시 듣기 » @ 450,1117
+icône ← «  이전 » @ 83,1201
+icône « 다음  » → @ 817,1201
+icône ↶ « 실행 취소 » @ 126,1289
+image ↷ @ 292,1273
+bouton ▶ « 곡 » @ 454,1289
+texte « 126 템포 » @ 617,1289
+icône ⋮ « 더보기 » @ 779,1289
+onglet (lignes et note) « 내 곡 » [sélectionné] @ 85,1389
+onglet (quatre carrés) « 리듬 » @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  메모 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 피드백 모드 » @ 318,1479

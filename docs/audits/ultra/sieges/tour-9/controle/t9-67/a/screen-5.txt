@@ -1,0 +1,55 @@
+Écran 5 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 300,42
+bouton « 간단 » @ 633,42
+bouton ● @ 711,42
+bouton ▶ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 126  템포 » @ 78,123
+bouton « ? » @ 855,123
+icône « 파트: A » ▾ @ 78,198
+bouton « 스튜디오 큰북 FX » @ 123,288
+bouton « 큰북 2 » @ 341,288
+bouton « 스네어 » @ 559,288
+bouton « 스네어 2 » @ 777,288
+bouton « 손뼉 FX » @ 123,366
+bouton « 하이햇 L 30 » @ 341,366
+bouton « 오픈 하이햇 R 30 » @ 559,366
+bouton « 로우 탐 » @ 777,366
+bouton « 미드 탐 R 45 » @ 123,444
+bouton « 하이 탐 » @ 341,444
+bouton « 북 테두리 FX R 50 » @ 559,444
+bouton « 벨 » @ 777,444
+bouton « 심벌 R 40 » @ 123,522
+bouton « 마라카스 L 50 » @ 341,522
+bouton « 콩가 » @ 559,522
+bouton « 레이저 » @ 777,522
+bouton « 킷: 스튜디오 » ▾ @ 129,597
+texte « 패드는 소리를 내고, 칸은 히트를 저장해요. 길게 누르기: 사운드 바꾸기. » @ 567,597
+texte « 첫 번째 파트: 그루브 6/13장 · 1/2단계 · 쉬움 » @ 378,681
+icône (liste) « 챕터 » @ 771,681
+icône ⌄ @ 843,681
+image (rond coché) @ 36,762
+texte « 루프를 몇 초 들어 보고, 예시도 들어 보세요. » @ 334,770
+texte « • 루프: 멈추지 않고 되풀이되는 부분. » @ 216,820
+bouton « Tech house 킷 다운로드 (2 MB) » @ 398,896
+texte « 나중에 » @ 821,896
+texte « ▸ 왜요? » @ 450,967
+bouton « 다음 단계   » → @ 450,1117
+bouton ▶ «  내 결과 듣기 » @ 260,1201
+bouton ▶ «  예시 듣기 » @ 587,1201
+icône « 다음  » → @ 817,1201
+icône ← @ 57,1201
+icône ↶ « 실행 취소 » @ 126,1289
+image ↷ @ 292,1273
+bouton ▶ « 곡 » @ 454,1289
+texte « 126 템포 » @ 617,1289
+icône ⋮ « 더보기 » @ 779,1289
+onglet (lignes et note) « 내 곡 » @ 85,1389
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  메모 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 피드백 모드 » @ 318,1479

@@ -1,0 +1,45 @@
+Écran 75 (900x1509)
+icône (dossier ouvert) ✓ « 내 곡 저장됨 » @ 300,42
+bouton « 간단 » @ 633,42
+bouton ● @ 711,42
+bouton ▶ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 126  템포 » @ 78,123
+icône (flèches en boucle) « Drop B 1/8마디 » ▾ @ 239,123
+bouton (flèches en boucle) « 루프 » [allumé, état « 켜짐 »] @ 751,123
+bouton « ? » @ 855,123
+image (rond coché) @ 0,0
+texte « 공유할 준비 됐나요? » @ 450,203
+champ « 곡 이름 (프로젝트 이름도) » contenu « 내 곡 » @ 450,299
+icône ✕ @ 834,307
+texte « 3:18 » @ 71,394
+texte « 파트 6개 » @ 178,396
+bouton ▶ «  듣기 » @ 790,413
+texte « 볼륨: −13.9, 스트리밍 음악처럼 (−14) » @ 364,435
+bouton « M4A · 공유용 » [sélectionné] @ 138,526
+bouton « WAV · 최고 품질 » @ 384,526
+bouton (trois points reliés) «   공유 » @ 450,622
+bouton (dossier) « 내 파일 » › @ 428,724
+bouton « ? » @ 848,724
+texte « 곡을 내보내세요 13/13장 · 1/1단계 · 쉬움 » @ 378,836
+icône (liste) « 챕터 » @ 771,836
+icône ⌄ @ 843,836
+image (coupe) @ 42,948
+texte « 잘했어요, 곡이 완성됐어요! 전부 다시 들어 보고 계속 바꿀 수 있어요. » @ 477,948
+bouton ▶ «  내 곡 듣기 » @ 450,1039
+bouton ↺ «  튜토리얼 다시 시작 » @ 450,1120
+bouton ✕ «  튜토리얼 닫기 » @ 450,1201
+icône ↶ « 실행 취소 » @ 126,1289
+image ↷ @ 292,1273
+bouton ▶ « 곡 » @ 454,1289
+texte « 126 템포 » @ 617,1289
+icône ⋮ « 더보기 » @ 779,1289
+onglet (lignes et note) « 내 곡 » @ 85,1389
+onglet (quatre carrés) « 리듬 » @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » [sélectionné] @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  메모 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 피드백 모드 » @ 318,1479

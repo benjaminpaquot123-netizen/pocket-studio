@@ -1,0 +1,46 @@
+Écran 32 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 300,42
+bouton « 간단 » @ 633,42
+bouton ● @ 711,42
+bouton ▶ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 126  템포 » @ 78,123
+bouton « ? » @ 855,123
+texte « 타임라인은 파트를 순서대로 놓아요. 각각 마디 단위 길이가 있어요. 순서대로 추가하세요. » [coupé] @ 450,190
+texte « 추가: » @ 72,250
+bouton « + A · 그루브 » @ 153,319
+bouton « + B · 인트로 » @ 383,319
+bouton « + C · 빌드업 » @ 613,319
+bouton « + D · 드롭 » @ 140,400
+bouton « + E · Drop B » @ 362,400
+bouton « + F · 브레이크 » @ 609,400
+bouton « + G · 끝 » @ 127,481
+bouton « + 새 파트 (G · 끝 복사) » @ 394,481
+bouton « + 빈 새 파트 » @ 684,481
+bouton (barres de son) «   곡에서 재생 중인 것 » @ 450,565
+texte « 파트를 정리하세요 9/13장 · 1/2단계 · 쉬움 » @ 378,694
+icône (liste) « 챕터 » @ 771,694
+icône ⌄ @ 843,694
+texte « 직접 해 보세요: “내 곡”의 “추가” 아래에서 인트로, 빌드업, 드롭, 드롭 B, 브레이크, 빌드업, 드롭 B, 끝을 순서대로 탭하세요. » @ 450,806
+texte « • 드롭: 곡의 하이라이트, 모든 소리가 한꺼번에 돌아오는 순간. » @ 346,879
+texte « • 브레이크: 조용해지는 부분, 킥과 베이스가 쉬어요. » @ 293,919
+texte « ▸ 왜요? » @ 450,967
+bouton (doigt qui touche) «   직접 할게요 » @ 450,1036
+bouton ▶ «  예시 듣기 » @ 232,1120
+bouton (œil) «  보여 주세요 » @ 667,1120
+icône ← «  이전 » @ 83,1201
+icône « 다음  » → @ 817,1201
+icône ↶ « 실행 취소 » @ 126,1289
+image ↷ @ 292,1273
+bouton ▶ « 곡 » @ 454,1289
+texte « 126 템포 » @ 617,1289
+icône ⋮ « 더보기 » @ 779,1289
+onglet (lignes et note) « 내 곡 » [sélectionné] @ 85,1389
+onglet (quatre carrés) « 리듬 » @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  메모 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 피드백 모드 » @ 318,1479

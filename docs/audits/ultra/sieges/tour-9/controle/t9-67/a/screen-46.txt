@@ -1,0 +1,70 @@
+Écran 46 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 300,42
+bouton « 간단 » @ 633,42
+bouton ● @ 711,42
+bouton ■ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 126  템포 » @ 78,123
+icône (flèches en boucle) « 빌드업 1/4마디 » ▾ @ 232,123
+bouton (flèches en boucle) « 루프 » [allumé, état « 켜짐 »] @ 751,123
+bouton « ? » @ 855,123
+icône (flèches en boucle) « 파트: C · 빌드업 » ▾ @ 144,198
+texte « 편집하는 동안 루프돼요. 위쪽 ⟳ 루프를 누르면 곡으로 돌아가요. » @ 357,246
+titre « 스텝: 하이햇 · 빌드업 » [coupé, état « 펼쳐짐 »] @ 369,282
+bouton « ? » [coupé] @ 336,282
+bouton « 모든 패드 » [coupé] @ 777,283
+texte « 마디 » @ 68,355
+bouton « 1 » @ 139,355
+bouton « 2 » @ 220,355
+bouton « 3 » @ 301,355
+bouton « 4 » [sélectionné] @ 382,355
+bouton « 따라가기 » @ 504,355
+texte « 4/4마디 · 하이햇 » @ 148,421
+texte « → 하이햇 » @ 114,460
+bouton « 1 » [état « 히트, 세기 35 % »] @ 90,530
+bouton [état « 히트, 세기 48 % »] @ 192,530
+bouton [état « 비어 있음 »] @ 294,530
+bouton [état « 히트, 세기 55 % »] @ 397,530
+bouton « 2 » [état « 히트, 세기 27 % »] @ 500,530
+bouton [état « 히트, 세기 62 % »] @ 603,530
+bouton [état « 비어 있음 »] @ 706,530
+bouton [état « 히트, 세기 52 % »] @ 809,530
+bouton « 3 » [état « 히트, 세기 33 % »] @ 90,611
+bouton [état « 히트, 세기 44 % »] @ 192,611
+bouton [état « 비어 있음 »] @ 294,611
+bouton [état « 히트, 세기 60 % »] @ 397,611
+bouton « 4 » [état « 히트, 세기 30 %, 줄 그음: 지워요 »] @ 500,611
+bouton « ×3 » [état « 히트, 세기 57 %, 3번 반복, 줄 그음: 지워요 »] @ 603,611
+bouton [état « 비어 있음 »] @ 706,611
+bouton [état « 비어 있음 »] @ 809,611
+texte « 채우기 » [coupé] @ 77,685
+texte « 전체 » [coupé] @ 155,679
+texte « 1/2 » [coupé] @ 233,679
+texte « 1/4 » [coupé] @ 308,679
+texte « ◀ » [coupé] @ 383,679
+texte « ▶ » [coupé] @ 458,679
+texte « 지우기 » [coupé] @ 549,679
+texte « 트랜지션 10/13장 · 1/3단계 · 쉬움 » @ 378,742
+icône (liste) « 챕터 » @ 771,742
+icône ⌄ @ 843,742
+texte « 직접 해 보세요: 빌드업에서 마지막 박의 히트를 지우세요. 드롭 앞에 정적이 생겨요. » @ 450,854
+texte « ▸ 왜요? » @ 450,929
+bouton (doigt qui touche) «   직접 할게요 » @ 450,1036
+bouton ▶ «  예시 듣기 » @ 232,1120
+bouton (œil) «  보여 주세요 » @ 667,1120
+icône ← «  이전 » @ 83,1201
+icône « 다음  » → @ 817,1201
+icône ↶ « 실행 취소 » @ 126,1289
+image ↷ @ 292,1273
+bouton ▶ « 곡 » @ 454,1289
+texte « 126 템포 » @ 617,1289
+icône ⋮ « 더보기 » @ 779,1289
+onglet (lignes et note) « 내 곡 » @ 85,1389
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  메모 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 피드백 모드 » @ 318,1479

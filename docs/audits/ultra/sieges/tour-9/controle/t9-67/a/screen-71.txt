@@ -1,0 +1,46 @@
+Écran 71 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 300,42
+bouton « 간단 » @ 633,42
+bouton ● @ 711,42
+bouton ▶ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 126  템포 » @ 78,123
+icône (flèches en boucle) « Drop B 1/8마디 » ▾ @ 239,123
+bouton (flèches en boucle) « 루프 » [allumé, état « 켜짐 »] @ 751,123
+bouton « ? » @ 855,123
+image (rond coché) @ 0,0
+texte « 공유할 준비 됐나요? » @ 450,203
+champ « 곡 이름 (프로젝트 이름도) » contenu « 내 곡 » @ 450,299
+icône ✕ @ 834,307
+texte « “공유”하면 프로젝트 “내 프로젝트 1”의 이름도 바뀌어요. » @ 450,390
+texte « 3:18 » @ 71,449
+texte « 파트 6개 » @ 178,451
+bouton ▶ «  듣기 » @ 790,468
+texte « 볼륨: −13.9, 스트리밍 음악처럼 (−14) » @ 364,490
+bouton « M4A · 공유용 » [sélectionné] @ 138,570
+bouton « WAV · 최고 품질 » @ 384,570
+bouton (trois points reliés) «   공유 » @ 450,666
+bouton (dossier) « 내 파일 » › @ 428,768
+bouton « ? » @ 848,768
+texte « 곡을 내보내세요 13/13장 · 1/1단계 · 쉬움 » @ 378,861
+icône (liste) « 챕터 » @ 771,861
+icône ⌄ @ 843,861
+texte « 직접 해 보세요: 곡을 공유하세요. 앱이 사운드 파일로 만들어 줘요. “M4A”는 친구용 가벼운 파일, “WAV”는 스튜디오 품질을 지켜요. » @ 450,973
+texte « ▸ 왜요? » @ 450,1048
+bouton (doigt qui touche) «   직접 할게요 » @ 450,1117
+icône ← «  이전 » @ 83,1201
+icône « 다음  » → @ 817,1201
+icône ↶ « 실행 취소 » @ 126,1289
+image ↷ @ 292,1273
+bouton ▶ « 곡 » @ 454,1289
+texte « 126 템포 » @ 617,1289
+icône ⋮ « 더보기 » @ 779,1289
+onglet (lignes et note) « 내 곡 » @ 85,1389
+onglet (quatre carrés) « 리듬 » @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » [sélectionné] @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  메모 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 피드백 모드 » @ 318,1479

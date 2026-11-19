@@ -1,0 +1,58 @@
+Écran 45 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 300,42
+bouton « 간단 » @ 633,42
+bouton ● @ 711,42
+bouton ▶ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 126  템포 » @ 78,123
+icône « 인트로 2/104마디 » ▾ @ 247,123
+bouton « ? » @ 855,123
+bouton « 곡 코드 B · 인트로 Gm  Gm  Gm  Gm  Gm  Gm  Gm  Gm C · 빌드업 Gm  Gm  Gm  Gm D · 드롭 Gm  Gm  Gm  Gm  Gm  Gm  Gm  Gm E · Drop B Gm  Gm  Gm  Gm  Gm  Gm  Gm  Gm F · 브레이크 Gm  Gm  Gm  Gm  Gm  Gm  Gm  Gm G · 끝 Gm  Gm  Gm  Gm  Gm  Gm  Gm  Gm 탭해서 곡 전체 코드를 바꿔요. » [coupé] @ 450,183
+icône ▶ « B · 인트로 24마디  ·  재생 중 » @ 342,260
+icône − [désactivé] @ 678,261
+icône + [désactivé] @ 750,261
+icône ⋮ @ 822,261
+icône ▶ « C · 빌드업 8마디  ·  다음 » @ 342,361
+icône − [désactivé] @ 678,362
+icône + [désactivé] @ 750,362
+icône ⋮ @ 822,362
+icône ▶ « D · 드롭 16마디 » @ 342,462
+icône − [désactivé] @ 678,463
+icône + [désactivé] @ 750,463
+icône ⋮ @ 822,463
+icône ▶ « E · Drop B 16마디 » @ 342,561
+icône − [désactivé] @ 678,562
+icône + [désactivé] @ 750,562
+icône ⋮ @ 822,562
+icône ▶ « F · 브레이크 8마디 » @ 342,660
+icône − [désactivé] @ 678,661
+icône + [désactivé] @ 750,661
+icône ⋮ @ 822,661
+icône ▶ « C · 빌드업 8마디 » [coupé] @ 342,746
+icône − [désactivé, coupé] @ 678,753
+icône + [désactivé, coupé] @ 750,753
+icône ⋮ [coupé] @ 822,753
+texte « 트랜지션 10/13장 · 1/3단계 · 쉬움 » @ 378,826
+icône (liste) « 챕터 » @ 771,826
+icône ⌄ @ 843,826
+texte « 내 차례: ““빌드업” 파트로 가기”를 누르세요. » @ 299,915
+texte « ▸ 왜요? » @ 450,967
+bouton ⊕ «   “빌드업” 파트로 가기 » @ 450,1036
+bouton ▶ «  예시 듣기 » @ 232,1120
+bouton (œil) «  보여 주세요 » @ 667,1120
+icône ← «  이전 » @ 83,1201
+icône « 다음  » → @ 817,1201
+icône ↶ « 실행 취소 » @ 126,1289
+image ↷ @ 292,1273
+bouton ■ « 곡 » @ 454,1289
+texte « 126 템포 » @ 617,1289
+icône ⋮ « 더보기 » @ 779,1289
+onglet (lignes et note) « 내 곡 » [sélectionné] @ 85,1389
+onglet (quatre carrés) « 리듬 » @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  메모 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 피드백 모드 » @ 318,1479

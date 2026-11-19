@@ -1,0 +1,45 @@
+Écran 30 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 300,42
+bouton « 간단 » @ 633,42
+bouton ● @ 711,42
+bouton ▶ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 126  템포 » @ 78,123
+bouton « ? » @ 855,123
+titre « 곡 » [état « 펼쳐짐 »] @ 98,243
+bouton « ? » @ 132,243
+texte « 타임라인은 파트를 순서대로 놓아요. 각각 마디 단위 길이가 있어요. 순서대로 추가하세요. » @ 450,313
+texte « 추가: » @ 72,382
+bouton « + A · 그루브 » @ 153,451
+bouton « + B · 인트로 » @ 383,451
+bouton « + C · 빌드업 » @ 613,451
+bouton « + D · 드롭 » @ 140,532
+bouton « + E · Drop B » @ 362,532
+bouton « + F · 브레이크 » @ 609,532
+bouton « + 새 파트 (F · 브레이크 복사) » @ 250,613
+bouton « + 빈 새 파트 » @ 577,613
+bouton (barres de son) «   곡에서 재생 중인 것 » @ 450,697
+texte « 파트를 만들어 보세요 8/13장 · 6/6단계 · 쉬움 » @ 378,826
+icône (liste) « 챕터 » @ 771,826
+icône ⌄ @ 843,826
+texte « 내 차례: ““끝” 파트 만들기”를 누르세요. » @ 271,915
+texte « ▸ 왜요? » @ 450,967
+bouton ⊕ «   “끝” 파트 만들기 » @ 450,1036
+bouton ▶ «  예시 듣기 » @ 232,1120
+bouton (œil) «  보여 주세요 » @ 667,1120
+icône ← «  이전 » @ 83,1201
+icône « 다음  » → @ 817,1201
+icône ↶ « 실행 취소 » @ 126,1289
+image ↷ @ 292,1273
+bouton ▶ « 곡 » @ 454,1289
+texte « 126 템포 » @ 617,1289
+icône ⋮ « 더보기 » @ 779,1289
+onglet (lignes et note) « 내 곡 » [sélectionné] @ 85,1389
+onglet (quatre carrés) « 리듬 » @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  메모 » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « 피드백 모드 » @ 318,1479

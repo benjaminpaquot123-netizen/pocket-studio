@@ -1,0 +1,380 @@
+#0 SIEGE lang=ko device=tablet8 font=130 mode=simple theme=- fresh=non gestes.max=160 lit=oui main=both amenee=tuto:tech_house:6
+#0 PREMIER ECRAN reel_s=4.1 simule_s=2.4 jvm_s=9.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:tech_house:6
+#0 AMENEE > touche 450 611 (welcome_learn)
+#0 AMENEE > touche 229 1349 (mode_card_simple)
+#0 AMENEE > touche 450 1435 (tuto_style_tech_house)
+#0 AMENEE chapitres 1 à 5 construits dans le projet
+#0 AMENEE > touche 771 815 (tuto_chapters)
+#0 AMENEE > touche 450 1449 (tuto_quit)
+#0 AMENEE > touche 225 1213 (tuto_resume)
+#0 AMENEE chapitres 1 à 5 cochés (18 étapes)
+#0 AMENEE > touche 771 681 (tuto_chapters)
+#0 AMENEE > touche 450 604 (tuto_chapter_5)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8fda14dec6 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « 저장됨 » lines cut (taller than its box)
+#1 LAYOUT OVERLAP « 스튜디오 큰북 » over « FX » (10 x 3 dp)
+#1 LAYOUT OVERLAP « 오픈 하이햇 » over « R 30 » (14 x 3 dp)
+#1 LAYOUT OVERLAP « 북 테두리 » over « R 50 » (28 x 3 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1036
+#1 DOIGT tuto_play_mine «   내 결과 듣기 »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9e2b279276 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5 playing=true
+#2 SON Son : la musique du projet joue en boucle.
+#2 > attends 4
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cb6193465e | project=p-e39b2f3b tuto=tech_house/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5 playing=true
+#3 SON Son : la musique du projet joue en boucle.
+#3 > touche 450 1120
+#3 DOIGT tuto_listen «  예시 듣기 »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 27ff2706a1 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=groove_hear done=18 chapters=1,2,3,4,5 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 3 s).
+#4 > attends 4
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cb33635632 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=groove_hear done=19 chapters=1,2,3,4,5 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 817 1201
+#5 DOIGT tuto_next « 다음  »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9aa9bf496e | project=p-e39b2f3b tuto=tech_house/Facile active=true step=groove_name done=19 chapters=1,2,3,4,5 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 450 1036
+#6 DOIGT tuto_need «   파트 이름을 “그루브”로 짓기 »
+#7 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3620fe165e | project=p-e39b2f3b tuto=tech_house/Facile active=true step=groove_name done=20 chapters=1,2,3,4,5,6 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 450 1117
+#7 DOIGT tuto_next_big « 다음 챕터   »
+#8 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ffb000e498 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_intro done=20 chapters=1,2,3,4,5,6 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « 24 » 2.79:1 (needs 4.5:1, 12 sp)
+#8 > touche 450 1117
+#8 DOIGT tuto_listen «  예시 듣기 »
+#9 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ab35194b23 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_intro done=20 chapters=1,2,3,4,5,6 playing=false
+#9 SON Son : l'exemple du tuto joue (encore 3 s).
+#9 > attends 4
+#10 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 190606e758 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_intro done=21 chapters=1,2,3,4,5,6 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 817 1201
+#10 DOIGT tuto_next « 다음  »
+#11 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 8a96268b44 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_montee done=21 chapters=1,2,3,4,5,6 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « 8 » 1.85:1 (needs 4.5:1, 12 sp)
+#11 > touche 821 920
+#11 DOIGT tuto_kit_later « 나중에 »
+#12 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE dac049f32d | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_montee done=21 chapters=1,2,3,4,5,6 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 450 1117
+#12 DOIGT tuto_listen «  예시 듣기 »
+#13 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ea1d9a1f55 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_montee done=21 chapters=1,2,3,4,5,6 playing=false
+#13 SON Son : l'exemple du tuto joue (encore 3 s).
+#13 > attends 4
+#14 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 754d641297 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_montee done=22 chapters=1,2,3,4,5,6 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 817 1201
+#14 DOIGT tuto_next « 다음  »
+#15 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 03464d0ad0 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_drop done=22 chapters=1,2,3,4,5,6 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « 16 » 2.08:1 (needs 4.5:1, 12 sp)
+#15 > touche 450 1117
+#15 DOIGT tuto_listen «  예시 듣기 »
+#16 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 811bc6f2f3 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_drop done=22 chapters=1,2,3,4,5,6 playing=false
+#16 SON Son : l'exemple du tuto joue (encore 3 s).
+#16 > attends 4
+#17 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0b8b38f4d6 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_drop done=23 chapters=1,2,3,4,5,6 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 817 1201
+#17 DOIGT tuto_next « 다음  »
+#18 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2743bef951 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_halves done=23 chapters=1,2,3,4,5,6 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « 8 » 3.56:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 8 » 4.28:1 (needs 4.5:1, 12 sp)
+#18 > touche 450 1117
+#18 DOIGT tuto_mark «   알겠어요 »
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e60a5a0ec0 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=map_halves done=24 chapters=1,2,3,4,5,6,7 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 450 1117
+#19 DOIGT tuto_next_big « 다음 챕터   »
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d6d2995d23 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_intro done=24 chapters=1,2,3,4,5,6,7 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1036
+#20 DOIGT tuto_need «   “인트로” 파트 만들기 »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bb85f5819c | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_intro done=25 chapters=1,2,3,4,5,6,7 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 450 1117
+#21 DOIGT tuto_next_big « 다음 단계   »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5846062b40 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_montee done=25 chapters=1,2,3,4,5,6,7 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 450 1036
+#22 DOIGT tuto_need «   “빌드업” 파트 만들기 »
+#23 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9c332195c2 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_montee done=26 chapters=1,2,3,4,5,6,7 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 450 1117
+#23 DOIGT tuto_next_big « 다음 단계   »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 94d0c1f644 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_drop done=26 chapters=1,2,3,4,5,6,7 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 450 1036
+#24 DOIGT tuto_need «   “드롭” 파트 만들기 »
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f5ee8dabbf | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_drop done=27 chapters=1,2,3,4,5,6,7 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 450 1117
+#25 DOIGT tuto_next_big « 다음 단계   »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c538c53044 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_dropb done=27 chapters=1,2,3,4,5,6,7 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 450 1036
+#26 DOIGT tuto_need «   “Drop B” 파트 만들기 »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1eb606bf58 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_dropb done=28 chapters=1,2,3,4,5,6,7 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 450 1117
+#27 DOIGT tuto_next_big « 다음 단계   »
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 432468e789 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_break done=28 chapters=1,2,3,4,5,6,7 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 450 1036
+#28 DOIGT tuto_need «   “브레이크” 파트 만들기 »
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d913486a6c | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_break done=29 chapters=1,2,3,4,5,6,7 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 450 1117
+#29 DOIGT tuto_next_big « 다음 단계   »
+#30 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d4536332a8 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_fin done=29 chapters=1,2,3,4,5,6,7 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 450 1036
+#30 DOIGT tuto_need «   “끝” 파트 만들기 »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 30496ce5ae | project=p-e39b2f3b tuto=tech_house/Facile active=true step=make_fin done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 450 1117
+#31 DOIGT tuto_next_big « 다음 챕터   »
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 17979780cb | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_order done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 450 1036
+#32 DOIGT tuto_do «   직접 할게요 »
+#33 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 8fd30259f4 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_order done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « + A · 그루브 » 4.16:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + B · 인트로 » 4.16:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + C · 빌드업 » 4.16:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + D · 드롭 » 4.25:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + E · Drop B » 4.25:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + F · 브레이크 » 4.25:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + G · 끝 » 4.30:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + 새 파트 (G · 끝 복사) » 4.30:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + 빈 새 파트 » 4.30:1 (needs 4.5:1, 14 sp)
+#33 > touche 383 702
+#33 DOIGT add_part_1 « + B · 인트로 »
+#34 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 7229df3e6f | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_order done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CUT « 1/8마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#34 LAYOUT CONTRAST « + A · 그루브 » 4.25:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « + B · 인트로 » 3.57:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « + C · 빌드업 » 4.25:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « + D · 드롭 » 4.30:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « + E · Drop B » 4.30:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « + F · 브레이크 » 4.30:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « + G · 끝 » 4.37:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « + 새 파트 (G · 끝 복사) » 4.37:1 (needs 4.5:1, 14 sp)
+#34 LAYOUT CONTRAST « + 빈 새 파트 » 4.37:1 (needs 4.5:1, 14 sp)
+#34 > touche 613 828
+#34 DOIGT add_part_2 « + C · 빌드업 »
+#35 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 565cdaa127 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_order done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CUT « 1/12마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#35 > touche 140 909
+#35 DOIGT add_part_3 « + D · 드롭 »
+#36 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 4b4c76a521 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_order done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « 1/20마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#36 > touche 362 909
+#36 DOIGT add_part_4 « + E · Drop B »
+#37 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE d11919aa5c | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_order done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « 1/28마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#37 > touche 609 909
+#37 DOIGT add_part_5 « + F · 브레이크 »
+#38 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 11748ac83d | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_order done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CUT « 1/36마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#38 > touche 613 828
+#38 DOIGT add_part_2 « + C · 빌드업 »
+#39 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 6935d8cac9 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_order done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CUT « 1/40마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#39 > touche 362 909
+#39 DOIGT add_part_4 « + E · Drop B »
+#40 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 17c82b7df6 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_order done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CUT « 1/48마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#40 > touche 127 990
+#40 DOIGT add_part_6 « + G · 끝 »
+#41 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE bb22dcb84f | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_order done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CUT « 1/56마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#41 > touche 450 1190
+#41 DOIGT tuto_next_folded « 성공 »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 725518c6e9 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_phrases done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 450 1036
+#42 DOIGT tuto_need «   추천 길이 적용 »
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ae54753a09 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_phrases done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CUT « 1/104마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#43 > touche 490 1201
+#43 DOIGT tuto_play_mine «  내 곡 듣기 »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 12ed6d02f1 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=song_phrases done=32 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#44 SON Son : le morceau joue (partie « B »).
+#44 LAYOUT CONTRAST « 24마디  ·  재생 중 » 4.26:1 (needs 4.5:1, 14 sp)
+#44 > touche 450 1117
+#44 DOIGT tuto_next_big « 다음 챕터   »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 182436ef9c | project=p-e39b2f3b tuto=tech_house/Facile active=true step=gap done=32 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#45 SON Son : le morceau joue (partie « B »).
+#45 LAYOUT CUT « 2/104마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#45 LAYOUT CONTRAST « 8마디 » 3.17:1 (needs 4.5:1, 14 sp)
+#45 > touche 450 1036
+#45 DOIGT tuto_need «   “빌드업” 파트로 가기 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 50250945e1 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=gap done=32 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 LAYOUT CUT « 1/4마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#46 LAYOUT CONTRAST « 스텝: 하이햇 · 빌드업 » 1.74:1 (needs 4.5:1, 12 sp)
+#46 LAYOUT CONTRAST « ? » 1.83:1 (needs 4.5:1, 12 sp)
+#46 LAYOUT CONTRAST « 모든 패드 » 1.55:1 (needs 4.5:1, 14 sp)
+#46 > touche 500 611
+#46 DOIGT step_60 « 스텝 13 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 804fdf2a1a | project=p-e39b2f3b tuto=tech_house/Facile active=true step=gap done=32 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CUT « 2/4마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#47 > touche 603 611
+#47 DOIGT step_61 « 스텝 14 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5fc3e9c2e1 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=gap done=32 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 LAYOUT CUT « 3/4마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#48 LAYOUT CONTRAST « 스텝: 북 테두리 · 빌드업 » 1.54:1 (needs 4.5:1, 12 sp)
+#48 > touche 603 611
+#48 DOIGT step_61 « 스텝 14 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6642c49962 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=gap done=32 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 LAYOUT CUT « 4/4마디 » drawn past its parent's edge (down, 21 dp shown of 27)
+#49 LAYOUT CONTRAST « 스텝: 마라카스 · 빌드업 » 1.54:1 (needs 4.5:1, 12 sp)
+#49 > touche 500 611
+#49 DOIGT step_60 « 스텝 13 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bef78ecf4f | project=p-e39b2f3b tuto=tech_house/Facile active=true step=gap done=32 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#50 SON Son : la musique du projet joue en boucle.
+#50 > touche 603 611
+#50 DOIGT step_61 « 스텝 14 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 11421ffd03 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=gap done=32 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 > touche 706 611
+#51 DOIGT step_62 « 스텝 15 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d8d493e62d | project=p-e39b2f3b tuto=tech_house/Facile active=true step=gap done=32 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 > touche 809 611
+#52 DOIGT step_63 « 스텝 16 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f33a9fc6ea | project=p-e39b2f3b tuto=tech_house/Facile active=true step=gap done=33 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 > touche 450 1117
+#53 DOIGT tuto_next_big « 다음 단계   »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 06bee117c2 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=crash done=33 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 LAYOUT CONTRAST « 스텝: 심벌 · 빌드업 » 1.76:1 (needs 4.5:1, 12 sp)
+#54 LAYOUT CONTRAST « 모든 패드 » 1.63:1 (needs 4.5:1, 14 sp)
+#54 > touche 450 1036
+#54 DOIGT tuto_need «   “Drop B” 파트로 가기 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6afa7b6c53 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=crash done=33 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#55 SON Son : la musique du projet joue en boucle.
+#55 LAYOUT CONTRAST « 스텝: 심벌 · DROP B » 1.74:1 (needs 4.5:1, 12 sp)
+#55 LAYOUT CONTRAST « 1 » 3.09:1 (needs 4.5:1, 12 sp)
+#55 > touche 90 530
+#55 DOIGT step_0 « 스텝 1 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 214bb4e3c9 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=crash done=34 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#56 SON Son : la musique du projet joue en boucle.
+#56 LAYOUT CONTRAST « 모든 패드 » 1.66:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « 1마디 » 3.06:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « 2 » 3.26:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « 3 » 3.55:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « 4 » 2.03:1 (needs 4.5:1, 14 sp)
+#56 > touche 450 1117
+#56 DOIGT tuto_next_big « 다음 단계   »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 75b0a874ef | project=p-e39b2f3b tuto=tech_house/Facile active=true step=variation done=34 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#57 SON Son : la musique du projet joue en boucle.
+#57 LAYOUT CONTRAST « 스텝: 오픈 하이햇 · DROP B » 1.62:1 (needs 4.5:1, 12 sp)
+#57 LAYOUT CONTRAST « 모든 패드 » 1.86:1 (needs 4.5:1, 14 sp)
+#57 > touche 450 1036
+#57 DOIGT tuto_do «   직접 할게요 »
+#58 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE b5a8e020bd | project=p-e39b2f3b tuto=tech_house/Facile active=true step=variation done=34 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#58 SON Son : la musique du projet joue en boucle.
+#58 LAYOUT CONTRAST « 스텝: 오픈 하이햇 · DROP B » 1.78:1 (needs 4.5:1, 12 sp)
+#58 LAYOUT CONTRAST « ? » 1.79:1 (needs 4.5:1, 12 sp)
+#58 > touche 294 524
+#58 DOIGT step_2 « 스텝 3 »
+#59 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 3ff4308cc6 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=variation done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#59 SON Son : la musique du projet joue en boucle.
+#59 > touche 706 524
+#59 DOIGT step_6 « 스텝 7 »
+#60 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE ce85bc23de | project=p-e39b2f3b tuto=tech_house/Facile active=true step=variation done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#60 SON Son : la musique du projet joue en boucle.
+#60 > touche 294 605
+#60 DOIGT step_10 « 스텝 11 »
+#61 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE 15fd3bc6a7 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=variation done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#61 SON Son : la musique du projet joue en boucle.
+#61 > touche 706 605
+#61 DOIGT step_14 « 스텝 15 »
+#62 ROUTE rhythm/tab_simple_Rythme | MODE simple | EMPREINTE fc1e47b211 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=variation done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#62 SON Son : la musique du projet joue en boucle.
+#62 > touche 450 1190
+#62 DOIGT tuto_chapter_end_folded « 잘했어요, 챕터 완료! »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f572aa1477 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=variation done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#63 SON Son : la musique du projet joue en boucle.
+#63 LAYOUT CONTRAST « 스텝: 오픈 하이햇 · DROP B » 1.65:1 (needs 4.5:1, 12 sp)
+#63 LAYOUT CONTRAST « ? » 1.75:1 (needs 4.5:1, 12 sp)
+#63 > touche 450 1117
+#63 DOIGT tuto_next_big « 다음 챕터   »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7d8e8b1706 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=riser_hear done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#64 SON Son : la musique du projet joue en boucle.
+#64 > touche 450 1117
+#64 DOIGT tuto_listen «  예시 듣기 »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5685efc8f6 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=riser_hear done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#65 SON Son : l'exemple du tuto joue (encore 3 s).
+#65 > attends 4
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d303278d4a | project=p-e39b2f3b tuto=tech_house/Facile active=true step=riser_hear done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 450 1117
+#66 DOIGT tuto_next_big « 다음 챕터   »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1a547ed34f | project=p-e39b2f3b tuto=tech_house/Facile active=true step=levels done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CONTRAST « 스텝: 오픈 하이햇 · DROP B » 1.63:1 (needs 4.5:1, 12 sp)
+#67 LAYOUT CONTRAST « 모든 패드 » 1.75:1 (needs 4.5:1, 14 sp)
+#67 > touche 633 1389
+#67 DOIGT tab_simple_Mix « 믹스 »
+#68 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 1af4274e64 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=levels done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « 출력 » 4.45:1 (needs 4.5:1, 13 sp)
+#68 > glisse 469 505 469 560
+#68 DOIGT mix_fader_6 « 코드 볼륨 »
+#69 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 757ec0eee4 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=levels done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 450 1117
+#69 DOIGT tuto_next_big « 다음 챕터   »
+#70 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 59a7970b76 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=share done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « 출력 » 4.40:1 (needs 4.5:1, 13 sp)
+#70 > touche 815 1389
+#70 DOIGT tab_simple_Envoyer « 공유 »
+#71 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE fc811cca91 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=share done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 450 666
+#71 DOIGT share_go «   공유 »
+#72 ROUTE dialogue:share_progress | MODE simple | EMPREINTE e5464bd71e | project=p-e39b2f3b tuto=tech_house/Facile active=true step=share done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#72 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#72 LAYOUT CONTRAST « 취소 » 4.27:1 (needs 4.5:1, 14 sp)
+#72 > attends 10
+#72 PARTAGE 내-곡-20261119-120702.m4a
+#73 ROUTE dialogue:« 내 곡 공유 · 내-곡-20261119-120702.m » | MODE simple | EMPREINTE cef11b6b46 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=share done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 450 866
+#73 DOIGT vue « Drive »
+#74 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE f206a06867 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=share done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT CONTRAST « M4A 파일: 가볍고 모든 기기에서 재생돼요. » 4.27:1 (needs 4.5:1, 13 sp)
+#74 > touche 790 940
+#74 DOIGT share_bilan_ok « OK »
+#75 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 3fafdcfc66 | project=p-e39b2f3b tuto=tech_house/Facile active=true step=share done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#75 SON Son : rien ne joue.
+#75 > fin
+#75 BENCH-VERDICT ok where=seat.fin
+#75 FIN : fin

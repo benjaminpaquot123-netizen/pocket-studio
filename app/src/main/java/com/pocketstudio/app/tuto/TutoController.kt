@@ -297,6 +297,24 @@ class TutoController(
         stopDemo()
         _ui.value?.let { store.save(projectId, it.progress.copy(active = false)) }
         _ui.value = null
+        if (TutoPadEar.heard === padEar) TutoPadEar.heard = null
+    }
+
+    /** This tutorial's ear on the pads ([TutoPadEar]), set while it is shown. */
+    private val padEar: (Int) -> Unit = { lane -> padPlayed(lane) }
+
+    /**
+     * Tour 9, F039: drum pad [lane] played by hand. A step listening to one drum sound alone
+     * (« Écoute le kick seul », listen "drums:kick") is heard once that sound's pad is played.
+     */
+    fun padPlayed(lane: Int) {
+        val u = _ui.value ?: return
+        val step = u.current
+        if (!step.listening || step.id in u.progress.done) return
+        val parts = step.listen.split(":")
+        if (parts.size != 2 || parts[0] != "drums") return
+        val role = parts[1].split(",").singleOrNull()?.trim()?.takeIf { it.isNotEmpty() } ?: return
+        if (lane in TutoChecks.lanesOf(role, target)) tick(setOf(step.id), advance = false, bravo = false)
     }
 
     /** « Passer en Pro » (or back to Facile): the steps done stay done. */
@@ -825,6 +843,7 @@ class TutoController(
         val course = TutoCourse.of(p.style) ?: return
         target = TutoTarget.of(p.style) ?: return
         if (!p.active) return
+        TutoPadEar.heard = padEar
         save(p, chapters = course.chaptersFor(p.level))
         look()
     }

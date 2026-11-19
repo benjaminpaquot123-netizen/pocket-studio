@@ -74,6 +74,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -372,7 +373,8 @@ fun TutoKitCard(
 ) {
     val shape = RoundedCornerShape(12.dp)
     val pinned = LocalKitPinned.current
-    val label = if (onPhone) tr("Mettre les sons du kit %s sur les pads", style) else tr("Télécharger le kit %1\$s (%2\$s)", style, size)
+    // Tour 9 F016 (t9-28): the size never breaks between its figure and its unit.
+    val label = if (onPhone) tr("Mettre les sons du kit %s sur les pads", style) else tr("Télécharger le kit %1\$s (%2\$s)", style, size.replace(' ', '\u00A0'))
     // Round 3, n° 28: inside the panel, never in its place. Tour 7 D3 end: pinned under the words, one row, nothing more
     // (the long sentence pushed its buttons below « Lire la suite »).
     if (pinned) {
@@ -668,6 +670,7 @@ fun TutoPanel(
             val least = maxOf(lineAndHalf, if (lowRoom && readAll) wholeWords else 0)
             WordsRoom(
                 if (holding) Modifier.weight(1f) else Modifier, holding, most, least,
+                mapRoom = chapter.map && map.isNotEmpty(),
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
             ) {
             Box {
@@ -729,7 +732,8 @@ fun TutoPanel(
             // It takes its room from the words above it, never from the buttons below (round 3, n° 28: an offer coming
             // late never moves the panel's buttons under a finger).
             if (step.id != READY_STEP && kit != null && ui.demo == null && !ui.bravo) {
-                CompositionLocalProvider(LocalKitPinned provides true) { kit() }
+                // Tour 9 F016: one child, known to [WordsRoom] (on a map step it never takes the map's room).
+                Box(Modifier.layoutId(KIT_ROOM)) { CompositionLocalProvider(LocalKitPinned provides true) { kit() } }
             }
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
             if (why != null && pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
@@ -757,9 +761,11 @@ fun TutoPanel(
  * left of [most] (of the height given, when [holding]). [least] px (0: none) is the words' least room: the room grows
  * past [most] by what is missing, as far as the height given lets it; when [holding], [starved] is told (the height
  * held is too low).
+ * Tour 9 F016 (t9-16, t9-22): on a step of the song's map ([mapRoom]) the kit offer ([KIT_ROOM]) adds its own height to
+ * [most]: the map of parts, in the words, is no longer cut by the banner (as far as the height given lets it).
  */
 @Composable
-private fun WordsRoom(modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, starved: () -> Unit, content: @Composable () -> Unit) {
+private fun WordsRoom(modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, mapRoom: Boolean = false, starved: () -> Unit, content: @Composable () -> Unit) {
     androidx.compose.ui.layout.Layout(content, modifier) { ms, c ->
         val gap = 6.dp.roundToPx()
         val wide = androidx.compose.ui.unit.Constraints(maxWidth = c.maxWidth)
@@ -768,7 +774,8 @@ private fun WordsRoom(modifier: Modifier, holding: Boolean, most: androidx.compo
         val pinned = ms.drop(1).map { m ->
             m.measure(wide.copy(maxHeight = if (c.hasBoundedHeight) maxOf(c.maxHeight - fixed, 0) else androidx.compose.ui.unit.Constraints.Infinity)).also { fixed += it.height + gap }
         }
-        val cap = if (holding && c.hasBoundedHeight) c.maxHeight else minOf(c.maxHeight, maxOf(most.roundToPx(), if (least > 0) fixed + least else 0))
+        val kitRoom = if (mapRoom) ms.drop(1).zip(pinned).filter { it.first.layoutId == KIT_ROOM }.sumOf { it.second.height + gap } else 0
+        val cap = if (holding && c.hasBoundedHeight) c.maxHeight else minOf(c.maxHeight, maxOf(most.roundToPx() + kitRoom, if (least > 0) fixed + least else 0))
         if (holding && least > 0 && cap - fixed < least) starved()
         val room = maxOf(cap - fixed, 0)
         val words = ms.firstOrNull()?.measure(wide.copy(maxHeight = room))
@@ -781,6 +788,9 @@ private fun WordsRoom(modifier: Modifier, holding: Boolean, most: androidx.compo
         }
     }
 }
+
+/** Tour 9 F016: the kit offer's place among [WordsRoom]'s pinned children. */
+private const val KIT_ROOM = "kit"
 
 /** Tour 7 D3 end: the kit offer pinned under the panel's words ([TutoKitCard] in one row); false outside the panel. */
 private val LocalKitPinned = androidx.compose.runtime.staticCompositionLocalOf { false }

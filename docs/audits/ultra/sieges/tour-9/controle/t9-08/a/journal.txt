@@ -1,0 +1,202 @@
+#0 SIEGE lang=zh-CN device=phone font=200 mode=pro theme=- fresh=non gestes.max=160 lit=oui main=both amenee=tuto:afro_house:6
+#0 PREMIER ECRAN reel_s=4.8 simule_s=2.4 jvm_s=11.0 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:afro_house:6
+#0 AMENEE > touche 294 979 (launch_learn)
+#0 AMENEE > touche 294 1073 (mode_card_pro)
+#0 AMENEE > touche 294 1187 (tuto_style_afro_house)
+#0 AMENEE chapitres 1 à 5 construits dans le projet
+#0 AMENEE > touche 459 328 (tuto_chapters)
+#0 AMENEE > touche 294 705 (tuto_chapter_5)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 0a2e62a078 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=groove_hear done=15 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « A » ellipsized (« … »)
+#1 LAYOUT OVERLAP « 122 » over « 你的第一段：高潮 » (54 x 14 dp)
+#1 LAYOUT OVERLAP « 你的第一段：高潮 » over the touchable « 速度：122 BPM 修改速度 » (132 x 21 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 758
+#1 DOIGT tuto_play_mine «   听你的成果 »
+#2 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5200c5f1d9 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=groove_hear done=15 playing=true
+#2 SON Son : la musique du projet joue en boucle.
+#2 LAYOUT OVERLAP « 你的第一段：高潮 » over the touchable « 从某个段落开始播放 » (70 x 33 dp)
+#2 > attends 3
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5200c5f1d9 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=groove_hear done=15 playing=true
+#3 SON Son : la musique du projet joue en boucle.
+#3 > touche 294 845
+#3 DOIGT tuto_listen «  听示例 »
+#4 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 630ee77de9 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=groove_hear done=15 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 3 s).
+#4 > attends 4
+#5 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 1ce6ffc272 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=groove_hear done=16 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 471 932
+#5 DOIGT tuto_next « 下一步  »
+#6 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 6b22eaad7f | project=p-6937c6f0 tuto=afro_house/Pro active=true step=groove_name done=16 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 238 119
+#6 DOIGT top_scene « 当前段落：A。点击切换段落。 »
+#7 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE a654f05206 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=groove_name done=16 playing=false
+#7 SON Son : rien ne joue.
+#7 > appui-long 340 275
+#7 DOIGT scene_pick_0 « A »
+#8 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 6b22eaad7f | project=p-6937c6f0 tuto=afro_house/Pro active=true step=groove_name done=16 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 294 758
+#8 DOIGT tuto_need «   把段落命名为“高潮” »
+#9 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 85cec6eaea | project=p-6937c6f0 tuto=afro_house/Pro active=true step=groove_name done=17 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#9 > touche 294 758
+#9 DOIGT tuto_next_big « 下一章   »
+#10 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 0a86a5989c | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_intro done=17 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 122 » over « 理解段落 » (54 x 3 dp)
+#10 LAYOUT OVERLAP «  BPM » over « 理解段落 » (48 x 3 dp)
+#10 LAYOUT OVERLAP « 理解段落 » over the touchable « 速度：122 BPM 修改速度 » (104 x 9 dp)
+#10 > touche 294 842
+#10 DOIGT tuto_listen «  听示例 »
+#11 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 1f45569bf0 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_intro done=17 playing=false
+#11 SON Son : l'exemple du tuto joue (encore 3 s).
+#11 > touche 471 932
+#11 DOIGT tuto_next « 下一步  »
+#12 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 47e5b5592a | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_intro done=18 playing=false
+#12 SON Son : l'exemple du tuto joue (encore 2 s).
+#12 > touche 294 848
+#12 DOIGT tuto_next_big « 下一步   »
+#13 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 28861b1447 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_groove done=18 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 514 620
+#13 DOIGT tuto_kit_later « 稍后 »
+#14 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE ba920c5748 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_groove done=18 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#14 > touche 294 842
+#14 DOIGT tuto_listen «  听示例 »
+#15 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE fff25cae99 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_groove done=18 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > attends 5
+#16 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 0ab43d7f62 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_groove done=19 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 471 932
+#16 DOIGT tuto_next « 下一步  »
+#17 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 814158081e | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_drop done=19 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « 16 » 2.08:1 (needs 4.5:1, 12 sp)
+#17 > touche 294 842
+#17 DOIGT tuto_listen «  听示例 »
+#18 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE e881e2e2d2 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_drop done=19 playing=false
+#18 SON Son : l'exemple du tuto joue (encore 3 s).
+#18 > attends 5
+#19 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 2dc9baa1df | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_drop done=20 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 471 932
+#19 DOIGT tuto_next « 下一步  »
+#20 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 317cc36fb3 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_break done=20 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « 16 » 2.53:1 (needs 4.5:1, 12 sp)
+#20 > touche 294 842
+#20 DOIGT tuto_listen «  听示例 »
+#21 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 57ee0a3d9f | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_break done=20 playing=false
+#21 SON Son : l'exemple du tuto joue (encore 3 s).
+#21 > attends 5
+#22 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 8701df055e | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_break done=21 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 471 932
+#22 DOIGT rien
+#23 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 8701df055e | project=p-6937c6f0 tuto=afro_house/Pro active=true step=map_break done=21 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 294 758
+#23 DOIGT tuto_next_big « 下一章   »
+#24 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 2bc0558511 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=make_intro done=21 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 433 845
+#24 DOIGT tuto_show «  示范给我看 »
+#25 ROUTE tab_Structure | MODE pro | EMPREINTE 7aa1adfb6f | project=p-6937c6f0 tuto=afro_house/Pro active=true step=make_intro done=21 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « ? » lines cut (taller than its box)
+#25 LAYOUT CONTRAST « 停止 » 3.91:1 (needs 4.5:1, 14 sp)
+#25 > attends 4
+#26 ROUTE tab_Structure | MODE pro | EMPREINTE b3482164d8 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=make_intro done=21 playing=false
+#26 SON Son : rien ne joue.
+#26 > glisse 294 560 294 330
+#26 DOIGT rien (texte « 轮到你：创建前奏：底鼓、嗵鼓、沙锤和木块。 »)
+#27 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 2bc0558511 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=make_intro done=21 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 294 758
+#27 DOIGT tuto_need «   创建段落“前奏” »
+#28 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE fa660c6e1a | project=p-6937c6f0 tuto=afro_house/Pro active=true step=make_intro done=22 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 294 758
+#28 DOIGT tuto_next_big « 下一步   »
+#29 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 2408ebeee0 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=make_break done=22 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 294 758
+#29 DOIGT tuto_need «   创建段落“间奏” »
+#30 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 4b7adba971 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=make_break done=23 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 294 758
+#30 DOIGT tuto_next_big « 下一步   »
+#31 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 5d2f9e8d2c | project=p-6937c6f0 tuto=afro_house/Pro active=true step=make_drop2 done=23 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 294 758
+#31 DOIGT tuto_need «   创建段落“高潮 2” »
+#32 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 0328b57d5c | project=p-6937c6f0 tuto=afro_house/Pro active=true step=make_drop2 done=24 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 294 681
+#32 DOIGT tuto_text_more « 继续阅读 »
+#33 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 5d65996e8c | project=p-6937c6f0 tuto=afro_house/Pro active=true step=make_drop2 done=24 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 294 758
+#33 DOIGT tuto_next_big « 下一步   »
+#34 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 5d0a51d9f5 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT OVERLAP « 122 » over « 搭建你的段落 » (54 x 9 dp)
+#34 LAYOUT OVERLAP «  BPM » over « 搭建你的段落 » (65 x 9 dp)
+#34 LAYOUT OVERLAP « 搭建你的段落 » over the touchable « 速度：122 BPM 修改速度 » (132 x 15 dp)
+#34 > touche 294 758
+#34 DOIGT tuto_do «   我来做 »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE 05f236caae | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CUT « D » ellipsized (« … »)
+#35 LAYOUT CUT « 轮到你：在“高潮 2”段落里，在一个打击乐打击垫（康加鼓、木块）或开镲上加几下：第 2 个高潮就和第 1 个不完全一样了。 » ellipsized (« … »)
+#35 > glisse 300 600 300 260
+#35 DOIGT rien (texte « 第 1/4 小节 · 鼓边 »)
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE b276b47a59 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#36 SON Son : rien ne joue.
+#36 > glisse 300 600 300 260
+#36 DOIGT fill_2 « 1/2 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 9694dbe2b6 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#37 SON Son : rien ne joue.
+#37 > glisse 300 600 300 300
+#37 DOIGT rien (texte « 点一格添加打击，滑动手指可以一次画好几格。长按一个打击：力度和滚奏（×2 到 × »)
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 3a64a22c2f | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « 这个打击垫循环长度 » 3.77:1 (needs 4.5:1, 14 sp)
+#38 > glisse 300 600 300 300
+#38 DOIGT rien
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE eb8e55ff45 | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « 鼓边（合成） » 1.52:1 (needs 4.5:1, 14 sp)
+#39 > glisse 300 600 300 300
+#39 DOIGT pad_settings «  打击垫设置 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE de99fbab1c | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#40 SON Son : rien ne joue.
+#40 > glisse 300 460 300 680
+#40 DOIGT rien (texte « 段落：D · 高潮 2 »)
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE de99fbab1c | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#41 SON Son : rien ne joue.
+#41 > glisse 300 460 300 680
+#41 DOIGT rien (texte « 段落：D · 高潮 2 »)
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE de99fbab1c | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#42 SON Son : rien ne joue.
+#42 RIEN NE CHANGE (3 écrans identiques)
+#42 > glisse 300 460 300 680
+#42 DOIGT rien (texte « 段落：D · 高潮 2 »)
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE de99fbab1c | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#43 SON Son : rien ne joue.
+#43 > glisse 60 455 60 640
+#43 DOIGT rien (texte « 段落：D · 高潮 2 »)
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE de99fbab1c | project=p-6937c6f0 tuto=afro_house/Pro active=true step=variation done=24 playing=false
+#44 SON Son : rien ne joue.
+#44 RIEN NE CHANGE (5 écrans identiques)
+#44 FIN : rien ne change (5 écrans identiques)

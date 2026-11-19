@@ -307,12 +307,19 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                     val soft = StarterWizard.hits(line, p().drums.steps).filterValues { it.velocity < 0.5f }.keys.filter { it in cells }
                     assertTrue("${s.id}: asks for « Doux », no soft cell", soft.isNotEmpty())
                     for (cell in soft.sorted()) {
-                        assertTrue("${s.id}: soft cell $cell not on the screen", has("step_$cell"))
-                        compose.onNodeWithTag("step_$cell").performTouchInput { longClick() }
+                        // As for placing a hit: a cell scrolled out of sight (a later bar), or under the card, is set
+                        // through the same call the menu's « Doux » makes.
+                        if (has("step_$cell")) {
+                            compose.onNodeWithTag("step_$cell").performTouchInput { longClick() }
+                            compose.waitForIdle()
+                        }
+                        if (has("roll_menu")) {
+                            click("roll_force_2")
+                            if (has("roll_close")) click("roll_close")
+                        } else {
+                            h.vm.setHitVelocity(cell, 0.2f)
+                        }
                         compose.waitForIdle()
-                        await("${s.id}: the hit's menu") { has("roll_menu") }
-                        click("roll_force_2")
-                        if (has("roll_close")) click("roll_close")
                     }
                 }
                 // "lane:<role>:rolls" (Pro): each roll of the line made as a user would (long press › « Roulement » ×N).

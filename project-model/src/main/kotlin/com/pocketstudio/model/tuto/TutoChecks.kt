@@ -828,7 +828,39 @@ object TutoChecks {
      * A drum step that names the « Doux » button in every level's words (« appui long dessus, puis « Doux » »): its
      * soft cells count only played soft (tour 6, T3). A step that does not ask for it ticks at any strength.
      */
-    fun asksSoft(step: TutoStep): Boolean = listOfNotNull(step.text, step.textPro).all { "« Doux »" in it }
+    fun asksSoft(step: TutoStep): Boolean {
+        val words = listOfNotNull(step.text, step.textPro)
+        if (words.all { "« Doux »" in it }) return true
+        // Tour 9, F031: « un fort, un doux », « deux petits coups doux », « ses fantômes »: words that ask for soft hits
+        // in every level check them too, when the style's line has soft hits and no later step of the course sets the
+        // strength (deep house's hats).
+        if (!step.check.startsWith("lane:") || !words.all { SOFT_WORDS.containsMatchIn(it) }) return false
+        return softAsked.getOrPut(step) { softHitsAsked(step) }
+    }
+
+    /** Words that ask for soft hits (tour 9, F031). */
+    private val SOFT_WORDS = Regex("(?i)\\bdoux\\b|\\bdouces?\\b|fantômes?|moins fort|discret|deux forces")
+
+    private val softAsked = ConcurrentHashMap<TutoStep, Boolean>()
+
+    /**
+     * Whether [step]'s line, in the course it belongs to, has soft hits to play and no step after it, in any level,
+     * sets its pad's strength ("velocity:<role>").
+     */
+    private fun softHitsAsked(step: TutoStep): Boolean {
+        val role = argOf(step.check)
+        for (style in TutoCourse.STYLES) {
+            val course = TutoCourse.of(style) ?: continue
+            for (steps in listOf(course.chapters.flatMap { it.steps }) + TutoLevel.entries.map { l -> course.chaptersFor(l).flatMap { it.steps } }) {
+                val at = steps.indexOf(step)
+                if (at < 0) continue
+                if (steps.drop(at + 1).any { it.check == "velocity:$role" }) return false
+                val line = TutoTarget.of(style)?.line(role) ?: return false
+                return StarterWizard.hits(line.pattern).values.any { it.velocity < 0.5f }
+            }
+        }
+        return false
+    }
 
     /**
      * A drum step that asks for « Doux » ([asksSoft]) whose dotted cells are all hit, nothing more, in a part it looks

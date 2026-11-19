@@ -426,7 +426,7 @@ private fun PadGrid(
 }
 
 /** The room a pad's name leaves above it for its « FX » and pan badges. */
-private val BADGE_ROOM = 12.dp
+private val BADGE_TOP = 3.dp
 
 /** A phone pad's height (wide pads, a little lower than on a tablet). */
 private val PHONE_PAD_HEIGHT = 56.dp
@@ -497,19 +497,24 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: () -> Bo
         val badged = hasFx || panned
         // A phone's pads are narrow (75 dp at a big interface size): « Cymbale » shrinks a little
         // rather than break mid-word.
-        com.pocketstudio.ui.WholeWordsText(
-            name,
-            textAlign = TextAlign.Center,
-            // Lower pads (a phone): two lines set closer, clear of the LED and of the colour strip.
-            style = if (ratio) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelLarge.copy(lineHeight = 16.sp),
-            color = { lerp(nameRest, Color(0xFF1E2023), glowState.value) },
-            maxLines = 2,
-            // Round 2 integration: the Mode simple's everyday names (« Claquement de mains », « Grondement grave ») have
-            // a 10-letter word: at 130 % it broke as « Claqueme nt » at the usual floor; a pad's name may shrink a little more.
-            minScale = PAD_NAME_MIN_SCALE,
-            modifier = Modifier.padding(horizontal = if (ratio) 4.dp else 8.dp, vertical = 2.dp).padding(bottom = if (ratio) 0.dp else 4.dp)
-                .padding(top = if (badged) BADGE_ROOM else 0.dp),
-        )
+        // Tour 9, F047: the badges grow with the text size (200 %: 22 dp high): the name sits under their real height,
+        // centred in the room left (a fixed room let « Kick » start under « G 100 »).
+        val badgeStyle = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, lineHeight = 11.sp)
+        val nameTop = if (badged) BADGE_TOP + with(androidx.compose.ui.platform.LocalDensity.current) { badgeStyle.lineHeight.toDp() } else 0.dp
+        Box(Modifier.matchParentSize().padding(top = nameTop), contentAlignment = Alignment.Center) {
+            com.pocketstudio.ui.WholeWordsText(
+                name,
+                textAlign = TextAlign.Center,
+                // Lower pads (a phone): two lines set closer, clear of the LED and of the colour strip.
+                style = if (ratio) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelLarge.copy(lineHeight = 16.sp),
+                color = { lerp(nameRest, Color(0xFF1E2023), glowState.value) },
+                maxLines = 2,
+                // Round 2 integration: the Mode simple's everyday names (« Claquement de mains », « Grondement grave ») have
+                // a 10-letter word: at 130 % it broke as « Claqueme nt » at the usual floor; a pad's name may shrink a little more.
+                minScale = PAD_NAME_MIN_SCALE,
+                modifier = Modifier.padding(horizontal = if (ratio) 4.dp else 8.dp, vertical = 2.dp).padding(bottom = if (ratio) 0.dp else 4.dp),
+            )
+        }
         // A small LED when the pad has hits in the loop.
         if (hasHits) {
             Box(
@@ -521,8 +526,8 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: () -> Bo
         // Effects of its own, and a pan off the centre (« G 100 »): small badges in the corner, so
         // a pad sent to one side is seen without opening it.
         if (badged) {
-            val small = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, lineHeight = 11.sp)
-            Row(Modifier.align(Alignment.TopStart).padding(start = 5.dp, top = 3.dp), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+            val small = badgeStyle
+            Row(Modifier.align(Alignment.TopStart).padding(start = 5.dp, top = BADGE_TOP), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                 // Tour 6 lot 1 (R21): the badges say what they are, in the words of the pad's sheet (« Effets du pad »,
                 // « Gauche 30 »): read by TalkBack, and by the « ? » labels.
                 if (hasFx) Text(

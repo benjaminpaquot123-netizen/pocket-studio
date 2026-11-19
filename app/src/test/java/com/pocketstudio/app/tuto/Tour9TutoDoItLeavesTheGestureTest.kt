@@ -100,9 +100,18 @@ class Tour9TutoDoItLeavesTheGestureTest {
             assertTrue("$style/$id: « Je le fais » shows where to work", go.effects != null || go.open != null)
             assertEquals("$style/$id: « Je le fais » made the gesture itself", before, flow.value)
             assertFalse("$style/$id: ticked before the user made the gesture", id in c.ui.value!!.progress.done)
-            // The user makes the gesture there: then it ticks.
+            // The user makes the gesture there (a send is one strip at a time): then it ticks.
             val step = c.ui.value!!.current
-            flow.value = TutoPlay.doHere(step, flow.value, target, go.effects, TutoLevel.Pro)!!
+            var where = go.effects
+            for (i in 0 until 4) {
+                flow.value = TutoPlay.doHere(step, flow.value, target, where, TutoLevel.Pro) ?: break
+                idle(300)
+                if (id in c.ui.value!!.progress.done) break
+                val m = goes.size
+                c.doIt()
+                await("$style/$id: went on") { goes.size > m }
+                where = goes.last().effects
+            }
             await("$style/$id: ticked once the user made it") { id in c.ui.value!!.progress.done }
             checked += "$style/$id"
         }

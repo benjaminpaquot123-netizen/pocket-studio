@@ -631,18 +631,22 @@ private fun StepGrid(
     val bar = (if (followedBar >= 0) followedBar else chosenBar).coerceIn(0, bars - 1)
     val chipColors = pillColors()
     NeonCard {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            // The sound on the pad now (« Kick de ma voix ») and the section being edited (the top bar
-            // only has room for its letter on a narrow phone); a long name wraps.
-            val section = if (project.allScenes.size > 1) " · " + com.pocketstudio.model.Scene.shownLabel(project.sceneLabel(project.scene)).ifBlank { com.pocketstudio.model.Scene.NAMES.getOrElse(project.scene) { "?" } } else ""
-            SectionLabel(
-                (if (allPads) tr("Pas : tous les pads") else tr("Pas : %s", padName(project, lane))) + section, Modifier.weight(1f),
-                // Round 3, n° 34 (seat D d): in the Mode simple the « ? » spoke of rolls, place and pitch it has not.
-                color = if (allPads) Neon.Cyan else color, help = Glossary.stepFor(simple), foldKey = "Pas",
-            )
-            FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text(tr("Tous les pads"), maxLines = 1, softWrap = false) }, colors = chipColors,
-                modifier = Modifier.testTag("all_pads"))
-        }
+        // The sound on the pad now (« Kick de ma voix ») and the section being edited (the top bar
+        // only has room for its letter on a narrow phone); a long name wraps.
+        val section = if (project.allScenes.size > 1) " · " + com.pocketstudio.model.Scene.shownLabel(project.sceneLabel(project.scene)).ifBlank { com.pocketstudio.model.Scene.NAMES.getOrElse(project.scene) { "?" } } else ""
+        HeadBesideChip(
+            head = {
+                SectionLabel(
+                    (if (allPads) tr("Pas : tous les pads") else tr("Pas : %s", padName(project, lane))) + section,
+                    // Round 3, n° 34 (seat D d): in the Mode simple the « ? » spoke of rolls, place and pitch it has not.
+                    color = if (allPads) Neon.Cyan else color, help = Glossary.stepFor(simple), foldKey = "Pas",
+                )
+            },
+            chip = {
+                FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text(tr("Tous les pads"), maxLines = 1, softWrap = false) }, colors = chipColors,
+                    modifier = Modifier.testTag("all_pads"))
+            },
+        )
         // The loop's length and its bar pages come under the cells: on a phone the first row of
         // cells stays on screen under the pads (the length is changed far less often than hits).
         val lengths: @Composable () -> Unit = {
@@ -1574,3 +1578,33 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
 /** How far a pad's name may shrink to keep its words whole ([com.pocketstudio.ui.WholeWordsText]'s floor is 0.72). */
 // Tour 5, lot « langues »: half its size at most (« Händeklatschen » on a 360 dp phone), only when a word would break.
 private const val PAD_NAME_MIN_SCALE = 0.5f
+
+/**
+ * A card's head with a chip at its end, side by side while the head holds on one line beside the chip; else the chip
+ * goes under the head (tour 9, seen at 130 and 200 %: « Tous les pads » kept its width and squeezed « Pas : Kick »
+ * into a column of one word per line).
+ */
+@Composable
+private fun HeadBesideChip(head: @Composable () -> Unit, chip: @Composable () -> Unit) {
+    androidx.compose.ui.layout.Layout(contents = listOf(head, chip)) { (heads, chips), constraints ->
+        val gap = 8.dp.roundToPx()
+        val loose = constraints.copy(minWidth = 0, minHeight = 0)
+        val chipPlaced = chips.first().measure(loose)
+        val headMeasurable = heads.first()
+        val beside = headMeasurable.maxIntrinsicWidth(androidx.compose.ui.unit.Constraints.Infinity) + gap + chipPlaced.width <= constraints.maxWidth
+        if (beside) {
+            val headPlaced = headMeasurable.measure(loose.copy(minWidth = constraints.maxWidth - gap - chipPlaced.width, maxWidth = constraints.maxWidth - gap - chipPlaced.width))
+            val height = maxOf(headPlaced.height, chipPlaced.height)
+            layout(constraints.maxWidth, height) {
+                headPlaced.placeRelative(0, (height - headPlaced.height) / 2)
+                chipPlaced.placeRelative(constraints.maxWidth - chipPlaced.width, (height - chipPlaced.height) / 2)
+            }
+        } else {
+            val headPlaced = headMeasurable.measure(loose.copy(minWidth = constraints.maxWidth))
+            layout(constraints.maxWidth, headPlaced.height + chipPlaced.height) {
+                headPlaced.placeRelative(0, 0)
+                chipPlaced.placeRelative(0, headPlaced.height)
+            }
+        }
+    }
+}

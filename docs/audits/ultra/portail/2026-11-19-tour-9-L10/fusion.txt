@@ -1,0 +1,13 @@
+fusion: d12e3c01649491d9bfa5bb32c45087fb3299cdcb
+branche: eq/tour-9-L10
+tete: 52b7f2d1ac64abd5090511dab12442dd4867688a
+relecture: docs/audits/ultra/tour-9-L10-relecture.md
+relu: 99f9df46
+filtres: *FitTextBox* *CutStaleMessage* *CutCurrentMessageScroll* *CutBoutBigText* *LiveArabicTitles* *Tour9TabsWhole* com.pocketstudio.app.live.* com.pocketstudio.app.remix.* *Scene* *WholeWords*
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu

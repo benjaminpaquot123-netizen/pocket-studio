@@ -73,6 +73,15 @@ object TutoTestHooks {
 }
 
 /**
+ * Tour 9, F039: a drum pad played by hand (Rythme's pads call [heard] with its lane). The tutorial shown
+ * listens while it is on screen: « Écoute le kick seul » is heard by playing the kick pad.
+ */
+object TutoPadEar {
+    @Volatile
+    var heard: ((Int) -> Unit)? = null
+}
+
+/**
  * Where the tutorial sends the screen: the Guide's screen ([open], with its control lit by a short
  * pulsing ring when [spot], brought into view either way), the drum pad to show ([pad]), the notes
  * of track [notes] (its next dotted note brought into view), the tutorial's own key sheet

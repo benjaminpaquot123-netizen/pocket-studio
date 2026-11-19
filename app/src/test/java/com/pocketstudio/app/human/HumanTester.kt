@@ -869,6 +869,21 @@ abstract class HumanTester(private val seat: String) {
                     v.tutoEdit { built }
                     play("attends 0.5")
                     journal.appendText("#0 AMENEE chapitres 1 à ${chapter - 1} construits dans le projet\n")
+                    // Tour 9 (common cause): the chapters skipped are ticked too, as playing them does, or the course can
+                    // never be finished from here. The tutorial is left, its kept progress ticked, then resumed: the
+                    // app's own doors, since it only reads the store when it opens or resumes.
+                    val course = com.pocketstudio.model.tuto.TutoCourse.of(style)?.chaptersFor(level) ?: error("amenée $name : pas de cours $style")
+                    tap("tuto_chapters")
+                    waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
+                    tap("tuto_quit")
+                    waitFor("« Reprendre le tuto »") { centerOf("tuto_resume") != null }
+                    val store = PrefsTutoStore(app)
+                    val kept = store.load(v.projectId) ?: error("amenée $name : pas de tuto gardé")
+                    val skipped = course.take(chapter - 1).flatMap { it.steps }.map { it.id }
+                    store.save(v.projectId, kept.copy(done = kept.done + skipped, current = course[chapter - 1].steps.first().id))
+                    tap("tuto_resume")
+                    waitFor("le tuto repris") { centerOf("tuto_chapters") != null }
+                    journal.appendText("#0 AMENEE chapitres 1 à ${chapter - 1} cochés (${skipped.size} étapes)\n")
                     tap("tuto_chapters")
                     waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
                     tap("tuto_chapter_${chapter - 1}")
@@ -2296,7 +2311,20 @@ abstract class HumanTester(private val seat: String) {
     companion object {
         /** The journal's words on where the tutorial is ([inside]), read by a round's oracle. */
         internal fun tutoState(p: com.pocketstudio.model.tuto.TutoProgress): String =
-            "tuto=${p.style}/${p.level} active=${p.active} step=${p.current} done=${p.done.size}"
+            "tuto=${p.style}/${p.level} active=${p.active} step=${p.current} done=${p.done.size} chapters=${chaptersOver(p)}"
+
+        /**
+         * Tour 9: the chapters of [p]'s course that are over (1-based, « - » for none), by the app's own rule (a step
+         * ticked; in Pro an example to listen to holds nothing back). A step ticked stays shown with its « Bravo »
+         * until « Chapitre suivant », so `step=` alone cannot say a slice is finished.
+         */
+        internal fun chaptersOver(p: com.pocketstudio.model.tuto.TutoProgress): String {
+            val chapters = com.pocketstudio.model.tuto.TutoCourse.of(p.style)?.chaptersFor(p.level).orEmpty()
+            val over = chapters.indices.filter { c ->
+                chapters[c].steps.all { it.id in p.done || (p.level == com.pocketstudio.model.tuto.TutoLevel.Pro && it.listening) }
+            }
+            return if (over.isEmpty()) "-" else over.joinToString(",") { "${it + 1}" }
+        }
 
         /** Socle du banc, point 3: the gestures that may name a test tag instead of pixels (« touche <étiquette> »). */
         val TAG_GESTURES = setOf("touche", "appui-long", "double-touche")

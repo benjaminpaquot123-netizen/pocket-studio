@@ -30,12 +30,12 @@ Mesures dans les journaux du tour 8 (11 sièges de tuto) : de 2,4 à 13 gestes p
 
 ## 4. Ce que l'oracle lit pour « tranche finie »
 
-Le banc écrit l'état du tuto sur chaque ligne `ROUTE` de `journal.txt` : `tuto=<style>/<Facile|Pro> active=… step=<id> done=<n>`.
+Le banc écrit l'état du tuto sur chaque ligne `ROUTE` de `journal.txt` : `tuto=<style>/<Facile|Pro> active=… step=<id> done=<n> chapters=<1,2,3>` (`chapters=` : les chapitres dont toutes les étapes sont réglées, selon la règle de l'appli ; `chapters=-` quand aucun).
 
-- Tranche finie (sauf la dernière) : une ligne `ROUTE` avec le bon `tuto=<style>/<niveau>` et `step=<id>`, où `<id>` est la **première étape du chapitre qui suit la tranche** (colonne « fin lue par l'oracle »).
-- Dernière tranche : le « Bravo » du tuto à l'écran, ou `done=` égal au total d'étapes du niveau (indiqué dans la colonne).
+- Tranche finie (toutes les tranches, depuis la réparation du 19 novembre) : une ligne `ROUTE` avec le bon `tuto=<style>/<niveau>` dont `chapters=` contient **tous les chapitres de la tranche**. Pour la dernière tranche, c'est aussi le « Bravo » du tuto : l'amenée coche maintenant les chapitres sautés.
+- Pourquoi plus `step=` (12 premiers sièges, tous « non ») : une étape cochée reste affichée avec son « Bravo » jusqu'à « Chapitre suivant », un geste que la mission ne demande pas ; `step=<première étape du chapitre suivant>` n'arrivait donc jamais. La colonne « fin lue par l'oracle » du §6 reste vraie si le testeur fait ce geste, mais elle ne juge plus. `done=` égal au total ne juge plus non plus (en Pro, un exemple non écouté ne retient pas le « Bravo »).
 - Chapitre par chapitre : le rapport du siège donne une ligne par chapitre (compris du premier coup / hésitation / bloqué) ; un chapitre « bloqué » arrête la lecture de l'oracle à ce chapitre.
-- `seat-metrics.py` (oracle `tuto`) compte toujours « réussi à 3 chapitres » : il sert de garde-fou, pas de verdict. Le verdict de ce tour est la ligne `step=` ci-dessus.
+- `seat-metrics.py` (oracle `tuto`) compte toujours « réussi à 3 chapitres » : il sert de garde-fou, pas de verdict. Le verdict de ce tour est le champ `chapters=` ci-dessus.
 
 ## 5. Ordre des vagues
 

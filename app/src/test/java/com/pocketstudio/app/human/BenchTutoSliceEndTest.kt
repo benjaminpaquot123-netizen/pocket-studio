@@ -21,8 +21,9 @@ class BenchTutoSliceEndTest {
             for (n in 1..chapters.size) {
                 val played = chapters.take(n).flatMap { it.steps }
                 val line = HumanTester.tutoState(TutoProgress(style, level, done = played.map { it.id }.toSet(), current = played.last().id))
-                val want = "chapters=" + (1..n).joinToString(",")
-                if (" $want " !in "$line ") missed += "$style/$level 1-$n: « $line » without « $want »"
+                // « Contains »: in Pro a later chapter made of examples only is over before it is reached (the app's rule).
+                val over = line.substringAfter(" chapters=", "").substringBefore(' ').split(',').mapNotNull { it.toIntOrNull() }
+                if (!over.containsAll((1..n).toList())) missed += "$style/$level 1-$n: « $line » without the chapters 1 to $n"
             }
         }
         assertTrue("${missed.size} slices whose end the journal cannot say:\n" + missed.take(10).joinToString("\n"), missed.isEmpty())

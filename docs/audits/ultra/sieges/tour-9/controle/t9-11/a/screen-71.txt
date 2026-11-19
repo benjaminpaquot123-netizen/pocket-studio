@@ -1,0 +1,53 @@
+Écran 71 (900x1509)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 284,42
+bouton « Simple » @ 612,42
+bouton ● @ 701,42
+bouton ▶ « this part » @ 778,42
+icône ⋮ @ 855,42
+bouton « 112  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Part: A » ▾ @ 99,240
+texte « Bar » @ 73,312
+bouton « 1 » @ 150,312
+bouton « 2 » [sélectionné] @ 231,312
+bouton « Follow » @ 363,312
+texte « Bar 2/2 · Maracas » @ 219,396
+bouton « 1 » [état « empty »] @ 90,481
+bouton [état « empty »] @ 192,481
+bouton [état « empty »] @ 294,481
+bouton [état « empty »] @ 397,481
+bouton « 2 » [état « hit, strength 100 % »] @ 500,481
+bouton [état « empty »] @ 603,481
+bouton [état « empty »] @ 706,481
+bouton [état « hit, strength 100 % »] @ 809,481
+bouton « 3 » [coupé, état « empty »] @ 90,539
+bouton [coupé, état « empty »] @ 192,539
+bouton [coupé, état « hit, strength 100 % »] @ 294,539
+bouton [coupé, état « empty »] @ 397,539
+bouton « 4 » [coupé, état « hit, strength 100 % »] @ 500,539
+bouton [coupé, état « empty »] @ 603,539
+bouton [coupé, état « empty »] @ 706,539
+bouton [coupé, état « empty »] @ 809,539
+texte « The percussion Chapter 2/12 · Step 7/7 · Easy » @ 357,620
+icône (liste) « Chapters » @ 750,620
+icône ⌄ @ 843,620
+texte « Listen to all your percussion, then to the example's. » @ 450,764
+texte « ▸ Why? » @ 450,864
+bouton ▶ «   Listen to your result » @ 450,1002
+bouton ■ «  Stop listening » @ 450,1088
+icône ← «  Previous » @ 141,1174
+icône « Next  » → @ 796,1174
+icône ↶ « Undo » @ 109,1277
+image ↷ @ 258,1257
+icône ▶ « the song » @ 436,1278
+texte « 112 Tempo » @ 629,1277
+icône ⋮ « More » @ 793,1277
+onglet (lignes et note) « My song » @ 85,1389
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 268,1389
+onglet (touches de piano) « Keyboard » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Share » @ 815,1389
+texte « ●  REC » @ 637,1479
+texte « ✎  Note » @ 754,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 297,1479

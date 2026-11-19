@@ -1,0 +1,15 @@
+#0 SIEGE lang=es device=tablet8 font=100 mode=simple theme=- fresh=non gestes.max=153 lit=oui main=both amenee=tuto:deep_house:1
+#0 PREMIER ECRAN reel_s=4.5 simule_s=2.4 jvm_s=10.0 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:deep_house:1
+#0 AMENEE > touche 450 570 (welcome_learn)
+#0 AMENEE > touche 229 1356 (mode_card_simple)
+#0 AMENEE > touche 450 1279 (tuto_style_deep_house)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8a1ae5924b | project=p-8a08abf9 tuto=deep_house/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ ¿Por qué? » 572 x 20 dp (touch 572 x 48)
+#1 > touche 450 1125
+#1 DOIGT tuto_listen «  Escuchar el ejemplo »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 97171151c7 | project=p-8a08abf9 tuto=deep_house/Facile active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).

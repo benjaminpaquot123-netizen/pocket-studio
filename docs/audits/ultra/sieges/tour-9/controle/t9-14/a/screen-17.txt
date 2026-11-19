@@ -1,0 +1,39 @@
+Écran 17 (1035x1243)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 202,42
+bouton « Pro » @ 437,42
+bouton « A » ▾ @ 522,42
+icône ↶ @ 602,42
+icône ↷ [désactivé] @ 674,42
+bouton ● @ 746,42
+bouton ▶ « dit deel » @ 818,42
+bouton ▶ « het nummer » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 92  BPM » @ 100,144
+bouton « ? » @ 990,144
+onglet « Remix Splitsen » [coupé] @ 64,250
+bouton « Bas Ronde bas » @ 241,250
+bouton « Akkoorden Elektrische piano » @ 556,250
+bouton « Melodie FM-piano » ⋮ @ 879,250
+image ← @ 10,251
+image → @ 1024,251
+texte « Je eerste deel: het Refrein Hoofdstuk 6/14 · Stap 2/2 · Pro » @ 424,363
+icône (liste) « Hoofdstukken » @ 885,363
+icône ⌄ @ 978,363
+texte « Nu jij: noem dit deel ‘Refrein’: het is je startdeel, waarin alles speelt. » @ 517,507
+bouton « Kit Boom bap downloaden (7 MB) » @ 470,627
+texte « Later » @ 961,627
+texte « ▸ Waarom? » @ 517,706
+bouton ⊕ «   Deel ‘Refrein’ een naam geven » @ 517,783
+bouton ▶ «  Luister naar het voorbeeld » @ 266,897
+bouton (œil) «  Laat zien » @ 768,897
+icône ← «  Vorige » @ 120,1011
+icône « Volgende  » → @ 886,1011
+onglet (ligne brisée et points) « Structuur » @ 99,1123
+onglet (touches de piano) « Klanken » [sélectionné] @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Meer » @ 936,1123
+texte « ●  REC » @ 726,1213
+texte « ✎  Noteren » @ 866,1213
+texte « ⋯ » @ 987,1213
+texte « Feedbackmodus » @ 341,1213

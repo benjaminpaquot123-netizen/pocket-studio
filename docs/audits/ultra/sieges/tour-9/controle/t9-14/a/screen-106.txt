@@ -1,0 +1,14 @@
+Écran 106 (1035x1243)
+texte « Tutorial van A tot Z » @ 481,60
+icône ✕ @ 975,60
+bouton (rond coché) « 7 De delen begrijpen » [coupé] @ 517,119
+bouton « 8 Bouw je delen » (rond coché) @ 517,189
+bouton « 9 Zet je delen op volgorde » (rond coché) @ 517,297
+bouton « 10 De overgangen » (rond coché) @ 517,405
+bouton « 11 De effecten » (rond coché) @ 517,513
+bouton « 12 De mix 0/2 » @ 517,621
+bouton « 13 De mastering 0/1 » @ 517,729
+bouton « 14 Exporteer je nummer 0/2 » @ 517,837
+bouton « Terug naar Makkelijk » @ 517,939
+bouton ↺ «  Tutorial opnieuw beginnen (nieuw leeg project) » @ 517,1059
+texte « Tutorial stoppen (je kunt hem hervatten) » @ 517,1179

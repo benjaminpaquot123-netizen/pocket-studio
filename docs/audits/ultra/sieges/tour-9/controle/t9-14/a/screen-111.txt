@@ -1,0 +1,6 @@
+Écran 111 (1035x1243)
+texte « Ik maak je nummer klaar… » @ 467,429
+texte « Geluid maken, daarna comprimeren naar M4A. » @ 517,545
+texte «   16% » @ 849,641
+texte « Kies daarna de app om het te versturen. » @ 491,707
+texte « Annuleren » @ 784,809

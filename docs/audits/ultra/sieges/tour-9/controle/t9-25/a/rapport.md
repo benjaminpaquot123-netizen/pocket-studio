@@ -66,3 +66,5 @@ mots-faux:
   - ecran: 58 | vu: perküsyon pad'i | attendu: Davul kenarı
   - ecran: 94 | vu: Pad (titre du chapitre des accords) | attendu: Akorlar
 defauts-avant:
+
+fin-tranche: non (dernier step=groove_name, done=22 ; « Bravo, bölüm bitti! » affiché à l’écran 117, step=brick jamais lu)

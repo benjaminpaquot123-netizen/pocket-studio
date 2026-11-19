@@ -181,7 +181,13 @@ fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Uni
             }
         },
         confirmButton = {
-            if (export.running) TextButton(onClick = cancel, modifier = Modifier.testTag("share_cancel")) { Text(tr("Annuler")) }
+            // Tour 9, F124: « Annuler » kept the window's own primary, read very pale on the dark by a seat (zh, 130 %):
+            // its colour and outline are said here, as the sheets' « Fermer ».
+            if (export.running) androidx.compose.material3.OutlinedButton(
+                onClick = cancel,
+                border = androidx.compose.foundation.BorderStroke(1.dp, Neon.TextSecondary.copy(alpha = 0.7f)),
+                modifier = Modifier.testTag("share_cancel"),
+            ) { Text(tr("Annuler"), color = Neon.TextPrimary) }
             else
  TextButton(onClick = dismiss, modifier = Modifier.testTag("share_dismiss")) { Text("OK") }
         },

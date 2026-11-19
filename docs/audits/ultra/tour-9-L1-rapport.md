@@ -64,6 +64,7 @@ Rejeu : `t9-d06-pointilles-200` passe du français (speed garage), tenu même sa
 Captures : app/screenshots/tour9/d06_dotted_notes_simple_fr_200.png (nouvelle), écran entier regardé : rouleau et notes pointillées au-dessus du panneau, « Touche ici » en haut, compteur lisible.
 
 corrige: D06 | gravité: bloquant | rejeu: t9-d06-pointilles-200
+controle: reporté (mode boost, grande vérification de fin)
 
 Rejeu ajouté (joué par scripts/bench/rejeu-defauts.sh avec la correction) :
 t9-d06-pointilles-200 : oracle tenu

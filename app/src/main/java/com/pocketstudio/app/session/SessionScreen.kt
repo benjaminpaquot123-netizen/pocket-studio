@@ -257,7 +257,7 @@ fun SessionScreen(
             top?.invoke()
             if (entries) LiveEntry(actions.openLive)
             if (entries) TimelineEntry(ui, actions)
-            SongCard(ui, actions, simple)
+            SongCard(ui, actions, simple, rename = { renaming = it })
         },
         // A wide screen: the live pads right under the scenes, in reach without scrolling.
         second = {
@@ -275,7 +275,7 @@ fun SessionScreen(
             if (entries) TimelineEntry(ui, actions)
             // The Mode simple: the tracks first (their sounds and volumes, what a beginner changes), then the parts.
             if (simple) tracks?.invoke()
-            SongCard(ui, actions, simple)
+            SongCard(ui, actions, simple, rename = { renaming = it })
             if (!simple) {
                 ScenesCard(ui, actions, rename = { renaming = it })
                 if (entries) LiveSection(live, liveActions, actions)
@@ -377,7 +377,7 @@ private fun LiveSection(live: LivePadsUi?, liveActions: LivePadsActions, actions
 }
 
 @Composable
-private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boolean = false) {
+private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boolean = false, rename: (Int) -> Unit = {}) {
     var inserting by rememberSaveable { mutableStateOf<Int?>(null) }
     NeonCard(accent = Neon.Magenta) {
         SectionLabel(tr("Le morceau"), color = Neon.Magenta, help = Glossary.SONG)
@@ -389,8 +389,9 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
                 ui.song.isEmpty() && (ui.playing || ui.scenes.any { it != null && !it.isEmpty } || ui.rows.any { it.takeSteps > 0 }) ->
                     tr("La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.") + " " + tr("Ajoute-les dans l'ordre.")
                 ui.song.isEmpty() -> tr("Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).")
-                ui.songIndex >= 0 -> tr("Touche une partie : elle joue juste après celle en cours.")
-                else -> tr("Touche une partie pour écouter le morceau à partir d'elle.")
+                // F104: a touch opens the part's settings; ▶ plays it.
+                ui.songIndex >= 0 -> tr("Touche une partie pour régler sa longueur ; ▶ la joue juste après celle en cours.")
+                else -> tr("Touche une partie pour régler sa longueur ; ▶ écoute le morceau à partir d'elle.")
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
         )
@@ -460,9 +461,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
                 .spot("song_add").testTag("song_add"),
         ) {
             ui.scenes.forEachIndexed { i, s ->
-                if (s != null) OutlinedButton(onClick = { touched(); actions.addPart(i) }, enabled = ui.song.size < SongPart.MAX_PARTS, modifier = Modifier.testTag("add_part_$i")) {
-                    Text("+ ${ui.title(i)}", maxLines = 1, softWrap = false)
-                }
+                if (s != null) AddPartButton(i, ui, enabled = ui.song.size < SongPart.MAX_PARTS, add = { touched(); actions.addPart(i) }, rename = rename, whatPlays = { actions.whatPlays(i) })
             }
             NewPartButtons(ui, enabled = ui.song.size < SongPart.MAX_PARTS) { copy -> touched(); actions.newPart(copy, null) }
         }
@@ -516,6 +515,37 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
 private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
 
 /**
+ * F102: « + A · Intro » adds the part on a touch; a long press opens its menu (rename, what plays in it) and adds nothing
+ * (an OutlinedButton took a long press for a touch). Drawn as the outlined buttons beside it.
+ */
+@Composable
+private fun AddPartButton(i: Int, ui: SessionScreenUi, enabled: Boolean, add: () -> Unit, rename: (Int) -> Unit, whatPlays: () -> Unit) {
+    var menu by remember { mutableStateOf(false) }
+    val shape = RoundedCornerShape(50)
+    Box {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.heightIn(min = 48.dp).padding(vertical = 4.dp).clip(shape)
+                .border(1.dp, if (enabled) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.outline.copy(alpha = 0.38f), shape)
+                .combinedClickable(
+                    enabled = enabled, role = Role.Button, onLongClickLabel = tr("Plus d'actions"),
+                    onLongClick = { menu = true }, onClick = add,
+                )
+                .padding(horizontal = 24.dp, vertical = 10.dp).testTag("add_part_$i"),
+        ) {
+            Text(
+                "+ ${ui.title(i)}", maxLines = 1, softWrap = false, style = MaterialTheme.typography.labelLarge,
+                color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            )
+        }
+        com.pocketstudio.ui.ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }, modifier = Modifier.testTag("add_part_menu")) {
+            DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; rename(i) }, modifier = Modifier.testTag("add_part_menu_rename"))
+            DropdownMenuItem(text = { Text(tr("Ce qui joue dans %s", ui.title(i))) }, onClick = { menu = false; whatPlays() }, modifier = Modifier.testTag("add_part_menu_what_plays"))
+        }
+    }
+}
+
+/**
  * Audit ultra round 1, n° 24 (seat B b gave up: « je ne trouvais nulle part comment créer une deuxième partie »):
  * « + Nouvelle partie » beside the parts already there: a copy of the part shown to change (the usual way to
  * a variation), or an empty one. The screens then show it.
@@ -523,9 +553,12 @@ private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
 @Composable
 private fun NewPartButtons(ui: SessionScreenUi, enabled: Boolean, onNew: (Boolean) -> Unit) {
     val free = ui.scenes.count { it == null || it.isEmpty } > 0 || ui.scenes.size < Scene.MAX
-    OutlinedButton(onClick = { onNew(true) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_copy")) {
-        // F108: a long part name goes on a second line instead of being cut (Arabic, big font, small phone).
-        Text(tr("+ Nouvelle partie (copie de %s)", ui.title(ui.current)))
+    // F103: a copy of an empty part is an empty part: only « vide » is offered then.
+    if (ui.scenes.getOrNull(ui.current)?.isEmpty == false) {
+        OutlinedButton(onClick = { onNew(true) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_copy")) {
+            // F108: a long part name goes on a second line instead of being cut (Arabic, big font, small phone).
+            Text(tr("+ Nouvelle partie (copie de %s)", ui.title(ui.current)))
+        }
     }
     OutlinedButton(onClick = { onNew(false) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_empty")) {
         Text(tr("+ Nouvelle partie vide"))
@@ -620,17 +653,32 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f).heightIn(min = 56.dp).clip(shape)
-                .combinedClickable(
-                    role = Role.Button, onClickLabel = tr("Jouer à partir de cette partie"),
-                    onLongClickLabel = tr("Variation, fill, break…"), onLongClick = { sheetOpen = true },
-                ) { actions.playPart(i) }
-                .padding(horizontal = 6.dp)
-                .spot("part_play_$i", if (i == 0) tr("Jouer · appui long : Fill") else null)
-                .testTag("part_play_$i"),
+            modifier = Modifier.weight(1f).heightIn(min = 56.dp).clip(shape),
         ) {
-            Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = if (active) Neon.Magenta else Neon.TextSecondary, modifier = Modifier.size(20.dp))
-            Column(Modifier.padding(start = 6.dp)) {
+            // F104: ▶ plays from the part (a long press: its sheet, as before); a touch on the part opens its settings.
+            // As wide as the old icon and its margins (32 dp, the whole row's height: 56 dp), so the name keeps its room.
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.width(32.dp).heightIn(min = 56.dp).clip(shape)
+                    .combinedClickable(
+                        role = Role.Button, onClickLabel = tr("Jouer à partir de cette partie"),
+                        onLongClickLabel = tr("Variation, fill, break…"), onLongClick = { sheetOpen = true },
+                    ) { actions.playPart(i) }
+                    .spot("part_play_$i", if (i == 0) tr("Jouer · appui long : Fill") else null)
+                    .testTag("part_play_$i"),
+            ) {
+                Icon(Icons.Filled.PlayArrow, contentDescription = tr("Jouer à partir de cette partie"), tint = if (active) Neon.Magenta else Neon.TextSecondary, modifier = Modifier.size(20.dp))
+            }
+            Column(
+                Modifier.weight(1f).heightIn(min = 56.dp).clip(shape)
+                    .combinedClickable(
+                        role = Role.Button, onClickLabel = tr("Plus d'actions"),
+                        onLongClickLabel = tr("Variation, fill, break…"), onLongClick = { sheetOpen = true },
+                    ) { sheetOpen = true }
+                    .padding(end = 6.dp)
+                    .testTag("part_open_$i"),
+                verticalArrangement = Arrangement.Center,
+            ) {
                 // A narrow row (a big text size): the name goes on a second line, never « B · Co… ».
                 Text(
                     ui.title(part.scene), fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis,

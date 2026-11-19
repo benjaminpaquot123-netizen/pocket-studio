@@ -499,7 +499,7 @@ class SongArrangementTest {
             ),
         )
         // The song comes first and shows the section names.
-        compose.onNodeWithTag("part_play_0").assertTextContains("A · Intro", substring = true)
+        compose.onNodeWithTag("part_open_0").assertTextContains("A · Intro", substring = true)
         compose.onNodeWithTag("part_play_1").performClick()
         compose.onNodeWithTag("part_menu_1").performClick()
         compose.onNodeWithTag("part_up_1").performClick()

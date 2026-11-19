@@ -1,0 +1,52 @@
+Écran 114 (1035x1243)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 209,42
+bouton « Pro » @ 448,42
+bouton « A » ▾ @ 526,42
+icône ↶ @ 602,42
+icône ↷ [désactivé] @ 674,42
+bouton ● @ 746,42
+bouton ▶ « bagian ini » @ 826,42
+bouton ▶ « lagu » @ 918,42
+icône (trois points reliés) @ 990,42
+bouton « 128  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « Drum 16 pad » [coupé] @ 54,204
+onglet « Acid 303 Bassline » @ 185,204
+onglet « Vokal Mikrofon » @ 364,204
+onglet « Remix Pisahkan » @ 539,204
+bouton « Bass Bass analog » @ 730,204
+bouton « Melodi Synth » ⋮ @ 925,204
+image ← @ 10,205
+image → @ 1024,205
+texte « Bagian: A » @ 85,273
+curseur [coupé, état « 30% », à 30 %] @ 273,313
+curseur [coupé, état « 0% », à 0 %] @ 761,313
+dessin @ 273,368
+texte « Sweep terkunci ke tempo » @ 210,368
+texte « 0% » @ 482,369
+dessin @ 761,368
+texte « Glide antar not » @ 627,368
+texte « 235 ms » @ 942,369
+curseur [état « 0% », à 0 %] @ 273,431
+curseur [état « 235 ms », à 68 %] @ 761,431
+titre « EFEK » [coupé, état « Terbuka »] @ 120,537
+bouton « ? » [coupé] @ 176,537
+texte « Bagian pertamamu: Groove Bab 5/13 · Langkah 2/2 · Pro » @ 445,594
+icône (liste) « Bab » @ 906,595
+icône ⌄ @ 978,595
+texte « Giliranmu: beri nama scene ini “Groove”: loop lengkap, sumber bagian-bagian lainnya. » @ 517,706
+texte « ▸ Kenapa? » @ 517,781
+bouton ⊕ «   Beri nama bagian “Groove” » @ 517,850
+bouton ▶ «  Dengar contohnya » @ 266,934
+bouton (œil) «  Tunjukkan » @ 768,934
+icône ← «  Sebelumnya » @ 141,1015
+icône « Berikutnya  » → @ 905,1015
+onglet (ligne brisée et points) « Struktur » @ 99,1123
+onglet (touches de piano) « Suara » [sélectionné] @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Lainnya » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Catat » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode masukan » @ 385,1213

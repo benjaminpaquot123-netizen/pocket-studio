@@ -1,0 +1,46 @@
+Écran 117 (1035x1243)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 291,42
+bouton « Pro » @ 611,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « bagian ini » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 128  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « Timeline » [désactivé] @ 106,210
+onglet « Bagian » [sélectionné] @ 258,210
+titre « LAGUNYA » [état « Terbuka »] @ 149,303
+bouton « ? » @ 235,303
+texte « Garis waktu menyusun bagianmu secara berurutan, masing-masing dengan panjangnya dalam birama. Tambahkan secara berurutan. » @ 263,403
+titre « BLOK » [état « Terbuka »] @ 629,225
+bouton « ? » @ 687,225
+texte « Satu blok = drum, acid, dan not dari satu bagian. Bagian-bagian lagu terbuat dari blok. Sentuh untuk mengedit, tahan dan geser untuk memindahkannya. » @ 771,349
+texte « Tampilkan: » [coupé] @ 622,468
+bouton « 8 » [coupé, sélectionné] @ 739,466
+bouton « 16 » [coupé] @ 824,466
+bouton « 24 » [coupé] @ 915,466
+texte « Bagian pertamamu: Groove Bab 5/13 · Selesai · Pro » @ 445,520
+icône (liste) « Bab » @ 906,521
+icône ⌄ @ 978,521
+image (coupe) @ 57,655
+texte « Bagus, bab selesai! » @ 224,618
+texte « Dengarkan lagumu seperti sekarang, lalu lanjut ke bab berikutnya: “Memahami bagian”. » @ 543,675
+bouton « Bab berikutnya   » → @ 517,857
+icône ← @ 57,941
+bouton ▶ «  Dengarkan laguku » @ 327,941
+bouton ▶ «  Dengar contohnya » @ 788,941
+bouton ▶ « lagu » @ 520,1026
+icône ↶ « Urungkan » @ 153,1026
+icône ↷ « Ulangi » [désactivé] @ 343,1026
+texte « 128 Tempo » @ 703,1026
+icône (trois points reliés) « Bagikan » @ 890,1026
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 99,1123
+onglet (touches de piano) « Suara » @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Lainnya » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Catat » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode masukan » @ 385,1213

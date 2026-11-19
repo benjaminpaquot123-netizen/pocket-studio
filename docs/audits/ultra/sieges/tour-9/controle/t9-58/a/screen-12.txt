@@ -1,0 +1,30 @@
+Écran 12 (1035x1243)
+dessin @ 518,417
+texte « Kunci nada lagu » @ 460,489
+texte « Tutup » @ 916,489
+texte « Nada dasar lagu: D · Minor » @ 239,560
+texte « Tangga nada » @ 149,616
+bouton « Mayor » @ 124,688
+bouton « Minor » @ 256,688
+bouton « Dorian » @ 391,688
+bouton « Penta minor » @ 567,688
+bouton « Penta mayor » @ 785,688
+bouton « Blues » @ 119,769
+bouton « Frigia » @ 242,769
+bouton « Minor harmonik » @ 436,769
+texte « Kunci nada » @ 137,840
+bouton « C » @ 101,912
+bouton « C♯ » @ 188,912
+bouton « D » @ 275,912
+bouton « E♭ » @ 362,912
+bouton « E » @ 449,912
+bouton « F » @ 536,912
+bouton « F♯ » @ 623,912
+bouton « G » @ 710,912
+bouton « A♭ » @ 797,912
+bouton « A » @ 884,912
+bouton « B♭ » @ 101,993
+bouton « B » @ 188,993
+image (rond coché) @ 96,1079
+texte « Berhasil! Warna lagu sudah dipilih. » @ 377,1079
+bouton « Kembali ke tutorial » @ 518,1168

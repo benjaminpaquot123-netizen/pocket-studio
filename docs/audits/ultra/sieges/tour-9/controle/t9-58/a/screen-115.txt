@@ -1,0 +1,4 @@
+Écran 115 (1035x1243)
+texte « Bagian yang diedit » @ 627,115
+icône ✓ « A » @ 667,176
+icône + « Bagian kosong baru » @ 667,250

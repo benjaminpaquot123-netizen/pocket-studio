@@ -1,0 +1,55 @@
+Écran 80 (1035x1243)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 209,42
+bouton « Pro » @ 448,42
+bouton « A » ▾ @ 526,42
+icône ↶ @ 602,42
+icône ↷ [désactivé] @ 674,42
+bouton ● @ 746,42
+bouton ▶ « bagian ini » @ 826,42
+bouton ▶ « lagu » @ 918,42
+icône (trois points reliés) @ 990,42
+bouton « 128  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « Drum 16 pad » @ 80,204
+onglet « Acid 303 Bassline » @ 245,204
+onglet « Vokal Mikrofon » @ 424,204
+onglet « Remix Pisahkan » @ 599,204
+bouton « Bass Bass analog » ⋮ @ 808,204
+icône ♪ « Suara » [coupé] @ 973,205
+image → @ 1024,205
+texte « Bagian: A » @ 85,273
+texte « Sesuai irama 50% » @ 504,351
+texte « 100% » @ 705,351
+texte « Hapus » @ 827,351
+bouton « Akor » @ 98,351
+bouton « Ghost bass » [sélectionné] @ 259,351
+texte « birama » @ 84,412
+bouton « 1 » @ 486,420
+bouton « 2 » [coupé] @ 920,420
+texte « G♭ » [coupé] @ 84,456
+texte « F » @ 84,480
+texte « E » @ 84,522
+texte « E♭ » @ 84,564
+texte « D » @ 84,606
+texte « D♭ » @ 84,648
+texte « C2 » [coupé] @ 84,670
+dessin [coupé] @ 559,562
+texte « Riff hoover Bab 4/13 · Langkah 1/3 · Pro » @ 445,721
+icône (liste) « Bab » @ 906,722
+icône ⌄ @ 978,722
+image (rond coché) @ 36,802
+texte « Dengarkan riff hoover sendirian. » @ 287,810
+texte « ▸ Kenapa? » @ 517,862
+bouton « Langkah berikutnya   » → @ 517,931
+icône ← @ 57,1015
+bouton ▶ «  Dengar contohnya » @ 444,1015
+icône « Berikutnya  » → @ 905,1015
+onglet (ligne brisée et points) « Struktur » @ 99,1123
+onglet (touches de piano) « Suara » [sélectionné] @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Lainnya » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Catat » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode masukan » @ 385,1213

@@ -1,0 +1,30 @@
+Écran 5 (1035x1243)
+dessin @ 518,405
+texte « Tutup » @ 916,477
+texte « Tempo » @ 124,477
+bouton « ? » @ 207,477
+texte « 1 » @ 480,571
+icône − @ 98,571
+texte «  BPM » @ 539,576
+icône + @ 938,571
+texte « Antara 40 dan 300 » @ 518,649
+bouton « 70 » @ 105,724
+bouton « 90 » @ 200,724
+bouton « 120 » [sélectionné] @ 304,724
+bouton « 140 » @ 418,724
+bouton « 174 » @ 532,724
+bouton « ½ » @ 631,724
+bouton « ×2 » @ 720,724
+bouton « 1 » @ 211,817
+bouton « 2 » @ 518,817
+bouton « 3 » @ 825,817
+bouton « 4 » @ 211,904
+bouton « 5 » @ 518,904
+bouton « 6 » @ 825,904
+bouton « 7 » @ 211,991
+bouton « 8 » @ 518,991
+bouton « 9 » @ 825,991
+bouton ⌫ @ 211,1078
+bouton « 0 » @ 518,1078
+bouton « OK » [désactivé] @ 825,1078
+bouton (doigt qui touche) « Tap sesuai irama Sentuh di sini tiap ketukan: temponya ikut. » @ 518,1177

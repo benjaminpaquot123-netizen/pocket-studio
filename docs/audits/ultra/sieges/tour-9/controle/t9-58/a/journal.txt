@@ -9,3 +9,696 @@
 #1 SON Son : rien ne joue.
 #1 LAYOUT CUT « Tersimpan » lines cut (taller than its box)
 #1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 517 857
+#1 DOIGT tuto_listen «  Dengar contohnya »
+#2 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 4e758f5c14 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=ref done=0 chapters=- playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 905 941
+#2 DOIGT tuto_next « Berikutnya  »
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE b661dc986f | project=p-5aee6437 tuto=retro_techno/Pro active=true step=tempo done=1 chapters=- playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 83 123
+#3 DOIGT top_tempo « Tempo: 120 BPM »
+#4 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 3d110d45e6 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=tempo done=1 chapters=- playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « Tempo » over the touchable « Tutup sheet » (82 x 32 dp)
+#4 LAYOUT OVERLAP « ? » over the touchable « Tutup sheet » (9 x 18 dp)
+#4 LAYOUT OVERLAP « Tutup » over the touchable « Tutup sheet » (52 x 27 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « Tutup sheet » (86 x 53 dp)
+#4 LAYOUT OVERLAP «  BPM » over the touchable « Tutup sheet » (50 x 31 dp)
+#4 LAYOUT OVERLAP « 70 » over the touchable « Tutup sheet » (25 x 24 dp)
+#4 LAYOUT OVERLAP « 90 » over the touchable « Tutup sheet » (25 x 24 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « Tutup sheet » (38 x 24 dp)
+#4 LAYOUT OVERLAP « 140 » over the touchable « Tutup sheet » (38 x 24 dp)
+#4 LAYOUT OVERLAP « 174 » over the touchable « Tutup sheet » (38 x 24 dp)
+#4 LAYOUT OVERLAP « ½ » over the touchable « Tutup sheet » (17 x 31 dp)
+#4 LAYOUT OVERLAP « ×2 » over the touchable « Tutup sheet » (26 x 31 dp)
+#4 LAYOUT OVERLAP « 1 » over the touchable « Tutup sheet » (16 x 30 dp)
+#4 LAYOUT OVERLAP « 2 » over the touchable « Tutup sheet » (16 x 30 dp)
+#4 LAYOUT OVERLAP « 3 » over the touchable « Tutup sheet » (16 x 30 dp)
+#4 LAYOUT OVERLAP « 4 » over the touchable « Tutup sheet » (16 x 30 dp)
+#4 LAYOUT OVERLAP « 5 » over the touchable « Tutup sheet » (16 x 30 dp)
+#4 LAYOUT OVERLAP « 6 » over the touchable « Tutup sheet » (16 x 30 dp)
+#4 LAYOUT OVERLAP « 7 » over the touchable « Tutup sheet » (16 x 30 dp)
+#4 LAYOUT OVERLAP « 8 » over the touchable « Tutup sheet » (16 x 30 dp)
+#4 LAYOUT OVERLAP « 9 » over the touchable « Tutup sheet » (16 x 30 dp)
+#4 LAYOUT OVERLAP « 0 » over the touchable « Tutup sheet » (16 x 30 dp)
+#4 LAYOUT OVERLAP « OK » over the touchable « Tutup sheet » (37 x 30 dp)
+#4 LAYOUT OVERLAP « Tap sesuai irama » over the touchable « Tutup sheet » (162 x 31 dp)
+#4 LAYOUT OVERLAP « Sentuh di sini tiap ketukan: temponya ikut. » over the touchable « Tutup sheet » (338 x 24 dp)
+#4 > touche 211 817
+#4 DOIGT tempo_key_1 « 1 »
+#5 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE ddbbda0817 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=tempo done=1 chapters=- playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « 1 » over the touchable « Tutup sheet » (29 x 53 dp)
+#5 LAYOUT OVERLAP « Antara 40 dan 300 » over the touchable « Tutup sheet » (168 x 27 dp)
+#5 > touche 518 817
+#5 DOIGT tempo_key_2 « 2 »
+#6 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 6c9349f879 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=tempo done=1 chapters=- playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 12 » over the touchable « Tutup sheet » (57 x 53 dp)
+#6 > touche 518 991
+#6 DOIGT tempo_key_8 « 8 »
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 6dbbcc6499 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=tempo done=1 chapters=- playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 128 » over the touchable « Tutup sheet » (86 x 53 dp)
+#7 > touche 825 1078
+#7 DOIGT tempo_key_ok « OK »
+#8 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE b9a978c32e | project=p-5aee6437 tuto=retro_techno/Pro active=true step=tempo done=2 chapters=- playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 517 857
+#8 DOIGT tuto_next_big « Langkah berikutnya   »
+#9 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 1ec50dc5c2 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=key done=2 chapters=- playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 517 776
+#9 DOIGT tuto_do «   Aku yang buat »
+#10 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE a773a74b0f | project=p-5aee6437 tuto=retro_techno/Pro active=true step=key done=2 chapters=- playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « Kunci nada lagu » over the touchable « Tutup sheet » (188 x 32 dp)
+#10 LAYOUT OVERLAP « Nada dasar lagu: tidak ada » over the touchable « Tutup sheet » (237 x 27 dp)
+#10 LAYOUT OVERLAP « Tangga nada » over the touchable « Tutup sheet » (116 x 27 dp)
+#10 LAYOUT OVERLAP « Mayor » over the touchable « Tutup sheet » (59 x 31 dp)
+#10 LAYOUT OVERLAP « Minor » over the touchable « Tutup sheet » (57 x 31 dp)
+#10 LAYOUT OVERLAP « Dorian » over the touchable « Tutup sheet » (62 x 31 dp)
+#10 LAYOUT OVERLAP « Penta minor » over the touchable « Tutup sheet » (113 x 31 dp)
+#10 LAYOUT OVERLAP « Penta mayor » over the touchable « Tutup sheet » (118 x 31 dp)
+#10 LAYOUT OVERLAP « Blues » over the touchable « Tutup sheet » (52 x 31 dp)
+#10 LAYOUT OVERLAP « Frigia » over the touchable « Tutup sheet » (52 x 31 dp)
+#10 LAYOUT OVERLAP « Minor harmonik » over the touchable « Tutup sheet » (147 x 31 dp)
+#10 LAYOUT OVERLAP « Kunci nada » over the touchable « Tutup sheet » (99 x 27 dp)
+#10 LAYOUT OVERLAP « C » over the touchable « Tutup sheet » (15 x 31 dp)
+#10 LAYOUT OVERLAP « C♯ » over the touchable « Tutup sheet » (26 x 31 dp)
+#10 LAYOUT OVERLAP « D » over the touchable « Tutup sheet » (15 x 31 dp)
+#10 LAYOUT OVERLAP « E♭ » over the touchable « Tutup sheet » (19 x 31 dp)
+#10 LAYOUT OVERLAP « E » over the touchable « Tutup sheet » (12 x 31 dp)
+#10 LAYOUT OVERLAP « F » over the touchable « Tutup sheet » (12 x 31 dp)
+#10 LAYOUT OVERLAP « F♯ » over the touchable « Tutup sheet » (23 x 31 dp)
+#10 LAYOUT OVERLAP « G » over the touchable « Tutup sheet » (15 x 31 dp)
+#10 LAYOUT OVERLAP « A♭ » over the touchable « Tutup sheet » (21 x 31 dp)
+#10 LAYOUT OVERLAP « A » over the touchable « Tutup sheet » (14 x 31 dp)
+#10 LAYOUT OVERLAP « B♭ » over the touchable « Tutup sheet » (20 x 31 dp)
+#10 LAYOUT OVERLAP « B » over the touchable « Tutup sheet » (13 x 31 dp)
+#10 > touche 256 866
+#10 DOIGT tuto_scale_Minor « Minor »
+#11 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 05e4d389a1 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=key done=2 chapters=- playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Nada dasar lagu: C · Minor » over the touchable « Tutup sheet » (237 x 27 dp)
+#11 > touche 275 1090
+#11 DOIGT tuto_root_2 « D »
+#12 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE c1d96d968e | project=p-5aee6437 tuto=retro_techno/Pro active=true step=key done=3 chapters=1 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Nada dasar lagu: D · Minor » over the touchable « Tutup sheet » (237 x 27 dp)
+#12 LAYOUT OVERLAP « Berhasil! Warna lagu sudah dipilih. » over the touchable « Tutup sheet » (337 x 31 dp)
+#12 LAYOUT OVERLAP « Kembali ke tutorial » over the touchable « Tutup sheet » (173 x 27 dp)
+#12 > touche 518 1168
+#12 DOIGT tuto_key_continue « Kembali ke tutorial »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 85eff7db02 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=key done=3 chapters=1 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT CUT « Pad bunyi, kotak menyimpan pukulan. Tekan lama: ganti suara. » ellipsized (« … »)
+#13 > touche 517 930
+#13 DOIGT tuto_chapter_end_folded « Bagus, bab selesai! »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE b030e3992a | project=p-5aee6437 tuto=retro_techno/Pro active=true step=key done=3 chapters=1 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 857
+#14 DOIGT tuto_next_big « Bab berikutnya   »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 552f1d3c5d | project=p-5aee6437 tuto=retro_techno/Pro active=true step=ready done=3 chapters=1 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 517 857
+#15 DOIGT tuto_mark «   Paham »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE b2957c2247 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=kick_do done=4 chapters=1 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CUT « Masih 4 kotak bergaris putus di sini » ellipsized (« … »)
+#16 LAYOUT CONTRAST « Masih 4 kotak bergaris putus di sini » 2.68:1 (needs 3.0:1, 14 sp)
+#16 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#16 > touche 469 636
+#16 DOIGT tuto_kit_download « Unduh kit Techno retro (6 MB) »
+#17 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 14df624a35 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=kick_do done=4 chapters=1 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « Snare » 1.87:1 (needs 4.5:1, 14 sp)
+#17 > attends 10
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 9af2a50fdc | project=p-5aee6437 tuto=retro_techno/Pro active=true step=kick_do done=4 chapters=1 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « Roland TR-909 · Kick » ellipsized (« … »)
+#18 LAYOUT CUT « Roland TR-909 · Snare » ellipsized (« … »)
+#18 LAYOUT CUT « Roland TR-909 · Clap » ellipsized (« … »)
+#18 LAYOUT CUT « Roland TR-909 · Hi-hat » ellipsized (« … »)
+#18 LAYOUT CUT « Roland TR-909 · Hi-hat terbuka » ellipsized (« … »)
+#18 LAYOUT CONTRAST « Roland TR-909 · Kick » 4.28:1 (needs 4.5:1, 13 sp)
+#18 > touche 978 567
+#18 DOIGT tuto_fold
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE bf03e14880 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=kick_do done=4 chapters=1 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Roland TR-909 · Kick » 4.31:1 (needs 4.5:1, 13 sp)
+#19 > touche 811 670
+#19 DOIGT fill_4 « 1/4 »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE 05e7923c9f | project=p-5aee6437 tuto=retro_techno/Pro active=true step=kick_do done=5 chapters=1 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « 1/4 » 3.95:1 (needs 4.5:1, 14 sp)
+#20 > touche 517 930
+#20 DOIGT tuto_next_folded « Berhasil »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE 37836ee236 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=clap_do done=5 chapters=1 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « Masih 2 kotak bergaris putus di sini » ellipsized (« … »)
+#21 LAYOUT CONTRAST « Roland TR-909 · Clap » 4.09:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « Roland TR-909 · Clap » 1.99:1 (needs 4.5:1, 13 sp)
+#21 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#21 > touche 978 567
+#21 DOIGT tuto_fold
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 99a00df354 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=clap_do done=5 chapters=1 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 800 413
+#22 DOIGT step_4 « Step 5 »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE d31a46e6b3 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=clap_do done=5 chapters=1 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CUT « Masih 1 kotak bergaris putus di sini » ellipsized (« … »)
+#23 LAYOUT CONTRAST « 4 » 3.04:1 (needs 4.5:1, 12 sp)
+#23 > touche 800 483
+#23 DOIGT step_12 « Step 13 »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 1f10951ed5 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=clap_do done=6 chapters=1 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « Roland TR-909 · Clap » 3.71:1 (needs 4.5:1, 13 sp)
+#24 > touche 517 930
+#24 DOIGT tuto_next_folded « Berhasil »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE f8d052fd61 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=open_hat_do done=6 chapters=1 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « Roland TR-909 · Hi-hat terbuka » 4.06:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « Roland TR-909 · Hi-hat terbuka » 2.79:1 (needs 4.5:1, 13 sp)
+#25 > touche 688 413
+#25 DOIGT step_2 « Step 3 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE e411b51690 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=open_hat_do done=6 chapters=1 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CUT « Masih 3 kotak bergaris putus di sini » ellipsized (« … »)
+#26 > touche 912 413
+#26 DOIGT step_6 « Step 7 »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE eea4e8b56b | project=p-5aee6437 tuto=retro_techno/Pro active=true step=open_hat_do done=6 chapters=1 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 688 483
+#27 DOIGT step_10 « Step 11 »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE 2e145a477d | project=p-5aee6437 tuto=retro_techno/Pro active=true step=open_hat_do done=6 chapters=1 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 912 483
+#28 DOIGT step_14 « Step 15 »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 5823293453 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=open_hat_do done=7 chapters=1 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « Roland TR-909 · Hi-hat terbuka » 3.69:1 (needs 4.5:1, 13 sp)
+#29 > touche 517 857
+#29 DOIGT tuto_next_big « Langkah berikutnya   »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 89416760e8 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CUT « Masih 12 kotak bergaris putus di sini » ellipsized (« … »)
+#30 LAYOUT CONTRAST « Roland TR-909 · Hi-hat » 4.06:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#30 > touche 575 381
+#30 DOIGT step_0 « Step 1 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE c79db0dfab | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CUT « Masih 11 kotak bergaris putus di sini » ellipsized (« … »)
+#31 > touche 632 381
+#31 DOIGT step_1 « Step 2 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE f773fc22b5 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CUT « Masih 10 kotak bergaris putus di sini » ellipsized (« … »)
+#32 > touche 744 381
+#32 DOIGT step_3 « Step 4 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 0937015f93 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CUT « Masih 9 kotak bergaris putus di sini » ellipsized (« … »)
+#33 LAYOUT CONTRAST « 2 » 3.22:1 (needs 4.5:1, 12 sp)
+#33 > touche 800 381
+#33 DOIGT step_4 « Step 5 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 2924fa6551 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CUT « Masih 8 kotak bergaris putus di sini » ellipsized (« … »)
+#34 > touche 856 381
+#34 DOIGT step_5 « Step 6 »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE 3d75a2e465 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CUT « Masih 7 kotak bergaris putus di sini » ellipsized (« … »)
+#35 > touche 968 381
+#35 DOIGT step_7 « Step 8 »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE 86fe8cb457 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « Masih 6 kotak bergaris putus di sini » ellipsized (« … »)
+#36 LAYOUT CONTRAST « 3 » 3.22:1 (needs 4.5:1, 12 sp)
+#36 > touche 575 451
+#36 DOIGT step_8 « Step 9 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 16c4c50082 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « Masih 5 kotak bergaris putus di sini » ellipsized (« … »)
+#37 > touche 632 451
+#37 DOIGT step_9 « Step 10 »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE b74634e4dd | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 744 451
+#38 DOIGT step_11 « Step 12 »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 208940cc78 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « 4 » 3.23:1 (needs 4.5:1, 12 sp)
+#39 > touche 800 451
+#39 DOIGT step_12 « Step 13 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE c0bfac9862 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 856 451
+#40 DOIGT step_13 « Step 14 »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 1a74dc9eb1 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=7 chapters=1 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 968 451
+#41 DOIGT step_15 « Step 16 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 7e63cd99aa | project=p-5aee6437 tuto=retro_techno/Pro active=true step=hat_do done=8 chapters=1 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 517 857
+#42 DOIGT tuto_next_big « Langkah berikutnya   »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE 8909c52de2 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=8 chapters=1 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « Roland TR-909 · Snare » 4.03:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « Roland TR-909 · Snare » 1.37:1 (needs 4.5:1, 13 sp)
+#43 > touche 517 776
+#43 DOIGT tuto_need «   Ubah ke 4 birama »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 42c2c98936 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=8 chapters=1 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CUT « Birama 4/4 · Roland TR-909 · Snare » ellipsized (« … »)
+#44 LAYOUT CONTRAST « Birama » 1.62:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « 1 » 1.39:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « 2 » 1.46:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « 3 » 1.37:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « 4 » 2.76:1 (needs 4.5:1, 14 sp)
+#44 > touche 769 312
+#44 DOIGT drum_page_1 « 2 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE bcdb03e085 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=8 chapters=1 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CUT « Birama 2/4 · Roland TR-909 · Snare » ellipsized (« … »)
+#45 LAYOUT CONTRAST « 2 » 2.70:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « 4 » 1.36:1 (needs 4.5:1, 14 sp)
+#45 > touche 931 312
+#45 DOIGT drum_page_3 « 4 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 42c2c98936 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=8 chapters=1 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « 4 » 2.73:1 (needs 4.5:1, 14 sp)
+#46 > touche 800 619
+#46 DOIGT step_60 « Step 13 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE 3530e51149 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=8 chapters=1 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « 4 » 2.75:1 (needs 4.5:1, 14 sp)
+#47 > touche 856 619
+#47 DOIGT step_61 « Step 14 »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE bd5adbdd60 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=8 chapters=1 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 912 619
+#48 DOIGT step_62 « Step 15 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE 72d25c5f4d | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=8 chapters=1 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 968 619
+#49 DOIGT step_63 « Step 16 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE e8b073dfbd | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=9 chapters=1 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 764 695
+#50 DOIGT roll_tool « Roll »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE de86da169a | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=9 chapters=1 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 856 614
+#51 DOIGT step_61 « Step 14 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE d71914986e | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=9 chapters=1 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 912 614
+#52 DOIGT step_62 « Step 15 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 48cd29e9d0 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=9 chapters=1 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 912 614
+#53 DOIGT step_62 « Step 15 »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 14e6110599 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=9 chapters=1 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 968 614
+#54 DOIGT step_63 « Step 16 »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE 94867412c6 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=9 chapters=1 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 968 614
+#55 DOIGT step_63 « Step 16 »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE b42db59010 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=9 chapters=1 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 968 614
+#56 DOIGT step_63 « Step 16 »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 48d37029c9 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=snare_do done=9 chapters=1 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 517 930
+#57 DOIGT tuto_next_folded « Berhasil »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE 5a5c66b059 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=perc_do done=9 chapters=1 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « Birama 1/4 · Rim » 2.79:1 (needs 4.5:1, 13 sp)
+#58 > touche 912 483
+#58 DOIGT step_14 « Step 15 »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE c89e82bebc | project=p-5aee6437 tuto=retro_techno/Pro active=true step=perc_do done=9 chapters=1 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CUT « Birama 1/4 · Rim » ellipsized (« … »)
+#59 LAYOUT CONTRAST « Birama 1/4 · Rim » 3.86:1 (needs 4.5:1, 13 sp)
+#59 > touche 831 332
+#59 DOIGT tuto_bar_go « Birama 3 · 1 kotak → »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE cc8bcbe1ef | project=p-5aee6437 tuto=retro_techno/Pro active=true step=perc_do done=9 chapters=1 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST « Birama 3/4 · Rim » 2.79:1 (needs 4.5:1, 13 sp)
+#60 > touche 912 483
+#60 DOIGT step_46 « Step 15 »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE db2fc79c84 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=perc_do done=10 chapters=1,2 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « Birama 3/4 · Rim » 3.69:1 (needs 4.5:1, 13 sp)
+#61 > touche 517 857
+#61 DOIGT tuto_next_big « Langkah berikutnya   »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE 083bb5cef1 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=drums_hear done=10 chapters=1,2 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 517 776
+#62 DOIGT tuto_play_mine «   Dengar hasilmu »
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 2fdf76597e | project=p-5aee6437 tuto=retro_techno/Pro active=true step=drums_hear done=10 chapters=1,2 playing=true
+#63 SON Son : la musique du projet joue en boucle.
+#63 > attends 4
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE 672d44473e | project=p-5aee6437 tuto=retro_techno/Pro active=true step=drums_hear done=10 chapters=1,2 playing=true
+#64 SON Son : la musique du projet joue en boucle.
+#64 > touche 517 860
+#64 DOIGT tuto_listen «  Dengar contohnya »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE 006ec9c858 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=drums_hear done=10 chapters=1,2 playing=false
+#65 SON Son : l'exemple du tuto joue (encore 3 s).
+#65 > attends 4
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE 642f025c9e | project=p-5aee6437 tuto=retro_techno/Pro active=true step=drums_hear done=11 chapters=1,2 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 517 857
+#66 DOIGT tuto_next_big « Bab berikutnya   »
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 8c24f16edf | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 517 776
+#67 DOIGT tuto_need «   Buat trek Bass »
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE f91c2221ef | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CUT « birama » lines dropped (more lines than room)
+#68 > touche 150 688
+#68 DOIGT rien
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 068b10c6a7 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#69 SON Son : 1 note du synthé.
+#69 > touche 283 688
+#69 DOIGT rien
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE 4f34a577a8 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#70 SON Son : 1 note du synthé.
+#70 > touche 440 688
+#70 DOIGT rien
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE 4bc1a4aacc | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#71 SON Son : 1 note du synthé.
+#71 > touche 508 688
+#71 DOIGT rien
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE 0a1391b2f4 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#72 SON Son : 1 note du synthé.
+#72 > touche 643 688
+#72 DOIGT rien
+#73 ROUTE tab_Sons | MODE pro | EMPREINTE e3114cd75d | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#73 SON Son : 1 note du synthé.
+#73 > touche 778 688
+#73 DOIGT rien
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE b23105d17c | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#74 SON Son : 1 note du synthé.
+#74 > touche 517 1004
+#74 DOIGT tuto_need_folded « Salin ke birama berikutnya »
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE 29912ba614 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=11 chapters=1,2 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 517 1004
+#75 DOIGT tuto_need_folded « Salin ke birama berikutnya »
+#76 ROUTE tab_Sons | MODE pro | EMPREINTE 8571eaebd7 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=12 chapters=1,2,3 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 517 1004
+#76 DOIGT tuto_chapter_end_folded « Bagus, bab selesai! »
+#77 ROUTE tab_Sons | MODE pro | EMPREINTE 9ea76286c6 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=bass_do done=12 chapters=1,2,3 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 517 931
+#77 DOIGT tuto_next_big « Bab berikutnya   »
+#78 ROUTE tab_Sons | MODE pro | EMPREINTE 9e50c8c7a2 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_hear done=12 chapters=1,2,3 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 517 931
+#78 DOIGT tuto_listen «  Dengar contohnya »
+#79 ROUTE tab_Sons | MODE pro | EMPREINTE ab148225ef | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_hear done=12 chapters=1,2,3 playing=false
+#79 SON Son : l'exemple du tuto joue (encore 3 s).
+#79 > attends 8
+#80 ROUTE tab_Sons | MODE pro | EMPREINTE 7d4aa5c87e | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_hear done=13 chapters=1,2,3 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 517 931
+#80 DOIGT tuto_next_big « Langkah berikutnya   »
+#81 ROUTE tab_Sons | MODE pro | EMPREINTE 935e179c32 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 517 850
+#81 DOIGT tuto_need «   Buat trek Melodi »
+#82 ROUTE tab_Sons | MODE pro | EMPREINTE 4e2490e951 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT CUT « Giliranmu: buat trek Melodi (suara “Hoover”): D panjang, D panjang, D tinggi yang jatuh; lalu D, D, F. “Salin” mentransposnya ke B♭ dan C. » ellipsized (« … »)
+#82 > touche 215 688
+#82 DOIGT rien
+#83 ROUTE tab_Sons | MODE pro | EMPREINTE 18eab2b31a | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#83 SON Son : 1 note du synthé.
+#83 > touche 485 688
+#83 DOIGT rien
+#84 ROUTE tab_Sons | MODE pro | EMPREINTE ff22875be7 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#84 SON Son : 1 note du synthé.
+#84 > touche 778 688
+#84 DOIGT rien
+#85 ROUTE tab_Sons | MODE pro | EMPREINTE 8037eee01c | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#85 SON Son : 1 note du synthé.
+#85 > touche 920 688
+#85 DOIGT rien
+#86 ROUTE tab_Sons | MODE pro | EMPREINTE 84a25c30dd | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#86 SON Son : 1 note du synthé.
+#86 > touche 886 433
+#86 DOIGT tuto_notes_left « Melodi · birama 1/8 »
+#87 ROUTE tab_Sons | MODE pro | EMPREINTE f7d144470e | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 688 688
+#87 DOIGT rien
+#88 ROUTE tab_Sons | MODE pro | EMPREINTE 012b4a7d4b | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#88 SON Son : 1 note du synthé.
+#88 > touche 886 433
+#88 DOIGT tuto_notes_left « Melodi · birama 1/8 »
+#89 ROUTE tab_Sons | MODE pro | EMPREINTE fcd7b7f9e8 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 485 688
+#89 DOIGT rien
+#90 ROUTE tab_Sons | MODE pro | EMPREINTE 8fa1c02c19 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#90 SON Son : 1 note du synthé.
+#90 > touche 755 562
+#90 DOIGT rien
+#91 ROUTE tab_Sons | MODE pro | EMPREINTE 458feec08a | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#91 SON Son : 1 note du synthé.
+#91 > touche 517 1004
+#91 DOIGT tuto_need_folded « Salin ke birama berikutnya »
+#92 ROUTE tab_Sons | MODE pro | EMPREINTE 14fb30ac41 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=13 chapters=1,2,3 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 517 1004
+#92 DOIGT tuto_need_folded « Salin ke birama berikutnya »
+#93 ROUTE tab_Sons | MODE pro | EMPREINTE 2915d13da0 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=14 chapters=1,2,3 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 517 1004
+#93 DOIGT tuto_next_folded « Berhasil »
+#94 ROUTE tab_Sons | MODE pro | EMPREINTE 3801f0d484 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT CONTRAST «  Rekam melodiku » 2.78:1 (needs 4.5:1, 14 sp)
+#94 > touche 517 850
+#94 DOIGT tuto_do «   Aku yang buat »
+#95 ROUTE tab_Sons | MODE pro | EMPREINTE 3ed20b07d4 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#95 SON Son : rien ne joue.
+#95 LAYOUT CUT « Giliranmu: di “Atur suara trek” Melodi, naikkan “Ketebalan (detune)” minimal 15, lalu di “Pengaturan lanjutan”, “Glide antar not” minimal 15: hoover jadi tebal dan menukik dari satu not ke not lain seperti sirene. » ellipsized (« … »)
+#95 LAYOUT CONTRAST « 30% » 3.33:1 (needs 4.5:1, 14 sp)
+#95 LAYOUT LABEL « knob_18 » long press without text nor description
+#95 LAYOUT LABEL « knob_2 » long press without text nor description
+#95 LAYOUT LABEL « knob_5 » long press without text nor description
+#95 LAYOUT LABEL « knob_24 » long press without text nor description
+#95 LAYOUT LABEL « knob_25 » long press without text nor description
+#95 LAYOUT LABEL « knob_23 » long press without text nor description
+#95 > glisse 680 434 730 434
+#95 DOIGT dans:tuto_knob_2 « Ketebalan (detune) »
+#96 ROUTE tab_Sons | MODE pro | EMPREINTE 1ea7f45ffe | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#96 SON Son : rien ne joue.
+#96 > glisse 517 400 517 700
+#96 DOIGT rien
+#97 ROUTE tab_Sons | MODE pro | EMPREINTE 988c3502ac | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#97 SON Son : rien ne joue.
+#97 LAYOUT LABEL « knob_8 » long press without text nor description
+#97 LAYOUT LABEL « knob_9 » long press without text nor description
+#97 LAYOUT LABEL « knob_10 » long press without text nor description
+#97 LAYOUT LABEL « knob_15 » long press without text nor description
+#97 > glisse 517 750 517 300
+#97 DOIGT rien
+#98 ROUTE tab_Sons | MODE pro | EMPREINTE 9f16c0c400 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#98 SON Son : rien ne joue.
+#98 > glisse 517 750 517 300
+#98 DOIGT rien
+#99 ROUTE tab_Sons | MODE pro | EMPREINTE 86c3783e6f | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT LABEL « knob_4 » long press without text nor description
+#99 LAYOUT LABEL « knob_6 » long press without text nor description
+#99 LAYOUT LABEL « knob_11 » long press without text nor description
+#99 LAYOUT LABEL « knob_12 » long press without text nor description
+#99 > glisse 517 750 517 300
+#99 DOIGT rien
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE aa134e6345 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#100 SON Son : rien ne joue.
+#100 LAYOUT LABEL « knob_13 » long press without text nor description
+#100 LAYOUT LABEL « knob_14 » long press without text nor description
+#100 LAYOUT LABEL « knob_16 » long press without text nor description
+#100 LAYOUT LABEL « knob_17 » long press without text nor description
+#100 LAYOUT LABEL « knob_19 » long press without text nor description
+#100 LAYOUT LABEL « knob_20 » long press without text nor description
+#100 LAYOUT LABEL « knob_21 » long press without text nor description
+#100 LAYOUT LABEL « knob_22 » long press without text nor description
+#100 > glisse 517 750 517 300
+#100 DOIGT dans:synth « Vibrato: kecepatan »
+#101 ROUTE tab_Sons | MODE pro | EMPREINTE 760275c54e | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT LABEL « knob_26 » long press without text nor description
+#101 LAYOUT LABEL « knob_27 » long press without text nor description
+#101 > glisse 718 587 760 587
+#101 DOIGT dans:tuto_knob_27 « Glide antar not »
+#102 ROUTE tab_Sons | MODE pro | EMPREINTE 08bf350eac | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 978 892
+#102 DOIGT tuto_fold
+#103 ROUTE tab_Sons | MODE pro | EMPREINTE 7e6cd396c9 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 768 934
+#103 DOIGT tuto_show «  Tunjukkan »
+#104 ROUTE tab_Sons | MODE pro | EMPREINTE 1fc23fa560 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#104 SON Son : rien ne joue.
+#104 LAYOUT CONTRAST « Stop » 3.91:1 (needs 4.5:1, 14 sp)
+#104 > attends 4
+#105 ROUTE tab_Sons | MODE pro | EMPREINTE 6bdd66f0a4 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#105 SON Son : rien ne joue.
+#105 > glisse 735 434 860 434
+#105 DOIGT dans:tuto_knob_27 « Glide antar not »
+#106 ROUTE tab_Sons | MODE pro | EMPREINTE 9f8d0e89a5 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 978 892
+#106 DOIGT tuto_fold
+#107 ROUTE tab_Sons | MODE pro | EMPREINTE ce2aa2a79c | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#107 SON Son : rien ne joue.
+#107 > touche 905 1015
+#107 DOIGT tuto_next « Berikutnya  »
+#108 ROUTE tab_Sons | MODE pro | EMPREINTE 3e530e2a93 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=14 chapters=1,2,3 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 905 1015
+#108 DOIGT tuto_next « Berikutnya  »
+#109 ROUTE tab_Sons | MODE pro | EMPREINTE 2c232da540 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=groove_hear done=14 chapters=1,2,3 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 517 850
+#109 DOIGT tuto_play_mine «   Dengar hasilmu »
+#110 ROUTE tab_Sons | MODE pro | EMPREINTE dbc2b2e9d9 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=groove_hear done=14 chapters=1,2,3 playing=true
+#110 SON Son : la musique du projet joue en boucle.
+#110 > attends 4
+#111 ROUTE tab_Sons | MODE pro | EMPREINTE 554374a3bf | project=p-5aee6437 tuto=retro_techno/Pro active=true step=groove_hear done=14 chapters=1,2,3 playing=true
+#111 SON Son : la musique du projet joue en boucle.
+#111 > touche 517 934
+#111 DOIGT tuto_listen «  Dengar contohnya »
+#112 ROUTE tab_Sons | MODE pro | EMPREINTE dc3f82e100 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=groove_hear done=14 chapters=1,2,3 playing=false
+#112 SON Son : l'exemple du tuto joue (encore 3 s).
+#112 > attends 4
+#113 ROUTE tab_Sons | MODE pro | EMPREINTE eeb67b6869 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=groove_hear done=15 chapters=1,2,3 playing=false
+#113 SON Son : rien ne joue.
+#113 > touche 905 1015
+#113 DOIGT tuto_next « Berikutnya  »
+#114 ROUTE tab_Sons | MODE pro | EMPREINTE 23988b00f2 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=groove_name done=15 chapters=1,2,3 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 526 42
+#114 DOIGT top_scene « Bagian sekarang: A. Sentuh untuk ganti b »
+#115 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE a5308b0112 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=groove_name done=15 chapters=1,2,3 playing=false
+#115 SON Son : rien ne joue.
+#115 > retour
+#115 RETOUR
+#116 ROUTE tab_Sons | MODE pro | EMPREINTE 23988b00f2 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=groove_name done=15 chapters=1,2,3 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 517 850
+#116 DOIGT tuto_need «   Beri nama bagian “Groove” »
+#117 ROUTE tab_Structure | MODE pro | EMPREINTE 40e7cb6e55 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=groove_name done=16 chapters=1,2,3,5 playing=false
+#117 SON Son : rien ne joue.
+#117 > touche 517 857
+#117 DOIGT tuto_next_big « Bab berikutnya   »
+#118 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 7177dc90ac | project=p-5aee6437 tuto=retro_techno/Pro active=true step=brick done=16 chapters=1,2,3,5 playing=false
+#118 SON Son : rien ne joue.
+#118 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#118 LAYOUT CONTRAST « 14 » 3.82:1 (needs 4.5:1, 12 sp)
+#118 LAYOUT CONTRAST « 16 » 4.28:1 (needs 4.5:1, 12 sp)
+#118 LAYOUT CONTRAST « 24 » 3.82:1 (needs 4.5:1, 12 sp)
+#118 > touche 517 857
+#118 DOIGT tuto_mark «   Paham »
+#119 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE b6ecae1bd8 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_intro done=17 chapters=1,2,3,5 playing=false
+#119 SON Son : rien ne joue.
+#119 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#119 > touche 517 857
+#119 DOIGT tuto_listen «  Dengar contohnya »
+#120 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE f567d98954 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_intro done=17 chapters=1,2,3,5 playing=false
+#120 SON Son : l'exemple du tuto joue (encore 3 s).
+#120 > attends 5
+#121 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE aaba4591b9 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_intro done=18 chapters=1,2,3,5 playing=false
+#121 SON Son : rien ne joue.
+#121 > touche 905 941
+#121 DOIGT tuto_next « Berikutnya  »
+#122 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 922d05955a | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_drop done=18 chapters=1,2,3,5 playing=false
+#122 SON Son : rien ne joue.
+#122 LAYOUT CONTRAST « 16 » 2.08:1 (needs 4.5:1, 12 sp)
+#122 LAYOUT CONTRAST « 14 » 2.08:1 (needs 4.5:1, 12 sp)
+#122 > touche 517 857
+#122 DOIGT tuto_listen «  Dengar contohnya »
+#123 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 2dad58dcd0 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_drop done=18 chapters=1,2,3,5 playing=false
+#123 SON Son : l'exemple du tuto joue (encore 3 s).
+#123 > attends 4
+#124 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 0e80f7a384 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_drop done=19 chapters=1,2,3,5 playing=false
+#124 SON Son : rien ne joue.
+#124 > touche 905 941
+#124 DOIGT tuto_next « Berikutnya  »
+#125 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c72d0404e4 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_break done=19 chapters=1,2,3,5 playing=false
+#125 SON Son : rien ne joue.
+#125 LAYOUT CONTRAST « 16 » 2.53:1 (needs 4.5:1, 12 sp)
+#125 > touche 517 857
+#125 DOIGT tuto_listen «  Dengar contohnya »
+#126 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 56904aeea9 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_break done=19 chapters=1,2,3,5 playing=false
+#126 SON Son : l'exemple du tuto joue (encore 3 s).
+#126 > attends 4
+#127 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 6d76923cf8 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_break done=20 chapters=1,2,3,5 playing=false
+#127 SON Son : rien ne joue.
+#127 > touche 905 941
+#127 DOIGT tuto_next « Berikutnya  »
+#128 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE da1265c6bc | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_phrases done=20 chapters=1,2,3,5 playing=false
+#128 SON Son : rien ne joue.
+#128 > touche 517 857
+#128 DOIGT tuto_mark «   Paham »
+#129 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE dda6d95e32 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_phrases done=21 chapters=1,2,3,5,6 playing=false
+#129 SON Son : rien ne joue.
+#129 > touche 906 357
+#129 DOIGT tuto_chapters « Bab »
+#130 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE adaa118ef9 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=map_phrases done=21 chapters=1,2,3,5,6 playing=false
+#130 SON Son : rien ne joue.
+#130 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#130 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#130 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#130 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#130 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#130 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#130 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#130 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#130 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#130 > touche 517 422
+#130 DOIGT tuto_chapter_3 « 4 »
+#131 ROUTE tab_Structure | MODE pro | EMPREINTE d448d0ed09 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_hear done=21 chapters=1,2,3,5,6 playing=false
+#131 SON Son : rien ne joue.
+#131 > touche 517 857
+#131 DOIGT tuto_next_big « Langkah berikutnya   »
+#132 ROUTE tab_Structure | MODE pro | EMPREINTE fd5cbc0942 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_do done=21 chapters=1,2,3,5,6 playing=false
+#132 SON Son : rien ne joue.
+#132 > touche 517 857
+#132 DOIGT tuto_next_big « Langkah berikutnya   »
+#133 ROUTE tab_Structure | MODE pro | EMPREINTE fc65aba990 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=21 chapters=1,2,3,5,6 playing=false
+#133 SON Son : rien ne joue.
+#133 > touche 517 669
+#133 DOIGT tuto_text_more « Baca selanjutnya »
+#134 ROUTE tab_Structure | MODE pro | EMPREINTE fc65aba990 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=21 chapters=1,2,3,5,6 playing=false
+#134 SON Son : rien ne joue.
+#134 > touche 517 776
+#134 DOIGT tuto_do «   Aku yang buat »
+#135 ROUTE tab_Sons | MODE pro | EMPREINTE a1e4edd223 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=21 chapters=1,2,3,5,6 playing=false
+#135 SON Son : rien ne joue.
+#135 LAYOUT CONTRAST « 36% » 3.33:1 (needs 4.5:1, 14 sp)
+#135 > glisse 700 434 900 434
+#135 DOIGT dans:tuto_knob_2 « Ketebalan (detune) »
+#136 ROUTE tab_Sons | MODE pro | EMPREINTE a1e4edd223 | project=p-5aee6437 tuto=retro_techno/Pro active=true step=lead_knobs done=21 chapters=1,2,3,5,6 playing=false
+#136 SON Son : rien ne joue.
+#136 > fin
+#136 BENCH-VERDICT ok where=seat.fin
+#136 FIN : fin

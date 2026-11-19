@@ -1,0 +1,43 @@
+Écran 133 (1035x1243)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 291,42
+bouton « Pro » @ 611,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « bagian ini » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 128  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « Timeline » [désactivé] @ 106,210
+onglet « Bagian » [sélectionné] @ 258,210
+titre « LAGUNYA » [état « Terbuka »] @ 149,303
+bouton « ? » @ 235,303
+texte « Garis waktu menyusun bagianmu secara berurutan, masing-masing dengan panjangnya dalam birama. Tambahkan secara berurutan. » [coupé] @ 263,380
+titre « BLOK » [état « Terbuka »] @ 629,225
+bouton « ? » @ 687,225
+texte « Satu blok = drum, acid, dan not dari satu bagian. Bagian-bagian lagu terbuat dari blok. Sentuh untuk mengedit, tahan dan geser untuk memindahkannya. » @ 771,341
+texte « Riff hoover Bab 4/13 · Langkah 3/3 · Pro » @ 445,474
+icône (liste) « Bab » @ 906,475
+icône ⌄ @ 978,475
+texte « Giliranmu: di “Atur suara trek” Melodi, naikkan “Ketebalan (detune)” minimal 15, lalu di “Pengaturan lanjutan”, “Glide antar not” minimal 15: hoover jadi tebal dan menukik dari satu not ke not lain seperti sirene. » [coupé] @ 517,563
+texte « ▸ Kenapa? » @ 517,615
+icône « Baca selanjutnya » ⌄ @ 517,669
+bouton (doigt qui touche) «   Aku yang buat » @ 517,776
+bouton ▶ «  Dengar contohnya » @ 266,860
+bouton (œil) «  Tunjukkan » @ 768,860
+icône ← «  Sebelumnya » @ 141,941
+icône « Berikutnya  » → @ 905,941
+bouton ▶ « lagu » @ 520,1026
+icône ↶ « Urungkan » @ 153,1026
+icône ↷ « Ulangi » [désactivé] @ 343,1026
+texte « 128 Tempo » @ 703,1026
+icône (trois points reliés) « Bagikan » @ 890,1026
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 99,1123
+onglet (touches de piano) « Suara » @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Lainnya » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Catat » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode masukan » @ 385,1213

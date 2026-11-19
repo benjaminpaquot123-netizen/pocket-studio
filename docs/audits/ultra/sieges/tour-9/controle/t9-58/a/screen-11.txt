@@ -1,0 +1,28 @@
+Écran 11 (1035x1243)
+dessin @ 517,621
+dessin @ 518,595
+texte « Kunci nada lagu » @ 460,667
+texte « Tutup » @ 916,667
+texte « Nada dasar lagu: C · Minor » @ 239,738
+texte « Tangga nada » @ 149,794
+bouton « Mayor » @ 124,866
+bouton « Minor » @ 256,866
+bouton « Dorian » @ 391,866
+bouton « Penta minor » @ 567,866
+bouton « Penta mayor » @ 785,866
+bouton « Blues » @ 119,947
+bouton « Frigia » @ 242,947
+bouton « Minor harmonik » @ 436,947
+texte « Kunci nada » @ 137,1018
+bouton « C » @ 101,1090
+bouton « C♯ » @ 188,1090
+bouton « D » @ 275,1090
+bouton « E♭ » @ 362,1090
+bouton « E » @ 449,1090
+bouton « F » @ 536,1090
+bouton « F♯ » @ 623,1090
+bouton « G » @ 710,1090
+bouton « A♭ » @ 797,1090
+bouton « A » @ 884,1090
+bouton « B♭ » @ 101,1171
+bouton « B » @ 188,1171

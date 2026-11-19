@@ -1,0 +1,86 @@
+Écran 45 (1035x1243)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 251,42
+bouton « Pro » @ 532,42
+bouton « A » ▾ @ 610,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « bagian ini » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 128  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « Drum 16 pad » [sélectionné] @ 80,204
+onglet « Acid 303 Bassline » @ 245,204
+onglet « Vokal Mikrofon » @ 424,204
+onglet « Remix Pisahkan » @ 599,204
+bouton + «  Trek » @ 776,205
+texte « Bagian: A » @ 85,273
+bouton « Roland TR-909 · Kick FX » @ 75,366
+bouton « Kick 2 » @ 200,366
+bouton « Roland TR-909 · Snare FX » @ 325,366
+bouton « Snare 2 » @ 450,366
+bouton « Roland TR-909 · Clap FX » @ 75,472
+bouton « Roland TR-909 · Hi-hat L 30 » @ 200,472
+bouton « Roland TR-909 · Hi-hat terbuka R 30 » @ 325,472
+bouton « Tom rendah » @ 450,472
+bouton « Tom tengah R 45 » @ 75,578
+bouton « Tom tinggi » @ 200,578
+bouton « Rim R 50 » @ 325,578
+bouton « Cowbell » @ 450,578
+bouton « Simbal FX R 40 » @ 75,684
+bouton « Shaker L 50 » @ 200,684
+bouton « Conga » @ 325,684
+bouton « Zap » @ 450,684
+texte « Pad bunyi, kotak menyimpan pukulan. Tekan lama: ganti suara. » [coupé] @ 436,754
+bouton ▾ « Kit: Roland TR-909 » [coupé] @ 185,763
+texte « Birama » [coupé] @ 596,310
+bouton « 1 » [coupé] @ 688,312
+bouton « 2 » [coupé, sélectionné] @ 769,312
+bouton « 3 » [coupé] @ 850,312
+bouton « 4 » [coupé] @ 931,312
+bouton « Ikuti » @ 604,381
+texte « Birama 4 · 4 kotak → » @ 827,465
+texte « Birama 2/4 · Roland TR-909 · Snare » @ 616,465
+bouton « 1 » [état « kosong »] @ 575,545
+bouton [état « kosong »] @ 632,544
+bouton [état « kosong »] @ 688,544
+bouton [état « kosong »] @ 744,544
+bouton « 2 » [état « kosong »] @ 800,544
+bouton [état « kosong »] @ 856,544
+bouton [état « kosong »] @ 912,544
+bouton [état « kosong »] @ 968,544
+bouton « 3 » [état « kosong »] @ 575,615
+bouton [état « kosong »] @ 632,614
+bouton [état « kosong »] @ 688,614
+bouton [état « kosong »] @ 744,614
+bouton « 4 » [état « kosong »] @ 800,614
+bouton [état « kosong »] @ 856,614
+bouton [état « kosong »] @ 912,614
+bouton [état « kosong »] @ 968,614
+bouton « Pukulan » [sélectionné] @ 629,695
+bouton « Roll » @ 764,695
+bouton « Pan » @ 870,695
+bouton « Pitch » [coupé] @ 960,695
+texte « semua » [coupé] @ 639,758
+texte « 1/2 » [coupé] @ 736,758
+texte « 1/4 » [coupé] @ 811,758
+texte « ◀ » [désactivé, coupé] @ 886,758
+texte « Isi » [coupé] @ 564,764
+texte « Drum 909 Bab 2/13 · Langkah 6/8 · Pro » @ 445,817
+icône (liste) « Bab » @ 906,818
+icône ⌃ @ 978,818
+icône « Giliranmu: roll snare di akhir birama ke-2 (1, 2, 3, 4 pukulan per kotak). Baca » ⌃ @ 517,930
+bouton ▶ « lagu » @ 520,1026
+icône ↶ « Urungkan » @ 153,1026
+icône ↷ « Ulangi » [désactivé] @ 343,1026
+texte « 128 Tempo » @ 703,1026
+icône (trois points reliés) « Bagikan » @ 890,1026
+onglet (ligne brisée et points) « Struktur » @ 99,1123
+onglet (touches de piano) « Suara » [sélectionné] @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Lainnya » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Catat » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode masukan » @ 385,1213

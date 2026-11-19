@@ -1,0 +1,66 @@
+Écran 67 (1035x1243)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 251,42
+bouton « Pro » @ 532,42
+bouton « A » ▾ @ 610,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « bagian ini » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 128  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « Drum 16 pad » [sélectionné] @ 80,204
+onglet « Acid 303 Bassline » @ 245,204
+onglet « Vokal Mikrofon » @ 424,204
+onglet « Remix Pisahkan » @ 599,204
+bouton + «  Trek » @ 776,205
+texte « Bagian: A » @ 85,273
+bouton « Roland TR-909 · Kick FX » @ 75,366
+bouton « Kick 2 » @ 200,366
+bouton « Roland TR-909 · Snare FX » @ 325,366
+bouton « Snare 2 » @ 450,366
+bouton « Roland TR-909 · Clap FX » [coupé] @ 75,447
+bouton « Roland TR-909 · Hi-hat L 30 » [coupé] @ 200,447
+bouton « Roland TR-909 · Hi-hat terbuka R 30 » [coupé] @ 325,447
+bouton « Tom rendah » [coupé] @ 450,447
+texte « Birama 3/4 · Rim » @ 667,329
+bouton « 1 » [état « kosong »] @ 575,409
+bouton [état « kosong »] @ 632,408
+bouton [état « kosong »] @ 688,408
+bouton [état « kosong »] @ 744,408
+bouton « 2 » [état « kosong »] @ 800,408
+bouton [état « kosong »] @ 856,408
+bouton [état « kosong »] @ 912,408
+bouton [état « kosong »] @ 968,408
+bouton « 3 » [coupé, état « kosong »] @ 575,458
+bouton [coupé, état « kosong »] @ 632,458
+bouton [coupé, état « kosong »] @ 688,458
+bouton [coupé, état « kosong »] @ 744,458
+bouton « 4 » [coupé, état « kosong »] @ 800,458
+bouton [coupé, état « kosong »] @ 856,458
+bouton [coupé, état « pukulan, kekuatan 100 % »] @ 912,458
+bouton [coupé, état « kosong »] @ 968,458
+texte « Bass Bab 3/13 · Langkah 1/1 · Pro » @ 445,520
+icône (liste) « Bab » @ 906,521
+icône ⌄ @ 978,521
+texte « Giliranmu: buat trek Bass (suara “Bass analog”): birama 1 di D, lalu “Salin”: ia mengikuti progresi D, D, B♭, C. » @ 517,632
+texte « ▸ Kenapa? » @ 517,707
+bouton ⊕ «   Buat trek Bass » @ 517,776
+bouton ▶ «  Dengar contohnya » @ 266,860
+bouton (œil) «  Tunjukkan » @ 768,860
+icône ← «  Sebelumnya » @ 141,941
+icône « Berikutnya  » → @ 905,941
+bouton ▶ « lagu » @ 520,1026
+icône ↶ « Urungkan » @ 153,1026
+icône ↷ « Ulangi » [désactivé] @ 343,1026
+texte « 128 Tempo » @ 703,1026
+icône (trois points reliés) « Bagikan » @ 890,1026
+onglet (ligne brisée et points) « Struktur » @ 99,1123
+onglet (touches de piano) « Suara » [sélectionné] @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Lainnya » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Catat » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode masukan » @ 385,1213

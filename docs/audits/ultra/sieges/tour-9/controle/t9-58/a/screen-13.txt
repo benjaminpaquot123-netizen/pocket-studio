@@ -1,0 +1,82 @@
+Écran 13 (1035x1243)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 251,42
+bouton « Pro » @ 532,42
+bouton « A » ▾ @ 610,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « bagian ini » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 128  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « Drum 16 pad » [sélectionné] @ 80,204
+onglet « Acid 303 Bassline » @ 245,204
+onglet « Vokal Mikrofon » @ 424,204
+onglet « Remix Pisahkan » @ 599,204
+bouton + «  Trek » @ 776,205
+texte « Bagian: A » @ 85,273
+bouton « Kick studio FX » @ 75,366
+bouton « Kick 2 » @ 200,366
+bouton « Snare FX » @ 325,366
+bouton « Snare 2 » @ 450,366
+bouton « Clap FX » @ 75,472
+bouton « Hi-hat L 30 » @ 200,472
+bouton « Hi-hat terbuka R 30 » @ 325,472
+bouton « Tom rendah » @ 450,472
+bouton « Tom tengah R 45 » @ 75,578
+bouton « Tom tinggi » @ 200,578
+bouton « Rim R 50 » @ 325,578
+bouton « Cowbell » @ 450,578
+bouton « Simbal FX R 40 » @ 75,684
+bouton « Shaker L 50 » @ 200,684
+bouton « Conga » @ 325,684
+bouton « Zap » @ 450,684
+texte « Pad bunyi, kotak menyimpan pukulan. Tekan lama: ganti suara. » [coupé] @ 378,754
+bouton ▾ « Kit: Studio » [coupé] @ 127,763
+titre « STEP: KICK STUDIO » [état « Terbuka »] @ 671,378
+bouton « ? » @ 770,378
+bouton « Semua pad » @ 892,378
+texte « Kick studio » @ 636,462
+bouton « 1 » [état « kosong »] @ 575,542
+bouton [état « kosong »] @ 632,541
+bouton [état « kosong »] @ 688,541
+bouton [état « kosong »] @ 744,541
+bouton « 2 » [état « kosong »] @ 800,541
+bouton [état « kosong »] @ 856,541
+bouton [état « kosong »] @ 912,541
+bouton [état « kosong »] @ 968,541
+bouton « 3 » [état « kosong »] @ 575,612
+bouton [état « kosong »] @ 632,611
+bouton [état « kosong »] @ 688,611
+bouton [état « kosong »] @ 744,611
+bouton « 4 » [état « kosong »] @ 800,611
+bouton [état « kosong »] @ 856,611
+bouton [état « kosong »] @ 912,611
+bouton [état « kosong »] @ 968,611
+bouton « Pukulan » [sélectionné] @ 629,692
+bouton « Roll » @ 764,692
+bouton « Pan » @ 870,692
+bouton « Pitch » [coupé] @ 960,692
+texte « semua » [coupé] @ 639,756
+texte « 1/2 » [coupé] @ 736,756
+texte « 1/4 » [coupé] @ 811,756
+texte « ◀ » [désactivé, coupé] @ 886,756
+texte « Isi » [coupé] @ 564,762
+texte « Tempo dan kunci nada Bab 1/13 · Selesai · Pro » @ 445,817
+icône (liste) « Bab » @ 906,818
+icône ⌃ @ 978,818
+icône (coupe) « Bagus, bab selesai! » ⌃ @ 517,930
+bouton ▶ « lagu » @ 520,1026
+icône ↶ « Urungkan » @ 153,1026
+icône ↷ « Ulangi » [désactivé] @ 343,1026
+texte « 128 Tempo » @ 703,1026
+icône (trois points reliés) « Bagikan » @ 890,1026
+onglet (ligne brisée et points) « Struktur » @ 99,1123
+onglet (touches de piano) « Suara » [sélectionné] @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Lainnya » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Catat » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode masukan » @ 385,1213

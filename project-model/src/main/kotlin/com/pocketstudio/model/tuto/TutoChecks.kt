@@ -681,7 +681,7 @@ object TutoChecks {
      * ("pad,clap": a track's or a pad's strip each), else the reverb's the « Accords » track and the
      * snare's pad, the echo's the lead.
      */
-    internal fun sendChannels(p: Project, bus: Int, step: TutoStep? = null): List<Int> {
+    fun sendChannels(p: Project, bus: Int, step: TutoStep? = null): List<Int> {
         val roles = step?.target?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() }.orEmpty()
         // Any target but the jump up's own reverb (« pad »: its chords and its snare) names the strips (the echo on the bass alone).
         if (roles.isNotEmpty() && !(bus == 0 && roles == listOf("pad"))) return roles.mapNotNull { r -> stripOf(p, r) }

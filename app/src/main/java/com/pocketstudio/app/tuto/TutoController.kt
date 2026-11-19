@@ -436,11 +436,6 @@ class TutoController(
         }.ifEmpty { all }
     }
 
-    /** The strips a "send:<bus>" step sends (as [TutoChecks.done] reads them): the reverb's « Accords » and the snare's pad, the echo's lead. */
-    private fun sendChannels(p: Project, bus: Int): List<Int> =
-        if (bus == 0) listOfNotNull(TutoChecks.trackFor(p, "pad")?.let(com.pocketstudio.model.InstrumentTrack::mixerChannel), com.pocketstudio.model.Mixer.padChannel(TutoChecks.laneOf("snare")))
-        else listOfNotNull(TutoChecks.trackFor(p, "lead")?.let(com.pocketstudio.model.InstrumentTrack::mixerChannel))
-
     private fun sends(p: Project, ch: Int, bus: Int) = (p.mixer.channels.getOrNull(ch)?.sends?.getOrNull(bus) ?: 0f) > SENT
 
     /**
@@ -452,7 +447,8 @@ class TutoController(
         val c = u.current.check
         if (!c.startsWith("send:")) return null
         val bus = c.substringAfter(':').toIntOrNull() ?: return null
-        val chans = sendChannels(p, bus).takeIf { it.size > 1 } ?: return null
+        // The strips the step names, as its check reads them (tour 9, F042: house's clap and chords, not the jump up's snare).
+        val chans = TutoChecks.sendChannels(p, bus, u.current).takeIf { it.size > 1 } ?: return null
         val here = goFor(u.current, p, spot = false)?.effects
         return chans.joinToString(" · ") { ch ->
             val name = stripName(p, ch)

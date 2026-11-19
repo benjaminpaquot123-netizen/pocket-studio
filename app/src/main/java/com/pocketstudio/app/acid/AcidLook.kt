@@ -50,7 +50,7 @@ object AcidLook {
 @Composable
 fun AcidChip(selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     com.pocketstudio.ui.TrackChip(
-        tr("Acid 303"), tr("Ligne de basse"), AcidLook.Yellow, selected,
+        tr("Acid 303"), tr("Séquence acide"), AcidLook.Yellow, selected,
         touch = Modifier.selectable(selected = selected, role = Role.Tab, onClick = onClick), modifier = modifier.testTag("sons_Acide"),
     )
 }

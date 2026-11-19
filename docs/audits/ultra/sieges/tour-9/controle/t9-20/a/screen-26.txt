@@ -1,0 +1,25 @@
+Écran 26 (588x1278)
+texte « Die Streicher Kapitel 5/13 · Erledigt · Einfach » @ 208,124
+icône (liste) « Kapitel » @ 445,124
+icône ⌄ @ 531,124
+image (coupe) @ 57,429
+texte « Bravo, Kapitel geschafft! » @ 319,299
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Dein erster Teil: der Refrain“. » @ 319,485
+bouton « Nächstes Kapitel   » → @ 294,689
+bouton ▶ «  Meinen Song anhören » @ 154,803
+bouton ▶ «  Beispiel anhören » @ 433,803
+icône ← «  Zurück » @ 125,917
+texte « 116 Tempo » @ 422,1020
+icône ↶ « Rückgängig » @ 56,1021
+image ↷ @ 152,1013
+icône ▶ « der Song » @ 280,1021
+icône ⋮ « Mehr » @ 533,1020
+onglet (lignes et note) « Mein Song » @ 54,1145
+onglet (quatre carrés) « Rhythmus » @ 174,1145
+onglet (touches de piano) « Tastatur » [sélectionné] @ 294,1145
+onglet (curseurs) « Mix » @ 414,1145
+onglet (trois points reliés) « Teilen » @ 534,1145
+texte « ●  REC » @ 272,1248
+texte « ✎  Notieren » @ 416,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback-Modus » @ 114,1248

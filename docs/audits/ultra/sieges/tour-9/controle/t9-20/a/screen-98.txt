@@ -1,0 +1,28 @@
+Écran 98 (588x1278)
+texte « Der Mix: die Lautstärken Kapitel 12/13 · Schritt 1/1 · Einfach » @ 208,145
+icône (liste) « Kapitel » @ 445,145
+icône ⌄ @ 531,145
+texte « Du bist dran: Zieh im Tab „Mix“ den Fader der Spur „Melodie“ (die Streicher) etwas runter. » [coupé] @ 294,343
+bouton « Kit Disco / Funk laden (2 MB) » @ 236,463
+texte « Später » @ 503,463
+texte « ▸ Warum? » @ 294,542
+icône « Weiterlesen » ⌄ @ 294,605
+bouton (doigt qui touche) «   Ich mach's » @ 294,689
+bouton ▶ «  Beispiel anhören » @ 154,803
+bouton (œil) «  Zeig's mir » @ 433,803
+icône ← «  Zurück » @ 125,917
+icône « Weiter  » → @ 467,917
+texte « 116 Tempo » @ 422,1020
+icône ↶ « Rückgängig » @ 56,1021
+image ↷ @ 152,1013
+icône ▶ « der Song » @ 280,1021
+icône ⋮ « Mehr » @ 533,1020
+onglet (lignes et note) « Mein Song » @ 54,1145
+onglet (quatre carrés) « Rhythmus » @ 174,1145
+onglet (touches de piano) « Tastatur » @ 294,1145
+onglet (curseurs) « Mix » [sélectionné] @ 414,1145
+onglet (trois points reliés) « Teilen » @ 534,1145
+texte « ●  REC » @ 272,1248
+texte « ✎  Notieren » @ 416,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback-Modus » @ 114,1248

@@ -1,0 +1,26 @@
+Écran 28 (588x1278)
+texte « Dein erster Teil: der Refrain Kapitel 6/13 · Schritt 1/2 · Einfach » @ 208,145
+icône (liste) « Kapitel » @ 445,145
+icône ⌄ @ 531,145
+texte « Hör dir deinen Loop ein paar Sekunden an, dann das Beispiel. » @ 294,374
+bouton « Kit Disco / Funk laden (2 MB) » @ 236,526
+texte « Später » @ 503,526
+texte « ▸ Warum? » @ 294,605
+bouton ■ «   Stoppen » @ 294,745
+bouton ▶ «  Beispiel anhören » @ 294,831
+icône ← «  Zurück » @ 125,917
+icône « Weiter  » → @ 467,917
+texte « 116 Tempo » @ 422,1020
+icône ↶ « Rückgängig » @ 56,1021
+image ↷ @ 152,1013
+icône ■ « der Song » @ 280,1021
+icône ⋮ « Mehr » @ 533,1020
+onglet (lignes et note) « Mein Song » @ 54,1145
+onglet (quatre carrés) « Rhythmus » @ 174,1145
+onglet (touches de piano) « Tastatur » [sélectionné] @ 294,1145
+onglet (curseurs) « Mix » @ 414,1145
+onglet (trois points reliés) « Teilen » @ 534,1145
+texte « ●  REC » @ 272,1248
+texte « ✎  Notieren » @ 416,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback-Modus » @ 114,1248

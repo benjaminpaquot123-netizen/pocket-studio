@@ -10,7 +10,17 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import com.github.takahirom.roborazzi.captureScreenRoboImage
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import com.pocketstudio.app.ui.PlayPosition
+import com.pocketstudio.app.ui.PlayStrip
+import com.pocketstudio.app.ui.PlayStripActions
+import com.pocketstudio.app.ui.PlayStripUi
 import com.pocketstudio.app.ui.SceneChipUi
+import com.pocketstudio.model.i18n.I18n
+import com.pocketstudio.model.i18n.Lang
+import org.junit.After
 import com.pocketstudio.app.ui.TopBar
 import com.pocketstudio.app.ui.TopBarActions
 import com.pocketstudio.app.ui.TopBarUi
@@ -30,12 +40,18 @@ import org.robolectric.annotation.GraphicsMode
 class Tour9L6ScreenshotTest {
     @get:Rule val compose = createComposeRule()
 
-    private fun structureAfterAdds(name: String) {
+    @After fun french() { I18n.lang = Lang.FR }
+
+    private fun structureAfterAdds(name: String, lang: Lang = Lang.FR) {
+        I18n.lang = lang
         compose.setContent {
+          CompositionLocalProvider(LocalLayoutDirection provides if (lang.rtl) LayoutDirection.Rtl else LayoutDirection.Ltr) {
             var song by remember { mutableStateOf(List(5) { SongPart(scene = it % 2) }) }
             PocketStudioTheme {
                 Column {
                     TopBar(TopBarUi(projectName = "Mon morceau", playing = false, canUndo = true, canRedo = false, scene = SceneChipUi(1, listOf("A · Intro", "B · Refrain", "C"), setOf(2))), TopBarActions())
+                    // F105: the strip's indicator names the edited part, its bars whole.
+                    PlayStrip(PlayStripUi(120.0, hasSong = true, loopPart = false, playing = false, position = { PlayPosition("Refrain", 2, 6) }, parts = listOf("A", "B"), helpOn = false), PlayStripActions())
                     SessionScreen(
                         SessionScreenUi(
                             scenes = List(Scene.MAX) { if (it < 2) Scene(name = Scene.NAMES[it]) else null }, current = 1, pending = null,
@@ -46,6 +62,7 @@ class Tour9L6ScreenshotTest {
                     )
                 }
             }
+          }
         }
         compose.onNodeWithTag("song_what_plays").performScrollTo()
         repeat(2) { compose.onNodeWithTag("add_part_0").performClick(); compose.mainClock.advanceTimeBy(500); compose.waitForIdle() }
@@ -63,4 +80,7 @@ class Tour9L6ScreenshotTest {
 
     @Test @Config(qualifiers = "w411dp-h891dp")
     fun usualPhone() = structureAfterAdds("411dp")
+
+    @Test @Config(qualifiers = "w360dp-h640dp", fontScale = 2f)
+    fun smallPhoneBigTextArabic() = structureAfterAdds("360dp_200pc_ar", Lang.AR)
 }

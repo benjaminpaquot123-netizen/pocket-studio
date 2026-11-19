@@ -312,6 +312,27 @@ class Coquille2SeatTest : HumanTester("coquille2") {
     }
 
     /**
+     * Tour 9, L9 (CI 382, first try: the same « no project_… on: … Chargement de la liste… » after 40 « attends 0.5 »).
+     * The list's reading waits in real time (a closing save, up to 10 s, polled with `delay`): no worker runs, the bench's
+     * waits pass at the speed of its own looks, and 40 of them end in a few real seconds on a loaded machine while the
+     * list is still coming. Here its reading is held 40 s of real time: [tap] still waits for the rows, then touches.
+     */
+    @Test
+    fun p5_aProjectsListHeldInRealTimeIsWaitedFor() {
+        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
+        begin(SeatOptions.parse(mapOf("lang" to "fr", "device" to "phone", "font" to "100", "mode" to "simple")).first)
+        amenee("premier-morceau", java.io.File("build/coquille2-journal.txt"))
+        val song = rhythm()!!.projectId
+        tap("top_more")
+        projectsModel().beforeOperationForTest = { kotlinx.coroutines.delay(40_000) }
+        tap("top_projects")
+        assertNotNull("the list is not held, nothing is proven:\n" + screen(), centerOf("projects_loading"))
+        tap("project_$song")
+        assertNull("« Mes projets » still loading after its project was touched:\n" + screen(), centerOf("projects_loading"))
+        assertTrue("another project open", rhythm()!!.projectId == song)
+    }
+
+    /**
      * Control seat A b-5 (fr, phone, 100 %, Mode simple), P5 again (screens 30-33): the Live project, the one open, touched
      * in « Mes projets » from the welcome page opens on Pad Live, as « Continuer » does — not on « Mon morceau ».
      */

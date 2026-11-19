@@ -95,6 +95,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.StarterWizard
 import com.pocketstudio.model.i18n.tr
@@ -1155,6 +1157,9 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
     }
     // The secondary buttons' words (what [besideFits] measures), each with its button.
     val words = ArrayList<String>()
+    // Tour 9 (F014, t9-20, German at 200 %): « Dein Ergebnis anhören » shrank, « Beispiel anhören » beside it did not;
+    // side by side, their words share one size (the smallest any of them needs).
+    val shared = remember(step.id, primary, mine, chapterEnd, canShow, LocalDensity.current, androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp) { SharedLabelSize() }
     val secondaries = buildList<@Composable RowScope.() -> Unit> {
         // A step done: the user's own result first, then the example to compare.
         if (primary == Primary.NEXT && mine && (!step.listening || mineFirst || chapterEnd)) {
@@ -1163,14 +1168,14 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
             add {
                 OutlinedButton(onClick = actions.playMine, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_play_mine")) {
                     Icon(if (minePlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
-                    com.pocketstudio.ui.WholeWordsText(" $label", textAlign = TextAlign.Center)
+                    SecondaryLabel(" $label", shared, 0)
                 }
             }
         }
         if (step.listen.isNotEmpty() && primary != Primary.LISTEN) {
             words += if (busy) tr("Arrêter l'écoute") else tr("Écouter l'exemple")
             add {
-                OutlinedButton(onClick = actions.listen, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_listen")) { ListenContent(ui, busy) }
+                OutlinedButton(onClick = actions.listen, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_listen")) { ListenContent(ui, busy, shared) }
             }
         }
         if (step.manual && primary != Primary.MARK) {
@@ -1178,7 +1183,7 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
             add {
                 OutlinedButton(onClick = actions.markDone, contentPadding = SECONDARY_PADDING, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_mark")) {
                     Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(18.dp))
-                    com.pocketstudio.ui.WholeWordsText(" " + tr("C'est fait"), textAlign = TextAlign.Center)
+                    SecondaryLabel(" " + tr("C'est fait"), shared, 2)
                 }
             }
         } else if (canShow && primary != Primary.NEXT) {
@@ -1190,7 +1195,7 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
                     modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_show"),
                 ) {
                     Icon(if (showing) Icons.Filled.Stop else Icons.Filled.Visibility, contentDescription = null, modifier = Modifier.size(18.dp))
-                    com.pocketstudio.ui.WholeWordsText(" " + if (showing) tr("Arrêter") else tr("Montre-moi"), textAlign = TextAlign.Center)
+                    SecondaryLabel(" " + if (showing) tr("Arrêter") else tr("Montre-moi"), shared, 2)
                 }
             }
         }
@@ -1330,14 +1335,79 @@ private val SECONDARY_PADDING = androidx.compose.foundation.layout.PaddingValues
 
 /** « ▶ Écouter l'exemple », a wheel while it is prepared, « ■ Arrêter l'écoute » while it plays. */
 @Composable
-private fun ListenContent(ui: TutoUi, busy: Boolean) {
+private fun ListenContent(ui: TutoUi, busy: Boolean, shared: SharedLabelSize? = null) {
     when {
         ui.preparing -> CircularProgressIndicator(Modifier.size(16.dp).semantics { contentDescription = tr("Préparation de l'écoute") }, strokeWidth = 2.dp)
         busy -> Icon(Icons.Filled.Stop, contentDescription = null, modifier = Modifier.size(18.dp))
         else -> Icon(Icons.Filled.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
     }
-    com.pocketstudio.ui.WholeWordsText(" " + if (busy) tr("Arrêter l'écoute") else tr("Écouter l'exemple"), textAlign = TextAlign.Center)
+    val label = " " + if (busy) tr("Arrêter l'écoute") else tr("Écouter l'exemple")
+    if (shared != null) SecondaryLabel(label, shared, 1) else com.pocketstudio.ui.WholeWordsText(label, textAlign = TextAlign.Center)
 }
+
+/** The sizes the secondary buttons' words were shrunk to, by button (0 its result, 1 the example, 2 the third). */
+private class SharedLabelSize {
+    val fitted = androidx.compose.runtime.mutableStateMapOf<Int, Float>()
+}
+
+/**
+ * A secondary button's words, as [com.pocketstudio.ui.WholeWordsText] shrinks them (no word cut, two lines), never
+ * larger than its neighbours' ([shared]): each reports the size it fits at, all take the smallest. The floor stays
+ * the one of the words' own size.
+ */
+@Composable
+private fun SecondaryLabel(text: String, shared: SharedLabelSize, slot: Int) {
+    val merged = androidx.compose.material3.LocalTextStyle.current
+    // As WholeWordsText: past 130 % a line height in sp would stay as tall when the words shrink.
+    val big = LocalDensity.current.fontScale > 1.3f
+    val style = if (big && merged.lineHeight.isSp && merged.fontSize.isSp && merged.fontSize.value > 0f) {
+        merged.copy(lineHeight = (merged.lineHeight.value / merged.fontSize.value).em)
+    } else merged
+    if (!style.fontSize.isSp) {
+        com.pocketstudio.ui.WholeWordsText(text, textAlign = TextAlign.Center)
+        return
+    }
+    val own = style.fontSize.value
+    val top = minOf(own, shared.fitted.values.minOrNull() ?: own)
+    // A new ceiling is a new text node: the auto-size kept its first measure while the constraints stayed the same.
+    androidx.compose.runtime.key(top) {
+        Text(
+            text, textAlign = TextAlign.Center, style = style, maxLines = 2, overflow = TextOverflow.Ellipsis,
+            autoSize = SharedFit(top, MIN_SCALE * own) { size -> if (shared.fitted[slot] != size) shared.fitted[slot] = size },
+        )
+    }
+}
+
+/**
+ * As [com.pocketstudio.ui.WholeWords] from [top] down by half points (no word cut, nothing past the lines), and no
+ * first line of blanks either (F014: « Montre-moi » under an empty line, the space before it alone above), never
+ * under [floor] (as far as at 130 % past it); each size chosen told to [report].
+ */
+private class SharedFit(private val top: Float, private val floor: Float, private val report: (Float) -> Unit) :
+    androidx.compose.foundation.text.TextAutoSize {
+    override fun androidx.compose.foundation.text.modifiers.TextAutoSizeLayoutScope.getFontSize(
+        constraints: androidx.compose.ui.unit.Constraints,
+        text: androidx.compose.ui.text.AnnotatedString,
+    ): androidx.compose.ui.unit.TextUnit {
+        val min = floor / (fontScale / 1.3f).coerceAtLeast(1f)
+        var size = top
+        while (size > min) {
+            val layout = performLayout(constraints, text, size.sp)
+            val blankFirst = layout.lineCount > 1 && text.text.substring(0, layout.getLineEnd(0)).isBlank()
+            if (!layout.hasVisualOverflow && !com.pocketstudio.ui.splitsAWord(layout, text.text) && !blankFirst) break
+            size -= 0.5f
+        }
+        val chosen = size.coerceAtLeast(min)
+        report(chosen)
+        return chosen.sp
+    }
+
+    override fun equals(other: Any?) = other is SharedFit && other.top == top && other.floor == floor
+    override fun hashCode() = top.hashCode() * 31 + floor.hashCode()
+}
+
+/** WholeWordsText's floor: 72 % of the words' size. */
+private const val MIN_SCALE = 0.72f
 
 /** « Pourquoi ? »: its reason (one or two sentences, in the step's words) folded until touched ([toggle]). */
 @Composable

@@ -339,6 +339,9 @@ class Tour9L14TutoPanelTest {
             text.config[SemanticsActions.GetTextLayoutResult].action!!(layouts)
             val lay = layouts.first()
             assertEquals("$tag starts with a space", ' ', lay.layoutInput.text.text.first())
+            // The space before the words alone on a first line: the label under an empty line (fr, 160 %: « Montre-moi »).
+            val first = lay.layoutInput.text.text.substring(0, lay.getLineEnd(0))
+            assertTrue("$tag: a first line of blanks under ${lay.layoutInput.text.text}", lay.lineCount == 1 || first.isNotBlank())
             return Triple(button.boundsInRoot.top, button.boundsInRoot.bottom, lay.getBoundingBox(0).width)
         }
         val faults = mutableListOf<String>()

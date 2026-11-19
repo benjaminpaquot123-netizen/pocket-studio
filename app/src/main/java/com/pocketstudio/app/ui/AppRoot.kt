@@ -2103,7 +2103,7 @@ fun AppRoot() {
     LaunchedEffect(tutoUi?.current?.id) {
         val open = tuto.place()?.open ?: return@LaunchedEffect
         val g = com.pocketstudio.app.guide.GuideNav.go(open, rhythmVm.project.value, SettingsStore.state.value.simpleMode)
-        if (g is com.pocketstudio.app.guide.GuideGo.Tab && g.tab == tab && g.spots.isNotEmpty()) tutoReveal = g.spots
+        if (g is com.pocketstudio.app.guide.GuideGo.Tab && g.tab == tab && g.spots.isNotEmpty()) tutoReveal = tutoPlaceFor(g.spots, tutoUi?.current?.check)
     }
     LaunchedEffect(tutoUi?.demo != null) { com.pocketstudio.app.tuto.TutoHints.demo = tutoUi?.demo != null }
     // The send a step asks for, dotted in the effects box (« Je le fais » opens the right one).
@@ -2293,7 +2293,7 @@ fun AppRoot() {
                 g.open != null -> {
                     guideGo(com.pocketstudio.app.guide.GuideNav.go(g.open, rhythmVm.project.value, simpleNow))
                     // No card to close (owner: « Le Guide t'attend… » + « Compris » each time): a ring that goes by itself.
-                    val lit = guideSpot
+                    val lit = tutoPlaceFor(guideSpot, tuto.ui.value?.current?.check)
                     guideSpot = null
                     if (g.spot) tutoSpot = lit else tutoReveal = lit
                 }
@@ -4959,6 +4959,17 @@ private const val TUTO_SPOT_MS = 2600L
 private const val TUTO_MINE_HEARD_MS = 600L
 /** The synth's « Réglages du son » card ([com.pocketstudio.app.synth.SoundCard]). */
 internal const val SYNTH_SETTINGS_SPOT = "synth_settings"
+
+/** Tour 9 (D13): the « Volume visé » chips of the master card (mixer/MasterLoudness.kt), a loudness step's own place. */
+internal const val LOUDNESS_TARGET_SPOT = "mixer_target"
+
+/**
+ * Tour 9 (D13; seat t9-14, Dutch at 200 % on a foldable): the master card, taller than the room above the tuto's panel, came
+ * top first, and the « Volume visé » chips at its foot stayed half under the panel. A loudness step brings the chips first
+ * (the card itself when it is folded and they are not there).
+ */
+internal fun tutoPlaceFor(ids: List<String>?, check: String?): List<String>? =
+    if (ids != null && check?.startsWith("loudness:") == true && "mixer_master" in ids) listOf(LOUDNESS_TARGET_SPOT) + ids else ids
 
 /**
  * [content] with the engine's position ([RhythmViewModel.live], new about 30 times a second) read

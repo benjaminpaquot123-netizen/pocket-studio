@@ -1,0 +1,104 @@
+44da2f208 « vert: Tour6Tuto4TechnoRound3Test#theSoundButtonIsSaidWhereItIsInEveryL » : vert sans rouge du même test avant lui
+ba9d34320 « vert: Coquille2SeatTest#cymbalGridLineNamesThePadShown » : vert sans rouge du même test avant lui
+4bd2329e8 « vert: no pattern uses a flag the phone refuses » : vert sans rouge du même test avant lui
+6406beb63 « vert: the first half's demo lays only its bars (review moyen, T8) » : vert sans rouge du même test avant lui
+7eafb997b « vert: Lot8QueuedWiringTest (U1, the queued part reaches the strip and  » : vert sans rouge du même test avant lui
+1f41ed8ca « vert: a stroke cut short is its own undo step, cut by a bar's number » : vert sans rouge du même test avant lui
+6cd5fb751 « vert: RemixLeftThumbSeatTest#a3_cutHintWholeNotUnderThumb, cut button  » : vert sans rouge du même test avant lui
+3f8ebaf79 « vert: a folded panel opens when only the cells' softness is missing » : vert sans rouge du même test avant lui
+42700d30f « vert: the bench plays and reads a control seat's folder as it does a l » : vert sans rouge du même test avant lui
+25b653a32 « vert: Coquille3SeatTest#n5_theVolumeSentenceIsWholeBeforeItsDetails » : vert sans rouge du même test avant lui
+8dd540519 « vert: Coquille3SeatTest#a10_oneDownloadButtonOnTheRemixPanel » : vert sans rouge du même test avant lui
+a61f5908e « vert: Coquille3SeatTest#a11_remixOfMoreIsUnderTheLeftThumb » : vert sans rouge du même test avant lui
+22087defb « vert: Coquille3SeatTest#p1_notesShowsEveryNotePlayed » : vert sans rouge du même test avant lui
+fd25b5421 « vert: tour 7 D1 and D6, dotted notes whole above the panel, first bar  » : vert sans rouge du même test avant lui
+1a669e4ec « vert: tour 7 D7, a skipped example is said, one way on at a step's Bra » : vert sans rouge du même test avant lui
+8b36fd8ce « vert: tour 7 D3 tuto panel words end on a whole line, kit offer under  » : vert sans rouge du même test avant lui
+2a5465d43 « vert: tour 7 D3 kit offer back in the words, its buttons never cut by  » : vert sans rouge du même test avant lui
+25d425109 « vert: D6 « Mes fichiers » in the Plus page, both modes » : vert sans rouge du même test avant lui
+6e2d1d07c « vert: D5 Live low in the Mode simple's Plus page, within either thumb » : vert sans rouge du même test avant lui
+725f17ccc « vert: D7 the Mixer's strips in the Sons chips' order » : vert sans rouge du même test avant lui
+8789def16 « vert: D4 the Guide's bar step whole at big text » : vert sans rouge du même test avant lui
+13230e4d8 « vert: song button plays from bar 1 when the part was only picked to ed » : vert sans rouge du même test avant lui
+cbdd3392d « vert: Start here and End here play the piece at once (tour 7 lot 2 D4) » : vert sans rouge du même test avant lui
+0b30a709e « vert: drop the two translations the export sheet no longer shows (tour » : vert sans rouge du même test avant lui
+211911f81 « vert: the share menu keeps the app's title, the file named in Android' » : vert sans rouge du même test avant lui
+5adade2a1 « vert: Plus tiles go compact when their rows would cross the fold » : vert sans rouge du même test avant lui
+e04c85dea « vert: chord steps turn Accords on by themselves » : vert sans rouge du même test avant lui
+f1ebc7431 « vert: a projects list still loading is waited for by the seat's tap (C » : vert sans rouge du même test avant lui
+764eb403e « vert: what is missing is always offered (R-C), panel tests » : vert sans rouge du même test avant lui
+fd4224529 « vert: the panel test follows the one-touch rule of the tutorial's line » : vert sans rouge du même test avant lui
+71f3c2c7b « vert: one moment per Facile consigne replaces two gestures » : vert sans rouge du même test avant lui
+4e27e680b « vert: tuto panel keeps the kit offer and « Pourquoi ? » in place » : vert sans rouge du même test avant lui
+2b1faf81b « vert: house Facile consignes fit the panel, one gesture series » : vert sans rouge du même test avant lui
+496d85523 « vert: drop four fixed hip-hop and lofi steps from PENDING_VERB » : vert sans rouge du même test avant lui
+999ff0a01 « vert: keep three shared copy-bars keys still used by other families » : vert sans rouge du même test avant lui
+460142ab6 « vert: restore Korean part durations and polish two Japanese phrasings » : vert sans rouge du même test avant lui
+33c8c1f72 « vert: pop fill names the beat before the last and the x4 roll » : vert sans rouge du même test avant lui
+779ff6501 « vert: bass tuto key/snare texts, glosses moved to why, orphan keys rem » : vert sans rouge du même test avant lui
+128bae154 « vert: step whys keep the chapter why, liquid hat tip fixed » : vert sans rouge du même test avant lui
+af97d85db « vert: jump_up pad_do why keeps the chord gloss » : vert sans rouge du même test avant lui
+9478f12ce « vert: jungle hat tip clears the extra cell » : vert sans rouge du même test avant lui
+429c88124 « vert: dubstep hat tip covers both bars » : vert sans rouge du même test avant lui
+80a2b6986 « vert: tuto panel fold (examples fold first, kit and why kept when cut  » : vert sans rouge du même test avant lui
+fc80fcfe2 « vert: the mixer hides the first track the tutorial hides, as the Sons  » : vert sans rouge du même test avant lui
+dbbc78b21 « vert: tutorial line keeps the whole count while it points » : vert sans rouge du même test avant lui
+d769c17c2 « vert: bench9 aim drawn part, cover check, hand back fixes, amenée jour » : vert sans rouge du même test avant lui
+fa22bdff6 « vert: row arrow - the left arrow no longer scrolls the row back to the » : vert sans rouge du même test avant lui
+440c63f5a « vert: row arrow - beside the row without pushing the edge chips out of » : vert sans rouge du même test avant lui
+32222750f « vert: share sheet tail only when it scrolls; row arrow starts at the r » : vert sans rouge du même test avant lui
+a82b33c07 « vert: captures re-recorded (share sheet, track bar arrow) » : vert sans rouge du même test avant lui
+b7b7dae18 « vert: captures re-recorded after integration merge » : vert sans rouge du même test avant lui
+e73a70cd3 « vert: Clavier at 200 % keeps keys 62, 65 and the take's button above t » : vert sans rouge du même test avant lui
+fbf0fe0e1 « vert: a white key's name shrinks to its key at 200 % instead of being  » : vert sans rouge du même test avant lui
+509081a0e « vert: curve's « Je le fais » takes only the curves and their strips' i » : vert sans rouge du même test avant lui
+e0d231a26 « vert: decoupe2 a message left from before no longer scrolls the cut on » : vert sans rouge du même test avant lui
+4d9cf5a57 « vert: guide2 no empty step block on a card with nothing to show » : vert sans rouge du même test avant lui
+5c1e5f989 « vert: share listen line shows whole, parts counted once » : vert sans rouge du même test avant lui
+9ba919d5e « vert: 3a a new part is brought into view whole » : vert sans rouge du même test avant lui
+2c00786d1 « vert: guide2 Plus rows measured unseen instead of guessed, the list ta » : vert sans rouge du même test avant lui
+ba319fe8d « vert: level missions, seat levels and per-level dashboard » : vert sans rouge du même test avant lui
+a228ce276 « vert: Plus tiles test checks every layout, not only full ones » : vert sans rouge du même test avant lui
+9a1a568e5 « vert: Guide card test measures the gap under the why, settled opener c » : vert sans rouge du même test avant lui
+3a9535787 « vert: bench self-test knows the seat entry point of BenchTutoKitDownlo » : vert sans rouge du même test avant lui
+ae8bfb101 « vert: tempo sheet keypad stays, typed tempo marked (F119) » : vert sans rouge du même test avant lui
+21771e7be « vert: kit and pad sheets' « Fermer » framed and apart from the text (F » : vert sans rouge du même test avant lui
+e24016e21 « vert: Partager keeps each signed number's minus with its digits in RTL » : vert sans rouge du même test avant lui
+1717e73b1 « vert: at 200 % M4A / WAV scroll under the Share name instead of coveri » : vert sans rouge du même test avant lui
+13d2d4966 « vert: the Share check mark reads with its sentence as one line (F126) » : vert sans rouge du même test avant lui
+abc116377 « vert: tempo sheet top stacks when narrow (360 dp, 200 %) » : vert sans rouge du même test avant lui
+ef049722d « vert: kit and pad sheets stack their top when narrow (360 dp, 200 %) » : vert sans rouge du même test avant lui
+329bc224c « rouge: tour 7 D1, a touch on the line leaves no dotted note cut by the » : rouge sans vert du même test après lui
+031882493 « rouge: tour 7 D6, the line's next note is the first one left in bar or » : rouge sans vert du même test après lui
+8dafb29b7 « rouge: tour 7 D7, Suivant on an example says nothing, two ways on side » : rouge sans vert du même test après lui
+85a43b5f2 « rouge: tour 7 D3 tuto panel words cut and kit offer cut above the grid » : rouge sans vert du même test après lui
+ef9975d6d « rouge: D6 « Mes fichiers » in the Plus menu » : rouge sans vert du même test après lui
+e13750326 « rouge: D5 Live within the left thumb in Simple's Plus » : rouge sans vert du même test après lui
+35bb6522e « rouge: D7 Mixer strips read like the Sons chips » : rouge sans vert du même test après lui
+d7d1d9229 « rouge: D5 Live in « Plus » out of the left thumb (real layout with bar » : rouge sans vert du même test après lui
+9a2a03b0d « rouge: D4 the Guide's bar cuts its step at big text » : rouge sans vert du même test après lui
+36577ac18 « rouge: song button plays from the part picked, not bar 1 (tour 7 lot 4 » : rouge sans vert du même test après lui
+99dc05898 « rouge: Start here heard even with the line on Start (tour 7 lot 2 D4) » : rouge sans vert du même test après lui
+9a2c5fe03 « rouge: a projects list still loading is missed by the seat's tap (CI 3 » : rouge sans vert du même test après lui
+819ef6040 « rouge: tuto chapters opened without their parts cannot be finished (sc » : rouge sans vert du même test après lui
+33e4b848d « rouge: Montre-moi everywhere (every step, seven arrivals, both levels) » : rouge sans vert du même test après lui
+7801c5bf4 « rouge: the silence step names the pads and the hits it crosses out » : rouge sans vert du même test après lui
+010313736 « rouge: techno block one moment per consigne » : rouge sans vert du même test après lui
+428957c27 « rouge: tuto panel fold (kit and why kept when cut anyway, examples fol » : rouge sans vert du même test après lui
+ebab732b6 « rouge: bench9 tests for aim, cover, hand back and amenée journal » : rouge sans vert du même test après lui
+472d0164a « rouge: share sheet tail band above the formats; row arrow drawn over c » : rouge sans vert du même test après lui
+9e195d6c3 « rouge: Clavier at 200 % pushes keys 62, 65 and the take's button under » : rouge sans vert du même test après lui
+a50897e9f « rouge: curve's « Je le fais » takes the whole project from the show » : rouge sans vert du même test après lui
+b9bea1b64 « rouge: guide2 empty step block on a settled card » : rouge sans vert du même test après lui
+de58dc7eb « rouge: decoupe2 stale message, Plus rows, 3a new part, share listen an » : rouge sans vert du même test après lui
+b461924f3 « rouge: tour 8 R tests reach the wizard steps, open Share in Simple mod » : rouge sans vert du même test après lui
+f7f956c24 « rouge: tuto-mots, German and Japanese words » : rouge sans vert du même test après lui
+1e856ac50 « rouge: level missions, seat levels and per-level dashboard (tests and  » : rouge sans vert du même test après lui
+2fb6c61b8 « rouge: tempo sheet keypad jumps while typing, 120 stays marked (F119) » : rouge sans vert du même test après lui
+96e1fe814 « rouge: pad sheet « Fermer » touches its title (F120) » : rouge sans vert du même test après lui
+a6483bfcb « rouge: Arabic Partager puts the minus right of its digits (F030) » : rouge sans vert du même test après lui
+afdd4329b « rouge: at 200 % the Share name field shows only its label above M4A /  » : rouge sans vert du même test après lui
+40f918f24 « rouge: the Share check mark is a picture without its sentence (F126) » : rouge sans vert du même test après lui
+9cab2b126 « rouge: tempo sheet top cut at 360 dp, 200 % (Fermer split, tempo figur » : rouge sans vert du même test après lui
+329b37c6d « rouge: kit sheet top and kit names cut at 360 dp, 200 % » : rouge sans vert du même test après lui
+chantier : 103 écarts

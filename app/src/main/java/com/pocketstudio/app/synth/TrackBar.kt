@@ -172,7 +172,9 @@ fun TrackBar(
                     when {
                         ui.freezing == t.id -> tr("Gel en cours…")
                         t.id in ui.frozen -> "❄ " + tr("Gelée")
-                        else -> com.pocketstudio.model.guide.GuideSheets.soundName(t)
+                        else -> com.pocketstudio.model.DefaultNames.soundBeside(
+                            com.pocketstudio.model.DefaultNames.shown(t.name), com.pocketstudio.model.guide.GuideSheets.soundName(t),
+                        )
                     },
                     color, selected,
                     touch = Modifier.combinedClickable(onClick = { if (selected) menuFor = t else ui.select(t.id) }, onLongClick = { ui.select(t.id); menuFor = t }),

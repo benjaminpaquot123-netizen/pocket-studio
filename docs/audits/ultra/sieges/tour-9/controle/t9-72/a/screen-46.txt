@@ -1,0 +1,47 @@
+Écran 46 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 138  Tempo » @ 83,114
+icône « Intro mesure 1/56 » ▾ @ 255,114
+bouton « ? » @ 543,114
+bouton « Accords du morceau B · Intro La m  La m  La m  La m  La m  La m  La m  La m C · Intro 2 La m  Fa  Do  Sol  La m  Fa  Do  Sol D · Montée La m  Fa  Do  Sol E · Drop La m  Fa  Do  Sol  La m  Fa  Do  Sol F · Break La m  Fa  Do  Sol  La m  Fa  Do  Sol G · Drop 2 La m  Fa  Do  Sol  La m  Fa  Do  Sol … et 1 autre partie Touche pour changer les accords de tout le morceau. » [coupé] @ 294,162
+icône ▶ « B · Intro × 1  ·  8 mes. » @ 186,234
+icône − [désactivé] @ 366,234
+icône + @ 438,234
+icône ⋮ @ 510,234
+icône ▶ « C · Intro 2 × 1  ·  8 mes. » @ 186,330
+icône − [désactivé] @ 366,330
+icône + @ 438,330
+icône ⋮ @ 510,330
+icône ▶ « D · Montée × 1  ·  4 mes. » [coupé] @ 186,414
+icône − [désactivé, coupé] @ 366,420
+icône + [coupé] @ 438,420
+icône ⋮ [coupé] @ 510,420
+texte « Range tes parties Chapitre 9/13 · Étape 2/2 · Facile » @ 207,492
+icône (liste) « Chapitres » @ 444,492
+icône ⌄ @ 531,492
+texte « À toi : touche « Donner les durées conseillées ». » @ 294,591
+bouton « Télécharger le kit Trance (2 Mo) » @ 236,684
+texte « Plus tard » @ 503,684
+texte « ▸ Pourquoi ? » @ 294,750
+bouton ⊕ «   Donner les durées conseillées » @ 294,813
+bouton (œil) «  Montre-moi » @ 294,897
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 138 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

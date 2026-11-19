@@ -1,0 +1,7 @@
+Écran 79 (588x1278)
+texte « Partager mon morceau · Trance-du-soir-morceau-20261119-115517.m4a » @ 294,460
+bouton « WhatsApp » @ 294,543
+bouton « Messages » @ 294,615
+bouton « Gmail » @ 294,687
+bouton « Drive » @ 294,759
+bouton « Files » @ 294,831

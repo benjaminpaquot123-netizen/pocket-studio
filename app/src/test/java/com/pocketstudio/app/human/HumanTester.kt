@@ -387,6 +387,8 @@ abstract class HumanTester(private val seat: String) {
                 if (reached == null) {
                     journal.appendText("#$n > $cmd\n#$n BANC étiquette introuvable : $tag\n")
                     flag("seat.etiquette", "« $tag » à l'écran", "$tag absent")
+                    // Tour 9 (banc-b, « drapeaux »): where and why, and what the screen offers instead.
+                    journal.appendText(BenchFlag.line(n, aimed[0], tag, found = false, why = BenchFlag.TAG_MISSING, screen = runCatching { screenText().tagged() }.getOrNull()) + "\n")
                     if (replaying && o.replayHandBack) {
                         // The bench's copy of the origin's gesture goes: gesture n is the tester's, on this screen again.
                         cmdFile.delete()
@@ -409,6 +411,12 @@ abstract class HumanTester(private val seat: String) {
                     val covered = runCatching { aim(tag)?.let { (x, y) -> screenText().coverAt(x, y) } }.getOrNull()
                     journal.appendText("#$n > $cmd\n#$n REFUS « $tag » : aucun point visible, à portée du pouce (${o.hand.word}) et sous le doigt" +
                         (covered?.let { " ($it)" } ?: "") + "\n")
+                    journal.appendText(
+                        BenchFlag.line(
+                            n, aimed[0], tag, found = true, why = BenchFlag.NO_POINT, coveredBy = BenchFlag.coverName(covered),
+                            bounds = flagBounds(tag), at = reached, more = "main ${o.hand.word}",
+                        ) + "\n",
+                    )
                     say("Ce bouton est caché, hors de l'écran ou trop loin de ton pouce (tu tiens l'appareil ${o.hand.word}) : rien ne s'est passé.")
                     n++
                     continue
@@ -454,6 +462,7 @@ abstract class HumanTester(private val seat: String) {
             }
             if (malformed) {
                 journal.appendText("#$n BANC geste mal écrit : $cmd\n")
+                journal.appendText(BenchFlag.line(n, kind, cmd, found = false, why = BenchFlag.MALFORMED) + "\n")
                 say("Banc : geste mal écrit (« $cmd ») : rien n'a été fait. Les gestes : touche X Y (ou touche ÉTIQUETTE), appui-long X Y, double-touche X Y, glisse X1 Y1 X2 Y2, tape X Y N MS (ou tape X Y N tempo : la pulsation du défi), ecris TEXTE, retour, attends S.")
                 if (kind != "attends" && kind != "regarde") gestures--
                 n++
@@ -467,6 +476,11 @@ abstract class HumanTester(private val seat: String) {
             val m = app.resources.displayMetrics
             if (points.any { (x, y) -> !SeatOptions.reachable(o.hand, x, y, m.widthPixels, m.heightPixels, m.density) }) {
                 journal.appendText("#$n REFUS hors de portée du pouce (${o.hand.word})\n")
+                val beyond = points.first { (x, y) -> !SeatOptions.reachable(o.hand, x, y, m.widthPixels, m.heightPixels, m.density) }
+                val there = runCatching { screenText().under(beyond.first, beyond.second) }.getOrDefault("rien")
+                journal.appendText(
+                    BenchFlag.line(n, kind, there, found = !there.startsWith("rien"), why = BenchFlag.OUT_OF_REACH, at = beyond, more = "main ${o.hand.word}, écran ${m.widthPixels}x${m.heightPixels}") + "\n",
+                )
                 say("Ce point est trop loin de ton pouce (tu tiens l'appareil ${o.hand.word}) : rien ne s'est passé.")
                 n++
                 continue
@@ -474,7 +488,7 @@ abstract class HumanTester(private val seat: String) {
             val finger = points.firstOrNull()
             if (finger != null) {
                 val (x, y) = finger
-                val touch = screenText().finger(n, x, y)
+                val touch = screenText().finger(n, x, y, kind)
                 val under = touch.under
                 // Tour 8, banc9 (point f): an untagged button the origin touched is no longer under the replayed finger: the
                 // seat gets its hand back here (the copied gesture goes), instead of touching whatever is there now. Read
@@ -2326,6 +2340,13 @@ abstract class HumanTester(private val seat: String) {
      * screen (cut by its parents, as boundsInWindow is) that [hand]'s thumb reaches and where the element under the finger is that
      * node (the journal's « DOIGT » line names it). Null: no such point, the touch is refused (review of rejeux6, grave 2).
      */
+    /** Tour 9 (banc-b, « drapeaux »): where [tag]'s first node is drawn (« l,t,r,b »), for a refusal's flag; null when nothing carries it. */
+    private fun flagBounds(tag: String): String? = runCatching {
+        taggedNodes(tag).fetchSemanticsNodes().firstOrNull()?.let { n ->
+            BenchWindows.drawnBounds(n, app.resources.displayMetrics).let { BenchFlag.bounds(it.left, it.top, it.right, it.bottom) }
+        }
+    }.getOrNull()
+
     private fun reachableNear(tag: String, middle: Pair<Float, Float>, hand: SeatOptions.Hand): Pair<Float, Float>? {
         val m = app.resources.displayMetrics
         val screen = screenText()

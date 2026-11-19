@@ -1037,11 +1037,11 @@ private fun Grid(
                             }
                             // Tour 9, S17 (seat 17): a finger drawn along a dotted note of the tutorial (a long one, a wide target)
                             // scrolled the roll, no note written. Started right on it, the gesture is the grid's: the dotted note
-                            // is written whole when the finger lifts, as a touch writes it; the roll does not scroll.
+                            // is written whole when the finger lifts, as a touch writes it; the roll does not scroll. « On it » is
+                            // a touch's own reach (tutoTapTarget: a step aside, a row off), or a finger landing just beside the
+                            // drawn note scrolled where a touch there writes it (bench replay of S17).
                             val drawn = if (found == null && selection.isEmpty() && com.pocketstudio.app.tuto.TutoHints.active && hints.isNotEmpty()) {
-                                val tick = tickAt(down.position.x)
-                                val pitch = pitchAt(down.position.y)
-                                hints.firstOrNull { h -> h.pitch == pitch && tick in h.start until h.end && clip.notes.none { it.pitch == h.pitch && it.start == h.start } }
+                                tutoTapTarget(tickAt(down.position.x), pitchAt(down.position.y), hints.filter { h -> clip.notes.none { it.pitch == h.pitch && it.start == h.start } })
                             } else null
                             if (drawn != null) {
                                 while (true) {

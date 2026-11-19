@@ -97,4 +97,10 @@ class Tour9L5bTutoWordsTest {
             keys.map { shown(l, it) }.filter { sheet !in it }
         })
     }
+
+    /** F082: in Japanese, « toute la batterie, sans la basse, le piano… » no longer reads as a list of what plays. */
+    @Test
+    fun f082IntroSaysOnlyTheDrumsStay() {
+        assertNoneLeft("ambiguous list", mapOf(Lang.JA to offenders(Lang.JA, Regex("ドラム全部、[^。]*はなし"))))
+    }
 }

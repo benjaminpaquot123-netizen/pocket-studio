@@ -26,6 +26,8 @@ corrige: F108 | gravité: moyen
 corrige: F109 | gravité: moyen
 corrige: F110 | gravité: moyen
 
+Tests ajustés par « corrige-les tous » : LanguageTest.kt ligne 110 (la phrase d'aide de la Structure a changé, F104) ; recensement-acceptes.tsv, 4 lignes HELP de Tour9L6ScreenshotTest (la phrase d'aide explique ▶ et le toucher d'une partie : pas de « ? » à côté).
+
 Demande accordée : Zone3JourneysTest.kt : F103 retire la copie d'une partie vide (lignes 98-99, `add_part_new_copy` devient `add_part_new_empty`).
 
 ## Restes

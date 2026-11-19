@@ -12,6 +12,8 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 ## Discussions du tour 9 (19 novembre, 08 h)
 
+- 08 h 12 : T9-PLAN fini (b39201e84 fusionné → ab7fbf4e8, archivé) : 76 sièges t9-01 à t9-76 en 10 vagues, code testé ab7fbf4e8. Vague 1 envoyée : attente-01 à 08 = t9-01 à t9-08 (t9-02, t9-04 = preuve de l'amenée hors house/techno). Rotation : t9-09 session_014RxrDJygytJrYW5v5XvDEJ, t9-10 session_014RxrDM5RKsa62BdNuCT8AS. Ouvertes : 11 (balayage + 10 sièges).
+
 - 08 h 06 : T9-REVUE fini (7fd356dee fusionné, discussion archivée) : 0 bloquant, appli 0 grave ; 3 tests creux graves (PlusRowsFit:65, GuideNoEmptyStep:33-37, OrdinaryTestsLeaveNothing:69-94) ajoutés au lot « tests creux » de la réparation ; 15 à noter dans `docs/REVIEW.md`. Place libérée : 10 discussions ouvertes.
 
 Rotation (Benjamin) : **11 discussions au plus**. Une discussion finie est archivée et une neuve prend sa place. Surveillance du chef : notifications, veilleur en arrière-plan (branches `aud/tour-9-*`, `eq/tour-9-*`, `rev/tour-8-*`, intégration, CI), une minuterie de secours < 1 h avec un seul `list_sessions(children)`.

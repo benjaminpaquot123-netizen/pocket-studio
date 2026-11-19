@@ -103,4 +103,10 @@ class Tour9L5bTutoWordsTest {
     fun f082IntroSaysOnlyTheDrumsStay() {
         assertNoneLeft("ambiguous list", mapOf(Lang.JA to offenders(Lang.JA, Regex("ドラム全部、[^。]*はなし"))))
     }
+
+    /** F085: German « die Schläge des letzten Schlags » says which cells: those of the last beat (« Zählzeit »). */
+    @Test
+    fun f085GermanLastBeatReadsRight() {
+        assertNoneLeft("« des letzten Schlags »", mapOf(Lang.DE to offenders(Lang.DE, Regex("des letzten Schlags"))))
+    }
 }

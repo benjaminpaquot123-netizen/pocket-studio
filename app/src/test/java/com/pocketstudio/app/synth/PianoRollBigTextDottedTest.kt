@@ -11,6 +11,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipe
 import com.pocketstudio.app.nav.AppHarness
 import com.pocketstudio.app.tuto.PrefsTutoStore
 import com.pocketstudio.app.tuto.TutoHints
@@ -137,6 +138,48 @@ abstract class PianoRollBigTextDotted {
         assertTrue("$style/$stepId: $total dotted notes, ${leftNotes().size} left after $touches touches: ${state()}",
             leftNotes().isEmpty() || TutoHints.step != stepId)
     }
+
+    /**
+     * Tour 9, S17 (seat 17, pt-BR, Pro, 200 %): a finger drawn along a long dotted note scrolled the roll, no note
+     * written. Acceptance: « Un glissé qui part d'une note en pointillé la pose entière, comme un toucher ; le rouleau ne
+     * défile pas. »
+     */
+    protected fun dragAlongDottedNote(style: String, stepId: String, simple: Boolean) {
+        val target = TutoTarget.of(style)!!
+        h.start(simple = simple, build = {
+            session.edit { target.blank() }
+            PrefsTutoStore(h.app).save(projectId, TutoProgress(style, if (simple) TutoLevel.Facile else TutoLevel.Pro, current = stepId))
+        })
+        await("the panel") { has("tuto_need") }
+        compose.onNodeWithTag("tuto_need").performClick()
+        await("the dotted notes") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
+        settle()
+        if (leftNotes().none { place(it) != null }) {
+            compose.onNodeWithTag("tuto_notes_left", useUnmergedTree = true).performClick()
+            settle()
+        }
+        val before = leftNotes()
+        val n = before.first { place(it) != null }
+        val at = place(n)!!
+        val canvas = node("piano_roll")
+        val stepPx = canvas.size.width / h.vm.project.value.track(TutoHints.notes!!.first).notes.steps.toFloat()
+        val origin = canvas.boundsInRoot.topLeft
+        val roll = node("roll_view").boundsInRoot
+        // Along the note, to its end and a little further (held a moment: a finger drawing, not a flick).
+        val to = Offset(minOf(at.x + maxOf(n.length / NoteClip.TICKS_PER_STEP.toFloat(), 3f) * stepPx, roll.right - 2f), at.y)
+        compose.onNodeWithTag("piano_roll", useUnmergedTree = true).performTouchInput { swipe(at - origin, to - origin, 500) }
+        settle()
+        val after = leftNotes()
+        assertTrue("a drag along ${n.pitch}@${n.start} wrote nothing (${before.size} then ${after.size} left): ${state()}",
+            after.size < before.size || TutoHints.step != stepId)
+        assertTrue("the dotted note dragged along is written whole", n !in after)
+    }
+
+    @Test
+    fun dragAlongDottedBassPro() = dragAlongDottedNote("speed_garage", "bass_do", simple = false)
+
+    @Test
+    fun dragAlongDottedBassSimple() = dragAlongDottedNote("speed_garage", "bass_do", simple = true)
 
     @Test
     fun speedGarageBassSimple() = touchEveryDottedNote("speed_garage", "bass_do", simple = true)

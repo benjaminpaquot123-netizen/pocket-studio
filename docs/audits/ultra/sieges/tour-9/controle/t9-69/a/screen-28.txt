@@ -1,0 +1,50 @@
+Écran 28 (540x1170)
+icône « 我的项目 1 » ✓ @ 274,36
+bouton « 专业 » @ 494,36
+bouton (dossier ouvert) @ 87,114
+bouton « A » ▾ @ 204,114
+icône ↶ @ 279,114
+bouton ● @ 351,114
+bouton ▶ « 这个段落 » @ 423,114
+icône (trois points reliés) @ 495,114
+bouton « 132  BPM » @ 73,186
+bouton « ? » @ 495,186
+onglet « Remix 分离 » [coupé] @ 70,258
+bouton « 贝斯 Plaits » @ 178,258
+bouton « 和弦 Pluck » @ 288,258
+bouton « 旋律 Plaits » ⋮ @ 415,258
+icône « 音色 » ♪ [coupé] @ 506,258
+image ← @ 10,259
+image → @ 529,259
+texte « 段落：A » @ 58,321
+curseur [coupé, état « 60 », à 60 %] @ 270,349
+dessin @ 270,415
+texte « 截止 » @ 256,415
+texte « 79 » @ 475,415
+curseur [état « 79 », à 79 %] @ 270,467
+dessin @ 270,539
+texte « Morph » @ 256,539
+texte « 70 » @ 484,539
+curseur [état « 70 », à 70 %] @ 270,602
+dessin @ 270,665
+texte « 衰减 » @ 256,665
+texte « 70 » @ 484,665
+curseur [coupé, état « 70 », à 70 %] @ 270,715
+icône (liste) « 章节 » @ 411,770
+texte « 重复乐句 第 7/16 章 · 第 3/3 步 · 专业 » @ 198,770
+icône ⌃ @ 483,770
+icône « 轮到你：在旋律音轨上点“设置音轨的音色 ↓”：这个按钮在音符页面的最上面，就在“键盘”和“音符”下方（看不到就把页面往上滑）。然后把“截止”和“共振”各至少调高 15：Riff 会嘶鸣、会咬人。 阅读 » ⌃ @ 270,869
+icône ↶ « 撤销 » @ 64,954
+icône ↷ « 重做 » [désactivé] @ 164,954
+bouton ▶ « 歌曲 » @ 264,954
+texte « 132 速度 » @ 370,954
+icône (trois points reliés) « 分享 » @ 476,954
+onglet (ligne brisée et points) « 结构 » @ 49,1050
+onglet (touches de piano) « 音色 » [sélectionné] @ 160,1050
+onglet (curseurs) « 混音 » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « 更多 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  记一笔 » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « 反馈模式 » @ 138,1140

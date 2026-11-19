@@ -1,0 +1,386 @@
+#0 SIEGE lang=zh-CN device=phone360 font=100 mode=pro theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:techno:6
+#0 PREMIER ECRAN reel_s=4.2 simule_s=2.4 jvm_s=10.2 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:techno:6
+#0 AMENEE > touche 270 939 (launch_learn)
+#0 AMENEE > touche 270 1049 (mode_card_pro)
+#0 AMENEE > touche 270 289 (tuto_style_techno)
+#0 AMENEE chapitres 1 à 5 construits dans le projet
+#0 AMENEE > touche 411 491 (tuto_chapters)
+#0 AMENEE > touche 270 1110 (tuto_quit)
+#0 AMENEE > touche 135 882 (tuto_resume)
+#0 AMENEE chapitres 1 à 5 cochés (18 étapes)
+#0 AMENEE > touche 411 311 (tuto_chapters)
+#0 AMENEE > touche 270 549 (tuto_chapter_5)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 52e5a779b0 | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_do done=18 chapters=1,2,3,4,5 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « 16 个打击垫 » lines cut (taller than its box)
+#1 LAYOUT CUT « 贝斯线 » lines cut (taller than its box)
+#1 LAYOUT CUT « 麦克风 » lines cut (taller than its box)
+#1 LAYOUT CUT « 分离 » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « 16 个打击垫 » 3.10:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 贝斯线 » 3.10:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 麦克风 » 3.10:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 分离 » 3.10:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « 鼓 16 个打击垫 » 106 x 23 dp (touch 106 x 48)
+#1 LAYOUT TARGET « Acid 303 贝斯线 » 97 x 23 dp (touch 97 x 48)
+#1 LAYOUT TARGET « 人声 麦克风 » 75 x 23 dp (touch 75 x 48)
+#1 LAYOUT TARGET « ▸ 为什么？ » 332 x 21 dp (touch 332 x 48)
+#1 > touche 270 705
+#1 DOIGT tuto_need «   创建和弦音轨 »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE fae6d1fe23 | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_do done=18 chapters=1,2,3,4,5 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « 轮到你：创建和弦音轨（音色“Pluck”，短促的拨弦音，dub 回声），然后写第 1 小节：两个 F 小调 stab，错开拍点（第 4 步和第 11 步）。 » ellipsized (« … »)
+#2 LAYOUT TARGET « A3 播放 » 36 x 20 dp (touch 48 x 48)
+#2 LAYOUT TARGET « A♭3 播放 » 36 x 20 dp (touch 48 x 48)
+#2 LAYOUT TARGET « G3 播放 » 36 x 20 dp (touch 48 x 48)
+#2 > touche 184 649
+#2 DOIGT rien
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE 36677893a7 | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_do done=18 chapters=1,2,3,4,5 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 360 649
+#3 DOIGT rien
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE 694c9fde31 | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_do done=19 chapters=1,2,3,4,5 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 270 869
+#4 DOIGT tuto_next_folded « 成功 »
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE d36ecbc819 | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_end done=19 chapters=1,2,3,4,5 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « 段落：A » lines cut (taller than its box)
+#5 > touche 270 705
+#5 DOIGT tuto_need «   复制到后面的小节 »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE 7f0a6a48a1 | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_end done=19 chapters=1,2,3,4,5 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT TARGET « B♭3 播放 » 36 x 20 dp (touch 48 x 48)
+#6 > touche 184 617
+#6 DOIGT rien
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE aade4200c7 | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_end done=19 chapters=1,2,3,4,5 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 360 617
+#7 DOIGT rien
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 4f9e6d5120 | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_end done=19 chapters=1,2,3,4,5 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CUT « Pattern 放好了！后面的复制过去就行： » ellipsized (« … »)
+#8 > touche 439 475
+#8 DOIGT tuto_roll_copy « 复制 »
+#9 ROUTE tab_Sons | MODE pro | EMPREINTE 53c01a68dc | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_end done=20 chapters=1,2,3,4,5,6 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 270 869
+#9 DOIGT tuto_chapter_end_folded « 太棒了，本章完成！ »
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE 206e5b6509 | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_end done=20 chapters=1,2,3,4,5,6 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 204 870
+#10 DOIGT tuto_play_mine «  听我的歌 »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE af666ac9fb | project=p-e7c5c02d tuto=techno/Pro active=true step=pad_end done=20 chapters=1,2,3,4,5,6 playing=true
+#11 SON Son : la musique du projet joue en boucle.
+#11 > touche 270 786
+#11 DOIGT tuto_next_big « 下一章   »
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE e38972ea42 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_hear done=20 chapters=1,2,3,4,5,6 playing=true
+#12 SON Son : la musique du projet joue en boucle.
+#12 > touche 270 786
+#12 DOIGT tuto_listen «  听示例 »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE efd7994817 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_hear done=20 chapters=1,2,3,4,5,6 playing=false
+#13 SON Son : l'exemple du tuto joue (encore 3 s).
+#13 > touche 452 870
+#13 DOIGT tuto_next « 下一步  »
+#14 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 1fbd9d22fc | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT TARGET « 人声 麦克风 » 75 x 21 dp (touch 75 x 48)
+#14 LAYOUT TARGET « Remix 分离 » 77 x 21 dp (touch 77 x 48)
+#14 LAYOUT TARGET « 贝斯 Plaits » 67 x 21 dp (touch 67 x 48)
+#14 LAYOUT TARGET « 和弦 的选项 和弦 Pluck » 91 x 21 dp (touch 91 x 48)
+#14 > touche 270 705
+#14 DOIGT tuto_need «   创建旋律音轨 »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 2864b9db88 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CUT « 轮到你：创建旋律音轨（“滤波 Lead”音色），写 2 小节的 Riff：低 F、高 F、低 F，然后同样的但以 A♭ 结尾。“复制到后面的小节”。 » ellipsized (« … »)
+#15 LAYOUT TARGET « G♭3 播放 » 36 x 20 dp (touch 48 x 48)
+#15 LAYOUT TARGET « F3 播放 » 36 x 20 dp (touch 48 x 48)
+#15 LAYOUT TARGET « E3 播放 » 36 x 20 dp (touch 48 x 48)
+#15 > touche 440 475
+#15 DOIGT tuto_notes_left « 旋律 · 第 1/8 小节 »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE 347f57be6a | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT TARGET « F4 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « E4 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « E♭4 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « D4 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « D♭4 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « C4 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « B3 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « B♭3 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « A3 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « A♭3 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « G3 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « G♭3 播放 » 36 x 7 dp (touch 48 x 48)
+#16 LAYOUT TARGET « F3 播放 » 36 x 7 dp (touch 48 x 48)
+#16 > touche 121 709
+#16 DOIGT rien
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 68da7ff912 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#17 SON Son : 1 note du synthé.
+#17 > touche 221 588
+#17 DOIGT rien
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE d175b58ff8 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#18 SON Son : 1 note du synthé.
+#18 > touche 321 709
+#18 DOIGT rien
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE 89f3364fb4 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#19 SON Son : 1 note du synthé.
+#19 > touche 440 475
+#19 DOIGT tuto_notes_left « 旋律 · 第 1/8 小节 »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE f0e981bc00 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 121 709
+#20 DOIGT rien
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE 5bc652481d | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#21 SON Son : 1 note du synthé.
+#21 > touche 221 588
+#21 DOIGT rien
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 5a07f3ab97 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#22 SON Son : 1 note du synthé.
+#22 > touche 321 709
+#22 DOIGT rien
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE 7273e38540 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#23 SON Son : 1 note du synthé.
+#23 > touche 421 678
+#23 DOIGT rien
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 51096de011 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=21 chapters=1,2,3,4,5,6 playing=false
+#24 SON Son : 1 note du synthé.
+#24 > touche 439 475
+#24 DOIGT tuto_roll_copy « 复制 »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 1b2f4f60be | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_do done=22 chapters=1,2,3,4,5,6 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 270 869
+#25 DOIGT tuto_next_folded « 成功 »
+#26 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d8a7531bb0 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_knobs done=22 chapters=1,2,3,4,5,6 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 270 705
+#26 DOIGT tuto_do «   我来做 »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE f8a32d3b9e | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_knobs done=22 chapters=1,2,3,4,5,6 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CUT « 轮到你：在旋律音轨上点“设置音轨的音色 ↓”：这个按钮在音符页面的最上面，就在“键盘”和“音符”下方（看不到就把页面往上滑）。然后把“截止”和“共振”各至少调高 15：Riff 会嘶鸣、会咬人。 » ellipsized (« … »)
+#27 LAYOUT CONTRAST « 60 » 3.59:1 (needs 4.5:1, 14 sp)
+#27 LAYOUT LABEL « plaits_knob_2 » long press without text nor description
+#27 LAYOUT LABEL « plaits_knob_3 » long press without text nor description
+#27 LAYOUT LABEL « plaits_knob_4 » long press without text nor description
+#27 > glisse 310 467 410 467
+#27 DOIGT plaits_param_2 « 截止 »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE f0f53e9fec | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_knobs done=22 chapters=1,2,3,4,5,6 playing=false
+#28 SON Son : rien ne joue.
+#28 > glisse 270 560 270 700
+#28 DOIGT rien
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 1e4794454e | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_knobs done=22 chapters=1,2,3,4,5,6 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « 模拟踩镲 » 2.50:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT LABEL « plaits_knob_1 » long press without text nor description
+#29 > glisse 310 450 410 450
+#29 DOIGT plaits_param_1 « 共振 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 9d024841f9 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_knobs done=23 chapters=1,2,3,4,5,6,7 playing=false
+#30 SON Son : rien ne joue.
+#30 > glisse 270 450 270 650
+#30 DOIGT plaits_param_1 « 共振 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE 921f4ef7c8 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_knobs done=23 chapters=1,2,3,4,5,6,7 playing=false
+#31 SON Son : rien ne joue.
+#31 > glisse 270 400 270 700
+#31 DOIGT plaits_model_22 « 军鼓 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE 88d141f6bd | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_knobs done=23 chapters=1,2,3,4,5,6,7 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 270 869
+#32 DOIGT tuto_chapter_end_folded « 太棒了，本章完成！ »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 2ae4dcbc30 | project=p-e7c5c02d tuto=techno/Pro active=true step=lead_knobs done=23 chapters=1,2,3,4,5,6,7 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 270 786
+#33 DOIGT tuto_next_big « 下一章   »
+#34 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 9770807202 | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_hear done=23 chapters=1,2,3,4,5,6,7 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 270 705
+#34 DOIGT tuto_play_mine «   听你的成果 »
+#35 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE dd357d6740 | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_hear done=23 chapters=1,2,3,4,5,6,7 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > attends 4
+#36 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 17bf25e038 | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_hear done=23 chapters=1,2,3,4,5,6,7 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 270 789
+#36 DOIGT tuto_listen «  听示例 »
+#37 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 29722d4109 | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_hear done=23 chapters=1,2,3,4,5,6,7 playing=false
+#37 SON Son : l'exemple du tuto joue (encore 3 s).
+#37 > attends 8
+#38 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 52b4cf8697 | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_hear done=24 chapters=1,2,3,4,5,6,7 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 270 780
+#38 DOIGT tuto_next_big « 下一步   »
+#39 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 23dc9cacd5 | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_name done=24 chapters=1,2,3,4,5,6,7 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 204 114
+#39 DOIGT top_scene « 当前段落：A。点击切换段落。 »
+#40 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE e168f32220 | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_name done=24 chapters=1,2,3,4,5,6,7 playing=false
+#40 SON Son : rien ne joue.
+#40 > appui-long 263 244
+#40 DOIGT scene_pick_0 « A »
+#41 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 23dc9cacd5 | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_name done=24 chapters=1,2,3,4,5,6,7 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 270 705
+#41 DOIGT tuto_need «   把段落命名为“律动” »
+#42 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 80c133795e | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_name done=25 chapters=1,2,3,4,5,6,7,8 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 483 347
+#42 DOIGT tuto_fold
+#43 ROUTE tab_Structure | MODE pro | EMPREINTE 73505605aa | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_name done=25 chapters=1,2,3,4,5,6,7,8 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 270 869
+#43 DOIGT tuto_chapter_end_folded « 太棒了，本章完成！ »
+#44 ROUTE tab_Structure | MODE pro | EMPREINTE f2a3bb8d3e | project=p-e7c5c02d tuto=techno/Pro active=true step=groove_name done=25 chapters=1,2,3,4,5,6,7,8 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 270 786
+#44 DOIGT tuto_next_big « 下一章   »
+#45 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 94be6435a4 | project=p-e7c5c02d tuto=techno/Pro active=true step=brick done=25 chapters=1,2,3,4,5,6,7,8 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#45 LAYOUT CONTRAST « 12 » 4.28:1 (needs 4.5:1, 12 sp)
+#45 > touche 270 786
+#45 DOIGT tuto_mark «   明白了 »
+#46 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 3765794380 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_intro done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « 前奏 » 4.15:1 (needs 4.5:1, 12 sp)
+#46 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#46 > touche 270 786
+#46 DOIGT tuto_listen «  听示例 »
+#47 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c898062d17 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_intro done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#47 SON Son : l'exemple du tuto joue (encore 3 s).
+#47 > attends 6
+#48 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 8d8958e2d6 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_intro done=27 chapters=1,2,3,4,5,6,7,8 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 270 786
+#48 DOIGT tuto_next_big « 下一步   »
+#49 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE f896b0e8e5 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_intro2 done=27 chapters=1,2,3,4,5,6,7,8 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT CONTRAST « 前奏 2 » 4.15:1 (needs 4.5:1, 12 sp)
+#49 > touche 270 786
+#49 DOIGT tuto_listen «  听示例 »
+#50 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 00c626438f | project=p-e7c5c02d tuto=techno/Pro active=true step=map_intro2 done=27 chapters=1,2,3,4,5,6,7,8 playing=false
+#50 SON Son : l'exemple du tuto joue (encore 3 s).
+#50 > attends 6
+#51 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c296f1ee52 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_intro2 done=28 chapters=1,2,3,4,5,6,7,8 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 270 786
+#51 DOIGT tuto_next_big « 下一步   »
+#52 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 4ad2f95cac | project=p-e7c5c02d tuto=techno/Pro active=true step=map_drop done=28 chapters=1,2,3,4,5,6,7,8 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « 高潮 » 3.09:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#52 > touche 270 786
+#52 DOIGT tuto_listen «  听示例 »
+#53 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE f553686340 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_drop done=28 chapters=1,2,3,4,5,6,7,8 playing=false
+#53 SON Son : l'exemple du tuto joue (encore 3 s).
+#53 > attends 6
+#54 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE ec196c9fa8 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_drop done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 270 786
+#54 DOIGT tuto_next_big « 下一步   »
+#55 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE dd5da22a87 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_break done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « 间奏 » 3.78:1 (needs 4.5:1, 12 sp)
+#55 LAYOUT CONTRAST « 12 » 2.53:1 (needs 4.5:1, 12 sp)
+#55 > touche 270 714
+#55 DOIGT tuto_text_more « 继续阅读 »
+#56 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 02a476e130 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_break done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#56 SON Son : rien ne joue.
+#56 > glisse 270 520 270 700
+#56 DOIGT rien (texte « 每个数字：这一段的长度（小节）。 »)
+#57 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE dd5da22a87 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_break done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 270 786
+#57 DOIGT tuto_listen «  听示例 »
+#58 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 120d06c086 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_break done=29 chapters=1,2,3,4,5,6,7,8 playing=false
+#58 SON Son : l'exemple du tuto joue (encore 3 s).
+#58 > attends 6
+#59 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 31b08ec6e1 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_break done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 270 786
+#59 DOIGT tuto_next_big « 下一步   »
+#60 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 370bd92feb | project=p-e7c5c02d tuto=techno/Pro active=true step=map_montee done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 270 786
+#60 DOIGT tuto_listen «  听示例 »
+#61 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 5c5f1d12f7 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_montee done=30 chapters=1,2,3,4,5,6,7,8 playing=false
+#61 SON Son : l'exemple du tuto joue (encore 3 s).
+#61 > attends 6
+#62 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 30e1cb68f2 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_montee done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 270 786
+#62 DOIGT tuto_next_big « 下一步   »
+#63 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 794dec9bf0 | project=p-e7c5c02d tuto=techno/Pro active=true step=map_phrases done=31 chapters=1,2,3,4,5,6,7,8 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 270 786
+#63 DOIGT tuto_mark «   明白了 »
+#64 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 8fa063666b | project=p-e7c5c02d tuto=techno/Pro active=true step=map_phrases done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 270 786
+#64 DOIGT tuto_next_big « 下一章   »
+#65 ROUTE tab_Structure | MODE pro | EMPREINTE 1c5cb993c6 | project=p-e7c5c02d tuto=techno/Pro active=true step=make_intro done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 466 575
+#65 DOIGT tuto_kit_later « 稍后 »
+#66 ROUTE tab_Structure | MODE pro | EMPREINTE 29f37904ac | project=p-e7c5c02d tuto=techno/Pro active=true step=make_intro done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 270 705
+#66 DOIGT tuto_need «   创建段落“前奏” »
+#67 ROUTE tab_Structure | MODE pro | EMPREINTE d32e4eed23 | project=p-e7c5c02d tuto=techno/Pro active=true step=make_intro done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 270 786
+#67 DOIGT tuto_next_big « 下一步   »
+#68 ROUTE tab_Structure | MODE pro | EMPREINTE 88d1b318cd | project=p-e7c5c02d tuto=techno/Pro active=true step=make_intro2 done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 270 705
+#68 DOIGT tuto_need «   创建段落“前奏 2” »
+#69 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 9f61854c0d | project=p-e7c5c02d tuto=techno/Pro active=true step=make_intro2 done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 270 786
+#69 DOIGT tuto_next_big « 下一步   »
+#70 ROUTE tab_Structure | MODE pro | EMPREINTE f053028c24 | project=p-e7c5c02d tuto=techno/Pro active=true step=make_drop done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 270 705
+#70 DOIGT tuto_need «   创建段落“高潮” »
+#71 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 13c78f71a4 | project=p-e7c5c02d tuto=techno/Pro active=true step=make_drop done=35 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « ? » 1.54:1 (needs 4.5:1, 12 sp)
+#71 > touche 270 786
+#71 DOIGT tuto_next_big « 下一步   »
+#72 ROUTE tab_Structure | MODE pro | EMPREINTE 02239ec5fe | project=p-e7c5c02d tuto=techno/Pro active=true step=make_break done=35 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 270 705
+#72 DOIGT tuto_need «   创建段落“间奏” »
+#73 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 99d77c273d | project=p-e7c5c02d tuto=techno/Pro active=true step=make_break done=36 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 270 786
+#73 DOIGT tuto_next_big « 下一步   »
+#74 ROUTE tab_Structure | MODE pro | EMPREINTE 627c58ac65 | project=p-e7c5c02d tuto=techno/Pro active=true step=make_montee done=36 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 270 705
+#74 DOIGT tuto_need «   创建段落“渐强段” »
+#75 ROUTE tab_Structure | MODE pro | EMPREINTE e97cb9940c | project=p-e7c5c02d tuto=techno/Pro active=true step=make_montee done=37 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 270 786
+#75 DOIGT tuto_next_big « 下一步   »
+#76 ROUTE tab_Structure | MODE pro | EMPREINTE e569cf1f5d | project=p-e7c5c02d tuto=techno/Pro active=true step=make_drop2 done=37 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 270 705
+#76 DOIGT tuto_need «   创建段落“高潮 2” »
+#77 ROUTE tab_Structure | MODE pro | EMPREINTE 3c8ff9837f | project=p-e7c5c02d tuto=techno/Pro active=true step=make_drop2 done=38 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 270 786
+#77 DOIGT tuto_next_big « 下一步   »
+#78 ROUTE tab_Structure | MODE pro | EMPREINTE 202f8d2c07 | project=p-e7c5c02d tuto=techno/Pro active=true step=make_fin done=38 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 270 705
+#78 DOIGT tuto_need «   创建段落“结束” »
+#79 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c7ffad595e | project=p-e7c5c02d tuto=techno/Pro active=true step=make_fin done=39 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 483 355
+#79 DOIGT tuto_fold
+#80 ROUTE tab_Structure | MODE pro | EMPREINTE 0975eef9f9 | project=p-e7c5c02d tuto=techno/Pro active=true step=make_fin done=39 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#80 SON Son : rien ne joue.
+#80 > fin
+#80 BENCH-VERDICT ok where=seat.fin
+#80 FIN : fin

@@ -741,9 +741,13 @@ internal object DrumFill : TutoKind {
         val end = d.steps - fillEnd(step, target)
         val window = (end - beat) until end
         val hits = lanesOf(fillRole(step), target).flatMap { l -> d.lanes.getOrNull(l)?.hits?.filterKeys { it in window }?.values.orEmpty() }
-        // A roll ×3 or more; a tom fill (a pad the part does not build up): 3 hits or more in that beat.
-        hits.any { it.repeats >= FILL_REPEATS } || (!buildsIn(step, target) && hits.size >= FILL_REPEATS)
+        // A roll ×3 or more; a tom fill (a pad the part does not build up, a step that asks no « Roulement »): 3 hits or more in that beat.
+        hits.any { it.repeats >= FILL_REPEATS } || (!rolls(step, target) && hits.size >= FILL_REPEATS)
     } ?: false
+
+    // The step's words ask for the roll (« Roulement » ×4, tour 9 F034: the demo laid a tom fill instead).
+    private fun rolls(step: TutoStep, target: TutoTarget) =
+        buildsIn(step, target) || listOfNotNull(step.text, step.textPro).any { "« Roulement »" in it }
 
     // The last roll: ×4 on the snare's last hit before the silence.
     override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = inScene(p, partsOf(step).first()) { q ->
@@ -754,7 +758,7 @@ internal object DrumFill : TutoKind {
         q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l ->
             when {
                 i != lane -> l
-                buildsIn(step, target) -> l.copy(hits = l.hits + (at to (l.hits[at] ?: Hit(1f)).copy(repeats = 4)))
+                rolls(step, target) -> l.copy(hits = l.hits + (at to (l.hits[at] ?: Hit(1f)).copy(repeats = 4)))
                 // A tom fill: every 16th of the last beat, louder and louder.
                 else -> l.copy(hits = l.hits + (end - beat until end).associateWith { Hit(0.6f + 0.4f * (it - end + beat) / beat) })
             }

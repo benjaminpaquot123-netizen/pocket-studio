@@ -601,7 +601,7 @@ class TutoController(
         val go = goFor(u.current, project.value, spot = true)
         go?.let { _goes.tryEmit(it) }
         // Tour 9, F033: it takes the user there and leaves the gesture to them (it made the send, the insert or the
-        // curve itself and the step ticked with nothing done); « Montre-moi » and the step's button do it for them.
+        // curve itself and the step ticked with nothing done); « Montre-moi » shows it, the user does it.
         _ui.value = u.copy(bravo = false, open = false)
     }
 

@@ -1,0 +1,53 @@
+Écran 125 (588x1278)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 111,42
+bouton « Pro » @ 251,42
+icône ↶ @ 326,42
+bouton ● @ 398,42
+bouton ▶ « dit deel » @ 470,42
+icône (trois points reliés) @ 543,42
+bouton « 132  BPM » @ 83,123
+icône « Intro maat 1/104 » ▾ @ 268,123
+bouton (flèches en boucle) [état « uit »] @ 462,123
+bouton « ? » @ 543,123
+image (courbe) @ 0,0
+texte « Volumes » @ 272,213
+bouton « ? » @ 530,213
+texte « Schuif een fader voor het volume; tik op de naam van een spoor voor zijn effecten en curves. » @ 294,295
+texte « Drums » @ 84,415
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 57,490
+bouton (casque) [état « uit »] @ 111,490
+curseur [état « +0,0 dB », à 80 %] @ 84,661
+texte « Acid 303 » @ 204,415
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 177,490
+bouton (casque) [état « uit »] @ 231,490
+curseur [état « +0,0 dB », à 80 %] @ 204,661
+texte « Bas » @ 324,415
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 297,490
+bouton (casque) [état « uit »] @ 351,490
+curseur [état « +0,0 dB », à 80 %] @ 324,661
+texte « Sub » @ 444,415
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 417,490
+bouton (casque) [état « uit »] @ 471,490
+curseur [état « +0,0 dB », à 80 %] @ 444,661
+texte « Akkoorden » [coupé] @ 541,415
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 537,490
+bouton (casque) [coupé, état « uit »] @ 568,490
+curseur [coupé, état « +0,0 dB », à 80 %] @ 546,661
+texte « De effecten Hoofdstuk 11/14 · Klaar · Pro » @ 200,852
+icône (liste) « Hoofdstukken » @ 437,853
+icône ⌃ @ 531,853
+icône (coupe) « Goed gedaan, hoofdstuk klaar! » ⌃ @ 294,965
+icône ↶ « Ongedaan maken » @ 70,1061
+icône ↷ « Opnieuw » [désactivé] @ 183,1061
+icône ▶ « het nummer » @ 309,1061
+texte « 132 Tempo » @ 434,1061
+icône (trois points reliés) « Delen » @ 532,1061
+onglet (ligne brisée et points) « Structuur » @ 54,1158
+onglet (touches de piano) « Klanken » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Meer » @ 534,1158
+texte « ●  REC » @ 345,1248
+texte « ✎  Noteren » @ 448,1248
+texte « ⋯ » @ 540,1248
+texte « Feedbackmodus » @ 154,1248

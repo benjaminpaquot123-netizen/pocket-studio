@@ -1,0 +1,48 @@
+Écran 115 (588x1278)
+icône « Mijn project 1 » ✓ @ 298,36
+bouton « Pro » @ 540,36
+bouton (dossier ouvert) @ 110,114
+bouton « D » ▾ @ 251,114
+icône ↶ @ 326,114
+bouton ● @ 398,114
+bouton ▶ « dit deel » @ 470,114
+icône (trois points reliés) @ 543,114
+bouton « 132  BPM » @ 83,195
+icône « Intro maat 1/104 » ▾ @ 268,195
+bouton (flèches en boucle) [état « uit »] @ 462,195
+bouton « ? » @ 543,195
+onglet « Drums 16 pads » [sélectionné] @ 87,276
+onglet « Acid 303 Baslijn » @ 260,276
+onglet « Zang Microfoon » @ 448,276
+onglet « Remix Splitsen » [coupé] @ 557,276
+image → @ 577,277
+texte « Deel: D · Pre-refrein » @ 155,345
+texte « Maat » [coupé] @ 75,382
+bouton « 1 » [coupé] @ 153,383
+bouton « 2 » [coupé] @ 234,383
+bouton « 3 » [coupé] @ 315,383
+bouton « 4 » [coupé, sélectionné] @ 396,383
+texte « De effecten Hoofdstuk 11/14 · Stap 1/1 · Pro » @ 200,463
+icône (liste) « Hoofdstukken » @ 437,464
+icône ⌄ @ 531,464
+texte « Nu jij: zet in Mix de ‘Galm-send’ hoger op het spoor ‘Akkoorden’, en dan op de pad ‘Rim’. » @ 294,616
+texte « ▸ Waarom? » @ 294,714
+bouton (doigt qui touche) «   Ik doe het » @ 294,783
+bouton ▶ «  Luister naar het voorbeeld » @ 154,881
+bouton (œil) «  Laat zien » @ 433,881
+icône ← «  Vorige » @ 101,976
+icône « Volgende  » → @ 466,976
+icône ↶ « Ongedaan maken » @ 70,1061
+icône ↷ « Opnieuw » [désactivé] @ 183,1061
+icône ▶ « het nummer » @ 309,1061
+texte « 132 Tempo » @ 434,1061
+icône (trois points reliés) « Delen » @ 532,1061
+onglet (ligne brisée et points) « Structuur » @ 54,1158
+onglet (touches de piano) « Klanken » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Meer » @ 534,1158
+texte « ●  REC » @ 345,1248
+texte « ✎  Noteren » @ 448,1248
+texte « ⋯ » @ 540,1248
+texte « Feedbackmodus » @ 154,1248

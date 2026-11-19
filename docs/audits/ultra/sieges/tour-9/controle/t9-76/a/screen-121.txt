@@ -1,0 +1,49 @@
+Écran 121 (588x1278)
+dessin @ 294,36
+bouton « 1. Compressor » [coupé] @ 150,103
+icône ⏻ [coupé] @ 312,98
+icône ⌃ [désactivé, coupé] @ 384,98
+icône ⌄ [coupé] @ 456,98
+icône ✕ [coupé] @ 528,98
+texte « Speelt in: » @ 81,176
+bouton « Alles » [sélectionné] @ 205,176
+bouton « A · Refrein » @ 367,176
+bouton « B · Intro » [coupé] @ 518,176
+bouton « 2. Saturatie » @ 150,259
+icône ⏻ @ 312,259
+icône ⌃ @ 384,259
+icône ⌄ @ 456,259
+icône ✕ @ 528,259
+bouton « Alles » [sélectionné] @ 205,342
+bouton « A · Refrein » @ 367,342
+bouton « B · Intro » [coupé] @ 518,342
+texte « Speelt in: » @ 81,342
+bouton « 3. Zachte clipper » @ 150,425
+icône ⏻ @ 312,425
+icône ⌃ @ 384,425
+icône ⌄ [désactivé] @ 456,425
+icône ✕ @ 528,425
+bouton « Alles » [sélectionné] @ 205,508
+bouton « A · Refrein » @ 367,508
+bouton « B · Intro » [coupé] @ 518,508
+texte « Speelt in: » @ 81,508
+texte « Een effect kan in maar een paar delen spelen: tik op hun letters. » @ 294,586
+bouton + «   Effect toevoegen » @ 294,664
+texte « Kant-en-klare sferen » @ 168,736
+bouton « ? » @ 333,736
+bouton « Voor: Drums » [sélectionné] @ 133,806
+bouton ★ « Favorieten » @ 361,806
+bouton « Sfeer » [coupé] @ 521,806
+texte « Stijl: » @ 49,890
+bouton « Acid » @ 139,890
+bouton « Techno » @ 278,890
+bouton « DnB » @ 414,890
+bouton « Dubstep » [coupé] @ 520,890
+bouton « Punch » @ 91,974
+bouton « EDM-pomp » @ 269,974
+bouton « Krokant » @ 458,974
+bouton « Lo-Fi Tape » @ 120,1046
+bouton « Kleine kamer » @ 340,1046
+bouton « Geen effect » @ 129,1118
+texte « Tik op een sfeer om hem te proberen: je kunt altijd terug met Ongedaan maken. » @ 294,1202
+texte « Houd je vinger op een sfeer om hem te horen; laat los en je geluid komt terug. » [coupé] @ 294,1264

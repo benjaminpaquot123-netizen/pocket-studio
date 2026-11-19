@@ -1,0 +1,38 @@
+Écran 58 (588x1278)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 111,42
+bouton « Pro » @ 251,42
+icône ↶ @ 326,42
+bouton ● @ 398,42
+bouton ▶ « dit deel » @ 470,42
+icône (trois points reliés) @ 543,42
+bouton « 132  BPM » @ 83,123
+bouton « ? » @ 543,123
+onglet « Tijdlijn » [désactivé] @ 93,210
+onglet « Onderdelen » [sélectionné] @ 266,210
+titre « HET NUMMER » [état « Uitgeklapt »] @ 175,303
+bouton « ? » @ 287,303
+texte « De tijdlijn zet je delen op volgorde, elk met zijn lengte in maten. Voeg ze op volgorde toe. » [coupé] @ 294,366
+texte « Bouw je delen Hoofdstuk 8/14 · Stap 5/5 · Pro » @ 200,463
+icône (liste) « Hoofdstukken » @ 437,464
+icône ⌄ @ 531,464
+texte « Nu jij: maak het Einde: zonder bas, zoals garageplaten die eindigen op de drums en de akkoorden. » @ 294,616
+texte « ▸ Waarom? » @ 294,714
+bouton ⊕ «   Deel ‘Einde’ maken » @ 294,783
+bouton ▶ «  Luister naar het voorbeeld » @ 154,881
+bouton (œil) «  Laat zien » @ 433,881
+icône ← «  Vorige » @ 101,976
+icône « Volgende  » → @ 466,976
+icône ↶ « Ongedaan maken » @ 70,1061
+icône ↷ « Opnieuw » [désactivé] @ 183,1061
+icône ▶ « het nummer » @ 309,1061
+texte « 132 Tempo » @ 434,1061
+icône (trois points reliés) « Delen » @ 532,1061
+onglet (ligne brisée et points) « Structuur » [sélectionné] @ 54,1158
+onglet (touches de piano) « Klanken » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Meer » @ 534,1158
+texte « ●  REC » @ 345,1248
+texte « ✎  Noteren » @ 448,1248
+texte « ⋯ » @ 540,1248
+texte « Feedbackmodus » @ 154,1248

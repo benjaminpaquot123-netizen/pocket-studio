@@ -1,0 +1,39 @@
+Écran 31 (588x1278)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 111,42
+bouton « Pro » @ 251,42
+icône ↶ @ 326,42
+bouton ● @ 398,42
+bouton ■ « dit deel » @ 470,42
+icône (trois points reliés) @ 543,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « A maat 3/8 » [désactivé] @ 239,123
+bouton « ? » @ 543,123
+image (courbe) @ 0,0
+texte « Volumes » @ 272,213
+bouton « ? » @ 530,213
+texte « Schuif een fader voor het volume; tik op de naam van een spoor voor zijn effecten en curves. » [coupé] @ 294,274
+texte « Je eerste deel: het Refrein Hoofdstuk 6/14 · Stap 1/2 · Pro » @ 200,396
+icône (liste) « Hoofdstukken » @ 437,396
+icône ⌄ @ 531,396
+texte « Luister een paar seconden naar je loop, dan naar het voorbeeld. » @ 294,546
+bouton « Kit UK Garage downloaden (3 MB) » @ 246,660
+texte « Later » @ 513,660
+texte « ▸ Waarom? » @ 294,742
+bouton ■ «   Stoppen » @ 294,811
+bouton ▶ «  Luister naar het voorbeeld » @ 294,895
+icône ← «  Vorige » @ 101,976
+icône « Volgende  » → @ 466,976
+icône ↶ « Ongedaan maken » @ 70,1061
+icône ↷ « Opnieuw » [désactivé] @ 183,1061
+icône ■ « het nummer » @ 309,1061
+texte « 132 Tempo » @ 434,1061
+icône (trois points reliés) « Delen » @ 532,1061
+onglet (ligne brisée et points) « Structuur » @ 54,1158
+onglet (touches de piano) « Klanken » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Meer » @ 534,1158
+texte « ●  REC » @ 345,1248
+texte « ✎  Noteren » @ 448,1248
+texte « ⋯ » @ 540,1248
+texte « Feedbackmodus » @ 154,1248

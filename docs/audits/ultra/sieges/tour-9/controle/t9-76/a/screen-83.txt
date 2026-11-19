@@ -1,0 +1,61 @@
+Écran 83 (588x1278)
+icône « Mijn project 1 » ✓ @ 298,36
+bouton « Pro » @ 540,36
+bouton (dossier ouvert) @ 110,114
+bouton « D » ▾ @ 251,114
+icône ↶ @ 326,114
+bouton ● @ 398,114
+bouton ▶ « dit deel » @ 470,114
+icône (trois points reliés) @ 543,114
+bouton « 132  BPM » @ 83,195
+icône « Intro maat 1/104 » ▾ @ 268,195
+bouton (flèches en boucle) [état « uit »] @ 462,195
+bouton « ? » @ 543,195
+onglet « Drums 16 pads » [sélectionné] @ 87,276
+onglet « Acid 303 Baslijn » @ 260,276
+onglet « Zang Microfoon » @ 448,276
+onglet « Remix Splitsen » [coupé] @ 557,276
+image → @ 577,277
+texte « Deel: D · Pre-refrein » @ 155,345
+texte « Maat » [coupé] @ 75,382
+bouton « 1 » [coupé] @ 153,384
+bouton « 2 » [coupé] @ 234,384
+bouton « 3 » [coupé] @ 315,384
+bouton « 4 » [coupé, sélectionné] @ 396,384
+bouton « Volgen » @ 114,453
+texte « Maat 4/4 · Hi-hat » @ 163,519
+texte « 11 slagen te veel hier (doorgestreept) » @ 298,557
+bouton « 1 » [état « slag, kracht 57 %, doorgestreept: weghalen »] @ 70,625
+bouton [état « slag, kracht 30 %, doorgestreept: weghalen »] @ 133,625
+bouton [état « leeg »] @ 197,626
+bouton [état « slag, kracht 33 %, doorgestreept: weghalen »] @ 261,626
+bouton « 2 » [état « leeg »] @ 325,626
+bouton [état « slag, kracht 27 %, doorgestreept: weghalen »] @ 389,626
+bouton [état « leeg »] @ 453,626
+bouton [état « leeg »] @ 517,626
+bouton « 3 » [état « slag, kracht 61 %, doorgestreept: weghalen »] @ 70,704
+bouton [état « slag, kracht 29 %, doorgestreept: weghalen »] @ 133,704
+bouton [état « leeg »] @ 197,705
+bouton [état « slag, kracht 33 %, doorgestreept: weghalen »] @ 261,705
+bouton « 4 » [état « slag, kracht 39 %, doorgestreept: weghalen »] @ 325,705
+bouton [état « slag, kracht 52 %, doorgestreept: weghalen »] @ 389,705
+bouton « ×2 » [état « slag, kracht 49 %, 2 herhalingen, doorgestreept: weghalen »] @ 453,705
+bouton « ×3 » [état « slag, kracht 64 %, 3 herhalingen, doorgestreept: weghalen »] @ 517,705
+texte « De overgangen Hoofdstuk 10/14 · Stap 1/1 · Pro » @ 200,834
+icône (liste) « Hoofdstukken » @ 437,835
+icône ⌃ @ 531,835
+icône « Nu jij: haal in het Pre-refrein alle drums weg in de laatste maat. Lees » ⌃ @ 294,965
+icône ↶ « Ongedaan maken » @ 70,1061
+icône ↷ « Opnieuw » [désactivé] @ 183,1061
+icône ▶ « het nummer » @ 309,1061
+texte « 132 Tempo » @ 434,1061
+icône (trois points reliés) « Delen » @ 532,1061
+onglet (ligne brisée et points) « Structuur » @ 54,1158
+onglet (touches de piano) « Klanken » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Meer » @ 534,1158
+texte « ●  REC » @ 345,1248
+texte « ✎  Noteren » @ 448,1248
+texte « ⋯ » @ 540,1248
+texte « Feedbackmodus » @ 154,1248

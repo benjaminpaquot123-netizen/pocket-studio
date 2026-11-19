@@ -1,0 +1,30 @@
+Écran 25 (588x1278)
+texte « Effecten · Melodie » @ 219,62
+bouton « Ruimte » [sélectionné] @ 123,139
+bouton « Vuil » @ 254,139
+bouton « Beweging » @ 407,139
+texte « ↑ Ver weg » @ 294,203
+texte « ← Donker » @ 144,496
+texte « ↓ Droog » @ 293,496
+texte « Helder → » @ 443,496
+texte « Schuif met je vinger om het geluid live te vervormen. Twee keer tikken: terug naar het begingeluid. » @ 294,578
+curseur [état « Neutraal », à 50 %] @ 112,683
+texte « Kleur » @ 111,741
+texte « Neutraal » @ 111,775
+curseur [état « 0 », à 0 %] @ 233,683
+texte « Vuil » @ 233,741
+texte « 0 » @ 232,775
+curseur [état « 0 », à 0 %] @ 354,683
+texte « Beweging » @ 354,741
+texte « 0 » @ 354,775
+curseur [état « 0 », à 0 %] @ 476,683
+texte « Ruimte » @ 476,741
+texte « 0 » @ 476,775
+texte « Gedeelde galm en echo » @ 212,824
+texte « galm-send » @ 271,880
+texte « 0% » @ 514,881
+curseur [état « 0% », à 0 %] @ 294,952
+texte « echo-send » @ 262,1032
+texte « 25% » @ 496,1033
+curseur [état « 25% », à 25 %] @ 294,1089
+texte « Sluiten » @ 471,1206

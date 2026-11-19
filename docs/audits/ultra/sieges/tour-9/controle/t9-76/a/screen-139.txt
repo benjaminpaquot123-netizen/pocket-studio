@@ -1,0 +1,8 @@
+Écran 139 (588x1278)
+texte « Het is klaar » @ 140,427
+texte « Klaar: Mijn-nummer-club-20261119-120748.m4a, er staat ook een kopie in Muziek › BenStudio. » @ 294,560
+texte « −8,0 LUFS geïntegreerd · piek −4,1 dBTP » @ 279,666
+texte « M4A, 48 kHz, 256 kb/s · 3 min 9 s » @ 241,708
+texte « Doel: Club · −8 LUFS » @ 161,750
+texte « Mijn bestanden bekijken » @ 268,840
+texte « OK » @ 508,840

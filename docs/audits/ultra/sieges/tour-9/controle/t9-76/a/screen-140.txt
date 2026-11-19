@@ -1,0 +1,41 @@
+Écran 140 (588x1278)
+icône (dossier ouvert) ✓ « Mijn nummer Opgeslagen » @ 111,42
+bouton « Pro » @ 251,42
+icône ↶ @ 326,42
+bouton ● @ 398,42
+bouton ▶ « dit deel » @ 470,42
+icône (trois points reliés) @ 543,42
+bouton « 132  BPM » @ 83,123
+icône « Intro maat 1/104 » ▾ @ 268,123
+bouton (flèches en boucle) [état « uit »] @ 462,123
+bouton « ? » @ 543,123
+image (courbe) @ 0,0
+bouton « Bestand van het nummer maken » [coupé] @ 294,209
+texte « Opgeslagen in Muziek › BenStudio: Mijn-nummer-club-20261119-120748.m4a » @ 294,305
+texte « ✓ Klaar om te delen » @ 177,373
+texte « Duur: 3 min 9 s » @ 133,415
+texte « Niveau: op het doel (Club) » @ 199,454
+texte « Piek: onder de grens, geen vervorming » @ 276,493
+texte « M4A, 48 kHz, 256 kb/s » @ 181,532
+texte « −8,0 LUFS geïntegreerd · piek −4,1 dBTP » @ 272,598
+bouton « ? » @ 524,598
+texte « Doel: Club · −8 LUFS » @ 167,664
+bouton « Delen » @ 294,730
+texte « Exporteer je nummer Hoofdstuk 14/14 · Stap 1/1 · Pro » @ 200,834
+icône (liste) « Hoofdstukken » @ 437,835
+icône ⌃ @ 531,835
+bouton (coupe) « Tutorial klaar: goed gedaan! » @ 294,965
+icône ↶ « Ongedaan maken » @ 70,1061
+icône ↷ « Opnieuw » [désactivé] @ 183,1061
+icône ▶ « het nummer » @ 309,1061
+texte « 132 Tempo » @ 434,1061
+icône (trois points reliés) « Delen » @ 532,1061
+onglet (ligne brisée et points) « Structuur » @ 54,1158
+onglet (touches de piano) « Klanken » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Meer » @ 534,1158
+texte « ●  REC » @ 345,1248
+texte « ✎  Noteren » @ 448,1248
+texte « ⋯ » @ 540,1248
+texte « Feedbackmodus » @ 154,1248

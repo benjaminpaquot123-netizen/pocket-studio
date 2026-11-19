@@ -1,0 +1,45 @@
+Écran 120 (588x1278)
+dessin @ 294,36
+texte « Drums » @ 237,108
+texte « Sluiten » @ 498,108
+bouton « Stil » @ 70,195
+bouton « Solo » @ 182,195
+texte « Volume » @ 241,269
+texte « +0,0 dB » @ 511,269
+curseur [état « +0,0 dB », à 80 %] @ 294,343
+texte « Pan » @ 51,417
+bouton « ? » @ 99,417
+texte « Midden » @ 513,417
+curseur [état « Midden », à 50 %] @ 294,491
+bouton (barres de son) «  Wat speelt » @ 156,578
+bouton (courbe) «  Curven » @ 432,578
+texte « Effecten » @ 81,649
+texte « Effecten actief: 3 van 8 » @ 183,705
+bouton « 1. Compressor » @ 150,771
+icône ⏻ @ 312,771
+icône ⌃ [désactivé] @ 384,771
+icône ⌄ @ 456,771
+icône ✕ @ 528,771
+texte « Speelt in: » @ 81,852
+bouton « Alles » [sélectionné] @ 205,852
+bouton « A · Refrein » @ 367,852
+bouton « B · Intro » [coupé] @ 518,852
+bouton « 2. Saturatie » @ 150,935
+icône ⏻ @ 312,935
+icône ⌃ @ 384,935
+icône ⌄ @ 456,935
+icône ✕ @ 528,935
+texte « Speelt in: » @ 81,1018
+bouton « Alles » [sélectionné] @ 205,1018
+bouton « A · Refrein » @ 367,1018
+bouton « B · Intro » [coupé] @ 518,1018
+bouton « 3. Zachte clipper » @ 150,1101
+icône ⏻ @ 312,1101
+icône ⌃ @ 384,1101
+icône ⌄ [désactivé] @ 456,1101
+icône ✕ @ 528,1101
+texte « Speelt in: » @ 81,1184
+bouton « Alles » [sélectionné] @ 205,1184
+bouton « A · Refrein » @ 367,1184
+bouton « B · Intro » [coupé] @ 518,1184
+texte « Een effect kan in maar een paar delen spelen: tik op hun letters. » [coupé] @ 294,1252

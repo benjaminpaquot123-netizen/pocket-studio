@@ -1,0 +1,31 @@
+Écran 117 (588x1278)
+texte « Effecten · Akkoorden » @ 246,62
+texte « Houd je vinger op een sfeer om hem te horen; laat los en je geluid komt terug. » [coupé] @ 294,128
+texte « XY-pad, op-neer: » @ 156,177
+bouton « ? » @ 291,176
+bouton « Ruimte » [sélectionné] @ 123,246
+bouton « Vuil » @ 254,246
+bouton « Beweging » @ 407,246
+texte « ↑ Ver weg » @ 294,310
+texte « ← Donker » @ 144,603
+texte « ↓ Droog » @ 293,603
+texte « Helder → » @ 443,603
+texte « Schuif met je vinger om het geluid live te vervormen. Twee keer tikken: terug naar het begingeluid. » @ 294,685
+curseur [état « Neutraal », à 50 %] @ 112,790
+texte « Kleur » @ 111,848
+texte « Neutraal » @ 111,882
+curseur [état « 0 », à 0 %] @ 233,790
+texte « Vuil » @ 233,848
+texte « 0 » @ 232,882
+curseur [état « 0 », à 0 %] @ 354,790
+texte « Beweging » @ 354,848
+texte « 0 » @ 354,882
+curseur [état « 0 », à 0 %] @ 476,790
+texte « Ruimte » @ 476,848
+texte « 0 » @ 476,882
+texte « Gedeelde galm en echo » @ 212,931
+texte « Akkoorden ✓ · Snare: hier instellen » @ 276,994
+texte « galm-send » @ 262,1032
+texte « 88% » @ 496,1033
+curseur [état « 88% », à 88 %] @ 294,1089
+texte « Sluiten » @ 471,1206

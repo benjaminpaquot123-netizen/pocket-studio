@@ -175,4 +175,26 @@ class T9PanelTargetTest {
         go()
         assertTargetChipAbovePanel("ch. 13 loudness (nl, foldable, 200 %)", "AUTO")
     }
+
+    /**
+     * D06 (seats t9-29, t9-62, t9-56, t9-87; replay t9-d06-pointilles-200): speed garage Facile, chapter 3, the melody on a
+     * phone at 200 % in Simple. « Aller au clavier » brought the piano roll under the folded panel: the dotted notes and
+     * « encore N notes » out of sight. The roll and its counter must stand wholly above the panel.
+     */
+    @Test
+    fun dottedNotesAboveThePanelInSimpleAt200French() {
+        start("w360dp-h780dp-port-hdpi", 2f, Lang.FR, true, "speed_garage", TutoLevel.Facile, 3, 0)
+        if (has("tuto_next")) { compose.onNodeWithTag("tuto_next").performClick(); settle(1500) }
+        go()
+        val top = panelTop()
+        val roll = tagged(Regex("piano_roll")).firstOrNull()
+        val seen = roll?.boundsInRoot?.let { minOf(it.bottom, top) - it.top } ?: 0f
+        val least = with(compose.density) { 96f * density }
+        assertTrue("ch. 3 (fr, 360 dp, 200 %, simple): the piano roll shows ${seen}px above the panel at $top (roll ${roll?.boundsInRoot})", seen >= least)
+        val left = tagged(Regex("tuto_notes_left")).firstOrNull()
+        assertTrue(
+            "ch. 3 (fr, 360 dp, 200 %, simple): « encore N notes » not wholly above the panel at $top (${left?.boundsInRoot})",
+            left != null && whole(left) && left.boundsInRoot.bottom <= top + 1f,
+        )
+    }
 }

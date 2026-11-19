@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import com.pocketstudio.model.tuto.TutoCourse
 import com.pocketstudio.model.tuto.TutoLevel
@@ -242,6 +243,63 @@ class Tour9L14TutoPanelTest {
         }
         TutoHints.gridInSight = false
         TutoHints.cells = null
+        assertTrue(faults.joinToString("\n"), faults.isEmpty())
+    }
+
+    /**
+     * F022 (t9-32, hard_techno Facile, Arabic at 200 %, « Construis tes parties »): « Lire la suite » under a « Bravo »
+     * whose words the seat read whole (its screen's text, the banner's bottom under the cut). « Lire la suite » only when
+     * something is really left to read: never under « Bravo », under a step's words only when they are cut by more than
+     * a margin; the steps read first with « Lire la suite » as the seat did. Same cause as F012 (the grid's low room
+     * kept for « Bravo »): red on the panel before that fix.
+     */
+    @Test
+    fun moreOnlyWhenMore() {
+        val made = "Partie « Drops 2 » créée (copie du Groove) : sans bord de caisse."
+        val all = listOf("hard_techno", "jump_up").flatMap { style ->
+            val chs = TutoCourse.of(style)!!.chaptersFor(TutoLevel.Facile)
+            chs.withIndex().flatMap { (ci, ch) -> ch.steps.indices.map { si ->
+                TutoUi(TutoProgress(style, TutoLevel.Facile, current = ch.steps[si].id), chs, ci, si) } }
+        }.filter { it.current.id.startsWith("make_") || it.chapter == 7 }
+        assertTrue("the steps of t9-32 found", all.size >= 3)
+        var scale by mutableStateOf(1f)
+        var shown by mutableStateOf(ui(0, 0))
+        var lang by mutableStateOf(com.pocketstudio.model.i18n.Lang.FR)
+        compose.setContent {
+            val local = LocalDensity.current
+            CompositionLocalProvider(LocalDensity provides Density(local.density, scale),
+                androidx.compose.ui.platform.LocalLayoutDirection provides com.pocketstudio.ui.layoutDirectionOf(lang.rtl)) {
+                PocketStudioTheme { TutoPanel(shown, canShow = true, actions = TutoActions(), reducedMotion = true, mine = true) }
+            }
+        }
+        // Less than a line hidden (the banner's own margin and border) is nothing left to read.
+        val margin = 12f
+        val faults = mutableListOf<String>()
+        for (l in listOf(com.pocketstudio.model.i18n.Lang.FR, com.pocketstudio.model.i18n.Lang.AR)) for (grid in listOf(false, true)) for (s in listOf(1f, 1.02f, 1.3f, 1.6f, 2f)) for (step in all) {
+            if (lang != l) { lang = l; com.pocketstudio.model.i18n.I18n.lang = l }
+            scale = s
+            // Over the pads' grid too (its cells to touch: the words' low room).
+            TutoHints.gridInSight = grid
+            TutoHints.cells = if (grid) 0 to setOf(0, 4, 8, 12) else null
+            shown = ui(0, 0); compose.waitForIdle()
+            shown = step; compose.waitForIdle()
+            val id = "${l.code} font $s ${step.progress.style} ${step.current.id}${if (grid) " (grid)" else ""}"
+            nodes("tuto_text").fetchSemanticsNodes().firstOrNull()?.let { t ->
+                if (has("tuto_text_more") && t.boundsInRoot.height >= t.size.height - margin) faults += "$id: « Lire la suite » under words seen whole"
+            }
+            // Read to their end, as the seat did.
+            repeat(8) { if (has("tuto_text_more")) { nodes("tuto_text_more").onFirst().performClick(); compose.waitForIdle() } }
+            for (said in listOf(made, null)) {
+                shown = step.copy(progress = step.progress.copy(done = setOf(step.current.id)), bravo = true, made = said); compose.waitForIdle()
+                val b = nodes("tuto_bravo").fetchSemanticsNodes().firstOrNull() ?: continue
+                // A few lines, it always has its room: « Lire la suite » under it is never a real « more ».
+                if (has("tuto_text_more"))
+                    faults += "$id${if (said == null) "" else " (made)"}: « Lire la suite » under « Bravo » seen ${b.boundsInRoot.height.toInt()} of ${b.size.height} px"
+            }
+        }
+        TutoHints.gridInSight = false
+        TutoHints.cells = null
+        com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR
         assertTrue(faults.joinToString("\n"), faults.isEmpty())
     }
 

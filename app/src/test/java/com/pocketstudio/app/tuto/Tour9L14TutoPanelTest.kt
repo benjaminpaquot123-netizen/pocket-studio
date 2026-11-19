@@ -1,6 +1,7 @@
 package com.pocketstudio.app.tuto
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -394,5 +395,49 @@ class Tour9L14TutoPanelTest {
             assertTrue("atEnd $atEnd: « Chapitres »", has("tuto_chapters"))
             assertFalse("atEnd $atEnd: « Suivant » at the end", has("tuto_next"))
         }
+    }
+
+    /**
+     * F018 (t9-11, t9-15, t9-54): in the key sheet, nothing is chosen ahead (« G » touched first chose « Dorian » by
+     * itself), each chip chosen says so (the seats read only « E · Durowa » above), and the sheet keeps its place under the
+     * finger (it rose when « Réussi ! » came).
+     */
+    @Test
+    fun keySheetChoosesNothingAheadAndStaysPut() {
+        var harmony by mutableStateOf(com.pocketstudio.model.Harmony())
+        val wanted = com.pocketstudio.model.Harmony(root = 7, scale = com.pocketstudio.model.Scale.Dorian)
+        compose.setContent {
+            PocketStudioTheme {
+                Box(androidx.compose.ui.Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.BottomCenter) {
+                    TutoKeySheetContent(harmony, wanted, set = { harmony = it }, close = {})
+                }
+            }
+        }
+        fun chosen() = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher.expectValue(SemanticsProperties.Selected, true))
+            .fetchSemanticsNodes().mapNotNull { it.config.getOrNull(SemanticsProperties.TestTag) }.filter { it.startsWith("tuto_scale_") || it.startsWith("tuto_root_") }
+        fun top(tag: String) = compose.onAllNodesWithTag(tag).onFirst().fetchSemanticsNode().boundsInRoot.top
+        val chips = compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher.keyIsDefined(SemanticsProperties.Selected)).fetchSemanticsNodes().size
+        assertEquals("every scale and root chip says whether it is chosen", com.pocketstudio.model.Scale.entries.size - 1 + 12, chips)
+        assertEquals("nothing chosen when the song has no key", emptyList<String>(), chosen())
+        val rootTop = top("tuto_root_7")
+        compose.onAllNodesWithTag("tuto_root_7").onFirst().performClick()
+        compose.waitForIdle()
+        assertEquals("« G » touched: no scale chosen by itself", listOf("tuto_root_7"), chosen())
+        assertEquals("the scale stays as the user left it", com.pocketstudio.model.Scale.Off, harmony.scale)
+        assertEquals("the sheet stays put after the first touch", rootTop, top("tuto_root_7"), 0.5f)
+        val scaleTop = top("tuto_scale_Dorian")
+        compose.onAllNodesWithTag("tuto_scale_Dorian").onFirst().performClick()
+        compose.waitForIdle()
+        assertEquals(wanted.copy(lock = true), harmony)
+        assertEquals("both chosen chips marked", setOf("tuto_root_7", "tuto_scale_Dorian"), chosen().toSet())
+        compose.onAllNodesWithTag("tuto_key_done").onFirst().fetchSemanticsNode()
+        assertEquals("« Réussi ! » comes without moving the chips", scaleTop, top("tuto_scale_Dorian"), 0.5f)
+        // Another root touched once the key is set: the scale stays.
+        compose.onAllNodesWithTag("tuto_root_2").onFirst().performClick()
+        compose.waitForIdle()
+        assertEquals(com.pocketstudio.model.Harmony(2, com.pocketstudio.model.Scale.Dorian, true), harmony)
+        assertEquals("« Réussi ! » gone, the chips still in place", scaleTop, top("tuto_scale_Dorian"), 0.5f)
+        assertTrue("« Revenir au tuto » not offered before the key is reached",
+            compose.onAllNodesWithTag("tuto_key_continue").fetchSemanticsNodes().isEmpty())
     }
 }

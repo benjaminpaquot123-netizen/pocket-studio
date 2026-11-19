@@ -1,0 +1,41 @@
+Écran 30 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 288,42
+bouton « プロ » @ 609,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « タイムライン » [désactivé] @ 129,210
+onglet « パート » [sélectionné] @ 299,210
+titre « 曲 » [coupé, état « 開いた状態 »] @ 99,298
+bouton « ? » [coupé] @ 134,298
+titre « ブロック » [état « 開いた状態 »] @ 645,225
+bouton « ? » @ 718,225
+texte « ブロック＝パートのドラム、アシッド、ノート。曲のパートはブロックでできています。タップで編集、長押ししてドラッグで移動。 » [coupé] @ 771,287
+texte « パートを作ろう チャプター 11/17 · 完了 · プロ » @ 425,366
+icône (liste) « チャプター » @ 885,366
+icône ⌄ @ 978,366
+image (coupe) @ 57,501
+texte « よくできました、章クリア！ » @ 272,464
+texte « パート「エンディング」を作りました（グルーヴのコピー）：ベース, サブ, コード, メロディ なし。 » @ 543,521
+bouton « 次の章   » → @ 517,851
+bouton ▶ «  自分の曲を聴く » @ 327,935
+bouton ▶ «  例を聴く » @ 788,935
+icône ← @ 57,935
+icône ↶ « 元に戻す » @ 149,1023
+icône ↷ « やり直す » [désactivé] @ 339,1023
+bouton ▶ « 曲 » @ 524,1023
+texte « 122 テンポ » @ 708,1023
+icône (trois points reliés) « シェア » @ 893,1023
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 99,1123
+onglet (touches de piano) « サウンド » @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  メモ » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 385,1213

@@ -1,0 +1,68 @@
+Écran 108 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 288,42
+bouton « プロ » @ 609,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 122  BPM » @ 83,123
+icône « イントロ 小節 1/96 » ▾ @ 254,123
+bouton (flèches en boucle) « ループ » [état « オフ »] @ 871,123
+bouton « ? » @ 990,123
+image (courbe) @ 0,0
+texte « フェーダーをスライドで音量。トラック名をタップでエフェクトとカーブ。 » [coupé] @ 263,183
+texte « ドラム » [coupé] @ 20,270
+bouton (casque) [coupé, état « オフ »] @ 20,345
+texte « Acid 303 » @ 91,270
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 64,345
+bouton (casque) [état « オフ »] @ 118,345
+curseur [coupé, état « +0.0 dB », à 80 %] @ 91,423
+texte « ベース » @ 211,270
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 184,345
+bouton (casque) [état « オフ »] @ 238,345
+curseur [coupé, état « +0.0 dB », à 80 %] @ 211,423
+texte « サブ » @ 331,270
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 304,345
+bouton (casque) [état « オフ »] @ 358,345
+curseur [coupé, état « +0.0 dB », à 80 %] @ 331,423
+texte « コード » @ 451,270
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 424,345
+bouton (casque) [état « オフ »] @ 478,345
+curseur [coupé, état « +0.0 dB », à 80 %] @ 451,423
+texte « 指で描こう。ダブルタップで点を消去。「スムーズ」で震えた線をなめらかに、「キャンセル」で元に戻します。 » [coupé] @ 771,192
+texte « 18.0 kHz » @ 589,248
+texte « 849 Hz » @ 589,334
+texte « 40 Hz » @ 590,420
+texte « 拍 » [coupé] @ 589,451
+texte « 1 » [coupé] @ 642,453
+texte « 3 » [coupé] @ 690,453
+texte « 5 » [coupé] @ 734,453
+texte « 7 » [coupé] @ 779,453
+texte « 9 » [coupé] @ 825,453
+texte « 11 » [coupé] @ 872,453
+texte « 13 » [coupé] @ 920,453
+texte « 15 » [coupé] @ 964,453
+texte « ミックス チャプター 15/17 · ステップ 2/2 · プロ » @ 425,514
+icône (liste) « チャプター » @ 885,514
+icône ⌄ @ 978,514
+texte « 目安：キックとサブが前、ベースはそのすぐ下、クラップはしっかり、ピアノは数 dB 後ろ、ループはさらに後ろ。例の曲と比べてみよう。 » @ 517,626
+texte « ▸ なぜ？ » @ 517,701
+bouton ✓ «   わかった » @ 517,770
+bouton ▶ «  例を聴く » @ 517,854
+icône ← «  前へ » @ 85,935
+icône « 次へ  » → @ 950,935
+icône ↶ « 元に戻す » @ 149,1023
+icône ↷ « やり直す » [désactivé] @ 339,1023
+bouton ▶ « 曲 » @ 524,1023
+texte « 122 テンポ » @ 708,1023
+icône (trois points reliés) « シェア » @ 893,1023
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » @ 309,1123
+onglet (curseurs) « ミックス » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  メモ » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 385,1213

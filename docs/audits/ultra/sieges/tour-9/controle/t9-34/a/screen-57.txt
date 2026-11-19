@@ -1,0 +1,86 @@
+Écran 57 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 180,42
+bouton « プロ » @ 393,42
+bouton « C · ビルドアップ » ▾ @ 542,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 122  BPM » @ 83,123
+icône « イントロ 小節 1/96 » ▾ @ 254,123
+bouton (flèches en boucle) « ループ » [état « オフ »] @ 871,123
+bouton « ? » @ 990,123
+onglet « ドラム 16パッド » [sélectionné] @ 90,205
+onglet « Acid 303 ベースライン » @ 277,205
+onglet « ボーカル マイク » @ 470,205
+onglet « リミックス 分離 » @ 660,205
+bouton « ベース 丸いベース » @ 850,205
+bouton « サブ ピュアなサブ » [coupé] @ 978,205
+image → @ 1024,206
+texte « パート：C · ビルドアップ » @ 182,275
+bouton « スタジオキック FX » @ 75,368
+bouton « キック 2 » @ 200,368
+bouton « スネア » @ 325,368
+bouton « スネア 2 » @ 450,368
+bouton « クラップ FX » @ 75,474
+bouton « ハイハット L 30 » @ 200,474
+bouton « オープンハイハット R 30 » @ 325,474
+bouton « ロータム » @ 450,474
+bouton « ミッドタム R 45 » @ 75,580
+bouton « ハイタム » @ 200,580
+bouton « リム R 50 » @ 325,580
+bouton « カウベル » @ 450,580
+bouton « シンバル R 40 » @ 75,686
+bouton « シェイカー L 50 » @ 200,686
+bouton « コンガ » @ 325,686
+bouton « Zap » @ 450,686
+texte « パッドで鳴らし、マスにヒットを記録。長押し：音を変更。 » [coupé] @ 420,752
+titre « ステップ：クラップ · ビルドアップ » [coupé, état « 開いた状態 »] @ 690,320
+bouton « ? » [coupé] @ 809,306
+bouton « 全パッド » [coupé] @ 912,307
+texte « 小節 » @ 578,386
+bouton « 1 » @ 651,386
+bouton « 2 » @ 732,386
+bouton « 3 » @ 813,386
+bouton « 4 » [sélectionné] @ 894,386
+bouton « 追従 » @ 603,467
+texte « 小節 4/4 · クラップ » @ 677,551
+bouton « 1 » [état « ヒット、強さ 90 % »] @ 575,631
+bouton [état « ヒット、強さ 91 % »] @ 632,630
+bouton [état « ヒット、強さ 92 % »] @ 688,630
+bouton [état « ヒット、強さ 93 % »] @ 744,630
+bouton « 2 » [état « ヒット、強さ 93 % »] @ 800,630
+bouton [état « ヒット、強さ 94 % »] @ 856,630
+bouton [état « ヒット、強さ 95 % »] @ 912,630
+bouton [état « ヒット、強さ 96 % »] @ 968,630
+bouton « 3 » [état « ヒット、強さ 97 % »] @ 575,701
+bouton [état « ヒット、強さ 98 % »] @ 632,700
+bouton [état « ヒット、強さ 98 % »] @ 688,700
+bouton « ×4 » [état « ヒット、強さ 99 %, 4 回リピート »] @ 744,700
+bouton « 4 » [état « 空 »] @ 800,700
+bouton [état « 空 »] @ 856,700
+bouton [état « 空 »] @ 912,700
+bouton [état « 空 »] @ 968,700
+bouton « ヒット » [coupé, sélectionné] @ 617,758
+bouton « ロール » [coupé] @ 757,758
+bouton « パン » [coupé] @ 883,758
+bouton « ピッチ » [coupé] @ 968,758
+texte « トランジション チャプター 13/17 · ステップ 1/4 · プロ » @ 425,811
+icône (liste) « チャプター » @ 885,811
+icône ⌃ @ 978,811
+icône (rond coché) « 成功 次のステップ » → @ 517,924
+icône ↶ « 元に戻す » @ 149,1023
+icône ↷ « やり直す » [désactivé] @ 339,1023
+bouton ▶ « 曲 » @ 524,1023
+texte « 122 テンポ » @ 708,1023
+icône (trois points reliés) « シェア » @ 893,1023
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » [sélectionné] @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  メモ » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 385,1213

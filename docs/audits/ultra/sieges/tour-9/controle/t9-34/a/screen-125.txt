@@ -1,0 +1,74 @@
+Écran 125 (1035x1243)
+icône (dossier ouvert) ✓ « マイソング 保存しました » @ 288,42
+bouton « プロ » @ 609,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 122  BPM » @ 83,123
+icône « イントロ 小節 1/96 » ▾ @ 254,123
+bouton (flèches en boucle) « ループ » [état « オフ »] @ 871,123
+bouton « ? » @ 990,123
+image (courbe) @ 0,0
+texte « フェーダーをスライドで音量。トラック名をタップでエフェクトとカーブ。 » [coupé] @ 263,183
+texte « ドラム » [coupé] @ 20,270
+bouton (casque) [coupé, état « オフ »] @ 20,345
+texte « Acid 303 » @ 91,270
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 64,345
+bouton (casque) [état « オフ »] @ 118,345
+curseur [état « +0.0 dB », à 80 %] @ 91,516
+texte « +0.0 » @ 91,671
+texte « ベース » @ 211,270
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 184,345
+bouton (casque) [état « オフ »] @ 238,345
+curseur [état « +0.0 dB », à 80 %] @ 211,516
+texte « +0.0 » @ 211,671
+image (étincelles) @ 204,711
+texte « 1 » @ 223,711
+texte « サブ » @ 331,270
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 304,345
+bouton (casque) [état « オフ »] @ 358,345
+curseur [état « +0.0 dB », à 80 %] @ 331,516
+texte « +0.0 » @ 331,671
+image (étincelles) @ 324,711
+texte « 1 » @ 343,711
+texte « コード » @ 451,270
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 424,345
+bouton (casque) [état « オフ »] @ 478,345
+curseur [état « +0.0 dB », à 80 %] @ 451,516
+texte « +0.0 » @ 451,671
+image (étincelles) @ 425,711
+texte « 1 » @ 444,711
+image (courbe) @ 463,711
+texte « 1 » @ 482,711
+texte « ミュージック › BenStudio に保存：マイソング-曲-クラブ-20261119-075358.m4a » @ 771,216
+texte « ✓ シェアの準備OK » @ 671,303
+texte « 長さ：3分9秒 » @ 629,345
+texte « レベル：目標どおり（クラブ） » @ 727,385
+texte « ピーク：上限以下、クリップなし » @ 739,425
+texte « M4A、48 kHz、256 kb/s » @ 700,465
+texte « 統合 −8.0 LUFS · ピーク −4.0 dBTP » @ 750,532
+bouton « ? » @ 971,532
+texte « 目標: クラブ · −8 LUFS » @ 684,599
+bouton « シェア » @ 771,666
+bouton (dossier) « マイファイル 探してもう一度送る：M4A、WAV、動画、.zip » › [coupé] @ 750,737
+bouton « ? » [coupé] @ 971,755
+texte « ミックス チャプター 15/17 · ステップ 1/2 · プロ » @ 425,811
+icône (liste) « チャプター » @ 885,811
+icône ⌃ @ 978,811
+icône « あなたの番：ミックスで、コードとメロディのフェーダーを少し下げよう。 読む » ⌃ @ 517,924
+icône ↶ « 元に戻す » @ 149,1023
+icône ↷ « やり直す » [désactivé] @ 339,1023
+bouton ▶ « 曲 » @ 524,1023
+texte « 122 テンポ » @ 708,1023
+icône (trois points reliés) « シェア » @ 893,1023
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » @ 309,1123
+onglet (curseurs) « ミックス » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  メモ » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 385,1213

@@ -1,0 +1,61 @@
+Écran 84 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 288,42
+bouton « プロ » @ 609,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 122  BPM » @ 83,123
+icône « イントロ 小節 1/96 » ▾ @ 254,123
+bouton (flèches en boucle) « ループ » [état « オフ »] @ 871,123
+bouton « ? » @ 990,123
+image (courbe) @ 0,0
+texte « 音量 » @ 241,213
+bouton « ? » @ 468,213
+texte « フェーダーをスライドで音量。トラック名をタップでエフェクトとカーブ。 » @ 263,277
+texte « ドラム » @ 84,380
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 57,455
+bouton (casque) [état « オフ »] @ 111,455
+curseur [état « +0.0 dB », à 80 %] @ 84,626
+texte « Acid 303 » @ 204,380
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 177,455
+bouton (casque) [état « オフ »] @ 231,455
+curseur [état « +0.0 dB », à 80 %] @ 204,626
+texte « ベース » @ 324,380
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 297,455
+bouton (casque) [état « オフ »] @ 351,455
+curseur [état « +0.0 dB », à 80 %] @ 324,626
+texte « サブ » @ 444,380
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 417,455
+bouton (casque) [état « オフ »] @ 471,455
+curseur [état « +0.0 dB », à 80 %] @ 444,626
+texte « まだ何も動きません。アイデア：8小節かけてパッドのフィルターを開く。 » [coupé] @ 771,191
+titre « マスター出力 » [état « 開いた状態 »] @ 670,305
+bouton « ? » @ 768,305
+texte « 音量：— » @ 606,359
+texte « マスター音量 » @ 719,445
+texte « −6.0 dB » @ 940,445
+curseur [état « −6.0 dB », à 60 %] @ 771,516
+texte « クリップなし：問題ありません。 » @ 739,582
+texte « 詳細 » @ 594,649
+texte « 目標ラウドネス » @ 648,718
+bouton « ? » @ 767,718
+texte « エフェクト チャプター 14/17 · ステップ 1/2 · プロ » @ 425,811
+icône (liste) « チャプター » @ 885,811
+icône ⌃ @ 978,811
+icône (rond coché) « 成功 次のステップ » → @ 517,924
+icône ↶ « 元に戻す » @ 149,1023
+icône ↷ « やり直す » [désactivé] @ 339,1023
+bouton ▶ « 曲 » @ 524,1023
+texte « 122 テンポ » @ 708,1023
+icône (trois points reliés) « シェア » @ 893,1023
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » @ 309,1123
+onglet (curseurs) « ミックス » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  メモ » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 385,1213

@@ -304,6 +304,73 @@ class Tour9L14TutoPanelTest {
     }
 
     /**
+     * F014 (t9-20, German at 200 %): « Dein Ergebnis anhören » and « Beispiel anhören » side by side, each label shrunk
+     * on its own, in two text sizes. The panel's buttons on one row share one size: a step done (its result and the
+     * example) and a step under way (the example and « Montre-moi »), in four languages, narrow to wide, 100 to 200 %.
+     */
+    @Test
+    @org.robolectric.annotation.GraphicsMode(org.robolectric.annotation.GraphicsMode.Mode.NATIVE)
+    fun neighboursShareTextSize() {
+        val steps = listOf("techno", "disco").flatMap { style ->
+            val chs = TutoCourse.of(style)!!.chaptersFor(TutoLevel.Facile)
+            chs.withIndex().flatMap { (ci, ch) -> ch.steps.indices.map { ci to it } }
+                .filter { (ci, si) -> chs[ci].steps[si].listen.isNotEmpty() && !chs[ci].steps[si].listening }.let { it.take(2) + it.filter { (ci, _) -> ci == 7 }.take(4) }
+                .map { (ci, si) -> TutoUi(TutoProgress(style, TutoLevel.Facile, current = chs[ci].steps[si].id), chs, ci, si) }
+        }
+        assertTrue("steps with an example found", steps.isNotEmpty())
+        var scale by mutableStateOf(1f)
+        var wide by mutableStateOf(392)
+        var shown by mutableStateOf(ui(0, 0))
+        compose.setContent {
+            val local = LocalDensity.current
+            CompositionLocalProvider(LocalDensity provides Density(local.density, scale)) {
+                PocketStudioTheme { Box(Modifier.width(wide.dp)) { TutoPanel(shown, canShow = true, actions = TutoActions(), reducedMotion = true, mine = true) } }
+            }
+        }
+        val tags = listOf("tuto_play_mine", "tuto_listen", "tuto_show", "tuto_mark")
+        // A label's drawn size: the width of its leading space (every label starts with one), which grows with the font
+        // (the layout's style keeps the largest size, the size the words were shrunk to is in its glyphs).
+        fun sizeIn(tag: String): Triple<Float, Float, Float>? {
+            val button = nodes(tag).fetchSemanticsNodes().firstOrNull() ?: return null
+            val text = compose.onAllNodes(androidx.compose.ui.test.hasAnyAncestor(androidx.compose.ui.test.hasTestTag(tag)) and
+                androidx.compose.ui.test.SemanticsMatcher.keyIsDefined(SemanticsActions.GetTextLayoutResult), useUnmergedTree = true)
+                .fetchSemanticsNodes().firstOrNull() ?: return null
+            val layouts = mutableListOf<TextLayoutResult>()
+            text.config[SemanticsActions.GetTextLayoutResult].action!!(layouts)
+            val lay = layouts.first()
+            assertEquals("$tag starts with a space", ' ', lay.layoutInput.text.text.first())
+            return Triple(button.boundsInRoot.top, button.boundsInRoot.bottom, lay.getBoundingBox(0).width)
+        }
+        val faults = mutableListOf<String>()
+        var pairs = 0
+        for (l in listOf(com.pocketstudio.model.i18n.Lang.DE, com.pocketstudio.model.i18n.Lang.FR, com.pocketstudio.model.i18n.Lang.NL, com.pocketstudio.model.i18n.Lang.IT))
+            for (w in listOf(360, 392, 411)) for (s in listOf(1f, 1.3f, 1.6f, 2f)) for (step in steps) for (done in listOf(true, false)) {
+                com.pocketstudio.model.i18n.I18n.lang = l
+                wide = w; scale = s
+                shown = ui(0, 0); compose.waitForIdle()
+                shown = if (done) step.copy(progress = step.progress.copy(done = setOf(step.current.id)), bravo = true) else step
+                compose.waitForIdle()
+                val seen = tags.mapNotNull { t -> sizeIn(t)?.let { t to it } }
+                // The buttons on one row: their bounds overlap from top to bottom.
+                val rows = mutableListOf<MutableList<Pair<String, Triple<Float, Float, Float>>>>()
+                for (b in seen.sortedBy { it.second.first }) {
+                    val row = rows.lastOrNull()
+                    if (row != null && b.second.first < row.maxOf { it.second.second }) row += b else rows += mutableListOf(b)
+                }
+                rows.filter { it.size > 1 }.forEach { row ->
+                    pairs++
+                    val sizes = row.map { it.second.third }
+                    if (sizes.max() - sizes.min() > 0.5f)
+                        faults += "${l.code} $w dp ${(s * 100).toInt()} % ${step.current.id}${if (done) " done" else ""}: " +
+                            row.joinToString { "${it.first} space ${it.second.third} px" }
+                }
+            }
+        com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR
+        assertTrue("no two buttons side by side seen", pairs > 0)
+        assertTrue(faults.joinToString("\n"), faults.isEmpty())
+    }
+
+    /**
      * F019 (t9-10, t9-18, t9-61, t9-63, t9-72): at the course's end the panel's head still said « Étape 3/3 » under a
      * finished tutorial. At the end: « Tuto fini », « Recommencer » and « Chapitres », no step counter, no « Suivant ».
      */

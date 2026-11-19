@@ -95,7 +95,7 @@ internal fun ShareBilanDialog(lines: List<String>, dismiss: () -> Unit, seeFiles
                 }
             }
         },
-        confirmButton = { TextButton(onClick = dismiss, modifier = Modifier.testTag("share_bilan_ok")) { Text("OK") } },
+        confirmButton = { TextButton(onClick = dismiss, modifier = Modifier.testTag("share_bilan_ok")) { Text(tr("OK")) } },
         dismissButton = seeFiles?.let { see -> { TextButton(onClick = see, modifier = Modifier.testTag("share_bilan_files")) { Text(tr("Voir mes fichiers")) } } },
     )
 }
@@ -119,8 +119,8 @@ internal fun shareReportLines(export: ExportUi, simple: Boolean): List<String> {
 /** « C'est prêt » once the song is made and its share menu open: its file, and its copy in Musique when there is one. */
 internal fun shareReadyText(files: List<java.io.File>, savedInMusic: Boolean): String {
     val name = files.joinToString(", ") { it.name }
-    return if (savedInMusic) tr("C'est prêt : %s, une copie est aussi dans Musique › BenStudio.", name)
-    else tr("C'est prêt : %s. Choisis l'appli pour l'envoyer.", name)
+    return if (savedInMusic) tr("%s, une copie est aussi dans Musique › BenStudio.", name)
+    else tr("%s. Choisis l'appli pour l'envoyer.", name)
 }
 
 /**
@@ -181,7 +181,7 @@ fun ShareProgressDialog(export: ExportUi, cancel: () -> Unit, dismiss: () -> Uni
         confirmButton = {
             if (export.running) TextButton(onClick = cancel, modifier = Modifier.testTag("share_cancel")) { Text(tr("Annuler")) }
             else
- TextButton(onClick = dismiss, modifier = Modifier.testTag("share_dismiss")) { Text("OK") }
+ TextButton(onClick = dismiss, modifier = Modifier.testTag("share_dismiss")) { Text(tr("OK")) }
         },
     )
 }

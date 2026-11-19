@@ -10,9 +10,9 @@ class ShareReadyTextTest {
     fun theFileIsSaidReadyAndWhereItsCopyIs() {
         val song = listOf(File("/x/Jump-up-DnB-bootleg-Mehdi-morceau-20261028-174901.wav"))
         assertEquals(
-            "C'est prêt : Jump-up-DnB-bootleg-Mehdi-morceau-20261028-174901.wav, une copie est aussi dans Musique › BenStudio.",
+            "Jump-up-DnB-bootleg-Mehdi-morceau-20261028-174901.wav, une copie est aussi dans Musique › BenStudio.",
             shareReadyText(song, savedInMusic = true),
         )
-        assertEquals("C'est prêt : a.m4a. Choisis l'appli pour l'envoyer.", shareReadyText(listOf(File("a.m4a")), savedInMusic = false))
+        assertEquals("a.m4a. Choisis l'appli pour l'envoyer.", shareReadyText(listOf(File("a.m4a")), savedInMusic = false))
     }
 }

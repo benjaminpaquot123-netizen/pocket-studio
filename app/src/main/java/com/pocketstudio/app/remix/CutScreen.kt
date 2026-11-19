@@ -686,7 +686,7 @@ private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<Stem
         if (said != null) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(said, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.weight(1f).testTag("cut_message"))
-                if (busy == null) TextButton(onClick = { dismissNote(); actions.dismissMessage() }, modifier = Modifier.testTag("cut_message_ok")) { Text("OK") }
+                if (busy == null) TextButton(onClick = { dismissNote(); actions.dismissMessage() }, modifier = Modifier.testTag("cut_message_ok")) { Text(tr("OK")) }
             }
         }
         if (model.single && hint) SpanHint()

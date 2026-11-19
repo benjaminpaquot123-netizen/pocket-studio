@@ -1,0 +1,48 @@
+Écran 16 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 290,42
+bouton « 간단 » @ 623,42
+bouton ● @ 711,42
+bouton ▶ « 이 파트 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 136  템포 » @ 105,144
+bouton « ? » @ 855,144
+icône « 파트: A » ▾ @ 95,240
+bouton « 단단한 큰북 » @ 123,330
+bouton « 큰북 2 » @ 341,330
+bouton « 스네어 FX » @ 559,330
+bouton « 낮은 울림 FX » @ 777,330
+bouton « 손뼉 » @ 123,408
+bouton « 하이햇 L 30 » @ 341,408
+bouton « 오픈 하이햇 R 30 » @ 559,408
+bouton « 로우 탐 » @ 777,408
+bouton « 미드 탐 R 45 » @ 123,486
+bouton « 하이 탐 » @ 341,486
+bouton « 북 테두리 FX R 50 » @ 559,486
+bouton « 벨 » @ 777,486
+bouton « 심벌 FX R 40 » [coupé] @ 123,540
+bouton « 마라카스 L 50 » [coupé] @ 341,540
+bouton « 콩가 » [coupé] @ 559,540
+bouton « 레이저 » [coupé] @ 777,540
+texte « 절뚝이는 킥 2/13장 · 1/3단계 · 쉬움 » @ 378,620
+icône (liste) « 챕터 » @ 771,621
+icône ⌄ @ 843,621
+texte « 시작하기 전에: 킷은 이미 인더스트리얼 테크노 킷이에요. 단단하고 새츄레이션 걸린 킥, 으르렁거림, 쇳소리 퍼커션. 설정할 건 없어요. » @ 450,798
+texte « • 킥: 베이스 드럼, 드럼의 낮은 ‘쿵’. » @ 293,930
+texte « ▸ 왜요? » @ 450,995
+bouton ✓ «   알겠어요 » @ 450,1073
+icône ← «  이전 » @ 94,1163
+icône « 다음  » → @ 805,1163
+texte « 136 템포 » @ 636,1272
+icône ↶ « 실행 취소 » @ 130,1272
+image ↷ @ 325,1247
+bouton ▶ « 곡 » @ 492,1273
+icône ⋮ « 더보기 » @ 789,1272
+onglet (lignes et note) « 내 곡 » @ 85,1389
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 268,1389
+onglet (touches de piano) « 건반 » @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « 피드백 모드 » @ 303,1479
+texte « ●  REC » @ 649,1479
+texte « ✎  메모 » @ 760,1479
+texte « ⋯ » @ 852,1479

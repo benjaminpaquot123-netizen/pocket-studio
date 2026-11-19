@@ -968,17 +968,17 @@ private fun StepGrid(
                 }, contentPadding = tight, modifier = small.testTag("fill_$every")) { Text(label) }
             }
             // Tour 9, F053: the pad's rotate says what it does and is not drawn like the bar arrows (◀ ▶ turn the page).
-            Text(tr("Décaler les coups"), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 6.dp))
+            Text(tr("Décalage"), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 6.dp))
             TextButton(onClick = { actions.rotate(-1) }, enabled = hits.isNotEmpty(), contentPadding = tight,
-                modifier = small.semantics { contentDescription = tr("Décaler les coups d'une case vers la gauche") }.testTag("rotate_left")) { Text("⇠") }
+                modifier = small.semantics { contentDescription = tr("Décalage") + " −1" }.testTag("rotate_left")) { Text("⇠") }
             TextButton(onClick = { actions.rotate(1) }, enabled = hits.isNotEmpty(), contentPadding = tight,
-                modifier = small.semantics { contentDescription = tr("Décaler les coups d'une case vers la droite") }.testTag("rotate_right")) { Text("⇢") }
+                modifier = small.semantics { contentDescription = tr("Décalage") + " +1" }.testTag("rotate_right")) { Text("⇢") }
             TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("clear_pad")) { Text(tr("Effacer"), maxLines = 1, softWrap = false) }
             // Tour 9, S76: the bar shown emptied in one touch (this pad; the other bars keep theirs; one undo step).
             if (bars > 1) {
                 val inBar = hits.keys.filter { it / per == bar }
                 TextButton(onClick = { inBar.forEach { actions.paintStep(it, false) }; actions.paintEnd() }, enabled = inBar.isNotEmpty(), contentPadding = tight,
-                    modifier = small.testTag("clear_bar")) { Text(tr("Effacer la mesure %d", bar + 1), maxLines = 1, softWrap = false) }
+                    modifier = small.testTag("clear_bar")) { Text(tr("Vider") + " · " + tr("Mesure %d", bar + 1), maxLines = 1, softWrap = false) }
             }
         }
         if (filled && padMuted) {

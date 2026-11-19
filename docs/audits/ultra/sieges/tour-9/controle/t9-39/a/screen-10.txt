@@ -1,0 +1,31 @@
+Écran 10 (900x1509)
+dessin @ 450,754
+dessin @ 450,726
+texte « Fermer » @ 821,798
+texte « Tonalité du morceau » @ 395,798
+texte « Tonalité du morceau : Fa · Phrygienne » @ 210,864
+texte « Gamme » @ 63,909
+bouton « Majeure » @ 88,975
+bouton « Mineure » @ 225,975
+bouton « Dorienne » @ 368,975
+bouton « Penta mineure » @ 546,975
+bouton « Penta majeure » @ 754,975
+bouton « Blues » @ 73,1056
+bouton « Phrygienne » @ 217,1056
+bouton « Mineure harmonique » @ 447,1056
+texte « Tonique » @ 65,1122
+bouton « Do » @ 63,1188
+bouton « Do♯ » @ 151,1188
+bouton « Ré » @ 239,1188
+bouton « Mi♭ » @ 326,1188
+bouton « Mi » @ 413,1188
+bouton « Fa » @ 500,1188
+bouton « Fa♯ » @ 587,1188
+bouton « Sol » @ 674,1188
+bouton « La♭ » @ 761,1188
+bouton « La » @ 63,1269
+bouton « Si♭ » @ 150,1269
+bouton « Si » @ 237,1269
+image (rond coché) @ 58,1350
+texte « Réussi ! La couleur du morceau est choisie. » @ 341,1350
+bouton « Revenir au tuto » @ 450,1434

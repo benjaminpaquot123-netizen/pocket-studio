@@ -1,0 +1,54 @@
+Écran 72 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 198,42
+bouton « Simple » @ 439,42
+icône ↶ @ 527,42
+bouton ● @ 599,42
+bouton ▶ « cette partie » @ 678,42
+bouton ▶ « le morceau » @ 776,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+onglet « Acid 303 Ligne de basse » @ 112,186
+bouton « Basse Basse growl » @ 304,186
+bouton « Accords Nappe » ⋮ @ 479,186
+icône ♪ « Son » @ 624,186
+bouton + «  Piste » @ 762,186
+icône « Partie : A » ▾ @ 82,264
+texte « En rythme 50 % » @ 515,351
+texte « 100 % » @ 668,351
+texte « Effacer » [désactivé] @ 777,351
+bouton « Accords » [sélectionné] @ 109,351
+bouton « Basse en fantôme » [sélectionné] @ 296,351
+bouton « Accords · mesure 1/8 Accords en pointillé à toucher : 1 » @ 450,432
+texte « mes. » @ 84,489
+bouton « 1 » @ 486,501
+bouton « 2 » [coupé] @ 853,501
+texte « Mi♭ » [coupé] @ 84,547
+texte « Ré » @ 84,582
+texte « Ré♭ » @ 84,624
+texte « Do4 » @ 84,666
+texte « Si » @ 84,708
+texte « Si♭ » @ 84,750
+texte « La » @ 84,792
+texte « La♭ » @ 84,834
+texte « Sol » @ 84,876
+texte « Sol♭ » @ 84,918
+texte « Fa » @ 84,960
+texte « Mi » @ 84,1002
+texte « Mi♭ » @ 84,1044
+texte « Ré » @ 84,1086
+texte « Ré♭ » [coupé] @ 84,1120
+dessin [coupé] @ 492,834
+icône (liste) « Chapitres » @ 756,1182
+texte « Les accords Chapitre 6/15 · Étape 1/3 · Facile » @ 363,1182
+icône ⌃ @ 843,1182
+icône « À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Lire » ⌃ @ 450,1281
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » @ 268,1389
+onglet (touches de piano) « Clavier » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

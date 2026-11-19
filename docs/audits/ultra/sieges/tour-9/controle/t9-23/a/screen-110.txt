@@ -1,0 +1,55 @@
+Écran 110 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 172,42
+bouton « Pro » @ 378,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ▶ « ta część » @ 693,42
+bouton ▶ « utwór » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Acid 303 Linia basu » [coupé] @ 21,262
+onglet « Wokal Mikrofon » @ 146,262
+onglet « Remix Rozdziel » @ 382,262
+bouton « 808 808 » @ 562,262
+bouton « Akordy Smyczki » ⋮ @ 755,262
+image ← @ 10,263
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « 100% » @ 114,435
+texte « Wyczyść » @ 296,435
+texte « Do rytmu 50% » [coupé] @ 625,390
+texte « takt » @ 84,508
+bouton « 1 » @ 486,508
+bouton « 2 » [coupé] @ 853,508
+texte « B♭ » [coupé] @ 84,550
+texte « A » @ 84,573
+texte « G♯ » @ 84,601
+texte « G » @ 84,629
+texte « F♯ » @ 84,657
+texte « F » @ 84,685
+texte « E » @ 84,713
+texte « E♭ » @ 84,741
+texte « D » @ 84,769
+texte « C♯ » @ 84,797
+texte « C3 » @ 84,825
+texte « B » [coupé] @ 84,851
+dessin [coupé] @ 492,702
+texte « Melodia Rozdział 7/16 · Krok 1/2 · Pro » @ 356,930
+icône (liste) « Rozdziały » @ 749,930
+icône ⌄ @ 843,930
+texte « Posłuchaj pianina z 808. » @ 263,1042
+texte « ▸ Dlaczego? » @ 450,1111
+bouton ▶ «  Posłuchaj przykładu » @ 450,1188
+icône ← «  Wstecz » @ 129,1277
+icône « Dalej  » → @ 794,1277
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

@@ -1,0 +1,27 @@
+Écran 59 (900x1509)
+texte « Uderzenie 11 » @ 336,229
+icône ✕ @ 690,229
+texte « Siła » @ 52,302
+bouton « Mocno » [sélectionné] @ 109,375
+bouton « Średni » @ 291,375
+bouton « Miękki » @ 470,375
+texte « Roll » @ 53,448
+bouton « ×1 » @ 64,521
+bouton « ×2 » @ 166,521
+bouton « ×3 » [sélectionné] @ 272,521
+bouton « ×4 » @ 380,521
+bouton « ×6 » @ 487,521
+bouton « ×8 » @ 594,521
+texte « Triola » @ 72,594
+bouton « 3 na 2 pola » @ 147,667
+bouton « 6 na miarę » @ 405,667
+bouton « ↗ Rosnąco » @ 145,748
+bouton « Równo » [sélectionné] @ 368,748
+bouton « ↘ Malejąco » @ 595,748
+texte « ×3: 3 uderzeń w polu, nuty 1/48 » @ 301,819
+texte « Całe uderzenie na ×2 (seria 1/32) » @ 351,894
+texte « Szansa zagrania » @ 174,971
+bouton « 100% » [sélectionné] @ 96,1044
+bouton « 75% » @ 248,1044
+bouton « 50% » @ 391,1044
+bouton « 25% » @ 535,1044

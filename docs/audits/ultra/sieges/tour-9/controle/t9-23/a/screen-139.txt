@@ -1,0 +1,39 @@
+Écran 139 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 222,42
+bouton « Pro » @ 477,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Oś czasu » [désactivé] @ 134,252
+onglet « Części » [sélectionné] @ 331,252
+titre « UTWÓR » [état « Rozwinięte »] @ 163,348
+bouton « ? » @ 262,348
+texte « Oś czasu układa twoje części po kolei, każdą z jej długością w taktach. Dodaj je po kolei. » @ 450,436
+texte « Twoja pierwsza część: Refren Rozdział 8/16 · Zrobione · Pro » @ 356,562
+icône (liste) « Rozdziały » @ 749,562
+icône ⌄ @ 843,562
+image (coupe) @ 57,761
+texte « Brawo, rozdział ukończony! » @ 352,683
+texte « Posłuchaj swojego utworu w obecnej postaci, a potem przejdź do następnego rozdziału: „Zrozumieć części”. » @ 475,789
+bouton « Następny rozdział   » → @ 450,1035
+bouton ▶ «  Posłuchaj mojego utworu » @ 294,1149
+bouton ▶ «  Posłuchaj przykładu » @ 687,1149
+icône ← @ 57,1149
+icône ↶ « Cofnij » @ 100,1277
+icône ↷ « Ponów » [désactivé] @ 254,1277
+bouton ▶ « utwór » @ 409,1278
+texte « 142 Tempo » @ 567,1277
+icône (trois points reliés) « Udostępnij » @ 762,1277
+onglet (ligne brisée et points) « Struktura » [sélectionné] @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

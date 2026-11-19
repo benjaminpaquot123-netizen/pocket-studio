@@ -10,6 +10,12 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 - **Lots ouverts** : aucun. **File du portail** : vide. **Discussions du tour 8** : à fermer.
 - **Branches pas entrées** : (rangées le 19 novembre, 08 h) 9 branches de sièges du tour 8 (rapports seuls : `aud/tour-8-ctrl-t0b-d`, `-d2`, `-e`, `-e2`, `aud/tour-8-ctrl-t0c-a`, `-b`, `-c`, `-e`, `eq/tour-8-controle-t0a`) ; `eq/tour-8-guetteur` (essai sur un test du moteur, à laisser : le lot « machinerie » le remplace).
 
+## Discussions du tour 9 (19 novembre, 08 h)
+- T9-REVUE `session_014RxrDKB2N7gX4yxMKTtohb` (revue fin de phase tour 8, branche `rev/tour-8-fin-de-phase`)
+- T9-BALAYAGE `session_014RxrDJMkVzhuYV7LFeF1pQ` (37 tutos × 15 langues, `eq/tour-9-balayage`)
+- T9-PLAN `session_014RxrDLxKw1RRtXuZbwYQZB` (plan + fiche type des sièges, `eq/tour-9-plan`)
+- Sièges en attente de fiche (machine chauffée) : 01 `session_014RxrDLsqZWPq2K97S4NFUy`, 02 `session_014RxrDJmEtLG2eK7Tp3Q6nq`, 03 `session_014RxrDMkyaiUUNQ1soeFrKE`, 04 `session_014RxrDNFN9ejLJFqz19nXgh`, 05 `session_014RxrDKrNiqYWDc6771ST75`, 06 `session_014RxrDNs8hTMn3kJV6cVgPb`, 07 `session_014RxrDMMKnYLFnxSWf95h8x`, 08 `session_014RxrDLJ3ouVbfqqYCqexSW`
+
 ## En arrivant (toute discussion, avant toute mission)
 
 1. Lis seulement `CLAUDE.md`, cette page et ta fiche. Pas `PROGRESS.md`, pas les issues, pas le test de nuit : c'est le travail du chef.

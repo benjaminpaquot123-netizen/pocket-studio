@@ -1,0 +1,739 @@
+#0 SIEGE lang=ar device=foldable font=200 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:speed_garage:1
+#0 PREMIER ECRAN reel_s=4.3 simule_s=2.4 jvm_s=10.4 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:speed_garage:1
+#0 AMENEE > touche 518 776 (welcome_learn)
+#0 AMENEE > touche 772 990 (mode_card_simple)
+#0 AMENEE > touche 517 1152 (tuto_style_speed_garage)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fcf9450355 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ref done=0 chapters=- playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 517 782
+#1 DOIGT tuto_listen «  استمع إلى المثال »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 80550ee336 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ref done=0 chapters=- playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > attends 8
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2509c47834 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ref done=1 chapters=- playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 517 782
+#3 DOIGT tuto_next_big « الخطوة التالية   »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5b6983aead | project=p-3a013121 tuto=speed_garage/Facile active=true step=tempo done=1 chapters=- playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « 120 » over « سرعة المقطوعة ولونها » (54 x 22 dp)
+#4 LAYOUT OVERLAP « 120 » over « الفصل 1/13 · الخطوة 2/3 · سهل » (35 x 12 dp)
+#4 LAYOUT OVERLAP « سرعة المقطوعة ولونها » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (137 x 35 dp)
+#4 LAYOUT OVERLAP « الفصل 1/13 · الخطوة 2/3 · سهل » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (37 x 17 dp)
+#4 > touche 517 687
+#4 DOIGT tuto_do «   سأفعلها »
+#5 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 9de4e74e4e | project=p-3a013121 tuto=speed_garage/Facile active=true step=tempo done=1 chapters=- playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « ? » lines cut (taller than its box)
+#5 LAYOUT CUT « حسنًا » drawn past its parent's edge (down, 52 dp shown of 59)
+#5 LAYOUT OVERLAP « السرعة » over the touchable « إغلاق الورقة » (91 x 59 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « إغلاق الورقة » (9 x 18 dp)
+#5 LAYOUT OVERLAP « إغلاق » over the touchable « إغلاق الورقة » (55 x 45 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « إغلاق الورقة » (96 x 61 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « إغلاق الورقة » (70 x 42 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « إغلاق الورقة » (36 x 34 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « إغلاق الورقة » (36 x 34 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « إغلاق الورقة » (54 x 34 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « إغلاق الورقة » (54 x 34 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « إغلاق الورقة » (54 x 34 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « إغلاق الورقة » (25 x 42 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « إغلاق الورقة » (36 x 42 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « إغلاق الورقة » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « إغلاق الورقة » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « إغلاق الورقة » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « إغلاق الورقة » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « إغلاق الورقة » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « إغلاق الورقة » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « إغلاق الورقة » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « إغلاق الورقة » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « إغلاق الورقة » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « إغلاق الورقة » (23 x 43 dp)
+#5 LAYOUT OVERLAP « حسنًا » over the touchable « إغلاق الورقة » (67 x 52 dp)
+#5 LAYOUT OVERLAP « انقر مع الإيقاع » over the touchable « إغلاق الورقة » (149 x 49 dp)
+#5 LAYOUT OVERLAP « انقر هنا مع كل نبضة: السرعة تتبعك. » over the touchable « إغلاق الورقة » (86 x 43 dp)
+#5 > touche 825 764
+#5 DOIGT tempo_key_1 « 1 »
+#6 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 0670e2b75f | project=p-3a013121 tuto=speed_garage/Facile active=true step=tempo done=1 chapters=- playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 1 » over the touchable « إغلاق الورقة » (32 x 61 dp)
+#6 LAYOUT OVERLAP « بين 40 و300 » over the touchable « إغلاق الورقة » (141 x 45 dp)
+#6 > touche 211 764
+#6 DOIGT tempo_key_3 « 3 »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 371c99741f | project=p-3a013121 tuto=speed_garage/Facile active=true step=tempo done=1 chapters=- playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 13 » over the touchable « إغلاق الورقة » (64 x 61 dp)
+#7 > touche 518 1025
+#7 DOIGT tempo_key_0 « 0 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE dc2e325d91 | project=p-3a013121 tuto=speed_garage/Facile active=true step=tempo done=1 chapters=- playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 130 » over the touchable « إغلاق الورقة » (96 x 61 dp)
+#8 > touche 211 1025
+#8 DOIGT tempo_key_ok « حسنًا »
+#9 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d3c0f94640 | project=p-3a013121 tuto=speed_garage/Facile active=true step=tempo done=2 chapters=- playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CUT « R 50 » lines dropped (more lines than room)
+#9 LAYOUT OVERLAP « طبل كبير للاستوديو » over « FX » (25 x 11 dp)
+#9 LAYOUT OVERLAP « سنير » over « FX » (19 x 9 dp)
+#9 LAYOUT OVERLAP « تصفيق » over « FX » (27 x 10 dp)
+#9 LAYOUT OVERLAP « هاي هات » over « L 30 » (21 x 5 dp)
+#9 LAYOUT OVERLAP « هاي هات مفتوح » over « R 30 » (21 x 11 dp)
+#9 LAYOUT CONTRAST « طبل كبير للاستوديو » 4.38:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « سنير » 3.62:1 (needs 4.5:1, 14 sp)
+#9 LAYOUT CONTRAST « تصفيق » 3.66:1 (needs 4.5:1, 14 sp)
+#9 > touche 517 861
+#9 DOIGT tuto_next_folded « نجحت »
+#10 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c30306c40c | project=p-3a013121 tuto=speed_garage/Facile active=true step=key done=2 chapters=- playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 130 » over « سرعة المقطوعة ولونها » (54 x 22 dp)
+#10 LAYOUT OVERLAP « 130 » over « الفصل 1/13 · الخطوة 3/3 · سهل » (35 x 12 dp)
+#10 LAYOUT OVERLAP « سرعة المقطوعة ولونها » over the touchable « السرعة: 130 نبضة في الدقيقة تغيير السرعة » (137 x 35 dp)
+#10 LAYOUT OVERLAP « الفصل 1/13 · الخطوة 3/3 · سهل » over the touchable « السرعة: 130 نبضة في الدقيقة تغيير السرعة » (37 x 17 dp)
+#10 > touche 517 687
+#10 DOIGT tuto_do «   سأفعلها »
+#11 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE f517c97785 | project=p-3a013121 tuto=speed_garage/Facile active=true step=key done=2 chapters=- playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « مقام المقطوعة » over the touchable « إغلاق الورقة » (188 x 59 dp)
+#11 LAYOUT OVERLAP « نغمة المقطوعة: لا شيء » over the touchable « إغلاق الورقة » (214 x 45 dp)
+#11 LAYOUT OVERLAP « السلّم » over the touchable « إغلاق الورقة » (52 x 45 dp)
+#11 LAYOUT OVERLAP « كبير » over the touchable « إغلاق الورقة » (40 x 49 dp)
+#11 LAYOUT OVERLAP « صغير » over the touchable « إغلاق الورقة » (56 x 49 dp)
+#11 LAYOUT OVERLAP « Dorian » over the touchable « إغلاق الورقة » (87 x 42 dp)
+#11 LAYOUT OVERLAP « خماسي صغير » over the touchable « إغلاق الورقة » (137 x 49 dp)
+#11 LAYOUT OVERLAP « خماسي كبير » over the touchable « إغلاق الورقة » (123 x 49 dp)
+#11 LAYOUT OVERLAP « Blues » over the touchable « إغلاق الورقة » (72 x 42 dp)
+#11 LAYOUT OVERLAP « Phrygian » over the touchable « إغلاق الورقة » (118 x 42 dp)
+#11 LAYOUT OVERLAP « صغير هارموني » over the touchable « إغلاق الورقة » (147 x 49 dp)
+#11 LAYOUT OVERLAP « المفتاح » over the touchable « إغلاق الورقة » (68 x 45 dp)
+#11 LAYOUT OVERLAP « دو » over the touchable « إغلاق الورقة » (25 x 49 dp)
+#11 LAYOUT OVERLAP « دو♯ » over the touchable « إغلاق الورقة » (40 x 49 dp)
+#11 LAYOUT OVERLAP « ري » over the touchable « إغلاق الورقة » (28 x 49 dp)
+#11 LAYOUT OVERLAP « مي♭ » over the touchable « إغلاق الورقة » (42 x 49 dp)
+#11 LAYOUT OVERLAP « مي » over the touchable « إغلاق الورقة » (32 x 49 dp)
+#11 LAYOUT OVERLAP « فا » over the touchable « إغلاق الورقة » (19 x 49 dp)
+#11 LAYOUT OVERLAP « فا♯ » over the touchable « إغلاق الورقة » (35 x 49 dp)
+#11 LAYOUT OVERLAP « صول » over the touchable « إغلاق الورقة » (53 x 49 dp)
+#11 LAYOUT OVERLAP « لا♭ » over the touchable « إغلاق الورقة » (25 x 49 dp)
+#11 LAYOUT OVERLAP « لا » over the touchable « إغلاق الورقة » (15 x 49 dp)
+#11 LAYOUT OVERLAP « سي♭ » over the touchable « إغلاق الورقة » (48 x 49 dp)
+#11 LAYOUT OVERLAP « سي » over the touchable « إغلاق الورقة » (38 x 49 dp)
+#11 > touche 809 835
+#11 DOIGT tuto_scale_Minor « صغير »
+#12 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE e30ad3ebf0 | project=p-3a013121 tuto=speed_garage/Facile active=true step=key done=2 chapters=- playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « نغمة المقطوعة: دو · صغير » over the touchable « إغلاق الورقة » (242 x 45 dp)
+#12 LAYOUT OVERLAP « دو » over the touchable « إغلاق الورقة » (26 x 49 dp)
+#12 > touche 252 1088
+#12 DOIGT tuto_root_7 « صول »
+#13 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE b3e1810c60 | project=p-3a013121 tuto=speed_garage/Facile active=true step=key done=3 chapters=1 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « نغمة المقطوعة: صول · صغير » over the touchable « إغلاق الورقة » (267 x 45 dp)
+#13 LAYOUT OVERLAP « نجحت! تم اختيار لون المقطوعة. » over the touchable « إغلاق الورقة » (113 x 49 dp)
+#13 LAYOUT OVERLAP « العودة إلى الدرس » over the touchable « إغلاق الورقة » (167 x 45 dp)
+#13 > touche 518 1161
+#13 DOIGT tuto_key_continue « العودة إلى الدرس »
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9fbac76aa8 | project=p-3a013121 tuto=speed_garage/Facile active=true step=key done=3 chapters=1 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 861
+#14 DOIGT tuto_chapter_end_folded « أحسنت، انتهى الفصل! »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d3e76b4460 | project=p-3a013121 tuto=speed_garage/Facile active=true step=key done=3 chapters=1 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 517 788
+#15 DOIGT tuto_next_big « الفصل التالي   »
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a2afa43c2f | project=p-3a013121 tuto=speed_garage/Facile active=true step=ready done=3 chapters=1 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 517 782
+#16 DOIGT tuto_mark «   فهمت »
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 1d7a2530d5 | project=p-3a013121 tuto=speed_garage/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « 130 » over « الطبول » (54 x 27 dp)
+#17 LAYOUT OVERLAP « الطبول » over the touchable « السرعة: 130 نبضة في الدقيقة تغيير السرعة » (67 x 32 dp)
+#17 > touche 517 687
+#17 DOIGT tuto_do «   سأفعلها »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4e7e9254d6 | project=p-3a013121 tuto=speed_garage/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « بقيت هنا 4 خانات منقّطة » 1.38:1 (needs 3.0:1, 14 sp)
+#18 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 2 » 4.18:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 3 » 4.18:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 4 » 4.18:1 (needs 4.5:1, 12 sp)
+#18 > touche 67 412
+#18 DOIGT step_0 « الخطوة 1 »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5f901a071d | project=p-3a013121 tuto=speed_garage/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « بقيت هنا 3 خانات منقّطة » 1.38:1 (needs 3.0:1, 14 sp)
+#19 LAYOUT CONTRAST « 1 » 4.37:1 (needs 4.5:1, 12 sp)
+#19 LAYOUT CONTRAST « 2 » 2.75:1 (needs 4.5:1, 12 sp)
+#19 > touche 292 411
+#19 DOIGT step_4 « الخطوة 5 »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3148877399 | project=p-3a013121 tuto=speed_garage/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « بقيت هنا خانتان منقّطتان » 1.38:1 (needs 3.0:1, 14 sp)
+#20 LAYOUT CONTRAST « 3 » 3.58:1 (needs 4.5:1, 12 sp)
+#20 > touche 67 482
+#20 DOIGT step_8 « الخطوة 9 »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1300fd4e66 | project=p-3a013121 tuto=speed_garage/Facile active=true step=kick_do done=4 chapters=1 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « بقيت هنا خانة منقّطة واحدة (1) » ellipsized (« … »)
+#21 LAYOUT CONTRAST « بقيت هنا خانة منقّطة واحدة (1) » 1.38:1 (needs 3.0:1, 14 sp)
+#21 LAYOUT CONTRAST « 4 » 3.58:1 (needs 4.5:1, 12 sp)
+#21 > touche 292 481
+#21 DOIGT step_12 « الخطوة 13 »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2e0dbc96c4 | project=p-3a013121 tuto=speed_garage/Facile active=true step=kick_do done=5 chapters=1 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 517 861
+#22 DOIGT tuto_next_folded « نجحت »
+#23 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 393f8f50f8 | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 517 687
+#23 DOIGT tuto_need «   الانتقال إلى 2 مازورات »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ccf6c7c0cd | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « سنير » 2.33:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#24 > touche 292 591
+#24 DOIGT step_4 « الخطوة 5 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d2a5cc74e4 | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#25 SON Son : rien ne joue.
+#25 > glisse 260 590 260 420
+#25 DOIGT step_3 « الخطوة 4 »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 83c4c032b9 | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « 4 » 3.04:1 (needs 4.5:1, 12 sp)
+#26 > touche 292 515
+#26 DOIGT step_12 « الخطوة 13 »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1d6b16091d | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CUT « المازورة 1/2 · سنير » ellipsized (« … »)
+#27 > glisse 260 420 260 600
+#27 DOIGT step_3 « الخطوة 4 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 01aacf0d11 | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 284 472
+#28 DOIGT tuto_bar_go « المازورة 2 · 4 خانات → »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 32020ec674 | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « 2 » 2.57:1 (needs 4.5:1, 12 sp)
+#29 > touche 460 596
+#29 DOIGT step_23 « الخطوة 8 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7c33d7d76d | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 292 596
+#30 DOIGT step_20 « الخطوة 5 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 563da90075 | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#31 SON Son : rien ne joue.
+#31 > glisse 260 590 260 420
+#31 DOIGT step_19 « الخطوة 4 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f4e32b75da | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 404 525
+#32 DOIGT step_30 « الخطوة 15 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d52192ee95 | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=5 chapters=1 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 292 525
+#33 DOIGT step_28 « الخطوة 13 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 793cc2d811 | project=p-3a013121 tuto=speed_garage/Facile active=true step=snare_do done=6 chapters=1 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 517 861
+#34 DOIGT tuto_next_folded « نجحت »
+#35 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f0d98003c0 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 517 687
+#35 DOIGT tuto_do «   سأفعلها »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 53f9f1fd2a | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « بقيت هنا 4 خانات منقّطة » 1.30:1 (needs 3.0:1, 14 sp)
+#36 > touche 404 411
+#36 DOIGT step_6 « الخطوة 7 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d86fb8c459 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « بقيت هنا 3 خانات منقّطة » 1.30:1 (needs 3.0:1, 14 sp)
+#37 > touche 180 411
+#37 DOIGT step_2 « الخطوة 3 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4344343864 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « بقيت هنا خانتان منقّطتان » 1.30:1 (needs 3.0:1, 14 sp)
+#38 > touche 404 481
+#38 DOIGT step_14 « الخطوة 15 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e37cba8b58 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « بقيت هنا خانة منقّطة واحدة (1) » 1.30:1 (needs 3.0:1, 14 sp)
+#39 > touche 180 481
+#39 DOIGT step_10 « الخطوة 11 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE da60e3e48d | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#40 SON Son : rien ne joue.
+#40 > glisse 260 420 260 600
+#40 DOIGT step_11 « الخطوة 12 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f4e7230d24 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CUT « المازورة 1/2 · هاي هات مفتوح » ellipsized (« … »)
+#41 LAYOUT CONTRAST « مازورة » 3.31:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST « 2 » 2.86:1 (needs 4.5:1, 14 sp)
+#41 LAYOUT CONTRAST « تتبّع » 2.47:1 (needs 4.5:1, 14 sp)
+#41 > touche 284 438
+#41 DOIGT tuto_bar_go « المازورة 2 · 4 خانات → »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 72470a9ab5 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CUT « المازورة 2/2 · هاي هات مفتوح » ellipsized (« … »)
+#42 LAYOUT CONTRAST « 1 » 2.60:1 (needs 4.5:1, 14 sp)
+#42 > touche 404 567
+#42 DOIGT step_22 « الخطوة 7 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 824a1674ac | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 180 567
+#43 DOIGT step_18 « الخطوة 3 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 64a85007d1 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#44 SON Son : rien ne joue.
+#44 > glisse 260 590 260 420
+#44 DOIGT step_19 « الخطوة 4 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 746dd8c758 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « بقيت هنا خانتان منقّطتان » 1.71:1 (needs 3.0:1, 14 sp)
+#45 > touche 404 491
+#45 DOIGT step_30 « الخطوة 15 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e5e17cc3f3 | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=6 chapters=1 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « بقيت هنا خانة منقّطة واحدة (1) » 1.71:1 (needs 3.0:1, 14 sp)
+#46 > touche 180 491
+#46 DOIGT step_26 « الخطوة 11 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b53b1190fe | project=p-3a013121 tuto=speed_garage/Facile active=true step=ohat_do done=7 chapters=1 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 517 861
+#47 DOIGT tuto_next_folded « نجحت »
+#48 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4b38a7e732 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 517 687
+#48 DOIGT tuto_do «   سأفعلها »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1ce4e3b5f2 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT CONTRAST « 1 » 2.56:1 (needs 4.5:1, 12 sp)
+#49 LAYOUT CONTRAST « 2 » 3.73:1 (needs 4.5:1, 12 sp)
+#49 LAYOUT CONTRAST « 3 » 3.73:1 (needs 4.5:1, 12 sp)
+#49 LAYOUT CONTRAST « 4 » 3.73:1 (needs 4.5:1, 12 sp)
+#49 > touche 460 373
+#49 DOIGT step_7 « الخطوة 8 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3858f3fef5 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 348 373
+#50 DOIGT step_5 « الخطوة 6 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5869e17392 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#51 > touche 292 373
+#51 DOIGT step_4 « الخطوة 5 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0809f5acd2 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 236 373
+#52 DOIGT step_3 « الخطوة 4 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4c4a151d3a | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 124 373
+#53 DOIGT step_1 « الخطوة 2 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 40a3506d45 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 67 373
+#54 DOIGT step_0 « الخطوة 1 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9e7808946c | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « 3 » 3.23:1 (needs 4.5:1, 12 sp)
+#55 > touche 460 443
+#55 DOIGT step_15 « الخطوة 16 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 53f2f069ef | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 348 443
+#56 DOIGT step_13 « الخطوة 14 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE eb8a6614e6 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 292 443
+#57 DOIGT step_12 « الخطوة 13 »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e84b2cc290 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 236 443
+#58 DOIGT step_11 « الخطوة 12 »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b4eb0b9385 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 124 443
+#59 DOIGT step_9 « الخطوة 10 »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 61dede0930 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 67 443
+#60 DOIGT step_8 « الخطوة 9 »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 72f22628f8 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « 1 » 3.64:1 (needs 4.5:1, 12 sp)
+#61 LAYOUT CONTRAST « 2 » 3.29:1 (needs 4.5:1, 12 sp)
+#61 > glisse 260 400 260 600
+#61 DOIGT step_11 « الخطوة 12 »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5ced963887 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CUT « المازورة 1/2 · هاي هات » ellipsized (« … »)
+#62 LAYOUT CONTRAST « مازورة » 1.50:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « 2 » 1.45:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « تتبّع » 1.45:1 (needs 4.5:1, 14 sp)
+#62 > touche 287 420
+#62 DOIGT tuto_bar_go « المازورة 2 · 12 خانة → »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fc228dfa17 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CONTRAST « 1 » 1.46:1 (needs 4.5:1, 14 sp)
+#63 LAYOUT CONTRAST « 2 » 2.85:1 (needs 4.5:1, 14 sp)
+#63 LAYOUT CONTRAST « 3 » 3.91:1 (needs 4.5:1, 12 sp)
+#63 LAYOUT CONTRAST « 4 » 3.91:1 (needs 4.5:1, 12 sp)
+#63 > touche 460 549
+#63 DOIGT step_23 « الخطوة 8 »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ec17f4a6df | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 348 549
+#64 DOIGT step_21 « الخطوة 6 »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6fb9740a92 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 292 549
+#65 DOIGT step_20 « الخطوة 5 »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 69327bb47d | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 236 549
+#66 DOIGT step_19 « الخطوة 4 »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4c1a67fe9c | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 124 549
+#67 DOIGT step_17 « الخطوة 2 »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c6c7c0e067 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 67 549
+#68 DOIGT step_16 « الخطوة 1 »
+#69 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9e109d6f95 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CONTRAST « 3 » 2.73:1 (needs 4.5:1, 12 sp)
+#69 > glisse 260 590 260 420
+#69 DOIGT step_27 « الخطوة 12 »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8e64b1dd7a | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « بقيت هنا 6 خانات منقّطة » 1.27:1 (needs 3.0:1, 14 sp)
+#70 > touche 460 473
+#70 DOIGT step_31 « الخطوة 16 »
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4d68b88a61 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « بقيت هنا 5 خانات منقّطة » 1.27:1 (needs 3.0:1, 14 sp)
+#71 > touche 348 473
+#71 DOIGT step_29 « الخطوة 14 »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d353878fd6 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « بقيت هنا 4 خانات منقّطة » 1.27:1 (needs 3.0:1, 14 sp)
+#72 > touche 292 473
+#72 DOIGT step_28 « الخطوة 13 »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ce171d2fee | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « بقيت هنا 3 خانات منقّطة » 1.27:1 (needs 3.0:1, 14 sp)
+#73 > touche 236 473
+#73 DOIGT step_27 « الخطوة 12 »
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 89b6b9ed9c | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT CONTRAST « بقيت هنا خانتان منقّطتان » 1.21:1 (needs 3.0:1, 14 sp)
+#74 > touche 124 473
+#74 DOIGT step_25 « الخطوة 10 »
+#75 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 09a8cef338 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=7 chapters=1 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT CONTRAST « بقيت هنا خانة منقّطة واحدة (1) » 1.21:1 (needs 3.0:1, 14 sp)
+#75 > touche 67 473
+#75 DOIGT step_24 « الخطوة 9 »
+#76 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1401b47d42 | project=p-3a013121 tuto=speed_garage/Facile active=true step=hat_do done=8 chapters=1 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 517 861
+#76 DOIGT tuto_next_folded « نجحت »
+#77 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE ae31f77581 | project=p-3a013121 tuto=speed_garage/Facile active=true step=drums_hear done=8 chapters=1 playing=false
+#77 SON Son : rien ne joue.
+#77 LAYOUT OVERLAP « 130 » over « الطبول » (54 x 32 dp)
+#77 LAYOUT OVERLAP « الطبول » over the touchable « السرعة: 130 نبضة في الدقيقة تغيير السرعة » (67 x 37 dp)
+#77 > touche 517 687
+#77 DOIGT tuto_play_mine «   استمع إلى نتيجتك »
+#78 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9782700a17 | project=p-3a013121 tuto=speed_garage/Facile active=true step=drums_hear done=8 chapters=1 playing=true
+#78 SON Son : la musique du projet joue en boucle.
+#78 > touche 517 785
+#78 DOIGT tuto_listen «  استمع إلى المثال »
+#79 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 08f012dd78 | project=p-3a013121 tuto=speed_garage/Facile active=true step=drums_hear done=8 chapters=1 playing=false
+#79 SON Son : l'exemple du tuto joue (encore 3 s).
+#79 > attends 4
+#80 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7a86669ae5 | project=p-3a013121 tuto=speed_garage/Facile active=true step=drums_hear done=9 chapters=1,2 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 517 788
+#80 DOIGT tuto_next_big « الفصل التالي   »
+#81 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9f6e39fe12 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_hear done=9 chapters=1,2 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 517 782
+#81 DOIGT tuto_listen «  استمع إلى المثال »
+#82 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7d03b615f6 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_hear done=9 chapters=1,2 playing=false
+#82 SON Son : l'exemple du tuto joue (encore 3 s).
+#82 > attends 8
+#83 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE ff8bae3af4 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_hear done=10 chapters=1,2 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 517 782
+#83 DOIGT tuto_next_big « الخطوة التالية   »
+#84 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 00027b4198 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 517 687
+#84 DOIGT tuto_need «   أنشئ مسار البيس »
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a183370953 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT CUT « مازورة » lines dropped (more lines than room)
+#85 LAYOUT CUT « 1 » drawn past its parent's edge (down, 32 dp shown of 37)
+#85 LAYOUT CUT « 2 » drawn past its parent's edge (down, 32 dp shown of 37)
+#85 LAYOUT CUT « لا♭ » lines cut (taller than its box)
+#85 LAYOUT CUT « صول » lines cut (taller than its box)
+#85 LAYOUT CUT « صول♭ » lines cut (taller than its box)
+#85 > touche 260 705
+#85 DOIGT rien
+#86 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 23ee09a973 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#86 SON Son : 1 note du synthé.
+#86 > touche 508 705
+#86 DOIGT rien
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 32daa10695 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#87 SON Son : 1 note du synthé.
+#87 > touche 800 705
+#87 DOIGT rien
+#88 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 108b56aa40 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#88 SON Son : 1 note du synthé.
+#88 > touche 920 705
+#88 DOIGT rien
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ddea7f04c1 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#89 SON Son : 1 note du synthé.
+#89 > touche 903 539
+#89 DOIGT tuto_notes_left « باص · المازورة 1/8 »
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6364cf1b46 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_do done=10 chapters=1,2 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 665 705
+#90 DOIGT rien
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d82baf003c | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_do done=11 chapters=1,2 playing=false
+#91 SON Son : 1 note du synthé.
+#91 > touche 517 980
+#91 DOIGT tuto_next_folded « نجحت »
+#92 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 40988ac55c | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_2 done=11 chapters=1,2 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 517 806
+#92 DOIGT tuto_do «   سأفعلها »
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0a904eeba0 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_2 done=11 chapters=1,2 playing=false
+#93 SON Son : rien ne joue.
+#93 LAYOUT CUT « 3 » drawn past its parent's edge (down, 32 dp shown of 37)
+#93 > touche 508 705
+#93 DOIGT rien
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ee09802460 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_2 done=11 chapters=1,2 playing=false
+#94 SON Son : 1 note du synthé.
+#94 > touche 903 539
+#94 DOIGT tuto_notes_left « باص · المازورة 2/8 »
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e6ffc242c9 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_2 done=11 chapters=1,2 playing=false
+#95 SON Son : rien ne joue.
+#95 LAYOUT CUT « مي♭ » lines cut (taller than its box)
+#95 LAYOUT CUT « ري » lines cut (taller than its box)
+#95 LAYOUT CUT « ري♭ » lines cut (taller than its box)
+#95 > touche 665 705
+#95 DOIGT rien
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b92f2484e1 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_2 done=11 chapters=1,2 playing=false
+#96 SON Son : 1 note du synthé.
+#96 > touche 903 539
+#96 DOIGT tuto_notes_left « باص · المازورة 2/8 »
+#97 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5595afc5f8 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_2 done=11 chapters=1,2 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 800 705
+#97 DOIGT rien
+#98 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a70b687477 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_2 done=11 chapters=1,2 playing=false
+#98 SON Son : 1 note du synthé.
+#98 > touche 517 980
+#98 DOIGT tuto_need_folded « انسخ إلى المازورات التالية »
+#99 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE de36408333 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_2 done=12 chapters=1,2 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT CUT « 4 » drawn past its parent's edge (down, 32 dp shown of 37)
+#99 LAYOUT CUT « 5 » drawn past its parent's edge (down, 32 dp shown of 37)
+#99 > touche 517 980
+#99 DOIGT tuto_next_folded « نجحت »
+#100 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE e8c8733ac2 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=12 chapters=1,2 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 517 806
+#100 DOIGT tuto_do «   سأفعلها »
+#101 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 74a49ad3b4 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=12 chapters=1,2 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 800 705
+#101 DOIGT rien
+#102 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d0d51a0d87 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=12 chapters=1,2 playing=false
+#102 SON Son : 1 note du synthé.
+#102 > touche 903 539
+#102 DOIGT tuto_notes_left « باص · المازورة 4/8 »
+#103 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7639d381f8 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=12 chapters=1,2 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 903 539
+#103 DOIGT tuto_notes_left « باص · المازورة 4/8 »
+#104 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 447d850242 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=12 chapters=1,2 playing=false
+#104 SON Son : rien ne joue.
+#104 LAYOUT CUT « لا » lines cut (taller than its box)
+#104 LAYOUT CONTRAST « باص · المازورة 4/8 » 3.91:1 (needs 4.5:1, 12 sp)
+#104 LAYOUT CONTRAST « ↓ بقيت نوتة منقّطة للمس (1) » 4.27:1 (needs 4.5:1, 14 sp)
+#104 > touche 903 539
+#104 DOIGT tuto_notes_left « باص · المازورة 4/8 »
+#105 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a8fdaacfe2 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=12 chapters=1,2 playing=false
+#105 SON Son : rien ne joue.
+#105 LAYOUT CONTRAST « ↑ بقيت نوتتان منقّطتان للمس » 4.17:1 (needs 4.5:1, 14 sp)
+#105 > touche 260 720
+#105 DOIGT rien
+#106 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0ec3e2d997 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=12 chapters=1,2 playing=false
+#106 SON Son : 1 note du synthé.
+#106 > touche 510 720
+#106 DOIGT rien
+#107 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ae31e565ae | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=12 chapters=1,2 playing=false
+#107 SON Son : 1 note du synthé.
+#107 > touche 903 539
+#107 DOIGT tuto_notes_left « باص · المازورة 4/8 »
+#108 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b8d4873ccc | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=12 chapters=1,2 playing=false
+#108 SON Son : rien ne joue.
+#108 LAYOUT CUT « سي♭ » lines cut (taller than its box)
+#108 > touche 665 712
+#108 DOIGT rien
+#109 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2c5c8bc3fc | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=12 chapters=1,2 playing=false
+#109 SON Son : 1 note du synthé.
+#109 > touche 517 980
+#109 DOIGT tuto_need_folded « انسخ إلى المازورات التالية »
+#110 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7809b403d7 | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=13 chapters=1,2,3 playing=false
+#110 SON Son : rien ne joue.
+#110 > touche 517 980
+#110 DOIGT tuto_chapter_end_folded « أحسنت، انتهى الفصل! »
+#111 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e6861827ec | project=p-3a013121 tuto=speed_garage/Facile active=true step=bass_3 done=13 chapters=1,2,3 playing=false
+#111 SON Son : rien ne joue.
+#111 > touche 517 907
+#111 DOIGT tuto_next_big « الفصل التالي   »
+#112 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 7a6482ba1e | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#112 SON Son : rien ne joue.
+#112 LAYOUT CUT « خط باص » lines cut (taller than its box)
+#112 LAYOUT CUT «  المسار » lines cut (taller than its box)
+#112 LAYOUT CONTRAST « خط باص » 3.10:1 (needs 4.5:1, 12 sp)
+#112 > touche 517 806
+#112 DOIGT tuto_need «   أنشئ مسار الكوردات »
+#113 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 19f12e841b | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#113 SON Son : rien ne joue.
+#113 > touche 903 539
+#113 DOIGT tuto_notes_left « الكوردات · المازورة 1/8 »
+#114 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE af583d5af2 | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#114 SON Son : rien ne joue.
+#114 LAYOUT CUT « فا » lines cut (taller than its box)
+#114 LAYOUT CUT « مي » lines cut (taller than its box)
+#114 > touche 305 692
+#114 DOIGT rien
+#115 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 85bab6049e | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#115 SON Son : rien ne joue.
+#115 > touche 598 692
+#115 DOIGT rien
+#116 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 275f49ad94 | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 517 980
+#116 DOIGT tuto_need_folded « انسخ إلى المازورات التالية »
+#117 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8e105aa13f | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#117 SON Son : rien ne joue.
+#117 > touche 903 539
+#117 DOIGT tuto_notes_left « الكوردات · المازورة 3/8 »
+#118 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 57369fd6ab | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#118 SON Son : rien ne joue.
+#118 LAYOUT CUT « سي » lines cut (taller than its box)
+#118 > touche 305 718
+#118 DOIGT rien
+#119 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2e3e820cf0 | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 598 718
+#119 DOIGT rien
+#120 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6ac722b980 | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#120 SON Son : rien ne joue.
+#120 > touche 903 539
+#120 DOIGT tuto_notes_left « الكوردات · المازورة 4/8 »
+#121 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c98e392e00 | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#121 SON Son : rien ne joue.
+#121 > touche 305 707
+#121 DOIGT rien
+#122 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE eca76a1eac | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#122 SON Son : rien ne joue.
+#122 > touche 598 707
+#122 DOIGT rien
+#123 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c4c0d7c192 | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=13 chapters=1,2,3 playing=false
+#123 SON Son : rien ne joue.
+#123 > touche 517 980
+#123 DOIGT tuto_need_folded « انسخ إلى المازورات التالية »
+#124 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a04fcb7a3d | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=14 chapters=1,2,3,4 playing=false
+#124 SON Son : rien ne joue.
+#124 > touche 517 980
+#124 DOIGT tuto_chapter_end_folded « أحسنت، انتهى الفصل! »
+#125 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 912cbb4bda | project=p-3a013121 tuto=speed_garage/Facile active=true step=pad_do done=14 chapters=1,2,3,4 playing=false
+#125 SON Son : rien ne joue.
+#125 > touche 517 907
+#125 DOIGT tuto_next_big « الفصل التالي   »
+#126 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE e671bd43e8 | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#126 SON Son : rien ne joue.
+#126 > touche 517 806
+#126 DOIGT tuto_need «   أنشئ مسار اللحن »
+#127 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a33e8ea072 | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#127 SON Son : rien ne joue.
+#127 > touche 175 707
+#127 DOIGT rien
+#128 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3a4df3d676 | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#128 SON Son : 1 note du synthé.
+#128 > touche 508 707
+#128 DOIGT rien
+#129 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE be6f4fd443 | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_do done=14 chapters=1,2,3,4 playing=false
+#129 SON Son : 1 note du synthé.
+#129 > touche 643 707
+#129 DOIGT rien
+#130 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 181e2057aa | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_do done=15 chapters=1,2,3,4 playing=false
+#130 SON Son : 1 note du synthé.
+#130 > touche 517 980
+#130 DOIGT tuto_next_folded « نجحت »
+#131 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 6067031efe | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_2 done=15 chapters=1,2,3,4 playing=false
+#131 SON Son : rien ne joue.
+#131 > touche 57 336
+#131 DOIGT tuto_fold
+#132 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 358c4412f1 | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_2 done=15 chapters=1,2,3,4 playing=false
+#132 SON Son : rien ne joue.
+#132 > touche 903 539
+#132 DOIGT tuto_notes_left « اللحن · المازورة 2/8 »
+#133 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 54bafbb2cd | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_2 done=15 chapters=1,2,3,4 playing=false
+#133 SON Son : rien ne joue.
+#133 > touche 418 707
+#133 DOIGT rien
+#134 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d4361e8fb9 | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_2 done=15 chapters=1,2,3,4 playing=false
+#134 SON Son : 1 note du synthé.
+#134 > touche 778 707
+#134 DOIGT rien
+#135 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 649f827232 | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_2 done=15 chapters=1,2,3,4 playing=false
+#135 SON Son : 1 note du synthé.
+#135 > touche 517 980
+#135 DOIGT tuto_need_folded « انسخ إلى المازورات التالية »
+#136 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9131d84c43 | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_2 done=16 chapters=1,2,3,4,5 playing=false
+#136 SON Son : rien ne joue.
+#136 > touche 517 980
+#136 DOIGT tuto_chapter_end_folded « أحسنت، انتهى الفصل! »
+#137 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f2a9ffe05f | project=p-3a013121 tuto=speed_garage/Facile active=true step=lead_2 done=16 chapters=1,2,3,4,5 playing=false
+#137 SON Son : rien ne joue.
+#137 > touche 517 907
+#137 DOIGT tuto_next_big « الفصل التالي   »
+#138 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 9e0fe41f00 | project=p-3a013121 tuto=speed_garage/Facile active=true step=groove_hear done=16 chapters=1,2,3,4,5 playing=false
+#138 SON Son : rien ne joue.
+#138 > touche 202 42
+#138 DOIGT top_play « تشغيل هذا الجزء »
+#139 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 1547759154 | project=p-3a013121 tuto=speed_garage/Facile active=true step=groove_hear done=16 chapters=1,2,3,4,5 playing=true
+#139 SON Son : la musique du projet joue en boucle.
+#139 > attends 4
+#140 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE deb596faff | project=p-3a013121 tuto=speed_garage/Facile active=true step=groove_hear done=16 chapters=1,2,3,4,5 playing=true
+#140 SON Son : la musique du projet joue en boucle.
+#140 > touche 517 904
+#140 DOIGT tuto_listen «  استمع إلى المثال »
+#141 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 75f9c75fe0 | project=p-3a013121 tuto=speed_garage/Facile active=true step=groove_hear done=16 chapters=1,2,3,4,5 playing=false
+#141 SON Son : l'exemple du tuto joue (encore 3 s).
+#141 > attends 4
+#142 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 2381d1c0f7 | project=p-3a013121 tuto=speed_garage/Facile active=true step=groove_hear done=17 chapters=1,2,3,4,5 playing=false
+#142 SON Son : rien ne joue.
+#142 > touche 517 901
+#142 DOIGT tuto_next_big « الخطوة التالية   »
+#143 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 88f6b4c2d5 | project=p-3a013121 tuto=speed_garage/Facile active=true step=groove_name done=17 chapters=1,2,3,4,5 playing=false
+#143 SON Son : rien ne joue.
+#143 > touche 517 806
+#143 DOIGT tuto_need «   سمِّ الجزء «غروف» »
+#144 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d348a8b5fe | project=p-3a013121 tuto=speed_garage/Facile active=true step=groove_name done=18 chapters=1,2,3,4,5,6 playing=false
+#144 SON Son : rien ne joue.
+#144 > fin
+#144 BENCH-VERDICT ok where=seat.fin
+#144 FIN : fin

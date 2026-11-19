@@ -3796,6 +3796,15 @@ def zone_report(d):
     check(code == 0 and moved and "--tests FooTest.works" in asked and "FooTest#works" not in asked,
           "« Classe#méthode » in « tests: » reaches Gradle as « Classe.méthode »:\n" + out + asked)
     git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    # Tour 9 L10: a report that copies the Gradle command (« :app:testDebugUnitTest --tests '*Foo*' ») gives its bare
+    # filters, never « --tests » nor the task as a filter (else Gradle fails on « --tests » with no argument).
+    branch("commande", "# Rapport\n\ntests: :app:testDebugUnitTest --tests 'FooTest' --tests \"*Foo*\"\n\n"
+           "- chemin: Accueil | test: FooTest#works\n")
+    code, out, asked, moved = merge("commande")
+    check(code == 0 and moved and "--tests FooTest" in asked and "--tests *Foo*" in asked
+          and "--tests --tests" not in asked and "testDebugUnitTest --tests :app" not in asked and "'" not in asked,
+          "a « tests: » line copied from the Gradle command gives its bare filters:\n" + out + asked)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
     branch("rapportok", good)
     code, out, asked, moved = merge("rapportok")
     check(code == 0 and moved and "--tests FooTest" in asked, "the report's « tests: » are the team's targeted tests:\n" + out + asked)

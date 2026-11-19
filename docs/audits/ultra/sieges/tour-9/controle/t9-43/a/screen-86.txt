@@ -1,0 +1,59 @@
+Écran 86 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 178,42
+bouton « Pro » @ 385,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 539,42
+bouton ● @ 611,42
+bouton ▶ « dit deel » @ 683,42
+bouton ▶ « het nummer » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [coupé] @ 68,204
+onglet « Acid 303 Baslijn » @ 212,204
+onglet « Zang Microfoon » @ 400,204
+onglet « Remix Splitsen » @ 578,204
+bouton « Bas Ronde bas » ⋮ @ 772,204
+image ← @ 10,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+texte « In de maat 50% » [coupé] @ 646,304
+texte « 100% » @ 99,351
+texte « Wissen » @ 228,351
+texte « Bas · maat 1/8 » @ 144,412
+bouton « Kopiëren » @ 763,433
+texte « Patroon staat erin! De rest wordt gekopieerd: » @ 364,448
+texte « mt » @ 84,494
+bouton « 1 » @ 486,502
+bouton « 2 » [coupé] @ 853,502
+texte « E » [coupé] @ 84,545
+texte « E♭ » @ 84,577
+texte « D » @ 84,619
+texte « D♭ » @ 84,661
+texte « C3 » @ 84,703
+texte « B » @ 84,745
+texte « B♭ » @ 84,787
+texte « A » @ 84,829
+texte « A♭ » @ 84,871
+texte « G » @ 84,913
+texte « G♭ » @ 84,955
+texte « F » @ 84,997
+texte « E » @ 84,1039
+texte « E♭ » @ 84,1081
+texte « D » [coupé] @ 84,1104
+dessin [coupé] @ 492,821
+texte « De bas Hoofdstuk 5/17 · Stap 2/2 · Pro » @ 356,1157
+icône (liste) « Hoofdstukken » @ 749,1158
+icône ⌃ @ 843,1158
+image (œil) @ 51,1270
+texte « Stoppen » @ 803,1270
+texte « Kijk, ik doe het… » @ 403,1270
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

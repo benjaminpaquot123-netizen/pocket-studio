@@ -1,0 +1,81 @@
+Écran 56 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 191,42
+bouton « Pro » @ 412,42
+bouton « A » ▾ @ 490,42
+icône ↶ @ 566,42
+icône ↷ [désactivé] @ 638,42
+bouton ● @ 710,42
+bouton ▶ « dit deel » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [sélectionné] @ 87,204
+onglet « Acid 303 Baslijn » @ 260,204
+onglet « Zang Microfoon » @ 448,204
+onglet « Remix Splitsen » @ 626,204
+bouton + «  Spoor » [coupé] @ 796,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+titre « VAKJES: BEKKEN » [coupé, état « Uitgeklapt »] @ 363,311
+bouton « ? » [coupé] @ 334,311
+bouton « Alle pads » [coupé] @ 771,312
+texte « Maat » @ 75,384
+bouton « 1 » [sélectionné] @ 153,384
+bouton « 2 » @ 234,384
+bouton « Volgen » @ 351,384
+texte « Maat 1/2 · Bekken » @ 166,450
+texte « Nog 8 gestippelde vakjes hier » @ 265,488
+bouton « 1 » [état « leeg, gestippeld: tik erop »] @ 90,558
+bouton [état « leeg »] @ 192,558
+bouton [état « leeg, gestippeld: tik erop »] @ 294,558
+bouton [état « leeg »] @ 397,558
+bouton « 2 » [état « leeg, gestippeld: tik erop »] @ 500,558
+bouton [état « leeg »] @ 603,558
+bouton [état « leeg, gestippeld: tik erop »] @ 706,558
+bouton [état « leeg »] @ 809,558
+bouton « 3 » [état « leeg, gestippeld: tik erop »] @ 90,639
+bouton [état « leeg »] @ 192,639
+bouton [état « leeg, gestippeld: tik erop »] @ 294,639
+bouton [état « leeg »] @ 397,639
+bouton « 4 » [état « leeg, gestippeld: tik erop »] @ 500,639
+bouton [état « leeg »] @ 603,639
+bouton [état « leeg, gestippeld: tik erop »] @ 706,639
+bouton [état « leeg »] @ 809,639
+bouton « Slagen » [sélectionné] @ 113,725
+bouton « Rolls » @ 248,725
+bouton « Pan » @ 361,725
+bouton « Toonhoogte » @ 525,725
+bouton « Kracht » @ 708,725
+texte « Vullen » @ 80,809
+texte « alles » @ 165,809
+texte « 1/2 » @ 248,809
+texte « 1/4 » @ 323,809
+texte « ◀ » [désactivé] @ 398,809
+texte « ▶ » [désactivé] @ 473,809
+texte « Wissen » [désactivé] @ 575,809
+texte « Tik op een vakje voor een slag, schuif je vinger om er meerdere te tekenen. Lang drukken op een slag: kracht en rolls (×2 tot ×8). » @ 450,893
+bouton « 1 maat » @ 210,977
+bouton « 2 » [sélectionné] @ 323,977
+bouton « 3 » @ 404,977
+bouton « 4 » @ 485,977
+texte « Lengte » @ 87,977
+texte « − » [coupé] @ 404,1031
+texte « + » [désactivé, coupé] @ 645,1031
+texte « Hi-hats, shaker en ride Hoofdstuk 4/17 · Stap 4/6 · Pro » @ 356,1083
+icône (liste) « Hoofdstukken » @ 749,1084
+icône ⌃ @ 843,1084
+icône « Nu jij: tik op de pad ‘Bekken’ (het grote tinkelende bekken) de gestippelde vakjes aan: om de andere. Hij speelt alleen in de Drop. Lees » ⌃ @ 450,1196
+icône ↶ « Ongedaan maken » @ 147,1292
+icône ↷ « Opnieuw » [désactivé] @ 336,1292
+icône ▶ « het nummer » @ 502,1292
+texte « 174 Tempo » @ 667,1292
+icône (trois points reliés) « Delen » @ 804,1292
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

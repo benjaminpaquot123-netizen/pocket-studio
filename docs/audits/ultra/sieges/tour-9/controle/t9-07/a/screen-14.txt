@@ -1,0 +1,31 @@
+Écran 14 (900x1509)
+dessin @ 450,754
+dessin @ 450,683
+texte « 歌曲调性 » @ 403,755
+texte « 关闭 » @ 829,755
+texte « 曲子的调：E · 小调 » @ 142,826
+texte « 音阶 » @ 52,882
+bouton « 大调 » @ 72,954
+bouton « 小调 » @ 177,954
+bouton « 多利亚 » @ 297,954
+bouton « 小调五声 » @ 447,954
+bouton « 大调五声 » @ 612,954
+bouton « Blues » @ 756,954
+bouton « 弗里几亚 » @ 102,1035
+bouton « 和声小调 » @ 267,1035
+texte « 主音 » @ 52,1106
+bouton « C » @ 63,1178
+bouton « C♯ » @ 150,1178
+bouton « D » @ 237,1178
+bouton « E♭ » @ 324,1178
+bouton « E » @ 411,1178
+bouton « F » @ 498,1178
+bouton « F♯ » @ 585,1178
+bouton « G » @ 672,1178
+bouton « A♭ » @ 759,1178
+bouton « A » @ 63,1259
+bouton « B♭ » @ 150,1259
+bouton « B » @ 237,1259
+image (rond coché) @ 58,1345
+texte « 成功！歌曲的色彩选好了。 » @ 267,1345
+bouton « 返回教程 » @ 450,1434

@@ -1,0 +1,288 @@
+Écran 53 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 116,42
+bouton « Pro » @ 262,42
+bouton « F · Build-up » ▾ @ 409,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 849,204
+image → @ 889,205
+texte « Teil: F · Build-up » @ 132,273
+bouton « Kit: Studio » ▾ [coupé] @ 127,314
+texte « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » [coupé] @ 565,314
+bouton « Alle Pads » [sélectionné] @ 770,400
+titre « STEPS: ALLE PADS · BUILD-UP » [état « Aufgeklappt »] @ 362,400
+bouton « ? » @ 508,400
+texte « Takt » @ 70,484
+bouton « 1 » @ 143,484
+bouton « 2 » @ 224,484
+bouton « 3 » @ 305,484
+bouton « 4 » [sélectionné] @ 386,484
+bouton « Folgen » @ 502,484
+texte « Kick » @ 96,549
+bouton @ 174,548
+bouton @ 219,548
+bouton @ 264,548
+bouton @ 309,548
+bouton @ 353,548
+bouton @ 397,548
+bouton @ 441,548
+bouton @ 485,548
+bouton @ 529,548
+bouton @ 573,548
+bouton @ 617,548
+bouton @ 661,548
+bouton @ 705,548
+bouton @ 749,548
+bouton @ 793,548
+bouton @ 837,548
+texte « Kick 2 » @ 96,585
+bouton @ 174,584
+bouton @ 219,584
+bouton @ 264,584
+bouton @ 309,584
+bouton @ 353,584
+bouton @ 397,584
+bouton @ 441,584
+bouton @ 485,584
+bouton @ 529,584
+bouton @ 573,584
+bouton @ 617,584
+bouton @ 661,584
+bouton @ 705,584
+bouton @ 749,584
+bouton @ 793,584
+bouton @ 837,584
+texte « Snare » @ 96,621
+bouton @ 174,620
+bouton @ 219,620
+bouton @ 264,620
+bouton @ 309,620
+bouton @ 353,620
+bouton @ 397,620
+bouton @ 441,620
+bouton @ 485,620
+bouton @ 529,620
+bouton @ 573,620
+bouton @ 617,620
+bouton @ 661,620
+bouton @ 705,620
+bouton @ 749,620
+bouton @ 793,620
+bouton @ 837,620
+texte « Snare 2 » @ 96,657
+bouton @ 174,656
+bouton @ 219,656
+bouton @ 264,656
+bouton @ 309,656
+bouton @ 353,656
+bouton @ 397,656
+bouton @ 441,656
+bouton @ 485,656
+bouton @ 529,656
+bouton @ 573,656
+bouton @ 617,656
+bouton @ 661,656
+bouton @ 705,656
+bouton @ 749,656
+bouton @ 793,656
+bouton @ 837,656
+texte « Clap » @ 96,693
+bouton [sélectionné] @ 174,692
+bouton [sélectionné] @ 219,692
+bouton [sélectionné] @ 264,692
+bouton [sélectionné] @ 309,692
+bouton [sélectionné] @ 353,692
+bouton [sélectionné] @ 397,692
+bouton [sélectionné] @ 441,692
+bouton [sélectionné] @ 485,692
+bouton [sélectionné] @ 529,692
+bouton [sélectionné] @ 573,692
+bouton [sélectionné] @ 617,692
+bouton [sélectionné] @ 661,692
+bouton @ 705,692
+bouton @ 749,692
+bouton @ 793,692
+bouton @ 837,692
+texte « Hi-Hat » @ 96,729
+bouton [sélectionné] @ 174,728
+bouton [sélectionné] @ 219,728
+bouton @ 264,728
+bouton [sélectionné] @ 309,728
+bouton [sélectionné] @ 353,728
+bouton [sélectionné] @ 397,728
+bouton @ 441,728
+bouton [sélectionné] @ 485,728
+bouton [sélectionné] @ 529,728
+bouton [sélectionné] @ 573,728
+bouton @ 617,728
+bouton [sélectionné] @ 661,728
+bouton @ 705,728
+bouton @ 749,728
+bouton @ 793,728
+bouton @ 837,728
+texte « Offene Hi-Hat » @ 96,765
+bouton @ 174,764
+bouton @ 219,764
+bouton @ 264,764
+bouton @ 309,764
+bouton @ 353,764
+bouton @ 397,764
+bouton @ 441,764
+bouton @ 485,764
+bouton @ 529,764
+bouton @ 573,764
+bouton @ 617,764
+bouton @ 661,764
+bouton @ 705,764
+bouton @ 749,764
+bouton @ 793,764
+bouton @ 837,764
+texte « Tiefes Tom » @ 96,801
+bouton @ 174,800
+bouton @ 219,800
+bouton @ 264,800
+bouton @ 309,800
+bouton @ 353,800
+bouton @ 397,800
+bouton @ 441,800
+bouton @ 485,800
+bouton @ 529,800
+bouton @ 573,800
+bouton @ 617,800
+bouton @ 661,800
+bouton @ 705,800
+bouton @ 749,800
+bouton @ 793,800
+bouton @ 837,800
+texte « Mittleres Tom » @ 96,837
+bouton @ 174,836
+bouton @ 219,836
+bouton @ 264,836
+bouton @ 309,836
+bouton @ 353,836
+bouton @ 397,836
+bouton @ 441,836
+bouton @ 485,836
+bouton @ 529,836
+bouton @ 573,836
+bouton @ 617,836
+bouton @ 661,836
+bouton @ 705,836
+bouton @ 749,836
+bouton @ 793,836
+bouton @ 837,836
+texte « Hohes Tom » @ 96,873
+bouton @ 174,872
+bouton @ 219,872
+bouton @ 264,872
+bouton @ 309,872
+bouton @ 353,872
+bouton @ 397,872
+bouton @ 441,872
+bouton @ 485,872
+bouton @ 529,872
+bouton @ 573,872
+bouton @ 617,872
+bouton @ 661,872
+bouton @ 705,872
+bouton @ 749,872
+bouton @ 793,872
+bouton @ 837,872
+texte « Rim » @ 96,909
+bouton @ 174,908
+bouton @ 219,908
+bouton @ 264,908
+bouton @ 309,908
+bouton @ 353,908
+bouton @ 397,908
+bouton @ 441,908
+bouton @ 485,908
+bouton @ 529,908
+bouton @ 573,908
+bouton @ 617,908
+bouton @ 661,908
+bouton @ 705,908
+bouton @ 749,908
+bouton @ 793,908
+bouton @ 837,908
+texte « Cowbell » @ 96,945
+bouton @ 174,944
+bouton @ 219,944
+bouton @ 264,944
+bouton @ 309,944
+bouton @ 353,944
+bouton @ 397,944
+bouton @ 441,944
+bouton @ 485,944
+bouton @ 529,944
+bouton @ 573,944
+bouton @ 617,944
+bouton @ 661,944
+bouton @ 705,944
+bouton @ 749,944
+bouton @ 793,944
+bouton @ 837,944
+texte « Becken » @ 96,981
+bouton @ 174,980
+bouton @ 219,980
+bouton @ 264,980
+bouton @ 309,980
+bouton @ 353,980
+bouton @ 397,980
+bouton @ 441,980
+bouton @ 485,980
+bouton @ 529,980
+bouton @ 573,980
+bouton @ 617,980
+bouton @ 661,980
+bouton @ 705,980
+bouton @ 749,980
+bouton @ 793,980
+bouton @ 837,980
+texte « Shaker » @ 96,1017
+bouton @ 174,1016
+bouton @ 219,1016
+bouton @ 264,1016
+bouton @ 309,1016
+bouton @ 353,1016
+bouton @ 397,1016
+bouton @ 441,1016
+bouton @ 485,1016
+bouton @ 529,1016
+bouton @ 573,1016
+bouton @ 617,1016
+bouton @ 661,1016
+bouton @ 705,1016
+bouton @ 749,1016
+bouton @ 793,1016
+bouton @ 837,1016
+texte « Die Übergänge: von einem Teil zum nächsten Kapitel 12/16 · Schritt 2/3 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône (rond coché) « Geschafft Nächster Schritt » → @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

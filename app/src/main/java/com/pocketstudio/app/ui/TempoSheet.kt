@@ -139,7 +139,11 @@ private fun lyingDown(): Boolean = LocalConfiguration.current.let { it.screenWid
 
 private const val LYING_MAX_HEIGHT_DP = 480
 
+/** Under this width (dp, at the interface size) the tempo sheet's top stacks: see [TempoTop]. */
+private const val NARROW_WIDTH_DP = 260
+
 /** What stays at the top: the title, its « ? », « Fermer », and the tempo between − and + (one row when lying down). */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TempoTop(tempoBpm: Double, draft: TempoDraft, typed: (TempoDraft) -> Unit, actions: TempoActions, close: () -> Unit) {
     val current = Math.round(tempoBpm).toInt()
@@ -148,28 +152,51 @@ private fun TempoTop(tempoBpm: Double, draft: TempoDraft, typed: (TempoDraft) ->
         Text(tr("Tempo"), style = MaterialTheme.typography.titleLarge, color = Neon.TextPrimary)
         com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.TEMPO_SET, about = listOf("tempo_tap", "tempo_display", "tempo_half", "tempo_double"))
     }
-    val closeButton: @Composable () -> Unit = { TextButton(onClick = close, modifier = Modifier.testTag("tempo_close")) { Text(tr("Fermer")) } }
+    val closeButton: @Composable () -> Unit = { TextButton(onClick = close, modifier = Modifier.testTag("tempo_close")) { Text(tr("Fermer"), maxLines = 1, softWrap = false) } }
     // The tempo as typed (accent) or as it is now, between − and + (held: they repeat).
-    val value: @Composable RowScope.(Modifier) -> Unit = { m ->
+    val minus: @Composable () -> Unit = {
         RepeatingIconButton({ actions.set((current - 1).toDouble().coerceAtLeast(Project.MIN_TEMPO)); typed(TempoDraft()) }, Modifier.testTag("tempo_minus")) {
             Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins"))
         }
-        Row(m, horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Bottom) {
-            val big = MonoStyle.copy(fontSize = if (lying) 36.sp else 44.sp, fontWeight = FontWeight.ExtraBold)
-            // Typed figures show as typed; the tempo itself rolls to its new value (−, +, a tap).
-            if (draft.digits.isNotEmpty()) Text(draft.digits, style = big, color = Neon.Cyan, modifier = Modifier.testTag("tempo_display"))
-            else RollingText("$current", style = big, color = Neon.TextPrimary, modifier = Modifier.testTag("tempo_display"))
-            Text(" BPM", style = MaterialTheme.typography.titleMedium, color = Neon.TextSecondary, modifier = Modifier.padding(bottom = if (lying) 6.dp else 8.dp))
-        }
+    }
+    val plus: @Composable () -> Unit = {
         RepeatingIconButton({ actions.set((current + 1).toDouble().coerceAtMost(Project.MAX_TEMPO)); typed(TempoDraft()) }, Modifier.testTag("tempo_plus")) {
             Icon(Icons.Filled.Add, contentDescription = tr("Tempo plus"))
         }
+    }
+    val number: @Composable (Modifier) -> Unit = { m ->
+        // Tour 9, L8 (360 dp at 200 %): when « BPM » does not fit beside the tempo, it goes under it whole; the
+        // figures are never cut and the letters never stack one per line.
+        FlowRow(m, horizontalArrangement = Arrangement.Center, itemVerticalAlignment = Alignment.Bottom) {
+            val big = MonoStyle.copy(fontSize = if (lying) 36.sp else 44.sp, fontWeight = FontWeight.ExtraBold)
+            // Typed figures show as typed; the tempo itself rolls to its new value (−, +, a tap).
+            if (draft.digits.isNotEmpty()) Text(draft.digits, style = big, color = Neon.Cyan, softWrap = false, modifier = Modifier.testTag("tempo_display"))
+            else RollingText("$current", style = big, color = Neon.TextPrimary, modifier = Modifier.testTag("tempo_display"))
+            Text(" BPM", maxLines = 1, softWrap = false, style = MaterialTheme.typography.titleMedium, color = Neon.TextSecondary, modifier = Modifier.padding(bottom = if (lying) 6.dp else 8.dp))
+        }
+    }
+    val value: @Composable RowScope.(Modifier) -> Unit = { m ->
+        minus()
+        number(m)
+        plus()
     }
     if (lying) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             title()
             value(Modifier.weight(1f))
             closeButton()
+        }
+    } else if (androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp < NARROW_WIDTH_DP) {
+        // Tour 9, L8 (360 dp at 200 %: some 180 dp): « Fermer » goes under the title rather than split letter by
+        // letter, and the tempo gets the whole width, − and + on the line under it.
+        FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, itemVerticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically) { title() }
+            closeButton()
+        }
+        number(Modifier.fillMaxWidth())
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+            minus()
+            plus()
         }
     } else {
         Row(verticalAlignment = Alignment.CenterVertically) {

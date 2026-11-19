@@ -30,12 +30,11 @@ class Coquille2SeatTest : HumanTester("coquille2") {
     /**
      * [tag] touched, as a person does. « Mes projets » reads its list off the main thread and says « Chargement de la
      * liste… » until it has it: a row is not looked for on that line, the list is waited for first (CI 349: the bench
-     * read the screen before a loaded machine had read the list). 20 s of the phone's time at most: a list that never
-     * comes still fails, on the screen shown.
+     * read the screen before a loaded machine had read the list). At least 20 s of the phone's time and 60 s of real time: a list that never
+     * comes still fails, on the screen shown. (Tour 9, L9: [waitWhileListLoads]).
      */
     private fun tap(tag: String): String {
-        var waits = 0
-        while (centerOf(tag) == null && centerOf("projects_loading") != null && waits++ < 40) act("attends 0.5")
+        waitWhileListLoads(tag)
         val at = reachTag(tag) ?: error("no $tag on:\n" + screenLines().joinToString("\n"))
         return act("touche ${at.first} ${at.second}")
     }

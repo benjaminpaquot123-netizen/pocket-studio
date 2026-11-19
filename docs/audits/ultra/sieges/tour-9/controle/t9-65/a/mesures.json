@@ -1,0 +1,49 @@
+{
+  "siege": "a",
+  "niveau": "3",
+  "options": {
+    "lang": "ja",
+    "device": "phone360",
+    "font": "200",
+    "mode": "pro",
+    "amenee": "tuto:synthwave:9",
+    "gestes.max": "181",
+    "mission": "tuto-pro",
+    "profil": "confirmé",
+    "niveau": "3",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 67,
+    "images": 4,
+    "gestes_premier_son": 5,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 13,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 74,
+    "ecrans_revisites": 5,
+    "defilements_sans_toucher": 12,
+    "appels_aide": 0,
+    "abandon": "rien ne change (5 écrans identiques)",
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 99,
+    "plantage": false,
+    "fin": "rien ne change (5 écrans identiques)",
+    "premier_ecran_s": {
+      "reel": 3.9,
+      "simule": 2.4,
+      "jvm": 9.1,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-pro",
+  "resultat": "reussie",
+  "pourquoi": "« synthwave » en Pro : 37 étape(s), 11 chapitre(s) entier(s) sur 16"
+}

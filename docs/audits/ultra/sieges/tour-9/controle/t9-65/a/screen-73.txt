@@ -1,0 +1,36 @@
+Écran 73 (540x1170)
+icône « マイプロジェクト 1 » ✓ @ 274,38
+bouton « プロ » @ 490,38
+bouton (dossier ouvert) @ 76,119
+icône ↶ @ 263,119
+bouton ● @ 335,119
+bouton ▶ « このパート » @ 415,119
+icône (trois points reliés) @ 495,119
+bouton « D » ▾ @ 185,119
+icône « イントロ 小節 1/88 » ▾ @ 298,221
+bouton « 105  BPM » @ 114,221
+bouton (flèches en boucle) [état « オフ »] @ 414,221
+bouton « ? » @ 495,221
+onglet « ドラム 16パッド » [sélectionné] @ 118,342
+onglet « Acid 303 ベースライン » @ 374,343
+image → @ 529,343
+texte « パート：D · プレサビ » @ 206,438
+texte « 小節 2/2 · リム » [coupé] @ 184,478
+texte « トランジション チャプター 12/16 · ステップ 1/3 · プロ » @ 178,604
+icône (liste) « チャプター » @ 391,605
+icône ⌃ @ 483,605
+icône « あなたの番：「プレサビ」パートの最後の小節で、タムのパッドの最後の拍の直前の3マスを続けてタップしよう：ドラマーのロール。 読む » ⌃ @ 270,802
+texte « 105 テンポ » @ 368,933
+icône ↶ « 元に戻す » @ 61,934
+icône ↷ « やり直す » [désactivé] @ 170,934
+bouton ▶ « 曲 » @ 267,934
+icône (trois points reliés) « シェア » @ 480,934
+onglet (ligne brisée et points) « 構成 » @ 49,1050
+onglet (touches de piano) « サウンド » [sélectionné] @ 160,1050
+onglet (curseurs) « ミックス » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « その他 » @ 491,1050
+texte « フィードバックモード » @ 121,1140
+texte « ●  REC » @ 285,1140
+texte « ✎  メモ » @ 398,1140
+texte « ⋯ » @ 492,1140

@@ -1,0 +1,24 @@
+Écran 68 (540x1170)
+texte « パートを並べよう チャプター 11/16 · 完了 · プロ » @ 178,94
+icône (liste) « チャプター » @ 391,95
+icône ⌄ @ 483,95
+image (coupe) @ 57,353
+texte « よくできました、章クリア！ » @ 295,272
+texte « 今の曲を聴いてから、次の章へ進もう：「トランジション」。 » @ 295,409
+bouton « 次の章   » → @ 270,811
+bouton ▶ «  自分の曲を聴く » @ 310,898
+icône ← @ 57,899
+texte « 105 テンポ » @ 368,1004
+icône ↶ « 元に戻す » @ 61,1005
+icône ↷ « やり直す » [désactivé] @ 170,1005
+bouton ▶ « 曲 » @ 267,1005
+icône (trois points reliés) « シェア » @ 480,1005
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 49,1085
+onglet (touches de piano) « サウンド » @ 160,1085
+onglet (curseurs) « ミックス » @ 271,1085
+onglet (neuf points) « Live » @ 381,1085
+onglet ⋯ « その他 » @ 491,1085
+texte « フィードバックモード » @ 121,1140
+texte « ●  REC » @ 285,1140
+texte « ✎  メモ » @ 398,1140
+texte « ⋯ » @ 492,1140

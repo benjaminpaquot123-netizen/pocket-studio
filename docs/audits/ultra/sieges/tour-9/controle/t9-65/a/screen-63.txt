@@ -1,0 +1,33 @@
+Écran 63 (540x1170)
+bouton (dossier ouvert) ✓ @ 77,42
+bouton « プロ » @ 186,42
+icône ↶ @ 263,42
+bouton ● @ 335,42
+bouton ▶ « このパート » @ 415,42
+icône (trois points reliés) @ 495,42
+icône « イントロ 小節 1/72 » ▾ @ 298,144
+bouton « 105  BPM » @ 114,144
+bouton (flèches en boucle) [état « オフ »] @ 414,144
+bouton « ? » @ 495,144
+texte « − / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。 » [coupé] @ 270,222
+texte « 最後に追加： » @ 159,280
+bouton « + A · サビ » @ 167,361
+bouton « + B · イントロ » @ 205,447
+texte « パートを並べよう チャプター 11/16 · ステップ 1/2 · プロ » @ 178,604
+icône (liste) « チャプター » @ 391,605
+icône ⌃ @ 483,605
+icône « あなたの番：「構成」の「追加」の下で、順にタップしよう：イントロ、Aメロ、プレサビ、サビ、ポストサビ、Aメロ、プレサビ、サビ、ブリッジ、サビ、イントロ（エンディングになる）。長さは次のステップで決めるよ。 読む » ⌃ @ 270,802
+texte « 105 テンポ » @ 368,933
+icône ↶ « 元に戻す » @ 61,934
+icône ↷ « やり直す » [désactivé] @ 170,934
+bouton ▶ « 曲 » @ 267,934
+icône (trois points reliés) « シェア » @ 480,934
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 49,1050
+onglet (touches de piano) « サウンド » @ 160,1050
+onglet (curseurs) « ミックス » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « その他 » @ 491,1050
+texte « フィードバックモード » @ 121,1140
+texte « ●  REC » @ 285,1140
+texte « ✎  メモ » @ 398,1140
+texte « ⋯ » @ 492,1140

@@ -1,0 +1,35 @@
+Écran 29 (540x1170)
+bouton (dossier ouvert) ✓ @ 77,42
+bouton « プロ » @ 186,42
+icône ↶ @ 263,42
+bouton ● @ 335,42
+bouton ▶ « このパート » @ 415,42
+icône (trois points reliés) @ 495,42
+bouton « 105  BPM » @ 114,144
+bouton « ? » @ 495,144
+onglet « タイムライン » [désactivé] @ 162,252
+onglet « パート » [sélectionné] @ 380,252
+titre « 曲 » [état « 開いた状態 »] @ 105,351
+bouton « ? » @ 147,351
+texte « タイムラインはパートを順番に並べる。それぞれの長さは小節数。 順番に足してね。 » [coupé] @ 270,437
+texte « パートを作ろう チャプター 10/16 · ステップ 3/5 · プロ » @ 178,604
+icône (liste) « チャプター » @ 391,605
+icône ⌃ @ 483,605
+image (œil) @ 51,803
+texte « 停止 » @ 461,802
+texte « 見てて、やってみせるね… » @ 240,802
+texte « 105 テンポ » @ 368,933
+icône ↶ « 元に戻す » @ 61,934
+icône ↷ « やり直す » [désactivé] @ 170,934
+bouton ▶ « 曲 » @ 267,934
+icône (trois points reliés) « シェア » @ 480,934
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 49,1050
+onglet (touches de piano) « サウンド » @ 160,1050
+onglet (curseurs) « ミックス » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « その他 » @ 491,1050
+image (doigt qui touche) @ 252,277
+texte « フィードバックモード » @ 121,1140
+texte « ●  REC » @ 285,1140
+texte « ✎  メモ » @ 398,1140
+texte « ⋯ » @ 492,1140

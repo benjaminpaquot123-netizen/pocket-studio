@@ -1,0 +1,27 @@
+Écran 20 (540x1170)
+texte « パートを理解する チャプター 9/16 · 完了 · プロ » @ 178,94
+icône (liste) « チャプター » @ 391,95
+icône ⌄ @ 483,95
+image (rond coché) @ 36,219
+texte « ブリッジを聴こう：キックもベースもなく、コードとメロディが漂う。 » @ 289,330
+texte « エネルギー » [coupé] @ 116,470
+texte « ▸ なぜ？ » @ 270,513
+icône « 続きを読む » ⌄ @ 270,579
+bouton « 次の章   » → @ 270,656
+bouton ▶ «  自分の曲を聴く » @ 142,744
+bouton ▶ «  例を聴く » @ 397,743
+icône ← «  前へ » @ 97,830
+bouton ▶ « 曲 » @ 267,940
+texte « 105 テンポ » @ 368,939
+icône ↶ « 元に戻す » @ 61,940
+icône ↷ « やり直す » [désactivé] @ 170,940
+icône (trois points reliés) « シェア » @ 480,940
+onglet (ligne brisée et points) « 構成 » @ 49,1053
+onglet (touches de piano) « サウンド » [sélectionné] @ 160,1053
+onglet (curseurs) « ミックス » @ 271,1053
+onglet (neuf points) « Live » @ 381,1053
+onglet ⋯ « その他 » @ 491,1053
+texte « フィードバックモード » @ 121,1140
+texte « ●  REC » @ 285,1140
+texte « ✎  メモ » @ 398,1140
+texte « ⋯ » @ 492,1140

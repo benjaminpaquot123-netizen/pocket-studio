@@ -1,0 +1,28 @@
+Écran 7 (540x1170)
+texte « パートを理解する チャプター 9/16 · ステップ 2/6 · プロ » @ 178,120
+icône (liste) « チャプター » @ 391,121
+icône ⌄ @ 483,121
+image (rond coché) @ 36,271
+texte « イントロを聴こう：映画の始まりみたいに、コードとメロディ、ドラムなし。 » [coupé] @ 289,319
+bouton « シンセウェイヴ キットをダウンロード（7 MB） » @ 217,448
+texte « あとで » @ 460,449
+texte « ▸ なぜ？ » @ 270,537
+icône « 続きを読む » ⌄ @ 270,603
+bouton « 次のステップ   » → @ 270,740
+icône « 次へ  » → @ 442,830
+icône ← @ 57,831
+bouton ▶ «  例を聴く » @ 229,830
+bouton ▶ « 曲 » @ 267,940
+texte « 105 テンポ » @ 368,939
+icône ↶ « 元に戻す » @ 61,940
+icône ↷ « やり直す » [désactivé] @ 170,940
+icône (trois points reliés) « シェア » @ 480,940
+onglet (ligne brisée et points) « 構成 » @ 49,1053
+onglet (touches de piano) « サウンド » [sélectionné] @ 160,1053
+onglet (curseurs) « ミックス » @ 271,1053
+onglet (neuf points) « Live » @ 381,1053
+onglet ⋯ « その他 » @ 491,1053
+texte « フィードバックモード » @ 121,1140
+texte « ●  REC » @ 285,1140
+texte « ✎  メモ » @ 398,1140
+texte « ⋯ » @ 492,1140

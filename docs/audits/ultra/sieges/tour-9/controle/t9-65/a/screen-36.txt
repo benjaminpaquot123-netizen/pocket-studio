@@ -1,0 +1,26 @@
+Écran 36 (540x1170)
+texte « パートを並べよう チャプター 11/16 · ステップ 1/2 · プロ » @ 178,120
+icône (liste) « チャプター » @ 391,121
+icône ⌄ @ 483,121
+texte « あなたの番：「構成」の「追加」の下で、順にタップしよう：イントロ、Aメロ、プレサビ、サビ、ポストサビ、Aメロ、プレサビ、サビ、ブリッジ、サビ、イントロ（エンディングになる）。長さは次のステップで決めるよ。 » [coupé] @ 270,350
+texte « ▸ なぜ？ » @ 270,482
+icône « 続きを読む » ⌄ @ 270,548
+bouton (doigt qui touche) «   自分でやる » @ 270,665
+bouton ▶ «  例を聴く » @ 142,752
+bouton (œil) «  見せて » @ 397,752
+icône ← «  前へ » @ 97,839
+icône « 次へ  » → @ 442,839
+texte « 105 テンポ » @ 368,948
+icône ↶ « 元に戻す » @ 61,949
+icône ↷ « やり直す » [désactivé] @ 170,949
+bouton ▶ « 曲 » @ 267,949
+icône (trois points reliés) « シェア » @ 480,949
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 49,1057
+onglet (touches de piano) « サウンド » @ 160,1057
+onglet (curseurs) « ミックス » @ 271,1057
+onglet (neuf points) « Live » @ 381,1057
+onglet ⋯ « その他 » @ 491,1057
+texte « フィードバックモード » @ 121,1140
+texte « ●  REC » @ 285,1140
+texte « ✎  メモ » @ 398,1140
+texte « ⋯ » @ 492,1140

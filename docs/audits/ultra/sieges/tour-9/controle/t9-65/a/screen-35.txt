@@ -1,0 +1,26 @@
+Écran 35 (540x1170)
+texte « パートを作ろう チャプター 10/16 · 完了 · プロ » @ 178,94
+icône (liste) « チャプター » @ 391,95
+icône ⌄ @ 483,95
+image (coupe) @ 57,431
+texte « よくできました、章クリア！ » @ 295,272
+texte « パート「ブリッジ」を作りました（「サビ」のコピー）：キック, スネア, クラップ, オープンハイハット, リム, ベースなし。 » [coupé] @ 295,443
+icône « 続きを読む » ⌄ @ 270,594
+bouton « 次の章   » → @ 270,679
+bouton ▶ «  自分の曲を聴く » @ 142,767
+bouton ▶ «  例を聴く » @ 397,766
+icône ← «  前へ » @ 97,853
+bouton ▶ « 曲 » @ 267,963
+texte « 105 テンポ » @ 368,962
+icône ↶ « 元に戻す » @ 61,963
+icône ↷ « やり直す » [désactivé] @ 170,963
+icône (trois points reliés) « シェア » @ 480,963
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 49,1064
+onglet (touches de piano) « サウンド » @ 160,1064
+onglet (curseurs) « ミックス » @ 271,1064
+onglet (neuf points) « Live » @ 381,1064
+onglet ⋯ « その他 » @ 491,1064
+texte « フィードバックモード » @ 121,1140
+texte « ●  REC » @ 285,1140
+texte « ✎  メモ » @ 398,1140
+texte « ⋯ » @ 492,1140

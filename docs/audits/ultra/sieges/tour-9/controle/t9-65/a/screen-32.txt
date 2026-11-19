@@ -1,0 +1,25 @@
+Écran 32 (540x1170)
+texte « パートを作ろう チャプター 10/16 · ステップ 4/5 · プロ » @ 178,154
+icône (liste) « チャプター » @ 391,155
+icône ⌄ @ 483,155
+texte « あなたの番：ポストサビを作ろう：コード以外の全部。 » @ 270,384
+texte « ▸ なぜ？ » @ 270,516
+bouton ⊕ «   パート「ポストサビ」を作る » @ 270,622
+bouton ▶ «  例を聴く » @ 142,737
+bouton (œil) «  見せて » @ 397,737
+icône ← «  前へ » @ 97,824
+icône « 次へ  » → @ 442,824
+texte « 105 テンポ » @ 368,933
+icône ↶ « 元に戻す » @ 61,934
+icône ↷ « やり直す » [désactivé] @ 170,934
+bouton ▶ « 曲 » @ 267,934
+icône (trois points reliés) « シェア » @ 480,934
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 49,1050
+onglet (touches de piano) « サウンド » @ 160,1050
+onglet (curseurs) « ミックス » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « その他 » @ 491,1050
+texte « フィードバックモード » @ 121,1140
+texte « ●  REC » @ 285,1140
+texte « ✎  メモ » @ 398,1140
+texte « ⋯ » @ 492,1140

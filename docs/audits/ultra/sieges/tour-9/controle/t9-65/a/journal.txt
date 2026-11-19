@@ -1,0 +1,406 @@
+#0 SIEGE lang=ja device=phone360 font=200 mode=pro theme=- fresh=non gestes.max=181 lit=oui main=both amenee=tuto:synthwave:9
+#0 PREMIER ECRAN reel_s=3.9 simule_s=2.4 jvm_s=9.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:synthwave:9
+#0 AMENEE > touche 270 815 (launch_learn)
+#0 AMENEE > touche 270 1045 (mode_card_pro)
+#0 AMENEE > touche 270 1079 (tuto_style_synthwave)
+#0 AMENEE chapitres 1 à 8 construits dans le projet
+#0 AMENEE > touche 391 154 (tuto_chapters)
+#0 AMENEE > touche 270 1077 (tuto_quit)
+#0 AMENEE > touche 135 744 (tuto_resume)
+#0 AMENEE chapitres 1 à 8 cochés (24 étapes)
+#0 AMENEE > touche 391 121 (tuto_chapters)
+#0 AMENEE > touche 270 649 (tuto_chapter_8)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f568860ec3 | project=p-c198c490 tuto=synthwave/Pro active=true step=brick done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « サウンド » drawn past its parent's edge (down, 54 dp shown of 64)
+#1 LAYOUT CUT « ミックス » drawn past its parent's edge (down, 54 dp shown of 64)
+#1 LAYOUT CUT « その他 » drawn past its parent's edge (down, 54 dp shown of 64)
+#1 LAYOUT CUT « フィードバックモード » ellipsized (« … »)
+#1 LAYOUT OVERLAP « 105 » over « チャプター 9/16 · ステップ 1/6 · プロ » (54 x 22 dp)
+#1 LAYOUT OVERLAP « チャプター 9/16 · ステップ 1/6 · プロ » over the touchable « 再生中のパート：A · サビ。タップでパートを切り替え。 パートを切り替え » (52 x 36 dp)
+#1 LAYOUT OVERLAP « チャプター 9/16 · ステップ 1/6 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 29 dp)
+#1 LAYOUT OVERLAP « チャプター » over the touchable « このパートを再生 このパートを再生 » (48 x 19 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 270 603
+#1 DOIGT tuto_text_more « 続きを読む »
+#2 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 42e2ea2e6b | project=p-c198c490 tuto=synthwave/Pro active=true step=brick done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#2 SON Son : rien ne joue.
+#2 > glisse 270 350 270 250
+#2 DOIGT rien (texte « ブロックは1つの楽器のループ（キック、ベース）。パートはいっしょに鳴るいくつかの »)
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 658f4274cc | project=p-c198c490 tuto=synthwave/Pro active=true step=brick done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « 16 » 1.94:1 (needs 4.5:1, 12 sp)
+#3 > touche 270 740
+#3 DOIGT tuto_mark «   わかった »
+#4 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ddcfc69aa2 | project=p-c198c490 tuto=synthwave/Pro active=true step=brick done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 270 656
+#4 DOIGT tuto_next_big « 次のステップ   »
+#5 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 527dd7fc67 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_intro done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « 105 » over « チャプター 9/16 · ステップ 2/6 · プロ » (54 x 22 dp)
+#5 LAYOUT OVERLAP « チャプター 9/16 · ステップ 2/6 · プロ » over the touchable « 再生中のパート：A · サビ。タップでパートを切り替え。 パートを切り替え » (52 x 36 dp)
+#5 LAYOUT OVERLAP « チャプター 9/16 · ステップ 2/6 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 29 dp)
+#5 > touche 270 740
+#5 DOIGT tuto_listen «  例を聴く »
+#6 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e4757691c5 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_intro done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 3 s).
+#6 > attends 4
+#7 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE fb054dbe1d | project=p-c198c490 tuto=synthwave/Pro active=true step=map_intro done=26 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 270 740
+#7 DOIGT tuto_next_big « 次のステップ   »
+#8 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c1a2332fcb | project=p-c198c490 tuto=synthwave/Pro active=true step=map_couplet done=26 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 105 » over « チャプター 9/16 · ステップ 3/6 · プロ » (54 x 22 dp)
+#8 LAYOUT OVERLAP « チャプター 9/16 · ステップ 3/6 · プロ » over the touchable « 再生中のパート：A · サビ。タップでパートを切り替え。 パートを切り替え » (52 x 36 dp)
+#8 LAYOUT OVERLAP « チャプター 9/16 · ステップ 3/6 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 29 dp)
+#8 > touche 460 449
+#8 DOIGT tuto_kit_later « あとで »
+#9 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE dd2cc0b3b0 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_couplet done=26 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 270 740
+#9 DOIGT tuto_listen «  例を聴く »
+#10 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 4ee6dd194e | project=p-c198c490 tuto=synthwave/Pro active=true step=map_couplet done=26 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#10 SON Son : l'exemple du tuto joue (encore 3 s).
+#10 > attends 4
+#11 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 8713eeda47 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_couplet done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 270 740
+#11 DOIGT tuto_next_big « 次のステップ   »
+#12 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 9546ec0a22 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_pre done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 105 » over « チャプター 9/16 · ステップ 4/6 · プロ » (54 x 22 dp)
+#12 LAYOUT OVERLAP « チャプター 9/16 · ステップ 4/6 · プロ » over the touchable « 再生中のパート：A · サビ。タップでパートを切り替え。 パートを切り替え » (52 x 36 dp)
+#12 LAYOUT OVERLAP « チャプター 9/16 · ステップ 4/6 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 29 dp)
+#12 > touche 270 740
+#12 DOIGT tuto_listen «  例を聴く »
+#13 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5af3047fc2 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_pre done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#13 SON Son : l'exemple du tuto joue (encore 3 s).
+#13 > attends 4
+#14 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 517d3fb428 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_pre done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 270 740
+#14 DOIGT tuto_next_big « 次のステップ   »
+#15 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 093bfb749b | project=p-c198c490 tuto=synthwave/Pro active=true step=map_post done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 105 » over « チャプター 9/16 · ステップ 5/6 · プロ » (54 x 22 dp)
+#15 LAYOUT OVERLAP « チャプター 9/16 · ステップ 5/6 · プロ » over the touchable « 再生中のパート：A · サビ。タップでパートを切り替え。 パートを切り替え » (52 x 36 dp)
+#15 LAYOUT OVERLAP « チャプター 9/16 · ステップ 5/6 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 29 dp)
+#15 > touche 270 740
+#15 DOIGT tuto_listen «  例を聴く »
+#16 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5edfeff8da | project=p-c198c490 tuto=synthwave/Pro active=true step=map_post done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#16 SON Son : l'exemple du tuto joue (encore 3 s).
+#16 > attends 4
+#17 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c24d550297 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_post done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 270 740
+#17 DOIGT tuto_next_big « 次のステップ   »
+#18 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 0dd0a718b3 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_pont done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « 105 » over « チャプター 9/16 · ステップ 6/6 · プロ » (54 x 22 dp)
+#18 LAYOUT OVERLAP « チャプター 9/16 · ステップ 6/6 · プロ » over the touchable « 再生中のパート：A · サビ。タップでパートを切り替え。 パートを切り替え » (52 x 36 dp)
+#18 LAYOUT OVERLAP « チャプター 9/16 · ステップ 6/6 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 29 dp)
+#18 > touche 270 740
+#18 DOIGT tuto_listen «  例を聴く »
+#19 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 9c5d97b902 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_pont done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#19 SON Son : l'exemple du tuto joue (encore 3 s).
+#19 > attends 4
+#20 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE af02188291 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_pont done=30 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT OVERLAP « 105 » over « ブリッジを聴こう：キックもベースもなく、コードとメロディが漂う。 » (30 x 29 dp)
+#20 LAYOUT OVERLAP « チャプター 9/16 · 完了 · プロ » over the touchable « 再生中のパート：A · サビ。タップでパートを切り替え。 パートを切り替え » (52 x 36 dp)
+#20 LAYOUT OVERLAP « ブリッジを聴こう：キックもベースもなく、コードとメロディが漂う。 » over the touchable « テンポ：105 BPM テンポを変更 » (106 x 35 dp)
+#20 LAYOUT OVERLAP « ブリッジを聴こう：キックもベースもなく、コードとメロディが漂う。 » over the touchable « 画面にラベルを表示 » (14 x 35 dp)
+#20 > touche 270 740
+#20 DOIGT rien
+#21 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE af02188291 | project=p-c198c490 tuto=synthwave/Pro active=true step=map_pont done=30 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 270 656
+#21 DOIGT tuto_next_big « 次の章   »
+#22 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d9e464794d | project=p-c198c490 tuto=synthwave/Pro active=true step=make_intro done=30 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT OVERLAP « 105 » over « チャプター 10/16 · ステップ 1/5 · プロ » (54 x 22 dp)
+#22 LAYOUT OVERLAP « チャプター 10/16 · ステップ 1/5 · プロ » over the touchable « 再生中のパート：A · サビ。タップでパートを切り替え。 パートを切り替え » (52 x 36 dp)
+#22 LAYOUT OVERLAP « チャプター 10/16 · ステップ 1/5 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 29 dp)
+#22 > touche 270 588
+#22 DOIGT tuto_need «   パート「イントロ」を作る »
+#23 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 32a2662cef | project=p-c198c490 tuto=synthwave/Pro active=true step=make_intro done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT OVERLAP « 105 » over « チャプター 10/16 · ステップ 1/5 · プロ » (54 x 34 dp)
+#23 LAYOUT OVERLAP « パートを作ろう » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 38 dp)
+#23 LAYOUT OVERLAP « チャプター 10/16 · ステップ 1/5 · プロ » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 8 dp)
+#23 LAYOUT OVERLAP « チャプター 10/16 · ステップ 1/5 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 48 dp)
+#23 > touche 270 616
+#23 DOIGT tuto_next_big « 次のステップ   »
+#24 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 58d3f5ae15 | project=p-c198c490 tuto=synthwave/Pro active=true step=make_couplet done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CUT « 構成 » drawn past its parent's edge (down, 15 dp shown of 31)
+#24 LAYOUT CUT « サウンド » drawn past its parent's edge (down, 14 dp shown of 28)
+#24 LAYOUT CUT « ミックス » drawn past its parent's edge (down, 14 dp shown of 28)
+#24 LAYOUT CUT « Live » drawn past its parent's edge (down, 15 dp shown of 30)
+#24 LAYOUT CUT « その他 » drawn past its parent's edge (down, 15 dp shown of 31)
+#24 LAYOUT OVERLAP « 105 » over « チャプター 10/16 · ステップ 2/5 · プロ » (54 x 34 dp)
+#24 LAYOUT OVERLAP « チャプター 10/16 · ステップ 2/5 · プロ » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 8 dp)
+#24 LAYOUT OVERLAP « チャプター 10/16 · ステップ 2/5 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 48 dp)
+#24 > touche 483 121
+#24 DOIGT tuto_fold
+#25 ROUTE tab_Structure | MODE pro | EMPREINTE 9d3c57f82f | project=p-c198c490 tuto=synthwave/Pro active=true step=make_couplet done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « ? » lines cut (taller than its box)
+#25 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#25 > glisse 270 450 270 250
+#25 DOIGT rien (texte « タイムラインはパートを順番に並べる。それぞれの長さは小節数。 順番に足してね。 »)
+#26 ROUTE tab_Structure | MODE pro | EMPREINTE b08b02f70a | project=p-c198c490 tuto=synthwave/Pro active=true step=make_couplet done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 270 802
+#26 DOIGT tuto_need_folded « パート「Aメロ」を作る »
+#27 ROUTE tab_Structure | MODE pro | EMPREINTE 5badc273f2 | project=p-c198c490 tuto=synthwave/Pro active=true step=make_couplet done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 270 802
+#27 DOIGT tuto_next_folded « 成功 »
+#28 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c5edcf6435 | project=p-c198c490 tuto=synthwave/Pro active=true step=make_pre done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « 105 » over « チャプター 10/16 · ステップ 3/5 · プロ » (54 x 34 dp)
+#28 LAYOUT OVERLAP « チャプター 10/16 · ステップ 3/5 · プロ » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 8 dp)
+#28 LAYOUT OVERLAP « チャプター 10/16 · ステップ 3/5 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 48 dp)
+#28 > touche 397 808
+#28 DOIGT tuto_show «  見せて »
+#29 ROUTE tab_Structure | MODE pro | EMPREINTE 91eac8676b | project=p-c198c490 tuto=synthwave/Pro active=true step=make_pre done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CUT « 見てて、やってみせるね… » ellipsized (« … »)
+#29 LAYOUT CONTRAST « 停止 » 3.91:1 (needs 4.5:1, 14 sp)
+#29 > attends 5
+#30 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c5edcf6435 | project=p-c198c490 tuto=synthwave/Pro active=true step=make_pre done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 270 693
+#30 DOIGT tuto_need «   パート「プレサビ」を作る »
+#31 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE f524a70df2 | project=p-c198c490 tuto=synthwave/Pro active=true step=make_pre done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 270 721
+#31 DOIGT tuto_next_big « 次のステップ   »
+#32 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 255bf609db | project=p-c198c490 tuto=synthwave/Pro active=true step=make_post done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT OVERLAP « 105 » over « チャプター 10/16 · ステップ 4/5 · プロ » (54 x 34 dp)
+#32 LAYOUT OVERLAP « パートを作ろう » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 23 dp)
+#32 LAYOUT OVERLAP « チャプター 10/16 · ステップ 4/5 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 48 dp)
+#32 > touche 270 622
+#32 DOIGT tuto_need «   パート「ポストサビ」を作る »
+#33 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE b4db044be0 | project=p-c198c490 tuto=synthwave/Pro active=true step=make_post done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 270 650
+#33 DOIGT tuto_next_big « 次のステップ   »
+#34 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE cb3fa4ff4b | project=p-c198c490 tuto=synthwave/Pro active=true step=make_pont done=34 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT OVERLAP « 105 » over « チャプター 10/16 · ステップ 5/5 · プロ » (54 x 34 dp)
+#34 LAYOUT OVERLAP « チャプター 10/16 · ステップ 5/5 · プロ » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 8 dp)
+#34 LAYOUT OVERLAP « チャプター 10/16 · ステップ 5/5 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 48 dp)
+#34 > touche 270 651
+#34 DOIGT tuto_need «   パート「ブリッジ」を作る »
+#35 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE bbb3fa2185 | project=p-c198c490 tuto=synthwave/Pro active=true step=make_pont done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT OVERLAP « 105 » over « チャプター 10/16 · 完了 · プロ » (54 x 34 dp)
+#35 LAYOUT OVERLAP « チャプター 10/16 · 完了 · プロ » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 8 dp)
+#35 LAYOUT OVERLAP « チャプター 10/16 · 完了 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 46 dp)
+#35 > touche 270 679
+#35 DOIGT tuto_next_big « 次の章   »
+#36 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 37686a61b6 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT OVERLAP « 105 » over « チャプター 11/16 · ステップ 1/2 · プロ » (54 x 34 dp)
+#36 LAYOUT OVERLAP « パートを並べよう » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 38 dp)
+#36 LAYOUT OVERLAP « チャプター 11/16 · ステップ 1/2 · プロ » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 8 dp)
+#36 LAYOUT OVERLAP « チャプター 11/16 · ステップ 1/2 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 48 dp)
+#36 > touche 270 665
+#36 DOIGT tuto_do «   自分でやる »
+#37 ROUTE tab_Structure | MODE pro | EMPREINTE 13d78c3605 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « あなたの番：「構成」の「追加」の下で、順にタップしよう：イントロ、Aメロ、プレサビ、サビ、ポストサビ、Aメロ、プレサビ、サビ、ブリッジ、サビ、イントロ（エンディングになる）。長さは次のステップで決めるよ。 » ellipsized (« … »)
+#37 LAYOUT CONTRAST « + A · サビ » 4.06:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « + B · イントロ » 4.06:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « + C · Aメロ » 4.06:1 (needs 4.5:1, 14 sp)
+#37 > touche 205 382
+#37 DOIGT add_part_1 « + B · イントロ »
+#38 ROUTE tab_Structure | MODE pro | EMPREINTE eb9ab31839 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CUT « イントロ » ellipsized (« … »)
+#38 LAYOUT CUT « 小節 1/8 » lines dropped (more lines than room)
+#38 > glisse 270 500 270 200
+#38 DOIGT tuto_toggle « パートを並べよう »
+#39 ROUTE tab_Structure | MODE pro | EMPREINTE eb9ab31839 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#39 SON Son : rien ne joue.
+#39 > glisse 200 420 200 120
+#39 DOIGT part_play_0 « B · イントロ »
+#40 ROUTE tab_Structure | MODE pro | EMPREINTE 2158b913d1 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#40 SON Son : rien ne joue.
+#40 > glisse 200 450 200 150
+#40 DOIGT add_part_0 « + A · サビ »
+#41 ROUTE tab_Structure | MODE pro | EMPREINTE 811114bd98 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 181 355
+#41 DOIGT add_part_2 « + C · Aメロ »
+#42 ROUTE tab_Structure | MODE pro | EMPREINTE 0fdf2d052a | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CUT « 小節 1/16 » lines dropped (more lines than room)
+#42 > glisse 200 540 200 100
+#42 DOIGT tuto_toggle « パートを並べよう »
+#43 ROUTE tab_Structure | MODE pro | EMPREINTE 0fdf2d052a | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#43 SON Son : rien ne joue.
+#43 > glisse 200 470 200 80
+#43 DOIGT rien (texte « − / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。 »)
+#44 ROUTE tab_Structure | MODE pro | EMPREINTE 4770e8f7ac | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#44 SON Son : rien ne joue.
+#44 > glisse 200 470 200 80
+#44 DOIGT add_part_1 « + B · イントロ »
+#45 ROUTE tab_Structure | MODE pro | EMPREINTE b48a5d99c1 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 206 265
+#45 DOIGT add_part_3 « + D · プレサビ »
+#46 ROUTE tab_Structure | MODE pro | EMPREINTE 09959ca533 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CUT « 小節 1/24 » lines dropped (more lines than room)
+#46 > glisse 200 470 200 80
+#46 DOIGT rien (texte « − / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。 »)
+#47 ROUTE tab_Structure | MODE pro | EMPREINTE fd44c94c8a | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 167 361
+#47 DOIGT add_part_0 « + A · サビ »
+#48 ROUTE tab_Structure | MODE pro | EMPREINTE b8f89dddb3 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CUT « 小節 1/32 » lines dropped (more lines than room)
+#48 > glisse 200 470 200 80
+#48 DOIGT rien (texte « − / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。 »)
+#49 ROUTE tab_Structure | MODE pro | EMPREINTE 4520a6b9db | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#49 SON Son : rien ne joue.
+#49 > glisse 200 470 200 80
+#49 DOIGT add_part_2 « + C · Aメロ »
+#50 ROUTE tab_Structure | MODE pro | EMPREINTE 8efbc66eae | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT « + 新しいパート（F · ブリッジのコピー） » lines dropped (more lines than room)
+#50 > touche 223 295
+#50 DOIGT add_part_4 « + E · ポストサビ »
+#51 ROUTE tab_Structure | MODE pro | EMPREINTE 8d42edb2c0 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT CUT « 小節 1/40 » lines dropped (more lines than room)
+#51 > glisse 200 470 200 80
+#51 DOIGT rien (texte « − / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。 »)
+#52 ROUTE tab_Structure | MODE pro | EMPREINTE 5269a0b62d | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#52 SON Son : rien ne joue.
+#52 > glisse 200 470 200 300
+#52 DOIGT add_part_1 « + B · イントロ »
+#53 ROUTE tab_Structure | MODE pro | EMPREINTE ebd5e3097f | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 181 395
+#53 DOIGT add_part_2 « + C · Aメロ »
+#54 ROUTE tab_Structure | MODE pro | EMPREINTE b3f27c9b4e | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CUT « 小節 1/48 » lines dropped (more lines than room)
+#54 > glisse 200 470 200 80
+#54 DOIGT rien (texte « − / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。 »)
+#55 ROUTE tab_Structure | MODE pro | EMPREINTE 01bcf6422c | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#55 SON Son : rien ne joue.
+#55 > glisse 200 470 200 300
+#55 DOIGT add_part_1 « + B · イントロ »
+#56 ROUTE tab_Structure | MODE pro | EMPREINTE a5f4cd5143 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 206 458
+#56 DOIGT add_part_3 « + D · プレサビ »
+#57 ROUTE tab_Structure | MODE pro | EMPREINTE 1eb81f356c | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « 小節 1/56 » lines dropped (more lines than room)
+#57 > glisse 200 470 200 80
+#57 DOIGT rien (texte « − / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。 »)
+#58 ROUTE tab_Structure | MODE pro | EMPREINTE 8271624b7b | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 167 361
+#58 DOIGT add_part_0 « + A · サビ »
+#59 ROUTE tab_Structure | MODE pro | EMPREINTE 92dc13d178 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CUT « 小節 1/64 » lines dropped (more lines than room)
+#59 > glisse 200 470 200 80
+#59 DOIGT rien (texte « − / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。 »)
+#60 ROUTE tab_Structure | MODE pro | EMPREINTE 593a7a8fa5 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#60 SON Son : rien ne joue.
+#60 > glisse 200 470 200 80
+#60 DOIGT add_part_2 « + C · Aメロ »
+#61 ROUTE tab_Structure | MODE pro | EMPREINTE 3b9cf818ac | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 203 385
+#61 DOIGT add_part_5 « + F · ブリッジ »
+#62 ROUTE tab_Structure | MODE pro | EMPREINTE e7107ac622 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CUT « 小節 1/72 » lines dropped (more lines than room)
+#62 > glisse 200 470 200 80
+#62 DOIGT rien (texte « − / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。 »)
+#63 ROUTE tab_Structure | MODE pro | EMPREINTE 6e4fa18a03 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 167 361
+#63 DOIGT add_part_0 « + A · サビ »
+#64 ROUTE tab_Structure | MODE pro | EMPREINTE dcb25c0aa8 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CUT « 小節 1/80 » lines dropped (more lines than room)
+#64 > glisse 200 470 200 80
+#64 DOIGT rien (texte « − / + ：リピート回数。灰色：長さ固定（おすすめ・Live）か1回のみ。 »)
+#65 ROUTE tab_Structure | MODE pro | EMPREINTE 5ac802a217 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 205 391
+#65 DOIGT add_part_1 « + B · イントロ »
+#66 ROUTE tab_Structure | MODE pro | EMPREINTE 5c59f08366 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_order done=36 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CUT « 小節 1/88 » lines dropped (more lines than room)
+#66 > touche 270 802
+#66 DOIGT tuto_next_folded « 成功 »
+#67 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 5c27b2c774 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_phrases done=36 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT OVERLAP « 105 » over « チャプター 11/16 · ステップ 2/2 · プロ » (54 x 34 dp)
+#67 LAYOUT OVERLAP « チャプター 11/16 · ステップ 2/2 · プロ » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 8 dp)
+#67 LAYOUT OVERLAP « チャプター 11/16 · ステップ 2/2 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 48 dp)
+#67 LAYOUT OVERLAP « チャプター 11/16 · ステップ 2/2 · プロ » over the touchable « パートから再生 » (62 x 80 dp)
+#67 LAYOUT OVERLAP « チャプター » over the touchable « パートから再生 » (20 x 19 dp)
+#67 LAYOUT OVERLAP « チャプター » over the touchable « 曲を再生せずパートをループ オフ » (43 x 19 dp)
+#67 > touche 270 693
+#67 DOIGT tuto_need «   おすすめの長さにする »
+#68 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 04d15b2601 | project=p-c198c490 tuto=synthwave/Pro active=true step=song_phrases done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT OVERLAP « 105 » over « チャプター 11/16 · 完了 · プロ » (54 x 34 dp)
+#68 LAYOUT OVERLAP « チャプター 11/16 · 完了 · プロ » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 8 dp)
+#68 LAYOUT OVERLAP « チャプター 11/16 · 完了 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 46 dp)
+#68 LAYOUT OVERLAP « チャプター 11/16 · 完了 · プロ » over the touchable « パートから再生 » (62 x 62 dp)
+#68 LAYOUT OVERLAP « チャプター » over the touchable « 曲を再生せずパートをループ オフ » (43 x 11 dp)
+#68 > touche 270 811
+#68 DOIGT tuto_next_big « 次の章   »
+#69 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 91f367553e | project=p-c198c490 tuto=synthwave/Pro active=true step=fill done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT OVERLAP « 105 » over « チャプター 12/16 · ステップ 1/3 · プロ » (54 x 34 dp)
+#69 LAYOUT OVERLAP « トランジション » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 38 dp)
+#69 LAYOUT OVERLAP « チャプター 12/16 · ステップ 1/3 · プロ » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 8 dp)
+#69 LAYOUT OVERLAP « チャプター 12/16 · ステップ 1/3 · プロ » over the touchable « テンポ：105 BPM テンポを変更 » (132 x 48 dp)
+#69 LAYOUT OVERLAP « チャプター 12/16 · ステップ 1/3 · プロ » over the touchable « パートから再生 » (67 x 80 dp)
+#69 > touche 270 693
+#69 DOIGT tuto_need «   パート「プレサビ」へ移動 »
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE 64830a5d31 | project=p-c198c490 tuto=synthwave/Pro active=true step=fill done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CUT « D » ellipsized (« … »)
+#70 LAYOUT CUT « あなたの番：「プレサビ」パートの最後の小節で、タムのパッドの最後の拍の直前の3マスを続けてタップしよう：ドラマーのロール。 » ellipsized (« … »)
+#70 > glisse 200 540 200 260
+#70 DOIGT tuto_toggle « トランジション »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE 64830a5d31 | project=p-c198c490 tuto=synthwave/Pro active=true step=fill done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#71 SON Son : rien ne joue.
+#71 > glisse 200 470 200 150
+#71 DOIGT rien
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE 64830a5d31 | project=p-c198c490 tuto=synthwave/Pro active=true step=fill done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#72 SON Son : rien ne joue.
+#72 RIEN NE CHANGE (3 écrans identiques)
+#72 > glisse 270 520 270 400
+#72 DOIGT tuto_toggle « トランジション »
+#73 ROUTE tab_Sons | MODE pro | EMPREINTE 64830a5d31 | project=p-c198c490 tuto=synthwave/Pro active=true step=fill done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#73 SON Son : rien ne joue.
+#73 > glisse 160 525 160 870
+#73 DOIGT tuto_toggle « トランジション »
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 64830a5d31 | project=p-c198c490 tuto=synthwave/Pro active=true step=fill done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#74 SON Son : rien ne joue.
+#74 RIEN NE CHANGE (5 écrans identiques)
+#74 BENCH-FLAG where=seat.rien-ne-change want="un écran qui change" saw="5 écrans identiques" waited=196799 screen=tab_Sons
+#74 BENCH-VERDICT fail where=seat.rien-ne-change why="rien ne change (5 écrans identiques)"
+#74 FIN : rien ne change (5 écrans identiques)

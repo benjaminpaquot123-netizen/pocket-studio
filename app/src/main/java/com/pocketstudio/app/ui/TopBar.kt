@@ -264,15 +264,31 @@ fun TopBar(
         com.pocketstudio.app.session.RenameSceneDialog(i, shown, done, dismiss)
     },
 ) {
-    // Tour 9, D10: « Renommer » in the scene menu opens it, outside the bar's BoxWithConstraints.
-    var naming by remember { mutableStateOf(false) }
-    TopBarRow(ui, actions, onRename = { naming = true })
+    // Tour 9, D10: « Renommer » in the scene menu opens it, outside the bar's BoxWithConstraints. The part named is
+    // the one touched, kept until the dialog closes (another part picked meanwhile is not renamed instead).
+    var naming by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<Int?>(null) }
     val named = ui.scene
-    if (naming && named != null) {
-        // The same dialog as Structure's; the title "A · Refrain" carries the name shown.
-        val title = named.titles.getOrElse(named.current) { "" }
-        nameDialog(named.current, title.substringAfter(" · ", ""), { label -> actions.renameScene(named.current, label); naming = false }, { naming = false })
+    if (named == null) naming = null
+    TopBarRow(ui, actions, onRename = { naming = named?.current })
+    val index = naming
+    if (index != null && named != null) {
+        // The same dialog as Structure's, given the part's saved name (as Structure does), not its title as shown.
+        val shown = named.titles.getOrElse(index) { "" }.substringAfter(" · ", "")
+        nameDialog(index, storedSceneLabel(shown), { label -> actions.renameScene(index, label); naming = null }, { naming = null })
     }
+}
+
+/**
+ * A part's saved name from its title as the bar shows it (Scene.shownLabel in the interface's language): « Ritornello 2 »
+ * back to « Refrain 2 », « Drop + » kept, any name typed as it is. Review G1: the project keeps its names in French.
+ */
+internal fun storedSceneLabel(shown: String): String {
+    val keys = Scene.SECTIONS + Scene.DRUM_LABELS
+    keys.firstOrNull { Scene.sectionName(it) == shown }?.let { return it }
+    if (shown.endsWith(Scene.ENERGY_SUFFIX)) return storedSceneLabel(shown.removeSuffix(Scene.ENERGY_SUFFIX)) + Scene.ENERGY_SUFFIX
+    val numbered = Regex("""^(.+) (\d+)$""").matchEntire(shown) ?: return shown
+    val (section, n) = numbered.destructured
+    return Scene.SECTIONS.firstOrNull { Scene.sectionName(it) == section }?.let { "$it $n" } ?: shown
 }
 
 @Composable

@@ -89,6 +89,7 @@ class Tour9RenameFromChipTest {
             compose.onNodeWithTag("scene_rename").performClick()
             compose.onNodeWithTag("scene_name_ok").performClick()
             assertEquals(1 to "Refrain 2", renamed)
+            for (saved in listOf("Refrain", "Refrain 2", "Drop +", "Refrain +", "Crash", "Ma partie", "Fin")) assertEquals(saved, storedSceneLabel(Scene.shownLabel(saved)))
         } finally {
             com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR
         }

@@ -1,0 +1,26 @@
+Écran 30 (540x1170)
+icône ✕ @ 486,217
+texte « ヒット 15 » @ 241,217
+texte « ベロシティ » @ 86,277
+bouton « 強め » @ 79,338
+bouton « ふつう » @ 187,338
+bouton « ソフト » [sélectionné] @ 306,338
+texte « ロール » @ 65,398
+bouton « ×1 » [sélectionné] @ 69,459
+bouton « ×2 » @ 150,459
+bouton « ×3 » @ 233,459
+bouton « ×4 » @ 317,459
+bouton « ×6 » @ 400,459
+bouton « ×8 » @ 483,459
+texte « 3連符 » @ 61,519
+bouton « 2マスに3打 » @ 113,580
+bouton « 1拍に6打 » [désactivé] @ 266,580
+bouton « ↗ 上昇 » [désactivé] @ 89,661
+bouton « 均等 » [désactivé, sélectionné] @ 198,661
+bouton « ↘ 下降 » [désactivé] @ 306,661
+texte « 拍全体を ×2 に（1/32 の連打） » @ 200,742
+texte « 鳴る確率 » @ 76,802
+bouton « 100% » [sélectionné] @ 87,863
+bouton « 75% » @ 195,863
+bouton « 50% » @ 298,863
+bouton « 25% » @ 401,863

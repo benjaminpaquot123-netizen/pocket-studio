@@ -1,0 +1,41 @@
+Écran 103 (540x1170)
+icône « マイプロジェクト 1 » ✓ @ 274,36
+bouton « プロ » @ 494,36
+bouton (dossier ouvert) @ 84,114
+bouton « A » ▾ @ 198,114
+icône ↶ @ 273,114
+bouton ● @ 345,114
+bouton ▶ « このパート » @ 420,114
+icône (trois points reliés) @ 495,114
+bouton « 122  BPM » @ 73,186
+bouton « ? » @ 495,186
+onglet « リミックス 分離 » @ 93,258
+bouton « ベース 丸いベース » @ 244,258
+bouton « サブ ピュアなサブ » ⋮ @ 421,258
+image ← @ 10,259
+image → @ 529,259
+texte « パート：A » @ 69,321
+icône (liste) « チャプター » @ 396,410
+texte « 低音とポンプ チャプター 6/17 · ステップ 1/2 · プロ » @ 183,410
+icône ⌄ @ 483,410
+image (coupe) @ 57,528
+texte « よくできました、成功！ » @ 205,500
+texte « 結果を聴いて、好きなときに「次のステップ」をタップしてね。 » @ 295,543
+bouton « 次のステップ   » → @ 270,786
+icône ← @ 57,870
+bouton ▶ «  結果を聴く » @ 204,870
+bouton ▶ «  例を聴く » @ 417,870
+icône ↶ « 元に戻す » @ 64,954
+icône ↷ « やり直す » [désactivé] @ 164,954
+bouton ▶ « 曲 » @ 264,954
+texte « 122 テンポ » @ 370,954
+icône (trois points reliés) « シェア » @ 476,954
+onglet (ligne brisée et points) « 構成 » @ 49,1050
+onglet (touches de piano) « サウンド » [sélectionné] @ 160,1050
+onglet (curseurs) « ミックス » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « その他 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  メモ » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « フィードバックモード » @ 138,1140

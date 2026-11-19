@@ -1,0 +1,41 @@
+Écran 122 (540x1170)
+icône « マイプロジェクト 1 » ✓ @ 274,36
+bouton « プロ » @ 494,36
+bouton (dossier ouvert) @ 84,114
+bouton « A » ▾ @ 198,114
+icône ↶ @ 273,114
+bouton ● @ 345,114
+bouton ▶ « このパート » @ 420,114
+icône (trois points reliés) @ 495,114
+bouton « 122  BPM » @ 73,186
+bouton « ? » @ 495,186
+image ← @ 10,235
+onglet « リミックス 分離 » @ 93,235
+bouton « ベース 丸いベース » ⋮ @ 262,235
+icône ♪ « 音 » @ 402,235
+bouton « サブ ピュアなサブ » [coupé] @ 487,235
+image → @ 529,235
+icône (liste) « チャプター » @ 396,302
+texte « ピアノのスタブ チャプター 7/17 · ステップ 2/3 · プロ » @ 183,302
+icône ⌄ @ 483,302
+texte « あなたの番：コードトラックを作り、ルートなしでスタブを書こう（ルートはベースが持っている）：Am9 = C E G B（1〜2小節目）、D9 = C E F♯ A（3〜4小節目）。2音は残り、2音が動く：ピアニストの「ボイスリーディング」。リズムは1拍目を避け、4小節目は変化をつけてフレーズを閉じる。 » @ 270,491
+texte « ▸ なぜ？ » @ 270,641
+bouton ⊕ «   コードトラックを作る » @ 270,705
+bouton ▶ «  例を聴く » @ 142,789
+bouton (œil) «  見せて » @ 397,789
+icône ← «  前へ » @ 77,870
+icône « 次へ  » → @ 463,870
+icône ↶ « 元に戻す » @ 64,954
+icône ↷ « やり直す » [désactivé] @ 164,954
+bouton ▶ « 曲 » @ 264,954
+texte « 122 テンポ » @ 370,954
+icône (trois points reliés) « シェア » @ 476,954
+onglet (ligne brisée et points) « 構成 » @ 49,1050
+onglet (touches de piano) « サウンド » [sélectionné] @ 160,1050
+onglet (curseurs) « ミックス » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « その他 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  メモ » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « フィードバックモード » @ 138,1140

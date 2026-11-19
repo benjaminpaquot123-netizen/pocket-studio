@@ -1,0 +1,76 @@
+Écran 18 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 191,42
+bouton « Pro » @ 412,42
+bouton « A » ▾ @ 490,42
+icône ↶ @ 566,42
+icône ↷ [désactivé] @ 638,42
+bouton ● @ 710,42
+bouton ▶ « dit deel » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [sélectionné] @ 87,204
+onglet « Acid 303 Baslijn » @ 260,204
+onglet « Zang Microfoon » @ 448,204
+onglet « Remix Splitsen » @ 626,204
+bouton + «  Spoor » [coupé] @ 796,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+titre « VAKJES: STUDIOKICK » [coupé, état « Uitgeklapt »] @ 363,311
+bouton « ? » [coupé] @ 393,311
+bouton « Alle pads » [coupé] @ 771,312
+texte « Studiokick » @ 123,366
+texte « Nog 1 gestippeld vakje hier » @ 245,404
+bouton « 1 » [état « slag, kracht 100 % »] @ 90,474
+bouton [état « leeg »] @ 192,474
+bouton [état « leeg »] @ 294,474
+bouton [état « leeg »] @ 397,474
+bouton « 2 » [état « leeg »] @ 500,474
+bouton [état « leeg »] @ 603,474
+bouton [état « leeg »] @ 706,474
+bouton [état « leeg »] @ 809,474
+bouton « 3 » [état « leeg »] @ 90,555
+bouton [état « leeg »] @ 192,555
+bouton [état « leeg, gestippeld: tik erop »] @ 294,555
+bouton [état « leeg »] @ 397,555
+bouton « 4 » [état « leeg »] @ 500,555
+bouton [état « leeg »] @ 603,555
+bouton [état « leeg »] @ 706,555
+bouton [état « leeg »] @ 809,555
+bouton « Slagen » [sélectionné] @ 113,641
+bouton « Rolls » @ 248,641
+bouton « Pan » @ 361,641
+bouton « Toonhoogte » @ 525,641
+bouton « Kracht » @ 708,641
+texte « alles » [coupé] @ 165,710
+texte « 1/2 » [coupé] @ 248,710
+texte « 1/4 » [coupé] @ 323,710
+texte « ◀ » [coupé] @ 398,710
+texte « ▶ » [coupé] @ 473,710
+texte « Wissen » [coupé] @ 575,710
+texte « Vullen » [coupé] @ 80,716
+texte « De kick Hoofdstuk 2/17 · Stap 3/4 · Pro » @ 356,775
+icône (liste) « Hoofdstukken » @ 749,776
+icône ⌄ @ 843,776
+texte « Nu jij: op de pad van de kick de gestippelde vakjes van de 2 maten: de two-step (1.1 en 1.3.3) en de aanloop aan het begin van de 2e. » [coupé] @ 450,864
+texte « ▸ Waarom? » @ 450,916
+icône « Verder lezen » ⌄ @ 450,970
+bouton ⊕ «   Naar 2 maten » @ 450,1042
+bouton ▶ «  Luister naar het voorbeeld » @ 232,1126
+bouton (œil) «  Laat zien » @ 667,1126
+icône ← «  Vorige » @ 101,1207
+icône « Volgende  » → @ 778,1207
+icône ↶ « Ongedaan maken » @ 147,1292
+icône ↷ « Opnieuw » [désactivé] @ 336,1292
+icône ▶ « het nummer » @ 502,1292
+texte « 174 Tempo » @ 667,1292
+icône (trois points reliés) « Delen » @ 804,1292
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

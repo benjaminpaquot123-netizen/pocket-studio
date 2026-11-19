@@ -1,0 +1,64 @@
+Écran 116 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 231,42
+bouton « Pro » @ 491,42
+icône ↶ @ 566,42
+icône ↷ [désactivé] @ 638,42
+bouton ● @ 710,42
+bouton ▶ « dit deel » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+texte « Volumes » @ 428,213
+bouton « ? » @ 842,213
+texte « Drums » @ 84,301
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 57,376
+bouton (casque) [état « uit »] @ 111,376
+curseur [état « +0,0 dB », à 80 %] @ 84,532
+texte « +0,0 » @ 84,673
+texte « 3 » @ 96,713
+image (étincelles) @ 74,713
+texte « Acid 303 » @ 204,301
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 177,376
+bouton (casque) [état « uit »] @ 231,376
+curseur [état « +0,0 dB », à 80 %] @ 204,532
+texte « +0,0 » @ 204,673
+texte « Sub » @ 324,301
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 297,376
+bouton (casque) [état « uit »] @ 351,376
+curseur [état « +0,0 dB », à 80 %] @ 324,532
+texte « +0,0 » @ 324,673
+texte « 1 » @ 336,713
+image (étincelles) @ 317,713
+texte « Bas » @ 444,301
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 417,376
+bouton (casque) [état « uit »] @ 471,376
+curseur [état « +0,0 dB », à 80 %] @ 444,532
+texte « +0,0 » @ 444,673
+texte « Remix » @ 564,301
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 537,376
+bouton (casque) [état « uit »] @ 591,376
+curseur [état « +0,0 dB », à 80 %] @ 564,532
+texte « +0,0 » @ 564,673
+image (courbe) @ 60,848
+texte « Curven en effecten » @ 233,812
+texte « Er beweegt nog niets: laat een filter opengaan, een volume stijgen… » @ 475,871
+bouton « Automatiseren » @ 243,955
+bouton « Wat speelt » @ 657,955
+texte « Het basgeluid Hoofdstuk 6/17 · Stap 2/2 · Pro » @ 356,1083
+icône (liste) « Hoofdstukken » @ 749,1084
+icône ⌃ @ 843,1084
+icône « Nu jij: zet in Mix het effect ‘Pomp’ op het spoor Sub, en dan op het spoor Bas: ze worden bij elke kick zachter (sidechain). Vooral de Sub vecht met de kick in het laag. Lees » ⌃ @ 450,1196
+icône ↶ « Ongedaan maken » @ 147,1292
+icône ↷ « Opnieuw » [désactivé] @ 336,1292
+icône ▶ « het nummer » @ 502,1292
+texte « 174 Tempo » @ 667,1292
+icône (trois points reliés) « Delen » @ 804,1292
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

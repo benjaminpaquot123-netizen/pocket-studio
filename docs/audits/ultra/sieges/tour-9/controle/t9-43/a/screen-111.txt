@@ -1,0 +1,53 @@
+Écran 111 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 178,42
+bouton « Pro » @ 385,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 539,42
+bouton ● @ 611,42
+bouton ▶ « dit deel » @ 683,42
+bouton ▶ « het nummer » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [coupé] @ 68,204
+onglet « Acid 303 Baslijn » @ 212,204
+onglet « Zang Microfoon » @ 400,204
+onglet « Remix Splitsen » @ 578,204
+bouton « Bas Ronde bas » ⋮ @ 772,204
+image ← @ 10,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+texte « mt » [coupé] @ 84,314
+bouton « 2 » [coupé] @ 171,322
+bouton « 3 » @ 378,322
+bouton « 4 » @ 698,322
+texte « G » [coupé] @ 84,370
+texte « G♭ » @ 84,408
+texte « F » @ 84,450
+texte « E » @ 84,492
+texte « E♭ » @ 84,534
+texte « D » @ 84,576
+texte « D♭ » @ 84,618
+texte « C3 » @ 84,660
+texte « B » @ 84,702
+texte « B♭ » @ 84,743
+dessin [coupé] @ 492,558
+texte « Het basgeluid Hoofdstuk 6/17 · Stap 1/2 · Pro » @ 356,814
+icône (liste) « Hoofdstukken » @ 749,815
+icône ⌄ @ 843,815
+texte « Nu jij: tik op ‘Bas een octaaf lager kopiëren’: een spoor ‘Sub’ speelt je bas een octaaf lager, zonder zijn octaafsprongen. Dat is het laag dat je in je buik voelt: het blijft op zijn plek. » @ 450,949
+texte « ▸ Waarom? » @ 450,1047
+bouton ⊕ «   Bas een octaaf lager kopiëren » @ 450,1116
+bouton ▶ «  Luister naar het voorbeeld » @ 232,1200
+bouton (œil) «  Laat zien » @ 667,1200
+icône ← «  Vorige » @ 101,1281
+icône « Volgende  » → @ 778,1281
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

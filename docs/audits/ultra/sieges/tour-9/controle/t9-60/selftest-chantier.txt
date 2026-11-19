@@ -1,0 +1,168 @@
+résumé refusé : pas de tampon à côté (selftest.ok) (/home/user/pocket-studio/docs/audits/ultra/sieges/tour-9/controle/t9-60/selftest-resume.txt) : aucune garde n'y est verte
+T4-19 : garde BenchTour4Test#renameAfterTheClearButton pas verte dans le dernier selftest
+T4-19 : « corrigé », commit d3eccff introuvable
+T4-16 : garde BenchRecetteTest#simpleSongCounterFollowsTheEnginePastTheFirstPart pas verte dans le dernier selftest
+T4-01 : « corrigé », commit c423455d introuvable
+T4-17 : garde BenchPlayThenTabsTest#theBarCounterGoesOnWhileTheSongPlays pas verte dans le dernier selftest
+T4-17 : « corrigé », commit ffd58ce introuvable
+T5-Dc-4 : garde BenchTour4Test#theClearButtonKeepsTheFieldsFocus pas verte dans le dernier selftest
+T5-Fb-73 : garde BenchRecetteTest#proPartPickedWhilePlayingTakesOver pas verte dans le dernier selftest
+T5-Cc-27 : « corrigé », commit 0d049be introuvable
+T5-Cd-83 : « corrigé », commit f3c283e introuvable
+T5-Cd-68 : « corrigé », commit f3c283e introuvable
+T5-Ac-61 : garde BenchTour4Test#theClearButtonKeepsTheFieldsFocus pas verte dans le dernier selftest
+T5-Cc-41a : « corrigé », commit f3c283e introuvable
+T5-Ec-28 : « corrigé », commit e0be831a introuvable
+T5-Cc-30 : « corrigé », commit 2e6e828 introuvable
+T5-Db-16 : garde BenchTour4Test#theClearButtonKeepsTheFieldsFocus pas verte dans le dernier selftest
+T5-Fa-5 : garde BenchPlayThenTabsTest#theBarCounterGoesOnWhileTheSongPlays pas verte dans le dernier selftest
+T5-Fa-11 : « corrigé », commit 88e36490 introuvable
+T5-Aa-43 : « corrigé », commit 88e36490 introuvable
+T5-Fc-8 : garde BenchPlayThenTabsTest#theBarCounterGoesOnWhileTheSongPlays pas verte dans le dernier selftest
+T5-Fc-8 : « corrigé », commit ffd58ce introuvable
+T5-Ec-61 : « corrigé », commit 2e6e828 introuvable
+T5-Cc-41b : garde BenchEngineTest#anExportSizeIsSaidToBeTheBenchs pas verte dans le dernier selftest
+T5-Ca-32 : garde BenchAmeneesTest#aTappedRhythmIsScored pas verte dans le dernier selftest
+T5-Ca-32 : « corrigé », commit 0f5efde introuvable
+T5-Ed-40 : « corrigé », commit 9aaaccf8 introuvable
+T5-Ab-14 : garde BenchRecetteTest#simpleSongCounterFollowsTheEnginePastTheFirstPart pas verte dans le dernier selftest
+T5-Ab-14 : garde BenchRecetteTest#simpleSongPlaysToItsEndAndStopsThere pas verte dans le dernier selftest
+T5-Ab-27 : garde BenchSongClockTest#aMicTakeEndsWithTheSongsEnd pas verte dans le dernier selftest
+T5-Ab-27 : garde BenchSongClockTest#aTakeArmedIsKeptWhenTheSongEnds pas verte dans le dernier selftest
+T5-Ab-27 : garde BenchEngineTest#aMicTakeLeftRunningIsKeptWhenTheSongEnds pas verte dans le dernier selftest
+T5-Ab-27 : « corrigé », commit 87b6693 introuvable
+T5-Ab-27 : « corrigé », commit 2e650ca introuvable
+T5-Ed-11 : garde BenchPadLiveStopTest#padLivesStopAllIsInSightAndStopsTheTempoToo pas verte dans le dernier selftest
+T5-Ed-11 : « corrigé », commit e6531060 introuvable
+T5-PADRETRIG : garde BenchPadLiveTest#aHitRetouchedSoundsAtOnce pas verte dans le dernier selftest
+T5-PADRETRIG : « corrigé », commit 16f520d7 introuvable
+T5-PREMIER-ECRAN : garde BenchSelfTest#aBlankFirstScreenIsWaitedForOnlyWhenTheBenchIsBusy pas verte dans le dernier selftest
+T5-AUTO-OPTION : « corrigé », commit a53e385e introuvable
+f1ebc743 « vert: a projects list still loading is waited for by the seat's tap (C » : vert sans rouge du même test avant lui
+e40ab1a6 « vert: chapter 12 easy words name what the crosses show » : vert sans rouge du même test avant lui
+fd422452 « vert: the panel test follows the one-touch rule of the tutorial's line » : vert sans rouge du même test avant lui
+71f3c2c7 « vert: one moment per Facile consigne replaces two gestures » : vert sans rouge du même test avant lui
+4e27e680 « vert: tuto panel keeps the kit offer and « Pourquoi ? » in place » : vert sans rouge du même test avant lui
+2b1faf81 « vert: house Facile consignes fit the panel, one gesture series » : vert sans rouge du même test avant lui
+496d8552 « vert: drop four fixed hip-hop and lofi steps from PENDING_VERB » : vert sans rouge du même test avant lui
+999ff0a0 « vert: keep three shared copy-bars keys still used by other families » : vert sans rouge du même test avant lui
+460142ab « vert: restore Korean part durations and polish two Japanese phrasings » : vert sans rouge du même test avant lui
+33c8c1f7 « vert: pop fill names the beat before the last and the x4 roll » : vert sans rouge du même test avant lui
+779ff650 « vert: bass tuto key/snare texts, glosses moved to why, orphan keys rem » : vert sans rouge du même test avant lui
+128bae15 « vert: step whys keep the chapter why, liquid hat tip fixed » : vert sans rouge du même test avant lui
+af97d85d « vert: jump_up pad_do why keeps the chord gloss » : vert sans rouge du même test avant lui
+9478f12c « vert: jungle hat tip clears the extra cell » : vert sans rouge du même test avant lui
+429c8812 « vert: dubstep hat tip covers both bars » : vert sans rouge du même test avant lui
+80a2b698 « vert: tuto panel fold (examples fold first, kit and why kept when cut  » : vert sans rouge du même test avant lui
+3e1b87dc « vert: the repairs register rules wait for batch 8 » : vert sans rouge du même test avant lui
+fd25b542 « vert: tour 7 D1 and D6, dotted notes whole above the panel, first bar  » : vert sans rouge du même test avant lui
+1a669e4e « vert: tour 7 D7, a skipped example is said, one way on at a step's Bra » : vert sans rouge du même test avant lui
+8b36fd8c « vert: tour 7 D3 tuto panel words end on a whole line, kit offer under  » : vert sans rouge du même test avant lui
+2a5465d4 « vert: tour 7 D3 kit offer back in the words, its buttons never cut by  » : vert sans rouge du même test avant lui
+25d42510 « vert: D6 « Mes fichiers » in the Plus page, both modes » : vert sans rouge du même test avant lui
+6e2d1d07 « vert: D5 Live low in the Mode simple's Plus page, within either thumb » : vert sans rouge du même test avant lui
+725f17cc « vert: D7 the Mixer's strips in the Sons chips' order » : vert sans rouge du même test avant lui
+8789def1 « vert: D4 the Guide's bar step whole at big text » : vert sans rouge du même test avant lui
+8bc8dd80 « vert: Hindi never writes « bar » in Latin letters (tour 7 lot 6 D1) » : vert sans rouge du même test avant lui
+0b30a709 « vert: drop the two translations the export sheet no longer shows (tour » : vert sans rouge du même test avant lui
+211911f8 « vert: the share menu keeps the app's title, the file named in Android' » : vert sans rouge du même test avant lui
+fc80fcfe « vert: the mixer hides the first track the tutorial hides, as the Sons  » : vert sans rouge du même test avant lui
+dbbc78b2 « vert: tutorial line keeps the whole count while it points » : vert sans rouge du même test avant lui
+d769c17c « vert: bench9 aim drawn part, cover check, hand back fixes, amenée jour » : vert sans rouge du même test avant lui
+fa22bdff « vert: row arrow - the left arrow no longer scrolls the row back to the » : vert sans rouge du même test avant lui
+440c63f5 « vert: row arrow - beside the row without pushing the edge chips out of » : vert sans rouge du même test avant lui
+32222750 « vert: share sheet tail only when it scrolls; row arrow starts at the r » : vert sans rouge du même test avant lui
+a82b33c0 « vert: captures re-recorded (share sheet, track bar arrow) » : vert sans rouge du même test avant lui
+b7b7dae1 « vert: captures re-recorded after integration merge » : vert sans rouge du même test avant lui
+e73a70cd « vert: Clavier at 200 % keeps keys 62, 65 and the take's button above t » : vert sans rouge du même test avant lui
+fbf0fe0e « vert: a white key's name shrinks to its key at 200 % instead of being  » : vert sans rouge du même test avant lui
+509081a0 « vert: curve's « Je le fais » takes only the curves and their strips' i » : vert sans rouge du même test avant lui
+e0d231a2 « vert: decoupe2 a message left from before no longer scrolls the cut on » : vert sans rouge du même test avant lui
+4d9cf5a5 « vert: guide2 no empty step block on a card with nothing to show » : vert sans rouge du même test avant lui
+5c1e5f98 « vert: share listen line shows whole, parts counted once » : vert sans rouge du même test avant lui
+9ba919d5 « vert: 3a a new part is brought into view whole » : vert sans rouge du même test avant lui
+2c00786d « vert: guide2 Plus rows measured unseen instead of guessed, the list ta » : vert sans rouge du même test avant lui
+ba319fe8 « vert: level missions, seat levels and per-level dashboard » : vert sans rouge du même test avant lui
+9a2c5fe0 « rouge: a projects list still loading is missed by the seat's tap (CI 3 » : rouge sans vert du même test après lui
+01031373 « rouge: techno block one moment per consigne » : rouge sans vert du même test après lui
+428957c2 « rouge: tuto panel fold (kit and why kept when cut anyway, examples fol » : rouge sans vert du même test après lui
+329bc224 « rouge: tour 7 D1, a touch on the line leaves no dotted note cut by the » : rouge sans vert du même test après lui
+03188249 « rouge: tour 7 D6, the line's next note is the first one left in bar or » : rouge sans vert du même test après lui
+8dafb29b « rouge: tour 7 D7, Suivant on an example says nothing, two ways on side » : rouge sans vert du même test après lui
+85a43b5f « rouge: tour 7 D3 tuto panel words cut and kit offer cut above the grid » : rouge sans vert du même test après lui
+ef9975d6 « rouge: D6 « Mes fichiers » in the Plus menu » : rouge sans vert du même test après lui
+e1375032 « rouge: D5 Live within the left thumb in Simple's Plus » : rouge sans vert du même test après lui
+35bb6522 « rouge: D7 Mixer strips read like the Sons chips » : rouge sans vert du même test après lui
+d7d1d922 « rouge: D5 Live in « Plus » out of the left thumb (real layout with bar » : rouge sans vert du même test après lui
+9a2a03b0 « rouge: D4 the Guide's bar cuts its step at big text » : rouge sans vert du même test après lui
+ebab732b « rouge: bench9 tests for aim, cover, hand back and amenée journal » : rouge sans vert du même test après lui
+472d0164 « rouge: share sheet tail band above the formats; row arrow drawn over c » : rouge sans vert du même test après lui
+9e195d6c « rouge: Clavier at 200 % pushes keys 62, 65 and the take's button under » : rouge sans vert du même test après lui
+a50897e9 « rouge: curve's « Je le fais » takes the whole project from the show » : rouge sans vert du même test après lui
+b9bea1b6 « rouge: guide2 empty step block on a settled card » : rouge sans vert du même test après lui
+de58dc7e « rouge: decoupe2 stale message, Plus rows, 3a new part, share listen an » : rouge sans vert du même test après lui
+b461924f « rouge: tour 8 R tests reach the wizard steps, open Share in Simple mod » : rouge sans vert du même test après lui
+f7f956c2 « rouge: tuto-mots, German and Japanese words » : rouge sans vert du même test après lui
+1e856ac5 « rouge: level missions, seat levels and per-level dashboard (tests and  » : rouge sans vert du même test après lui
+journal, ligne cochée A.4 : paire rouge 004e366 / vert 7f5a0ce : commit introuvable
+journal, ligne cochée A.10 : paire rouge c3eebf7 / vert 7e33ec5 : commit introuvable
+journal, ligne cochée A.12 : paire rouge 03c768c / vert 8180d82 : commit introuvable
+journal, ligne cochée A.4 : paire rouge c39ca77 / vert 3dab50a : commit introuvable
+journal, ligne cochée A.3 : paire rouge 0a4d552 / vert a460613 : commit introuvable
+journal, ligne cochée A.4 : paire rouge 609f50b / vert 01fcb3c : commit introuvable
+journal, ligne cochée A.11 : paire rouge 7e34de9 / vert 1b8dd12 : commit introuvable
+journal, ligne cochée A.14 : paire rouge 5f0c5f8 / vert 12d6cca : commit introuvable
+journal, ligne cochée A.2 : paire rouge 4587080 / vert 7a6864d : commit introuvable
+journal, ligne cochée A.6 : paire rouge 0a38188 / vert f9a7b86 : commit introuvable
+journal, ligne cochée A.9 : paire rouge 0fcb63d / vert 419a5c4 : commit introuvable
+journal, ligne cochée A.7 : paire rouge 49c3325 / vert 2e650ca : commit introuvable
+journal, ligne cochée A.8 : paire rouge c6e9f7e / vert c9bb80d : commit introuvable
+journal, ligne cochée A.15 : paire rouge e3db5e2 / vert 7bfe58b : commit introuvable
+journal, ligne cochée A.13 : paire rouge ec9cc11 / vert dddbb0d : commit introuvable
+journal, ligne cochée A.16 : paire rouge 103f232 / vert 844dbcd : commit introuvable
+journal, ligne cochée A.16 : paire rouge f59af32 / vert 6c2f776 : commit introuvable
+journal, ligne cochée A.16 : paire rouge 0ac27a1 / vert 948d8ad : commit introuvable
+journal, ligne cochée A.18 : paire rouge 043332d / vert 1467e1b : commit introuvable
+journal, ligne cochée A.19 : paire rouge d3868c6 / vert de9d84d : commit introuvable
+journal, ligne cochée A.19 : paire rouge 6a81e3c / vert 81e0c68 : commit introuvable
+journal, ligne cochée A.19 : paire rouge b3be3c1 / vert 894033d : commit introuvable
+journal, ligne cochée A.19 : paire rouge de0df4e / vert ba7e1d3 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 8bd0c866 / vert 7e993b81 : commit introuvable
+journal, ligne cochée A.22 : paire rouge 21c8018 / vert 6b9c72b : commit introuvable
+journal, ligne cochée A.22 : paire rouge 9bfb587 / vert 7539576 : commit introuvable
+journal, ligne cochée A.22 : paire rouge 7ee664e / vert f1da11f : commit introuvable
+journal, ligne cochée A.19 : paire rouge 90da09f8 / vert 68d0adc7 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 34a5af69 / vert 07a79168 : commit introuvable
+journal, ligne cochée A.18 : paire rouge a678a94c / vert e507f9bc : commit introuvable
+journal, ligne cochée A.18 : paire rouge e26fde7e / vert c125176c : commit introuvable
+journal, ligne cochée A.18 : paire rouge 1bb1622f / vert 5e32afae : commit introuvable
+journal, ligne cochée A.19 : paire rouge 1d767cbb / vert 80c637eb : commit introuvable
+journal, ligne cochée A.19 : paire rouge 689872ac / vert f023003d : commit introuvable
+journal, ligne cochée A.19 : paire rouge a989d0b5 / vert 9a94aed0 : commit introuvable
+journal, ligne cochée A.18 : paire rouge 6be9442e / vert 6614d1ba : commit introuvable
+journal, ligne cochée A.23 : paire rouge 95de177 / vert 778c01e : commit introuvable
+journal, ligne cochée A.24 : paire rouge bb09927 / vert c094a6c : commit introuvable
+journal, ligne cochée A.24 : paire rouge 92d65e4 / vert c8bca8a : commit introuvable
+journal, ligne cochée R.8 : paire rouge 19d33b8 / vert f2a0a9a : commit introuvable
+journal, ligne cochée A.23 : paire rouge af6da683 / vert a74b389a : commit introuvable
+journal, ligne cochée A.23 : paire rouge f4d447ea / vert b89017a7 : commit introuvable
+journal, ligne cochée 4.4 : paire rouge ff69cb40 / vert cdab9801 : commit introuvable
+journal, ligne cochée 4.6 : paire rouge 7bb62944 / vert 516c8726 : commit introuvable
+journal, ligne cochée 4.6 : paire rouge d55884fa / vert e7756ba3 : commit introuvable
+journal, ligne cochée 4.7 : paire rouge 510a1e19 / vert 50ba6a28 : commit introuvable
+journal, ligne cochée A.19 : paire rouge a27f5070 / vert 60c6dea6 : commit introuvable
+journal, ligne cochée A.18 : paire rouge 18e455da / vert bf068ce0 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 105236cc / vert 42cd01b5 : commit introuvable
+journal, ligne cochée A.19 : paire rouge 5c743b13 / vert f175438b : commit introuvable
+journal, ligne cochée 4.7 : paire rouge 8db74c19 / vert 727a99f6 : commit introuvable
+journal, ligne cochée 5.10 : paire rouge 96573c2c / vert 395576d2 : commit introuvable
+journal, ligne cochée 5.3 : paire rouge b2de5bc7 / vert 678ce5c3 : commit introuvable
+journal, ligne cochée 5.11 : paire rouge e22c78b6 / vert be759849 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge bf9dbfd3 / vert 28435ec9 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge 2cac6138 / vert e7f47614 : commit introuvable
+journal, ligne cochée 4.4 : paire rouge 9f4ac07b / vert 05487030 : commit introuvable
+journal, ligne cochée 6.2 : paire rouge f37a1827 / vert b116d4e0 : commit introuvable
+journal, ligne cochée 6.5 : paire rouge 4423d09f / vert 10db41c8 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge ae1eda78 / vert 88e36490 : commit introuvable
+journal, ligne cochée 6.3 : paire rouge 338748e3 / vert a563a6dd : commit introuvable
+chantier : 167 écarts

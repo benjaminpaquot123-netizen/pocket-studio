@@ -1,0 +1,186 @@
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=45257 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+Starting a Gradle Daemon (subsequent builds will be faster)
+Calculating task graph as no cached configuration is available for tasks: :app:testDebugUnitTest --tests com.pocketstudio.app.human.Bench* --tests com.pocketstudio.app.human.Tour*AppProof*Test --rerun
+> Task :project-model:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :engine:preBuild UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :engine:preDebugBuild UP-TO-DATE
+> Task :engine:processDebugNavigationResources UP-TO-DATE
+> Task :separation:preBuild UP-TO-DATE
+> Task :separation:preDebugBuild UP-TO-DATE
+> Task :separation:processDebugNavigationResources UP-TO-DATE
+> Task :ui-components:preBuild UP-TO-DATE
+> Task :ui-components:preDebugBuild UP-TO-DATE
+> Task :ui-components:processDebugNavigationResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :engine:generateDebugResources UP-TO-DATE
+> Task :project-model:processResources UP-TO-DATE
+> Task :engine:packageDebugResources UP-TO-DATE
+> Task :engine:javaPreCompileDebug UP-TO-DATE
+> Task :separation:generateDebugResources UP-TO-DATE
+> Task :engine:parseDebugLocalResources UP-TO-DATE
+> Task :separation:packageDebugResources UP-TO-DATE
+> Task :separation:parseDebugLocalResources UP-TO-DATE
+> Task :engine:generateDebugRFile UP-TO-DATE
+> Task :separation:generateDebugRFile UP-TO-DATE
+> Task :project-model:compileKotlin UP-TO-DATE
+> Task :project-model:compileJava NO-SOURCE
+> Task :project-model:classes UP-TO-DATE
+> Task :project-model:jar UP-TO-DATE
+> Task :separation:javaPreCompileDebug UP-TO-DATE
+> Task :ui-components:generateDebugResources UP-TO-DATE
+> Task :engine:compileDebugKotlin UP-TO-DATE
+> Task :separation:compileDebugKotlin UP-TO-DATE
+> Task :engine:compileDebugJavaWithJavac NO-SOURCE
+> Task :separation:compileDebugJavaWithJavac NO-SOURCE
+> Task :engine:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :separation:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :ui-components:packageDebugResources UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :ui-components:parseDebugLocalResources UP-TO-DATE
+> Task :engine:writeDebugAarMetadata UP-TO-DATE
+> Task :ui-components:generateDebugRFile UP-TO-DATE
+> Task :ui-components:javaPreCompileDebug UP-TO-DATE
+> Task :separation:writeDebugAarMetadata UP-TO-DATE
+> Task :ui-components:writeDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :ui-components:compileDebugKotlin UP-TO-DATE
+> Task :ui-components:compileDebugJavaWithJavac NO-SOURCE
+> Task :ui-components:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :engine:processDebugManifest UP-TO-DATE
+> Task :engine:extractDeepLinksDebug UP-TO-DATE
+> Task :separation:extractDeepLinksDebug UP-TO-DATE
+> Task :ui-components:extractDeepLinksDebug UP-TO-DATE
+> Task :separation:processDebugManifest UP-TO-DATE
+> Task :ui-components:processDebugManifest UP-TO-DATE
+> Task :separation:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :engine:mapDebugSourceSetPaths UP-TO-DATE
+> Task :separation:compileDebugLibraryResources UP-TO-DATE
+> Task :engine:compileDebugLibraryResources UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :ui-components:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :engine:generateDebugAssets UP-TO-DATE
+> Task :ui-components:compileDebugLibraryResources UP-TO-DATE
+> Task :separation:generateDebugAssets UP-TO-DATE
+> Task :engine:mergeDebugAssets UP-TO-DATE
+> Task :ui-components:generateDebugAssets UP-TO-DATE
+> Task :ui-components:mergeDebugAssets UP-TO-DATE
+> Task :engine:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :separation:mergeDebugAssets UP-TO-DATE
+> Task :engine:processDebugJavaRes UP-TO-DATE
+> Task :separation:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :separation:processDebugJavaRes UP-TO-DATE
+> Task :ui-components:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :ui-components:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugUnitTestManifest UP-TO-DATE
+> Task :app:processDebugUnitTestManifest UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:bundleDebugClassesToRuntimeJar UP-TO-DATE
+> Task :app:bundleDebugClassesToCompileJar UP-TO-DATE
+> Task :app:packageDebugUnitTestForUnitTest UP-TO-DATE
+> Task :app:generateDebugUnitTestConfig UP-TO-DATE
+
+> Task :app:compileDebugUnitTestKotlin
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/BenchFlagTest.kt:114:19 'fun createComposeRule(effectContext: CoroutineContext = ...): ComposeContentTestRule' is deprecated. Use `androidx.compose.ui.test.junit4.v2.createComposeRule` instead. The v2 APIs use StandardTestDispatcher instead of UnconfinedTestDispatcher, which aligns with standard coroutine behavior by queuing tasks rather than executing them immediately. Tests relying on immediate execution may require explicit synchronization. Please refer to the migration guide for more details.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/BenchMixFaderCoverTest.kt:38:19 'fun createComposeRule(effectContext: CoroutineContext = ...): ComposeContentTestRule' is deprecated. Use `androidx.compose.ui.test.junit4.v2.createComposeRule` instead. The v2 APIs use StandardTestDispatcher instead of UnconfinedTestDispatcher, which aligns with standard coroutine behavior by queuing tasks rather than executing them immediately. Tests relying on immediate execution may require explicit synchronization. Please refer to the migration guide for more details.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:81:19 'fun createEmptyComposeRule(effectContext: CoroutineContext = ...): ComposeTestRule' is deprecated. Use `androidx.compose.ui.test.junit4.v2.createEmptyComposeRule` instead. The v2 APIs use StandardTestDispatcher instead of UnconfinedTestDispatcher, which aligns with standard coroutine behavior by queuing tasks rather than executing them immediately. Tests relying on immediate execution may require explicit synchronization. Please refer to the migration guide for more details.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1180:30 Unnecessary non-null assertion (!!) on a non-null receiver of type 'RhythmViewModel'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1188:14 Unnecessary non-null assertion (!!) on a non-null receiver of type 'RhythmViewModel'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1205:26 Unnecessary non-null assertion (!!) on a non-null receiver of type 'RhythmViewModel'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1211:26 Unnecessary non-null assertion (!!) on a non-null receiver of type 'RhythmViewModel'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1486:25 'fun withIntent(p0: Intent!): ServiceController<SeparationService!>!' is deprecated. Deprecated in Java.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1778:16 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1778:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1779:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1780:17 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1873:16 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1873:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1874:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1875:17 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1888:16 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1888:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1889:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1890:17 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2091:13 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2091:47 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2091:75 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2091:93 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2411:38 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2411:72 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2411:100 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2411:118 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/ScreenText.kt:90:111 'val InvisibleToUser: SemanticsPropertyKey<Unit>' is deprecated. Use `hideFromAccessibility` instead.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/ScreenText.kt:408:46 'field scaledDensity: Float' is deprecated. Deprecated in Java.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/BenchCoverTest.kt:42:19 'fun createComposeRule(effectContext: CoroutineContext = ...): ComposeContentTestRule' is deprecated. Use `androidx.compose.ui.test.junit4.v2.createComposeRule` instead. The v2 APIs use StandardTestDispatcher instead of UnconfinedTestDispatcher, which aligns with standard coroutine behavior by queuing tasks rather than executing them immediately. Tests relying on immediate execution may require explicit synchronization. Please refer to the migration guide for more details.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/BenchFlagTest.kt:114:19 'fun createComposeRule(effectContext: CoroutineContext = ...): ComposeContentTestRule' is deprecated. Use `androidx.compose.ui.test.junit4.v2.createComposeRule` instead. The v2 APIs use StandardTestDispatcher instead of UnconfinedTestDispatcher, which aligns with standard coroutine behavior by queuing tasks rather than executing them immediately. Tests relying on immediate execution may require explicit synchronization. Please refer to the migration guide for more details.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/BenchMixFaderCoverTest.kt:38:19 'fun createComposeRule(effectContext: CoroutineContext = ...): ComposeContentTestRule' is deprecated. Use `androidx.compose.ui.test.junit4.v2.createComposeRule` instead. The v2 APIs use StandardTestDispatcher instead of UnconfinedTestDispatcher, which aligns with standard coroutine behavior by queuing tasks rather than executing them immediately. Tests relying on immediate execution may require explicit synchronization. Please refer to the migration guide for more details.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:81:19 'fun createEmptyComposeRule(effectContext: CoroutineContext = ...): ComposeTestRule' is deprecated. Use `androidx.compose.ui.test.junit4.v2.createEmptyComposeRule` instead. The v2 APIs use StandardTestDispatcher instead of UnconfinedTestDispatcher, which aligns with standard coroutine behavior by queuing tasks rather than executing them immediately. Tests relying on immediate execution may require explicit synchronization. Please refer to the migration guide for more details.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1180:30 Unnecessary non-null assertion (!!) on a non-null receiver of type 'RhythmViewModel'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1188:14 Unnecessary non-null assertion (!!) on a non-null receiver of type 'RhythmViewModel'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1205:26 Unnecessary non-null assertion (!!) on a non-null receiver of type 'RhythmViewModel'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1211:26 Unnecessary non-null assertion (!!) on a non-null receiver of type 'RhythmViewModel'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1486:25 'fun withIntent(p0: Intent!): ServiceController<SeparationService!>!' is deprecated. Deprecated in Java.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1778:16 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1778:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1779:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1780:17 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1873:16 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1873:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1874:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1875:17 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1888:16 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1888:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1889:44 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:1890:17 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'ThreadGroup?'.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2091:13 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2091:47 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2091:75 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2091:93 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2411:38 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2411:72 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2411:100 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/HumanTester.kt:2411:118 This declaration needs opt-in. Its usage should be marked with '@com.github.takahirom.roborazzi.ExperimentalRoborazziApi' or '@OptIn(com.github.takahirom.roborazzi.ExperimentalRoborazziApi::class)'
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/ScreenText.kt:90:111 'val InvisibleToUser: SemanticsPropertyKey<Unit>' is deprecated. Use `hideFromAccessibility` instead.
+w: file:///home/user/pocket-studio/app/src/test/java/com/pocketstudio/app/human/ScreenText.kt:408:46 'field scaledDensity: Float' is deprecated. Deprecated in Java.
+
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes UP-TO-DATE
+
+> Task :app:testDebugUnitTest
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=45257 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+
+> Task :app:finalizeTestRoborazziDebug SKIPPED
+
+[Incubating] Problems report is available at: file:///home/user/pocket-studio/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.8.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 12m 13s
+82 actionable tasks: 2 executed, 80 up-to-date
+Configuration cache entry stored.

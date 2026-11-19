@@ -31,6 +31,8 @@ chemin: Synthé, après un enregistrement, fiche de prise refermée | test: Tour
 
 corrige: S17 | gravité: grave | rejeu: t9-s17-glisse-pointille
 controle: reporté (mode boost, grande vérification de fin)
+
+t9-s17-glisse-pointille : oracle tenu
 corrige: F112 | gravité: mineur
 corrige: F113 | gravité: mineur
 corrige: F114 | gravité: mineur

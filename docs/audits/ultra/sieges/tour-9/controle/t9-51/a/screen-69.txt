@@ -1,0 +1,44 @@
+Écran 69 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 285,42
+bouton « Einfach » @ 615,42
+bouton ● @ 705,42
+bouton ▶ « dieser Teil » @ 780,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+icône « Intro Takt 1/136 » ▾ @ 246,114
+bouton « ? » @ 855,114
+image (rond coché) @ 0,0
+texte « Bereit zum Teilen? » @ 450,180
+champ « Name des Songs (und des Projekts) » contenu «  » @ 450,265
+texte « „Teilen“ benennt auch das Projekt „Mein Projekt 1“ um. » @ 450,345
+bouton ▶ «  Anhören » @ 773,413
+texte « 3:08 » @ 66,400
+texte « 6 Teile » @ 150,405
+texte « Lautstärke: −13,7, wie Streaming-Musik (−14) » @ 347,433
+bouton « M4A · zum Teilen » [sélectionné] @ 143,521
+bouton « WAV · max. Qualität » @ 394,521
+bouton (trois points reliés) «   Teilen » [désactivé] @ 450,617
+bouton (dossier) « Meine Dateien » › @ 428,719
+bouton « ? » @ 848,719
+texte « Exportiere deinen Track Kapitel 15/15 · Schritt 1/1 · Einfach » @ 375,867
+icône (liste) « Kapitel » @ 768,867
+icône ⌄ @ 843,867
+texte « Du bist dran: Teile deinen Track, die App macht eine Audiodatei daraus. „M4A“ macht eine leichte Datei für deine Freunde, „WAV“ behält die Studioqualität. » @ 450,984
+texte « ▸ Warum? » @ 450,1062
+bouton (doigt qui touche) «   Ich mach's » @ 450,1125
+icône ← «  Zurück » @ 92,1209
+icône « Weiter  » → @ 811,1209
+icône ↶ « Rückgängig » @ 125,1293
+image ↷ @ 299,1283
+bouton ▶ « der Song » @ 464,1293
+texte « 174 Tempo » @ 624,1293
+icône ⋮ « Mehr » @ 783,1293
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » [sélectionné] @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Notieren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 318,1479

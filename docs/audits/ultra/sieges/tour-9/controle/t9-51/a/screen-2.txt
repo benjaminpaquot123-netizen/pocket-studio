@@ -1,0 +1,69 @@
+Écran 2 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 285,42
+bouton « Einfach » @ 615,42
+bouton ● @ 705,42
+bouton ▶ « dieser Teil » @ 780,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+icône « Teil: A · Groove » ▾ @ 114,180
+bouton « Große Trommel Studio FX » @ 123,270
+bouton « Große Trommel 2 » @ 341,270
+bouton « Snare FX » @ 559,270
+bouton « Snare 2 » @ 777,270
+bouton « Händeklatschen » @ 123,348
+bouton « Hi-Hat L 30 » @ 341,348
+bouton « Offene Hi-Hat R 30 » @ 559,348
+bouton « Tiefes Tom » @ 777,348
+bouton « Mittleres Tom R 45 » @ 123,426
+bouton « Hohes Tom » @ 341,426
+bouton « Trommelrand FX R 50 » @ 559,426
+bouton « Glocke » @ 777,426
+bouton « Becken FX R 40 » @ 123,502
+bouton « Maracas L 50 » @ 341,502
+bouton « Conga » @ 559,502
+bouton « Laser » @ 777,502
+texte « Die Teile verstehen Kapitel 9/15 · Schritt 2/7 · Einfach » @ 375,585
+icône (liste) « Kapitel » @ 768,585
+icône ⌄ @ 843,585
+texte « Hör dir das Intro (den Anfang des Tracks) an: das Schlagzeug und das kalte Pad, ohne Bass. » @ 450,684
+texte « Energie » @ 58,741
+texte « Intro » @ 95,834
+texte « 24 » @ 95,858
+texte « 8 » @ 196,846
+texte « Drop » @ 323,834
+texte « 32 » @ 324,858
+texte « Break » @ 475,834
+texte « 16 » @ 475,858
+texte « 8 » @ 551,846
+texte « Drop 2 » @ 678,834
+texte « 32 » @ 678,858
+texte « Ende » @ 829,834
+texte « 16 » @ 829,858
+texte «  Intro » @ 61,895
+texte «  Build-up » @ 160,895
+texte «  Drop » @ 258,895
+texte «  Break » @ 343,895
+texte «  Drop 2 » @ 437,895
+texte «  Ende » @ 528,895
+texte « Jede Zahl: die Länge des Teils in Takten. » @ 206,925
+bouton « Kit Neurofunk laden (3 MB) » @ 403,996
+texte « Später » @ 826,996
+texte « ▸ Warum? » @ 450,1062
+bouton ▶ «  Beispiel anhören » @ 450,1125
+icône ← «  Zurück » @ 92,1209
+icône « Weiter  » → @ 811,1209
+icône ↶ « Rückgängig » @ 125,1293
+image ↷ @ 299,1283
+bouton ▶ « der Song » @ 464,1293
+texte « 174 Tempo » @ 624,1293
+icône ⋮ « Mehr » @ 783,1293
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Notieren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 318,1479

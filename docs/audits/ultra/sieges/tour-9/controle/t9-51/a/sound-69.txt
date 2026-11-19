@@ -1,0 +1,2 @@
+Son : rien ne joue.
+Rien ne s'écrit : aucun champ n'a le curseur (un téléphone n'afficherait pas de clavier) : touche d'abord le champ, puis écris.

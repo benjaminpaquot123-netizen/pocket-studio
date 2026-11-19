@@ -1,0 +1,61 @@
+Écran 44 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 285,42
+bouton « Einfach » @ 615,42
+bouton ● @ 705,42
+bouton ▶ « dieser Teil » @ 780,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+icône (flèches en boucle) « Ende Takt 1/8 » ▾ @ 239,114
+bouton « ? » @ 855,114
+bouton « Song-Akkorde B · Intro F♯m  F♯m  G  F♯m  F♯m  F♯m  G  F♯m C · Build-up F♯m  F♯m  G  F♯m D · Drop F♯m  F♯m  F♯m  F♯m  F♯m  F♯m  F♯m  F♯m E · Break F♯m  F♯m  G  F♯m  F♯m  F♯m  G  F♯m F · Drop 2 F♯m  F♯m  F♯m  F♯m  F♯m  F♯m  F♯m  F♯m G · Ende F♯m  F♯m  F♯m  F♯m  F♯m  F♯m  F♯m  F♯m Tippe, um die Akkorde des ganzen Songs zu ändern. » [coupé] @ 450,162
+icône ▶ « B · Intro × 1  ·  8 Takte » @ 342,234
+icône − [désactivé] @ 678,234
+icône + @ 750,234
+icône ⋮ @ 822,234
+icône ▶ « C · Build-up × 1  ·  4 Takte » @ 342,330
+icône − [désactivé] @ 678,330
+icône + @ 750,330
+icône ⋮ @ 822,330
+icône ▶ « D · Drop × 1  ·  8 Takte » @ 342,426
+icône − [désactivé] @ 678,426
+icône + @ 750,426
+icône ⋮ @ 822,426
+icône ▶ « E · Break × 1  ·  8 Takte » @ 342,522
+icône − [désactivé] @ 678,522
+icône + @ 750,522
+icône ⋮ @ 822,522
+icône ▶ « C · Build-up × 1  ·  4 Takte » @ 342,618
+icône − [désactivé] @ 678,618
+icône + @ 750,618
+icône ⋮ @ 822,618
+icône ▶ « F · Drop 2 × 1  ·  8 Takte » @ 342,714
+icône − [désactivé] @ 678,714
+icône + @ 750,714
+icône ⋮ @ 822,714
+icône ▶ « G · Ende × 1  ·  8 Takte » [coupé] @ 342,787
+icône − [désactivé, coupé] @ 678,793
+icône + [coupé] @ 750,793
+icône ⋮ [coupé] @ 822,793
+texte « Ordne deine Teile Kapitel 11/15 · Schritt 2/2 · Einfach » @ 375,855
+icône (liste) « Kapitel » @ 768,855
+icône ⌄ @ 843,855
+texte « Du bist dran: Tippe auf „Empfohlene Längen setzen“. » @ 321,936
+texte « ▸ Warum? » @ 450,978
+bouton ⊕ «   Empfohlene Längen setzen » @ 450,1044
+bouton (œil) «  Zeig's mir » @ 450,1128
+icône ← «  Zurück » @ 92,1209
+icône « Weiter  » → @ 811,1209
+icône ↶ « Rückgängig » @ 125,1293
+image ↷ @ 299,1283
+bouton ■ « der Song » @ 464,1293
+texte « 174 Tempo » @ 624,1293
+icône ⋮ « Mehr » @ 783,1293
+onglet (lignes et note) « Mein Song » [sélectionné] @ 85,1389
+onglet (quatre carrés) « Rhythmus » @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Notieren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 318,1479

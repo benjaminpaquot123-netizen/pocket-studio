@@ -1,0 +1,19 @@
+Écran 49 (900x1509)
+texte « Schlag 12 » @ 575,642
+icône ✕ @ 820,642
+texte « Velocity » @ 409,702
+bouton « Stark » [sélectionné] @ 419,762
+bouton « Mittel » @ 530,762
+bouton « Sanft » @ 641,762
+texte « Roll » @ 387,822
+bouton « ×1 » [sélectionné] @ 403,882
+bouton « ×2 » @ 484,882
+bouton « ×3 » @ 567,882
+bouton « ×4 » @ 651,882
+bouton « ×6 » @ 734,882
+bouton « ×8 » @ 817,882
+texte « Triole » @ 397,942
+bouton « 3 auf 2 Felder » @ 461,1002
+bouton « ↗ Steigend » [désactivé] @ 448,1083
+bouton « Gleich » [désactivé, sélectionné] @ 592,1083
+bouton « ↘ Fallend » [désactivé] @ 728,1083

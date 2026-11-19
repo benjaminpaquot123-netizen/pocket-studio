@@ -1,0 +1,56 @@
+Écran 17 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 285,42
+bouton « Einfach » @ 615,42
+bouton ● @ 705,42
+bouton ▶ « dieser Teil » @ 780,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+icône « Teil: A · Groove » ▾ @ 114,180
+bouton « Große Trommel Studio FX » @ 123,270
+bouton « Große Trommel 2 » @ 341,270
+bouton « Snare FX » @ 559,270
+bouton « Snare 2 » @ 777,270
+bouton « Händeklatschen » @ 123,348
+bouton « Hi-Hat L 30 » @ 341,348
+bouton « Offene Hi-Hat R 30 » @ 559,348
+bouton « Tiefes Tom » @ 777,348
+bouton « Mittleres Tom R 45 » @ 123,426
+bouton « Hohes Tom » @ 341,426
+bouton « Trommelrand FX R 50 » @ 559,426
+bouton « Glocke » @ 777,426
+bouton « Becken FX R 40 » @ 123,504
+bouton « Maracas L 50 » @ 341,504
+bouton « Conga » @ 559,504
+bouton « Laser » @ 777,504
+bouton « Kit: Drum & Bass » ▾ @ 142,582
+texte « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » @ 580,582
+titre « STEPS: GROSSE TROMMEL STUDIO » [état « Aufgeklappt »] @ 377,690
+bouton « ? » @ 472,690
+bouton « Alle Pads » @ 785,688
+texte « Bau deine Teile Kapitel 10/15 · Schritt 1/6 · Einfach » @ 375,759
+icône (liste) « Kapitel » @ 768,759
+icône ⌄ @ 843,759
+texte « Du bist dran: Tippe auf „Teil „Intro“ erstellen“. » @ 277,840
+bouton « Kit Neurofunk laden (3 MB) » @ 403,915
+texte « Später » @ 826,915
+texte « ▸ Warum? » @ 450,981
+bouton ⊕ «   Teil „Intro“ erstellen » @ 450,1044
+bouton ▶ «  Beispiel anhören » @ 232,1128
+bouton (œil) «  Zeig's mir » @ 667,1128
+icône ← «  Zurück » @ 92,1209
+icône « Weiter  » → @ 811,1209
+icône ↶ « Rückgängig » @ 125,1293
+image ↷ @ 299,1283
+bouton ▶ « der Song » @ 464,1293
+texte « 174 Tempo » @ 624,1293
+icône ⋮ « Mehr » @ 783,1293
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Notieren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 318,1479

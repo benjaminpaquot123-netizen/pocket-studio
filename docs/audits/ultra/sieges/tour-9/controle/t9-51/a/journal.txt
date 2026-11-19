@@ -1,0 +1,353 @@
+#0 SIEGE lang=de device=tablet8 font=100 mode=simple theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:neurofunk:9
+#0 PREMIER ECRAN reel_s=4.4 simule_s=2.4 jvm_s=10.4 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:neurofunk:9
+#0 AMENEE > touche 450 570 (welcome_learn)
+#0 AMENEE > touche 229 1374 (mode_card_simple)
+#0 AMENEE > touche 450 1444 (tuto_style_neurofunk)
+#0 AMENEE chapitres 1 à 8 construits dans le projet
+#0 AMENEE > touche 768 675 (tuto_chapters)
+#0 AMENEE > touche 450 1449 (tuto_quit)
+#0 AMENEE > touche 225 1221 (tuto_resume)
+#0 AMENEE chapitres 1 à 8 cochés (20 étapes)
+#0 AMENEE > touche 768 579 (tuto_chapters)
+#0 AMENEE > touche 450 792 (tuto_chapter_8)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4ab4545d0b | project=p-4557c49d tuto=neurofunk/Facile active=true step=brick done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 8 » 3.56:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 16 » 4.28:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Warum? » 572 x 20 dp (touch 572 x 48)
+#1 > touche 450 1125
+#1 DOIGT tuto_mark «   Verstanden »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 553bbf30c1 | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_intro done=21 chapters=1,2,3,4,5,6,7,8 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Intro » 4.15:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « 24 » 2.79:1 (needs 4.5:1, 12 sp)
+#2 > touche 811 1209
+#2 DOIGT tuto_next « Weiter  »
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e49aa79339 | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_montee done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « 8 » 1.85:1 (needs 4.5:1, 12 sp)
+#3 > touche 450 1125
+#3 DOIGT tuto_listen «  Beispiel anhören »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d102995bf8 | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_montee done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 3 s).
+#4 > attends 4
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d80b1e118f | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_montee done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 811 1209
+#5 DOIGT tuto_next « Weiter  »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4384e9810e | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_drop done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « Drop » 3.09:1 (needs 4.5:1, 12 sp)
+#6 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#6 > touche 450 1125
+#6 DOIGT tuto_listen «  Beispiel anhören »
+#7 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 31c8b26fb0 | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_drop done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 3 s).
+#7 > attends 4
+#8 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 21339af6cf | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_drop done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 811 1209
+#8 DOIGT tuto_next « Weiter  »
+#9 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9f5bce675b | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_break done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « Break » 3.78:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « 16 » 2.53:1 (needs 4.5:1, 12 sp)
+#9 > touche 450 1125
+#9 DOIGT tuto_listen «  Beispiel anhören »
+#10 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7b69ad7d5d | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_break done=24 chapters=1,2,3,4,5,6,7,8 playing=false
+#10 SON Son : l'exemple du tuto joue (encore 3 s).
+#10 > attends 4
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 734fa012ab | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_break done=25 chapters=1,2,3,4,5,6,7,8 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 811 1209
+#11 DOIGT tuto_next « Weiter  »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7d5956c37c | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_drop2 done=25 chapters=1,2,3,4,5,6,7,8 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Drop 2 » 3.09:1 (needs 4.5:1, 12 sp)
+#12 > touche 450 1125
+#12 DOIGT tuto_listen «  Beispiel anhören »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 98f5cedb44 | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_drop2 done=25 chapters=1,2,3,4,5,6,7,8 playing=false
+#13 SON Son : l'exemple du tuto joue (encore 3 s).
+#13 > attends 4
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 28b7bfe1bc | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_drop2 done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 811 1209
+#14 DOIGT tuto_next « Weiter  »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE be69ab16ba | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_phrases done=26 chapters=1,2,3,4,5,6,7,8 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 450 1125
+#15 DOIGT tuto_mark «   Verstanden »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8a92a871a4 | project=p-4557c49d tuto=neurofunk/Facile active=true step=map_phrases done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1125
+#16 DOIGT tuto_next_big « Nächstes Kapitel   »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e69ff54167 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_intro done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 450 1044
+#17 DOIGT tuto_need «   Teil „Intro“ erstellen »
+#18 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 628467bec9 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_intro done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « Sound ändern » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (43 x 4 dp)
+#18 LAYOUT CONTRAST « Sound ändern » 1.23:1 (needs 4.5:1, 13 sp)
+#18 > touche 450 1125
+#18 DOIGT tuto_next_big « Nächster Schritt   »
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1ab551e951 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_montee done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « Melodie » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (43 x 4 dp)
+#19 > touche 450 1044
+#19 DOIGT tuto_need «   Teil „Build-up“ erstellen »
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3ab3805b2c | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_montee done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1125
+#20 DOIGT tuto_next_big « Nächster Schritt   »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4db6268585 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_drop done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 667 1128
+#21 DOIGT tuto_show «  Zeig's mir »
+#22 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ddeaff0ad8 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_drop done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « Stoppen » 3.91:1 (needs 4.5:1, 14 sp)
+#22 > attends 3
+#23 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 833e78213d | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_drop done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#23 SON Son : rien ne joue.
+#23 > attends 3
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 92505fcd54 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_drop done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 450 1044
+#24 DOIGT tuto_need «   Teil „Drop“ erstellen »
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bfb8d3558d | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_drop done=30 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 450 1125
+#25 DOIGT tuto_next_big « Nächster Schritt   »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE eaa79a7fb7 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_break done=30 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 826 915
+#26 DOIGT tuto_kit_later « Später »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d7accf4d06 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_break done=30 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT OVERLAP « Akkorde » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (43 x 3 dp)
+#27 > touche 450 1044
+#27 DOIGT tuto_need «   Teil „Break“ erstellen »
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c7067fd072 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_break done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 450 1125
+#28 DOIGT tuto_next_big « Nächster Schritt   »
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 360abd2ac0 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_drop2 done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 450 1044
+#29 DOIGT tuto_need «   Teil „Drop 2“ erstellen »
+#30 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ff174a5039 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_drop2 done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 450 1125
+#30 DOIGT tuto_next_big « Nächster Schritt   »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d821c09fd5 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_fin done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 450 1044
+#31 DOIGT tuto_need «   Teil „Ende“ erstellen »
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 77ea5102e8 | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_fin done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 294 1209
+#32 DOIGT tuto_play_mine «  Meinen Song anhören »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e3888e28ff | project=p-4557c49d tuto=neurofunk/Facile active=true step=make_fin done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 LAYOUT OVERLAP « Sound ändern » over the touchable « Ab einem Teil spielen » (35 x 4 dp)
+#33 > touche 450 1125
+#33 DOIGT tuto_next_big « Nächstes Kapitel   »
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f85086674a | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_order done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 336 312
+#34 DOIGT add_part_1 « + B · Intro »
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ab6e916b12 | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_order done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 LAYOUT OVERLAP « B · Intro » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (52 x 4 dp)
+#35 LAYOUT OVERLAP « F♯m  F♯m  G  F♯m  F♯m  F♯m  G  F♯m » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (6 x 4 dp)
+#35 LAYOUT OVERLAP « F♯m  F♯m  G  F♯m  F♯m  F♯m  G  F♯m » over the touchable « Ab einem Teil spielen » (96 x 4 dp)
+#35 > touche 538 438
+#35 DOIGT add_part_2 « + C · Build-up »
+#36 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 652902f140 | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_order done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 LAYOUT OVERLAP « B · Intro » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (45 x 4 dp)
+#36 LAYOUT OVERLAP « B · Intro » over the touchable « Ab einem Teil spielen » (16 x 4 dp)
+#36 > touche 741 438
+#36 DOIGT add_part_3 « + D · Drop »
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f20fe05574 | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_order done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 LAYOUT OVERLAP « C · Build-up » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (45 x 4 dp)
+#37 LAYOUT OVERLAP « C · Build-up » over the touchable « Ab einem Teil spielen » (51 x 4 dp)
+#37 > touche 328 519
+#37 DOIGT add_part_5 « + F · Drop 2 »
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ea4d72b83d | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_order done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT OVERLAP « D · Drop » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (45 x 4 dp)
+#38 LAYOUT OVERLAP « D · Drop » over the touchable « Ab einem Teil spielen » (19 x 4 dp)
+#38 > touche 125 1293
+#38 DOIGT thumb_undo « Rückgängig »
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fb19fa5bb7 | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_order done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 133 393
+#39 DOIGT add_part_4 « + E · Break »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9ef06e5ec2 | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_order done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 > touche 538 438
+#40 DOIGT add_part_2 « + C · Build-up »
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f2f6905226 | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_order done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 LAYOUT OVERLAP « E · Break » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (45 x 4 dp)
+#41 LAYOUT OVERLAP « E · Break » over the touchable « Ab einem Teil spielen » (24 x 4 dp)
+#41 > touche 328 519
+#41 DOIGT add_part_5 « + F · Drop 2 »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0c1fc06dfa | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_order done=33 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 > touche 521 519
+#42 DOIGT add_part_6 « + G · Ende »
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c0bd1ffd67 | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 LAYOUT OVERLAP « F · Drop 2 » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (45 x 4 dp)
+#43 LAYOUT OVERLAP « F · Drop 2 » over the touchable « Ab einem Teil spielen » (32 x 4 dp)
+#43 > touche 450 1125
+#43 DOIGT tuto_next_big « Nächster Schritt   »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 32bbc69592 | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_phrases done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 LAYOUT OVERLAP « Tippe, um die Akkorde des ganzen Songs zu ändern. » over the touchable « Tempo: 174 Schläge pro Minute Tempo ände » (67 x 4 dp)
+#44 LAYOUT OVERLAP « Tippe, um die Akkorde des ganzen Songs zu ändern. » over the touchable « Ab einem Teil spielen » (96 x 4 dp)
+#44 > touche 450 1044
+#44 DOIGT tuto_need «   Empfohlene Längen setzen »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 250ef746c0 | project=p-4557c49d tuto=neurofunk/Facile active=true step=song_phrases done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 450 1125
+#45 DOIGT tuto_next_big « Nächstes Kapitel   »
+#46 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bf1bf030e5 | project=p-4557c49d tuto=neurofunk/Facile active=true step=fill done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 450 1044
+#46 DOIGT tuto_need «   Zum Teil „Build-up“ gehen »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4b39430f96 | project=p-4557c49d tuto=neurofunk/Facile active=true step=fill done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CONTRAST « STEPS: SNARE · BUILD-UP » 1.34:1 (needs 4.5:1, 12 sp)
+#47 LAYOUT CONTRAST « ? » 1.36:1 (needs 4.5:1, 12 sp)
+#47 LAYOUT CONTRAST « Alle Pads » 1.30:1 (needs 4.5:1, 14 sp)
+#47 > touche 374 300
+#47 DOIGT drum_page_3 « 4 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE da65b81c56 | project=p-4557c49d tuto=neurofunk/Facile active=true step=fill done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > appui-long 397 550
+#48 DOIGT step_59 « Step 12 »
+#49 ROUTE dialogue:roll_menu | MODE simple | EMPREINTE ea19488424 | project=p-4557c49d tuto=neurofunk/Facile active=true step=fill done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 651 882
+#49 DOIGT roll_4 « ×4 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bccecfe76f | project=p-4557c49d tuto=neurofunk/Facile active=true step=fill done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#50 SON Son : la musique du projet joue en boucle.
+#50 > touche 450 1125
+#50 DOIGT tuto_next_big « Nächster Schritt   »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 76583016d5 | project=p-4557c49d tuto=neurofunk/Facile active=true step=gap done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 LAYOUT CONTRAST « STEPS: HI-HAT · BUILD-UP » 1.29:1 (needs 4.5:1, 12 sp)
+#51 > touche 500 550
+#51 DOIGT step_60 « Step 13 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 13d825dd21 | project=p-4557c49d tuto=neurofunk/Facile active=true step=gap done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 > touche 706 550
+#52 DOIGT step_62 « Step 15 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e2a726379a | project=p-4557c49d tuto=neurofunk/Facile active=true step=gap done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 LAYOUT CONTRAST « STEPS: HI-HAT · BUILD-UP » 1.32:1 (needs 4.5:1, 12 sp)
+#53 LAYOUT CONTRAST « Alle Pads » 1.23:1 (needs 4.5:1, 14 sp)
+#53 > touche 450 1125
+#53 DOIGT tuto_next_big « Nächstes Kapitel   »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a407f66d91 | project=p-4557c49d tuto=neurofunk/Facile active=true step=reverb_hear done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 LAYOUT CONTRAST « Alle Pads » 1.24:1 (needs 4.5:1, 14 sp)
+#54 > touche 450 1125
+#54 DOIGT tuto_listen «  Beispiel anhören »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5f955c41a5 | project=p-4557c49d tuto=neurofunk/Facile active=true step=reverb_hear done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#55 SON Son : l'exemple du tuto joue (encore 8 s).
+#55 > attends 5
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 32aaeb56d2 | project=p-4557c49d tuto=neurofunk/Facile active=true step=reverb_hear done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#56 SON Son : l'exemple du tuto joue (encore 3 s).
+#56 > touche 811 1209
+#56 DOIGT tuto_next « Weiter  »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c022175817 | project=p-4557c49d tuto=neurofunk/Facile active=true step=riser_hear done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 450 1125
+#57 DOIGT tuto_listen «  Beispiel anhören »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ca02fe519a | project=p-4557c49d tuto=neurofunk/Facile active=true step=riser_hear done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#58 SON Son : l'exemple du tuto joue (encore 3 s).
+#58 > attends 5
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b5914017da | project=p-4557c49d tuto=neurofunk/Facile active=true step=riser_hear done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 811 1209
+#59 DOIGT tuto_listen «  Beispiel anhören »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 26b2e8d838 | project=p-4557c49d tuto=neurofunk/Facile active=true step=riser_hear done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#60 SON Son : l'exemple du tuto joue (encore 3 s).
+#60 > touche 450 1125
+#60 DOIGT tuto_next_big « Nächstes Kapitel   »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cf1c4ce142 | project=p-4557c49d tuto=neurofunk/Facile active=true step=levels done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 633 1389
+#61 DOIGT tab_simple_Mix « Mix »
+#62 ROUTE tab_simple_Mix | MODE simple | EMPREINTE ad8b9a0787 | project=p-4557c49d tuto=neurofunk/Facile active=true step=levels done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST « Ausgang » 4.33:1 (needs 4.5:1, 13 sp)
+#62 > glisse 347 450 347 510
+#62 DOIGT mix_fader_5 « Lautstärke von Akkorde »
+#63 ROUTE tab_simple_Mix | MODE simple | EMPREINTE f4fe6ad44c | project=p-4557c49d tuto=neurofunk/Facile active=true step=levels done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#63 SON Son : rien ne joue.
+#63 > glisse 470 450 470 510
+#63 DOIGT mix_fader_6 « Lautstärke von Melodie »
+#64 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 0e324e7762 | project=p-4557c49d tuto=neurofunk/Facile active=true step=levels done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 216 363
+#64 DOIGT rien (texte « Bass »)
+#65 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 0e324e7762 | project=p-4557c49d tuto=neurofunk/Facile active=true step=levels done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 450 1125
+#65 DOIGT tuto_next_big « Nächstes Kapitel   »
+#66 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 00c1edd521 | project=p-4557c49d tuto=neurofunk/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 815 1389
+#66 DOIGT tab_simple_Envoyer « Teilen »
+#67 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE ca6034023b | project=p-4557c49d tuto=neurofunk/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 834 272
+#67 DOIGT name_clear
+#68 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE a191f5a77f | project=p-4557c49d tuto=neurofunk/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#68 SON Son : rien ne joue.
+#68 > ecris Neuro Nacht
+#69 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 0ec1c4a0d6 | project=p-4557c49d tuto=neurofunk/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 450 265
+#69 DOIGT share_name « Name des Songs (und des Projekts) »
+#69 DIALOGUE 0.3 s
+#70 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE a191f5a77f | project=p-4557c49d tuto=neurofunk/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#70 SON Son : rien ne joue.
+#70 > ecris Neuro Nacht
+#70 DIALOGUE 0.2 s
+#71 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE f12874536d | project=p-4557c49d tuto=neurofunk/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 450 617
+#71 DOIGT share_go «   Teilen »
+#71 DIALOGUE 0.3 s
+#72 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 534d7df513 | project=p-4557c49d tuto=neurofunk/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#72 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#72 > attends 15
+#72 PARTAGE Neuro-Nacht-song-20261119-120620.m4a
+#72 DIALOGUE 2.4 s
+#73 ROUTE dialogue:« Meinen Song teilen · Neuro-Nac » | MODE simple | EMPREINTE 8cb8ee3cd5 | project=p-4557c49d tuto=neurofunk/Facile active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 450 642
+#73 DOIGT vue « WhatsApp »
+#73 DIALOGUE 0.2 s
+#74 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE f7c22eee98 | project=p-4557c49d tuto=neurofunk/Facile active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 790 904
+#74 DOIGT share_bilan_ok « OK »
+#74 DIALOGUE 0.2 s
+#75 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 930853be97 | project=p-4557c49d tuto=neurofunk/Facile active=true step=share done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#75 SON Son : rien ne joue.
+#75 > fin
+#75 BENCH-VERDICT ok where=seat.fin
+#75 FIN : fin

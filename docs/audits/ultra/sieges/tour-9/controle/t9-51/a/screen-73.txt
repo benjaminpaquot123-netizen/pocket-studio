@@ -1,0 +1,7 @@
+Écran 73 (900x1509)
+texte « Meinen Song teilen · Neuro-Nacht-song-20261119-120620.m4a » @ 450,575
+bouton « WhatsApp » @ 450,642
+bouton « Messages » @ 450,714
+bouton « Gmail » @ 450,786
+bouton « Drive » @ 450,858
+bouton « Files » @ 450,930

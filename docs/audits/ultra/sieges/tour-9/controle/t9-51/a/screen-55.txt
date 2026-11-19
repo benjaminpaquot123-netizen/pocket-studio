@@ -1,0 +1,72 @@
+Écran 55 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 285,42
+bouton « Einfach » @ 615,42
+bouton ● @ 705,42
+bouton ▶ « dieser Teil » @ 780,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+icône « Intro Takt 1/136 » ▾ @ 246,114
+bouton « ? » @ 855,114
+icône « Teil: C · Build-up » ▾ @ 120,180
+titre « STEPS: HI-HAT · BUILD-UP » [coupé, état « Aufgeklappt »] @ 377,227
+bouton « ? » [coupé] @ 384,227
+bouton « Alle Pads » [coupé] @ 785,228
+texte « Takt » @ 64,300
+bouton « 1 » @ 131,300
+bouton « 2 » @ 212,300
+bouton « 3 » @ 293,300
+bouton « 4 » [sélectionné] @ 374,300
+bouton « Folgen » @ 478,300
+texte « Takt 4/4 · Hi-Hat » @ 137,384
+bouton « 1 » [état « Schlag, Stärke 34 % »] @ 90,469
+bouton [état « leer »] @ 192,469
+bouton [état « Schlag, Stärke 49 % »] @ 294,469
+bouton [état « leer »] @ 397,469
+bouton « 2 » [allumé, état « Schlag, Stärke 32 % »] @ 500,469
+bouton [état « leer »] @ 603,469
+bouton [état « Schlag, Stärke 45 % »] @ 706,469
+bouton [état « leer »] @ 809,469
+bouton « 3 » [état « Schlag, Stärke 35 % »] @ 90,550
+bouton [état « leer »] @ 192,550
+bouton [état « Schlag, Stärke 49 % »] @ 294,550
+bouton [état « leer »] @ 397,550
+bouton « 4 » [état « leer »] @ 500,550
+bouton [état « leer »] @ 603,550
+bouton [état « leer »] @ 706,550
+bouton [état « leer »] @ 809,550
+texte « alles » @ 138,636
+texte « 1/2 » @ 214,636
+texte « 1/4 » @ 289,636
+texte « ◀ » @ 364,636
+texte « ▶ » @ 439,636
+texte « Löschen » @ 534,636
+texte « Füllen » @ 70,636
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,711
+texte « Länge » @ 72,786
+bouton « 1 Takt » @ 166,786
+bouton « 2 » @ 265,786
+bouton « 3 » @ 346,786
+bouton « 4 » [sélectionné] @ 427,786
+texte « Die Effekte Kapitel 13/15 · Schritt 1/2 · Einfach » @ 375,867
+icône (liste) « Kapitel » @ 768,867
+icône ⌄ @ 843,867
+texte « Hör dir das Reverb an: die Snare und die Spur „Akkorde“, erst ohne, dann mit. Der Sound nimmt Raum ein, wie in einem großen Saal. » @ 450,966
+texte « • Akkord: mehrere Töne zusammen gespielt. » @ 223,1024
+texte « ▸ Warum? » @ 450,1062
+bouton ■ «  Anhören stoppen » @ 450,1125
+icône ← «  Zurück » @ 92,1209
+icône « Weiter  » → @ 811,1209
+icône ↶ « Rückgängig » @ 125,1293
+image ↷ @ 299,1283
+bouton ▶ « der Song » @ 464,1293
+texte « 174 Tempo » @ 624,1293
+icône ⋮ « Mehr » @ 783,1293
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Notieren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 318,1479

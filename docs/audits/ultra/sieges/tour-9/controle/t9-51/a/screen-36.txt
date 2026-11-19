@@ -1,0 +1,53 @@
+Écran 36 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 285,42
+bouton « Einfach » @ 615,42
+bouton ● @ 705,42
+bouton ▶ « dieser Teil » @ 780,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+icône (flèches en boucle) « Ende Takt 5/8 » ▾ @ 239,114
+bouton « ? » @ 855,114
+icône ▶ « B · Intro × 1  ·  8 Takte » [coupé] @ 342,178
+icône − [désactivé] @ 678,172
+icône + @ 750,172
+icône ⋮ @ 822,172
+icône ▶ « C · Build-up × 1  ·  4 Takte » @ 342,267
+icône − [désactivé] @ 678,267
+icône + @ 750,267
+icône ⋮ @ 822,267
+texte « − / + : Wiederholungen. Grau: feste Dauer (empfohlen oder Live) oder nur 1-mal. » @ 406,334
+texte « Am Ende hinzufügen: » @ 147,375
+bouton « + A · Groove » @ 141,438
+bouton « + B · Intro » @ 336,438
+bouton « + C · Build-up » @ 538,438
+bouton « + D · Drop » @ 741,438
+bouton « + E · Break » @ 133,519
+bouton « + F · Drop 2 » @ 328,519
+bouton « + G · Ende » @ 521,519
+bouton « + Neuer Teil (Kopie von G · Ende) » @ 247,600
+bouton « + Neuer leerer Teil » @ 591,600
+texte « Ordne deine Teile Kapitel 11/15 · Schritt 1/2 · Einfach » @ 375,684
+icône (liste) « Kapitel » @ 768,684
+icône ⌄ @ 843,684
+texte « Noch: Drop, Break, Build-up, Drop 2, Ende. » @ 235,762
+texte « Du bist dran: Tippe in „Mein Song“ unter „Hinzufügen“ der Reihe nach auf die Knöpfe, die auf Intro, Build-up, Drop, Break, Build-up, Drop 2 und Ende enden (zum Beispiel „+ B · Intro“). Die Längen stimmen noch nicht: Der nächste Schritt stellt sie ein. » @ 450,858
+texte « ▸ Warum? » @ 450,954
+bouton (doigt qui touche) «   Ich mach's » @ 450,1044
+bouton ▶ «  Beispiel anhören » @ 232,1128
+bouton (œil) «  Zeig's mir » @ 667,1128
+icône ← «  Zurück » @ 92,1209
+icône « Weiter  » → @ 811,1209
+icône ↶ « Rückgängig » @ 125,1293
+image ↷ @ 299,1283
+bouton ■ « der Song » @ 464,1293
+texte « 174 Tempo » @ 624,1293
+icône ⋮ « Mehr » @ 783,1293
+onglet (lignes et note) « Mein Song » [sélectionné] @ 85,1389
+onglet (quatre carrés) « Rhythmus » @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Notieren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 318,1479

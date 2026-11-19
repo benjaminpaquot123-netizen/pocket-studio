@@ -1,0 +1,9 @@
+Écran 74 (900x1509)
+texte « Fertig » @ 117,592
+texte « Fertig: Neuro-Nacht-song-20261119-120620.m4a, eine Kopie liegt auch in Musik › BenStudio. » @ 450,670
+texte « Dauer: 3 min 8 s » @ 141,719
+texte « Pegel: wie Streaming-Musik (−14) » @ 221,752
+texte « Keine Übersteuerung. » @ 165,785
+texte « M4A-Datei: leicht, läuft auf jedem Gerät. » @ 249,818
+texte « Meine Dateien ansehen » @ 597,904
+texte « OK » @ 790,904

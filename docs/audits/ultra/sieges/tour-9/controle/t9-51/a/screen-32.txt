@@ -1,0 +1,49 @@
+Écran 32 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 285,42
+bouton « Einfach » @ 615,42
+bouton ● @ 705,42
+bouton ▶ « dieser Teil » @ 780,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+bouton « Melodie Sound ändern » › [coupé] @ 316,163
+bouton ▶ « Solo hören » [coupé] @ 688,160
+icône (curseurs) [coupé] @ 822,157
+titre « DER SONG » [état « Aufgeklappt »] @ 140,269
+bouton « ? » @ 217,269
+texte « Die Zeitleiste bringt deine Teile in Reihenfolge, jeden mit seiner Länge in Takten. Füg sie der Reihe nach hinzu. » @ 450,330
+texte « Hinzufügen: » @ 102,384
+bouton « + A · Groove » @ 141,447
+bouton « + B · Intro » @ 336,447
+bouton « + C · Build-up » @ 538,447
+bouton « + D · Drop » @ 741,447
+bouton « + E · Break » @ 133,528
+bouton « + F · Drop 2 » @ 328,528
+bouton « + G · Ende » @ 521,528
+bouton « + Neuer Teil (Kopie von G · Ende) » @ 247,609
+bouton « + Neuer leerer Teil » @ 591,609
+bouton (barres de son) «   Was im Song spielt » @ 450,693
+texte « Bau deine Teile Kapitel 10/15 · Erledigt · Einfach » @ 375,819
+icône (liste) « Kapitel » @ 768,819
+icône ⌄ @ 843,819
+image (coupe) @ 57,923
+texte « Bravo, Kapitel geschafft! » @ 217,909
+texte « Teil „Ende“ erstellt (Kopie des Grooves): ohne Bass, Akkorde, Melodie. » @ 406,937
+bouton « Nächstes Kapitel   » → @ 450,1125
+icône ← @ 57,1209
+bouton ▶ «  Meinen Song anhören » @ 294,1209
+bouton ▶ «  Beispiel anhören » @ 687,1209
+icône ↶ « Rückgängig » @ 125,1293
+image ↷ @ 299,1283
+bouton ▶ « der Song » @ 464,1293
+texte « 174 Tempo » @ 624,1293
+icône ⋮ « Mehr » @ 783,1293
+onglet (lignes et note) « Mein Song » [sélectionné] @ 85,1389
+onglet (quatre carrés) « Rhythmus » @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Notieren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 318,1479

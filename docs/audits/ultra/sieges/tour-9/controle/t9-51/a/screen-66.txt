@@ -1,0 +1,61 @@
+Écran 66 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 285,42
+bouton « Einfach » @ 615,42
+bouton ● @ 705,42
+bouton ▶ « dieser Teil » @ 780,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+icône « Intro Takt 1/136 » ▾ @ 246,114
+bouton « ? » @ 855,114
+bouton « ▶ Teil in Schleife » @ 414,192
+bouton « ↺ Alles zurück » @ 679,192
+texte « Mix » @ 48,193
+texte «  · Mein Projekt 1 » @ 157,193
+bouton « ? » @ 257,192
+bouton « ? » @ 546,192
+texte « Du bist dran: lauter, was man hören soll, leiser, was stört. Tippe ▶, um eine Spur allein zu hören. » @ 453,282
+bouton « Drums ▸ » [état « geschlossen »] @ 75,375
+curseur [état « Normal », à 80 %] @ 84,552
+texte « Normal » @ 84,709
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 56,769
+bouton ▶ @ 113,759
+texte « Bass » @ 216,363
+curseur [état « Normal », à 80 %] @ 216,528
+texte « Normal » @ 216,685
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 194,745
+bouton ▶ @ 245,735
+texte « Akkorde » @ 339,363
+curseur [état « −3 », à 66 %] @ 339,528
+texte « −3 » @ 339,685
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 317,745
+bouton ▶ @ 368,735
+texte « Melodie » @ 462,363
+curseur [état « −3 », à 66 %] @ 462,528
+texte « −3 » @ 462,685
+bouton (haut-parleur et ondes) [allumé, état « an »] @ 440,745
+bouton ▶ @ 491,735
+texte « Ausgang » @ 597,363
+curseur [état « −6 », à 60 %] @ 597,528
+texte « Drück ▶ » @ 597,705
+texte « Exportiere deinen Track Kapitel 15/15 · Schritt 1/1 · Einfach » @ 375,867
+icône (liste) « Kapitel » @ 768,867
+icône ⌄ @ 843,867
+texte « Du bist dran: Teile deinen Track, die App macht eine Audiodatei daraus. „M4A“ macht eine leichte Datei für deine Freunde, „WAV“ behält die Studioqualität. » @ 450,984
+texte « ▸ Warum? » @ 450,1062
+bouton (doigt qui touche) «   Ich mach's » @ 450,1125
+icône ← «  Zurück » @ 92,1209
+icône « Weiter  » → @ 811,1209
+icône ↶ « Rückgängig » @ 125,1293
+image ↷ @ 299,1283
+bouton ▶ « der Song » @ 464,1293
+texte « 174 Tempo » @ 624,1293
+icône ⋮ « Mehr » @ 783,1293
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » [sélectionné] @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Notieren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 318,1479

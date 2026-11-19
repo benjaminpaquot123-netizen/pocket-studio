@@ -1,0 +1,49 @@
+Écran 34 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 285,42
+bouton « Einfach » @ 615,42
+bouton ● @ 705,42
+bouton ■ « dieser Teil » @ 780,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+icône (flèches en boucle) « Ende Takt 3/8 » [désactivé] @ 239,114
+bouton « ? » @ 855,114
+titre « DER SONG » [coupé, état « Aufgeklappt »] @ 140,150
+bouton « ? » [coupé] @ 217,150
+texte « Die Zeitleiste bringt deine Teile in Reihenfolge, jeden mit seiner Länge in Takten. Füg sie der Reihe nach hinzu. » @ 450,195
+texte « Hinzufügen: » @ 102,249
+bouton « + A · Groove » @ 141,312
+bouton « + B · Intro » @ 336,312
+bouton « + C · Build-up » @ 538,312
+bouton « + D · Drop » @ 741,312
+bouton « + E · Break » @ 133,393
+bouton « + F · Drop 2 » @ 328,393
+bouton « + G · Ende » @ 521,393
+bouton « + Neuer Teil (Kopie von G · Ende) » @ 247,474
+bouton « + Neuer leerer Teil » @ 591,474
+bouton (barres de son) «   Was im Song spielt » @ 450,558
+texte « Ordne deine Teile Kapitel 11/15 · Schritt 1/2 · Einfach » @ 375,684
+icône (liste) « Kapitel » @ 768,684
+icône ⌄ @ 843,684
+texte « Du bist dran: Tippe in „Mein Song“ unter „Hinzufügen“ der Reihe nach auf die Knöpfe, die auf Intro, Build-up, Drop, Break, Build-up, Drop 2 und Ende enden (zum Beispiel „+ B · Intro“). Die Längen stimmen noch nicht: Der nächste Schritt stellt sie ein. » @ 450,819
+texte « • Drop: der große Moment des Songs, wenn alles auf einmal zurückkommt. » @ 362,913
+texte « • Break: ein ruhigerer Moment, Kick und Bass schweigen. » @ 282,943
+texte « ▸ Warum? » @ 450,981
+bouton (doigt qui touche) «   Ich mach's » @ 450,1044
+bouton ▶ «  Beispiel anhören » @ 232,1128
+bouton (œil) «  Zeig's mir » @ 667,1128
+icône ← «  Zurück » @ 92,1209
+icône « Weiter  » → @ 811,1209
+icône ↶ « Rückgängig » @ 125,1293
+image ↷ @ 299,1283
+bouton ■ « der Song » @ 464,1293
+texte « 174 Tempo » @ 624,1293
+icône ⋮ « Mehr » @ 783,1293
+onglet (lignes et note) « Mein Song » [sélectionné] @ 85,1389
+onglet (quatre carrés) « Rhythmus » @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Notieren » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 318,1479

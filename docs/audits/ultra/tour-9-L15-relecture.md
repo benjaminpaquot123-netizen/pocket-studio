@@ -18,6 +18,8 @@ comme dans PadLoopRow.
 
 Aucun.
 
+## Tests existants touchés
+
 - Test existant à l'attente changée : `Lot6VmTutoKitNameTest` (ligne 78-79) attendait « Techno · Kick », il attend
   maintenant `tr("Kick")`. Changement voulu (F132), écrit dans `docs/decisions/tour-9-L15.md` et annoncé au chef ; le test
   reste vert et son intention (le pad que l'étape nomme suit son nom à l'écran, via `tutoPadNames` qui lit `padName`) est
@@ -40,4 +42,6 @@ Aucun.
 
 rouge constaté : a12c97d0 : rejoué sur 651a1c81 : Tour9L15KitSoundNamesTest#f132KitSoundsSayTheSameForm échoue (« Drum & bass · Kick » au lieu de « Kick »), vert sur d99bbffb
 
-Verdict : 0 bloquant, 0 grave — fusion possible
+Fusion possible.
+
+Verdict : 0 bloquant, 0 grave

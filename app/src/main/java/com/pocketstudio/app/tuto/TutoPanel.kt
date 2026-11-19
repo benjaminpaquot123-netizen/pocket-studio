@@ -158,6 +158,12 @@ private fun tutoWords(fr: String, names: (String) -> String): String = names(tut
  */
 object TutoHints {
     var cells by mutableStateOf<Pair<Int, Set<Int>>?>(null)
+    /** Tour 9, F093: the dotted [cells] a tap does not make ([com.pocketstudio.model.tuto.TutoPlay.longPressCells]). */
+    var longPress by mutableStateOf<Set<Int>>(emptySet())
+
+    /** What TalkBack says of an empty cell [step] of pad [lane]: null when it is not dotted. */
+    fun dottedState(lane: Int, step: Int): String? =
+        if (cells?.let { (l, c) -> l == lane && step in c } == true) tr("vide, en pointillé : à toucher") else null
     var notes by mutableStateOf<Pair<Int, List<com.pocketstudio.model.Note>>?>(null)
     /** The 303 steps a step asks for, by index (the Acide tab draws them dashed until written). */
     var acid by mutableStateOf<Map<Int, com.pocketstudio.model.AcidStep>?>(null)
@@ -212,7 +218,7 @@ object TutoHints {
      */
     @androidx.annotation.VisibleForTesting
     fun reset() {
-        cells = null; notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; focusTouched = -1; demo = false
+        cells = null; longPress = emptySet(); notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; focusTouched = -1; demo = false
         erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null; gridInSight = false; soundButtonInSight = false
         step = null; copy = null; page = null; copyOnGrid = false
     }

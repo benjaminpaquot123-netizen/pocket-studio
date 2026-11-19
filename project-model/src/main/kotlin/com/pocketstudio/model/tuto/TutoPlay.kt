@@ -143,6 +143,13 @@ object TutoPlay {
     }
 
     /**
+     * Tour 9, F093 (seat t9-68, zh: « 点一下 » on a cell its words ask a long press for): the dotted cells of [step]
+     * a tap does not make, at [level]: a soft hit when its words there name « Doux », a roll or a triplet of a
+     * ":rolls" step. Empty for any other step.
+     */
+    fun longPressCells(step: TutoStep, target: TutoTarget, steps: Int, level: TutoLevel): Set<Int> = emptySet()
+
+    /**
      * The dotted cell the « Touche ici » ring goes round (tour 8, seat a, ch.3: no ring on the Clap's cells): the
      * first of [cells] in the bar shown ([from] until [until]) not yet [filled]; null when the bar holds none to touch.
      */

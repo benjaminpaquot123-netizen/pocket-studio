@@ -134,7 +134,7 @@ class Tour9MixFinishTest {
             val text = n.config[SemanticsProperties.Text].joinToString(" ") { it.text }
             val at = text.indexOfFirst { it == '−' || it == '-' }
             // The Console's own values (« −6,0 dB », « −∞ dB »); the loudness chip lives in MasterLoudness.kt, another lot.
-            if (at < 0 || !text.trimEnd().endsWith("dB")) continue
+            if (at < 0 || !DB_VALUE.matches(text.filterNot { it in "\u2066\u2067\u2068\u2069" }.trim())) continue
             val r = ArrayList<TextLayoutResult>().also { n.config.getOrElseNullable(SemanticsActions.GetTextLayoutResult) { null }?.action?.invoke(it) }.firstOrNull() ?: continue
             val after = (at + 1 until text.length).firstOrNull { text[it].isLetterOrDigit() || text[it] == '∞' } ?: continue
             signs++
@@ -143,6 +143,8 @@ class Tour9MixFinishTest {
         assertTrue("no negative value read", signs >= 2)
         assertTrue(problems.joinToString("\n"), problems.isEmpty())
     }
+
+    private val DB_VALUE = Regex("[−+-]?(\\p{Nd}+[.,٫]\\p{Nd}|∞)( dB)?")
 
     /** F141 « Le Mix ne crée rien de neuf à chaque image (liste mémorisée) »: the same channels, drawn again, build nothing. */
     @Test

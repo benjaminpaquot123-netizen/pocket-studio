@@ -306,8 +306,8 @@ fun MixerScreen(
  */
 @Composable
 private fun fitProbe(strips: List<StripInfo>, channels: List<Channel>, lanesOn: Map<Int, Int>, lanes: Int): @Composable (Dp, Boolean) -> Unit {
-    val atRest = channels.map { fitProbeRestLists++; it.copy(volume = 0f) }
-    val probeChannels = androidx.compose.runtime.remember(atRest) { atRest }
+    // F141: built once per set of channels (a list equal to the last one, as each frame hands it, builds nothing).
+    val probeChannels = androidx.compose.runtime.remember(channels) { channels.map { fitProbeRestLists++; it.copy(volume = 0f) } }
     return androidx.compose.runtime.remember(strips, probeChannels, lanesOn, lanes) {
         { f: Dp, hint: Boolean ->
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {

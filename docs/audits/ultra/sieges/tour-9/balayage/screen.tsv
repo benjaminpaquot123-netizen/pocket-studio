@@ -1,0 +1,66 @@
+sev	famille	tuto	niveau	chapitre	langue	appareil	police	quoi
+grave	grille-cachee	techno	Pro	3	ar	foldable	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	ar	foldable	200	texte coupé à l'écran : texte « دورك: على باد «تصفيق»، ضع النبضتين 2 و4، ثم ضربته الشبحية: اضغط مطولًا على الخانة الأخيرة، قبل المازورة التالية مباشرة؛ توضع الضربة وتنفتح قائمتها: تحت 
+grave	grille-cachee	techno	Facile	3	ar	foldable	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+grave	grille-cachee	techno	Pro	3	ar	phone360	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	ar	phone360	200	texte coupé à l'écran : texte « دورك: على باد «تصفيق»، ضع النبضتين 2 و4، ثم ضربته الشبحية: اضغط مطولًا على الخانة الأخيرة، قبل المازورة التالية مباشرة؛ توضع الضربة وتنفتح قائمتها: تحت 
+grave	grille-cachee	techno	Facile	3	ar	phone360	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Facile	3	ar	phone360	200	texte coupé à l'écran : texte « دورك: على باد «تصفيق»، اضغط الخانات المنقّطة: النبضتان 2 و4، والخانة الأخيرة. » [coupé] @ 270,255
+grave	consigne-depliee-cache-grille	techno	Pro	3	de	foldable	100	après « Lire la suite », plus aucune case visible (16 avant) : la consigne couvre toute la grille
+finition	texte-coupe	techno	Pro	3	de	foldable	100	texte coupé à l'écran : texte « Du bist dran: Setz auf dem Pad „Clap“ die Schläge 2 und 4, dann seinen Ghost-Schlag: Drück lange auf das letzte Kästchen, kurz vor dem nächsten Takt; de
+grave	consigne-depliee-cache-grille	techno	Pro	3	de	foldable	130	après « Lire la suite », plus aucune case visible (8 avant) : la consigne couvre toute la grille
+finition	texte-coupe	techno	Pro	3	de	foldable	130	texte coupé à l'écran : texte « Noch 3 gestrichelte Kästchen hier » [coupé] @ 776,318
+finition	texte-coupe	techno	Pro	3	de	foldable	130	texte coupé à l'écran : texte « Du bist dran: Setz auf dem Pad „Clap“ die Schläge 2 und 4, dann seinen Ghost-Schlag: Drück lange auf das letzte Kästchen, kurz vor dem nächsten Takt; de
+grave	grille-cachee	techno	Pro	3	de	foldable	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	de	foldable	200	texte coupé à l'écran : texte « Du bist dran: Setz auf dem Pad „Clap“ die Schläge 2 und 4, dann seinen Ghost-Schlag: Drück lange auf das letzte Kästchen, kurz vor dem nächsten Takt; de
+grave	grille-cachee	techno	Facile	3	de	foldable	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Facile	3	de	foldable	200	texte coupé à l'écran : texte « Du bist dran: Tippe beim Pad „Händeklatschen“ auf die gestrichelten Kästchen: Schläge 2 und 4 und das letzte Kästchen. » [coupé] @ 517,430
+grave	grille-cachee	techno	Pro	3	de	phone360	100	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	de	phone360	100	texte coupé à l'écran : texte « Du bist dran: Setz auf dem Pad „Clap“ die Schläge 2 und 4, dann seinen Ghost-Schlag: Drück lange auf das letzte Kästchen, kurz vor dem nächsten Takt; de
+grave	grille-cachee	techno	Pro	3	de	phone360	130	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	de	phone360	130	texte coupé à l'écran : texte « Du bist dran: Setz auf dem Pad „Clap“ die Schläge 2 und 4, dann seinen Ghost-Schlag: Drück lange auf das letzte Kästchen, kurz vor dem nächsten Takt; de
+grave	grille-cachee	techno	Pro	3	de	phone360	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	de	phone360	200	texte coupé à l'écran : texte « Du bist dran: Setz auf dem Pad „Clap“ die Schläge 2 und 4, dann seinen Ghost-Schlag: Drück lange auf das letzte Kästchen, kurz vor dem nächsten Takt; de
+grave	grille-cachee	techno	Facile	3	de	phone360	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Facile	3	de	phone360	200	texte coupé à l'écran : texte « Du bist dran: Tippe beim Pad „Händeklatschen“ auf die gestrichelten Kästchen: Schläge 2 und 4 und das letzte Kästchen. » [coupé] @ 270,301
+grave	consigne-depliee-cache-grille	techno	Pro	3	fr	foldable	100	après « Lire la suite », plus aucune case visible (16 avant) : la consigne couvre toute la grille
+finition	texte-coupe	techno	Pro	3	fr	foldable	100	texte coupé à l'écran : texte « À toi : sur le pad « Clap », pose les temps 2 et 4, puis son fantôme : appui long sur la dernière case, juste avant la mesure suivante ; le coup se pose
+grave	consigne-depliee-cache-grille	techno	Pro	3	fr	foldable	130	après « Lire la suite », plus aucune case visible (8 avant) : la consigne couvre toute la grille
+finition	texte-coupe	techno	Pro	3	fr	foldable	130	texte coupé à l'écran : texte « Encore 3 cases en pointillé ici » [coupé] @ 771,318
+finition	texte-coupe	techno	Pro	3	fr	foldable	130	texte coupé à l'écran : texte « À toi : sur le pad « Clap », pose les temps 2 et 4, puis son fantôme : appui long sur la dernière case, juste avant la mesure suivante ; le coup se pose
+grave	grille-cachee	techno	Pro	3	fr	foldable	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	fr	foldable	200	texte coupé à l'écran : texte « À toi : sur le pad « Clap », pose les temps 2 et 4, puis son fantôme : appui long sur la dernière case, juste avant la mesure suivante ; le coup se pose
+grave	grille-cachee	techno	Facile	3	fr	foldable	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Facile	3	fr	foldable	200	texte coupé à l'écran : texte « À toi : sur le pad « Claquement de mains », touche les cases en pointillé : les temps 2 et 4, et la dernière case. » [coupé] @ 517,404
+grave	grille-cachee	techno	Pro	3	fr	phone360	100	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	fr	phone360	100	texte coupé à l'écran : texte « À toi : sur le pad « Clap », pose les temps 2 et 4, puis son fantôme : appui long sur la dernière case, juste avant la mesure suivante ; le coup se pose
+grave	grille-cachee	techno	Pro	3	fr	phone360	130	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	fr	phone360	130	texte coupé à l'écran : texte « À toi : sur le pad « Clap », pose les temps 2 et 4, puis son fantôme : appui long sur la dernière case, juste avant la mesure suivante ; le coup se pose
+grave	grille-cachee	techno	Pro	3	fr	phone360	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	fr	phone360	200	texte coupé à l'écran : texte « À toi : sur le pad « Clap », pose les temps 2 et 4, puis son fantôme : appui long sur la dernière case, juste avant la mesure suivante ; le coup se pose
+grave	grille-cachee	techno	Facile	3	fr	phone360	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Facile	3	fr	phone360	200	texte coupé à l'écran : texte « À toi : sur le pad « Claquement de mains », touche les cases en pointillé : les temps 2 et 4, et la dernière case. » [coupé] @ 270,259
+grave	grille-cachee	techno	Pro	3	hi	foldable	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	hi	foldable	200	texte coupé à l'écran : texte « तुम्हारी बारी: “Clap” पैड पर बीट 2 और 4 रखो, फिर उसका घोस्ट हिट: आख़िरी खाने पर देर तक दबाओ, अगले बार से ठीक पहले; हिट लग जाता है और उसका मेन्यू खुलता ह
+grave	grille-cachee	techno	Facile	3	hi	foldable	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Facile	3	hi	foldable	200	texte coupé à l'écran : texte « तुम्हारी बारी: “ताली” पैड पर डॉटेड खाने दबाओ: बीट 2 और 4, और आख़िरी खाना। » [coupé] @ 517,422
+grave	grille-cachee	techno	Pro	3	hi	phone360	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	hi	phone360	200	texte coupé à l'écran : texte « तुम्हारी बारी: “Clap” पैड पर बीट 2 और 4 रखो, फिर उसका घोस्ट हिट: आख़िरी खाने पर देर तक दबाओ, अगले बार से ठीक पहले; हिट लग जाता है और उसका मेन्यू खुलता ह
+grave	grille-cachee	techno	Facile	3	hi	phone360	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Facile	3	hi	phone360	200	texte coupé à l'écran : texte « तुम्हारी बारी: “ताली” पैड पर डॉटेड खाने दबाओ: बीट 2 और 4, और आख़िरी खाना। » [coupé] @ 270,243
+grave	consigne-depliee-cache-grille	techno	Pro	3	ja	foldable	100	après « Lire la suite », plus aucune case visible (16 avant) : la consigne couvre toute la grille
+finition	texte-coupe	techno	Pro	3	ja	foldable	100	texte coupé à l'écran : texte « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » [coupé] @ 517,516
+grave	consigne-depliee-cache-grille	techno	Pro	3	ja	foldable	130	après « Lire la suite », plus aucune case visible (8 avant) : la consigne couvre toute la grille
+finition	texte-coupe	techno	Pro	3	ja	foldable	130	texte coupé à l'écran : texte « ここに点線のマスがあと 3 個 » [coupé] @ 751,320
+finition	texte-coupe	techno	Pro	3	ja	foldable	130	texte coupé à l'écran : texte « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » [coupé] @ 517,493
+grave	grille-cachee	techno	Pro	3	ja	foldable	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	ja	foldable	200	texte coupé à l'écran : texte « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » [coupé] @ 517,412
+grave	grille-cachee	techno	Facile	3	ja	foldable	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+grave	grille-cachee	techno	Pro	3	ja	phone360	100	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	ja	phone360	100	texte coupé à l'écran : texte « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » [coupé] @ 270,442
+grave	grille-cachee	techno	Pro	3	ja	phone360	130	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	ja	phone360	130	texte coupé à l'écran : texte « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » [coupé] @ 270,392
+grave	grille-cachee	techno	Pro	3	ja	phone360	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Pro	3	ja	phone360	200	texte coupé à l'écran : texte « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » [coupé] @ 270,284
+grave	grille-cachee	techno	Facile	3	ja	phone360	200	aucune case de la grille visible dès l'arrivée sur l'étape, panneau replié
+finition	texte-coupe	techno	Facile	3	ja	phone360	200	texte coupé à l'écran : texte « あなたの番：「手拍子」パッドで、点線のマスをタップしよう：2拍目と4拍目、そして最後のマス。 » [coupé] @ 270,287

@@ -495,12 +495,20 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         // Scaffold lays its body out under its bars. Full-screen layers are the overlay rule's (shownWindows / mark).
         val area = win.drawn(screen).let { it.width().toFloat() * it.height() }
         val cover = here.firstOrNull { c ->
-            layer(c) && c.id !in chain &&
+            layer(c) && c.id !in chain && placed(c) &&
                 drawn(c).let { it.width * it.height } < 0.9f * area &&
                 generateSequence(c.parent) { it.parent }.none { it.id == hit.id } && !passThrough(c) && drawnAfter(c, hit)
         } ?: return null
         return "« ${nameOf(cover)} » couvre « ${nameOf(hit)} »"
     }
+
+    /**
+     * Tour 9 (banc-b, « mix curseurs »): [n] and every layout above it were placed. A layout that is measured and never
+     * placed (the Mix's `FitFaders` probes: two whole consoles) draws nothing and takes no touch, yet its nodes stay in
+     * the unmerged tree with bounds at the window's corner; one of them « covered » every fader and every strip's name.
+     */
+    private fun placed(n: SemanticsNode): Boolean =
+        generateSequence(n.layoutInfo) { it.parentInfo }.all { it.isPlaced }
 
     /** A layer that takes the touch over what is under it: a traversal group, or a container (M3's Surface and Card still
      *  set the older « IsContainer » key, not « IsTraversalGroup »). */

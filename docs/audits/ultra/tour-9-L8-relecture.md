@@ -1,6 +1,6 @@
 # Relecture neuve, tour 9, lot L8
 
-relu : 8ce4a1bf7
+relu : 12359483c
 
 Relecteur : sous-agent neuf (n'a pas écrit le code). Portée : 7455749a5..HEAD (eq/tour-9-L8), sans captures ni docs.
 Une première relecture (7455749a5..f603c4b94) avait donné 0 bloquant, 0 grave, 12 mineurs ; celle-ci couvre tout le lot, F125/F122/F121 compris.
@@ -20,5 +20,11 @@ Ajout après relecture : commit a078458a2 (correction du selftest du banc), relu
 9. mineur, ShareSheet.kt : éteint, l'étiquette dit un état (« Le projet garde son nom… »), en petit gris.
 10. mineur, Tour9L8ShareWordsTest l.86 : cherchait share_renames sans l'arbre non fusionné. Corrigé (commit suivant, test vert, 7/7).
 Selftest du banc vert ensuite : 388 verts, 0 rouge.
+
+Relecture neuve finale (sous-agent neuf, c79d3442c..12359483c hors captures et docs) : aucun code neuf depuis 8ce4a1bf7 (fusion d'intégration en docs seuls, goldens seuls). Renommage gardé par l'interrupteur, aucune perte ; 5 clés × 14 langues, rien d'existant modifié. Mineurs :
+11. mineur, hi/partage.json : « बदलें » vouvoie (même famille que le n° 8).
+12. mineur, Tour9L8CapturesTest : captures seules, sans assertion.
+13. mineur, ShareSongUi.kt:107 : en arabe, l'isolation bidi touche aussi les noms de fichier du bilan (n° 7 étendu).
+Tests ciblés verts en local (13 classes + TrackNameNoRepeatTest) ; selftest vert (388 verts, 0 rouge) ; 86 captures revues et réenregistrées.
 
 Verdict : 0 bloquant, 0 grave

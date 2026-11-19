@@ -13,7 +13,7 @@ import com.pocketstudio.model.tuto.TutoChecks.SHOWN_OFFSET_MS
 import com.pocketstudio.model.tuto.TutoChecks.SOFT_HITS_CHECKED
 import com.pocketstudio.model.tuto.TutoChecks.asksSoft
 import com.pocketstudio.model.tuto.TutoChecks.barsOf
-import com.pocketstudio.model.tuto.TutoChecks.hasTriplet
+import com.pocketstudio.model.tuto.TutoChecks.tripletsDone
 import com.pocketstudio.model.tuto.TutoChecks.hatBars
 import com.pocketstudio.model.tuto.TutoChecks.hatsSwing
 import com.pocketstudio.model.tuto.TutoChecks.laneExtras
@@ -406,7 +406,7 @@ internal class Offset(val role: String, val early: Boolean) : TutoKind {
 
 /** "triplet:<role>": at least one triplet (3 hits over 2 cells, or 6 over a beat) on the role's pad, in any part. */
 internal class Triplet(val role: String) : TutoKind {
-    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = p.allScenes.any { sc -> hasTriplet(sc.drums, lanesOf(role, target)) }
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = p.allScenes.any { sc -> tripletsDone(sc.drums, role, target) }
     override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? = withTriplet(p, role, target)
 }
 

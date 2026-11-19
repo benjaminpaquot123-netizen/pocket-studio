@@ -191,4 +191,26 @@ class Tour9L14TutoPanelTest {
             }
         }
     }
+    /**
+     * F019 (t9-10, t9-18, t9-61, t9-63, t9-72): at the course's end the panel's head still said « Étape 3/3 » under a
+     * finished tutorial. At the end: « Tuto fini », « Recommencer » and « Chapitres », no step counter, no « Suivant ».
+     */
+    @Test
+    fun endShowsOnlyFinished() {
+        val all = chapters.flatMap { it.steps }
+        val last = chapters.lastIndex
+        var at by mutableStateOf(TutoUi(TutoProgress("techno", TutoLevel.Facile, all.map { it.id }.toSet(), all.last().id), chapters, last, chapters[last].steps.lastIndex))
+        compose.setContent { PocketStudioTheme { TutoPanel(at, canShow = true, actions = TutoActions(), reducedMotion = true) } }
+        for (atEnd in listOf(false, true)) {
+            at = at.copy(atEnd = atEnd)
+            compose.waitForIdle()
+            val step = compose.onAllNodes(hasText("Étape", substring = true), useUnmergedTree = true).fetchSemanticsNodes()
+                .mapNotNull { it.config.getOrNull(SemanticsProperties.Text)?.joinToString { t -> t.text } }
+            assertTrue("atEnd $atEnd: a step's counter at the end: $step", step.isEmpty())
+            assertTrue("atEnd $atEnd: « Tuto fini » said", compose.onAllNodes(hasText("Tuto fini", substring = true), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty())
+            assertTrue("atEnd $atEnd: « Recommencer »", has("tuto_restart_finished"))
+            assertTrue("atEnd $atEnd: « Chapitres »", has("tuto_chapters"))
+            assertFalse("atEnd $atEnd: « Suivant » at the end", has("tuto_next"))
+        }
+    }
 }

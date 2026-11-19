@@ -4,5 +4,6 @@
 - The compact form applies only when folded, so 100 % layouts are unchanged.
 - A nav tab touched by hand during an open « Je le fais » step (spot non-empty) folds the panel (tablet: Mix ▶ under the panel). Manual steps keep it open (TutoKickSoundTest). Back: remove the `tutoTabTouched` effect.
 - The piano roll and pad grids (D02) are covered by the same general ceiling, with no case-by-case code.
-- D14 (« Lire la suite » should unfold the whole instruction) is not addressed by this lot: left to the chief.
-- Tour6GuideCoquilleLookTest captures re-recorded: the panel is identical, only the chip shimmer and the ripple timing moved.
+- D14: « Lire la suite » puts the open panel in a reading mode: it may grow up to the status bar, sheds its head row, kit and pinned « Pourquoi » one by one while the instruction still does not fit, and pages only if it still overflows; « Replier » ends the mode. Reason: under the ceiling, paging left the end of the instruction cut at 200 %. Back: drop `readAll` from `reading` in TutoPanel.kt.
+- D13: a loudness step (check « loudness: ») reveals the « Volume visé » chips (spot `mixer_target`, AppRoot `tutoPlaceFor`) before the master card. Reason: the card, taller than the room above the panel, came top first and left its chips under the panel. Back: `tutoPlaceFor` returns its ids unchanged. The spot is one line in mixer/MasterLoudness.kt (L8's file), granted by the chief.
+- Tour6GuideCoquilleLookTest audio-page captures: restored to the base. Their only difference (chip shimmer, touch ripple) changes from run to run and is red on the base too (tour 8).

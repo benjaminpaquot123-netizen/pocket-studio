@@ -1,96 +1,102 @@
 package com.pocketstudio.app.remix
 
-import android.app.Application
-import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.onAllNodesWithTag
-import androidx.test.core.app.ApplicationProvider
-import com.pocketstudio.app.human.BenchWindows
-import com.pocketstudio.app.human.HumanTester
-import com.pocketstudio.app.human.SeatOptions
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
+import com.pocketstudio.model.AutoCut
+import com.pocketstudio.model.CutPiece
+import com.pocketstudio.model.SongCuts
+import com.pocketstudio.model.StemCuts
+import com.pocketstudio.ui.PocketStudioTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Assume.assumeTrue
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import org.robolectric.annotation.GraphicsMode
-import java.io.File
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
- * Tour 8, lot R (review of decoupe2, moyen): « en es, main gauche, phone à 100 %, Mode Simple : j'arrive en « Un trozo »
- * avec un message resté d'avant et je vois la consigne en haut, sans saut. » The message lives until « OK »: the column
- * must not follow it down on arrival. A message that comes while the screen is open still brings the four buttons into
- * view (tour 7, lot 2 D3).
+ * Tour 9, L10 F139 (review T9): « L'écran de découpe ne défile que vers le message du moment. » A message left from
+ * before stays where it is on arrival (tour 8, R); once a work came and went (« Voix vers le pad… ») and the message
+ * left under it was still that old one, the column ran down to it again, away from where the user had scrolled.
  */
 @RunWith(RobolectricTestRunner::class)
-@GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(qualifiers = HumanTester.PHONE)
-class CutStaleMessageTest : HumanTester("t8-r-decoupe") {
-    override val remixTimeScale = 0.25
-    private val app: Application get() = ApplicationProvider.getApplicationContext()
-    private val out = File("build/t8-r-decoupe").apply { mkdirs() }
+@org.robolectric.annotation.GraphicsMode(org.robolectric.annotation.GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = "w411dp-h914dp-xxhdpi")
+class CutStaleMessageTest {
+    @get:Rule
+    val compose = createComposeRule()
 
-    private fun node(tag: String) = compose.onAllNodesWithTag(tag).fetchSemanticsNodes().firstOrNull()
+    private val frames = 60L * BOARD_RATE
+    private val bar = 4 * 24_000L
 
-    private fun tap(tag: String): String {
-        val at = reachTag(tag) ?: error("no $tag on:\n" + screenLines().joinToString("\n"))
-        return act("touche ${at.first} ${at.second}")
+    private class Shown(private val cuts: SongCuts, message: String?) : StemBoardActions by NoStemBoardActions {
+        override val state = MutableStateFlow(StemBoardState(message = message))
+        override fun savedCuts(setId: String, frames: Long) = cuts
     }
 
-    private fun drawnEntire(tag: String): Boolean {
-        val n = node(tag) ?: return false
-        val b = BenchWindows.drawnBounds(n, app.resources.displayMetrics)
-        return shownWhole(n) && b.height >= n.size.height - 1f && b.width >= n.size.width - 1f
+    private lateinit var shown: Shown
+
+    private fun show(message: String?) {
+        val cuts = SongCuts("song", listOf(StemCuts(VOCALS_STEM, listOf(CutPiece(2 * bar, 4 * bar)), auto = "Selection")))
+        val ui = StemBoardUi("song", "Ma chanson", frames, 120.0, 0.0, StemPeakSource { StemPeaks.of(frames, 1) { _, n -> FloatArray(n) } }, peaksContext = EmptyCoroutineContext)
+        shown = Shown(cuts, message)
+        compose.setContent {
+            val d = LocalDensity.current
+            CompositionLocalProvider(LocalDensity provides Density(d.density, 2f)) {
+                PocketStudioTheme {
+                    Box(Modifier.fillMaxWidth().height(430.dp)) {
+                        val model = remember { CutModel("song", frames, 120.0, 0.0, cuts, mode = AutoCut.Selection) }
+                        CutScreen(ui, shown, onClose = {}, model = model)
+                    }
+                }
+            }
+        }
+        compose.waitForIdle()
     }
 
-    private fun hintWhole(): Boolean {
-        val hint = compose.onAllNodes(hasText("Coloca Inicio y Fin", substring = true)).fetchSemanticsNodes().firstOrNull() ?: return false
-        val b = BenchWindows.drawnBounds(hint, app.resources.displayMetrics)
-        return shownWhole(hint) && b.height >= hint.size.height - 1f
+    private val column get() = compose.onNode(SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange), useUnmergedTree = true)
+    private fun scrolled(): Float = column.fetchSemanticsNode().config[SemanticsProperties.VerticalScrollAxisRange].value()
+    private fun toTop() {
+        column.performSemanticsAction(SemanticsActions.ScrollBy) { it(0f, -100_000f) }
+        compose.mainClock.advanceTimeBy(2_000)
+        compose.waitForIdle()
     }
-
-    private fun song() = StemStore.list(app).first().id
-
-    private fun openCut() {
-        begin(SeatOptions.parse(mapOf("lang" to "es", "device" to "phone", "font" to "100", "mode" to "simple", "main" to "gauche")).first)
-        amenee("remix", File(out, "journal.txt"))
-        tap("remix_download_thumb")
-        runCatching { tap("remix_model_ask_ok") }
-        repeat(80) { if (SeparationJob.state.value is SeparationState.Done) return@repeat; act("attends 1") }
-        runCatching { tap("remix_pick_thumb") }
-        repeat(80) { if (SeparationJob.state.value is SeparationState.Done) return@repeat; act("attends 1") }
-        tap("cut_song_${song()}")
-        repeat(20) { act("attends 1") }
-    }
-
-    private fun send() {
-        val d = app.resources.displayMetrics.density
-        act("glisse ${196 * d} ${600 * d} ${196 * d} ${300 * d}")
-        act("attends 1")
-        tap("cut_to_pads")
-        repeat(10) { act("attends 1") }
+    private fun set(s: StemBoardState) {
+        shown.state.value = s
+        compose.mainClock.advanceTimeBy(2_000)
+        compose.waitForIdle()
     }
 
     @Test
-    fun staleMessageKeepsTheInstructionOnTop() {
-        assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
-        openCut()
-        send()
-        assertTrue("no message after « En los pads »:\n" + screenLines().joinToString("\n"), node("cut_message") != null)
-        // Out of the cut and back in « Un trozo »: the message is still there (it lives until « OK »).
-        tap("cut_close")
-        repeat(5) { act("attends 1") }
-        if (reachTag("cut_song_${song()}") != null) tap("cut_song_${song()}") else tap("remix_cut_thumb")
-        repeat(20) { act("attends 1") }
-        assertTrue("the message from before is gone (the case is not played):\n" + screenLines().joinToString("\n"), node("cut_message") != null)
-        assertTrue("« Coloca Inicio y Fin » not whole on arrival with a message from before:\n" + screenLines().joinToString("\n"), hintWhole())
-        // A new message, while the screen is open: the column follows it down (tour 7, lot 2 D3 kept).
-        send()
-        val ok = runCatching { tap("cut_message_ok") }.isSuccess
-        assertTrue("no « OK » under the message", ok)
-        repeat(3) { act("attends 1") }
-        send()
-        for (t in listOf("cut_message", "cut_to_pads", "cut_to_live", "cut_to_library", "cut_to_track"))
-            assertTrue("$t cut after a new message:\n" + screenLines().joinToString("\n"), drawnEntire(t))
+    fun theOldMessageLeftUnderAWorkDoesNotPullTheColumnDown() {
+        val old = "« Voix » est sur les pads 9 à 14."
+        show(old)
+        assertEquals("a message from before moved the column on arrival", 0f, scrolled())
+        set(StemBoardState(busy = "Voix vers le pad…", message = old))
+        toTop()
+        set(StemBoardState(message = old))
+        assertEquals("the work ended on the same old message: the column ran down to it", 0f, scrolled())
+    }
+
+    @Test
+    fun aNewMessageStillBringsTheColumnDown() {
+        show("« Voix » est sur les pads 9 à 14.")
+        set(StemBoardState(message = "« Voix 1 » est sur une nouvelle piste, mesure 3."))
+        assertTrue("a new message did not bring the column down to it", scrolled() > 0f)
     }
 }

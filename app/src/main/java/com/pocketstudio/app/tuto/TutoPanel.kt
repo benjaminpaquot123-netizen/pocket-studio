@@ -446,6 +446,11 @@ private fun PlayMineButton(actions: TutoActions, playing: Boolean) {
 /** « Recommencer le tuto ». */
 fun restartTutoLabel(): String = tr("Recommencer le tuto")
 
+/** Tour 9 F019: every step of [p]'s course settled (done, or in Pro an example): nothing left to resume, only to restart. */
+fun tutoCourseFinished(p: com.pocketstudio.model.tuto.TutoProgress?): Boolean =
+    p != null && TutoCourse.of(p.style)?.chaptersFor(p.level)?.flatMap { it.steps }
+        ?.all { it.id in p.done || (p.level == TutoLevel.Pro && it.listening) } == true
+
 /** The words of a need's button, as the step's text names it. */
 fun needLabel(need: TutoNeed, style: String? = null): String = when (need) {
     is TutoNeed.Bars -> tr("Passer à %d mesures", need.bars)
@@ -599,7 +604,9 @@ fun TutoPanel(
                     )
                     // Tour 6 (N23): the chapter's « Bravo » shown, « Chapitre 7/15 · Fait » (« Étape 1/2 » said a step left).
                     Text(
-                        (if (ui.chapterDoneNext() != null) tr("Chapitre %1\$d/%2\$d · %3\$s", ui.chapter + 1, ui.chapters.size, tr("Fait"))
+                        // Tour 9 F019 (t9-10, t9-18): the end, no step counter (« Étape 3/3 » under a finished tutorial).
+                        (if (end) (if (ui.finished) tr("Tuto fini : bravo !") else tr("Presque fini !"))
+                        else if (ui.chapterDoneNext() != null) tr("Chapitre %1\$d/%2\$d · %3\$s", ui.chapter + 1, ui.chapters.size, tr("Fait"))
                         else tr("Chapitre %1\$d/%2\$d · Étape %3\$d/%4\$d", ui.chapter + 1, ui.chapters.size, ui.step + 1, chapter.steps.size)) + " · " +
                             if (ui.progress.level == TutoLevel.Pro) tr("Pro") else tr("Facile"),
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,

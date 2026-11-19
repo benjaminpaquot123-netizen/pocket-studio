@@ -2619,7 +2619,8 @@ fun AppRoot() {
                     )
                 } else if (tuto.resumable && !showLive && !showLivePads && !showTimeline) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        TextButton(onClick = tuto::resume, modifier = Modifier.weight(1f).heightIn(min = 40.dp).testTag("tuto_resume")) {
+                        // Tour 9 F019: a tutorial finished has nothing to resume (« Recommencer » only).
+                        if (!com.pocketstudio.app.tuto.tutoCourseFinished(tuto.saved)) TextButton(onClick = tuto::resume, modifier = Modifier.weight(1f).heightIn(min = 40.dp).testTag("tuto_resume")) {
                             Text(tr("Reprendre le tuto"), color = Neon.Cyan)
                         }
                         TextButton(onClick = restartTuto, modifier = Modifier.weight(1f).heightIn(min = 40.dp).testTag("tuto_restart_quit")) {
@@ -3811,7 +3812,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         missions = startMissions,
                                         // Testers (lot « tuto 5 »): the tutorial found again from a project (proposal in fix5-ecran.md).
                                         tuto = { modeAsk = START_TUTO },
-                                        resumeTuto = if (tuto.resumable) ({ toolPage = null; tuto.resume() }) else null,
+                                        resumeTuto = if (tuto.resumable && !com.pocketstudio.app.tuto.tutoCourseFinished(tuto.saved)) ({ toolPage = null; tuto.resume() }) else null,
                                     ),
                                 )
                                 ToolPage.Recette -> {

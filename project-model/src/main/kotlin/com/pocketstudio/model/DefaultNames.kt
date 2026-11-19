@@ -176,6 +176,18 @@ object DefaultNames {
     /** [name] (in any language) says the track's role in the song (« Mélodie », « Basse »), not its sound. */
     fun isRole(name: String): Boolean = french(name)?.let { it in ROLES } == true
 
+    /**
+     * Tour 9, F133 (« 808 808 », « Baixo Baixo pluck »): the sound shown under a track's [name] without the words the
+     * name already says, so the two lines never read a word twice. Words compare whole, whatever their case; an
+     * empty result means the name says it all.
+     */
+    fun soundBeside(name: String, sound: String): String {
+        val said = words(name).map { it.lowercase() }.toSet()
+        return words(sound).filter { it.lowercase() !in said }.joinToString(" ")
+    }
+
+    private fun words(text: String): List<String> = text.split(Regex("""\s+""")).filter { it.isNotBlank() }
+
     /** True when [name] is one of the app's own names (in any language). */
     fun isDefault(name: String): Boolean =
         name in EXACT || name in RENAMED || name in fromTranslation || numbered.any { it.first.matches(name) } || timed.any { it.first.matches(name) }

@@ -401,6 +401,8 @@ private fun PadGrid(
                         onHit = {
                             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             onHit(lane)
+                            // Tour 9, F039: « Écoute le kick seul » is heard by playing the kick pad.
+                            com.pocketstudio.app.tuto.TutoPadEar.heard?.invoke(lane)
                         },
                         onHold = {
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)

@@ -73,6 +73,15 @@ object TutoTestHooks {
 }
 
 /**
+ * Tour 9, F039: a drum pad played by hand (Rythme's pads call [heard] with its lane). The tutorial shown
+ * listens while it is on screen: « Écoute le kick seul » is heard by playing the kick pad.
+ */
+object TutoPadEar {
+    @Volatile
+    var heard: ((Int) -> Unit)? = null
+}
+
+/**
  * Where the tutorial sends the screen: the Guide's screen ([open], with its control lit by a short
  * pulsing ring when [spot], brought into view either way), the drum pad to show ([pad]), the notes
  * of track [notes] (its next dotted note brought into view), the tutorial's own key sheet
@@ -288,6 +297,24 @@ class TutoController(
         stopDemo()
         _ui.value?.let { store.save(projectId, it.progress.copy(active = false)) }
         _ui.value = null
+        if (TutoPadEar.heard === padEar) TutoPadEar.heard = null
+    }
+
+    /** This tutorial's ear on the pads ([TutoPadEar]), set while it is shown. */
+    private val padEar: (Int) -> Unit = { lane -> padPlayed(lane) }
+
+    /**
+     * Tour 9, F039: drum pad [lane] played by hand. A step listening to one drum sound alone
+     * (« Écoute le kick seul », listen "drums:kick") is heard once that sound's pad is played.
+     */
+    fun padPlayed(lane: Int) {
+        val u = _ui.value ?: return
+        val step = u.current
+        if (!step.listening || step.id in u.progress.done) return
+        val parts = step.listen.split(":")
+        if (parts.size != 2 || parts[0] != "drums") return
+        val role = parts[1].split(",").singleOrNull()?.trim()?.takeIf { it.isNotEmpty() } ?: return
+        if (lane in TutoChecks.lanesOf(role, target)) tick(setOf(step.id), advance = false, bravo = false)
     }
 
     /** « Passer en Pro » (or back to Facile): the steps done stay done. */
@@ -409,11 +436,6 @@ class TutoController(
         }.ifEmpty { all }
     }
 
-    /** The strips a "send:<bus>" step sends (as [TutoChecks.done] reads them): the reverb's « Accords » and the snare's pad, the echo's lead. */
-    private fun sendChannels(p: Project, bus: Int): List<Int> =
-        if (bus == 0) listOfNotNull(TutoChecks.trackFor(p, "pad")?.let(com.pocketstudio.model.InstrumentTrack::mixerChannel), com.pocketstudio.model.Mixer.padChannel(TutoChecks.laneOf("snare")))
-        else listOfNotNull(TutoChecks.trackFor(p, "lead")?.let(com.pocketstudio.model.InstrumentTrack::mixerChannel))
-
     private fun sends(p: Project, ch: Int, bus: Int) = (p.mixer.channels.getOrNull(ch)?.sends?.getOrNull(bus) ?: 0f) > SENT
 
     /**
@@ -425,7 +447,8 @@ class TutoController(
         val c = u.current.check
         if (!c.startsWith("send:")) return null
         val bus = c.substringAfter(':').toIntOrNull() ?: return null
-        val chans = sendChannels(p, bus).takeIf { it.size > 1 } ?: return null
+        // The strips the step names, as its check reads them (tour 9, F042: house's clap and chords, not the jump up's snare).
+        val chans = TutoChecks.sendChannels(p, bus, u.current).takeIf { it.size > 1 } ?: return null
         val here = goFor(u.current, p, spot = false)?.effects
         return chans.joinToString(" · ") { ch ->
             val name = stripName(p, ch)
@@ -585,6 +608,9 @@ class TutoController(
 
     /** The step's main button ([TutoUi.need]): what it needs, made in one undo step, then its screen. */
     fun fulfilNeed() {
+        // Tour 9, F036: touched while « Montre-moi » ends (its result still shown), it first puts the project back as it
+        // was, so the part it makes is on the real song and stays (it was read on the demonstration's and did nothing).
+        endDemoNow()
         val u = _ui.value ?: return
         val t = target ?: return
         val step = u.current
@@ -674,11 +700,20 @@ class TutoController(
                 // all it showed): « Créer la piste … » in sight rather than another track's notes without a word.
                 val back = step.manual || step.spot.isEmpty() || _ui.value?.need != null
                 if (_ui.value?.demo != null) _ui.value = _ui.value?.let { it.copy(demo = null, demoCells = null, fade = 0f, gesture = 0, gestureCell = null, gestureDrag = null, open = it.open || (back && it.current.id == step.id)) }
-                demoJob = null
+                if (demoJob === coroutineContext[Job]) demoJob = null
                 look()
             }
         }
         return true
+    }
+
+    /** Stops « Montre-moi » at once, the project put back as it was before this returns. */
+    private fun endDemoNow() {
+        val job = demoJob ?: return
+        demoJob = null
+        job.cancel()
+        demoShow(null)
+        _ui.value = _ui.value?.copy(demo = null, demoCells = null, fade = 0f, gesture = 0, gestureCell = null, gestureDrag = null)
     }
 
     /** Stops « Montre-moi » where it is (the project as it was). */
@@ -816,6 +851,7 @@ class TutoController(
         val course = TutoCourse.of(p.style) ?: return
         target = TutoTarget.of(p.style) ?: return
         if (!p.active) return
+        TutoPadEar.heard = padEar
         save(p, chapters = course.chaptersFor(p.level))
         look()
     }

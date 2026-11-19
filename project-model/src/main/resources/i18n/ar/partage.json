@@ -20,5 +20,10 @@
   "Pour partager : l'onglet Partager.": "للمشاركة: تبويب مشاركة.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "لمتابعة أغنيتك على جهاز آخر: « مشاركة » › « حفظ الأغنية في ملف ‎.zip » (ملف ‎.zip فيه كل أصواته)، ثم على الجهاز الآخر: مشاريعي › « استيراد مشروع (‎.zip) ».",
   "La partie en cours, jouée sur %s.": "الجزء الحالي، معزوفًا على %s.",
-  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "ملف .zip جاهز: %s. لكن تعذّر نسخه إلى المستندات: احفظه من قائمة المشاركة."
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "ملف .zip جاهز: %s. لكن تعذّر نسخه إلى المستندات: احفظه من قائمة المشاركة.",
+  "comme la musique en streaming (−14 LUFS, le niveau de Spotify et YouTube)": "مثل موسيقى البث (−14 LUFS، مستوى Spotify وYouTube)",
+  "le volume habituel de ton style": "مستوى الصوت المعتاد لأسلوبك",
+  "Mesuré pendant l'écoute : %s LUFS · crête %s dBTP": "قِيس أثناء الاستماع: %s LUFS · الذروة %s dBTP",
+  "(avec les reprises : %d)": "(مع التكرارات: %d)",
+  "Renommer aussi le projet": "إعادة تسمية المشروع أيضًا"
 }

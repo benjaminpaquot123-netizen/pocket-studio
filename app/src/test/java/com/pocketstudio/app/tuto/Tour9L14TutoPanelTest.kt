@@ -463,6 +463,8 @@ class Tour9L14TutoPanelTest {
             fun toast() = compose.onAllNodesWithTag("tuto_ticked_toast").fetchSemanticsNodes()
             assertTrue("nothing said before a step is ticked", toast().isEmpty())
             TutoHints.ticked++
+            // The clock is held: the write is sent to the compositions here, as a frame of the app would.
+            androidx.compose.runtime.snapshots.Snapshot.sendApplyNotifications()
             compose.mainClock.advanceTimeBy(500)
             assertEquals("the step ticked under the window is said over it", 1, toast().size)
             assertTrue(compose.onAllNodes(hasText("Bravo, c'est réussi !", substring = true)).fetchSemanticsNodes().isNotEmpty())
@@ -471,10 +473,13 @@ class Tour9L14TutoPanelTest {
             windowed = false
             compose.mainClock.advanceTimeBy(500)
             TutoHints.ticked++
+            // The clock is held: the write is sent to the compositions here, as a frame of the app would.
+            androidx.compose.runtime.snapshots.Snapshot.sendApplyNotifications()
             compose.mainClock.advanceTimeBy(500)
             assertTrue("no window over the card: the card says it", toast().isEmpty())
         } finally {
             TutoHints.active = false
         }
     }
+
 }

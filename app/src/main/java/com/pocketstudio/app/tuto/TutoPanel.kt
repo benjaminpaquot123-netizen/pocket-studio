@@ -92,6 +92,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -1867,3 +1868,49 @@ internal const val FINGER_DRAG_MS = 900
 private const val DRAG_PRESS = 0.15f
 private const val DRAG_LIFT = 0.15f
 private val FINGER_SIZE = 40.dp
+
+/**
+ * Tour 9, F021 (t9-33: the echo send set in the effects window, « la feuille d'effets couvre la carte du tuto : aucune
+ * confirmation visible »): a step ticked while a window covers the course's card is said a moment over that window,
+ * in the card's own words. Drawn only inside a window (a dialog or a sheet): on the screen itself, the card says it.
+ */
+@Composable
+fun TutoTickedOverWindow() {
+    if (!TutoHints.active) return
+    val view = androidx.compose.ui.platform.LocalView.current
+    val windowed = remember(view) { generateSequence(view.parent) { it.parent }.any { it is androidx.compose.ui.window.DialogWindowProvider } }
+    if (!windowed) return
+    val ticked = TutoHints.ticked
+    val start = remember { ticked }
+    var shown by remember { mutableStateOf(false) }
+    LaunchedEffect(ticked) {
+        if (ticked != start) {
+            shown = true
+            kotlinx.coroutines.delay(2_500)
+            shown = false
+        }
+    }
+    if (!shown) return
+    androidx.compose.ui.window.Popup(
+        popupPositionProvider = TopCenterPopup,
+        properties = androidx.compose.ui.window.PopupProperties(focusable = false),
+    ) {
+        Row(
+            Modifier.padding(top = 12.dp).background(Neon.SurfaceHigh, RoundedCornerShape(12.dp))
+                .border(1.dp, Neon.Acid, RoundedCornerShape(12.dp)).padding(horizontal = 14.dp, vertical = 10.dp)
+                .semantics { liveRegion = androidx.compose.ui.semantics.LiveRegionMode.Polite }.testTag("tuto_ticked_toast"),
+            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(20.dp))
+            Text(tr("Bravo, c'est réussi !"), color = Neon.Acid, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+/** At the top of the window, across its middle. */
+private object TopCenterPopup : androidx.compose.ui.window.PopupPositionProvider {
+    override fun calculatePosition(
+        anchorBounds: androidx.compose.ui.unit.IntRect, windowSize: androidx.compose.ui.unit.IntSize,
+        layoutDirection: androidx.compose.ui.unit.LayoutDirection, popupContentSize: androidx.compose.ui.unit.IntSize,
+    ) = androidx.compose.ui.unit.IntOffset((windowSize.width - popupContentSize.width) / 2, 0)
+}

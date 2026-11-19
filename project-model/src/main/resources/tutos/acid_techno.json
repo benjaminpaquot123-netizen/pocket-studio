@@ -133,7 +133,7 @@
         },
         {
           "id": "acid_do",
-          "text": "À toi : ouvre l'onglet Acide et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.",
+          "text": "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.",
           "why": "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.",
           "levels": "p",
           "check": "notes:acid",

@@ -1035,6 +1035,27 @@ private fun Grid(
                                 }
                                 return@awaitEachGesture
                             }
+                            // Tour 9, S17 (seat 17): a finger drawn along a dotted note of the tutorial (a long one, a wide target)
+                            // scrolled the roll, no note written. Started right on it, the gesture is the grid's: the dotted note
+                            // is written whole when the finger lifts, as a touch writes it; the roll does not scroll.
+                            val drawn = if (found == null && selection.isEmpty() && com.pocketstudio.app.tuto.TutoHints.active && hints.isNotEmpty()) {
+                                val tick = tickAt(down.position.x)
+                                val pitch = pitchAt(down.position.y)
+                                hints.firstOrNull { h -> h.pitch == pitch && tick in h.start until h.end && clip.notes.none { it.pitch == h.pitch && it.start == h.start } }
+                            } else null
+                            if (drawn != null) {
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    // A second finger: a pinch (É8), nothing written.
+                                    if (event.changes.count { it.pressed } > 1) return@awaitEachGesture
+                                    val change = event.changes.firstOrNull { it.id == down.id } ?: return@awaitEachGesture
+                                    if (!change.pressed) break
+                                    change.consume()
+                                }
+                                val chord = dottedTouch(drawn, hints, clip, chordMode)
+                                if (chord.size > 1) actions.replaceClip(chord.fold(clip) { c, n -> c.add(n) }, null) else actions.add(drawn)
+                                return@awaitEachGesture
+                            }
                             if (found == null) {
                                 val up = waitForUpOrCancellation() ?: return@awaitEachGesture  // a scroll took it
                                 if ((up.position - down.position).getDistance() < slop && selection.isNotEmpty()) {

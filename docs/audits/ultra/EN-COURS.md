@@ -11,6 +11,8 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 - **Branches pas entrées** : (rangées le 19 novembre, 08 h) 9 branches de sièges du tour 8 (rapports seuls : `aud/tour-8-ctrl-t0b-d`, `-d2`, `-e`, `-e2`, `aud/tour-8-ctrl-t0c-a`, `-b`, `-c`, `-e`, `eq/tour-8-controle-t0a`) ; `eq/tour-8-guetteur` (essai sur un test du moteur, à laisser : le lot « machinerie » le remplace).
 
 ## Discussions du tour 9 (19 novembre, 08 h)
+
+Rotation (Benjamin) : **11 discussions au plus**. Une discussion finie est archivée et une neuve prend sa place. Surveillance du chef : notifications, veilleur en arrière-plan (branches `aud/tour-9-*`, `eq/tour-9-*`, `rev/tour-8-*`, intégration, CI), une minuterie de secours < 1 h avec un seul `list_sessions(children)`.
 - T9-REVUE `session_014RxrDKB2N7gX4yxMKTtohb` (revue fin de phase tour 8, branche `rev/tour-8-fin-de-phase`)
 - T9-BALAYAGE `session_014RxrDJMkVzhuYV7LFeF1pQ` (37 tutos × 15 langues, `eq/tour-9-balayage`)
 - T9-PLAN `session_014RxrDLxKw1RRtXuZbwYQZB` (plan + fiche type des sièges, `eq/tour-9-plan`)

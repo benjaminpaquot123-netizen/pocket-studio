@@ -294,6 +294,10 @@ data class ShareSheetUi(
     val seconds: Int,
     val parts: Int,
     val checks: List<ShareCheck>,
+    /** Tour 9, F125: the song's rows (a part played twice counts twice, as the home and Structure count them). */
+    val rows: Int = parts,
+    /** Tour 9, F122: « Partager » renames a default-named project too (off: it keeps its name). */
+    val renameProject: Boolean = true,
     val format: ExportFormat = ExportFormat.M4a,
     val playing: Boolean = false,
     val running: Boolean = false,
@@ -324,6 +328,8 @@ fun shareExportLufs(p: Project): Double? = LoudnessTargets.of(p)?.toDouble()
 
 class ShareSheetActions(
     val setName: (String) -> Unit = {},
+    /** Tour 9, F122: « Renommer aussi le projet » turned on or off. */
+    val renameProject: (Boolean) -> Unit = {},
     val setFormat: (ExportFormat) -> Unit = {},
     /** « Partager »: the name kept, the song exported in the format chosen, then Android's share sheet. */
     val share: () -> Unit = {},

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -125,6 +126,8 @@ fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions, alsoSet: 
     val spot = LocalControlSpot.current?.takeIf { it.kind == com.pocketstudio.model.AutoTarget.INSERT_PARAM && it.ch == ch }?.slot ?: -1
     var open by rememberSaveable(ch) { mutableIntStateOf(spot) }
     var picking by rememberSaveable(ch) { mutableStateOf(false) }
+    // Tour 9 L2 (F029): the effect just added from the list, brought into view (it lands above the list, often off screen).
+    var added by remember(ch) { mutableIntStateOf(-1) }
     val used = inserts.indices.filter { inserts[it].effect != EffectType.NONE }
     val busy by actions.cpuBusy.collectAsState()
     val scenes by actions.scenes.collectAsState()
@@ -152,12 +155,21 @@ fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions, alsoSet: 
         }
         used.forEachIndexed { pos, i ->
             val ins = inserts[i]
-            InsertRow(
-                ch, i, pos, ins, open == i,
-                before = used.getOrNull(pos - 1), after = used.getOrNull(pos + 1),
-                toggle = { open = if (open == i) -1 else i }, actions = actions,
-                removed = { if (open == i) open = -1 }, level = level,
-            )
+            val bring = remember(i) { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+            if (i == added) androidx.compose.runtime.LaunchedEffect(i) {
+                // Once the new row is laid out.
+                androidx.compose.runtime.withFrameNanos { }
+                runCatching { bring.bringIntoView() }
+                added = -1
+            }
+            androidx.compose.foundation.layout.Box(Modifier.bringIntoViewRequester(bring)) {
+                InsertRow(
+                    ch, i, pos, ins, open == i,
+                    before = used.getOrNull(pos - 1), after = used.getOrNull(pos + 1),
+                    toggle = { open = if (open == i) -1 else i }, actions = actions,
+                    removed = { if (open == i) open = -1 }, level = level,
+                )
+            }
             // « Joue dans »: only worth it with several scenes (song sections), or to say it plays nowhere.
             if (scenes.size > 1 || ins.scenes?.isEmpty() == true) PlaysIn(ch, i, ins, scenes, actions)
             if (open == i) InsertEditor(ch, i, ins, actions)
@@ -173,7 +185,7 @@ fun InsertChain(ch: Int, inserts: List<Insert>, actions: MixerActions, alsoSet: 
             Icon(if (picking) Icons.Filled.Close else Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(18.dp))
             Text(if (picking) tr("  Fermer la liste des effets") else tr("  Ajouter un effet"))
         }
-        if (picking) EffectPicker(ch, inserts, actions) { slot -> open = slot }
+        if (picking) EffectPicker(ch, inserts, actions) { slot -> open = slot; added = slot }
     }
 }
 

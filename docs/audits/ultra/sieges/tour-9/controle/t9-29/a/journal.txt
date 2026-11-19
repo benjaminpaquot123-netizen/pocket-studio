@@ -1,0 +1,719 @@
+#0 SIEGE lang=hi device=phone360 font=200 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:grime:1
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=9.4 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:grime:1
+#0 AMENEE > touche 270 986 (welcome_learn)
+#0 AMENEE > touche 270 546 (mode_card_simple)
+#0 AMENEE > touche 270 1079 (tuto_style_grime)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE bd9e8b6cf6 | project=p-48309d45 tuto=grime/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT OVERLAP « 120 » over « गाने की स्पीड और रंग » (54 x 27 dp)
+#1 LAYOUT OVERLAP « गाने की स्पीड और रंग » over the touchable « टेम्पो: 120 थाप प्रति मिनट टेम्पो बदलो » (117 x 34 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 270 708
+#1 DOIGT tuto_listen «  उदाहरण सुनो »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 32678768ce | project=p-48309d45 tuto=grime/Facile active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 223 469
+#2 DOIGT tuto_kit_download « किट Grime डाउनलोड करो (2 MB) »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE af3813f667 | project=p-48309d45 tuto=grime/Facile active=true step=ref done=1 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 LAYOUT OVERLAP « सिंपल » over « गाने की स्पीड और रंग » (49 x 5 dp)
+#3 LAYOUT OVERLAP « 120 » over « अध्याय 1/13 · स्टेप 1/3 · आसान » (54 x 34 dp)
+#3 LAYOUT OVERLAP « गाने की स्पीड और रंग » over the touchable « सिंपल मोड। मोड बदलने के लिए छुओ। मोड बदल » (70 x 10 dp)
+#3 LAYOUT OVERLAP « अध्याय 1/13 · स्टेप 1/3 · आसान » over the touchable « टेम्पो: 120 थाप प्रति मिनट टेम्पो बदलो » (117 x 48 dp)
+#3 LAYOUT CONTRAST « यह पार्ट » 3.26:1 (needs 4.5:1, 7 sp)
+#3 > attends 5
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a4476ba2cb | project=p-48309d45 tuto=grime/Facile active=true step=ref done=1 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 1 s).
+#4 > touche 270 658
+#4 DOIGT tuto_next_big « अगला स्टेप   »
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2ec957fb16 | project=p-48309d45 tuto=grime/Facile active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « मेरा गाना » drawn past its parent's edge (down, 52 dp shown of 61)
+#5 LAYOUT CUT « शेयर करो » drawn past its parent's edge (down, 52 dp shown of 61)
+#5 LAYOUT OVERLAP « 120 » over « अध्याय 1/13 · स्टेप 2/3 · आसान » (54 x 19 dp)
+#5 LAYOUT OVERLAP « गाने की स्पीड और रंग » over the touchable « सिंपल मोड। मोड बदलने के लिए छुओ। मोड बदल » (70 x 37 dp)
+#5 LAYOUT OVERLAP « अध्याय 1/13 · स्टेप 2/3 · आसान » over the touchable « सिंपल मोड। मोड बदलने के लिए छुओ। मोड बदल » (70 x 8 dp)
+#5 LAYOUT OVERLAP « अध्याय 1/13 · स्टेप 2/3 · आसान » over the touchable « टेम्पो: 120 थाप प्रति मिनट टेम्पो बदलो » (117 x 27 dp)
+#5 LAYOUT OVERLAP « तुम्हारी बारी: टेम्पो (गाने की स्पीड) 140 BPM पर सेट करो, यानी एक मिनट में 140 बीट्स। “मैं करूँगा” टेम्पो शीट खोलता है। » over the touchable « टेम्पो: 120 थाप प्रति मिनट टेम्पो बदलो » (117 x 3 dp)
+#5 LAYOUT OVERLAP « तुम्हारी बारी: टेम्पो (गाने की स्पीड) 140 BPM पर सेट करो, यानी एक मिनट में 140 बीट्स। “मैं करूँगा” टेम्पो शीट खोलता है। » over the touchable « स्क्रीन पर लेबल लगाओ » (25 x 3 dp)
+#5 > touche 270 608
+#5 DOIGT tuto_do «   मैं करूँगा »
+#6 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE cc9d80aa9e | project=p-48309d45 tuto=grime/Facile active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#6 LAYOUT CUT « ? » lines cut (taller than its box)
+#6 LAYOUT OVERLAP « टेम्पो » over the touchable « शीट बंद करें » (62 x 49 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « शीट बंद करें » (13 x 18 dp)
+#6 LAYOUT OVERLAP « बंद करो » over the touchable « शीट बंद करें » (78 x 37 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « शीट बंद करें » (96 x 61 dp)
+#6 LAYOUT OVERLAP «  BPM » over the touchable « शीट बंद करें » (70 x 42 dp)
+#6 LAYOUT OVERLAP « 70 » over the touchable « शीट बंद करें » (36 x 34 dp)
+#6 LAYOUT OVERLAP « 90 » over the touchable « शीट बंद करें » (36 x 34 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « शीट बंद करें » (54 x 34 dp)
+#6 LAYOUT OVERLAP « 140 » over the touchable « शीट बंद करें » (54 x 34 dp)
+#6 LAYOUT OVERLAP « 174 » over the touchable « शीट बंद करें » (54 x 34 dp)
+#6 LAYOUT OVERLAP « ½ » over the touchable « शीट बंद करें » (25 x 42 dp)
+#6 LAYOUT OVERLAP « ×2 » over the touchable « शीट बंद करें » (36 x 42 dp)
+#6 LAYOUT OVERLAP « 1 » over the touchable « शीट बंद करें » (23 x 43 dp)
+#6 LAYOUT OVERLAP « 2 » over the touchable « शीट बंद करें » (23 x 43 dp)
+#6 LAYOUT OVERLAP « 3 » over the touchable « शीट बंद करें » (23 x 43 dp)
+#6 LAYOUT OVERLAP « 4 » over the touchable « शीट बंद करें » (23 x 43 dp)
+#6 LAYOUT OVERLAP « 5 » over the touchable « शीट बंद करें » (23 x 43 dp)
+#6 LAYOUT OVERLAP « 6 » over the touchable « शीट बंद करें » (23 x 43 dp)
+#6 LAYOUT OVERLAP « 7 » over the touchable « शीट बंद करें » (23 x 43 dp)
+#6 LAYOUT OVERLAP « 8 » over the touchable « शीट बंद करें » (23 x 43 dp)
+#6 LAYOUT OVERLAP « 9 » over the touchable « शीट बंद करें » (23 x 43 dp)
+#6 LAYOUT OVERLAP « 0 » over the touchable « शीट बंद करें » (23 x 43 dp)
+#6 LAYOUT OVERLAP « OK » over the touchable « शीट बंद करें » (51 x 43 dp)
+#6 LAYOUT OVERLAP « बीट पर टैप करो » over the touchable « शीट बंद करें » (168 x 42 dp)
+#6 LAYOUT OVERLAP « हर बीट पर यहाँ टैप करो: टेम्पो साथ चलेगा। » over the touchable « शीट बंद करें » (218 x 69 dp)
+#6 > touche 448 487
+#6 DOIGT tempo_preset_140 « 140 »
+#7 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ea24b285e3 | project=p-48309d45 tuto=grime/Facile active=true step=tempo done=2 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « Grime · बड़ा ढोल 1 » over « FX » (25 x 11 dp)
+#7 LAYOUT OVERLAP « Grime · ताली » over « FX » (21 x 11 dp)
+#7 LAYOUT OVERLAP « Grime · हाई-हैट » over « L 30 » (38 x 11 dp)
+#7 LAYOUT OVERLAP « ओपन हाई-हैट » over « R 30 » (34 x 11 dp)
+#7 LAYOUT CONTRAST « Grime · ताली » 3.55:1 (needs 4.5:1, 14 sp)
+#7 > touche 270 775
+#7 DOIGT tuto_next_folded « हो गया »
+#8 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 07673af47c | project=p-48309d45 tuto=grime/Facile active=true step=key done=2 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 140 » over « अध्याय 1/13 · स्टेप 3/3 · आसान » (54 x 19 dp)
+#8 LAYOUT OVERLAP « अध्याय 1/13 · स्टेप 3/3 · आसान » over the touchable « सिंपल मोड। मोड बदलने के लिए छुओ। मोड बदल » (70 x 8 dp)
+#8 LAYOUT OVERLAP « अध्याय 1/13 · स्टेप 3/3 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 27 dp)
+#8 LAYOUT OVERLAP « तुम्हारी बारी: “मैं करूँगा” टोन शीट खोलता है: घेरे वाले दोनों बटन दबाओ। » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 3 dp)
+#8 > touche 270 608
+#8 DOIGT tuto_do «   मैं करूँगा »
+#9 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 5b46adfffc | project=p-48309d45 tuto=grime/Facile active=true step=key done=2 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « गाने की स्केल » over the touchable « शीट बंद करें » (176 x 49 dp)
+#9 LAYOUT OVERLAP « गाने की key: कोई नहीं » over the touchable « शीट बंद करें » (216 x 37 dp)
+#9 LAYOUT OVERLAP « स्केल » over the touchable « शीट बंद करें » (52 x 37 dp)
+#9 LAYOUT OVERLAP « मेजर » over the touchable « शीट बंद करें » (49 x 42 dp)
+#9 LAYOUT OVERLAP « माइनर » over the touchable « शीट बंद करें » (70 x 42 dp)
+#9 LAYOUT OVERLAP « Dorian » over the touchable « शीट बंद करें » (87 x 42 dp)
+#9 LAYOUT OVERLAP « माइनर पेंटा » over the touchable « शीट बंद करें » (109 x 42 dp)
+#9 LAYOUT OVERLAP « मेजर पेंटा » over the touchable « शीट बंद करें » (94 x 42 dp)
+#9 LAYOUT OVERLAP « Blues » over the touchable « शीट बंद करें » (72 x 42 dp)
+#9 LAYOUT OVERLAP « Phrygian » over the touchable « शीट बंद करें » (118 x 42 dp)
+#9 LAYOUT OVERLAP « हार्मोनिक माइनर » over the touchable « शीट बंद करें » (162 x 42 dp)
+#9 LAYOUT OVERLAP « Key » over the touchable « शीट बंद करें » (47 x 37 dp)
+#9 LAYOUT OVERLAP « C » over the touchable « शीट बंद करें » (21 x 42 dp)
+#9 LAYOUT OVERLAP « C♯ » over the touchable « शीट बंद करें » (36 x 42 dp)
+#9 LAYOUT OVERLAP « D » over the touchable « शीट बंद करें » (20 x 42 dp)
+#9 LAYOUT OVERLAP « E♭ » over the touchable « शीट बंद करें » (27 x 42 dp)
+#9 LAYOUT OVERLAP « E » over the touchable « शीट बंद करें » (17 x 42 dp)
+#9 LAYOUT OVERLAP « F » over the touchable « शीट बंद करें » (17 x 42 dp)
+#9 LAYOUT OVERLAP « F♯ » over the touchable « शीट बंद करें » (32 x 42 dp)
+#9 LAYOUT OVERLAP « G » over the touchable « शीट बंद करें » (21 x 42 dp)
+#9 LAYOUT OVERLAP « A♭ » over the touchable « शीट बंद करें » (29 x 42 dp)
+#9 LAYOUT OVERLAP « A » over the touchable « शीट बंद करें » (19 x 42 dp)
+#9 LAYOUT OVERLAP « B♭ » over the touchable « शीट बंद करें » (28 x 42 dp)
+#9 LAYOUT OVERLAP « B » over the touchable « शीट बंद करें » (18 x 42 dp)
+#9 > touche 212 535
+#9 DOIGT tuto_scale_Minor « माइनर »
+#10 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE a51456e1a7 | project=p-48309d45 tuto=grime/Facile active=true step=key done=2 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « गाने की key: C · माइनर » over the touchable « शीट बंद करें » (235 x 37 dp)
+#10 > touche 423 936
+#10 DOIGT tuto_root_4 « E »
+#11 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE a6f515a48c | project=p-48309d45 tuto=grime/Facile active=true step=key done=3 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « गाने की key: E · माइनर » over the touchable « शीट बंद करें » (232 x 37 dp)
+#11 LAYOUT OVERLAP « हो गया! गाने का रंग चुन लिया गया। » over the touchable « शीट बंद करें » (252 x 84 dp)
+#11 LAYOUT OVERLAP « ट्यूटोरियल पर वापस जाओ » over the touchable « शीट बंद करें » (268 x 23 dp)
+#11 > touche 270 1140
+#11 DOIGT tuto_key_continue « ट्यूटोरियल पर वापस जाओ »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8ec7b02035 | project=p-48309d45 tuto=grime/Facile active=true step=key done=3 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 270 775
+#12 DOIGT tuto_chapter_end_folded « शाबाश, अध्याय पूरा! »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 02879085ff | project=p-48309d45 tuto=grime/Facile active=true step=key done=3 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 270 714
+#13 DOIGT tuto_next_big « अगला अध्याय   »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7a7b59a29d | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 140 » over « सूखे ड्रम्स » (54 x 34 dp)
+#14 LAYOUT OVERLAP « सूखे ड्रम्स » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (95 x 37 dp)
+#14 LAYOUT OVERLAP « अध्याय 2/13 · स्टेप 1/5 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 4 dp)
+#14 > touche 270 569
+#14 DOIGT tuto_need «   2 बार पर जाओ »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e2e1568331 | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CUT « बार 1/2 · Grime · बड़ा ढोल 1 » ellipsized (« … »)
+#15 LAYOUT CUT « तुम्हारी बारी: “Grime · बड़ा ढोल 1” पैड पर 2 बार के डॉटेड खाने दबाओ। » ellipsized (« … »)
+#15 LAYOUT CONTRAST « बार » 4.17:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « 2 » 3.72:1 (needs 4.5:1, 14 sp)
+#15 LAYOUT CONTRAST « फ़ॉलो » 3.00:1 (needs 4.5:1, 14 sp)
+#15 > glisse 270 450 270 250
+#15 DOIGT rien (texte « यहाँ 3 डॉटेड खाने बाकी हैं »)
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7029685007 | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#16 > touche 67 369
+#16 DOIGT step_0 « स्टेप 1 »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5c53f2e0b0 | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 472 369
+#17 DOIGT step_7 « स्टेप 8 »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 91ecb66e32 | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 182 440
+#18 DOIGT step_10 « स्टेप 11 »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0ede30a9de | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#19 SON Son : rien ne joue.
+#19 > glisse 270 330 270 480
+#19 DOIGT rien
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 104ba8e934 | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 338 383
+#20 DOIGT tuto_bar_go « बार 2 · 3 खाने → »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a38ab4f3b8 | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « बार 2/2 · Grime · बड़ा ढोल 1 » ellipsized (« … »)
+#21 LAYOUT CONTRAST « 1 » 3.02:1 (needs 4.5:1, 12 sp)
+#21 > glisse 270 450 270 250
+#21 DOIGT rien (texte « यहाँ 3 डॉटेड खाने बाकी हैं »)
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9e6064828f | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « 1 » 2.78:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « 2 » 2.06:1 (needs 4.5:1, 12 sp)
+#22 > touche 67 340
+#22 DOIGT step_16 « स्टेप 1 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE aa88bbe20e | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « 1 » 2.26:1 (needs 4.5:1, 12 sp)
+#23 > touche 182 390
+#23 DOIGT step_26 « स्टेप 11 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fb7b46d37b | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=3 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « 1 » 2.67:1 (needs 4.5:1, 12 sp)
+#24 > touche 356 390
+#24 DOIGT step_29 « स्टेप 14 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 46e04ba799 | project=p-48309d45 tuto=grime/Facile active=true step=kick_do done=4 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 270 775
+#25 DOIGT tuto_next_folded « हो गया »
+#26 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 43b627ffe1 | project=p-48309d45 tuto=grime/Facile active=true step=clap_do done=4 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT OVERLAP « अध्याय 2/13 · स्टेप 2/5 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 4 dp)
+#26 > touche 270 569
+#26 DOIGT tuto_do «   मैं करूँगा »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 119fd57a58 | project=p-48309d45 tuto=grime/Facile active=true step=clap_do done=4 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CUT « तुम्हारी बारी: “Grime · ताली” पैड पर डॉटेड खाने: दूसरी और चौथी बीट। » ellipsized (« … »)
+#27 LAYOUT CONTRAST « 2 » 2.32:1 (needs 4.5:1, 12 sp)
+#27 LAYOUT CONTRAST « 4 » 3.52:1 (needs 4.5:1, 12 sp)
+#27 > touche 298 356
+#27 DOIGT step_4 « स्टेप 5 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 32fde8dae8 | project=p-48309d45 tuto=grime/Facile active=true step=clap_do done=4 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « 4 » 2.36:1 (needs 4.5:1, 12 sp)
+#28 > touche 298 426
+#28 DOIGT step_12 « स्टेप 13 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fa416ccfe2 | project=p-48309d45 tuto=grime/Facile active=true step=clap_do done=4 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « 1 » 2.63:1 (needs 4.5:1, 12 sp)
+#29 > glisse 270 330 270 480
+#29 DOIGT rien
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 697f427c9c | project=p-48309d45 tuto=grime/Facile active=true step=clap_do done=4 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CUT « बार 1/2 · Grime · ताली » ellipsized (« … »)
+#30 > touche 338 369
+#30 DOIGT tuto_bar_go « बार 2 · 2 खाने → »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3e0f374d82 | project=p-48309d45 tuto=grime/Facile active=true step=clap_do done=4 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « बार 2/2 · Grime · ताली » 4.03:1 (needs 4.5:1, 13 sp)
+#31 LAYOUT CONTRAST « 2 » 2.87:1 (needs 4.5:1, 12 sp)
+#31 > touche 298 481
+#31 DOIGT step_20 « स्टेप 5 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 73be797103 | project=p-48309d45 tuto=grime/Facile active=true step=clap_do done=4 playing=false
+#32 SON Son : rien ne joue.
+#32 > glisse 270 450 270 300
+#32 DOIGT rien
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 32fde8dae8 | project=p-48309d45 tuto=grime/Facile active=true step=clap_do done=4 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « 4 » 2.94:1 (needs 4.5:1, 12 sp)
+#33 > touche 298 426
+#33 DOIGT step_28 « स्टेप 13 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 287fa0c69c | project=p-48309d45 tuto=grime/Facile active=true step=clap_do done=5 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « 1 » 1.83:1 (needs 4.5:1, 12 sp)
+#34 LAYOUT CONTRAST « 2 » 2.80:1 (needs 4.5:1, 12 sp)
+#34 > touche 270 775
+#34 DOIGT tuto_next_folded « हो गया »
+#35 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5905e83ec8 | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT OVERLAP « अध्याय 2/13 · स्टेप 3/5 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 4 dp)
+#35 > touche 270 569
+#35 DOIGT tuto_do «   मैं करूँगा »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d472158e2b | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « तुम्हारी बारी: “ढोल का किनारा” पैड पर डॉटेड खाने दबाओ। » ellipsized (« … »)
+#36 > touche 182 356
+#36 DOIGT step_2 « स्टेप 3 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 61deb347dd | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 414 356
+#37 DOIGT step_6 « स्टेप 7 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0ef4515a84 | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 182 426
+#38 DOIGT step_10 « स्टेप 11 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e05cedaaf7 | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 414 426
+#39 DOIGT step_14 « स्टेप 15 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c540ddfa80 | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « 1 » 2.66:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « 2 » 3.24:1 (needs 4.5:1, 12 sp)
+#40 > glisse 270 330 270 480
+#40 DOIGT rien
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3180596791 | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CUT « बार 1/2 · ढोल का किनारा » ellipsized (« … »)
+#41 > touche 338 369
+#41 DOIGT tuto_bar_go « बार 2 · 4 खाने → »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bb22c2e6f5 | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « बार 2/2 · ढोल का किनारा » 4.03:1 (needs 4.5:1, 13 sp)
+#42 > glisse 270 450 270 300
+#42 DOIGT rien
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 716f243844 | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 182 356
+#43 DOIGT step_18 « स्टेप 3 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 61deb347dd | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 414 356
+#44 DOIGT step_22 « स्टेप 7 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0ef4515a84 | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 182 426
+#45 DOIGT step_26 « स्टेप 11 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e05cedaaf7 | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=5 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 414 426
+#46 DOIGT step_30 « स्टेप 15 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 675e4d1293 | project=p-48309d45 tuto=grime/Facile active=true step=perc_do done=6 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « 1 » 1.89:1 (needs 4.5:1, 12 sp)
+#47 LAYOUT CONTRAST « 2 » 2.03:1 (needs 4.5:1, 12 sp)
+#47 > touche 270 775
+#47 DOIGT tuto_next_folded « हो गया »
+#48 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7dadaba461 | project=p-48309d45 tuto=grime/Facile active=true step=hat_do done=6 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT OVERLAP « अध्याय 2/13 · स्टेप 4/5 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 4 dp)
+#48 > touche 270 569
+#48 DOIGT tuto_do «   मैं करूँगा »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 033fe22b18 | project=p-48309d45 tuto=grime/Facile active=true step=hat_do done=6 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT CUT « तुम्हारी बारी: “Grime · हाई-हैट” पैड पर डॉटेड खाने: आठवें नोट्स, जो टेम्पो थामते हैं। » ellipsized (« … »)
+#49 LAYOUT CONTRAST « यहाँ 8 डॉटेड खाने बाकी हैं » 1.87:1 (needs 3.0:1, 14 sp)
+#49 LAYOUT CONTRAST « 1 » 2.56:1 (needs 4.5:1, 12 sp)
+#49 LAYOUT CONTRAST « 2 » 3.73:1 (needs 4.5:1, 12 sp)
+#49 LAYOUT CONTRAST « 3 » 3.74:1 (needs 4.5:1, 12 sp)
+#49 LAYOUT CONTRAST « 4 » 3.74:1 (needs 4.5:1, 12 sp)
+#49 > glisse 270 450 270 330
+#49 DOIGT rien
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2ab78cf71d | project=p-48309d45 tuto=grime/Facile active=true step=hat_do done=6 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST « 1 » 1.86:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « 2 » 2.15:1 (needs 4.5:1, 12 sp)
+#50 > touche 218 459
+#50 DOIGT fill_2 « 1/2 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7bb5b27fee | project=p-48309d45 tuto=grime/Facile active=true step=hat_do done=7 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 270 775
+#51 DOIGT tuto_next_folded « हो गया »
+#52 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f635a249ab | project=p-48309d45 tuto=grime/Facile active=true step=drums_hear done=7 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT OVERLAP « 140 » over « सूखे ड्रम्स » (54 x 32 dp)
+#52 LAYOUT OVERLAP « 140 » over « अध्याय 2/13 · स्टेप 5/5 · आसान » (54 x 2 dp)
+#52 LAYOUT OVERLAP « अध्याय 2/13 · स्टेप 5/5 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 9 dp)
+#52 > touche 270 625
+#52 DOIGT tuto_play_mine «   अपना नतीजा सुनो »
+#53 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 526b336bf9 | project=p-48309d45 tuto=grime/Facile active=true step=drums_hear done=7 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 LAYOUT OVERLAP « अध्याय 2/13 · स्टेप 5/5 · आसान » over the touchable « किसी पार्ट से बजाओ » (97 x 21 dp)
+#53 > attends 3
+#54 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 526b336bf9 | project=p-48309d45 tuto=grime/Facile active=true step=drums_hear done=7 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 > touche 270 711
+#54 DOIGT tuto_listen «  उदाहरण सुनो »
+#55 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7b63dbdd01 | project=p-48309d45 tuto=grime/Facile active=true step=drums_hear done=7 playing=false
+#55 SON Son : l'exemple du tuto joue (encore 3 s).
+#55 > attends 5
+#56 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 91da2c974a | project=p-48309d45 tuto=grime/Facile active=true step=drums_hear done=8 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT OVERLAP « 140 » over « अध्याय 2/13 · हो गया · आसान » (54 x 2 dp)
+#56 LAYOUT OVERLAP « अध्याय 2/13 · हो गया · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 9 dp)
+#56 > touche 270 569
+#56 DOIGT tuto_next_big « अगला अध्याय   »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ead19725e5 | project=p-48309d45 tuto=grime/Facile active=true step=bass_hear done=8 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « पार्ट: A » lines cut (taller than its box)
+#57 LAYOUT TARGET « पार्ट: A पार्ट बदलो » 93 x 2 dp (touch 93 x 48)
+#57 > touche 270 708
+#57 DOIGT tuto_listen «  उदाहरण सुनो »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2a2bd04f31 | project=p-48309d45 tuto=grime/Facile active=true step=bass_hear done=8 playing=false
+#58 SON Son : l'exemple du tuto joue (encore 3 s).
+#58 > attends 8
+#59 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7d8fc896f4 | project=p-48309d45 tuto=grime/Facile active=true step=bass_hear done=9 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT OVERLAP « 140 » over « स्क्वेयर बेस » (54 x 17 dp)
+#59 LAYOUT OVERLAP « स्क्वेयर बेस » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (113 x 24 dp)
+#59 > touche 270 658
+#59 DOIGT tuto_next_big « अगला स्टेप   »
+#60 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 53a45b143e | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT OVERLAP « 140 » over « स्क्वेयर बेस » (54 x 34 dp)
+#60 LAYOUT OVERLAP « स्क्वेयर बेस » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (113 x 37 dp)
+#60 LAYOUT OVERLAP « अध्याय 3/13 · स्टेप 2/4 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 5 dp)
+#60 > touche 270 569
+#60 DOIGT tuto_need «   बेस ट्रैक बनाओ »
+#61 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 10a8e5c528 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#61 SON Son : rien ne joue.
+#61 > glisse 270 480 270 250
+#61 DOIGT dans:synth « घोस्ट बेस »
+#62 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 75ec22f2a1 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CUT « 1 » drawn past its parent's edge (down, 32 dp shown of 37)
+#62 > glisse 270 480 270 250
+#62 DOIGT roll_bar_0 « 1 »
+#63 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 88e8ae9233 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT TARGET « E2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#63 > touche 483 606
+#63 DOIGT tuto_fold
+#64 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 132cfdab78 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT OVERLAP « 140 » over « अध्याय 3/13 · स्टेप 2/4 · आसान » (54 x 29 dp)
+#64 LAYOUT OVERLAP « अध्याय 3/13 · स्टेप 2/4 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 37 dp)
+#64 > touche 270 569
+#64 DOIGT tuto_do «   मैं करूँगा »
+#65 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 88e8ae9233 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 121 478
+#65 DOIGT rien
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bc245d2bd3 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#66 SON Son : 1 note du synthé.
+#66 > touche 196 478
+#66 DOIGT rien
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bc245d2bd3 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#67 SON Son : 1 note du synthé.
+#67 > touche 270 478
+#67 DOIGT rien
+#68 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bc245d2bd3 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#68 SON Son : 1 note du synthé.
+#68 > touche 322 478
+#68 DOIGT rien
+#69 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3ebc802a66 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT TARGET « G2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#69 > touche 471 470
+#69 DOIGT rien
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 88e8ae9233 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#70 SON Son : rien ne joue.
+#70 > glisse 300 460 300 500
+#70 DOIGT rien
+#71 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b270f8c7cd | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT TARGET « F2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#71 > glisse 300 450 300 505
+#71 DOIGT rien
+#72 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d02f3e633b | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT TARGET « F♯2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#72 > glisse 300 450 300 480
+#72 DOIGT rien
+#73 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3ebc802a66 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 471 450
+#73 DOIGT rien
+#74 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ee47f0bded | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#74 SON Son : 1 note du synthé.
+#74 > glisse 300 470 300 420
+#74 DOIGT rien
+#75 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c0cff3c91e | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 483 606
+#75 DOIGT tuto_fold
+#76 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 132cfdab78 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 397 683
+#76 DOIGT tuto_show «  मुझे दिखाओ »
+#77 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e51894a16a | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#77 SON Son : rien ne joue.
+#77 LAYOUT CUT « देखो, मैं करके दिखाता हूँ… » ellipsized (« … »)
+#77 LAYOUT CONTRAST « रोको » 3.91:1 (needs 4.5:1, 14 sp)
+#77 > attends 6
+#78 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 11a5c5b402 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#78 SON Son : 4 notes du synthé.
+#78 > attends 10
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bc245d2bd3 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#79 SON Son : 1 note du synthé.
+#79 > touche 122 478
+#79 DOIGT rien
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3ebc802a66 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 197 478
+#80 DOIGT rien
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 88e8ae9233 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 297 478
+#81 DOIGT rien
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3ebc802a66 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#82 SON Son : rien ne joue.
+#82 > glisse 300 450 300 480
+#82 DOIGT rien
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5cea5e70ca | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 483 606
+#83 DOIGT tuto_fold
+#84 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 132cfdab78 | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 433 797
+#84 DOIGT tuto_next « अगला  »
+#85 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 5ab7d92bfc | project=p-48309d45 tuto=grime/Facile active=true step=bass_do done=9 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 433 797
+#85 DOIGT tuto_next « अगला  »
+#86 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 99c0076759 | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT OVERLAP « 140 » over « अध्याय 3/13 · स्टेप 3/4 · आसान » (54 x 29 dp)
+#86 LAYOUT OVERLAP « अध्याय 3/13 · स्टेप 3/4 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 37 dp)
+#86 > touche 270 569
+#86 DOIGT tuto_do «   मैं करूँगा »
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e3db4fd0d5 | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT CUT « C3 » lines cut (taller than its box)
+#87 LAYOUT TARGET « B2 बजाओ » 36 x 20 dp (touch 48 x 48)
+#87 > touche 480 903
+#87 DOIGT thumb_more « और ऑप्शन »
+#88 ROUTE ? | MODE simple | EMPREINTE 4c39b696d4 | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#88 SON Son : rien ne joue.
+#88 > glisse 270 480 270 330
+#88 DOIGT rien
+#89 ROUTE ? | MODE simple | EMPREINTE 0b85c164bd | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 271 1034
+#89 DOIGT tab_simple_Clavier « कीबोर्ड »
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c86368a4e8 | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#90 SON Son : rien ne joue.
+#90 > glisse 270 400 270 150
+#90 DOIGT rien
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c86368a4e8 | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 483 606
+#91 DOIGT tuto_fold
+#92 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 99c0076759 | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 397 683
+#92 DOIGT tuto_show «  मुझे दिखाओ »
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE feacd80a08 | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#93 SON Son : rien ne joue.
+#93 > attends 12
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8502ea3e3d | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#94 SON Son : 5 notes du synthé.
+#94 > attends 3
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c86368a4e8 | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 483 606
+#95 DOIGT tuto_fold
+#96 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 99c0076759 | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 433 797
+#96 DOIGT tuto_next « अगला  »
+#97 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 3fc940a968 | project=p-48309d45 tuto=grime/Facile active=true step=bass_2 done=9 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 433 797
+#97 DOIGT tuto_next « अगला  »
+#98 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 90caf6694c | project=p-48309d45 tuto=grime/Facile active=true step=bass_sub done=9 playing=false
+#98 SON Son : rien ne joue.
+#98 LAYOUT OVERLAP « 140 » over « अध्याय 3/13 · स्टेप 4/4 · आसान » (54 x 25 dp)
+#98 LAYOUT OVERLAP « अध्याय 3/13 · स्टेप 4/4 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 33 dp)
+#98 > touche 270 541
+#98 DOIGT tuto_need «   बेस को एक ऑक्टेव नीचे कॉपी करो »
+#99 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 0bf546a8db | project=p-48309d45 tuto=grime/Facile active=true step=bass_sub done=10 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 270 569
+#99 DOIGT tuto_next_big « अगला स्टेप   »
+#100 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 2f8b81a208 | project=p-48309d45 tuto=grime/Facile active=true step=pad_do done=10 playing=false
+#100 SON Son : rien ne joue.
+#100 LAYOUT OVERLAP « 140 » over « बर्फ़ीले स्टैब्स » (54 x 34 dp)
+#100 LAYOUT OVERLAP « बर्फ़ीले स्टैब्स » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 37 dp)
+#100 LAYOUT OVERLAP « अध्याय 4/13 · स्टेप 1/2 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 5 dp)
+#100 > touche 270 569
+#100 DOIGT tuto_need «   कॉर्ड्स ट्रैक बनाओ »
+#101 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7a817ec013 | project=p-48309d45 tuto=grime/Facile active=true step=pad_do done=10 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT CUT « तुम्हारी बारी: बार 1 और 2 में हर कॉर्ड का नीचे वाला डॉटेड नोट दबाओ: पूरा कॉर्ड लग जाता है। » ellipsized (« … »)
+#101 LAYOUT TARGET « E4 बजाओ » 36 x 20 dp (touch 48 x 48)
+#101 > touche 123 478
+#101 DOIGT rien
+#102 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7a817ec013 | project=p-48309d45 tuto=grime/Facile active=true step=pad_do done=10 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 271 478
+#102 DOIGT rien
+#103 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7a817ec013 | project=p-48309d45 tuto=grime/Facile active=true step=pad_do done=10 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 120 468
+#103 DOIGT rien
+#104 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 29133bb5b1 | project=p-48309d45 tuto=grime/Facile active=true step=pad_do done=10 playing=false
+#104 SON Son : rien ne joue.
+#104 LAYOUT TARGET « G4 बजाओ » 36 x 20 dp (touch 48 x 48)
+#104 > touche 483 606
+#104 DOIGT tuto_fold
+#105 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE fe23464831 | project=p-48309d45 tuto=grime/Facile active=true step=pad_do done=10 playing=false
+#105 SON Son : rien ne joue.
+#105 LAYOUT OVERLAP « 140 » over « अध्याय 4/13 · स्टेप 1/2 · आसान » (54 x 19 dp)
+#105 LAYOUT OVERLAP « अध्याय 4/13 · स्टेप 1/2 · आसान » over the touchable « सिंपल मोड। मोड बदलने के लिए छुओ। मोड बदल » (70 x 8 dp)
+#105 LAYOUT OVERLAP « अध्याय 4/13 · स्टेप 1/2 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 27 dp)
+#105 LAYOUT OVERLAP « तुम्हारी बारी: बार 1 और 2 में हर कॉर्ड का नीचे वाला डॉटेड नोट दबाओ: पूरा कॉर्ड लग जाता है। » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 3 dp)
+#105 LAYOUT OVERLAP « तुम्हारी बारी: बार 1 और 2 में हर कॉर्ड का नीचे वाला डॉटेड नोट दबाओ: पूरा कॉर्ड लग जाता है। » over the touchable « स्क्रीन पर लेबल लगाओ » (25 x 3 dp)
+#105 > touche 397 683
+#105 DOIGT tuto_show «  मुझे दिखाओ »
+#106 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 27ffb8808e | project=p-48309d45 tuto=grime/Facile active=true step=pad_do done=10 playing=false
+#106 SON Son : rien ne joue.
+#106 > attends 15
+#107 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7a177895b3 | project=p-48309d45 tuto=grime/Facile active=true step=pad_do done=10 playing=false
+#107 SON Son : 10 notes du synthé.
+#107 > touche 483 606
+#107 DOIGT tuto_fold
+#108 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE fe23464831 | project=p-48309d45 tuto=grime/Facile active=true step=pad_do done=10 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 433 797
+#108 DOIGT tuto_next « अगला  »
+#109 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 205d0ee614 | project=p-48309d45 tuto=grime/Facile active=true step=pad_do done=10 playing=false
+#109 SON Son : rien ne joue.
+#109 LAYOUT OVERLAP « यह स्टेप अभी पूरा नहीं हुआ। फिर भी छोड़ने के लिए “अगला” दोबारा छुओ। » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 3 dp)
+#109 LAYOUT OVERLAP « यह स्टेप अभी पूरा नहीं हुआ। फिर भी छोड़ने के लिए “अगला” दोबारा छुओ। » over the touchable « स्क्रीन पर लेबल लगाओ » (23 x 3 dp)
+#109 > touche 433 797
+#109 DOIGT tuto_next « अगला  »
+#110 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE d526e33425 | project=p-48309d45 tuto=grime/Facile active=true step=pad_end done=10 playing=false
+#110 SON Son : rien ne joue.
+#110 LAYOUT OVERLAP « 140 » over « अध्याय 4/13 · स्टेप 2/2 · आसान » (54 x 29 dp)
+#110 LAYOUT OVERLAP « अध्याय 4/13 · स्टेप 2/2 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 37 dp)
+#110 > touche 397 683
+#110 DOIGT tuto_show «  मुझे दिखाओ »
+#111 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a95787f17a | project=p-48309d45 tuto=grime/Facile active=true step=pad_end done=10 playing=false
+#111 SON Son : rien ne joue.
+#111 > attends 12
+#112 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9040bc7ce7 | project=p-48309d45 tuto=grime/Facile active=true step=pad_end done=10 playing=false
+#112 SON Son : 10 notes du synthé.
+#112 > touche 483 606
+#112 DOIGT tuto_fold
+#113 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE d526e33425 | project=p-48309d45 tuto=grime/Facile active=true step=pad_end done=10 playing=false
+#113 SON Son : rien ne joue.
+#113 > touche 433 797
+#113 DOIGT tuto_next « अगला  »
+#114 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 24824438db | project=p-48309d45 tuto=grime/Facile active=true step=pad_end done=10 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 433 797
+#114 DOIGT tuto_next « अगला  »
+#115 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 08c045bd6e | project=p-48309d45 tuto=grime/Facile active=true step=lead_do done=10 playing=false
+#115 SON Son : rien ne joue.
+#115 LAYOUT OVERLAP « 140 » over « चिपट्यून लीड » (54 x 34 dp)
+#115 LAYOUT OVERLAP « चिपट्यून लीड » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 37 dp)
+#115 LAYOUT OVERLAP « अध्याय 5/13 · स्टेप 1/2 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 5 dp)
+#115 > touche 270 569
+#115 DOIGT tuto_need «   मेलोडी ट्रैक बनाओ »
+#116 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f87002ec43 | project=p-48309d45 tuto=grime/Facile active=true step=lead_do done=10 playing=false
+#116 SON Son : rien ne joue.
+#116 LAYOUT CUT « Chiptune मेलोडी » ellipsized (« … »)
+#116 LAYOUT TARGET « E5 बजाओ » 36 x 20 dp (touch 48 x 48)
+#116 > touche 123 480
+#116 DOIGT rien
+#117 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ae02ff823d | project=p-48309d45 tuto=grime/Facile active=true step=lead_do done=10 playing=false
+#117 SON Son : 1 note du synthé.
+#117 > touche 197 480
+#117 DOIGT rien
+#118 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ae02ff823d | project=p-48309d45 tuto=grime/Facile active=true step=lead_do done=10 playing=false
+#118 SON Son : 1 note du synthé.
+#118 > touche 297 480
+#118 DOIGT rien
+#119 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ae02ff823d | project=p-48309d45 tuto=grime/Facile active=true step=lead_do done=10 playing=false
+#119 SON Son : 1 note du synthé.
+#119 > attends 1
+#120 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f87002ec43 | project=p-48309d45 tuto=grime/Facile active=true step=lead_do done=10 playing=false
+#120 SON Son : rien ne joue.
+#120 > touche 123 480
+#120 DOIGT rien
+#121 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5ef11e2121 | project=p-48309d45 tuto=grime/Facile active=true step=lead_do done=10 playing=false
+#121 SON Son : rien ne joue.
+#121 LAYOUT TARGET « G5 बजाओ » 36 x 20 dp (touch 48 x 48)
+#121 > attends 1
+#122 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5ef11e2121 | project=p-48309d45 tuto=grime/Facile active=true step=lead_do done=10 playing=false
+#122 SON Son : rien ne joue.
+#122 > touche 483 606
+#122 DOIGT tuto_fold
+#123 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 688fae3ac4 | project=p-48309d45 tuto=grime/Facile active=true step=lead_do done=10 playing=false
+#123 SON Son : rien ne joue.
+#123 LAYOUT OVERLAP « 140 » over « अध्याय 5/13 · स्टेप 1/2 · आसान » (54 x 29 dp)
+#123 LAYOUT OVERLAP « चिपट्यून लीड » over the touchable « सिंपल मोड। मोड बदलने के लिए छुओ। मोड बदल » (11 x 35 dp)
+#123 LAYOUT OVERLAP « अध्याय 5/13 · स्टेप 1/2 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 37 dp)
+#123 > touche 433 797
+#123 DOIGT tuto_next « अगला  »
+#124 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 6df86efa4d | project=p-48309d45 tuto=grime/Facile active=true step=lead_do done=10 playing=false
+#124 SON Son : rien ne joue.
+#124 > touche 433 797
+#124 DOIGT tuto_next « अगला  »
+#125 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 2a4f29c7f2 | project=p-48309d45 tuto=grime/Facile active=true step=lead_2 done=10 playing=false
+#125 SON Son : rien ne joue.
+#125 LAYOUT OVERLAP « 140 » over « अध्याय 5/13 · स्टेप 2/2 · आसान » (54 x 29 dp)
+#125 LAYOUT OVERLAP « अध्याय 5/13 · स्टेप 2/2 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 37 dp)
+#125 > touche 270 491
+#125 DOIGT tuto_why « ▸ क्यों? »
+#126 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 8d73844008 | project=p-48309d45 tuto=grime/Facile active=true step=lead_2 done=10 playing=false
+#126 SON Son : rien ne joue.
+#126 LAYOUT OVERLAP « 140 » over « अध्याय 5/13 · स्टेप 2/2 · आसान » (54 x 19 dp)
+#126 LAYOUT OVERLAP « चिपट्यून लीड » over the touchable « सिंपल मोड। मोड बदलने के लिए छुओ। मोड बदल » (11 x 37 dp)
+#126 LAYOUT OVERLAP « अध्याय 5/13 · स्टेप 2/2 · आसान » over the touchable « सिंपल मोड। मोड बदलने के लिए छुओ। मोड बदल » (70 x 8 dp)
+#126 LAYOUT OVERLAP « अध्याय 5/13 · स्टेप 2/2 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 27 dp)
+#126 LAYOUT OVERLAP « तुम्हारी बारी: अगले बार पर कॉपी करो। » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 3 dp)
+#126 LAYOUT OVERLAP « तुम्हारी बारी: अगले बार पर कॉपी करो। » over the touchable « स्क्रीन पर लेबल लगाओ » (33 x 3 dp)
+#126 > touche 270 608
+#126 DOIGT tuto_do «   मैं करूँगा »
+#127 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 753ba8153e | project=p-48309d45 tuto=grime/Facile active=true step=lead_2 done=10 playing=false
+#127 SON Son : rien ne joue.
+#127 > touche 87 406
+#127 DOIGT part_header_pick « पार्ट: A »
+#128 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE 4b703a7bc7 | project=p-48309d45 tuto=grime/Facile active=true step=lead_2 done=10 playing=false
+#128 SON Son : rien ne joue.
+#128 > retour
+#128 RETOUR
+#129 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 753ba8153e | project=p-48309d45 tuto=grime/Facile active=true step=lead_2 done=10 playing=false
+#129 SON Son : rien ne joue.
+#129 > touche 483 606
+#129 DOIGT tuto_fold
+#130 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 8d73844008 | project=p-48309d45 tuto=grime/Facile active=true step=lead_2 done=10 playing=false
+#130 SON Son : rien ne joue.
+#130 > touche 433 797
+#130 DOIGT tuto_next « अगला  »
+#131 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 2ddc1c1d73 | project=p-48309d45 tuto=grime/Facile active=true step=lead_2 done=10 playing=false
+#131 SON Son : rien ne joue.
+#131 > touche 433 797
+#131 DOIGT tuto_next « अगला  »
+#132 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE b51bd274e8 | project=p-48309d45 tuto=grime/Facile active=true step=groove_hear done=10 playing=false
+#132 SON Son : rien ne joue.
+#132 LAYOUT OVERLAP « 140 » over « अध्याय 6/13 · स्टेप 1/2 · आसान » (54 x 34 dp)
+#132 LAYOUT OVERLAP « तुम्हारा पहला पार्ट: मुखड़ा » over the touchable « सिंपल मोड। मोड बदलने के लिए छुओ। मोड बदल » (55 x 45 dp)
+#132 LAYOUT OVERLAP « अध्याय 6/13 · स्टेप 1/2 · आसान » over the touchable « टेम्पो: 140 थाप प्रति मिनट टेम्पो बदलो » (117 x 48 dp)
+#132 > touche 411 120
+#132 DOIGT tuto_chapters « अध्याय »
+#133 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE d8971f1a5c | project=p-48309d45 tuto=grime/Facile active=true step=groove_hear done=10 playing=false
+#133 SON Son : rien ne joue.
+#133 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#133 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#133 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#133 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#133 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#133 > fin
+#133 FIN : fin

@@ -1,0 +1,77 @@
+Écran 81 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 140,42
+bouton « Pro » @ 310,42
+bouton « D · Drop » ▾ @ 433,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « Drop Takt 3/8 » ▾ @ 246,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 849,204
+image → @ 889,205
+texte « Teil: D · Drop » @ 107,273
+titre « STEPS: BECKEN · DROP » [coupé, état « Aufgeklappt »] @ 362,302
+texte « ? » [coupé] @ 415,302
+bouton « Alle Pads » [coupé] @ 770,303
+texte « Becken » @ 103,366
+bouton « 1 » [état « Schlag, Stärke 100 % »] @ 90,451
+bouton [état « leer »] @ 192,451
+bouton [état « Schlag, Stärke 35 % »] @ 294,451
+bouton [état « leer »] @ 397,451
+bouton « 2 » [allumé, état « Schlag, Stärke 60 % »] @ 500,451
+bouton [état « leer »] @ 603,451
+bouton [état « Schlag, Stärke 35 % »] @ 706,451
+bouton [état « leer »] @ 809,451
+bouton « 3 » [état « Schlag, Stärke 60 % »] @ 90,532
+bouton [état « leer »] @ 192,532
+bouton [état « Schlag, Stärke 35 % »] @ 294,532
+bouton [état « leer »] @ 397,532
+bouton « 4 » [état « Schlag, Stärke 60 % »] @ 500,532
+bouton [état « leer »] @ 603,532
+bouton [état « Schlag, Stärke 35 % »] @ 706,532
+bouton [état « leer »] @ 809,532
+bouton « Schläge » [sélectionné] @ 122,618
+bouton « Rolls » @ 265,618
+bouton « Panorama » @ 421,618
+bouton « Tonhöhe » @ 604,618
+bouton « Velocity » @ 774,618
+texte « alles » [coupé] @ 163,681
+texte « 1/2 » [coupé] @ 246,681
+texte « 1/4 » [coupé] @ 321,681
+texte « ◀ » [coupé] @ 396,681
+texte « ▶ » [coupé] @ 471,681
+texte « Löschen » [coupé] @ 581,681
+texte « Füllen » [coupé] @ 79,687
+texte « Die Effekte Kapitel 13/16 · Schritt 1/2 · Pro » @ 366,740
+icône (liste) « Kapitel » @ 759,741
+icône ⌄ @ 843,741
+texte « Du bist dran: Tippe auf das Pad „Techno · Clap“, dann unter seinem Raster auf „Pad-Effekte“: Dreh den „Reverb-Send“ auf. » @ 450,875
+texte « ▸ Warum? » @ 450,973
+bouton (doigt qui touche) «   Ich mach's » @ 450,1042
+bouton ▶ «  Beispiel anhören » @ 232,1126
+bouton (œil) «  Zeig's mir » @ 667,1126
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ■ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

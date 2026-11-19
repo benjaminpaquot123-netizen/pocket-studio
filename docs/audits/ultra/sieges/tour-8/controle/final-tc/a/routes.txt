@@ -1,0 +1,5 @@
+tab_simple_Rythme
+dialogue:part_header_menu
+tuto_panel/tab_simple_Rythme
+dialogue:tuto_chapter_list
+?

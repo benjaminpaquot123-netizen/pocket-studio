@@ -163,7 +163,11 @@ object TutoHints {
 
     /** What TalkBack says of an empty cell [step] of pad [lane]: null when it is not dotted. */
     fun dottedState(lane: Int, step: Int): String? =
-        if (cells?.let { (l, c) -> l == lane && step in c } == true) tr("vide, en pointillé : à toucher") else null
+        when {
+            cells?.let { (l, c) -> l == lane && step in c } != true -> null
+            step in longPress -> tr("vide, en pointillé : appui long")
+            else -> tr("vide, en pointillé : à toucher")
+        }
     var notes by mutableStateOf<Pair<Int, List<com.pocketstudio.model.Note>>?>(null)
     /** The 303 steps a step asks for, by index (the Acide tab draws them dashed until written). */
     var acid by mutableStateOf<Map<Int, com.pocketstudio.model.AcidStep>?>(null)

@@ -246,7 +246,7 @@ class TutoController(
         // changes, and a part of the same length left the cells of the one before on its grid).
         scope.launch {
             project.map { it.scene }.distinctUntilChanged().drop(1).collect {
-                if (_ui.value != null) TutoHints.cells = hint(project.value.drums.steps)
+                if (_ui.value != null) showHint(project.value.drums.steps)
             }
         }
         scope.launch { looks() }
@@ -685,6 +685,17 @@ class TutoController(
         val u = _ui.value ?: return false
         val t = target ?: return false
         return u.demo != null || TutoPlay.canShow(u.current, project.value, t, u.progress.level)
+    }
+
+    /**
+     * Tour 9, F093: the dotted cells of the step shown ([hint]) on the screens, with those a tap does not make at
+     * the level played ([TutoPlay.longPressCells]): TalkBack says « appui long » there.
+     */
+    fun showHint(steps: Int) {
+        TutoHints.cells = hint(steps)
+        val u = _ui.value
+        val t = target
+        TutoHints.longPress = if (u == null || t == null) emptySet() else TutoPlay.longPressCells(u.current, t, steps, u.progress.level)
     }
 
     /** The dotted cells of the step shown on a pad ([TutoChecks.hint]), null when none. */

@@ -587,6 +587,9 @@ class RealLots(unittest.TestCase):
         if not real(merge) or not real(merge + "^2"):
             self.skipTest(f"the merge {merge} is not in this history")
         base = subprocess.run(["git", "-C", ROOT, "merge-base", merge + "^1", merge + "^2"], capture_output=True, text=True).stdout.strip()
+        if not base:
+            # A clone cut short (« --depth »): the merge is there, not where its two sides part.
+            self.skipTest(f"historique coupé : la base de la fusion {merge} manque, approfondis avec git fetch --deepen")
         r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "rapport-zone.py"), "--tuto", merge + "^2",
                             f"docs/audits/ultra/tour-6-{zone}-rapport.md", f"base:{base}", f"tete:{real(merge + '^1')}", "tour:tour-6"],
                            cwd=ROOT, capture_output=True, text=True)

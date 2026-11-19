@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -78,7 +79,6 @@ import com.pocketstudio.ui.fadingEdges
 import kotlinx.coroutines.launch
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.ui.pillColors
 import kotlin.math.roundToInt
@@ -101,7 +101,6 @@ internal fun consoleFaderHeight(height: Dp, lying: Boolean): Dp =
  * its colour and name (a touch opens the strip's sheet: volume, pan, effects, curves, « Ce qui
  * joue »), M and S, its vertical fader with the meter beside it (the meter read only when drawn).
  */
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun Console(
     strips: List<StripInfo>, channels: List<Channel>, meters: () -> FloatArray, actions: MixerActions,
@@ -121,35 +120,36 @@ internal fun Console(
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Row(Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Volumes"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.weight(1f))
+            Text(tr("Volumes"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan)
             HelpDot(Glossary.MUTE_SOLO)
+            // Tour 9 (D12): the pads' own effects and sends, one touch away from the Mix.
+            TextButton(
+                onClick = { padsOpen = true },
+                modifier = Modifier.weight(1f).wrapContentWidth(Alignment.End).heightIn(min = 48.dp).testTag("console_pads"),
+                colors = androidx.compose.material3.ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+            ) {
+                Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
+                Text(" " + tr("  Effets du pad").trim(), maxLines = 2, textAlign = TextAlign.End)
+            }
         }
         if (hint) Text(
             tr("Glisse un fader pour le volume ; touche le nom d'une piste pour ses effets et ses courbes."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(horizontal = 12.dp),
         )
         val scroll = rememberScrollState()
-        Row(
-            Modifier.fillMaxWidth().fadingEdges(scroll).horizontalScroll(scroll).padding(horizontal = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            strips.forEachIndexed { i, st ->
-                ConsoleStrip(
-                    st, channels.getOrElse(st.ch) { Channel() }, { meters().getOrElse(st.ch) { 0f } }, actions, moves[st.ch] ?: 0,
-                    open = { sheetFor = st.ch }, first = i == 0, faderHeight = faderHeight,
-                )
+        Box {
+            Row(
+                Modifier.fillMaxWidth().fadingEdges(scroll).horizontalScroll(scroll).padding(horizontal = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                strips.forEachIndexed { i, st ->
+                    ConsoleStrip(
+                        st, channels.getOrElse(st.ch) { Channel() }, { meters().getOrElse(st.ch) { 0f } }, actions, moves[st.ch] ?: 0,
+                        open = { sheetFor = st.ch }, first = i == 0, faderHeight = faderHeight,
+                    )
+                }
             }
-        }
-        // Tour 9 (D12, S34): the pads' own effects and sends one touch away; more strips said, not only faded.
-        FlowRow(
-            Modifier.fillMaxWidth().padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            OutlinedButton(onClick = { padsOpen = true }, modifier = Modifier.heightIn(min = 48.dp).testTag("console_pads")) {
-                Icon(Icons.Filled.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
-                Text(" " + tr("  Effets du pad").trim(), maxLines = 2)
-            }
-            MoreTracksButton(scroll, "console_more_right")
+            MoreTracksTab(scroll, "console_more_right", Modifier.align(Alignment.CenterEnd))
         }
     }
     if (padsOpen) PadSheet(channels, actions, padNames) { padsOpen = false }
@@ -350,19 +350,21 @@ private fun StripSheet(
 }
 
 /**
- * Tour 9 (S34, seats 18 34: « Melodia » off-screen, nothing said): « Voir les autres pistes ▸ » while more
- * strips wait further on; a touch brings the last ones in. Gone once the row is at its end.
+ * Tour 9 (S34, seats 18 34: « Melodia » off-screen, nothing said): while more strips wait further on, an arrow
+ * stands on the row's far edge (as on the Live's columns), « Voir les autres pistes »; a touch brings the last
+ * ones in, and it goes.
  */
 @Composable
-internal fun MoreTracksButton(scroll: androidx.compose.foundation.ScrollState, tag: String) {
+internal fun MoreTracksTab(scroll: androidx.compose.foundation.ScrollState, tag: String, modifier: Modifier = Modifier) {
     if (!scroll.canScrollForward) return
     val scope = androidx.compose.runtime.rememberCoroutineScope()
-    TextButton(
-        onClick = { scope.launch { scroll.animateScrollTo(scroll.maxValue) } },
-        modifier = Modifier.heightIn(min = 48.dp).testTag(tag),
+    Box(
+        modifier.size(32.dp, 56.dp).clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)).background(Neon.Cyan.copy(alpha = 0.9f))
+            .clickable(role = androidx.compose.ui.semantics.Role.Button) { scope.launch { scroll.animateScrollTo(scroll.maxValue) } }
+            .semantics { contentDescription = tr("Voir les autres pistes") }.testTag(tag),
+        contentAlignment = Alignment.Center,
     ) {
-        Text(tr("Voir les autres pistes"), maxLines = 2)
-        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, modifier = Modifier.size(18.dp))
+        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(24.dp))
     }
 }
 
@@ -370,7 +372,7 @@ internal fun MoreTracksButton(scroll: androidx.compose.foundation.ScrollState, t
  * Tour 9 (D12, seats 18 49 59: « Envoi réverbe » on the pad « Caisse », not found from the Mix): the pads'
  * effects and sends, a pad picked by its name, without leaving the Mix.
  */
-@OptIn(ExperimentalLayoutApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 private fun PadSheet(channels: List<Channel>, actions: MixerActions, padNames: (Int) -> String, close: () -> Unit) {
     var lane by rememberSaveable { mutableStateOf(0) }

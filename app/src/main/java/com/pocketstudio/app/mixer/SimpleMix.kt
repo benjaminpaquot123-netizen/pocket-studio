@@ -234,6 +234,7 @@ fun SimpleMixScreen(
         )
         androidx.compose.runtime.CompositionLocalProvider(LocalAloneResumes provides (ui.listening?.resume == true)) {
         val strips = rememberScrollState()
+        Box {
         Row(Modifier.fillMaxWidth().fadingEdges(strips).horizontalScroll(strips), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             ui.tracks.forEach { t ->
                 val trackAlone = alone != null && alone == AloneTarget.ofSongKey(t.key)
@@ -246,7 +247,8 @@ fun SimpleMixScreen(
             OutputStrip(ui.masterDb, meters, shownWords, actions.setMasterDb)
         }
         // Tour 9 (S34): more strips (the output's) wait on the right: said, a touch brings them in.
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) { MoreTracksButton(strips, "mix_more_right") }
+        MoreTracksTab(strips, "mix_more_right", Modifier.align(Alignment.CenterEnd))
+        }
         }
         TipCard(ui.tip, actions.applyTip)
     }

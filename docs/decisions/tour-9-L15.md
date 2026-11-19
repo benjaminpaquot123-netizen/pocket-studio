@@ -11,3 +11,4 @@
 - D05 (« Ik doe het », t9-13) : relève de L5, pas touché.
 - corrections.tsv : aucune ligne écrite ; le registre n'a pas encore de ligne du trieur pour le tour 9 et un lot n'en ajoute pas (reparations.py). États et preuves dans le rapport.
 - Captures de référence réenregistrées : seulement les 3 de l'écran Rythme que le lot change (nav/simple_rhythm, rythme_empty_project, rhythm_scrolled_under_part). sons_synth_take et pad_sound_name_whole diffèrent aussi mais pas à cause de ce lot (texte du Guide, nuances de pixels) : non touchées.
+- TutoBigFontTest (200 %) : F050 fait passer les mots de la ligne du tuto à la ligne, la ligne grandissait et la deuxième rangée de cases passait sous le panneau. Dès fontScale 1,5, les mots de la ligne sont en labelMedium et sans marge verticale (ligne 122 → 105 px, cases au-dessus du panneau). Retour arrière : labelLarge et padding 4 dp partout.

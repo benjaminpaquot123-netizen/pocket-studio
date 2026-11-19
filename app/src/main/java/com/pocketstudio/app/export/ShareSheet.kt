@@ -465,7 +465,7 @@ fun ShareSheetContent(
                     // Tour 6, control seat Ac-3 (screen 45): beside a sentence on two lines, « détails ? » read in its middle
                     // (« comme la musique de détails ? club »): the sentence whole, then « détails » and its « ? » under it.
                     Text(
-                        tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), shareLevelWords(lufs, ui.exportLufs?.let { ui.target?.choice })),
+                        shareSigned(tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), shareLevelWords(lufs, ui.exportLufs?.let { ui.target?.choice }))),
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.fillMaxWidth().testTag("share_loudness"),
                     )
                     if (!simple) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
@@ -477,7 +477,7 @@ fun ShareSheetContent(
                     }
                     if (details && !simple) {
                         Text(
-                            tr("%s LUFS · crête %s dBTP", LoudnessTargets.format(ui.lufs ?: lufs), ui.truePeakDb?.let { LoudnessTargets.format(it) } ?: "—"),
+                            shareSigned(tr("%s LUFS · crête %s dBTP", LoudnessTargets.format(ui.lufs ?: lufs), ui.truePeakDb?.let { LoudnessTargets.format(it) } ?: "—")),
                             style = MonoStyle.copy(fontSize = 12.sp), color = Neon.TextSecondary, modifier = Modifier.testTag("share_loudness_details"),
                         )
                     }
@@ -602,6 +602,16 @@ internal fun shareLevelWords(lufs: Double, choice: com.pocketstudio.model.Target
     else -> Loudness.describe(lufs)
 }
 
+/**
+ * Tour 9, F030: in a right-to-left interface each signed number of « Partager » (« −14 », « −14,4 ») keeps its minus
+ * on its left, glued to its digits: the sign and the digits form one left-to-right isolate ([ltrNumber]). Arabic
+ * read « 14− » (the bidi algorithm put a bare minus on the right). Unchanged left to right.
+ */
+internal fun shareSigned(text: String): String =
+    text
+
+private val SIGNED = Regex("""[−\-+][0-9٠-٩۰-۹](?:[0-9٠-٩۰-۹.,٫٬]*[0-9٠-٩۰-۹])?""")
+
 /** One line of [SnapColumn]: where it starts and ends, in pixels; [whole]: never to be cut by the edge ([WHOLE_LINE]). */
 internal data class SnapLine(val top: Int, val bottom: Int, val whole: Boolean)
 
@@ -677,7 +687,7 @@ private fun SimpleTargetPicker(pick: com.pocketstudio.app.mixer.TargetPick, choo
             com.pocketstudio.ui.Help(tr("Volume visé"), listOf(
                 tr("Streaming") + " : " + tr("comme la musique en streaming (−14)"),
                 tr("Club") + " : " + tr("fort, comme la musique de club"),
-            ).joinToString("\n")),
+            ).joinToString("\n").let(::shareSigned)),
             about = listOf("share_target_*"),
         )
     }

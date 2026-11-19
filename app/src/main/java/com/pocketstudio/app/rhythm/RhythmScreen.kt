@@ -286,9 +286,8 @@ fun RhythmScreen(
             // A pad only sounds: what stays in the beat is in the cells (beginners tap pads and wait).
             Text(
                 tr("Les pads sonnent, les cases gardent les coups. Appui long : changer le son."),
-                // Three lines at most: the longer languages (German, Spanish) say it all on a phone.
-                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 3,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                // Tour 9, F050: read in full (three lines at most cut its end at 100 % on a 360 dp phone).
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
                 modifier = Modifier.weight(1f).testTag("pads_hint"),
             )
         }
@@ -1074,11 +1073,12 @@ const val SWING_SPOT = "rhythm_swing"
 @Composable
 private fun GrooveCard(project: Project, transport: TransportUi, actions: RhythmActions, simple: Boolean = false) {
     NeonCard {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Tour 9, F049: the chips wrap (on a 360 dp phone « Effets » was squeezed to nothing beside them).
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), itemVerticalAlignment = Alignment.CenterVertically) {
             val chipColors = pillColors()
             FilterChip(selected = transport.metronome, onClick = actions.toggleMetronome, label = { Text(tr("Métronome")) }, colors = chipColors)
             FilterChip(selected = transport.countIn, onClick = actions.toggleCountIn, label = { Text(tr("Décompte")) }, colors = chipColors)
-            HelpDot(Glossary.METRONOME, Modifier.align(Alignment.CenterVertically))
+            HelpDot(Glossary.METRONOME)
             Box(Modifier.weight(1f))
             if (!simple) OutlinedButton(
                 onClick = actions.openEffects, modifier = Modifier.testTag("drum_effects"),

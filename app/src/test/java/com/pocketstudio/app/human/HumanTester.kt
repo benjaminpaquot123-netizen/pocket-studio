@@ -743,6 +743,8 @@ abstract class HumanTester(private val seat: String) {
         runCatching { scenario?.onActivity { v = ViewModelProvider(it)[RhythmViewModel::class.java] } }
         // An example of 8 s to hear (Robolectric has no engine to render it).
         v?.let { if (it.guideRenderForTest == null) it.guideRenderForTest = { _, _ -> FloatArray(OfflineExport.SAMPLE_RATE * 8) { k -> 0.3f * kotlin.math.sin(k * 0.05f) } to FloatArray(2) } }
+        // Tour 9, D17: the tutorial's kit, downloaded in the middle of a wait, decoded as on a phone ([BenchFlac.readable]).
+        v?.let { if (it.tutoKitDecodeForTest == null) it.tutoKitDecodeForTest = flac::readable }
         // The built-in sounds as the phone's engine renders them (Robolectric has none: « Ce son n'a pas pu être lu »).
         runCatching {
             scenario?.onActivity { a ->

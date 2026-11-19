@@ -398,7 +398,8 @@ fun TutoKitCard(
                         modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("tuto_kit_download"),
                     ) { Text(label, textAlign = TextAlign.Center, style = compact) }
                 } else Spacer(Modifier.weight(1f))
-                TextButton(
+                // Tour 9 (F017): the download under way, only its progress (« Plus tard » went on beside it).
+                if (progress == null) TextButton(
                     onClick = later, contentPadding = PaddingValues(horizontal = 6.dp),
                     modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_kit_later"),
                 ) { Text(tr("Plus tard"), color = Neon.TextSecondary, maxLines = 2, textAlign = TextAlign.Center, style = compact) }
@@ -427,7 +428,7 @@ fun TutoKitCard(
                 modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("tuto_kit_download"),
             ) { Text(label, textAlign = TextAlign.Center) }
         }
-        TextButton(onClick = later, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp).testTag("tuto_kit_later")) { Text(tr("Plus tard"), color = Neon.TextSecondary) }
+        if (progress == null) TextButton(onClick = later, modifier = Modifier.fillMaxWidth().heightIn(min = 44.dp).testTag("tuto_kit_later")) { Text(tr("Plus tard"), color = Neon.TextSecondary) }
     }
 }
 
@@ -1186,9 +1187,12 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
     }
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(if (beside) 6.dp else 0.dp), verticalAlignment = Alignment.CenterVertically) {
         val back = ui.chapter > 0 || ui.step > 0
+        // Tour 9 (F013, t9-02): during « Montre-moi » the steps stay put: a finger aiming at « Arrêter » beside them
+        // hit « Suivant » and got « Cette étape n'est pas encore faite ». They stay in their place, inert.
+        val still = ui.demo == null
         if (beside && secondaries.isNotEmpty()) {
             // Only the arrow (its words for TalkBack): the row is the other buttons'.
-            IconButton(onClick = actions.previous, enabled = back, modifier = Modifier.testTag("tuto_prev")) {
+            IconButton(onClick = actions.previous, enabled = back && still, modifier = Modifier.testTag("tuto_prev")) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = tr("Précédent"), modifier = Modifier.size(20.dp))
             }
             secondaries.forEach { it() }
@@ -1196,20 +1200,20 @@ private fun ActionBar(ui: TutoUi, canShow: Boolean, actions: TutoActions, mine: 
             // nor beside the « Bravo »'s own « Étape suivante ».
             if (chapterEnd || ui.bravo) return@Row
             // Testers (lot « tuto 5 »): « Suivant → » stays where it was (a quick touch there replayed the example).
-            TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
+            TextButton(onClick = actions.next, enabled = still, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
                 Text(tr("Suivant") + " ", maxLines = 1)
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
             }
             return@Row
         }
-        TextButton(onClick = actions.previous, enabled = back, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_prev")) {
+        TextButton(onClick = actions.previous, enabled = back && still, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_prev")) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
             Text(" " + tr("Précédent"), maxLines = 1)
         }
         Box(Modifier.weight(1f))
         // Testers: two ways on (« Étape suivante » and « Suivant → ») puzzled them; the step done has only the big one
         // (n° 23: « Suivant → » stays where it was when its row is the secondary buttons' own on a big font).
-        if (primary != Primary.NEXT || (secondaries.isNotEmpty() && !chapterEnd && !ui.bravo)) TextButton(onClick = actions.next, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
+        if (primary != Primary.NEXT || (secondaries.isNotEmpty() && !chapterEnd && !ui.bravo)) TextButton(onClick = actions.next, enabled = still, modifier = Modifier.heightIn(min = 44.dp).testTag("tuto_next")) {
             Text(tr("Suivant") + " ", maxLines = 1)
             Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
         }

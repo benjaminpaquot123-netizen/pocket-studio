@@ -67,6 +67,24 @@ class QuickChecksFirst(unittest.TestCase):
             if name != "quick":
                 self.assertTrue(waits(name), f"job « {name} » does not wait for « quick »")
 
+    def test_the_unit_tests_are_split_and_gathered_under_the_name_the_tools_know(self):
+        # Lot « ci-rapide »: the suite runs on TEST_PARTS machines (the « tests » job), and « build » keeps the job name
+        # scripts/bench/paquet-verifie.sh requires, waits for every part and is never skipped when one is red.
+        workflow = read(".github", "workflows", "ci.yml")
+        parts = int(re.search(r'^  TEST_PARTS: "(\d+)"$', workflow, re.M).group(1))
+        tests, build = self.jobs.get("tests", ""), self.jobs.get("build", "")
+        listed = re.search(r"^        part: \[([0-9, ]+)\]$", tests, re.M)
+        self.assertIsNotNone(listed, "the « tests » job lists its parts")
+        self.assertEqual([int(n) for n in listed.group(1).split(",")], list(range(1, parts + 1)),
+                         "the list of parts and TEST_PARTS go together: a part nobody runs is a class nobody tests")
+        self.assertIn("-Pshard=${{ matrix.part }}/${{ env.TEST_PARTS }}", tests)
+        self.assertIn("fail-fast: false", tests)
+        self.assertIn("    name: Build, unit tests, screenshots\n", build + "\n")
+        self.assertIn("tests", needs_of(build))
+        self.assertIn("if: ${{ !cancelled() }}", build, "a red part must make « build » red, not skipped")
+        self.assertIn('[ "${{ needs.tests.result }}" = "success" ]', build)
+        self.assertIn("scripts/screenshot-diff.py", build, "the line « Captures : … » is read in this job's log")
+
     def test_the_preflight_lists_its_quick_mode(self):
         pre_vol = read("scripts", "bench", "pre-vol.sh")
         self.assertIn("--rapide", pre_vol)

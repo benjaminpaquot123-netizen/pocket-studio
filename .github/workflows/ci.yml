@@ -17,6 +17,8 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
+  # The number of machines the unit tests are split over: the « tests » job's list of parts has as many entries.
+  TEST_PARTS: "4"
   NDK_VERSION: "30.0.16248370"
   CMAKE_VERSION: "4.1.2"
   ANDROID_PLATFORM: "platforms;android-37.0"
@@ -116,12 +118,21 @@ jobs:
   # projects 3, soak 5, APK 6; run 43402800379) is three jobs side by side, « build », « sound » and « apk », with the
   # same steps, each with its own caches and artifacts. None waits for « engine » any more (27 minutes): they start
   # after « quick », and the publish job needs every one of them, « engine » included.
-  build:
-    name: Build, unit tests, screenshots
+  # The unit tests and the screenshots, on several machines side by side (lot « ci-rapide »): one process ran the
+  # whole suite in 58 of the job's 64 minutes (run 44575316256). -Pshard=<k>/<n> (app/build.gradle.kts) gives each
+  # machine the classes of its part, each class on exactly one machine. The « build » job below gathers them under
+  # the name the tools know. The list of parts below and TEST_PARTS (top of this file) go together
+  # (scripts/bench/test_socle.py checks it).
+  tests:
+    name: Unit tests and screenshots (part ${{ matrix.part }})
     runs-on: ubuntu-latest
     needs: quick
-    # Unit tests and screenshots: about 43 minutes in the single job (run 43402800379).
-    timeout-minutes: 75
+    timeout-minutes: 45
+    strategy:
+      # Every part runs to its end: a red class on one machine must not hide the red classes of the others.
+      fail-fast: false
+      matrix:
+        part: [1, 2, 3, 4]
     env:
       VERSION_CODE: ${{ github.run_number }}
       RELEASE_CHANNEL: ${{ github.event_name == 'push' && 'stable' || 'preview' }}
@@ -154,31 +165,91 @@ jobs:
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
       # The screenshots are compared with the committed ones (app/screenshots/, recorded locally):
       # a difference does not fail the build (the runner may draw a pixel differently) but is
-      # flagged as a warning, with the images in the « screenshots-diff » artifact.
+      # flagged as a warning by the « build » job, with the images in the « screenshots-diff » artifact.
+      # The small :project-model:test rides on the first machine.
       - name: Unit tests and screenshots
-        run: ./gradlew :project-model:test :app:testDebugUnitTest :app:compareRoborazziDebug
-      - name: Screenshots that changed
+        run: ./gradlew ${{ matrix.part == 1 && ':project-model:test' || '' }} :app:testDebugUnitTest :app:compareRoborazziDebug -Pshard=${{ matrix.part }}/${{ env.TEST_PARTS }}
+      - name: What this part ran
         if: always()
-        run: python3 -I scripts/screenshot-diff.py app/build/test-results/roborazzi/debug/results-summary.json
+        run: |
+          python3 -I - "${{ matrix.part }}/${{ env.TEST_PARTS }}" <<'PY'
+          import glob, sys, xml.etree.ElementTree as ET
+          tests = skipped = red = classes = 0
+          for f in glob.glob("app/build/test-results/testDebugUnitTest/TEST-*.xml"):
+              s = ET.parse(f).getroot()
+              classes += 1
+              tests += int(s.get("tests", 0)); skipped += int(s.get("skipped", 0))
+              red += int(s.get("failures", 0)) + int(s.get("errors", 0))
+          print(f"Tests, partie {sys.argv[1]} : {tests} dans {classes} classes, {skipped} sautés, {red} rouges.")
+          PY
       # A red unit test names itself in the log but not its message (« AssertionError at BenchPristine.kt:54 »): the
-      # HTML report and the JUnit XML (messages, stacks, each class's output and time) are kept when this job fails.
+      # HTML report and the JUnit XML (messages, stacks, each class's output and time) are kept when this part fails.
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
-          name: unit-test-reports
+          name: unit-test-reports-part-${{ matrix.part }}
           path: |
             app/build/reports/tests/testDebugUnitTest/
             app/build/test-results/testDebugUnitTest/
           if-no-files-found: ignore
+          retention-days: 5
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
-          name: screenshots-diff
+          name: screenshots-diff-part-${{ matrix.part }}
           path: |
             app/build/outputs/roborazzi/
             app/build/reports/roborazzi/
             app/build/test-results/roborazzi/
           if-no-files-found: ignore
+          retention-days: 5
+
+  # The verdict of the parts above, under the job name, the log line (« Captures : … ») and the artifact names
+  # (« unit-test-reports », « screenshots-diff », one folder per part inside) that scripts/bench/paquet-verifie.sh,
+  # scripts/bench/ci-rouge.sh and the publish job know. Red as soon as one part is not green, a skipped one included.
+  build:
+    name: Build, unit tests, screenshots
+    runs-on: ubuntu-latest
+    needs: [quick, tests]
+    if: ${{ !cancelled() }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: false
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        continue-on-error: true
+        with:
+          pattern: screenshots-diff-part-*
+          path: parts/screenshots
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        continue-on-error: true
+        with:
+          pattern: unit-test-reports-part-*
+          path: parts/reports
+      - name: Screenshots that changed
+        run: |
+          # One summary per part; a part without one is named and the line « Captures : … » is not printed.
+          summaries=()
+          for k in $(seq 1 "$TEST_PARTS"); do
+            f="$(find "parts/screenshots/screenshots-diff-part-$k" -name results-summary.json 2>/dev/null | head -n 1)"
+            summaries+=("${f:-parts/screenshots/screenshots-diff-part-$k/results-summary.json}")
+          done
+          python3 -I scripts/screenshot-diff.py "${summaries[@]}"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: unit-test-reports
+          path: parts/reports/
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: screenshots-diff
+          path: parts/screenshots/
+          if-no-files-found: ignore
+      - name: Every part green
+        run: |
+          echo "Parts of the unit tests: ${{ needs.tests.result }}"
+          [ "${{ needs.tests.result }}" = "success" ]
 
   sound:
     name: Sound benches (song, live listening, real projects, soak)

@@ -136,6 +136,18 @@ android {
                 // PLAN-RESTE 4.3: a run's JUnit XML in a folder of its own (-Ptest.results.dir), so that two self-tests (or two
                 // passes of one) never read or wipe each other's results in the shared build/test-results.
                 providers.gradleProperty("test.results.dir").orNull?.let { d -> it.reports.junitXml.outputLocation.set(file(d)) }
+                // CI (the « tests » job of ci.yml): -Pshard=<k>/<n> keeps the test classes whose path falls in part k of n,
+                // so the suite runs on n machines side by side and each class runs on exactly one of them. A nested class
+                // follows its outer class. Not meant for -Pshuffle (one suite class) nor for the benches (--tests).
+                providers.gradleProperty("shard").orNull?.let { spec ->
+                    val parts = spec.split("/").mapNotNull { s -> s.trim().toIntOrNull() }
+                    require(parts.size == 2 && parts[1] >= 1 && parts[0] in 1..parts[1]) { "-Pshard=$spec: expected <k>/<n> with 1 <= k <= n" }
+                    val (k, n) = parts
+                    it.inputs.property("shard", spec)
+                    it.exclude(org.gradle.api.specs.Spec<org.gradle.api.file.FileTreeElement> { el ->
+                        !el.isDirectory && Math.floorMod(el.relativePath.pathString.removeSuffix(".class").substringBefore('$').hashCode(), n) != k - 1
+                    })
+                }
                 // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.
                 // The suite itself (audit stage 1, flaky tests): a worker runs hundreds of Robolectric classes, more than one
                 // sandbox at a time; at Gradle's default 512 MB its old generation filled up (99.9 %, 500 full GCs): tests

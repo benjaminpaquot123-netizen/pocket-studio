@@ -766,15 +766,25 @@ internal object DrumFill : TutoKind {
 
 private val DROPS = listOf("Drop", "Drop 2")
 
-/** "crash": the crash on the first beat of the part (or of one of the parts) the step names. */
+/**
+ * "crash": the crash on the first beat of the part the step names; naming several (« le Drop et le Drop 2 »), on
+ * the first beat of each of them the project has (tour 9, F032: the Drop's alone passed).
+ */
 internal object Crash : TutoKind {
-    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) =
-        p.allScenes.any { s -> partsOf(step).any { labelIs(s.label, it) } && s.drums.lanes.getOrNull(CRASH_LANE)?.hits?.containsKey(0) == true }
+    private fun crashed(p: Project, part: String) =
+        p.allScenes.any { s -> labelIs(s.label, part) && s.drums.lanes.getOrNull(CRASH_LANE)?.hits?.containsKey(0) == true }
 
-    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) =
-        inScene(p, partsOf(step).first { sceneLabelled(p, it) >= 0 || it == partsOf(step).last() }) { q ->
-            q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == CRASH_LANE) l.copy(hits = l.hits + (0 to Hit(1f))) else l }))
-        }
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?): Boolean {
+        val there = partsOf(step).filter { part -> p.allScenes.any { labelIs(it.label, part) } }
+        return there.isNotEmpty() && there.all { crashed(p, it) }
+    }
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        val there = partsOf(step).filter { sceneLabelled(p, it) >= 0 }.ifEmpty { listOf(partsOf(step).last()) }
+        return there.fold(p as Project?) { q, part ->
+            q?.let { inScene(it, part) { r -> r.copy(drums = r.drums.copy(lanes = r.drums.lanes.mapIndexed { i, l -> if (i == CRASH_LANE) l.copy(hits = l.hits + (0 to Hit(1f))) else l })) } ?: it }
+        }?.takeIf { it != p }
+    }
     override fun workPart(step: TutoStep, p: Project) = partsOf(step).firstOrNull { sceneLabelled(p, it) >= 0 } ?: partsOf(step).first()
     override fun cited(step: TutoStep) = partsOf(step)
     override val defaultParts get() = DROPS

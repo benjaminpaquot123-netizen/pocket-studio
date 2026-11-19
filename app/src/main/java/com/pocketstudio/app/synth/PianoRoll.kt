@@ -606,8 +606,13 @@ private fun BarRuler(
     pick: (Int) -> Unit,
 ) {
     Row(Modifier.fillMaxWidth().height(32.dp)) {
-        Box(Modifier.width(keysWidth), contentAlignment = Alignment.Center) {
-            Text(tr("mes."), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, softWrap = false)
+        Box(Modifier.width(keysWidth).padding(horizontal = 1.dp), contentAlignment = Alignment.Center) {
+            // F115 (t9-20, de 200 %: « Takt » lines dropped): shrunk to the keys' width, as « Force » under them.
+            val label = MaterialTheme.typography.labelSmall
+            androidx.compose.foundation.text.BasicText(
+                tr("mes."), style = label.copy(color = Neon.TextSecondary, letterSpacing = 0.sp), maxLines = 1,
+                autoSize = com.pocketstudio.ui.WholeWordsAutoSize(5.sp, label.fontSize),
+            )
         }
         Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
             Row {
@@ -1380,16 +1385,21 @@ private fun RollKey(
             val name = if (pitch % 12 == 0) com.pocketstudio.model.NoteNames.withOctave(pitch, english)
             else if (harmony.scale != Scale.Off) harmony.noteName(pitch, english)
             else com.pocketstudio.model.NoteNames.pitchClass(pitch, english, sharp = "♯")
-            Text(
+            // F115 (t9-11, t9-23 at 200 %: each name higher than its row, over its neighbours'): the name shrinks to its row,
+            // with a line as high as its letters, and a black key's to the black part of the key.
+            val label = MaterialTheme.typography.labelSmall
+            val ink = when {
+                black -> Color(0xFFB9BCC2)
+                pitch % 12 == 0 -> Color(0xFF1E2023)
+                else -> Color(0xFF5A5D63)
+            }
+            androidx.compose.foundation.text.BasicText(
                 name,
-                style = MaterialTheme.typography.labelSmall,
-                color = when {
-                    black -> Color(0xFFB9BCC2)
-                    pitch % 12 == 0 -> Color(0xFF1E2023)
-                    else -> Color(0xFF5A5D63)
-                },
-                maxLines = 1, softWrap = false,
-                modifier = if (black) Modifier.align(Alignment.CenterStart).padding(start = 3.dp) else Modifier.padding(end = 3.dp),
+                style = label.copy(color = ink, letterSpacing = 0.sp, lineHeight = androidx.compose.ui.unit.TextUnit.Unspecified),
+                maxLines = 1,
+                autoSize = com.pocketstudio.ui.WholeWordsAutoSize(5.sp, label.fontSize),
+                modifier = if (black) Modifier.align(Alignment.CenterStart).padding(start = 3.dp).widthIn(max = (width * 0.6f - 4.dp).coerceAtLeast(1.dp))
+                else Modifier.padding(start = 2.dp, end = 3.dp),
             )
         }
     }

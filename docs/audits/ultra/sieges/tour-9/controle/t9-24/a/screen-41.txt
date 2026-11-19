@@ -1,0 +1,58 @@
+Écran 41 (588x1278)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 114,42
+texte « Pro » @ 255,42
+icône ↶ @ 327,42
+bouton ● @ 399,42
+bouton ■ « ta część » @ 471,42
+icône (trois points reliés) @ 543,42
+bouton « 142  BPM » @ 73,114
+icône (flèches en boucle) « Intro takt 5/8 » ▾ @ 218,114
+bouton (flèches en boucle) « Pętla » [allumé, état « wł. »] @ 439,114
+bouton « ? » @ 543,114
+bouton « Akordy utworu B · Intro Gm  D  Gm  D  Gm  D  Gm  D A · Refren Gm  E♭  Cm  D  Gm  E♭  Cm  D C · Zwrotka Gm  E♭  Cm  Gm  Gm  E♭  Cm  Gm D · Pre-chorus Gm  D  Gm  D  Gm  D  Gm  D Dotknij, żeby zmienić akordy całego utworu. » [coupé] @ 294,166
+icône ▶ « B · Intro × 1  ·  8 taktów » @ 186,242
+icône − [désactivé] @ 366,242
+icône + @ 438,242
+icône ⋮ @ 510,242
+icône ▶ « A · Refren × 1  ·  8 taktów » @ 186,338
+icône − [désactivé] @ 366,338
+icône + @ 438,338
+icône ⋮ @ 510,338
+icône ▶ « C · Zwrotka × 1  ·  8 taktów » @ 186,434
+icône − [désactivé] @ 366,434
+icône + @ 438,434
+icône ⋮ @ 510,434
+icône ▶ « D · Pre-chorus × 1  ·  8 taktów » @ 186,530
+icône − [désactivé] @ 366,530
+icône + @ 438,530
+icône ⋮ @ 510,530
+icône ▶ « A · Refren × 1  ·  8 taktów » @ 186,626
+icône − [désactivé] @ 366,626
+icône + @ 438,626
+icône ⋮ @ 510,626
+icône ▶ « C · Zwrotka × 1  ·  8 taktów » @ 186,722
+icône − [désactivé] @ 366,722
+icône + @ 438,722
+icône ⋮ @ 510,722
+icône ▶ « D · Pre-chorus × 1  ·  8 taktów » [coupé] @ 186,803
+icône − [désactivé, coupé] @ 366,809
+icône + [coupé] @ 438,809
+icône ⋮ [coupé] @ 510,809
+icône (liste) « Rozdziały » @ 444,879
+texte « Ułóż swoje części Rozdział 11/16 · Krok 2/2 · Pro » @ 207,879
+icône ⌃ @ 531,879
+bouton « Ustaw zalecane długości » → @ 294,978
+icône ↶ « Cofnij » @ 71,1062
+icône ↷ « Ponów » [désactivé] @ 177,1062
+bouton ▶ « utwór » @ 284,1062
+texte « 142 Tempo » @ 396,1062
+icône (trois points reliés) « Udostępnij » @ 513,1062
+onglet (ligne brisée et points) « Struktura » [sélectionné] @ 54,1158
+onglet (touches de piano) « Dźwięki » @ 174,1158
+onglet (curseurs) « Miks » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Więcej » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Zanotuj » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Tryb uwag » @ 162,1248

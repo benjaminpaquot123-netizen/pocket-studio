@@ -1,0 +1,48 @@
+Écran 113 (588x1278)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 114,42
+texte « Pro » @ 255,42
+icône ↶ @ 327,42
+bouton ● @ 399,42
+bouton ▶ « ta część » @ 471,42
+icône (trois points reliés) @ 543,42
+bouton « 142  BPM » @ 73,114
+icône « Intro takt 1/124 » ▾ @ 223,114
+bouton (flèches en boucle) [état « wył. »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+texte « Głośności » @ 272,165
+bouton « ? » @ 530,165
+texte « Przesuń fader, żeby zmienić głośność; dotknij nazwy ścieżki, żeby zobaczyć jej efekty i krzywe. » @ 294,219
+texte « Perkusja » [coupé] @ 84,294
+texte « Acid 303 » [coupé] @ 204,294
+texte « 808 » [coupé] @ 324,294
+texte « Akordy » [coupé] @ 444,294
+texte « Melodia » [coupé] @ 541,294
+texte « Miks Rozdział 14/16 · Krok 1/2 · Pro » @ 207,360
+icône (liste) « Rozdziały » @ 444,360
+icône ⌄ @ 531,360
+texte « Ten krok nie jest jeszcze zrobiony. Dotknij jeszcze raz „Dalej”, żeby mimo to go pominąć. » @ 294,453
+texte « Twoja kolej: w Miksie ścisz trochę „Akordy” i „Melodia”: najpierw 808 i kick, potem werbel, potem hi-haty. » [coupé] @ 294,528
+bouton « Pobierz zestaw Drill (3 MB) » @ 243,621
+texte « Później » @ 510,621
+texte « ▸ Dlaczego? » @ 294,687
+icône « Czytaj dalej » ⌄ @ 294,735
+bouton (doigt qui touche) «   Zrobię to » @ 294,807
+bouton ▶ «  Posłuchaj przykładu » @ 154,894
+bouton (œil) «  Pokaż mi » @ 433,894
+icône ← «  Wstecz » @ 93,978
+icône « Dalej  » → @ 506,978
+icône ↶ « Cofnij » @ 71,1062
+icône ↷ « Ponów » [désactivé] @ 177,1062
+bouton ▶ « utwór » @ 284,1062
+texte « 142 Tempo » @ 396,1062
+icône (trois points reliés) « Udostępnij » @ 513,1062
+onglet (ligne brisée et points) « Struktura » @ 54,1158
+onglet (touches de piano) « Dźwięki » @ 174,1158
+onglet (curseurs) « Miks » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Więcej » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Zanotuj » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Tryb uwag » @ 162,1248

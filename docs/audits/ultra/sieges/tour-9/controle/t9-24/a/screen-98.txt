@@ -1,0 +1,47 @@
+Écran 98 (588x1278)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 114,42
+texte « Pro » @ 255,42
+icône ↶ @ 327,42
+bouton ● @ 399,42
+bouton ▶ « ta część » @ 471,42
+icône (trois points reliés) @ 543,42
+bouton « 142  BPM » @ 73,114
+icône « Intro takt 1/124 » ▾ @ 223,114
+bouton (flèches en boucle) [état « wył. »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+bouton « Pokaż krzywe » [coupé] @ 165,148
+bouton « Co gra » [coupé] @ 423,148
+titre « KRZYWE » [état « Rozwinięte »] @ 217,252
+bouton « ? » @ 199,252
+bouton ● « Nagraj » @ 469,252
+texte « Spraw, żeby ustawienie ruszało się samo: wybierz je, potem narysuj krzywą (palcem albo linią w dwóch dotknięciach). » @ 294,340
+bouton + «  Automatyzuj ustawienie » @ 223,429
+bouton (vagues) «  Co gra » @ 128,510
+texte « Melodia » @ 113,583
+texte « Wyczyść » @ 396,600
+icône (poubelle) @ 510,600
+texte « Filtr Odcięcie » @ 109,620
+texte « Otwiera (jasno) lub zamyka (głucho) dźwięk: przemiatanie filtra. » @ 402,685
+bouton (curseurs) «  Pokaż ustawienie » @ 185,771
+bouton « Pętla » [coupé] @ 92,829
+bouton « Na część » [coupé] @ 223,829
+bouton « Utwór » [coupé, sélectionné] @ 359,829
+icône (liste) « Rozdziały » @ 444,879
+texte « Efekty Rozdział 13/16 · Zrobione · Pro » @ 207,879
+icône ⌃ @ 531,879
+icône (coupe) « Brawo, rozdział ukończony! » ⌃ @ 294,978
+icône ↶ « Cofnij » @ 71,1062
+icône ↷ « Ponów » [désactivé] @ 177,1062
+bouton ▶ « utwór » @ 284,1062
+texte « 142 Tempo » @ 396,1062
+icône (trois points reliés) « Udostępnij » @ 513,1062
+onglet (ligne brisée et points) « Struktura » @ 54,1158
+onglet (touches de piano) « Dźwięki » @ 174,1158
+onglet (curseurs) « Miks » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Więcej » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Zanotuj » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Tryb uwag » @ 162,1248

@@ -948,10 +948,24 @@ private fun StepGrid(
         // Whole-pad edits, on their own line that wraps: none is cut on a small phone.
         val tight = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp)
         val small = Modifier.defaultMinSize(minWidth = 44.dp)
+        // Tour 9, F055: a fill on a muted pad says why it is not heard (its cells lit, nothing in the speakers).
+        var filled by remember(lane) { mutableStateOf(false) }
+        val padMuted = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.mute == true
         FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(tr("Remplir"), style = MaterialTheme.typography.bodySmall)
+            // Tour 9, S56: during a tutorial step asking for cells on this pad, a fill places those cells (on its grid,
+            // else all of them) and keeps the hits there: the pad's fill wiped them and added cells the step's check refused.
+            val dotted = com.pocketstudio.app.tuto.TutoHints.cells?.takeIf { tutoActive && it.first == lane }?.second
+                ?.filter { it < project.drums.steps }.orEmpty()
             listOf(1 to tr("tout"), 2 to "1/2", 4 to "1/4").forEach { (every, label) ->
-                TextButton(onClick = { actions.fill(every) }, contentPadding = tight, modifier = small.testTag("fill_$every")) { Text(label) }
+                TextButton(onClick = {
+                    if (dotted.isEmpty()) actions.fill(every)
+                    else {
+                        dotted.filter { it % every == 0 }.ifEmpty { dotted }.filter { it !in hits }.forEach { actions.paintStep(it, true) }
+                        actions.paintEnd()
+                    }
+                    filled = true
+                }, contentPadding = tight, modifier = small.testTag("fill_$every")) { Text(label) }
             }
             // Tour 9, F053: the pad's rotate says what it does and is not drawn like the bar arrows (◀ ▶ turn the page).
             Text(tr("Décaler les coups"), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 6.dp))
@@ -966,6 +980,10 @@ private fun StepGrid(
                 TextButton(onClick = { inBar.forEach { actions.paintStep(it, false) }; actions.paintEnd() }, enabled = inBar.isNotEmpty(), contentPadding = tight,
                     modifier = small.testTag("clear_bar")) { Text(tr("Effacer la mesure %d", bar + 1), maxLines = 1, softWrap = false) }
             }
+        }
+        if (filled && padMuted) {
+            Text(tr("%s coupé", padName(project, lane)), style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
+                modifier = Modifier.testTag("fill_muted"))
         }
         val pickedHit = hits[picked]?.takeIf { tool >= 2 }
         // Audit ultra round 3, n° 34 (seat D d): the hit's slider came under the Guide's bar, out of sight: a hit

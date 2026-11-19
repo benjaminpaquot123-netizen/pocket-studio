@@ -235,11 +235,15 @@ fun CutScreen(
                   val said = busy ?: note ?: message
                   // Tour 8, R (decoupe2): a message left from before (it lives until « OK ») does not move the column on
                   // arrival, so the instruction stays on top; only a message that comes while the screen is open does.
+                  // Tour 9, L10 F139: that old message is never followed later either (a work that came and went, leaving it
+                  // under): only a message other than the one found on arrival brings the column down.
                   val arrived = androidx.compose.runtime.remember { booleanArrayOf(false) }
+                  val old = androidx.compose.runtime.remember { arrayOf(message) }
+                  if (message != old[0]) old[0] = null
                   if (scrollsAll) androidx.compose.runtime.LaunchedEffect(said) {
                       val first = !arrived[0]
                       arrived[0] = true
-                      if (said != null && !first) {
+                      if (said != null && !first && said != old[0]) {
                           androidx.compose.runtime.withFrameNanos { }
                           scroll.animateScrollTo(scroll.maxValue)
                       }

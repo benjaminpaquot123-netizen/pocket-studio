@@ -131,4 +131,12 @@ class Tour9L5bTutoWordsTest {
             Lang.NL to offenders(Lang.NL, Regex("(?i)rood kruisje|rode kruisjes")),
         ))
     }
+
+    /** F094: Chinese « the off-beat hit » on the Rim pad is plural: four dotted cells wait. */
+    @Test
+    fun f094ChineseOffbeatHitsArePlural() {
+        val fr = "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle."
+        val v = shown(Lang.ZH_CN, fr)
+        assertTrue("zh: $v", "那个错位的一下" !in v && "几下" in v)
+    }
 }

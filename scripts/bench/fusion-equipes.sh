@@ -94,7 +94,11 @@ for zone in "${zones[@]}"; do
   # branch not older than its last change of the tutorial, <id> a seat whose report is in the branch and names the
   # same commit (scripts/bench/rapport-zone.py, its « --tuto » mode). A lot outside the zone: nothing asked, nothing said.
   tuto_out=""
-  if from_paquet 7 && ! tuto_out="$(python3 -I scripts/bench/rapport-zone.py --tuto "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour")"; then echo "$zone: tutorial lot without its control seat: $(printf '%s' "$tuto_out" | tr '\n' ';'): not merged." >&2; exit 10; fi
+  # Boost mode (Benjamin, 2026-11-19): the tutorial's control seat is played at the final big check, not per lot.
+  if from_paquet 7 && ! tuto_out="$(python3 -I scripts/bench/rapport-zone.py --tuto "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour")"; then
+    if [ "${PS_JUGE_BOOST:-}" = 1 ]; then echo "$zone: tutorial lot, control seat deferred to the final check (PS_JUGE_BOOST, boost mode)"
+    else echo "$zone: tutorial lot without its control seat: $(printf '%s' "$tuto_out" | tr '\n' ';'): not merged." >&2; exit 10; fi
+  fi
   # PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », from batch 8): a repair is « done » only when a tester saw
   # it. In docs/audits/ultra/corrections.tsv a lot writes « tenté » (or « pas pris »), never « corrigé », « rejoué » (the
   # portal's, set below after the merge) nor « constaté » (the chief's, after a control seat); nor the sorter's

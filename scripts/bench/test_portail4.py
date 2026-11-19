@@ -554,8 +554,10 @@ class Portal(unittest.TestCase):
         lines = [l for l in portal.splitlines() if "rapport-zone.py --tuto" in l]
         self.assertEqual(len(lines), 1, "one line of the portal calls rapport-zone.py --tuto")
         self.assertIn("from_paquet 7", lines[0])
-        self.assertIn("exit 10", lines[0])
-        self.assertIn("not merged", lines[0])
+        # Boost mode (2026-11-19) splits the refusal over the next lines: the call, the boost branch, the refusal.
+        block = portal[portal.index(lines[0]):].split("\n  fi\n", 1)[0]
+        self.assertIn("exit 10", block)
+        self.assertIn("not merged", block)
         self.assertLess(portal.index("rapport-zone.py --tuto"), portal.index("if ! git merge --no-ff -m"), "refused BEFORE the merge")
 
     def test_the_preflight_repeats_it_from_batch_7(self):

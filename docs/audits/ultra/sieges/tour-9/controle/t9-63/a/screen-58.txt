@@ -1,0 +1,64 @@
+Écran 58 (900x1509)
+icône (dossier ouvert) ✓ « مشروعي 1 تم الحفظ » @ 597,42
+bouton « بسيط » @ 264,42
+bouton ● @ 189,42
+bouton ▶ « هذا الجزء » @ 117,42
+icône ⋮ @ 45,42
+icône « مقدمة المازورة 1/96 » ▾ @ 669,126
+bouton « 130  السرعة » @ 825,126
+bouton « ? » @ 45,126
+texte « المكس » @ 842,216
+bouton « ? » @ 680,216
+bouton « ▶ تكرار الجزء » @ 557,216
+bouton « ? » @ 457,216
+bouton « ↺ إعادة الكل » @ 349,216
+texte «  · مشروعي 1 » @ 752,216
+texte « دورك: ارفع ما يجب أن يُسمع، واخفض ما يزعج. المس ▶ لتسمع مسارًا وحده. » @ 447,294
+bouton « الطبول ▸ » [état « مغلق »] @ 825,375
+curseur [état « عادي », à 80 %] @ 816,552
+texte « عادي » @ 816,714
+bouton (haut-parleur et ondes) [coupé, allumé, état « يعمل »] @ 844,745
+bouton ▶ [coupé] @ 790,745
+texte « باص » @ 684,367
+curseur [état « عادي », à 80 %] @ 684,536
+texte « عادي » @ 684,698
+bouton (haut-parleur et ondes) [coupé, allumé, état « يعمل »] @ 709,737
+bouton ▶ [coupé] @ 658,737
+texte « الكوردات » @ 561,367
+curseur [état « ⁦−3⁩ », à 66 %] @ 561,536
+texte « ⁦−3⁩ » @ 561,693
+bouton (haut-parleur et ondes) [coupé, allumé, état « يعمل »] @ 586,732
+bouton ▶ [coupé] @ 535,732
+texte « اللحن » @ 438,367
+curseur [état « عادي », à 80 %] @ 438,536
+texte « عادي » @ 438,698
+bouton (haut-parleur et ondes) [coupé, allumé, état « يعمل »] @ 463,737
+bouton ▶ [coupé] @ 412,737
+texte « المخرج » @ 303,367
+curseur [état « ⁦−6⁩ », à 60 %] @ 303,536
+texte « اضغط ▶ » @ 303,713
+texte « المزج: المستويات الفصل 12/13 · الخطوة 1/1 · سهل » @ 522,800
+icône (liste) « الفصول » @ 129,800
+icône ⌄ @ 57,800
+texte « دورك: في تبويب «مزج»، اخفض قليلًا مساري «الكوردات» و«اللحن». » @ 578,884
+texte « • الكورد: عدة نوتات تُعزف معًا. » @ 773,930
+texte « ▸ لماذا؟ » @ 450,974
+bouton (doigt qui touche) «   سأفعلها » @ 450,1040
+bouton ▶ «  استمع إلى المثال » @ 667,1124
+bouton (œil) «  أرني » @ 232,1124
+icône ← «  السابق » @ 818,1205
+icône « التالي  » → @ 78,1205
+icône ↶ « تراجع » @ 776,1291
+image ↷ @ 616,1277
+bouton ▶ « الأغنية » @ 456,1291
+texte « 130 السرعة » @ 290,1291
+icône ⋮ « المزيد » @ 124,1291
+onglet (lignes et note) « أغنيتي » @ 814,1389
+onglet (quatre carrés) « الإيقاع » @ 631,1389
+onglet (touches de piano) « لوحة المفاتيح » @ 449,1389
+onglet (curseurs) « المكس » [sélectionné] @ 267,1389
+onglet (trois points reliés) « مشاركة » @ 85,1389
+texte « ●  REC » @ 228,1479
+texte « ✎  دوّن » @ 132,1479
+texte « ⋯ » @ 48,1479
+texte « وضع الملاحظات » @ 582,1479

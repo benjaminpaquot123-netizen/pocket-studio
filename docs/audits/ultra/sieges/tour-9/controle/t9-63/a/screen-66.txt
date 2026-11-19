@@ -1,0 +1,48 @@
+Écran 66 (900x1509)
+icône (dossier ouvert) ✓ « أغنيتي تم الحفظ » @ 597,42
+bouton « بسيط » @ 264,42
+bouton ● @ 189,42
+bouton ▶ « هذا الجزء » @ 117,42
+icône ⋮ @ 45,42
+icône « مقدمة المازورة 1/96 » ▾ @ 669,126
+bouton « 130  السرعة » @ 825,126
+bouton « ? » @ 45,126
+texte « جاهز للمشاركة؟ » @ 450,214
+champ « اسم الأغنية (واسم المشروع) » contenu « أغنيتي » @ 450,312
+icône ✕ @ 66,319
+texte « 2:57 » @ 834,402
+texte « 6 أجزاء » @ 753,404
+bouton ▶ «  استمع » @ 107,419
+texte « المستوى: −13.6، مثل موسيقى الـStreaming ‏(−14) » @ 533,438
+bouton « Streaming » @ 619,509
+bouton « Club » @ 484,509
+bouton « تلقائي (النمط) » @ 345,509
+bouton « إيقاف » [sélectionné] @ 207,509
+texte « علوّ الصوت المستهدف » @ 787,509
+bouton « ? » @ 129,509
+image (rond coché) @ 855,580
+texte « كل شيء جاهز: لا عزف منفرد مفعّل، ولا مسار مكتوم. » @ 427,581
+bouton (clap de cinéma) «   فيديو لمواقع التواصل · 30 ث » @ 450,653
+bouton (notes sur une pile) « ملفات أخرى مسارًا بمسار، MIDI، FLAC… (ينتقل إلى وضع المحترف) » › @ 471,749
+bouton « ? » @ 51,749
+bouton « M4A · للمشاركة » [sélectionné] @ 778,863
+bouton « WAV · أعلى جودة » @ 575,863
+bouton (trois points reliés) «   مشاركة » @ 450,959
+bouton (dossier) « ملفاتي اعثر عليها وأرسلها من جديد: M4A، WAV، فيديو، ‎.zip » › @ 471,1061
+bouton « ? » @ 51,1061
+texte « استئناف الدرس » @ 675,1217
+texte « إعادة الدرس من البداية » @ 225,1217
+icône ↶ « تراجع » @ 776,1291
+image ↷ @ 616,1277
+bouton ▶ « الأغنية » @ 456,1291
+texte « 130 السرعة » @ 290,1291
+icône ⋮ « المزيد » @ 124,1291
+onglet (lignes et note) « أغنيتي » @ 814,1389
+onglet (quatre carrés) « الإيقاع » @ 631,1389
+onglet (touches de piano) « لوحة المفاتيح » @ 449,1389
+onglet (curseurs) « المكس » @ 267,1389
+onglet (trois points reliés) « مشاركة » [sélectionné] @ 85,1389
+texte « ●  REC » @ 228,1479
+texte « ✎  دوّن » @ 132,1479
+texte « ⋯ » @ 48,1479
+texte « وضع الملاحظات » @ 582,1479

@@ -1,0 +1,61 @@
+Écran 60 (900x1509)
+icône (dossier ouvert) ✓ « مشروعي 1 تم الحفظ » @ 597,42
+bouton « بسيط » @ 264,42
+bouton ● @ 189,42
+bouton ▶ « هذا الجزء » @ 117,42
+icône ⋮ @ 45,42
+icône « مقدمة المازورة 1/96 » ▾ @ 669,126
+bouton « 130  السرعة » @ 825,126
+bouton « ? » @ 45,126
+texte « المكس » @ 842,216
+bouton « ? » @ 680,216
+bouton « ▶ تكرار الجزء » @ 557,216
+bouton « ? » @ 457,216
+bouton « ↺ إعادة الكل » @ 349,216
+texte «  · مشروعي 1 » @ 752,216
+texte « دورك: ارفع ما يجب أن يُسمع، واخفض ما يزعج. المس ▶ لتسمع مسارًا وحده. » @ 447,294
+bouton « الطبول ▸ » [état « مغلق »] @ 825,375
+curseur [état « عادي », à 80 %] @ 816,552
+texte « عادي » @ 816,714
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 844,782
+bouton ▶ @ 790,768
+texte « باص » @ 684,367
+curseur [état « عادي », à 80 %] @ 684,536
+texte « عادي » @ 684,698
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 709,766
+bouton ▶ @ 658,752
+texte « الكوردات » @ 561,367
+curseur [état « ⁦−3⁩ », à 66 %] @ 561,536
+texte « ⁦−3⁩ » @ 561,693
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 586,757
+bouton ▶ @ 535,743
+texte « اللحن » @ 438,367
+curseur [état « ⁦−3⁩ », à 66 %] @ 438,536
+texte « ⁦−3⁩ » @ 438,693
+bouton (haut-parleur et ondes) [allumé, état « يعمل »] @ 463,757
+bouton ▶ @ 412,743
+texte « المخرج » @ 303,367
+curseur [état « ⁦−6⁩ », à 60 %] @ 303,536
+texte « اضغط ▶ » @ 303,713
+texte « صدّر مقطوعتك الفصل 13/13 · الخطوة 1/1 · سهل » @ 522,887
+icône (liste) « الفصول » @ 129,887
+icône ⌄ @ 57,887
+texte « دورك: شارك مقطوعتك: التطبيق يصنع منها ملفًا صوتيًا. «M4A» يصنع ملفًا خفيفًا لأصدقائك، و«WAV» يحفظ جودة الاستوديو. » @ 450,989
+texte « ▸ لماذا؟ » @ 450,1055
+bouton (doigt qui touche) «   سأفعلها » @ 450,1121
+icône ← «  السابق » @ 818,1205
+icône « التالي  » → @ 78,1205
+icône ↶ « تراجع » @ 776,1291
+image ↷ @ 616,1277
+bouton ▶ « الأغنية » @ 456,1291
+texte « 130 السرعة » @ 290,1291
+icône ⋮ « المزيد » @ 124,1291
+onglet (lignes et note) « أغنيتي » @ 814,1389
+onglet (quatre carrés) « الإيقاع » @ 631,1389
+onglet (touches de piano) « لوحة المفاتيح » @ 449,1389
+onglet (curseurs) « المكس » [sélectionné] @ 267,1389
+onglet (trois points reliés) « مشاركة » @ 85,1389
+texte « ●  REC » @ 228,1479
+texte « ✎  دوّن » @ 132,1479
+texte « ⋯ » @ 48,1479
+texte « وضع الملاحظات » @ 582,1479

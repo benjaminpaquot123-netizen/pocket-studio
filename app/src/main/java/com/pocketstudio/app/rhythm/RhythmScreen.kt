@@ -602,6 +602,10 @@ private fun StepGrid(
     // Tour 8, lot T0b (seat e, ch.12): a step asking for cells or crosses on this pad begins on « Coups » (the fill's
     // « Roulements » stayed on, and a touch on a cross rolled the hit ×2 instead of taking it away).
     LaunchedEffect(tutoStep, tutoLeft.isNotEmpty()) { if (tutoLeft.isNotEmpty()) tool = 0 }
+    // Tour 9, F056: a touch on a full cell takes it away on the first touch. « Force » (Pro) never stays on out of sight:
+    // not in the Mode simple (no tool chips there), nor into a new tutorial step (a touch to erase set the hit to 55 %).
+    LaunchedEffect(simple) { if (simple) tool = 0 }
+    LaunchedEffect(tutoStep) { if (tutoActive) tool = 0 }
     LaunchedEffect(tutoStep, tutoLeft.isNotEmpty(), tutoDemo) {
         if (tutoLeft.isEmpty()) return@LaunchedEffect
         if (!tutoDemo && tutoPlacedFor == tutoStep) return@LaunchedEffect

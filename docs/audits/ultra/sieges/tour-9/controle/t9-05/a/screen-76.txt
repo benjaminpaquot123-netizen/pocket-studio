@@ -1,0 +1,35 @@
+Écran 76 (540x1170)
+bouton (dossier ouvert) ✓ @ 110,42
+bouton « 간단 » @ 263,42
+bouton ● @ 351,42
+bouton ▶ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+texte « 파트 이해하기 5/11장 · 3/5단계 · 쉬움 » @ 198,140
+icône (liste) « 챕터 » @ 411,141
+icône ⌄ @ 483,141
+texte « 드롭을 들어 보세요: 전부 연주하고, 303이 활짝 열려요. » @ 270,313
+texte « 에너지 » @ 73,412
+texte « 16 » @ 51,531
+texte « 16 » @ 114,531
+texte « 32 » @ 207,531
+texte « 32 » @ 396,531
+texte « 16 » @ 489,531
+texte « ▸ 왜요? » @ 270,591
+icône « 계속 읽기 » ⌄ @ 270,657
+bouton ■ «  듣기 정지 » @ 270,734
+icône ← «  이전 » @ 94,824
+icône « 다음  » → @ 445,824
+texte « 185 템포 » @ 376,933
+icône ↶ « 실행 취소 » @ 65,934
+image ↷ @ 180,915
+bouton ▶ « 곡 » @ 282,934
+icône ⋮ « 더보기 » @ 479,933
+onglet (lignes et note) « 내 곡 » [sélectionné] @ 49,1050
+onglet (quatre carrés) « 리듬 » @ 160,1050
+onglet (touches de piano) « 건반 » @ 271,1050
+onglet (curseurs) « 믹스 » @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « 피드백 모드 » @ 123,1140
+texte « ●  REC » @ 289,1140
+texte « ✎  메모 » @ 400,1140
+texte « ⋯ » @ 492,1140

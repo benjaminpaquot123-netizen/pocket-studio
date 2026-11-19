@@ -230,6 +230,9 @@ class TutoController(
 
     /** N20: the project as it was when the step shown was reached (a tick with nothing changed since: « Déjà fait »). */
     private var arrived: Project? = null
+    /** The instrument tracks the last look saw, with their roles (a track made since, for the step shown, is shown:
+     *  tour 9, F043; track 0 always exists, so « made » is a track whose role is new). */
+    private var tracksSeen: Map<Int, String?>? = null
     /** The step whose folded panel was opened because only its cells' softness was missing (once a step). */
     private var softSaid: String? = null
 
@@ -393,6 +396,16 @@ class TutoController(
             c.startsWith("part:") -> target?.let { TutoChecks.ghostNotes(s, p, it) }?.let { TutoGo(notes = it.first, spot = spot) } ?: plain
             else -> plain
         }
+    }
+
+    /** Each instrument track of [p] with its role (what the tutorial calls it: "bass", "pad"…). */
+    private fun rolesOf(p: Project): Map<Int, String?> = p.instrumentTracks.associate { it.id to TutoChecks.roleOf(p, it.id) }
+
+    /** The role of the track whose notes [s] asks for ("notes:bass", "track:sub"); null for a step of another kind. */
+    private fun trackRole(s: TutoStep): String? = when {
+        s.check.startsWith("notes:") -> s.check.substringAfter(':')
+        s.check == "track:sub" -> "sub"
+        else -> null
     }
 
     /** The knobs of a "changed:synth:…" step not turned up yet since it began (all of them when none is, or no baseline). */
@@ -606,6 +619,8 @@ class TutoController(
             r?.first ?: this
         }
         val p = project.value
+        // The track it made is shown below: the next look does not show it again (tour 9, F043).
+        tracksSeen = rolesOf(p)
         // Testers (lot « tuto 4 »): « Créer la partie » six times and nothing seen changing: what it made, in words.
         if (need is TutoNeed.Part && p !== before) _ui.value = _ui.value?.copy(made = partMade(before, p, need.label, step))
         // Fresh review of « fable-repar » (M2): « Poser ce qui manque » says what it laid too, by name.
@@ -846,6 +861,7 @@ class TutoController(
         if (moved) {
             skipSaid = null
             arrived = project.value
+            tracksSeen = rolesOf(project.value)
             stopListening()
             stopDemo()
             baseline = step.check.takeIf { it.startsWith("changed:") }?.let { step.id to TutoPlay.arrive(step, project.value) }
@@ -931,6 +947,13 @@ class TutoController(
         val now = _ui.value?.takeIf { it.demo == null } ?: return true
         // The answer is about the step, the progress and the project it began on: one of them moved, it counts no more.
         if (now.progress != u.progress || target !== t || project.value.let { it !== p && it != p }) return false
+        // Tour 9, F043 (t9-43): the track the step asks for, made from « + Piste » (not its button): shown, its notes
+        // on screen, as the step's own button does (the screen stayed on the drums).
+        val tracks = rolesOf(p)
+        val madeNow = tracksSeen?.let { seenBefore -> tracks.filter { (id, role) -> seenBefore[id] != role }.keys }.orEmpty()
+        tracksSeen = tracks
+        if (madeNow.isNotEmpty()) trackRole(u.current)?.let { TutoChecks.trackFor(p, it) }?.takeIf { it in madeNow }
+            ?.let { _goes.tryEmit(TutoGo(notes = it, spot = false)) }
         // Only what is not ticked yet NOW (lot « tutoordre2 », CI 43448175188; since the looks are made one at a time and
         // an answer about a progress that moved is thrown away, that is all of what this look saw).
         val found = seen - now.progress.done

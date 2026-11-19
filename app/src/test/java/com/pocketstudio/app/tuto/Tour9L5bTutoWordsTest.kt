@@ -145,4 +145,12 @@ class Tour9L5bTutoWordsTest {
     fun f096DutchOverstuurtSpelledRight() {
         assertNoneLeft("oversteuurt", mapOf(Lang.NL to offenders(Lang.NL, Regex("oversteuurt"))))
     }
+
+    /** F097: the Turkish Post-chorus part is « Nakarat sonrası » on its card and in every step. */
+    @Test
+    fun f097TurkishPostChorusName() {
+        assertTrue("tr part name", I18n.table(Lang.TR)["Post-refrain"] == "Nakarat sonrası")
+        assertNoneLeft("Post-nakarat", mapOf(Lang.TR to (offenders(Lang.TR, Regex("Post-nakarat")) +
+            I18n.table(Lang.TR).values.filter { "Post-nakarat" in it })))
+    }
 }

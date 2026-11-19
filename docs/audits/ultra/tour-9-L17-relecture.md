@@ -1,27 +1,38 @@
-# Tour 9, lot L17 « finitions du tuto » : relecture neuve
-Relu : 6832498e
+# Tour 9, lot L17 : relecture neuve
+Relu : cbdfd5d7
 
 ## Diff lu
-`git diff ddf08286 6832498e` en entier : TutoController.kt, TutoPanel.kt (TutoGridLine), AcidScreen.kt, RhythmScreen.kt, TutoChecks.kt, TutoKind.kt, les 8 tests T9L17*, rapport, décisions, corrections.tsv. Rien sous `engine/` : thread audio intact. Aucun changement de sauvegarde (le seul `store.save` touché passe par `tick`, déjà existant).
+`git diff origin/ccr-80af1a1b-mn0wec...cbdfd5d7` : AcidScreen.kt, RhythmScreen.kt, TutoController.kt, TutoPanel.kt, TutoChecks.kt, TutoKind.kt, TripletsTest.kt, les 8 tests T9L17*, rapport et décisions du lot. Rien sous `engine/` : thread audio intact. Aucun test sauté ni désactivé (aucun `@Ignore`, aucun `assume`). Pas de changement du chemin de sauvegarde (le seul `store.save` nouveau passe par `tick`, déjà existant).
 
-## Tests relancés
-- `:project-model:test --tests '*T9L17*' :app:testDebugUnitTest --tests '*T9L17*'` : 12 tests, 0 échec (8 classes T9L17). Premier passage resté « up-to-date » ; relancé avec `--rerun` : verts.
-- En plus, toute la suite du modèle `:project-model:test --rerun` : 1259 tests, **1 échec** : `TripletsTest#theTutorialDetectsAndShowsATriplet` (TripletsTest.kt:157). Le même test sur ddf08286 (avant le lot, worktree jetable) : 8/8 verts. Le lot le fait passer au rouge.
+## Test relancé
+- `:project-model:test --tests '*TripletsTest'` sur cbdfd5d7 (tâche de test réellement exécutée) : 8 tests, 0 échec, 0 sauté.
 
-## Rouge constaté
-rouge constaté : 7fbb6174 : rejoué sur 7fbb6174^ : `T9L17ChapterDoneNoDottedTest` échoue, « chapter done, dotted notes left: {bass_sub=6} » (1 test, 1 échec). Le test prouve bien F044.
+## Le grave de la relecture précédente (6832498e)
+**Corrigé.** Le commit 25f33189 change `TripletsTest#theTutorialDetectsAndShowsATriplet` selon la règle de F032, sans l'affaiblir :
+- en trap, un triolet vrai sur la case 5 (hors des cases 13 et 15 de la ligne du style) donne maintenant « pas fait », ce qui est exactement le défaut F032 ; `tripletsDone` lit les triolets de la ligne trap (`X.x.X.x.X.x.t.t.…` : cases 12 et 14 en index) et les exige tous ;
+- en house (ligne sans triolet), n'importe quel triolet suffit (`hasTriplet`), et le test le prouve sur un projet house ;
+- « Montre-moi » en trap pose toujours 12 et 14 et l'étape est alors faite ; en house, le triolet de la fin de mesure 1 valide.
+Le test vérifie donc les deux branches de `tripletsDone` et reste vert. La décision est écrite dans `docs/decisions/tour-9-L17.md`.
 
-## Captures regardées (écran entier)
-- `app/screenshots/rhythm.png` : pads, kit, grille 1 mesure, onglets, longueur ; rien ne déborde (« Hauteur » coupé par le défilement horizontal, comme avant).
-- `app/screenshots/acid_editor.png` : générateur, grille 2 mesures, éditeur de pas, son ; propre. Le texte d'aide « Touche un pas pour le modifier » reste juste avec le nouveau toucher.
+## Bloquant
+Aucun.
 
-## Constats
-- GRAVE : F032, `Triplet.done` passe par `tripletsDone`, qui exige toutes les cases du triolet de la ligne du style (trap : 12 et 14). Le test existant `TripletsTest#theTutorialDetectsAndShowsATriplet` pose un triolet vrai sur la case 4 du charley et attend « fait » : il passe au rouge (ligne 157). Il faut trancher : soit mettre à jour ce test (le comportement voulu par F032 a changé, avec une ligne dans les décisions), soit garder « n'importe quel triolet » hors de l'étape trap qui nomme les cases. En l'état, la CI du paquet sera rouge. Le rapport n'avait relancé que les tests T9L17.
-- Moyen : Acid, toucher une case muette y pose maintenant une note. Pour verrouiller un silence (🔒) ou choisir la hauteur avant de jouer, il faut deux touchers (note puis silence) au lieu d'un. Hors tuto, deux touchers sur une note la rendent muette : changement de geste pour tous, voulu par F040 mais à faire valider par un testeur.
-- Moyen : `TutoPadEar.heard` est un objet global qui tient le contrôleur du tuto ; il n'est rendu à null qu'à « Quitter ». Un contrôleur abandonné sans `quit()` (projet changé) reste tenu jusqu'au tuto suivant, et un pad joué entre-temps peut cocher l'étape de l'ancien projet. Petite fuite, sans perte de données visible.
-- Moyen : TutoGridLine affiche maintenant « Mesure 2 · N cases → » en même temps que « Encore N cases en pointillé ici » ; sur un écran étroit, le statut (poids 1, une ligne) peut être coupé par « … ». Non vu sur les captures (aucune ne montre le cas).
-- Moyen : `Crash.shown` rend null quand rien ne change (crash déjà sur toutes les parties) ; sans effet tant que l'étape est alors « faite », à surveiller.
-- Rapport : « aucune image de référence ne change » et les phrases « tenté » sont justes ; mais il ne dit pas qu'un test existant passe au rouge.
-- F036 (`endDemoNow`) : la démo annulée remet le projet, puis le `finally` de la démo refait `demoShow(null)` (sans effet) et ne vole plus `demoJob` grâce au test `===` : correct.
+## Grave
+Aucun.
 
-Verdict : 0 bloquant, 1 grave
+## Moyen
+- F032, `tripletsDone` : la ligne du style est répétée sur toute la grille (`StarterWizard.hits(line, steps)`). Sur une grille trap de 4 mesures, il faudrait aussi les triolets des cases 44 et 46, alors que la consigne ne parle que de la mesure 1. « Montre-moi » fait pareil (cohérent), mais un débutant qui suit le texte à la lettre resterait bloqué. Non vu dans le parcours Facile (grille de 1 ou 2 mesures à cette étape) ; à faire jouer par un testeur.
+- F040, Acid : toucher une case muette y pose une note ; deux touchers sur une note la rendent muette. Changement de geste pour tous, hors tuto aussi (verrouiller un silence ou choisir une hauteur demande un toucher de plus). Voulu par F040, à valider par un testeur.
+- F039, `TutoPadEar.heard` : lien global vers le contrôleur, rendu à null seulement à « Quitter ». Un contrôleur abandonné sans `quit()` reste tenu jusqu'au tuto suivant ; un pad joué entre-temps peut cocher l'étape d'écoute de l'ancien projet. Petite fuite, sans perte de données.
+- F046, TutoGridLine : « Mesure 2 · N cases → » s'affiche maintenant à côté de « Encore N cases… » ; sur un écran étroit, le statut (une ligne) peut être coupé. Aucune capture ne montre ce cas.
+- F036, `Crash.shown` rend null quand rien ne change (crash déjà posé partout) ; sans effet tant que l'étape est alors faite.
+- Seul `TripletsTest` a été relancé ici ; le reste de la suite du modèle n'est pas rejoué dans cette relecture (la grande vérification de fin le fera).
+
+## Points vérifiés sans constat
+- F036 `endDemoNow` : la démo est arrêtée et le projet remis avant le geste ; le `finally` de la démo ne vole plus `demoJob` grâce au test `===`.
+- F034 `rolls()` : la consigne qui dit « Roulement » demande et montre un roulement ×4 ; les fills de toms restent comme avant.
+- F044 : les notes fantômes de la sous-basse viennent de `subOf`, la même ligne que le contrôle.
+- F042 : le conseil lit `TutoChecks.sendChannels(p, bus, step)`, la même liste que le contrôle.
+- Les tests globaux (`TutoHints.acid`, `TutoPadEar.heard`) sont remis à null en `@After`.
+
+Verdict : 0 bloquant, 0 grave

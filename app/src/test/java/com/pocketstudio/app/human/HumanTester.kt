@@ -868,6 +868,9 @@ abstract class HumanTester(private val seat: String) {
     /** How many times an amenée touches again a target that moved under the finger (tests: 0 = the tour 9 refusal). */
     internal var ameneeRetaps = AMENEE_RETAPS
 
+    /** The bench's own tests: called between an amenée's aim at a tag and its touch (where a real screen may move). */
+    internal var ameneeAfterAim: ((String) -> Unit)? = null
+
     /** Where the screen is, for a flag: never throws (a flag is written while something else is failing). */
     private fun routeNow(): String = runCatching { screenText().read().route }.getOrDefault("?")
 
@@ -906,11 +909,20 @@ abstract class HumanTester(private val seat: String) {
         // leaves the touch beside its target: [waitFor] sees it and touches again, instead of waiting for nothing.
         var lastTag: String? = null
         var lastAt: Pair<Float, Float>? = null
+        // Tour 9 (seats t9-57, t9-45): the point the finger went to. The screen may move between the aim and the reading of
+        // [lastAt] (the kit card then came before that reading): the touch is judged by where it went, not only by the move.
+        var touched: Pair<Float, Float>? = null
+        // Only a point that was on the drawn target when aimed is judged (a target cut by an edge outside a list that scrolls
+        // is touched at its hidden middle, on purpose: never « beside » then).
+        var touchedWasOn = false
         var retaps = 0
         fun tap(tag: String, again: Boolean = false) {
             val at = reachTag(tag) ?: refuse("amenee.tag", "« $tag » à l'écran", "$tag absent", "« $tag » introuvable")
+            touchedWasOn = touchedOn(tag, at, missing = false)
+            ameneeAfterAim?.invoke(tag)
             if (!again) retaps = 0
             lastTag = tag
+            touched = at
             lastAt = centerOf(tag)
             journal.appendText("#0 AMENEE > touche ${at.first.toInt()} ${at.second.toInt()} ($tag)\n")
             play("touche ${at.first} ${at.second}")
@@ -935,11 +947,14 @@ abstract class HumanTester(private val seat: String) {
                 val tag = lastTag
                 val now = tag?.let { centerOf(it) }
                 val was = lastAt
-                if (polls >= AMENEE_RETAP_POLLS && tag != null && now != null && was != null && retaps < ameneeRetaps &&
-                    (kotlin.math.abs(now.first - was.first) > AMENEE_MOVED_PX || kotlin.math.abs(now.second - was.second) > AMENEE_MOVED_PX) && !done()
-                ) {
+                val went = touched
+                val moved = now != null && was != null &&
+                    (kotlin.math.abs(now.first - was.first) > AMENEE_MOVED_PX || kotlin.math.abs(now.second - was.second) > AMENEE_MOVED_PX)
+                val beside = tag != null && went != null && now != null && touchedWasOn && !touchedOn(tag, went, missing = true)
+                if (polls >= AMENEE_RETAP_POLLS && tag != null && now != null && retaps < ameneeRetaps && (moved || beside) && !done()) {
                     retaps++
-                    journal.appendText(BenchFlags.flag(0, "amenee.tap-missed", what, "$tag visé ${was.first.toInt()},${was.second.toInt()} puis ${where(tag)}", waited, routeNow()) + "\n")
+                    val aimed = went ?: was!!
+                    journal.appendText(BenchFlags.flag(0, "amenee.tap-missed", what, "$tag visé ${aimed.first.toInt()},${aimed.second.toInt()} puis ${where(tag)}", waited, routeNow()) + "\n")
                     tap(tag, again = true)
                     polls = 0
                 }
@@ -1101,6 +1116,12 @@ abstract class HumanTester(private val seat: String) {
             compose.onAllNodesWithTag(root.config.getOrNull(SemanticsProperties.TestTag) ?: tag, useUnmergedTree = true).fetchSemanticsNodes().flatMap(::walk)
         }.toSet()
     }.getOrDefault(emptySet())
+
+    /** The point [at] is inside what the screen draws of the first node tagged [tag] (where a touch there lands on it); [missing] when unreadable. */
+    private fun touchedOn(tag: String, at: Pair<Float, Float>, missing: Boolean): Boolean = runCatching {
+        val b = BenchWindows.drawnBounds(taggedNodes(tag).fetchSemanticsNodes().first(), app.resources.displayMetrics)
+        at.first in b.left..b.right && at.second in b.top..b.bottom
+    }.getOrDefault(missing)
 
     /** The first node tagged [tag] is drawn whole on the screen (see [shownWhole]). */
     private fun shownWhole(tag: String): Boolean =

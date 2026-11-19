@@ -7,10 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -59,7 +60,8 @@ internal fun LiveTempo(bpm: Double, actions: LiveActions) = BoxWithConstraints(M
         }
         val said = tr("Tempo : %d BPM", bpm.roundToInt())
         Column(
-            Modifier.widthIn(min = 48.dp).requiredHeight(48.dp).clip(RoundedCornerShape(10.dp))
+            // Tour 9 L11 (N3, Arabic at 200 %: « BPM » cut top and bottom in a fixed 48 dp): at least 48 dp, taller with the text.
+            Modifier.widthIn(min = 48.dp).heightIn(min = 48.dp).clip(RoundedCornerShape(10.dp))
                 .clickable(role = Role.Button, onClickLabel = tr("Changer le tempo"), onClick = actions.openTempo)
                 .semantics(mergeDescendants = true) { contentDescription = said }
                 .padding(horizontal = 4.dp).testTag("live_tempo").spot("live_tempo", tr("Tempo")),
@@ -84,19 +86,22 @@ private val TEMPO_STEPS_WIDTH = 150.dp
  * « Lancer à » (lot 4d: over the grid, beside « Cases »): touching it goes 1 → 2 → 4 bars → a beat
  * → half a bar.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun QuantumButton(p: Project, setQuantum: (Int) -> Unit, modifier: Modifier = Modifier) {
     val code = liveQuantumCode(p)
     val next = LIVE_QUANTUM_CYCLE[(LIVE_QUANTUM_CYCLE.indexOf(code) + 1).mod(LIVE_QUANTUM_CYCLE.size)]
-    Row(
+    // Tour 9 L11 (N3, 200 %: « Lancer à » squeezed to nothing, « مازورة واحدة » cut short): the value goes under the
+    // words when both do not fit on one line, rather than either losing letters.
+    FlowRow(
         modifier.heightIn(min = 44.dp).clip(RoundedCornerShape(12.dp)).background(GridLook.Panel)
-            .clickable { setQuantum(next) }.padding(horizontal = 10.dp).testTag("live_quantum")
+            .clickable { setQuantum(next) }.padding(horizontal = 10.dp, vertical = 2.dp).testTag("live_quantum")
             .spot("live_quantum", tr("Quand ça part")),
-        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.Center,
     ) {
         // Tour 5, lot « langues » (Arabic on a small phone: « الإطلاق ع… »): the words set smaller, whole, before any « … ».
-        com.pocketstudio.ui.WholeWordsText(tr("Lancer à"), Modifier.weight(1f, fill = false), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, maxLines = 1)
-        Text(liveQuantumLabel(code), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary, maxLines = 1)
+        com.pocketstudio.ui.WholeWordsText(tr("Lancer à"), Modifier.align(Alignment.CenterVertically), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary, maxLines = 1)
+        Text(liveQuantumLabel(code), Modifier.align(Alignment.CenterVertically), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.TextPrimary, maxLines = 1)
     }
 }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -70,7 +70,15 @@ fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextS
             .testTag("help_${help.term}"),
         contentAlignment = Alignment.Center,
     ) {
-        Box(Modifier.size(18.dp).border(1.dp, ink, CircleShape), contentAlignment = Alignment.Center) {
+        // Tour 9 L11 (N3, Arabic at 200 %: the « ? » 29 dp tall in an 18 dp ring, cut top and bottom): the ring is 18 dp,
+        // larger when the text size makes the « ? » larger, and always round (as wide as it is tall).
+        Box(
+            Modifier.border(1.dp, ink, CircleShape).layout { m, c ->
+                val q = m.measure(c.copy(minWidth = 0, minHeight = 0))
+                val side = maxOf(q.width, q.height, 18.dp.roundToPx())
+                layout(side, side) { q.place((side - q.width) / 2, (side - q.height) / 2) }
+            },
+        ) {
             Text("?", color = ink, fontSize = 12.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold)
         }
     }

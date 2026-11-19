@@ -64,6 +64,31 @@ class CiRougeTest(unittest.TestCase):
         self.assertNotIn("d2", out, "a green test of the same class is not listed")
         self.assertIn("1 test(s) rouge(s), 5 classes lues", out)
 
+    def test_a_run_split_over_several_machines_ranks_each_class_on_its_own_machine(self):
+        # ci.yml runs the suite on several machines: the merged artifact has one folder per machine
+        # (unit-test-reports-part-<k>). A class's neighbours are the classes of ITS machine, never another's,
+        # even when their clocks interleave.
+        with tempfile.TemporaryDirectory() as root:
+            toys = {
+                1: [("com.x.AClass", "2026-11-13T20:00:01.000Z", [("a", "0.1", None)]),
+                    ("com.x.CClass", "2026-11-13T20:00:03.000Z", [("c", "0.3", "left by AClass")])],
+                2: [("com.x.BClass", "2026-11-13T20:00:02.000Z", [("b", "0.1", None)]),
+                    ("com.x.DClass", "2026-11-13T20:00:04.000Z", [("d", "0.1", None)])],
+            }
+            for part, suites in toys.items():
+                d = os.path.join(root, f"unit-test-reports-part-{part}", "test-results", "testDebugUnitTest")
+                os.makedirs(d)
+                for name, stamp, cases in suites:
+                    with open(os.path.join(d, f"TEST-{name}.xml"), "w") as f:
+                        f.write(suite(name, stamp, cases))
+            r = run("--dossier", root)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertIn("ROUGE com.x.CClass#c (0.3 s)", r.stdout)
+            self.assertIn("rang    : machine 1, classe 2/2", r.stdout)
+            self.assertIn("avant   : com.x.AClass\n", r.stdout)
+            self.assertNotIn("BClass", r.stdout, "a class of another machine is not a neighbour")
+            self.assertIn("1 test(s) rouge(s), 4 classes lues", r.stdout)
+
     def test_a_green_run_says_none(self):
         d = os.path.join(self.tmp.name, "test-results", "testDebugUnitTest")
         os.remove(os.path.join(d, "TEST-com.x.DClass.xml"))

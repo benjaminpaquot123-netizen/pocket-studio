@@ -13,8 +13,9 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
   - L2 Mix `session_014RxrDMZBvLi55WqYcZy7t7` (`eq/tour-9-L2`) : D01, D11, D12, S30, S34 + F023…F030 (Mix), F130, F136.
   - L8 feuilles et partage `session_014RxrDKvhB4oNgXkVj2tghN` (`eq/tour-9-L8`) : F127, F131 (graves) + F030 (Partage), F119…F135.
   - L4 grille rythme `session_014RxrDNJtiS2AgPKRrbmdzj` (`eq/tour-9-L4`) : D04 (bloquant), S56, S76, F053 (graves) + F047…F057.
+  - L9 banc et tests creux `session_014RxrDKb4jSvE5dmsmczsoZ` (`eq/tour-9-L9`) : D17 (banc), 3 tests creux, pré-vol sur clone coupé, ci-etat.sh, Coquille2SeatTest p5.
 - **Paquets** : 1 = L1, L7, L6 ; 2 = L2, L3, L4 ; puis L8, L5, secondes passes. L3 (validation, D03 D07 D09 D15 D18 S67) s'ouvre après L1 (le tuto est une seule zone) ; L5 (contenu des cours) après L3. Le message de repli muet des kits (D17, AppRoot) attend la fermeture de L1.
-- **Banc** : D17 = le banc (kits téléchargés non décodés sous Robolectric) ; à réparer dans un lot banc après les vagues.
+- **Pas encore de lot** : L10 divers (F139 CutScreen, F142 SynthScreen), secondes passes L1 (22 finitions) et L7 (7).
 - **Branches de rapports pas entrées** : `aud/tour-9-*-r2`, `aud/tour-9-verif-d17`.
 
 ## En arrivant (toute discussion, avant toute mission)

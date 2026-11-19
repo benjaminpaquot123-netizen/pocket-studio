@@ -64,6 +64,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -976,6 +980,9 @@ private fun Grid(
                     }
                 }
             }
+            // F112 (t9-20: a drag up past the lowest row scrolled the page, the roll's header with it): what the roll leaves of
+            // an upward drag stays with it; a drag down still gives the page back.
+            .nestedScroll(KeepHeaderInSight)
             .verticalScroll(vScroll)
             // Lot « tuto-flèches »: as much room under the lowest row as the tutorial's panel covers of the roll, so that
             // the lowest notes can come above it (trap's 808 at 130 %: « plus bas ↓ » and no way to scroll that far).
@@ -1618,4 +1625,13 @@ private fun TutoNotesLeft(
             ) { Text(tr("Copier"), maxLines = 1, softWrap = false) }
         }
     }
+}
+
+/** F112: the part of an upward drag or fling the roll cannot take is not handed to the page under it (whose top is the roll's header). */
+private object KeepHeaderInSight : NestedScrollConnection {
+    override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset =
+        if (available.y < 0f) Offset(0f, available.y) else Offset.Zero
+
+    override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity =
+        if (available.y < 0f) Velocity(0f, available.y) else Velocity.Zero
 }

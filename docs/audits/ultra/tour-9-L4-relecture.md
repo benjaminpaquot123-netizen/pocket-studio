@@ -1,5 +1,5 @@
 # Relecture tour 9 L4
-Relu : d617bbb16ba1024c2cce29a6dddf6e6e96cfbb47
+Relu : 103aa2c4afc03ce5cc6fcc36db5101880ec4e38b
 
 Lu : `git diff 7455749a..HEAD` (RhythmScreen.kt, Help.kt, 13 tests Tour9L4*, rapport, décisions). Je n'ai rien construit ni lancé (consigne : lecture seule). Aucun bloquant, aucun grave.
 
@@ -29,5 +29,13 @@ Lu : `git diff 7455749a..HEAD` (RhythmScreen.kt, Help.kt, 13 tests Tour9L4*, rap
 
 ## Thread audio
 - Rien de touché : aucun fichier sous `engine/` ni le callback audio. Le changement de Help.kt (`12.dp.toSp()`) ne touche que l'interface.
+
+
+## Relecture neuve de la tête (captures réenregistrées + fusion de l'intégration)
+- Code de l'appli inchangé depuis d617bbb1 ; 84581bfe = 51 captures sous app/screenshots/, aucune sous tour7/.
+- Captures regardées (tablet/rhythm, i18n/ar_rhythm, nav/alone_tracks, remix_stem_edit_menu, tuto_app_snare) : seuls changements = « ? » en dp, ligne Décalage, flèches du Swing, ligne Mesure ; rien de coupé ni de chevauché.
+- Mineur : les flèches ⇠ ⇢ de Décalage sont plus pâles que les ◀ ▶ de Mesure (principe 11).
+- Mineur : dans tuto_app_snare, « Longueur » demande un défilement sous le guide.
+- Fusion de l'intégration sans marque de conflit.
 
 Verdict : 0 bloquant, 0 grave

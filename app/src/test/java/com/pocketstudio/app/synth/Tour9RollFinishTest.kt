@@ -9,9 +9,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import com.pocketstudio.model.Note
+import com.pocketstudio.model.NoteClip
 import com.pocketstudio.model.Project
 import com.pocketstudio.ui.PocketStudioTheme
 import org.junit.Assert.assertEquals
@@ -49,5 +53,15 @@ class Tour9RollFinishTest {
         val after = compose.onNodeWithTag("synth_keys_first").fetchSemanticsNode().size.height
         assertEquals("the keys, before a take ($before px) and during it ($during px)", true, during < before)
         assertEquals("the keys once the take's card is gone", before, after)
+    }
+
+    /** F114: « Une piste mélodique s'ouvre sans basse fantôme sélectionnée. » */
+    @Test
+    fun aMelodyTrackOpensWithoutTheGhostBassTicked() {
+        val t = NoteClip.TICKS_PER_STEP
+        compose.setContent {
+            PocketStudioTheme { PianoRoll(NoteClip(steps = 64), listOf(Note(0, 4 * t, 36)), -1, PianoRollActions(), trackName = "Mélodie") }
+        }
+        compose.onNodeWithText("Basse en fantôme").assertIsNotSelected()
     }
 }

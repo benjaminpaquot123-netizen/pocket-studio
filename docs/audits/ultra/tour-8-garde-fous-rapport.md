@@ -12,6 +12,8 @@ Fiche : `docs/audits/ultra/tour-8-fiches/fiche-garde-fous.md`, partie A (la part
 | Mineur, repli du panneau | `Tour7TutoPanelFoldTest` : compteur de cas coupés (« Lire la suite »), rouge s'il vaut 0 | — (garde ; vert à la CI 387) |
 | Mineur, étapes de volume | `Tour6TutoMixWordsTest.everyVolumeStepNamesItsTracksInEveryLanguage` : les 36 étapes, 14 langues, traduites et nommant chaque piste à baisser | règle rejouée hors Gradle (Python, mêmes fichiers) : 0 écart ; une piste retirée d'un texte la fait rougir ; vert à la CI 387 |
 
+tests: com.pocketstudio.app.tuto.TutoReadabilityBudgetTest com.pocketstudio.app.tuto.Tour7TutoPanelFoldTest com.pocketstudio.model.tuto.TutoValidationMomentTest com.pocketstudio.model.tuto.Tour6TutoMixWordsTest
+
 ## Entrées retirées
 
 Aucune : à la CI 387, les deux tests ne nomment que la fausse entrée. Après T0c, aucune entrée réelle n'est périmée (52 moments, 409 cas de lisibilité).

@@ -1,0 +1,10 @@
+lang=tr
+device=foldable
+font=200
+mode=simple
+amenee=tuto:dubstep:9
+gestes.max=167
+mission=tuto-facile
+profil=débutant motivé
+niveau=1
+timeout.minutes=30

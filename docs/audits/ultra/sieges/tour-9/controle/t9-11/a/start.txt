@@ -1,0 +1,10 @@
+lang=en
+device=tablet8
+font=200
+mode=simple
+amenee=tuto:amapiano:1
+gestes.max=150
+mission=tuto-facile
+profil=curieux
+niveau=0
+timeout.minutes=30

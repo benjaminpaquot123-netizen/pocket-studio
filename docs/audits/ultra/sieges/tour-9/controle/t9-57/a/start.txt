@@ -1,0 +1,10 @@
+lang=tr
+device=phone360
+font=100
+mode=simple
+amenee=tuto:reggaeton:8
+gestes.max=167
+mission=tuto-facile
+profil=débutant motivé
+niveau=1
+timeout.minutes=30

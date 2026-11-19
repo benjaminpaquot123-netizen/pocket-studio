@@ -1,0 +1,10 @@
+lang=de
+device=phone
+font=200
+mode=simple
+amenee=tuto:disco:5
+gestes.max=150
+mission=tuto-facile
+profil=moyen
+niveau=2
+timeout.minutes=30

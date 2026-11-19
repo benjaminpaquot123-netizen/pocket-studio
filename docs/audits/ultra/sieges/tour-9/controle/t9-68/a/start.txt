@@ -1,0 +1,10 @@
+lang=zh-CN
+device=phone
+font=200
+mode=pro
+amenee=tuto:techno:1
+gestes.max=150
+mission=tuto-pro
+profil=pro
+niveau=4
+timeout.minutes=30

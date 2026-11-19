@@ -1,0 +1,10 @@
+lang=nl
+device=phone
+font=200
+mode=pro
+amenee=tuto:liquid_dnb:7
+gestes.max=167
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

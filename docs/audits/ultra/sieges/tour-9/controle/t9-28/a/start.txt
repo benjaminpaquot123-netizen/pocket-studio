@@ -1,0 +1,10 @@
+lang=id
+device=phone
+font=130
+mode=pro
+amenee=tuto:gabber:8
+gestes.max=150
+mission=tuto-pro
+profil=pro
+niveau=4
+timeout.minutes=30

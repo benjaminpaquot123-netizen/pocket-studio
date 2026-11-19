@@ -1,0 +1,10 @@
+lang=ko
+device=tablet8
+font=130
+mode=simple
+amenee=tuto:tech_house:6
+gestes.max=160
+mission=tuto-facile
+profil=débutant motivé
+niveau=1
+timeout.minutes=30

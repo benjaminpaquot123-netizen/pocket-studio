@@ -1,0 +1,10 @@
+lang=ar
+device=phone
+font=200
+mode=simple
+amenee=tuto:hard_techno:8
+gestes.max=150
+mission=tuto-facile
+profil=curieux
+niveau=0
+timeout.minutes=30

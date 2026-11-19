@@ -1,0 +1,606 @@
+#0 SIEGE lang=zh-CN device=foldable font=200 mode=pro theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:jersey_club:8
+#0 PREMIER ECRAN reel_s=3.7 simule_s=2.4 jvm_s=8.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:jersey_club:8
+#0 AMENEE > touche 518 972 (launch_learn)
+#0 AMENEE > touche 771 1006 (mode_card_pro)
+#0 AMENEE > touche 517 1152 (tuto_style_jersey_club)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 906 420 (tuto_chapters)
+#0 AMENEE > touche 517 1178 (tuto_quit)
+#0 AMENEE > touche 258 909 (tuto_resume)
+#0 AMENEE chapitres 1 à 7 cochés (16 étapes)
+#0 AMENEE > touche 906 240 (tuto_chapters)
+#0 AMENEE > touche 517 906 (tuto_chapter_7)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 86f0ac26c0 | project=p-301f300c tuto=jersey_club/Pro active=true step=brick done=16 chapters=1,2,3,4,5,6,7 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « 已保存 » lines cut (taller than its box)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 517 664
+#1 DOIGT tuto_why « ▸ 为什么？ »
+#2 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 19992fb775 | project=p-301f300c tuto=jersey_club/Pro active=true step=brick done=16 chapters=1,2,3,4,5,6,7 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 517 730
+#2 DOIGT tuto_text_more « 继续阅读 »
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 33c3b3dfb4 | project=p-301f300c tuto=jersey_club/Pro active=true step=brick done=16 chapters=1,2,3,4,5,6,7 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#3 LAYOUT CONTRAST « 8 » 4.28:1 (needs 4.5:1, 12 sp)
+#3 > touche 517 807
+#3 DOIGT tuto_mark «   明白了 »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE dc68947fab | project=p-301f300c tuto=jersey_club/Pro active=true step=brick done=17 chapters=1,2,3,4,5,6,7,8 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 517 813
+#4 DOIGT tuto_next_big « 下一步   »
+#5 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e6a38aacaa | project=p-301f300c tuto=jersey_club/Pro active=true step=map_intro done=17 chapters=1,2,3,4,5,6,7,8 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « 8 » 1.22:1 (needs 4.5:1, 12 sp)
+#5 > touche 517 807
+#5 DOIGT tuto_listen «  听示例 »
+#6 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f4a4e705ca | project=p-301f300c tuto=jersey_club/Pro active=true step=map_intro done=17 chapters=1,2,3,4,5,6,7,8 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 3 s).
+#6 > attends 4
+#7 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d925b685e9 | project=p-301f300c tuto=jersey_club/Pro active=true step=map_intro done=18 chapters=1,2,3,4,5,6,7,8 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 517 807
+#7 DOIGT tuto_next_big « 下一步   »
+#8 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 349f97c38e | project=p-301f300c tuto=jersey_club/Pro active=true step=map_refrain done=18 chapters=1,2,3,4,5,6,7,8 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 517 807
+#8 DOIGT tuto_listen «  听示例 »
+#9 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 7d89cc6b27 | project=p-301f300c tuto=jersey_club/Pro active=true step=map_refrain done=18 chapters=1,2,3,4,5,6,7,8 playing=false
+#9 SON Son : l'exemple du tuto joue (encore 3 s).
+#9 > attends 6
+#10 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 842e2c7e9f | project=p-301f300c tuto=jersey_club/Pro active=true step=map_refrain done=19 chapters=1,2,3,4,5,6,7,8 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 517 807
+#10 DOIGT tuto_next_big « 下一步   »
+#11 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 6a4e0fd08a | project=p-301f300c tuto=jersey_club/Pro active=true step=map_pont done=19 chapters=1,2,3,4,5,6,7,8 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 918 897
+#11 DOIGT tuto_next « 下一步  »
+#12 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 31c59ecca4 | project=p-301f300c tuto=jersey_club/Pro active=true step=map_pont done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 517 813
+#12 DOIGT tuto_next_big « 下一章   »
+#13 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 98f6899e3e | project=p-301f300c tuto=jersey_club/Pro active=true step=make_intro done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT CUT « 16 个打击垫 » lines cut (taller than its box)
+#13 LAYOUT CUT « 贝斯线 » lines cut (taller than its box)
+#13 LAYOUT CUT « 麦克风 » lines cut (taller than its box)
+#13 LAYOUT CUT « 分离 » lines cut (taller than its box)
+#13 LAYOUT CUT « 808 » lines cut (taller than its box)
+#13 > touche 556 42
+#13 DOIGT top_scene « 当前段落：A · 副歌。点击切换段落。 »
+#14 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE 5b3f783319 | project=p-301f300c tuto=jersey_club/Pro active=true step=make_intro done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#14 SON Son : rien ne joue.
+#14 > retour
+#14 RETOUR
+#15 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 98f6899e3e | project=p-301f300c tuto=jersey_club/Pro active=true step=make_intro done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 99 1123
+#15 DOIGT tab_Structure « 结构 »
+#16 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c93712a711 | project=p-301f300c tuto=jersey_club/Pro active=true step=make_intro done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CUT « ? » lines cut (taller than its box)
+#16 > touche 978 363
+#16 DOIGT tuto_fold
+#17 ROUTE tab_Structure | MODE pro | EMPREINTE 69839ef0b1 | project=p-301f300c tuto=jersey_club/Pro active=true step=make_intro done=20 chapters=1,2,3,4,5,6,7,8 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 517 875
+#17 DOIGT tuto_need_folded « 创建段落“前奏” »
+#18 ROUTE tab_Structure | MODE pro | EMPREINTE 6cac3d2d7d | project=p-301f300c tuto=jersey_club/Pro active=true step=make_intro done=21 chapters=1,2,3,4,5,6,7,8 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 517 875
+#18 DOIGT tuto_next_folded « 成功 »
+#19 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE d9bdca276c | project=p-301f300c tuto=jersey_club/Pro active=true step=make_couplet done=21 chapters=1,2,3,4,5,6,7,8 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 517 723
+#19 DOIGT tuto_need «   创建段落“主歌” »
+#20 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 39a05a3246 | project=p-301f300c tuto=jersey_club/Pro active=true step=make_couplet done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 517 813
+#20 DOIGT tuto_next_big « 下一步   »
+#21 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 4dc1053f48 | project=p-301f300c tuto=jersey_club/Pro active=true step=make_pre done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 768 810
+#21 DOIGT tuto_show «  示范给我看 »
+#22 ROUTE tab_Structure | MODE pro | EMPREINTE 5d33894834 | project=p-301f300c tuto=jersey_club/Pro active=true step=make_pre done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « 停止 » 3.91:1 (needs 4.5:1, 14 sp)
+#22 > attends 5
+#23 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 4dc1053f48 | project=p-301f300c tuto=jersey_club/Pro active=true step=make_pre done=22 chapters=1,2,3,4,5,6,7,8 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 517 723
+#23 DOIGT tuto_need «   创建段落“预副歌” »
+#24 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 0062651594 | project=p-301f300c tuto=jersey_club/Pro active=true step=make_pre done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 517 813
+#24 DOIGT tuto_next_big « 下一步   »
+#25 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE d051fc004f | project=p-301f300c tuto=jersey_club/Pro active=true step=make_pont done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 517 723
+#25 DOIGT tuto_need «   创建段落“桥段” »
+#26 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 8ef95b3381 | project=p-301f300c tuto=jersey_club/Pro active=true step=make_pont done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 517 813
+#26 DOIGT tuto_next_big « 下一章   »
+#27 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE ca49bea38e | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT OVERLAP « 排列你的段落 » over the touchable « 速度：140 BPM 修改速度 » (132 x 4 dp)
+#27 > touche 517 723
+#27 DOIGT tuto_do «   我来做 »
+#28 ROUTE tab_Structure | MODE pro | EMPREINTE e0114e7234 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CUT « 轮到你：在“结构”里的“添加”下面，按顺序点结尾是 前奏、副歌、主歌、预副歌、副歌、主歌、预副歌、桥段、副歌 的按钮，最后再点 前奏 作为尾奏。下一步会设好它们的时长。 » ellipsized (« … »)
+#28 LAYOUT CONTRAST « + A · 副歌 » 3.99:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « + B · 前奏 » 4.06:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « + C · 主歌 » 4.06:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « + D · 预副歌 » 4.12:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « + E · 桥段 » 4.12:1 (needs 4.5:1, 14 sp)
+#28 > touche 166 382
+#28 DOIGT add_part_1 « + B · 前奏 »
+#29 ROUTE tab_Structure | MODE pro | EMPREINTE c4b8faf90f | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CUT « 循环 » drawn past its parent's edge (down, 32 dp shown of 38)
+#29 LAYOUT CONTRAST « + A · 副歌 » 4.12:1 (needs 4.5:1, 14 sp)
+#29 > glisse 200 600 200 250
+#29 DOIGT rien (texte « 在末尾添加： »)
+#30 ROUTE tab_Structure | MODE pro | EMPREINTE 15b23f4728 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 167 341
+#30 DOIGT add_part_0 « + A · 副歌 »
+#31 ROUTE tab_Structure | MODE pro | EMPREINTE d92f0cf6d4 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#31 SON Son : rien ne joue.
+#31 > glisse 200 300 200 600
+#31 DOIGT part_play_1 « A · 副歌 »
+#32 ROUTE tab_Structure | MODE pro | EMPREINTE e23ccde4fb | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CUT « Fm  Fm  E♭  D♭  Fm  Fm  E♭  D♭ » ellipsized (« … »)
+#32 > glisse 200 640 200 150
+#32 DOIGT part_play_1 « A · 副歌 »
+#33 ROUTE tab_Structure | MODE pro | EMPREINTE c870b8e89a | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 167 630
+#33 DOIGT add_part_2 « + C · 主歌 »
+#34 ROUTE tab_Structure | MODE pro | EMPREINTE eaefa20a06 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#34 SON Son : rien ne joue.
+#34 > glisse 200 640 200 100
+#34 DOIGT add_part_0 « + A · 副歌 »
+#35 ROUTE tab_Structure | MODE pro | EMPREINTE 5a8fe60623 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CUT « + 新段落（复制 E · 桥段） » lines dropped (more lines than room)
+#35 > touche 186 421
+#35 DOIGT add_part_3 « + D · 预副歌 »
+#36 ROUTE tab_Structure | MODE pro | EMPREINTE 3ab25ead8d | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#36 SON Son : rien ne joue.
+#36 > glisse 200 640 200 100
+#36 DOIGT rien (texte « 在末尾添加： »)
+#37 ROUTE tab_Structure | MODE pro | EMPREINTE 1ae55d7f7d | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 167 240
+#37 DOIGT add_part_0 « + A · 副歌 »
+#38 ROUTE tab_Structure | MODE pro | EMPREINTE 8646bba9ee | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#38 SON Son : rien ne joue.
+#38 > glisse 200 640 200 100
+#38 DOIGT add_part_0 « + A · 副歌 »
+#39 ROUTE tab_Structure | MODE pro | EMPREINTE b9616fe982 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 167 331
+#39 DOIGT add_part_2 « + C · 主歌 »
+#40 ROUTE tab_Structure | MODE pro | EMPREINTE 87de81b824 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#40 SON Son : rien ne joue.
+#40 > glisse 200 640 200 100
+#40 DOIGT add_part_0 « + A · 副歌 »
+#41 ROUTE tab_Structure | MODE pro | EMPREINTE 4314aa0a1c | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 186 421
+#41 DOIGT add_part_3 « + D · 预副歌 »
+#42 ROUTE tab_Structure | MODE pro | EMPREINTE 1afb8bddf6 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#42 SON Son : rien ne joue.
+#42 > glisse 200 640 200 100
+#42 DOIGT rien (texte « 在末尾添加： »)
+#43 ROUTE tab_Structure | MODE pro | EMPREINTE b99fb2c06b | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 165 571
+#43 DOIGT add_part_4 « + E · 桥段 »
+#44 ROUTE tab_Structure | MODE pro | EMPREINTE 95b0c7de3b | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#44 SON Son : rien ne joue.
+#44 > glisse 200 640 200 100
+#44 DOIGT add_part_0 « + A · 副歌 »
+#45 ROUTE tab_Structure | MODE pro | EMPREINTE ccbe3cc239 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#45 SON Son : rien ne joue.
+#45 > glisse 200 300 200 450
+#45 DOIGT add_part_2 « + C · 主歌 »
+#46 ROUTE tab_Structure | MODE pro | EMPREINTE 68421095cb | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 167 277
+#46 DOIGT add_part_0 « + A · 副歌 »
+#47 ROUTE tab_Structure | MODE pro | EMPREINTE 16f8f42c5d | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#47 SON Son : rien ne joue.
+#47 > glisse 200 640 200 100
+#47 DOIGT add_part_0 « + A · 副歌 »
+#48 ROUTE tab_Structure | MODE pro | EMPREINTE 837f1b3ee6 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 166 243
+#48 DOIGT add_part_1 « + B · 前奏 »
+#49 ROUTE tab_Structure | MODE pro | EMPREINTE 6cb0d32fce | project=p-301f300c tuto=jersey_club/Pro active=true step=song_order done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 517 875
+#49 DOIGT tuto_next_folded « 成功 »
+#50 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 76c424e765 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT OVERLAP « 小节 1/80 » over « 排列你的段落 » (12 x 18 dp)
+#50 LAYOUT OVERLAP « 排列你的段落 » over the touchable « 从某个段落开始播放 » (18 x 20 dp)
+#50 > touche 978 231
+#50 DOIGT tuto_fold
+#51 ROUTE tab_Structure | MODE pro | EMPREINTE adc95eb96d | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#51 SON Son : rien ne joue.
+#51 > glisse 200 300 200 900
+#51 DOIGT part_play_1 « A · 副歌 »
+#52 ROUTE tab_Structure | MODE pro | EMPREINTE 35ec36c55b | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CUT « Fm  Fm  Fm  Fm  Fm  Fm  Fm  Fm » ellipsized (« … »)
+#52 > glisse 200 600 200 250
+#52 DOIGT rien
+#53 ROUTE tab_Structure | MODE pro | EMPREINTE 31d4d21ef3 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 155 551
+#53 DOIGT part_play_1 « A · 副歌 »
+#54 ROUTE tab_Structure | MODE pro | EMPREINTE 4bc2648941 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#54 SON Son : le morceau joue (partie « A »).
+#54 LAYOUT CUT « 接下来 » lines dropped (more lines than room)
+#54 LAYOUT CUT « 预副歌 » ellipsized (« … »)
+#54 LAYOUT CONTRAST « × 1  ·  8 小节  ·  播放中 » 4.19:1 (needs 4.5:1, 14 sp)
+#54 > touche 448 635
+#54 DOIGT part_menu_1
+#54 DIALOGUE 0.5 s
+#55 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 6a718c1c20 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#55 SON Son : le morceau joue (partie « A »).
+#55 LAYOUT OVERLAP « 段落 2 · A · 副歌 » over the touchable « 关闭工作表 » (245 x 51 dp)
+#55 LAYOUT OVERLAP « 8 小节  ·  播放 3 次 » over the touchable « 关闭工作表 » (218 x 38 dp)
+#55 LAYOUT OVERLAP « 关闭 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#55 LAYOUT OVERLAP « 在歌曲中播放 3 次。编辑： » over the touchable « 关闭工作表 » (317 x 38 dp)
+#55 LAYOUT OVERLAP « 仅这一个 » over the touchable « 关闭工作表 » (105 x 38 dp)
+#55 LAYOUT OVERLAP « 全部 3 次 » over the touchable « 关闭工作表 » (109 x 38 dp)
+#55 LAYOUT OVERLAP « 结尾加花 » over the touchable « 关闭工作表 » (105 x 38 dp)
+#55 LAYOUT OVERLAP « 之后间奏 · 4 小节 » over the touchable « 关闭工作表 » (203 x 38 dp)
+#55 LAYOUT OVERLAP « 之后间奏 · 8 小节 » over the touchable « 关闭工作表 » (203 x 38 dp)
+#55 LAYOUT OVERLAP « 之前渐强段 · 4 小节 » over the touchable « 关闭工作表 » (230 x 38 dp)
+#55 LAYOUT OVERLAP « 之前渐强段 · 8 小节 » over the touchable « 关闭工作表 » (229 x 38 dp)
+#55 LAYOUT OVERLAP « 淡入 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#55 LAYOUT OVERLAP « 淡出 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#55 LAYOUT OVERLAP « 加一个结尾 » over the touchable « 关闭工作表 » (131 x 38 dp)
+#55 LAYOUT OVERLAP « 能量：3 » over the touchable « 关闭工作表 » (95 x 38 dp)
+#55 LAYOUT OVERLAP « 1 · Pad » over the touchable « 关闭工作表 » (80 x 37 dp)
+#55 LAYOUT OVERLAP « 2 · + 贝斯 » over the touchable « 关闭工作表 » (115 x 38 dp)
+#55 LAYOUT OVERLAP « 3 · + 鼓 » over the touchable « 关闭工作表 » (89 x 38 dp)
+#55 LAYOUT OVERLAP « 4 · 全开 » over the touchable « 关闭工作表 » (92 x 38 dp)
+#55 LAYOUT OVERLAP « 长度 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#55 LAYOUT OVERLAP « 小节 » over the touchable « 关闭工作表 » (50 x 37 dp)
+#55 LAYOUT OVERLAP « 好 » over the touchable « 关闭工作表 » (26 x 38 dp)
+#55 LAYOUT OVERLAP « 段落 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#55 > touche 353 1100
+#55 DOIGT name_clear
+#55 DIALOGUE 0.2 s
+#56 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 924b934861 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#56 SON Son : le morceau joue (partie « A »).
+#56 LAYOUT OVERLAP « 小节 » over the touchable « 关闭工作表 » (56 x 42 dp)
+#56 > ecris 16
+#56 DIALOGUE 0.2 s
+#57 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 67d5d67cd8 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#57 SON Son : le morceau joue (partie « A »).
+#57 > touche 290 1086
+#57 DOIGT part_bars_field « 小节 »
+#57 DIALOGUE 0.3 s
+#58 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 7dcb800c56 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#58 SON Son : le morceau joue (partie « A »).
+#58 > ecris 16
+#58 DIALOGUE 0.2 s
+#59 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE e1f838ad67 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#59 SON Son : le morceau joue (partie « A »).
+#59 > touche 441 1088
+#59 DOIGT part_bars_ok « 好 »
+#59 DIALOGUE 0.3 s
+#60 ROUTE tab_Structure | MODE pro | EMPREINTE cdb3d3f5c2 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=25 chapters=1,2,3,4,5,6,7,8,9 playing=true
+#60 SON Son : le morceau joue (partie « A »).
+#60 LAYOUT OVERLAP « × 1  ·  8 小节 » over « 完成：A · 副歌 的新长度 » (75 x 29 dp)
+#60 LAYOUT OVERLAP « 8 小节 » over « 取消 » (30 x 15 dp)
+#60 LAYOUT OVERLAP « H » over « 取消 » (18 x 10 dp)
+#60 LAYOUT OVERLAP « 完成：A · 副歌 的新长度 » over the touchable « 从这个段落开始播放 » (123 x 29 dp)
+#60 LAYOUT OVERLAP « 取消 » over the touchable « 选择段落 » (52 x 18 dp)
+#60 LAYOUT OVERLAP « 取消 » over the touchable « 选择段落 » (52 x 12 dp)
+#60 LAYOUT OVERLAP « 取消 » floats over the touchable « D 预副歌 8 小节 选择段落 » (65 x 26 dp)
+#60 LAYOUT CONTRAST « 副歌 » 4.44:1 (needs 4.5:1, 12 sp)
+#60 LAYOUT CONTRAST « 主歌 » 1.34:1 (needs 4.5:1, 12 sp)
+#60 LAYOUT CONTRAST « 8 小节 » 3.63:1 (needs 4.5:1, 11 sp)
+#60 LAYOUT CONTRAST « F » 1.94:1 (needs 3.0:1, 22 sp)
+#60 LAYOUT CONTRAST « 取消 » 3.63:1 (needs 4.5:1, 14 sp)
+#60 > touche 517 875
+#60 DOIGT tuto_need_folded « 使用推荐时长 »
+#61 ROUTE tab_Structure | MODE pro | EMPREINTE 8482cf60ea | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=26 chapters=1,2,3,4,5,6,7,8,9,10 playing=true
+#61 SON Son : le morceau joue (partie « A »).
+#61 LAYOUT OVERLAP « C · 主歌 » over « 完成：A · 副歌 的新长度 » (107 x 35 dp)
+#61 LAYOUT OVERLAP « 完成：A · 副歌 的新长度 » over the touchable « 从这个段落开始播放 » (123 x 35 dp)
+#61 LAYOUT CONTRAST « A · 副歌 » 2.94:1 (needs 3.0:1, 18 sp)
+#61 LAYOUT CONTRAST « 16 小节  ·  播放中 » 2.99:1 (needs 4.5:1, 14 sp)
+#61 LAYOUT CONTRAST « 15 小节  ·  接下来 » 3.64:1 (needs 4.5:1, 14 sp)
+#61 > touche 512 1007
+#61 DOIGT thumb_play « 停止 »
+#62 ROUTE tab_Structure | MODE pro | EMPREINTE 1a848e6f1d | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=26 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT OVERLAP « A · 副歌 » over « 完成：A · 副歌 的新长度 » (107 x 11 dp)
+#62 LAYOUT OVERLAP « 16 小节 » over « 完成：A · 副歌 的新长度 » (92 x 27 dp)
+#62 LAYOUT OVERLAP « 24 » over « 取消 » (13 x 23 dp)
+#62 LAYOUT OVERLAP « 完成：A · 副歌 的新长度 » over the touchable « 从这个段落开始播放 » (123 x 38 dp)
+#62 LAYOUT OVERLAP « 取消 » floats over the touchable « 24 » (42 x 31 dp)
+#62 LAYOUT CONTRAST « 显示： » 1.57:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « 8 » 2.67:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « 24 » 3.63:1 (needs 4.5:1, 14 sp)
+#62 > touche 978 730
+#62 DOIGT tuto_fold
+#63 ROUTE tab_Structure | MODE pro | EMPREINTE f0270522e3 | project=p-301f300c tuto=jersey_club/Pro active=true step=song_phrases done=26 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT OVERLAP « D · 预副歌 » over « 完成：A · 副歌 的新长度 » (107 x 38 dp)
+#63 LAYOUT OVERLAP « 一块积木 = 一个段落的鼓、Acid 和音符。歌曲的段落就是由它们组成的。点一块来编辑，按住拖动可以移动它。 » over « 取消 » (42 x 38 dp)
+#63 LAYOUT CONTRAST « 1 小节 » 4.36:1 (needs 4.5:1, 14 sp)
+#63 > touche 517 813
+#63 DOIGT tuto_next_big « 下一章   »
+#64 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c3a8492060 | project=p-301f300c tuto=jersey_club/Pro active=true step=crash done=26 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 517 723
+#64 DOIGT tuto_do «   我来做 »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE 424aba8ec1 | project=p-301f300c tuto=jersey_club/Pro active=true step=crash done=26 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CUT « 右 50 » lines dropped (more lines than room)
+#65 LAYOUT OVERLAP « 808 » over « FX » (22 x 5 dp)
+#65 LAYOUT OVERLAP « 拍手 » over « FX » (22 x 6 dp)
+#65 LAYOUT OVERLAP « 踩镲 » over « 左 30 » (47 x 11 dp)
+#65 LAYOUT OVERLAP « 开镲 » over « 右 30 » (47 x 11 dp)
+#65 LAYOUT OVERLAP « 鼓边 » over « FX » (22 x 4 dp)
+#65 LAYOUT OVERLAP « 鼓边 » over « 右 50 » (18 x 4 dp)
+#65 LAYOUT CONTRAST « 1 » 2.22:1 (needs 4.5:1, 12 sp)
+#65 > touche 575 628
+#65 DOIGT step_0 « 第 1 步 »
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE a0481eb15b | project=p-301f300c tuto=jersey_club/Pro active=true step=crash done=27 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 978 730
+#66 DOIGT tuto_fold
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE eacc3c524d | project=p-301f300c tuto=jersey_club/Pro active=true step=crash done=27 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 517 813
+#67 DOIGT tuto_next_big « 下一章   »
+#68 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e8884ebca7 | project=p-301f300c tuto=jersey_club/Pro active=true step=delay done=27 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CUT « 鼓 » lines cut (taller than its box)
+#68 LAYOUT CUT « Acid 303 » lines cut (taller than its box)
+#68 LAYOUT CUT « 人声 » lines cut (taller than its box)
+#68 LAYOUT CUT « Remix » lines cut (taller than its box)
+#68 LAYOUT CONTRAST « Acid 303 » 3.10:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « 人声 » 3.10:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « Remix » 3.10:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « 808 » 3.10:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT TARGET « 鼓 16 个打击垫 » 175 x 10 dp (touch 175 x 48)
+#68 LAYOUT TARGET « Acid 303 贝斯线 » 149 x 10 dp (touch 149 x 48)
+#68 LAYOUT TARGET « 人声 麦克风 » 112 x 10 dp (touch 112 x 48)
+#68 LAYOUT TARGET « Remix 分离 » 112 x 10 dp (touch 112 x 48)
+#68 LAYOUT TARGET « 808 808 » 81 x 10 dp (touch 81 x 48)
+#68 > touche 518 1123
+#68 DOIGT tab_Mix « 混音 »
+#69 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE a36367b1f6 | project=p-301f300c tuto=jersey_club/Pro active=true step=delay done=27 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 978 300
+#69 DOIGT tuto_fold
+#70 ROUTE tab_Mix | MODE pro | EMPREINTE c69872fa0f | project=p-301f300c tuto=jersey_club/Pro active=true step=delay done=27 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « ? » 3.92:1 (needs 4.5:1, 12 sp)
+#70 > touche 444 471
+#70 DOIGT strip_more_5 « 旋律 »
+#71 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE d833fada61 | project=p-301f300c tuto=jersey_club/Pro active=true step=delay done=27 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT OVERLAP « XY 打击垫，上下： » over the touchable « 关闭工作表 » (214 x 19 dp)
+#71 LAYOUT OVERLAP « ? » over the touchable « 关闭工作表 » (13 x 10 dp)
+#71 LAYOUT OVERLAP « 空间 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#71 LAYOUT OVERLAP « 脏度 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#71 LAYOUT OVERLAP « 动感 » over the touchable « 关闭工作表 » (52 x 38 dp)
+#71 LAYOUT OVERLAP « ↑ 遥远 » over the touchable « 关闭工作表 » (81 x 36 dp)
+#71 LAYOUT OVERLAP « ← 暗 » over the touchable « 关闭工作表 » (56 x 36 dp)
+#71 LAYOUT OVERLAP « ↓ 干 » over the touchable « 关闭工作表 » (55 x 36 dp)
+#71 LAYOUT OVERLAP « 明亮 → » over the touchable « 关闭工作表 » (81 x 36 dp)
+#71 LAYOUT OVERLAP « 滑动手指，实时折腾声音。点两下：回到原始声音。 » over the touchable « 关闭工作表 » (572 x 37 dp)
+#71 LAYOUT OVERLAP « 色彩 » over the touchable « 关闭工作表 » (48 x 48 dp)
+#71 LAYOUT OVERLAP « 中性 » over the touchable « 关闭工作表 » (48 x 36 dp)
+#71 LAYOUT OVERLAP « 脏度 » over the touchable « 关闭工作表 » (48 x 48 dp)
+#71 LAYOUT OVERLAP « 0 » over the touchable « 关闭工作表 » (13 x 28 dp)
+#71 LAYOUT OVERLAP « 动感 » over the touchable « 关闭工作表 » (48 x 48 dp)
+#71 LAYOUT OVERLAP « 空间 » over the touchable « 关闭工作表 » (48 x 48 dp)
+#71 LAYOUT OVERLAP « 公共混响和回声 » over the touchable « 关闭工作表 » (183 x 38 dp)
+#71 LAYOUT OVERLAP « 混响 发送 » over the touchable « 关闭工作表 » (111 x 38 dp)
+#71 LAYOUT OVERLAP « 0% » over the touchable « 关闭工作表 » (43 x 31 dp)
+#71 LAYOUT OVERLAP « 回声 发送 » over the touchable « 关闭工作表 » (111 x 38 dp)
+#71 > glisse 80 1198 550 1198
+#71 DOIGT send_5_1 « 回声 发送 »
+#72 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 6be4afbee5 | project=p-301f300c tuto=jersey_club/Pro active=true step=delay done=28 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT OVERLAP « 50% » over the touchable « 关闭工作表 » (59 x 31 dp)
+#72 > retour
+#72 RETOUR
+#73 ROUTE tab_Mix | MODE pro | EMPREINTE 659517a69b | project=p-301f300c tuto=jersey_club/Pro active=true step=delay done=28 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 978 730
+#73 DOIGT tuto_fold
+#74 ROUTE tab_Mix | MODE pro | EMPREINTE 45382f409a | project=p-301f300c tuto=jersey_club/Pro active=true step=delay done=28 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 517 813
+#74 DOIGT tuto_next_big « 下一章   »
+#75 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 279c1a74e4 | project=p-301f300c tuto=jersey_club/Pro active=true step=levels done=28 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 978 300
+#75 DOIGT tuto_fold
+#76 ROUTE tab_Mix | MODE pro | EMPREINTE 60c073c9b3 | project=p-301f300c tuto=jersey_club/Pro active=true step=levels done=28 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#76 SON Son : rien ne joue.
+#76 > glisse 437 305 437 365
+#76 DOIGT volume_5 « 旋律 的音量 »
+#77 ROUTE tab_Mix | MODE pro | EMPREINTE b1d731f363 | project=p-301f300c tuto=jersey_club/Pro active=true step=levels done=29 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 517 875
+#77 DOIGT tuto_next_folded « 成功 »
+#78 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 068873d6d5 | project=p-301f300c tuto=jersey_club/Pro active=true step=meters done=29 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 912 42
+#78 DOIGT top_play « 播放这个段落 »
+#79 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 28e2970fbb | project=p-301f300c tuto=jersey_club/Pro active=true step=meters done=29 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=true
+#79 SON Son : la musique du projet joue en boucle.
+#79 > touche 978 384
+#79 DOIGT tuto_fold
+#80 ROUTE tab_Mix | MODE pro | EMPREINTE 17b52db927 | project=p-301f300c tuto=jersey_club/Pro active=true step=meters done=29 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=true
+#80 SON Son : la musique du projet joue en boucle.
+#80 > touche 912 42
+#80 DOIGT top_play « 停止 »
+#81 ROUTE tab_Mix | MODE pro | EMPREINTE a442abd8fb | project=p-301f300c tuto=jersey_club/Pro active=true step=meters done=29 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 978 730
+#81 DOIGT tuto_fold
+#82 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 7e23c00ee4 | project=p-301f300c tuto=jersey_club/Pro active=true step=meters done=29 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 517 807
+#82 DOIGT tuto_mark «   明白了 »
+#83 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 90b69a4f4d | project=p-301f300c tuto=jersey_club/Pro active=true step=meters done=30 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 517 813
+#83 DOIGT tuto_next_big « 下一章   »
+#84 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 42d7b22939 | project=p-301f300c tuto=jersey_club/Pro active=true step=loudness done=30 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 978 300
+#84 DOIGT tuto_fold
+#85 ROUTE tab_Mix | MODE pro | EMPREINTE b3a1df76c5 | project=p-301f300c tuto=jersey_club/Pro active=true step=loudness done=30 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#85 SON Son : rien ne joue.
+#85 > glisse 250 600 250 250
+#85 DOIGT rien
+#86 ROUTE tab_Mix | MODE pro | EMPREINTE 8dad59dd2d | project=p-301f300c tuto=jersey_club/Pro active=true step=loudness done=30 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#86 SON Son : rien ne joue.
+#86 > glisse 700 600 700 300
+#86 DOIGT rien (texte « 没有削波：一切正常。 »)
+#87 ROUTE tab_Mix | MODE pro | EMPREINTE a3ab60da63 | project=p-301f300c tuto=jersey_club/Pro active=true step=loudness done=30 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 771 607
+#87 DOIGT loudness_target_AUTO « 自动（按风格） · −9 LUFS »
+#88 ROUTE tab_Mix | MODE pro | EMPREINTE 69be93b7ec | project=p-301f300c tuto=jersey_club/Pro active=true step=loudness done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 978 730
+#88 DOIGT tuto_fold
+#89 ROUTE tab_Mix | MODE pro | EMPREINTE b2c0953c5f | project=p-301f300c tuto=jersey_club/Pro active=true step=loudness done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 517 813
+#89 DOIGT tuto_next_big « 下一章   »
+#90 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE dfae36b618 | project=p-301f300c tuto=jersey_club/Pro active=true step=formats done=31 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 517 807
+#90 DOIGT tuto_mark «   明白了 »
+#91 ROUTE tab_Mix | MODE pro | EMPREINTE 3f3208feac | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 889 1006
+#91 DOIGT thumb_share « 分享我的歌 »
+#91 DIALOGUE 0.3 s
+#92 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE e57a32d4ff | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#92 SON Son : rien ne joue.
+#92 LAYOUT OVERLAP « 准备好分享了吗？ » over the touchable « 关闭工作表 » (275 x 51 dp)
+#92 LAYOUT OVERLAP « 歌曲名称（也是项目名称） » over the touchable « 关闭工作表 » (298 x 37 dp)
+#92 LAYOUT OVERLAP « “分享”也会重命名项目“我的项目 1”。 » over the touchable « 关闭工作表 » (408 x 37 dp)
+#92 LAYOUT OVERLAP « 2:58 » over the touchable « 关闭工作表 » (77 x 43 dp)
+#92 LAYOUT OVERLAP « 5 个段落 » over the touchable « 关闭工作表 » (101 x 38 dp)
+#92 LAYOUT OVERLAP « 音量：−9.0，响，像俱乐部音乐 » over the touchable « 关闭工作表 » (352 x 37 dp)
+#92 LAYOUT OVERLAP « 详情 » over the touchable « 关闭工作表 » (40 x 27 dp)
+#92 LAYOUT OVERLAP « ? » over the touchable « 关闭工作表 » (13 x 18 dp)
+#92 LAYOUT OVERLAP «  试听 » over the touchable « 关闭工作表 » (59 x 38 dp)
+#92 LAYOUT OVERLAP « 目标响度 » over the touchable « 关闭工作表 » (104 x 38 dp)
+#92 LAYOUT OVERLAP « 流媒体 » over the touchable « 关闭工作表 » (78 x 38 dp)
+#92 LAYOUT OVERLAP « 俱乐部 » over the touchable « 关闭工作表 » (78 x 38 dp)
+#92 LAYOUT OVERLAP « 自动（按风格） » over the touchable « 关闭工作表 » (183 x 38 dp)
+#92 LAYOUT OVERLAP « 一切就绪：没有忘关的独奏，没有被静音的音轨。 » over the touchable « 关闭工作表 » (520 x 75 dp)
+#92 LAYOUT OVERLAP « M4A · 适合分享 » over the touchable « 关闭工作表 » (187 x 38 dp)
+#92 LAYOUT OVERLAP « WAV · 最高品质 » over the touchable « 关闭工作表 » (187 x 38 dp)
+#92 LAYOUT OVERLAP «   分享 » over the touchable « 关闭工作表 » (69 x 42 dp)
+#92 LAYOUT OVERLAP « 我的文件 » over the touchable « 关闭工作表 » (104 x 38 dp)
+#92 LAYOUT OVERLAP « 找到并再次发送：M4A、WAV、视频、.zip » over the touchable « 关闭工作表 » (477 x 37 dp)
+#92 > touche 575 971
+#92 DOIGT share_format_Wav « WAV · 最高品质 »
+#92 DIALOGUE 0.2 s
+#93 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 93d44cd4a1 | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 518 1068
+#93 DOIGT share_go «   分享 »
+#93 DIALOGUE 0.3 s
+#94 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 2f155c5b36 | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=32 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#94 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#94 LAYOUT CONTRAST «   16% » 1.79:1 (needs 4.5:1, 14 sp)
+#94 LAYOUT CONTRAST « 然后选择用哪个应用发送。 » 3.49:1 (needs 4.5:1, 13 sp)
+#94 > attends 5
+#94 PARTAGE 我的歌曲-歌曲-20261119-114914.wav
+#94 DIALOGUE 1.6 s
+#95 ROUTE dialogue:« 分享我的歌 · 我的歌曲-歌曲-20261119-11491 » | MODE pro | EMPREINTE ecddc71742 | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 517 773
+#95 DOIGT vue « Drive »
+#95 DIALOGUE 0.2 s
+#96 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE f82156956f | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 853 868
+#96 DOIGT share_bilan_ok « OK »
+#96 DIALOGUE 0.2 s
+#97 ROUTE tab_Mix | MODE pro | EMPREINTE 6d50060001 | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 889 1006
+#97 DOIGT thumb_share « 分享我的歌 »
+#97 DIALOGUE 0.3 s
+#98 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE edd0dca444 | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#98 SON Son : rien ne joue.
+#98 > glisse 518 1000 518 400
+#98 DOIGT share_format_Wav « WAV · 最高品质 »
+#98 DIALOGUE 0.2 s
+#99 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE edd0dca444 | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 677 543
+#99 DOIGT share_details « 详情 »
+#99 DIALOGUE 0.2 s
+#100 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE a2093dff0a | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#100 SON Son : rien ne joue.
+#100 LAYOUT OVERLAP « 隐藏 » over the touchable « 关闭工作表 » (40 x 27 dp)
+#100 LAYOUT OVERLAP « −13.6 LUFS · 峰值 −9.4 dBTP » over the touchable « 关闭工作表 » (330 x 36 dp)
+#100 > touche 932 121
+#100 DOIGT share_close
+#100 DIALOGUE 0.2 s
+#101 ROUTE tab_Mix | MODE pro | EMPREINTE 6d50060001 | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 936 1123
+#101 DOIGT tab_Plus « 更多 »
+#102 ROUTE tab_Plus | MODE pro | EMPREINTE d5b708d675 | project=p-301f300c tuto=jersey_club/Pro active=true step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 517 897
+#102 DOIGT tuto_end_close «  关闭教程 »
+#103 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 520075b33f | project=p-301f300c tuto=jersey_club/Pro active=false step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#103 SON Son : rien ne joue.
+#103 > glisse 518 800 518 300
+#103 DOIGT rien
+#104 ROUTE plus/tab_Plus | MODE pro | EMPREINTE e6f0839e63 | project=p-301f300c tuto=jersey_club/Pro active=false step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#104 SON Son : rien ne joue.
+#104 > glisse 518 300 518 900
+#104 DOIGT tool_Aide « 帮助 »
+#105 ROUTE plus/tab_Plus | MODE pro | EMPREINTE 520075b33f | project=p-301f300c tuto=jersey_club/Pro active=false step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 518 379
+#105 DOIGT plus_projects « 我的项目 »
+#106 ROUTE dialogue:projects | MODE pro | EMPREINTE 5d6017159a | project=p-301f300c tuto=jersey_club/Pro active=false step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 981 526
+#106 DOIGT project_menu_p-301f300c
+#107 ROUTE dialogue:project_opening_p-301f300c | MODE pro | EMPREINTE de6d412246 | project=p-301f300c tuto=jersey_club/Pro active=false step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#107 SON Son : rien ne joue.
+#107 > retour
+#107 RETOUR
+#108 ROUTE dialogue:projects | MODE pro | EMPREINTE 5d6017159a | project=p-301f300c tuto=jersey_club/Pro active=false step=share done=33 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#108 SON Son : rien ne joue.
+#108 > fin
+#108 BENCH-VERDICT ok where=seat.fin
+#108 FIN : fin

@@ -1,0 +1,40 @@
+Écran 16 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+bouton « 140  BPM » @ 114,144
+bouton « ? » @ 990,144
+onglet « 时间线 » [désactivé] @ 104,252
+onglet « 段落 » [sélectionné] @ 246,252
+titre « 积木 » [coupé, état « 已展开 »] @ 633,270
+bouton « ? » @ 695,273
+texte « 搭建你的段落 第 9/15 章 · 第 1/4 步 · 专业 » @ 445,362
+icône (liste) « 章节 » @ 906,363
+icône ⌄ @ 978,363
+texte « 轮到你：从副歌创建前奏：只有人声和踩镲。 » @ 441,477
+bouton « 下载 Jersey club 鼓组（1 MB） » @ 471,566
+texte « 稍后 » @ 961,566
+texte « ▸ 为什么？ » @ 517,645
+bouton ⊕ «   创建段落“前奏” » @ 517,723
+bouton ▶ «  听示例 » @ 266,810
+bouton (œil) «  示范给我看 » @ 768,810
+icône ← «  上一步 » @ 117,897
+icône « 下一步  » → @ 918,897
+texte « 140 速度 » @ 700,1006
+icône ↶ « 撤销 » @ 147,1006
+icône ↷ « 重做 » [désactivé] @ 329,1006
+bouton ▶ « 歌曲 » @ 512,1007
+icône (trois points reliés) « 分享 » @ 889,1006
+onglet (ligne brisée et points) « 结构 » [sélectionné] @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 750,1213
+texte « ✎  记一笔 » @ 878,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 353,1213

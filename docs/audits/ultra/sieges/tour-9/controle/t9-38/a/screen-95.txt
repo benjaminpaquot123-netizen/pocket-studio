@@ -1,0 +1,7 @@
+Écran 95 (1035x1243)
+texte « 分享我的歌 · 我的歌曲-歌曲-20261119-114914.wav » @ 517,443
+bouton « WhatsApp » @ 517,557
+bouton « Messages » @ 517,629
+bouton « Gmail » @ 517,701
+bouton « Drive » @ 517,773
+bouton « Files » @ 517,845

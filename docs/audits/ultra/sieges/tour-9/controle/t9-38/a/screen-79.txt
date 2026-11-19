@@ -1,0 +1,52 @@
+Écran 79 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ■ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+icône (flèches en boucle) « 副歌 小节 1/8 » ▾ @ 327,144
+bouton « 140  BPM » @ 114,144
+bouton (flèches en boucle) « 循环 » [allumé, état « 开 »] @ 873,144
+bouton « ? » @ 990,144
+image (courbe) @ 0,0
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 57,223
+bouton (casque) [coupé, état « 关 »] @ 111,223
+curseur [coupé, état « +0.0 dB », à 80 %] @ 84,283
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 177,230
+bouton (casque) [coupé, état « 关 »] @ 231,230
+curseur [coupé, état « +0.0 dB », à 80 %] @ 204,290
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 297,223
+bouton (casque) [coupé, état « 关 »] @ 351,223
+curseur [coupé, état « +0.0 dB », à 80 %] @ 324,283
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 417,223
+bouton (casque) [coupé, état « 关 »] @ 471,223
+curseur [coupé, état « -3.2 dB », à 66 %] @ 444,283
+titre « 曲线 » [état « 已展开 »] @ 689,282
+bouton « ? » @ 695,282
+bouton ● « 录音 » @ 911,282
+texte « 混音 第 13/15 章 · 第 2/2 步 · 专业 » @ 445,383
+icône (liste) « 章节 » @ 906,384
+icône ⌄ @ 978,384
+texte « 参考：副歌期间，调音台的电平表不要一直停在红区。如果某条音轨变红，就拉低它的推子。 » @ 517,530
+bouton « 下载 Jersey club 鼓组（1 MB） » @ 471,650
+texte « 稍后 » @ 961,650
+texte « ▸ 为什么？ » @ 517,729
+bouton ✓ «   明白了 » @ 517,807
+icône ← «  上一步 » @ 117,897
+icône « 下一步  » → @ 918,897
+texte « 140 速度 » @ 700,1006
+icône ↶ « 撤销 » @ 147,1006
+icône ↷ « 重做 » [désactivé] @ 329,1006
+bouton ▶ « 歌曲 » @ 512,1007
+icône (trois points reliés) « 分享 » @ 889,1006
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 750,1213
+texte « ✎  记一笔 » @ 878,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 353,1213

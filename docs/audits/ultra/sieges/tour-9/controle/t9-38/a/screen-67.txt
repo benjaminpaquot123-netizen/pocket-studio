@@ -1,0 +1,53 @@
+Écran 67 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 192,42
+bouton « 专业 » @ 416,42
+bouton « A · 副歌 » ▾ @ 556,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+icône « 副歌 小节 9/104 » ▾ @ 352,144
+bouton « 140  BPM » @ 114,144
+bouton (flèches en boucle) « 循环 » [état « 关 »] @ 873,144
+bouton « ? » @ 990,144
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 143,265
+onglet « Acid 303 贝斯线 » @ 395,266
+onglet « 人声 麦克风 » @ 600,265
+onglet « Remix 分离 » @ 777,266
+bouton « 808 808 » @ 930,266
+bouton « 旋律 机器人声 » [coupé] @ 1007,265
+image → @ 1024,266
+texte « 段落：A · 副歌 » @ 147,361
+bouton « 录音棚底鼓 FX » [coupé] @ 75,444
+bouton « 808 FX » [coupé] @ 200,444
+bouton « 军鼓 » [coupé] @ 325,444
+bouton « 军鼓 2 » [coupé] @ 450,444
+texte « 小节 » @ 589,432
+bouton « 1 » [sélectionné] @ 673,432
+bouton « 2 » @ 754,432
+bouton « 跟随 » @ 864,432
+texte « 过渡 第 11/15 章 · 已完成 · 专业 » @ 445,543
+icône (liste) « 章节 » @ 906,544
+icône ⌄ @ 978,544
+image (coupe) @ 57,696
+texte « 太棒了，本章完成！ » @ 265,667
+texte « 听听你现在的歌曲，然后进入下一章：“效果”。 » @ 480,724
+bouton « 下一章   » → @ 517,813
+bouton ▶ «  听我的歌 » @ 327,900
+bouton ▶ «  听示例 » @ 788,900
+icône ← @ 57,901
+texte « 140 速度 » @ 700,1006
+icône ↶ « 撤销 » @ 147,1006
+icône ↷ « 重做 » [désactivé] @ 329,1006
+bouton ▶ « 歌曲 » @ 512,1007
+icône (trois points reliés) « 分享 » @ 889,1006
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » [sélectionné] @ 309,1123
+onglet (curseurs) « 混音 » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 750,1213
+texte « ✎  记一笔 » @ 878,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 353,1213

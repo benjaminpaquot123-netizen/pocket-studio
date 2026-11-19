@@ -1,0 +1,72 @@
+Écran 66 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 192,42
+bouton « 专业 » @ 416,42
+bouton « A · 副歌 » ▾ @ 556,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+icône « 副歌 小节 9/104 » ▾ @ 352,144
+bouton « 140  BPM » @ 114,144
+bouton (flèches en boucle) « 循环 » [état « 关 »] @ 873,144
+bouton « ? » @ 990,144
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 143,265
+onglet « Acid 303 贝斯线 » @ 395,266
+onglet « 人声 麦克风 » @ 600,265
+onglet « Remix 分离 » @ 777,266
+bouton « 808 808 » @ 930,266
+bouton « 旋律 机器人声 » [coupé] @ 1007,265
+image → @ 1024,266
+texte « 段落：A · 副歌 » @ 147,361
+bouton « 录音棚底鼓 FX » @ 75,462
+bouton « 808 FX » @ 200,462
+bouton « 军鼓 » @ 325,462
+bouton « 军鼓 2 » @ 450,462
+bouton « 拍手 FX » @ 75,568
+bouton « 踩镲 左 30 » @ 200,568
+bouton « 开镲 右 30 » @ 325,568
+bouton « 低音嗵鼓 » @ 450,568
+bouton « 中音嗵鼓 右 45 » [coupé] @ 75,643
+bouton « 高音嗵鼓 » [coupé] @ 200,643
+bouton « 鼓边 FX 右 50 » [coupé] @ 325,643
+bouton « 牛铃 » [coupé] @ 450,643
+texte « 小节 » @ 589,432
+bouton « 1 » [sélectionné] @ 673,432
+bouton « 2 » @ 754,432
+bouton « 跟随 » @ 864,432
+texte « 第 1/2 小节 · 镲片 » @ 712,516
+bouton « 1 » [état « 打击，力度 100% »] @ 575,596
+bouton [état « 空 »] @ 632,595
+bouton [état « 空 »] @ 688,595
+bouton [état « 空 »] @ 744,595
+bouton « 2 » [état « 空 »] @ 800,595
+bouton [état « 空 »] @ 856,595
+bouton [état « 空 »] @ 912,595
+bouton [état « 空 »] @ 968,595
+bouton « 3 » [coupé, état « 空 »] @ 575,647
+bouton [coupé, état « 空 »] @ 632,647
+bouton [coupé, état « 空 »] @ 688,647
+bouton [coupé, état « 空 »] @ 744,647
+bouton « 4 » [coupé, état « 空 »] @ 800,647
+bouton [coupé, état « 空 »] @ 856,647
+bouton [coupé, état « 空 »] @ 912,647
+bouton [coupé, état « 空 »] @ 968,647
+texte « 过渡 第 11/15 章 · 已完成 · 专业 » @ 445,729
+icône (liste) « 章节 » @ 906,730
+icône ⌃ @ 978,730
+icône (coupe) « 太棒了，本章完成！ » ⌃ @ 517,875
+texte « 140 速度 » @ 700,1006
+icône ↶ « 撤销 » @ 147,1006
+icône ↷ « 重做 » [désactivé] @ 329,1006
+bouton ▶ « 歌曲 » @ 512,1007
+icône (trois points reliés) « 分享 » @ 889,1006
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » [sélectionné] @ 309,1123
+onglet (curseurs) « 混音 » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 750,1213
+texte « ✎  记一笔 » @ 878,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 353,1213

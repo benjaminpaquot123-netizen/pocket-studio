@@ -1,0 +1,61 @@
+Écran 85 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+icône (flèches en boucle) « 副歌 小节 1/8 » ▾ @ 327,144
+bouton « 140  BPM » @ 114,144
+bouton (flèches en boucle) « 循环 » [allumé, état « 开 »] @ 873,144
+bouton « ? » @ 990,144
+image (courbe) @ 0,0
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 57,223
+bouton (casque) [coupé, état « 关 »] @ 111,223
+curseur [état « +0.0 dB », à 80 %] @ 84,384
+texte « +0.0 » @ 84,547
+image (étincelles) @ 70,602
+texte « 3 » @ 96,602
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 177,230
+bouton (casque) [coupé, état « 关 »] @ 231,230
+curseur [état « +0.0 dB », à 80 %] @ 204,398
+texte « +0.0 » @ 204,561
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 297,223
+bouton (casque) [coupé, état « 关 »] @ 351,223
+curseur [état « +0.0 dB », à 80 %] @ 324,384
+texte « +0.0 » @ 324,547
+image (étincelles) @ 314,602
+texte « 1 » @ 336,602
+bouton (haut-parleur et ondes) [coupé, allumé, état « 开 »] @ 417,223
+bouton (casque) [coupé, état « 关 »] @ 471,223
+curseur [état « -3.2 dB », à 66 %] @ 444,384
+texte « -3.2 » @ 444,547
+image (étincelles) @ 430,602
+texte « 2 » @ 456,602
+texte « 还没有任何变化。点子：让一个 Pad 的滤波器在 8 小节里慢慢打开。 » [coupé] @ 771,208
+titre « 总输出 » [état « 已展开 »] @ 653,303
+bouton « ? » @ 734,303
+texte « 音量：— » @ 628,370
+texte « 总音量 » @ 699,472
+texte « −6.0 dB » @ 920,472
+curseur [état « −6.0 dB », à 60 %] @ 771,552
+texte « 没有削波：一切正常。 » @ 737,628
+texte « 母带处理 第 14/15 章 · 第 1/1 步 · 专业 » @ 445,729
+icône (liste) « 章节 » @ 906,730
+icône ⌃ @ 978,730
+icône « 轮到你：在“总输出”里，把“目标响度”设为“自动（按风格）”：约 −8.5 LUFS。 阅读 » ⌃ @ 517,875
+texte « 140 速度 » @ 700,1006
+icône ↶ « 撤销 » @ 147,1006
+icône ↷ « 重做 » [désactivé] @ 329,1006
+bouton ▶ « 歌曲 » @ 512,1007
+icône (trois points reliés) « 分享 » @ 889,1006
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 750,1213
+texte « ✎  记一笔 » @ 878,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 353,1213

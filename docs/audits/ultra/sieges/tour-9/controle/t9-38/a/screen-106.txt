@@ -1,0 +1,9 @@
+Écran 106 (1035x1243)
+icône (maison) «  首页 » @ 99,58
+texte « 我的项目 » @ 598,59
+bouton (étincelles) «   帮我做一首 » @ 517,157
+bouton + «   新歌曲：风格、Demo 或空白 » @ 517,256
+bouton (boîte, flèche vers le haut) « 导入项目（.zip） » › @ 517,354
+bouton « 我的歌曲 已打开 刚刚 · 140 BPM · 104 小节 · 2:58 · 10 个段落 » @ 517,526
+icône ⋮ @ 981,526
+icône (trois points reliés) « 分享我的歌 » @ 178,585

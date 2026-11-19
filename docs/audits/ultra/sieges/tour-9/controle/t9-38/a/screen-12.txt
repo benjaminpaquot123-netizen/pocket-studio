@@ -1,0 +1,35 @@
+Écran 12 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 192,42
+bouton « 专业 » @ 416,42
+bouton « A · 副歌 » ▾ @ 556,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+bouton « 140  BPM » @ 114,144
+bouton « ? » @ 990,144
+texte « 理解段落 第 8/15 章 · 已完成 · 专业 » @ 445,239
+icône (liste) « 章节 » @ 906,240
+icône ⌄ @ 978,240
+image (coupe) @ 57,392
+texte « 太棒了，本章完成！ » @ 265,363
+texte « 未收听，已跳过示例。 » @ 277,420
+bouton « 下一章   » → @ 517,813
+bouton ▶ «  听我的歌 » @ 327,900
+bouton ▶ «  听示例 » @ 788,900
+icône ← @ 57,901
+texte « 140 速度 » @ 700,1006
+icône ↶ « 撤销 » @ 147,1006
+icône ↷ « 重做 » [désactivé] @ 329,1006
+bouton ▶ « 歌曲 » @ 512,1007
+icône (trois points reliés) « 分享 » @ 889,1006
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » [sélectionné] @ 309,1123
+onglet (curseurs) « 混音 » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 750,1213
+texte « ✎  记一笔 » @ 878,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 353,1213

@@ -1,0 +1,52 @@
+Écran 91 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+icône (flèches en boucle) « 副歌 小节 1/8 » ▾ @ 327,144
+bouton « 140  BPM » @ 114,144
+bouton (flèches en boucle) « 循环 » [allumé, état « 开 »] @ 873,144
+bouton « ? » @ 990,144
+texte « +0.0 » [coupé] @ 84,223
+image (étincelles) @ 70,276
+texte « 3 » @ 96,276
+texte « +0.0 » @ 204,235
+texte « +0.0 » [coupé] @ 324,223
+image (étincelles) @ 314,276
+texte « 1 » @ 336,276
+texte « -3.2 » [coupé] @ 444,223
+image (étincelles) @ 430,276
+texte « 2 » @ 456,276
+image (courbe) @ 0,0
+texte « 曲线和效果 » [coupé] @ 198,369
+texte « 总音量 » [coupé] @ 699,216
+texte « −6.0 dB » [coupé] @ 920,212
+curseur [état « −6.0 dB », à 60 %] @ 771,276
+texte « 没有削波：一切正常。 » @ 737,351
+texte « 导出你的曲子 第 15/15 章 · 第 2/2 步 · 专业 » @ 445,446
+icône (liste) « 章节 » @ 906,447
+icône ⌄ @ 978,447
+texte « 轮到你：导出你的曲子，然后分享。 » @ 357,561
+bouton « 下载 Jersey club 鼓组（1 MB） » @ 471,650
+texte « 稍后 » @ 961,650
+texte « ▸ 为什么？ » @ 517,729
+bouton (doigt qui touche) «   我来做 » @ 517,807
+icône ← «  上一步 » @ 117,897
+icône « 下一步  » → @ 918,897
+texte « 140 速度 » @ 700,1006
+icône ↶ « 撤销 » @ 147,1006
+icône ↷ « 重做 » [désactivé] @ 329,1006
+bouton ▶ « 歌曲 » @ 512,1007
+icône (trois points reliés) « 分享 » @ 889,1006
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 750,1213
+texte « ✎  记一笔 » @ 878,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 353,1213

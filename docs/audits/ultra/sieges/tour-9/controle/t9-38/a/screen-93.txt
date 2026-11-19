@@ -1,0 +1,26 @@
+Écran 93 (1035x1243)
+dessin @ 518,36
+texte « 准备好分享了吗？ » @ 482,110
+icône ✕ @ 932,111
+champ « 歌曲名称（也是项目名称） » contenu « 我的歌曲 » @ 518,236
+icône ✕ @ 932,248
+texte « “分享”也会重命名项目“我的项目 1”。 » @ 518,351
+texte « 2:58 » @ 126,429
+texte « 5 个段落 » @ 274,432
+texte « 音量：−9.0，响，像俱乐部音乐 » @ 417,489
+bouton ▶ «  试听 » @ 873,493
+texte « 详情 » @ 677,553
+bouton « ? » @ 745,553
+bouton « 流媒体 » @ 316,643
+bouton « 俱乐部 » @ 492,643
+bouton « 自动（按风格） » [sélectionné] @ 747,643
+texte « 目标响度 » @ 146,643
+bouton « ? » @ 939,643
+image (rond coché) @ 83,714
+texte « 一切就绪：没有忘关的独奏，没有被静音的音轨。 » @ 540,753
+bouton (clap de cinéma) «   社交媒体视频 · 30 秒 » @ 518,868
+bouton « M4A · 适合分享 » @ 233,971
+bouton « WAV · 最高品质 » [sélectionné] @ 575,971
+bouton (trois points reliés) «   分享 » @ 518,1068
+bouton (dossier) « 我的文件 找到并再次发送：M4A、WAV、视频、.zip » › @ 496,1186
+bouton « ? » @ 946,1186

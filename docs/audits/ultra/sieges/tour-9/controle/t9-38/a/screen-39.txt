@@ -1,0 +1,43 @@
+Écran 39 (1035x1243)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+icône « 前奏 小节 1/40 » ▾ @ 339,144
+bouton « 140  BPM » @ 114,144
+bouton (flèches en boucle) « 循环 » [état « 关 »] @ 873,144
+bouton « ? » @ 990,144
+bouton « + B · 前奏 » @ 166,243
+bouton « + C · 主歌 » @ 167,331
+bouton « + D · 预副歌 » @ 186,421
+bouton « + E · 桥段 » @ 165,511
+bouton « + 新段落（复制 E · 桥段） » @ 263,601
+bouton « + 新的空段落 » [coupé] @ 195,656
+titre « 积木 » [état « 已展开 »] @ 633,273
+bouton « ? » @ 695,273
+texte « 一块积木 = 一个段落的鼓、Acid 和音符。歌曲的段落就是由它们组成的。点一块来编辑，按住拖动可以移动它。 » @ 771,444
+texte « 显示： » @ 608,624
+bouton « 8 » [sélectionné] @ 713,624
+bouton « 16 » @ 804,624
+bouton « 24 » @ 908,624
+texte « 排列你的段落 第 10/15 章 · 第 1/2 步 · 专业 » @ 445,729
+icône (liste) « 章节 » @ 906,730
+icône ⌃ @ 978,730
+icône « 轮到你：在“结构”里的“添加”下面，按顺序点结尾是 前奏、副歌、主歌、预副歌、副歌、主歌、预副歌、桥段、副歌 的按钮，最后再点 前奏 作为尾奏。下一步会设好它们的时长。 阅读 » ⌃ @ 517,875
+texte « 140 速度 » @ 700,1006
+icône ↶ « 撤销 » @ 147,1006
+icône ↷ « 重做 » [désactivé] @ 329,1006
+bouton ▶ « 歌曲 » @ 512,1007
+icône (trois points reliés) « 分享 » @ 889,1006
+onglet (ligne brisée et points) « 结构 » [sélectionné] @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » @ 936,1123
+texte « ●  REC » @ 750,1213
+texte « ✎  记一笔 » @ 878,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 353,1213

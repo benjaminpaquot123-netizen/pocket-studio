@@ -1,0 +1,27 @@
+Écran 58 (1035x1243)
+dessin @ 518,36
+texte « 段落 2 · A · 副歌 » @ 246,110
+texte « 关闭 » @ 916,139
+texte « 8 小节  ·  播放 3 次 » @ 225,177
+texte « 在歌曲中播放 3 次。编辑： » @ 299,249
+bouton (étincelles) « 仅这一个 » @ 287,335
+bouton (crayon) « 全部 3 次 » @ 749,335
+bouton (barres de son) « 结尾加花 » @ 287,434
+bouton ❚❚ « 之后间奏 · 4 小节 » @ 749,434
+bouton ❚❚ « 之后间奏 · 8 小节 » @ 287,533
+bouton (courbe qui monte) « 之前渐强段 · 4 小节 » @ 749,533
+bouton (courbe qui monte) « 之前渐强段 · 8 小节 » @ 287,632
+bouton (haut-parleur et ondes) « 淡入 » @ 749,632
+bouton (haut-parleur et une onde) « 淡出 » @ 287,731
+bouton (drapeau) « 加一个结尾 » @ 749,731
+texte « 能量：3 » @ 133,816
+bouton « 1 · Pad » @ 147,896
+bouton « 2 · + 贝斯 » @ 352,896
+bouton « 3 · + 鼓 » [sélectionné] @ 563,896
+bouton « 4 · 全开 » @ 757,896
+texte « 长度 » @ 101,975
+champ « 小节 » contenu «  » @ 306,1088
+icône − [désactivé] @ 98,1088
+icône + @ 179,1088
+texte « 好 » [désactivé] @ 441,1088
+texte « 段落 » @ 101,1200

@@ -1,0 +1,33 @@
+Écran 105 (1035x1243)
+icône (dossier ouvert) ✓ « 我的歌曲 已保存 » @ 291,42
+bouton « 专业 » @ 614,42
+icône ↶ @ 691,42
+icône ↷ [désactivé] @ 763,42
+bouton ● @ 835,42
+bouton ▶ « 这个段落 » @ 912,42
+icône (trois points reliés) @ 990,42
+icône (flèches en boucle) « 副歌 小节 1/8 » ▾ @ 327,144
+bouton « 140  BPM » @ 114,144
+bouton (flèches en boucle) « 循环 » [allumé, état « 开 »] @ 873,144
+bouton « ? » @ 990,144
+bouton (maison) « 首页 继续、新歌曲、Remix… » › @ 518,290
+bouton (dossier ouvert) « 我的项目 打开、创建、复制、分享项目 » › @ 518,436
+bouton (dossier) « 我的文件 找到并再次发送：M4A、WAV、视频、.zip » › @ 518,582
+bouton (? dans un rond) « 帮助 快速导览、向导、术语表 » › @ 518,728
+bouton (drapeau) « 我的第一首歌，跟着向导做 最初的卡片，从选风格到分享 » › [coupé] @ 518,837
+texte « 继续教程 » @ 258,909
+texte « 重新开始教程 » @ 776,909
+texte « 140 速度 » @ 700,1006
+icône ↶ « 撤销 » @ 147,1006
+icône ↷ « 重做 » [désactivé] @ 329,1006
+bouton ▶ « 歌曲 » @ 512,1007
+icône (trois points reliés) « 分享 » @ 889,1006
+onglet (ligne brisée et points) « 结构 » @ 99,1123
+onglet (touches de piano) « 音色 » @ 309,1123
+onglet (curseurs) « 混音 » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « 更多 » [sélectionné] @ 936,1123
+texte « ●  REC » @ 750,1213
+texte « ✎  记一笔 » @ 878,1213
+texte « ⋯ » @ 987,1213
+texte « 反馈模式 » @ 353,1213

@@ -12,6 +12,8 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 ## Discussions du tour 9 (19 novembre, 08 h)
 
+- 08 h 26 : T9-BALAYAGE fini (eq/tour-9-balayage 6cb53e072, archivé) : 3/3 connus retrouvés ; graves probables : grille cachée par le panneau (360 dp même à 100 %, toutes langues), « Déjà fait » faux sur 717 étapes (cause unique `TutoPlay.undone`), compte-faux maracas, 40 vélocités non vérifiées ; 305 finitions. Seul le rapport (docs) entre maintenant ; les 3 tests et `scripts/bench/tuto-sweep.sh` attendent la fin des vagues (rien n'entre dans le banc pendant une vague), puis une CI. Place libérée → siège t9-11.
+
 - 08 h 12 : T9-PLAN fini (b39201e84 fusionné → ab7fbf4e8, archivé) : 76 sièges t9-01 à t9-76 en 10 vagues, code testé ab7fbf4e8. Vague 1 envoyée : attente-01 à 08 = t9-01 à t9-08 (t9-02, t9-04 = preuve de l'amenée hors house/techno). Rotation : t9-09 session_014RxrDJygytJrYW5v5XvDEJ, t9-10 session_014RxrDM5RKsa62BdNuCT8AS. Ouvertes : 11 (balayage + 10 sièges).
 
 - 08 h 06 : T9-REVUE fini (7fd356dee fusionné, discussion archivée) : 0 bloquant, appli 0 grave ; 3 tests creux graves (PlusRowsFit:65, GuideNoEmptyStep:33-37, OrdinaryTestsLeaveNothing:69-94) ajoutés au lot « tests creux » de la réparation ; 15 à noter dans `docs/REVIEW.md`. Place libérée : 10 discussions ouvertes.

@@ -1,0 +1,53 @@
+Écran 1 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 358,42
+bouton « Simple » @ 758,42
+bouton ● @ 846,42
+bouton ▶ « this part » @ 918,42
+icône ⋮ @ 990,42
+bouton « 165  Tempo » @ 83,114
+bouton « ? » @ 990,114
+icône « Part: A · Groove » ▾ @ 117,180
+bouton « Studio bass drum FX » [coupé] @ 75,269
+bouton « Bass drum 2 » [coupé] @ 200,269
+bouton « Snare FX » [coupé] @ 325,269
+bouton « Snare 2 » [coupé] @ 450,269
+titre « STEPS: STUDIO BASS DRUM » [coupé, état « Expanded »] @ 705,287
+bouton « ? » [coupé] @ 838,288
+bouton « All pads » [coupé] @ 926,287
+icône (liste) « Chapters » @ 894,352
+icône ⌄ @ 978,352
+texte « Understanding parts Chapter 9/15 · Step 1/7 · Easy » @ 433,352
+texte « A block is the loop of a single instrument (the kick, the bass). A part is several blocks playing together. » @ 517,451
+texte « Energy » @ 55,508
+texte « Intro » @ 143,601
+texte « 32 » [coupé] @ 144,614
+texte « Drop » @ 390,601
+texte « 32 » [coupé] @ 391,614
+texte « Break » @ 561,601
+texte « 12 » [coupé] @ 561,614
+texte « 4 » [coupé] @ 625,608
+texte « Drop 2 » @ 767,601
+texte « 32 » [coupé] @ 767,614
+texte « End » @ 953,601
+texte « 16 » [coupé] @ 953,614
+bouton « Download the Jungle kit (6 MB) » @ 471,673
+texte « Later » @ 961,673
+texte « ▸ Why? » @ 517,739
+icône « Read on » ⌄ @ 517,787
+bouton ✓ «   Got it » @ 517,859
+icône ← «  Previous » @ 101,943
+icône « Next  » → @ 955,943
+icône ↶ « Undo » @ 147,1027
+image ↷ @ 329,1017
+bouton ▶ « the song » @ 512,1027
+texte « 165 Tempo » @ 700,1027
+icône ⋮ « More » @ 889,1027
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Note » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 385,1213

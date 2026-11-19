@@ -531,7 +531,9 @@ fun TutoPanel(
     var wholeWords by remember(step.id, ui.open, ui.progress.level, readAll) { mutableIntStateOf(0) }
     val lowRoom = (TutoHints.gridInSight && (TutoHints.cells?.second?.isNotEmpty() == true || TutoHints.erase?.values?.any { it.isNotEmpty() } == true)) ||
         (TutoHints.soundButtonInSight && TutoHints.knobs.isNotEmpty())
-    val cellsToTouch = lowRoom && !readAll
+    // Tour 9 F012 (t9-40, t9-52, t9-68): « Bravo » in the words' low room over the cells was cut under « Lire la suite »:
+    // the step done has no cells left to touch, its banner takes its whole height (the panel's height taken again).
+    val cellsToTouch = lowRoom && !readAll && !ui.bravo
     var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.

@@ -1,0 +1,42 @@
+Écran 30 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ▶ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 98,123
+icône « Intro compás 1/32 » ▾ @ 308,123
+bouton « ? » @ 543,123
+icône ▶ « E · Break × 1  ·  8 comp. » @ 186,204
+icône − [désactivé] @ 366,204
+icône + @ 438,204
+icône ⋮ @ 510,204
+texte « − / + : repeticiones. Gris: duración fija (sugerida o Live) o 1 sola vez. » @ 294,294
+texte « Añadir al final: » @ 137,362
+bouton « + A · Groove » @ 163,431
+bouton « + B · Intro » @ 395,431
+bouton « + C · Subida » @ 161,512
+bouton « + D · Drop » @ 393,512
+bouton « + E · Break » @ 151,593
+bouton « + F · Drop 2 » @ 384,593
+bouton « + G · Fin » @ 134,674
+bouton « + Nueva parte (copia de G · Fin) » @ 293,755
+bouton « + Nueva parte vacía » [coupé] @ 215,801
+texte « Ordena tus partes Capítulo 9/13 · Paso 1/2 · Fácil » @ 202,852
+icône (liste) « Capítulos » @ 439,853
+icône ⌃ @ 531,853
+icône « Te toca: en “Mi canción”, bajo “Añadir”, toca en orden Intro, Subida, Drop, Break, Subida, Drop 2 y Fin. Leer » ⌃ @ 294,965
+icône ↶ « Deshacer » @ 72,1061
+image ↷ @ 185,1048
+bouton ▶ « la canción » @ 304,1061
+texte « 120 Tempo » @ 424,1061
+icône ⋮ « Más » @ 527,1061
+onglet (lignes et note) « Mi canción » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Ritmo » @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 356,1248
+texte « ✎  Anotar » @ 454,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 160,1248

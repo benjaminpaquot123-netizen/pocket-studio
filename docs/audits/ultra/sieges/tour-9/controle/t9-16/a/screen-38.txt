@@ -1,0 +1,38 @@
+Écran 38 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ■ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 98,123
+icône (flèches en boucle) « Subida compás 1/8 » ▾ @ 271,123
+bouton (flèches en boucle) « Bucle » [allumé, état « activado »] @ 427,123
+bouton « ? » @ 543,123
+icône (flèches en boucle) « Parte: C · Subida » ▾ @ 164,198
+texte « Se repite en bucle mientras la editas. ⟳ Bucle, arriba, para volver a la canción. » @ 294,230
+texte « Las transiciones Capítulo 10/13 · Paso 1/3 · Fácil » @ 202,307
+icône (liste) « Capítulos » @ 439,308
+icône ⌄ @ 531,308
+texte « Te toca: final de la Subida, pad “Tom medio”: toca las 4 casillas del penúltimo tiempo. » @ 294,460
+texte « • Tiempo: cada “1, 2, 3, 4” de un compás, donde marcas con el pie. » @ 294,574
+texte « • Pad: un cuadrado que tocas para que suene un sonido. » @ 294,649
+texte « ▸ ¿Por qué? » @ 294,714
+bouton (doigt qui touche) «   Lo hago yo » @ 294,783
+bouton ▶ «  Escuchar el ejemplo » @ 154,881
+bouton (œil) «  Muéstramelo » @ 433,881
+icône ← «  Anterior » @ 112,976
+icône « Siguiente  » → @ 466,976
+icône ↶ « Deshacer » @ 72,1061
+image ↷ @ 185,1048
+bouton ▶ « la canción » @ 304,1061
+texte « 120 Tempo » @ 424,1061
+icône ⋮ « Más » @ 527,1061
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 356,1248
+texte « ✎  Anotar » @ 454,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 160,1248

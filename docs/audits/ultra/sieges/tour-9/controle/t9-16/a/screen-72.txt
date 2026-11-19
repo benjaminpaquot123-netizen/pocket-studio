@@ -1,0 +1,7 @@
+Écran 72 (588x1278)
+texte « Compartir mi canción · Mi-canción-20261119-081454.m4a » @ 294,460
+bouton « WhatsApp » @ 294,549
+bouton « Messages » @ 294,621
+bouton « Gmail » @ 294,693
+bouton « Drive » @ 294,765
+bouton « Files » @ 294,837

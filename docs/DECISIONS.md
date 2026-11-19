@@ -1547,3 +1547,4 @@
 - 2026-11-19 · Mode boost, équipes (Benjamin : « Tout ce qui est réparable tu envois. Même si c'est le même fichier ») : tout défaut réparable part tout de suite à une équipe, même sur un fichier déjà ouvert (fonctions différentes, conflits réglés par le lot qui fusionne après). Plafond des 31 discussions levé par Benjamin. Retour arrière : un lot par fichier.
 - 2026-11-19 · Mode boost, tuto : avec `PS_JUGE_BOOST=1`, le pré-vol et le portail reportent le siège de contrôle du tuto à la grande vérification de fin au lieu de refuser. Raison : aucun rejeu de testeur avant l'entrée en mode boost. Retour arrière : ne plus exporter la variable.
 - 2026-11-19 · Équipes muettes, fermées seules après « fini » (Benjamin). Raison : les discussions parlaient trop. Retour arrière : retirer la ligne de CLAUDE.md.
+- 2026-11-19 · lot « L10 » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-L10.md`

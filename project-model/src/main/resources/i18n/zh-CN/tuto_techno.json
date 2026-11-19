@@ -4,7 +4,6 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 138 BPM, 138 battements par minute. « Je le fais » ouvre la fiche Tempo.": "轮到你：把速度（曲子的快慢）设为 138 BPM，也就是每分钟 138 拍。“我来做”会打开“速度”面板。",
   "À toi : règle le tempo sur 138 BPM. « Je le fais » ouvre la fiche Tempo.": "轮到你：把速度设为 138 BPM。“我来做”会打开“速度”面板。",
   "Sans ça, ton morceau reste à 120 BPM : l'acid techno de Londres tourne autour de 138.": "不设的话，你的曲子会停在 120 BPM：伦敦的 acid techno 大约在 138。",
-  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.": "轮到你：把调设为 A 弗里几亚：303 围着 A、它的八度和小二度 B♭ 转。“我来做”会打开“音调”面板。",
   "Sans cette gamme, tes notes ne prendront pas la couleur du acid techno.": "没有这个音阶，你的音符就出不来 acid techno 的色彩。",
   "La 909": "909",
   "Une batterie simple : toute la place reste à la 303.": "简单的鼓：把所有空间都留给 303。",
@@ -30,7 +29,6 @@
   "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».": "Acid 线条要在制作人的界面里一格一格地写。点“示范给我看”：应用会帮你写在“Acid 303”音轨上。然后用“听你的成果”来听。",
   "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.": "重音让一个音尖叫，滑音把它连到下一个音：只用三个音，303 就会说话。",
   "Sans ligne acide, il n'y a pas d'acid techno.": "没有 Acid 线条，就没有 acid techno。",
-  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.": "轮到你：打开“Acid 303”标签页，一格一格地写 2 小节的线条：先写虚线音符（A、它的八度、C、G、E），再在 4 格上加重音（!），在 3 格上加滑音（⌒）。第 2 小节是变体：用 B♭ 代替 G，最后一格留空。",
   "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.": "你做的一切都在一起播放：这就是你的起点循环。其他段落都从它诞生。",
   "Écoute ta boucle quelques secondes, puis l'exemple. Une 909 qui cogne et une 303 qui couine : c'est l'acid techno.": "把你的循环听几秒，然后听示例。一台猛砸的 909 加一台吱吱叫的 303：这就是 acid techno。",
   "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.": "轮到你：把这个段落命名为“律动”：它是你的起点段落，所有东西都在里面播放。",
@@ -721,5 +719,7 @@
   "Bouton : Créer la partie « Montée ». La tension monte parce que le kick manque et que le clap s'emballe. Le temps de silence de la fin, tu le feras au chapitre 12.": "按钮：创建段落“渐强段”。因为缺了底鼓、拍手越来越急，紧张感上升。结尾那一拍的安静，到第 12 章再做。",
   "Bouton : Créer la partie « Drop 2 ». Une brique retirée suffit : l'oreille sent que quelque chose a changé.": "按钮：创建段落“高潮 2”。拿掉一块积木就够了：耳朵会感觉到有什么变了。",
   "Bouton : Créer la partie « Break ». Le vide après le plein : l'oreille se repose.": "按钮：创建段落“间奏”。满之后的空：耳朵休息一下。",
-  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "按钮：创建段落“结束”。结束段给 DJ 留出接下一首的空间。"
+  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "按钮：创建段落“结束”。结束段给 DJ 留出接下一首的空间。",
+  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.": "轮到你：把调设为 A 弗里几亚：303 围着 A、它的八度和小二度 A# 转。“我来做”会打开“音调”面板。",
+  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.": "轮到你：打开“Acid 303”标签页，一格一格地写 2 小节的线条：先写虚线音符（A、它的八度、C、G、E），再在 4 格上加重音（!），在 3 格上加滑音（⌒）。第 2 小节是变体：用 A# 代替 G，最后一格留空。"
 }

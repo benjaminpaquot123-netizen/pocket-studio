@@ -4,7 +4,6 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 138 BPM, 138 battements par minute. « Je le fais » ouvre la fiche Tempo.": "Te toca: ajusta el tempo (la velocidad del tema) a 138 BPM, 138 pulsaciones por minuto. “Lo hago yo” abre la ficha Tempo.",
   "À toi : règle le tempo sur 138 BPM. « Je le fais » ouvre la fiche Tempo.": "Te toca: ajusta el tempo a 138 BPM. “Lo hago yo” abre la ficha Tempo.",
   "Sans ça, ton morceau reste à 120 BPM : l'acid techno de Londres tourne autour de 138.": "Sin esto, tu tema se queda a 120 BPM: el acid techno de Londres gira en torno a 138.",
-  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.": "Te toca: ajusta la tonalidad a La frigio: la 303 gira sobre La, su octava y la segunda menor Si♭. “Lo hago yo” abre la ficha Tono.",
   "Sans cette gamme, tes notes ne prendront pas la couleur du acid techno.": "Sin esta escala, tus notas no tendrán el color del acid techno.",
   "La 909": "La 909",
   "Une batterie simple : toute la place reste à la 303.": "Una batería sencilla: todo el espacio queda para la 303.",
@@ -30,7 +29,6 @@
   "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».": "La línea ácida se escribe en una pantalla de productor, casilla a casilla. Toca “Muéstramelo”: la app la escribe por ti en la pista “Acid 303”. Luego escúchala con “Escuchar tu resultado”.",
   "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.": "El acento hace gritar una nota, el slide la une a la siguiente: con solo tres notas, la 303 habla.",
   "Sans ligne acide, il n'y a pas d'acid techno.": "Sin línea ácida, no hay acid techno.",
-  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.": "Te toca: abre la pestaña “Acid 303” y escribe la línea de 2 compases, casilla a casilla: las notas punteadas (La, su octava, Do, Sol, Mi), luego los acentos (!) en 4 casillas y los slides (⌒) en 3. El compás 2 es la variante: Si♭ en lugar de Sol, la última casilla vacía.",
   "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.": "Todo lo que has hecho suena junto: es tu bucle de partida. Las demás partes nacerán de él.",
   "Écoute ta boucle quelques secondes, puis l'exemple. Une 909 qui cogne et une 303 qui couine : c'est l'acid techno.": "Escucha tu bucle unos segundos y luego el ejemplo. Una 909 que pega y una 303 que chilla: eso es el acid techno.",
   "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.": "Te toca: llama a esta parte “Groove”: es tu parte de partida, donde suena todo.",
@@ -721,5 +719,7 @@
   "Bouton : Créer la partie « Montée ». La tension monte parce que le kick manque et que le clap s'emballe. Le temps de silence de la fin, tu le feras au chapitre 12.": "Botón: Crear la parte “Subida”. La tensión sube porque falta el kick y el clap se desboca. El tiempo de silencio del final lo harás en el capítulo 12.",
   "Bouton : Créer la partie « Drop 2 ». Une brique retirée suffit : l'oreille sent que quelque chose a changé.": "Botón: Crear la parte “Drop 2”. Basta con quitar un ladrillo: el oído nota que algo ha cambiado.",
   "Bouton : Créer la partie « Break ». Le vide après le plein : l'oreille se repose.": "Botón: Crear la parte “Break”. El vacío después de lo lleno: el oído descansa.",
-  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Botón: Crear la parte “Fin”. El Fin le deja al DJ con qué pasar al siguiente tema."
+  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Botón: Crear la parte “Fin”. El Fin le deja al DJ con qué pasar al siguiente tema.",
+  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.": "Te toca: ajusta la tonalidad a La frigio: la 303 gira sobre La, su octava y la segunda menor La#. “Lo hago yo” abre la ficha Tono.",
+  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.": "Te toca: abre la pestaña “Acid 303” y escribe la línea de 2 compases, casilla a casilla: las notas punteadas (La, su octava, Do, Sol, Mi), luego los acentos (!) en 4 casillas y los slides (⌒) en 3. El compás 2 es la variante: La# en lugar de Sol, la última casilla vacía."
 }

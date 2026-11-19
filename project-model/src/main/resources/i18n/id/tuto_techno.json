@@ -4,7 +4,6 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 138 BPM, 138 battements par minute. « Je le fais » ouvre la fiche Tempo.": "Giliranmu: atur tempo (kecepatan lagu) ke 138 BPM, 138 ketukan per menit. “Aku yang buat” membuka lembar Tempo.",
   "À toi : règle le tempo sur 138 BPM. « Je le fais » ouvre la fiche Tempo.": "Giliranmu: atur tempo ke 138 BPM. “Aku yang buat” membuka lembar Tempo.",
   "Sans ça, ton morceau reste à 120 BPM : l'acid techno de Londres tourne autour de 138.": "Tanpa ini, lagumu tetap di 120 BPM: acid techno London berputar di sekitar 138.",
-  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.": "Giliranmu: atur nada ke A Frigia: 303 berputar di A, oktafnya, dan minor second B♭. “Aku yang buat” membuka lembar Nada.",
   "Sans cette gamme, tes notes ne prendront pas la couleur du acid techno.": "Tanpa tangga nada ini, not-notmu tidak akan punya warna acid techno.",
   "La 909": "909",
   "Une batterie simple : toute la place reste à la 303.": "Drum yang sederhana: semua ruang tersisa untuk 303.",
@@ -30,7 +29,6 @@
   "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».": "Baris acid ditulis di layar produser, kotak demi kotak. Sentuh “Tunjukkan”: aplikasi menulisnya untukmu di trek “Acid 303”. Lalu dengarkan dengan “Dengar hasilmu”.",
   "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.": "Aksen membuat not menjerit, slide menyambungnya ke not berikutnya: dengan tiga not saja, 303 sudah bicara.",
   "Sans ligne acide, il n'y a pas d'acid techno.": "Tanpa baris acid, tidak ada acid techno.",
-  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.": "Giliranmu: buka tab “Acid 303” dan tulis baris 2 birama, kotak demi kotak: not bergaris putus (A, oktafnya, C, G, E), lalu aksen (!) di 4 kotak dan slide (⌒) di 3. Birama 2 adalah variasinya: B♭ menggantikan G, kotak terakhir kosong.",
   "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.": "Semua yang kamu buat main bersama: itulah loop awalmu. Bagian lain akan lahir darinya.",
   "Écoute ta boucle quelques secondes, puis l'exemple. Une 909 qui cogne et une 303 qui couine : c'est l'acid techno.": "Dengarkan loop-mu beberapa detik, lalu contohnya. 909 yang menghentak dan 303 yang mencicit: itulah acid techno.",
   "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.": "Giliranmu: beri nama bagian ini “Groove”: ini bagian awalmu, tempat semuanya main.",
@@ -721,5 +719,7 @@
   "Bouton : Créer la partie « Montée ». La tension monte parce que le kick manque et que le clap s'emballe. Le temps de silence de la fin, tu le feras au chapitre 12.": "Tombol: Buat bagian “Build-up”. Ketegangan naik karena kick hilang dan clap makin menggila. Satu ketukan hening di akhir akan kamu buat di bab 12.",
   "Bouton : Créer la partie « Drop 2 ». Une brique retirée suffit : l'oreille sent que quelque chose a changé.": "Tombol: Buat bagian “Drop 2”. Mencabut satu blok sudah cukup: telinga merasa ada yang berubah.",
   "Bouton : Créer la partie « Break ». Le vide après le plein : l'oreille se repose.": "Tombol: Buat bagian “Break”. Kosong setelah penuh: telinga beristirahat.",
-  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Tombol: Buat bagian “Akhir”. Akhir memberi DJ bahan untuk pindah ke lagu berikutnya."
+  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Tombol: Buat bagian “Akhir”. Akhir memberi DJ bahan untuk pindah ke lagu berikutnya.",
+  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.": "Giliranmu: atur nada ke A Frigia: 303 berputar di A, oktafnya, dan minor second A#. “Aku yang buat” membuka lembar Nada.",
+  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.": "Giliranmu: buka tab “Acid 303” dan tulis baris 2 birama, kotak demi kotak: not bergaris putus (A, oktafnya, C, G, E), lalu aksen (!) di 4 kotak dan slide (⌒) di 3. Birama 2 adalah variasinya: A# menggantikan G, kotak terakhir kosong."
 }

@@ -4,7 +4,6 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 138 BPM, 138 battements par minute. « Je le fais » ouvre la fiche Tempo.": "Your turn: set the tempo (the song's speed) to 138 BPM, 138 beats per minute. “I'll do it” opens the Tempo sheet.",
   "À toi : règle le tempo sur 138 BPM. « Je le fais » ouvre la fiche Tempo.": "Your turn: set the tempo to 138 BPM. “I'll do it” opens the Tempo sheet.",
   "Sans ça, ton morceau reste à 120 BPM : l'acid techno de Londres tourne autour de 138.": "Otherwise your song stays at 120 BPM: London acid techno runs at around 138.",
-  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.": "Your turn: set the key to A Phrygian: the 303 loops on A, its octave and the minor second B♭. “I'll do it” opens the Key sheet.",
   "Sans cette gamme, tes notes ne prendront pas la couleur du acid techno.": "Without this scale, your notes won't take on the colour of acid techno.",
   "La 909": "The 909",
   "Une batterie simple : toute la place reste à la 303.": "Simple drums: all the room is left for the 303.",
@@ -30,7 +29,6 @@
   "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».": "The acid line is written in a producer's screen, cell by cell. Tap “Show me”: the app writes it for you on the “Acid 303” track. Then listen to it with “Listen to your result”.",
   "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.": "The accent makes a note scream, the slide ties it to the next: with only three notes, the 303 talks.",
   "Sans ligne acide, il n'y a pas d'acid techno.": "Without an acid line, there's no acid techno.",
-  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.": "Your turn: open the “Acid 303” tab and write the 2-bar line, cell by cell: the dotted notes (A, its octave, C, G, E), then the accents (!) on 4 cells and the slides (⌒) on 3. Bar 2 is the variation: B♭ instead of G, the last cell empty.",
   "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.": "Everything you've made plays together: it's your starting loop. The other parts will grow out of it.",
   "Écoute ta boucle quelques secondes, puis l'exemple. Une 909 qui cogne et une 303 qui couine : c'est l'acid techno.": "Listen to your loop for a few seconds, then to the example. A pounding 909 and a squealing 303: that's acid techno.",
   "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.": "Your turn: name this part “Groove”: it's your starting part, the one where everything plays.",
@@ -721,5 +719,7 @@
   "Bouton : Créer la partie « Montée ». La tension monte parce que le kick manque et que le clap s'emballe. Le temps de silence de la fin, tu le feras au chapitre 12.": "Button: Create the “Build-up” part. Tension rises because the kick is missing and the clap races. The beat of silence at the end, you'll make in chapter 12.",
   "Bouton : Créer la partie « Drop 2 ». Une brique retirée suffit : l'oreille sent que quelque chose a changé.": "Button: Create the “Drop 2” part. Removing one block is enough: the ear feels something has changed.",
   "Bouton : Créer la partie « Break ». Le vide après le plein : l'oreille se repose.": "Button: Create the “Break” part. Emptiness after fullness: the ear rests.",
-  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Button: Create the “End” part. The End gives the DJ something to move to the next song."
+  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Button: Create the “End” part. The End gives the DJ something to move to the next song.",
+  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.": "Your turn: set the key to A Phrygian: the 303 loops on A, its octave and the minor second A#. “I'll do it” opens the Key sheet.",
+  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.": "Your turn: open the “Acid 303” tab and write the 2-bar line, cell by cell: the dotted notes (A, its octave, C, G, E), then the accents (!) on 4 cells and the slides (⌒) on 3. Bar 2 is the variation: A# instead of G, the last cell empty."
 }

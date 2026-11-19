@@ -4,7 +4,6 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 138 BPM, 138 battements par minute. « Je le fais » ouvre la fiche Tempo.": "직접 해 보세요: 템포(곡의 빠르기)를 138 BPM, 1분에 138박으로 맞추세요. “직접 할게요”를 누르면 템포 시트가 열려요.",
   "À toi : règle le tempo sur 138 BPM. « Je le fais » ouvre la fiche Tempo.": "직접 해 보세요: 템포를 138 BPM으로 맞추세요. “직접 할게요”를 누르면 템포 시트가 열려요.",
   "Sans ça, ton morceau reste à 120 BPM : l'acid techno de Londres tourne autour de 138.": "안 그러면 곡이 120 BPM에 머물러요. 런던의 애시드 테크노는 138 정도로 돌아요.",
-  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.": "직접 해 보세요: 키를 A 프리지안으로 맞추세요. 303은 A, 그 옥타브, 단2도 B♭ 위를 돌아요. “직접 할게요”를 누르면 키 시트가 열려요.",
   "Sans cette gamme, tes notes ne prendront pas la couleur du acid techno.": "이 스케일이 없으면 노트가 애시드 테크노의 색깔을 띠지 않아요.",
   "La 909": "909",
   "Une batterie simple : toute la place reste à la 303.": "단순한 드럼: 자리는 모두 303에게 줘요.",
@@ -30,7 +29,6 @@
   "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».": "애시드 라인은 프로듀서 화면에서 한 칸씩 써요. “보여 주세요”를 탭하면 앱이 “Acid 303” 트랙에 대신 써 줘요. 그다음 “내 결과 듣기”로 들어 보세요.",
   "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.": "액센트는 노트를 소리치게 하고, 슬라이드는 다음 노트와 이어 줘요. 노트 세 개만으로도 303은 말을 해요.",
   "Sans ligne acide, il n'y a pas d'acid techno.": "애시드 라인이 없으면 애시드 테크노도 없어요.",
-  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.": "직접 해 보세요: “Acid 303” 탭을 열고 2마디 라인을 한 칸씩 쓰세요. 점선 노트(A, 그 옥타브, C, G, E), 그다음 4칸에 액센트(!), 3칸에 슬라이드(⌒). 2마디는 변형이에요: G 대신 B♭, 마지막 칸은 비워요.",
   "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.": "지금까지 만든 게 모두 함께 연주돼요. 이게 시작 루프예요. 다른 파트는 여기서 태어나요.",
   "Écoute ta boucle quelques secondes, puis l'exemple. Une 909 qui cogne et une 303 qui couine : c'est l'acid techno.": "루프를 몇 초 들어 보고, 예시도 들어 보세요. 때리는 909와 끽끽대는 303: 이게 애시드 테크노예요.",
   "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.": "직접 해 보세요: 이 파트 이름을 “그루브”로 지으세요. 모든 게 연주되는 시작 파트예요.",
@@ -721,5 +719,7 @@
   "Bouton : Créer la partie « Montée ». La tension monte parce que le kick manque et que le clap s'emballe. Le temps de silence de la fin, tu le feras au chapitre 12.": "버튼: “빌드업” 파트 만들기. 킥이 없고 클랩이 폭주해서 긴장이 올라가요. 끝의 한 박 침묵은 12챕터에서 만들어요.",
   "Bouton : Créer la partie « Drop 2 ». Une brique retirée suffit : l'oreille sent que quelque chose a changé.": "버튼: “드롭 2” 파트 만들기. 블록 하나만 빼도 충분해요. 귀는 뭔가 바뀌었다는 걸 느껴요.",
   "Bouton : Créer la partie « Break ». Le vide après le plein : l'oreille se repose.": "버튼: “브레이크” 파트 만들기. 꽉 찬 다음의 빈자리: 귀가 쉬어요.",
-  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "버튼: “끝” 파트 만들기. 끝은 DJ가 다음 곡으로 넘어갈 여유를 줘요."
+  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "버튼: “끝” 파트 만들기. 끝은 DJ가 다음 곡으로 넘어갈 여유를 줘요.",
+  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.": "직접 해 보세요: 키를 A 프리지안으로 맞추세요. 303은 A, 그 옥타브, 단2도 A# 위를 돌아요. “직접 할게요”를 누르면 키 시트가 열려요.",
+  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.": "직접 해 보세요: “Acid 303” 탭을 열고 2마디 라인을 한 칸씩 쓰세요. 점선 노트(A, 그 옥타브, C, G, E), 그다음 4칸에 액센트(!), 3칸에 슬라이드(⌒). 2마디는 변형이에요: G 대신 A#, 마지막 칸은 비워요."
 }

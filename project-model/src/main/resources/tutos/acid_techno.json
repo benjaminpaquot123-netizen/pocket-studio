@@ -33,7 +33,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre : La phrygien. « Je le fais » ouvre la fiche Tonalité, les bons boutons y sont entourés.",
-          "textPro": "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.",
+          "textPro": "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Phrygien : une gamme sombre. La 303 reste presque toujours sur la même note : la gamme lui donne ses quelques couleurs.",
           "check": "key",
           "spot": "tuto.key",
@@ -133,7 +133,7 @@
         },
         {
           "id": "acid_do",
-          "text": "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.",
+          "text": "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.",
           "why": "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.",
           "levels": "p",
           "check": "notes:acid",

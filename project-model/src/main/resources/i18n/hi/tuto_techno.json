@@ -4,7 +4,6 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 138 BPM, 138 battements par minute. « Je le fais » ouvre la fiche Tempo.": "तुम्हारी बारी: टेम्पो (गाने की स्पीड) 138 BPM पर सेट करो, यानी एक मिनट में 138 बीट्स। “मैं करूँगा” टेम्पो शीट खोलता है।",
   "À toi : règle le tempo sur 138 BPM. « Je le fais » ouvre la fiche Tempo.": "तुम्हारी बारी: टेम्पो 138 BPM पर सेट करो। “मैं करूँगा” टेम्पो शीट खोलता है।",
   "Sans ça, ton morceau reste à 120 BPM : l'acid techno de Londres tourne autour de 138.": "इसके बिना तुम्हारा गाना 120 BPM पर रहेगा: लंदन की acid techno लगभग 138 पर चलती है।",
-  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.": "तुम्हारी बारी: key को A Phrygian पर सेट करो: 303 A, उसके ऑक्टेव और माइनर सेकंड B♭ पर घूमती है। “मैं करूँगा” टोन शीट खोलता है।",
   "Sans cette gamme, tes notes ne prendront pas la couleur du acid techno.": "इस स्केल के बिना तुम्हारे नोट्स में acid techno का रंग नहीं आएगा।",
   "La 909": "909",
   "Une batterie simple : toute la place reste à la 303.": "सिंपल ड्रम्स: सारी जगह 303 के लिए रहती है।",
@@ -30,7 +29,6 @@
   "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».": "एसिड लाइन प्रोड्यूसर स्क्रीन में खाना-दर-खाना लिखी जाती है। “मुझे दिखाओ” दबाओ: ऐप इसे “Acid 303” ट्रैक पर लिख देगा। फिर “अपना नतीजा सुनो” से सुनो।",
   "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.": "एक्सेंट नोट को चीख़ने देता है, slide उसे अगले से जोड़ देता है: सिर्फ़ तीन नोट्स से 303 बोलने लगती है।",
   "Sans ligne acide, il n'y a pas d'acid techno.": "एसिड लाइन के बिना acid techno नहीं होती।",
-  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.": "तुम्हारी बारी: “Acid 303” टैब खोलो और 2 बार की लाइन खाना-दर-खाना लिखो: डॉटेड नोट्स (A, उसका ऑक्टेव, C, G, E), फिर 4 खानों पर एक्सेंट (!) और 3 पर slides (⌒)। बार 2 वेरिएशन है: G की जगह B♭, आख़िरी खाना ख़ाली।",
   "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.": "तुमने जो कुछ बनाया वो सब साथ बजता है: ये तुम्हारा शुरुआती लूप है। बाकी पार्ट्स इसी से बनेंगे।",
   "Écoute ta boucle quelques secondes, puis l'exemple. Une 909 qui cogne et une 303 qui couine : c'est l'acid techno.": "अपना लूप कुछ सेकंड सुनो, फिर उदाहरण। ज़ोर से पड़ता 909 और चीं-चीं करती 303: यही acid techno है।",
   "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.": "तुम्हारी बारी: इस पार्ट का नाम “ग्रूव” रखो: ये तुम्हारा शुरुआती पार्ट है, जिसमें सब बजता है।",
@@ -721,5 +719,7 @@
   "Bouton : Créer la partie « Montée ». La tension monte parce que le kick manque et que le clap s'emballe. Le temps de silence de la fin, tu le feras au chapitre 12.": "बटन: पार्ट “बिल्ड-अप” बनाओ। टेंशन बढ़ती है क्योंकि kick ग़ायब है और clap बेकाबू होता है। आख़िर की एक बीट की ख़ामोशी तुम चैप्टर 12 में बनाओगे।",
   "Bouton : Créer la partie « Drop 2 ». Une brique retirée suffit : l'oreille sent que quelque chose a changé.": "बटन: पार्ट “ड्रॉप 2” बनाओ। एक ईंट हटाना काफ़ी है: कान महसूस करता है कि कुछ बदला है।",
   "Bouton : Créer la partie « Break ». Le vide après le plein : l'oreille se repose.": "बटन: पार्ट “ब्रेक” बनाओ। भराव के बाद खालीपन: कान आराम करता है।",
-  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "बटन: पार्ट “अंत” बनाओ। अंत DJ को अगले ट्रैक पर जाने का मौका देता है।"
+  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "बटन: पार्ट “अंत” बनाओ। अंत DJ को अगले ट्रैक पर जाने का मौका देता है।",
+  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.": "तुम्हारी बारी: key को A Phrygian पर सेट करो: 303 A, उसके ऑक्टेव और माइनर सेकंड A# पर घूमती है। “मैं करूँगा” टोन शीट खोलता है।",
+  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.": "तुम्हारी बारी: “Acid 303” टैब खोलो और 2 बार की लाइन खाना-दर-खाना लिखो: डॉटेड नोट्स (A, उसका ऑक्टेव, C, G, E), फिर 4 खानों पर एक्सेंट (!) और 3 पर slides (⌒)। बार 2 वेरिएशन है: G की जगह A#, आख़िरी खाना ख़ाली।"
 }

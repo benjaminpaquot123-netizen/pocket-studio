@@ -4,7 +4,6 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 138 BPM, 138 battements par minute. « Je le fais » ouvre la fiche Tempo.": "Sıra sende: tempoyu (parçanın hızını) 138 BPM'ye, yani dakikada 138 vuruşa ayarla. “Ben yaparım” Tempo kartını açar.",
   "À toi : règle le tempo sur 138 BPM. « Je le fais » ouvre la fiche Tempo.": "Sıra sende: tempoyu 138 BPM'ye ayarla. “Ben yaparım” Tempo kartını açar.",
   "Sans ça, ton morceau reste à 120 BPM : l'acid techno de Londres tourne autour de 138.": "Bunu yapmazsan parçan 120 BPM'de kalır: Londra acid techno'su 138 civarında döner.",
-  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.": "Sıra sende: tonu La Frigyen'e ayarla: 303 La, onun oktavı ve küçük ikili Si♭ üzerinde döner. “Ben yaparım” Ton kartını açar.",
   "Sans cette gamme, tes notes ne prendront pas la couleur du acid techno.": "Bu gam olmadan notaların acid techno rengini almaz.",
   "La 909": "909",
   "Une batterie simple : toute la place reste à la 303.": "Basit bir davul: bütün alan 303'e kalır.",
@@ -30,7 +29,6 @@
   "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».": "Asit çizgisi bir prodüktör ekranında, kutu kutu yazılır. “Göster”e dokun: uygulama onu senin için “Acid 303” kanalına yazar. Sonra “Sonucunu dinle” ile dinle.",
   "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.": "Aksan bir notayı bağırtır, slide onu sonrakine bağlar: sadece üç notayla 303 konuşur.",
   "Sans ligne acide, il n'y a pas d'acid techno.": "Asit çizgisi olmadan acid techno olmaz.",
-  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.": "Sıra sende: “Acid 303” sekmesini aç ve 2 ölçülük çizgiyi kutu kutu yaz: noktalı notalar (La, oktavı, Do, Sol, Mi), sonra 4 kutuya aksan (!) ve 3 kutuya slide (⌒). 2. ölçü varyasyondur: Sol yerine Si♭, son kutu boş.",
   "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.": "Yaptığın her şey birlikte çalıyor: bu senin başlangıç döngün. Diğer bölümler ondan doğacak.",
   "Écoute ta boucle quelques secondes, puis l'exemple. Une 909 qui cogne et une 303 qui couine : c'est l'acid techno.": "Döngünü birkaç saniye dinle, sonra örneği. Sert vuran bir 909 ve ciyaklayan bir 303: işte acid techno.",
   "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.": "Sıra sende: bu bölüme “Groove” adını ver: bu senin başlangıç bölümün, her şeyin çaldığı bölüm.",
@@ -721,5 +719,7 @@
   "Bouton : Créer la partie « Montée ». La tension monte parce que le kick manque et que le clap s'emballe. Le temps de silence de la fin, tu le feras au chapitre 12.": "Düğme: “Yükseliş” bölümünü oluştur. Gerilim artar çünkü kick eksik ve clap çılgına döner. Sondaki bir vuruşluk sessizliği 12. bölümde yapacaksın.",
   "Bouton : Créer la partie « Drop 2 ». Une brique retirée suffit : l'oreille sent que quelque chose a changé.": "Düğme: “Drop 2” bölümünü oluştur. Bir blok çıkarmak yeter: kulak bir şeyin değiştiğini hisseder.",
   "Bouton : Créer la partie « Break ». Le vide après le plein : l'oreille se repose.": "Düğme: “Break” bölümünü oluştur. Doluluğun ardından boşluk: kulak dinlenir.",
-  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Düğme: “Bitiş” bölümünü oluştur. Bitiş, DJ'e sonraki parçaya geçecek malzeme bırakır."
+  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Düğme: “Bitiş” bölümünü oluştur. Bitiş, DJ'e sonraki parçaya geçecek malzeme bırakır.",
+  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.": "Sıra sende: tonu La Frigyen'e ayarla: 303 La, onun oktavı ve küçük ikili La# üzerinde döner. “Ben yaparım” Ton kartını açar.",
+  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.": "Sıra sende: “Acid 303” sekmesini aç ve 2 ölçülük çizgiyi kutu kutu yaz: noktalı notalar (La, oktavı, Do, Sol, Mi), sonra 4 kutuya aksan (!) ve 3 kutuya slide (⌒). 2. ölçü varyasyondur: Sol yerine La#, son kutu boş."
 }

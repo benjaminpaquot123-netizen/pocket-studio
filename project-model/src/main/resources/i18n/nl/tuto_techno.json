@@ -4,7 +4,6 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 138 BPM, 138 battements par minute. « Je le fais » ouvre la fiche Tempo.": "Nu jij: zet het tempo (de snelheid van het nummer) op 138 BPM, 138 tellen per minuut. ‘Ik doe het’ opent het blad Tempo.",
   "À toi : règle le tempo sur 138 BPM. « Je le fais » ouvre la fiche Tempo.": "Nu jij: zet het tempo op 138 BPM. ‘Ik doe het’ opent het blad Tempo.",
   "Sans ça, ton morceau reste à 120 BPM : l'acid techno de Londres tourne autour de 138.": "Anders blijft je nummer op 120 BPM: Londense acid techno zit rond de 138.",
-  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.": "Nu jij: zet de toonsoort op A frygisch: de 303 draait rond A, zijn octaaf en de kleine secunde B♭. ‘Ik doe het’ opent het blad Toon.",
   "Sans cette gamme, tes notes ne prendront pas la couleur du acid techno.": "Zonder deze toonladder krijgen je noten niet de kleur van acid techno.",
   "La 909": "De 909",
   "Une batterie simple : toute la place reste à la 303.": "Een eenvoudig drumpatroon: alle ruimte blijft voor de 303.",
@@ -30,7 +29,6 @@
   "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».": "De acidlijn schrijf je in een producersscherm, vakje voor vakje. Tik op ‘Laat zien’: de app schrijft hem voor je op het spoor ‘Acid 303’. Luister er daarna naar met ‘Luister naar je resultaat’.",
   "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.": "Het accent laat een noot schreeuwen, de slide verbindt hem met de volgende: met maar drie noten praat de 303 al.",
   "Sans ligne acide, il n'y a pas d'acid techno.": "Zonder acidlijn geen acid techno.",
-  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.": "Nu jij: open het tabblad ‘Acid 303’ en schrijf de lijn van 2 maten, vakje voor vakje: de gestippelde noten (A, zijn octaaf, C, G, E), dan de accenten (!) op 4 vakjes en de slides (⌒) op 3. Maat 2 is de variant: B♭ in plaats van G, het laatste vakje leeg.",
   "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.": "Alles wat je gemaakt hebt speelt samen: dat is je startloop. De andere delen komen eruit voort.",
   "Écoute ta boucle quelques secondes, puis l'exemple. Une 909 qui cogne et une 303 qui couine : c'est l'acid techno.": "Luister een paar seconden naar je loop, dan naar het voorbeeld. Een beukende 909 en een piepende 303: dat is acid techno.",
   "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.": "Nu jij: noem dit deel ‘Groove’: het is je startdeel, waarin alles speelt.",
@@ -721,5 +719,7 @@
   "Bouton : Créer la partie « Montée ». La tension monte parce que le kick manque et que le clap s'emballe. Le temps de silence de la fin, tu le feras au chapitre 12.": "Knop: Deel ‘Opbouw’ maken. De spanning stijgt omdat de kick ontbreekt en de clap op hol slaat. De tel stilte aan het eind maak je in hoofdstuk 12.",
   "Bouton : Créer la partie « Drop 2 ». Une brique retirée suffit : l'oreille sent que quelque chose a changé.": "Knop: Deel ‘Drop 2’ maken. Eén blok weghalen is genoeg: het oor voelt dat er iets veranderd is.",
   "Bouton : Créer la partie « Break ». Le vide après le plein : l'oreille se repose.": "Knop: Deel ‘Break’ maken. Leegte na volheid: het oor rust uit.",
-  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Knop: Deel ‘Einde’ maken. Het Einde geeft de dj iets om naar het volgende nummer over te gaan."
+  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Knop: Deel ‘Einde’ maken. Het Einde geeft de dj iets om naar het volgende nummer over te gaan.",
+  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.": "Nu jij: zet de toonsoort op A frygisch: de 303 draait rond A, zijn octaaf en de kleine secunde A#. ‘Ik doe het’ opent het blad Toon.",
+  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.": "Nu jij: open het tabblad ‘Acid 303’ en schrijf de lijn van 2 maten, vakje voor vakje: de gestippelde noten (A, zijn octaaf, C, G, E), dan de accenten (!) op 4 vakjes en de slides (⌒) op 3. Maat 2 is de variant: A# in plaats van G, het laatste vakje leeg."
 }

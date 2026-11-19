@@ -4,7 +4,6 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 138 BPM, 138 battements par minute. « Je le fais » ouvre la fiche Tempo.": "あなたの番：テンポ（曲の速さ）を 138 BPM、1分間に138拍にしよう。「自分でやる」でテンポのシートが開くよ。",
   "À toi : règle le tempo sur 138 BPM. « Je le fais » ouvre la fiche Tempo.": "あなたの番：テンポを 138 BPM にしよう。「自分でやる」でテンポのシートが開くよ。",
   "Sans ça, ton morceau reste à 120 BPM : l'acid techno de Londres tourne autour de 138.": "これをしないと曲は 120 BPM のまま。ロンドンのアシッドテクノは 138 くらい。",
-  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.": "あなたの番：キーを A フリジアンにしよう。303 は A とそのオクターブ、短2度の B♭ を行き来する。「自分でやる」でキーのシートが開くよ。",
   "Sans cette gamme, tes notes ne prendront pas la couleur du acid techno.": "このスケールがないと、ノートがアシッドテクノの色にならない。",
   "La 909": "909",
   "Une batterie simple : toute la place reste à la 303.": "シンプルなドラム：スペースは全部 303 のために空けておく。",
@@ -30,7 +29,6 @@
   "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».": "アシッドラインはプロ向けの画面で1マスずつ書く。「見せて」で、アプリが「Acid 303」トラックに書いてくれる。「結果を聴く」で聴こう。",
   "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.": "アクセントはノートを叫ばせ、スライドは次のノートにつなげる。たった3音で 303 はしゃべり出す。",
   "Sans ligne acide, il n'y a pas d'acid techno.": "アシッドラインがなければ、アシッドテクノにはならない。",
-  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.": "あなたの番：「Acid 303」タブを開いて、2小節のラインを1マスずつ書こう：点線のノート（A、そのオクターブ、C、G、E）、次にアクセント（!）を4マス、スライド（⌒）を3マス。2小節目はバリエーション：G の代わりに B♭、最後のマスは空ける。",
   "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.": "ここまで作ったものが全部いっしょに鳴る。これがスタートのループ。ほかのパートはここから生まれる。",
   "Écoute ta boucle quelques secondes, puis l'exemple. Une 909 qui cogne et une 303 qui couine : c'est l'acid techno.": "自分のループを数秒聴いて、次に例を聴こう。ドスドス鳴る 909 とキーキー鳴る 303：これがアシッドテクノ。",
   "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.": "あなたの番：このパートに「グルーヴ」と名前を付けよう。スタートのパートで、全部が鳴る場所。",
@@ -721,5 +719,7 @@
   "Bouton : Créer la partie « Montée ». La tension monte parce que le kick manque et que le clap s'emballe. Le temps de silence de la fin, tu le feras au chapitre 12.": "ボタン：パート「ビルドアップ」を作る。キックがなく、クラップが暴走するから緊張が高まる。最後の1拍の無音は、チャプター 12 で作るよ。",
   "Bouton : Créer la partie « Drop 2 ». Une brique retirée suffit : l'oreille sent que quelque chose a changé.": "ボタン：パート「ドロップ 2」を作る。ブロックを1つ抜くだけで十分：耳は何かが変わったと感じる。",
   "Bouton : Créer la partie « Break ». Le vide après le plein : l'oreille se repose.": "ボタン：パート「ブレイク」を作る。満ちたあとの空白：耳がひと休み。",
-  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "ボタン：パート「エンディング」を作る。エンディングはDJが次の曲へつなぐための材料になる。"
+  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "ボタン：パート「エンディング」を作る。エンディングはDJが次の曲へつなぐための材料になる。",
+  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.": "あなたの番：キーを A フリジアンにしよう。303 は A とそのオクターブ、短2度の A# を行き来する。「自分でやる」でキーのシートが開くよ。",
+  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.": "あなたの番：「Acid 303」タブを開いて、2小節のラインを1マスずつ書こう：点線のノート（A、そのオクターブ、C、G、E）、次にアクセント（!）を4マス、スライド（⌒）を3マス。2小節目はバリエーション：G の代わりに A#、最後のマスは空ける。"
 }

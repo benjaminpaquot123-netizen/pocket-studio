@@ -4,7 +4,6 @@
   "À toi : règle le tempo (la vitesse du morceau) sur 138 BPM, 138 battements par minute. « Je le fais » ouvre la fiche Tempo.": "Twoja kolej: ustaw tempo (prędkość utworu) na 138 BPM, czyli 138 uderzeń na minutę. „Zrobię to” otwiera kartę Tempo.",
   "À toi : règle le tempo sur 138 BPM. « Je le fais » ouvre la fiche Tempo.": "Twoja kolej: ustaw tempo na 138 BPM. „Zrobię to” otwiera kartę Tempo.",
   "Sans ça, ton morceau reste à 120 BPM : l'acid techno de Londres tourne autour de 138.": "Bez tego twój utwór zostanie na 120 BPM: londyńskie acid techno kręci się wokół 138.",
-  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.": "Twoja kolej: ustaw tonację na A frygijską: 303 krąży wokół A, jego oktawy i małej sekundy B♭. „Zrobię to” otwiera kartę Tonacja.",
   "Sans cette gamme, tes notes ne prendront pas la couleur du acid techno.": "Bez tej skali twoje nuty nie nabiorą koloru acid techno.",
   "La 909": "909",
   "Une batterie simple : toute la place reste à la 303.": "Prosta perkusja: całe miejsce zostaje dla 303.",
@@ -30,7 +29,6 @@
   "La ligne acide s'écrit dans un écran de producteur, case par case. Touche « Montre-moi » : l'appli l'écrit pour toi sur la piste « Acid 303 ». Écoute-la ensuite avec « Écouter ton résultat ».": "Linię acid pisze się na ekranie producenta, pole po polu. Dotknij „Pokaż mi”: aplikacja napisze ją za ciebie na ścieżce „Acid 303”. Potem posłuchaj jej przez „Posłuchaj swojego wyniku”.",
   "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.": "Akcent sprawia, że nuta krzyczy, slide łączy ją z następną: już z trzema nutami 303 mówi.",
   "Sans ligne acide, il n'y a pas d'acid techno.": "Bez linii acid nie ma acid techno.",
-  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.": "Twoja kolej: otwórz kartę „Acid 303” i napisz linię na 2 takty, pole po polu: kropkowane nuty (A, jego oktawa, C, G, E), potem akcenty (!) na 4 polach i slide'y (⌒) na 3. Takt 2 to wariant: B♭ zamiast G, ostatnie pole puste.",
   "Tout ce que tu as fait joue ensemble : c'est ta boucle de départ. Les autres parties naîtront d'elle.": "Wszystko, co zrobiłeś, gra razem: to twoja pętla startowa. Z niej narodzą się pozostałe części.",
   "Écoute ta boucle quelques secondes, puis l'exemple. Une 909 qui cogne et une 303 qui couine : c'est l'acid techno.": "Posłuchaj swojej pętli przez kilka sekund, potem przykładu. Walące 909 i piszcząca 303: to jest acid techno.",
   "À toi : nomme cette partie « Groove » : c'est ta partie de départ, celle où tout joue.": "Twoja kolej: nazwij tę część „Groove”: to twoja część startowa, ta, w której gra wszystko.",
@@ -721,5 +719,7 @@
   "Bouton : Créer la partie « Montée ». La tension monte parce que le kick manque et que le clap s'emballe. Le temps de silence de la fin, tu le feras au chapitre 12.": "Przycisk: Utwórz część „Build-up”. Napięcie rośnie, bo brakuje kicka, a clap się rozpędza. Ćwierćnutę ciszy na końcu zrobisz w rozdziale 12.",
   "Bouton : Créer la partie « Drop 2 ». Une brique retirée suffit : l'oreille sent que quelque chose a changé.": "Przycisk: Utwórz część „Drop 2”. Wystarczy zabrać jeden klocek: ucho czuje, że coś się zmieniło.",
   "Bouton : Créer la partie « Break ». Le vide après le plein : l'oreille se repose.": "Przycisk: Utwórz część „Break”. Pustka po pełni: ucho odpoczywa.",
-  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Przycisk: Utwórz część „Koniec”. Koniec daje DJ-owi czas, by przejść do następnego utworu."
+  "Bouton : Créer la partie « Fin ». La Fin laisse au DJ de quoi passer au morceau suivant.": "Przycisk: Utwórz część „Koniec”. Koniec daje DJ-owi czas, by przejść do następnego utworu.",
+  "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.": "Twoja kolej: ustaw tonację na A frygijską: 303 krąży wokół A, jego oktawy i małej sekundy A#. „Zrobię to” otwiera kartę Tonacja.",
+  "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.": "Twoja kolej: otwórz kartę „Acid 303” i napisz linię na 2 takty, pole po polu: kropkowane nuty (A, jego oktawa, C, G, E), potem akcenty (!) na 4 polach i slide'y (⌒) na 3. Takt 2 to wariant: A# zamiast G, ostatnie pole puste."
 }

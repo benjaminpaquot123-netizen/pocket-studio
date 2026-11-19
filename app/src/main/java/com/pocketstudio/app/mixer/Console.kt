@@ -1,28 +1,31 @@
 package com.pocketstudio.app.mixer
 
-import com.pocketstudio.ui.ScaledBottomSheet
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitVerticalTouchSlopOrCancellation
+import androidx.compose.foundation.gestures.verticalDrag
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.GraphicEq
@@ -40,7 +43,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -51,8 +53,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.contentDescription
@@ -68,20 +71,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.app.learn.spot
+import com.pocketstudio.app.ui.showcasePanel
 import com.pocketstudio.model.Channel
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
-import com.pocketstudio.app.ui.showcasePanel
 import com.pocketstudio.ui.ProSlider
+import com.pocketstudio.ui.ScaledBottomSheet
 import com.pocketstudio.ui.fadingEdges
-import kotlinx.coroutines.launch
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.ui.pillColors
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 /** The width of one strip of the console: a dozen of them side by side on a tablet, four or five on a phone. */
 internal val CONSOLE_STRIP_W = 76.dp
@@ -236,19 +237,6 @@ internal fun VerticalFader(
     // The travel's height in pixels (known once drawn) and the value under the finger while it slides
     // (kept apart from the value given back: a slide moves it by as much as the finger goes).
     val travel = remember { floatArrayOf(1f) }
-    val held = remember { floatArrayOf(Float.NaN) }
-    // The touch slop the drag waits for is not given in its first delta: added back, the cap follows
-    // the finger from where it went down (no dead zone, then no jump).
-    val slop = LocalViewConfiguration.current.touchSlop
-    val fresh = remember { booleanArrayOf(false) }
-    val state = rememberDraggableState { dy ->
-        val from = if (held[0].isNaN()) latest else held[0]
-        val moved = if (fresh[0] && dy != 0f) dy + kotlin.math.sign(dy) * slop else dy
-        if (dy != 0f) fresh[0] = false
-        val now = (from - moved / travel[0]).coerceIn(0f, 1f)
-        held[0] = now
-        change(now)
-    }
     val off = Neon.SurfaceHigh
     val accent = Neon.Cyan
     val bar = com.pocketstudio.ui.rememberLevelBar(dissolve = 22.dp)
@@ -258,7 +246,7 @@ internal fun VerticalFader(
     Canvas(
         modifier.width(56.dp).height(height)
             .onSizeChanged { travel[0] = it.height.toFloat().coerceAtLeast(1f) }
-            .draggable(state, Orientation.Vertical, onDragStarted = { held[0] = latest; fresh[0] = true }, onDragStopped = { held[0] = Float.NaN })
+            .capDrag({ (1f - latest) * travel[0] }, { latest }, { from, dy -> change((from - dy / travel[0]).coerceIn(0f, 1f)) })
             .semantics {
                 contentDescription = description
                 stateDescription = faderDb(value)
@@ -292,6 +280,30 @@ internal fun VerticalFader(
 }
 
 private val CAP_MARK = Color.Black.copy(alpha = 0.6f)
+
+/** F024: a finger that lands this close to a fader's cap takes it; anywhere else on the fader it scrolls the page. */
+internal val FADER_GRAB = 32.dp
+
+/**
+ * A fader's slide (F024, option A): only a finger landing within [FADER_GRAB] of the cap (at [capY], in pixels from the
+ * top) takes it; elsewhere nothing is consumed and the page scrolls. Once taken, [move] gets the value at the touch
+ * ([start]) and how far the finger went down since it touched: the cap follows the finger from the touch on (no dead
+ * zone, then no jump, S30).
+ */
+internal fun Modifier.capDrag(capY: () -> Float, start: () -> Float, move: (from: Float, dy: Float) -> Unit): Modifier =
+    pointerInput(Unit) {
+        awaitEachGesture {
+            val down = awaitFirstDown()
+            if (kotlin.math.abs(down.position.y - capY()) > FADER_GRAB.toPx()) return@awaitEachGesture
+            val first = awaitVerticalTouchSlopOrCancellation(down.id) { c, _ -> c.consume() } ?: return@awaitEachGesture
+            val from = start()
+            move(from, first.position.y - down.position.y)
+            verticalDrag(first.id) { c ->
+                c.consume()
+                move(from, c.position.y - down.position.y)
+            }
+        }
+    }
 
 /**
  * A strip's sheet: its volume and pan, M and S, its effects (the same box as under each sound),

@@ -104,7 +104,9 @@ class Tour9MixScrollTest {
         assertTrue("the fader did not follow the finger: $changes", changes.isNotEmpty() && changes.last() < 0.6f)
     }
 
+    /** The phone's font at 200 %: the simple Mix is taller than the screen and scrolls. */
     @Test
+    @Config(fontScale = 2.0f)
     fun f024_aSlideFromTheSimpleMixsFaderAwayFromItsCapScrollsAndMovesNothing() {
         val t = simpleTracks(acidTechnoSong())[1]
         compose.setContent {

@@ -1,14 +1,11 @@
 package com.pocketstudio.app.mixer
 
-import com.pocketstudio.app.learn.spot
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,13 +47,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalViewConfiguration
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
@@ -76,6 +72,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pocketstudio.app.learn.spot
 import com.pocketstudio.app.rhythm.AloneListen
 import com.pocketstudio.app.rhythm.AloneTarget
 import com.pocketstudio.app.ui.SimpleTrack
@@ -87,7 +84,6 @@ import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.fadingEdges
-import androidx.compose.foundation.horizontalScroll
 import kotlin.math.log10
 
 /** What the Mode simple's « Mix » tab shows: the project's name, its tracks (the drums with their sounds), the master, the tip. */
@@ -524,20 +520,7 @@ private fun MixFader(
     val change by rememberUpdatedState(onChange)
     val reset by rememberUpdatedState(onReset)
     val travel = remember { floatArrayOf(1f) }
-    val held = remember { floatArrayOf(Float.NaN) }
-    // The touch slop the drag waits for is not given in its first delta: added back, the cap follows
-    // the finger from where it went down (no dead zone, then no jump).
-    val slop = LocalViewConfiguration.current.touchSlop
     val padPx = with(LocalDensity.current) { 6.dp.toPx() }
-    val fresh = remember { booleanArrayOf(false) }
-    val state = rememberDraggableState { dy ->
-        val from = if (held[0].isNaN()) latest else held[0]
-        val moved = if (fresh[0] && dy != 0f) dy + kotlin.math.sign(dy) * slop else dy
-        if (dy != 0f) fresh[0] = false
-        val now = (from - moved / travel[0]).coerceIn(0f, 1f)
-        held[0] = now
-        change(now)
-    }
     val measurer = rememberTextMeasurer()
     val labelStyle = MonoStyle.copy(fontSize = 9.sp, color = Neon.TextSecondary)
     val labels = remember(top, bottom, labelStyle) {
@@ -578,7 +561,7 @@ private fun MixFader(
                 }
             }
             .onSizeChanged { travel[0] = (it.height - 2 * padPx).coerceAtLeast(1f) }
-            .draggable(state, Orientation.Vertical, onDragStarted = { held[0] = latest; fresh[0] = true }, onDragStopped = { held[0] = Float.NaN })
+            .capDrag({ padPx + (1f - latest) * travel[0] }, { latest }, { from, dy -> change((from - dy / travel[0]).coerceIn(0f, 1f)) })
             .semantics {
                 contentDescription = description
                 stateDescription = said

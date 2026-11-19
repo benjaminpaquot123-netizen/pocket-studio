@@ -68,11 +68,16 @@ class Tour9MixFaderNoBenchTest {
         compose.waitForIdle()
     }
 
-    /** Drags [tag] down by [px] (slowly, as a finger), returns how far its value went (0..1 of the travel). */
-    private fun dragDown(tag: String, px: Float, from: Float): Float {
+    /**
+     * Drags [tag] down by [px] (slowly, as a finger) from its cap at value [from] (F024: a fader is taken at its cap;
+     * [inset]: the room kept at each end of its travel, in dp), returns how far its value went (0..1 of the travel).
+     */
+    private fun dragDown(tag: String, px: Float, from: Float, inset: Float = 0f): Float {
         volumes.clear()
         compose.onNodeWithTag(tag).performScrollTo().performTouchInput {
-            swipe(center, center + Offset(0f, px), durationMillis = 400)
+            val pad = inset * density
+            val cap = Offset(centerX, pad + (1f - from) * (height - 2 * pad))
+            swipe(cap, cap + Offset(0f, px), durationMillis = 400)
         }
         compose.waitForIdle()
         return from - (volumes.lastOrNull()?.second ?: from)
@@ -89,7 +94,7 @@ class Tour9MixFaderNoBenchTest {
     fun d01_aDragMovesTheSimpleMixsFader() {
         showSimple()
         val ch = simpleTracks(acidTechnoSong())[1].ch
-        dragDown("mix_fader_$ch", 60f, 0.8f)
+        dragDown("mix_fader_$ch", 60f, simpleTracks(acidTechnoSong())[1].volume, inset = 6f)
         assertTrue("the simple Mix's fader did not move: $volumes", volumes.any { it.first == ch })
     }
 
@@ -109,7 +114,7 @@ class Tour9MixFaderNoBenchTest {
         val t = simpleTracks(acidTechnoSong())[1]
         val node = compose.onNodeWithTag("mix_fader_${t.ch}").fetchSemanticsNode()
         val travel = node.size.height - 2 * 6 * node.layoutInfo.density.density
-        val moved = dragDown("mix_fader_${t.ch}", 30f, t.volume)
+        val moved = dragDown("mix_fader_${t.ch}", 30f, t.volume, inset = 6f)
         assertEquals("a 30 px slide on a ${travel}px travel: $volumes", 30f / travel, moved, 0.1f * 30f / travel)
     }
 

@@ -1064,7 +1064,12 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
                 Text(tr("Swing"))
                 HelpDot(Glossary.SWING)
                 Box(Modifier.weight(1f))
-                Text(percent((project.swing / Project.MAX_SWING * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
+                // F057 (tour 9): « − » and « + » reach any value to 1 % (the slider alone, under a finger, skipped the asked one).
+                val shown = (project.swing / Project.MAX_SWING * 100).roundToInt()
+                val to = { pc: Int -> actions.setSwing(pc.coerceIn(0, 100) / 100.0 * Project.MAX_SWING) }
+                TextButton(onClick = { to(shown - 1) }, enabled = shown > 0, modifier = Modifier.testTag("swing_minus")) { Text("−") }
+                Text(percent(shown), style = MonoStyle, color = Neon.Cyan)
+                TextButton(onClick = { to(shown + 1) }, enabled = shown < 100, modifier = Modifier.testTag("swing_plus")) { Text("+") }
             }
             ProSlider(
                 value = (project.swing / Project.MAX_SWING).toFloat(),

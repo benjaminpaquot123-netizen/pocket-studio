@@ -295,7 +295,9 @@ fun TutoGridLine(
                 copy != null -> Button(onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_grid_copy")) { Text(tr("Copier"), maxLines = 1) }
                 elsewhere != null && here == 0 -> TextButton(onClick = { go(elsewhere.first) }, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_bar_go")) {
                     Text(
-                        trCount(elsewhere.second, "Mesure %2\$d · %1\$d case", "Mesure %2\$d · %1\$d cases", elsewhere.second, elsewhere.first + 1) + (if (elsewhere.first > bar) " →" else ""),
+                        trCount(elsewhere.second, "Mesure %2\$d · %1\$d case", "Mesure %2\$d · %1\$d cases", elsewhere.second, elsewhere.first + 1) +
+                            // F052 (tour 9, seat t9-41): hits to take away there are said so, not as cells to add.
+                            (if (erasing) " · " + tr("barré : à enlever") else "") + (if (elsewhere.first > bar) " →" else ""),
                         color = Neon.Amber, fontWeight = FontWeight.Bold,
                     )
                 }

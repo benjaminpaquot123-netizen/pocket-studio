@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performScrollTo
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.pocketstudio.app.ui.UiScaled
 import com.pocketstudio.model.Project
@@ -73,6 +75,24 @@ class Tour9L15CapturesTest {
     @Test fun lineAt200() = line("ligne_tuto_200", 2f, here = 0, elsewhere = 3 to 5)
     @Test fun lineAt200OtherPad() = line("ligne_tuto_200_autre_pad", 2f, here = 0, elsewhere = null, toPad = "Caisse claire" to {})
     @Test fun lineAt200Here() = line("ligne_tuto_200_ici", 2f, here = 3, elsewhere = null)
+
+    /** F057: the Swing with its « − » and « + » (the groove card, scrolled into view). */
+    private fun swing(name: String, fontScale: Float) {
+        RuntimeEnvironment.setFontScale(fontScale)
+        val project = Project().copy(swing = 0.25 * Project.MAX_SWING)
+        compose.setContent {
+            PocketStudioTheme {
+                Box(Modifier.background(Neon.Background)) {
+                    RhythmScreen(project = project, transport = TransportUi(selectedPad = 0), live = { LiveUi() }, canUndo = false, canRedo = false, actions = RhythmActions())
+                }
+            }
+        }
+        compose.waitForIdle()
+        compose.onNodeWithTag(SWING_SPOT).performScrollTo().captureRoboImage("build/outputs/roborazzi/tour9-L15/$name.png")
+    }
+
+    @Test fun swingAt100() = swing("swing_100", 1f)
+    @Test fun swingAt200() = swing("swing_200", 2f)
 
     @Test fun at100() = shot("rythme_360_100")
     @Test fun at130() = shot("rythme_360_130", uiScale = 1.3f)

@@ -4104,6 +4104,12 @@ fun mixerStrips(p: com.pocketstudio.model.Project, hideFirst: Boolean = false): 
                 ?: com.pocketstudio.app.mixer.StripInfo(3, "Remix")
         )
 
+/**
+ * Tour 9 (F136, « Pour : Pluck » on the Rhodes track): the name the effects of strip [ch] say
+ * (« Pour : Rhodes »), wherever they open outside the Mix: the track's own name, a pad's sound.
+ */
+fun fxTrackName(p: com.pocketstudio.model.Project, ch: Int): String? = null
+
 /** What the effects box does, wherever it shows (one box for every sound). */
 fun effectsActions(vm: RhythmViewModel): MixerActions = MixerActions(
     setInsertType = vm::setInsertType,

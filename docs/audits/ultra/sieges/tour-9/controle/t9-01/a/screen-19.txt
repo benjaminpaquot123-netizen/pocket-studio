@@ -1,0 +1,13 @@
+Écran 19 (540x1170)
+dessin @ 270,302
+texte « صوت: Acid 303 » @ 387,370
+texte « إغلاق » @ 71,410
+texte « اضغط على صوت: يستبدل صوت هذا المسار في الأغنية كلها. » @ 317,442
+icône ← @ 480,533
+texte « الكلاسيكيات » @ 234,533
+bouton (vagues) (dents de scie) « Acid أساسي لامع » [sélectionné] @ 270,637
+bouton (vagues) (dents de scie) « Squelchy لامع · حاد » @ 270,755
+bouton (vagues) (créneaux) « Da Funk أجوف » @ 270,866
+bouton (dé) « عشوائي » @ 396,985
+bouton ★ « احفظ هذا الصوت » @ 144,985
+texte « «احفظ هذا الصوت» يضعه في مفضّلاتك، لكل مشاريعك. » @ 270,1094

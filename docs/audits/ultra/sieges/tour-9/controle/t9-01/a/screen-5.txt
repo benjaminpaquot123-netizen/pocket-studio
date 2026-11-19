@@ -1,0 +1,29 @@
+Écran 5 (540x1170)
+dessin @ 270,297
+texte « السرعة » @ 466,370
+texte « إغلاق » @ 71,369
+bouton « ? » @ 395,369
+texte « 100 » @ 307,464
+icône − @ 480,464
+texte «  BPM » @ 205,469
+icône + @ 60,464
+bouton « 70 » @ 473,558
+bouton « 90 » @ 378,558
+bouton « 120 » @ 273,558
+bouton « 140 » @ 159,558
+bouton « 174 » @ 463,639
+bouton « ½ » @ 365,639
+bouton « ×2 » @ 275,639
+bouton « 1 » @ 437,732
+bouton « 2 » @ 270,732
+bouton « 3 » @ 103,732
+bouton « 4 » @ 437,819
+bouton « 5 » @ 270,819
+bouton « 6 » @ 103,819
+bouton « 7 » @ 437,906
+bouton « 8 » @ 270,906
+bouton « 9 » @ 103,906
+bouton ⌫ [désactivé] @ 437,993
+bouton « 0 » @ 270,993
+bouton « حسنًا » [désactivé] @ 103,993
+bouton (doigt qui touche) « انقر مع الإيقاع انقر هنا مع كل نبضة: السرعة تتبعك. » @ 270,1098

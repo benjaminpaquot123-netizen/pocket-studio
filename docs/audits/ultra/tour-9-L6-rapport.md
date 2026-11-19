@@ -6,7 +6,7 @@ tests: :app:testDebugUnitTest --tests 'com.pocketstudio.app.session.Tour9*' --te
 chemin: Structure, ajouter une partie garde la liste en place | test: Tour9AddKeepsPlaceTest#aSmallPhoneKeepsTheButtonUnderTheFinger
 chemin: Structure, titre « Ajouter », boutons et blocs lisibles en entier | test: Tour9StructureLabelsTest#theNewPartButtonsReadWholeInArabic
 chemin: Structure, gestes (appui long, toucher une partie, liste qui défile) | test: Tour9StructureGesturesTest#aLongPressOnAnAddButtonOpensItsMenuWithoutAdding
-chemin: Structure, phrase d'aide visible quand le tuto montre les boutons d'ajout | test: Tour9HelpUnderTopTest#theHelpStaysInSightWithManyParts
+chemin: Structure, phrase d'aide visible quand le tuto montre les boutons d'ajout | test: Tour9HelpUnderTopTest#theHelpStaysInSightWhenTheTutoShowsTheAddButtons
 chemin: Barre du haut, nom du projet et « Sauvegardé » | test: Tour9TopBarSavedTest#theNameAndSavedFitTheBar
 chemin: Barre du haut, menu de la partie « Renommer » | test: Tour9RenameFromChipTest#theSceneMenuOffersRenameAndOpensTheNamingDialog
 chemin: Bande de lecture, arrêtée : dit où ▶ démarre | test: Tour9PlayStripTest#stoppedItSaysWhereThePlayButtonStarts
@@ -20,7 +20,6 @@ corrige: F102 | gravité: moyen
 corrige: F103 | gravité: moyen
 corrige: F104 | gravité: moyen
 corrige: F105 | gravité: moyen
-corrige: F106 | gravité: moyen
 corrige: F107 | gravité: moyen
 corrige: F108 | gravité: moyen
 corrige: F109 | gravité: moyen
@@ -36,3 +35,4 @@ Demande accordée : Zone3JourneysTest.kt : F103 retire la copie d'une partie vid
 - F111 : `DoneBar` prête (`doneGoesAtNextGesture`), la ligne d'AppRoot.kt attend l'entrée de L1.
 - D10 : la ligne `renameScene = rhythmVm::renameScene` dans AppRoot.kt n'est pas posée (refusée deux fois), à faire par le chef.
 - F105 : moitié seulement. Les mesures se lisent en entier ; nommer la partie éditée demande que ▶ y démarre (RhythmViewModel, hors du lot, relecture G1).
+- F106 : moitié seulement. La phrase d'aide reste visible avec 3 ou 4 parties (Mode simple, texte normal ou 200 %) ; avec 8 parties en Mode avancé, les boutons d'ajout remplissent la place au-dessus du panneau et la phrase sort par le haut. La garder avec eux (`revealFrom`) cassait le tuto « jump_up » Facile (cible absente après « Montre-moi »).

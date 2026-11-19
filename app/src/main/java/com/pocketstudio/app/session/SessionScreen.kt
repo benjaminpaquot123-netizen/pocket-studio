@@ -395,7 +395,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
                 else -> tr("Touche une partie pour régler sa longueur ; ▶ écoute le morceau à partir d'elle.")
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
-            // F106 (seats t9-12, t9-36): the tuto's reveal of the add buttons keeps this sentence in sight with them.
+            // F106 (seats t9-12, t9-36): named so the tuto's missions can point at it.
             // Tour 9 L6: when it speaks of the parts, it explains their touch and their ▶ (no « ? » needed beside them).
             modifier = Modifier.spot(SONG_HELP_SPOT)
                 .then(if (ui.song.isNotEmpty()) Modifier.semantics { set(HelpAbout, listOf("part_open_#", "part_play_#")) } else Modifier)
@@ -464,7 +464,7 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
                         scroller.dispatchPostScroll(androidx.compose.ui.geometry.Offset.Zero, push, androidx.compose.ui.input.nestedscroll.NestedScrollSource.UserInput)
                     } else addRowY = y
                 }
-                .spot("song_add", revealFrom = SONG_ADD_HEAD).testTag("song_add"),
+                .spot("song_add").testTag("song_add"),
         ) {
             ui.scenes.forEachIndexed { i, s ->
                 if (s != null) AddPartButton(i, ui, enabled = ui.song.size < SongPart.MAX_PARTS, add = { touched(); actions.addPart(i) }, rename = rename, whatPlays = { actions.whatPlays(i) })
@@ -1087,4 +1087,3 @@ private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) 
 
 /** F106: the Structure's help sentence, kept in sight with the add buttons when the tuto reveals them. */
 private const val SONG_HELP_SPOT = "song_help"
-private val SONG_ADD_HEAD = listOf(SONG_HELP_SPOT)

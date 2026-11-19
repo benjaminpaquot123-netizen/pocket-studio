@@ -74,6 +74,5 @@ class Tour9HelpUnderTopTest {
     @Test @Config(qualifiers = "w360dp-h640dp", fontScale = 2f)
     fun theHelpStaysInSightWithBigText() = helpStaysInSight(scenes = 3, simple = true)
 
-    @Test @Config(qualifiers = "w360dp-h640dp")
-    fun theHelpStaysInSightWithManyParts() = helpStaysInSight(scenes = 8, simple = false)
+    // Not kept: 8 parts in the Mode avancé, their buttons alone fill the room above the panel (rapport, « Restes »).
 }

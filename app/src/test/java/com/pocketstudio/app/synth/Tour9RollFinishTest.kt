@@ -64,4 +64,22 @@ class Tour9RollFinishTest {
         }
         compose.onNodeWithText("Basse en fantôme").assertIsNotSelected()
     }
+
+    /**
+     * F113: « La note mise en évidence est celle que la consigne demande de toucher. » A chords step asks for « the
+     * bottom dotted note of each chord » (a touch there writes the whole chord): the note lit is the chord's bottom one.
+     */
+    @Test
+    fun theNoteLitInAChordIsItsBottomOne() {
+        val t = NoteClip.TICKS_PER_STEP
+        val chords = listOf(0, 16).flatMap { s -> listOf(56, 60, 63).map { p -> Note(s * t, 8 * t, p) } }
+            .sortedWith(compareBy({ it.start }, { -it.pitch }))
+        val view = com.pocketstudio.model.tuto.TutoRollView(0f, 1000f, 0f, 2000f, 20f, 20f, 100)
+        val asked = aimedNotes(chords, chordMode = true)
+        val lit = com.pocketstudio.model.tuto.TutoRollHint.lit(asked, view, 16)
+        assertEquals("the chord's bottom note", Note(0, 8 * t, 56), lit)
+        assertEquals("the next one, the next chord's bottom", listOf(56, 56), asked.map { it.pitch })
+        // Without the chords' mode each note is touched: they all stay asked for.
+        assertEquals(chords, aimedNotes(chords, chordMode = false))
+    }
 }

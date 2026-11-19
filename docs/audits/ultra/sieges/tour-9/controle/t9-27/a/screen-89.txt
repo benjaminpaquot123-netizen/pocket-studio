@@ -1,0 +1,58 @@
+Écran 89 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 188,42
+texte « Pro » @ 403,42
+bouton « A » ▾ @ 478,42
+icône ↶ @ 553,42
+bouton ● @ 625,42
+bouton ▶ « bagian ini » @ 698,42
+bouton ▶ « lagu » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » [coupé] @ 54,186
+onglet « Acid 303 Bassline » @ 169,186
+onglet « Vokal Mikrofon » @ 322,186
+onglet « Remix Pisahkan » @ 473,186
+bouton « Akor Hoover » @ 612,186
+bouton « Melodi Lead square » ⋮ @ 779,186
+image ← @ 10,187
+image → @ 889,187
+texte « Bagian: A » @ 68,249
+titre « SUARA SIAP MAIN » [coupé, état « Terbuka »] @ 159,281
+icône ← @ 78,340
+texte « Lead » @ 486,340
+bouton (éclair) (dents de scie) « Lead Saw · ditahan » @ 243,431
+bouton (éclair) (créneaux) « Lead square Square · ditahan » [sélectionné] @ 657,431
+bouton (éclair) (dents de scie) « Lead acid Saw · ditahan » @ 243,530
+bouton (éclair) (dents de scie) « Supersaw Saw · 7 suara · ditahan » @ 657,530
+bouton (éclair) (dents de scie) « Lead trance Saw · 4 suara · ditahan » @ 243,629
+bouton (éclair) (dents de scie) « Hoover Saw · 7 suara · ditahan » @ 657,629
+bouton (dé) « Acak » @ 243,721
+bouton ★ « Simpan suara ini » @ 657,721
+texte « “Simpan suara ini” menyimpannya di favoritmu, untuk semua proyekmu. » @ 369,782
+titre « PENGATURAN SUARA » [état « Terbuka »] @ 175,877
+texte « Bentuk gelombang » @ 135,922
+bouton (dents de scie) « Saw » @ 102,985
+bouton (créneaux) « Square » [sélectionné] @ 246,985
+bouton (zigzag) « Triangle » @ 410,985
+dessin @ 240,1048
+texte « Cutoff » @ 73,1048
+texte « 4,0 kHz » @ 398,1048
+dessin @ 660,1048
+texte « Resonance » @ 517,1048
+texte « 20% » @ 833,1048
+curseur [état « 4,0 kHz », à 78 %] @ 240,1111
+curseur [état « 20% », à 20 %] @ 660,1111
+icône (liste) « Bab » @ 771,1182
+texte « Riff Bab 5/14 · Langkah 2/2 · Pro » @ 378,1182
+icône ⌃ @ 843,1182
+icône « Giliranmu: di “Atur suara trek” Melodi, naikkan “Ketebalan (detune)” minimal 15: riff-nya jadi lebih lebar dan lebih galak. Baca » ⌃ @ 450,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

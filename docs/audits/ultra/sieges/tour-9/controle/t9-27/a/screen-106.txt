@@ -1,0 +1,33 @@
+Écran 106 (900x1509)
+dessin @ 450,355
+texte « Bagian 1 · A » @ 115,415
+texte « Tutup » @ 827,427
+texte « 8 birama » @ 69,448
+bouton (étincelles) « Variasi » @ 234,520
+bouton (barres de son) « Fill di akhir » @ 666,520
+bouton ❚❚ « Break sesudah · 4 birama » @ 234,619
+bouton ❚❚ « Break sesudah · 8 birama » @ 666,619
+bouton (courbe qui monte) « Build-up sebelum · 4 birama » [désactivé] @ 234,718
+bouton (courbe qui monte) « Build-up sebelum · 8 birama » [désactivé] @ 666,718
+bouton (haut-parleur et ondes) « Fade-in » @ 234,817
+bouton (haut-parleur et une onde) « Fade-out » @ 666,817
+bouton (drapeau) « Tambah penutup » @ 234,916
+texte « Energi: 3 » @ 69,988
+bouton « 1 · pad » @ 81,1054
+bouton « 2 · + bass » @ 222,1054
+bouton « 3 · + drum » [sélectionné] @ 382,1054
+bouton « 4 · full » @ 525,1054
+texte « Panjang » @ 65,1120
+champ « birama » contenu « 8 » @ 268,1199
+icône ✕ @ 315,1206
+icône − [désactivé] @ 60,1199
+icône + @ 141,1199
+texte « OK » [désactivé] @ 403,1199
+texte « Bagian » @ 59,1278
+icône (crayon) « Ganti nama » @ 117,1344
+icône (curseurs) « Yang sedang main » @ 346,1344
+icône ↑ « Naikkan » [désactivé] @ 559,1344
+icône ↓ « Turunkan » [désactivé] @ 726,1344
+icône (deux feuilles) « Duplikat » @ 102,1416
+icône + « Sisipkan sesudah » @ 312,1416
+icône (poubelle) « Hapus » @ 513,1416

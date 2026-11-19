@@ -1,0 +1,652 @@
+#0 SIEGE lang=en device=tablet8 font=200 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:amapiano:1
+#0 PREMIER ECRAN reel_s=3.5 simule_s=2.4 jvm_s=8.7 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:amapiano:1
+#0 AMENEE > touche 450 822 (welcome_learn)
+#0 AMENEE > touche 229 1186 (mode_card_simple)
+#0 AMENEE > touche 450 1418 (tuto_style_amapiano)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 91a938050e | project=p-3d440285 tuto=amapiano/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Saved » lines cut (taller than its box)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT OVERLAP « Studio bass drum » over « FX » (26 x 5 dp)
+#1 LAYOUT OVERLAP « Handclap » over « FX » (18 x 11 dp)
+#1 LAYOUT OVERLAP « Hi-hat » over « L 30 » (42 x 11 dp)
+#1 LAYOUT OVERLAP « Open hi-hat » over « R 30 » (44 x 11 dp)
+#1 LAYOUT OVERLAP « Mid tom » over « R 45 » (29 x 11 dp)
+#1 LAYOUT OVERLAP « Drum rim » over « FX » (17 x 11 dp)
+#1 LAYOUT OVERLAP « Drum rim » over « R 50 » (44 x 11 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1085
+#1 DOIGT tuto_listen «  Listen to the example »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b443146350 | project=p-3d440285 tuto=amapiano/Facile active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 403 868
+#2 DOIGT tuto_kit_download « Download the Amapiano kit (2 MB) »
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 24491d6be0 | project=p-3d440285 tuto=amapiano/Facile active=true step=ref done=1 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > touche 450 1085
+#3 DOIGT tuto_next_big « Next step   »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 267bc760bb | project=p-3d440285 tuto=amapiano/Facile active=true step=tempo done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 136 144
+#4 DOIGT top_tempo « Tempo: 120 beats per minute »
+#5 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE ef3d0b0d48 | project=p-3d440285 tuto=amapiano/Facile active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « ? » lines cut (taller than its box)
+#5 LAYOUT OVERLAP « Tempo » over the touchable « Close sheet » (114 x 45 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Close sheet » (13 x 18 dp)
+#5 LAYOUT OVERLAP « Close » over the touchable « Close sheet » (72 x 37 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Close sheet » (96 x 61 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « Close sheet » (70 x 42 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « Close sheet » (36 x 34 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « Close sheet » (36 x 34 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Close sheet » (54 x 34 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « Close sheet » (54 x 34 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « Close sheet » (54 x 34 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « Close sheet » (25 x 42 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « Close sheet » (36 x 42 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « Close sheet » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « Close sheet » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « Close sheet » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « Close sheet » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « Close sheet » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « Close sheet » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « Close sheet » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « Close sheet » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « Close sheet » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « Close sheet » (23 x 43 dp)
+#5 LAYOUT OVERLAP « OK » over the touchable « Close sheet » (51 x 43 dp)
+#5 LAYOUT OVERLAP « Tap in time » over the touchable « Close sheet » (149 x 42 dp)
+#5 LAYOUT OVERLAP « Tap here on each beat: the tempo follows. » over the touchable « Close sheet » (499 x 35 dp)
+#5 > touche 163 1052
+#5 DOIGT tempo_key_1 « 1 »
+#6 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 6f76a8cb61 | project=p-3d440285 tuto=amapiano/Facile active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 1 » over the touchable « Close sheet » (32 x 61 dp)
+#6 LAYOUT OVERLAP « Between 40 and 300 » over the touchable « Close sheet » (260 x 37 dp)
+#6 > touche 163 1052
+#6 DOIGT tempo_key_1 « 1 »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 09ede3ed1a | project=p-3d440285 tuto=amapiano/Facile active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 11 » over the touchable « Close sheet » (64 x 61 dp)
+#7 > touche 450 1052
+#7 DOIGT tempo_key_2 « 2 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 215d6db695 | project=p-3d440285 tuto=amapiano/Facile active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 112 » over the touchable « Close sheet » (96 x 61 dp)
+#8 > touche 737 1313
+#8 DOIGT tempo_key_ok « OK »
+#9 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d124dfdbfb | project=p-3d440285 tuto=amapiano/Facile active=true step=tempo done=2 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 450 1091
+#9 DOIGT tuto_next_big « Next step   »
+#10 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e651f3d76e | project=p-3d440285 tuto=amapiano/Facile active=true step=key done=2 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 450 946
+#10 DOIGT tuto_do «   I'll do it »
+#11 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 16afa625e7 | project=p-3d440285 tuto=amapiano/Facile active=true step=key done=2 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Song key » over the touchable « Close sheet » (152 x 45 dp)
+#11 LAYOUT OVERLAP « Song key: none » over the touchable « Close sheet » (190 x 37 dp)
+#11 LAYOUT OVERLAP « Scale » over the touchable « Close sheet » (69 x 37 dp)
+#11 LAYOUT OVERLAP « Major » over the touchable « Close sheet » (75 x 42 dp)
+#11 LAYOUT OVERLAP « Minor » over the touchable « Close sheet » (76 x 42 dp)
+#11 LAYOUT OVERLAP « Dorian » over the touchable « Close sheet » (89 x 42 dp)
+#11 LAYOUT OVERLAP « Minor penta » over the touchable « Close sheet » (159 x 42 dp)
+#11 LAYOUT OVERLAP « Major penta » over the touchable « Close sheet » (159 x 42 dp)
+#11 LAYOUT OVERLAP « Blues » over the touchable « Close sheet » (72 x 42 dp)
+#11 LAYOUT OVERLAP « Phrygian » over the touchable « Close sheet » (118 x 42 dp)
+#11 LAYOUT OVERLAP « Harmonic minor » over the touchable « Close sheet » (212 x 42 dp)
+#11 LAYOUT OVERLAP « Key » over the touchable « Close sheet » (47 x 37 dp)
+#11 LAYOUT OVERLAP « C » over the touchable « Close sheet » (21 x 42 dp)
+#11 LAYOUT OVERLAP « C♯ » over the touchable « Close sheet » (36 x 42 dp)
+#11 LAYOUT OVERLAP « D » over the touchable « Close sheet » (20 x 42 dp)
+#11 LAYOUT OVERLAP « E♭ » over the touchable « Close sheet » (27 x 42 dp)
+#11 LAYOUT OVERLAP « E » over the touchable « Close sheet » (17 x 42 dp)
+#11 LAYOUT OVERLAP « F » over the touchable « Close sheet » (17 x 42 dp)
+#11 LAYOUT OVERLAP « F♯ » over the touchable « Close sheet » (32 x 42 dp)
+#11 LAYOUT OVERLAP « G » over the touchable « Close sheet » (21 x 42 dp)
+#11 LAYOUT OVERLAP « A♭ » over the touchable « Close sheet » (29 x 42 dp)
+#11 LAYOUT OVERLAP « A » over the touchable « Close sheet » (19 x 42 dp)
+#11 LAYOUT OVERLAP « B♭ » over the touchable « Close sheet » (28 x 42 dp)
+#11 LAYOUT OVERLAP « B » over the touchable « Close sheet » (18 x 42 dp)
+#11 > touche 690 1356
+#11 DOIGT tuto_root_7 « G »
+#12 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 8b46c53427 | project=p-3d440285 tuto=amapiano/Facile active=true step=key done=3 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Song key: G · Dorian » over the touchable « Close sheet » (250 x 37 dp)
+#12 LAYOUT OVERLAP « Done! The song's colour is chosen. » over the touchable « Close sheet » (482 x 42 dp)
+#12 LAYOUT OVERLAP « Back to the tutorial » over the touchable « Close sheet » (242 x 37 dp)
+#12 > touche 426 1036
+#12 DOIGT rien
+#13 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 8b46c53427 | project=p-3d440285 tuto=amapiano/Facile active=true step=key done=3 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 1433
+#13 DOIGT tuto_key_continue « Back to the tutorial »
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e92f3bc260 | project=p-3d440285 tuto=amapiano/Facile active=true step=key done=3 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « Cymbal » over « FX » (7 x 11 dp)
+#14 LAYOUT OVERLAP « Cymbal » over « R 40 » (45 x 11 dp)
+#14 LAYOUT OVERLAP « Maracas » over « L 50 » (31 x 11 dp)
+#14 > touche 450 1152
+#14 DOIGT tuto_chapter_end_folded « Well done, chapter finished! »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8ee7f183c0 | project=p-3d440285 tuto=amapiano/Facile active=true step=key done=3 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 450 1091
+#15 DOIGT tuto_next_big « Next chapter   »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 11faa06206 | project=p-3d440285 tuto=amapiano/Facile active=true step=ready done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1008
+#16 DOIGT tuto_why « ▸ Why? »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2527dabdca | project=p-3d440285 tuto=amapiano/Facile active=true step=ready done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 450 1085
+#17 DOIGT tuto_mark «   Got it »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8854f5ed0a | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#18 > touche 450 871
+#18 DOIGT tuto_text_more « Read on »
+#19 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d7807b8286 | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CUT « Part: A » drawn past its parent's edge (down, 29 dp shown of 37)
+#19 > touche 450 810
+#19 DOIGT tuto_text_less « Show less »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8854f5ed0a | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 90 442
+#20 DOIGT step_0 « Step 1 »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5eb1fcf64d | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 192 442
+#21 DOIGT step_1 « Step 2 »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2fde63bf4e | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 294 442
+#22 DOIGT step_2 « Step 3 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 21208065f8 | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 397 442
+#23 DOIGT step_3 « Step 4 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f83a73388d | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « 2 » 3.23:1 (needs 4.5:1, 12 sp)
+#24 > touche 500 442
+#24 DOIGT step_4 « Step 5 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 72739e3905 | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 603 442
+#25 DOIGT step_5 « Step 6 »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f713377c1c | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 706 442
+#26 DOIGT step_6 « Step 7 »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5addd78afb | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 809 442
+#27 DOIGT step_7 « Step 8 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 67b5311f8e | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « 3 » 3.23:1 (needs 4.5:1, 12 sp)
+#28 > touche 90 523
+#28 DOIGT step_8 « Step 9 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ef6fc91783 | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 192 523
+#29 DOIGT step_9 « Step 10 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 18a6b90d92 | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 294 523
+#30 DOIGT step_10 « Step 11 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a347a23ff7 | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 397 523
+#31 DOIGT step_11 « Step 12 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3c35d92385 | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « 4 » 3.23:1 (needs 4.5:1, 12 sp)
+#32 > touche 500 523
+#32 DOIGT step_12 « Step 13 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3438d66e14 | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 603 523
+#33 DOIGT step_13 « Step 14 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 612baa6a0e | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 706 523
+#34 DOIGT step_14 « Step 15 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a85b6d1c92 | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=4 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 809 523
+#35 DOIGT step_15 « Step 16 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bdf558f59e | project=p-3d440285 tuto=amapiano/Facile active=true step=hat_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 450 1035
+#36 DOIGT tuto_next_big « Next step   »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7deab0960c | project=p-3d440285 tuto=amapiano/Facile active=true step=kick_do done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#37 > touche 90 442
+#37 DOIGT step_0 « Step 1 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 37c5242745 | project=p-3d440285 tuto=amapiano/Facile active=true step=kick_do done=5 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « 2 » 3.58:1 (needs 4.5:1, 12 sp)
+#38 > touche 500 442
+#38 DOIGT step_4 « Step 5 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d656aa072c | project=p-3d440285 tuto=amapiano/Facile active=true step=kick_do done=5 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 12 sp)
+#39 > touche 90 523
+#39 DOIGT step_8 « Step 9 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d3b1a2d528 | project=p-3d440285 tuto=amapiano/Facile active=true step=kick_do done=5 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 12 sp)
+#40 > touche 500 523
+#40 DOIGT step_12 « Step 13 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 19bd83ac7b | project=p-3d440285 tuto=amapiano/Facile active=true step=kick_do done=6 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « Clear » 3.40:1 (needs 4.5:1, 14 sp)
+#41 > touche 294 1149
+#41 DOIGT tuto_play_mine «  Listen to your result »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE da99025515 | project=p-3d440285 tuto=amapiano/Facile active=true step=kick_do done=6 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 > touche 450 1035
+#42 DOIGT tuto_next_big « Next step   »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bd33467295 | project=p-3d440285 tuto=amapiano/Facile active=true step=clap_do done=6 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#43 > touche 500 442
+#43 DOIGT step_4 « Step 5 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2c1b0e9723 | project=p-3d440285 tuto=amapiano/Facile active=true step=clap_do done=6 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 LAYOUT CONTRAST « 4 » 3.09:1 (needs 4.5:1, 12 sp)
+#44 > touche 500 523
+#44 DOIGT step_12 « Step 13 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4eebe12579 | project=p-3d440285 tuto=amapiano/Facile active=true step=clap_do done=7 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 450 1035
+#45 DOIGT tuto_next_big « Next step   »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d49bd737f0 | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 LAYOUT CONTRAST « Drum rim » 3.80:1 (needs 4.5:1, 13 sp)
+#46 > touche 706 433
+#46 DOIGT step_6 « Step 7 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 88282f4baa | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 192 514
+#47 DOIGT step_9 « Step 10 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 39b8eabc79 | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 603 514
+#48 DOIGT step_13 « Step 14 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9c3d9845a1 | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 450 946
+#49 DOIGT tuto_need «   Switch to 2 bars »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7f64a85de5 | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#50 SON Son : la musique du projet joue en boucle.
+#50 > touche 231 312
+#50 DOIGT drum_page_1 « 2 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4dbca1704c | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 > touche 603 517
+#51 DOIGT step_21 « Step 6 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ee2e7983df | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 LAYOUT CONTRAST « 3 » 3.61:1 (needs 4.5:1, 12 sp)
+#52 > touche 706 517
+#52 DOIGT step_22 « Step 7 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 483af49c95 | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 > touche 90 598
+#53 DOIGT step_24 « Step 9 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7dbd04cba1 | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 > touche 192 598
+#54 DOIGT step_25 « Step 10 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fa6ab8a290 | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#55 SON Son : la musique du projet joue en boucle.
+#55 > touche 294 598
+#55 DOIGT step_26 « Step 11 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 782c1fa137 | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#56 SON Son : la musique du projet joue en boucle.
+#56 LAYOUT CONTRAST « 4 » 3.61:1 (needs 4.5:1, 12 sp)
+#56 > touche 500 598
+#56 DOIGT step_28 « Step 13 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f797e17e3b | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=7 playing=true
+#57 SON Son : la musique du projet joue en boucle.
+#57 > touche 603 598
+#57 DOIGT step_29 « Step 14 »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dae8bc24c0 | project=p-3d440285 tuto=amapiano/Facile active=true step=perc_do done=8 playing=true
+#58 SON Son : la musique du projet joue en boucle.
+#58 > touche 450 1152
+#58 DOIGT tuto_next_folded « Passed »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 83f68bac31 | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=8 playing=true
+#59 SON Son : la musique du projet joue en boucle.
+#59 LAYOUT CONTRAST « 2 » 3.55:1 (needs 4.5:1, 12 sp)
+#59 > touche 450 946
+#59 DOIGT tuto_do «   I'll do it »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0672f828b8 | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=8 playing=true
+#60 SON Son : la musique du projet joue en boucle.
+#60 LAYOUT CONTRAST « 2 » 2.73:1 (needs 4.5:1, 12 sp)
+#60 LAYOUT CONTRAST « 4 » 4.20:1 (needs 4.5:1, 12 sp)
+#60 > touche 500 517
+#60 DOIGT step_4 « Step 5 »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ce5779b1b9 | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=8 playing=true
+#61 SON Son : la musique du projet joue en boucle.
+#61 LAYOUT CONTRAST « 2 » 4.23:1 (needs 4.5:1, 12 sp)
+#61 > touche 809 517
+#61 DOIGT step_7 « Step 8 »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0ce79ac7e3 | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=8 playing=true
+#62 SON Son : la musique du projet joue en boucle.
+#62 > touche 294 598
+#62 DOIGT step_10 « Step 11 »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b9ba5eae13 | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=8 playing=true
+#63 SON Son : la musique du projet joue en boucle.
+#63 > touche 500 598
+#63 DOIGT step_12 « Step 13 »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 425b068cff | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=8 playing=true
+#64 SON Son : la musique du projet joue en boucle.
+#64 > touche 231 312
+#64 DOIGT drum_page_1 « 2 »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a0fb8ae6f8 | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=8 playing=true
+#65 SON Son : la musique du projet joue en boucle.
+#65 > touche 500 517
+#65 DOIGT step_20 « Step 5 »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6a15a4903c | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=8 playing=true
+#66 SON Son : la musique du projet joue en boucle.
+#66 > touche 809 517
+#66 DOIGT step_23 « Step 8 »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fd903f33b7 | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=8 playing=true
+#67 SON Son : la musique du projet joue en boucle.
+#67 > touche 294 598
+#67 DOIGT step_26 « Step 11 »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0628480902 | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=8 playing=true
+#68 SON Son : la musique du projet joue en boucle.
+#68 > touche 500 598
+#68 DOIGT step_28 « Step 13 »
+#69 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2132f8f1c4 | project=p-3d440285 tuto=amapiano/Facile active=true step=conga_do done=9 playing=true
+#69 SON Son : la musique du projet joue en boucle.
+#69 > touche 450 1152
+#69 DOIGT tuto_next_folded « Passed »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5d297ae272 | project=p-3d440285 tuto=amapiano/Facile active=true step=drums_hear done=9 playing=true
+#70 SON Son : la musique du projet joue en boucle.
+#70 > touche 450 1088
+#70 DOIGT tuto_listen «  Listen to the example »
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a72a3a7aab | project=p-3d440285 tuto=amapiano/Facile active=true step=drums_hear done=9 playing=false
+#71 SON Son : l'exemple du tuto joue (encore 3 s).
+#71 > touche 450 1002
+#71 DOIGT tuto_play_mine «   Listen to your result »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bb5d275e99 | project=p-3d440285 tuto=amapiano/Facile active=true step=drums_hear done=9 playing=true
+#72 SON Son : la musique du projet joue en boucle.
+#72 > touche 450 1088
+#72 DOIGT tuto_listen «  Listen to the example »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a72a3a7aab | project=p-3d440285 tuto=amapiano/Facile active=true step=drums_hear done=9 playing=false
+#73 SON Son : l'exemple du tuto joue (encore 3 s).
+#73 > attends 5
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 702e86d2fa | project=p-3d440285 tuto=amapiano/Facile active=true step=drums_hear done=10 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 450 1035
+#74 DOIGT tuto_next_big « Next chapter   »
+#75 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 04c22f3cbf | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_hear done=10 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 450 1085
+#75 DOIGT tuto_listen «  Listen to the example »
+#76 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9d4b0e94bc | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_hear done=10 playing=false
+#76 SON Son : l'exemple du tuto joue (encore 3 s).
+#76 > attends 8
+#77 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7608b5a9af | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_hear done=11 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 450 1085
+#77 DOIGT tuto_next_big « Next step   »
+#78 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4f9679b7c2 | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_do done=11 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 450 946
+#78 DOIGT tuto_need «   Create the Chords track »
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ab236f10e5 | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_do done=11 playing=false
+#79 SON Son : rien ne joue.
+#79 LAYOUT CUT « 1 » drawn past its parent's edge (down, 32 dp shown of 37)
+#79 LAYOUT CUT « 2 » drawn past its parent's edge (down, 32 dp shown of 37)
+#79 LAYOUT CUT « A » drawn past its parent's edge (down, 28 dp shown of 32)
+#79 LAYOUT CUT « A♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#79 LAYOUT CUT « G » drawn past its parent's edge (down, 28 dp shown of 32)
+#79 LAYOUT CUT « G♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#79 LAYOUT CUT « F » drawn past its parent's edge (down, 28 dp shown of 32)
+#79 LAYOUT CUT « E » drawn past its parent's edge (down, 28 dp shown of 32)
+#79 LAYOUT CUT « E♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#79 LAYOUT CUT « D » drawn past its parent's edge (down, 28 dp shown of 32)
+#79 LAYOUT CUT « D♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#79 LAYOUT CUT « Your turn: tap the bottom dotted note of each chord in bars 1 and 2: the whole chord is placed. Bar 1: 3 hits; bar 2: one long chord. » ellipsized (« … »)
+#79 > touche 328 973
+#79 DOIGT rien
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e8e6f11aad | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_do done=11 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 508 973
+#80 DOIGT rien
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d146eda4e7 | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_do done=11 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 688 973
+#81 DOIGT rien
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8ca2265176 | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_do done=11 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 750 540
+#82 DOIGT tuto_notes_left « Chords · bar 1/8 »
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c1738fea69 | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_do done=11 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT CUT « 3 » drawn past its parent's edge (down, 32 dp shown of 37)
+#83 LAYOUT CONTRAST « ↓ Dotted chords to tap: 1 » 4.29:1 (needs 4.5:1, 14 sp)
+#83 > touche 463 973
+#83 DOIGT rien
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a8c84892f1 | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_do done=12 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 450 1255
+#84 DOIGT tuto_next_folded « Passed »
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 749e092f22 | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_2 done=12 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT CUT « Pattern placed! Copy it to the rest: » ellipsized (« … »)
+#85 LAYOUT CUT « F » drawn past its parent's edge (down, 8 dp shown of 32)
+#85 > touche 774 540
+#85 DOIGT tuto_roll_copy « Copy »
+#86 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c05db6b4f1 | project=p-3d440285 tuto=amapiano/Facile active=true step=pad_2 done=13 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 450 1138
+#86 DOIGT tuto_next_big « Next chapter   »
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 59591dd619 | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 667 1163
+#87 DOIGT tuto_show «  Show me »
+#88 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8ee0e1a34d | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CUT « C5 » drawn past its parent's edge (down, 28 dp shown of 32)
+#88 LAYOUT CUT « B » drawn past its parent's edge (down, 28 dp shown of 32)
+#88 LAYOUT CONTRAST « Stop » 3.91:1 (needs 4.5:1, 14 sp)
+#88 > attends 6
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9c5ce62757 | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#89 SON Son : 5 notes du synthé.
+#89 > attends 6
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e7a4f74b4e | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#90 SON Son : 3 notes du synthé.
+#90 > attends 5
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 60dd90e5c1 | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT CONTRAST « E♭ » 1.62:1 (needs 4.5:1, 12 sp)
+#91 > touche 450 1049
+#91 DOIGT tuto_need «   Create the Melody track »
+#92 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6196c967ff | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 238 680
+#92 DOIGT rien
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 5a9805c994 | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#93 SON Son : 1 note du synthé.
+#93 > touche 373 889
+#93 DOIGT rien
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 62cc947768 | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#94 SON Son : 1 note du synthé.
+#94 LAYOUT CUT « 2 more dotted notes, further on → » ellipsized (« … »)
+#94 > touche 450 540
+#94 DOIGT tuto_notes_left « Melody · bar 1/8 »
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fa62328eb9 | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#95 SON Son : rien ne joue.
+#95 LAYOUT CUT « 4 » drawn past its parent's edge (down, 32 dp shown of 37)
+#95 LAYOUT CUT « E♭ » drawn past its parent's edge (down, 3 dp shown of 33)
+#95 LAYOUT CUT « B♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#95 LAYOUT CONTRAST « Melody · bar 3/8 » 3.86:1 (needs 4.5:1, 12 sp)
+#95 LAYOUT CONTRAST « 2 more dotted notes to tap » 4.29:1 (needs 4.5:1, 14 sp)
+#95 > touche 553 852
+#95 DOIGT rien
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b69b3aacb2 | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#96 SON Son : 1 note du synthé.
+#96 > touche 688 978
+#96 DOIGT rien
+#97 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d40abab027 | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=13 playing=false
+#97 SON Son : 1 note du synthé.
+#97 > touche 450 1255
+#97 DOIGT tuto_need_folded « Copy to the next bars »
+#98 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dfec1824e3 | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=14 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 450 1255
+#98 DOIGT tuto_chapter_end_folded « Well done, chapter finished! »
+#99 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 93bd22d0a4 | project=p-3d440285 tuto=amapiano/Facile active=true step=lead_do done=14 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT CONTRAST « C5 » 1.33:1 (needs 4.5:1, 12 sp)
+#99 > touche 450 1138
+#99 DOIGT tuto_next_big « Next chapter   »
+#100 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6dcf196106 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_hear done=14 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 450 1188
+#100 DOIGT tuto_listen «  Listen to the example »
+#101 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 29677970cc | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_hear done=14 playing=false
+#101 SON Son : l'exemple du tuto joue (encore 3 s).
+#101 > attends 8
+#102 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3c7a0dcec7 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_hear done=15 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 450 1188
+#102 DOIGT tuto_next_big « Next step   »
+#103 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3b4a6fb6d1 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_do done=15 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 450 1049
+#103 DOIGT tuto_need «   Create the Bass track »
+#104 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7654a33f1c | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_do done=15 playing=false
+#104 SON Son : rien ne joue.
+#104 LAYOUT CUT « C3 » drawn past its parent's edge (down, 3 dp shown of 32)
+#104 LAYOUT CONTRAST « C3 » 3.25:1 (needs 4.5:1, 12 sp)
+#104 > touche 450 540
+#104 DOIGT tuto_notes_left « Bass · bar 1/8 »
+#105 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b833b60a11 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_do done=15 playing=false
+#105 SON Son : rien ne joue.
+#105 LAYOUT CUT « A♭ » lines cut (taller than its box)
+#105 LAYOUT CUT « G » lines cut (taller than its box)
+#105 LAYOUT CUT « G♭ » lines cut (taller than its box)
+#105 LAYOUT CUT « F » lines cut (taller than its box)
+#105 LAYOUT CUT « E » lines cut (taller than its box)
+#105 LAYOUT CUT « E♭ » lines cut (taller than its box)
+#105 LAYOUT CUT « D » lines cut (taller than its box)
+#105 LAYOUT CUT « D♭ » lines cut (taller than its box)
+#105 LAYOUT CUT « C3 » lines cut (taller than its box)
+#105 LAYOUT CUT « B » lines cut (taller than its box)
+#105 LAYOUT CUT « B♭ » lines cut (taller than its box)
+#105 LAYOUT CUT « A » lines cut (taller than its box)
+#105 LAYOUT CONTRAST « Bass · bar 1/8 » 3.86:1 (needs 4.5:1, 12 sp)
+#105 LAYOUT CONTRAST « 5 more dotted notes to tap » 4.29:1 (needs 4.5:1, 14 sp)
+#105 LAYOUT TARGET « G3 G Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « G♭3 G♭ Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « F3 F Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « E3 E Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « E♭3 E♭ Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « D3 D Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « D♭3 D♭ Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « C3 C3 Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « B2 B Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « B♭2 B♭ Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « A2 A Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « A♭2 A♭ Play » 56 x 18 dp (touch 56 x 48)
+#105 LAYOUT TARGET « G2 G Play » 56 x 18 dp (touch 56 x 48)
+#105 > touche 486 689
+#105 DOIGT rien
+#106 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6e15d4b757 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_do done=15 playing=false
+#106 SON Son : 1 note du synthé.
+#106 > touche 756 825
+#106 DOIGT rien
+#107 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE be13dfff30 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_do done=15 playing=false
+#107 SON Son : 1 note du synthé.
+#107 > touche 261 1013
+#107 DOIGT rien
+#108 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0156219470 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_do done=15 playing=false
+#108 SON Son : 1 note du synthé.
+#108 > touche 396 1013
+#108 DOIGT rien
+#109 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2848e38b79 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_do done=15 playing=false
+#109 SON Son : 1 note du synthé.
+#109 > touche 621 1013
+#109 DOIGT rien
+#110 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8e1a1691a8 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_do done=16 playing=false
+#110 SON Son : 1 note du synthé.
+#110 LAYOUT CUT « 5 more dotted notes, further on → » ellipsized (« … »)
+#110 > touche 450 1255
+#110 DOIGT tuto_next_folded « Passed »
+#111 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ee4368556d | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_2 done=16 playing=false
+#111 SON Son : rien ne joue.
+#111 > touche 450 1049
+#111 DOIGT tuto_do «   I'll do it »
+#112 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b58f88329b | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_2 done=16 playing=false
+#112 SON Son : rien ne joue.
+#112 LAYOUT CUT « C2 » lines cut (taller than its box)
+#112 LAYOUT TARGET « G♭2 G♭ Play » 56 x 18 dp (touch 56 x 48)
+#112 LAYOUT TARGET « F2 F Play » 56 x 18 dp (touch 56 x 48)
+#112 LAYOUT TARGET « E2 E Play » 56 x 18 dp (touch 56 x 48)
+#112 LAYOUT TARGET « E♭2 E♭ Play » 56 x 18 dp (touch 56 x 48)
+#112 LAYOUT TARGET « D2 D Play » 56 x 18 dp (touch 56 x 48)
+#112 LAYOUT TARGET « D♭2 D♭ Play » 56 x 18 dp (touch 56 x 48)
+#112 LAYOUT TARGET « C2 C2 Play » 56 x 18 dp (touch 56 x 48)
+#112 > touche 576 708
+#112 DOIGT rien
+#113 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 136f84f2ee | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_2 done=16 playing=false
+#113 SON Son : 1 note du synthé.
+#113 > touche 800 843
+#113 DOIGT rien
+#114 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE cb49d40371 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_2 done=16 playing=false
+#114 SON Son : 1 note du synthé.
+#114 > touche 261 1030
+#114 DOIGT rien
+#115 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a3d797535b | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_2 done=16 playing=false
+#115 SON Son : 1 note du synthé.
+#115 > touche 396 1030
+#115 DOIGT rien
+#116 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 150e385b89 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_2 done=16 playing=false
+#116 SON Son : 1 note du synthé.
+#116 > touche 733 1030
+#116 DOIGT rien
+#117 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2ee51233d9 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_2 done=16 playing=false
+#117 SON Son : 1 note du synthé.
+#117 > touche 450 1255
+#117 DOIGT tuto_need_folded « Copy to the next bars »
+#118 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 59683833d2 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_2 done=17 playing=false
+#118 SON Son : rien ne joue.
+#118 LAYOUT CUT « 5 » drawn past its parent's edge (down, 32 dp shown of 37)
+#118 > touche 450 1255
+#118 DOIGT tuto_next_folded « Passed »
+#119 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 38abcc322c | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_3 done=17 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 450 1049
+#119 DOIGT tuto_do «   I'll do it »
+#120 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fcc71f358c | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_3 done=17 playing=false
+#120 SON Son : rien ne joue.
+#120 > touche 441 843
+#120 DOIGT rien
+#121 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f8b1d1d197 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_3 done=17 playing=false
+#121 SON Son : 1 note du synthé.
+#121 > touche 800 925
+#121 DOIGT rien
+#122 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 132bab588f | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_3 done=17 playing=false
+#122 SON Son : 1 note du synthé.
+#122 > touche 643 1030
+#122 DOIGT rien
+#123 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7517c68ed8 | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_3 done=17 playing=false
+#123 SON Son : 1 note du synthé.
+#123 > touche 450 1255
+#123 DOIGT tuto_need_folded « Copy to the next bars »
+#124 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8ca2087a0d | project=p-3d440285 tuto=amapiano/Facile active=true step=bass_3 done=18 playing=false
+#124 SON Son : rien ne joue.
+#124 > fin
+#124 FIN : fin

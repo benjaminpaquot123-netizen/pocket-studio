@@ -68,3 +68,20 @@ Mineurs :
 - Restent ouverts, sans changement : m1 à m5 (D08) ; le branchement `renameScene` dans AppRoot.kt (D10) et la ligne `doneGoesAtNextGesture` (F111), hors lot, chez le chef.
 
 Verdict : 0 bloquant, 0 grave
+
+## Relecture neuve après la fusion de l'intégration (boost)
+
+Relu : SessionScreen.kt, TopBar.kt, rapport du lot, Tour9L6ScreenshotTest, Tour9HelpUnderTopTest, après retrait de `revealFrom` (F106).
+
+Constats et suite :
+- G3. TopBar.kt : « Renommer » apparaissait dans le menu de la partie sans être branché (AppRoot.kt ne passe pas `renameScene`, hors du lot) : un geste mort. Corrigé : `renameScene` vaut `null` par défaut et l'entrée n'apparaît que s'il est fourni ; Tour9RenameFromChipTest et la capture `scene_menu_rename` le passent. D10 noté « tenté » dans le rapport.
+- G4. Rapport : « corrige: D10 » annonçait un défaut réglé alors que la ligne d'AppRoot.kt manque. Corrigé : ligne retirée, D10 dans les Restes (« tenté »).
+- G5. Rapport : « corrige: F107 » (et F105, m10) annonçaient en entier des défauts faits à moitié. Corrigé : lignes retirées, « moitié seulement » dans les Restes ; F106 aussi (moitié, sans `revealFrom` qui cassait le tuto « jump_up » Facile).
+- m11. SessionScreen.kt : la KDoc de `SONG_HELP_SPOT` disait la phrase gardée avec les boutons d'ajout. Corrigé.
+- m12. Tour9TopBarSavedTest vérifie que nom et « Sauvegardé » tiennent dans la barre, pas que le nom entier se lit (F107 à moitié). Noté, sans changement.
+
+Tests ciblés verts après fusion (Tour9*, TopBar*, HelpLabelsTest, ScreenScanTest, PlayStripLogicTest, SongArrangementTest, TutoJourneyTest, LanguageTest) ; self-test du banc vert (389 verts, 0 rouge).
+
+relu : bdeeb417
+
+Verdict : 0 bloquant, 0 grave

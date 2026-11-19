@@ -18,7 +18,6 @@ corrige: F100 | gravité: moyen
 corrige: F102 | gravité: moyen
 corrige: F103 | gravité: moyen
 corrige: F104 | gravité: moyen
-corrige: F105 | gravité: moyen
 corrige: F108 | gravité: moyen
 corrige: F109 | gravité: moyen
 corrige: F110 | gravité: moyen

@@ -1,0 +1,66 @@
+Écran 76 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Głośności » @ 428,213
+bouton « ? » @ 842,213
+texte « Przesuń fader, żeby zmienić głośność; dotknij nazwy ścieżki, żeby zobaczyć jej efekty i krzywe. » @ 450,277
+texte « Perkusja » @ 84,379
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 57,454
+bouton (casque) [état « wył. »] @ 111,454
+curseur [coupé, état « +0,0 dB », à 80 %] @ 84,542
+texte « Acid 303 » @ 204,379
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 177,454
+bouton (casque) [état « wył. »] @ 231,454
+curseur [coupé, état « +0,0 dB », à 80 %] @ 204,542
+texte « Akordy » @ 324,379
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 297,454
+bouton (casque) [état « wył. »] @ 351,454
+curseur [coupé, état « +0,0 dB », à 80 %] @ 324,542
+texte « Bas » @ 444,379
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 417,454
+bouton (casque) [état « wył. »] @ 471,454
+curseur [coupé, état « +0,0 dB », à 80 %] @ 444,542
+texte « Melodia » @ 564,379
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 537,454
+bouton (casque) [état « wył. »] @ 591,454
+curseur [coupé, état « +0,0 dB », à 80 %] @ 564,542
+texte « Remix » @ 684,379
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 657,454
+bouton (casque) [état « wył. »] @ 711,454
+curseur [coupé, état « +0,0 dB », à 80 %] @ 684,542
+texte « Efekty Rozdział 13/16 · Krok 1/3 · Pro » @ 357,641
+icône (liste) « Rozdziały » @ 750,642
+icône ⌄ @ 843,642
+texte « Twoja kolej: w Miksie podkręć „Wysyłka na pogłos” na ścieżce „Akordy”, potem na padzie „Werbel”. Niewiele: pop zostaje bliski i wyraźny. » @ 450,776
+bouton « Pobierz zestaw Pop (3 MB) » @ 387,902
+texte « Później » @ 810,902
+texte « ▸ Dlaczego? » @ 450,973
+bouton (doigt qui touche) «   Zrobię to » @ 450,1042
+bouton ▶ «  Posłuchaj przykładu » @ 232,1126
+bouton (œil) «  Pokaż mi » @ 667,1126
+icône ← «  Wstecz » @ 108,1207
+icône « Dalej  » → @ 809,1207
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

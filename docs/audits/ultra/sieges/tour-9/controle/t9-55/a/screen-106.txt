@@ -1,0 +1,75 @@
+Écran 106 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+texte « Głośności » @ 428,213
+bouton « ? » @ 842,213
+texte « Perkusja » @ 84,301
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 57,376
+bouton (casque) [état « wył. »] @ 111,376
+curseur [état « +0,0 dB », à 80 %] @ 84,547
+texte « +0,0 » @ 84,702
+image (étincelles) @ 74,742
+texte « 3 » @ 96,742
+texte « Acid 303 » @ 204,301
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 177,376
+bouton (casque) [état « wył. »] @ 231,376
+curseur [état « +0,0 dB », à 80 %] @ 204,547
+texte « +0,0 » @ 204,702
+texte « Akordy » @ 324,301
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 297,376
+bouton (casque) [état « wył. »] @ 351,376
+curseur [état « -2,3 dB », à 70 %] @ 324,547
+texte « -2,3 » @ 324,702
+image (étincelles) @ 295,742
+texte « 3 » @ 317,742
+image (courbe) @ 338,742
+texte « 1 » @ 357,742
+texte « Bas » @ 444,301
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 417,376
+bouton (casque) [état « wył. »] @ 471,376
+curseur [état « +0,0 dB », à 80 %] @ 444,547
+texte « +0,0 » @ 444,702
+image (étincelles) @ 437,742
+texte « 1 » @ 456,742
+texte « Melodia » @ 564,301
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 537,376
+bouton (casque) [état « wył. »] @ 591,376
+curseur [état « +0,0 dB », à 80 %] @ 564,547
+texte « +0,0 » @ 564,702
+texte « Remix » @ 684,301
+bouton (haut-parleur et ondes) [allumé, état « wł. »] @ 657,376
+bouton (casque) [état « wył. »] @ 711,376
+curseur [état « +0,0 dB », à 80 %] @ 684,547
+texte « +0,0 » @ 684,702
+image (courbe) @ 60,859
+texte « Krzywe i efekty » @ 207,841
+texte « 1 ustawienie rusza się samo. » @ 264,882
+bouton « Pokaż krzywe » @ 243,948
+bouton « Co gra » @ 657,948
+texte « Miks Rozdział 14/16 · Krok 1/1 · Pro » @ 357,1083
+icône (liste) « Rozdziały » @ 750,1084
+icône ⌃ @ 843,1084
+icône « Twoja kolej: ścisz trochę suwaki „Akordy” i „Melodia”; jeśli śpiewałeś, Wokal wychodzi przed całą resztę. Czytaj » ⌃ @ 450,1196
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

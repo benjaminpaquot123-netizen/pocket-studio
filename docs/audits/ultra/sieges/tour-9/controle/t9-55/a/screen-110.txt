@@ -1,0 +1,49 @@
+Écran 110 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+titre « WYJŚCIE GŁÓWNE » [coupé, état « Rozwinięte »] @ 207,180
+bouton « ? » [coupé] @ 350,180
+texte « Głośność: — » @ 126,228
+texte « Głośność główna » @ 397,310
+texte « −6,0 dB » @ 805,310
+curseur [état « −6,0 dB », à 60 %] @ 450,381
+texte « Brak przesteru: wszystko gra. » @ 220,447
+texte « Szczegóły » @ 125,513
+texte « Głośność docelowa » @ 173,582
+bouton « ? » @ 325,582
+bouton « Auto (styl) · −9 LUFS » @ 207,652
+bouton « Klub · −8 LUFS » @ 507,652
+bouton « Streaming · −14 LUFS » @ 213,733
+bouton « Apple Music · −16 LUFS » @ 579,733
+bouton « Wolny » @ 109,814
+bouton « Wył. » [sélectionné] @ 240,814
+texte « Głośność zostaje taka, jak ją ustawisz; wyjście jest tylko chronione przed przesterem. » @ 450,898
+bouton « Zaawansowane: master pro Pułap −1,0 dB · atak i zwolnienie · bas w mono · odsłuch A/B · odniesienie » ⌄ [coupé] @ 450,989
+texte « Mastering Rozdział 15/16 · Krok 1/1 · Pro » @ 357,1083
+icône (liste) « Rozdziały » @ 750,1084
+icône ⌃ @ 843,1084
+icône « Twoja kolej: w „Wyjście główne” ustaw „Głośność docelowa” na „Streaming” (−14 LUFS): Spotify czy YouTube i tak ściszają głośniejsze utwory, lepiej zachować żywe uderzenia werbla. Będzie brzmieć trochę ciszej niż demo „Zrób mi utwór”: to normalne, to poziom serwisów. Czytaj » ⌃ @ 450,1196
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

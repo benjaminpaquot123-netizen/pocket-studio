@@ -1,0 +1,74 @@
+Écran 71 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 128,42
+bouton « Pro » @ 286,42
+bouton « A · Refren » ▾ @ 422,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Perkusja 16 padów » [sélectionné] @ 100,204
+onglet « Acid 303 Linia basu » @ 288,204
+onglet « Wokal Mikrofon » @ 470,204
+onglet « Remix Rozdziel » @ 642,204
+bouton « Akordy Pianino FM » [coupé] @ 805,204
+image → @ 889,205
+texte « Część: A · Refren » @ 138,273
+texte « Talerz » @ 96,338
+bouton « 1 » [état « uderzenie, siła 100 % »] @ 90,423
+bouton [état « pusty »] @ 192,423
+bouton [état « pusty »] @ 294,423
+bouton [état « pusty »] @ 397,423
+bouton « 2 » [état « pusty »] @ 500,423
+bouton [état « pusty »] @ 603,423
+bouton [état « pusty »] @ 706,423
+bouton [état « pusty »] @ 809,423
+bouton « 3 » [état « pusty »] @ 90,504
+bouton [état « pusty »] @ 192,504
+bouton [état « pusty »] @ 294,504
+bouton [état « pusty »] @ 397,504
+bouton « 4 » [état « pusty »] @ 500,504
+bouton [état « pusty »] @ 603,504
+bouton [état « pusty »] @ 706,504
+bouton [état « pusty »] @ 809,504
+bouton « Uderzenia » [sélectionné] @ 137,590
+bouton « Rolki » @ 295,590
+bouton « Pan » @ 409,590
+bouton « Wysokość » @ 561,590
+bouton « Siła » @ 712,590
+texte « wszystko » @ 227,674
+texte « 1/2 » @ 344,674
+texte « 1/4 » @ 419,674
+texte « ◀ » @ 494,674
+texte « ▶ » @ 569,674
+texte « Wyczyść » @ 683,674
+texte « Wypełnij » @ 94,674
+texte « Dotknij komórki, żeby dodać uderzenie, przesuń palec, żeby namalować kilka. Przytrzymaj uderzenie: siła i rolki (×2 do ×8). » @ 450,758
+texte « Przejścia Rozdział 12/16 · Zrobione · Pro » @ 357,844
+icône (liste) « Rozdziały » @ 750,845
+icône ⌄ @ 843,845
+image (coupe) @ 57,979
+texte « Brawo, rozdział ukończony! » @ 277,942
+texte « Posłuchaj swojego utworu w obecnej postaci, a potem przejdź do następnego rozdziału: „Efekty”. » @ 475,999
+bouton « Następny rozdział   » → @ 450,1095
+bouton ▶ «  Posłuchaj mojego utworu » @ 294,1193
+icône ← @ 57,1193
+bouton ▶ «  Posłuchaj przykładu » @ 687,1193
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

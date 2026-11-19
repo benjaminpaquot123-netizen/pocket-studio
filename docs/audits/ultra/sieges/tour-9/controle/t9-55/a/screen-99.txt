@@ -1,0 +1,60 @@
+Écran 99 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Akordy » @ 120,191
+texte « Wyczyść » @ 693,213
+icône (poubelle) @ 822,213
+texte « Filtr Odcięcie » @ 131,237
+texte « Otwiera (jasno) lub zamyka (głucho) dźwięk: przemiatanie filtra. » @ 558,303
+bouton (curseurs) «  Pokaż ustawienie » @ 216,384
+bouton « Pętla » @ 101,465
+bouton « Na część » [sélectionné] @ 256,465
+bouton « Utwór » @ 418,465
+texte « Kroki części D (każda część ma swoje). » @ 279,528
+texte « Wygładź » @ 422,591
+bouton (pinceau) « Rysuj » @ 115,591
+bouton (courbe) « Linia » [sélectionné] @ 266,591
+icône (loupe −) [désactivé] @ 546,591
+texte « ×1 » @ 600,591
+icône (loupe +) @ 654,591
+texte « Linia: dotknij początku, potem końca (albo przesuń od jednego do drugiego); łączy je prosta rampa. » @ 450,708
+texte « 18,0 kHz » @ 81,805
+texte « 849 Hz » @ 81,891
+texte « 40 Hz » @ 82,977
+texte « ćwierćnuta » @ 81,1012
+texte « 1 » @ 134,1012
+texte « 3 » @ 229,1012
+texte « 5 » @ 319,1012
+texte « 7 » @ 411,1012
+texte « 9 » @ 503,1012
+texte « 11 » @ 598,1012
+texte « 13 » @ 692,1012
+texte « 15 » @ 783,1012
+texte « Efekty Rozdział 13/16 · Zrobione · Pro » @ 357,1083
+icône (liste) « Rozdziały » @ 750,1084
+icône ⌃ @ 843,1084
+icône (coupe) « Brawo, rozdział ukończony! » ⌃ @ 450,1196
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

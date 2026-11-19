@@ -1,0 +1,50 @@
+Écran 91 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton « Automatyzuj » [coupé] @ 243,166
+bouton « Co gra » [coupé] @ 657,166
+titre « KRZYWE » [état « Rozwinięte »] @ 362,270
+bouton « ? » @ 221,270
+bouton ● « Nagraj » @ 770,270
+texte « Spraw, żeby ustawienie ruszało się samo: wybierz je, potem narysuj krzywą (palcem albo linią w dwóch dotknięciach). » @ 450,354
+bouton + «  Automatyzuj ustawienie » @ 265,438
+bouton (vagues) «  Co gra » @ 599,438
+texte « Jeszcze nic się nie rusza. Pomysł: filtr pada otwierający się przez 8 taktów. » @ 450,522
+titre « WYJŚCIE GŁÓWNE » [état « Rozwinięte »] @ 207,642
+bouton « ? » @ 350,642
+texte « Głośność: — » @ 126,693
+texte « Głośność główna » @ 397,775
+texte « −6,0 dB » @ 805,775
+curseur [état « −6,0 dB », à 60 %] @ 450,846
+texte « Brak przesteru: wszystko gra. » @ 220,912
+texte « Szczegóły » @ 125,978
+texte « Głośność docelowa » [coupé] @ 173,1030
+texte « ? » [coupé] @ 325,1029
+texte « Efekty Rozdział 13/16 · Krok 3/3 · Pro » @ 357,1083
+icône (liste) « Rozdziały » @ 750,1084
+icône ⌃ @ 843,1084
+icône « Twoja kolej: zautomatyzuj filtr ścieżki „Akordy” na Pre-chorusie: „Automatyzuj ustawienie”, „Akordy”, „Filtr (przemiatanie)”, „Na część”, krzywa rosnąca aż do Refrenu. Czytaj » ⌃ @ 450,1196
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

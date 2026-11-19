@@ -1,0 +1,48 @@
+Écran 113 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Głośność docelowa » @ 173,184
+bouton « ? » @ 325,184
+bouton « Auto (styl) · −9 LUFS » @ 207,254
+bouton « Klub · −8 LUFS » @ 507,254
+bouton « Streaming · −14 LUFS » [sélectionné] @ 213,335
+bouton « Apple Music · −16 LUFS » @ 579,335
+bouton « Wolny » @ 109,416
+bouton « Wył. » @ 240,416
+texte « −14 LUFS na całym utworze: głośność, do której Spotify i YouTube sprowadzają wszystkie utwory. » @ 450,500
+bouton « Zaawansowane: master pro Pułap −1,0 dB · atak i zwolnienie · bas w mono · odsłuch A/B · odniesienie » ⌄ @ 450,613
+bouton « Efekty Brak » ⌄ @ 450,738
+texte « Mastering Rozdział 15/16 · Zrobione · Pro » @ 357,844
+icône (liste) « Rozdziały » @ 750,845
+icône ⌄ @ 843,845
+image (coupe) @ 57,979
+texte « Brawo, rozdział ukończony! » @ 277,942
+texte « Posłuchaj swojego utworu w obecnej postaci, a potem przejdź do następnego rozdziału: „Wyeksportuj swój utwór”. » @ 475,999
+bouton « Następny rozdział   » → @ 450,1095
+bouton ▶ «  Posłuchaj mojego utworu » @ 294,1193
+icône ← @ 57,1193
+bouton ▶ «  Posłuchaj przykładu » @ 687,1193
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

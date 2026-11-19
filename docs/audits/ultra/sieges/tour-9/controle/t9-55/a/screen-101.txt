@@ -1,0 +1,72 @@
+Écran 101 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+bouton (haut-parleur et ondes) [coupé, allumé, état « wł. »] @ 57,181
+bouton (casque) [coupé, état « wył. »] @ 111,181
+curseur [état « +0,0 dB », à 80 %] @ 84,342
+texte « +0,0 » @ 84,497
+texte « 3 » @ 96,537
+image (étincelles) @ 74,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « wł. »] @ 177,181
+bouton (casque) [coupé, état « wył. »] @ 231,181
+curseur [état « +0,0 dB », à 80 %] @ 204,342
+texte « +0,0 » @ 204,497
+bouton (haut-parleur et ondes) [coupé, allumé, état « wł. »] @ 297,181
+bouton (casque) [coupé, état « wył. »] @ 351,181
+curseur [état « +0,0 dB », à 80 %] @ 324,342
+texte « +0,0 » @ 324,497
+texte « 3 » @ 317,537
+texte « 1 » @ 357,537
+image (étincelles) @ 295,537
+image (courbe) @ 338,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « wł. »] @ 417,181
+bouton (casque) [coupé, état « wył. »] @ 471,181
+curseur [état « +0,0 dB », à 80 %] @ 444,342
+texte « +0,0 » @ 444,497
+texte « 1 » @ 456,537
+image (étincelles) @ 437,537
+bouton (haut-parleur et ondes) [coupé, allumé, état « wł. »] @ 537,181
+bouton (casque) [coupé, état « wył. »] @ 591,181
+curseur [état « +0,0 dB », à 80 %] @ 564,342
+texte « +0,0 » @ 564,497
+bouton (haut-parleur et ondes) [coupé, allumé, état « wł. »] @ 657,181
+bouton (casque) [coupé, état « wył. »] @ 711,181
+curseur [état « +0,0 dB », à 80 %] @ 684,342
+texte « +0,0 » @ 684,497
+image (courbe) @ 60,636
+texte « Krzywe i efekty » [coupé] @ 207,625
+texte « Miks Rozdział 14/16 · Krok 1/1 · Pro » @ 357,687
+icône (liste) « Rozdziały » @ 750,688
+icône ⌄ @ 843,688
+texte « Twoja kolej: ścisz trochę suwaki „Akordy” i „Melodia”; jeśli śpiewałeś, Wokal wychodzi przed całą resztę. » @ 450,799
+bouton « Pobierz zestaw Pop (3 MB) » @ 387,902
+texte « Później » @ 810,902
+texte « ▸ Dlaczego? » @ 450,973
+bouton (doigt qui touche) «   Zrobię to » @ 450,1042
+bouton ▶ «  Posłuchaj przykładu » @ 232,1126
+bouton (œil) «  Pokaż mi » @ 667,1126
+icône ← «  Wstecz » @ 108,1207
+icône « Dalej  » → @ 809,1207
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

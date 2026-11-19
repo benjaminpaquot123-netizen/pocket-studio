@@ -1,0 +1,76 @@
+Écran 70 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 128,42
+bouton « Pro » @ 286,42
+bouton « A · Refren » ▾ @ 422,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Perkusja 16 padów » [sélectionné] @ 100,204
+onglet « Acid 303 Linia basu » @ 288,204
+onglet « Wokal Mikrofon » @ 470,204
+onglet « Remix Rozdziel » @ 642,204
+bouton « Akordy Pianino FM » [coupé] @ 805,204
+image → @ 889,205
+texte « Część: A · Refren » @ 138,273
+texte « Talerz » @ 96,320
+texte « Jeszcze 1 kropkowane pole tutaj » @ 281,358
+bouton « 1 » [état « puste, kropkowane: dotknij »] @ 90,428
+bouton [état « pusty »] @ 192,428
+bouton [état « pusty »] @ 294,428
+bouton [état « pusty »] @ 397,428
+bouton « 2 » [état « pusty »] @ 500,428
+bouton [état « pusty »] @ 603,428
+bouton [état « pusty »] @ 706,428
+bouton [état « pusty »] @ 809,428
+bouton « 3 » [état « pusty »] @ 90,509
+bouton [état « pusty »] @ 192,509
+bouton [état « pusty »] @ 294,509
+bouton [état « pusty »] @ 397,509
+bouton « 4 » [état « pusty »] @ 500,509
+bouton [état « pusty »] @ 603,509
+bouton [état « pusty »] @ 706,509
+bouton [état « pusty »] @ 809,509
+bouton « Uderzenia » [sélectionné] @ 137,595
+bouton « Rolki » @ 295,595
+bouton « Pan » @ 409,595
+bouton « Wysokość » @ 561,595
+bouton « Siła » @ 712,595
+texte « Wypełnij » [coupé] @ 94,672
+texte « wszystko » [coupé] @ 227,666
+texte « 1/2 » [coupé] @ 344,666
+texte « 1/4 » [coupé] @ 419,666
+texte « ◀ » [désactivé, coupé] @ 494,666
+texte « ▶ » [désactivé, coupé] @ 569,666
+texte « Wyczyść » [désactivé, coupé] @ 683,666
+texte « Przejścia Rozdział 12/16 · Krok 3/3 · Pro » @ 357,733
+icône (liste) « Rozdziały » @ 750,734
+icône ⌄ @ 843,734
+texte « Twoja kolej: w części „Refren” talerz na pierwszym polu. » @ 417,822
+bouton « Pobierz zestaw Pop (3 MB) » @ 387,902
+texte « Później » @ 810,902
+texte « ▸ Dlaczego? » @ 450,973
+bouton (doigt qui touche) «   Zrobię to » @ 450,1042
+bouton ▶ «  Posłuchaj przykładu » @ 232,1126
+bouton (œil) «  Pokaż mi » @ 667,1126
+icône ← «  Wstecz » @ 108,1207
+icône « Dalej  » → @ 809,1207
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

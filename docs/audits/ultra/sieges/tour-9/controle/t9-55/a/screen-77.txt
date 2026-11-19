@@ -1,0 +1,66 @@
+Écran 77 (900x1509)
+dessin @ 450,36
+texte « Perkusja » @ 386,108
+texte « Zamknij » @ 803,108
+bouton « Wyciszona » @ 123,195
+bouton « Solo » @ 289,195
+texte « Głośność » @ 397,269
+texte « +0,0 dB » @ 823,269
+curseur [état « +0,0 dB », à 80 %] @ 450,343
+texte « Pan » @ 51,417
+bouton « ? » @ 99,417
+texte « Środek » @ 828,417
+curseur [état « Środek », à 50 %] @ 450,491
+bouton (barres de son) «  Co gra » @ 234,578
+bouton (courbe) «  Krzywe » @ 666,578
+texte « Efekty » @ 67,649
+texte « Aktywne efekty: 3 z 8 » @ 175,705
+bouton « 1. Kompresor » @ 306,768
+icône ⏻ @ 624,768
+icône ⌃ [désactivé] @ 696,768
+icône ⌄ @ 768,768
+icône ✕ @ 840,768
+bouton « Wszystko » [sélectionné] @ 202,846
+bouton « A · Refren » @ 395,846
+bouton « B · Intro » @ 573,846
+bouton « C · Zwrotka » @ 762,846
+bouton « D · Pre-chorus » [coupé] @ 875,846
+texte « Gra w: » @ 63,846
+icône ⏻ @ 624,924
+icône ⌃ @ 696,924
+icône ⌄ @ 768,924
+icône ✕ @ 840,924
+bouton « 2. Saturacja » @ 306,924
+texte « Gra w: » @ 63,1002
+bouton « Wszystko » [sélectionné] @ 202,1002
+bouton « A · Refren » @ 395,1002
+bouton « B · Intro » @ 573,1002
+bouton « C · Zwrotka » @ 762,1002
+bouton « D · Pre-chorus » [coupé] @ 875,1002
+bouton « 3. Miękki clipper » @ 306,1080
+icône ⏻ @ 624,1080
+icône ⌃ @ 696,1080
+icône ⌄ [désactivé] @ 768,1080
+icône ✕ @ 840,1080
+texte « Gra w: » @ 63,1158
+bouton « Wszystko » [sélectionné] @ 202,1158
+bouton « A · Refren » @ 395,1158
+bouton « B · Intro » @ 573,1158
+bouton « C · Zwrotka » @ 762,1158
+bouton « D · Pre-chorus » [coupé] @ 875,1158
+texte « Efekt może grać tylko w niektórych częściach: dotknij ich liter. » @ 396,1218
+bouton + «   Dodaj efekt » @ 450,1278
+texte « Gotowe klimaty » @ 131,1350
+bouton « ? » @ 259,1350
+bouton « Dla: Perkusja » [sélectionné] @ 138,1420
+bouton ★ « Ulubione » @ 358,1420
+bouton « Atmosfera » @ 560,1420
+bouton « Kolor » @ 725,1420
+bouton « Brud » [coupé] @ 835,1420
+texte « Styl: » [coupé] @ 51,1497
+bouton « Acid » [coupé] @ 142,1494
+bouton « Techno » [coupé] @ 281,1494
+bouton « DnB » [coupé] @ 417,1494
+bouton « Dubstep » [coupé] @ 560,1494
+bouton « House » [coupé] @ 719,1494
+bouton « Lo-fi » [coupé] @ 836,1494

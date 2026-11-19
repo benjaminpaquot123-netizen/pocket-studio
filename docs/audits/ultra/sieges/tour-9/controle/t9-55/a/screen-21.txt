@@ -1,0 +1,43 @@
+Écran 21 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Oś czasu » [désactivé] @ 109,210
+onglet « Części » [sélectionné] @ 263,210
+titre « UTWÓR » [état « Rozwinięte »] @ 136,303
+bouton « ? » @ 208,303
+texte « Oś czasu układa twoje części po kolei, każdą z jej długością w taktach. Dodaj je po kolei. » @ 450,373
+texte « Dodaj: » @ 84,441
+bouton « + A · Refren » @ 159,510
+bouton « + B · Intro » @ 388,510
+bouton « + Nowa część (kopia B · Intro) » [coupé] @ 281,573
+texte « Zbuduj swoje części Rozdział 10/16 · Krok 1/5 · Pro » @ 357,642
+icône (liste) « Rozdziały » @ 750,643
+icône ⌄ @ 843,643
+image (coupe) @ 57,777
+texte « Brawo, udało się! » @ 208,740
+texte « Utworzono część „Intro” (kopia „Refren”): bez Kick, Werbel, Clap, Hi-hat, Otwarty hi-hat, Rim, Shaker, Bas. » @ 475,797
+bouton « Następny krok   » → @ 450,1095
+bouton ▶ «  Posłuchaj swojego wyniku » @ 294,1193
+icône ← @ 57,1193
+bouton ▶ «  Posłuchaj przykładu » @ 687,1193
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » [sélectionné] @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

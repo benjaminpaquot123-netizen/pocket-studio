@@ -1,0 +1,51 @@
+Écran 95 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « Akordy » @ 120,191
+texte « Wyczyść » @ 693,213
+icône (poubelle) @ 822,213
+texte « Filtr Odcięcie » @ 131,237
+texte « Otwiera (jasno) lub zamyka (głucho) dźwięk: przemiatanie filtra. » @ 558,303
+bouton (curseurs) «  Pokaż ustawienie » @ 216,384
+bouton « Pętla » @ 101,465
+bouton « Na część » [sélectionné] @ 256,465
+bouton « Utwór » @ 418,465
+texte « Kroki części D (każda część ma swoje). » @ 279,528
+texte « Żeby zmieniać to ustawienie przez część utworu (głośniej na początku…), wybierz „Utwór”. » @ 450,591
+texte « Wygładź » @ 422,672
+icône (loupe −) [désactivé] @ 546,672
+icône (loupe +) @ 654,672
+bouton (pinceau) « Rysuj » [sélectionné] @ 115,672
+bouton (courbe) « Linia » @ 266,672
+texte « ×1 » @ 600,672
+texte « Rysuj palcem; dwa dotknięcia usuwają punkt. „Wygładź” wyrównuje drżącą linię, „Cofnij” ją cofa. » @ 450,789
+texte « 18,0 kHz » @ 81,886
+texte « 849 Hz » @ 81,972
+texte « Efekty Rozdział 13/16 · Krok 3/3 · Pro » @ 357,1083
+icône (liste) « Rozdziały » @ 750,1084
+icône ⌃ @ 843,1084
+icône « Twoja kolej: zautomatyzuj filtr ścieżki „Akordy” na Pre-chorusie: „Automatyzuj ustawienie”, „Akordy”, „Filtr (przemiatanie)”, „Na część”, krzywa rosnąca aż do Refrenu. Czytaj » ⌃ @ 450,1196
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

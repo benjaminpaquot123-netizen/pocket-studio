@@ -1,0 +1,50 @@
+Écran 38 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Intro takt 1/20 » ▾ @ 252,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+icône ▶ « D · Pre-chorus × 1  ·  4 takty » @ 342,204
+icône − [désactivé] @ 678,204
+icône + @ 750,204
+icône ⋮ @ 822,204
+texte « − / + : powtórzenia. Szare: stała długość (zalecana lub Live) lub 1 raz. » @ 450,294
+texte « Dodaj na końcu: » @ 150,362
+bouton « + A · Refren » @ 159,431
+bouton « + B · Intro » @ 388,431
+bouton « + C · Zwrotka » @ 628,431
+bouton « + D · Pre-chorus » @ 190,512
+bouton « + E · Post-chorus » @ 502,512
+texte « Ułóż swoje części Rozdział 11/16 · Krok 1/2 · Pro » @ 357,595
+icône (liste) « Rozdziały » @ 750,596
+icône ⌄ @ 843,596
+texte « Jeszcze: Refren, Post-chorus, Zwrotka, Pre-chorus, Refren, Bridge, Refren, Koniec. » @ 450,702
+bouton « Pobierz zestaw Pop (3 MB) » @ 387,809
+texte « Później » @ 810,809
+texte « ▸ Dlaczego? » @ 450,880
+icône « Czytaj dalej » ⌄ @ 450,934
+bouton (doigt qui touche) «   Zrobię to » @ 450,1042
+bouton ▶ «  Posłuchaj przykładu » @ 232,1126
+bouton (œil) «  Pokaż mi » @ 667,1126
+icône ← «  Wstecz » @ 108,1207
+icône « Dalej  » → @ 809,1207
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » [sélectionné] @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

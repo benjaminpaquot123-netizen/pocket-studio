@@ -1,0 +1,39 @@
+Écran 82 (900x1509)
+dessin @ 450,36
+bouton « Punch » @ 91,130
+bouton « Pompa EDM » @ 275,130
+bouton « Chrupiący » @ 485,130
+bouton « Taśma Lo-Fi » @ 696,130
+bouton « Mały pokój » @ 122,202
+bouton « Bez efektu » @ 328,202
+texte « Dotknij klimatu, żeby go wypróbować: zawsze możesz wrócić przez Cofnij. » @ 450,286
+texte « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » @ 450,370
+texte « Pad XY, góra-dół: » @ 130,440
+bouton « ? » @ 266,439
+bouton « Przestrzeń » [sélectionné] @ 123,509
+bouton « Brud » @ 287,509
+bouton « Ruch » @ 412,509
+texte « ↑ Odległy » @ 450,573
+texte « ← Ciemny » @ 208,866
+texte « ↓ Sucho » @ 450,866
+texte « Jasny → » @ 691,866
+texte « Przesuwaj palcem, żeby niszczyć dźwięk na żywo. Dwa dotknięcia: powrót do oryginału. » @ 450,930
+curseur [état « Neutralny », à 50 %] @ 131,1017
+texte « Kolor » @ 130,1079
+texte « Neutralny » @ 131,1117
+curseur [état « 0 », à 0 %] @ 344,1017
+texte « Brud » @ 344,1079
+texte « 0 » @ 343,1117
+curseur [état « 0 », à 0 %] @ 557,1017
+texte « Ruch » @ 557,1079
+texte « 0 » @ 556,1117
+curseur [état « 0 », à 0 %] @ 770,1017
+texte « Przestrzeń » @ 769,1079
+texte « 0 » @ 769,1117
+texte « Wspólny pogłos i echo » @ 178,1166
+texte « Wysyłka pogłos » @ 427,1222
+texte « 0% » @ 853,1223
+curseur [état « 0% », à 0 %] @ 450,1294
+texte « Wysyłka echo » @ 427,1365
+texte « 0% » @ 853,1366
+curseur [état « 0% », à 0 %] @ 450,1437

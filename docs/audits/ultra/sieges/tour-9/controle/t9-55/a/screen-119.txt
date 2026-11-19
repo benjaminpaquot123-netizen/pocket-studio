@@ -1,0 +1,8 @@
+Écran 119 (900x1509)
+texte « Gotowe » @ 138,584
+texte « Gotowe: Mój-utwór-streaming-20261119-120044.m4a, kopia jest też w Muzyka › BenStudio. » @ 450,676
+texte « −14,0 LUFS zintegrowane · szczyt −10,0 dBTP » @ 341,741
+texte « M4A, 48 kHz, 256 kb/s · 3 min 27 s » @ 277,783
+texte « Cel: Streaming · −14 LUFS » @ 223,825
+texte « Zobacz moje pliki » @ 598,915
+texte « OK » @ 790,915

@@ -1,0 +1,9 @@
+Écran 69 (900x1509)
+texte « Część do edycji » @ 427,115
+texte « A · Refren » @ 473,176
+texte « B · Intro » @ 473,248
+texte « C · Zwrotka » @ 473,320
+icône ✓ « D · Pre-chorus » @ 473,392
+texte « E · Post-chorus » @ 473,464
+texte « F · Bridge » @ 473,536
+icône + « Nowa pusta część » @ 473,610

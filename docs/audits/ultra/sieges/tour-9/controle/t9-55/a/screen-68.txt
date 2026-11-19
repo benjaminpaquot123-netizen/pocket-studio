@@ -1,0 +1,74 @@
+Écran 68 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 117,42
+bouton « Pro » @ 264,42
+bouton « D · Pre-chorus » ▾ @ 411,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Intro takt 1/100 » ▾ @ 261,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Perkusja 16 padów » [sélectionné] @ 100,204
+onglet « Acid 303 Linia basu » @ 288,204
+onglet « Wokal Mikrofon » @ 470,204
+onglet « Remix Rozdziel » @ 642,204
+bouton « Akordy Pianino FM » [coupé] @ 805,204
+image → @ 889,205
+texte « Część: D · Pre-chorus » @ 169,273
+texte « Takt » @ 70,338
+bouton « 1 » @ 143,338
+bouton « 2 » @ 224,338
+bouton « 3 » @ 305,338
+bouton « 4 » [sélectionné] @ 386,338
+bouton « Podążaj » @ 509,338
+texte « Takt 4/4 · Talerz » @ 159,422
+bouton « 1 » [état « pusty »] @ 90,507
+bouton [état « pusty »] @ 192,507
+bouton [état « pusty »] @ 294,507
+bouton [état « pusty »] @ 397,507
+bouton « 2 » [état « pusty »] @ 500,507
+bouton [état « pusty »] @ 603,507
+bouton [état « pusty »] @ 706,507
+bouton [état « pusty »] @ 809,507
+bouton « 3 » [état « pusty »] @ 90,588
+bouton [état « pusty »] @ 192,588
+bouton [état « pusty »] @ 294,588
+bouton [état « pusty »] @ 397,588
+bouton « 4 » [état « pusty »] @ 500,588
+bouton [état « pusty »] @ 603,588
+bouton [état « pusty »] @ 706,588
+bouton [état « pusty »] @ 809,588
+bouton « Uderzenia » [coupé, sélectionné] @ 137,666
+bouton « Rolki » [coupé] @ 295,666
+bouton « Pan » [coupé] @ 409,666
+bouton « Wysokość » [coupé] @ 561,666
+bouton « Siła » [coupé] @ 712,666
+texte « Przejścia Rozdział 12/16 · Krok 3/3 · Pro » @ 357,733
+icône (liste) « Rozdziały » @ 750,734
+icône ⌄ @ 843,734
+texte « Twoja kolej: w części „Refren” talerz na pierwszym polu. » @ 417,822
+bouton « Pobierz zestaw Pop (3 MB) » @ 387,902
+texte « Później » @ 810,902
+texte « ▸ Dlaczego? » @ 450,973
+bouton ⊕ «   Przejdź do części „Refren” » @ 450,1042
+bouton ▶ «  Posłuchaj przykładu » @ 232,1126
+bouton (œil) «  Pokaż mi » @ 667,1126
+icône ← «  Wstecz » @ 108,1207
+icône « Dalej  » → @ 809,1207
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

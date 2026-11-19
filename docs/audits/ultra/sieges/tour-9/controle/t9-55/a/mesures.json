@@ -1,0 +1,49 @@
+{
+  "siege": "a",
+  "niveau": "3",
+  "options": {
+    "lang": "pl",
+    "device": "tablet8",
+    "font": "130",
+    "mode": "pro",
+    "amenee": "tuto:pop:9",
+    "gestes.max": "174",
+    "mission": "tuto-pro",
+    "profil": "confirmé",
+    "niveau": "3",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 112,
+    "images": 3,
+    "gestes_premier_son": 3,
+    "gestes_premier_partage": 109,
+    "touchers_a_vide": 6,
+    "touchers_desactives": 0,
+    "retours": 5,
+    "retours_immediats": 2,
+    "ecrans": 121,
+    "ecrans_revisites": 24,
+    "defilements_sans_toucher": 7,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 227,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 4.3,
+      "simule": 2.4,
+      "jvm": 10.2,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-pro",
+  "resultat": "reussie",
+  "pourquoi": "« pop » en Pro : 45 étape(s), 16 chapitre(s) entier(s) sur 16"
+}

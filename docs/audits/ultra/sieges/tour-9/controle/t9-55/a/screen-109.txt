@@ -1,0 +1,56 @@
+Écran 109 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « ćwierćnuta » [coupé] @ 81,166
+texte « 1 » [coupé] @ 134,165
+texte « 3 » [coupé] @ 229,165
+texte « 5 » [coupé] @ 319,165
+texte « 7 » [coupé] @ 411,165
+texte « 9 » [coupé] @ 503,165
+texte « 11 » [coupé] @ 598,165
+texte « 13 » [coupé] @ 692,165
+texte « 15 » [coupé] @ 783,165
+titre « WYJŚCIE GŁÓWNE » [état « Rozwinięte »] @ 207,255
+bouton « ? » @ 350,255
+texte « Głośność: — » @ 126,306
+texte « Głośność główna » @ 397,388
+texte « −6,0 dB » @ 805,388
+curseur [état « −6,0 dB », à 60 %] @ 450,459
+texte « Brak przesteru: wszystko gra. » [coupé] @ 220,512
+texte « Mastering Rozdział 15/16 · Krok 1/1 · Pro » @ 357,568
+icône (liste) « Rozdziały » @ 750,569
+icône ⌄ @ 843,569
+texte « Twoja kolej: w „Wyjście główne” ustaw „Głośność docelowa” na „Streaming” (−14 LUFS): Spotify czy YouTube i tak ściszają głośniejsze utwory, lepiej zachować żywe uderzenia werbla. Będzie brzmieć trochę ciszej niż demo „Zrób mi utwór”: to normalne, to poziom serwisów. » [coupé] @ 450,703
+bouton « Pobierz zestaw Pop (3 MB) » @ 387,829
+texte « Później » @ 810,829
+texte « ▸ Dlaczego? » @ 450,900
+icône « Czytaj dalej » ⌄ @ 450,954
+bouton (doigt qui touche) «   Zrobię to » @ 450,1042
+bouton ▶ «  Posłuchaj przykładu » @ 232,1126
+bouton (œil) «  Pokaż mi » @ 667,1126
+icône ← «  Wstecz » @ 108,1207
+icône « Dalej  » → @ 809,1207
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

@@ -1,0 +1,4 @@
+Écran 19 (900x1509)
+texte « Część do edycji » @ 449,115
+icône ✓ « A · Refren » @ 495,176
+icône + « Nowa pusta część » @ 495,250

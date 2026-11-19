@@ -1,0 +1,59 @@
+Écran 67 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 117,42
+bouton « Pro » @ 264,42
+bouton « D · Pre-chorus » ▾ @ 411,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Intro takt 1/100 » ▾ @ 261,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Perkusja 16 padów » [sélectionné] @ 100,204
+onglet « Acid 303 Linia basu » @ 288,204
+onglet « Wokal Mikrofon » @ 470,204
+onglet « Remix Rozdziel » @ 642,204
+bouton « Akordy Pianino FM » [coupé] @ 805,204
+image → @ 889,205
+texte « Część: D · Pre-chorus » @ 169,273
+texte « Takt » @ 70,338
+bouton « 1 » @ 143,338
+bouton « 2 » @ 224,338
+bouton « 3 » @ 305,338
+bouton « 4 » [sélectionné] @ 386,338
+bouton « Podążaj » @ 509,338
+texte « Takt 4/4 · Rim » @ 144,422
+bouton « 1 » [coupé, état « pusty »] @ 90,502
+bouton [coupé, état « pusty »] @ 192,502
+bouton [coupé, état « uderzenie, siła 35 % »] @ 294,502
+bouton [coupé, état « pusty »] @ 397,502
+bouton « 2 » [coupé, état « pusty »] @ 500,502
+bouton [coupé, état « pusty »] @ 603,502
+bouton [coupé, état « uderzenie, siła 35 % »] @ 706,502
+bouton [coupé, état « pusty »] @ 809,502
+texte « Przejścia Rozdział 12/16 · Krok 2/3 · Pro » @ 357,584
+icône (liste) « Rozdziały » @ 750,585
+icône ⌄ @ 843,585
+image (coupe) @ 57,719
+texte « Brawo, udało się! » @ 208,682
+texte « Posłuchaj swojego wyniku, potem dotknij „Następny krok”, kiedy chcesz. » @ 475,739
+bouton « Następny krok   » → @ 450,1095
+bouton ▶ «  Posłuchaj swojego wyniku » @ 294,1193
+icône ← @ 57,1193
+bouton ▶ «  Posłuchaj przykładu » @ 687,1193
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

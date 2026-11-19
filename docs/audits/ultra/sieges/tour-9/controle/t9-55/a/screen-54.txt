@@ -1,0 +1,57 @@
+Écran 54 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Intro takt 1/76 » ▾ @ 252,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+bouton « Akordy utworu B · Intro E  B  C♯m  F♯m  E  B  C♯m  F♯m C · Zwrotka E  B  C♯m  A  E  B  C♯m  A D · Pre-chorus E  B  C♯m  A A · Refren E  B  C♯m  A  E  B  C♯m  A E · Post-chorus E  B  C♯m  A  E  B  C♯m  A F · Bridge E  B  C♯m  F♯m  E  B  C♯m  F♯m Dotknij, żeby zmienić akordy całego utworu. » [coupé] @ 450,180
+icône ▶ « B · Intro 4 takty » @ 342,252
+icône − [désactivé] @ 678,252
+icône + [désactivé] @ 750,252
+icône ⋮ @ 822,252
+icône ▶ « C · Zwrotka × 1  ·  8 taktów » @ 342,348
+icône − [désactivé] @ 678,348
+icône + @ 750,348
+icône ⋮ @ 822,348
+icône ▶ « D · Pre-chorus × 1  ·  4 takty » @ 342,444
+icône − [désactivé] @ 678,444
+icône + @ 750,444
+icône ⋮ @ 822,444
+icône ▶ « A · Refren × 1  ·  8 taktów » [coupé] @ 342,521
+icône − [désactivé, coupé] @ 678,527
+icône + [coupé] @ 750,527
+icône ⋮ [coupé] @ 822,527
+image ✓ @ 33,485
+texte « Anuluj » @ 814,491
+texte « Gotowe: nowa długość dla B · Intro » @ 411,491
+texte « Ułóż swoje części Rozdział 11/16 · Krok 2/2 · Pro » @ 357,595
+icône (liste) « Rozdziały » @ 750,596
+icône ⌄ @ 843,596
+texte « Twoja kolej: nadaj każdej części długość: Intro 4 takty, Zwrotka 8, Pre-chorus 8, Refren 16, Post-chorus 4, Bridge 8, Koniec 4. Przycisk „Ustaw zalecane długości” robi to za jednym razem. » @ 450,753
+bouton « Pobierz zestaw Pop (3 MB) » @ 387,902
+texte « Później » @ 810,902
+texte « ▸ Dlaczego? » @ 450,973
+bouton ⊕ «   Ustaw zalecane długości » @ 450,1042
+bouton (œil) «  Pokaż mi » @ 450,1126
+icône ← «  Wstecz » @ 108,1207
+icône « Dalej  » → @ 809,1207
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » [sélectionné] @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

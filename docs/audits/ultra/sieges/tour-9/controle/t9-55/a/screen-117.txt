@@ -1,0 +1,6 @@
+Écran 117 (900x1509)
+texte « Przygotowuję twój utwór… » @ 315,617
+texte « Tworzę dźwięk, potem kompresuję go do M4A. » @ 377,688
+texte «   12% » @ 797,741
+texte « Potem wybierz aplikację, żeby to wysłać. » @ 312,792
+texte « Anuluj » @ 772,882

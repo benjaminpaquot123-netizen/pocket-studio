@@ -1,0 +1,728 @@
+#0 SIEGE lang=pl device=tablet8 font=130 mode=pro theme=- fresh=non gestes.max=174 lit=oui main=both amenee=tuto:pop:9
+#0 PREMIER ECRAN reel_s=4.3 simule_s=2.4 jvm_s=10.2 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:pop:9
+#0 AMENEE > touche 450 1268 (launch_learn)
+#0 AMENEE > touche 670 1305 (mode_card_pro)
+#0 AMENEE > touche 450 1435 (tuto_style_pop)
+#0 AMENEE chapitres 1 à 8 construits dans le projet
+#0 AMENEE > touche 750 822 (tuto_chapters)
+#0 AMENEE > touche 450 1449 (tuto_quit)
+#0 AMENEE > touche 225 1219 (tuto_resume)
+#0 AMENEE chapitres 1 à 8 cochés (23 étapes)
+#0 AMENEE > touche 750 575 (tuto_chapters)
+#0 AMENEE > touche 450 877 (tuto_chapter_8)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE 0dafd0b943 | project=p-151654db tuto=pop/Pro active=true step=brick done=23 chapters=1,2,3,4,5,6,7,8 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Mój projekt 1 » ellipsized (« … »)
+#1 LAYOUT CUT « Zapisano » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « 8 » 3.56:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 8 » 4.28:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1123
+#1 DOIGT tuto_mark «   Rozumiem »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE 3e28cd1a17 | project=p-151654db tuto=pop/Pro active=true step=brick done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 450 1095
+#2 DOIGT tuto_next_big « Następny krok   »
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE 666606818f | project=p-151654db tuto=pop/Pro active=true step=map_intro done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « 4 » 2.79:1 (needs 4.5:1, 12 sp)
+#3 > touche 450 1123
+#3 DOIGT tuto_listen «  Posłuchaj przykładu »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE 9b528ae8b7 | project=p-151654db tuto=pop/Pro active=true step=map_intro done=24 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 3 s).
+#4 > attends 4
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE eb150f2580 | project=p-151654db tuto=pop/Pro active=true step=map_intro done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 450 1123
+#5 DOIGT tuto_next_big « Następny krok   »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE b81fd52482 | project=p-151654db tuto=pop/Pro active=true step=map_couplet done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « 8 » 2.79:1 (needs 4.5:1, 12 sp)
+#6 > touche 450 1123
+#6 DOIGT tuto_listen «  Posłuchaj przykładu »
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE 135e0cb548 | project=p-151654db tuto=pop/Pro active=true step=map_couplet done=25 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 3 s).
+#7 > attends 4
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 72115b1375 | project=p-151654db tuto=pop/Pro active=true step=map_couplet done=26 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 450 1123
+#8 DOIGT tuto_next_big « Następny krok   »
+#9 ROUTE tab_Sons | MODE pro | EMPREINTE 2b81276a39 | project=p-151654db tuto=pop/Pro active=true step=map_pre done=26 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « 8 » 1.85:1 (needs 4.5:1, 12 sp)
+#9 > touche 450 997
+#9 DOIGT tuto_why « ▸ Dlaczego? »
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE aa7bf1763f | project=p-151654db tuto=pop/Pro active=true step=map_pre done=26 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 450 1123
+#10 DOIGT tuto_listen «  Posłuchaj przykładu »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE 330832babb | project=p-151654db tuto=pop/Pro active=true step=map_pre done=26 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#11 SON Son : l'exemple du tuto joue (encore 3 s).
+#11 > attends 4
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE a517ee2cd2 | project=p-151654db tuto=pop/Pro active=true step=map_pre done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 450 1123
+#12 DOIGT tuto_next_big « Następny krok   »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 54dd1cf2cb | project=p-151654db tuto=pop/Pro active=true step=map_post done=27 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 809 1207
+#13 DOIGT tuto_next « Dalej  »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 73aa091243 | project=p-151654db tuto=pop/Pro active=true step=map_post done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 450 1123
+#14 DOIGT tuto_next_big « Następny krok   »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 89fbbdda28 | project=p-151654db tuto=pop/Pro active=true step=map_pont done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « 8 » 2.53:1 (needs 4.5:1, 12 sp)
+#15 > touche 450 1123
+#15 DOIGT tuto_listen «  Posłuchaj przykładu »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE c1e03998f5 | project=p-151654db tuto=pop/Pro active=true step=map_pont done=28 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#16 SON Son : l'exemple du tuto joue (encore 3 s).
+#16 > attends 4
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE baca9d3711 | project=p-151654db tuto=pop/Pro active=true step=map_pont done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 450 1123
+#17 DOIGT tuto_next_big « Następny rozdział   »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 167767365b | project=p-151654db tuto=pop/Pro active=true step=make_intro done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 422 42
+#18 DOIGT top_scene « Bieżąca część: A · Refren. Dotknij, aby  »
+#19 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE 7da5b2ed26 | project=p-151654db tuto=pop/Pro active=true step=make_intro done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#19 SON Son : rien ne joue.
+#19 > retour
+#19 RETOUR
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE 167767365b | project=p-151654db tuto=pop/Pro active=true step=make_intro done=29 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1042
+#20 DOIGT tuto_need «   Utwórz część „Intro” »
+#21 ROUTE tab_Structure | MODE pro | EMPREINTE 3cd82a1d8c | project=p-151654db tuto=pop/Pro active=true step=make_intro done=30 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 450 1095
+#21 DOIGT tuto_next_big « Następny krok   »
+#22 ROUTE tab_Structure | MODE pro | EMPREINTE a6fe3ef1ad | project=p-151654db tuto=pop/Pro active=true step=make_couplet done=30 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 450 1042
+#22 DOIGT tuto_need «   Utwórz część „Zwrotka” »
+#23 ROUTE tab_Structure | MODE pro | EMPREINTE 5f9eb5b4d1 | project=p-151654db tuto=pop/Pro active=true step=make_couplet done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 118 1292
+#23 DOIGT thumb_undo « Cofnij »
+#24 ROUTE tab_Structure | MODE pro | EMPREINTE 5bc233fdb9 | project=p-151654db tuto=pop/Pro active=true step=make_couplet done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 272 1292
+#24 DOIGT thumb_redo « Ponów »
+#25 ROUTE tab_Structure | MODE pro | EMPREINTE 5f9eb5b4d1 | project=p-151654db tuto=pop/Pro active=true step=make_couplet done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 450 1095
+#25 DOIGT tuto_next_big « Następny krok   »
+#26 ROUTE tab_Structure | MODE pro | EMPREINTE 604548db57 | project=p-151654db tuto=pop/Pro active=true step=make_pre done=31 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 450 1042
+#26 DOIGT tuto_need «   Utwórz część „Pre-chorus” »
+#27 ROUTE tab_Structure | MODE pro | EMPREINTE c4952b7d8a | project=p-151654db tuto=pop/Pro active=true step=make_pre done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 450 1095
+#27 DOIGT tuto_next_big « Następny krok   »
+#28 ROUTE tab_Structure | MODE pro | EMPREINTE 8bc3b9dd87 | project=p-151654db tuto=pop/Pro active=true step=make_post done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 667 1126
+#28 DOIGT tuto_show «  Pokaż mi »
+#29 ROUTE session/tab_Structure | MODE pro | EMPREINTE 4f2c619cde | project=p-151654db tuto=pop/Pro active=true step=make_post done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « Stop » 3.91:1 (needs 4.5:1, 14 sp)
+#29 > attends 3
+#30 ROUTE session/tab_Structure | MODE pro | EMPREINTE 1532c9f127 | project=p-151654db tuto=pop/Pro active=true step=make_post done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#30 SON Son : rien ne joue.
+#30 > attends 3
+#31 ROUTE tab_Structure | MODE pro | EMPREINTE 8bc3b9dd87 | project=p-151654db tuto=pop/Pro active=true step=make_post done=32 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 450 1042
+#31 DOIGT tuto_need «   Utwórz część „Post-chorus” »
+#32 ROUTE tab_Structure | MODE pro | EMPREINTE 0d63f3272d | project=p-151654db tuto=pop/Pro active=true step=make_post done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 450 1095
+#32 DOIGT tuto_next_big « Następny krok   »
+#33 ROUTE tab_Structure | MODE pro | EMPREINTE ddd77aead7 | project=p-151654db tuto=pop/Pro active=true step=make_pont done=33 chapters=1,2,3,4,5,6,7,8,9 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 450 1042
+#33 DOIGT tuto_need «   Utwórz część „Bridge” »
+#34 ROUTE tab_Structure | MODE pro | EMPREINTE 25162ed94e | project=p-151654db tuto=pop/Pro active=true step=make_pont done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 450 1095
+#34 DOIGT tuto_next_big « Następny rozdział   »
+#35 ROUTE tab_Structure | MODE pro | EMPREINTE 4e96a9b587 | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 388 246
+#35 DOIGT add_part_1 « + B · Intro »
+#36 ROUTE tab_Structure | MODE pro | EMPREINTE edafe4c881 | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 628 431
+#36 DOIGT add_part_2 « + C · Zwrotka »
+#37 ROUTE tab_Structure | MODE pro | EMPREINTE 67342dfa2d | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 190 512
+#37 DOIGT add_part_3 « + D · Pre-chorus »
+#38 ROUTE tab_Structure | MODE pro | EMPREINTE a37a2da49d | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 159 431
+#38 DOIGT add_part_0 « + A · Refren »
+#39 ROUTE tab_Structure | MODE pro | EMPREINTE 49f05a75d6 | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 502 512
+#39 DOIGT add_part_4 « + E · Post-chorus »
+#40 ROUTE tab_Structure | MODE pro | EMPREINTE 41309a3e1a | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 628 431
+#40 DOIGT add_part_2 « + C · Zwrotka »
+#41 ROUTE tab_Structure | MODE pro | EMPREINTE bf77da3798 | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 190 512
+#41 DOIGT add_part_3 « + D · Pre-chorus »
+#42 ROUTE tab_Structure | MODE pro | EMPREINTE 72ccb7e535 | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 159 431
+#42 DOIGT add_part_0 « + A · Refren »
+#43 ROUTE tab_Structure | MODE pro | EMPREINTE 06188c439b | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#43 SON Son : rien ne joue.
+#43 > glisse 450 540 450 380
+#43 DOIGT add_part_4 « + E · Post-chorus »
+#44 ROUTE tab_Structure | MODE pro | EMPREINTE 3313fe8b83 | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 156 457
+#44 DOIGT add_part_5 « + F · Bridge »
+#45 ROUTE tab_Structure | MODE pro | EMPREINTE 96d58ddde2 | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 159 431
+#45 DOIGT add_part_0 « + A · Refren »
+#46 ROUTE tab_Structure | MODE pro | EMPREINTE f7569f1248 | project=p-151654db tuto=pop/Pro active=true step=song_order done=34 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 388 431
+#46 DOIGT add_part_1 « + B · Intro »
+#47 ROUTE tab_Structure | MODE pro | EMPREINTE cb82da085f | project=p-151654db tuto=pop/Pro active=true step=song_order done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 450 1095
+#47 DOIGT tuto_next_big « Następny krok   »
+#48 ROUTE tab_Structure | MODE pro | EMPREINTE 4bd6424463 | project=p-151654db tuto=pop/Pro active=true step=song_phrases done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 822 252
+#48 DOIGT part_menu_0
+#48 DIALOGUE 0.5 s
+#49 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 55cc3e394a | project=p-151654db tuto=pop/Pro active=true step=song_phrases done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT OVERLAP « Część 1 · B · Intro » over the touchable « Zamknij arkusz » (199 x 32 dp)
+#49 LAYOUT OVERLAP « 8 taktów  ·  grana razy: 2 » over the touchable « Zamknij arkusz » (225 x 23 dp)
+#49 LAYOUT OVERLAP « Zamknij » over the touchable « Zamknij arkusz » (71 x 27 dp)
+#49 LAYOUT OVERLAP « Grana w utworze (razy: 2). Edytuj: » over the touchable « Zamknij arkusz » (303 x 27 dp)
+#49 LAYOUT OVERLAP « Tylko ta » over the touchable « Zamknij arkusz » (71 x 27 dp)
+#49 LAYOUT OVERLAP « Wszystkie (2) » over the touchable « Zamknij arkusz » (124 x 27 dp)
+#49 LAYOUT OVERLAP « Przejście na końcu » over the touchable « Zamknij arkusz » (171 x 27 dp)
+#49 LAYOUT OVERLAP « Przerwa po · 4 takty » over the touchable « Zamknij arkusz » (183 x 27 dp)
+#49 LAYOUT OVERLAP « Przerwa po · 8 taktów » over the touchable « Zamknij arkusz » (199 x 27 dp)
+#49 LAYOUT OVERLAP « Build-up przed · 4 takty » over the touchable « Zamknij arkusz » (213 x 27 dp)
+#49 LAYOUT OVERLAP « Build-up przed · 8 taktów » over the touchable « Zamknij arkusz » (228 x 27 dp)
+#49 LAYOUT OVERLAP « Fade in » over the touchable « Zamknij arkusz » (65 x 27 dp)
+#49 LAYOUT OVERLAP « Fade out » over the touchable « Zamknij arkusz » (79 x 27 dp)
+#49 LAYOUT OVERLAP « Dodaj zakończenie » over the touchable « Zamknij arkusz » (172 x 27 dp)
+#49 LAYOUT OVERLAP « Energia: 3 » over the touchable « Zamknij arkusz » (91 x 27 dp)
+#49 LAYOUT OVERLAP « 1 · pady » over the touchable « Zamknij arkusz » (69 x 27 dp)
+#49 LAYOUT OVERLAP « 2 · + bas » over the touchable « Zamknij arkusz » (77 x 27 dp)
+#49 LAYOUT OVERLAP « 3 · + perkusja » over the touchable « Zamknij arkusz » (124 x 27 dp)
+#49 LAYOUT OVERLAP « 4 · na całego » over the touchable « Zamknij arkusz » (117 x 27 dp)
+#49 LAYOUT OVERLAP « Długość » over the touchable « Zamknij arkusz » (73 x 27 dp)
+#49 LAYOUT OVERLAP « takty » over the touchable « Zamknij arkusz » (40 x 24 dp)
+#49 LAYOUT OVERLAP « OK » over the touchable « Zamknij arkusz » (28 x 27 dp)
+#49 LAYOUT OVERLAP « Część » over the touchable « Zamknij arkusz » (56 x 27 dp)
+#49 LAYOUT OVERLAP « Zmień nazwę » over the touchable « Zamknij arkusz » (122 x 27 dp)
+#49 LAYOUT OVERLAP « Co gra » over the touchable « Zamknij arkusz » (60 x 27 dp)
+#49 LAYOUT OVERLAP « Przesuń w górę » over the touchable « Zamknij arkusz » (142 x 27 dp)
+#49 LAYOUT OVERLAP « Przesuń w dół » over the touchable « Zamknij arkusz » (128 x 27 dp)
+#49 LAYOUT OVERLAP « Duplikuj » over the touchable « Zamknij arkusz » (73 x 27 dp)
+#49 LAYOUT OVERLAP « Wstaw po » over the touchable « Zamknij arkusz » (90 x 27 dp)
+#49 LAYOUT OVERLAP « Usuń » over the touchable « Zamknij arkusz » (47 x 27 dp)
+#49 > touche 315 1190
+#49 DOIGT name_clear
+#49 DIALOGUE 0.2 s
+#50 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 606d7193c2 | project=p-151654db tuto=pop/Pro active=true step=song_phrases done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT OVERLAP « takty » over the touchable « Zamknij arkusz » (47 x 31 dp)
+#50 > ecris 4
+#50 DIALOGUE 0.2 s
+#51 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 5a70c30cfe | project=p-151654db tuto=pop/Pro active=true step=song_phrases done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 240 1182
+#51 DOIGT part_bars_field « takty »
+#51 DIALOGUE 0.3 s
+#52 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 606d7193c2 | project=p-151654db tuto=pop/Pro active=true step=song_phrases done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#52 SON Son : rien ne joue.
+#52 > ecris 4
+#52 DIALOGUE 0.2 s
+#53 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE 0cfaccc499 | project=p-151654db tuto=pop/Pro active=true step=song_phrases done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 403 1182
+#53 DOIGT part_bars_ok « OK »
+#53 DIALOGUE 0.2 s
+#54 ROUTE tab_Structure | MODE pro | EMPREINTE 0a8c02eaea | project=p-151654db tuto=pop/Pro active=true step=song_phrases done=35 chapters=1,2,3,4,5,6,7,8,9,10 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT OVERLAP « × 1  ·  4 takty » over « Gotowe: nowa długość dla B · Intro » (120 x 8 dp)
+#54 LAYOUT OVERLAP « A · Refren » over « Gotowe: nowa długość dla B · Intro » (103 x 7 dp)
+#54 LAYOUT OVERLAP « Gotowe: nowa długość dla B · Intro » over the touchable « Graj od tej części » (309 x 10 dp)
+#54 LAYOUT OVERLAP « Gotowe: nowa długość dla B · Intro » over the touchable « Graj od tej części » (309 x 9 dp)
+#54 LAYOUT OVERLAP « Anuluj » floats over the touchable « Jedno powtórzenie więcej » (18 x 10 dp)
+#54 LAYOUT OVERLAP « Anuluj » floats over the touchable « Więcej akcji » (40 x 10 dp)
+#54 LAYOUT CONTRAST « A · Refren » 1.52:1 (needs 3.0:1, 18 sp)
+#54 LAYOUT CONTRAST « Anuluj » 3.63:1 (needs 4.5:1, 14 sp)
+#54 > touche 450 1042
+#54 DOIGT tuto_need «   Ustaw zalecane długości »
+#55 ROUTE tab_Structure | MODE pro | EMPREINTE 52a767b40e | project=p-151654db tuto=pop/Pro active=true step=song_phrases done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT OVERLAP « 8 taktów » over « Gotowe: nowa długość dla B · Intro » (79 x 8 dp)
+#55 > touche 450 1123
+#55 DOIGT tuto_next_big « Następny rozdział   »
+#56 ROUTE tab_Structure | MODE pro | EMPREINTE 2d01888cfb | project=p-151654db tuto=pop/Pro active=true step=fill done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT OVERLAP « A · Refren » over « Gotowe: nowa długość dla B · Intro » (103 x 19 dp)
+#56 LAYOUT OVERLAP « 16 taktów » over « Gotowe: nowa długość dla B · Intro » (91 x 9 dp)
+#56 LAYOUT OVERLAP « Gotowe: nowa długość dla B · Intro » over the touchable « Graj od tej części » (309 x 27 dp)
+#56 LAYOUT OVERLAP « Anuluj » floats over the touchable « Jedno powtórzenie więcej » (18 x 40 dp)
+#56 LAYOUT OVERLAP « Anuluj » floats over the touchable « Więcej akcji » (40 x 40 dp)
+#56 > touche 450 1042
+#56 DOIGT tuto_need «   Przejdź do części „Pre-chorus” »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 2366370f9b | project=p-151654db tuto=pop/Pro active=true step=fill done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « Zapisano » wider than its box (by 2.0 dp)
+#57 LAYOUT CUT « D · Pre-chorus » ellipsized (« … »)
+#57 LAYOUT CUT « Twoja kolej: w części „Pre-chorus”, w ostatnim takcie, pad „Werbel”: przytrzymaj ostatnie uderzenie przed ostatnią ćwierćnutą, potem „Roll” ×3 albo ×4. » ellipsized (« … »)
+#57 LAYOUT OVERLAP « Długość » over « Gotowe: nowa długość dla B · Intro » (45 x 23 dp)
+#57 LAYOUT OVERLAP « 1 takt » over « Gotowe: nowa długość dla B · Intro » (48 x 23 dp)
+#57 LAYOUT OVERLAP « 2 » over « Gotowe: nowa długość dla B · Intro » (11 x 23 dp)
+#57 LAYOUT OVERLAP « 3 » over « Gotowe: nowa długość dla B · Intro » (12 x 23 dp)
+#57 LAYOUT OVERLAP « 4 » over « Gotowe: nowa długość dla B · Intro » (13 x 23 dp)
+#57 LAYOUT CONTRAST « KROKI: WERBEL · PRE-CHORUS » 1.43:1 (needs 4.5:1, 12 sp)
+#57 LAYOUT CONTRAST « ? » 1.76:1 (needs 4.5:1, 12 sp)
+#57 LAYOUT CONTRAST « Wszystkie pady » 1.46:1 (needs 4.5:1, 14 sp)
+#57 > appui-long 397 634
+#57 DOIGT step_59 « Krok 12 »
+#58 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE e6453ed458 | project=p-151654db tuto=pop/Pro active=true step=fill done=36 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 334 516
+#58 DOIGT roll_4 « ×4 »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE 2d25fd7ec2 | project=p-151654db tuto=pop/Pro active=true step=fill done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 843 1084
+#59 DOIGT tuto_fold
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE 0bf5c466cc | project=p-151654db tuto=pop/Pro active=true step=fill done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST « KROKI: WERBEL · PRE-CHORUS » 1.51:1 (needs 4.5:1, 12 sp)
+#60 LAYOUT CONTRAST « Wszystkie pady » 1.51:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « 1/2 » 2.51:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « 1/4 » 2.50:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « ◀ » 3.30:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « ▶ » 4.34:1 (needs 4.5:1, 14 sp)
+#60 LAYOUT CONTRAST « Wyczyść » 1.74:1 (needs 4.5:1, 14 sp)
+#60 > touche 450 1095
+#60 DOIGT tuto_next_big « Następny krok   »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE a589a72cc0 | project=p-151654db tuto=pop/Pro active=true step=gap done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 500 590
+#61 DOIGT step_60 « Krok 13 »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE e51a428f76 | project=p-151654db tuto=pop/Pro active=true step=gap done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 500 591
+#62 DOIGT step_60 « Krok 13 »
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 136ba8506a | project=p-151654db tuto=pop/Pro active=true step=gap done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 603 591
+#63 DOIGT step_61 « Krok 14 »
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE aaef56fff2 | project=p-151654db tuto=pop/Pro active=true step=gap done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 706 591
+#64 DOIGT step_62 « Krok 15 »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE 1cfa79139c | project=p-151654db tuto=pop/Pro active=true step=gap done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 809 591
+#65 DOIGT step_63 « Krok 16 »
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE 10a23e2d74 | project=p-151654db tuto=pop/Pro active=true step=gap done=37 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 706 591
+#66 DOIGT step_62 « Krok 15 »
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE c4acdfba7c | project=p-151654db tuto=pop/Pro active=true step=gap done=38 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 450 1095
+#67 DOIGT tuto_next_big « Następny krok   »
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE ce8f7baacd | project=p-151654db tuto=pop/Pro active=true step=crash done=38 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 411 42
+#68 DOIGT top_scene « Bieżąca część: D · Pre-chorus. Dotknij,  »
+#69 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE 6de18d8f26 | project=p-151654db tuto=pop/Pro active=true step=crash done=38 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 473 176
+#69 DOIGT scene_pick_0 « A · Refren »
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE 7a701f8dc1 | project=p-151654db tuto=pop/Pro active=true step=crash done=38 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « Talerz » 4.01:1 (needs 4.5:1, 13 sp)
+#70 LAYOUT CONTRAST « 1 » 3.08:1 (needs 4.5:1, 12 sp)
+#70 > touche 90 428
+#70 DOIGT step_0 « Krok 1 »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE 54dea10251 | project=p-151654db tuto=pop/Pro active=true step=crash done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 450 1095
+#71 DOIGT tuto_next_big « Następny rozdział   »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE 59892875ef | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 451 1389
+#72 DOIGT tab_Mix « Miks »
+#73 ROUTE tab_Mix | MODE pro | EMPREINTE d770a247f3 | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CUT « Perkusja » a word split over two lines
+#73 LAYOUT CONTRAST « ? » 3.92:1 (needs 4.5:1, 12 sp)
+#73 > touche 324 379
+#73 DOIGT strip_more_2 « Akordy »
+#74 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 5055a438c2 | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT OVERLAP « Dla: Pluck » over the touchable « Zamknij arkusz » (90 x 27 dp)
+#74 LAYOUT OVERLAP « Ulubione » over the touchable « Zamknij arkusz » (81 x 27 dp)
+#74 LAYOUT OVERLAP « Atmosfera » over the touchable « Zamknij arkusz » (95 x 27 dp)
+#74 LAYOUT OVERLAP « Kolor » over the touchable « Zamknij arkusz » (48 x 27 dp)
+#74 LAYOUT OVERLAP « Brud » over the touchable « Zamknij arkusz » (42 x 27 dp)
+#74 LAYOUT OVERLAP « Styl: » over the touchable « Zamknij arkusz » (35 x 24 dp)
+#74 LAYOUT OVERLAP « Acid » over the touchable « Zamknij arkusz » (40 x 27 dp)
+#74 LAYOUT OVERLAP « Techno » over the touchable « Zamknij arkusz » (67 x 27 dp)
+#74 LAYOUT OVERLAP « DnB » over the touchable « Zamknij arkusz » (37 x 27 dp)
+#74 LAYOUT OVERLAP « Dubstep » over the touchable « Zamknij arkusz » (76 x 27 dp)
+#74 LAYOUT OVERLAP « House » over the touchable « Zamknij arkusz » (59 x 27 dp)
+#74 LAYOUT OVERLAP « Lo-fi » over the touchable « Zamknij arkusz » (37 x 27 dp)
+#74 LAYOUT OVERLAP « Pluck ping-pong » over the touchable « Zamknij arkusz » (150 x 27 dp)
+#74 LAYOUT OVERLAP « Głęboki dub » over the touchable « Zamknij arkusz » (108 x 27 dp)
+#74 LAYOUT OVERLAP « Szeroki i żywy » over the touchable « Zamknij arkusz » (131 x 27 dp)
+#74 LAYOUT OVERLAP « Mały pokój » over the touchable « Zamknij arkusz » (98 x 27 dp)
+#74 LAYOUT OVERLAP « Taśma Lo-Fi » over the touchable « Zamknij arkusz » (111 x 27 dp)
+#74 LAYOUT OVERLAP « Bez efektu » over the touchable « Zamknij arkusz » (98 x 27 dp)
+#74 LAYOUT OVERLAP « Przesuwa się z lewa na prawo i pogrubia: idealny do pada albo akordów. » over the touchable « Zamknij arkusz » (499 x 48 dp)
+#74 LAYOUT OVERLAP « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » over the touchable « Zamknij arkusz » (553 x 48 dp)
+#74 LAYOUT OVERLAP « Pad XY, góra-dół: » over the touchable « Zamknij arkusz » (140 x 24 dp)
+#74 LAYOUT OVERLAP « ? » over the touchable « Zamknij arkusz » (9 x 18 dp)
+#74 LAYOUT OVERLAP « Przestrzeń » over the touchable « Zamknij arkusz » (99 x 27 dp)
+#74 LAYOUT OVERLAP « Ruch » over the touchable « Zamknij arkusz » (46 x 27 dp)
+#74 LAYOUT OVERLAP « ↑ Odległy » over the touchable « Zamknij arkusz » (85 x 21 dp)
+#74 LAYOUT OVERLAP « ← Ciemny » over the touchable « Zamknij arkusz » (82 x 21 dp)
+#74 LAYOUT OVERLAP « ↓ Sucho » over the touchable « Zamknij arkusz » (71 x 21 dp)
+#74 LAYOUT OVERLAP « Jasny → » over the touchable « Zamknij arkusz » (69 x 21 dp)
+#74 LAYOUT OVERLAP « Przesuwaj palcem, żeby niszczyć dźwięk na żywo. Dwa dotknięcia: powrót do oryginału. » over the touchable « Zamknij arkusz » (537 x 48 dp)
+#74 LAYOUT OVERLAP « Kolor » over the touchable « Zamknij arkusz » (39 x 31 dp)
+#74 LAYOUT OVERLAP « Neutralny » over the touchable « Zamknij arkusz » (29 x 19 dp)
+#74 LAYOUT OVERLAP « Brud » over the touchable « Zamknij arkusz » (35 x 31 dp)
+#74 LAYOUT OVERLAP « 0 » over the touchable « Zamknij arkusz » (9 x 19 dp)
+#74 LAYOUT OVERLAP « Ruch » over the touchable « Zamknij arkusz » (37 x 31 dp)
+#74 LAYOUT OVERLAP « Przestrzeń » over the touchable « Zamknij arkusz » (81 x 31 dp)
+#74 LAYOUT OVERLAP « Wspólny pogłos i echo » over the touchable « Zamknij arkusz » (204 x 27 dp)
+#74 LAYOUT OVERLAP « Akordy: ustaw tutaj · Werbel: potem » over the touchable « Zamknij arkusz » (298 x 24 dp)
+#74 LAYOUT OVERLAP « Wysyłka pogłos » over the touchable « Zamknij arkusz » (141 x 27 dp)
+#74 LAYOUT OVERLAP « 0% » over the touchable « Zamknij arkusz » (31 x 23 dp)
+#74 > glisse 60 1464 230 1464
+#74 DOIGT send_2_0 « Wysyłka pogłos »
+#75 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 4eebd9786d | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT OVERLAP « Dotknij klimatu, żeby go wypróbować: zawsze możesz wrócić przez Cofnij. » over the touchable « Zamknij arkusz » (541 x 48 dp)
+#75 LAYOUT OVERLAP « Akordy ✓ · Werbel: ustaw tutaj » over the touchable « Zamknij arkusz » (254 x 24 dp)
+#75 LAYOUT OVERLAP « 19% » over the touchable « Zamknij arkusz » (43 x 23 dp)
+#75 > retour
+#75 RETOUR
+#76 ROUTE tab_Mix | MODE pro | EMPREINTE d770a247f3 | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 84 379
+#76 DOIGT strip_more_0 « Perkusja »
+#77 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE c5ff74d0ee | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#77 SON Son : rien ne joue.
+#77 LAYOUT OVERLAP « Perkusja » over the touchable « Zamknij arkusz » (103 x 32 dp)
+#77 LAYOUT OVERLAP « Wyciszona » over the touchable « Zamknij arkusz » (100 x 27 dp)
+#77 LAYOUT OVERLAP « Solo » over the touchable « Zamknij arkusz » (40 x 27 dp)
+#77 LAYOUT OVERLAP « Głośność » over the touchable « Zamknij arkusz » (88 x 31 dp)
+#77 LAYOUT OVERLAP « +0,0 dB » over the touchable « Zamknij arkusz » (70 x 23 dp)
+#77 LAYOUT OVERLAP « Pan » over the touchable « Zamknij arkusz » (36 x 31 dp)
+#77 LAYOUT OVERLAP « Środek » over the touchable « Zamknij arkusz » (64 x 23 dp)
+#77 LAYOUT OVERLAP «  Co gra » over the touchable « Zamknij arkusz » (65 x 27 dp)
+#77 LAYOUT OVERLAP «  Krzywe » over the touchable « Zamknij arkusz » (74 x 27 dp)
+#77 LAYOUT OVERLAP « Efekty » over the touchable « Zamknij arkusz » (58 x 27 dp)
+#77 LAYOUT OVERLAP « Aktywne efekty: 3 z 8 » over the touchable « Zamknij arkusz » (200 x 27 dp)
+#77 LAYOUT OVERLAP « 1. Kompresor » over the touchable « Zamknij arkusz » (119 x 27 dp)
+#77 LAYOUT OVERLAP « Gra w: » over the touchable « Zamknij arkusz » (51 x 24 dp)
+#77 LAYOUT OVERLAP « Wszystko » over the touchable « Zamknij arkusz » (89 x 27 dp)
+#77 LAYOUT OVERLAP « A · Refren » over the touchable « Zamknij arkusz » (90 x 27 dp)
+#77 LAYOUT OVERLAP « B · Intro » over the touchable « Zamknij arkusz » (70 x 27 dp)
+#77 LAYOUT OVERLAP « C · Zwrotka » over the touchable « Zamknij arkusz » (105 x 27 dp)
+#77 LAYOUT OVERLAP « 2. Saturacja » over the touchable « Zamknij arkusz » (108 x 27 dp)
+#77 LAYOUT OVERLAP « 3. Miękki clipper » over the touchable « Zamknij arkusz » (150 x 27 dp)
+#77 LAYOUT OVERLAP « Efekt może grać tylko w niektórych częściach: dotknij ich liter. » over the touchable « Zamknij arkusz » (495 x 24 dp)
+#77 LAYOUT OVERLAP «   Dodaj efekt » over the touchable « Zamknij arkusz » (114 x 27 dp)
+#77 LAYOUT OVERLAP « Gotowe klimaty » over the touchable « Zamknij arkusz » (141 x 27 dp)
+#77 LAYOUT OVERLAP « Dla: Perkusja » over the touchable « Zamknij arkusz » (119 x 27 dp)
+#77 LAYOUT OVERLAP « Brud » over the touchable « Zamknij arkusz » (38 x 27 dp)
+#77 LAYOUT OVERLAP « Styl: » over the touchable « Zamknij arkusz » (35 x 15 dp)
+#77 LAYOUT OVERLAP « Acid » over the touchable « Zamknij arkusz » (40 x 17 dp)
+#77 LAYOUT OVERLAP « Techno » over the touchable « Zamknij arkusz » (67 x 17 dp)
+#77 LAYOUT OVERLAP « DnB » over the touchable « Zamknij arkusz » (37 x 17 dp)
+#77 LAYOUT OVERLAP « Dubstep » over the touchable « Zamknij arkusz » (76 x 17 dp)
+#77 LAYOUT OVERLAP « House » over the touchable « Zamknij arkusz » (59 x 17 dp)
+#77 LAYOUT OVERLAP « Lo-fi » over the touchable « Zamknij arkusz » (37 x 17 dp)
+#77 > glisse 450 1300 450 300
+#77 DOIGT fx_add_0 «   Dodaj efekt »
+#78 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 5e499b42be | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT OVERLAP « Punch » over the touchable « Zamknij arkusz » (57 x 27 dp)
+#78 LAYOUT OVERLAP « Pompa EDM » over the touchable « Zamknij arkusz » (110 x 27 dp)
+#78 LAYOUT OVERLAP « Chrupiący » over the touchable « Zamknij arkusz » (93 x 27 dp)
+#78 > glisse 450 1300 450 300
+#78 DOIGT rien
+#79 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE f2fdb0a9e1 | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#79 SON Son : rien ne joue.
+#79 > glisse 450 1300 450 500
+#79 DOIGT rien
+#80 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE f2fdb0a9e1 | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#80 SON Son : rien ne joue.
+#80 > tape 450 1200 2 150
+#80 DOIGT rien
+#81 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 5e499b42be | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#81 SON Son : rien ne joue.
+#81 > glisse 450 860 450 200
+#81 DOIGT rien (texte « Przytrzymaj palec na klimacie, żeby go u »)
+#82 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 5dc48dc211 | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT OVERLAP « Wysyłka echo » over the touchable « Zamknij arkusz » (125 x 27 dp)
+#82 > retour
+#82 RETOUR
+#83 ROUTE tab_Mix | MODE pro | EMPREINTE d770a247f3 | project=p-151654db tuto=pop/Pro active=true step=reverb done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 450 1042
+#83 DOIGT tuto_do «   Zrobię to »
+#84 ROUTE dialogue:effects_box_18 | MODE pro | EMPREINTE b7f236b4c2 | project=p-151654db tuto=pop/Pro active=true step=reverb done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#84 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#84 LAYOUT CONTRAST « Neutralny » 4.44:1 (needs 4.5:1, 12 sp)
+#84 LAYOUT CONTRAST « 0 » 4.44:1 (needs 4.5:1, 12 sp)
+#84 LAYOUT CONTRAST « Wspólny pogłos i echo » 4.44:1 (needs 4.5:1, 14 sp)
+#84 LAYOUT CONTRAST « 30% » 3.63:1 (needs 4.5:1, 14 sp)
+#84 LAYOUT CONTRAST « Zamknij » 3.63:1 (needs 4.5:1, 14 sp)
+#84 > touche 776 1437
+#84 DOIGT fx_close « Zamknij »
+#85 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6f37fa8567 | project=p-151654db tuto=pop/Pro active=true step=reverb done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 450 1196
+#85 DOIGT tuto_next_folded « Udało się »
+#86 ROUTE tab_Mix | MODE pro | EMPREINTE baf89001da | project=p-151654db tuto=pop/Pro active=true step=delay done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 564 379
+#86 DOIGT strip_more_6 « Melodia »
+#87 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 3797cba1c5 | project=p-151654db tuto=pop/Pro active=true step=delay done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT OVERLAP « Styl: » over the touchable « Zamknij arkusz » (35 x 17 dp)
+#87 LAYOUT OVERLAP « Acid » over the touchable « Zamknij arkusz » (40 x 19 dp)
+#87 LAYOUT OVERLAP « Techno » over the touchable « Zamknij arkusz » (67 x 19 dp)
+#87 LAYOUT OVERLAP « DnB » over the touchable « Zamknij arkusz » (37 x 19 dp)
+#87 LAYOUT OVERLAP « Dubstep » over the touchable « Zamknij arkusz » (76 x 19 dp)
+#87 LAYOUT OVERLAP « House » over the touchable « Zamknij arkusz » (59 x 19 dp)
+#87 LAYOUT OVERLAP « Lo-fi » over the touchable « Zamknij arkusz » (37 x 19 dp)
+#87 LAYOUT OVERLAP « Krzyczący lead » over the touchable « Zamknij arkusz » (139 x 27 dp)
+#87 LAYOUT OVERLAP « Sen » over the touchable « Zamknij arkusz » (35 x 27 dp)
+#87 LAYOUT OVERLAP « Przester » over the touchable « Zamknij arkusz » (77 x 27 dp)
+#87 LAYOUT OVERLAP « Odległy » over the touchable « Zamknij arkusz » (70 x 27 dp)
+#87 LAYOUT OVERLAP « Dźwięk bez zmian: żadnych efektów, makra w spoczynku. » over the touchable « Zamknij arkusz » (464 x 24 dp)
+#87 > glisse 60 1464 260 1464
+#87 DOIGT send_6_1 « Wysyłka echo »
+#88 ROUTE dialogue:strip_sheet | MODE pro | EMPREINTE 5cf2e23714 | project=p-151654db tuto=pop/Pro active=true step=delay done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT OVERLAP « 22% » over the touchable « Zamknij arkusz » (43 x 23 dp)
+#88 > retour
+#88 RETOUR
+#89 ROUTE tab_Mix | MODE pro | EMPREINTE e31f7cd040 | project=p-151654db tuto=pop/Pro active=true step=delay done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 450 1095
+#89 DOIGT tuto_next_big « Następny krok   »
+#90 ROUTE tab_Mix | MODE pro | EMPREINTE 8b149bb03e | project=p-151654db tuto=pop/Pro active=true step=riser done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 450 1042
+#90 DOIGT tuto_need «   Przejdź do części „Pre-chorus” »
+#91 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 1fc3f251ae | project=p-151654db tuto=pop/Pro active=true step=riser done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT CUT « Twoja kolej: zautomatyzuj filtr ścieżki „Akordy” na Pre-chorusie: „Automatyzuj ustawienie”, „Akordy”, „Filtr (przemiatanie)”, „Na część”, krzywa rosnąca aż do Refrenu. » ellipsized (« … »)
+#91 > touche 265 438
+#91 DOIGT automation_add «  Automatyzuj ustawienie »
+#92 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 70aeb3526d | project=p-151654db tuto=pop/Pro active=true step=riser done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#92 SON Son : rien ne joue.
+#92 LAYOUT CONTRAST « Wspólny pogłos i echo » 2.41:1 (needs 4.5:1, 14 sp)
+#92 LAYOUT CONTRAST « Dodaje filtr do tej ścieżki i otwiera go lub zamyka: najbardziej słyszalny efekt. » 3.43:1 (needs 4.5:1, 13 sp)
+#92 LAYOUT CONTRAST « Głośniej lub ciszej: wyciszenia, wejścia, cięcia. » 4.08:1 (needs 4.5:1, 13 sp)
+#92 LAYOUT CONTRAST « Wysyłka echo » 3.06:1 (needs 4.5:1, 16 sp)
+#92 > touche 518 344
+#92 DOIGT pick_track_2 « Akordy »
+#93 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 4836a200fa | project=p-151654db tuto=pop/Pro active=true step=riser done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 450 661
+#93 DOIGT pick_filter_2 « Filtr (przemiatanie) »
+#94 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 1a4e12e6f0 | project=p-151654db tuto=pop/Pro active=true step=riser done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#94 LAYOUT CUT « 849 Hz » lines dropped (more lines than room)
+#94 > touche 268 521
+#94 DOIGT auto_mode_0_1 « Na część »
+#95 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 2bf57ce3a7 | project=p-151654db tuto=pop/Pro active=true step=riser done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 266 672
+#95 DOIGT auto_tool_line_0 « Linia »
+#96 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE a583d245f2 | project=p-151654db tuto=pop/Pro active=true step=riser done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 132 1025
+#96 DOIGT rien
+#97 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE a583d245f2 | project=p-151654db tuto=pop/Pro active=true step=riser done=41 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 852 878
+#97 DOIGT rien
+#98 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 87d9d35671 | project=p-151654db tuto=pop/Pro active=true step=riser done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#98 SON Son : rien ne joue.
+#98 LAYOUT CUT « ćwierćnuta » lines dropped (more lines than room)
+#98 LAYOUT CUT « 1 » drawn past its parent's edge (down, 18 dp shown of 21)
+#98 LAYOUT CUT « 3 » drawn past its parent's edge (down, 18 dp shown of 21)
+#98 LAYOUT CUT « 5 » drawn past its parent's edge (down, 18 dp shown of 21)
+#98 LAYOUT CUT « 7 » drawn past its parent's edge (down, 18 dp shown of 21)
+#98 LAYOUT CUT « 9 » drawn past its parent's edge (down, 18 dp shown of 21)
+#98 LAYOUT CUT « 11 » drawn past its parent's edge (down, 18 dp shown of 21)
+#98 LAYOUT CUT « 13 » drawn past its parent's edge (down, 18 dp shown of 21)
+#98 LAYOUT CUT « 15 » drawn past its parent's edge (down, 18 dp shown of 21)
+#98 > attends 1
+#99 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 87d9d35671 | project=p-151654db tuto=pop/Pro active=true step=riser done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 843 1084
+#99 DOIGT tuto_fold
+#100 ROUTE tab_Mix | MODE pro | EMPREINTE 11fd1c5e6d | project=p-151654db tuto=pop/Pro active=true step=riser done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 450 1095
+#100 DOIGT tuto_next_big « Następny rozdział   »
+#101 ROUTE tab_Mix | MODE pro | EMPREINTE 9b3ba0d220 | project=p-151654db tuto=pop/Pro active=true step=levels done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 843 688
+#101 DOIGT tuto_fold
+#102 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 987a18da6a | project=p-151654db tuto=pop/Pro active=true step=levels done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#102 SON Son : rien ne joue.
+#102 > retour
+#102 RETOUR
+#103 ROUTE launch | MODE pro | EMPREINTE 141ef3cb4b | project=p-151654db tuto=pop/Pro active=true step=levels done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 450 327
+#103 DOIGT launch_continue « Kontynuuj »
+#104 ROUTE session/tab_Structure | MODE pro | EMPREINTE 247473221e | project=p-151654db tuto=pop/Pro active=true step=levels done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#104 SON Son : rien ne joue.
+#104 LAYOUT CONTRAST « ? » 4.31:1 (needs 4.5:1, 12 sp)
+#104 > touche 451 1389
+#104 DOIGT tab_Mix « Miks »
+#105 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 4a4020b071 | project=p-151654db tuto=pop/Pro active=true step=levels done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#105 SON Son : rien ne joue.
+#105 > glisse 324 470 324 520
+#105 DOIGT volume_2 « Głośność: Akordy »
+#106 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE dd0554246a | project=p-151654db tuto=pop/Pro active=true step=levels done=42 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#106 SON Son : rien ne joue.
+#106 > glisse 564 470 564 520
+#106 DOIGT volume_6 « Głośność: Melodia »
+#107 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a59dea5b90 | project=p-151654db tuto=pop/Pro active=true step=levels done=43 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#107 SON Son : rien ne joue.
+#107 > touche 843 1084
+#107 DOIGT tuto_fold
+#108 ROUTE tab_Mix | MODE pro | EMPREINTE 841151979f | project=p-151654db tuto=pop/Pro active=true step=levels done=43 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 450 1095
+#108 DOIGT tuto_next_big « Następny rozdział   »
+#109 ROUTE tab_Mix | MODE pro | EMPREINTE e007605653 | project=p-151654db tuto=pop/Pro active=true step=loudness done=43 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#109 SON Son : rien ne joue.
+#109 LAYOUT CUT « 1 » drawn past its parent's edge (down, 5 dp shown of 21)
+#109 LAYOUT CUT « 3 » drawn past its parent's edge (down, 5 dp shown of 21)
+#109 LAYOUT CUT « 5 » drawn past its parent's edge (down, 5 dp shown of 21)
+#109 LAYOUT CUT « 7 » drawn past its parent's edge (down, 5 dp shown of 21)
+#109 LAYOUT CUT « 9 » drawn past its parent's edge (down, 5 dp shown of 21)
+#109 LAYOUT CUT « 11 » drawn past its parent's edge (down, 5 dp shown of 21)
+#109 LAYOUT CUT « 13 » drawn past its parent's edge (down, 5 dp shown of 21)
+#109 LAYOUT CUT « 15 » drawn past its parent's edge (down, 5 dp shown of 21)
+#109 > touche 843 569
+#109 DOIGT tuto_fold
+#110 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 6218a87a51 | project=p-151654db tuto=pop/Pro active=true step=loudness done=43 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#110 SON Son : rien ne joue.
+#110 LAYOUT CUT « Twoja kolej: w „Wyjście główne” ustaw „Głośność docelowa” na „Streaming” (−14 LUFS): Spotify czy YouTube i tak ściszają głośniejsze utwory, lepiej zachować żywe uderzenia werbla. Będzie brzmieć trochę ciszej niż demo „Zrób mi utwór”: to normalne, to poziom serwisów. » ellipsized (« … »)
+#110 > glisse 820 950 820 450
+#110 DOIGT master_pro « Zaawansowane: master pro »
+#111 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a77a70e6b1 | project=p-151654db tuto=pop/Pro active=true step=loudness done=43 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#111 SON Son : rien ne joue.
+#111 > touche 213 257
+#111 DOIGT loudness_target_STREAMING « Streaming · −14 LUFS »
+#112 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE a30d985040 | project=p-151654db tuto=pop/Pro active=true step=loudness done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#112 SON Son : rien ne joue.
+#112 > touche 843 1084
+#112 DOIGT tuto_fold
+#113 ROUTE tab_Mix | MODE pro | EMPREINTE 0b1e5b3669 | project=p-151654db tuto=pop/Pro active=true step=loudness done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#113 SON Son : rien ne joue.
+#113 > touche 450 1095
+#113 DOIGT tuto_next_big « Następny rozdział   »
+#114 ROUTE tab_Mix | MODE pro | EMPREINTE 6a43834b3a | project=p-151654db tuto=pop/Pro active=true step=share done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 843 815
+#114 DOIGT tuto_fold
+#115 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2ba9dd3b10 | project=p-151654db tuto=pop/Pro active=true step=share done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#115 SON Son : rien ne joue.
+#115 > touche 764 1292
+#115 DOIGT thumb_share « Udostępnij mój utwór »
+#115 DIALOGUE 0.3 s
+#116 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE f4dd0f501c | project=p-151654db tuto=pop/Pro active=true step=share done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#116 SON Son : rien ne joue.
+#116 LAYOUT OVERLAP « Gotowe do udostępnienia? » over the touchable « Zamknij arkusz » (316 x 32 dp)
+#116 LAYOUT OVERLAP « Nazwa utworu (i projektu) » over the touchable « Zamknij arkusz » (206 x 24 dp)
+#116 LAYOUT OVERLAP « „Udostępnij” zmienia też nazwę projektu „Mój projekt 1”. » over the touchable « Zamknij arkusz » (449 x 24 dp)
+#116 LAYOUT OVERLAP « 3:27 » over the touchable « Zamknij arkusz » (55 x 30 dp)
+#116 LAYOUT OVERLAP « 6 części » over the touchable « Zamknij arkusz » (73 x 27 dp)
+#116 LAYOUT OVERLAP « Głośność: −14,0, jak muzyka w streamingu (−14) » over the touchable « Zamknij arkusz » (386 x 24 dp)
+#116 LAYOUT OVERLAP « szczegóły » over the touchable « Zamknij arkusz » (74 x 14 dp)
+#116 LAYOUT OVERLAP «  Słuchaj » over the touchable « Zamknij arkusz » (71 x 27 dp)
+#116 LAYOUT OVERLAP « Głośność docelowa » over the touchable « Zamknij arkusz » (174 x 27 dp)
+#116 LAYOUT OVERLAP « Streaming » over the touchable « Zamknij arkusz » (93 x 27 dp)
+#116 LAYOUT OVERLAP « Klub » over the touchable « Zamknij arkusz » (41 x 27 dp)
+#116 LAYOUT OVERLAP « Auto (styl) » over the touchable « Zamknij arkusz » (94 x 27 dp)
+#116 LAYOUT OVERLAP « Wszystko gra: żadne solo nie jest włączone, żadna ścieżka wyciszona. » over the touchable « Zamknij arkusz » (522 x 55 dp)
+#116 LAYOUT OVERLAP «   Wideo do social mediów · 30 s » over the touchable « Zamknij arkusz » (182 x 27 dp)
+#116 LAYOUT OVERLAP « Inne pliki » over the touchable « Zamknij arkusz » (80 x 27 dp)
+#116 LAYOUT OVERLAP « Ścieżka po ścieżce, MIDI, FLAC… w Miksie » over the touchable « Zamknij arkusz » (342 x 24 dp)
+#116 LAYOUT OVERLAP « Udostępnij projekt (.zip) » over the touchable « Zamknij arkusz » (215 x 27 dp)
+#116 LAYOUT OVERLAP « Na inne urządzenie albo jako kopia zapasowa » over the touchable « Zamknij arkusz » (364 x 24 dp)
+#116 LAYOUT OVERLAP « M4A · do udostępniania » over the touchable « Zamknij arkusz » (215 x 27 dp)
+#116 LAYOUT OVERLAP « WAV · maks. jakość » over the touchable « Zamknij arkusz » (177 x 27 dp)
+#116 LAYOUT OVERLAP «   Udostępnij » over the touchable « Zamknij arkusz » (115 x 31 dp)
+#116 LAYOUT OVERLAP « Moje pliki » over the touchable « Zamknij arkusz » (85 x 27 dp)
+#116 LAYOUT OVERLAP « Znajdź i wyślij ponownie: M4A, WAV, wideo, .zip » over the touchable « Zamknij arkusz » (383 x 24 dp)
+#116 > touche 450 1365
+#116 DOIGT share_go «   Udostępnij »
+#116 DIALOGUE 0.3 s
+#117 ROUTE dialogue:share_progress | MODE pro | EMPREINTE 6bf0576164 | project=p-151654db tuto=pop/Pro active=true step=share done=44 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#117 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#117 LAYOUT CONTRAST « Potem wybierz aplikację, żeby to wysłać. » 1.40:1 (needs 4.5:1, 13 sp)
+#117 > attends 10
+#117 PARTAGE Mój-utwór-streaming-20261119-120044.m4a
+#117 DIALOGUE 2.4 s
+#118 ROUTE dialogue:« Udostępnij mój utwór · Mój-utw » | MODE pro | EMPREINTE b3c7a95b1c | project=p-151654db tuto=pop/Pro active=true step=share done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#118 SON Son : rien ne joue.
+#118 > touche 450 880
+#118 DOIGT vue « Drive »
+#118 DIALOGUE 0.2 s
+#119 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE d278f77e6a | project=p-151654db tuto=pop/Pro active=true step=share done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#119 SON Son : rien ne joue.
+#119 LAYOUT CONTRAST « Zobacz moje pliki » 2.41:1 (needs 4.5:1, 14 sp)
+#119 LAYOUT CONTRAST « OK » 2.41:1 (needs 4.5:1, 14 sp)
+#119 > touche 790 915
+#119 DOIGT share_bilan_ok « OK »
+#119 DIALOGUE 0.2 s
+#120 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 31820c61e4 | project=p-151654db tuto=pop/Pro active=true step=share done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#120 SON Son : rien ne joue.
+#120 > touche 843 1084
+#120 DOIGT tuto_fold
+#121 ROUTE tab_Mix | MODE pro | EMPREINTE c6ac8527a5 | project=p-151654db tuto=pop/Pro active=true step=share done=45 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 playing=false
+#121 SON Son : rien ne joue.
+#121 > fin
+#121 BENCH-VERDICT ok where=seat.fin
+#121 FIN : fin

@@ -1,0 +1,51 @@
+Écran 74 (900x1509)
+dessin @ 450,36
+bouton « Dla: Pluck » [sélectionné] @ 116,102
+bouton ★ « Ulubione » @ 314,102
+bouton « Atmosfera » @ 516,102
+bouton « Kolor » @ 681,102
+bouton « Brud » @ 807,102
+bouton « Ruch » [coupé] @ 874,102
+texte « Styl: » @ 51,186
+bouton « Acid » @ 142,186
+bouton « Techno » @ 281,186
+bouton « DnB » @ 417,186
+bouton « Dubstep » @ 560,186
+bouton « House » @ 719,186
+bouton « Lo-fi » [coupé] @ 836,186
+bouton « Pluck ping-pong » @ 161,270
+bouton « Głęboki dub » @ 412,270
+bouton « Szeroki i żywy » [sélectionné] @ 650,270
+bouton « Mały pokój » @ 122,342
+bouton « Taśma Lo-Fi » @ 337,342
+bouton « Bez efektu » @ 552,342
+texte « Przesuwa się z lewa na prawo i pogrubia: idealny do pada albo akordów. » @ 414,426
+icône ☆ @ 840,426
+texte « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » @ 450,510
+texte « Pad XY, góra-dół: » @ 130,580
+bouton « ? » @ 266,579
+bouton « Przestrzeń » [sélectionné] @ 123,649
+bouton « Brud » @ 287,649
+bouton « Ruch » @ 412,649
+texte « ↑ Odległy » @ 450,713
+texte « ← Ciemny » @ 208,1006
+texte « ↓ Sucho » @ 450,1006
+texte « Jasny → » @ 691,1006
+texte « Przesuwaj palcem, żeby niszczyć dźwięk na żywo. Dwa dotknięcia: powrót do oryginału. » @ 450,1070
+curseur [état « Neutralny », à 50 %] @ 131,1157
+texte « Kolor » @ 130,1219
+texte « Neutralny » @ 131,1257
+curseur [état « 0 », à 0 %] @ 344,1157
+texte « Brud » @ 344,1219
+texte « 0 » @ 343,1257
+curseur [état « 0 », à 0 %] @ 557,1157
+texte « Ruch » @ 557,1219
+texte « 0 » @ 556,1257
+curseur [état « 0 », à 0 %] @ 770,1157
+texte « Przestrzeń » @ 769,1219
+texte « 0 » @ 769,1257
+texte « Wspólny pogłos i echo » @ 178,1306
+texte « Akordy: ustaw tutaj · Werbel: potem » @ 257,1369
+texte « Wysyłka pogłos » @ 427,1407
+texte « 0% » @ 844,1408
+curseur [état « 0% », à 0 %] @ 450,1464

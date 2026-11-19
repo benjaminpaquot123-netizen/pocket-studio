@@ -1,0 +1,47 @@
+Écran 121 (900x1509)
+icône (dossier ouvert) ✓ « Mój utwór Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton « Auto (styl) · −9 LUFS » @ 207,189
+bouton « Wył. » @ 437,189
+texte « −14 LUFS na całym utworze: głośność, do której Spotify i YouTube sprowadzają wszystkie utwory. » @ 450,267
+texte « Fade-out » @ 103,335
+bouton « Brak » @ 97,404
+bouton « Krótko (3 s) » [sélectionné] @ 266,404
+bouton « Długo (8 s) » @ 477,404
+bouton « Zaawansowane Ścieżka po ścieżce · FLAC · MIDI · 48 kHz · 24 bit » ⌄ @ 450,499
+bouton « Utwórz plik utworu » @ 450,595
+texte « Zapisano w Muzyka › BenStudio: Mój-utwór-streaming-20261119-120044.m4a » @ 450,679
+texte « ✓ Gotowe do udostępnienia » @ 233,747
+texte « Długość: 3 min 27 s » [coupé] @ 160,781
+texte « Wyeksportuj swój utwór Rozdział 16/16 · Krok 1/1 · Pro » @ 357,842
+icône (liste) « Rozdziały » @ 750,843
+icône ⌄ @ 843,843
+image (coupe) @ 42,954
+texte « Brawo, twój utwór jest gotowy! Możesz go całego posłuchać jeszcze raz i dalej zmieniać. » @ 477,954
+bouton ▶ «  Posłuchaj mojego utworu » @ 450,1045
+bouton ↺ «  Zacznij kurs od nowa » @ 450,1126
+bouton ✕ «  Zamknij kurs » @ 450,1207
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

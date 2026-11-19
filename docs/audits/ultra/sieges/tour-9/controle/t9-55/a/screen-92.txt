@@ -1,0 +1,18 @@
+Écran 92 (900x1509)
+texte « Co chcesz poruszyć? » @ 250,198
+texte « 1. Wybierz ścieżkę: » @ 181,269
+bouton « Perkusja » [sélectionné] @ 142,344
+bouton « Acid 303 » @ 336,344
+bouton « Akordy » @ 518,344
+bouton « Bas » @ 665,344
+bouton « Melodia » @ 137,425
+bouton « Remix » @ 307,425
+bouton « Wspólny pogłos i echo » @ 575,425
+texte « 2. Co się rusza na „Perkusja”: » @ 250,499
+texte « Perkusja » @ 132,561
+bouton « Filtr (przemiatanie) Dodaje filtr do tej ścieżki i otwiera go lub zamyka: najbardziej słyszalny efekt. » @ 450,661
+bouton « Głośność Głośniej lub ciszej: wyciszenia, wejścia, cięcia. » @ 450,791
+bouton « Wysyłka pogłos Więcej lub mniej pogłosu: przestrzeń, oddalenie. » @ 450,903
+bouton « Wysyłka echo Więcej lub mniej echa: powtórzenia w rytmie. » @ 450,1015
+texte « Pokaż pozostałe ustawienia (18) » @ 288,1110
+texte « Zamknij » @ 776,1218

@@ -1,0 +1,63 @@
+Écran 102 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+curseur [coupé, état « +0,0 dB », à 80 %] @ 84,279
+texte « +0,0 » @ 84,419
+image (étincelles) @ 74,459
+texte « 3 » @ 96,459
+curseur [coupé, état « +0,0 dB », à 80 %] @ 204,279
+texte « +0,0 » @ 204,419
+curseur [coupé, état « +0,0 dB », à 80 %] @ 324,279
+texte « +0,0 » @ 324,419
+image (étincelles) @ 295,459
+texte « 3 » @ 317,459
+image (courbe) @ 338,459
+texte « 1 » @ 357,459
+curseur [coupé, état « +0,0 dB », à 80 %] @ 444,279
+texte « +0,0 » @ 444,419
+image (étincelles) @ 437,459
+texte « 1 » @ 456,459
+curseur [coupé, état « +0,0 dB », à 80 %] @ 564,279
+texte « +0,0 » @ 564,419
+curseur [coupé, état « +0,0 dB », à 80 %] @ 684,279
+texte « +0,0 » @ 684,419
+image (courbe) @ 60,576
+texte « Krzywe i efekty » @ 207,558
+texte « 1 ustawienie rusza się samo. » @ 264,599
+bouton « Pokaż krzywe » @ 243,665
+bouton « Co gra » @ 657,665
+titre « KRZYWE » [état « Rozwinięte »] @ 362,800
+bouton « ? » @ 221,800
+bouton ● « Nagraj » @ 770,800
+texte « Spraw, żeby ustawienie ruszało się samo: wybierz je, potem narysuj krzywą (palcem albo linią w dwóch dotknięciach). » @ 450,884
+bouton + «  Automatyzuj ustawienie » @ 265,968
+bouton (vagues) «  Co gra » @ 599,968
+texte « Akordy » [coupé] @ 120,1030
+texte « Wyczyść » [coupé] @ 693,1032
+texte « Miks Rozdział 14/16 · Krok 1/1 · Pro » @ 357,1083
+icône (liste) « Rozdziały » @ 750,1084
+icône ⌃ @ 843,1084
+icône « Twoja kolej: ścisz trochę suwaki „Akordy” i „Melodia”; jeśli śpiewałeś, Wokal wychodzi przed całą resztę. Czytaj » ⌃ @ 450,1196
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

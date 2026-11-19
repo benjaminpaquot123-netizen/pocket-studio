@@ -1,0 +1,14 @@
+Écran 103 (900x1509)
+texte « BenStudio » @ 169,78
+texte « Co chcesz zrobić? » @ 217,146
+bouton ✓ « Kontynuuj Pro Mój projekt 1 100 taktów · 3:27 · 11 części Zapisano przed chwilą » → @ 450,327
+bouton (étincelles) « Nowy utwór Styl jednym dotknięciem albo „Zrób mi utwór”. » → @ 450,544
+bouton (dossier ouvert) « Moje projekty Otwórz inny utwór, skopiuj go lub zmień nazwę. » → @ 450,696
+bouton (quatre vagues) « Remix Rozdzielanie ścieżek: perkusja, bas, wokal i reszta. » → @ 450,868
+bouton (grille de pads) « Pad Live NOWOŚĆ Pady gotowe do gry, twoje dźwięki, efekty live. Gra od razu. » → @ 450,1061
+bouton ★ ★ ★ « Wyzwania Posłuchaj rytmu, powtórz go na padach: zdobywaj gwiazdki. » → @ 450,1254
+bouton « ↓ jeszcze 3 » @ 770,1395
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

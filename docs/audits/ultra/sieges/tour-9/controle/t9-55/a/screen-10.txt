@@ -1,0 +1,57 @@
+Écran 10 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 128,42
+bouton « Pro » @ 286,42
+bouton « A · Refren » ▾ @ 422,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Perkusja 16 padów » [sélectionné] @ 100,204
+onglet « Acid 303 Linia basu » @ 288,204
+onglet « Wokal Mikrofon » @ 470,204
+onglet « Remix Rozdziel » @ 642,204
+bouton « Akordy Pianino FM » [coupé] @ 805,204
+image → @ 889,205
+texte « Część: A · Refren » @ 138,273
+bouton « Kick FX » @ 123,354
+bouton « Kick 2 » @ 341,354
+bouton « Werbel FX » @ 559,354
+bouton « Werbel 2 » @ 777,354
+bouton « Clap FX » @ 123,432
+bouton « Hi-hat L 30 » @ 341,432
+bouton « Otwarty hi-hat P 30 » @ 559,432
+bouton « Niski tom » @ 777,432
+bouton « Średni tom P 45 » [coupé] @ 123,499
+bouton « Wysoki tom » [coupé] @ 341,499
+bouton « Rim P 50 » [coupé] @ 559,499
+bouton « Cowbell » [coupé] @ 777,499
+texte « Zrozumieć części Rozdział 9/16 · Krok 4/6 · Pro » @ 357,574
+icône (liste) « Rozdziały » @ 750,575
+icône ⌄ @ 843,575
+texte « Posłuchaj Pre-chorusa: kick odchodzi, werbel przyspiesza, potem wszystko milknie na ćwierćnutę. » @ 450,686
+texte « Tuż przed refrenem tworzy się brak: refren wydaje się dwa razy większy. » @ 450,782
+texte « Energia » @ 68,848
+bouton « Pobierz zestaw Pop (3 MB) » @ 387,926
+texte « Później » @ 810,926
+texte « ▾ Dlaczego? » @ 450,997
+icône « Czytaj dalej » ⌄ @ 450,1051
+bouton ▶ «  Posłuchaj przykładu » @ 450,1123
+icône ← «  Wstecz » @ 108,1207
+icône « Dalej  » → @ 809,1207
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

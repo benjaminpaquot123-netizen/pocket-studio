@@ -1,0 +1,51 @@
+Écran 80 (900x1509)
+dessin @ 450,36
+bouton « 3. Miękki clipper » @ 306,104
+icône ⏻ @ 624,104
+icône ⌃ @ 696,104
+icône ⌄ [désactivé] @ 768,104
+icône ✕ @ 840,104
+bouton « Wszystko » [sélectionné] @ 202,182
+bouton « A · Refren » @ 395,182
+bouton « B · Intro » @ 573,182
+bouton « C · Zwrotka » @ 762,182
+bouton « D · Pre-chorus » [coupé] @ 875,182
+texte « Gra w: » @ 63,182
+texte « Efekt może grać tylko w niektórych częściach: dotknij ich liter. » @ 396,242
+bouton + «   Dodaj efekt » @ 450,302
+texte « Gotowe klimaty » @ 131,374
+bouton « ? » @ 259,374
+bouton « Dla: Perkusja » [sélectionné] @ 138,444
+bouton ★ « Ulubione » @ 358,444
+bouton « Atmosfera » @ 560,444
+bouton « Kolor » @ 725,444
+bouton « Brud » [coupé] @ 835,444
+texte « Styl: » @ 51,528
+bouton « Acid » @ 142,528
+bouton « Techno » @ 281,528
+bouton « DnB » @ 417,528
+bouton « Dubstep » @ 560,528
+bouton « House » @ 719,528
+bouton « Lo-fi » [coupé] @ 836,528
+bouton « Punch » @ 91,612
+bouton « Pompa EDM » @ 275,612
+bouton « Chrupiący » @ 485,612
+bouton « Taśma Lo-Fi » @ 696,612
+bouton « Mały pokój » @ 122,684
+bouton « Bez efektu » @ 328,684
+texte « Dotknij klimatu, żeby go wypróbować: zawsze możesz wrócić przez Cofnij. » @ 450,768
+texte « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » @ 450,852
+texte « Pad XY, góra-dół: » @ 130,922
+bouton « ? » @ 266,921
+bouton « Przestrzeń » [sélectionné] @ 123,991
+bouton « Brud » @ 287,991
+bouton « Ruch » @ 412,991
+texte « ↑ Odległy » @ 450,1055
+texte « ← Ciemny » @ 208,1348
+texte « ↓ Sucho » @ 450,1348
+texte « Jasny → » @ 691,1348
+texte « Przesuwaj palcem, żeby niszczyć dźwięk na żywo. Dwa dotknięcia: powrót do oryginału. » @ 450,1412
+curseur [coupé, état « Neutralny », à 50 %] @ 131,1484
+curseur [coupé, état « 0 », à 0 %] @ 344,1484
+curseur [coupé, état « 0 », à 0 %] @ 557,1484
+curseur [coupé, état « 100% », à 100 %] @ 770,1484

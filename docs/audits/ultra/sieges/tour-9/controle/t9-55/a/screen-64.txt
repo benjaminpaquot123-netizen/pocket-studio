@@ -1,0 +1,71 @@
+Écran 64 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 117,42
+bouton « Pro » @ 264,42
+bouton « D · Pre-chorus » ▾ @ 411,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Intro takt 1/100 » ▾ @ 261,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Perkusja 16 padów » [sélectionné] @ 100,204
+onglet « Acid 303 Linia basu » @ 288,204
+onglet « Wokal Mikrofon » @ 470,204
+onglet « Remix Rozdziel » @ 642,204
+bouton « Akordy Pianino FM » [coupé] @ 805,204
+image → @ 889,205
+texte « Część: D · Pre-chorus » @ 169,273
+texte « Takt » @ 70,338
+bouton « 1 » @ 143,338
+bouton « 2 » @ 224,338
+bouton « 3 » @ 305,338
+bouton « 4 » [sélectionné] @ 386,338
+bouton « Podążaj » @ 509,338
+texte « Takt 4/4 · Hi-hat » @ 159,404
+texte « 2 uderzenia za dużo tutaj (przekreślone) » @ 337,442
+bouton « 1 » [état « uderzenie, siła 100 % »] @ 90,512
+bouton [état « pusty »] @ 192,512
+bouton [état « uderzenie, siła 49 % »] @ 294,512
+bouton [état « pusty »] @ 397,512
+bouton « 2 » [état « uderzenie, siła 91 % »] @ 500,512
+bouton [état « pusty »] @ 603,512
+bouton [état « uderzenie, siła 44 % »] @ 706,512
+bouton [état « pusty »] @ 809,512
+bouton « 3 » [état « uderzenie, siła 98 % »] @ 90,591
+bouton [état « pusty »] @ 192,591
+bouton [état « uderzenie, siła 48 % »] @ 294,591
+bouton [état « pusty »] @ 397,591
+bouton « 4 » [état « pusty »] @ 500,591
+bouton [état « pusty »] @ 603,591
+bouton « ×2 » [état « uderzenie, siła 62 %, Powtórzenia: 2, przekreślone: do usunięcia »] @ 706,591
+bouton « ×3 » [état « uderzenie, siła 58 %, Powtórzenia: 3, przekreślone: do usunięcia »] @ 809,591
+texte « Przejścia Rozdział 12/16 · Krok 2/3 · Pro » @ 357,676
+icône (liste) « Rozdziały » @ 750,677
+icône ⌄ @ 843,677
+texte « Twoja kolej: w części „Pre-chorus”, w ostatnim takcie, wymaż uderzenia z ostatniej ćwierćnuty (dotknij każdego czerwonego krzyżyka): ćwierćnuta ciszy tuż przed Refrenem. » [coupé] @ 450,765
+bouton « Pobierz zestaw Pop (3 MB) » @ 387,845
+texte « Później » @ 810,845
+texte « ▸ Dlaczego? » @ 450,916
+icône « Czytaj dalej » ⌄ @ 450,970
+bouton (doigt qui touche) «   Zrobię to » @ 450,1042
+bouton ▶ «  Posłuchaj przykładu » @ 232,1126
+bouton (œil) «  Pokaż mi » @ 667,1126
+icône ← «  Wstecz » @ 108,1207
+icône « Dalej  » → @ 809,1207
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

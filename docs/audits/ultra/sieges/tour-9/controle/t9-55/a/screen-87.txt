@@ -1,0 +1,47 @@
+Écran 87 (900x1509)
+dessin @ 450,36
+texte « Styl: » [coupé] @ 51,84
+bouton « Acid » [coupé] @ 142,87
+bouton « Techno » [coupé] @ 281,87
+bouton « DnB » [coupé] @ 417,87
+bouton « Dubstep » [coupé] @ 560,87
+bouton « House » [coupé] @ 719,87
+bouton « Lo-fi » [coupé] @ 836,87
+bouton « Krzyczący lead » @ 153,163
+bouton « Szeroki i żywy » @ 414,163
+bouton « Głęboki dub » @ 651,163
+bouton « Sen » @ 817,163
+bouton « Przester » @ 106,235
+bouton « Odległy » @ 275,235
+bouton « Bez efektu » [sélectionné] @ 460,235
+texte « Dźwięk bez zmian: żadnych efektów, makra w spoczynku. » @ 450,319
+texte « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » @ 450,403
+texte « Pad XY, góra-dół: » @ 130,473
+bouton « ? » @ 266,472
+bouton « Przestrzeń » [sélectionné] @ 123,542
+bouton « Brud » @ 287,542
+bouton « Ruch » @ 412,542
+texte « ↑ Odległy » @ 450,606
+texte « ← Ciemny » @ 208,899
+texte « ↓ Sucho » @ 450,899
+texte « Jasny → » @ 691,899
+texte « Przesuwaj palcem, żeby niszczyć dźwięk na żywo. Dwa dotknięcia: powrót do oryginału. » @ 450,963
+curseur [état « Neutralny », à 50 %] @ 131,1050
+texte « Kolor » @ 130,1112
+texte « Neutralny » @ 131,1150
+curseur [état « 0 », à 0 %] @ 344,1050
+texte « Brud » @ 344,1112
+texte « 0 » @ 343,1150
+curseur [état « 0 », à 0 %] @ 557,1050
+texte « Ruch » @ 557,1112
+texte « 0 » @ 556,1150
+curseur [état « 0 », à 0 %] @ 770,1050
+texte « Przestrzeń » @ 769,1112
+texte « 0 » @ 769,1150
+texte « Wspólny pogłos i echo » @ 178,1199
+texte « Wysyłka pogłos » @ 427,1255
+texte « 0% » @ 853,1256
+curseur [état « 0% », à 0 %] @ 450,1327
+texte « Wysyłka echo » @ 427,1407
+texte « 0% » @ 844,1408
+curseur [état « 0% », à 0 %] @ 450,1464

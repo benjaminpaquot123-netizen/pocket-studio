@@ -1,0 +1,26 @@
+Écran 58 (900x1509)
+icône ✕ @ 534,254
+texte « Uderzenie 12 » @ 258,254
+texte « Siła » @ 43,319
+bouton « Mocno » [sélectionné] @ 89,385
+bouton « Średni » @ 235,385
+bouton « Miękki » @ 379,385
+texte « Roll » @ 43,450
+bouton « ×1 » [sélectionné] @ 58,516
+bouton « ×2 » @ 148,516
+bouton « ×3 » @ 240,516
+bouton « ×4 » @ 334,516
+bouton « ×6 » @ 427,516
+bouton « ×8 » @ 520,516
+texte « Triola » @ 56,581
+bouton « 3 na 2 pola » @ 116,647
+bouton « 6 na miarę » @ 317,647
+bouton « ↗ Rosnąco » [désactivé] @ 116,728
+bouton « Równo » [désactivé, sélectionné] @ 291,728
+bouton « ↘ Malejąco » [désactivé] @ 469,728
+texte « Całe uderzenie na ×2 (seria 1/32) » @ 262,809
+texte « Szansa zagrania » @ 131,874
+bouton « 100% » [sélectionné] @ 81,940
+bouton « 75% » @ 205,940
+bouton « 50% » @ 323,940
+bouton « 25% » @ 442,940

@@ -1,0 +1,48 @@
+Écran 120 (900x1509)
+icône (dossier ouvert) ✓ « Mój utwór Zapisano » @ 225,42
+bouton « Pro » @ 480,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 116  BPM » @ 83,123
+icône « Refren takt 21/100 » ▾ @ 270,123
+bouton (flèches en boucle) « Pętla » [état « wył. »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « −14 LUFS na całym utworze: głośność, do której Spotify i YouTube sprowadzają wszystkie utwory. » [coupé] @ 450,193
+texte « Fade-out » @ 103,257
+bouton « Brak » @ 97,326
+bouton « Krótko (3 s) » [sélectionné] @ 266,326
+bouton « Długo (8 s) » @ 477,326
+bouton « Zaawansowane Ścieżka po ścieżce · FLAC · MIDI · 48 kHz · 24 bit » ⌄ @ 450,421
+bouton « Utwórz plik utworu » @ 450,517
+texte « Zapisano w Muzyka › BenStudio: Mój-utwór-streaming-20261119-120044.m4a » @ 450,601
+texte « ✓ Gotowe do udostępnienia » @ 233,669
+texte « Długość: 3 min 27 s » @ 160,711
+texte « Poziom: na celu (Streaming) » @ 211,750
+texte « Szczyt: poniżej limitu, bez przesterowania » @ 294,789
+texte « M4A, 48 kHz, 256 kb/s » @ 181,828
+texte « −14,0 LUFS zintegrowane · szczyt −10,0 dBTP » @ 317,880
+bouton « ? » @ 613,879
+texte « Cel: Streaming · −14 LUFS » @ 199,931
+bouton « Udostępnij » @ 450,997
+texte « Wyeksportuj swój utwór Rozdział 16/16 · Krok 1/1 · Pro » @ 357,1083
+icône (liste) « Rozdziały » @ 750,1084
+icône ⌃ @ 843,1084
+bouton (coupe) « Kurs skończony: brawo! » @ 450,1196
+icône ↶ « Cofnij » @ 118,1292
+icône ↷ « Ponów » [désactivé] @ 272,1292
+bouton ▶ « utwór » @ 426,1292
+texte « 116 Tempo » @ 587,1292
+icône (trois points reliés) « Udostępnij » @ 764,1292
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » @ 268,1389
+onglet (curseurs) « Miks » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 661,1479
+texte « ✎  Zanotuj » @ 762,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 312,1479

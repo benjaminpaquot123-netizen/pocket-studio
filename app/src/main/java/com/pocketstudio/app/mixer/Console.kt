@@ -74,7 +74,12 @@ import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
 import com.pocketstudio.app.ui.showcasePanel
 import com.pocketstudio.ui.ProSlider
-import com.pocketstudio.ui.fadingHorizontalScroll
+import com.pocketstudio.ui.fadingEdges
+import kotlinx.coroutines.launch
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import com.pocketstudio.ui.pillColors
 import kotlin.math.roundToInt
 
@@ -96,6 +101,7 @@ internal fun consoleFaderHeight(height: Dp, lying: Boolean): Dp =
  * its colour and name (a touch opens the strip's sheet: volume, pan, effects, curves, « Ce qui
  * joue »), M and S, its vertical fader with the meter beside it (the meter read only when drawn).
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun Console(
     strips: List<StripInfo>, channels: List<Channel>, meters: () -> FloatArray, actions: MixerActions,
@@ -104,8 +110,11 @@ internal fun Console(
     faderHeight: Dp = CONSOLE_FADER_H,
     /** « Glisse un fader… » under the title (left out when the faders were lowered to fit). */
     hint: Boolean = faderHeight >= CONSOLE_FADER_H,
+    /** The pads' names as the project has them (by lane); the built-in kit's names by default. */
+    padNames: (Int) -> String = { com.pocketstudio.app.rhythm.DrumKitInfo.names.getOrElse(it) { "" } },
 ) {
     var sheetFor by rememberSaveable { mutableStateOf<Int?>(null) }
+    var padsOpen by rememberSaveable { mutableStateOf(false) }
     Column(
         Modifier.fillMaxWidth().showcasePanel(RoundedCornerShape(16.dp))
             .padding(vertical = 8.dp).testTag("console"),
@@ -119,8 +128,9 @@ internal fun Console(
             tr("Glisse un fader pour le volume ; touche le nom d'une piste pour ses effets et ses courbes."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(horizontal = 12.dp),
         )
+        val scroll = rememberScrollState()
         Row(
-            Modifier.fillMaxWidth().fadingHorizontalScroll().padding(horizontal = 6.dp),
+            Modifier.fillMaxWidth().fadingEdges(scroll).horizontalScroll(scroll).padding(horizontal = 6.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             strips.forEachIndexed { i, st ->
@@ -130,7 +140,19 @@ internal fun Console(
                 )
             }
         }
+        // Tour 9 (D12, S34): the pads' own effects and sends one touch away; more strips said, not only faded.
+        FlowRow(
+            Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            OutlinedButton(onClick = { padsOpen = true }, modifier = Modifier.heightIn(min = 48.dp).testTag("console_pads")) {
+                Icon(Icons.Filled.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
+                Text(" " + tr("  Effets du pad").trim(), maxLines = 2)
+            }
+            MoreTracksButton(scroll, "console_more_right")
+        }
     }
+    if (padsOpen) PadSheet(channels, actions, padNames) { padsOpen = false }
     sheetFor?.let { ch ->
         val st = strips.firstOrNull { it.ch == ch }
         val c = channels.getOrNull(ch)
@@ -323,6 +345,56 @@ private fun StripSheet(
             }
             Text(tr("Effets"), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("effects_$index"))
             EffectsBox(index, c, actions)
+        }
+    }
+}
+
+/**
+ * Tour 9 (S34, seats 18 34: « Melodia » off-screen, nothing said): « Voir les autres pistes ▸ » while more
+ * strips wait further on; a touch brings the last ones in. Gone once the row is at its end.
+ */
+@Composable
+internal fun MoreTracksButton(scroll: androidx.compose.foundation.ScrollState, tag: String) {
+    if (!scroll.canScrollForward) return
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    TextButton(
+        onClick = { scope.launch { scroll.animateScrollTo(scroll.maxValue) } },
+        modifier = Modifier.heightIn(min = 48.dp).testTag(tag),
+    ) {
+        Text(tr("Voir les autres pistes"), maxLines = 2)
+        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, modifier = Modifier.size(18.dp))
+    }
+}
+
+/**
+ * Tour 9 (D12, seats 18 49 59: « Envoi réverbe » on the pad « Caisse », not found from the Mix): the pads'
+ * effects and sends, a pad picked by its name, without leaving the Mix.
+ */
+@OptIn(ExperimentalLayoutApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun PadSheet(channels: List<Channel>, actions: MixerActions, padNames: (Int) -> String, close: () -> Unit) {
+    var lane by rememberSaveable { mutableStateOf(0) }
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("pad_sheet")) {
+        Column(
+            Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(tr("  Effets du pad").trim(), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                TextButton(onClick = close, modifier = Modifier.testTag("pad_sheet_close")) { Text(tr("Fermer")) }
+            }
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                for (l in 0 until com.pocketstudio.model.DrumPattern.PAD_COUNT) {
+                    FilterChip(
+                        selected = l == lane, onClick = { lane = l }, label = { Text(tr("Pad %1\$d · %2\$s", l + 1, padNames(l)), maxLines = 1) },
+                        colors = pillColors(), modifier = Modifier.testTag("pad_fx_$l"),
+                    )
+                }
+            }
+            val ch = com.pocketstudio.model.Mixer.padChannel(lane)
+            Text(tr("Effets · %s", tr("pad %1\$d (%2\$s)", lane + 1, padNames(lane))), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("pad_sheet_title"))
+            androidx.compose.runtime.key(lane) { EffectsBox(ch, channels.getOrElse(ch) { Channel() }, actions) }
         }
     }
 }

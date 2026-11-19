@@ -145,9 +145,9 @@ class Tour9MixFaderNoBenchTest {
     @Test
     fun s34_theSimpleMixSaysMoreTracksWaitOnTheRight() {
         showSimple()
-        compose.onNodeWithTag("mix_more_right").assertIsDisplayed().performClick()
+        compose.onNodeWithTag("mix_more_right").performScrollTo().assertIsDisplayed().performClick()
         compose.waitForIdle()
-        compose.onNodeWithTag("mix_out_fader").assertIsDisplayed()
+        compose.onNodeWithTag("mix_out_fader").performScrollTo().assertIsDisplayed()
         compose.onNodeWithTag("mix_more_right").assertDoesNotExist()
     }
 }

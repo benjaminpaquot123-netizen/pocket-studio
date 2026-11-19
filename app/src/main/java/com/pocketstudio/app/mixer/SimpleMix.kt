@@ -86,7 +86,8 @@ import com.pocketstudio.model.guide.MixTip
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
-import com.pocketstudio.ui.fadingHorizontalScroll
+import com.pocketstudio.ui.fadingEdges
+import androidx.compose.foundation.horizontalScroll
 import kotlin.math.log10
 
 /** What the Mode simple's « Mix » tab shows: the project's name, its tracks (the drums with their sounds), the master, the tip. */
@@ -232,7 +233,8 @@ fun SimpleMixScreen(
                 .drawStartBar(Neon.Cyan).padding(start = 12.dp, end = 8.dp, top = 6.dp, bottom = 6.dp).testTag("mix_hint"),
         )
         androidx.compose.runtime.CompositionLocalProvider(LocalAloneResumes provides (ui.listening?.resume == true)) {
-        Row(Modifier.fillMaxWidth().fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        val strips = rememberScrollState()
+        Row(Modifier.fillMaxWidth().fadingEdges(strips).horizontalScroll(strips), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             ui.tracks.forEach { t ->
                 val trackAlone = alone != null && alone == AloneTarget.ofSongKey(t.key)
                 if (t.pads.isNotEmpty()) {
@@ -243,6 +245,8 @@ fun SimpleMixScreen(
             }
             OutputStrip(ui.masterDb, meters, shownWords, actions.setMasterDb)
         }
+        // Tour 9 (S34): more strips (the output's) wait on the right: said, a touch brings them in.
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) { MoreTracksButton(strips, "mix_more_right") }
         }
         TipCard(ui.tip, actions.applyTip)
     }

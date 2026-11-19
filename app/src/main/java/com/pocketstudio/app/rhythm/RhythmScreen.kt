@@ -284,10 +284,11 @@ fun RhythmScreen(
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             KitChip(kit, onClick = { actions.openKits(); kitSheet = true })
             // A pad only sounds: what stays in the beat is in the cells (beginners tap pads and wait).
-            Text(
+            com.pocketstudio.ui.WholeWordsText(
                 tr("Les pads sonnent, les cases gardent les coups. Appui long : changer le son."),
-                // Tour 9, F050: read in full (three lines at most cut its end at 100 % on a 360 dp phone).
-                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+                // Tour 9, F050: read in full (three lines at most cut its end at 100 % on a 360 dp phone), and
+                // no word split over two lines at 200 % beside the kit's chip.
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 6,
                 modifier = Modifier.weight(1f).testTag("pads_hint"),
             )
         }
@@ -1597,7 +1598,7 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
             val ringStep = com.pocketstudio.app.tuto.TutoHints.cells?.let { (hl, cells) ->
                 if (hl != lane) null
                 else com.pocketstudio.model.tuto.TutoPlay.ringed(
-                    cells, cells.filter { l.hits[it] != null }.toSet(), bar * project.stepsPerBar, (bar + 1) * project.stepsPerBar,
+                    cells, cells.filter { l.hits[it] != null || l.covering(it) != null }.toSet(), bar * project.stepsPerBar, (bar + 1) * project.stepsPerBar,
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -1624,7 +1625,8 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
                             .testTag("cell_${lane}_$step"),
                     ) {
                         // Tour 8 (seat c in ko, ch.12): the tutorial's marks here too, as on the pad's own grid.
-                        if (hit == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true) {
+                        // F140: a cell a roll covers is played already, no mark on it (as on the pad's own grid).
+                        if (hit == null && l.covering(step) == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (hl, cells) -> hl == lane && step in cells } == true) {
                             com.pocketstudio.app.tuto.TutoHintCell(color, ring = step == ringStep)
                         }
                         if (hit != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true) {

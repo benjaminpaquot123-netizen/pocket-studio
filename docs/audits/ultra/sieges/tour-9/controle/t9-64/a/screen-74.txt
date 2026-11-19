@@ -1,0 +1,49 @@
+Écran 74 (588x1278)
+icône « マイプロジェクト 1 » ✓ @ 298,36
+bouton « プロ » @ 538,36
+bouton (dossier ouvert) @ 102,114
+bouton « A » ▾ @ 235,114
+icône ↶ @ 311,114
+bouton ● @ 383,114
+bouton ▶ « このパート » @ 463,114
+icône (trois points reliés) @ 543,114
+bouton « 105  BPM » @ 83,195
+bouton « ? » @ 543,195
+onglet « ドラム 16パッド » [sélectionné] @ 90,277
+onglet « Acid 303 ベースライン » @ 277,277
+onglet « ボーカル マイク » @ 470,277
+onglet « リミックス 分離 » [coupé] @ 565,277
+image → @ 577,278
+texte « パート：A » @ 85,347
+texte « 小節 2/2 · オープンハイハット » [coupé] @ 230,380
+bouton « 1 » [coupé, état « 空 »] @ 70,439
+bouton [coupé, état « 空 »] @ 133,439
+bouton [coupé, état « ヒット、強さ 100 % »] @ 197,439
+bouton [coupé, état « 空 »] @ 261,439
+bouton « 2 » [coupé, état « 空 »] @ 325,439
+bouton [coupé, état « 空 »] @ 389,439
+bouton [coupé, état « ヒット、強さ 100 % »] @ 453,439
+bouton [coupé, état « 空 »] @ 517,439
+texte « ハイハットとタム チャプター 4/16 · ステップ 5/5 · プロ » @ 201,531
+icône (liste) « チャプター » @ 438,531
+icône ⌄ @ 531,531
+texte « 自分のドラムを数秒聴いて、次に例のドラムを聴こう。 » @ 294,661
+texte « ▸ なぜ？ » @ 294,736
+bouton ▶ «   結果を聴く » @ 294,805
+bouton ■ «  試聴を停止 » @ 294,889
+icône ← «  前へ » @ 85,970
+icône « 次へ  » → @ 503,970
+icône ↶ « 元に戻す » @ 74,1058
+icône ↷ « やり直す » [désactivé] @ 190,1058
+bouton ▶ « 曲 » @ 300,1058
+texte « 105 テンポ » @ 410,1058
+icône (trois points reliés) « シェア » @ 520,1058
+onglet (ligne brisée et points) « 構成 » @ 54,1158
+onglet (touches de piano) « サウンド » [sélectionné] @ 174,1158
+onglet (curseurs) « ミックス » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « その他 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

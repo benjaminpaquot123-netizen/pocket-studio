@@ -1,0 +1,63 @@
+Écran 25 (588x1278)
+icône « マイプロジェクト 1 » ✓ @ 298,36
+bouton « プロ » @ 538,36
+bouton (dossier ouvert) @ 102,114
+bouton « A » ▾ @ 235,114
+icône ↶ @ 311,114
+bouton ● @ 383,114
+bouton ▶ « このパート » @ 463,114
+icône (trois points reliés) @ 543,114
+bouton « 105  BPM » @ 83,195
+bouton « ? » @ 543,195
+onglet « ドラム 16パッド » [sélectionné] @ 90,277
+onglet « Acid 303 ベースライン » @ 277,277
+onglet « ボーカル マイク » @ 470,277
+onglet « リミックス 分離 » [coupé] @ 565,277
+image → @ 577,278
+texte « パート：A » @ 85,347
+texte « LinnDrum · スネア » [coupé] @ 166,380
+bouton « 1 » [état « 空 »] @ 70,451
+bouton [état « 空 »] @ 133,451
+bouton [état « 空 »] @ 197,452
+bouton [état « 空 »] @ 261,452
+bouton « 2 » [état « ヒット、強さ 100 % »] @ 325,452
+bouton [état « 空 »] @ 389,452
+bouton [état « 空 »] @ 453,452
+bouton [état « 空 »] @ 517,452
+bouton « 3 » [état « 空 »] @ 70,530
+bouton [état « 空 »] @ 133,530
+bouton [état « 空 »] @ 197,531
+bouton [état « 空 »] @ 261,531
+bouton « 4 » [état « ヒット、強さ 100 % »] @ 325,531
+bouton [état « 空 »] @ 389,531
+bouton [état « 空 »] @ 453,531
+bouton [état « 空 »] @ 517,531
+bouton « ヒット » [sélectionné] @ 109,616
+bouton « ロール » @ 249,616
+bouton « パン » @ 375,616
+bouton « ピッチ » [coupé] @ 490,616
+texte « 埋める » @ 80,700
+texte « すべて » @ 175,700
+texte « 1/2 » @ 268,700
+texte « 1/4 » @ 343,700
+texte « ◀ » @ 418,700
+texte « ▶ » @ 493,700
+texte « 消去 » [coupé] @ 83,750
+texte « スネアとクラップ チャプター 3/16 · ステップ 1/2 · プロ » @ 201,828
+icône (liste) « チャプター » @ 438,828
+icône ⌃ @ 531,828
+icône (rond coché) « 成功 次のステップ » → @ 294,959
+icône ↶ « 元に戻す » @ 74,1058
+icône ↷ « やり直す » [désactivé] @ 190,1058
+bouton ▶ « 曲 » @ 300,1058
+texte « 105 テンポ » @ 410,1058
+icône (trois points reliés) « シェア » @ 520,1058
+onglet (ligne brisée et points) « 構成 » @ 54,1158
+onglet (touches de piano) « サウンド » [sélectionné] @ 174,1158
+onglet (curseurs) « ミックス » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « その他 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

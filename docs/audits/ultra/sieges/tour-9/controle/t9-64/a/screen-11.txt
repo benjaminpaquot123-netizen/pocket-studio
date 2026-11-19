@@ -1,0 +1,27 @@
+Écran 11 (588x1278)
+dessin @ 294,468
+texte « 曲のキー » @ 233,540
+texte « 閉じる » @ 503,540
+texte « 曲のキー：なし » @ 122,611
+texte « スケール » @ 80,667
+bouton « メジャー » @ 101,739
+bouton « マイナー » @ 266,739
+bouton « ドリアン » @ 430,739
+bouton « マイナーペンタ » @ 147,820
+bouton « メジャーペンタ » @ 401,820
+bouton « ブルース » @ 101,901
+bouton « フリジアン » @ 280,901
+bouton « ハーモニックマイナー » @ 192,982
+texte « キー » @ 52,1053
+bouton « C » @ 63,1125
+bouton « C♯ » @ 150,1125
+bouton « D » @ 237,1125
+bouton « E♭ » @ 324,1125
+bouton « E » @ 411,1125
+bouton « F » @ 498,1125
+bouton « F♯ » @ 63,1206
+bouton « G » @ 150,1206
+bouton « A♭ » @ 237,1206
+bouton « A » @ 324,1206
+bouton « B♭ » @ 411,1206
+bouton « B » @ 498,1206

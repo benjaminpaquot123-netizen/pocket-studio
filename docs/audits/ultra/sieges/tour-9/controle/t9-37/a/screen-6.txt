@@ -1,0 +1,41 @@
+Écran 6 (540x1170)
+icône « 我的项目 1 » ✓ @ 274,36
+bouton « 专业 » @ 490,36
+bouton (dossier ouvert) @ 81,114
+bouton « A » ▾ @ 192,114
+icône ↶ @ 268,114
+bouton ● @ 340,114
+bouton ▶ « 这个段落 » @ 417,114
+icône (trois points reliés) @ 495,114
+bouton « 120  BPM » @ 83,195
+bouton « ? » @ 495,195
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 105,241
+onglet « Acid 303 贝斯线 » @ 296,241
+onglet « 人声 麦克风 » @ 456,241
+image → @ 529,242
+texte « 速度和调性 第 1/15 章 · 第 2/3 步 · 专业 » @ 198,300
+icône (liste) « 章节 » @ 411,300
+icône ⌄ @ 483,300
+texte « 未收听，已跳过示例。 » @ 161,386
+texte « 轮到你：把速度设为 140 BPM。“我来做”会打开“速度”面板。 » @ 270,462
+texte « 新歌从 120 BPM 开始：这种风格的速度由你来定。 » @ 270,558
+texte « ▸ 为什么？ » @ 270,628
+bouton (doigt qui touche) «   我来做 » @ 270,697
+bouton ▶ «  听示例 » @ 142,781
+bouton (œil) «  示范给我看 » @ 397,781
+icône ← «  上一步 » @ 99,862
+icône « 下一步  » → @ 441,862
+icône ↶ « 撤销 » @ 64,950
+icône ↷ « 重做 » [désactivé] @ 164,950
+bouton ▶ « 歌曲 » @ 264,950
+texte « 120 速度 » @ 370,950
+icône (trois points reliés) « 分享 » @ 476,950
+onglet (ligne brisée et points) « 结构 » @ 49,1050
+onglet (touches de piano) « 音色 » [sélectionné] @ 160,1050
+onglet (curseurs) « 混音 » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « 更多 » @ 491,1050
+texte « ●  REC » @ 311,1140
+texte « ✎  记一笔 » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « 反馈模式 » @ 137,1140

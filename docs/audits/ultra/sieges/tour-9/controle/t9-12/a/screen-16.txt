@@ -1,0 +1,55 @@
+Écran 16 (588x1278)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 134,42
+bouton « Simple » @ 311,42
+bouton ● @ 399,42
+bouton ▶ « this part » @ 471,42
+icône ⋮ @ 543,42
+bouton « 112  Tempo » @ 83,114
+bouton « ? » @ 543,114
+texte « Add: » @ 65,165
+bouton « + A · Drop » @ 129,228
+bouton « + New part (copy of A · Drop) » [coupé] @ 227,288
+texte « Understanding parts Chapter 7/12 · Done · Easy » @ 210,351
+icône (liste) « Chapters » @ 447,351
+icône ⌄ @ 531,351
+texte « Example skipped without listening. » @ 192,429
+image (rond coché) @ 36,468
+texte « Listen to the Drop: the log drum finally comes in. » @ 313,489
+texte « Energy » @ 55,546
+texte « Intro » @ 48,639
+texte « 8 » @ 48,663
+texte « Groove » @ 157,639
+texte « 24 » @ 157,663
+texte « Drop » @ 293,639
+texte « 16 » @ 293,663
+texte « 8 » @ 375,651
+texte « Drop 2 » @ 458,639
+texte « 16 » @ 458,663
+texte « End » @ 540,639
+texte « 8 » @ 540,663
+texte «  Intro » @ 60,700
+texte «  Groove » @ 150,700
+texte «  Drop » @ 242,700
+texte «  Break » @ 328,700
+texte «  Drop 2 » @ 422,700
+texte «  End » @ 507,700
+texte « Each number: the part's length in bars. » @ 197,730
+texte « ▸ Why? » @ 294,768
+bouton « Next chapter   » → @ 294,888
+icône ← @ 57,975
+bouton ▶ «  Listen to my song » @ 216,975
+bouton ▶ «  Listen to the example » @ 453,975
+icône ↶ « Undo » @ 72,1062
+image ↷ @ 180,1052
+bouton ▶ « the song » @ 288,1062
+texte « 112 Tempo » @ 402,1062
+icône ⋮ « More » @ 516,1062
+onglet (lignes et note) « My song » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rhythm » @ 174,1158
+onglet (touches de piano) « Keyboard » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Share » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

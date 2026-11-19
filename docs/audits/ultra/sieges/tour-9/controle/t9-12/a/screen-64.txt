@@ -1,0 +1,41 @@
+Écran 64 (588x1278)
+icône (dossier ouvert) ✓ « My song Saved » @ 134,42
+bouton « Simple » @ 311,42
+bouton ● @ 399,42
+bouton ▶ « this part » @ 471,42
+icône ⋮ @ 543,42
+bouton « 112  Tempo » @ 83,114
+icône « Intro bar 1/80 » ▾ @ 239,114
+bouton « ? » @ 543,114
+image (rond coché) @ 0,0
+bouton « M4A · for sharing » [sélectionné] @ 144,198
+bouton « WAV · max quality » @ 387,198
+bouton (trois points reliés) «   Share » @ 294,294
+bouton (dossier) « My files » › @ 272,349
+bouton « ? » @ 536,349
+icône (liste) « Chapters » @ 447,411
+texte « Export your song Chapter 12/12 · Step 1/1 · Easy » @ 210,411
+icône ⌄ @ 531,411
+texte « Almost done! » @ 99,492
+bouton ▶ «  Listen to my song » @ 294,555
+texte « 5 steps left. Tap one to go there: » @ 182,615
+bouton « Chapter 1/12 · The song's speed and colour Listen to a clip of a finished amapiano song: first the piano and light percussion, then the log drum comes in and bounces. » → @ 294,676
+bouton « Chapter 2/12 · The percussion Before you start: the amapiano kit is loaded. You have nothing to set. » → @ 294,760
+bouton « Chapter 2/12 · The percussion Listen to all your percussion, then to the example's. » → @ 294,844
+bouton « Chapter 3/12 · The piano Listen to the piano alone. » → @ 294,928
+texte « … and 1 more (list ≡) » @ 113,988
+bouton ← «  Back to the step » [coupé] @ 294,1012
+icône ↶ « Undo » @ 72,1062
+image ↷ @ 180,1052
+bouton ▶ « the song » @ 288,1062
+texte « 112 Tempo » @ 402,1062
+icône ⋮ « More » @ 516,1062
+onglet (lignes et note) « My song » @ 54,1158
+onglet (quatre carrés) « Rhythm » @ 174,1158
+onglet (touches de piano) « Keyboard » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Share » [sélectionné] @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

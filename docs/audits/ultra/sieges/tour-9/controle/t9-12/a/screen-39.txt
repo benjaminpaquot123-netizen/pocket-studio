@@ -1,0 +1,45 @@
+Écran 39 (588x1278)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 134,42
+bouton « Simple » @ 311,42
+bouton ● @ 399,42
+bouton ▶ « this part » @ 471,42
+icône ⋮ @ 543,42
+bouton « 112  Tempo » @ 83,114
+icône « Intro bar 1/16 » ▾ @ 239,114
+bouton « ? » @ 543,114
+icône ▶ « B · Intro × 1  ·  8 bars » [coupé] @ 186,181
+icône − [désactivé] @ 366,177
+icône + @ 438,177
+icône ⋮ @ 510,177
+icône ▶ « F · Groove × 1  ·  8 bars » @ 186,273
+icône − [désactivé] @ 366,273
+icône + @ 438,273
+icône ⋮ @ 510,273
+texte « − / + : repeats. Grey: fixed length (suggested or Live) or just once. » @ 294,354
+texte « Add at the end: » @ 117,408
+bouton « + A · Drop » @ 129,471
+bouton « + B · Intro » @ 311,471
+bouton « + C · Break » @ 134,552
+bouton « + D · Drop 2 » @ 331,552
+bouton « + E · End » @ 123,633
+bouton « + F · Groove » @ 312,633
+bouton « + New part (copy of F · Groove) » @ 237,714
+bouton « + New empty part » @ 169,795
+icône (liste) « Chapters » @ 447,879
+texte « Arrange your parts Chapter 9/12 · Step 1/2 · Easy » @ 210,879
+icône ⌃ @ 531,879
+icône « Your turn: in “My song”, under “Add”, tap in order Intro, Groove, Drop, Break, Drop 2 and End. Read » ⌃ @ 294,978
+icône ↶ « Undo » @ 72,1062
+image ↷ @ 180,1052
+bouton ▶ « the song » @ 288,1062
+texte « 112 Tempo » @ 402,1062
+icône ⋮ « More » @ 516,1062
+onglet (lignes et note) « My song » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rhythm » @ 174,1158
+onglet (touches de piano) « Keyboard » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Share » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

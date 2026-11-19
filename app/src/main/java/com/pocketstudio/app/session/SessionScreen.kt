@@ -681,7 +681,8 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
                         role = Role.Button, onClickLabel = tr("Plus d'actions"),
                         onLongClickLabel = tr("Variation, fill, break…"), onLongClick = { sheetOpen = true },
                     ) { sheetOpen = true }
-                    .padding(end = 6.dp)
+                    // Room on the left: the tuto's frame around ▶ stays off the part's name.
+                    .padding(start = 8.dp, end = 6.dp)
                     .testTag("part_open_$i"),
                 verticalArrangement = Arrangement.Center,
             ) {

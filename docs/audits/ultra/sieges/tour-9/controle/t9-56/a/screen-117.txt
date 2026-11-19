@@ -1,0 +1,31 @@
+Écran 117 (588x1278)
+icône (dossier ouvert) ✓ @ 123,42
+bouton « Basit » @ 291,42
+bouton ● @ 381,42
+bouton ▶ « bu bölüm » @ 462,42
+icône ⋮ @ 543,42
+texte « Riff Aşama 7/15 · Adım 3/3 · Kolay » @ 199,203
+icône (liste) « Aşamalar » @ 436,203
+icône ⌄ @ 531,203
+texte « Sıra sende: 2. ölçünün 4 notasını yaz. » @ 294,373
+texte « • Ölçü: ritmin bir turu, dört vuruş; “1, 2, 3, 4” diye sayarsın. » @ 294,523
+texte « ▸ Neden? » @ 294,638
+bouton (doigt qui touche) «   Ben yaparım » @ 294,715
+bouton ▶ «  Örneği dinle » @ 154,829
+bouton (œil) «  Göster » @ 433,829
+icône ← «  Önceki » @ 125,943
+icône « İleri  » → @ 494,943
+bouton ▶ « şarkı » @ 294,1047
+texte « 96 Tempo » @ 409,1046
+icône ↶ « Geri al » @ 69,1046
+image ↷ @ 188,1026
+icône ⋮ « Diğer » @ 527,1046
+onglet (lignes et note) « Şarkım » @ 54,1158
+onglet (quatre carrés) « Ritim » @ 174,1158
+onglet (touches de piano) « Klavye » [sélectionné] @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Paylaş » @ 534,1158
+texte « ●  REC » @ 310,1248
+texte « ✎  Not al » @ 435,1248
+texte « ⋯ » @ 540,1248
+texte « Geri bildirim modu » @ 133,1248

@@ -1,0 +1,30 @@
+Écran 6 (588x1278)
+dessin @ 294,190
+texte « Tempo » @ 110,266
+texte « Kapat » @ 490,266
+bouton « ? » @ 218,266
+icône − @ 60,370
+texte « 9 » @ 242,369
+texte «  BPM » @ 318,371
+icône + @ 528,370
+texte « 40 ile 300 arası » @ 294,461
+bouton « 70 » @ 75,543
+bouton « 90 » @ 186,543
+bouton « 120 » [sélectionné] @ 310,543
+bouton « 140 » @ 448,543
+bouton « ½ » @ 204,624
+bouton « ×2 » @ 307,624
+bouton « 174 » @ 88,624
+bouton « 1 » @ 111,717
+bouton « 2 » @ 294,717
+bouton « 3 » @ 477,717
+bouton « 4 » @ 111,804
+bouton « 5 » @ 294,804
+bouton « 6 » @ 477,804
+bouton « 7 » @ 111,891
+bouton « 8 » @ 294,891
+bouton « 9 » @ 477,891
+bouton ⌫ @ 111,978
+bouton « 0 » @ 294,978
+bouton « Tamam » [désactivé] @ 477,978
+bouton (doigt qui touche) « Ritimde dokun Her vuruşta buraya dokun: tempo seni takip eder. » @ 294,1144

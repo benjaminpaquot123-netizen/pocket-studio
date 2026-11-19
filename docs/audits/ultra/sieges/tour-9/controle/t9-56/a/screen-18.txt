@@ -1,0 +1,52 @@
+Écran 18 (588x1278)
+icône (dossier ouvert) ✓ @ 123,42
+bouton « Basit » @ 291,42
+bouton ● @ 381,42
+bouton ▶ « bu bölüm » @ 462,42
+icône ⋮ @ 543,42
+bouton « 96  Tempo » @ 122,144
+bouton « ? » @ 543,144
+icône « Bölüm: A » ▾ @ 121,240
+texte « Burada 3 noktalı kutu daha var » [coupé] @ 298,294
+bouton « 1 » [état « vuruş, güç %100 »] @ 70,359
+bouton [état « boş »] @ 133,359
+bouton [état « boş »] @ 197,360
+bouton [état « boş »] @ 261,360
+bouton « 2 » [état « boş, noktalı: dokun »] @ 325,360
+bouton [état « boş »] @ 389,360
+bouton [état « boş »] @ 453,360
+bouton [état « boş »] @ 517,360
+bouton « 3 » [état « boş, noktalı: dokun »] @ 70,438
+bouton [état « boş »] @ 133,438
+bouton [état « boş »] @ 197,439
+bouton [état « boş »] @ 261,439
+bouton « 4 » [état « boş, noktalı: dokun »] @ 325,439
+bouton [état « boş »] @ 389,439
+bouton [état « boş »] @ 453,439
+bouton [état « boş »] @ 517,439
+texte « Doldur » @ 102,524
+texte « tümü » @ 226,524
+texte « 1/2 » @ 331,524
+texte « 1/4 » @ 416,524
+texte « ◀ » @ 497,524
+texte « ▶ » @ 78,596
+texte « Temizle » @ 203,596
+texte « Vuruş eklemek için bir kutuya dokun, birkaç tane boyamak için parmağını kaydır. Bir vuruşa uzun bas: güç ve roll'lar (×2 ile ×8). » [coupé] @ 294,652
+texte « Kick Aşama 2/15 · Adım 2/2 · Kolay » @ 199,752
+icône (liste) « Aşamalar » @ 436,752
+icône ⌃ @ 531,752
+icône « Sıra sende: kick pad'inde noktalı kutulara dokun. Oku » ⌃ @ 294,921
+bouton ▶ « şarkı » @ 294,1047
+texte « 96 Tempo » @ 409,1046
+icône ↶ « Geri al » @ 69,1046
+image ↷ @ 188,1026
+icône ⋮ « Diğer » @ 527,1046
+onglet (lignes et note) « Şarkım » @ 54,1158
+onglet (quatre carrés) « Ritim » [sélectionné] @ 174,1158
+onglet (touches de piano) « Klavye » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Paylaş » @ 534,1158
+texte « ●  REC » @ 310,1248
+texte « ✎  Not al » @ 435,1248
+texte « ⋯ » @ 540,1248
+texte « Geri bildirim modu » @ 133,1248

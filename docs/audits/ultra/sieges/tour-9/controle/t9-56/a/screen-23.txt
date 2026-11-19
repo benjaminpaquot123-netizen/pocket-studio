@@ -1,0 +1,32 @@
+Écran 23 (588x1278)
+icône (dossier ouvert) ✓ @ 123,42
+bouton « Basit » @ 291,42
+bouton ● @ 381,42
+bouton ▶ « bu bölüm » @ 462,42
+icône ⋮ @ 543,42
+bouton « 96  Tempo » @ 122,144
+bouton « ? » @ 543,144
+texte « Dembow Aşama 3/15 · Adım 1/2 · Kolay » @ 199,300
+icône (liste) « Aşamalar » @ 436,300
+icône ⌄ @ 531,300
+texte « Trampeti kick'le birlikte dinle: 2. vuruştan hemen önce, sonra hemen ardından vurur; 4. vuruşun çevresinde de aynısı. » [coupé] @ 294,501
+texte « ▸ Neden? » @ 294,633
+icône « Devamını oku » ⌄ @ 294,696
+bouton ▶ «   Sonucunu dinle » @ 294,771
+bouton ▶ «  Örneği dinle » @ 294,857
+icône ← «  Önceki » @ 125,943
+icône « İleri  » → @ 494,943
+bouton ▶ « şarkı » @ 294,1047
+texte « 96 Tempo » @ 409,1046
+icône ↶ « Geri al » @ 69,1046
+image ↷ @ 188,1026
+icône ⋮ « Diğer » @ 527,1046
+onglet (lignes et note) « Şarkım » @ 54,1158
+onglet (quatre carrés) « Ritim » [sélectionné] @ 174,1158
+onglet (touches de piano) « Klavye » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Paylaş » @ 534,1158
+texte « ●  REC » @ 310,1248
+texte « ✎  Not al » @ 435,1248
+texte « ⋯ » @ 540,1248
+texte « Geri bildirim modu » @ 133,1248

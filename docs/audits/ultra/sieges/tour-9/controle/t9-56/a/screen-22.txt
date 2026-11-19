@@ -1,0 +1,50 @@
+Écran 22 (588x1278)
+icône (dossier ouvert) ✓ @ 123,42
+bouton « Basit » @ 291,42
+bouton ● @ 381,42
+bouton ▶ « bu bölüm » @ 462,42
+icône ⋮ @ 543,42
+bouton « 96  Tempo » @ 122,144
+bouton « ? » @ 543,144
+icône « Bölüm: A » ▾ @ 121,240
+bouton « 1 » [état « vuruş, güç %100 »] @ 70,323
+bouton [état « boş »] @ 133,323
+bouton [état « boş »] @ 197,324
+bouton [état « boş »] @ 261,324
+bouton « 2 » [état « vuruş, güç %100 »] @ 325,324
+bouton [état « boş »] @ 389,324
+bouton [état « boş »] @ 453,324
+bouton [état « boş »] @ 517,324
+bouton « 3 » [coupé, état « vuruş, güç %100 »] @ 70,371
+bouton [coupé, état « boş »] @ 133,371
+bouton [coupé, état « boş »] @ 197,371
+bouton [coupé, état « boş »] @ 261,371
+bouton « 4 » [coupé, état « vuruş, güç %100 »] @ 325,371
+bouton [coupé, état « boş »] @ 389,371
+bouton [coupé, état « boş »] @ 453,371
+bouton [coupé, état « boş »] @ 517,371
+texte « Kick Aşama 2/15 · Tamam · Kolay » @ 199,468
+icône (liste) « Aşamalar » @ 436,468
+icône ⌄ @ 531,468
+image (coupe) @ 57,684
+texte « Bravo, bölüm bitti! » @ 264,615
+texte « Şarkını şimdiki haliyle dinle, sonra bir sonraki bölüme geç: “Dembow”. » [coupé] @ 319,668
+icône « Devamını oku » ⌄ @ 294,729
+bouton « Sonraki bölüm   » → @ 294,804
+bouton ▶ «  Şarkımı dinle » @ 216,918
+bouton ▶ «  Örneği dinle » @ 453,918
+icône ← @ 57,918
+bouton ▶ « şarkı » @ 294,1047
+texte « 96 Tempo » @ 409,1046
+icône ↶ « Geri al » @ 69,1046
+image ↷ @ 188,1026
+icône ⋮ « Diğer » @ 527,1046
+onglet (lignes et note) « Şarkım » @ 54,1158
+onglet (quatre carrés) « Ritim » [sélectionné] @ 174,1158
+onglet (touches de piano) « Klavye » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Paylaş » @ 534,1158
+texte « ●  REC » @ 310,1248
+texte « ✎  Not al » @ 435,1248
+texte « ⋯ » @ 540,1248
+texte « Geri bildirim modu » @ 133,1248

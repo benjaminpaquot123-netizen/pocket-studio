@@ -95,7 +95,7 @@ internal fun QuantumButton(p: Project, setQuantum: (Int) -> Unit, modifier: Modi
     // words when both do not fit on one line, rather than either losing letters.
     FlowRow(
         modifier.heightIn(min = 44.dp).clip(RoundedCornerShape(12.dp)).background(GridLook.Panel)
-            .clickable { setQuantum(next) }.padding(horizontal = 10.dp, vertical = 2.dp).testTag("live_quantum")
+            .clickable { setQuantum(next) }.padding(horizontal = 10.dp).testTag("live_quantum")
             .spot("live_quantum", tr("Quand ça part")),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalArrangement = Arrangement.Center,

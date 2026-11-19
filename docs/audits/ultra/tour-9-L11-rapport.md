@@ -33,4 +33,4 @@ corrige: D17 | gravité: grave (douteux banc) | rejeu: t9-75-kit
 Aucune.
 
 ## Captures regardées (écran entier)
-Voir la fin du rapport (ajoutée après l'enregistrement des captures).
+86 captures changent, toutes sur mes écrans : le Live (barre, rangée du haut, grille), la Structure en Parties (bascule sortie de la colonne, N1) et le cercle « ? » à 130 % et plus (Découpe, feuille du tempo). Regardées en entier : Live arabe 360 dp (`i18n/ar_live_fx`), Live Simple 100 % (`nav/live`), Live 130 % tablette (`tabA11/130_nav_live`), Structure Pro (`tabA11/nav_structure_parts`), feuille du tempo 130 % (`lying/tempo_sheet_text130`), Découpe 130 % (`cut_bout_130`), Guide sur la Structure (`guide_spot`). Rien de coupé, rien qui chevauche ; à 100 % le cercle « ? » est identique au pixel près (18 dp).

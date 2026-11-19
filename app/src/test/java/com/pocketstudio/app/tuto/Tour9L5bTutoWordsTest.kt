@@ -139,4 +139,10 @@ class Tour9L5bTutoWordsTest {
         val v = shown(Lang.ZH_CN, fr)
         assertTrue("zh: $v", "那个错位的一下" !in v && "几下" in v)
     }
+
+    /** F096: Dutch writes « overstuurt », never « oversteuurt ». */
+    @Test
+    fun f096DutchOverstuurtSpelledRight() {
+        assertNoneLeft("oversteuurt", mapOf(Lang.NL to offenders(Lang.NL, Regex("oversteuurt"))))
+    }
 }

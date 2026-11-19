@@ -22,9 +22,9 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 1. Lis seulement `CLAUDE.md`, cette page et ta fiche. Pas `PROGRESS.md`, pas les issues, pas le test de nuit : c'est le travail du chef.
 2. La machine est préparée au démarrage : SDK Android dans `/opt/android-sdk`, cache des tests rempli, `local.properties` écrit. Vérifie : `ls /opt/android-sdk/platforms`. Si le dossier manque (environnement sans script de préparation), suis la recette de `docs/audits/ultra/tour-8-fiches/LISEZ-MOI.md`, puis `bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*BenchSelfTest'`.
-3. Écris au chef d'orchestre, en une ligne : « prêt : <un nom court> ; modifier l'appli : oui/non ; pousser une branche neuve : oui/non ; tests chauds : oui/non ».
+3. Pas de message « prêt » (boost éco, 19 novembre) : la fiche est dans ton message d'ouverture, tu travailles tout de suite ; tu n'écris au chef qu'une fois, « fini <sha> » ou « bloqué : … ».
 4. Économie de quota (Benjamin, 13 novembre) : aucun texte pour Benjamin dans ta discussion, pas de résumé ni de récit d'étape ; tes messages au chef tiennent en une ligne ; sorties de commandes filtrées (`tail`, `grep`), jamais un fichier entier quand un extrait suffit ; un sous-agent seulement quand la fiche le demande.
-5. Attends ta fiche (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
+5. Ta fiche est dans ton message d'ouverture (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
 6. Quand tu as poussé : « fini », puis silence. Tu n'attends pas ta CI ; le chef te réveille seulement si elle est rouge.
 
 ## Ce qui n'est pas vert (19 novembre)

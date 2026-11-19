@@ -30,13 +30,24 @@ class WholeWordsAutoSize(private val min: TextUnit, private val max: TextUnit, p
         val bottom = if (min.isSp) (min.value / (fontScale / BIG_FONT_FROM).coerceAtLeast(1f)).coerceAtMost(top) else top
         // Tour 5, moyens2: the same steps, searched by halves ([largestFitting]).
         val by = if (step.isSp) step.value.coerceAtLeast(0.25f) else 0.5f
-        return largestFitting(top, bottom, by) { size -> fits(performLayout(constraints, text, size.sp), text.text) }?.sp ?: bottom.sp
+        return largestFitting(top, bottom, by) { size -> fits(performLayout(constraints, text, size.sp), text.text) }?.sp
+            ?: lowEnough(bottom, by) { size -> performLayout(constraints, text, size.sp).let { it.multiParagraph.height <= it.size.height + 0.5f } }.sp
     }
+
+    /**
+     * Tour 9, L10 N2: nothing fits whole, [bottom] is the floor and the text is cut with « … » at its side; but a box lower
+     * than one line at the floor showed the line over its top and bottom edges. Then the text gets lower still, till
+     * its lines stand in the box (1 sp at the least).
+     */
+    private fun lowEnough(bottom: Float, by: Float, inside: (Float) -> Boolean): Float =
+        if (inside(bottom)) bottom else largestFitting(bottom, FLOOR_SP, by, inside) ?: FLOOR_SP
 
     override fun equals(other: Any?): Boolean = other is WholeWordsAutoSize && other.min == min && other.max == max && other.step == step
     override fun hashCode(): Int = (min.hashCode() * 31 + max.hashCode()) * 31 + step.hashCode()
 
     companion object {
+        private const val FLOOR_SP = 1f
+
         /** [r] shows [text] whole: no line past the last, nothing wider than its box, no word split over two lines. */
         fun fits(r: TextLayoutResult, text: String): Boolean {
             if (r.didOverflowHeight || r.isLineEllipsized(r.lineCount - 1)) return false

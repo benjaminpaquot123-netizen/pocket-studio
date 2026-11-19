@@ -81,6 +81,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -1665,6 +1666,11 @@ fun TutoHintCell(color: Color, ring: Boolean = false) {
 @Composable
 fun TutoKeySheetContent(harmony: com.pocketstudio.model.Harmony, wanted: com.pocketstudio.model.Harmony, set: (com.pocketstudio.model.Harmony) -> Unit, close: () -> Unit) {
     val english = com.pocketstudio.app.settings.englishNotes()
+    // Tour 9, F018 (t9-11: « G » touched first, « Dorian » was chosen by itself): on a song without a key, the scale and
+    // the root are chosen one by one, each shown chosen at once, and the key is set only once both are.
+    val off = harmony.scale == com.pocketstudio.model.Scale.Off
+    var scale by remember(harmony) { mutableStateOf(if (off) null else harmony.scale) }
+    var root by remember(harmony) { mutableStateOf(if (off) null else harmony.root) }
     Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp).testTag("tuto_key_sheet"), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(tr("Tonalité du morceau"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
@@ -1675,33 +1681,41 @@ fun TutoKeySheetContent(harmony: com.pocketstudio.model.Harmony, wanted: com.poc
         Text(tr("Gamme"), style = MaterialTheme.typography.titleSmall)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             com.pocketstudio.model.Scale.entries.filter { it != com.pocketstudio.model.Scale.Off }.forEach { sc ->
-                KeyChip(tr(sc.label), harmony.scale == sc, sc == wanted.scale, "tuto_scale_${sc.name}") {
-                    set(harmony.copy(scale = sc, lock = true))
+                KeyChip(tr(sc.label), scale == sc, sc == wanted.scale, "tuto_scale_${sc.name}") {
+                    scale = sc
+                    root?.let { set(harmony.copy(root = it, scale = sc, lock = true)) }
                 }
             }
         }
         Text(tr("Tonique"), style = MaterialTheme.typography.titleSmall)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             (0..11).forEach { i ->
-                KeyChip(com.pocketstudio.model.NoteNames.key(i, english), harmony.root == i && harmony.scale != com.pocketstudio.model.Scale.Off, i == wanted.root, "tuto_root_$i") {
-                    set(harmony.copy(root = i, scale = if (harmony.scale == com.pocketstudio.model.Scale.Off) wanted.scale else harmony.scale, lock = true))
+                KeyChip(com.pocketstudio.model.NoteNames.key(i, english), root == i, i == wanted.root, "tuto_root_$i") {
+                    root = i
+                    scale?.let { set(harmony.copy(root = i, scale = it, lock = true)) }
                 }
             }
         }
         // Audit ultra round 2, n° 24 (seat A a, screen 22): « Phrygienne » then « Fa » touched, the sheet stayed as it was and
         // « Fermer » had to be guessed: the key asked for is said reached, and the way back to the course is one big button.
-        if (harmony.scale == wanted.scale && harmony.root == wanted.root) {
+        // Tour 9, F018 (t9-11: « la feuille a sauté vers le haut après « G »): the place of « Réussi ! » is kept from the
+        // start (drawn only once reached, nothing to read or touch before), so the chips stay under the finger.
+        val reached = harmony.scale == wanted.scale && harmony.root == wanted.root
+        Column(
+            Modifier.fillMaxWidth().alpha(if (reached) 1f else 0f).then(if (reached) Modifier else Modifier.clearAndSetSemantics {}),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
             Row(
                 Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Neon.Acid.copy(alpha = 0.14f)).border(1.dp, Neon.Acid, RoundedCornerShape(12.dp))
-                    .padding(horizontal = 12.dp, vertical = 8.dp).testTag("tuto_key_done"),
+                    .padding(horizontal = 12.dp, vertical = 8.dp).then(if (reached) Modifier.testTag("tuto_key_done") else Modifier),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(22.dp))
                 Text(tr("Réussi ! La couleur du morceau est choisie."), color = Neon.Acid, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
             }
             Button(
-                onClick = close, colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Neon.OnAccent),
-                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag("tuto_key_continue"),
+                onClick = close, enabled = reached, colors = ButtonDefaults.buttonColors(containerColor = Neon.Acid, contentColor = Neon.OnAccent),
+                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).then(if (reached) Modifier.testTag("tuto_key_continue") else Modifier),
             ) { Text(tr("Revenir au tuto"), fontWeight = FontWeight.Bold) }
         }
     }
@@ -1716,18 +1730,26 @@ fun TutoKeySheet(harmony: com.pocketstudio.model.Harmony, wanted: com.pocketstud
     ) { TutoKeySheetContent(harmony, wanted, set, close) }
 }
 
-/** A choice of the key sheet: filled when chosen, dotted when it is the one the step asks for. */
+/**
+ * A choice of the key sheet: filled and ticked when chosen (and said « sélectionné »), dotted when it is the one the step
+ * asks for. Tour 9, F018 (t9-15, t9-54: « rien de marqué sur les puces »): the asked one was tinted like a choice.
+ */
 @Composable
 private fun KeyChip(label: String, chosen: Boolean, wanted: Boolean, tag: String, onClick: () -> Unit) {
     val shape = RoundedCornerShape(10.dp)
     val amber = Neon.Amber
-    Box(
+    Row(
         Modifier.heightIn(min = 48.dp).widthIn(min = 52.dp).clip(shape)
-            .background(if (chosen) Neon.Cyan else if (wanted) Neon.Amber.copy(alpha = 0.18f) else Neon.SurfaceHigh)
+            .background(if (chosen) Neon.Cyan else Neon.SurfaceHigh)
             .then(if (wanted && !chosen) Modifier.drawDashed(amber) else Modifier.border(1.dp, if (chosen) Neon.Cyan else Neon.Outline, shape))
-            .clickable(onClick = onClick).padding(horizontal = 12.dp).testTag(tag),
-        contentAlignment = Alignment.Center,
-    ) { Text(label, color = if (chosen) Neon.OnAccent else Neon.TextPrimary, fontWeight = if (chosen || wanted) FontWeight.Bold else FontWeight.Normal) }
+            .selectable(selected = chosen, role = androidx.compose.ui.semantics.Role.RadioButton, onClick = onClick)
+            .padding(horizontal = 12.dp).testTag(tag),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        if (chosen) Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.padding(end = 4.dp).size(16.dp))
+        Text(label, color = if (chosen) Neon.OnAccent else Neon.TextPrimary, fontWeight = if (chosen) FontWeight.Bold else FontWeight.Normal)
+    }
 }
 
 /** The tutorial's dashed amber outline around a control it asks to touch (an effects box's send). */

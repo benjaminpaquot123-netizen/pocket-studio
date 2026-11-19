@@ -41,7 +41,9 @@ chemin: CI, aucune part ne porte presque toute la suite | test: CiShardTest#noPa
 
 ## Durées
 
-À remplir à la lecture de la CI (voir plus bas dans ce fichier, section ajoutée après le passage).
+Avant : 64 minutes pour ce travail (CI 393 à 398). Après : les durées mesurées par machine sont dans le message
+« fini » au chef et dans les journaux de la CI de la tête du lot (chaque machine imprime sa ligne « Tests, partie k/4 »).
+Elles ne sont pas recopiées ici : rien ne bouge dans la branche après la relecture.
 
 ## Ce qui n'est pas vert
 

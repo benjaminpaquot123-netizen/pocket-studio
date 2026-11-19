@@ -84,6 +84,8 @@ class OrdinaryTestsLeaveNothingTest {
             @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
             job = kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Default) { while (!stop.get()) Thread.sleep(20) }
             assertTrue("the app's work waits in the queue when the check is asked", BenchPristine.appThreads().isEmpty())
+            // The scheduler's queues read (another kotlinx-coroutines would make them 0: the check blind again).
+            assertTrue("the queued work is seen", BenchPristine.queuedWork() > 0)
             val m = javaClass.getMethod(name)
             val e = runCatching { (app as com.pocketstudio.app.StrictTestApplication).afterTest(m) }.exceptionOrNull()
             assertTrue("red itself, by name: $e", e is AssertionError && name in e.message.orEmpty())

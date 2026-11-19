@@ -74,4 +74,23 @@ class Tour9RenameFromChipTest {
         compose.onNodeWithText("Nommer la partie B").assertDoesNotExist()
         assertEquals(1 to "Pont", renamed)
     }
+
+    /** Relecture G1: the part's saved name goes to the dialog, not its title in the interface's language. */
+    @Test
+    fun inItalianAnUnchangedNameIsKeptAsSaved() {
+        com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.IT
+        try {
+            var renamed: Pair<Int, String>? = null
+            val italian = SceneChipUi(current = 1, titles = listOf("A · Intro", "B · " + Scene.shownLabel("Refrain 2"), "C · " + Scene.shownLabel("Drop +")))
+            compose.setContent {
+                PocketStudioTheme { Box(Modifier.width(411.dp)) { TopBar(TopBarUi(projectName = "Mon morceau", playing = false, canUndo = true, canRedo = true, scene = italian), TopBarActions(renameScene = { i, l -> renamed = i to l }), nameDialog = { i, shown, done, _ -> NamingFields(i, shown, done) }) } }
+            }
+            compose.onNodeWithTag("top_scene").performClick()
+            compose.onNodeWithTag("scene_rename").performClick()
+            compose.onNodeWithTag("scene_name_ok").performClick()
+            assertEquals(1 to "Refrain 2", renamed)
+        } finally {
+            com.pocketstudio.model.i18n.I18n.lang = com.pocketstudio.model.i18n.Lang.FR
+        }
+    }
 }

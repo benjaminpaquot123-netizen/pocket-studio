@@ -60,11 +60,12 @@ class Tour9HelpUnderTopTest {
         compose.waitForIdle()
         compose.mainClock.advanceTimeBy(2_000)
         compose.waitForIdle()
-        val help = compose.onNode(hasText("La ligne du temps met tes parties", substring = true), useUnmergedTree = true)
-            .fetchSemanticsNode().boundsInRoot
+        val node = compose.onNode(hasText("La ligne du temps met tes parties", substring = true), useUnmergedTree = true).fetchSemanticsNode()
+        // The bounds are cut by the scrolling page: a sentence partly scrolled away is shorter than itself.
+        val help = node.boundsInRoot
         val add = spots.find("song_add")!!
         assertTrue("the add buttons were not brought above the panel: $add, panel at ${spots.coverTop}", add.top < spots.coverTop)
-        assertTrue("the help sentence went above the screen's top: $help", help.top >= 0f)
+        assertTrue("the help sentence went (partly) above the screen's top: $help of ${node.size.height} px", help.top >= 0f && help.height >= node.size.height - 1f)
     }
 
     @Test @Config(qualifiers = "w360dp-h640dp")

@@ -959,7 +959,12 @@ class TutoController(
     companion object {
         /** Where [have] (the user's parts) stands against [wanted] (the order a step asks for), as [orderText] says it. */
         internal fun orderLine(wanted: List<String>, have: List<String>): String {
-            val shown = { l: String -> com.pocketstudio.model.Scene.shownLabel(l) }
+            // Tour 9, F078: a course's « Outro » is no part the user can add: it is made with the Intro button
+            // (« puis Intro pour l'Outro », as TutoChecks counts it); a « Fin » keeps its name (« Ajouter une fin »).
+            val button = { l: String ->
+                if (l in com.pocketstudio.model.tuto.TutoTarget.ENDINGS && l !in com.pocketstudio.model.Scene.SECTIONS) "Intro" else l
+            }
+            val shown = { l: String -> com.pocketstudio.model.Scene.shownLabel(button(l)) }
             val k = have.indices.firstOrNull { have[it] != wanted.getOrNull(it) }
             return when {
                 k == null -> com.pocketstudio.model.i18n.tr("Encore : %s.", wanted.drop(have.size).joinToString(", ", transform = shown))

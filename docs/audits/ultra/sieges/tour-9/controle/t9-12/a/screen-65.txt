@@ -1,0 +1,18 @@
+Écran 65 (588x1278)
+icône ✕ @ 528,60
+texte « A to Z tutorial » @ 258,60
+bouton « 1 The song's speed and colour 2/3 » @ 294,144
+bouton « 2 The percussion 5/7 » @ 294,225
+bouton « 3 The piano 2/3 » @ 294,306
+bouton « 4 The little piano phrase » (rond coché) @ 294,387
+bouton « 5 The log drum 3/4 » @ 294,468
+bouton « 6 Your first part: the Drop » (rond coché) @ 294,549
+bouton « 7 Understanding parts » (rond coché) @ 294,630
+bouton « 8 Build your parts » (rond coché) @ 294,711
+bouton « 9 Arrange your parts » (rond coché) @ 294,792
+bouton « 10 Effects » (rond coché) @ 294,873
+bouton « 11 The mix: the volumes » (rond coché) @ 294,954
+bouton « 12 Export your song » (rond coché) [coupé] @ 294,1000
+bouton « Continue in Pro (every tool) » @ 294,1050
+bouton ↺ «  Restart the tutorial (new empty project) » @ 294,1134
+texte « Quit the tutorial (you can resume it) » @ 294,1218

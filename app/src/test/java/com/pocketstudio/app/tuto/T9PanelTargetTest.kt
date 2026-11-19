@@ -137,4 +137,42 @@ class T9PanelTargetTest {
         val under = solos.filter { !whole(it) || it.boundsInRoot.bottom > top + 1f }
         assertTrue("ch. 14 (de, tablet, 100 %): ▶ under the panel at $top: ${under.map { it.boundsInRoot }}", under.isEmpty())
     }
+
+    /**
+     * D13 (seats t9-14, t9-28, t9-34): the course's own « Volume visé » setting, its [choice] chip, wholly in sight above the
+     * panel once the step's button is touched (« Je le fais » took the page where the chip went under the panel or off screen).
+     */
+    private fun assertTargetChipAbovePanel(what: String, choice: String) {
+        val top = if (has("tuto_panel")) panelTop() else Float.MAX_VALUE
+        val chip = tagged(Regex("loudness_target_$choice")).firstOrNull()
+        val root = compose.onRoot().fetchSemanticsNode().boundsInRoot
+        assertTrue(
+            "$what: « Volume visé » $choice not wholly in sight above the panel at $top (chip ${chip?.boundsInRoot}, size ${chip?.size})",
+            chip != null && whole(chip) && chip.boundsInRoot.bottom <= minOf(top, root.bottom) + 1f && chip.boundsInRoot.top >= root.top,
+        )
+    }
+
+    @Test
+    fun clubTargetAboveThePanelOnAPhoneAt130Indonesian() {
+        // t9-28: gabber Pro, chapter 13 « loudness »: « Aku yang buat » left « Klub · −8 LUFS » cut under the panel.
+        start("w392dp-h852dp-port-hdpi", 1.3f, Lang.ID, false, "gabber", TutoLevel.Pro, 13, 0)
+        go()
+        assertTargetChipAbovePanel("ch. 13 loudness (id, phone, 130 %)", "CLUB")
+    }
+
+    @Test
+    fun clubTargetAboveThePanelOnAFoldableAt130Japanese() {
+        // t9-34: house Pro, chapter 16 « loudness »: after « 自分でやる », « クラブ · −8 LUFS » out of sight (a swipe needed).
+        start("w690dp-h829dp-port-hdpi", 1.3f, Lang.JA, false, "house", TutoLevel.Pro, 16, 0)
+        go()
+        assertTargetChipAbovePanel("ch. 16 loudness (ja, foldable, 130 %)", "CLUB")
+    }
+
+    @Test
+    fun autoTargetAboveThePanelOnAFoldableAt200Dutch() {
+        // t9-14: boom bap Pro, chapter 13 « loudness »: ‘Doelvolume’ not found in ‘Hoofduitgang’.
+        start("w690dp-h829dp-port-hdpi", 2f, Lang.NL, false, "boom_bap", TutoLevel.Pro, 13, 0)
+        go()
+        assertTargetChipAbovePanel("ch. 13 loudness (nl, foldable, 200 %)", "AUTO")
+    }
 }

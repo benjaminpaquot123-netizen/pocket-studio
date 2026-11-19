@@ -515,7 +515,8 @@ internal object SubTrack : TutoKind {
     override fun ghosts(step: TutoStep, p: Project, target: TutoTarget): Pair<Int, List<Note>>? {
         val bass = trackFor(p, "bass") ?: return null
         val id = sub(p) ?: return null
-        return id to StarterWizard.subNotes(notesOf(p, bass))
+        // The same folded line as done() and the step's button (tour 9, F044: an octave jump left a dotted note).
+        return id to subOf(notesOf(p, bass))
     }
 }
 

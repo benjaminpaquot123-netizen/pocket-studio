@@ -2387,7 +2387,9 @@ fun AppRoot() {
         // through while the screens are rebuilt on another project; « Que veux-tu faire ? » is drawn over it
         // (and TalkBack does not read the studio under it).
         modifier = Modifier.studioCover(showProjects || switching || launchShown, studioBackground)
-            .then(if (launchShown) Modifier.clearAndSetSemantics {} else Modifier),
+            .then(if (launchShown) Modifier.clearAndSetSemantics {} else Modifier)
+            // Tour 9, F111: the next touch or swipe lets « Fait : … · Annuler » go (its 6 s stay for no touch).
+            .letDoneGoAtNextTouch(rhythmVm.done, rhythmVm::dismissDone),
         containerColor = Neon.Background,
         // One under the other (the slot alone would draw them on top of each other).
         topBar = { Column(Modifier.onGloballyPositioned { tutoTopEnd = it.boundsInWindow().bottom }) {

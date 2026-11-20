@@ -1,4 +1,4 @@
-Relu : b1f1a5daf (tête eq/tour-9-L14 au moment de la relecture ; code : QuickFx.kt, TutoPanel.kt, AppRoot.kt)
+Relu : bc62e6aa9 (après fusion de l'intégration par le chef ; relecture d'origine sur b1f1a5daf)
 
 # Relecture neuve, tour 9 L14 (panneau tuto, bandeau du kit, fin du tuto)
 
@@ -33,5 +33,8 @@ Aucun.
 - F019 : en-tête « Tuto fini : bravo ! », plus de « Reprendre » ni dans la ligne sous la page ni dans les outils ; test d'un tuto fini et d'un tuto non fini.
 - F021 : popup non focalisable, 2,5 s, annoncée (liveRegion), seulement dans une fenêtre ; test avec et sans fenêtre.
 - Textes d'interface en français, traductions présentes (en, de, pl, pt-BR) ; code et commentaires en anglais. Aucune sauvegarde touchée, aucun risque de plantage repéré (pas de `!!`, accès protégés).
+
+
+Note du chef : conflit TutoPanel.kt résolu en gardant les deux côtés (D02 compact, D14 shed/few de l'intégration ; F012 !ui.bravo, F014 SharedLabelSize, F016 KIT_ROOM/mapRoom de L14). Tests Tour9L14*, TutoKeySheetDoneTest, T9ReadMoreTest verts ; T9PanelTargetTest#fillCellsAboveThePanelIn360At200Japanese rouge à l'identique sur l'intégration 30675362f (pas de ce lot).
 
 Verdict : 0 bloquant, 0 grave

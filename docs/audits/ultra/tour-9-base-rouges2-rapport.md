@@ -10,4 +10,4 @@ Base : intégration `ccr-80af1a1b-mn0wec` à ceb482ad.
 - chemin: Tempo › feuille sur un petit téléphone debout (360 x 780), « Taper en rythme » et sa phrase entières dans les 12 langues | test: CaptureMatrixPhone360Test#screenFits
 - chemin: Accueil › Continuer › Envoyer › 16 mesures en 3 gestes, l'interrupteur « Renommer aussi le projet » gardé (sous la longueur de boucle) | test: SharePathTest#theSheetsChipsSetTheLoopLengthAndTheDuration
 - Pas de contradiction avec DECISIONS.md : le budget 3 gestes (G1) tient, aucun test modifié.
-- Tests ciblés verts : 121 (matrice tempo/share, SharePath, Tour9L8*, Tempo*, LyingSheets*, ArchitectureRules, HelpCoverage, RhythmBeginner, PadLiveTake, AutoTempoJourney).
+tests: --tests *CaptureMatrix*tempo_sheet* --tests *CaptureMatrix*share* --tests *SharePathTest --tests *Tour9L8CapturesTest --tests *Tour9L8ShareWordsTest --tests *TempoSheetNarrowWholeTest --tests *TempoTypingStaysTest --tests *LyingSheetsScreenshotTest --tests *LyingSheetsScrollTest --tests *ArchitectureRulesTest --tests *HelpCoverageTest --tests *RhythmBeginnerTest --tests *PadLiveTakeTest --tests *AutoTempoJourneyTest (121 verts)

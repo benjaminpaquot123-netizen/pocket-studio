@@ -11,7 +11,7 @@ chemin: Barre du haut, nom du projet et « Sauvegardé » | test: Tour9TopBarSav
 chemin: Barre du haut, menu de la partie « Renommer » | test: Tour9RenameFromChipTest#theSceneMenuOffersRenameAndOpensTheNamingDialog
 chemin: Bande de lecture, arrêtée : dit où ▶ démarre | test: Tour9PlayStripTest#stoppedItSaysWhereThePlayButtonStarts
 chemin: Bande de lecture, mesures lisibles à 200 % | test: Tour9PlayStripTest#theBarsReadWholeWithBigText
-chemin: Message « Fait » qui s'en va au geste suivant | test: Tour9DoneBarGoesTest#theNextTouchOnThePageLetsTheLineGoAndStillWorks
+chemin: Message « Fait » qui s'en va au geste suivant | test: DoneBarNextTouchTest#aTouchLetsTheShownMessageGo
 
 corrige: D08 | gravité: grave | rejeu impossible : le self-test du banc était rouge, les rejeux n'ont pas été joués ; preuve par Tour9AddKeepsPlaceTest et les captures
 corrige: F100 | gravité: moyen

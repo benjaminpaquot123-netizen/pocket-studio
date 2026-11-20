@@ -139,7 +139,7 @@
         {
           "id": "swing",
           "levels": "p",
-          "text": "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.",
+          "text": "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.",
           "why": "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.",
           "check": "swing",
           "spot": "rhythm.swing",
@@ -342,7 +342,7 @@
         },
         {
           "id": "map_bars",
-          "text": "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.",
+          "text": "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.",
           "why": "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.",
           "check": "manual"
         }
@@ -485,7 +485,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».",
           "textPro": "À toi : dans Mix, baisse un peu « Accords » et « Mélodie » : la 808 et le kick d'abord, puis la caisse, puis les charleys.",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "أصوات الطبول الحقيقية لهذا الأسلوب، لمقطوعتك وللأمثلة. بدونها يعمل الدرس بالأصوات المدمجة.",
   "Téléchargement du kit… %d %%": "تنزيل الطقم… %d %%",
   "Mettre les sons du kit %s sur les pads": "ضع أصوات الطقم %s على البادات",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "تعذّر تحميل الطقم: يكمل الدرس بالأصوات المدمجة.",
   "Télécharger le kit %1$s (%2$s)": "تنزيل الطقم %1$s (%2$s)",
   "Recommencer le tuto": "إعادة الدرس من البداية",
   "Passer à %d mesures": "الانتقال إلى %d مازورات",
@@ -149,7 +150,7 @@
   "%1$s : encore +%2$d": "%1$s: +%2$d أخرى",
   "Touche ici": "المس هنا",
   "Accords en pointillé à toucher : %d": "الكوردات المنقّطة المتبقية للمس: %d",
-  "Break : un moment plus calme, le kick et la basse se taisent.": "الاستراحة: لحظة أهدأ، يصمت الطبل الكبير والباص.",
+  "Break : un moment plus calme, le kick et la basse se taisent.": "الفاصل: لحظة أهدأ، يصمت الطبل الكبير والباص.",
   "Exemple passé sans l'écouter.": "تم تخطي المثال دون الاستماع إليه.",
   "Partie « %1$s » créée (copie de « %2$s »).": "تم إنشاء الجزء «%1$s» (نسخة من «%2$s»).",
   "Partie « %1$s » créée (copie de « %2$s ») : sans %3$s.": "تم إنشاء الجزء «%1$s» (نسخة من «%2$s»): بدون %3$s.",
@@ -157,5 +158,10 @@
   "Posé : %s.": "تم وضع: %s.",
   "Il te manque ce que font les chapitres d'avant.": "ينقصك ما تصنعه الفصول السابقة.",
   "Aller au chapitre %d": "اذهب إلى الفصل %d",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "لا يوجد جزء «%s» في مقطوعتك: هذه الخطوة تُنجَز فيه."
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "لا يوجد جزء «%s» في مقطوعتك: هذه الخطوة تُنجَز فيه.",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "قبل أن نبدأ: في بادّاتك أصوات الدرامز الخاصة بالتطبيق، مضبوطة لهذا الأسلوب. طقم الأسلوب ليس على بادّاتك بعد: بطاقته تعرضه عليك لاحقًا في الدرس، ويكفي «لاحقًا»: الدرس يعمل بهذه الأصوات. لا شيء عليك ضبطه.",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303: آلة باص صغيرة، صوتها الذي يصرّ ويهدر هو صوت الأسيد.",
+  "Accent : une note jouée plus fort que les autres.": "أكسنت: نوتة تُعزف أقوى من غيرها.",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "سلايد: تنزلق النوتة إلى التالية بدل أن تقفز.",
+  "Glide : le son glisse doucement d'une note à l'autre.": "غلايد: ينزلق الصوت بهدوء من نوتة إلى أخرى."
 }

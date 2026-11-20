@@ -11,7 +11,7 @@
   "La ligne 303": "303 çizgisi",
   "En acid house, la ligne de 303 est la vedette : on commence par elle, comme Phuture, et la batterie viendra la servir.": "Acid house'ta yıldız 303 çizgisidir: Phuture gibi ondan başlanır, davul ona hizmet etmeye gelir.",
   "Écoute la 303 seule : une boucle d'une mesure qui saute d'octave, avec des notes qui crient (les accents) et des notes qui glissent (les slides).": "303'ü tek başına dinle: oktav sıçrayan bir ölçülük bir döngü, bağıran notalar (aksanlar) ve kayan notalarla (slide'lar).",
-  "À toi : dans l'onglet Acide, écris les pas en pointillé : la note, l'octave, l'accent (« ! ») et le slide (« ⌒ »). Fondamentale La, octave, 7e (Sol), quinte (Mi), tierce (Do) ; accents sur les pas 1, 3, 7, 12, 15 ; slides sur les pas 3, 11, 12.": "Sıra sende: Asit sekmesinde noktalı adımları yaz: nota, oktav, aksan (“!”) ve slide (“⌒”). Kök La, oktav, yedili (Sol), beşli (Mi), üçlü (Do); 1, 3, 7, 12, 15. adımlarda aksan; 3, 11, 12. adımlarda slide.",
+  "À toi : dans l'onglet « Acid 303 », écris les pas en pointillé : la note, l'octave, l'accent (« ! ») et le slide (« ⌒ »). Fondamentale La, octave, 7e (Sol), quinte (Mi), tierce (Do) ; accents sur les pas 1, 3, 7, 12, 15 ; slides sur les pas 3, 11, 12.": "Sıra sende: “Acid 303” sekmesinde noktalı adımları yaz: nota, oktav, aksan (“!”) ve slide (“⌒”). Kök La, oktav, yedili (Sol), beşli (Mi), üçlü (Do); 1, 3, 7, 12, 15. adımlarda aksan; 3, 11, 12. adımlarda slide.",
   "Une note accentuée sort plus fort et plus ouverte ; une note « slide » glisse vers la suivante : la ligne se met à parler.": "Aksanlı bir nota daha yüksek ve daha açık çıkar; “slide” bir nota sonrakine kayar: çizgi konuşmaya başlar.",
   "Sans 303, il n'y a pas d'acid house.": "303 olmadan acid house olmaz.",
   "Les gestes acid : décaler toute la ligne d'un pas (les mêmes notes tombent ailleurs, l'oreille croit à une nouvelle ligne) ; une longueur de 15 pas qui tourne contre la mesure ; et surtout tourner la Coupure et la Résonance pendant que ça joue.": "Asit hareketleri: bütün çizgiyi bir adım kaydırmak (aynı notalar başka yere düşer, kulak yeni bir çizgi sanır); ölçüye karşı dönen 15 adımlık bir uzunluk; ve hepsinden önemlisi çalarken Cutoff ve Rezonans'ı çevirmek.",
@@ -319,7 +319,7 @@
   "À toi : pose les charleys fermés, plus forts sur les temps, plus doux autour, avec un trou sous le charley ouvert.": "Sıra sende: kapalı hi-hat'leri koy, vuruşlarda daha güçlü, çevrelerinde daha yumuşak, açık hi-hat'in altında bir boşlukla.",
   "À toi : sur le pad « Rim », touche les 8 cases en pointillé (4 par mesure), entre les temps.": "Sıra sende: “Rim” pad'inde vuruşların arasındaki 8 noktalı kutuya dokun (ölçü başına 4).",
   "À toi : pose le pad « Rim » de la 707 sur chaque contretemps.": "Sıra sende: 707'nin “Rim” pad'ini her ara vuruşa koy.",
-  "À toi : mets le swing à 33 % : les doubles croches paires arrivent un peu en retard, entre la house de Chicago (55-60 %) et celle de New York (70-80 %).": "Sıra sende: swing'i %33'e ayarla: çift on altılıklar biraz geç gelir, Chicago house'u (%55-60) ile New York house'u (%70-80) arasında.",
+  "À toi : mets le swing à 33 % : les doubles croches paires arrivent un peu en retard, entre la house de Chicago (55-60 % sur une MPC) et celle de New York (70-80 % sur une MPC).": "Sıra sende: swing'i %33'e ayarla: çift on altılıklar biraz geç gelir, Chicago house'u (MPC'de %55-60) ile New York house'u (MPC'de %70-80) arasında.",
   "Une basse d'orgue qui saute de la note grave à la même note plus haut : le rebond des disques house (dans « Show Me Love », le célèbre riff d'orgue était d'abord la basse).": "Pes notadan aynı notanın daha yukarısına sıçrayan bir org bası: house plaklarının sekmesi (“Show Me Love”da meşhur org riff'i önce bastı).",
   "À toi : crée la piste Basse et écris la mesure 1 (La, saut d'octave), « Copier » (mesure 2 en La, mesure 3 transposée sur Ré, le IV), puis la mesure 4 avec sa tourne Mi–Sol qui ramène à La.": "Sıra sende: Bas kanalını oluştur ve 1. ölçüyü yaz (La, oktav sıçraması), “Kopyala” (2. ölçü La'da, 3. ölçü Re'ye, IV'e aktarılmış), sonra La'ya geri getiren Mi–Sol dönüşüyle 4. ölçü.",
   "La basse change de note avec les accords (La, puis Ré) : basse et piano racontent la même chose.": "Bas akorlarla birlikte nota değiştirir (La, sonra Re): bas ve piyano aynı şeyi anlatır.",
@@ -547,7 +547,7 @@
   "À toi : touche « Partager » et envoie ton morceau.": "Sıra sende: “Paylaş”a dokun ve parçanı gönder.",
   "Le kick : la grosse caisse": "Kick: büyük davul",
   "Ta première partie : le Groove, ta boucle de base": "İlk bölümün: Groove, temel döngün",
-  "À toi : crée la Montée, sans kick ni basse. Le clap accélère, puis se tait au dernier temps. Les charleys et le « Rim » jouent encore : tu les feras taire au chapitre « Les transitions ».": "Sıra sende: Yükselişi oluştur, kick ve bas yok. Clap hızlanır, sonra son vuruşta susar. Hi-hat'ler ve “Rim” hâlâ çalar: onları “Geçişler” bölümünde susturacaksın.",
+  "À toi : crée la Montée, sans kick ni basse. Le clap accélère, puis se tait au dernier temps. Les charleys et le « Rim » jouent encore : tu les feras taire au chapitre « Les transitions ».": "Sıra sende: Yükselişi oluştur, kick ve bas yok. Clap hızlanır, sonra son vuruşta susar. Hi-hat'ler ve “Rim” hâlâ çalar: onları “Geçişler” aşamasında susturacaksın.",
   "À toi : dans l'onglet « Mix », baisse un peu les pistes « Accords » et « Mélodie ».": "Sıra sende: “Mix” sekmesinde “Akorlar” ve “Melodi” kanallarını biraz indir.",
   "À toi : dans la Montée, efface les coups du dernier temps : un silence avant le Drop.": "Sıra sende: Yükseliş'te son vuruştaki vuruşları sil: Drop'tan önce sessizlik.",
   "À toi : dans le Break, pad « Tom médium », touche les 4 cases du dernier temps.": "Sıra sende: Break'te, “Orta tom” pad'inde son vuruşun 4 kutusuna dokun.",
@@ -602,7 +602,7 @@
   "À toi : sur le pad « Rim », touche les cases en pointillé des 2 mesures.": "Sıra sende: “Rim” pad'inde 2 ölçünün noktalı kutularına dokun.",
   "À toi : sur le pad « Shaker », touche les cases en pointillé : il tourne sans arrêt.": "Sıra sende: “Shaker” pad'inde noktalı kutulara dokun: durmadan döner.",
   "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé des 2 mesures.": "Sıra sende: “Orta tom” pad'inde 2 ölçünün 3 noktalı kutusuna dokun.",
-  "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé, entre les kicks.": "Sıra sende: “Orta tom” pad'inde kick'lerin arasındaki 3 noktalı kutuya dokun.",
+  "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé, autour des kicks.": "Sıra sende: “Orta tom” pad'inde kick'lerin çevresindeki 3 noktalı kutuya dokun.",
   "À toi : touche la note du bas de chaque accord en pointillé de chaque mesure : tout l'accord se pose. Il y a 2 coups par mesure.": "Sıra sende: her ölçüde her noktalı akorun en alt notasına dokun: akorun tamamı yerleşir. Ölçü başına 2 vuruş var.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 2 coups.": "Sıra sende: 1. ölçüde her noktalı akorun en alt notasına dokun: akorun tamamı yerleşir. 2 vuruş var.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 4 coups.": "Sıra sende: 1. ölçüde her noktalı akorun en alt notasına dokun: akorun tamamı yerleşir. 4 vuruş var.",
@@ -633,5 +633,6 @@
   "À toi : écris les 2 notes de la mesure 2 : la réponse, plus grave.": "Sıra sende: 2. ölçünün 2 notasını yaz: cevap, daha pes.",
   "À toi : écris les 2 notes plus graves de la mesure 4 : la réponse.": "Sıra sende: 4. ölçünün daha pes 2 notasını yaz: cevap.",
   "À toi : écris les 4 notes de la mesure 4.": "Sıra sende: 4. ölçünün 4 notasını yaz.",
-  "À toi : écris les 8 notes de la mesure 2.": "Sıra sende: 2. ölçünün 8 notasını yaz."
+  "À toi : écris les 8 notes de la mesure 2.": "Sıra sende: 2. ölçünün 8 notasını yaz.",
+  "La caisse un peu en retard traîne derrière le kick : le 2-step boite et se balance encore plus.": "Biraz geciken trampet kick'in arkasından sürüklenir: 2-step daha da aksar ve sallanır."
 }

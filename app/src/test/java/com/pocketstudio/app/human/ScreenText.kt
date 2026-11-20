@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutInfo
 import androidx.compose.ui.layout.boundsInRoot
@@ -223,6 +224,18 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
             c.getOrNull(SemanticsProperties.ProgressBarRangeInfo)?.let { p ->
                 val span = p.range.endInclusive - p.range.start
                 if (span > 0f && p.current.isFinite()) add("à %d %%".format(((p.current - p.range.start) / span * 100).toInt()))
+            }
+            // Tour 9 L2 (F024 option A): a fader is taken only near its cap, elsewhere the finger scrolls the page. The
+            // line gives where the cap is drawn (from its value: bottom to top when the curseur stands, start to end
+            // when it lies), so a seat aims at it.
+            if (c.contains(SemanticsActions.SetProgress)) c.getOrNull(SemanticsProperties.ProgressBarRangeInfo)?.let { p ->
+                val span = p.range.endInclusive - p.range.start
+                if (span > 0f && p.current.isFinite()) {
+                    val f = ((p.current - p.range.start) / span).coerceIn(0f, 1f)
+                    val cap = if (r.height > r.width) Offset(r.center.x, r.bottom - f * r.height)
+                    else Offset(if (rtl) r.right - f * r.width else r.left + f * r.width, r.center.y)
+                    add("poignée @ ${cap.x.toInt()},${cap.y.toInt()}")
+                }
             }
         }
         val at = "@ ${r.center.x.toInt()},${r.center.y.toInt()}"

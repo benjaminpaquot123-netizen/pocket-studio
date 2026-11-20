@@ -482,10 +482,11 @@ internal class Notes(val role: String) : TutoKind {
     override fun requires(step: TutoStep, p: Project, target: TutoTarget) =
         if (trackFor(p, role) == null) TutoNeed.Track(role) else copyNeed(step, p, target, role)
 
-    // The first 4 bars while they are not all written, then the whole line (testers, lot « tuto 4 »).
+    // The first 4 bars while they are not all written, then the whole line (testers, lot « tuto 4 »); a step cut to
+    // its first bar dots that bar only, as its text and its check say (tour 9, F059: a 3rd note waited in bar 3).
     override fun ghosts(step: TutoStep, p: Project, target: TutoTarget): Pair<Int, List<Note>>? {
         val id = trackFor(p, role) ?: return null
-        return id to (wantedNotes(step, p, target) ?: return null)
+        return id to own(step, wantedNotes(step, p, target) ?: return null)
     }
     override fun line(step: TutoStep, target: TutoTarget) = target.roleNotes(role)?.notes
     override fun mine(step: TutoStep, p: Project, target: TutoTarget) = trackFor(p, role)?.let { notesOf(p, it) }

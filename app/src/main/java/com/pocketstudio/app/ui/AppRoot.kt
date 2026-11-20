@@ -1983,16 +1983,24 @@ fun AppRoot() {
         // Read once the effect runs: the pads' sounds at that moment, not a key of it.
         com.pocketstudio.model.tuto.TutoKit.offer(target, u.progress, rhythmVm.project.value, index, tutoPacks.installed, tutoKitAsked)
     }
+    // Tour 9, D17 (seat t9-75): a kit on the phone whose sounds cannot be loaded went back to the built-in sounds and its
+    // card went away without a word. The lesson still goes on with the built-in sounds, and the card stays to say so,
+    // its button trying again (« Mettre les sons du kit … sur les pads ») and « Plus tard » putting it away.
+    var tutoKitFailed by remember(tutoKitStyle) { mutableStateOf(false) }
+    val tutoKitLoad: (com.pocketstudio.model.tuto.TutoTarget) -> Unit = { target ->
+        val names = tutoPacks.installed.associate { it.id to it.name }
+        val sounds = com.pocketstudio.model.tuto.TutoKit.sounds(target, tutoPacks.installed).mapValues { (_, v) -> Triple(v.first, names[v.first] ?: v.first, v.second) }
+        rhythmVm.loadTutoKit(sounds) { ok ->
+            tuto.setKit(if (ok) com.pocketstudio.model.tuto.TutoProgress.KIT_PACK else com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN)
+            tutoKitFailed = !ok
+        }
+    }
     LaunchedEffect(tutoKitOffer) {
         val style = tutoKitStyle ?: return@LaunchedEffect
         val target = com.pocketstudio.model.tuto.TutoTarget.of(style) ?: return@LaunchedEffect
         when (tutoKitOffer) {
             com.pocketstudio.model.tuto.TutoKit.Offer.BuiltIn -> tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN)
-            com.pocketstudio.model.tuto.TutoKit.Offer.Apply -> {
-                val names = tutoPacks.installed.associate { it.id to it.name }
-                val sounds = com.pocketstudio.model.tuto.TutoKit.sounds(target, tutoPacks.installed).mapValues { (_, v) -> Triple(v.first, names[v.first] ?: v.first, v.second) }
-                rhythmVm.loadTutoKit(sounds) { ok -> tuto.setKit(if (ok) com.pocketstudio.model.tuto.TutoProgress.KIT_PACK else com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) }
-            }
+            com.pocketstudio.model.tuto.TutoKit.Offer.Apply -> tutoKitLoad(target)
             else -> Unit
         }
     }
@@ -2035,7 +2043,7 @@ fun AppRoot() {
     // The dotted cells of a drum step (Rythme), the dotted notes of a melodic one (its notes), shown the whole step.
     val tutoProject = rhythmVm.project.collectAsStateWithLifecycle().value
     val tutoSteps = tutoProject.drums.steps
-    LaunchedEffect(tutoUi?.current?.id, tutoSteps, tutoUi == null, tutoUi?.need, tutoUi?.progress?.done) { com.pocketstudio.app.tuto.TutoHints.cells = tuto.hint(tutoSteps) }
+    LaunchedEffect(tutoUi?.current?.id, tutoSteps, tutoUi == null, tutoUi?.need, tutoUi?.progress?.done, tutoUi?.progress?.level) { tuto.showHint(tutoSteps) }
     LaunchedEffect(tutoUi?.current?.id, tutoProject, tutoUi == null, tutoUi?.need) {
         com.pocketstudio.app.tuto.TutoHints.notes = tuto.ghostNotes(tutoProject)
         com.pocketstudio.app.tuto.TutoHints.acid = tuto.acidHints(tutoProject)
@@ -2313,6 +2321,9 @@ fun AppRoot() {
     val homeBackOn = studioFocused && !tutoKeySheet && !launch.open && !noProject && settings.guideSeen && !sheetOver && !showProjects && !wizardUi.open &&
         !tutoChooserOpen && modeAsk == null && !songVersionsOpen && fxChannel < 0 && !showLibrary
     androidx.compose.runtime.SideEffect { homeBack.value = homeBackOn }
+    // Tour 9, F131 (t9-09, t9-55): the tutorial's panel folded over the grid (« Je le fais », its « ⌄ ») is what is open:
+    // Back unfolds it, on the same tab; the project is left only by the next Back, the panel unfolded.
+    androidx.activity.compose.BackHandler(enabled = homeBackOn && tutoUi?.let { !it.open && it.demo == null } == true) { tuto.toggleOpen() }
     androidx.activity.compose.BackHandler(enabled = guideOpen && guideShown && !sheetOver) { guideOpen = false }
     androidx.activity.compose.BackHandler(enabled = guideSpot != null && !sheetOver) { guideSpot = null }
     androidx.activity.compose.BackHandler(enabled = helpLabels && !sheetOver) { helpLabels = false }
@@ -2387,7 +2398,9 @@ fun AppRoot() {
         // through while the screens are rebuilt on another project; « Que veux-tu faire ? » is drawn over it
         // (and TalkBack does not read the studio under it).
         modifier = Modifier.studioCover(showProjects || switching || launchShown, studioBackground)
-            .then(if (launchShown) Modifier.clearAndSetSemantics {} else Modifier),
+            .then(if (launchShown) Modifier.clearAndSetSemantics {} else Modifier)
+            // Tour 9, F111: the next touch or swipe lets « Fait : … · Annuler » go (its 6 s stay for no touch).
+            .letDoneGoAtNextTouch(rhythmVm.done, rhythmVm::dismissDone),
         containerColor = Neon.Background,
         // One under the other (the slot alone would draw them on top of each other).
         topBar = { Column(Modifier.onGloballyPositioned { tutoTopEnd = it.boundsInWindow().bottom }) {
@@ -2588,19 +2601,23 @@ fun AppRoot() {
                     // catalogue while the user read and took the panel's place; the touch meant for « Lire la suite » or
                     // « Écouter l'exemple » seconds later landed on it. It is now a block at the end of the step's words,
                     // inside the panel: the panel, its words and its buttons never move or go away for it.
-                    val kitCard = kitTarget != null && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask)
+                    val kitCard = kitTarget != null && (kitMissing.isNotEmpty() || tutoKitOffer == com.pocketstudio.model.tuto.TutoKit.Offer.Ask || tutoKitFailed)
                     val kitBlock: (@Composable () -> Unit)? = if (!kitCard) null else { {
                         val loading = kitLoading
                         com.pocketstudio.app.tuto.TutoKitCard(
                             style = com.pocketstudio.app.tuto.tutoText(kitTarget.style.name),
                             size = tr("%d Mo", ((kitMissing.sumOf { it.sizeBytes } + 500_000) / 1_000_000).coerceAtLeast(1)),
                             progress = if (loading.isEmpty()) null else loading.sum() / kitMissing.size,
-                            error = tutoPacks.message?.takeIf { loading.isEmpty() },
+                            error = if (tutoKitFailed) tr("Le kit n'a pas pu se charger : le tuto garde les sons intégrés.") else tutoPacks.message?.takeIf { loading.isEmpty() },
                             download = {
-                                tutoKitAsked = true
-                                kitMissing.forEach { libraryVm.downloadPack(it.id) }
+                                if (tutoKitFailed) {
+                                    tutoKitLoad(kitTarget)
+                                } else {
+                                    tutoKitAsked = true
+                                    kitMissing.forEach { libraryVm.downloadPack(it.id) }
+                                }
                             },
-                            later = { tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) },
+                            later = { if (tutoKitFailed) tutoKitFailed = false else tuto.setKit(com.pocketstudio.model.tuto.TutoProgress.KIT_BUILT_IN) },
                             onPhone = kitMissing.isEmpty(),
                         )
                     } }
@@ -2639,7 +2656,8 @@ fun AppRoot() {
                     )
                 } else if (tuto.resumable && !showLive && !showLivePads && !showTimeline) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        TextButton(onClick = tuto::resume, modifier = Modifier.weight(1f).heightIn(min = 40.dp).testTag("tuto_resume")) {
+                        // Tour 9 F019: a tutorial finished has nothing to resume (« Recommencer » only).
+                        if (!com.pocketstudio.app.tuto.tutoCourseFinished(tuto.saved)) TextButton(onClick = tuto::resume, modifier = Modifier.weight(1f).heightIn(min = 40.dp).testTag("tuto_resume")) {
                             Text(tr("Reprendre le tuto"), color = Neon.Cyan)
                         }
                         TextButton(onClick = restartTuto, modifier = Modifier.weight(1f).heightIn(min = 40.dp).testTag("tuto_restart_quit")) {
@@ -3423,7 +3441,12 @@ WithPartHeader(rhythmVm, simple, shown = !rollFirst) { partModifier ->
                                     StructureSwitch(showParts, timelineEnabled = hasSong) { partsView = it; navPrefs.partsView = it }
                                 }
                                 if (showParts) {
-                                    sessionView(false, switch)
+                                    // Tour 9 L11 (N1): the switch stays put over the parts' column, which scrolls under it
+                                    // (riding in the column, it went under the BPM bar as the column moved).
+                                    Column(Modifier.fillMaxSize()) {
+                                        Box(Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, top = 8.dp)) { switch() }
+                                        Box(Modifier.fillMaxWidth().weight(1f)) { sessionView(false, null) }
+                                    }
                                 } else {
                                     TimelineRoute(
                                         rhythmVm, lifecycleOwner, close = { partsView = true; navPrefs.partsView = true },
@@ -3836,7 +3859,7 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
                                         missions = startMissions,
                                         // Testers (lot « tuto 5 »): the tutorial found again from a project (proposal in fix5-ecran.md).
                                         tuto = { modeAsk = START_TUTO },
-                                        resumeTuto = if (tuto.resumable) ({ toolPage = null; tuto.resume() }) else null,
+                                        resumeTuto = if (tuto.resumable && !com.pocketstudio.app.tuto.tutoCourseFinished(tuto.saved)) ({ toolPage = null; tuto.resume() }) else null,
                                     ),
                                 )
                                 ToolPage.Recette -> {

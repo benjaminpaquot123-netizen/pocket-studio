@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "Snare से पहले एक बौछार और लूप के आख़िर में एक और, बस: बाकी साँस लेता है।",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "Snare से ठीक पहले एक ट्रिपलेट, यही drill hi-hats का ख़ास धक्का है।",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "तुम्हारी बारी: “Rim” पैड (छोटा “टॉक”) पर 2 बार के डॉटेड खाने दबाओ: ये snare को जवाब देता है।",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "तुम्हारी बारी: थोड़ा swing, ग्रिड के नीचे “Swing” स्लाइडर पर 16 % swing: बीट्स के बीच के सोलहवें नोट्स ज़रा-सा देर से आते हैं, hi-hats फुदकते हैं।",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "तुम्हारी बारी: थोड़ा swing, “Swing” स्लाइडर पर 16 % swing: बीट्स के बीच के सोलहवें नोट्स ज़रा-सा देर से आते हैं, hi-hats फुदकते हैं।",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "Drill प्रोड्यूसर hi-hats को 8 से 15 % तक swing करते हैं: अकड़ खोए बिना फुदकना।",
   "La 808 qui glisse": "फिसलता 808",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "Drill में 808 लगभग गाता है: ये हर बार में कई बार फिसलता है, ऑक्टेव या फ़िफ़्थ की ओर, और अपना लूप नीचे की ओर एक लंबे glide से ख़त्म करता है।",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "इंट्रो सुनो: अकेला पियानो, एक ख़तरे की तरह।",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "अंतरा सुनो: बिना स्ट्रिंग्स के, आवाज़ की जगह।",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "मुखड़ा सुनो: सब बजता है, 808 सबसे ज़ोर पर।",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "जानने लायक: drill में रैपर एक बार गिनता है जब ऐप दो गिनता है (snare हर 2 बार में लौटता है)। इसलिए उसका “16 बार” का अंतरा यहाँ 32 बार का है।",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "जानने लायक: drill में रैपर एक बार गिनता है जब ऐप दो गिनता है (snare हर 2 बार में लौटता है)। इसलिए उसका “16 बार” का अंतरा यहाँ 32 बार का है: मैप पर अंतरा 30 + प्री-कोरस 2।",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "ऐप के 16 बार का अंतरा सिर्फ़ 27 सेकंड चलेगा: रैपर के पास ज़्यादा कुछ कहने का वक़्त नहीं होगा।",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "तुम्हारी बारी: मुखड़ा से इंट्रो बनाओ: अकेला पियानो।",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "अकेला पियानो माहौल बनाता है; जब 808 गिरता है, ज़ोर से लगता है।",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "तुम्हारी बारी: आख़िरी बार में, आख़िरी बीट के kick और snare हिट्स मिटाओ।",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "तुम्हारी बारी: बार 2, “Hi-hat” खाना 13 लंबा दबाओ, फिर “ट्रिपलेट” › “2 खानों में 3”।",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "तुम्हारी बारी: बार 1, “Hi-hat” 13 व 15 लंबा दबाओ, फिर “ट्रिपलेट” › “2 खानों में 3”।",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "तुम्हारी बारी: ग्रिड के नीचे “Swing” स्लाइडर 27 % तक बढ़ाओ।",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "तुम्हारी बारी: ग्रिड के नीचे “Swing” स्लाइडर 33 % तक बढ़ाओ।",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "तुम्हारी बारी: “Swing” स्लाइडर 27 % तक बढ़ाओ।",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "तुम्हारी बारी: “Swing” स्लाइडर 33 % तक बढ़ाओ।",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "तुम्हारी बारी: “जोड़ो” के नीचे क्रम से दबाओ: इंट्रो, अंतरा, मुखड़ा, अंतरा, मुखड़ा, अंतरा, मुखड़ा, फिर अंत के लिए इंट्रो।",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "तुम्हारी बारी: हर पार्ट को उसकी लंबाई दो: इंट्रो 4 बार, अंतरा 16, मुखड़ा 8, आउट्रो 4।",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "तुम्हारी बारी: हर पार्ट को उसकी लंबाई दो: इंट्रो 8 बार, मुखड़ा 16, अंतरा 30, प्री-कोरस 2, आउट्रो 4।",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "एक पूरे lo-fi गाने का टुकड़ा सुनो: इलेक्ट्रिक पियानो पर jazz कॉर्ड्स, मुलायम ड्रम्स जो थोड़ा पीछे खिंचते हैं, पुराने रिकॉर्ड की चटचटाहट।",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "एक पूरे phonk गाने का टुकड़ा सुनो: इंट्रो में अकेली घंटी, फिर मुखड़ा जहाँ सब ज़ोर से पड़ता है।",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "एक पूरे trap गाने का टुकड़ा सुनो: इंट्रो (अकेली घंटी), फिर मुखड़ा, जहाँ 808 (बहुत गहरा बेस) kick के साथ गिरता है।",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "तुम्हारी बारी: “मिक्स” में “मेलोडी” थोड़ा नीचे करो: “सामान्य” से “−2”।"
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "तुम्हारी बारी: “मिक्स” में “मेलोडी” थोड़ा नीचे करो: “सामान्य” से “−1”।"
 }

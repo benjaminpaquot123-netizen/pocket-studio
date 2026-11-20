@@ -11,7 +11,7 @@
   "La ligne 303": "Linia 303",
   "En acid house, la ligne de 303 est la vedette : on commence par elle, comme Phuture, et la batterie viendra la servir.": "W acid house linia 303 jest gwiazdą: zaczynamy od niej, jak Phuture, a perkusja przyjdzie jej służyć.",
   "Écoute la 303 seule : une boucle d'une mesure qui saute d'octave, avec des notes qui crient (les accents) et des notes qui glissent (les slides).": "Posłuchaj samej 303: pętla na jeden takt, która skacze o oktawę, z nutami, które krzyczą (akcenty), i nutami, które się ślizgają (slide'y).",
-  "À toi : dans l'onglet Acide, écris les pas en pointillé : la note, l'octave, l'accent (« ! ») et le slide (« ⌒ »). Fondamentale La, octave, 7e (Sol), quinte (Mi), tierce (Do) ; accents sur les pas 1, 3, 7, 12, 15 ; slides sur les pas 3, 11, 12.": "Twoja kolej: na karcie Acid zapisz kropkowane kroki: nutę, oktawę, akcent („!”) i slide („⌒”). Pryma A, oktawa, septyma (G), kwinta (E), tercja (C); akcenty na krokach 1, 3, 7, 12, 15; slide'y na krokach 3, 11, 12.",
+  "À toi : dans l'onglet « Acid 303 », écris les pas en pointillé : la note, l'octave, l'accent (« ! ») et le slide (« ⌒ »). Fondamentale La, octave, 7e (Sol), quinte (Mi), tierce (Do) ; accents sur les pas 1, 3, 7, 12, 15 ; slides sur les pas 3, 11, 12.": "Twoja kolej: na karcie „Acid 303” zapisz kropkowane kroki: nutę, oktawę, akcent („!”) i slide („⌒”). Pryma A, oktawa, septyma (G), kwinta (E), tercja (C); akcenty na krokach 1, 3, 7, 12, 15; slide'y na krokach 3, 11, 12.",
   "Une note accentuée sort plus fort et plus ouverte ; une note « slide » glisse vers la suivante : la ligne se met à parler.": "Akcentowana nuta wychodzi głośniej i bardziej otwarta; nuta ze „slide” ślizga się do następnej: linia zaczyna mówić.",
   "Sans 303, il n'y a pas d'acid house.": "Bez 303 nie ma acid house.",
   "Les gestes acid : décaler toute la ligne d'un pas (les mêmes notes tombent ailleurs, l'oreille croit à une nouvelle ligne) ; une longueur de 15 pas qui tourne contre la mesure ; et surtout tourner la Coupure et la Résonance pendant que ça joue.": "Gesty acid: przesunąć całą linię o krok (te same nuty wypadają gdzie indziej, ucho myśli, że to nowa linia); długość 15 kroków, która kręci się w poprzek taktu; a przede wszystkim kręcić Odcięciem i Rezonansem, gdy gra.",
@@ -319,7 +319,7 @@
   "À toi : pose les charleys fermés, plus forts sur les temps, plus doux autour, avec un trou sous le charley ouvert.": "Twoja kolej: postaw zamknięte hi-haty, mocniejsze na ćwierćnutach, cichsze wokół, z dziurą pod otwartym hi-hatem.",
   "À toi : sur le pad « Rim », touche les 8 cases en pointillé (4 par mesure), entre les temps.": "Twoja kolej: na padzie „Rim” dotknij 8 kropkowanych pól (4 w takcie), między ćwierćnutami.",
   "À toi : pose le pad « Rim » de la 707 sur chaque contretemps.": "Twoja kolej: postaw pad „Rim” z 707 na każdym offbeacie.",
-  "À toi : mets le swing à 33 % : les doubles croches paires arrivent un peu en retard, entre la house de Chicago (55-60 %) et celle de New York (70-80 %).": "Twoja kolej: ustaw swing na 33%: parzyste szesnastki przychodzą trochę później, między house'em z Chicago (55-60%) a tym z Nowego Jorku (70-80%).",
+  "À toi : mets le swing à 33 % : les doubles croches paires arrivent un peu en retard, entre la house de Chicago (55-60 % sur une MPC) et celle de New York (70-80 % sur une MPC).": "Twoja kolej: ustaw swing na 33%: parzyste szesnastki przychodzą trochę później, między house'em z Chicago (55-60% na MPC) a tym z Nowego Jorku (70-80% na MPC).",
   "Une basse d'orgue qui saute de la note grave à la même note plus haut : le rebond des disques house (dans « Show Me Love », le célèbre riff d'orgue était d'abord la basse).": "Organowy bas, który skacze z niskiej nuty na tę samą wyżej: sprężystość płyt house (w „Show Me Love” słynny organowy riff był najpierw basem).",
   "À toi : crée la piste Basse et écris la mesure 1 (La, saut d'octave), « Copier » (mesure 2 en La, mesure 3 transposée sur Ré, le IV), puis la mesure 4 avec sa tourne Mi–Sol qui ramène à La.": "Twoja kolej: utwórz ścieżkę Bas i zapisz takt 1 (A, skok o oktawę), „Kopiuj” (takt 2 na A, takt 3 przeniesiony na D, IV), potem takt 4 z obrotem E–G, który prowadzi z powrotem do A.",
   "La basse change de note avec les accords (La, puis Ré) : basse et piano racontent la même chose.": "Bas zmienia nutę razem z akordami (A, potem D): bas i pianino opowiadają to samo.",
@@ -602,7 +602,7 @@
   "À toi : sur le pad « Rim », touche les cases en pointillé des 2 mesures.": "Twoja kolej: na padzie „Rim” dotknij kropkowanych pól w 2 taktach.",
   "À toi : sur le pad « Shaker », touche les cases en pointillé : il tourne sans arrêt.": "Twoja kolej: na padzie „Shaker” dotknij kropkowanych pól: kręci się bez przerwy.",
   "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé des 2 mesures.": "Twoja kolej: na padzie „Średni tom” dotknij 3 kropkowanych pól w 2 taktach.",
-  "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé, entre les kicks.": "Twoja kolej: na padzie „Średni tom” dotknij 3 kropkowanych pól, między kickami.",
+  "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé, autour des kicks.": "Twoja kolej: na padzie „Średni tom” dotknij 3 kropkowanych pól, wokół kicków.",
   "À toi : touche la note du bas de chaque accord en pointillé de chaque mesure : tout l'accord se pose. Il y a 2 coups par mesure.": "Twoja kolej: w każdym takcie dotknij najniższej nuty każdego kropkowanego akordu: cały akord się pojawi. Są 2 uderzenia na takt.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 2 coups.": "Twoja kolej: w takcie 1 dotknij najniższej nuty każdego kropkowanego akordu: cały akord się pojawi. Są 2 uderzenia.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 4 coups.": "Twoja kolej: w takcie 1 dotknij najniższej nuty każdego kropkowanego akordu: cały akord się pojawi. Są 4 uderzenia.",
@@ -633,5 +633,6 @@
   "À toi : écris les 2 notes de la mesure 2 : la réponse, plus grave.": "Twoja kolej: napisz 2 nuty w takcie 2: odpowiedź, niżej.",
   "À toi : écris les 2 notes plus graves de la mesure 4 : la réponse.": "Twoja kolej: napisz 2 niższe nuty w takcie 4: odpowiedź.",
   "À toi : écris les 4 notes de la mesure 4.": "Twoja kolej: napisz 4 nuty w takcie 4.",
-  "À toi : écris les 8 notes de la mesure 2.": "Twoja kolej: napisz 8 nut w takcie 2."
+  "À toi : écris les 8 notes de la mesure 2.": "Twoja kolej: napisz 8 nut w takcie 2.",
+  "La caisse un peu en retard traîne derrière le kick : le 2-step boite et se balance encore plus.": "Werbel trochę spóźniony ciągnie się za stopą: 2-step kuleje i buja jeszcze bardziej."
 }

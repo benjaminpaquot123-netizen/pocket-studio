@@ -11,7 +11,7 @@
   "La ligne 303": "La línea 303",
   "En acid house, la ligne de 303 est la vedette : on commence par elle, comme Phuture, et la batterie viendra la servir.": "En acid house, la línea de 303 es la estrella: se empieza por ella, como Phuture, y la batería vendrá a servirla.",
   "Écoute la 303 seule : une boucle d'une mesure qui saute d'octave, avec des notes qui crient (les accents) et des notes qui glissent (les slides).": "Escucha la 303 sola: un bucle de un compás que salta de octava, con notas que gritan (los acentos) y notas que se deslizan (los slides).",
-  "À toi : dans l'onglet Acide, écris les pas en pointillé : la note, l'octave, l'accent (« ! ») et le slide (« ⌒ »). Fondamentale La, octave, 7e (Sol), quinte (Mi), tierce (Do) ; accents sur les pas 1, 3, 7, 12, 15 ; slides sur les pas 3, 11, 12.": "Te toca: en la pestaña Ácido, escribe los pasos punteados: la nota, la octava, el acento (“!”) y el slide (“⌒”). Fundamental La, octava, 7.ª (Sol), quinta (Mi), tercera (Do); acentos en los pasos 1, 3, 7, 12, 15; slides en los pasos 3, 11, 12.",
+  "À toi : dans l'onglet « Acid 303 », écris les pas en pointillé : la note, l'octave, l'accent (« ! ») et le slide (« ⌒ »). Fondamentale La, octave, 7e (Sol), quinte (Mi), tierce (Do) ; accents sur les pas 1, 3, 7, 12, 15 ; slides sur les pas 3, 11, 12.": "Te toca: en la pestaña “Acid 303”, escribe los pasos punteados: la nota, la octava, el acento (“!”) y el slide (“⌒”). Fundamental La, octava, 7.ª (Sol), quinta (Mi), tercera (Do); acentos en los pasos 1, 3, 7, 12, 15; slides en los pasos 3, 11, 12.",
   "Une note accentuée sort plus fort et plus ouverte ; une note « slide » glisse vers la suivante : la ligne se met à parler.": "Una nota acentuada sale más fuerte y más abierta; una nota con “slide” se desliza hacia la siguiente: la línea empieza a hablar.",
   "Sans 303, il n'y a pas d'acid house.": "Sin 303, no hay acid house.",
   "Les gestes acid : décaler toute la ligne d'un pas (les mêmes notes tombent ailleurs, l'oreille croit à une nouvelle ligne) ; une longueur de 15 pas qui tourne contre la mesure ; et surtout tourner la Coupure et la Résonance pendant que ça joue.": "Los gestos acid: desplazar toda la línea un paso (las mismas notas caen en otro sitio y el oído cree que es una línea nueva); una longitud de 15 pasos que gira contra el compás; y sobre todo girar el Corte y la Resonancia mientras suena.",
@@ -319,7 +319,7 @@
   "À toi : pose les charleys fermés, plus forts sur les temps, plus doux autour, avec un trou sous le charley ouvert.": "Te toca: pon los hi-hats cerrados, más fuertes en los tiempos, más suaves alrededor, con un hueco bajo el hi-hat abierto.",
   "À toi : sur le pad « Rim », touche les 8 cases en pointillé (4 par mesure), entre les temps.": "Te toca: en el pad “Rim”, toca las 8 casillas punteadas (4 por compás), entre los tiempos.",
   "À toi : pose le pad « Rim » de la 707 sur chaque contretemps.": "Te toca: pon el pad “Rim” de la 707 en cada contratiempo.",
-  "À toi : mets le swing à 33 % : les doubles croches paires arrivent un peu en retard, entre la house de Chicago (55-60 %) et celle de New York (70-80 %).": "Te toca: pon el swing a 33 %: las semicorcheas pares llegan un poco tarde, entre el house de Chicago (55-60 %) y el de Nueva York (70-80 %).",
+  "À toi : mets le swing à 33 % : les doubles croches paires arrivent un peu en retard, entre la house de Chicago (55-60 % sur une MPC) et celle de New York (70-80 % sur une MPC).": "Te toca: pon el swing a 33 %: las semicorcheas pares llegan un poco tarde, entre el house de Chicago (55-60 % en una MPC) y el de Nueva York (70-80 % en una MPC).",
   "Une basse d'orgue qui saute de la note grave à la même note plus haut : le rebond des disques house (dans « Show Me Love », le célèbre riff d'orgue était d'abord la basse).": "Un bajo de órgano que salta de la nota grave a la misma nota más aguda: el rebote de los discos house (en “Show Me Love”, el célebre riff de órgano era al principio el bajo).",
   "À toi : crée la piste Basse et écris la mesure 1 (La, saut d'octave), « Copier » (mesure 2 en La, mesure 3 transposée sur Ré, le IV), puis la mesure 4 avec sa tourne Mi–Sol qui ramène à La.": "Te toca: crea la pista Bajo y escribe el compás 1 (La, salto de octava), “Copiar” (compás 2 en La, compás 3 transportado a Re, el IV), y luego el compás 4 con su giro Mi–Sol que vuelve a La.",
   "La basse change de note avec les accords (La, puis Ré) : basse et piano racontent la même chose.": "El bajo cambia de nota con los acordes (La, luego Re): bajo y piano cuentan lo mismo.",
@@ -602,7 +602,7 @@
   "À toi : sur le pad « Rim », touche les cases en pointillé des 2 mesures.": "Te toca: en el pad “Rim”, toca las casillas punteadas de los 2 compases.",
   "À toi : sur le pad « Shaker », touche les cases en pointillé : il tourne sans arrêt.": "Te toca: en el pad “Shaker”, toca las casillas punteadas: gira sin parar.",
   "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé des 2 mesures.": "Te toca: en el pad “Tom medio”, toca las 3 casillas punteadas de los 2 compases.",
-  "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé, entre les kicks.": "Te toca: en el pad “Tom medio”, toca las 3 casillas punteadas, entre los kicks.",
+  "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé, autour des kicks.": "Te toca: en el pad “Tom medio”, toca las 3 casillas punteadas, alrededor de los kicks.",
   "À toi : touche la note du bas de chaque accord en pointillé de chaque mesure : tout l'accord se pose. Il y a 2 coups par mesure.": "Te toca: toca la nota de abajo punteada de cada acorde de cada compás: se coloca todo el acorde. Hay 2 golpes por compás.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 2 coups.": "Te toca: toca la nota de abajo punteada de cada acorde del compás 1: se coloca todo el acorde. Hay 2 golpes.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. Il y a 4 coups.": "Te toca: toca la nota de abajo punteada de cada acorde del compás 1: se coloca todo el acorde. Hay 4 golpes.",
@@ -633,5 +633,6 @@
   "À toi : écris les 2 notes de la mesure 2 : la réponse, plus grave.": "Te toca: escribe las 2 notas del compás 2: la respuesta, más grave.",
   "À toi : écris les 2 notes plus graves de la mesure 4 : la réponse.": "Te toca: escribe las 2 notas más graves del compás 4: la respuesta.",
   "À toi : écris les 4 notes de la mesure 4.": "Te toca: escribe las 4 notas del compás 4.",
-  "À toi : écris les 8 notes de la mesure 2.": "Te toca: escribe las 8 notas del compás 2."
+  "À toi : écris les 8 notes de la mesure 2.": "Te toca: escribe las 8 notas del compás 2.",
+  "La caisse un peu en retard traîne derrière le kick : le 2-step boite et se balance encore plus.": "La caja un poco atrasada se arrastra detrás del bombo: el 2-step cojea y se balancea aún más."
 }

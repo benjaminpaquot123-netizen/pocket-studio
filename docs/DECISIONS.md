@@ -1559,3 +1559,4 @@
 - 2026-11-20 · lot « L12 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-L12.md`
 - 2026-11-20 · lot « L2 » (tour-9) : 12 décision(s) dans `docs/decisions/tour-9-L2.md`
 - 2026-11-20 · lot « L16 » (tour-9) : 7 décision(s) dans `docs/decisions/tour-9-L16.md`
+- 2026-11-20 · lot « L11 » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-L11.md`

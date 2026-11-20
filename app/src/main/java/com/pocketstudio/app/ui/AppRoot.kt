@@ -2471,6 +2471,8 @@ fun AppRoot() {
                         }
                     },
                     selectScene = rhythmVm::selectScene, newScene = rhythmVm::newScene,
+                    // Tour 9, D10: « Renommer » in the « A ▾ » menu names the part, as Structure does.
+                    renameScene = rhythmVm::renameScene,
                     share = shareSong,
                     mode = { modeSwitchOpen = true },
                     // Mode simple: « Envoyer » is a tab; the rest of the app in « ⋯ ».

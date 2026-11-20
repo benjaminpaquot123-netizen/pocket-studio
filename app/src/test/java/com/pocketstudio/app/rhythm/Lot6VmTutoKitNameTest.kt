@@ -12,6 +12,7 @@ import com.pocketstudio.model.PackSound
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoKit
 import com.pocketstudio.model.tuto.TutoTarget
+import com.pocketstudio.model.i18n.tr
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -74,7 +75,8 @@ class Lot6VmTutoKitNameTest {
         assertEquals(true, ok)
         assertTrue(vm.project.value.drums.lanes[lane].sample != null)
         assertEquals("the pad the step names « Rumble »", "Rumble", padName(vm.project.value, lane))
-        // A pad the step names by the kit's name keeps the kit's name (the step renames it, tutoPadNames).
-        assertEquals("Techno · Kick", padName(vm.project.value, 0))
+        // A pad the step names by the kit's name keeps the kit's name (the step renames it, tutoPadNames). Tour 9, F132:
+        // a kit's own sound shows its pad's word only (« Kick », not « Techno · Kick »), as the kit's other pads do.
+        assertEquals(tr("Kick"), padName(vm.project.value, 0))
     }
 }

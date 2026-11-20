@@ -205,6 +205,8 @@ object TutoHints {
      * moment over the grid (testers, lot « tuto 4 »: the page turned without a word, the hits seemed gone).
      */
     var banner by mutableStateOf<String?>(null)
+    /** A swing step's aim, in % as the Rythme slider shows it (Tour 9, F057): the slider says it. */
+    var swing by mutableStateOf<Int?>(null)
     /**
      * The drum grid with its tutorial line is on the screen (RhythmScreen): with dotted cells to touch on it, the panel
      * leaves their rows room (replay t6-ha19-cases-panneau: at 100 % the first row was cut under the open panel).
@@ -231,7 +233,7 @@ object TutoHints {
      */
     @androidx.annotation.VisibleForTesting
     fun reset() {
-        cells = null; longPress = emptySet(); notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; focusTouched = -1; demo = false
+        swing = null; cells = null; longPress = emptySet(); notes = null; acid = null; fading = null; send = null; focus = 0; focusSeen = 0; focusTouched = -1; demo = false
         erase = null; knobs = emptySet(); strip = null; sendNote = null; active = false; ticked = 0; banner = null; gridInSight = false; soundButtonInSight = false
         step = null; copy = null; page = null; copyOnGrid = false
     }
@@ -275,44 +277,96 @@ fun TutoBanner(modifier: Modifier = Modifier) {
 
 /**
  * The tutorial's line over the drum grid (testers, lot « tuto 5 »), always there while the tutorial
- * runs, one height: « Mesure 1/2 · Caisse », then « encore 2 cases » on this page, and « Mesure 2 ·
- * 3 cases → » when they are on another page (a touch goes there: the page never turns by itself),
- * what the screen just changed (« → Charley »), and « Copier » when it is the next thing to do.
+ * runs: « Mesure 1/2 », then, on the line nearest the cells, « Caisse · encore 2 cases » on this page,
+ * and « Mesure 2 · 3 cases → » when they are on another page (a touch goes there: the page never turns
+ * by itself), what the screen just changed (« Caisse · → Charley »), and « Copier » when it is the next
+ * thing to do. Its words wrap rather than being cut (tour 9, F048 and F050). [toPad]: the step's cells are on
+ * another pad than the one shown: its name and « → », one touch shows it (tour 9, F054).
  * Nothing of it over the cells.
  */
 @Composable
-fun TutoGridLine(bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<Int, Int>?, go: (Int) -> Unit, copy: (() -> Unit)?, erasing: Boolean = false) {
+fun TutoGridLine(
+    bar: Int, bars: Int, pad: String, here: Int, elsewhere: Pair<Int, Int>?, go: (Int) -> Unit, copy: (() -> Unit)?, erasing: Boolean = false,
+    toPad: Pair<String, () -> Unit>? = null,
+) {
     val said = TutoHints.banner
     androidx.compose.runtime.LaunchedEffect(said) { if (said != null) { kotlinx.coroutines.delay(TUTO_BANNER_MS); if (TutoHints.banner == said) TutoHints.banner = null } }
-    Row(
+    val status = when {
+        said != null -> said
+        // n° 34: a hit too many (crossed out) is said as such, not as a dotted cell to touch.
+        here > 0 && erasing -> trCount(here, "%d coup en trop ici (barré)", "%d coups en trop ici (barrés)")
+        here > 0 -> trCount(here, "Encore %d case en pointillé ici", "Encore %d cases en pointillé ici")
+        else -> null
+    }
+    // F048 (tour 9): the pad is on the line right over the cells, with what to do there, so it stays in sight even
+    // when the screen's fixed head covers the bar line above it, and while a message shows.
+    val near = if (status != null && pad.isNotBlank() && status.contains(pad)) status else listOfNotNull(pad.takeIf { it.isNotBlank() }, status).joinToString(" · ")
+    TutoLineBesideButton(
         Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(10.dp)).background(Neon.Amber.copy(alpha = 0.10f)).padding(start = 10.dp, end = 4.dp)
             .spot(TUTO_GRID_LINE_SPOT).testTag("tuto_grid_line"),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.weight(1f)) {
-            Text(
-                (if (bars > 1) tr("Mesure %1\$d/%2\$d", bar + 1, bars) + " · " else "") + pad,
-                style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.testTag("tuto_grid_where"),
-            )
-            val status = when {
-                said != null -> said
-                // n° 34: a hit too many (crossed out) is said as such, not as a dotted cell to touch.
-                here > 0 && erasing -> trCount(here, "%d coup en trop ici (barré)", "%d coups en trop ici (barrés)")
-                here > 0 -> trCount(here, "Encore %d case en pointillé ici", "Encore %d cases en pointillé ici")
-                else -> null
-            }
-            if (status != null) Text(status, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Amber, maxLines = 1,
-                overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_grid_status"))
-        }
-        when {
-            copy != null -> Button(onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_grid_copy")) { Text(tr("Copier"), maxLines = 1) }
-            // Tour 9 F046: the other bars' cells said from the start, not only once this page is done.
-            elsewhere != null -> TextButton(onClick = { go(elsewhere.first) }, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_bar_go")) {
-                Text(
-                    trCount(elsewhere.second, "Mesure %2\$d · %1\$d case", "Mesure %2\$d · %1\$d cases", elsewhere.second, elsewhere.first + 1) + (if (elsewhere.first > bar) " →" else ""),
-                    color = Neon.Amber, fontWeight = FontWeight.Bold, maxLines = 1,
+        line = {
+            // F050 (tour 9): every word reads in full at 200 %: the words wrap, never « … ». With a very big font, the
+            // wrapped words a size smaller and no padding, so the line and the cells' two rows still fit between
+            // « Partie : A » and the panel (TutoBigFontTest: the cells' second row went under the panel).
+            val big = androidx.compose.ui.platform.LocalDensity.current.fontScale >= TUTO_LINE_BIG_FONT
+            Column(Modifier.padding(vertical = if (big) 0.dp else 4.dp)) {
+                if (bars > 1) Text(
+                    tr("Mesure %1\$d/%2\$d", bar + 1, bars),
+                    style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_grid_where"),
                 )
+                if (near.isNotEmpty()) Text(near, style = if (big) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Amber,
+                    modifier = Modifier.testTag("tuto_grid_status"))
+            }
+        },
+        button = {
+            when {
+                // F054 (tour 9, seat t9-57): the pad the step asks for, a touch away (it was to be found among the 16).
+                toPad != null -> TextButton(onClick = toPad.second, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_pad_go")) {
+                    Text(toPad.first + " →", color = Neon.Amber, fontWeight = FontWeight.Bold)
+                }
+                copy != null -> Button(onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_grid_copy")) { Text(tr("Copier"), maxLines = 1) }
+                // Tour 9 F046: the other bars' cells said from the start, not only once this page is done.
+                elsewhere != null -> TextButton(onClick = { go(elsewhere.first) }, modifier = Modifier.heightIn(min = 48.dp).testTag("tuto_bar_go")) {
+                    Text(
+                        trCount(elsewhere.second, "Mesure %2\$d · %1\$d case", "Mesure %2\$d · %1\$d cases", elsewhere.second, elsewhere.first + 1) +
+                            // F052 (tour 9, seat t9-41): hits to take away there are said so, not as cells to add.
+                            (if (erasing) " · " + tr("barré : à enlever") else "") + (if (elsewhere.first > bar) " →" else ""),
+                        color = Neon.Amber, fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+        },
+    )
+}
+
+/** The font scale from which the tutorial's grid line wraps its words a size smaller (as the spotlight's big font). */
+private const val TUTO_LINE_BIG_FONT = 1.5f
+
+/**
+ * The tutorial line's words with its button at the end when both fit side by side, else the button under the words
+ * (at the end): the words are never squeezed into a sliver beside the button (F050, tour 9).
+ */
+@Composable
+private fun TutoLineBesideButton(modifier: Modifier, line: @Composable () -> Unit, button: @Composable () -> Unit) {
+    androidx.compose.ui.layout.Layout(contents = listOf(line, button), modifier = modifier) { (lines, buttons), constraints ->
+        val gap = 8.dp.roundToPx()
+        val loose = constraints.copy(minWidth = 0, minHeight = 0)
+        val buttonPlaced = buttons.firstOrNull()?.measure(loose)
+        val bw = buttonPlaced?.width ?: 0
+        val lineMeasurable = lines.first()
+        val beside = buttonPlaced == null || lineMeasurable.maxIntrinsicWidth(androidx.compose.ui.unit.Constraints.Infinity) + gap + bw <= constraints.maxWidth
+        val lineWidth = if (beside && buttonPlaced != null) (constraints.maxWidth - gap - bw).coerceAtLeast(0) else constraints.maxWidth
+        val linePlaced = lineMeasurable.measure(loose.copy(minWidth = 0, maxWidth = lineWidth))
+        val bh = buttonPlaced?.height ?: 0
+        val height = (if (beside) maxOf(linePlaced.height, bh) else linePlaced.height + bh).coerceIn(constraints.minHeight, constraints.maxHeight)
+        val width = constraints.maxWidth
+        layout(width, height) {
+            if (beside) {
+                linePlaced.placeRelative(0, (height - linePlaced.height) / 2)
+                buttonPlaced?.placeRelative(width - bw, (height - bh) / 2)
+            } else {
+                linePlaced.placeRelative(0, 0)
+                buttonPlaced?.placeRelative(width - bw, linePlaced.height)
             }
         }
     }

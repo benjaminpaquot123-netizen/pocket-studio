@@ -484,6 +484,13 @@ class TutoController(
         }
     }
 
+    /**
+     * Tour 9, F057 (seats t9-23, t9-25, t9-41): a swing step's aim as the Rythme slider shows it (whole %), for the
+     * slider to show the value to reach; null for any other step.
+     */
+    fun swingAim(): Int? = _ui.value?.current?.takeIf { it.check == "swing" }?.let { target?.style?.swing }
+        ?.takeIf { it > 0.0 }?.let(TutoChecks::swingShown)
+
     private fun stripName(p: Project, ch: Int): String =
         if (com.pocketstudio.model.Mixer.isPad(ch)) com.pocketstudio.app.rhythm.padName(p, ch - com.pocketstudio.model.Mixer.FIRST_PAD)
         else p.instrumentTracks.firstOrNull { com.pocketstudio.model.InstrumentTrack.mixerChannel(it.id) == ch }?.name?.let(com.pocketstudio.model.DefaultNames::shown) ?: "?"

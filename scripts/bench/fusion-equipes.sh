@@ -44,10 +44,13 @@ for zone in "${zones[@]}"; do
   for f in $(git diff --name-only "$read_sha" "eq/$tour-$zone" | grep -vxF "$review" || true); do
     git diff --quiet HEAD "eq/$tour-$zone" -- "$f" && continue
     # A file the team changed before the review and fx-int changed since is the plain 3-way merge of both: not the team's.
-    mb="$(git merge-base "$read_sha" HEAD)"
-    if git cat-file -e "eq/$tour-$zone:$f" 2>/dev/null && git cat-file -e "$read_sha:$f" 2>/dev/null && git cat-file -e "HEAD:$f" 2>/dev/null; then
+    # fx-int as the team last merged it (the team may be behind today's fx-int).
+    fx="$(git merge-base "eq/$tour-$zone" HEAD)"
+    git diff --quiet "$fx" "eq/$tour-$zone" -- "$f" && continue
+    mb="$(git merge-base "$read_sha" "$fx")"
+    if git cat-file -e "eq/$tour-$zone:$f" 2>/dev/null && git cat-file -e "$read_sha:$f" 2>/dev/null && git cat-file -e "$fx:$f" 2>/dev/null; then
       tdir="$(mktemp -d)"
-      git show "$read_sha:$f" > "$tdir/o"; git show "HEAD:$f" > "$tdir/t"
+      git show "$read_sha:$f" > "$tdir/o"; git show "$fx:$f" > "$tdir/t"
       git show "$mb:$f" > "$tdir/b" 2>/dev/null || : > "$tdir/b"
       git show "eq/$tour-$zone:$f" > "$tdir/l"
       same=0

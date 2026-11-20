@@ -111,15 +111,43 @@ internal fun KitSheet(current: String, kits: List<KitChoice>, choose: (String) -
     }
 }
 
+/**
+ * Tour 9, F120: the sheet's « Fermer », framed and 12 dp away from the text beside it (a bare text button read as
+ * the end of the hint), at least 48 dp tall.
+ */
+/** Under this width (dp, at the interface size: 360 dp at 200 %) the sheets' top stacks. */
+private const val NARROW_SHEET_DP = 260
+
+@Composable
+private fun narrowSheet(): Boolean = androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp < NARROW_SHEET_DP
+
+@Composable
+private fun SheetClose(close: () -> Unit, tag: String) {
+    Spacer(Modifier.width(12.dp))
+    OutlinedButton(
+        onClick = close,
+        border = BorderStroke(1.dp, Neon.TextSecondary.copy(alpha = 0.7f)),
+        modifier = Modifier.heightIn(min = 48.dp).testTag(tag),
+    ) { Text(tr("Fermer"), color = Neon.TextPrimary) }
+}
+
 @Composable
 fun KitSheetContent(current: String, kits: List<KitChoice>, choose: (String) -> Unit, close: () -> Unit) {
     Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(tr("Kit de batterie"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Text(tr("Touche un kit : il remplace les sons des 16 pads. Annuler le remet."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        val narrow = narrowSheet()
+        if (narrow) {
+            // Tour 9, L8 (360 dp at 200 %): the framed « Fermer » left the title a sliver; it goes on its own line.
+            Text(tr("Kit de batterie"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) { SheetClose(close, "kit_sheet_close") }
+            Text(tr("Touche un kit : il remplace les sons des 16 pads. Annuler le remet."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+        } else {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(tr("Kit de batterie"), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(tr("Touche un kit : il remplace les sons des 16 pads. Annuler le remet."), style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary)
+                }
+                SheetClose(close, "kit_sheet_close")
             }
-            TextButton(onClick = close, modifier = Modifier.testTag("kit_sheet_close")) { Text(tr("Fermer")) }
         }
         listOf(
             KitChoice.BUILT_IN to tr("Dans l'appli"),
@@ -129,7 +157,7 @@ fun KitSheetContent(current: String, kits: List<KitChoice>, choose: (String) -> 
             val list = kits.filter { it.group == group }
             if (list.isEmpty()) return@forEach
             Text(title, style = MaterialTheme.typography.titleSmall)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = 2) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = if (narrow) 1 else 2) {
                 list.forEach { kit ->
                     val chosen = kit.name == current
                     OutlinedButton(
@@ -140,7 +168,7 @@ fun KitSheetContent(current: String, kits: List<KitChoice>, choose: (String) -> 
                         Text(kit.name, maxLines = 2, overflow = TextOverflow.Ellipsis, fontWeight = if (chosen) FontWeight.Bold else FontWeight.Normal)
                     }
                 }
-                if (list.size % 2 == 1) Spacer(Modifier.weight(1f))
+                if (!narrow && list.size % 2 == 1) Spacer(Modifier.weight(1f))
             }
         }
         if (kits.none { it.group != KitChoice.BUILT_IN }) {
@@ -225,15 +253,23 @@ internal fun PadSheet(ui: PadSheetUi, actions: PadSheetActions, close: () -> Uni
 fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit) {
     val color = DrumKitInfo.colors[ui.lane]
     Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        val narrow = narrowSheet()
+        if (narrow) {
+            // Tour 9, L8: same as the kit sheet, « Fermer » under the title on a narrow room.
             Text(tr("Pad %1\$d · %2\$s", ui.lane + 1, ui.name), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color,
-                maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("pad_sheet_title"))
-            TextButton(onClick = close, modifier = Modifier.testTag("pad_sheet_close")) { Text(tr("Fermer")) }
+                modifier = Modifier.testTag("pad_sheet_title"))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) { SheetClose(close, "pad_sheet_close") }
+        } else {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(tr("Pad %1\$d · %2\$s", ui.lane + 1, ui.name), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color,
+                    maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("pad_sheet_title"))
+                SheetClose(close, "pad_sheet_close")
+            }
         }
         actions.listenAlone?.let { AloneButton(ui.alone, tr("Écouter seul"), ui.name, "pad_alone", toggle = it) }
         if (ui.alone) Text(tr("Joue en boucle, tout seul : change le son pour comparer."), style = MaterialTheme.typography.bodySmall, color = Neon.Acid)
         Text(tr("Son"), style = MaterialTheme.typography.titleSmall)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = 2) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = if (narrow) 1 else 2) {
             if (ui.hasSample) SoundTile(tr("Son d'origine"), "pad_sound_origin", Modifier.weight(1f), onClick = actions.origin)
             ui.sounds.forEachIndexed { i, name -> SoundTile(name, "pad_sound_$i", Modifier.weight(1f), current = name == ui.name || name.substringBefore(" · ") == ui.name) { actions.pickSound(i) } }
             OutlinedButton(onClick = actions.more, modifier = Modifier.weight(1f).heightIn(min = 56.dp).testTag("pad_sound_more")) {
@@ -266,6 +302,7 @@ fun PadSheetContent(ui: PadSheetUi, actions: PadSheetActions, close: () -> Unit)
 @Composable
 private fun PadLayers(ui: PadSheetUi, actions: PadSheetActions) {
     var choosing by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf(false) }
+    val narrow = narrowSheet()
     com.pocketstudio.ui.WithHelp(
         com.pocketstudio.app.help.ScreenHelp.LAYERS, about = listOf("pad_layers", "pad_layer_add", "pad_layer_slider_*", "pad_layer_remove_*"),
     ) {
@@ -290,7 +327,7 @@ private fun PadLayers(ui: PadSheetUi, actions: PadSheetActions) {
         OutlinedButton(onClick = { choosing = !choosing }, modifier = Modifier.heightIn(min = 48.dp).testTag("pad_layer_add")) {
             Text(if (choosing) tr("Fermer") else tr("Ajouter une couche"))
         }
-        if (choosing) FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = 2) {
+        if (choosing) FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp), maxItemsInEachRow = if (narrow) 1 else 2) {
             ui.sounds.forEachIndexed { i, name -> SoundTile(name, "pad_layer_sound_$i", Modifier.weight(1f)) { choosing = false; actions.addLayer(i) } }
         }
     }

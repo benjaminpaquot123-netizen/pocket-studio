@@ -135,6 +135,7 @@
           "id": "conga_late",
           "levels": "p",
           "text": "À toi : avec l'outil « Force », règle le « Décalage du coup » de la moitié des congas à +5 ms ou plus : elles traînent un tout petit peu, comme un percussionniste.",
+          "why": "Des congas un peu en retard, c'est la main du percussionniste : le groove respire au lieu de taper comme une machine.",
           "check": "offset:perc:late",
           "spot": "rhythm.pattern",
           "target": "perc",

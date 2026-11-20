@@ -1,0 +1,8 @@
+# Tour 9, lot L11 : décisions
+
+- F131 : Retour défait d'abord ce qui est ouvert (panneau du tuto replié, feuille, éditeur), et ne quitte le projet qu'en dernier. Raison : la phrase d'acceptation. Retour arrière : revenir au `BackHandler` d'avant dans `AppRoot.kt` (commit 8b8bada5).
+- D17 : l'erreur du kit se dit sur la carte du tuto, avec « Réessayer » et « Plus tard », plutôt qu'un repli muet sur le kit Studio. Raison : « affiche une erreur claire ». Retour arrière : 07b9d5dc.
+- N1 : la bascule de la Structure sort de la colonne qui défile au lieu de garder la colonne fixe. Raison : seule ma bascule est à moi dans `AppRoot.kt` (L15 y travaille aussi). Retour arrière : b028a173.
+- N3 : plus de place plutôt qu'un texte rétréci. FlowRow pour « Lancer à » et la rangée du haut, hauteurs minimales au lieu de fixes, cercle de l'aide aussi haut que la ligne de son « ? » (1,25 fois sa taille), jamais sous 18 dp, donc inchangé à 100 % et plus grand dès 130 %, avec une taille simple pour ne pas casser les rangées qui mesurent leurs enfants, compteur qui s'élargit jusqu'à 1,5 fois avec la police. Raison : la relecture de L10 disait qu'au plancher de 1 sp le compteur devient illisible ; le remède est la place. Plafond 1,5 : au-delà, la barre de 360 dp ne tient plus le tempo et le bouton REC. Retour arrière : 42afe85b.
+- F139 : le vrai chemin (note locale effacée au toucher) a sa garde, sans rouge puisque la correction de L10 le couvre déjà ; la garde est prouvée rouge en retirant cette correction. Retour arrière : supprimer `CutLocalNoteScrollTest.kt`.
+- Une amenée tombée au hasard une fois (faute connue du banc) : relancée, pas de changement du banc dans ce lot (le banc n'est pas dans mes fichiers).

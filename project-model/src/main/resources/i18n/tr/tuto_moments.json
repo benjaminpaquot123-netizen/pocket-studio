@@ -9,7 +9,7 @@
   "À toi : écris les 5 notes de la mesure 2.": "Sıra sende: 2. ölçünün 5 notasını yaz.",
   "À toi : écris les 4 notes de la mesure 2.": "Sıra sende: 2. ölçünün 4 notasını yaz.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "Sıra sende: 1. ölçüdeki her noktalı akorun alttaki notasına dokun: bütün akor konur.",
-  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Sıra sende: “Ben yaparım” Ton kartını açar: işaretli iki düğmeye dokun.",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Sıra sende: “Ben yaparım” “Parçanın tonu” kartını açar: işaretli iki düğmeye dokun.",
   "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "Sıra sende: “Kick” pad'inde 2 ölçünün noktalı kutularına dokun.",
   "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "Sıra sende: “Trampet” pad'inde 2 ölçünün noktalı kutularına dokun.",
   "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "Sıra sende: “Hi-hat” pad'inde 2 ölçünün noktalı kutularına dokun.",
@@ -19,7 +19,7 @@
   "À toi : sur le pad « Cymbale », touche la toute première case.": "Sıra sende: “Zil” pad'inde en ilk kutuya dokun.",
   "À toi : dernière mesure, efface les coups du dernier temps.": "Sıra sende: son ölçüde, son vuruştaki vuruşları sil.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "Sıra sende: “Ekle” altında sırayla dokun: Giriş, Nakarat, Kıta, Ön nakarat, Nakarat, Kıta, Ön nakarat, Nakarat, sonra bitiş için Giriş.",
-  "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "Sıra sende: “Ekle” altında sırayla dokun: Giriş, Kıta, Ön nakarat, Nakarat, Post-nakarat, Kıta, Ön nakarat, Nakarat, Köprü, Nakarat, sonra bitiş için Giriş.",
-  "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "Sıra sende: her bölüme süresini ver: Giriş 4 ölçü, Kıta 8, Ön nakarat 4, Nakarat 16 (2. seferde 8, 3. seferde 16), Post-nakarat 4, Köprü 8, Bitiş 4.",
-  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Sıra sende: “Mix” sekmesinde “Akorlar” ve “Melodi” sürgülerini biraz indir. Sürgünün altında “Normal”, “−1” olur."
+  "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "Sıra sende: “Ekle” altında sırayla dokun: Giriş, Kıta, Ön nakarat, Nakarat, Nakarat sonrası, Kıta, Ön nakarat, Nakarat, Köprü, Nakarat, sonra bitiş için Giriş.",
+  "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "Sıra sende: her bölüme süresini ver: Giriş 4 ölçü, Kıta 8, Ön nakarat 4, Nakarat 16 (2. seferde 8, 3. seferde 16), Nakarat sonrası 4, Köprü 8, Bitiş 4.",
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Sıra sende: “Mix” sekmesinde “Akorlar” ve “Melodi” sürgülerini biraz indir. Sürgünün altındaki “Normal”, “−1” olur."
 }

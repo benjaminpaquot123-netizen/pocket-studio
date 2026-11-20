@@ -1547,3 +1547,21 @@
 - 2026-11-19 · Mode boost, équipes (Benjamin : « Tout ce qui est réparable tu envois. Même si c'est le même fichier ») : tout défaut réparable part tout de suite à une équipe, même sur un fichier déjà ouvert (fonctions différentes, conflits réglés par le lot qui fusionne après). Plafond des 31 discussions levé par Benjamin. Retour arrière : un lot par fichier.
 - 2026-11-19 · Mode boost, tuto : avec `PS_JUGE_BOOST=1`, le pré-vol et le portail reportent le siège de contrôle du tuto à la grande vérification de fin au lieu de refuser. Raison : aucun rejeu de testeur avant l'entrée en mode boost. Retour arrière : ne plus exporter la variable.
 - 2026-11-19 · Équipes muettes, fermées seules après « fini » (Benjamin). Raison : les discussions parlaient trop. Retour arrière : retirer la ligne de CLAUDE.md.
+- 2026-11-19 · lot « L10 » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-L10.md`
+- 2026-11-19 · Boost éco (Benjamin : « rendre le mode boost comme il est, en mode économie de quota, même s'il faut diminuer le nombre de discussions, je serais d'accord ») : le boost garde ses règles d'entrée ; lots pleins (8 à 15 défauts par zone), un fichier = un lot, 5 à 7 discussions au plus, un seul message par lot, chef muet hors jalon. Raison : mesuré le 19 novembre, un lot de 3 défauts coûte 4,6 $ par défaut, un lot de 15 entre 1,5 et 2,3 $ ; le chef, 10 $ l'heure en réveils. Gain attendu : un tiers de quota, pour un débit à peu près moitié moindre au plus fort. Détail : `docs/audits/ultra/BOOST-ECO.md`. Retour arrière : « boost plein », retirer la ligne de CLAUDE.md.
+- 2026-11-19 · Lots qui ne corrigent que des textes : on reste sur Opus partout (Benjamin : « 1a »). Raison : aucun risque sur la qualité. Retour : Benjamin choisit 1B (Sonnet pour ces lots).
+- 2026-11-19 · Benjamin : « Tu te stop après les réparations » : après la dernière fusion du tour 9 (lot des miettes compris), point final et arrêt ; pas de CI complète, de testeurs ni de PR vers main sans nouvel ordre. Retour : Benjamin relance la suite.
+- 2026-11-19 · lot « L8 » (tour-9) : 17 décision(s) dans `docs/decisions/tour-9-L8.md`
+- 2026-11-19 · Portail en mode boost : un lot du tour 9 peut ajouter ses propres lignes « tenté » / « pas pris » au registre des réparations (le trieur du tour 9 n'en a écrit aucune) ; un état réservé (corrigé, rejoué, constaté) reste refusé. Retour arrière : enlever PS_JUGE_BOOST.
+- 2026-11-19 · lot « L5b » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-L5b.md`
+- 2026-11-19 · lot « L1 » (tour-9) : 10 décision(s) dans `docs/decisions/tour-9-L1.md`
+- 2026-11-19 · lot « L17 » (tour-9) : 11 décision(s) dans `docs/decisions/tour-9-L17.md`
+- 2026-11-20 · lot « L12 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-L12.md`
+- 2026-11-20 · lot « L2 » (tour-9) : 12 décision(s) dans `docs/decisions/tour-9-L2.md`
+- 2026-11-20 · lot « L16 » (tour-9) : 7 décision(s) dans `docs/decisions/tour-9-L16.md`
+- 2026-11-20 · lot « L11 » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-L11.md`
+- 2026-11-20 · Arrêt du tour 9 sur ordre de Benjamin (quota) : plus de lot neuf, discussions en pause, seuls les lots finis passent le portail. Portail assoupli (40f244e06, adac8695a, de32f8b2b : comparaison à la base commune, fusion JSON clé par clé) ; retour arrière : revert de ces trois commits.
+- 2026-11-20 · lot « L7 » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-L7.md`
+- 2026-11-20 · lot « L4 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-L4.md`
+- 2026-11-20 · lot « L6 » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-L6.md`
+- 2026-11-20 · lot « L14 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-L14.md`

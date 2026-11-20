@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "이 스타일의 진짜 드럼 사운드예요. 내 곡과 예시에 쓰여요. 없어도 튜토리얼은 기본 사운드로 돌아가요.",
   "Téléchargement du kit… %d %%": "킷 다운로드 중… %d %%",
   "Mettre les sons du kit %s sur les pads": "%s 킷의 사운드를 패드에 넣기",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "킷을 불러오지 못했어요. 튜토리얼은 기본 사운드로 계속돼요.",
   "Télécharger le kit %1$s (%2$s)": "%1$s 킷 다운로드 (%2$s)",
   "Recommencer le tuto": "튜토리얼 다시 시작",
   "Passer à %d mesures": "%d마디로 바꾸기",

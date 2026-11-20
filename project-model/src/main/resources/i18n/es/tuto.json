@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "Los sonidos de batería auténticos del estilo, para tu tema y para los ejemplos. Sin ellos, el tutorial funciona con los sonidos integrados.",
   "Téléchargement du kit… %d %%": "Descargando el kit… %d %%",
   "Mettre les sons du kit %s sur les pads": "Poner los sonidos del kit %s en los pads",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "No se pudo cargar el kit: el tutorial sigue con los sonidos integrados.",
   "Télécharger le kit %1$s (%2$s)": "Descargar el kit %1$s (%2$s)",
   "Recommencer le tuto": "Empezar de nuevo el tutorial",
   "Passer à %d mesures": "Pasar a %d compases",

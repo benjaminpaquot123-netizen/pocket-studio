@@ -512,6 +512,9 @@ data class LayersEditorUi(
     val favorites: Favorites = Favorites(),
 )
 
+/** The name the layers editor gives the track's own sound (its first card and its title). */
+internal fun layersOwnSound(t: com.pocketstudio.model.InstrumentTrack): String = com.pocketstudio.model.guide.GuideSheets.soundName(t)
+
 /** A sound being chosen: for a new layer of [role] ([index] null), or for layer [index]. */
 private data class Picking(val role: String?, val index: Int?)
 
@@ -769,7 +772,7 @@ internal fun LayersEditorRoute(vm: RhythmViewModel, track: Int, close: () -> Uni
     DisposableEffect(track) { onDispose { vm.soloLayer(track, null) } }
     val t = project.track(track)
     LayersEditor(
-        LayersEditorUi(DefaultNames.shown(t.name), com.pocketstudio.model.guide.GuideSheets.soundName(t), layers, heard, transport.playing, favorites),
+        LayersEditorUi(DefaultNames.shown(t.name), layersOwnSound(t), layers, heard, transport.playing, favorites),
         LayersEditorActions(
             close = close,
             play = vm::togglePlay,

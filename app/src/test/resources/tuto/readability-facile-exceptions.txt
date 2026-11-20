@@ -53,7 +53,6 @@ acid_techno/gap pl GRID 100% 360dp 4/3
 acid_techno/gap tr GRID 100% 360dp 4/3
 acid_techno/gap id GRID 100% 360dp 4/3
 acid_techno/gap hi GRID 100% 360dp 4/2
-acid_techno/gap ja GRID 100% 360dp 4/3
 acidcore/gap fr GRID 100% 360dp 4/3
 acidcore/gap en GRID 100% 360dp 4/3
 acidcore/gap nl GRID 100% 360dp 4/3
@@ -65,7 +64,6 @@ acidcore/gap pl GRID 100% 360dp 4/3
 acidcore/gap tr GRID 100% 360dp 4/3
 acidcore/gap id GRID 100% 360dp 4/3
 acidcore/gap hi GRID 100% 360dp 4/2
-acidcore/gap ja GRID 100% 360dp 4/3
 trance/gap fr GRID 100% 360dp 4/3
 trance/gap en GRID 100% 360dp 4/3
 trance/gap nl GRID 100% 360dp 4/3
@@ -77,7 +75,6 @@ trance/gap pl GRID 100% 360dp 5/3
 trance/gap tr GRID 100% 360dp 4/3
 trance/gap id GRID 100% 360dp 4/3
 trance/gap hi GRID 100% 360dp 4/2
-trance/gap ja GRID 100% 360dp 4/3
 trance/levels fr GRID 100% 360dp 6/3
 trance/levels fr OPEN 130% 360dp 8/6
 trance/levels en GRID 100% 360dp 5/3
@@ -117,7 +114,6 @@ house/gap pl GRID 100% 360dp 5/3
 house/gap tr GRID 100% 360dp 4/3
 house/gap id GRID 100% 360dp 4/3
 house/gap hi GRID 100% 360dp 4/2
-house/gap ja GRID 100% 360dp 4/3
 dnb/song_order fr OPEN 130% 360dp 8/6
 dnb/song_order en OPEN 130% 360dp 7/6
 dnb/song_order nl OPEN 130% 360dp 8/6
@@ -236,7 +232,6 @@ dubstep/gap pl GRID 100% 360dp 5/3
 dubstep/gap tr GRID 100% 360dp 4/3
 dubstep/gap id GRID 100% 360dp 4/3
 dubstep/gap hi GRID 100% 360dp 4/2
-dubstep/gap ja GRID 100% 360dp 4/3
 dubstep/levels fr GRID 100% 360dp 5/3
 dubstep/levels en GRID 100% 360dp 4/3
 dubstep/levels nl GRID 100% 360dp 5/3
@@ -265,7 +260,6 @@ minimal/gap pl GRID 100% 360dp 4/3
 minimal/gap tr GRID 100% 360dp 4/3
 minimal/gap id GRID 100% 360dp 4/3
 minimal/gap hi GRID 100% 360dp 4/2
-minimal/gap ja GRID 100% 360dp 4/3
 minimal/levels fr GRID 100% 360dp 6/3
 minimal/levels fr OPEN 130% 360dp 8/6
 minimal/levels en GRID 100% 360dp 5/3
@@ -320,7 +314,6 @@ gabber/gap pl GRID 100% 360dp 5/3
 gabber/gap tr GRID 100% 360dp 4/3
 gabber/gap id GRID 100% 360dp 4/3
 gabber/gap hi GRID 100% 360dp 4/2
-gabber/gap ja GRID 100% 360dp 4/3
 liquid_dnb/song_order fr OPEN 130% 360dp 8/6
 liquid_dnb/song_order en OPEN 130% 360dp 7/6
 liquid_dnb/song_order nl OPEN 130% 360dp 8/6
@@ -347,7 +340,6 @@ liquid_dnb/gap pl GRID 100% 360dp 5/3
 liquid_dnb/gap tr GRID 100% 360dp 4/3
 liquid_dnb/gap id GRID 100% 360dp 4/3
 liquid_dnb/gap hi GRID 100% 360dp 4/2
-liquid_dnb/gap ja GRID 100% 360dp 4/3
 neurofunk/song_order fr OPEN 130% 360dp 8/6
 neurofunk/song_order en OPEN 130% 360dp 7/6
 neurofunk/song_order nl OPEN 130% 360dp 8/6
@@ -391,7 +383,6 @@ jungle/gap pl GRID 100% 360dp 4/3
 jungle/gap tr GRID 100% 360dp 4/3
 jungle/gap id GRID 100% 360dp 4/3
 jungle/gap hi GRID 100% 360dp 4/2
-jungle/gap ja GRID 100% 360dp 4/3
 jungle/levels fr GRID 100% 360dp 5/3
 jungle/levels en GRID 100% 360dp 4/3
 jungle/levels nl GRID 100% 360dp 5/3

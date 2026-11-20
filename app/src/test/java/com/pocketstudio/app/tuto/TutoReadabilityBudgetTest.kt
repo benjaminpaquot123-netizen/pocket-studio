@@ -79,8 +79,8 @@ class TutoReadabilityBudgetTest {
 
     companion object {
         const val FACILE = "tuto/readability-facile-exceptions.txt"
-        const val FACILE_FROZEN = 409
-        const val PRO_RATCHET = 3725
+        const val FACILE_FROZEN = 400
+        const val PRO_RATCHET = 3722
         val GRID_CHECKS = setOf("lane", "gap", "fill", "crash", "velocity", "triplet", "offset", "swing")
     }
 }

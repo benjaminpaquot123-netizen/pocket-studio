@@ -17,6 +17,7 @@ chemin: Panneau tuto, « Pourquoi ? » debout | test: Tour9L13TutoWhyTest#theRea
 chemin: Panneau tuto, « Pourquoi ? » couché | test: Tour9L13TutoWhyTest#onItsSideTooTheReasonOpensUnderItsButtonAndStays
 chemin: Panneau tuto, flèche du repli | test: Tour9L13TutoNoDemoBySurpriseTest#theTouchMeantForTheFoldNeverStartsADemo
 chemin: Carte des parties | test: Tour9L13TutoSongMapTest#everyPartWholeWithItsOwnColourEvenAt200
+chemin: Panneau tuto, « Lire la suite » à 200 % | test: Tour9L13TutoReadAllTest#readAllShowsTheWholeInstruction
 chemin: Bandeau du kit, carte de la grille (L14, garde) | test: Tour9L14TutoPanelTest#kitLeavesTheMapWhole
 chemin: Panneau tuto, boutons voisins (L14, garde) | test: Tour9L14TutoPanelTest#neighboursShareTextSize
 
@@ -42,10 +43,11 @@ ne corrige pas: F008 : non reproduit à neuf, garde gardée
 - F011 : chaque bloc de la carte montre nom et durée, chaque partie sa couleur, même à 200 %. Rouge 60aa2613, vert 5f2b8411.
 - F009 : la raison s'ouvre juste sous « Pourquoi ? », ne chasse pas la consigne, reste ouverte au « Bravo » ; à 200 % elle défile dans sa propre place. Rouge 60aa2613, vert fd80b1b7.
 - Garde L14 après fusion de l'intégration (4dd35036) : le plafond F003 coupait la carte quand le bandeau du kit arrivait, et le bouton plein partageait la rangée à parts égales. Vert 630ca6f7.
+- Rejeu t9-d14 (« Lire la suite ») : le plafond F003 coupait la consigne entière. « Lire la suite » lève le plafond et rend aux mots toute leur hauteur. Rouge 894bb6df, vert 4c8d92ef.
 - F008 : non reproduit à neuf ; test de garde (Tour9L13TutoMineAfterPartTest) dans 60aa2613.
 
 ## Choix notés
-- Plafond du panneau debout : 60 % ; 85 % quand la raison est ouverte ; sur un pas de carte, 60 % + hauteur du kit + 6 dp, sans dépasser 85 %.
+- Plafond du panneau debout : 60 % ; 85 % quand la raison est ouverte ; sur un pas de carte, 60 % + hauteur du kit + 6 dp, sans dépasser 85 %. Aucun plafond une fois « Lire la suite » touché (la consigne entière est demandée).
 - À 200 %, la raison défile dans sa place ; si la place manque encore, elle passe sous les mots (repli `whyShed`).
 - Boutons côte à côte seulement si chacun tient dans sa part égale de la rangée (espace de tête compris), sinon empilés.
 

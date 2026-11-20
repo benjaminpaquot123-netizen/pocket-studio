@@ -21,3 +21,7 @@ chemin: Rythme, tuto « gap », ja | test: Tour9L5bTutoWordsTest#f090CellsToEras
 - Corrigé : « TrackBar.kt: it » ajouté aux sources vérifiées ; ce sont les noms SoundLibrary (SYNTH, PLAITS), déjà traduits et contrôlés par ModelTextsTest. Le test n'est pas affaibli : la source est réellement vérifiée.
 
 chemin: Synthé, barre de piste (nom du son le plus proche) | test: I18nCatalogTest#everyTextPassedInAVariableComesFromACheckedSource
+
+## Non corrigé ici : T9PanelTargetTest#fillCellsAboveThePanelIn360At200Japanese
+- Rouge sur la base : « panel at 734.0 ; cells 16, whole above it 0 ».
+- Ce n'est pas le texte : la consigne japonaise raccourcie d'un tiers laisse le panneau exactement au même endroit (734.0). La cause est dans la mise en page du panneau ou du défilement de la grille (TutoPanel.kt, RhythmScreen.kt), fichiers de L13 et L15 : renvoyé au chef.

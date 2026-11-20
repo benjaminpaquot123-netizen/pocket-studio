@@ -1567,6 +1567,28 @@ private fun partColor(label: String): Color = when {
     else -> Color(0xFF9AA4B2)
 }
 
+/** Tour 9 F011: a colour for each part not yet coloured by its kind (« Drop 2 » after « Drop », « Groove » after « Intro »). */
+private val MORE_PART_COLOURS = listOf(
+    Color(0xFF7CD992), Color(0xFFB98CFF), Color(0xFFFF8A3D), Color(0xFF3FD0C9), Color(0xFFF2E25B), Color(0xFFE05C9E), Color(0xFF8C6E4F), Color(0xFFEDEDED),
+)
+
+/**
+ * Each distinct part of [labels] its own colour (Tour 9 F011: the Intro, the Groove and the Fin, or the Drop and the Drop 2,
+ * had one colour in the legend): its kind's colour ([partColor]) when no part before has one close to it, else the first
+ * of [MORE_PART_COLOURS] apart from all the colours given.
+ */
+@Composable
+private fun partColors(labels: List<String>): Map<String, Color> {
+    val out = LinkedHashMap<String, Color>()
+    fun apart(a: Color, b: Color) = kotlin.math.abs(a.red - b.red) + kotlin.math.abs(a.green - b.green) + kotlin.math.abs(a.blue - b.blue) >= 0.3f
+    for (label in labels.distinct()) {
+        val own = partColor(label)
+        out[label] = if (out.values.all { apart(it, own) }) own
+            else MORE_PART_COLOURS.firstOrNull { c -> out.values.all { apart(it, c) } } ?: own
+    }
+    return out
+}
+
 /**
  * The song's map: one block per part, as wide as its bars (its name and bars in it when they fit,
  * never cut to « M » or « Br »), the energy curve above (how many of its bricks play), every part's
@@ -1595,33 +1617,30 @@ fun SongMap(blocks: List<TutoMapBlock>, modifier: Modifier = Modifier, focus: St
             drawPath(path, curve, style = Stroke(width = 3.dp.toPx()))
             drawLine(curve.copy(alpha = 0.25f), Offset(0f, size.height), Offset(size.width, size.height), strokeWidth = 1.dp.toPx())
         }
-        Row(Modifier.fillMaxWidth().height(44.dp), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-            blocks.forEachIndexed { i, b ->
-                val c = partColor(b.label)
-                val on = lit(b)
-                androidx.compose.foundation.layout.BoxWithConstraints(
-                    Modifier.weight(b.bars.toFloat()).fillMaxSize().clip(RoundedCornerShape(6.dp))
-                        .background(c.copy(alpha = if (focus != null && on) 0.6f else if (on) 0.3f else 0.12f))
-                        .border(if (focus != null && on) 2.5.dp else 1.dp, if (on) c else c.copy(alpha = 0.4f), RoundedCornerShape(6.dp))
-                        .then(if (focus != null && on) Modifier.testTag("tuto_map_lit_$i") else Modifier),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    // A name only where it fits whole (the names are written under the map anyway). Tour 6 (N29, N30): measured
-                    // as drawn, in its language and font size (« Breal », « ブレイク » cut, « 16 » out of its block in Arabic
-                    // at 130 %): the name and its bars when both fit, else the bars alone, else nothing.
-                    val name = Scene.shownLabel(b.label)
-                    val bars = "${b.bars}"
-                    val style = MaterialTheme.typography.labelSmall
-                    val n = measurer.measure(name, style, softWrap = false, maxLines = 1).size
-                    val k = measurer.measure(bars, style, softWrap = false, maxLines = 1).size
-                    val w = with(LocalDensity.current) { (maxWidth - 2.dp).toPx() }
-                    val h = with(LocalDensity.current) { (maxHeight - 2.dp).toPx() }
-                    when {
-                        n.width <= w && k.width <= w && n.height + k.height <= h -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(name, style = style, maxLines = 1, softWrap = false, color = if (on) Neon.TextPrimary else Neon.TextSecondary)
-                            Text(bars, style = style, color = Neon.TextSecondary, maxLines = 1, softWrap = false)
-                        }
-                        k.width <= w && k.height <= h -> Text(bars, style = style, color = Neon.TextSecondary, maxLines = 1, softWrap = false)
+        // Tour 9 F011 (16 seats): every block shows its name and its bars whole, even at 200 % (a narrow block showed its
+        // bars alone, or nothing). Each block is as wide as its bars at least, wider when its words need it; the blocks
+        // go on to a next line, in the song's order, when they no longer fit on one.
+        val colours = partColors(blocks.map { it.label })
+        androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxWidth()) {
+            val gap = 2.dp
+            val room = maxWidth
+            FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(gap), verticalArrangement = Arrangement.spacedBy(gap)) {
+                blocks.forEachIndexed { i, b ->
+                    val c = colours.getValue(b.label)
+                    val on = lit(b)
+                    val share = ((room - gap * (blocks.size - 1)) * (b.bars.toFloat() / total)).coerceAtLeast(0.dp)
+                    Column(
+                        Modifier.widthIn(min = minOf(share, room), max = room).heightIn(min = 44.dp).clip(RoundedCornerShape(6.dp))
+                            .background(c.copy(alpha = if (focus != null && on) 0.6f else if (on) 0.3f else 0.12f))
+                            .border(if (focus != null && on) 2.5.dp else 1.dp, if (on) c else c.copy(alpha = 0.4f), RoundedCornerShape(6.dp))
+                            .then(if (focus != null && on) Modifier.testTag("tuto_map_lit_$i") else Modifier)
+                            .testTag("tuto_map_block_$i").padding(horizontal = 4.dp, vertical = 2.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
+                    ) {
+                        val style = MaterialTheme.typography.labelSmall
+                        Text(Scene.shownLabel(b.label), style = style, textAlign = TextAlign.Center, color = if (on) Neon.TextPrimary else Neon.TextSecondary,
+                            modifier = Modifier.testTag("tuto_map_name_$i"))
+                        Text("${b.bars}", style = style, color = Neon.TextSecondary, maxLines = 1, softWrap = false, modifier = Modifier.testTag("tuto_map_bars_$i"))
                     }
                 }
             }
@@ -1629,10 +1648,10 @@ fun SongMap(blocks: List<TutoMapBlock>, modifier: Modifier = Modifier, focus: St
         // Every part's name in full, in the song's order, with its colour (the one the step is about in bold).
         FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.testTag("tuto_map_names")) {
             blocks.map { it.label }.distinct().forEach { label ->
-                val c = partColor(label)
+                val c = colours.getValue(label)
                 val on = focus == label
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(10.dp).clip(RoundedCornerShape(3.dp)).background(if (focus == null || on) c else c.copy(alpha = 0.4f)))
+                    Box(Modifier.size(10.dp).clip(RoundedCornerShape(3.dp)).background(if (focus == null || on) c else c.copy(alpha = 0.4f)).testTag("tuto_map_swatch_$label"))
                     Text(" " + Scene.shownLabel(label), style = MaterialTheme.typography.labelMedium, fontWeight = if (on) FontWeight.Bold else FontWeight.Normal,
                         color = if (focus == null || on) Neon.TextPrimary else Neon.TextSecondary)
                 }

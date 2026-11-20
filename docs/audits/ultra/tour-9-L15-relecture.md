@@ -1,5 +1,5 @@
+Relu : bc5c014bb8903e264186216db3f296d6ccf2b30a
 # Relecture neuve — lot tour-9 L15 (eq/tour-9-L15, b72de0c9..d99bbffb)
-Relu : d99bbffb44531d49e84632ada0a424ce75bf1574
 
 Périmètre : `git diff b72de0c9 HEAD`. Appli : `tuto/TutoPanel.kt` (ligne du tuto au-dessus de la grille), `tuto/TutoController.kt`
 (`swingAim`), `rhythm/RhythmScreen.kt` (en-tête « Pas », bouton vers le pad demandé, Swing « − / + » et « Cible »),

@@ -47,17 +47,17 @@ chemin: tuto liquid_dnb Pro, grille de la caisse claire | test: Tour9TutoL5aCour
 chemin: tuto, grille des pads, étape de batterie | test: Tour9TutoL5aPadsTest#aReportedDrumStepNamesItsPadAsThePadShows
 chemin: tuto, panneau des textes de cours | test: Tour9TutoL5aCourseTest#courseTextsSayWhatTheScreenShows
 chemin: tuto, ligne du moment du panneau | test: Tour9TutoL5aPanelWordsTest#aButtonNamedInTheMomentLineHasNoQuotesInsideItsQuotes
-chemin: tuto jump_up, rouleau en pointillé | test: Tour9TutoL5aDottedTest#theNotesDottedAreTheOnesTheTextCounts
+- tuto jump_up, rouleau en pointillé : couvert par le test du modèle (project-model) Tour9TutoL5aDottedTest#theNotesDottedAreTheOnesTheTextCounts (note du chef : le portail ne lit que app/src/test)
 chemin: tuto, étape prête, carte du kit proposée | test: Tour9TutoL5aKitReadyTest#theReadyStepSaysTheKitIsNotLoadedWhileItsCardIsOffered
 chemin: feuille du kit, nom du pack chargé | test: Tour9TutoL5aKitReadyTest#aLoadedPackIsNamedEvenWithARumblePad
 chemin: pistes, puce de la 303 | test: Tour9AcidChipNameTest#theAcidChipNamesNoSecondBass
-chemin: session, noms des parties à lettre | test: Tour9TutoL5aPartNamesTest#aLetteredPartIsShownAsTheConsigneNamesIt
+- session, noms des parties à lettre : couvert par le test du modèle (project-model) Tour9TutoL5aPartNamesTest#aLetteredPartIsShownAsTheConsigneNamesIt (note du chef : le portail ne lit que app/src/test)
 chemin: tuto, lignes en clair sous la consigne | test: Tour9PlainWordsL5aTest#aLongerWordIsNotTheWordOfTheTrade
 chemin: tuto acid_techno, lignes en clair des mots acid | test: Tour9PlainWordsL5aTest#theAcidWordsAreExplained
 chemin: tuto acid_techno, panneau en toutes les langues, notes de la 303 | test: Tour9TutoL5aNotesTest#acidTechnoNamesTheNotesAsTheAcidKeyboardDoes
 chemin: tuto, panneau en arabe, noms de notes | test: Tour9TutoL5aNotesTest#arabicCourseTextsNameNotesInSolfege
-chemin: tuto acid_techno, Simple, panneau en arabe à 360 dp | test: Tour9TutoL5aShotsTest#simpleAcidStepNamesNotesAsTheKeys
-chemin: tuto acid_techno, Pro, panneau en arabe à 360 dp, 130 % | test: Tour9TutoL5aShotsLargeTextTest#proAcidStepNamesNotesAsTheKeys
+chemin: tuto acid_techno, Simple, panneau en arabe à 360 dp | test: Tour9TutoL5aShots#simpleAcidStepNamesNotesAsTheKeys
+chemin: tuto acid_techno, Pro, panneau en arabe à 360 dp, 130 % | test: Tour9TutoL5aShots#proAcidStepNamesNotesAsTheKeys
 chemin: tuto, onglet Acid 303 nommé | test: Tour9TutoL5aWordsTest#aStepNamesTheAcidTabAsTheTabShowsIt
 chemin: tuto acid_techno, Intro, pad du kick | test: Tour9TutoL5aWordsTest#theAcidTechnoIntroNamesTheKickThePadShows
 chemin: tuto retro_techno, roulement de caisse claire | test: Tour9TutoL5aCourseTest#retroTechnoRollIsInTheBarTheTextSays

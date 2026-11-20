@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "Stilin gerçek davul sesleri, parçan ve örnekler için. Bunlar olmadan eğitim yerleşik seslerle çalışır.",
   "Téléchargement du kit… %d %%": "Kit indiriliyor… %%%d",
   "Mettre les sons du kit %s sur les pads": "%s kitinin seslerini pad'lere koy",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "Kit yüklenemedi: eğitim yerleşik seslerle devam ediyor.",
   "Télécharger le kit %1$s (%2$s)": "%1$s kitini indir (%2$s)",
   "Recommencer le tuto": "Eğitimi baştan başlat",
   "Passer à %d mesures": "%d ölçüye geç",

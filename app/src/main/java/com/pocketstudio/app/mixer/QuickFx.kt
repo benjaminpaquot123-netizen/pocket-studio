@@ -107,6 +107,8 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions, kind: Sound
     // The ambience a finger holds (heard, not chosen).
     var auditioning by remember(ch) { mutableStateOf<String?>(null) }
     Column(Modifier.fillMaxWidth().testTag("quick_fx_$ch"), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Tour 9, F021 (t9-33): the effects window covers the course's card; a step ticked here is said over it.
+        com.pocketstudio.app.tuto.TutoTickedOverWindow()
         WithHelp(Glossary.FX_PRESET) { Text(tr("Ambiances toutes prêtes"), style = MaterialTheme.typography.labelLarge, color = Neon.Magenta) }
         Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (kind != null) {

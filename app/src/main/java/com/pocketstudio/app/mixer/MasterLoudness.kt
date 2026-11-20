@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.app.export.Loudness
 import com.pocketstudio.app.help.Glossary
+import com.pocketstudio.app.learn.spot
 import com.pocketstudio.app.rhythm.ExportUi
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.LoudnessTarget
@@ -238,7 +239,7 @@ internal fun MasterLoudnessPanel(
         Text(tr("Volume visé"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f, fill = false))
     }
     val colors = pillColors(Neon.Cyan)
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    FlowRow(Modifier.spot("mixer_target"), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         TARGET_CHOICES.forEach { c ->
             // « Libre » reads its value only once chosen (until then, the name alone).
             val lufs = if (c == TargetChoice.FREE && choice != TargetChoice.FREE) null else LoudnessTargets.shown(c, styleLufs, freeLufs)

@@ -132,7 +132,7 @@ object GuideSheets {
 
     private fun soundOf(p: Project, t: GuideTrack): String = when {
         // A library sound by its name (« Basse ronde »), else what kind of sound it is.
-        t.key.startsWith("inst:") -> soundName(p.track(t.key.removePrefix("inst:").toInt()))
+        t.key.startsWith("inst:") -> tabSoundName(p.track(t.key.removePrefix("inst:").toInt()))
         t.key.startsWith("pad:") -> t.key.removePrefix("pad:").toInt().let { lane ->
             p.drums.lanes.getOrNull(lane)?.sample?.name?.let(com.pocketstudio.model.DefaultNames::shownSample) ?: com.pocketstudio.model.DefaultNames.shown(t.name)
         }
@@ -151,6 +151,38 @@ object GuideSheets {
         }
         return name?.let { libraryName -> com.pocketstudio.model.i18n.tr(libraryName) } ?: t.soundLabel
     }
+
+    /**
+     * Instrument track [t]'s sound as its tab names it: [soundName], or, once a few knobs of a library sound were turned,
+     * that library sound's name (never « Synthé » or « Plaits » for a sound the user chose). Same rule as the app's
+     * track tab (`trackSoundName`, TrackBar.kt), which a test keeps aligned (Tour9TextesGuideSoundNameTest).
+     */
+    fun tabSoundName(t: com.pocketstudio.model.InstrumentTrack): String {
+        val exact = soundName(t)
+        if (exact != t.soundLabel || t.instrument != null) return exact
+        fun moved(a: List<Float>, b: List<Float>) = a.zip(b).count { (x, y) -> kotlin.math.abs(x - y) > 1e-4f }
+        val near = when (t.engine) {
+            com.pocketstudio.model.InstrumentTrack.ENGINE_SYNTH -> {
+                fun com.pocketstudio.model.SynthPatch.knobs() = sanitized().with(com.pocketstudio.model.SynthPatch.GAIN, 0.5f).values
+                val mine = t.synth.knobs()
+                // Never a fresh synth's: it is no library sound, however near one.
+                if (moved(mine, com.pocketstudio.model.SynthPatch().knobs()) == 0) emptyList()
+                else com.pocketstudio.model.SoundLibrary.SYNTH.map { it.name to moved(mine, it.sound.knobs()) }
+            }
+            com.pocketstudio.model.InstrumentTrack.ENGINE_PLAITS -> {
+                // Another Plaits model is another sound; level and gain are no knob of the sound.
+                fun com.pocketstudio.model.PlaitsPatch.knobs() = listOf(harmonics, timbre, morph, decay, colour, release)
+                val mine = t.plaits
+                if (mine == com.pocketstudio.model.PlaitsPatch()) emptyList()
+                else com.pocketstudio.model.SoundLibrary.PLAITS.filter { it.sound.model == mine.model }.map { it.name to moved(mine.knobs(), it.sound.knobs()) }
+            }
+            else -> emptyList()
+        }.filter { it.second <= TURNED_KNOBS }.minByOrNull { it.second }?.first
+        return near?.let { libraryName -> com.pocketstudio.model.i18n.tr(libraryName) } ?: exact
+    }
+
+    /** How many of a library sound's settings may be turned while it keeps its name ([tabSoundName]). */
+    private const val TURNED_KNOBS = 3
 
     /** What a lane moves, as a French key. */
     private fun laneWhat(p: Project, t: AutoTarget): String = when (t.kind) {

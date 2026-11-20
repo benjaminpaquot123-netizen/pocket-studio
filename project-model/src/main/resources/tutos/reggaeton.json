@@ -128,8 +128,8 @@
         },
         {
           "id": "guira_do",
-          "text": "À toi : sur le pad de la güira, touche « Remplir tout », sous la grille.",
-          "textPro": "À toi : la güira en continu (« Remplir tout » puis efface les 4 cases sans pointillé, si tu veux le motif exact : long-court-court à chaque temps).",
+          "text": "À toi : sur le pad « Shaker » (il joue la güira), touche « Remplir tout », sous la grille.",
+          "textPro": "À toi : sur le pad « Shaker », la güira en continu (« Remplir tout » puis efface les 4 cases sans pointillé, si tu veux le motif exact : long-court-court à chaque temps).",
           "why": "La güira est le son le plus important du reggaeton après le dembow : sans elle, le rythme sonne vide.",
           "check": "lane:perc2",
           "spot": "rhythm.pattern",
@@ -511,7 +511,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».",
           "textPro": "À toi : baisse un peu les faders « Accords » et « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

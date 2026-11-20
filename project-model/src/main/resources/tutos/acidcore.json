@@ -123,7 +123,7 @@
         },
         {
           "id": "acid_do",
-          "text": "À toi : ouvre l'onglet Acide et écris la ligne de 2 mesures : presque toutes les cases, sur Fa♯ et son octave, avec Sol, La, Do♯ et Mi. Puis les accents (!) et les slides (⌒) en pointillé. La mesure 2 commence comme la 1re et part ailleurs à mi-chemin.",
+          "text": "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures : presque toutes les cases, sur Fa♯ et son octave, avec Sol, La, Do♯ et Mi. Puis les accents (!) et les slides (⌒) en pointillé. La mesure 2 commence comme la 1re et part ailleurs à mi-chemin.",
           "why": "À 185 BPM, la 303 joue presque chaque case : les accents et les slides la font hurler au lieu de crépiter.",
           "levels": "p",
           "check": "notes:acid",

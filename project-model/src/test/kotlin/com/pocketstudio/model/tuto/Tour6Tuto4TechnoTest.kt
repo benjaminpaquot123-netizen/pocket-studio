@@ -166,7 +166,8 @@ class Tour6Tuto4TechnoTest {
         for (s in chapter("parts").steps.filter { it.check.startsWith("part:") }) {
             val label = s.check.removePrefix("part:").substringBefore(':')
             for (fr in texts(s)) {
-                if ("« Créer la partie « $label » »" !in seen(fr, s)) bad += "fr ${s.id}: not « Créer la partie « $label » »: $fr"
+                // Tour 9 L5a (F058): the button's words, never inside a second pair of « » (« « Créer la partie « Intro » » »).
+                if ("Créer la partie « $label »" !in seen(fr, s)) bad += "fr ${s.id}: not Créer la partie « $label »: $fr"
                 for (l in langs) {
                     val button = tr(l, "Créer la partie « %s »")
                     val shown = Regex(Regex.escape(button.substringBefore("%s")) + ".+?" + Regex.escape(button.substringAfter("%s")))

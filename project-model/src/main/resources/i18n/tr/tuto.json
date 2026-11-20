@@ -158,5 +158,10 @@
   "Posé : %s.": "Yerleştirildi: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Önceki aşamalarda yapılanlar sende eksik.",
   "Aller au chapitre %d": "%d. aşamaya git",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Şarkında “%s” bölümü yok: bu adım o bölümde yapılır."
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Şarkında “%s” bölümü yok: bu adım o bölümde yapılır.",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "Başlamadan önce: padlerinde uygulamanın davul sesleri var, bu stil için ayarlanmış. Stilin kiti henüz padlerinde değil: kartı onu ileride sana önerir, “Sonra” yeter, eğitim bu seslerle çalışır. Ayarlaman gereken bir şey yok.",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303: küçük bir bas makinesi; cıyaklayan, hırlayan sesi asidin sesidir.",
+  "Accent : une note jouée plus fort que les autres.": "Aksan: diğerlerinden daha güçlü çalınan nota.",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "Slide: nota zıplamak yerine bir sonrakine kayar.",
+  "Glide : le son glisse doucement d'une note à l'autre.": "Glide: ses bir notadan diğerine yumuşakça kayar."
 }

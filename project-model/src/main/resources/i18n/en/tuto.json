@@ -158,5 +158,10 @@
   "Posé : %s.": "Laid down: %s.",
   "Il te manque ce que font les chapitres d'avant.": "You are missing what the earlier chapters make.",
   "Aller au chapitre %d": "Go to chapter %d",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Your song has no “%s” part: this step is done in it."
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "Your song has no “%s” part: this step is done in it.",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "Before you start: your pads have the app's drum sounds, set up for this style. The style's kit is not on your pads yet: its card offers it to you further on, and “Later” is fine, the tutorial works with these sounds. You have nothing to set.",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303: a small bass machine; its squealing, growling sound is what makes acid.",
+  "Accent : une note jouée plus fort que les autres.": "Accent: a note played louder than the others.",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "Slide: the note glides into the next one instead of jumping.",
+  "Glide : le son glisse doucement d'une note à l'autre.": "Glide: the sound slides smoothly from one note to the next."
 }

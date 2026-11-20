@@ -107,6 +107,7 @@ import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.i18n.trCount
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoCourse
+import com.pocketstudio.model.tuto.TutoKit
 import com.pocketstudio.model.tuto.TutoLevel
 import com.pocketstudio.model.tuto.TutoMapBlock
 import com.pocketstudio.model.tuto.TutoTarget
@@ -505,7 +506,9 @@ fun needLabel(need: TutoNeed, style: String? = null): String = when (need) {
 internal fun momentWords(ui: TutoUi): String? {
     val need = ui.need ?: return null
     if (ui.progress.level != com.pocketstudio.model.tuto.TutoLevel.Facile) return null
-    return tr("À toi : touche « %s ».", needLabel(need, ui.progress.style))
+    // Tour 9, F058: the button's own quotes (« Créer la partie « Intro » ») dropped inside the line's quotes.
+    val label = needLabel(need, ui.progress.style).filterNot { it in TUTO_OPEN || it in TUTO_CLOSE }.replace(Regex("\\s{2,}"), " ").trim()
+    return tr("À toi : touche « %s ».", label)
 }
 
 /** The panel's background: the screen's, tinted with the tutorial's colour (never a page card's grey). */
@@ -718,7 +721,7 @@ fun TutoPanel(
             }
             if (shedAt < 1) progress(Modifier.fillMaxWidth())
             if (!ui.open) {
-                FoldedLine(ui, done, actions, names)
+                FoldedLine(ui, done, actions, names, kitPending = kit != null)
                 return@Column
             }
             // Testers (lot « tuto 4 »): the end said nothing (or sent back to chapter 5): « Bravo » when all is
@@ -779,7 +782,7 @@ fun TutoPanel(
                         if (alreadySaid == null) {
                             Row(verticalAlignment = Alignment.Top) {
                                 if (done) Icon(Icons.Filled.CheckCircle, contentDescription = tr("Fait"), tint = Neon.Acid, modifier = Modifier.padding(end = 6.dp).size(20.dp).testTag("tuto_step_done"))
-                                Text(momentWords(ui) ?: tutoWords(step.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyLarge, onTextLayout = { laid[0] = it },
+                                Text(momentWords(ui) ?: tutoWords(shownText(ui, step.id, kit != null), names), style = MaterialTheme.typography.bodyLarge, onTextLayout = { laid[0] = it },
                                     modifier = Modifier.testTag("tuto_text").onGloballyPositioned { c ->
                                         val t = laid[0] ?: return@onGloballyPositioned
                                         put("text", c) { base -> (0 until t.lineCount).map { base + t.getLineTop(it) to base + t.getLineBottom(it) } }
@@ -789,7 +792,7 @@ fun TutoPanel(
                         ui.note?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_note")) }
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
                         if (alreadySaid == null && momentWords(ui) == null && !examplesFolded) com.pocketstudio.app.library.PlainWordsLines(
-                            step.textFor(ui.progress.level), modifier = Modifier.onSizeChanged { if (it.height > 0) examplesHeight = it.height })
+                            shownText(ui, step.id, kit != null), modifier = Modifier.onSizeChanged { if (it.height > 0) examplesHeight = it.height })
                         if (why != null && !pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
                         // « Pourquoi ? »'s reason, opened by the user, where it belongs in the words (brought into sight).
                         if (why != null && whyOpen) Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
@@ -910,6 +913,15 @@ private const val WHY_PINNED_SCREEN = 480
 
 /** The courses' first step, « ton kit est déjà celui du style… Tu n'as rien à régler »: no kit offer under it. */
 private const val READY_STEP = "ready"
+
+/**
+ * Tour 9, F061: the current step's words as shown. The ready step does not speak of the style's kit as on the
+ * pads while its card offers it ([kitPending]): « le kit du disco est chargé » was said over the studio's sounds.
+ */
+private fun shownText(ui: TutoUi, stepId: String, kitPending: Boolean): String {
+    val text = ui.current.textFor(ui.progress.level)
+    return if (stepId == READY_STEP) TutoKit.readyText(text, kitPending) else text
+}
 
 /**
  * Under the step's words when they scroll: « Lire la suite », a touch scrolls down ([shown]; at their end the same room
@@ -1041,7 +1053,7 @@ private fun demoWords(phase: TutoDemoPhase): String = when (phase) {
  * touch unfolds them).
  */
 @Composable
-private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions, names: (String) -> String = { it }) {
+private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions, names: (String) -> String = { it }, kitPending: Boolean = false) {
     val shape = RoundedCornerShape(12.dp)
     val line = Modifier.fillMaxWidth().height(foldedLineHeight()).clip(shape)
     when {
@@ -1106,7 +1118,7 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions, names: (
             line.clickable(onClickLabel = tr("Lire la suite"), onClick = actions.toggle).testTag("tuto_folded_text"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(tutoWords(ui.current.textFor(ui.progress.level), names), style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis,
+            Text(tutoWords(shownText(ui, ui.current.id, kitPending), names), style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f))
             Row(Modifier.padding(start = 6.dp).testTag("tuto_folded_more"), verticalAlignment = Alignment.CenterVertically) {
                 Text(tr("Lire"), style = MaterialTheme.typography.labelMedium, color = Neon.Cyan, fontWeight = FontWeight.Bold, maxLines = 1)

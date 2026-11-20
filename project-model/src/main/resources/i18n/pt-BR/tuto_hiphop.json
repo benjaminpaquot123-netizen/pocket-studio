@@ -81,7 +81,7 @@
   "Une rafale avant la caisse et une autre en fin de boucle, pas plus : le reste respire.": "Uma rajada antes da caixa e outra no fim do loop, mais nada: o resto respira.",
   "Un triolet juste avant la caisse claire, c'est la relance typique des charleys drill.": "Uma tercina logo antes da caixa é a retomada típica dos hi-hats de drill.",
   "À toi : sur le pad « Rim » (un petit « toc »), touche les cases en pointillé des 2 mesures : il répond à la caisse claire.": "Sua vez: no pad “Rim” (um pequeno “toc”), toque nas casas pontilhadas dos 2 compassos: ele responde à caixa.",
-  "À toi : un peu de swing, 16 % sur le curseur « Swing » sous la grille : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Sua vez: um pouco de swing, 16 % só, no controle “Swing” embaixo da grade: as semicolcheias entre os tempos chegam um tiquinho atrasadas, e os hi-hats saltitam.",
+  "À toi : un peu de swing, 16 % sur le curseur « Swing » : les doubles croches d'entre les temps arrivent un poil en retard, les charleys sautillent.": "Sua vez: um pouco de swing, 16 % só, no controle “Swing”: as semicolcheias entre os tempos chegam um tiquinho atrasadas, e os hi-hats saltitam.",
   "Les producteurs drill swinguent les charleys de 8 à 15 % : le sautillement sans perdre la raideur.": "Os produtores de drill colocam de 8 a 15% no swing dos hi-hats: o saltitar sem perder a rigidez.",
   "La 808 qui glisse": "O 808 que desliza",
   "En drill, la 808 chante presque : elle glisse plusieurs fois par mesure, vers l'octave ou la quinte, et finit sa boucle par un long glissé vers le bas.": "No drill, o 808 quase canta: ele desliza várias vezes por compasso, para a oitava ou a quinta, e termina o loop com um longo glide para baixo.",
@@ -104,7 +104,7 @@
   "Écoute l'Intro : le piano seul, comme une menace.": "Ouça a Intro: o piano sozinho, como uma ameaça.",
   "Écoute le Couplet : sans les cordes, la place de la voix.": "Ouça o Verso: sem as cordas, o lugar da voz.",
   "Écoute le Refrain : tout joue, la 808 au plus fort.": "Ouça o Refrão: tudo toca, o 808 no máximo.",
-  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici.": "É bom saber: no drill, o rapper conta um compasso quando o app conta dois (a caixa volta a cada 2 compassos). O verso de “16 compassos” dele tem então 32 compassos aqui.",
+  "Bon à savoir : en drill, le rappeur compte une mesure quand l'appli en compte deux (la caisse claire revient toutes les 2 mesures). Son couplet de « 16 mesures » fait donc 32 mesures ici : Couplet 30 + Pré-refrain 2 sur la carte.": "É bom saber: no drill, o rapper conta um compasso quando o app conta dois (a caixa volta a cada 2 compassos). O verso de “16 compassos” dele tem então 32 compassos aqui: Verso 30 + Pré-refrão 2 no mapa.",
   "Un couplet de 16 mesures de l'appli ne durerait que 27 secondes : un rappeur n'aurait pas le temps de dire grand-chose.": "Um verso de 16 compassos do app duraria só 27 segundos: um rapper não teria tempo de dizer muita coisa.",
   "À toi : crée l'Intro à partir du Refrain : le piano seul.": "Sua vez: crie a Intro a partir do Refrão: o piano sozinho.",
   "Le piano seul installe l'ambiance ; quand la 808 tombe, ça frappe.": "O piano sozinho instala o clima; quando o 808 cai, ele bate.",
@@ -399,8 +399,8 @@
   "À toi : dernière mesure, efface les coups de kick et de caisse du dernier temps.": "Sua vez: último compasso, apague as batidas de kick e de caixa do último tempo.",
   "À toi : mesure 2, appui long sur la case 13 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Sua vez: compasso 2, segure a casa 13 do “Hi-hat”, depois “Tercina” › “3 em 2 casas”.",
   "À toi : mesure 1, appui long sur les cases 13 et 15 du « Charley », puis « Triolet » › « 3 sur 2 cases ».": "Sua vez: compasso 1, segure as casas 13 e 15 do “Hi-hat”, depois “Tercina” › “3 em 2 casas”.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 27 %.": "Sua vez: embaixo da grade, suba o controle “Swing” até 27%.",
-  "À toi : sous la grille, monte le curseur « Swing » jusqu'à 33 %.": "Sua vez: embaixo da grade, suba o controle “Swing” até 33%.",
+  "À toi : monte le curseur « Swing » jusqu'à 27 %.": "Sua vez: suba o controle “Swing” até 27%.",
+  "À toi : monte le curseur « Swing » jusqu'à 33 %.": "Sua vez: suba o controle “Swing” até 33%.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Refrain, Couplet, Refrain, Couplet, Refrain, et Intro pour finir.": "Sua vez: embaixo de “Adicionar”, toque na ordem: Intro, Verso, Refrão, Verso, Refrão, Verso, Refrão e depois Intro para fechar.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 16, Refrain 8, Outro 4.": "Sua vez: dê a cada parte sua duração: Intro 4 compassos, Verso 16, Refrão 8, Outro 4.",
   "À toi : donne à chaque partie sa durée : Intro 8 mesures, Refrain 16, Couplet 30, Pré-refrain 2, Outro 4.": "Sua vez: dê a cada parte sua duração: Intro 8 compassos, Refrão 16, Verso 30, Pré-refrão 2, Outro 4.",
@@ -418,5 +418,5 @@
   "Écoute un extrait de lo-fi fini : des accords jazz au piano électrique, une batterie feutrée qui traîne un peu, le craquement d'un vieux disque.": "Ouça um trecho de lo-fi pronto: acordes de jazz no piano elétrico, uma bateria abafada que se arrasta um pouco, o chiado de um disco antigo.",
   "Écoute un extrait de phonk fini : la cloche seule dans l'Intro, puis le Refrain où tout cogne.": "Ouça um trecho de phonk pronto: o sino sozinho na Intro, depois o Refrão em que tudo soca.",
   "Écoute un extrait de trap fini : l'Intro (la cloche seule), puis le Refrain, où la 808 (la basse très grave) tombe avec le kick.": "Ouça um trecho de trap pronto: a Intro (o sino sozinho), depois o Refrão, em que o 808 (o baixo bem grave) cai com o kick.",
-  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Sua vez: na aba “Mix”, abaixe um pouco o fader “Melodia”. Sob o fader, “Normal” vira “−2”."
+  "À toi : dans l'onglet « Mix », baisse un peu le curseur « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Sua vez: na aba “Mix”, abaixe um pouco o fader “Melodia”. Sob o fader, “Normal” vira “−1”."
 }

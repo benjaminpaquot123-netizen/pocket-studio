@@ -866,8 +866,9 @@ private fun StepGrid(
                                 // Audit ultra round 1, n° 34 (seat B d): the tutorial's dotted cells said « vide » like the others.
                                 stateDescription = when {
                                     ownerHit != null -> tr("dans le triolet")
-                                    hit == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true ->
-                                        tr("vide, en pointillé : à toucher")
+                                    // Tour 9, F093: « appui long » on a cell a tap does not make.
+                                    hit == null && com.pocketstudio.app.tuto.TutoHints.dottedState(lane, step) != null ->
+                                        com.pocketstudio.app.tuto.TutoHints.dottedState(lane, step).orEmpty()
                                     hit != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true ->
                                         stepState(hit) + ", " + tr("barré : à enlever")
                                     else -> stepState(hit)

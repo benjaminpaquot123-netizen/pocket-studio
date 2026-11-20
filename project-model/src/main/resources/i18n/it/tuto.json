@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "I veri suoni di batteria dello stile, per il tuo brano e per gli esempi. Senza di loro, il tutorial funziona con i suoni integrati.",
   "Téléchargement du kit… %d %%": "Download del kit… %d %%",
   "Mettre les sons du kit %s sur les pads": "Metti i suoni del kit %s sui pad",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "Impossibile caricare il kit: il tutorial continua con i suoni integrati.",
   "Télécharger le kit %1$s (%2$s)": "Scarica il kit %1$s (%2$s)",
   "Recommencer le tuto": "Ricomincia il tutorial",
   "Passer à %d mesures": "Passa a %d battute",

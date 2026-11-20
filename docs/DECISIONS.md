@@ -1556,3 +1556,8 @@
 - 2026-11-19 · lot « L5b » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-L5b.md`
 - 2026-11-19 · lot « L1 » (tour-9) : 10 décision(s) dans `docs/decisions/tour-9-L1.md`
 - 2026-11-19 · lot « L17 » (tour-9) : 11 décision(s) dans `docs/decisions/tour-9-L17.md`
+- 2026-11-20 · lot « L12 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-L12.md`
+- 2026-11-20 · lot « L2 » (tour-9) : 12 décision(s) dans `docs/decisions/tour-9-L2.md`
+- 2026-11-20 · lot « L16 » (tour-9) : 7 décision(s) dans `docs/decisions/tour-9-L16.md`
+- 2026-11-20 · lot « L11 » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-L11.md`
+- 2026-11-20 · Arrêt du tour 9 sur ordre de Benjamin (quota) : plus de lot neuf, discussions en pause, seuls les lots finis passent le portail. Portail assoupli (40f244e06, adac8695a, de32f8b2b : comparaison à la base commune, fusion JSON clé par clé) ; retour arrière : revert de ces trois commits.

@@ -41,3 +41,9 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 ## Prochain départ (tour 9)
 
 Pas avant : le rangement du tour 8 (branches de sièges, revue, PR vers `main`), le lot « machinerie » fusionné, `selftest.sh` vert, et un siège pilote par mission neuve. Ordre conseillé et règles de dépense : `PREPARATION-TOUR-9.md` §5 et §6. Le chef note son compteur d'unités au départ et à la clôture.
+
+## Arrêt du 2026-11-20 (ordre de Benjamin)
+- Entrés : L9, L10, L8, L5b, L1, L17, L12, L2, L16, L11.
+- En attente (finis, refusés au portail) : L3 (sortie 5, TutoJourneyTest), L7 (3, F133 après revue), L4 (4, conflit Help.kt), L6 (3, changements après revue), L15 (5, oracle de rejeu).
+- En pause sans revue : L5a, L13, L14.
+- Pas vert : TutoReadabilityBudgetTest (depuis L5b), captures audio_pages_end instables, tempo_sheet / nl_tempo_sheet / tracks rouges sur la base, écarts du juge 123 → 125.

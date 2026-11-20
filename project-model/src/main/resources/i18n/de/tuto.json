@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds.",
   "Téléchargement du kit… %d %%": "Kit wird geladen… %d %%",
   "Mettre les sons du kit %s sur les pads": "Die Sounds des Kits %s auf die Pads legen",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "Das Kit konnte nicht geladen werden: Das Tutorial behält die eingebauten Sounds.",
   "Télécharger le kit %1$s (%2$s)": "Kit %1$s laden (%2$s)",
   "Recommencer le tuto": "Tutorial neu starten",
   "Passer à %d mesures": "Auf %d Takte umstellen",

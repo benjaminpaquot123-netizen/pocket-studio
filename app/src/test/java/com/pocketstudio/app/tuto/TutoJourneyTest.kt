@@ -22,6 +22,7 @@ import com.pocketstudio.model.track
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoCourse
 import com.pocketstudio.model.tuto.TutoLevel
+import com.pocketstudio.model.tuto.TutoPlay
 import com.pocketstudio.model.tuto.TutoProgress
 import com.pocketstudio.model.tuto.TutoStep
 import com.pocketstudio.model.tuto.TutoTarget
@@ -312,9 +313,18 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                 closeSheet()
             }
             c.startsWith("lane:") -> {
-                if (has("tuto_need")) click("tuto_need")
-                await("need met") { !has("tuto_need") }
-                if (!has("tuto_do")) unfold()
+                // Tour 9 (banc, « TutoJourneyTest instable »): the step's button is set by a look made off the main thread
+                // (TutoController.check): under load it lands after the screen was read (the panel folded, « Ajouter … »
+                // instead of « Je le fais »). What the project needs (the same rule, TutoPlay.button) is waited for on
+                // the screen, the panel open, before it is touched.
+                if (TutoPlay.button(s, p(), target, null, level) != null) {
+                    await("${s.id}: its button") { unfold(); has("tuto_need") }
+                    click("tuto_need")
+                }
+                await("${s.id}: « Je le fais »") {
+                    unfold()
+                    TutoPlay.button(s, p(), target, null, level) == null && !has("tuto_need") && has("tuto_do")
+                }
                 click("tuto_do")
                 // Tour 7: a Facile piece that only asks for « Doux » (techno clap_2) finds its cells all hit: none is dotted.
                 val softOnly = TutoChecks.onlySoftnessMissing(s, p(), target)

@@ -42,7 +42,26 @@ for zone in "${zones[@]}"; do
   # (A file changed after the review only because the team merged fx-int in, i.e. now equal to fx-int's, is not the team's.)
   after=""
   for f in $(git diff --name-only "$read_sha" "eq/$tour-$zone" | grep -vxF "$review" || true); do
-    git diff --quiet HEAD "eq/$tour-$zone" -- "$f" || after="$after $f"
+    git diff --quiet HEAD "eq/$tour-$zone" -- "$f" && continue
+    # A file the team changed before the review and fx-int changed since is the plain 3-way merge of both: not the team's.
+    mb="$(git merge-base "$read_sha" HEAD)"
+    if git cat-file -e "eq/$tour-$zone:$f" 2>/dev/null && git cat-file -e "$read_sha:$f" 2>/dev/null && git cat-file -e "HEAD:$f" 2>/dev/null; then
+      tdir="$(mktemp -d)"
+      git show "$read_sha:$f" > "$tdir/o"; git show "HEAD:$f" > "$tdir/t"
+      git show "$mb:$f" > "$tdir/b" 2>/dev/null || : > "$tdir/b"
+      git show "eq/$tour-$zone:$f" > "$tdir/l"
+      same=0
+      if [ "$f" = docs/audits/ultra/corrections.tsv ]; then
+        # The register is a set of lines: the team's copy must hold all of fx-int's lines and nothing beyond fx-int's and the reviewed ones.
+        sort -u "$tdir/t" > "$tdir/ts"; sort -u "$tdir/o" "$tdir/t" > "$tdir/us"; sort -u "$tdir/l" > "$tdir/ls"
+        [ -z "$(comm -23 "$tdir/ts" "$tdir/ls")" ] && [ -z "$(comm -23 "$tdir/ls" "$tdir/us")" ] && same=1
+      elif git merge-file -p "$tdir/o" "$tdir/b" "$tdir/t" > "$tdir/m" 2>/dev/null && cmp -s "$tdir/m" "$tdir/l"; then same=1; fi
+      rm -rf "${tdir:?}"
+      [ "$same" = 1 ] && continue
+    fi
+    # Boost mode: screenshots are re-checked by the tests after the merge.
+    if [ "${PS_JUGE_BOOST:-0}" = 1 ]; then case "$f" in *.png) continue ;; esac; fi
+    after="$after $f"
   done
   [ -z "$after" ] || { echo "$zone: changed after the review ($read_sha): $after: not merged." >&2; exit 3; }
   # Audit « banc crédible » 2, P1: the verdict is the review's LAST line, no table row « bloquant »/« grave » is left

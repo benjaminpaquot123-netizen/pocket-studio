@@ -239,6 +239,9 @@ class TutoController(
 
     /** N20: the project as it was when the step shown was reached (a tick with nothing changed since: « Déjà fait »). */
     private var arrived: Project? = null
+    /** The instrument tracks the last look saw, with their roles (a track made since, for the step shown, is shown:
+     *  tour 9, F043; track 0 always exists, so « made » is a track whose role is new). */
+    private var tracksSeen: Map<Int, String?>? = null
     /** The step whose folded panel was opened because only its cells' softness was missing (once a step). */
     private var softSaid: String? = null
 
@@ -422,6 +425,16 @@ class TutoController(
         }
     }
 
+    /** Each instrument track of [p] with its role (what the tutorial calls it: "bass", "pad"…). */
+    private fun rolesOf(p: Project): Map<Int, String?> = p.instrumentTracks.associate { it.id to TutoChecks.roleOf(p, it.id) }
+
+    /** The role of the track whose notes [s] asks for ("notes:bass", "track:sub"); null for a step of another kind. */
+    private fun trackRole(s: TutoStep): String? = when {
+        s.check.startsWith("notes:") -> s.check.substringAfter(':')
+        s.check == "track:sub" -> "sub"
+        else -> null
+    }
+
     /** The knobs of a "changed:synth:…" step not turned up yet since it began (all of them when none is, or no baseline). */
     private fun knobsLeft(c: String, p: Project, track: Int): List<Int> {
         val all = knobsOf(c)
@@ -529,14 +542,14 @@ class TutoController(
         val made = if (from != null) {
             // A part that keeps everything says what plays in it, whatever its source is named (tour 7, L10 and seat d).
             if (out.isEmpty() && "*" in step.keep.split(',').map { it.trim() } && now.isNotEmpty()) com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s »).", name, from) + " " +
-                com.pocketstudio.model.i18n.tr("Dedans : %s.", now.map { brickName(after, it) }.distinct().joinToString(", "))
+                com.pocketstudio.model.i18n.tr("Dedans : %s.", listed(now.map { brickName(after, it) }.distinct()))
             else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s »).", name, from)
-            else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s ») : sans %3\$s.", name, from, out.joinToString(", "))
+            else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie de « %2\$s ») : sans %3\$s.", name, from, listed(out))
         } else if (out.isEmpty() && ("*" !in step.keep.split(',').map { it.trim() } || now.isEmpty())) com.pocketstudio.model.i18n.tr("Partie « %s » créée (copie du Groove).", name)
         // Tour 7 (L10, seat 1d #45): what « tout le Groove » is, said by name (a Groove of a kick alone read as a full one).
         else if (out.isEmpty()) com.pocketstudio.model.i18n.tr("Partie « %s » créée : tout le Groove y joue.", name) + " " +
-            com.pocketstudio.model.i18n.tr("Dedans : %s.", now.map { brickName(after, it) }.distinct().joinToString(", "))
-        else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie du Groove) : sans %2\$s.", name, out.joinToString(", "))
+            com.pocketstudio.model.i18n.tr("Dedans : %s.", listed(now.map { brickName(after, it) }.distinct()))
+        else com.pocketstudio.model.i18n.tr("Partie « %1\$s » créée (copie du Groove) : sans %2\$s.", name, listed(out))
         val more = when {
             writes -> com.pocketstudio.model.i18n.tr("Sa basse est à toi d'écrire : les notes en pointillé.")
             // The pad the part builds up (the Montée's snare, a clap, a hat…), named as the grid names it.
@@ -547,12 +560,25 @@ class TutoController(
         return listOfNotNull(made, more).joinToString(" ")
     }
 
+    /**
+     * Tour 9, F045: a list written as the language writes one (« 、 » in Chinese and Japanese, « ، » in Arabic):
+     * « sans 贝斯, 和弦 » read half in French.
+     */
+    internal fun listed(items: List<String>, lang: com.pocketstudio.model.i18n.Lang = com.pocketstudio.model.i18n.I18n.lang): String =
+        items.joinToString(
+            when (lang) {
+                com.pocketstudio.model.i18n.Lang.ZH_CN, com.pocketstudio.model.i18n.Lang.JA -> "、"
+                com.pocketstudio.model.i18n.Lang.AR -> "، "
+                else -> ", "
+            },
+        )
+
     /** « Posé : Clap, Basse. »: the lines and tracks « Poser ce qui manque » really changed from [before] to [after], null when none. */
     private fun laid(before: Project, after: Project): String? {
         val was = before.allScenes
         val names = LinkedHashSet<String>()
         after.allScenes.forEachIndexed { i, now -> names += changedBricks(was.getOrNull(i), now).map { brickName(after, it) } }
-        return if (names.isEmpty()) null else com.pocketstudio.model.i18n.tr("Posé : %s.", names.joinToString(", "))
+        return if (names.isEmpty()) null else com.pocketstudio.model.i18n.tr("Posé : %s.", listed(names.toList()))
     }
 
     /** The pads, tracks and 303 whose hits or notes are not in [now] as they were in [was] (null: a scene just made), as [TutoChecks.bricks] names them. */
@@ -598,13 +624,9 @@ class TutoController(
         val u = _ui.value ?: return
         val go = goFor(u.current, project.value, spot = true)
         go?.let { _goes.tryEmit(it) }
+        // Tour 9, F033: it takes the user there and leaves the gesture to them (it made the send, the insert or the
+        // curve itself and the step ticked with nothing done); « Montre-moi » shows it, the user does it.
         _ui.value = u.copy(bravo = false, open = false)
-        // Tour 8, seat e (ch.13): on an effect step it also makes the gesture there (the send, the insert of that
-        // strip, the curve), in one undo step, so the sheet it opens shows it made and the step ticks.
-        val t = target ?: return
-        if (TutoPlay.doHere(u.current, project.value, t, go?.effects, u.progress.level) == null) return
-        edit { TutoPlay.doHere(u.current, this, t, go?.effects, u.progress.level) ?: this }
-        look()
     }
 
     /** The step's main button ([TutoUi.need]): what it needs, made in one undo step, then its screen. */
@@ -624,6 +646,8 @@ class TutoController(
             r?.first ?: this
         }
         val p = project.value
+        // The track it made is shown below: the next look does not show it again (tour 9, F043).
+        tracksSeen = rolesOf(p)
         // Testers (lot « tuto 4 »): « Créer la partie » six times and nothing seen changing: what it made, in words.
         if (need is TutoNeed.Part && p !== before) _ui.value = _ui.value?.copy(made = partMade(before, p, need.label, step))
         // Fresh review of « fable-repar » (M2): « Poser ce qui manque » says what it laid too, by name.
@@ -885,6 +909,7 @@ class TutoController(
         if (moved) {
             skipSaid = null
             arrived = project.value
+            tracksSeen = rolesOf(project.value)
             stopListening()
             stopDemo()
             baseline = step.check.takeIf { it.startsWith("changed:") }?.let { step.id to TutoPlay.arrive(step, project.value) }
@@ -970,6 +995,13 @@ class TutoController(
         val now = _ui.value?.takeIf { it.demo == null } ?: return true
         // The answer is about the step, the progress and the project it began on: one of them moved, it counts no more.
         if (now.progress != u.progress || target !== t || project.value.let { it !== p && it != p }) return false
+        // Tour 9, F043 (t9-43): the track the step asks for, made from « + Piste » (not its button): shown, its notes
+        // on screen, as the step's own button does (the screen stayed on the drums).
+        val tracks = rolesOf(p)
+        val madeNow = tracksSeen?.let { seenBefore -> tracks.filter { (id, role) -> seenBefore[id] != role }.keys }.orEmpty()
+        tracksSeen = tracks
+        if (madeNow.isNotEmpty()) trackRole(u.current)?.let { TutoChecks.trackFor(p, it) }?.takeIf { it in madeNow }
+            ?.let { _goes.tryEmit(TutoGo(notes = it, spot = false)) }
         // Only what is not ticked yet NOW (lot « tutoordre2 », CI 43448175188; since the looks are made one at a time and
         // an answer about a progress that moved is thrown away, that is all of what this look saw).
         val found = seen - now.progress.done
@@ -982,6 +1014,12 @@ class TutoController(
             if (_ui.value?.current?.id in found && arrived.let { it != null && (it === p || it == p) }) _ui.value = _ui.value?.copy(already = true)
             // The Drop 2's bass written: what its button said (« à toi d'écrire ») is said no more under « Bravo ».
             if (u.current.id in found && (u.current.transpose != 0 || skipSaid == u.current.id || u.current.check.startsWith("song:"))) _ui.value = _ui.value?.copy(made = null)
+        }
+        // Tour 9, F037 (t9-42, t9-55): the step's work taken away while it is shown (Annuler took back the part it
+        // made): to do again, its « Bravo » and what was made said no more, its button back.
+        else if (_ui.value?.current?.id == u.current.id && u.current.id in now.progress.done && TutoPlay.undone(u.current, p, t)) {
+            save(now.progress.copy(done = now.progress.done - u.current.id))
+            _ui.value = _ui.value?.copy(bravo = false, already = false, made = null)
         }
         else if (_ui.value?.current?.id == u.current.id && (_ui.value?.need != need || _ui.value?.partEmpty != TutoPlay.emptyPart(p, need))) {
             _ui.value = _ui.value?.copy(need = need, partEmpty = TutoPlay.emptyPart(p, need))

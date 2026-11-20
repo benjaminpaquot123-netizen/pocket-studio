@@ -13,8 +13,10 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  # Never interrupt a release being published from main.
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  # A newer head of a pull request or of a lot branch (eq/…, ccr-…) makes the older run useless: cancel it rather
+  # than queue behind it (run 401 waited 34 minutes behind run 400). Never interrupt main (it publishes the release)
+  # nor the integration branch ccr-80af1a1b-mn0wec (a merge needs the verdict of a precise sha).
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.ref_name != 'ccr-80af1a1b-mn0wec' && (startsWith(github.ref_name, 'eq/') || startsWith(github.ref_name, 'ccr-'))) }}
 
 env:
   # The number of machines the unit tests are split over: the « tests » job's list of parts has as many entries.
@@ -163,6 +165,18 @@ jobs:
         with:
           key: tests-ndk
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      # Robolectric downloads its Android jar (android-all-instrumented, ~200 MB) at test time and gives up on the
+      # first network error, failing the whole part (run 401, part 2: 533 tests). The jar is cached by name and,
+      # on a miss, fetched beforehand with retries and its checksum (scripts/ci-robolectric-jars.sh).
+      - name: Robolectric jars to cache
+        id: robolectric
+        run: echo "names=$(scripts/ci-robolectric-jars.sh --names | paste -sd+ -)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-android-all-${{ steps.robolectric.outputs.names }}-${{ hashFiles('gradle/libs.versions.toml', 'app/src/test/resources/robolectric.properties') }}
+      - name: Fetch the Robolectric jars with retries
+        run: scripts/ci-robolectric-jars.sh
       # The screenshots are compared with the committed ones (app/screenshots/, recorded locally):
       # a difference does not fail the build (the runner may draw a pixel differently) but is
       # flagged as a warning by the « build » job, with the images in the « screenshots-diff » artifact.

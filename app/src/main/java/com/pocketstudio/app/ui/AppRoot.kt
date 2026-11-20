@@ -2035,7 +2035,7 @@ fun AppRoot() {
     // The dotted cells of a drum step (Rythme), the dotted notes of a melodic one (its notes), shown the whole step.
     val tutoProject = rhythmVm.project.collectAsStateWithLifecycle().value
     val tutoSteps = tutoProject.drums.steps
-    LaunchedEffect(tutoUi?.current?.id, tutoSteps, tutoUi == null, tutoUi?.need, tutoUi?.progress?.done) { com.pocketstudio.app.tuto.TutoHints.cells = tuto.hint(tutoSteps) }
+    LaunchedEffect(tutoUi?.current?.id, tutoSteps, tutoUi == null, tutoUi?.need, tutoUi?.progress?.done, tutoUi?.progress?.level) { tuto.showHint(tutoSteps) }
     LaunchedEffect(tutoUi?.current?.id, tutoProject, tutoUi == null, tutoUi?.need) {
         com.pocketstudio.app.tuto.TutoHints.notes = tuto.ghostNotes(tutoProject)
         com.pocketstudio.app.tuto.TutoHints.acid = tuto.acidHints(tutoProject)

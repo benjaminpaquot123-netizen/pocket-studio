@@ -13,7 +13,7 @@ import com.pocketstudio.model.tuto.TutoChecks.SHOWN_OFFSET_MS
 import com.pocketstudio.model.tuto.TutoChecks.SOFT_HITS_CHECKED
 import com.pocketstudio.model.tuto.TutoChecks.asksSoft
 import com.pocketstudio.model.tuto.TutoChecks.barsOf
-import com.pocketstudio.model.tuto.TutoChecks.hasTriplet
+import com.pocketstudio.model.tuto.TutoChecks.tripletsDone
 import com.pocketstudio.model.tuto.TutoChecks.hatBars
 import com.pocketstudio.model.tuto.TutoChecks.hatsSwing
 import com.pocketstudio.model.tuto.TutoChecks.laneExtras
@@ -406,7 +406,7 @@ internal class Offset(val role: String, val early: Boolean) : TutoKind {
 
 /** "triplet:<role>": at least one triplet (3 hits over 2 cells, or 6 over a beat) on the role's pad, in any part. */
 internal class Triplet(val role: String) : TutoKind {
-    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = p.allScenes.any { sc -> hasTriplet(sc.drums, lanesOf(role, target)) }
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = p.allScenes.any { sc -> tripletsDone(sc.drums, role, target) }
     override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? = withTriplet(p, role, target)
 }
 
@@ -482,10 +482,11 @@ internal class Notes(val role: String) : TutoKind {
     override fun requires(step: TutoStep, p: Project, target: TutoTarget) =
         if (trackFor(p, role) == null) TutoNeed.Track(role) else copyNeed(step, p, target, role)
 
-    // The first 4 bars while they are not all written, then the whole line (testers, lot « tuto 4 »).
+    // The first 4 bars while they are not all written, then the whole line (testers, lot « tuto 4 »); a step cut to
+    // its first bar dots that bar only, as its text and its check say (tour 9, F059: a 3rd note waited in bar 3).
     override fun ghosts(step: TutoStep, p: Project, target: TutoTarget): Pair<Int, List<Note>>? {
         val id = trackFor(p, role) ?: return null
-        return id to (wantedNotes(step, p, target) ?: return null)
+        return id to own(step, wantedNotes(step, p, target) ?: return null)
     }
     override fun line(step: TutoStep, target: TutoTarget) = target.roleNotes(role)?.notes
     override fun mine(step: TutoStep, p: Project, target: TutoTarget) = trackFor(p, role)?.let { notesOf(p, it) }
@@ -515,7 +516,8 @@ internal object SubTrack : TutoKind {
     override fun ghosts(step: TutoStep, p: Project, target: TutoTarget): Pair<Int, List<Note>>? {
         val bass = trackFor(p, "bass") ?: return null
         val id = sub(p) ?: return null
-        return id to StarterWizard.subNotes(notesOf(p, bass))
+        // The same folded line as done() and the step's button (tour 9, F044: an octave jump left a dotted note).
+        return id to subOf(notesOf(p, bass))
     }
 }
 
@@ -740,9 +742,13 @@ internal object DrumFill : TutoKind {
         val end = d.steps - fillEnd(step, target)
         val window = (end - beat) until end
         val hits = lanesOf(fillRole(step), target).flatMap { l -> d.lanes.getOrNull(l)?.hits?.filterKeys { it in window }?.values.orEmpty() }
-        // A roll ×3 or more; a tom fill (a pad the part does not build up): 3 hits or more in that beat.
-        hits.any { it.repeats >= FILL_REPEATS } || (!buildsIn(step, target) && hits.size >= FILL_REPEATS)
+        // A roll ×3 or more; a tom fill (a pad the part does not build up, a step that asks no « Roulement »): 3 hits or more in that beat.
+        hits.any { it.repeats >= FILL_REPEATS } || (!rolls(step, target) && hits.size >= FILL_REPEATS)
     } ?: false
+
+    // The step's words ask for the roll (« Roulement » ×4, tour 9 F034: the demo laid a tom fill instead).
+    private fun rolls(step: TutoStep, target: TutoTarget) =
+        buildsIn(step, target) || listOfNotNull(step.text, step.textPro).any { "« Roulement »" in it }
 
     // The last roll: ×4 on the snare's last hit before the silence.
     override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = inScene(p, partsOf(step).first()) { q ->
@@ -753,7 +759,7 @@ internal object DrumFill : TutoKind {
         q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l ->
             when {
                 i != lane -> l
-                buildsIn(step, target) -> l.copy(hits = l.hits + (at to (l.hits[at] ?: Hit(1f)).copy(repeats = 4)))
+                rolls(step, target) -> l.copy(hits = l.hits + (at to (l.hits[at] ?: Hit(1f)).copy(repeats = 4)))
                 // A tom fill: every 16th of the last beat, louder and louder.
                 else -> l.copy(hits = l.hits + (end - beat until end).associateWith { Hit(0.6f + 0.4f * (it - end + beat) / beat) })
             }
@@ -765,15 +771,25 @@ internal object DrumFill : TutoKind {
 
 private val DROPS = listOf("Drop", "Drop 2")
 
-/** "crash": the crash on the first beat of the part (or of one of the parts) the step names. */
+/**
+ * "crash": the crash on the first beat of the part the step names; naming several (« le Drop et le Drop 2 »), on
+ * the first beat of each of them the project has (tour 9, F032: the Drop's alone passed).
+ */
 internal object Crash : TutoKind {
-    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) =
-        p.allScenes.any { s -> partsOf(step).any { labelIs(s.label, it) } && s.drums.lanes.getOrNull(CRASH_LANE)?.hits?.containsKey(0) == true }
+    private fun crashed(p: Project, part: String) =
+        p.allScenes.any { s -> labelIs(s.label, part) && s.drums.lanes.getOrNull(CRASH_LANE)?.hits?.containsKey(0) == true }
 
-    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) =
-        inScene(p, partsOf(step).first { sceneLabelled(p, it) >= 0 || it == partsOf(step).last() }) { q ->
-            q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == CRASH_LANE) l.copy(hits = l.hits + (0 to Hit(1f))) else l }))
-        }
+    override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?): Boolean {
+        val there = partsOf(step).filter { part -> p.allScenes.any { labelIs(it.label, part) } }
+        return there.isNotEmpty() && there.all { crashed(p, it) }
+    }
+
+    override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?): Project? {
+        val there = partsOf(step).filter { sceneLabelled(p, it) >= 0 }.ifEmpty { listOf(partsOf(step).last()) }
+        return there.fold(p as Project?) { q, part ->
+            q?.let { inScene(it, part) { r -> r.copy(drums = r.drums.copy(lanes = r.drums.lanes.mapIndexed { i, l -> if (i == CRASH_LANE) l.copy(hits = l.hits + (0 to Hit(1f))) else l })) } ?: it }
+        }?.takeIf { it != p }
+    }
     override fun workPart(step: TutoStep, p: Project) = partsOf(step).firstOrNull { sceneLabelled(p, it) >= 0 } ?: partsOf(step).first()
     override fun cited(step: TutoStep) = partsOf(step)
     override val defaultParts get() = DROPS

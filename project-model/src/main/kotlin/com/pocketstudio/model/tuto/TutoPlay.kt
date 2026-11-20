@@ -143,6 +143,21 @@ object TutoPlay {
     }
 
     /**
+     * Tour 9, F093 (seat t9-68, zh: « 点一下 » on a cell its words ask a long press for): the dotted cells of [step]
+     * a tap does not make, at [level]: a soft hit when its words there name « Doux », a roll or a triplet of a
+     * ":rolls" step. Empty for any other step.
+     */
+    fun longPressCells(step: TutoStep, target: TutoTarget, steps: Int, level: TutoLevel): Set<Int> {
+        val c = step.check
+        if (!c.startsWith("lane:")) return emptySet()
+        val line = target.line(TutoChecks.argOf(c), TutoChecks.partOf(step)) ?: return emptySet()
+        val soft = "« Doux »" in step.textFor(level)
+        val rolls = c.endsWith(":rolls")
+        return com.pocketstudio.model.StarterWizard.hits(line, steps)
+            .filter { (_, h) -> (soft && h.velocity < TutoChecks.SOFT_VELOCITY) || (rolls && (h.repeats > 1 || h.isTriplet)) }.keys
+    }
+
+    /**
      * The dotted cell the « Touche ici » ring goes round (tour 8, seat a, ch.3: no ring on the Clap's cells): the
      * first of [cells] in the bar shown ([from] until [until]) not yet [filled]; null when the bar holds none to touch.
      */

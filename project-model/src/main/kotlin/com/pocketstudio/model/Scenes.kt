@@ -58,13 +58,14 @@ data class Scene(
 
         /**
          * A scene label as shown: a section name ("Refrain", or a copy's "Refrain 2", or the fuller
-         * "Refrain +" of Énergie 4) in the interface's language; any other name the user typed
+         * "Refrain +" of Énergie 4, a course's "Drop B") in the interface's language; any other name the user typed
          * stays as it is. The label is saved in French so a project reads the same in every language.
          */
         fun shownLabel(label: String): String {
             if (label in SECTIONS || label in DRUM_LABELS) return sectionName(label)
             if (label.endsWith(ENERGY_SUFFIX)) return shownLabel(label.removeSuffix(ENERGY_SUFFIX)) + ENERGY_SUFFIX
-            val numbered = Regex("""^(.+) (\d+)$""").matchEntire(label) ?: return label
+            // « Refrain 2 », and a course's « Drop B » (tour 9, F074: the Korean consigne says « 드롭 B »).
+            val numbered = Regex("""^(.+) (\d+|[A-Z])$""").matchEntire(label) ?: return label
             val (section, n) = numbered.destructured
             return if (section in SECTIONS) "${sectionName(section)} $n" else label
         }

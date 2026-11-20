@@ -23,6 +23,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.Buses
@@ -127,5 +131,18 @@ internal fun LabeledSlider(label: String, value: String, v: Float, tag: String, 
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    ProSlider(value = v, onValueChange = onChange, modifier = Modifier.testTag(tag), label = label, valueText = value)
+    // Tour 9, F028: the slider's own rail barely shows on a card, so an empty setting (a send at 0 %) gave nothing to
+    // aim at. A ring drawn behind it, 2 dp around the rail (inset by half the 28 dp thumb, as Material lays it out).
+    val ring = Neon.Outline
+    ProSlider(
+        value = v, onValueChange = onChange, label = label, valueText = value,
+        modifier = Modifier.testTag(tag).drawBehind {
+            val inset = 12.dp.toPx()
+            val half = 5.dp.toPx()
+            drawRoundRect(
+                ring, topLeft = Offset(inset, size.height / 2 - half), size = Size(size.width - 2 * inset, 2 * half),
+                cornerRadius = CornerRadius(half),
+            )
+        },
+    )
 }

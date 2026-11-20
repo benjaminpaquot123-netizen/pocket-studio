@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -70,7 +71,13 @@ fun HelpDot(help: Help, modifier: Modifier = Modifier, color: Color = Neon.TextS
             .testTag("help_${help.term}"),
         contentAlignment = Alignment.Center,
     ) {
-        Box(Modifier.size(18.dp).border(1.dp, ink, CircleShape), contentAlignment = Alignment.Center) {
+        // Tour 9 L11 (N3, Arabic at 200 %: the « ? » 29 dp tall in an 18 dp ring, cut top and bottom; 19 dp at 130 %): the
+        // ring is as tall as the « ? »'s line (1.25 times its size), never under 18 dp (pixel for pixel the old ring up to 115 %).
+        val side = (with(LocalDensity.current) { 12.sp.toDp() } * 1.25f).coerceAtLeast(18.dp)
+        Box(
+            Modifier.size(side).border(1.dp, ink, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
             Text("?", color = ink, fontSize = 12.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold)
         }
     }

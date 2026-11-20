@@ -1,0 +1,4 @@
+source=docs/audits/ultra/sieges/tour-9/controle/t9-17/a
+rejeu.n=4
+rejeu.attendu=Falta tocar 1 nota pontilhada
+rejeu.absent=Faltam tocar 2 notas

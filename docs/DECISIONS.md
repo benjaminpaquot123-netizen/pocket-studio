@@ -1563,3 +1563,4 @@
 - 2026-11-20 · Arrêt du tour 9 sur ordre de Benjamin (quota) : plus de lot neuf, discussions en pause, seuls les lots finis passent le portail. Portail assoupli (40f244e06, adac8695a, de32f8b2b : comparaison à la base commune, fusion JSON clé par clé) ; retour arrière : revert de ces trois commits.
 - 2026-11-20 · lot « L7 » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-L7.md`
 - 2026-11-20 · lot « L4 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-L4.md`
+- 2026-11-20 · lot « L6 » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-L6.md`

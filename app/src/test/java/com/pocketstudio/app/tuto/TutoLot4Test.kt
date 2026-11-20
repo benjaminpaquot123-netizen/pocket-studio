@@ -145,8 +145,10 @@ class TutoLot4Test {
         idle(100)
         c.doIt(); idle()
         assertEquals(snare, list.last().effects)
-        // Tour 8, lot T0b (ch.13): « Je le fais » also sets the send of the strip it opens; both halves are done.
-        assertTrue("the snare's send is not set", flow.value.mixer.channels[snare].sends[0] > 0f)
+        // Tour 9, F033: « Je le fais » opens the strip and leaves the gesture to the user; once made, both halves are done.
+        assertEquals("« Je le fais » set the snare's send itself", 0f, flow.value.mixer.channels[snare].sends[0])
+        flow.value = sends(flow.value, snare, 0, 0.31f)
+        idle(100)
         val note = c.sendNote()!!
         assertEquals(note, 2, note.split("✓").size - 1)
     }

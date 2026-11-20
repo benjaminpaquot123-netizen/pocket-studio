@@ -58,6 +58,7 @@ for zone in "${zones[@]}"; do
         # The register is a set of lines: the team's copy must hold all of fx-int's lines and nothing beyond fx-int's and the reviewed ones.
         sort -u "$tdir/t" > "$tdir/ts"; sort -u "$tdir/o" "$tdir/t" > "$tdir/us"; sort -u "$tdir/l" > "$tdir/ls"
         [ -z "$(comm -23 "$tdir/ts" "$tdir/ls")" ] && [ -z "$(comm -23 "$tdir/ls" "$tdir/us")" ] && same=1
+      elif [ "${f##*.}" = json ] && python3 -I scripts/bench/json-merge-ok.py "$tdir/o" "$tdir/b" "$tdir/t" "$tdir/l" 2>/dev/null; then same=1
       elif git merge-file -p "$tdir/o" "$tdir/b" "$tdir/t" > "$tdir/m" 2>/dev/null && cmp -s "$tdir/m" "$tdir/l"; then same=1; fi
       rm -rf "${tdir:?}"
       [ "$same" = 1 ] && continue

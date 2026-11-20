@@ -2076,6 +2076,7 @@ fun AppRoot() {
         if (place?.knobs?.isNotEmpty() == true && com.pocketstudio.app.tuto.TutoHints.soundButtonInSight) tutoReveal = listOf(com.pocketstudio.app.synth.SOUND_BUTTON_SPOT)
     }
     LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.step = tutoUi?.current?.id }
+    LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.swing = tuto.swingAim() }
     // Testers (lot « tuto 5 »): « Copier sur les mesures suivantes » next: offered over the grid too, where the eyes are.
     val tutoCopy = (tutoUi?.need as? com.pocketstudio.model.tuto.TutoNeed.Copy)?.role
     LaunchedEffect(tutoCopy) {

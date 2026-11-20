@@ -1,4 +1,4 @@
-Relu : 555d5d640 (tête du lot 13574782b, plus la correction de test de la relecture)
+Relu : 5488ec308 (après fusion de l'intégration par le chef ; relecture d'origine sur 6558eb861)
 
 # Relecture neuve, tour 9 L5a (contenu des cours du tuto)
 
@@ -30,5 +30,7 @@ Aucun.
 - F063, F066, F067, F069–F072, F074, F080, F083, F091, F092, F095 : chaque test lit les cours tels que livrés et compare à l'écran ou à la vérification. La fixture `pro-step-ids.txt` suit le nouvel ordre de jungle.
 - F079 : la limite de mot Unicode remplace `\b` (accordé, bouclé, accentuée testés) ; la ligne arabe du Break nomme la partie (test sur toutes les langues).
 - Textes d'interface en français, avec leurs 14 traductions (READY_PENDING, « Boucle acide », 4 lignes en clair) ; code et commentaires en anglais. Aucun `!!` neuf dans le code de l'appli, aucun risque de plantage repéré.
+
+Note du chef : fusion de l'intégration c2ae90f85 (conflits dans corrections.tsv et 21 fichiers de traduction du tuto). Fusion clé par clé : clés d'un seul côté gardées ; 60 traductions arabes touchées des deux côtés réunies mot à mot (solfège F063 du lot + titre de la feuille F077 et mot « clap » F088 de l'intégration) ; 21 retraductions de l'intégration posées sur les clés françaises renommées par le lot (Si♭ → La#, bouton Montée, Break, −2 → −1 ; F077, F085, F087, F088, F090, F098) ; corrections.tsv : union des lignes, aucun identifiant en double. Tests : :project-model:test et les tests tuto/i18n de l'appli (1268 + 1862) ; rouges : I18nCatalogTest (TrackBar.kt: it), TutoJourneyTest trap Facile (hat_triplet) et TutoReadabilityBudgetTest, les trois aussi rouges sur l'intégration seule, donc pas dus à la fusion.
 
 Verdict : 0 bloquant, 0 grave

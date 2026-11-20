@@ -1,4 +1,5 @@
 # Relecture neuve : tour 9, lot L6 (D08, D10)
+Relu : a00044127 (chef, 2026-11-20 : depuis la dernière relecture neuve, bdeeb417, 0 bloquant 0 grave, seuls les documents du lot et les fusions de l'intégration ont changé ; aucun fichier de l'appli propre au lot)
 
 Périmètre : `git diff 7455749a..HEAD` (branche eq/tour-9-L6, 3 commits rouge / vert / captures). Lecture seule, rien compilé ni lancé.
 Fil audio : rien de touché (TopBar.kt, SessionScreen.kt et tests seulement).

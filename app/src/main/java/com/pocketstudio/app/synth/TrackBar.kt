@@ -66,6 +66,39 @@ import com.pocketstudio.ui.Neon
 import com.pocketstudio.ui.TrackColors
 import com.pocketstudio.ui.trackColor
 
+/**
+ * Tour 9 (F116, seats t9-27, t9-58, t9-69): the sound's name a track shows. A library sound with a knob or two turned
+ * (the tutorial's step) matched no library sound: the tab fell to the engine's name (« Melodi Synth », « Mélodie
+ * Plaits »). The library sound it still is but for at most [TURNED_KNOBS] settings names it; a fresh track's is as before.
+ */
+internal fun trackSoundName(t: com.pocketstudio.model.InstrumentTrack): String {
+    val exact = com.pocketstudio.model.guide.GuideSheets.soundName(t)
+    if (exact != t.soundLabel || t.instrument != null) return exact
+    fun moved(a: List<Float>, b: List<Float>) = a.zip(b).count { (x, y) -> kotlin.math.abs(x - y) > 1e-4f }
+    val near = when (t.engine) {
+        com.pocketstudio.model.InstrumentTrack.ENGINE_SYNTH -> {
+            fun com.pocketstudio.model.SynthPatch.knobs() = sanitized().with(com.pocketstudio.model.SynthPatch.GAIN, 0.5f).values
+            val mine = t.synth.knobs()
+            // Never a fresh synth's (DEFAULTS): it is no library sound, however near one.
+            if (moved(mine, com.pocketstudio.model.SynthPatch().knobs()) == 0) emptyList()
+            else com.pocketstudio.model.SoundLibrary.SYNTH.map { it.name to moved(mine, it.sound.knobs()) }
+        }
+        com.pocketstudio.model.InstrumentTrack.ENGINE_PLAITS -> {
+            // A Plaits sound's model is what it is: another model is another sound. Its level and gain are no knob of the sound.
+            fun com.pocketstudio.model.PlaitsPatch.knobs() = listOf(harmonics, timbre, morph, decay, colour, release)
+            val mine = t.plaits
+            if (mine == com.pocketstudio.model.PlaitsPatch()) emptyList()
+            else com.pocketstudio.model.SoundLibrary.PLAITS.filter { it.sound.model == mine.model }.map { it.name to moved(mine.knobs(), it.sound.knobs()) }
+        }
+        else -> emptyList()
+    }.filter { it.second <= TURNED_KNOBS }.minByOrNull { it.second }?.first
+    return near?.let { tr(it) } ?: exact
+}
+
+/** How many of a library sound's settings may be turned while the track still shows its name ([trackSoundName]). */
+private const val TURNED_KNOBS = 3
+
+
 /** The instrument tracks for the synth screen's track bar. */
 class TracksUi(
     val tracks: List<InstrumentTrack>,
@@ -172,7 +205,9 @@ fun TrackBar(
                     when {
                         ui.freezing == t.id -> tr("Gel en cours…")
                         t.id in ui.frozen -> "❄ " + tr("Gelée")
-                        else -> com.pocketstudio.model.guide.GuideSheets.soundName(t)
+                        else -> com.pocketstudio.model.DefaultNames.soundBeside(
+                            com.pocketstudio.model.DefaultNames.shown(t.name), trackSoundName(t),
+                        )
                     },
                     color, selected,
                     touch = Modifier.combinedClickable(onClick = { if (selected) menuFor = t else ui.select(t.id) }, onLongClick = { ui.select(t.id); menuFor = t }),

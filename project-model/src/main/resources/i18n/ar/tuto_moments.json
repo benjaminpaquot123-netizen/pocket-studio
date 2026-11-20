@@ -9,7 +9,7 @@
   "À toi : écris les 5 notes de la mesure 2.": "دورك: اكتب النوتات الـ5 في المازورة 2.",
   "À toi : écris les 4 notes de la mesure 2.": "دورك: اكتب النوتات الـ4 في المازورة 2.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "دورك: اضغط النوتة السفلى المنقّطة لكل كورد في المازورة 1: يوضع الكورد كله.",
-  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "دورك: «سأفعلها» يفتح بطاقة النغمة: اضغط الزرين المحاطين.",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "دورك: «سأفعلها» يفتح بطاقة «مقام المقطوعة»: اضغط الزرين المحاطين.",
   "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "دورك: على باد ‏«طبل كبير»، اضغط الخانات المنقّطة في المازورتين.",
   "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "دورك: على باد «سنير»، اضغط الخانات المنقّطة في المازورتين.",
   "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "دورك: على باد «هاي هات»، اضغط الخانات المنقّطة في المازورتين.",
@@ -21,5 +21,5 @@
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "دورك: تحت «إضافة»، اضغط بالترتيب: مقدمة، لازمة، مقطع، ما قبل اللازمة، لازمة، مقطع، ما قبل اللازمة، لازمة، ثم مقدمة للختام.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "دورك: تحت «إضافة»، اضغط بالترتيب: مقدمة، مقطع، ما قبل اللازمة، لازمة، ما بعد اللازمة، مقطع، ما قبل اللازمة، لازمة، جسر، لازمة، ثم مقدمة للختام.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "دورك: أعطِ كل جزء طوله: مقدمة ‏4 مازورات، المقطع 8، ما قبل اللازمة ‏4، اللازمة 16 (8 في المرة الثانية، 16 في الثالثة)، ما بعد اللازمة ‏4، جسر ‏8، النهاية 4.",
-  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "دورك: في تبويب «المكس»، اخفض قليلًا فيدر «الكوردات» و«اللحن». تحت الفيدر يصبح «عادي» «−2»."
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "دورك: في تبويب «المكس»، اخفض قليلًا فيدر «الكوردات» و«اللحن». تحت الفيدر يصبح «عادي» «−1»."
 }

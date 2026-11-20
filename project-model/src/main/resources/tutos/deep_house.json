@@ -111,7 +111,7 @@
         },
         {
           "id": "tom_do",
-          "text": "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé, entre les kicks.",
+          "text": "À toi : sur le pad « Tom médium », touche les 3 cases en pointillé, autour des kicks.",
           "textPro": "À toi : le tom 909 sur les cases 3, 9 et 11 : le motif « rolling » de la deep house.",
           "check": "lane:tom",
           "spot": "rhythm.pattern",

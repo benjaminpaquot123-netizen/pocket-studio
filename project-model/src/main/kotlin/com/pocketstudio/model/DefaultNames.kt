@@ -149,12 +149,26 @@ object DefaultNames {
     }
 
     /**
+     * A pad's sound [name] as the pad itself shows it (Tour 9, F132, seat t9-39: « Drum & bass · Caisse » next to
+     * « Claquement de mains »): one of a kit's own sounds (« <kit> · Caisse », [kitPad]) drops the kit's name, as the
+     * kit's other pads say theirs, the « Kit : … » chip saying the kit; any other name is [shownSample].
+     */
+    fun shownOnPad(name: String): String {
+        val cut = name.indexOf(JOIN)
+        if (cut > 0 && !isDefault(name)) {
+            val rest = name.substring(cut + JOIN.length)
+            if (rest in KIT_PADS) return tr(rest)
+        }
+        return shownSample(name)
+    }
+
+    /**
      * The name pad [lane] shows (as the pad screen does): the [sample] put on it ([shownSample]: a file of the user's
      * stays as it is), else its studio voice [voice] (a [PadVoice] kind: « 808 », « Rumble »), else its kit voice
      * ([KIT_VOICES]), in the interface's language and with the Mode simple's words.
      */
     fun shownPad(lane: Int, sample: String?, voice: Int?): String =
-        sample?.takeIf { it.isNotBlank() }?.let { shownSample(it) }
+        sample?.takeIf { it.isNotBlank() }?.let { shownOnPad(it) }
             ?: voice?.let { kind -> if (kind == PadVoice.BASS_808) "808" else PadVoice.NAMES.getOrNull(kind)?.takeIf { it.isNotBlank() }?.let { tr(it) } }
             ?: KIT_VOICES.getOrNull(lane)?.let { tr(it) } ?: "Pad ${lane + 1}"
 
@@ -175,6 +189,18 @@ object DefaultNames {
 
     /** [name] (in any language) says the track's role in the song (« Mélodie », « Basse »), not its sound. */
     fun isRole(name: String): Boolean = french(name)?.let { it in ROLES } == true
+
+    /**
+     * Tour 9, F133 (« 808 808 », « Baixo Baixo pluck »): the sound shown under a track's [name] without the words the
+     * name already says, so the two lines never read a word twice. Words compare whole, whatever their case; an
+     * empty result means the name says it all.
+     */
+    fun soundBeside(name: String, sound: String): String {
+        val said = words(name).map { it.lowercase() }.toSet()
+        return words(sound).filter { it.lowercase() !in said }.joinToString(" ")
+    }
+
+    private fun words(text: String): List<String> = text.split(Regex("""\s+""")).filter { it.isNotBlank() }
 
     /** True when [name] is one of the app's own names (in any language). */
     fun isDefault(name: String): Boolean =

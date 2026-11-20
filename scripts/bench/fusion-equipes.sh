@@ -42,7 +42,30 @@ for zone in "${zones[@]}"; do
   # (A file changed after the review only because the team merged fx-int in, i.e. now equal to fx-int's, is not the team's.)
   after=""
   for f in $(git diff --name-only "$read_sha" "eq/$tour-$zone" | grep -vxF "$review" || true); do
-    git diff --quiet HEAD "eq/$tour-$zone" -- "$f" || after="$after $f"
+    git diff --quiet HEAD "eq/$tour-$zone" -- "$f" && continue
+    # A file the team changed before the review and fx-int changed since is the plain 3-way merge of both: not the team's.
+    # fx-int as the team last merged it (the team may be behind today's fx-int).
+    fx="$(git merge-base "eq/$tour-$zone" HEAD)"
+    git diff --quiet "$fx" "eq/$tour-$zone" -- "$f" && continue
+    mb="$(git merge-base "$read_sha" "$fx")"
+    if git cat-file -e "eq/$tour-$zone:$f" 2>/dev/null && git cat-file -e "$read_sha:$f" 2>/dev/null && git cat-file -e "$fx:$f" 2>/dev/null; then
+      tdir="$(mktemp -d)"
+      git show "$read_sha:$f" > "$tdir/o"; git show "$fx:$f" > "$tdir/t"
+      git show "$mb:$f" > "$tdir/b" 2>/dev/null || : > "$tdir/b"
+      git show "eq/$tour-$zone:$f" > "$tdir/l"
+      same=0
+      if [ "$f" = docs/audits/ultra/corrections.tsv ]; then
+        # The register is a set of lines: the team's copy must hold all of fx-int's lines and nothing beyond fx-int's and the reviewed ones.
+        sort -u "$tdir/t" > "$tdir/ts"; sort -u "$tdir/o" "$tdir/t" > "$tdir/us"; sort -u "$tdir/l" > "$tdir/ls"
+        [ -z "$(comm -23 "$tdir/ts" "$tdir/ls")" ] && [ -z "$(comm -23 "$tdir/ls" "$tdir/us")" ] && same=1
+      elif [ "${f##*.}" = json ] && python3 -I scripts/bench/json-merge-ok.py "$tdir/o" "$tdir/b" "$tdir/t" "$tdir/l" 2>/dev/null; then same=1
+      elif git merge-file -p "$tdir/o" "$tdir/b" "$tdir/t" > "$tdir/m" 2>/dev/null && cmp -s "$tdir/m" "$tdir/l"; then same=1; fi
+      rm -rf "${tdir:?}"
+      [ "$same" = 1 ] && continue
+    fi
+    # Boost mode: screenshots are re-checked by the tests after the merge.
+    if [ "${PS_JUGE_BOOST:-0}" = 1 ]; then case "$f" in *.png) continue ;; esac; fi
+    after="$after $f"
   done
   [ -z "$after" ] || { echo "$zone: changed after the review ($read_sha): $after: not merged." >&2; exit 3; }
   # Audit « banc crédible » 2, P1: the verdict is the review's LAST line, no table row « bloquant »/« grave » is left
@@ -94,14 +117,21 @@ for zone in "${zones[@]}"; do
   # branch not older than its last change of the tutorial, <id> a seat whose report is in the branch and names the
   # same commit (scripts/bench/rapport-zone.py, its « --tuto » mode). A lot outside the zone: nothing asked, nothing said.
   tuto_out=""
-  if from_paquet 7 && ! tuto_out="$(python3 -I scripts/bench/rapport-zone.py --tuto "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour")"; then echo "$zone: tutorial lot without its control seat: $(printf '%s' "$tuto_out" | tr '\n' ';'): not merged." >&2; exit 10; fi
+  # Boost mode (Benjamin, 2026-11-19): the tutorial's control seat is played at the final big check, not per lot.
+  if from_paquet 7 && ! tuto_out="$(python3 -I scripts/bench/rapport-zone.py --tuto "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour")"; then
+    if [ "${PS_JUGE_BOOST:-}" = 1 ]; then echo "$zone: tutorial lot, control seat deferred to the final check (PS_JUGE_BOOST, boost mode)"
+    else echo "$zone: tutorial lot without its control seat: $(printf '%s' "$tuto_out" | tr '\n' ';'): not merged." >&2; exit 10; fi
+  fi
   # PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », from batch 8): a repair is « done » only when a tester saw
   # it. In docs/audits/ultra/corrections.tsv a lot writes « tenté » (or « pas pris »), never « corrigé », « rejoué » (the
   # portal's, set below after the merge) nor « constaté » (the chief's, after a control seat); nor the sorter's
   # acceptance sentence or seat of origin. Its own lines are those neither the base nor the integration's head has
   # (scripts/bench/reparations.py --lot).
   states_out=""
-  if from_paquet 8 && ! states_out="$(python3 -I scripts/bench/reparations.py --lot "eq/$tour-$zone" "base:$base" "tete:$(git rev-parse HEAD)")"; then echo "$zone: the lot gives itself a state of the repairs register: $(printf '%s' "$states_out" | tr '\n' ';'): not merged." >&2; exit 11; fi
+  # Boost mode (Benjamin, 2026-11-19): tour 9's sorter wrote no register lines, so a lot's own « tenté » / « pas pris »
+  # lines go in; a line that says a reserved state (« corrigé », « rejoué », « constaté ») is still refused.
+  boost_states_ok() { [ "${PS_JUGE_BOOST:-}" = 1 ] && ! printf '%s' "$states_out" | grep -q 'says « \(corrigé\|rejoué\|constaté\) »' && echo "$zone: the lot writes its own register lines, accepted in boost mode"; }
+  if from_paquet 8 && ! states_out="$(python3 -I scripts/bench/reparations.py --lot "eq/$tour-$zone" "base:$base" "tete:$(git rev-parse HEAD)")" && ! boost_states_ok; then echo "$zone: the lot gives itself a state of the repairs register: $(printf '%s' "$states_out" | tr '\n' ';'): not merged." >&2; exit 11; fi
   zone_filters=("${filters[@]}")
   while IFS= read -r f; do [ -z "$f" ] || zone_filters+=("$f"); done < <(printf '%s\n' "$report_out" | sed -n 's/^filtre: //p')
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).
@@ -203,7 +233,10 @@ for zone in "${zones[@]}"; do
   if [ -n "$judge_why" ]; then
     # (The judge's lines of this merge stay in the lot, the trace folder going away with the merge.)
     cp "$trace/selftest-chantier.txt" "$lot/selftest-chantier-apres.txt"
-    if from_paquet 4; then clean_merge; echo "$zone: $judge_why: undone (kept in $lot)." >&2; exit 9; fi
+    # Boost mode of the tour 9 repair (Benjamin, 2026-11-19, « 1A »): the last portal trace is from tour 6, so the
+    # judge's gaps already on the integration count as new; with PS_JUGE_BOOST=1 a judge gone up is said, not refused.
+    if [ "${PS_JUGE_BOOST:-}" = 1 ]; then echo "$zone: $judge_why — said, not refused (PS_JUGE_BOOST, boost mode)"
+    elif from_paquet 4; then clean_merge; echo "$zone: $judge_why: undone (kept in $lot)." >&2; exit 9; fi
     echo "$zone: $judge_why — refused from batch 4 (batch in progress: ${paquet:-1})"
   fi
   # Socle du banc, point 2: the lot's decisions file, listed once at the end of docs/DECISIONS.md.

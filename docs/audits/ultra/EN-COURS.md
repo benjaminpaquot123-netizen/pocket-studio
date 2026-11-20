@@ -22,9 +22,9 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 
 1. Lis seulement `CLAUDE.md`, cette page et ta fiche. Pas `PROGRESS.md`, pas les issues, pas le test de nuit : c'est le travail du chef.
 2. La machine est préparée au démarrage : SDK Android dans `/opt/android-sdk`, cache des tests rempli, `local.properties` écrit. Vérifie : `ls /opt/android-sdk/platforms`. Si le dossier manque (environnement sans script de préparation), suis la recette de `docs/audits/ultra/tour-8-fiches/LISEZ-MOI.md`, puis `bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*BenchSelfTest'`.
-3. Écris au chef d'orchestre, en une ligne : « prêt : <un nom court> ; modifier l'appli : oui/non ; pousser une branche neuve : oui/non ; tests chauds : oui/non ».
+3. Pas de message « prêt » (boost éco, 19 novembre) : la fiche est dans ton message d'ouverture, tu travailles tout de suite ; tu n'écris au chef qu'une fois, « fini <sha> » ou « bloqué : … ».
 4. Économie de quota (Benjamin, 13 novembre) : aucun texte pour Benjamin dans ta discussion, pas de résumé ni de récit d'étape ; tes messages au chef tiennent en une ligne ; sorties de commandes filtrées (`tail`, `grep`), jamais un fichier entier quand un extrait suffit ; un sous-agent seulement quand la fiche le demande.
-5. Attends ta fiche (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
+5. Ta fiche est dans ton message d'ouverture (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
 6. Quand tu as poussé : « fini », puis silence. Tu n'attends pas ta CI ; le chef te réveille seulement si elle est rouge.
 
 ## Ce qui n'est pas vert (19 novembre)
@@ -41,3 +41,15 @@ Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7).
 ## Prochain départ (tour 9)
 
 Pas avant : le rangement du tour 8 (branches de sièges, revue, PR vers `main`), le lot « machinerie » fusionné, `selftest.sh` vert, et un siège pilote par mission neuve. Ordre conseillé et règles de dépense : `PREPARATION-TOUR-9.md` §5 et §6. Le chef note son compteur d'unités au départ et à la clôture.
+
+## Arrêt du 2026-11-20 (ordre de Benjamin)
+- Entrés : L9, L10, L8, L5b, L1, L17, L12, L2, L16, L11.
+- En attente (finis, refusés au portail) : L3 (sortie 5, TutoJourneyTest), L7 (3, F133 après revue), L4 (4, conflit Help.kt), L6 (3, changements après revue), L15 (5, oracle de rejeu).
+- En pause sans revue : L5a, L13, L14.
+- Pas vert : TutoReadabilityBudgetTest (depuis L5b), captures audio_pages_end instables, tempo_sheet / nl_tempo_sheet / tracks rouges sur la base, écarts du juge 123 → 125.
+- Reprise éco (2026-11-20, soir) : L7, L4, L6 entrés après fusion de l'intégration côté chef (captures et F111 pris de l'intégration, test F111 du lot retiré car doublon non branché). Juge : 134 écarts. Restent : L3, L15 (rouges), L5a, L13, L14 (sans relecture).
+
+- 2026-11-20 nuit : L14 fusionné (30b800810 ; conflit TutoPanel.kt résolu par le chef, deux côtés gardés). Rouge sur la base, pas des lots : T9PanelTargetTest#fillCellsAboveThePanelIn360At200Japanese. Suivant : relecture neuve de L5a.
+- 2026-11-20 nuit : L5a fusionné (1f3b5b7ad), après ménage du disque (1,1 Go libre faisait échouer les tests). Suivant : L3.
+- 2026-11-20 : L3 fusionné (a7c4ab95a ; TutoJourneyTest hat_triplet réparé côté test : l'élève simulé pose un triolet sur chaque triolet de la boucle, F032). En cours : L15 (assistant ici), L13, base-rouges et miettesB (discussions). MiettesA fermée sans commit : renameScene (une ligne dans AppRoot.kt, après L15), F034/F101 (tuto, après L13/L15), F032 reste (JSON du tuto).
+- 2026-11-20 soir : miettesB (cc99fcfa1) et base-rouges (b55c9209e) fusionnés. textes refusé au portail (conflit dans corrections.tsv seulement) : renvoyé à sa discussion pour fusionner l'intégration. En cours : L13 (rapport final), banc TutoJourneyTest, D10 (renommer depuis « A ▾ », relecture manquante). Ensuite V1 → fiche tuto → V2, puis le tour 10 de contrôle (47 sièges).

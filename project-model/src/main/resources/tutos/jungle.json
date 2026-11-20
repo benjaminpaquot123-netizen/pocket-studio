@@ -325,13 +325,6 @@
           "listen": "part:Intro"
         },
         {
-          "id": "map_montee",
-          "text": "Écoute la Montée : la batterie accélère, puis tout se tait un temps.",
-          "why": "Un court élan, et le Drop retombe en force.",
-          "check": "listen",
-          "listen": "part:Montée"
-        },
-        {
           "id": "map_drop",
           "text": "Écoute le Drop : tout joue.",
           "why": "C'est le cœur du morceau.",
@@ -344,6 +337,13 @@
           "why": "La pause rêveuse de la jungle.",
           "check": "listen",
           "listen": "part:Break"
+        },
+        {
+          "id": "map_montee",
+          "text": "Écoute la Montée : la batterie accélère, puis tout se tait un temps.",
+          "why": "Un court élan, et le Drop retombe en force.",
+          "check": "listen",
+          "listen": "part:Montée"
         },
         {
           "id": "map_drop2",
@@ -540,7 +540,7 @@
       "steps": [
         {
           "id": "levels",
-          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −2 », « −4 »… : plus bas, moins fort.",
+          "text": "À toi : dans l'onglet « Mix », baisse un peu le curseur de la piste « Accords », puis celui de la piste « Mélodie ». Sous le curseur, « Normal » devient « −1 », « −2 »… : plus bas, moins fort.",
           "textPro": "À toi : dans Mix, baisse un peu le fader de la piste « Accords » et celui de la piste « Mélodie ».",
           "check": "changed:volumes:pad,lead",
           "spot": "mixer.strip",

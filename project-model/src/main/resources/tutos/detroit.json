@@ -300,7 +300,7 @@
       "steps": [
         {
           "id": "make_intro",
-          "text": "À toi : crée l'Intro à partir du Groove : le kick, les charleys, le « toc » et les cordes.",
+          "text": "À toi : crée l'Intro à partir du Groove : le kick, les charleys, le « toc » et les « Accords ».",
           "check": "part:Intro:less+nobass",
           "spot": "song.parts",
           "keep": "kick,hat,open_hat,perc,pad",
@@ -325,7 +325,7 @@
         },
         {
           "id": "make_break",
-          "text": "À toi : crée le Break : les cordes et les charleys seulement.",
+          "text": "À toi : crée le Break : les « Accords » et les charleys seulement.",
           "why": "Les cordes tenues, seules : le moment le plus émouvant.",
           "check": "part:Break:nokick+nobass",
           "spot": "song.parts",
@@ -343,7 +343,7 @@
         },
         {
           "id": "make_fin",
-          "text": "À toi : crée la Fin : la batterie et les cordes, sans basse ni cloche.",
+          "text": "À toi : crée la Fin : la batterie et les « Accords », sans basse ni cloche.",
           "check": "part:Fin:less",
           "spot": "song.parts",
           "keep": "kick,hat,open_hat,perc,pad",
@@ -386,7 +386,7 @@
         {
           "id": "gap",
           "text": "À toi : à la fin du Break, efface les coups du dernier temps : un silence avant le Drop 2.",
-          "textPro": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "textPro": "À toi : dans la partie « Break », efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
           "why": "Un temps de rien, et le retour du kick paraît plus fort.",
           "check": "gap",
           "spot": "rhythm.pattern",

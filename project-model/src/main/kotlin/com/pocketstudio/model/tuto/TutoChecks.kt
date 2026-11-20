@@ -681,7 +681,7 @@ object TutoChecks {
      * ("pad,clap": a track's or a pad's strip each), else the reverb's the « Accords » track and the
      * snare's pad, the echo's the lead.
      */
-    internal fun sendChannels(p: Project, bus: Int, step: TutoStep? = null): List<Int> {
+    fun sendChannels(p: Project, bus: Int, step: TutoStep? = null): List<Int> {
         val roles = step?.target?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() }.orEmpty()
         // Any target but the jump up's own reverb (« pad »: its chords and its snare) names the strips (the echo on the bass alone).
         if (roles.isNotEmpty() && !(bus == 0 && roles == listOf("pad"))) return roles.mapNotNull { r -> stripOf(p, r) }
@@ -846,6 +846,18 @@ object TutoChecks {
     /** Whether one of [lanes] holds a triplet ([Hit.isTriplet]) inside the loop. */
     internal fun hasTriplet(d: DrumPattern, lanes: Set<Int>): Boolean =
         lanes.any { l -> d.lanes.getOrNull(l)?.hits?.any { (s, h) -> s < d.steps && h.isTriplet } == true }
+
+    /**
+     * "triplet:<role>" done in [d]: every triplet the style's line has on that pad where it fits (trap's hats: cells 13
+     * and 15, tour 9, F032: cell 13 alone passed), else any triplet ([hasTriplet]).
+     */
+    internal fun tripletsDone(d: DrumPattern, role: String, target: TutoTarget): Boolean {
+        val lane = laneOf(role)
+        val wanted = target.line(role)?.let { StarterWizard.hits(it, d.steps) }.orEmpty().filter { (s, h) -> h.isTriplet && s + h.span <= d.steps }
+        if (wanted.isEmpty()) return hasTriplet(d, lanesOf(role, target))
+        val have = d.lanes.getOrNull(lane)?.hits.orEmpty()
+        return wanted.keys.all { s -> have[s]?.isTriplet == true }
+    }
 
     /**
      * « Montre-moi » of "triplet:<role>": the triplets of the style's line on that pad where they fit
@@ -1493,7 +1505,7 @@ object TutoChecks {
         val role = step.target.ifEmpty { "pad" }
         val shape = step.check.substringAfter(':', "").ifEmpty { RISE_SHAPE }
         val label = partsOf(step).first()
-        val (q, t) = if (role == TutoTarget.ACID) p to AutoTarget(AutoTarget.ACID, AutoTarget.ACID_CHANNEL, 0, 0)
+        val (p0, t) = if (role == TutoTarget.ACID) p to AutoTarget(AutoTarget.ACID, AutoTarget.ACID_CHANNEL, 0, 0)
         else {
             val id = trackFor(p, role) ?: (if (step.target.isEmpty()) trackFor(p, "lead") else null) ?: return null
             val ch = InstrumentTrack.mixerChannel(id)
@@ -1501,6 +1513,19 @@ object TutoChecks {
                 ?: withInsert(p, ch, Insert(EffectType.FILTER.ordinal, listOf(1f, 0.25f, 0f, 1f)))?.let { q -> q to q.mixer.channels[ch].inserts.indexOfFirst { it.effect == EffectType.FILTER } }
                 ?: return null
             withFilter.first to AutoTarget(AutoTarget.INSERT_PARAM, ch, withFilter.second, 0)
+        }
+        // Tour 9, F138: the user's own curves are kept. Every lane taken: an empty one makes room (none: nothing to do).
+        var q = p0
+        val mine = q.automation.firstOrNull { it.target == t }
+        if (mine == null && q.automation.size >= AutomationLane.MAX_LANES) {
+            val free = q.automation.indexOfFirst { !drawn(it) }.takeIf { it >= 0 } ?: return null
+            q = q.copy(automation = q.automation.filterIndexed { i, _ -> i != free })
+        }
+        // A loop curve drawn on that knob: it goes on in every part, the step's part gets the step's curve.
+        val scene0 = sceneLabelled(q, label)
+        if (mine != null && mine.mode == AutomationLane.LOOP && drawn(mine) && scene0 >= 0) {
+            val each = mine.copy(mode = AutomationLane.PER_SCENE, sceneValues = q.allScenes.indices.associateWith { mine.values })
+            q = q.copy(automation = q.automation.map { if (it.target == t) each else it })
         }
         if (shape == LOOP_SHAPE) {
             // « Par partie », on the part's loop: up to the middle of each bar and back down (the filter's cycle).
@@ -1519,19 +1544,33 @@ object TutoChecks {
         }
         // The lane already « Par partie » (the Drop's loop of ch.13): the curve goes into this part's loop, the other
         // parts' curves kept (fresh review of the ch.13 fix: a song-wide lane in its place lost the Drop's loop).
-        if (q.automation.any { it.target == t && it.mode == AutomationLane.PER_SCENE } && shape in setOf(RISE_SHAPE, "fall")) {
+        if (q.automation.any { it.target == t && it.mode == AutomationLane.PER_SCENE } && shape in setOf(RISE_SHAPE, "fall", "wave")) {
             val scene = sceneLabelled(q, label).takeIf { it >= 0 } ?: return null
-            val steps = q.allScenes[scene].stepsFor(q.stepsPerBar.coerceAtLeast(2)).coerceIn(2, AutomationLane.STEPS)
+            val steps = q.allScenes[scene].stepsFor(q.stepsPerBar.coerceAtLeast(2)).coerceIn(if (shape == "wave") 3 else 2, AutomationLane.STEPS)
             val (from, to) = if (shape == "fall") 1f to 0.15f else 0.15f to 1f
-            return withPartCurve(q, t, scene, List(AutomationLane.STEPS) { i -> if (i < steps) from + (to - from) * i / (steps - 1) else null })
+            return withPartCurve(
+                q, t, scene,
+                List(AutomationLane.STEPS) { i ->
+                    val x = i.toFloat() / (steps - 1)
+                    when {
+                        i >= steps -> null
+                        // Tour 9, F138: up to the middle of the part's loop and back down.
+                        shape == "wave" -> 0.15f + 0.85f * (1f - kotlin.math.abs(2f * x - 1f))
+                        else -> from + (to - from) * x
+                    }
+                },
+            )
         }
-        var lane = AutomationLane(t, mode = AutomationLane.SONG)
         val spans = spansOf(q, label).ifEmpty { listOf(0 to 8) }
+        // Tour 9, F138: the user's song curve kept, the step's curve drawn over the part's own bars only.
+        var lane = mine?.takeIf { it.mode == AutomationLane.SONG && !it.songPerBeat }
+            ?.let { m -> spans.fold(m) { l, (at, bars) -> (at until at + bars).fold(l) { x, b -> x.withSongPoint(b, null) } } }
+            ?: AutomationLane(t, mode = AutomationLane.SONG)
         // Review (2026-10-29, MOYEN 5): the filter open (its rest) outside the part, reached by a jump. A song curve
         // holds its first point before it: the jungle's chords played their first Drop, before the Montée, with the
         // filter shut at 0.15 (500-2000 Hz of the Drop 40 dB under the assistant's chords).
         val rest = 1f
-        if (spans.first().first > 0) lane = lane.withSongPoint(0, rest)
+        if (spans.first().first > 0 && lane.songValues.take(spans.first().first).all { it == null }) lane = lane.withSongPoint(0, rest)
         for ((at, bars) in spans) {
             lane = when (shape) {
                 "fall" -> lane.withSongPoint(at, 1f).withSongPoint(at + bars - 1, 0.15f)
@@ -1540,16 +1579,25 @@ object TutoChecks {
             }.withSongJump(at, true)
         }
         // After each time the part plays: open again at once (where another time of it does not begin there).
-        for ((at, bars) in spans) if (spans.none { it.first == at + bars }) lane = lane.withSongPoint(at + bars, rest).withSongJump(at + bars, true)
-        val kept = q.automation.filterNot { it.target == lane.target }
-        return q.copy(automation = (kept + lane).take(AutomationLane.MAX_LANES))
+        for ((at, bars) in spans) {
+            if (spans.any { it.first == at + bars } || lane.songValues.getOrNull(at + bars) != null) continue
+            lane = lane.withSongPoint(at + bars, rest).withSongJump(at + bars, true)
+        }
+        // In the user's lane's place (its order kept), or after the others.
+        val i = q.automation.indexOfFirst { it.target == t }
+        return q.copy(automation = if (i < 0) q.automation + lane else q.automation.mapIndexed { j, l -> if (j == i) lane else l }.filterIndexed { j, l -> j == i || l.target != t })
     }
+
+    /** [l] has a point drawn: a loop step, a part's step, a song point. */
+    private fun drawn(l: AutomationLane): Boolean =
+        l.values.any { it != null } || l.sceneValues.values.any { v -> v.any { it != null } } || l.songValues.any { it != null }
 
     /** [q] with [line] as the « Par partie » curve of [scene] on [t]'s lane, the lane's other parts kept. */
     private fun withPartCurve(q: Project, t: AutoTarget, scene: Int, line: List<Float?>): Project {
         val was = q.automation.firstOrNull { it.target == t && it.mode == AutomationLane.PER_SCENE }
         val lane = (was ?: AutomationLane(t, mode = AutomationLane.PER_SCENE)).let { it.copy(sceneValues = it.sceneValues + (scene to line)) }
-        return q.copy(automation = (q.automation.filterNot { it.target == t } + lane).take(AutomationLane.MAX_LANES))
+        val i = q.automation.indexOfFirst { it.target == t }
+        return q.copy(automation = if (i < 0) q.automation + lane else q.automation.mapIndexed { j, l -> if (j == i) lane else l }.filterIndexed { j, l -> j == i || l.target != t })
     }
 
     /** [edit] made in the scene named [label] (shown, then back on the scene shown before). */

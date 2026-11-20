@@ -99,7 +99,7 @@
         {
           "id": "snare_do",
           "text": "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.",
-          "textPro": "À toi : sur le pad « Caisse », les cases en pointillé des 2 mesures : 2 et 4, et les notes fantômes en 2.4 et 3.2, 6 à 12 dB plus bas.",
+          "textPro": "À toi : sur le pad « Caisse », les cases en pointillé des 2 mesures : 2 et 4, et les notes fantômes en 2.4 et 4.3, 6 à 12 dB plus bas.",
           "why": "La caisse claire (le « clac » de la batterie) frappe sur 2 et 4. Entourée de petits coups très doux, elle devient souple et funky, comme un batteur de soul accéléré. Le pointillé montre où frapper ; une mesure = un tour de la boucle.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",

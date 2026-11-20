@@ -9,7 +9,7 @@
   "À toi : écris les 5 notes de la mesure 2.": "あなたの番：2小節目の5音を書こう。",
   "À toi : écris les 4 notes de la mesure 2.": "あなたの番：2小節目の4音を書こう。",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "あなたの番：1小節目の点線の各コードの下のノートをタップしよう：コード全体が置かれる。",
-  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "あなたの番：「自分でやる」でキーのシートが開くよ：丸で囲まれた2つのボタンをタップしよう。",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "あなたの番：「自分でやる」で「曲のキー」シートが開くよ：丸で囲まれた2つのボタンをタップしよう。",
   "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "あなたの番：「キック」パッドで、2小節の点線のマスをタップしよう。",
   "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "あなたの番：「スネア」パッドで、2小節分の点線のマスをタップしよう。",
   "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "あなたの番：「ハイハット」パッドで、2小節分の点線のマスをタップしよう。",
@@ -21,5 +21,5 @@
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "あなたの番：「追加」の下で、順にタップしよう：イントロ、サビ、Aメロ、プレサビ、サビ、Aメロ、プレサビ、サビ、最後にイントロ。",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "あなたの番：「追加」の下で、順にタップしよう：イントロ、Aメロ、プレサビ、サビ、ポストサビ、Aメロ、プレサビ、サビ、ブリッジ、サビ、最後にイントロ。",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "あなたの番：各パートの長さ：イントロ 4小節、Aメロ 8、プレサビ 4、サビ 16（2回目 8、3回目 16）、ポストサビ 4、ブリッジ 8、エンディング 4。",
-  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "あなたの番：「ミックス」タブで「コード」と「メロディ」を少し下げよう。下の「ふつう」が「−2」に。"
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "あなたの番：「ミックス」タブで「コード」と「メロディ」を少し下げよう。下の「ふつう」が「−1」に。"
 }

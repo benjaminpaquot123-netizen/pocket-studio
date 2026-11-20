@@ -117,7 +117,7 @@ fun TempoSheet(tempoBpm: Double, actions: TempoActions, onClose: () -> Unit) {
     ) {
         Column(
             Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp).padding(bottom = if (lyingDown()) 8.dp else 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(sectionGap()),
         ) { TempoRest(tempoBpm, draft, typed, actions, close) }
     }
 }
@@ -127,7 +127,7 @@ fun TempoSheet(tempoBpm: Double, actions: TempoActions, onClose: () -> Unit) {
 fun TempoPad(tempoBpm: Double, actions: TempoActions, close: () -> Unit, modifier: Modifier = Modifier) {
     var draft by rememberSaveable(stateSaver = TempoDraftSaver) { mutableStateOf(TempoDraft()) }
     val typed: (TempoDraft) -> Unit = { draft = it }
-    Column(modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(sectionGap())) {
         TempoTop(tempoBpm, draft, typed, actions, close)
         TempoRest(tempoBpm, draft, typed, actions, close)
     }
@@ -138,6 +138,20 @@ fun TempoPad(tempoBpm: Double, actions: TempoActions, close: () -> Unit, modifie
 private fun lyingDown(): Boolean = LocalConfiguration.current.let { it.screenWidthDp > it.screenHeightDp && it.screenHeightDp < LYING_MAX_HEIGHT_DP }
 
 private const val LYING_MAX_HEIGHT_DP = 480
+
+/**
+ * Under this height (dp, at the interface size) the sheet is tightened: keys of 48 dp (still the touch minimum) and
+ * 8 dp between its parts. Tour 9 (base-rouges2): on a small phone upright (360 x 780) « Taper en rythme » and its
+ * two-line hint were squeezed under the keypad since the range got its own line (F119).
+ */
+private const val SHORT_HEIGHT_DP = 820
+
+@Composable
+private fun shortScreen(): Boolean = LocalConfiguration.current.screenHeightDp < SHORT_HEIGHT_DP
+
+/** The room between the sheet's parts. */
+@Composable
+private fun sectionGap() = if (shortScreen()) 8.dp else 12.dp
 
 /** Under this width (dp, at the interface size) the tempo sheet's top stacks: see [TempoTop]. */
 private const val NARROW_WIDTH_DP = 260
@@ -273,7 +287,7 @@ private fun TempoRest(tempoBpm: Double, draft: TempoDraft, typed: (TempoDraft) -
     val lying = lyingDown()
     // The keypad: 1 to 9, then erase, 0, OK.
     val keypad: @Composable (Modifier) -> Unit = { m ->
-        val keyHeight = if (lying) 48.dp else 52.dp
+        val keyHeight = if (lying || shortScreen()) 48.dp else 52.dp
         Column(m, verticalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf(listOf(1, 2, 3), listOf(4, 5, 6), listOf(7, 8, 9)).forEach { row ->
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {

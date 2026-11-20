@@ -15,3 +15,6 @@ chemin: Rythme, tuto « gap » Pro, ja | test: TutoReadabilityBudgetTest#proOutO
 chemin: Rythme, tuto « gap », ja | test: TutoReadabilityBudgetTest#everyFacileExceptionStillMisses
 chemin: Rythme, tuto « Roulement », toutes langues | test: Tour9L5bTutoWordsTest#f068RollStepNamesTheTap
 chemin: Rythme, tuto « gap », ja | test: Tour9L5bTutoWordsTest#f090CellsToEraseAreStruckThrough
+
+## Rouge mesuré : I18nCatalogTest
+- I18nCatalogTest#everyTextPassedInAVariableComesFromACheckedSource : « TrackBar.kt: it », le `tr(it)` ajouté par L7 (nom d'un son de la bibliothèque près des boutons de la piste) n'est pas dans la liste des sources vérifiées.

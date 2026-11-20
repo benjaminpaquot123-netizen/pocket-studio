@@ -651,7 +651,7 @@ fun TutoPanel(
         // Tour 9 F003 (seats t9-11, t9-29, t9-41, t9-56): at 200 % the unfolded panel covered the whole work area (the
         // piano under it gone). Upright, it takes at most [PANEL_MAX_SHARE] of the screen's height; the words scroll in
         // what is left (their room is weighted below), the buttons stay whole.
-        modifier = modifier.fillMaxWidth().then(panelCap(whyOpen && why != null, if (kit != null && chapter.map && map.isNotEmpty()) with(LocalDensity.current) { kitTall.toDp() + 6.dp } else 0.dp)).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
+        modifier = modifier.fillMaxWidth().then(if (readAll) Modifier else panelCap(whyOpen && why != null, if (kit != null && chapter.map && map.isNotEmpty()) with(LocalDensity.current) { kitTall.toDp() + 6.dp } else 0.dp)).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
             .onGloballyPositioned { val b = it.boundsInWindow().bottom; if (b != bottomPx) bottomPx = b },
     ) {
         Column(
@@ -768,7 +768,7 @@ fun TutoPanel(
             if (whole > wholeWords) SideEffect { wholeWords = maxOf(wholeWords, whole) }
             val least = maxOf(lineAndHalf, if (readAll) wholeWords else 0)
             WordsRoom(
-                if (holding) Modifier.weight(1f) else Modifier.weight(1f, fill = false), holding, most, least,
+                if (holding) Modifier.weight(1f) else if (readAll && !reading) Modifier else Modifier.weight(1f, fill = false), holding, most, least,
                 mapRoom = chapter.map && map.isNotEmpty(),
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
                 short = if (reading) { { if (shed == shedAt && shed < 3) shed++ } } else null,
@@ -1500,7 +1500,7 @@ internal const val PANEL_REASON_SHARE = 0.85f
 
 /**
  * The panel's height cap: [PANEL_MAX_SHARE] of an upright screen (on its side, the panel is as before), [PANEL_REASON_SHARE]
- * with « Pourquoi ? »'s reason opened. [kit]: the kit offer pinned on a step of the song's map adds its own height and its gap (F016:
+ * with « Pourquoi ? »'s reason opened (none once « Lire la suite » is touched: the whole instruction asked for, replay t9-d14). [kit]: the kit offer pinned on a step of the song's map adds its own height and its gap (F016:
  * the map keeps the height it has without the offer), within [PANEL_REASON_SHARE].
  */
 @Composable

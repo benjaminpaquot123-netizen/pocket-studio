@@ -822,7 +822,7 @@ fun TutoPanel(
             if (whole > wholeWords) SideEffect { wholeWords = maxOf(wholeWords, whole) }
             val least = maxOf(lineAndHalf, if (readAll) wholeWords else 0)
             WordsRoom(
-                if (holding) Modifier.weight(1f) else if (readAll && !reading) Modifier else Modifier.weight(1f, fill = false), holding, most, least,
+                if (holding) Modifier.weight(1f) else Modifier.weight(1f, fill = false), holding, most, least,
                 mapRoom = chapter.map && map.isNotEmpty(),
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
                 short = if (reading) { { if (shed == shedAt && shed < 3) shed++ } } else null,

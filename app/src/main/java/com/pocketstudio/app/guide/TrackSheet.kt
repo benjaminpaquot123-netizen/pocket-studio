@@ -513,7 +513,7 @@ data class LayersEditorUi(
 )
 
 /** The name the layers editor gives the track's own sound (its first card and its title). */
-internal fun layersOwnSound(t: com.pocketstudio.model.InstrumentTrack): String = com.pocketstudio.model.guide.GuideSheets.soundName(t)
+internal fun layersOwnSound(t: com.pocketstudio.model.InstrumentTrack): String = com.pocketstudio.app.synth.trackSoundName(t)
 
 /** A sound being chosen: for a new layer of [role] ([index] null), or for layer [index]. */
 private data class Picking(val role: String?, val index: Int?)

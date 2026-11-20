@@ -10,7 +10,7 @@ Rôle : correcteur. Fichiers occupés par d'autres lots (L13, L15, L3) et fichie
 chemin: Sons > piste mélodique > Couches (feuille des couches) | test: Tour9LayersOwnSoundNameTest#theLayersEditorNamesTheChosenSoundLikeTheTab
 chemin: Sons > piste neuve > Couches | test: Tour9LayersOwnSoundNameTest#aFreshTracksSoundIsNamedAsBefore
 
-corrige: reste L7 (TrackSheet soundName) | gravité: mineur
+corrige: t9-miettesB-L7-couches | gravité: mineur
 
 ## Déjà fait, rien à changer
 - F111 (« Le message « nouvelle longueur » disparaît après quelques secondes ou au geste suivant. ») : corrigé par L12, entré. `Tour9DoneBarGoesTest` et `DoneBarNextTouchTest` verts sur la base de ce lot. Reste « tenté » jusqu'au constat d'un testeur neuf.

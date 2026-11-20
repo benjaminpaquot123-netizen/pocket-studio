@@ -8,11 +8,16 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onRoot
 import com.github.takahirom.roborazzi.captureRoboImage
+import com.pocketstudio.app.library.IndexState
+import com.pocketstudio.app.library.PacksUi
 import com.pocketstudio.app.nav.AppHarness
+import com.pocketstudio.model.PackEntry
+import com.pocketstudio.model.PackIndex
 import com.pocketstudio.model.i18n.Lang
 import com.pocketstudio.model.tuto.TutoLevel
 import com.pocketstudio.model.tuto.TutoProgress
 import com.pocketstudio.model.tuto.TutoTarget
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -35,7 +40,23 @@ abstract class Tour9TutoL5aKitShots(private val name: String) {
     private val h = AppHarness(compose)
 
     @After
-    fun end() = h.finish()
+    fun end() {
+        TutoTestHooks.packs = null
+        TutoTestHooks.kitOffer = true
+        h.finish()
+    }
+
+    /**
+     * The style's packs in a catalogue, none on the phone: the kit's card is offered (« Télécharger » / « Plus tard »)
+     * without the network, the same in every run (review L5a: the real catalogue made the ready shots order-dependent).
+     */
+    private fun catalogue(style: String) {
+        val s = TutoTarget.of(style)!!.style
+        val ids = (s.lines.filter { it.voice == null }.mapNotNull { s.kit[it.role] } + s.id).distinct()
+        val entries = ids.map { PackEntry(it, "Pack $it", "$it.zip", "a".repeat(64), 1_500_000, 12) }
+        TutoTestHooks.kitOffer = true
+        TutoTestHooks.packs = MutableStateFlow(PacksUi(IndexState.Ready(PackIndex(entries)), emptyList()))
+    }
 
     private fun texts(): String = compose.onAllNodesWithTag("tuto_text", useUnmergedTree = true).fetchSemanticsNodes()
         .flatMap { n -> n.config.getOrNull(SemanticsProperties.Text)?.map { it.text } ?: emptyList() }.joinToString(" ")
@@ -52,6 +73,7 @@ abstract class Tour9TutoL5aKitShots(private val name: String) {
     }
 
     private fun shot(style: String, step: String, level: TutoLevel, simple: Boolean, file: String): String {
+        catalogue(style)
         h.start(simple = simple, lang = Lang.FR, build = {
             session.edit { TutoTarget.of(style)!!.blank() }
             PrefsTutoStore(h.app).save(projectId, TutoProgress(style, level, current = step))

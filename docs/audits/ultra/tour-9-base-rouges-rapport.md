@@ -18,3 +18,6 @@ chemin: Rythme, tuto « gap », ja | test: Tour9L5bTutoWordsTest#f090CellsToEras
 
 ## Rouge mesuré : I18nCatalogTest
 - I18nCatalogTest#everyTextPassedInAVariableComesFromACheckedSource : « TrackBar.kt: it », le `tr(it)` ajouté par L7 (nom d'un son de la bibliothèque près des boutons de la piste) n'est pas dans la liste des sources vérifiées.
+- Corrigé : « TrackBar.kt: it » ajouté aux sources vérifiées ; ce sont les noms SoundLibrary (SYNTH, PLAITS), déjà traduits et contrôlés par ModelTextsTest. Le test n'est pas affaibli : la source est réellement vérifiée.
+
+chemin: Synthé, barre de piste (nom du son le plus proche) | test: I18nCatalogTest#everyTextPassedInAVariableComesFromACheckedSource

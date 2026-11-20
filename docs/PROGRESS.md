@@ -2,15 +2,14 @@
 
 Page courte, lue par le chef à chaque début de session. Tout ce qui date d'avant le 19 novembre 2026 est dans `docs/archive/PROGRESS-2026-10-18-a-2026-11-18.md` (historique, ne se suit pas).
 
-## Où on en est (2026-11-19, matin)
-- Tour 8 clôturé : paquets 1 à 4, garde-fous A et contrôle final T-a à T-d entrés dans l'intégration (`ccr-80af1a1b-mn0wec`, tête `26e315e22`, CI 389 verte). 0 chapitre bloqué ; 2 graves neufs du tuto et P6-grille mis de côté. Verdict : `docs/audits/ultra/sieges/tour-8/controle/verdict-final.md`.
-- Tour 8 mesuré : 88 M d'unités pour 25 discussions (245 $), environ 10 M par bug constaté, contre 22 M au tour 6. Le chef n'est pas compté.
-- Vérification avant le tour 9 faite (`docs/audits/ultra/PREPARATION-TOUR-9.md`) : fiches de reprise raccourcies, lecture d'arrivée courte, une seule CI par paquet, pas de CI pour du texte seul, machine préparée au démarrage (script de l'environnement, approuvé par Benjamin le 19 novembre ; pas encore vu tourner au démarrage d'une discussion neuve).
+## Où on en est (2026-11-20, soir)
+- Tour 9, réparation arrêtée sur ordre de Benjamin (économie de quota). Entrés dans l'intégration (`ccr-80af1a1b-mn0wec`) : L9, L10, L8, L5b, L1, L17, L12, L2, L16, L11. Environ 29 défauts tentés sur 166 (registre `corrections.tsv`), 0 constaté par un testeur.
+- Finis mais pas entrés : L3 (rouge TutoJourneyTest, piège Facile hat_triplet, probable effet de F032/L17), L7 (F133 ajouté après la revue), L4 (conflit Help.kt + captures), L6 (changements après la revue), L15 (oracle de rejeu « bouton 1 » absent, tab_Sons japonais).
+- En pause sans revue : L5a, L13, L14. L18 et L19 archivés vides.
 
 ## Prochaine étape exacte
-1. Ranger le tour 8 : fusionner les 9 branches de sièges pas entrées (rapports seuls), faire la revue de fin de phase, ouvrir la PR du tour 8 vers `main` et la fusionner sur CI verte.
-2. Lot « machinerie » (`PREPARATION-TOUR-9.md` §4), puis la CI en deux moitiés.
-3. Tour 9 : élargir d'abord (sièges jamais joués, un par niveau), trier, puis réparer par zone (`PREPARATION-TOUR-9.md` §5).
+1. Reprendre L3, L7, L4, L6, L15 (revue neuve sur la tête, puis portail), puis L5a, L13, L14 et les miettes (restes L2/L7, F101, F111, demandes hors fichiers : L6 renameScene, L17 F032/F034, L3 F031/F041).
+2. Remettre au vert TutoReadabilityBudgetTest et les captures instables, puis la grande vérification et un tour de testeurs neufs.
 
 ## Ce qui n'est pas vert
 Voir `docs/audits/ultra/EN-COURS.md`, même rubrique.

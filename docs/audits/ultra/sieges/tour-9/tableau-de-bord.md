@@ -273,7 +273,7 @@ Toutes remplies : non
 | D | Promesses tenues (vérifiées par ≥ 2 sièges) ; vues au moins une fois ; toutes les lignes « promesse: » | 0/1 ; 0/120 ; 2 oui, 6 non, 1 pas vue | ≥ 90 % ; ≥ 80 % | ? |
 | E | Missions réussies (oracle mesures.json) | 0/0 | ≥ 90 % | ? |
 | F | Moyens nouveaux (dont vus par ≥ 2 sièges) | 55 (6) | ≤ 5 (0) | non |
-| G | Relecture neuve, corrections sans test, fichiers non commités | 0, 0, 431, 1 | 0, 0, 0, 0 | non |
+| G | Relecture neuve, corrections sans test, fichiers non commités | 0, 0, 435, 1 | 0, 0, 0, 0 | non |
 | H | Hors banc : CI build + émulateur, points rouges de la recette téléphone | ?/?, ? | vert/vert, 0 | ? |
 | I | Couverture : cases vides (écrans de CARTE-CODE sans route), écrans non analysés (œil neuf), lots non joués, sièges joués / coupés par le banc | 27 (projects, new_project, wizard, padlive, padlive_party, live_screen, live_grid, live_pads_full, timeline_screen, piano_roll, audio_tracks, instrument_panel, master_pro_panel, video_sheet, remix_project, cut_screen, board, library, midi, plus, settings, help_page, glossary, latency, recette, studio, guide_panel), 36, ?, ? / ? | 0, 0, 0, ≥ 16 / ≤ 3 | ? |
 | J | Défauts vus sur l'appareil que le banc montre (défauts cachés) | 17/20 (85 % ; à l'essai 50 %) ; 14 cachés sur 26 ; 0 écart(s) | ≥ 80 %, 0 écart | oui |

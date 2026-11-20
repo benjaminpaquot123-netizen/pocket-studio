@@ -1568,3 +1568,4 @@
 - 2026-11-20 · lot « L5a » (tour-9) : 16 décision(s) dans `docs/decisions/tour-9-L5a.md`
 - 2026-11-20 : Benjamin autorise 3 assistants à la fois ; le chef en garde 2 (règle « jamais plus de deux sur une même machine » et 6 Go de disque libre). Le 3e (L13) part dès qu'un des deux finit. Retour arrière : repasser à 1.
 - 2026-11-20 · lot « L3 » (tour-9) : 9 décision(s) dans `docs/decisions/tour-9-L3.md`
+- 2026-11-20 · lot « L15 » (tour-9) : 12 décision(s) dans `docs/decisions/tour-9-L15.md`

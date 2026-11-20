@@ -23,7 +23,6 @@ import com.pocketstudio.model.tuto.TutoTarget
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -161,16 +160,17 @@ class T9D17KitDisappearsTest {
     }
 
     @Test
-    fun b_withTheRealDecoderUnderRobolectricTheKitVanishesWithoutAWord() {
+    fun b_withTheRealDecoderUnderRobolectricTheKitThatCannotLoadIsSaid() {
         open(phoneDecoder = false)
         val next = replay()
         await("kit decided") { progress().kit.isNotEmpty() }
-        await("card gone") { !has("tuto_kit") }
+        // Tour 9 L11 (D17): the kit that cannot load is said on its card, which stays (« Télécharger » tries again).
+        await("the error said") { has("tuto_kit_error") }
         val log = com.pocketstudio.app.report.AppLog.dump(20)
         println("D17(b): next pressed=$next kit=${progress().kit} pads=${padsWithSamples()} error=${has("tuto_kit_error")} log=$log")
         assertEquals(TutoProgress.KIT_BUILT_IN, progress().kit)
         assertTrue(padsWithSamples().isEmpty())
-        assertFalse("a message shown", has("tuto_kit_error"))
+        assertTrue("the card stays, to try again", has("tuto_kit"))
         assertTrue("the decoder failed", log.contains("son du kit illisible"))
     }
 }

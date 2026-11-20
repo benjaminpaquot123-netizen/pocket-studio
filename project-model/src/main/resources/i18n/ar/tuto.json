@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "أصوات الطبول الحقيقية لهذا الأسلوب، لمقطوعتك وللأمثلة. بدونها يعمل الدرس بالأصوات المدمجة.",
   "Téléchargement du kit… %d %%": "تنزيل الطقم… %d %%",
   "Mettre les sons du kit %s sur les pads": "ضع أصوات الطقم %s على البادات",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "تعذّر تحميل الطقم: يكمل الدرس بالأصوات المدمجة.",
   "Télécharger le kit %1$s (%2$s)": "تنزيل الطقم %1$s (%2$s)",
   "Recommencer le tuto": "إعادة الدرس من البداية",
   "Passer à %d mesures": "الانتقال إلى %d مازورات",

@@ -547,7 +547,7 @@
   "À toi : touche « Partager » et envoie ton morceau.": "Sıra sende: “Paylaş”a dokun ve parçanı gönder.",
   "Le kick : la grosse caisse": "Kick: büyük davul",
   "Ta première partie : le Groove, ta boucle de base": "İlk bölümün: Groove, temel döngün",
-  "À toi : crée la Montée, sans kick ni basse. Le clap accélère, puis se tait au dernier temps. Les charleys et le « Rim » jouent encore : tu les feras taire au chapitre « Les transitions ».": "Sıra sende: Yükselişi oluştur, kick ve bas yok. Clap hızlanır, sonra son vuruşta susar. Hi-hat'ler ve “Rim” hâlâ çalar: onları “Geçişler” bölümünde susturacaksın.",
+  "À toi : crée la Montée, sans kick ni basse. Le clap accélère, puis se tait au dernier temps. Les charleys et le « Rim » jouent encore : tu les feras taire au chapitre « Les transitions ».": "Sıra sende: Yükselişi oluştur, kick ve bas yok. Clap hızlanır, sonra son vuruşta susar. Hi-hat'ler ve “Rim” hâlâ çalar: onları “Geçişler” aşamasında susturacaksın.",
   "À toi : dans l'onglet « Mix », baisse un peu les pistes « Accords » et « Mélodie ».": "Sıra sende: “Mix” sekmesinde “Akorlar” ve “Melodi” kanallarını biraz indir.",
   "À toi : dans la Montée, efface les coups du dernier temps : un silence avant le Drop.": "Sıra sende: Yükseliş'te son vuruştaki vuruşları sil: Drop'tan önce sessizlik.",
   "À toi : dans le Break, pad « Tom médium », touche les 4 cases du dernier temps.": "Sıra sende: Break'te, “Orta tom” pad'inde son vuruşun 4 kutusuna dokun.",
@@ -633,5 +633,6 @@
   "À toi : écris les 2 notes de la mesure 2 : la réponse, plus grave.": "Sıra sende: 2. ölçünün 2 notasını yaz: cevap, daha pes.",
   "À toi : écris les 2 notes plus graves de la mesure 4 : la réponse.": "Sıra sende: 4. ölçünün daha pes 2 notasını yaz: cevap.",
   "À toi : écris les 4 notes de la mesure 4.": "Sıra sende: 4. ölçünün 4 notasını yaz.",
-  "À toi : écris les 8 notes de la mesure 2.": "Sıra sende: 2. ölçünün 8 notasını yaz."
+  "À toi : écris les 8 notes de la mesure 2.": "Sıra sende: 2. ölçünün 8 notasını yaz.",
+  "La caisse un peu en retard traîne derrière le kick : le 2-step boite et se balance encore plus.": "Biraz geciken trampet kick'in arkasından sürüklenir: 2-step daha da aksar ve sallanır."
 }

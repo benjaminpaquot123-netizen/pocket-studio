@@ -776,7 +776,7 @@ private fun DeleteStemsDialog(set: StemSet, inProject: Boolean, onDelete: () -> 
             text = {
                 Text(tr("« %s » joue dans %s. Retire-le d'abord de ce projet (« Retirer du projet ») pour pouvoir le supprimer.", set.name, users.joinToString(", ")))
             },
-            confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.testTag("delete_stems_ok")) { Text("OK") } },
+            confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.testTag("delete_stems_ok")) { Text(tr("OK")) } },
             modifier = Modifier.testTag("delete_stems_dialog"),
         )
     } else {

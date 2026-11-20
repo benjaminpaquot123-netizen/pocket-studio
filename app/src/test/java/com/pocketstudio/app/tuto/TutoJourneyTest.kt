@@ -326,17 +326,21 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                 }
             }
             // "triplet:<role>": a triplet put on a hit of the pad as a user would (long press › « Triolet » › « 3 sur 2 cases »),
-            // where the style's line has one, else on the last beat of the first bar.
-            // Red (tour 9, F032, T9L17WholeStepTest): trap's step asks for cells 13 AND 15; only the first is played here.
+            // where the style's line has them (every one: trap's step says cells 13 and 15, tour 9 F032), else on the
+            // last beat of the first bar.
             c.startsWith("triplet:") -> {
                 if (has("tuto_do")) click("tuto_do")
                 val role = c.removePrefix("triplet:")
                 h.vm.selectPad(TutoChecks.laneOf(role))
                 val line = target.line(role)!!
-                val cell = StarterWizard.hits(line, p().drums.steps).entries.firstOrNull { it.value.span > 1 }?.key ?: 12
-                if (p().drums.lanes[TutoChecks.laneOf(role)].hits[cell] == null) h.vm.toggleStep(cell)
-                h.vm.setSpread(cell, 3, 2, 0)
-                compose.waitForIdle()
+                val steps = p().drums.steps
+                val cells = StarterWizard.hits(line, steps).filter { (s, hit) -> hit.isTriplet && s + hit.span <= steps }.keys.sorted()
+                    .ifEmpty { listOf(12) }
+                for (cell in cells) {
+                    if (p().drums.lanes[TutoChecks.laneOf(role)].hits[cell] == null) h.vm.toggleStep(cell)
+                    h.vm.setSpread(cell, 3, 2, 0)
+                    compose.waitForIdle()
+                }
                 closeSheetIfAny()
             }
             c == "velocity:hat" -> {

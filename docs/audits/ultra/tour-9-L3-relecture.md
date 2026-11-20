@@ -1,5 +1,5 @@
 # Tour 9, lot L3 (zone tuto) : relecture neuve
-Relu : 62436d22a447c87bee306c541f9a77aad74d8349
+Relu : ca7f33547df0d753fce09e8e69d018b96e35d029
 
 Base : `git diff origin/ccr-80af1a1b-mn0wec 62436d22 -- app/src project-model/src` (intégration ddf08286 fusionnée). Fichiers de l'appli touchés : `TutoController.kt`, `TutoChecks.kt` seulement, dans la liste permise. Tests du lot : `Tour9Tuto*` (app et project-model), `Tour8TutoGesturesDoItTest`, `TutoLot4Test`. Aucune capture, aucun fichier i18n, aucun cours, rien du moteur ni du thread audio.
 

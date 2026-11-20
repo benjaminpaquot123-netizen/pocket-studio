@@ -459,16 +459,22 @@ fun ShareSheetContent(
                     color = Neon.TextSecondary, modifier = m.testTag("share_keeps_name"))
             }
         }
-        if (canRename) Row(
-            Modifier.fillMaxWidth().heightIn(min = 48.dp)
-                .toggleable(value = ui.renameProject, role = Role.Switch, onValueChange = actions.renameProject)
-                .testTag("share_rename_project"),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (sentence != null) sentence(Modifier.weight(1f))
-            else Text(tr("Renommer aussi le projet"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-            Switch(checked = ui.renameProject, onCheckedChange = null, modifier = Modifier.padding(start = 8.dp))
-        } else sentence?.invoke(Modifier)
+        // Tour 9 (base-rouges2): the switch row is 48 dp tall; under the name it pushed « Longueur de la boucle » out of
+        // a small phone's sight (« partager » took a scroll, budget 3 touches, G1). It sits under the loop's length now;
+        // the label of the name field above still says whether the project is renamed.
+        val renameRow: @Composable () -> Unit = {
+            Row(
+                Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                    .toggleable(value = ui.renameProject, role = Role.Switch, onValueChange = actions.renameProject)
+                    .testTag("share_rename_project"),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (sentence != null) sentence(Modifier.weight(1f))
+                else Text(tr("Renommer aussi le projet"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                Switch(checked = ui.renameProject, onCheckedChange = null, modifier = Modifier.padding(start = 8.dp))
+            }
+        }
+        if (!canRename) sentence?.invoke(Modifier)
         if (cramped) FormatChips(ui, actions)
         // How long it lasts, and one last listen (the saturation is checked while it plays).
         // Tour 8, R (seat 3a #64): one line whole or not at all; the edge cut it under the clock (hi, 130 %) and
@@ -540,6 +546,7 @@ fun ShareSheetContent(
                 }
             }
         }
+        if (canRename) renameRow()
         // Audit ultra round 3 (n° 10, seats A d 3, F b 26): the target chosen here, where the song leaves (it was only
         // said, « se règle dans Mix », and only once set there). The same setting as Mix's. Pro keeps it above the checks.
         // Tour 7 lot 5 D3: the same plain target chips in both modes (Pro's LUFS stay in Mix and under « détails »).

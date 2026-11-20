@@ -1556,3 +1556,4 @@
 - 2026-11-19 · lot « L5b » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-L5b.md`
 - 2026-11-19 · lot « L1 » (tour-9) : 10 décision(s) dans `docs/decisions/tour-9-L1.md`
 - 2026-11-19 · lot « L17 » (tour-9) : 11 décision(s) dans `docs/decisions/tour-9-L17.md`
+- 2026-11-20 · lot « L12 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-L12.md`

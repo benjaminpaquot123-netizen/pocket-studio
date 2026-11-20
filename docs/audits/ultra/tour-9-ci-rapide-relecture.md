@@ -68,3 +68,60 @@ rouge constaté : d977d18b : rejoué sur b76bc637 : `test_stable.py` de b76bc637
   vert » honnête), hormis le chemin « une classe imbriquée suit sa classe » adossé au test creux ci-dessus.
 
 Verdict : 0 bloquant, 0 grave
+
+## Relecture neuve du complément (cache Robolectric, annulation des CI de lot)
+Relu : 375161e3 (`.github/workflows/ci.yml`, `scripts/ci-robolectric-jars.sh`), et la fusion 67965245 pour ci.yml seul.
+
+### Bloquant
+- Aucun.
+
+### Grave
+- Aucun.
+
+### Mineur
+- `scripts/ci-robolectric-jars.sh:54-55` : curl sans `--max-time` ni `--speed-limit/--speed-time`. Une connexion
+  ouverte qui ne débite plus bloque l'étape jusqu'au délai du travail (45 min) au lieu de réessayer. Robolectric seul
+  avait le même défaut, donc ce n'est pas un recul ; ajouter par ex. `--speed-limit 10000 --speed-time 60`.
+- `scripts/ci-robolectric-jars.sh:88` : après les essais, `exit 1` rougit la part sans laisser Robolectric tenter
+  lui-même (pas de `continue-on-error`). Voulu (échec en 2 min au lieu de 533 tests rouges), mais ce n'est pas le
+  « repli silencieux » : ce repli ne vaut que pour une version absente de la table (vérifié, voir plus bas).
+- `ci.yml:19` : le nom de l'intégration `ccr-80af1a1b-mn0wec` est écrit en dur, en double de `PS_INTEGRATION`
+  (`scripts/bench/portail-file.sh:23`). Si l'intégration change de branche (nom en `ccr-`), sa CI devient annulable
+  tant que ci.yml n'est pas mis à jour.
+- `ci.yml:19` : `on.push` ne vise que `main`, donc la clause `eq/`/`ccr-` ne joue que pour les CI lancées à la main
+  (workflow_dispatch). Une CI de lot annulée se lit « rouge » dans `scripts/bench/ci-etat.sh` (completed/cancelled)
+  pour l'ancien sha seulement ; sans effet sur la tête poussée.
+- `ci.yml:177` : clé avec le hachage de tout `libs.versions.toml` (toute montée de dépendance = nouvelle entrée de
+  ~213 Mo) et cache rangé par branche : une branche de lot ne relit que son propre cache ou celui de `main`, donc
+  la première CI de chaque lot télécharge quand même (avec les essais du script, c'est l'essentiel du gain).
+  Les 4 parts qui sauvent la même clé : la première gagne, les autres n'ont qu'un avertissement (pas de rouge).
+
+### Vérifié (sans défaut)
+- Fichier partiel : téléchargement dans `.part.$$` puis `.new`, déplacé dans `~/.m2` seulement après contrôle sha512 ;
+  le jar n'est jamais en place sans être vérifié ; rien ne reste après un échec (essai avec un dépôt injoignable).
+- Clé : change avec la version de Robolectric (nom de l'artefact + hachage du toml) et avec le sdk ; version inconnue
+  → nom vide, rien écrit, code 0 (essayé avec `4.99`), Robolectric télécharge et le cache garde ce qu'il a pris.
+- `set -euo pipefail` : les `[ … ] && …` ne font pas sortir ; tableau vide sous `set -u` sans erreur (bash 5).
+- Concurrence : `main` et l'intégration jamais annulées (push sur main : `ref_name`=`main` → faux) ; pull_request
+  inchangé.
+- Actions : `actions/cache` épinglée par sha (même sha que le travail « smoke »). Fusion 67965245 : ci.yml identique
+  au côté du lot (a4002a4a), l'intégration n'y avait rien changé ; YAML lu, étapes du travail « tests » sans doublon
+  ni perte.
+
+### Ce qui a tourné
+- Script réel dans un dossier temporaire : jar de 213 Mo et pom récupérés, sha512 égal à celui de Central, même
+  disposition que le `~/.m2` écrit par Robolectric ; second passage : rien à faire (0,01 s). `--names` → 
+  `16-robolectric-13921718-i7`.
+- `test_portail3.py` (80 verts), `test_stable.py` (6 verts), `test_socle.py` : 29 verts, 1 rouge
+  `PortalRulesFrozenPerBatch.test_a_rule_added_during_the_batch_waits_for_the_next`, **déjà rouge sur 9c466fd1**
+  (worktree, 28 verts 1 rouge) ; cause : la règle `elif from_paquet 4` ajoutée par 19e40b8f (19/11 19:16) après
+  l'ouverture du paquet 9 (b746a9aa, 18:33). En clone de profondeur 1 (comme `actions/checkout`), 30 verts : la CI ne le
+  voit pas.
+
+### Non vérifié
+- Aucune CI GitHub de 375161e3 lue : restauration/sauvegarde réelle du cache, durée, avertissement de course.
+- `CiShardTest` non lancé (il ne lit que `TEST_PARTS`, inchangé).
+- Que Robolectric 4.17 ne revérifie pas le jar local (lu de mémoire : il se fie à la présence du jar) ; sans conséquence,
+  le jar et son `.sha512` sont cohérents.
+
+Verdict : 0 bloquant, 0 grave

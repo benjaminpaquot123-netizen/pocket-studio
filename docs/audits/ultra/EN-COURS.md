@@ -51,3 +51,4 @@ Pas avant : le rangement du tour 8 (branches de sièges, revue, PR vers `main`),
 
 - 2026-11-20 nuit : L14 fusionné (30b800810 ; conflit TutoPanel.kt résolu par le chef, deux côtés gardés). Rouge sur la base, pas des lots : T9PanelTargetTest#fillCellsAboveThePanelIn360At200Japanese. Suivant : relecture neuve de L5a.
 - 2026-11-20 nuit : L5a fusionné (1f3b5b7ad), après ménage du disque (1,1 Go libre faisait échouer les tests). Suivant : L3.
+- 2026-11-20 : L3 fusionné (a7c4ab95a ; TutoJourneyTest hat_triplet réparé côté test : l'élève simulé pose un triolet sur chaque triolet de la boucle, F032). En cours : L15 (assistant ici), L13, base-rouges et miettesB (discussions). MiettesA fermée sans commit : renameScene (une ligne dans AppRoot.kt, après L15), F034/F101 (tuto, après L13/L15), F032 reste (JSON du tuto).

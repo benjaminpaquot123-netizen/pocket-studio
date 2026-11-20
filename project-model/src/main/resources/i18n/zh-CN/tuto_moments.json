@@ -9,7 +9,7 @@
   "À toi : écris les 5 notes de la mesure 2.": "轮到你：写好第 2 小节的 5 个音。",
   "À toi : écris les 4 notes de la mesure 2.": "轮到你：写好第 2 小节的 4 个音。",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "轮到你：点第 1 小节每个虚线和弦最低的那个音：整个和弦就放下了。",
-  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "轮到你：“我来做”会打开“音调”面板：点两个圈出来的按钮。",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "轮到你：“我来做”会打开“歌曲调性”面板：点两个圈出来的按钮。",
   "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "轮到你：在“底鼓”打击垫上，点 2 个小节的虚线格子。",
   "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "轮到你：在“军鼓”打击垫上，点2 小节里的虚线格子。",
   "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "轮到你：在“踩镲”打击垫上，点2 小节里的虚线格子。",
@@ -21,5 +21,5 @@
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "轮到你：在“添加”下面按顺序点：前奏、副歌、主歌、预副歌、副歌、主歌、预副歌、副歌，最后是前奏。",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "轮到你：在“添加”下面按顺序点：前奏、主歌、预副歌、副歌、副歌后段、主歌、预副歌、副歌、桥段、副歌，最后是前奏。",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "轮到你：给每个段落设好时长：前奏 4 小节、主歌 8、预副歌 4、副歌 16（第 2 次 8，第 3 次 16）、副歌后段 4、桥段 8、结尾 4。",
-  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "轮到你：在“混音”标签里，把“和弦”和“旋律”推子稍微拉低一点。推子下方的“正常”会变成“−2”。"
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "轮到你：在“混音”标签里，把“和弦”和“旋律”推子稍微拉低一点。推子下方的“正常”会变成“−1”。"
 }

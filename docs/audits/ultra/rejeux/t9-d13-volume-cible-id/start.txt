@@ -1,0 +1,7 @@
+lang=id
+device=phone
+font=130
+mode=pro
+amenee=tuto:gabber:13
+gestes.max=20
+mission=tuto-pro

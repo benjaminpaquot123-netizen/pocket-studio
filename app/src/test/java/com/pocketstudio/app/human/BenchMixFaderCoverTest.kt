@@ -59,15 +59,34 @@ class BenchMixFaderCoverTest {
         return ScreenText(compose, screen, reads = true, rtl = false).finger(74, at.x, at.y)
     }
 
-    /** No bench here: a plain finger drags the fader, and the app moves the volume. */
+    /**
+     * Tour 9 L2, F024 option A: a fader is taken only near its cap. The reading gives the cap's place on the fader's
+     * line (« poignée @ x,y »), so a seat aims at it.
+     */
+    private fun capOf(tag: String): Offset {
+        val screen = ApplicationProvider.getApplicationContext<android.app.Application>().resources.displayMetrics
+        val at = centerOf(tag)
+        val lines = ScreenText(compose, screen, reads = true, rtl = false).read().lines
+        val line = lines.firstOrNull { it.startsWith("curseur") && " @ ${at.x.toInt()},${at.y.toInt()}" in it }
+        assertTrue("no line for the fader $tag at $at: $lines", line != null)
+        val m = Regex("poignée @ (\\d+),(\\d+)").find(line!!)
+        assertTrue("the reading does not give the fader's cap: $line", m != null)
+        return Offset(m!!.groupValues[1].toFloat(), m.groupValues[2].toFloat())
+    }
+
+    /** No bench here: a plain finger drags the fader from its cap (where the reading puts it), and the app moves the volume. */
     @Test
-    fun withoutTheBenchADragMovesTheFader() {
+    fun withoutTheBenchADragFromTheCapTheReadingGivesMovesTheFader() {
         showMix()
+        val cap = capOf("volume_1")
+        val screen = ApplicationProvider.getApplicationContext<android.app.Application>().resources.displayMetrics
+        val box = BenchWindows.drawnBounds(compose.onNodeWithTag("volume_1").fetchSemanticsNode(), screen)
+        val local = cap - box.topLeft
         compose.onNodeWithTag("volume_1").performTouchInput {
-            swipe(center, center + Offset(0f, 50f), durationMillis = 200)
+            swipe(local, local + Offset(0f, 50f), durationMillis = 200)
         }
         compose.waitForIdle()
-        assertTrue("the drag did not move the volume of strip 1: $volumes", volumes.any { it.first == 1 })
+        assertTrue("the drag from the cap did not move the volume of strip 1: $volumes", volumes.any { it.first == 1 })
     }
 
     /** No bench here: a plain touch on a strip's name opens the strip's sheet (its effects). */

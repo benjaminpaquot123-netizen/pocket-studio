@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "Prawdziwe dźwięki perkusji tego stylu, do twojego utworu i do przykładów. Bez nich kurs działa z wbudowanymi dźwiękami.",
   "Téléchargement du kit… %d %%": "Pobieranie zestawu… %d %%",
   "Mettre les sons du kit %s sur les pads": "Połóż dźwięki zestawu %s na padach",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "Nie udało się wczytać zestawu: kurs zostaje przy wbudowanych dźwiękach.",
   "Télécharger le kit %1$s (%2$s)": "Pobierz zestaw %1$s (%2$s)",
   "Recommencer le tuto": "Zacznij kurs od nowa",
   "Passer à %d mesures": "Przejdź na %d takty",
@@ -157,5 +158,10 @@
   "Posé : %s.": "Położono: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Brakuje ci tego, co powstaje we wcześniejszych rozdziałach.",
   "Aller au chapitre %d": "Przejdź do rozdziału %d",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "W twoim utworze nie ma części „%s”: ten krok wykonuje się właśnie w niej."
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "W twoim utworze nie ma części „%s”: ten krok wykonuje się właśnie w niej.",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "Zanim zaczniesz: twoje pady mają brzmienia perkusji z aplikacji, ustawione pod ten styl. Zestawu tego stylu nie ma jeszcze na padach: jego karta zaproponuje go dalej, a „Później” wystarczy, samouczek działa z tymi brzmieniami. Nie musisz nic ustawiać.",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303: mała maszyna basowa; jej piszczący, warczący dźwięk to acid.",
+  "Accent : une note jouée plus fort que les autres.": "Akcent: nuta zagrana głośniej niż inne.",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "Slide: nuta przesuwa się do następnej zamiast skakać.",
+  "Glide : le son glisse doucement d'une note à l'autre.": "Glide: dźwięk płynnie przesuwa się z jednej nuty na drugą."
 }

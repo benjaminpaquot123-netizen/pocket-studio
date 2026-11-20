@@ -115,7 +115,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad de percussion, touche les cases en pointillé : un coup tous les trois pas.",
+          "text": "À toi : sur le pad « Rim », touche les cases en pointillé : un coup tous les trois pas.",
           "why": "Tous les trois pas, elle tourne « à côté » du rythme : l'esprit des triolets du riddim. On la garde pour le Drop 2.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",

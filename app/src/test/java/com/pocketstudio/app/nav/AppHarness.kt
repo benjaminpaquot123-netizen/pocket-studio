@@ -5,6 +5,8 @@ import androidx.compose.ui.test.performClick
 import android.app.Application
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.swipe
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -267,7 +269,17 @@ internal fun GestureBudget.holdAndSlide(tag: String, from: Offset, to: Offset, c
 
 /** A slide on node [tag] (a fader): one gesture. */
 internal fun GestureBudget.slide(tag: String, compose: AndroidComposeTestRule<*, *>, up: Boolean = true) {
-    compose.onNodeWithTag(tag).performTouchInput { if (up) swipeUp() else swipeDown() }
+    // Tour 9 L2 (F024): a fader is taken only near its cap, so the finger lands on the cap (from the fader's value).
+    val p = compose.onNodeWithTag(tag).fetchSemanticsNode().config
+        .getOrNull(androidx.compose.ui.semantics.SemanticsProperties.ProgressBarRangeInfo)
+    val f = p?.let { ((it.current - it.range.start) / (it.range.endInclusive - it.range.start)).coerceIn(0f, 1f) }
+    compose.onNodeWithTag(tag).performTouchInput {
+        if (f == null) { if (up) swipeUp() else swipeDown() }
+        else {
+            val start = Offset(centerX, height * (1f - f))
+            swipe(start, Offset(centerX, if (up) 0f else height - 1f), durationMillis = 300)
+        }
+    }
     count("slide $tag")
     compose.waitForIdle()
 }

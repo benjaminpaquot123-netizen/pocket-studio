@@ -107,7 +107,7 @@ class LanguageTest {
         I18n.lang = Lang.NL
         session()
         compose.onNodeWithText("Instellingen van het nummer", ignoreCase = true).assertExists()
-        compose.onNodeWithText("Tik op een deel om het nummer vanaf daar te horen.").assertExists()
+        compose.onNodeWithText("Tik op een deel om de lengte in te stellen; ▶ speelt het nummer vanaf daar.").assertExists()
         compose.onAllNodesWithText("A · Refrein").assertCountEquals(1)
         compose.onAllNodesWithText("  Jouer le morceau").assertCountEquals(0)
     }

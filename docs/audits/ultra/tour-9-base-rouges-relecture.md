@@ -1,4 +1,4 @@
-Relu : e255b34fe86dd330b999283b4545088545d4a0d7
+Relu : d6e3d16a01f89f972bdc712821f3e805813cd913
 
 Relecture neuve du diff `8801b1dc..HEAD` (branche eq/tour-9-base-rouges). Tests ciblés relancés : TutoReadabilityBudgetTest 3/3, Tour9L5bTutoWordsTest 13/13, I18nCatalogTest 13/13, ModelTextsTest 2/2, tous verts. Les 5 JSON se chargent sans erreur ; rien d'autre n'est touché (hors le rapport du lot).
 
@@ -15,5 +15,6 @@ L'entrée « TrackBar.kt: it » est vraie : le seul `tr(it)` de TrackBar.kt (lig
 - ja (6 consignes gap) : les noms de partie perdent leurs 「」 (ビルドアップ, プレサビ, ブレイク), un peu moins raccord avec les consignes voisines qui les gardent, et « それぞれ » (chacune) saute ; la partie, la dernière mesure et les cases barrées (取り消し線のマス) restent, aucun 赤い× (f090 respecté).
 - I18nCatalogTest : la clé « TrackBar.kt: it » couvre tout futur `tr(it)` du fichier, pas seulement celui-ci (même limite que les entrées voisines du même genre).
 - T9PanelTargetTest laissé rouge par le lot (dit « mise en page, pas texte ») : pas vérifié ici, à traiter par le lot qui possède cette zone.
+- Depuis e255b34f, seul le rapport a changé (vérifié) : il ajoute la ligne « tests: » et la ligne I18nCatalogTest quitte « chemin: » parce que c'est un test de project-model ; le code et les traductions sont les mêmes.
 
 Verdict : 0 bloquant, 0 grave

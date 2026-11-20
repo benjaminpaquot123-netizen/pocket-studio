@@ -1,5 +1,5 @@
 # Relecture neuve, tour-9 L7
-Relu : 58fb8b0e9939a09af4c4d054c709ff90bab533e8
+Relu : 1ad7be09bd3f9777003fda53f96e9c5f359c863b
 
 Diff relu : `git diff origin/ccr-80af1a1b-mn0wec 58fb8b0e` (branche eq/tour-9-L7). Les PNG de captures existent dans le diff ; ils n'ont pas été analysés (consigne).
 
@@ -36,3 +36,6 @@ Aucun.
 - `GestureBudgetTest.aBarIsCopiedAndPastedInThreeGestures` reste compatible avec le nouveau calcul de la mesure visée.
 
 Verdict : 0 bloquant, 0 grave
+
+## Complément (chef, 2026-11-20)
+Entre 58fb8b0e et 1ad7be09, seul `TrackBar.kt` change hors captures : la résolution de la fusion avec l'intégration garde à la fois `trackSoundName(t)` (F116, ce lot) et `DefaultNames.soundBeside(shown(t.name), …)` (F133, lot L8). Rien d'autre. 0 bloquant, 0 grave.

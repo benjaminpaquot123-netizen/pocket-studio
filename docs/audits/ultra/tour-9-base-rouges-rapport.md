@@ -1,5 +1,6 @@
 # Tour 9 : lot base-rouges (rapport)
 
+tests: *TutoReadabilityBudgetTest *Tour9L5bTutoWordsTest
 Base : ccr-80af1a1b-mn0wec (8801b1dc). Tests rouges sur la base, mesurés avant correction.
 
 ## Rouges mesurés sur la base
@@ -20,7 +21,7 @@ chemin: Rythme, tuto « gap », ja | test: Tour9L5bTutoWordsTest#f090CellsToEras
 - I18nCatalogTest#everyTextPassedInAVariableComesFromACheckedSource : « TrackBar.kt: it », le `tr(it)` ajouté par L7 (nom d'un son de la bibliothèque près des boutons de la piste) n'est pas dans la liste des sources vérifiées.
 - Corrigé : « TrackBar.kt: it » ajouté aux sources vérifiées ; ce sont les noms SoundLibrary (SYNTH, PLAITS), déjà traduits et contrôlés par ModelTextsTest. Le test n'est pas affaibli : la source est réellement vérifiée.
 
-chemin: Synthé, barre de piste (nom du son le plus proche) | test: I18nCatalogTest#everyTextPassedInAVariableComesFromACheckedSource
+Test du module project-model (hors app) : I18nCatalogTest#everyTextPassedInAVariableComesFromACheckedSource, joué à part (:project-model:test), vert.
 
 ## Non corrigé ici : T9PanelTargetTest#fillCellsAboveThePanelIn360At200Japanese
 - Rouge sur la base : « panel at 734.0 ; cells 16, whole above it 0 ».

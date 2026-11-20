@@ -50,3 +50,4 @@ Pas avant : le rangement du tour 8 (branches de sièges, revue, PR vers `main`),
 - Reprise éco (2026-11-20, soir) : L7, L4, L6 entrés après fusion de l'intégration côté chef (captures et F111 pris de l'intégration, test F111 du lot retiré car doublon non branché). Juge : 134 écarts. Restent : L3, L15 (rouges), L5a, L13, L14 (sans relecture).
 
 - 2026-11-20 nuit : L14 fusionné (30b800810 ; conflit TutoPanel.kt résolu par le chef, deux côtés gardés). Rouge sur la base, pas des lots : T9PanelTargetTest#fillCellsAboveThePanelIn360At200Japanese. Suivant : relecture neuve de L5a.
+- 2026-11-20 nuit : L5a fusionné (1f3b5b7ad), après ménage du disque (1,1 Go libre faisait échouer les tests). Suivant : L3.

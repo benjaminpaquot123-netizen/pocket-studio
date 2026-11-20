@@ -38,4 +38,6 @@ Aucun.
 Verdict : 0 bloquant, 0 grave
 
 ## Complément (chef, 2026-11-20)
-Entre 58fb8b0e et 1ad7be09, seul `TrackBar.kt` change hors captures : la résolution de la fusion avec l'intégration garde à la fois `trackSoundName(t)` (F116, ce lot) et `DefaultNames.soundBeside(shown(t.name), …)` (F133, lot L8). Rien d'autre. 0 bloquant, 0 grave.
+Entre 58fb8b0e et 1ad7be09, seul `TrackBar.kt` change hors captures : la résolution de la fusion avec l'intégration garde à la fois `trackSoundName(t)` (F116, ce lot) et `DefaultNames.soundBeside(shown(t.name), …)` (F133, lot L8). Rien d'autre.
+
+Verdict : 0 bloquant, 0 grave

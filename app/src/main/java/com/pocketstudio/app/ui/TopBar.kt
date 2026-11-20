@@ -54,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -66,6 +67,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -141,6 +143,9 @@ class TopBarActions(
     val toggleRecord: () -> Unit = {},
     val selectScene: (Int) -> Unit = {},
     val newScene: () -> Unit = {},
+    /** Tour 9, D10: « Renommer » in the scene chip's menu names a part (index, section or free name), as Structure does. */
+    // Null: no « Renommer » in the menu (a name given there would go nowhere until the caller wires it).
+    val renameScene: ((Int, String) -> Unit)? = null,
     /** ⤴ « Prêt à partager ? »: the song checked, then shared (on every tab). */
     val share: () -> Unit = {},
     /**
@@ -239,6 +244,27 @@ private val PROJECT_FOLDER_ROOM = 52.dp
 /** Next to the mode chip, the name keeps this much text at the usual size (« Mon prem… »), more as the text grows. */
 private val PROJECT_NAME_TEXT = 56.dp
 
+/**
+ * « ✓ Sauvegardé » under (or next to) the project's name. Tour 9, F107 (« Enregistré » gone, « Mon projet 1 » alone): a
+ * word that does not fit is set a size smaller, then tighter, before the tick is left alone (never « Sauv… »).
+ */
+@Composable
+private fun SavedWord(modifier: Modifier = Modifier, word: Boolean = true) = androidx.compose.foundation.layout.BoxWithConstraints(modifier) {
+  // Tried again from the largest size when the room changes (the phone turned, a chip gone).
+  var step by remember(maxWidth, word) { mutableStateOf(if (word) 0 else SAVED_STEPS + 1) }
+  Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("top_saved")) {
+    Icon(Icons.Filled.Check, contentDescription = if (step > SAVED_STEPS) tr("Sauvegardé") else null, tint = Neon.Acid, modifier = Modifier.size(if (step == 0) 16.dp else 14.dp))
+    val base = if (step == 0) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall
+    if (step <= SAVED_STEPS) Text(
+        tr("Sauvegardé"), style = base.copy(letterSpacing = if (step >= 2) (-0.02).em else 0.sp, fontWeight = FontWeight.Bold), color = Neon.Acid,
+        maxLines = 1, softWrap = false, overflow = TextOverflow.Clip, onTextLayout = { if (it.hasVisualOverflow && step <= SAVED_STEPS) step++ },
+        modifier = Modifier.padding(start = if (step == 0) 2.dp else 1.dp).graphicsLayer { alpha = if (step > SAVED_STEPS) 0f else 1f },
+    )
+  }
+}
+
+private const val SAVED_STEPS = 2
+
 private val TOP_SHEEN = Color.White.copy(alpha = 0.06f)
 private val FOOT_SHADE = Color.Black.copy(alpha = 0.32f)
 private val FOOT_LIGHT = Color.White.copy(alpha = 0.07f)
@@ -252,7 +278,44 @@ private val GLOSS = Brush.verticalGradient(0f to Color.White.copy(alpha = 0.2f),
  * play strip right under it.
  */
 @Composable
-fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.layout.BoxWithConstraints(
+fun TopBar(
+    ui: TopBarUi,
+    actions: TopBarActions,
+    // The naming dialog (index, name shown, done, dismiss): Structure's own. Under Robolectric a dialog holding a text
+    // field never goes idle, so a test draws the same fields without the window.
+    nameDialog: @Composable (Int, String, (String) -> Unit, () -> Unit) -> Unit = { i, shown, done, dismiss ->
+        com.pocketstudio.app.session.RenameSceneDialog(i, shown, done, dismiss)
+    },
+) {
+    // Tour 9, D10: « Renommer » in the scene menu opens it, outside the bar's BoxWithConstraints. The part named is
+    // the one touched, kept until the dialog closes (another part picked meanwhile is not renamed instead).
+    var naming by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<Int?>(null) }
+    val named = ui.scene
+    if (named == null) naming = null
+    TopBarRow(ui, actions, onRename = { naming = named?.current })
+    val index = naming
+    if (index != null && named != null) {
+        // The same dialog as Structure's, given the part's saved name (as Structure does), not its title as shown.
+        val shown = named.titles.getOrElse(index) { "" }.substringAfter(" · ", "")
+        nameDialog(index, storedSceneLabel(shown), { label -> actions.renameScene?.invoke(index, label); naming = null }, { naming = null })
+    }
+}
+
+/**
+ * A part's saved name from its title as the bar shows it (Scene.shownLabel in the interface's language): « Ritornello 2 »
+ * back to « Refrain 2 », « Drop + » kept, any name typed as it is. Review G1: the project keeps its names in French.
+ */
+internal fun storedSceneLabel(shown: String): String {
+    val keys = Scene.SECTIONS + Scene.DRUM_LABELS
+    keys.firstOrNull { Scene.sectionName(it) == shown }?.let { return it }
+    if (shown.endsWith(Scene.ENERGY_SUFFIX)) return storedSceneLabel(shown.removeSuffix(Scene.ENERGY_SUFFIX)) + Scene.ENERGY_SUFFIX
+    val numbered = Regex("""^(.+) (\d+)$""").matchEntire(shown) ?: return shown
+    val (section, n) = numbered.destructured
+    return Scene.SECTIONS.firstOrNull { Scene.sectionName(it) == section }?.let { "$it $n" } ?: shown
+}
+
+@Composable
+private fun TopBarRow(ui: TopBarUi, actions: TopBarActions, onRename: () -> Unit) = androidx.compose.foundation.layout.BoxWithConstraints(
     Modifier.fillMaxWidth()
         .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.Black, 0.12f), lerp(Neon.Background, Color.Black, 0.1f))))
         // A machined edge (lot « design pro »): a faint light line on top, a dark one then a light one at the foot.
@@ -274,6 +337,9 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
     // A narrow bar (the keys on a small phone at 130 %): « ▶ le morceau » goes up to the name's line, at its end.
     val songOnTop = ui.songButton && rowWidth - songRoom - PLAY_GAP - (if (ui.redoFirst) BUTTON else 0.dp) < ALWAYS_SHOWN + PROJECT_ICON
     val fitted = topBarLayout(if (songOnTop || !ui.songButton) rowWidth else rowWidth - songRoom - PLAY_GAP, ui.scene != null, modeChip = ui.mode?.let(::modeChipRoom), redoFirst = ui.redoFirst, fontScale = androidx.compose.ui.platform.LocalDensity.current.fontScale)
+    // Tour 9, F107: the name keeps its place in the row (a line of its own took the screens' height, the keys and
+    // the labels lying down); « Sauvegardé » is tried smaller before its tick is left alone (SavedWord).
+    val barWidth = maxWidth
     val layout = if (songOnTop) fitted.copy(projectName = false, modeInRow = false) else fitted
     val showRedo = layout.showRedo && ui.redo
     androidx.compose.foundation.layout.Column {
@@ -289,14 +355,18 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 .testTag("top_project_line"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            // The name first: on a line too short for both (a big text), « Sauvegardé » leaves its tick alone, never the name cut.
+            var wordOff by remember(ui.projectName, barWidth) { mutableStateOf(false) }
             Text(
                 ui.projectName, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                onTextLayout = { if (it.hasVisualOverflow) wordOff = true },
                 modifier = Modifier.weight(1f),
             )
             if (ui.recordInto != null) {
                 Text(tr("REC dans %s", ui.recordInto), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp), color = Neon.RedText, maxLines = 1, modifier = Modifier.testTag("top_record_into"))
             } else if (ui.saved) {
-                Icon(Icons.Filled.Check, contentDescription = tr("Sauvegardé"), tint = Neon.Acid, modifier = Modifier.size(16.dp).testTag("top_saved"))
+                // Tour 9, F107: the word too, as in the row (the line has the bar's whole width).
+                SavedWord(Modifier.padding(start = 6.dp), word = !wordOff)
             }
             if (ui.mode != null && !layout.modeInRow) ModeChip(ui.mode, actions.mode)
             if (songOnTop) NamedPlay(tr("le morceau"), songStyle, tr("Jouer le morceau"), ui.songPlaying, "top_song", songRoom, actions.playSong)
@@ -328,9 +398,10 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 // Tour 5, moyens2: the folder alone (no name in the bar), « ✓ Sauvegardé » and « REC dans … » stay, on it.
                 if (!layout.nameShown) FolderStatus(ui, Modifier.align(Alignment.BottomEnd).offset(x = 3.dp, y = 3.dp))
             }
-            if (layout.projectName && layout.nameShown) androidx.compose.foundation.layout.Column {
-                // Testers (lot « tuto 4 »): « Mon pro… »: a name that does not fit is set a size smaller first.
-                var smaller by remember(ui.projectName) { mutableStateOf(false) }
+            if (layout.projectName && layout.nameShown) androidx.compose.foundation.layout.BoxWithConstraints nameBox@{ val room = this@nameBox.maxWidth; androidx.compose.foundation.layout.Column {
+                // Testers (lot « tuto 4 »): « Mon pro… »: a name that does not fit is set a size smaller first (tried
+                // again at its usual size when the room changes).
+                var smaller by remember(ui.projectName, room) { mutableStateOf(false) }
                 Text(
                     ui.projectName, style = if (smaller) MaterialTheme.typography.titleSmall else MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
                     maxLines = 1, overflow = TextOverflow.Ellipsis, onTextLayout = { if (!smaller && it.hasVisualOverflow) smaller = true },
@@ -343,22 +414,14 @@ fun TopBar(ui: TopBarUi, actions: TopBarActions) = androidx.compose.foundation.l
                 } else if (ui.saved) {
                     // Nothing to save by hand: said where the project is named, quietly.
                     // Audit ultra round 1, n° 26 (seat B b: « une minuscule coche »): the tick and its word larger, in the accent.
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.testTag("top_saved")) {
-                        Icon(Icons.Filled.Check, contentDescription = null, tint = Neon.Acid, modifier = Modifier.size(16.dp))
-                        // Too narrow for the word (a small phone): the tick alone, never "E…".
-                        var cut by remember { mutableStateOf(false) }
-                        Text(
-                            tr("Sauvegardé"), style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 0.sp, fontWeight = FontWeight.Bold), color = Neon.Acid,
-                            maxLines = 1, softWrap = false, overflow = TextOverflow.Clip, onTextLayout = { cut = it.hasVisualOverflow },
-                            modifier = Modifier.padding(start = 2.dp).graphicsLayer { alpha = if (cut) 0f else 1f },
-                        )
-                    }
+                    // Its word does not fit under the name, even smaller: the tick alone (the word said to TalkBack).
+                    SavedWord()
                 }
-            }
+            } }
         }
         if (ui.mode != null && layout.modeInRow) ModeChip(ui.mode, actions.mode)
         if (ui.scene != null && layout.scene != SceneChipMode.Hidden) {
-            SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions)
+            SceneChip(ui.scene, layout.scene == SceneChipMode.Full, layout.sceneMaxWidth, actions, onRename)
         }
         if (ui.undo) IconButton(onClick = actions.undo, enabled = ui.canUndo, modifier = Modifier.spot("top_undo", tr("Annuler (défaire)")).testTag("top_undo")) {
             Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = tr("Annuler la dernière action"))
@@ -516,7 +579,7 @@ private fun NamedPlay(word: String, style: androidx.compose.ui.text.TextStyle, t
 
 /** The scene being edited ("A · Intro ▾"): a touch lists every scene to pick another, or a new empty one. */
 @Composable
-private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: TopBarActions) {
+private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: TopBarActions, onRename: () -> Unit) {
     var open by remember { mutableStateOf(false) }
     val title = scene.titles.getOrElse(scene.current) { Scene.NAMES.getOrElse(scene.current) { "?" } }
     val letter = Scene.NAMES.getOrElse(scene.current) { "?" }
@@ -577,6 +640,16 @@ private fun SceneChip(scene: SceneChipUi, full: Boolean, maxWidth: Dp, actions: 
                     actions.newScene()
                 },
                 modifier = Modifier.testTag("scene_new"),
+            )
+            // Tour 9, D10 (seats 27, 37, 08, 23, 48, 60, 63): the part was named from Structure only.
+            if (actions.renameScene != null) DropdownMenuItem(
+                text = { Text(tr("Renommer")) },
+                leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null, tint = Neon.Cyan) },
+                onClick = {
+                    open = false
+                    onRename()
+                },
+                modifier = Modifier.testTag("scene_rename"),
             )
         }
     }

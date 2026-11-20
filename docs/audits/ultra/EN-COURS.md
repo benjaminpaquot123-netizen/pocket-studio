@@ -47,3 +47,4 @@ Pas avant : le rangement du tour 8 (branches de sièges, revue, PR vers `main`),
 - En attente (finis, refusés au portail) : L3 (sortie 5, TutoJourneyTest), L7 (3, F133 après revue), L4 (4, conflit Help.kt), L6 (3, changements après revue), L15 (5, oracle de rejeu).
 - En pause sans revue : L5a, L13, L14.
 - Pas vert : TutoReadabilityBudgetTest (depuis L5b), captures audio_pages_end instables, tempo_sheet / nl_tempo_sheet / tracks rouges sur la base, écarts du juge 123 → 125.
+- Reprise éco (2026-11-20, soir) : L7, L4, L6 entrés après fusion de l'intégration côté chef (captures et F111 pris de l'intégration, test F111 du lot retiré car doublon non branché). Juge : 134 écarts. Restent : L3, L15 (rouges), L5a, L13, L14 (sans relecture).

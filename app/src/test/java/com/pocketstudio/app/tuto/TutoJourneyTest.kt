@@ -327,6 +327,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
             }
             // "triplet:<role>": a triplet put on a hit of the pad as a user would (long press › « Triolet » › « 3 sur 2 cases »),
             // where the style's line has one, else on the last beat of the first bar.
+            // Red (tour 9, F032, T9L17WholeStepTest): trap's step asks for cells 13 AND 15; only the first is played here.
             c.startsWith("triplet:") -> {
                 if (has("tuto_do")) click("tuto_do")
                 val role = c.removePrefix("triplet:")

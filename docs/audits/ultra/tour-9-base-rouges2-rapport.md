@@ -11,3 +11,8 @@ Base : intégration `ccr-80af1a1b-mn0wec` à ceb482ad.
 - chemin: Accueil › Continuer › Envoyer › 16 mesures en 3 gestes, l'interrupteur « Renommer aussi le projet » gardé (sous la longueur de boucle) | test: SharePathTest#theSheetsChipsSetTheLoopLengthAndTheDuration
 - Pas de contradiction avec DECISIONS.md : le budget 3 gestes (G1) tient, aucun test modifié.
 tests: --tests *CaptureMatrix*tempo_sheet* --tests *CaptureMatrix*share* --tests *SharePathTest --tests *Tour9L8CapturesTest --tests *Tour9L8ShareWordsTest --tests *TempoSheetNarrowWholeTest --tests *TempoTypingStaysTest --tests *LyingSheetsScreenshotTest --tests *LyingSheetsScrollTest --tests *ArchitectureRulesTest --tests *HelpCoverageTest --tests *RhythmBeginnerTest --tests *PadLiveTakeTest --tests *AutoTempoJourneyTest (121 verts)
+
+## Relecture neuve
+Relu : 273dcc00
+Mineur : la phrase de renommage est maintenant sous la longueur de boucle, loin du champ du nom (le libellé du champ le dit quand même).
+Verdict : 0 bloquant, 0 grave

@@ -7,6 +7,8 @@ Base : `ccr-80af1a1b-mn0wec`. Branche : `eq/tour-9-textes`. Tout est « tenté �
 - Reste de miettesB : la fiche « Son » du guide disait « Synthé » après un bouton tourné ; elle nomme maintenant le son comme l'onglet. Rouge 4d46c367, vert 94f73577.
 - Rouge connu hors lot : I18nCatalogTest « TrackBar.kt: it » (déjà rouge sur la base ; fichiers du lot base-rouges).
 
+tests: *Tour9TextesStopWordTest *Tour9TextesGuideSoundNameTest *Tour9L16TextsTest *Tour9L16ShareTextsTest *Tour9L16LongPressStateTest
+
 ## Chemins
 
 chemin: Pad live, bouton stop d'une ligne (es) | test: Tour9TextesStopWordTest#everyStopTextUsesTheStopWord

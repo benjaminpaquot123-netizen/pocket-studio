@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "Prawdziwe dźwięki perkusji tego stylu, do twojego utworu i do przykładów. Bez nich kurs działa z wbudowanymi dźwiękami.",
   "Téléchargement du kit… %d %%": "Pobieranie zestawu… %d %%",
   "Mettre les sons du kit %s sur les pads": "Połóż dźwięki zestawu %s na padach",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "Nie udało się wczytać zestawu: kurs zostaje przy wbudowanych dźwiękach.",
   "Télécharger le kit %1$s (%2$s)": "Pobierz zestaw %1$s (%2$s)",
   "Recommencer le tuto": "Zacznij kurs od nowa",
   "Passer à %d mesures": "Przejdź na %d takty",

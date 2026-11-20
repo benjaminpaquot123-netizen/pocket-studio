@@ -1596,9 +1596,26 @@ private fun TutoNotesLeft(
             .padding(horizontal = 10.dp).testTag("tuto_notes_left"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // Tour 9 (D06): at a large font « Touche ici » beside the line cut it to « ↑ Encor… », the count unread. There it
+        // goes up beside the bar, and the count gets the whole width.
+        val stacked = LocalDensity.current.fontScale > 1.3f
+        val go = copy == null && (way != null || also != null) && left.isNotEmpty()
+        // Control seat Da-5 (tour 6): the line pointed away and the seat swiped ten times, never knowing a touch on the line
+        // brings the note into view: said on the line while it points away.
+        val goLabel: @Composable () -> Unit = {
+            Text(
+                tr("Touche ici"), style = MaterialTheme.typography.labelMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                color = Neon.OnAccent, maxLines = 1, softWrap = false,
+                modifier = Modifier.padding(start = 6.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp)).background(Neon.Amber)
+                    .padding(horizontal = 8.dp, vertical = 4.dp).testTag("tuto_notes_left_go"),
+            )
+        }
         Column(Modifier.weight(1f)) {
-            Text(where, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(where, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("tuto_roll_where"))
+                if (stacked && go) goLabel()
+            }
             Text(
                 if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
                 else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way, also)
@@ -1608,16 +1625,7 @@ private fun TutoNotesLeft(
                 modifier = Modifier.testTag("tuto_notes_left_text"),
             )
         }
-        // Control seat Da-5 (tour 6): the line pointed away and the seat swiped ten times, never knowing a touch on the line
-        // brings the note into view: said on the line while it points away.
-        if (copy == null && (way != null || also != null) && left.isNotEmpty()) {
-            Text(
-                tr("Touche ici"), style = MaterialTheme.typography.labelMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                color = Neon.OnAccent, maxLines = 1, softWrap = false,
-                modifier = Modifier.padding(start = 6.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp)).background(Neon.Amber)
-                    .padding(horizontal = 8.dp, vertical = 4.dp).testTag("tuto_notes_left_go"),
-            )
-        }
+        if (!stacked && go) goLabel()
         if (copy != null) {
             androidx.compose.material3.Button(
                 onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_roll_copy"),

@@ -1553,3 +1553,11 @@
 - 2026-11-19 · Benjamin : « Tu te stop après les réparations » : après la dernière fusion du tour 9 (lot des miettes compris), point final et arrêt ; pas de CI complète, de testeurs ni de PR vers main sans nouvel ordre. Retour : Benjamin relance la suite.
 - 2026-11-19 · lot « L8 » (tour-9) : 17 décision(s) dans `docs/decisions/tour-9-L8.md`
 - 2026-11-19 · Portail en mode boost : un lot du tour 9 peut ajouter ses propres lignes « tenté » / « pas pris » au registre des réparations (le trieur du tour 9 n'en a écrit aucune) ; un état réservé (corrigé, rejoué, constaté) reste refusé. Retour arrière : enlever PS_JUGE_BOOST.
+- 2026-11-19 · lot « L5b » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-L5b.md`
+- 2026-11-19 · lot « L1 » (tour-9) : 10 décision(s) dans `docs/decisions/tour-9-L1.md`
+- 2026-11-19 · lot « L17 » (tour-9) : 11 décision(s) dans `docs/decisions/tour-9-L17.md`
+- 2026-11-20 · lot « L12 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-L12.md`
+- 2026-11-20 · lot « L2 » (tour-9) : 12 décision(s) dans `docs/decisions/tour-9-L2.md`
+- 2026-11-20 · lot « L16 » (tour-9) : 7 décision(s) dans `docs/decisions/tour-9-L16.md`
+- 2026-11-20 · lot « L11 » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-L11.md`
+- 2026-11-20 · Arrêt du tour 9 sur ordre de Benjamin (quota) : plus de lot neuf, discussions en pause, seuls les lots finis passent le portail. Portail assoupli (40f244e06, adac8695a, de32f8b2b : comparaison à la base commune, fusion JSON clé par clé) ; retour arrière : revert de ces trois commits.

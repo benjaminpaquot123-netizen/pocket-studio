@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "このスタイルの本物のドラム音。曲にも例にも使う。なくても、内蔵の音でチュートリアルは動くよ。",
   "Téléchargement du kit… %d %%": "キットをダウンロード中… %d %%",
   "Mettre les sons du kit %s sur les pads": "キット %s の音をパッドに入れる",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "キットを読み込めなかった。チュートリアルは内蔵の音のまま続くよ。",
   "Télécharger le kit %1$s (%2$s)": "%1$s キットをダウンロード（%2$s）",
   "Recommencer le tuto": "チュートリアルをやり直す",
   "Passer à %d mesures": "%d 小節にする",

@@ -586,7 +586,11 @@ fun TutoPanel(
     val reading = readAll && ui.open && !end && ceiling != androidx.compose.ui.unit.Dp.Infinity && bottomPx > statusTop + 1f
     val reach = if (reading) with(density) { (bottomPx - statusTop).toDp() } else androidx.compose.ui.unit.Dp.Infinity
     var shed by remember(step.id, ui.open, ui.progress.level, readAll) { mutableIntStateOf(0) }
-    val shedAt = if (reading) shed else 0
+    // Tour 9 F009: « Pourquoi ? »'s reason opened where the panel is short (200 %, a phone on its side), the panel lets
+    // go the same way (its head, the kit offer, then the row of the example) until the reason has two lines under its
+    // button; all come back when it is closed (« ▾ Pourquoi ? » stays).
+    var whyShed by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
+    val shedAt = if (reading) shed else whyShed
     var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedAt) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
@@ -633,16 +637,19 @@ fun TutoPanel(
         val keep = TutoReadability.layout(room, rest.toFloat() / restLines, restLines, 0, 0, examplesHeight + gapPx, more)
         if (!keep.examples) examplesFolded = true
     }
-    val why = (step.why ?: chapter.why.takeIf { it.isNotEmpty() }).takeIf { ui.demo == null && !ui.bravo }
-    var whyOpen by rememberSaveable(why) { mutableStateOf(false) }
-    val reason = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
-    LaunchedEffect(whyOpen, why) { if (whyOpen && why != null) reason.bringIntoView() }
+    // Tour 9 F009: kept at the step's validation (« Bravo »): a reason opened stays open until the user closes it.
+    val why = (step.why ?: chapter.why.takeIf { it.isNotEmpty() }).takeIf { ui.demo == null }
+    var whyOpen by rememberSaveable(why, step.id) { mutableStateOf(false) }
+    if (!whyOpen && whyShed > 0) SideEffect { whyShed = 0 }
+    // Opened from the words (a phone on its side), the reason goes pinned under them with its button: the words go back
+    // to their start, the instruction is read first (it was scrolled away to show the reason).
+    LaunchedEffect(whyOpen, why) { if (whyOpen && why != null) words.scrollTo(0) }
     Surface(
         color = panelColor(), shape = shape,
         // Tour 9 F003 (seats t9-11, t9-29, t9-41, t9-56): at 200 % the unfolded panel covered the whole work area (the
         // piano under it gone). Upright, it takes at most [PANEL_MAX_SHARE] of the screen's height; the words scroll in
         // what is left (their room is weighted below), the buttons stay whole.
-        modifier = modifier.fillMaxWidth().then(panelCap()).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
+        modifier = modifier.fillMaxWidth().then(panelCap(whyOpen && why != null)).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
             .onGloballyPositioned { val b = it.boundsInWindow().bottom; if (b != bottomPx) bottomPx = b },
     ) {
         Column(
@@ -746,7 +753,9 @@ fun TutoPanel(
             // whole room and the step's instruction had no height left. The words keep a line and a half at least: the
             // room grows by what is missing, and a height held too low for it is taken again (twice at most).
             // Only where « Pourquoi ? » is pinned: a phone on its side has its panel as before (its buttons were cut).
-            val lineAndHalf = if (pinned) with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() } else 0
+            // Tour 9 F009: « Pourquoi ? » opened is pinned too, its reason right under it (on a phone on its side as well).
+            val whyPinned = pinned || (whyOpen && why != null)
+            val lineAndHalf = if (whyPinned) with(density) { (MaterialTheme.typography.bodyLarge.lineHeight * 1.5f).roundToPx() } else 0
             // Tour 7 P6/P7 bloc 0b (CI 353): « Lire la suite » over the cells to touch gives back the whole instruction, the
             // kit offer pinned under it or not (its card came once the packs' index was read and took the words' room):
             // there, the words' least room is their whole height, as far as the screen lets it.
@@ -761,6 +770,10 @@ fun TutoPanel(
                 mapRoom = chapter.map && map.isNotEmpty(),
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
                 short = if (reading) { { if (shed == shedAt && shed < 3) shed++ } } else null,
+                // « Pourquoi ? » opened leaves the instruction a line at least (its first one, in sight over the reason).
+                whyLeaves = if (whyOpen) with(density) { MaterialTheme.typography.bodyLarge.lineHeight.roundToPx() } else 0,
+                whyMin = with(density) { MaterialTheme.typography.labelLarge.lineHeight.roundToPx() + (MaterialTheme.typography.bodyMedium.lineHeight * 2).roundToPx() },
+                whyShort = if (!reading && whyOpen && why != null) { { if (whyShed < 3) whyShed++ } } else null,
             ) {
             Box {
             Column(
@@ -770,7 +783,9 @@ fun TutoPanel(
             ) {
                 when {
                     ui.demo != null -> DemoCaption(ui.demo)
-                    ui.bravo -> BravoBanner(mine, ui.made, nextChapter = ui.chapterDoneNext(), missing = ui.chapterLeft(), already = alreadyWords(ui))
+                    ui.bravo -> {
+                        BravoBanner(mine, ui.made, nextChapter = ui.chapterDoneNext(), missing = ui.chapterLeft(), already = alreadyWords(ui))
+                    }
                     else -> {
                         ui.made?.let { Text(it, style = MaterialTheme.typography.bodyMedium, color = Neon.Acid, modifier = Modifier.testTag("tuto_made")) }
                         // Tour 6 (N20): reached done, never touched: said, not left to look like a mistake.
@@ -797,10 +812,8 @@ fun TutoPanel(
                         // n° 37: in the Mode simple, each word of the trade of the step (kick, Drop, phrygienne…) said in plain words under it.
                         if (alreadySaid == null && momentWords(ui) == null && !examplesFolded) com.pocketstudio.app.library.PlainWordsLines(
                             shownText(ui, step.id, kit != null), modifier = Modifier.onSizeChanged { if (it.height > 0) examplesHeight = it.height })
-                        if (why != null && !pinned) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
-                        // « Pourquoi ? »'s reason, opened by the user, where it belongs in the words (brought into sight).
-                        if (why != null && whyOpen) Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary,
-                            modifier = Modifier.bringIntoViewRequester(reason).testTag("tuto_why_text"))
+                        // Closed, on a phone on its side: « ▸ Pourquoi ? » in the words (opened, it is pinned under them).
+                        if (why != null && !whyPinned) Why(why, false) { whyOpen = true; held = 0 }
                         if (chapter.map && map.isNotEmpty()) SongMap(map, focus = mapFocus(step.listen))
                         if (ui.failed) Text(tr("L'exemple ne s'entend pas : monte le volume du téléphone, puis touche encore « Écouter l'exemple »."), color = Neon.Amber,
                             style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("tuto_failed"))
@@ -825,7 +838,8 @@ fun TutoPanel(
                 Box(Modifier.layoutId(KIT_ROOM)) { CompositionLocalProvider(LocalKitPinned provides true) { kit() } }
             }
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
-            if (why != null && pinned && shedAt < 2) Why(whyOpen) { whyOpen = !whyOpen; held = 0 }
+            // Tour 9 F009: its reason opens right under it (not up in the words), and stays at « Bravo » until closed.
+            if (why != null && whyPinned && (shedAt < 2 || whyOpen) && (!ui.bravo || whyOpen)) Why(why, whyOpen, Modifier.layoutId(WHY_ROOM)) { whyOpen = !whyOpen; held = 0 }
             // Its room kept while the words scroll at all (shown or not, nothing moves when the end is reached).
             // Reading (D14), only once the panel has let all it could go and the words still do not fit: they page on.
             if (scrolls && (!reading || shedAt >= 3)) MoreWords(words.canScrollForward, Modifier.onSizeChanged { moreHeight = it.height }) {
@@ -858,16 +872,25 @@ fun TutoPanel(
 @Composable
 private fun WordsRoom(
     modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, mapRoom: Boolean = false, starved: () -> Unit,
-    short: (() -> Unit)? = null, content: @Composable () -> Unit,
+    short: (() -> Unit)? = null, whyLeaves: Int = 0, whyMin: Int = 0, whyShort: (() -> Unit)? = null, content: @Composable () -> Unit,
 ) {
     androidx.compose.ui.layout.Layout(content, modifier) { ms, c ->
         val gap = 6.dp.roundToPx()
         val wide = androidx.compose.ui.unit.Constraints(maxWidth = c.maxWidth)
         // Each pinned one within what the height given leaves (as a column would), never past it.
+        // Tour 9 F009: « Pourquoi ? » ([WHY_ROOM]) is measured last, in what the others and the words' least room leave
+        // (its reason scrolls under its button there): opened, it never takes the instruction's line and a half.
         var fixed = 0
-        val pinned = ms.drop(1).map { m ->
-            m.measure(wide.copy(maxHeight = if (c.hasBoundedHeight) maxOf(c.maxHeight - fixed, 0) else androidx.compose.ui.unit.Constraints.Infinity)).also { fixed += it.height + gap }
+        val bounded = c.hasBoundedHeight
+        val rest = ms.drop(1)
+        val sized = arrayOfNulls<androidx.compose.ui.layout.Placeable>(rest.size)
+        val order = rest.indices.sortedBy { if (rest[it].layoutId == WHY_ROOM) 1 else 0 }
+        for (i in order) {
+            val left = if (bounded) maxOf(c.maxHeight - fixed - (if (rest[i].layoutId == WHY_ROOM && least > 0) minOf(least, whyLeaves) else 0), 0) else androidx.compose.ui.unit.Constraints.Infinity
+            sized[i] = rest[i].measure(wide.copy(maxHeight = left)).also { fixed += it.height + gap }
+            if (rest[i].layoutId == WHY_ROOM && bounded && left < whyMin) whyShort?.invoke()
         }
+        val pinned = sized.map { it!! }
         val kitRoom = if (mapRoom) ms.drop(1).zip(pinned).filter { it.first.layoutId == KIT_ROOM }.sumOf { it.second.height + gap } else 0
         val cap = if (holding && c.hasBoundedHeight) c.maxHeight else minOf(c.maxHeight, maxOf(most.roundToPx() + kitRoom, if (least > 0) fixed + least else 0))
         if (holding && least > 0 && cap - fixed < least) starved()
@@ -887,6 +910,9 @@ private fun WordsRoom(
 
 /** Tour 9 F016: the kit offer's place among [WordsRoom]'s pinned children. */
 private const val KIT_ROOM = "kit"
+
+/** Tour 9 F009: « Pourquoi ? »'s place among [WordsRoom]'s pinned children (measured last). */
+private const val WHY_ROOM = "why"
 
 /** Tour 7 D3 end: the kit offer pinned under the panel's words ([TutoKitCard] in one row); false outside the panel. */
 private val LocalKitPinned = androidx.compose.runtime.staticCompositionLocalOf { false }
@@ -1464,11 +1490,17 @@ private const val END_LIST = 4
 /** Tour 9 F003: the most of the screen's height the unfolded panel takes, upright. */
 internal const val PANEL_MAX_SHARE = 0.6f
 
+/**
+ * Tour 9 F009: « Pourquoi ? »'s reason opened by the user (upright), the panel may take this much of the screen's height,
+ * until it is closed: at 200 % the reason, its button and the buttons left the instruction no room under [PANEL_MAX_SHARE].
+ */
+internal const val PANEL_REASON_SHARE = 0.85f
+
 /** The panel's height cap: [PANEL_MAX_SHARE] of an upright screen (on its side, the panel is as before). */
 @Composable
-private fun panelCap(): Modifier {
+private fun panelCap(reasonOpen: Boolean = false): Modifier {
     val conf = androidx.compose.ui.platform.LocalConfiguration.current
-    return if (conf.screenHeightDp >= conf.screenWidthDp) Modifier.heightIn(max = (conf.screenHeightDp * PANEL_MAX_SHARE).dp) else Modifier
+    return if (conf.screenHeightDp >= conf.screenWidthDp) Modifier.heightIn(max = (conf.screenHeightDp * if (reasonOpen) PANEL_REASON_SHARE else PANEL_MAX_SHARE).dp) else Modifier
 }
 
 /** The secondary buttons' inner room: their words on one line on a phone, two at 130 %. */
@@ -1550,11 +1582,17 @@ private class SharedFit(private val top: Float, private val floor: Float, privat
 /** WholeWordsText's floor: 72 % of the words' size. */
 private const val MIN_SCALE = 0.72f
 
-/** « Pourquoi ? »: its reason (one or two sentences, in the step's words) folded until touched ([toggle]). */
+/** « Pourquoi ? »: its reason ([why], one or two sentences, in the step's words) folded until touched ([toggle]), right under it. */
 @Composable
-private fun Why(open: Boolean, toggle: () -> Unit) {
-    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable(onClick = toggle).testTag("tuto_why")) {
-        Text((if (open) "▾ " else "▸ ") + tr("Pourquoi ?"), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan)
+private fun Why(why: String, open: Boolean, modifier: Modifier = Modifier, toggle: () -> Unit) {
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable(onClick = toggle).testTag("tuto_why")) {
+            Text((if (open) "▾ " else "▸ ") + tr("Pourquoi ?"), style = MaterialTheme.typography.labelLarge, color = Neon.Cyan)
+        }
+        // Where the panel is short (200 %, a phone on its side), the reason scrolls in the room left under its button.
+        if (open) Box(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()).testTag("tuto_why_room")) {
+            Text(tutoText(why), style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.testTag("tuto_why_text"))
+        }
     }
 }
 

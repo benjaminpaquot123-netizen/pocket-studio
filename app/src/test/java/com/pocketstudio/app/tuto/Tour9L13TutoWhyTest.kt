@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import com.pocketstudio.model.i18n.I18n
@@ -54,13 +55,13 @@ class Tour9L13TutoWhyTest {
 
     @Test
     @Config(qualifiers = "w360dp-h780dp")
-    fun theReasonOpensUnderItsButtonAndStaysUntilClosed() = check()
+    fun theReasonOpensUnderItsButtonAndStaysUntilClosed() = check(listOf(1f, 2f))
 
     @Test
     @Config(qualifiers = "w780dp-h360dp")
-    fun onItsSideTooTheReasonOpensUnderItsButtonAndStays() = check()
+    fun onItsSideTooTheReasonOpensUnderItsButtonAndStays() = check(listOf(1f, 2f))
 
-    private fun check() {
+    private fun check(scales: List<Float>) {
         val style = "jump_up"
         val chapters = TutoCourse.of(style)!!.chaptersFor(TutoLevel.Facile)
         val places = chapters.flatMapIndexed { c, ch -> ch.steps.indices.map { c to it } }
@@ -87,7 +88,7 @@ class Tour9L13TutoWhyTest {
         fun node(tag: String) = compose.onAllNodes(hasTestTag(tag), useUnmergedTree = true).fetchSemanticsNodes().firstOrNull()
         val wrong = ArrayList<String>()
         var cases = 0
-        for (l in listOf(Lang.FR, Lang.HI)) for (s in listOf(1f, 2f)) for (p in places.take(6)) {
+        for (l in listOf(Lang.FR, Lang.HI)) for (s in scales) for (p in places.take(6)) {
             I18n.lang = l
             lang = l
             scale = s
@@ -96,7 +97,10 @@ class Tour9L13TutoWhyTest {
             compose.waitForIdle()
             val where = "${l.code} ${(s * 100).toInt()} % ${chapters[p.first].steps[p.second].id}"
             if (node("tuto_why") == null) { wrong += "$where: no « Pourquoi ? »"; continue }
-            compose.onNode(hasTestTag("tuto_why"), useUnmergedTree = true).performClick()
+            // On a phone on its side « ▸ Pourquoi ? » is in the words: the user scrolls to it, then touches it.
+            val why = compose.onNode(hasTestTag("tuto_why"), useUnmergedTree = true)
+            try { why.performScrollTo() } catch (_: AssertionError) { /* pinned, not in the scrolling words */ }
+            why.performClick()
             compose.waitForIdle()
             cases++
             val button = node("tuto_why")!!
@@ -104,7 +108,9 @@ class Tour9L13TutoWhyTest {
             val gap = reason.positionInRoot.y - (button.positionInRoot.y + button.size.height)
             val density = button.layoutInfo.density.density
             if (gap < -1f || gap > 12f * density) wrong += "$where: the reason opens ${(gap / density).toInt()} dp from its button"
-            if (reason.boundsInRoot.height < reason.size.height - 1f) wrong += "$where: the reason ${reason.boundsInRoot.height.toInt()} of ${reason.size.height} px in sight"
+            // Its start in sight; where the panel is short (200 %), the rest scrolls under it (in its own room).
+            if (reason.boundsInRoot.top > reason.positionInRoot.y + 1f || reason.boundsInRoot.height < 1f) wrong += "$where: the reason's start not in sight"
+            if (reason.boundsInRoot.height < reason.size.height - 1f && s == 1f) wrong += "$where: at 100 %, the reason ${reason.boundsInRoot.height.toInt()} of ${reason.size.height} px in sight"
             // The instruction: its beginning stays in sight, nothing over it.
             val text = node("tuto_text")
             if (text != null) {

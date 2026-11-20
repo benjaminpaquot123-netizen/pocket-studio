@@ -604,6 +604,8 @@ fun TutoPanel(
     // Tour 7 P6/P7 bloc 0b: the examples folded (below), the words are measured again from the start: « Lire la suite »'s
     // room, taken while the examples overflowed, is not kept under words that now fit.
     var examplesHeight by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
+    // Tour 9 (F016 under F003): on a step of the song's map, the kit offer's height (px) is added to the panel's cap.
+    var kitTall by remember { mutableIntStateOf(0) }
     var examplesFolded by remember(step.id, ui.open, ui.progress.level) { mutableStateOf(false) }
     val words = remember(step.id, ui.open, examplesFolded) { androidx.compose.foundation.ScrollState(0) }
     // Tour 7 D3 (seat lotA/a, ohat_do above the grid): the room's bottom fell inside a line of the words (half a line seen
@@ -649,7 +651,7 @@ fun TutoPanel(
         // Tour 9 F003 (seats t9-11, t9-29, t9-41, t9-56): at 200 % the unfolded panel covered the whole work area (the
         // piano under it gone). Upright, it takes at most [PANEL_MAX_SHARE] of the screen's height; the words scroll in
         // what is left (their room is weighted below), the buttons stay whole.
-        modifier = modifier.fillMaxWidth().then(panelCap(whyOpen && why != null)).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
+        modifier = modifier.fillMaxWidth().then(panelCap(whyOpen && why != null, if (kit != null && chapter.map && map.isNotEmpty()) with(LocalDensity.current) { kitTall.toDp() + 6.dp } else 0.dp)).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
             .onGloballyPositioned { val b = it.boundsInWindow().bottom; if (b != bottomPx) bottomPx = b },
     ) {
         Column(
@@ -835,7 +837,7 @@ fun TutoPanel(
             // late never moves the panel's buttons under a finger).
             if (step.id != READY_STEP && kit != null && ui.demo == null && !ui.bravo && shedAt < 2) {
                 // Tour 9 F016: one child, known to [WordsRoom] (on a map step it never takes the map's room).
-                Box(Modifier.layoutId(KIT_ROOM)) { CompositionLocalProvider(LocalKitPinned provides true) { kit() } }
+                Box(Modifier.layoutId(KIT_ROOM).onSizeChanged { kitTall = it.height }) { CompositionLocalProvider(LocalKitPinned provides true) { kit() } }
             }
             // « Pourquoi ? » opened by the user: the panel takes its new height (the user's own touch, on the panel).
             // Tour 9 F009: its reason opens right under it (not up in the words), and stays at « Bravo » until closed.
@@ -1465,21 +1467,21 @@ private fun besideFits(words: List<String>, nextWords: String): Boolean {
     val style = MaterialTheme.typography.labelLarge
     val density = LocalDensity.current
     val width = androidx.compose.ui.platform.LocalConfiguration.current.screenWidthDp.dp
-    return remember(words, style, density, width) {
+    return remember(words, nextWords, style, density, width) {
         // The words' floor: 72 % of their size, as far as they would shrink at 130 % (WholeWords).
         val floor = 0.72f * minOf(1f, 1.3f / density.fontScale.coerceAtLeast(0.1f))
         fun px(text: String) = measurer.measure(text, style).size.width.toFloat()
+        fun longest(label: String) = label.split(' ', '\u00A0').filter { it.isNotBlank() }.maxOfOrNull { px(it) } ?: 0f
         with(density) {
-            val buttons = words.sumOf { label ->
-                val longest = label.split(' ', '\u00A0').filter { it.isNotBlank() }.maxOfOrNull { px(it) } ?: 0f
-                // Its icon, a space, its padding and border.
-                (longest * floor + (18.dp + 6.dp + 10.dp * 2 + 2.dp).toPx()).toDouble()
-            }.toFloat()
+            // Each label starts with a space (glued to its first word on its line): its icon, padding and border.
+            val buttons = words.map { (longest(it) + px(" ")) * floor + (18.dp + 6.dp + 10.dp * 2 + 2.dp).toPx() }
             // The filled way on (F004): its longest word, its arrow, its padding.
-            val next = (nextWords.split(' ', '\u00A0').filter { it.isNotBlank() }.maxOfOrNull { px(it) } ?: 0f) * floor + (18.dp + 6.dp + 10.dp * 2).toPx()
+            val next = longest(nextWords) * floor + (18.dp + 6.dp + 10.dp * 2).toPx()
             // The panel's padding (14 dp each side), « ← » (48 dp), the gaps (6 dp).
             val room = (width - 28.dp - 48.dp - 6.dp * (words.size + 1)).toPx()
-            buttons + next <= room
+            // Tour 9 (F014 under F004): the buttons and the way on share the row evenly (each weighs one): each fits its share.
+            val share = room / (words.size + 1)
+            (buttons + next).all { it <= share }
         }
     }
 }
@@ -1496,11 +1498,16 @@ internal const val PANEL_MAX_SHARE = 0.6f
  */
 internal const val PANEL_REASON_SHARE = 0.85f
 
-/** The panel's height cap: [PANEL_MAX_SHARE] of an upright screen (on its side, the panel is as before). */
+/**
+ * The panel's height cap: [PANEL_MAX_SHARE] of an upright screen (on its side, the panel is as before), [PANEL_REASON_SHARE]
+ * with « Pourquoi ? »'s reason opened. [kit]: the kit offer pinned on a step of the song's map adds its own height and its gap (F016:
+ * the map keeps the height it has without the offer), within [PANEL_REASON_SHARE].
+ */
 @Composable
-private fun panelCap(reasonOpen: Boolean = false): Modifier {
+private fun panelCap(reasonOpen: Boolean = false, kit: androidx.compose.ui.unit.Dp = 0.dp): Modifier {
     val conf = androidx.compose.ui.platform.LocalConfiguration.current
-    return if (conf.screenHeightDp >= conf.screenWidthDp) Modifier.heightIn(max = (conf.screenHeightDp * if (reasonOpen) PANEL_REASON_SHARE else PANEL_MAX_SHARE).dp) else Modifier
+    val most = conf.screenHeightDp * PANEL_REASON_SHARE
+    return if (conf.screenHeightDp >= conf.screenWidthDp) Modifier.heightIn(max = if (reasonOpen) most.dp else minOf(conf.screenHeightDp * PANEL_MAX_SHARE + kit.value, most).dp) else Modifier
 }
 
 /** The secondary buttons' inner room: their words on one line on a phone, two at 130 %. */

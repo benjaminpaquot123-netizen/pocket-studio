@@ -84,16 +84,23 @@ class Tour8TutoGesturesDoItTest {
         assertEquals(id, c.ui.value!!.current.id)
     }
 
-    private fun doItUntilTicked(c: TutoController, target: TutoTarget, id: String, flow: MutableStateFlow<Project>, goes: List<TutoGo>) {
+    /**
+     * Tour 9, F033: « Je le fais » takes the user to where the gesture is made and leaves it to them. Here the user
+     * makes it on what they were shown (the strip, the curve), the way the screen does it, until the step ticks.
+     */
+    private fun doItThenMine(c: TutoController, target: TutoTarget, id: String, flow: MutableStateFlow<Project>, goes: List<TutoGo>) {
         repeat(4) {
             if (id in c.ui.value!!.progress.done) return
             val before = flow.value
             val n = goes.size
             c.doIt()
             await("$id: went") { goes.size > n }
-            // The tick comes from a look made after the edit: waited for, not read at once.
-            await("$id: « Je le fais » changed nothing in the project") { flow.value != before || id in c.ui.value!!.progress.done }
+            idle(100)
+            assertEquals("$id: « Je le fais » made the gesture itself", before, flow.value)
             val step = c.ui.value!!.current
+            val mine = TutoPlay.doHere(step, flow.value, target, goes.last().effects, TutoLevel.Pro)
+            assertTrue("$id: nothing left to make where « Je le fais » went", mine != null)
+            flow.value = mine!!
             if (TutoPlay.done(step, flow.value, target, null)) await("$id: ticked once made") { id in c.ui.value!!.progress.done }
         }
         assertTrue("$id: ticked", id in c.ui.value!!.progress.done)
@@ -115,8 +122,9 @@ class Tour8TutoGesturesDoItTest {
             idle(300)
             val strip = goes.last().effects!!
             assertEquals("$style: the send it shows", 0, goes.last().send)
-            assertTrue("$style: the send of strip $strip is set", flow.value.mixer.channels[strip].sends[0] >= 0.25f)
-            doItUntilTicked(c, target, "reverb", flow, goes)
+            assertTrue("$style: the send of strip $strip left to the user", flow.value.mixer.channels[strip].sends[0] < 0.25f)
+            doItThenMine(c, target, "reverb", flow, goes)
+            assertTrue("$style: the send of strip $strip set by the user", flow.value.mixer.channels[strip].sends[0] >= 0.25f)
         }
     }
 
@@ -130,7 +138,7 @@ class Tour8TutoGesturesDoItTest {
             c.start(style, TutoLevel.Pro)
             idle()
             stepOf(c, "filter")
-            doItUntilTicked(c, target, "filter", flow, goes)
+            doItThenMine(c, target, "filter", flow, goes)
             assertTrue("$style: a curve", flow.value.automation.isNotEmpty())
         }
     }

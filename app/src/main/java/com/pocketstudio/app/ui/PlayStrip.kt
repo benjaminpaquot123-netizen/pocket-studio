@@ -117,6 +117,7 @@ fun playPosition(p: Project, playing: Boolean, songIndex: Int, bar: Int, playFro
         song.isEmpty() -> null
         loopPart -> PlayPosition(partName(p, p.scene), 1, sceneBars, loop = true)
         else -> {
+            // Stopped: where ▶ starts (review G1, tour 9: naming the edited part needs ▶ to start there too, the view model's).
             val from = playFrom.takeIf { it in song.indices } ?: 0
             PlayPosition(partName(p, song[from].scene), p.songStepOf(from) / spb + 1, songBars)
         }
@@ -192,6 +193,9 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
         if (ui.loopPart) maxWidth < (if (chips >= 3) COMPACT_BELOW else LOOP_WORD_BELOW)
         else maxWidth < (if (chips >= 2) COMPACT_BELOW else 300.dp)
         )
+    // Tour 9, F105: a narrow strip with a big text size puts « BPM » under the tempo's figure, so the position keeps the
+    // room for its bars whole (« 1/84 » was cut at 200 % on a 360 dp phone).
+    val tempoStacked = maxWidth < COMPACT_BELOW && LocalDensity.current.fontScale > 1.25f
     Row(
         Modifier.fillMaxWidth().height(height).padding(horizontal = 6.dp).testTag("play_strip"),
         verticalAlignment = Alignment.CenterVertically,
@@ -203,12 +207,12 @@ fun PlayStrip(ui: PlayStripUi, actions: PlayStripActions) = BoxWithConstraints(
             RepeatingIconButton({ nudge(-1) }, Modifier.widthIn(min = TOUCH_HEIGHT).requiredHeight(TOUCH_HEIGHT).testTag("top_tempo_minus")) {
                 Icon(Icons.Filled.Remove, contentDescription = tr("Tempo moins"), modifier = Modifier.size(18.dp))
             }
-            TempoButton(ui.tempoBpm, actions.openTempo)
+            TempoButton(ui.tempoBpm, actions.openTempo, tempoStacked)
             RepeatingIconButton({ nudge(+1) }, Modifier.widthIn(min = TOUCH_HEIGHT).requiredHeight(TOUCH_HEIGHT).testTag("top_tempo_plus")) {
                 Icon(Icons.Filled.Add, contentDescription = tr("Tempo plus"), modifier = Modifier.size(18.dp))
             }
         } else if (ui.showTempo) {
-            TempoButton(ui.tempoBpm, actions.openTempo)
+            TempoButton(ui.tempoBpm, actions.openTempo, tempoStacked)
         }
         PositionLabel(ui, actions, Modifier.weight(1f))
         if (ui.soloed.isNotEmpty()) SoloChip(ui.soloed, actions.clearSolos, iconOnly = soloIconOnly)
@@ -248,7 +252,7 @@ private fun Modifier.control(): Modifier = widthIn(min = TOUCH_HEIGHT).requiredH
 
 /** The tempo in a small dark window, like a hardware display; a touch opens the tempo sheet. */
 @Composable
-private fun TempoButton(bpm: Double, open: () -> Unit) {
+private fun TempoButton(bpm: Double, open: () -> Unit, stacked: Boolean = false) {
     val shape = RoundedCornerShape(8.dp)
     val said = tr("Tempo : %d BPM", Math.round(bpm).toInt())
     // Touched over the strip's whole height; the window drawn smaller inside.
@@ -261,15 +265,41 @@ private fun TempoButton(bpm: Double, open: () -> Unit) {
             .testTag("top_tempo"),
         contentAlignment = Alignment.Center,
     ) {
-        Row(
-            Modifier.clip(shape).background(Color.Black.copy(alpha = 0.35f)).border(1.dp, Color.White.copy(alpha = 0.08f), shape)
-                .padding(horizontal = 10.dp, vertical = 5.dp),
-            verticalAlignment = Alignment.Bottom,
-        ) {
+        val window = Modifier.clip(shape).background(Color.Black.copy(alpha = 0.35f)).border(1.dp, Color.White.copy(alpha = 0.08f), shape)
+        if (stacked) Column(window.padding(horizontal = 6.dp, vertical = 2.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            RollingText("${Math.round(bpm)}", style = MonoStyle.copy(fontSize = 16.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan)
+            Text(tr("BPM"), style = MaterialTheme.typography.labelSmall.copy(lineHeight = 12.sp), color = Neon.TextSecondary, maxLines = 1)
+        } else Row(window.padding(horizontal = 10.dp, vertical = 5.dp), verticalAlignment = Alignment.Bottom) {
             RollingText("${Math.round(bpm)}", style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan)
             Text(" " + tr("BPM"), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary)
         }
     }
+}
+
+/**
+ * Tour 9, F105: the bar, its figures always whole. The longest of « mesure 9/84 », « mes. 9/84 » and « 9/84 » that fits the
+ * room left (a narrow phone, a big text size, a long script); the figures alone at worst.
+ */
+@Composable
+private fun BarsFitting(bar: Int, bars: Int, color: Color) = BoxWithConstraints {
+    val style = MonoStyle.copy(fontSize = 14.sp, lineHeight = 16.sp)
+    val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+    val choices = listOfNotNull(
+        if (com.pocketstudio.model.i18n.I18n.everyday) tr("mesure %1\$d/%2\$d", bar, bars) else null,
+        tr("mes. %1\$d/%2\$d", bar, bars),
+        "$bar/$bars",
+    )
+    // Measured with the bar's widest figures, so the words do not come and go as the bars roll.
+    val widest = bars.toString().replace(Regex("\\d"), "8").toInt()
+    val text = choices.indices.firstOrNull { i ->
+        val probe = listOfNotNull(
+            if (com.pocketstudio.model.i18n.I18n.everyday) tr("mesure %1\$d/%2\$d", widest, bars) else null,
+            tr("mes. %1\$d/%2\$d", widest, bars),
+            "$widest/$bars",
+        )[i]
+        measurer.measure(probe, style, maxLines = 1, softWrap = false).size.width <= constraints.maxWidth
+    }?.let(choices::get) ?: choices.last()
+    RollingText(text, style = style, color = color, maxLines = 1, softWrap = false, modifier = Modifier.testTag("top_position_bar"))
 }
 
 /** "Refrain · mes. 17/60" (green while it plays); with a song, a touch lists its parts to play from. */
@@ -317,10 +347,7 @@ private fun PositionLabel(ui: PlayStripUi, actions: PlayStripActions, modifier: 
                     if (pos.next != null) Text(
                         tr("%s : ensuite", pos.next), style = MaterialTheme.typography.labelMedium.copy(lineHeight = 16.sp), color = Neon.Amber,
                         maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.testTag("top_position_next"),
-                    ) else RollingText(
-                        if (com.pocketstudio.model.i18n.I18n.everyday) tr("mesure %1\$d/%2\$d", pos.bar, pos.bars) else tr("mes. %1\$d/%2\$d", pos.bar, pos.bars), style = MonoStyle.copy(fontSize = 14.sp, lineHeight = 16.sp), color = color,
-                        maxLines = 1, softWrap = false, modifier = Modifier.testTag("top_position_bar"),
-                    )
+                    ) else BarsFitting(pos.bar, pos.bars, color)
                 }
                 if (pickable) Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = color, modifier = Modifier.size(18.dp))
             }

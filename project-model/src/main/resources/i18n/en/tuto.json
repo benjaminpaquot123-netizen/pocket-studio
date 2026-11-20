@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "The style's real drum sounds, for your song and for the examples. Without them, the tutorial works with the built-in sounds.",
   "Téléchargement du kit… %d %%": "Downloading the kit… %d %%",
   "Mettre les sons du kit %s sur les pads": "Put the %s kit's sounds on the pads",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "The kit couldn't load: the tutorial keeps the built-in sounds.",
   "Télécharger le kit %1$s (%2$s)": "Download the %1$s kit (%2$s)",
   "Recommencer le tuto": "Restart the tutorial",
   "Passer à %d mesures": "Switch to %d bars",

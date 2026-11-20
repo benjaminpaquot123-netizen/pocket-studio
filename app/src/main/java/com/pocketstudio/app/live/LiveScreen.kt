@@ -72,6 +72,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -659,7 +660,8 @@ private fun LiveTopBar(
     padsOn: Boolean = false,
     cutPads: () -> Unit = {},
 ) = BoxWithConstraints(
-    Modifier.fillMaxWidth().height(if (slim) 48.dp else 56.dp)
+    // Tour 9 L11 (N3): at least its height, taller when a big text size makes the tempo or the counter taller.
+    Modifier.fillMaxWidth().heightIn(min = if (slim) 48.dp else 56.dp)
         // Lit from above with a machined foot, as the app's top bar (lot « design pro »).
         .background(Brush.verticalGradient(listOf(lerp(Neon.Surface, Color.White, 0.03f), lerp(Neon.Surface, Color.Black, 0.08f))))
         .drawBehind {
@@ -674,7 +676,7 @@ private fun LiveTopBar(
     // The counter and ● REC are placed first and never squeezed out.
     val compact = maxWidth < LIVE_BAR_FULL
     Row(
-        Modifier.fillMaxSize().padding(horizontal = 4.dp),
+        Modifier.fillMaxWidth().heightIn(min = if (slim) 48.dp else 56.dp).padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp),
     ) {
@@ -890,7 +892,8 @@ private fun Counter(ui: LiveScreenUi) {
     val accent = if (waiting) Neon.Cyan else Neon.Outline
     val track = Neon.SurfaceHigh
     Column(
-        Modifier.size(COUNTER_W, 48.dp)
+        // Tour 9 L11 (N3): wider with a big text size (its figures stay readable, never shrunk to nothing), taller if need be.
+        Modifier.width(COUNTER_W * androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceIn(1f, COUNTER_GROWTH)).heightIn(min = 48.dp)
             .drawBehind {
                 val stroke = 3.dp.toPx()
                 val frame = counterFrame(stroke / 2, stroke / 2, size.width - stroke, size.height - stroke, 12.dp.toPx())
@@ -921,6 +924,9 @@ private fun Counter(ui: LiveScreenUi) {
 /** The counter's width: as ● REC beside it. */
 private val COUNTER_W = 56.dp
 
+/** How much wider the counter grows with the text size (56 dp at 100 %, 84 dp from 150 %). */
+private const val COUNTER_GROWTH = 1.5f
+
 /** A frame [w] x [h] from ([x], [y]), its corners [r] round, drawn from the middle of its top edge clockwise (as a clock's hand). */
 private fun counterFrame(x: Float, y: Float, w: Float, h: Float, r: Float) = androidx.compose.ui.graphics.Path().apply {
     val c = r.coerceAtMost(minOf(w, h) / 2f)
@@ -945,6 +951,7 @@ private fun counterFrame(x: Float, y: Float, w: Float, h: Float, r: Float) = and
  * « Cases − 8 + » sets how many bricks share the height (none smaller than [ROW_MIN_H]: past that
  * the grid scrolls); rows past the song's last brick are new bricks, their dots ready to fill.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveActions, marks: GridMarks, modifier: Modifier, dense: Boolean = false) = BoxWithConstraints(modifier.background(GridLook.Ground)) {
     val p = ui.project
@@ -987,18 +994,26 @@ private fun LiveGrid(ui: LiveScreenUi, columns: List<LiveColumn>, actions: LiveA
         val header = if (compact) HEADER_COMPACT else HEADER_HEIGHT
         val stopH = if (compact) 44.dp else 48.dp
         val top = 48.dp
+        // Tour 9 L11 (N3): the row over the grid as tall as it really is (two lines at a big text size).
+        var topRow by remember { mutableStateOf(top - gap) }
         val cellW = fitW.coerceIn(MIN_CELL_W, MAX_CELL_W)
-        val cellH = ((innerH - top - header - stopH - gap * (shown + 2)) / shown).coerceAtLeast(if (dense) ROW_MIN_DENSE else ROW_MIN_H)
+        val cellH = ((innerH - topRow - gap - header - stopH - gap * (shown + 2)) / shown).coerceAtLeast(if (dense) ROW_MIN_DENSE else ROW_MIN_H)
         val look = CellLook(clock, cellW.value, cellH.value, gap.value)
         Column(Modifier.padding(horizontal = GRID_PAD_H, vertical = GRID_PAD_V).testTag("live_grid"), verticalArrangement = Arrangement.spacedBy(gap)) {
-            Row(Modifier.fillMaxWidth().height(top - gap), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            // Tour 9 L11 (N3, Arabic at 200 %: « Lancer à » and « Cases » cut in a fixed 42 dp row): « Cases » goes under
+            // « Lancer à » when both do not fit side by side, and the row is as tall as its words.
+            FlowRow(
+                Modifier.fillMaxWidth().heightIn(min = top - gap).onSizeChanged { topRow = with(density) { it.height.toDp() } },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.spacedBy(gap, Alignment.CenterVertically),
+            ) {
                 // Lot 4d: « Lancer à » here (the bar keeps the tempo), beside « Cases ».
-                Row(Modifier.weight(1f, fill = false), verticalAlignment = Alignment.CenterVertically) {
+                Row(Modifier.align(Alignment.CenterVertically), verticalAlignment = Alignment.CenterVertically) {
                     QuantumButton(p, actions.setQuantum, Modifier.weight(1f, fill = false))
                     com.pocketstudio.ui.HelpDot(com.pocketstudio.app.help.ScreenHelp.LIVE_LAUNCH, about = listOf("live_quantum", "live_cases_less", "live_cases_more"))
+                    Spacer(Modifier.width(8.dp))
                 }
-                Spacer(Modifier.width(8.dp))
-                CasesStepper(shown, actions.setRows)
+                CasesStepper(shown, actions.setRows, Modifier.align(Alignment.CenterVertically))
             }
             Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
                 // Lot « Aide à jour »: the empty corner over the bricks' letters holds the grid's « ? ».

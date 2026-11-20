@@ -1,0 +1,18 @@
+fusion: c3d27d667e7d1a41cb655a018f443d14dffd12b8
+branche: eq/tour-9-L16
+tete: 3cd5bbfeb05f72e747aa3bcd92b986752fb19204
+relecture: docs/audits/ultra/tour-9-L16-relecture.md
+relu: e4a68848001b5528afa682f836bc17aa8243683d
+filtres: *Tour9L16* *ShareReadyTextTest* *ShareNotSentTest* *Tour6TutoOrderRaceTest* *TutoPanel* *I18n*
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu

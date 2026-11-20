@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "这个风格真实的鼓声，用于你的曲子和示例。没有它们，教程也能用内置音色进行。",
   "Téléchargement du kit… %d %%": "正在下载鼓组… %d%%",
   "Mettre les sons du kit %s sur les pads": "把 %s 鼓组的声音放到打击垫上",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "鼓组无法加载：教程继续使用内置音色。",
   "Télécharger le kit %1$s (%2$s)": "下载 %1$s 鼓组（%2$s）",
   "Recommencer le tuto": "重新开始教程",
   "Passer à %d mesures": "改为 %d 小节",

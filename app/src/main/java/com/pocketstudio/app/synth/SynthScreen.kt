@@ -423,15 +423,27 @@ fun SynthScreen(
             // left allows, never under 110 dp), and the keyboard's title, its chips and the mode switch after them.
             val bigLetters = simple && !tabletUpright && LocalDensity.current.fontScale >= BIG_LETTERS
             var recordTall by remember { mutableStateOf(0) }
+            var barTall by remember { mutableStateOf(0) }
+            val page = rememberScrollState()
             Column(
-                Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
+                Modifier.fillMaxSize().verticalScroll(page).padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
+                val bar = tracks?.takeIf { it.showBar }
+                if (bar != null) Box(Modifier.onSizeChanged { barTall = it.height }) { TrackBar(bar) }
                 if (bigLetters) {
                     record?.let { r -> Box(Modifier.onSizeChanged { recordTall = it.height }) { r(false) } }
-                    val above = with(LocalDensity.current) { recordTall.toDp() } + if (record != null) 10.dp else 0.dp
-                    val keysHigh = (screenHigh - 12.dp - above - 6.dp).coerceIn(110.dp, 150.dp)
+                    // Tour 9 (F142): the take's card gone, its height goes too (it kept the keys short after a take).
+                    val density = LocalDensity.current
+                    val above = if (record != null) with(density) { recordTall.toDp() } + 10.dp else 0.dp
+                    // Tour 9 (F117, t9-05 at 200 % over the tutorial's panel): the track's bar is above the keys too.
+                    // When the room left is under the keys' least height, the page slides by what is missing (the
+                    // bar goes up first, the take's card stays), so the whole keys stand in sight.
+                    val barRoom = if (bar != null) with(density) { barTall.toDp() } + 10.dp else 0.dp
+                    val room = screenHigh - 12.dp - barRoom - above - 6.dp
+                    val keysHigh = room.coerceIn(110.dp, 150.dp)
+                    val missing = with(density) { (110.dp - room).coerceIn(0.dp, barRoom).roundToPx() }
+                    LaunchedEffect(missing) { if (missing > 0 && page.value < missing) page.scrollTo(missing) }
                     Box(trackKeyboard.testTag("synth_keys_first")) {
                         if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keysHigh)
                         else PlayKeys(keyLayout, octave, uprightOctaves, harmony, english, keyOn, keyOff, keysHigh)
@@ -547,7 +559,7 @@ private fun KeyboardCard(
 ) {
     NeonCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(if (chordPads) tr("Pads d'accords") else tr("Clavier"), help = if (chordPads) Glossary.CHORD else null, foldKey = "Clavier")
+            SectionLabel(if (chordPads) tr("Pads d'accords") else tr("Clavier"), help = keyboardHelp(harmony, chordPads), foldKey = "Clavier")
             Box(Modifier.weight(1f))
             OctaveControl(octave, actions)
         }
@@ -579,7 +591,7 @@ private fun SimpleSoundCard(tracks: TracksUi) {
     NeonCard(modifier = Modifier.testTag("simple_sound")) {
         SectionLabel(tr("Le son"), foldKey = "Le son (mode simple)")
         // Audit ultra round 1, n° 36 (seat F a): the sound's own name (« Orgue »), not its kind (« Synthé ») once it is changed.
-        Text(com.pocketstudio.model.guide.GuideSheets.soundName(t), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+        Text(trackSoundName(t), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
             modifier = Modifier.testTag("simple_sound_name"))
         tracks.changeSound?.let { change ->
             androidx.compose.material3.Button(onClick = { change(t.id) }, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag("simple_change_sound")) {
@@ -597,6 +609,17 @@ internal val TALL_LANDSCAPE = 440.dp
 
 /** From this font scale a phone's Mode simple Clavier puts the take's card and the keys first (tour 8, t4-26). */
 internal const val BIG_LETTERS = 1.15f
+
+/**
+ * Tour 9 (F117, t9-05): the keyboard's « ? » says what the keys do (the one beside them was the take's, about
+ * recording only): in the song's scale they cannot play a wrong note; else they try notes over the beat.
+ */
+internal fun keyboardHelp(harmony: Harmony, chordPads: Boolean): com.pocketstudio.ui.Help? = when {
+    chordPads -> Glossary.CHORD
+    harmony.lock && harmony.scale != com.pocketstudio.model.Scale.Off ->
+        com.pocketstudio.ui.Help(tr("Clavier"), tr("Le clavier : joue, il reste dans la gamme du morceau : aucune fausse note possible."))
+    else -> com.pocketstudio.ui.Help(tr("Clavier"), tr("Le clavier : joue pour essayer des notes par-dessus le rythme."))
+}
 
 /** From this width a screen held upright is a tablet's (an 8.7" one is 600 dp wide). */
 internal val TABLET_WIDTH = 600.dp

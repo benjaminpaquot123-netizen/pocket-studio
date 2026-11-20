@@ -1,14 +1,12 @@
 package com.pocketstudio.app.mixer
 
-import com.pocketstudio.ui.fadingHorizontalScroll
-import com.pocketstudio.app.analysis.drawSpectrumBackdrop
-import com.pocketstudio.ui.WithHelp
-import com.pocketstudio.ui.HelpDot
-import com.pocketstudio.app.help.Glossary
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,54 +17,63 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.ui.composed
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.pocketstudio.app.analysis.drawSpectrumBackdrop
+import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.model.Channel
 import com.pocketstudio.model.FxPresets
 import com.pocketstudio.model.Macros
 import com.pocketstudio.model.SoundKind
+import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.model.matchingFx
+import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.ui.Knob
 import com.pocketstudio.ui.KnobColors
 import com.pocketstudio.ui.Neon
+import com.pocketstudio.ui.WithHelp
+import com.pocketstudio.ui.fadingHorizontalScroll
 import com.pocketstudio.ui.pillColors
 import kotlin.math.roundToInt
-import com.pocketstudio.model.i18n.tr
+
+/**
+ * Tour 9 (F136, « Pour : Pluck » on the Rhodes track): the name of the track whose effects are open, given by the
+ * sheet that opens them; the suggested chip says it (« Pour : Rhodes ») rather than the sound's family.
+ */
+val LocalFxTrackName = androidx.compose.runtime.compositionLocalOf<String?> { null }
 
 class QuickFxActions(
     val setMacro: (ch: Int, macro: Int, value: Float) -> Unit = { _, _, _ -> },
@@ -91,6 +98,7 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions, kind: Sound
     val current = channel.matchingFx()
     val suggested = kind?.let { FxPresets.suggestedFor(it, ch) }.orEmpty()
     val favourites by actions.favourites.collectAsState()
+    val trackName = LocalFxTrackName.current
     // With suggestions, the families wait behind « Toutes » (unless the one in use is elsewhere).
     val startAll = suggested.isEmpty() || (current != null && current.id != FxPresets.NONE.id && current !in suggested)
     var category by rememberSaveable(ch, kind) {
@@ -104,7 +112,7 @@ fun QuickFxPanel(ch: Int, channel: Channel, actions: QuickFxActions, kind: Sound
         WithHelp(Glossary.FX_PRESET) { Text(tr("Ambiances toutes prêtes"), style = MaterialTheme.typography.labelLarge, color = Neon.Magenta) }
         Row(Modifier.fadingHorizontalScroll(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             if (kind != null) {
-                FilterChip(selected = category == SUGGESTED, onClick = { category = SUGGESTED }, label = { Text(tr("Pour : %s", tr(kind.label))) },
+                FilterChip(selected = category == SUGGESTED, onClick = { category = SUGGESTED }, label = { Text(tr("Pour : %s", trackName ?: tr(kind.label))) },
                     modifier = Modifier.testTag("fx_category_suggested"))
             }
             FilterChip(selected = category == FAVOURITES, onClick = { category = FAVOURITES }, label = { Text(tr("Favoris")) },
@@ -247,6 +255,8 @@ internal fun XyPad(
     val x = macros[Macros.COLOR]
     val y = macros[yMacro]
     val currentY by rememberUpdatedState(yMacro)
+    val dotX by rememberUpdatedState(x)
+    val dotY by rememberUpdatedState(y)
     val set by rememberUpdatedState(actions.setMacroPair)
     if (yFixed == null) {
         // The label on its own line: never cut at the left of the chips (a small phone, big text).
@@ -273,7 +283,19 @@ internal fun XyPad(
                         val nx = (at.x / size.width).coerceIn(0f, 1f)
                         set(ch, Macros.COLOR, nx, currentY, xyValue(at.y, size.height.toFloat(), XY_INSET.toPx()))
                     }
-                    detectDragGestures(onDragStart = ::send) { change, _ -> send(change.position) }
+                    // F024: a slide moves the dot only when it starts on it (within FADER_GRAB); elsewhere it scrolls the page.
+                    awaitEachGesture {
+                        // Seen even after the double tap's own detector took the touch.
+                        val down = awaitFirstDown(requireUnconsumed = false)
+                        val dot = Offset(dotX * size.width, xyPosition(dotY, size.height.toFloat(), XY_INSET.toPx()))
+                        if ((down.position - dot).getDistance() > FADER_GRAB.toPx()) return@awaitEachGesture
+                        val first = awaitTouchSlopOrCancellation(down.id) { c, _ -> c.consume() } ?: return@awaitEachGesture
+                        send(first.position)
+                        drag(first.id) { c ->
+                            c.consume()
+                            send(c.position)
+                        }
+                    }
                 }
                 .pointerInput(ch) {
                     detectTapGestures(

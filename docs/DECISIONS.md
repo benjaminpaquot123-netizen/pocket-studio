@@ -1573,3 +1573,4 @@
 - 2026-11-20 : D16 tranché : les cours ne promettent plus de « pistes séparées » (textes corrigés, pas d'export en pistes). Retour arrière : faire l'export en pistes séparées.
 - 2026-11-20 : F041 abandonné (contredit la décision du tour 6, cases guides visibles sur « Passer à 2 mesures »).
 - 2026-11-20 : ordre des lots tuto : L13 → V1 validation (D03 D07 D09 D15 D18 S67) → fiche tuto (F101 D06 F034 S17) → V2 contenu (D05 D16 F031 F032). Tuto = une seule zone.
+- 2026-11-20 : Benjamin : « si ça coûte un peu plus en quotat tant que c'est productif c'est ok ». Lot ci-rapide (CI 62 → 40 min) confié à la discussion audit vitesse : cache du jar Robolectric + annulation des CI périmées sur les branches de lot. Retour arrière : revenir à l'ancien ci.yml.

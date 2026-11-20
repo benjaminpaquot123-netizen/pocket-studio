@@ -69,8 +69,11 @@ class TutoReadabilityBudgetTest {
     }
 
     @Test fun proOutOfBudgetOnlyGoesDown() {
-        val n = all(TutoLevel.Pro).size
+        val misses = all(TutoLevel.Pro)
+        val n = misses.size
         File("build/tuto-readability-pro-count.txt").writeText("$n\n")
+        // The whole list, to find which consignes a change pushed out of budget (diff two runs).
+        File("build/tuto-readability-pro.txt").writeText(misses.joinToString("\n", postfix = "\n"))
         assertTrue("$n Pro consignes out of budget: the ratchet is $PRO_RATCHET (lower it when it goes down)", n <= PRO_RATCHET)
     }
 

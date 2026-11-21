@@ -54,6 +54,8 @@ class Tour9L13TutoFoldedActionTest {
         }
         compose.waitForIdle()
         val wrong = ArrayList<String>()
+        // Still the demonstration's line (it fades): what waits for its end (the journey, the user) sees it under way.
+        if (node("tuto_demo_caption") == null) wrong += "demo's end folded: the line no longer says the demonstration is under way"
         if (node("tuto_need_folded") == null) wrong += "demo's end folded: no « Créer la partie » on the line"
         else {
             compose.onAllNodes(hasTestTag("tuto_need_folded"), useUnmergedTree = true)[0].performClick()

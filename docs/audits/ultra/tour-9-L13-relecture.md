@@ -1,25 +1,22 @@
-# Tour 9, lot L13 : relecture neuve
+# Tour 9 — L13 : relecture neuve
 
-Relu : e2605208
+Relu : d1525f73 (diff ed0ea8f3..d1525f73, TutoPanel.kt + Tour9L13KitShedTest.kt)
 
-Périmètre : `git diff c72349d0 e2605208 -- app/` (commits 781beb26 et 4db8f4e5 sur `TutoPanel.kt` et `Tour9L13TutoFoldedActionTest.kt`), et survol de `git diff 4dd35036 e2605208 -- app/` pour reconfirmer le grave déjà corrigé. Lecture seule, aucun test lancé.
+Relecteur : sous-agent neuf, qui n'a pas écrit le code (seconde relecture : les 2 graves de la première sont corrigés dans d1525f73, couverts par Tour9L13KitShedTest, rouge avant).
 
-## Défauts
+Tests : `com.pocketstudio.app.tuto.*` + TutoJourneyTest = 470 tests, 1 rouge, celui connu de la base (T9PanelTargetTest.fillCellsAboveThePanelIn360At200Japanese). Pré-vol : PRÊT.
 
-- **Corrigé** (c9a0bdb1) — grave : couché (sans plafond), après « Lire la suite », les mots étaient mesurés sans poids et la barre d'actions de l'étape tombait à 0 px. Reconfirmé : `WordsRoom` reçoit toujours `weight(1f)` (tenu) ou `weight(1f, fill = false)`, la colonne mesure donc la tête et `ActionBar` avant les mots ; `Tour9L13TutoReadAllTest` mesure de vrais bords visibles et exige une hauteur > 0.
+## Bloquant
+Aucun.
 
-## Changement 781beb26 / 4db8f4e5 (fin de démonstration repliée)
+## Grave
+Aucun. Les écritures faites pendant la mesure sont bornées (kitGrown ≤ 3, kitShed ≤ 1, regrown ≤ 2). Cacher l'en-tête ne relance ni kitShown ni held. Aucun plantage.
 
-- Pendant `FADING` avec un `need`, la `NeedLine` est enveloppée d'un `Box` étiqueté `tuto_demo_caption`. Vérifié dans `TutoController` : la phase `FADING` finit seule (boucle de `fadeMs / FADE_TICK` pas, puis le `finally` remet `demo = null`), et un toucher sur la ligne appelle `stopDemo()` (annulation, même `finally`, `restored` déjà vrai donc pas de double `demoShow(null)`) puis `need()`. L'étiquette disparaît donc toujours : `TutoJourneyTest`, `TutoKickSoundTest` (« demo over ») ne restent pas bloqués, et ils ne déplient plus en plein fondu. Pas d'état coincé, pas de plantage.
-- Mise en page : le `Box` n'a pas de modificateur de taille, l'enfant garde `fillMaxWidth().height(foldedLineHeight())` ; même rendu qu'avant. `tuto_need_folded` reste cliquable (semantics de l'enfant intactes, le `Box` n'en fusionne aucune).
-- Le test ajouté (`node("tuto_demo_caption") == null` → échec) échoue bien sans la correction (le commit « rouge » le prouve) et passe avec : il vérifie quelque chose.
-
-## Notes (mineurs)
-
-- mineur : l'étiquette `tuto_demo_caption` couvre désormais, pendant le fondu, une ligne dont le texte est le bouton de l'étape et non les mots de la démonstration ; un futur test qui lirait le texte sous cette étiquette serait trompé. Sans effet pour TalkBack (une étiquette de test n'est pas lue).
-- mineur (déjà noté) : couché après « Lire la suite », le test ne vérifie que le bouton « suivant », pas qu'il reste une ligne de consigne visible à 200 % sur 360 dp.
-- mineur (déjà noté) : `userFolded` n'est remis à zéro que par `start()` et `toggleOpen()`.
-
-Aucun nouveau bloquant ni grave.
+## Mineur (notés, pas corrigés)
+- TutoPanel.kt:719 : le plafond grandit de la hauteur du kit sur toutes les étapes avec l'offre, borné à 85 %.
+- TutoPanel.kt:841 : kitMissing peut atteindre 3 fois le manque si le plafond est déjà bloqué. Sans effet visible tant que la borne tient.
+- TutoPanel.kt:649 : kitShed a pour clé `kit != null`, pas kitShown. Pendant Bravo ou une démo, l'en-tête reste caché.
+- TutoPanel.kt:707 : kitTall sans clé, vieux d'une image (défaut d'avant).
+- Tour9L13KitShedTest vérifie seulement le retour de l'en-tête. La promesse du lot (une ligne de consigne visible) est tenue par Tour7TutoKitBigFontTest et Tour7TutoKitWordsInSightTest.
 
 Verdict : 0 bloquant, 0 grave

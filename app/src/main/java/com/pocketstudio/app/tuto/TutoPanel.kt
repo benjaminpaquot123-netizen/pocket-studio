@@ -644,17 +644,20 @@ fun TutoPanel(
     // go the same way (its head, the kit offer, then the row of the example) until the reason has two lines under its
     // button; all come back when it is closed (« ▾ Pourquoi ? » stays).
     var whyShed by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
-    val shedAt = if (reading) shed else whyShed
+    // Tour 9 (portal, L13): the kit offer come late over a height held, the instruction without its line and a half: the
+    // panel's head goes ([kitShed]), the panel staying where it is (the finger meant for its buttons, TutoKitUnderFinger).
+    var kitShed by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
+    val shedHeld = if (reading) shed else whyShed
+    val shedAt = if (reading) shed else maxOf(whyShed, kitShed)
     // Tour 9 (portal, L13): the kit offer pinned under the words raises the panel's cap on every step (F016: the map's
-    // steps only), by its height and what the instruction's line and a half still lacks ([kitMissing]); come late, the
-    // panel's height is taken again with it (the height held without it left the instruction 0 px at 200 %).
+    // steps only), by its height and what the instruction's line and a half still lacks ([kitMissing]).
     val kitShown = step.id != READY_STEP && kit != null && ui.demo == null && !ui.bravo && shedAt < 2
-    var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedAt, kitShown) { mutableIntStateOf(0) }
+    var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedHeld) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
     val holding = ui.open && held > 0 && !end
     // How many times the height held was taken again for the words' least room ([WordsRoom]).
-    var regrown by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedAt, kitShown) { mutableIntStateOf(0) }
+    var regrown by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedHeld) { mutableIntStateOf(0) }
     // Tour 6 (N31): « Lire la suite » lay over « ▸ Pourquoi ? » (a touch there read on). « Pourquoi ? » and « Lire la
     // suite » are under the scrolling words, never in them: neither under the other, « Pourquoi ? » never cut by the
     // words' room (Arabic at 130 %), the panel's height as before. The words' scroll is the step's own (the step
@@ -833,7 +836,7 @@ fun TutoPanel(
                 if (holding) Modifier.weight(1f) else Modifier.weight(1f, fill = false), holding, most, least,
                 mapRoom = chapter.map && map.isNotEmpty(),
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
-                kitShort = if (kitShown) { { m -> if (kitGrown < 3) { kitGrown++; kitMissing += m } } } else null,
+                kitShort = if (kitShown) { { m -> if (holding) { if (kitShed < 1) kitShed = 1 } else if (kitGrown < 3) { kitGrown++; kitMissing += m } } } else null,
                 short = if (reading) { { if (shed == shedAt && shed < 3) shed++ } } else null,
                 // « Pourquoi ? » opened leaves the instruction a line at least (its first one, in sight over the reason).
                 whyLeaves = if (whyOpen) with(density) { MaterialTheme.typography.bodyLarge.lineHeight.roundToPx() } else 0,

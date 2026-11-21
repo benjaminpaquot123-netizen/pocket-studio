@@ -14,7 +14,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
-import kotlin.math.hypot
 
 /**
  * Tour 9, F034 (seat t9-08 a: zh-CN, phone, 200 %, Mode pro, the afro house course « Pro », chapter 8 « Construis tes
@@ -35,13 +34,11 @@ class T9F034DemoShowsThePartMadeTest : HumanTester("t9f034") {
     private fun finger(): Pair<Float, Float>? = screenLines().firstOrNull { "doigt qui touche" in it }
         ?.substringAfterLast('@')?.trim()?.split(',')?.let { it[0].trim().toFloat() to it[1].trim().toFloat() }
 
-    private fun far(a: Pair<Float, Float>, b: Pair<Float, Float>) = hypot(a.first - b.first, a.second - b.second)
-
     @Test
     fun theDemoOfAPartToMakePointsWhereThePartComes() {
         assumeTrue(System.getProperty("ps.human.dir").isNullOrBlank())
         begin(SeatOptions.parse(mapOf("lang" to "fr", "device" to "phone", "font" to "200", "mode" to "pro")).first)
-        tap("welcome_learn"); runCatching { tap("mode_card_pro") }; tap("tuto_style_afro_house")
+        tap(listOf("welcome_learn", "launch_learn").firstOrNull { reachTag(it) != null } ?: error("no way to the courses on:\n" + screen())); runCatching { tap("mode_card_pro") }; tap("tuto_style_afro_house")
         repeat(3) { act("attends 1") }
         tap("tuto_chapters"); tap("tuto_chapter_7")
         act("attends 1")
@@ -57,21 +54,23 @@ class T9F034DemoShowsThePartMadeTest : HumanTester("t9f034") {
         v.session.edit { made }
         act("attends 1")
         tap("tuto_show")
+        // The demonstration watched to its end: where the finger is, and whether the part it makes is seen meanwhile.
         var at: Pair<Float, Float>? = null
         var seen = ""
-        for (i in 0 until 8) {
-            at = finger()
-            if (at != null) { seen = screen(); break }
+        var shown = false
+        for (i in 0 until 12) {
+            val now = finger()
+            if (now != null) {
+                at = now; seen = screen()
+                if (seen.lines().any { "Intro" in it && "bouton" in it }) { shown = true; break }
+            } else if (at != null) break
             act("attends 1")
         }
         assertNotNull("no finger during « Montre-moi »:\n" + screen(), at)
-        val add = centerOf("song_add")
-        assertNotNull("« Ajouter : » not on the screen during the demonstration:\n$seen", add)
-        val switch = centerOf("structure_switch")
-        assertTrue(
-            "the finger ($at) is on the view switch ($switch), not on « Ajouter : » ($add):\n$seen",
-            switch == null || far(at!!, add!!) < far(at!!, switch),
-        )
-        assertTrue("the part made (« Intro ») is not shown during the demonstration:\n$seen", seen.lines().any { "Intro" in it && "bouton" in it })
+        // « Ajouter : » is the title right above the buttons: the finger is under it, on them, not up on the view switch.
+        val title = seen.lines().firstOrNull { "« Ajouter : »" in it }?.substringAfterLast(',')?.trim()?.toFloat()
+        assertNotNull("« Ajouter : » not on the screen during the demonstration:\n$seen", title)
+        assertTrue("the finger ($at) is above « Ajouter : » (y = $title), not on its buttons:\n$seen", at!!.second > title!!)
+        assertTrue("the part made (« Intro ») is not shown during the demonstration:\n$seen", shown)
     }
 }

@@ -686,7 +686,10 @@ class TutoController(
         demoJob = scope.launch {
             var restored = false
             try {
-                goFor(step, before, spot = false)?.takeIf { it.notes == null }?.let { _goes.tryEmit(it) }
+                // F034: a part still to make comes as a button of « Ajouter : »: the finger there, not on the view switch.
+                val place = if (step.check.startsWith("part:") && u.need is TutoNeed.Part) TutoGo(GuideOpen(SONG_ADD_SPOT, ""), spot = false)
+                else goFor(step, before, spot = false)?.takeIf { it.notes == null }
+                place?.let { _goes.tryEmit(it) }
                 // n° 20: the screen scrolls to the place (its card opened) before the first gesture.
                 delay(each.coerceAtMost(LEAD_MS * frameMs / FRAME_MS))
                 demo.frames.forEachIndexed { i, frame ->

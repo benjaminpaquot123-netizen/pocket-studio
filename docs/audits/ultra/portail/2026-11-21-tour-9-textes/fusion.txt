@@ -1,0 +1,20 @@
+fusion: b7fce6776a49ac344a89cd4b511e637abac26a41
+branche: eq/tour-9-textes
+tete: ebbfbecfcdfb2b5524b35e0b0dc8be7cbb490bd7
+relecture: docs/audits/ultra/tour-9-textes-relecture.md
+relu: 7a48eb60
+filtres: *Tour9TextesRowStopWordTest *Tour9TextesStopWordTest *Tour9TextesGuideSoundNameTest *Tour9L16TextsTest *Tour9L16ShareTextsTest *Tour9L16LongPressStateTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

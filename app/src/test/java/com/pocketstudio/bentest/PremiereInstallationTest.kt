@@ -128,6 +128,7 @@ class PremiereInstallationTest {
         val note = lines.single { it.kind == Carnet.NOTE }.text
         assertTrue(note, note.startsWith("à l'écran : welcome, "))
         val tags = note.removePrefix("à l'écran : ").substringBefore(" (+").split(", ")
-        assertTrue(note, tags.size in 3..EssaiEclair.TAGS_MAX && "space_bar" in tags && tags.any { it.startsWith("welcome_") })
+        // The studio under the welcome is covered (tour 9 « flash »): the screen does not show it, the note does not say it.
+        assertTrue(note, tags.size in 3..EssaiEclair.TAGS_MAX && "space_bar" !in tags && tags.any { it.startsWith("welcome_") })
     }
 }

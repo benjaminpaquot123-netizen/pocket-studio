@@ -2169,7 +2169,7 @@ fun TutoTickedOverWindow() {
         }
     }
     if (!shown) return
-    androidx.compose.ui.window.Popup(
+    com.pocketstudio.ui.ScaledPopup(
         popupPositionProvider = TopCenterPopup,
         properties = androidx.compose.ui.window.PopupProperties(focusable = false),
     ) {

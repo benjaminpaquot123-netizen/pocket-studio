@@ -1,18 +1,25 @@
 # Tour 9, lot L13 : relecture neuve
 
-Relu : c72349d0
+Relu : e2605208
 
-Périmètre : commits du lot (2428f6ee..c72349d0, sans fusions) sur `TutoPanel.kt`, `TutoController.kt` et les tests `Tour9L13*`. Lecture seule, aucun test lancé.
+Périmètre : `git diff c72349d0 e2605208 -- app/` (commits 781beb26 et 4db8f4e5 sur `TutoPanel.kt` et `Tour9L13TutoFoldedActionTest.kt`), et survol de `git diff 4dd35036 e2605208 -- app/` pour reconfirmer le grave déjà corrigé. Lecture seule, aucun test lancé.
 
 ## Défauts
 
-- **Corrigé** (c9a0bdb1) — grave : couché (sans plafond), après « Lire la suite », les mots étaient mesurés sans poids avant la barre d'actions, qui tombait à 0 px. Vérifié : les mots gardent `weight(1f, fill = false)` (ou `weight(1f)` quand la hauteur est tenue), donc la colonne mesure d'abord la tête et `ActionBar`, et `WordsRoom` borne sa place (`cap = minOf(c.maxHeight, …)`) à ce qui reste ; « Lire la suite » lève toujours `panelCap`. Debout, `reading` borne la colonne (`heightIn(max = reach)`) et le délestage (`shed`, 3 au plus) rend la consigne entière. Couché, `MoreWords` reste et page la suite. Les boucles possibles sont bornées (`wholeWords` monotone, `regrown` ≤ 2, `shed`/`whyShed` ≤ 3). Le test `Tour9L13TutoReadAllTest` mesure de vrais bords visibles (`boundsInRoot`, coupé par le défilement) et exige une hauteur > 0 : il vérifie bien quelque chose, dans les deux sens.
+- **Corrigé** (c9a0bdb1) — grave : couché (sans plafond), après « Lire la suite », les mots étaient mesurés sans poids et la barre d'actions de l'étape tombait à 0 px. Reconfirmé : `WordsRoom` reçoit toujours `weight(1f)` (tenu) ou `weight(1f, fill = false)`, la colonne mesure donc la tête et `ActionBar` avant les mots ; `Tour9L13TutoReadAllTest` mesure de vrais bords visibles et exige une hauteur > 0.
 
-Aucun autre bloquant ni grave trouvé (pas de plantage Compose, pas de boucle de recomposition, placement `placeRelative` correct en RTL, 200 % couvert par les tests du lot).
+## Changement 781beb26 / 4db8f4e5 (fin de démonstration repliée)
+
+- Pendant `FADING` avec un `need`, la `NeedLine` est enveloppée d'un `Box` étiqueté `tuto_demo_caption`. Vérifié dans `TutoController` : la phase `FADING` finit seule (boucle de `fadeMs / FADE_TICK` pas, puis le `finally` remet `demo = null`), et un toucher sur la ligne appelle `stopDemo()` (annulation, même `finally`, `restored` déjà vrai donc pas de double `demoShow(null)`) puis `need()`. L'étiquette disparaît donc toujours : `TutoJourneyTest`, `TutoKickSoundTest` (« demo over ») ne restent pas bloqués, et ils ne déplient plus en plein fondu. Pas d'état coincé, pas de plantage.
+- Mise en page : le `Box` n'a pas de modificateur de taille, l'enfant garde `fillMaxWidth().height(foldedLineHeight())` ; même rendu qu'avant. `tuto_need_folded` reste cliquable (semantics de l'enfant intactes, le `Box` n'en fusionne aucune).
+- Le test ajouté (`node("tuto_demo_caption") == null` → échec) échoue bien sans la correction (le commit « rouge » le prouve) et passe avec : il vérifie quelque chose.
 
 ## Notes (mineurs)
 
-- Couché après « Lire la suite », le test ne vérifie que le bouton « suivant », pas qu'il reste au moins une ligne de consigne visible (à 200 % sur 360 dp, la tête et la barre d'actions peuvent tout prendre ; comportement d'avant le lot, pas une régression).
-- `userFolded` n'est remis à zéro que par `start()` et `toggleOpen()` : une ouverture automatique (`softSaid`) ou une reprise d'un autre cours par `show()` garde le repli choisi auparavant.
+- mineur : l'étiquette `tuto_demo_caption` couvre désormais, pendant le fondu, une ligne dont le texte est le bouton de l'étape et non les mots de la démonstration ; un futur test qui lirait le texte sous cette étiquette serait trompé. Sans effet pour TalkBack (une étiquette de test n'est pas lue).
+- mineur (déjà noté) : couché après « Lire la suite », le test ne vérifie que le bouton « suivant », pas qu'il reste une ligne de consigne visible à 200 % sur 360 dp.
+- mineur (déjà noté) : `userFolded` n'est remis à zéro que par `start()` et `toggleOpen()`.
+
+Aucun nouveau bloquant ni grave.
 
 Verdict : 0 bloquant, 0 grave

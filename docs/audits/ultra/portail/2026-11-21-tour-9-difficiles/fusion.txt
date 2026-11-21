@@ -1,0 +1,20 @@
+fusion: e83a4d4bf9cdc9e559bd6fd6cc693a4c24188b0f
+branche: eq/tour-9-difficiles
+tete: 2b24f17683ca1dfee390b28b9b99c6754627435c
+relecture: docs/audits/ultra/tour-9-difficiles-relecture.md
+relu: 7d3878158
+filtres: *T9D09CopyOneTouchTest *T9F034DemoShowsThePartMadeTest *Coquille2SeatTest *ProjectsSafetyTest *BenchProjectsListTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

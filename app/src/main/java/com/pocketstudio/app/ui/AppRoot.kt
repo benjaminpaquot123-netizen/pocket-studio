@@ -2076,6 +2076,7 @@ fun AppRoot() {
         if (place?.knobs?.isNotEmpty() == true && com.pocketstudio.app.tuto.TutoHints.soundButtonInSight) tutoReveal = listOf(com.pocketstudio.app.synth.SOUND_BUTTON_SPOT)
     }
     LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.step = tutoUi?.current?.id }
+    LaunchedEffect(tutoUi?.current?.id) { com.pocketstudio.app.tuto.TutoHints.swing = tuto.swingAim() }
     // Testers (lot « tuto 5 »): « Copier sur les mesures suivantes » next: offered over the grid too, where the eyes are.
     val tutoCopy = (tutoUi?.need as? com.pocketstudio.model.tuto.TutoNeed.Copy)?.role
     LaunchedEffect(tutoCopy) {
@@ -2470,6 +2471,8 @@ fun AppRoot() {
                         }
                     },
                     selectScene = rhythmVm::selectScene, newScene = rhythmVm::newScene,
+                    // Tour 9, D10: « Renommer » in the « A ▾ » menu names the part, as Structure does.
+                    renameScene = rhythmVm::renameScene,
                     share = shareSong,
                     mode = { modeSwitchOpen = true },
                     // Mode simple: « Envoyer » is a tab; the rest of the app in « ⋯ ».

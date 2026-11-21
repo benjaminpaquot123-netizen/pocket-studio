@@ -1,0 +1,20 @@
+fusion: b55c9209e90dcad3c6fa237d9edd009fae4d83ff
+branche: eq/tour-9-base-rouges
+tete: 2ff669408f916c2fd1d5d5de5dac608839ac0bd3
+relecture: docs/audits/ultra/tour-9-base-rouges-relecture.md
+relu: d6e3d16a01f89f972bdc712821f3e805813cd913
+filtres: *TutoReadabilityBudgetTest *Tour9L5bTutoWordsTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

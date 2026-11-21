@@ -1568,3 +1568,9 @@
 - 2026-11-20 · lot « L5a » (tour-9) : 16 décision(s) dans `docs/decisions/tour-9-L5a.md`
 - 2026-11-20 : Benjamin autorise 3 assistants à la fois ; le chef en garde 2 (règle « jamais plus de deux sur une même machine » et 6 Go de disque libre). Le 3e (L13) part dès qu'un des deux finit. Retour arrière : repasser à 1.
 - 2026-11-20 · lot « L3 » (tour-9) : 9 décision(s) dans `docs/decisions/tour-9-L3.md`
+- 2026-11-20 · lot « L15 » (tour-9) : 12 décision(s) dans `docs/decisions/tour-9-L15.md`
+- 2026-11-20 : règle d'arrêt de l'Audit (Benjamin : « rien de grave et bloquant ») : l'appli est prête quand il ne reste ni bloquant ni grave ; les finitions vont dans un carnet et en lot groupé plus tard. Retour arrière : Benjamin peut exiger 0 finition.
+- 2026-11-20 : D16 tranché : les cours ne promettent plus de « pistes séparées » (textes corrigés, pas d'export en pistes). Retour arrière : faire l'export en pistes séparées.
+- 2026-11-20 : F041 abandonné (contredit la décision du tour 6, cases guides visibles sur « Passer à 2 mesures »).
+- 2026-11-20 : ordre des lots tuto : L13 → V1 validation (D03 D07 D09 D15 D18 S67) → fiche tuto (F101 D06 F034 S17) → V2 contenu (D05 D16 F031 F032). Tuto = une seule zone.
+- 2026-11-20 : Benjamin : « si ça coûte un peu plus en quotat tant que c'est productif c'est ok ». Lot ci-rapide (CI 62 → 40 min) confié à la discussion audit vitesse : cache du jar Robolectric + annulation des CI périmées sur les branches de lot. Retour arrière : revenir à l'ancien ci.yml.

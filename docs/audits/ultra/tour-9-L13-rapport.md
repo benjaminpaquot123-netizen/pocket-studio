@@ -18,6 +18,7 @@ chemin: Panneau tuto, « Pourquoi ? » couché | test: Tour9L13TutoWhyTest#onIts
 chemin: Panneau tuto, flèche du repli | test: Tour9L13TutoNoDemoBySurpriseTest#theTouchMeantForTheFoldNeverStartsADemo
 chemin: Carte des parties | test: Tour9L13TutoSongMapTest#everyPartWholeWithItsOwnColourEvenAt200
 chemin: Panneau tuto, « Lire la suite » à 200 % | test: Tour9L13TutoReadAllTest#readAllShowsTheWholeInstruction
+chemin: Panneau tuto couché, « Lire la suite », boutons de l'étape | test: Tour9L13TutoReadAllTest#onItsSideReadAllKeepsTheStepsButtons
 chemin: Bandeau du kit, carte de la grille (L14, garde) | test: Tour9L14TutoPanelTest#kitLeavesTheMapWhole
 chemin: Panneau tuto, boutons voisins (L14, garde) | test: Tour9L14TutoPanelTest#neighboursShareTextSize
 
@@ -43,7 +44,7 @@ ne corrige pas: F008 : non reproduit à neuf, garde gardée
 - F011 : chaque bloc de la carte montre nom et durée, chaque partie sa couleur, même à 200 %. Rouge 60aa2613, vert 5f2b8411.
 - F009 : la raison s'ouvre juste sous « Pourquoi ? », ne chasse pas la consigne, reste ouverte au « Bravo » ; à 200 % elle défile dans sa propre place. Rouge 60aa2613, vert fd80b1b7.
 - Garde L14 après fusion de l'intégration (4dd35036) : le plafond F003 coupait la carte quand le bandeau du kit arrivait, et le bouton plein partageait la rangée à parts égales. Vert 630ca6f7.
-- Rejeu t9-d14 (« Lire la suite ») : le plafond F003 coupait la consigne entière. « Lire la suite » lève le plafond et rend aux mots toute leur hauteur. Rouge 894bb6df, vert 4c8d92ef.
+- Rejeu t9-d14 (« Lire la suite ») : le plafond F003 coupait la consigne entière. « Lire la suite » lève le plafond et rend aux mots toute leur hauteur. Rouge 894bb6df, vert 4c8d92ef. Relecture neuve : couché, les boutons de l'étape tombaient à 0 px ; les mots restent pondérés, la barre d'actions mesurée d'abord. Rouge fe325abe, vert c9a0bdb1.
 - F008 : non reproduit à neuf ; test de garde (Tour9L13TutoMineAfterPartTest) dans 60aa2613.
 
 ## Choix notés
@@ -54,6 +55,12 @@ ne corrige pas: F008 : non reproduit à neuf, garde gardée
 ## Ce qui n'est pas vert
 - Contrôle du tuto (débutant neuf) : reporté en mode boost (`PS_JUGE_BOOST=1`), à faire à la grande vérification.
 - CI complète non lancée (mode boost : la grande vérification la fera).
+
+## Notes de la relecture (mineurs, non traités)
+- Le test « Pourquoi ? » ne vérifie pas la fermeture au second toucher.
+- Replié, « Chapitre suivant » permet de passer la musique du « Bravo ».
+- « Revenir à l'étape » masqué quand plus aucune étape ne reste : non testé.
+- Le repli choisi n'est pas gardé après la mort du processus.
 
 ## Demandes (hors de mes fichiers)
 Aucune.

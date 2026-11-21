@@ -1145,7 +1145,10 @@ private fun FoldedLine(ui: TutoUi, done: Boolean, actions: TutoActions, names: (
     when {
         // Tour 9, F002 (seats t9-47, t9-60): « Voilà ! À toi maintenant. » and « Arrêter » were all the line said, the step's
         // button (« Créer la partie … ») unseen: once the demonstration hands over, its button is on the line.
-        ui.demo == TutoDemoPhase.FADING && ui.need != null -> NeedLine(line, shape, ui.need, ui.progress.style) { actions.stopDemo(); actions.need() }
+        // Still the demonstration's line while it fades (« tuto_demo_caption »): its end is not taken as reached early.
+        ui.demo == TutoDemoPhase.FADING && ui.need != null -> Box(Modifier.testTag("tuto_demo_caption")) {
+            NeedLine(line, shape, ui.need, ui.progress.style) { actions.stopDemo(); actions.need() }
+        }
         ui.demo != null -> Row(
             line.background(Neon.Amber.copy(alpha = 0.16f)).border(1.dp, Neon.Amber, shape).padding(start = 10.dp).testTag("tuto_demo_caption"),
             verticalAlignment = Alignment.CenterVertically,

@@ -69,3 +69,6 @@ Aucune.
 
 ## Captures regardées (écran entier)
 - Captures du panneau prises par les tests ciblés (debout, couché, 100 % et 200 %, FR et HI) : rien ne déborde, la consigne reste en tête, la raison sous son bouton.
+
+## Portal refusal (merge with ceb482ad6): kit offer over the instruction
+- Replayed red on 48f3e2fe: `Tour7TutoKitBigFontTest#theInstructionKeepsALineOverTheKitOffer` and `Tour7TutoKitWordsInSightTest#theInstructionShowsOverTheKitOfferAt130` (3 tests, 2 failed). Cause: F003's panel cap (60 % of the screen) let the kit offer add its height only on a map step (F016); elsewhere the offer took the instruction's room.

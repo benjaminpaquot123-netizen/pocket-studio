@@ -687,7 +687,8 @@ class TutoController(
             var restored = false
             try {
                 // F034: a part still to make comes as a button of « Ajouter : »: the finger there, not on the view switch.
-                val place = if (step.check.startsWith("part:") && u.need is TutoNeed.Part) TutoGo(GuideOpen(SONG_MAKE_SPOT, ""), spot = false)
+                // Not the part whose notes the demonstration writes (the Drop 2's bass): its first frame opens the notes.
+                val place = if (step.check.startsWith("part:") && step.transpose == 0 && u.need is TutoNeed.Part) TutoGo(GuideOpen(SONG_MAKE_SPOT, ""), spot = false)
                 else goFor(step, before, spot = false)?.takeIf { it.notes == null }
                 place?.let { _goes.tryEmit(it) }
                 // n° 20: the screen scrolls to the place (its card opened) before the first gesture.

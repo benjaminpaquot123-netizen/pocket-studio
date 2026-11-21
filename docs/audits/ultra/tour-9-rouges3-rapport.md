@@ -8,7 +8,7 @@ tests: *ScaledWindowsTest *TutoPanelFitsBigFontTest *T9PanelTargetTest *Coquille
 ## Chemins
 
 chemin: Fenêtre des effets, « étape cochée » par-dessus | test: ScaledWindowsTest#noWindowIsOpenedOutsideTheScaledWrappers
-chemin: Panneau du tuto à 200 % sur 360 dp, « Pourquoi ? » et « Lire la suite » | test: TutoPanelFitsBigFontTest#panelFits
+chemin: Panneau du tuto à 200 % sur 360 dp, « Pourquoi ? » et « Lire la suite » | test: TutoPanelFitsTest#panelFits
 chemin: Tuto, chapitre 12 « fill », cases au-dessus du panneau (japonais, 200 %) | test: T9PanelTargetTest#fillCellsAboveThePanelIn360At200Japanese
 chemin: Grille de la Montée, ligne du pad (siège Coquille2) | test: Coquille2SeatTest#cymbalGridLineNamesThePadShown
 

@@ -704,6 +704,9 @@ fun TutoPanel(
     // Tour 9 (F016 under F003): the kit offer's height (px) is added to the panel's cap; [kitMissing] (px): what the
     // words' least room still lacks with the offer pinned (portal, L13: at 200 % the offer, « Pourquoi ? » and the
     // buttons left the instruction 0 px), added too, taken three times at most.
+    // Lot rouges3 (TutoPanelFitsBigFontTest fr_5, 360 dp at 200 %): without the offer too, a three-line chapter title and
+    // the buttons left the instruction 0 px under the cap (« ▸ Pourquoi ? » or « Lire la suite » cut): what its line
+    // and a half lacks raises the cap the same way (within [PANEL_REASON_SHARE]).
     var kitTall by remember { mutableIntStateOf(0) }
     var kitMissing by remember(step.id, ui.open, ui.progress.level, kitShown, readAll, whyOpen) { mutableIntStateOf(0) }
     var kitGrown by remember(step.id, ui.open, ui.progress.level, kitShown, readAll, whyOpen) { mutableIntStateOf(0) }
@@ -716,7 +719,7 @@ fun TutoPanel(
         // Tour 9 F003 (seats t9-11, t9-29, t9-41, t9-56): at 200 % the unfolded panel covered the whole work area (the
         // piano under it gone). Upright, it takes at most [PANEL_MAX_SHARE] of the screen's height; the words scroll in
         // what is left (their room is weighted below), the buttons stay whole.
-        modifier = modifier.fillMaxWidth().then(if (readAll) Modifier else panelCap(whyOpen && why != null, if (kitShown) with(LocalDensity.current) { (kitTall + kitMissing).toDp() + 6.dp } else 0.dp)).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
+        modifier = modifier.fillMaxWidth().then(if (readAll) Modifier else panelCap(whyOpen && why != null, with(LocalDensity.current) { if (kitShown) (kitTall + kitMissing).toDp() + 6.dp else kitMissing.toDp() })).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
             .onGloballyPositioned { val b = it.boundsInWindow().bottom; if (b != bottomPx) bottomPx = b },
     ) {
         Column(
@@ -838,7 +841,7 @@ fun TutoPanel(
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
                 // Only where the cap it raises applies (not unfolded by « Lire la suite », nor with the reason opened); the head goes
                 // once the height held was taken again twice and failed (held again, read after [starved] in the same pass).
-                kitShort = if (kitShown && !readAll && !(whyOpen && why != null)) { { m -> if (holding) { if (kitShed < 1 && regrown >= 2 && held > 0 && m * 3 > least) kitShed = 1 } else if (kitGrown < 3) { kitGrown++; kitMissing += m } } } else null,
+                kitShort = if (!readAll && !(whyOpen && why != null)) { { m -> if (holding) { if (kitShown && kitShed < 1 && regrown >= 2 && held > 0 && m * 3 > least) kitShed = 1 } else if (kitGrown < 3) { kitGrown++; kitMissing += m } } } else null,
                 short = if (reading) { { if (shed == shedAt && shed < 3) shed++ } } else null,
                 // « Pourquoi ? » opened leaves the instruction a line at least (its first one, in sight over the reason).
                 whyLeaves = if (whyOpen) with(density) { MaterialTheme.typography.bodyLarge.lineHeight.roundToPx() } else 0,

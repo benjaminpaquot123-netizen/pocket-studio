@@ -136,6 +136,65 @@ class HomeAndPadsTest {
         }
     }
 
+    // --- 3. The first launch: the welcome, straight after the opening ------------------------------
+
+    /** The welcome drawn in the app's window over a covered studio: one of it, no window, no studio found. */
+    private fun welcomeAloneOnScreen(what: String) {
+        assertEquals("$what: one welcome", 1, compose.onAllNodes(androidx.compose.ui.test.hasTestTag("welcome")).fetchSemanticsNodes().size)
+        assertTrue("$what: no dialog window for it", compose.onAllNodes(isDialog()).fetchSemanticsNodes().isEmpty())
+        assertFalse("$what: the studio under it is not shown", exists("tab_simple_Rythme"))
+        assertFalse("$what: nor its Guide card", exists("guide_bar"))
+        assertFalse("$what: nor « Que veux-tu faire ? »", exists("launch"))
+    }
+
+    /**
+     * Benjamin's video (2026-11-21, first launch on a Xiaomi): after the opening's logo the studio
+     * flashed for half a second before « Bienvenue ! » faded in, a window of its own waiting for the
+     * logo's end. It is now already in place under the logo, in the app's window.
+     */
+    @Test
+    fun theWelcomeIsUnderTheOpeningAtTheFirstLaunch() {
+        com.pocketstudio.app.onboarding.Intro.playing = true
+        try {
+            h.start(simple = true, firstLaunch = true)
+            welcomeAloneOnScreen("under the logo")
+            compose.runOnUiThread { com.pocketstudio.app.onboarding.Intro.playing = false }
+            compose.waitForIdle()
+            welcomeAloneOnScreen("the logo gone")
+        } finally {
+            com.pocketstudio.app.onboarding.Intro.playing = false
+        }
+        // Its Retour is « Plus tard », as before: the studio then.
+        back()
+        assertFalse(exists("welcome"))
+        assertTrue(com.pocketstudio.app.settings.SettingsStore.state.value.guideSeen)
+    }
+
+    /** A first launch asked to show « Que veux-tu faire ? » too: the welcome alone, the same way. */
+    @Test
+    fun theFirstLaunchWelcomeWinsOverTheHomeScreen() {
+        com.pocketstudio.app.onboarding.Intro.playing = true
+        try {
+            h.start(simple = true, firstLaunch = true, launchChoice = true)
+            welcomeAloneOnScreen("with the home screen asked")
+        } finally {
+            com.pocketstudio.app.onboarding.Intro.playing = false
+        }
+        compose.waitForIdle()
+        welcomeAloneOnScreen("with the home screen asked, the logo gone")
+    }
+
+    /** A rotation (the screen rebuilt) during the welcome: still alone on screen, the studio never shown. */
+    @Test
+    fun theFirstLaunchWelcomeStaysThroughARotation() {
+        val restore = androidx.compose.ui.test.junit4.StateRestorationTester(compose)
+        h.start(simple = true, firstLaunch = true, restore = restore)
+        welcomeAloneOnScreen("before the rotation")
+        restore.emulateSavedInstanceStateRestore()
+        compose.waitForIdle()
+        welcomeAloneOnScreen("after the rotation")
+    }
+
     // --- 4. The way home ----------------------------------------------------------------------------
 
     /** The system's Retour: whatever is open closes first, then the project, home, then out of the app. */

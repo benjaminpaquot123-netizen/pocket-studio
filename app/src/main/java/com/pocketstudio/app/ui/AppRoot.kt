@@ -866,6 +866,9 @@ fun AppRoot() {
     val leaveApp = { context.findActivity()?.moveTaskToBack(true); Unit }
     // « Que veux-tu faire ? » on screen (drawn in the app's window, under the opening's logo at a start).
     val launchShown = launch.open && navSettings.guideSeen
+    // The first launch's welcome on screen (drawn in the app's window over the studio, see firstLaunch): the studio covered.
+    val welcomeShown = !navSettings.guideSeen
+    val studioCovered = launchShown || welcomeShown
     // With no project, « Mes projets » stays on screen, except under « Que veux-tu faire ? » (a window would cover it).
     if (showProjects || (noProject && !launchShown)) {
         val projectsUi by projectsVm.state.collectAsStateWithLifecycle()
@@ -1006,9 +1009,12 @@ fun AppRoot() {
     var voiceFromWelcome by rememberSaveable(key = "voice_from_welcome") { mutableStateOf(false) }
     // Audit ultra round 2, zone 1, n° 3: « Défis » (the stars) touched: Pad Live opens on its challenges.
     var padLiveChallenge by rememberSaveable(key = "pad_live_challenge") { mutableStateOf(false) }
-    com.pocketstudio.app.onboarding.FirstLaunch(
-        // After the opening (BrandIntro): a window would cover it.
-        show = !settings.guideSeen && !com.pocketstudio.app.onboarding.Intro.playing,
+    // Drawn last, over the studio and outside the mode's key (« Simple ou Pro ? » changes the mode; see the end of the screen).
+    val firstLaunch: @Composable () -> Unit = { com.pocketstudio.app.onboarding.FirstLaunch(
+        // Benjamin's video (2026-11-21): in the app's window, already there under the opening's logo, which then
+        // simply fades off it (as a window of its own after the logo, the studio flashed in between).
+        show = !settings.guideSeen,
+        inline = true,
         simple = settings.simpleMode,
         actions = com.pocketstudio.app.onboarding.WelcomeActions(
             chooseMode = { v -> com.pocketstudio.app.settings.ProjectModes.choose(context, v) },
@@ -1032,7 +1038,7 @@ fun AppRoot() {
             challenges = { firstLaunchSeen(); padLiveChallenge = true; padLiveFromWelcome = true },
         ),
         playDemo = { if (rhythmVm.project.value.song.isNotEmpty()) rhythmVm.toggleSong() else rhythmVm.togglePlay() },
-    )
+    ) }
     // Réglages › Écran toujours allumé: only while the music plays.
     // Revue neuve (MOYEN 7): only whether it plays is read here (not each change of the transport).
     val screenPlaying by remember(rhythmVm) { rhythmVm.transport.map { it.playing }.distinctUntilChanged() }
@@ -2398,8 +2404,8 @@ fun AppRoot() {
         // « Mes projets » is a dialog above: behind it, a plain background, so the studio never flashes
         // through while the screens are rebuilt on another project; « Que veux-tu faire ? » is drawn over it
         // (and TalkBack does not read the studio under it).
-        modifier = Modifier.studioCover(showProjects || switching || launchShown, studioBackground)
-            .then(if (launchShown) Modifier.clearAndSetSemantics {} else Modifier)
+        modifier = Modifier.studioCover(showProjects || switching || studioCovered, studioBackground)
+            .then(if (studioCovered) Modifier.clearAndSetSemantics {} else Modifier)
             // Tour 9, F111: the next touch or swipe lets « Fait : … · Annuler » go (its 6 s stay for no touch).
             .letDoneGoAtNextTouch(rhythmVm.done, rhythmVm::dismissDone),
         containerColor = Neon.Background,
@@ -2856,7 +2862,7 @@ fun AppRoot() {
                 // Owner (2026-10-29): after a screen covered the studio (« Mes projets », « Que veux-tu faire ? »),
                 // the tab is built afresh (its saved state kept), as going to another tab and back did by hand
                 // when Rythme came back without its pads.
-                val covered = showProjects || switching || launchShown
+                val covered = showProjects || switching || studioCovered
                 val coverSeen = remember { intArrayOf(0, 0) }
                 if (covered) coverSeen[0] = 1 else if (coverSeen[0] == 1) { coverSeen[0] = 0; coverSeen[1]++ }
                 androidx.compose.runtime.key(coverSeen[1]) {
@@ -4046,6 +4052,8 @@ WithPartHeader(rhythmVm, simple) { partModifier ->
     }
     }
     }
+    // Over everything of the studio, the first launch's welcome (its own « Simple ou Pro ? » outlives the mode's key).
+    firstLaunch()
 
     LaunchPrompts(mainVm)
     val bugProject by rhythmVm.project.collectAsStateWithLifecycle()

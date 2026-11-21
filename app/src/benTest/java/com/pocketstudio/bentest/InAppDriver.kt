@@ -101,11 +101,22 @@ class InAppDriver(
         for (r in roots().asReversed()) {
             for (n in r.semanticsOwner.getAllSemanticsNodes(mergingEnabled = false)) {
                 val tag = n.config.getOrNull(SemanticsProperties.TestTag) ?: continue
+                if (hidden(n)) continue
                 val b = n.boundsInWindow
                 if (b.width > 0f && b.height > 0f) out += tag
             }
         }
         out.toList()
+    }
+
+    /** True when an ancestor (or [n]) clears its semantics: the app hides it (a covered screen), no one reads it. */
+    private fun hidden(n: androidx.compose.ui.semantics.SemanticsNode): Boolean {
+        var p: androidx.compose.ui.semantics.SemanticsNode? = n
+        while (p != null) {
+            if (p.config.isClearingSemantics) return true
+            p = p.parent
+        }
+        return false
     }
 
     /** Hears what a finger could not have done (a touch on a node another window covers), once per tag. */

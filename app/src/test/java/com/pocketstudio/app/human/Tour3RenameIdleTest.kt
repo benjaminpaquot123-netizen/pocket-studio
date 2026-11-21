@@ -13,6 +13,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
@@ -104,7 +105,10 @@ abstract class Tour3RenameIdleBase(private val theme: String) {
         // again and touch « Mes projets » again, three times at most; the screen's rest is awaited before each touch.
         for (attempt in 1..3) {
             compose.waitForIdle()
-            if (shown("welcome_later")) compose.onNodeWithTag("welcome_later").performClick()
+            // Tour 9 (lot flash): « Plus tard » sits below the fold, as a finger does the welcome is scrolled to it first
+            // (touched unscrolled, the touch was lost and the test went on touching « Mes projets » through the welcome,
+            // which a window of its own let it do; drawn over the studio now, the studio under it is out of reach).
+            if (shown("welcome_later")) compose.onNodeWithTag("welcome_later").performScrollTo().performClick()
             compose.waitUntil(20_000) { shown("top_projects") }
             compose.onNodeWithTag("top_projects").performClick()
             val opened = runCatching { compose.waitUntil(7_000) { compose.onAllNodes(projectMenu).fetchSemanticsNodes().isNotEmpty() } }.isSuccess

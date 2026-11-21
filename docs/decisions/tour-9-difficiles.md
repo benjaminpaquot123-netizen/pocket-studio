@@ -1,0 +1,3 @@
+# Décisions du lot « problèmes difficiles » (tour 9)
+
+- 2026-11-21 : discussion « problèmes difficiles » (branche `ccr-69119313-or4u42`, à fusionner par le chef). D09 : « Copier sur les mesures suivantes » copie et valide en un toucher (`TutoChecks.copied`). F034 : « Montre-moi » d'une partie à créer met le doigt sur « Ajouter : », plus sur le changement de vue. « Mes projets » bloquée (p5) : cause non prouvée ; écritures d'état rendues atomiques et mouchard dans le banc, sans test rouge. F038, F101, F124, F134, F135 : non reproduits, déjà gardés par des tests. Retour arrière : annuler les commits de la branche, un par sujet.

@@ -72,3 +72,5 @@ Aucune.
 
 ## Portal refusal (merge with ceb482ad6): kit offer over the instruction
 - Replayed red on 48f3e2fe: `Tour7TutoKitBigFontTest#theInstructionKeepsALineOverTheKitOffer` and `Tour7TutoKitWordsInSightTest#theInstructionShowsOverTheKitOfferAt130` (3 tests, 2 failed). Cause: F003's panel cap (60 % of the screen) let the kit offer add its height only on a map step (F016); elsewhere the offer took the instruction's room.
+- Fix (`TutoPanel.kt`): on every step with the kit offer pinned, the panel's cap grows by the offer's height plus what the instruction's line and a half still lacks (measured by the words' room, three passes at most, within 85 % of the screen). The offer come late over a height held and taken again twice: the panel's head goes, the panel staying under the finger.
+- Green: both kit tests, F003 (`Tour9L13*`), F016 (`Tour9L14TutoPanelTest`), `TutoKitUnderFingerTest`, `Tour6TutoCellsPanel100Test`. Whole `com.pocketstudio.app.tuto.*` + `TutoJourneyTest`: 469 tests, 1 red, the base's known `T9PanelTargetTest#fillCellsAboveThePanelIn360At200Japanese`.

@@ -7,6 +7,7 @@ Le registre `corrections.tsv` n'a aucune ligne pour ces finitions : le lot n'en 
 tests: :app:testDebugUnitTest --tests 'com.pocketstudio.app.tuto.*'
 chemin: Panneau tuto replié, étape suivante | test: Tour9L13TutoFoldKeptTest#foldedByTheUserStaysFoldedWhenTheStepChanges
 chemin: Panneau tuto replié, consigne d'action | test: Tour9L13TutoFoldedActionTest#foldedTheStepsActionIsStillThere
+chemin: Fin de démo repliée, la démo se dit encore en cours | test: Tour9L13TutoFoldedActionTest#foldedTheStepsActionIsStillThere
 chemin: Panneau tuto déplié, flèche | test: Tour9L13TutoNeverFullScreenTest#unfoldedThePanelLeavesTheWorkInSight
 chemin: Panneau tuto, bouton « suivant » sous le doigt | test: Tour9L13TutoOneWayOnTest#theNextButtonStaysUnderTheFingerWhenTheExampleEnds
 chemin: Panneau tuto, un seul « suivant » | test: Tour9L13TutoOneWayOnTest#neverTwoWaysOnAndEachButtonSaysWhatItDoes
@@ -45,6 +46,7 @@ ne corrige pas: F008 : non reproduit à neuf, garde gardée
 - F009 : la raison s'ouvre juste sous « Pourquoi ? », ne chasse pas la consigne, reste ouverte au « Bravo » ; à 200 % elle défile dans sa propre place. Rouge 60aa2613, vert fd80b1b7.
 - Garde L14 après fusion de l'intégration (4dd35036) : le plafond F003 coupait la carte quand le bandeau du kit arrivait, et le bouton plein partageait la rangée à parts égales. Vert 630ca6f7.
 - Rejeu t9-d14 (« Lire la suite ») : le plafond F003 coupait la consigne entière. « Lire la suite » lève le plafond et rend aux mots toute leur hauteur. Rouge 894bb6df, vert 4c8d92ef. Relecture neuve : couché, les boutons de l'étape tombaient à 0 px ; les mots restent pondérés, la barre d'actions mesurée d'abord. Rouge fe325abe, vert c9a0bdb1.
+- Garde du parcours (TutoJourneyTest, 19 cas) : replié en plein fondu de démo, la ligne F002 perdait la marque « démo en cours », le parcours dépliait trop tôt et la démo restait figée. Rouge 781beb26, vert 4db8f4e5 ; parcours complet et panneaux voisins (Tour6, L14, L15, TutoScreenTest) verts.
 - F008 : non reproduit à neuf ; test de garde (Tour9L13TutoMineAfterPartTest) dans 60aa2613.
 
 ## Choix notés

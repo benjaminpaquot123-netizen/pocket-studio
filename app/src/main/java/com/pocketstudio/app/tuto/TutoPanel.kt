@@ -652,6 +652,11 @@ fun TutoPanel(
     // Tour 9 (portal, L13): the kit offer pinned under the words raises the panel's cap on every step (F016: the map's
     // steps only), by its height and what the instruction's line and a half still lacks ([kitMissing]).
     val kitShown = step.id != READY_STEP && kit != null && ui.demo == null && !ui.bravo && shedAt < 2
+    // Lot rouges3 (TutoPanelFitsBigFontTest fr_5, 360 dp at 200 %): without the kit offer, a three-line chapter title and
+    // the buttons left the instruction 0 px under the 60 % cap (« ▸ Pourquoi ? » or « Lire la suite » cut). The cap stays
+    // (F003: the work in sight); the head gives the room instead: first the chapter's counter line and the progress, then
+    // the title on two lines (a little smaller, never cut). Its arrow and « Chapitres » stay.
+    var headShed by remember(step.id, ui.open, ui.progress.level, readAll) { mutableIntStateOf(0) }
     var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedHeld) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
@@ -704,9 +709,6 @@ fun TutoPanel(
     // Tour 9 (F016 under F003): the kit offer's height (px) is added to the panel's cap; [kitMissing] (px): what the
     // words' least room still lacks with the offer pinned (portal, L13: at 200 % the offer, « Pourquoi ? » and the
     // buttons left the instruction 0 px), added too, taken three times at most.
-    // Lot rouges3 (TutoPanelFitsBigFontTest fr_5, 360 dp at 200 %): without the offer too, a three-line chapter title and
-    // the buttons left the instruction 0 px under the cap (« ▸ Pourquoi ? » or « Lire la suite » cut): what its line
-    // and a half lacks raises the cap the same way (within [PANEL_REASON_SHARE]).
     var kitTall by remember { mutableIntStateOf(0) }
     var kitMissing by remember(step.id, ui.open, ui.progress.level, kitShown, readAll, whyOpen) { mutableIntStateOf(0) }
     var kitGrown by remember(step.id, ui.open, ui.progress.level, kitShown, readAll, whyOpen) { mutableIntStateOf(0) }
@@ -719,7 +721,7 @@ fun TutoPanel(
         // Tour 9 F003 (seats t9-11, t9-29, t9-41, t9-56): at 200 % the unfolded panel covered the whole work area (the
         // piano under it gone). Upright, it takes at most [PANEL_MAX_SHARE] of the screen's height; the words scroll in
         // what is left (their room is weighted below), the buttons stay whole.
-        modifier = modifier.fillMaxWidth().then(if (readAll) Modifier else panelCap(whyOpen && why != null, with(LocalDensity.current) { if (kitShown) (kitTall + kitMissing).toDp() + 6.dp else kitMissing.toDp() })).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
+        modifier = modifier.fillMaxWidth().then(if (readAll) Modifier else panelCap(whyOpen && why != null, if (kitShown) with(LocalDensity.current) { (kitTall + kitMissing).toDp() + 6.dp } else 0.dp)).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
             .onGloballyPositioned { val b = it.boundsInWindow().bottom; if (b != bottomPx) bottomPx = b },
     ) {
         Column(
@@ -760,11 +762,11 @@ fun TutoPanel(
                     // The chapter's whole title (testers: « Le tempo et la ton… »), on two lines when it needs them.
                     // n° 38 (200 %): three lines at most, a little smaller rather than cut.
                     com.pocketstudio.ui.WholeWordsText(
-                        tutoText(chapter.title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 3,
+                        tutoText(chapter.title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = if (headShed >= 2) 2 else 3,
                         modifier = Modifier.testTag("tuto_chapter_title"),
                     )
                     // Tour 6 (N23): the chapter's « Bravo » shown, « Chapitre 7/15 · Fait » (« Étape 1/2 » said a step left).
-                    Text(
+                    if (headShed < 1) Text(
                         // Tour 9 F019 (t9-10, t9-18): the end, no step counter (« Étape 3/3 » under a finished tutorial).
                         (if (end) (if (ui.finished) tr("Tuto fini : bravo !") else tr("Presque fini !"))
                         else if (ui.chapterDoneNext() != null) tr("Chapitre %1\$d/%2\$d · %3\$s", ui.chapter + 1, ui.chapters.size, tr("Fait"))
@@ -800,7 +802,7 @@ fun TutoPanel(
                 }
                 fold()
             }
-            if (shedAt < 1) progress(Modifier.fillMaxWidth())
+            if (shedAt < 1 && headShed < 1) progress(Modifier.fillMaxWidth())
             if (!ui.open) {
                 FoldedLine(ui, done, actions, names, kitPending = kit != null)
                 return@Column
@@ -841,7 +843,9 @@ fun TutoPanel(
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
                 // Only where the cap it raises applies (not unfolded by « Lire la suite », nor with the reason opened); the head goes
                 // once the height held was taken again twice and failed (held again, read after [starved] in the same pass).
-                kitShort = if (!readAll && !(whyOpen && why != null)) { { m -> if (holding) { if (kitShown && kitShed < 1 && regrown >= 2 && held > 0 && m * 3 > least) kitShed = 1 } else if (kitGrown < 3) { kitGrown++; kitMissing += m } } } else null,
+                // Without the offer, the head gives the room ([headShed]), twice at most, before a height is held (as the cap grows below);
+                // with it, over a height held, a few px short, the head gives the same way first, then goes whole ([kitShed]).
+                kitShort = if (!readAll && !(whyOpen && why != null)) { { m -> if (!kitShown) { if (!holding && headShed < 2) headShed++ } else if (holding) { if (regrown >= 2 && held > 0) { if (kitShed < 1 && (m * 3 > least || headShed >= 2)) kitShed = 1 else if (headShed < 2) headShed++ } } else if (kitGrown < 3) { kitGrown++; kitMissing += m } } } else null,
                 short = if (reading) { { if (shed == shedAt && shed < 3) shed++ } } else null,
                 // « Pourquoi ? » opened leaves the instruction a line at least (its first one, in sight over the reason).
                 whyLeaves = if (whyOpen) with(density) { MaterialTheme.typography.bodyLarge.lineHeight.roundToPx() } else 0,

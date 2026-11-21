@@ -1,0 +1,33 @@
+Écran 89 (588x1278)
+texte « Efekty · Melodia » @ 190,60
+texte « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » [coupé] @ 294,131
+texte « Pad XY, góra-dół: » @ 132,188
+bouton « ? » @ 243,188
+bouton « Przestrzeń » [sélectionné] @ 131,258
+bouton « Brud » @ 269,258
+bouton « Ruch » @ 378,258
+texte « ↑ Odległy » @ 294,318
+texte « ← Ciemny » @ 149,603
+texte « ↓ Sucho » @ 293,603
+texte « Jasny → » @ 438,603
+texte « Przesuwaj palcem, żeby niszczyć dźwięk na żywo. Dwa dotknięcia: powrót do oryginału. » @ 294,654
+curseur [état « Neutralny », à 50 %] @ 112,732
+texte « Kolor » @ 112,786
+texte « Neutralny » @ 112,811
+curseur [état « 0 », à 0 %] @ 233,732
+texte « Brud » @ 232,786
+texte « 0 » @ 233,811
+curseur [état « 0 », à 0 %] @ 354,732
+texte « Ruch » @ 354,786
+texte « 0 » @ 354,811
+curseur [état « 0 », à 0 %] @ 476,732
+texte « Przestrzeń » @ 476,786
+texte « 0 » @ 476,811
+texte « Wspólny pogłos i echo » @ 168,852
+texte « Wysyłka pogłos » @ 276,897
+texte « 0% » @ 519,897
+curseur [état « 0% », à 0 %] @ 294,963
+texte « Wysyłka echo » @ 269,1038
+texte « 69% » @ 503,1038
+curseur [état « 69% », à 69 %] @ 294,1089
+texte « Zamknij » @ 477,1206

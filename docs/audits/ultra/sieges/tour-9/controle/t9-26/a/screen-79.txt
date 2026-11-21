@@ -1,0 +1,45 @@
+Écran 79 (1035x1243)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 346,42
+bouton « Basit » @ 738,42
+bouton ● @ 828,42
+bouton ▶ « bu bölüm » @ 909,42
+icône ⋮ @ 990,42
+icône (flèches en boucle) « Yükseliş ölçü 1/4 » ▾ @ 391,144
+bouton « 140  Tempo » @ 136,144
+bouton (flèches en boucle) « Döngü » [allumé, état « açık »] @ 849,144
+bouton « ? » @ 990,144
+texte « Sıra sende: duyulması gerekeni aç, rahatsız edeni kıs. Bir parçayı tek başına dinlemek için ▶'ye dokun. » [coupé] @ 520,211
+bouton « Davul ▸ » [état « kapalı »] @ 75,295
+curseur [coupé, état « Normal », à 80 %] @ 84,396
+texte « Bas » @ 216,280
+curseur [coupé, état « Normal », à 80 %] @ 216,381
+texte « Akorlar » @ 339,271
+curseur [coupé, état « −3 », à 66 %] @ 339,372
+texte « Melodi » @ 462,274
+curseur [coupé, état « −3 », à 68 %] @ 462,375
+texte « Çıkış » @ 597,280
+curseur [coupé, état « −6 », à 60 %] @ 597,381
+texte « Mix: seviyeler Aşama 14/15 · Tamam · Kolay » @ 423,511
+icône (liste) « Aşamalar » @ 883,511
+icône ⌄ @ 978,511
+image (coupe) @ 57,684
+texte « Bravo, bölüm bitti! » @ 264,632
+texte « Şarkını şimdiki haliyle dinle, sonra bir sonraki bölüme geç: “Parçanı dışa aktar”. » @ 543,712
+bouton « Sonraki bölüm   » → @ 517,825
+icône ← @ 57,911
+bouton ▶ «  Şarkımı dinle » @ 327,911
+bouton ▶ «  Örneği dinle » @ 788,911
+bouton ▶ « şarkı » @ 518,1012
+texte « 140 Tempo » @ 707,1011
+icône ↶ « Geri al » @ 144,1011
+image ↷ @ 337,991
+icône ⋮ « Diğer » @ 899,1011
+onglet (lignes et note) « Şarkım » @ 99,1123
+onglet (quatre carrés) « Ritim » @ 309,1123
+onglet (touches de piano) « Klavye » @ 518,1123
+onglet (curseurs) « Mix » [sélectionné] @ 727,1123
+onglet (trois points reliés) « Paylaş » @ 936,1123
+texte « ●  REC » @ 757,1213
+texte « ✎  Not al » @ 882,1213
+texte « ⋯ » @ 987,1213
+texte « Geri bildirim modu » @ 357,1213

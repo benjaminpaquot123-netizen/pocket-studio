@@ -1,0 +1,10 @@
+lang=fr
+device=tablet8
+font=100
+mode=simple
+amenee=tuto:jump_up:1
+gestes.max=174
+mission=tuto-facile
+profil=moyen
+niveau=2
+timeout.minutes=30

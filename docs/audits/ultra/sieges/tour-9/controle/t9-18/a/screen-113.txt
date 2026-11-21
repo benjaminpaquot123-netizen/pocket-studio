@@ -1,0 +1,8 @@
+Écran 113 (1035x1243)
+texte « Está pronto » @ 232,476
+texte « Pronto: Minha-música-club-20261119-075616.wav, uma cópia também está em Música › BenStudio. » @ 517,554
+texte « −8,0 LUFS integrados · pico −3,5 dBTP » @ 309,603
+texte « WAV, 48 kHz, 24 bits · 3 min 49 s » @ 283,636
+texte « Alvo: Club · −8 LUFS » @ 227,669
+texte « Ver meus arquivos » @ 688,755
+texte « OK » @ 857,755

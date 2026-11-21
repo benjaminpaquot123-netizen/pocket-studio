@@ -1,0 +1,45 @@
+Écran 58 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 132  Tempo » @ 83,114
+icône (flèches en boucle) « Fin mesure 4/8 » ▾ @ 248,114
+bouton « ? » @ 543,114
+bouton « Accords du morceau B · Intro Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m C · Intro 2 Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ D · Drop Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ E · Break Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ F · Montée Fa m  Fa m  Fa m  Sol♭ G · Drop 2 Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ … et 1 autre partie Touche pour changer les accords de tout le morceau. » [coupé] @ 294,279
+texte « − / + : répétitions de la partie (une partie jouée en Live garde sa longueur). » @ 294,453
+icône ▶ « B · Intro × 1  ·  8 mes. » @ 186,534
+icône − [désactivé] @ 366,534
+icône + @ 438,534
+icône ⋮ @ 510,534
+icône ▶ « C · Intro 2 × 1  ·  8 mes. » @ 186,630
+icône − [désactivé] @ 366,630
+icône + @ 438,630
+icône ⋮ @ 510,630
+icône ▶ « D · Drop × 1  ·  8 mes. » @ 186,726
+icône − [désactivé] @ 366,726
+icône + @ 438,726
+icône ⋮ @ 510,726
+icône ▶ « E · Break × 1  ·  8 mes. » [coupé] @ 186,805
+icône − [désactivé, coupé] @ 366,811
+icône + [coupé] @ 438,811
+icône ⋮ [coupé] @ 510,811
+icône (liste) « Chapitres » @ 444,879
+texte « Range tes parties Chapitre 11/15 · Étape 1/2 · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône (rond coché) « Réussi Étape suivante » → @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ■ « le morceau » @ 288,1062
+texte « 132 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -9,7 +9,7 @@ import org.junit.Test
  * nothing left. Back with no app picked: one message, « Pas envoyé », and where the file is.
  */
 class ShareNotSentTest {
-    private val ready = listOf(tr("C'est prêt : %s. Choisis l'appli pour l'envoyer.", "Mon morceau.m4a"), "Pas de saturation.")
+    private val ready = listOf(tr("%s. Choisis l'appli pour l'envoyer.", "Mon morceau.m4a"), "Pas de saturation.")
 
     @Test
     fun backWithNothingSentSaysSoOnce() {

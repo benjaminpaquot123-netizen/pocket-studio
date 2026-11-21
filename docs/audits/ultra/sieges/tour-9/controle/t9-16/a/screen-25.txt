@@ -1,0 +1,37 @@
+Écran 25 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ▶ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 98,123
+bouton « ? » @ 543,123
+texte « Añadir: » [coupé] @ 89,180
+bouton « + A · Groove » @ 163,244
+bouton « + B · Intro » @ 395,244
+texte « Ordena tus partes Capítulo 9/13 · Paso 1/2 · Fácil » @ 202,325
+icône (liste) « Capítulos » @ 439,326
+icône ⌄ @ 531,326
+texte « Te toca: en “Mi canción”, bajo “Añadir”, toca en orden Intro, Subida, Drop, Break, Subida, Drop 2 y Fin. » @ 294,460
+texte « • Drop: el gran momento de la canción, cuando todo vuelve de golpe. » @ 294,574
+texte « • Break: un momento más tranquilo, el kick y el bajo callan. » @ 294,649
+texte « ▸ ¿Por qué? » @ 294,714
+bouton (doigt qui touche) «   Lo hago yo » @ 294,783
+bouton ▶ «  Escuchar el ejemplo » @ 154,881
+bouton (œil) «  Muéstramelo » @ 433,881
+icône ← «  Anterior » @ 112,976
+icône « Siguiente  » → @ 466,976
+icône ↶ « Deshacer » @ 72,1061
+image ↷ @ 185,1048
+bouton ▶ « la canción » @ 304,1061
+texte « 120 Tempo » @ 424,1061
+icône ⋮ « Más » @ 527,1061
+onglet (lignes et note) « Mi canción » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Ritmo » @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 356,1248
+texte « ✎  Anotar » @ 454,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 160,1248

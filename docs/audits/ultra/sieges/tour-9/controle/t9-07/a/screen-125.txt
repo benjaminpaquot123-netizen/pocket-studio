@@ -1,0 +1,58 @@
+Écran 125 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 178,42
+bouton « 专业 » @ 388,42
+bouton « A » ▾ @ 468,42
+icône ↶ @ 544,42
+bouton ● @ 616,42
+bouton ▶ « 这个段落 » @ 693,42
+bouton ▶ « 歌曲 » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Acid 303 贝斯线 » [coupé] @ 58,205
+onglet « 人声 麦克风 » @ 169,205
+onglet « Remix 分离 » @ 310,205
+bouton « 贝斯 Pluck 贝斯 » @ 473,205
+bouton « 和弦 温暖 Pad » @ 641,205
+bouton « 旋律 马林巴 » ⋮ @ 801,205
+image ← @ 10,206
+image → @ 889,206
+texte « 段落：A » @ 71,275
+texte « 对齐 50% » @ 398,353
+texte « 100% » @ 540,353
+texte « 清除 » @ 647,353
+bouton « 和弦 » @ 95,353
+bouton « 幽灵贝斯 » [sélectionné] @ 232,353
+texte « 小节 » @ 84,415
+bouton « 3 » @ 486,422
+bouton « 4 » [coupé] @ 853,422
+texte « F♯ » [coupé] @ 84,460
+texte « F » @ 84,486
+texte « E » @ 84,528
+texte « D♯ » @ 84,570
+texte « D » @ 84,612
+texte « C♯ » @ 84,654
+texte « C5 » @ 84,696
+texte « B » @ 84,738
+texte « A♯ » @ 84,780
+texte « A » [coupé] @ 84,805
+dessin [coupé] @ 492,632
+texte « 马林巴 第 5/14 章 · 第 2/2 步 · 专业 » @ 378,860
+icône (liste) « 章节 » @ 771,860
+icône ⌄ @ 843,860
+texte « 轮到你：在混音里，把“旋律”音轨的“回声发送”调高：马林巴在重复中飘浮。 » @ 450,972
+texte « ▸ 为什么？ » @ 450,1047
+bouton (doigt qui touche) «   我来做 » @ 450,1116
+bouton ▶ «  听示例 » @ 232,1200
+bouton (œil) «  示范给我看 » @ 667,1200
+icône ← «  上一步 » @ 99,1281
+icône « 下一步  » → @ 801,1281
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 671,1479
+texte « ✎  记一笔 » @ 767,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 317,1479

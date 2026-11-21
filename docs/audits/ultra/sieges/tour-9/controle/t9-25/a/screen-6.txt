@@ -1,0 +1,45 @@
+Écran 6 (540x1170)
+bouton (dossier ouvert) ✓ @ 102,42
+bouton « Basit » @ 246,42
+bouton ● @ 333,42
+bouton ▶ « bu bölüm » @ 414,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Bölüm: A » ▾ @ 96,198
+bouton « Büyük davul 1 FX » @ 78,294
+bouton « Büyük davul 2 » @ 206,294
+bouton « Trampet FX » @ 334,294
+bouton « Trampet 2 » @ 462,294
+bouton « El çırpma FX » @ 78,384
+bouton « Hi-hat L 30 » @ 206,384
+bouton « Açık hi-hat R 30 » @ 334,384
+bouton « Pes tom » @ 462,384
+bouton « Orta tom R 45 » @ 78,474
+bouton « Tiz tom » @ 206,474
+bouton « Davul kenarı FX R 50 » @ 334,474
+bouton « Çan » @ 462,474
+bouton « Zil FX R 40 » @ 78,564
+bouton « Marakas L 50 » @ 206,564
+bouton « Conga » @ 334,564
+bouton « Lazer » @ 462,564
+texte « Pad'ler ses çıkarır, kutular vuruşları saklar. Uzun bas: sesi değiştir. » [coupé] @ 389,635
+bouton « Kit: Stüdyo » ▾ [coupé] @ 131,644
+texte « Parçanın hızı ve rengi Aşama 1/15 · Adım 2/3 · Kolay » @ 176,726
+icône (liste) « Aşamalar » @ 389,727
+icône ⌃ @ 483,727
+icône (rond coché) « Başarıldı Sonraki adım » → @ 270,857
+icône ↶ « Geri al » @ 64,953
+image ↷ @ 164,940
+bouton ▶ « şarkı » @ 264,953
+texte « 140 Tempo » @ 370,953
+icône ⋮ « Diğer » @ 476,953
+onglet (lignes et note) « Şarkım » @ 49,1050
+onglet (quatre carrés) « Ritim » [sélectionné] @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

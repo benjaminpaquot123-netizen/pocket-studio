@@ -1,0 +1,71 @@
+Écran 78 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 116,42
+bouton « Pro » @ 262,42
+bouton « F · Build-up » ▾ @ 409,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « Build-up Takt 1/4 » ▾ @ 263,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 849,204
+image → @ 889,205
+texte « Teil: F · Build-up » @ 132,273
+titre « STEPS: BECKEN · BUILD-UP » [coupé, état « Aufgeklappt »] @ 362,311
+bouton « ? » [coupé] @ 470,311
+bouton « Alle Pads » [coupé] @ 770,312
+texte « Takt » @ 70,384
+bouton « 1 » @ 143,384
+bouton « 2 » @ 224,384
+bouton « 3 » @ 305,384
+bouton « 4 » [sélectionné] @ 386,384
+bouton « Folgen » @ 502,384
+texte « Takt 4/4 · Becken » @ 166,468
+bouton « 1 » [état « leer »] @ 90,553
+bouton [état « leer »] @ 192,553
+bouton [état « leer »] @ 294,553
+bouton [état « leer »] @ 397,553
+bouton « 2 » [état « leer »] @ 500,553
+bouton [état « leer »] @ 603,553
+bouton [état « leer »] @ 706,553
+bouton [état « leer »] @ 809,553
+bouton « 3 » [état « leer »] @ 90,634
+bouton [état « leer »] @ 192,634
+bouton [état « leer »] @ 294,634
+bouton [état « leer »] @ 397,634
+bouton « 4 » [état « leer »] @ 500,634
+bouton [état « leer »] @ 603,634
+bouton [état « leer »] @ 706,634
+bouton [état « leer »] @ 809,634
+texte « Die Übergänge: von einem Teil zum nächsten Kapitel 12/16 · Schritt 3/3 · Pro » @ 366,740
+icône (liste) « Kapitel » @ 759,741
+icône ⌄ @ 843,741
+texte « Du bist dran: Tippe im Teil „Drop“ auf dem Pad „Becken“ auf das allererste Kästchen, es ist noch leer: ein Schlag in dem Moment, in dem alles einsetzt. » @ 450,875
+texte « ▸ Warum? » @ 450,973
+bouton ⊕ «   Zum Teil „Drop“ gehen » @ 450,1042
+bouton ▶ «  Beispiel anhören » @ 232,1126
+bouton (œil) «  Zeig's mir » @ 667,1126
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ■ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -38,7 +38,7 @@
   "Balayage du filtre": "フィルタースイープ",
   "Basse": "ベース",
   "Basse Reese": "リースベース",
-  "Basse en fantôme": "ゴーストベース",
+  "Basse en fantôme": "ベースの影",
   "Basses": "ベース",
   "Bend": "ベンド",
   "Boucle": "ループ",
@@ -286,5 +286,6 @@
   "Voyelle": "母音",
   "Couche médium": "ミッドレイヤー",
   "Suréchantillonnage": "オーバーサンプリング",
-  "Le son": "音"
+  "Le son": "音",
+  "Boucle acide": "アシッドループ"
 }

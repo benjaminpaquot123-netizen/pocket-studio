@@ -20,6 +20,6 @@
  "Partie « %s » créée : tout le Groove y joue.": "“%s” 파트를 만들었어요: 그루브 전체가 연주돼요.",
  "Partie « %1$s » créée (copie du Groove) : sans %2$s.": "“%1$s” 파트를 만들었어요 (그루브 복사): %2$s 없이.",
  "Sa basse est à toi d'écrire : les notes en pointillé.": "베이스는 직접 써요: 점선 노트.",
- "Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.": "스네어가 마디마다 빨라지고, 마지막 박은 조용해져요.",
- "Son pad « %s » accélère mesure après mesure, et son dernier temps se tait.": "“%s” 패드가 마디마다 빨라지고, 마지막 박은 조용해져요."
+ "Sa caisse claire accélère mesure après mesure.": "스네어가 마디마다 빨라져요.",
+ "Son pad « %s » accélère mesure après mesure.": "“%s” 패드가 마디마다 빨라져요."
 }

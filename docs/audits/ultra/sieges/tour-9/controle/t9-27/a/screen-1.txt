@@ -1,0 +1,59 @@
+Écran 1 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 194,42
+texte « Pro » @ 415,42
+bouton « A » ▾ @ 490,42
+icône ↶ [désactivé] @ 565,42
+icône ↷ [désactivé] @ 637,42
+bouton ● @ 709,42
+bouton ▶ « bagian ini » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 120  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » [sélectionné] @ 71,183
+onglet « Acid 303 Bassline » @ 212,183
+onglet « Vokal Mikrofon » @ 365,183
+onglet « Remix Pisahkan » @ 516,183
+bouton + «  Trek » @ 672,183
+texte « Bagian: A » @ 68,243
+bouton « Kick keras FX » @ 123,318
+bouton « Kick 2 » @ 341,318
+bouton « Snare FX » @ 559,318
+bouton « Snare 2 » @ 777,318
+bouton « Clap FX » @ 123,396
+bouton « Hi-hat L 30 » @ 341,396
+bouton « Hi-hat terbuka R 30 » @ 559,396
+bouton « Tom rendah » @ 777,396
+bouton « Tom tengah R 45 » @ 123,474
+bouton « Tom tinggi » @ 341,474
+bouton « Rim R 50 » @ 559,474
+bouton « Cowbell » @ 777,474
+bouton « Simbal FX R 40 » @ 123,552
+bouton « Shaker L 50 » @ 341,552
+bouton « Conga » @ 559,552
+bouton « Zap » @ 777,552
+bouton « Kit: Studio » ▾ @ 110,628
+texte « Pad bunyi, kotak menyimpan pukulan. Tekan lama: ganti suara. » @ 548,630
+texte « Tempo dan kunci nada Bab 1/14 · Langkah 1/3 · Pro » @ 378,711
+icône (liste) « Bab » @ 771,711
+icône ⌄ @ 843,711
+texte « Dengarkan cuplikan gabber, hardcore dari Rotterdam: kick yang super terdistorsi sekaligus jadi bass, Build-up tempat snare makin menggila, lalu Drop. » @ 450,828
+bouton « Unduh kit Gabber (4 MB) » @ 403,939
+texte « Nanti » @ 826,939
+texte « ▸ Kenapa? » @ 450,1005
+bouton ▶ «  Dengar contohnya » @ 450,1125
+icône ← «  Sebelumnya » [désactivé] @ 119,1209
+icône « Berikutnya  » → @ 789,1209
+icône ↶ « Urungkan » [désactivé] @ 124,1293
+icône ↷ « Ulangi » [désactivé] @ 285,1293
+bouton ▶ « lagu » @ 445,1293
+texte « 120 Tempo » @ 610,1293
+icône (trois points reliés) « Bagikan » @ 776,1293
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

@@ -1,0 +1,4 @@
+Écran 134 (900x1509)
+texte « Część do edycji » @ 601,123
+icône ✓ « A » @ 630,192
+icône + « Nowa pusta część » @ 630,286

@@ -8,6 +8,14 @@ import os
 import sys
 
 
+def short_name(path):
+    """The golden's path from app/screenshots/ on: 156 goldens share a basename, so the basename alone is ambiguous."""
+    norm = path.replace("\\", "/")
+    marker = "app/screenshots/"
+    i = norm.rfind(marker)
+    return norm[i + len(marker):] if i >= 0 else norm
+
+
 def main(path):
     if not os.path.exists(path):
         print(f"::warning::No screenshot summary ({path}): the comparison did not run.")
@@ -19,7 +27,7 @@ def main(path):
     lines = [f"Captures : {summary.get('total', 0)} au total, {summary.get('changed', 0)} différentes, "
              f"{summary.get('added', 0)} sans référence."]
     for r in odd:
-        lines.append(f"- {r['type']} : {os.path.basename(r.get('golden_file_path', '?'))}")
+        lines.append(f"- {r['type']} : {short_name(r.get('golden_file_path', '?'))}")
     print("\n".join(lines))
     if odd:
         print(f"::warning::{len(odd)} screenshot(s) differ from app/screenshots/: see the screenshots-diff artifact.")

@@ -1,0 +1,41 @@
+Écran 121 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 86,114
+bouton « A » ▾ @ 202,114
+icône ↶ @ 278,114
+bouton ● @ 350,114
+bouton ▶ « dit deel » @ 422,114
+icône (trois points reliés) @ 495,114
+bouton « 92  BPM » @ 74,195
+bouton « ? » @ 495,195
+onglet « Zang Microfoon » [coupé] @ 76,276
+onglet « Remix Splitsen » @ 218,276
+bouton « Bas Ronde bas » ⋮ @ 412,276
+image ← @ 10,277
+image → @ 529,277
+texte « Deel: A » @ 69,345
+texte « − » [coupé] @ 155,373
+texte « + » [coupé] @ 354,373
+texte « De loop Hoofdstuk 4/14 · Stap 1/3 · Pro » @ 176,464
+icône (liste) « Hoofdstukken » @ 389,465
+icône ⌄ @ 483,465
+texte « Luister naar de loop alleen: twee jazzakkoorden die eindeloos terugkomen. » @ 270,617
+texte « ▸ Waarom? » @ 270,715
+bouton ▶ «  Luister naar het voorbeeld » @ 270,784
+icône ← «  Vorige » @ 101,868
+icône « Volgende  » → @ 418,868
+icône ↶ « Ongedaan maken » @ 57,953
+icône ↷ « Opnieuw » [désactivé] @ 157,953
+icône ▶ « het nummer » @ 276,953
+texte « 92 Tempo » @ 396,953
+icône (trois points reliés) « Delen » @ 489,953
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 297,1140
+texte « ✎  Noteren » @ 400,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 130,1140

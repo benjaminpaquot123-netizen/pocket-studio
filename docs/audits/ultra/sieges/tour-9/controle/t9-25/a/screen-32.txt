@@ -1,0 +1,43 @@
+Écran 32 (540x1170)
+bouton (dossier ouvert) ✓ @ 102,42
+bouton « Basit » @ 246,42
+bouton ● @ 333,42
+bouton ▶ « bu bölüm » @ 414,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Bölüm: A » ▾ @ 96,198
+texte « Burada 1 noktalı kutu daha var » [coupé] @ 264,252
+bouton « 1 » [coupé, état « boş »] @ 67,302
+bouton [coupé, état « boş »] @ 124,302
+bouton [coupé, état « boş »] @ 182,302
+bouton [coupé, état « boş »] @ 240,302
+bouton « 2 » [coupé, état « boş »] @ 298,302
+bouton [coupé, état « boş »] @ 356,302
+bouton [coupé, état « boş »] @ 414,302
+bouton [coupé, état « boş »] @ 472,302
+texte « Trampet ve clap Aşama 3/15 · Adım 2/2 · Kolay » @ 176,391
+icône (liste) « Aşamalar » @ 389,392
+icône ⌄ @ 483,392
+texte « Sıra sende: “El çırpma” pad'inde (el çırpma) tam trampetin üstündeki noktalı kutuya dokun. » [coupé] @ 270,498
+texte « ▸ Neden? » @ 270,550
+icône « Devamını oku » ⌄ @ 270,604
+bouton (doigt qui touche) «   Ben yaparım » @ 270,703
+bouton ▶ «  Örneği dinle » @ 142,787
+bouton (œil) «  Göster » @ 397,787
+icône ← «  Önceki » @ 105,868
+icône « İleri  » → @ 457,868
+icône ↶ « Geri al » @ 64,953
+image ↷ @ 164,940
+bouton ▶ « şarkı » @ 264,953
+texte « 140 Tempo » @ 370,953
+icône ⋮ « Diğer » @ 476,953
+onglet (lignes et note) « Şarkım » @ 49,1050
+onglet (quatre carrés) « Ritim » [sélectionné] @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

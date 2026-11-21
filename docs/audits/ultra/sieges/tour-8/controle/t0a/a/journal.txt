@@ -1,0 +1,417 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=120 lit=oui main=both amenee=tuto:house:3
+#0 PREMIER ECRAN reel_s=3.7 simule_s=2.4 jvm_s=8.4 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:house:3
+#0 AMENEE > touche 294 621 (welcome_learn)
+#0 AMENEE > touche 294 915 (mode_card_simple)
+#0 AMENEE > touche 294 1201 (tuto_style_house)
+#0 AMENEE chapitres 1 à 2 construits dans le projet
+#0 AMENEE > touche 444 573 (tuto_chapters)
+#0 AMENEE > touche 294 306 (tuto_chapter_2)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d01e7cb420 | project=p-391c62b5 tuto=house/Facile active=true step=clap_do done=3 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#1 > touche 294 813
+#1 DOIGT tuto_do «   Je le fais »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c431536b02 | project=p-391c62b5 tuto=house/Facile active=true step=clap_do done=3 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « À toi : sur le pad « Claquement de mains », touche les cases en pointillé des 2 mesures, sur les temps 2 et 4. » ellipsized (« … »)
+#2 LAYOUT CONTRAST « 2 » 3.51:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « 4 » 3.56:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « SON DU PAD » 1.37:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « ? » 1.64:1 (needs 4.5:1, 12 sp)
+#2 > touche 325 307
+#2 DOIGT step_4 « Pas 5 »
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e644ee9fa8 | project=p-391c62b5 tuto=house/Facile active=true step=clap_do done=3 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 325 386
+#3 DOIGT step_12 « Pas 13 »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 64fa99b24f | project=p-391c62b5 tuto=house/Facile active=true step=clap_do done=3 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « Mesure 1/2 · Claquement de mains » ellipsized (« … »)
+#4 LAYOUT CONTRAST « Mesure 1/2 · Claquement de mains » 1.65:1 (needs 4.5:1, 13 sp)
+#4 LAYOUT CONTRAST « Mesure 2 · 2 cases → » 1.71:1 (needs 3.0:1, 14 sp)
+#4 > touche 410 237
+#4 DOIGT tuto_bar_go « Mesure 2 · 2 cases → »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b4b78ab55d | project=p-391c62b5 tuto=house/Facile active=true step=clap_do done=3 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 325 307
+#5 DOIGT step_20 « Pas 5 »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6ba11eb356 | project=p-391c62b5 tuto=house/Facile active=true step=clap_do done=3 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 325 386
+#6 DOIGT step_28 « Pas 13 »
+#7 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b95187e672 | project=p-391c62b5 tuto=house/Facile active=true step=clap_do done=4 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « Mesure 2/2 · Claquement de mains » 1.65:1 (needs 4.5:1, 13 sp)
+#7 > touche 294 978
+#7 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#8 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e4e1b2d7d0 | project=p-391c62b5 tuto=house/Facile active=true step=clap_do done=4 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « Mesure 2/2 · Claquement de mains » 2.01:1 (needs 4.5:1, 13 sp)
+#8 > touche 294 888
+#8 DOIGT tuto_next_big « Chapitre suivant   »
+#9 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 87f3744fdb | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=4 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 294 813
+#9 DOIGT tuto_do «   Je le fais »
+#10 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b52974a960 | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=4 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT CUT « À toi : sur le pad « Charley ouvert » (le « tchi »), touche les cases en pointillé : une entre chaque coup de kick. » ellipsized (« … »)
+#10 LAYOUT CONTRAST « SON DU PAD » 1.34:1 (needs 4.5:1, 12 sp)
+#10 > touche 197 307
+#10 DOIGT step_2 « Pas 3 »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d6001f5a48 | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=4 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 453 307
+#11 DOIGT step_6 « Pas 7 »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 68ca8dffd2 | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=4 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 197 386
+#12 DOIGT step_10 « Pas 11 »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 35c1c92b9d | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=4 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 453 386
+#13 DOIGT step_14 « Pas 15 »
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 70a47b3ce5 | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=4 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « Mesure 1/2 · Charley ouvert » ellipsized (« … »)
+#14 LAYOUT CONTRAST « Mesure 1/2 · Charley ouvert » 1.65:1 (needs 4.5:1, 13 sp)
+#14 LAYOUT CONTRAST « Mesure 2 · 4 cases → » 1.71:1 (needs 3.0:1, 14 sp)
+#14 > touche 410 237
+#14 DOIGT tuto_bar_go « Mesure 2 · 4 cases → »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 18b41e09c7 | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=4 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 197 307
+#15 DOIGT step_18 « Pas 3 »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE deb1b58fdc | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=4 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 453 307
+#16 DOIGT step_22 « Pas 7 »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9e937f11df | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=4 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 197 386
+#17 DOIGT step_26 « Pas 11 »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d15be08ac5 | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=4 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 453 386
+#18 DOIGT step_30 « Pas 15 »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 38b48027a6 | project=p-391c62b5 tuto=house/Facile active=true step=ohat_do done=5 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Mesure 2/2 · Charley ouvert » 1.65:1 (needs 4.5:1, 13 sp)
+#19 > touche 294 978
+#19 DOIGT tuto_next_folded « Réussi »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 86e3571185 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 294 813
+#20 DOIGT tuto_do «   Je le fais »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d6993d5e4f | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « 1 » 3.85:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « 2 » 3.73:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « 3 » 3.91:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « 4 » 3.78:1 (needs 4.5:1, 12 sp)
+#21 > touche 70 307
+#21 DOIGT step_0 « Pas 1 »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 134b467b05 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 133 307
+#22 DOIGT step_1 « Pas 2 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8996dbad58 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 261 307
+#23 DOIGT step_3 « Pas 4 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 088002836b | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 325 307
+#24 DOIGT step_4 « Pas 5 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 360804990a | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 389 307
+#25 DOIGT step_5 « Pas 6 »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 94e20b0ad1 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 517 307
+#26 DOIGT step_7 « Pas 8 »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4de1eeabeb | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 70 386
+#27 DOIGT step_8 « Pas 9 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b827451031 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 133 386
+#28 DOIGT step_9 « Pas 10 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 27cea0f5f5 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 261 386
+#29 DOIGT step_11 « Pas 12 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 795699907d | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 325 386
+#30 DOIGT step_12 « Pas 13 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c9e9334bbe | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 389 386
+#31 DOIGT step_13 « Pas 14 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0a5695d648 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 517 386
+#32 DOIGT step_15 « Pas 16 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d16caf0154 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « Mesure 1/2 · Charley » 1.65:1 (needs 4.5:1, 13 sp)
+#33 LAYOUT CONTRAST « Mesure 2 · 12 cases → » 1.71:1 (needs 3.0:1, 14 sp)
+#33 > touche 406 237
+#33 DOIGT tuto_bar_go « Mesure 2 · 12 cases → »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4d5a53fb0d | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 70 307
+#34 DOIGT step_16 « Pas 1 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 42c99a2fc3 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 133 307
+#35 DOIGT step_17 « Pas 2 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3198d021de | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 261 307
+#36 DOIGT step_19 « Pas 4 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 33539e22ff | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 325 307
+#37 DOIGT step_20 « Pas 5 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 808d7d2504 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 389 307
+#38 DOIGT step_21 « Pas 6 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2c6f6ddbcd | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 517 307
+#39 DOIGT step_23 « Pas 8 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 015f9f0caa | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 70 386
+#40 DOIGT step_24 « Pas 9 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e43a426c03 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 133 386
+#41 DOIGT step_25 « Pas 10 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d1cda7bcad | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 261 386
+#42 DOIGT step_27 « Pas 12 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a90fcbeda2 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 325 386
+#43 DOIGT step_28 « Pas 13 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 28b78d0c19 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 389 386
+#44 DOIGT step_29 « Pas 14 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 696f702df4 | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=5 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 517 386
+#45 DOIGT step_31 « Pas 16 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1fa046130b | project=p-391c62b5 tuto=house/Facile active=true step=hat_do done=6 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « Mesure 2/2 · Charley » 1.65:1 (needs 4.5:1, 13 sp)
+#46 > touche 294 978
+#46 DOIGT tuto_next_folded « Réussi »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 14100fb763 | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=6 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 294 813
+#47 DOIGT tuto_do «   Je le fais »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a85ea238d7 | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=6 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CUT « À toi : sur le pad « Bord de caisse », touche les 8 cases en pointillé (4 par mesure), entre les temps. » ellipsized (« … »)
+#48 LAYOUT CONTRAST « SON DU PAD » 1.26:1 (needs 4.5:1, 12 sp)
+#48 > touche 197 307
+#48 DOIGT step_2 « Pas 3 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE aaa95b8b0f | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=6 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 453 307
+#49 DOIGT step_6 « Pas 7 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d1352d9c29 | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=6 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 197 386
+#50 DOIGT step_10 « Pas 11 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8f3a17d3d1 | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=6 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 453 386
+#51 DOIGT step_14 « Pas 15 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0992cfb574 | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=6 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CUT « Mesure 1/2 · Bord de caisse » ellipsized (« … »)
+#52 LAYOUT CONTRAST « Mesure 1/2 · Bord de caisse » 1.65:1 (needs 4.5:1, 13 sp)
+#52 > touche 410 237
+#52 DOIGT tuto_bar_go « Mesure 2 · 4 cases → »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 89373f65e0 | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=6 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 197 307
+#53 DOIGT step_18 « Pas 3 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7377f81afc | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=6 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 453 307
+#54 DOIGT step_22 « Pas 7 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5dfb55a895 | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=6 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 197 386
+#55 DOIGT step_26 « Pas 11 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d19d047354 | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=6 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 453 386
+#56 DOIGT step_30 « Pas 15 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 08d960fddc | project=p-391c62b5 tuto=house/Facile active=true step=perc_do done=7 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « Mesure 2/2 · Bord de caisse » 1.65:1 (needs 4.5:1, 13 sp)
+#57 > touche 294 978
+#57 DOIGT tuto_next_folded « Réussi »
+#58 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c17944c685 | project=p-391c62b5 tuto=house/Facile active=true step=drums_hear done=7 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « Mesure 2/2 · Bord de caisse » 2.01:1 (needs 4.5:1, 13 sp)
+#58 > touche 294 813
+#58 DOIGT tuto_play_mine «   Écouter ton résultat »
+#59 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE db99024a68 | project=p-391c62b5 tuto=house/Facile active=true step=drums_hear done=7 playing=true
+#59 SON Son : la musique du projet joue en boucle.
+#59 > attends 4
+#60 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c60bd943fe | project=p-391c62b5 tuto=house/Facile active=true step=drums_hear done=7 playing=true
+#60 SON Son : la musique du projet joue en boucle.
+#60 > touche 294 897
+#60 DOIGT tuto_listen «  Écouter l'exemple »
+#61 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4604b3eb0e | project=p-391c62b5 tuto=house/Facile active=true step=drums_hear done=7 playing=false
+#61 SON Son : l'exemple du tuto joue (encore 3 s).
+#61 > attends 4
+#62 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a88f8caa90 | project=p-391c62b5 tuto=house/Facile active=true step=drums_hear done=8 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 294 888
+#62 DOIGT tuto_next_big « Chapitre suivant   »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8da57a7f9c | project=p-391c62b5 tuto=house/Facile active=true step=bass_hear done=8 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 294 894
+#63 DOIGT tuto_listen «  Écouter l'exemple »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6ca472d2f8 | project=p-391c62b5 tuto=house/Facile active=true step=bass_hear done=8 playing=false
+#64 SON Son : l'exemple du tuto joue (encore 3 s).
+#64 > attends 8
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d44b99e4e6 | project=p-391c62b5 tuto=house/Facile active=true step=bass_hear done=9 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 294 894
+#65 DOIGT tuto_next_big « Étape suivante   »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ed0399c452 | project=p-391c62b5 tuto=house/Facile active=true step=bass_do done=9 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CONTRAST « Mesure 2/2 · Bord de caisse » 1.67:1 (needs 4.5:1, 13 sp)
+#66 > touche 294 813
+#66 DOIGT tuto_need «   Créer la piste Basse »
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE eeff817a04 | project=p-391c62b5 tuto=house/Facile active=true step=bass_do done=9 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CUT « ↑ Encore 6 notes en pointillé à toucher » ellipsized (« … »)
+#67 LAYOUT TARGET « Do♯2 Jouer » 36 x 20 dp (touch 48 x 48)
+#67 LAYOUT TARGET « Do2 Do2 Jouer » 36 x 20 dp (touch 48 x 48)
+#67 LAYOUT TARGET « Si1 Jouer » 36 x 20 dp (touch 48 x 48)
+#67 LAYOUT TARGET « La♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#67 LAYOUT TARGET « La1 Jouer » 36 x 20 dp (touch 48 x 48)
+#67 LAYOUT TARGET « Sol♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#67 LAYOUT TARGET « Sol1 Jouer » 36 x 20 dp (touch 48 x 48)
+#67 LAYOUT TARGET « Fa♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#67 LAYOUT TARGET « Fa1 Jouer » 36 x 20 dp (touch 48 x 48)
+#67 > touche 126 682
+#67 DOIGT rien
+#68 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d2468ffc84 | project=p-391c62b5 tuto=house/Facile active=true step=bass_do done=9 playing=false
+#68 SON Son : 1 note du synthé.
+#68 LAYOUT CUT « ↑ Encore 5 notes en pointillé à toucher » ellipsized (« … »)
+#68 > touche 194 682
+#68 DOIGT rien
+#69 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a10423d6de | project=p-391c62b5 tuto=house/Facile active=true step=bass_do done=9 playing=false
+#69 SON Son : 1 note du synthé.
+#69 LAYOUT CUT « ↑ Encore 4 notes en pointillé à toucher » ellipsized (« … »)
+#69 > touche 348 682
+#69 DOIGT rien
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c7c1d45430 | project=p-391c62b5 tuto=house/Facile active=true step=bass_do done=9 playing=false
+#70 SON Son : 1 note du synthé.
+#70 LAYOUT CUT « ↑ Encore 3 notes en pointillé à toucher » ellipsized (« … »)
+#70 > touche 419 682
+#70 DOIGT rien
+#71 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7599f5fff4 | project=p-391c62b5 tuto=house/Facile active=true step=bass_do done=9 playing=false
+#71 SON Son : 1 note du synthé.
+#71 LAYOUT CUT « Encore 2 notes en pointillé, plus haut ↑ » ellipsized (« … »)
+#71 > touche 468 432
+#71 DOIGT tuto_notes_left « Basse · mesure 1/8 »
+#72 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6788eadb3c | project=p-391c62b5 tuto=house/Facile active=true step=bass_do done=9 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT TARGET « Do♯3 Jouer » 36 x 20 dp (touch 48 x 48)
+#72 LAYOUT TARGET « Do3 Do3 Jouer » 36 x 20 dp (touch 48 x 48)
+#72 LAYOUT TARGET « Si2 Jouer » 36 x 20 dp (touch 48 x 48)
+#72 LAYOUT TARGET « La♯2 Jouer » 36 x 20 dp (touch 48 x 48)
+#72 LAYOUT TARGET « La2 Jouer » 36 x 20 dp (touch 48 x 48)
+#72 LAYOUT TARGET « Sol♯2 Jouer » 36 x 20 dp (touch 48 x 48)
+#72 LAYOUT TARGET « Sol2 Jouer » 36 x 20 dp (touch 48 x 48)
+#72 LAYOUT TARGET « Fa♯2 Jouer » 36 x 20 dp (touch 48 x 48)
+#72 LAYOUT TARGET « Fa2 Jouer » 36 x 20 dp (touch 48 x 48)
+#72 > touche 279 682
+#72 DOIGT rien
+#73 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9bdf6f95e8 | project=p-391c62b5 tuto=house/Facile active=true step=bass_do done=9 playing=false
+#73 SON Son : 1 note du synthé.
+#73 > touche 503 682
+#73 DOIGT rien
+#74 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 01547235e8 | project=p-391c62b5 tuto=house/Facile active=true step=bass_do done=10 playing=false
+#74 SON Son : 1 note du synthé.
+#74 > touche 294 978
+#74 DOIGT tuto_next_folded « Réussi »
+#75 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b271da2f7b | project=p-391c62b5 tuto=house/Facile active=true step=bass_2 done=10 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 294 813
+#75 DOIGT tuto_need «   Copier sur les mesures suivantes »
+#76 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0855ffcd85 | project=p-391c62b5 tuto=house/Facile active=true step=bass_2 done=10 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT TARGET « Mi1 Jouer » 36 x 20 dp (touch 48 x 48)
+#76 LAYOUT TARGET « Ré♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#76 LAYOUT TARGET « Ré1 Jouer » 36 x 20 dp (touch 48 x 48)
+#76 LAYOUT TARGET « Do♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#76 LAYOUT TARGET « Do1 Do1 Jouer » 36 x 20 dp (touch 48 x 48)
+#76 LAYOUT TARGET « Si0 Jouer » 36 x 20 dp (touch 48 x 48)
+#76 > touche 468 432
+#76 DOIGT tuto_notes_left « Basse · mesure 4/8 »
+#77 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 74cf32c3f3 | project=p-391c62b5 tuto=house/Facile active=true step=bass_2 done=10 playing=false
+#77 SON Son : rien ne joue.
+#77 LAYOUT TARGET « Ré2 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « Do♯2 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « Do2 Do2 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « Si1 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « La♯1 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « La1 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « Sol♯1 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « Sol1 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « Fa♯1 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « Fa1 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « Mi1 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « Ré♯1 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 LAYOUT TARGET « Ré1 Jouer » 36 x 14 dp (touch 48 x 48)
+#77 > touche 124 808
+#77 DOIGT rien
+#78 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9fd66152b5 | project=p-391c62b5 tuto=house/Facile active=true step=bass_2 done=10 playing=false
+#78 SON Son : 1 note du synthé.
+#78 > touche 194 808
+#78 DOIGT rien
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 95a27a4a04 | project=p-391c62b5 tuto=house/Facile active=true step=bass_2 done=10 playing=false
+#79 SON Son : 1 note du synthé.
+#79 > touche 279 557
+#79 DOIGT rien
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b10c0af90f | project=p-391c62b5 tuto=house/Facile active=true step=bass_2 done=10 playing=false
+#80 SON Son : 1 note du synthé.
+#80 > touche 348 808
+#80 DOIGT rien
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e0ef60a373 | project=p-391c62b5 tuto=house/Facile active=true step=bass_2 done=10 playing=false
+#81 SON Son : 1 note du synthé.
+#81 > touche 419 766
+#81 DOIGT rien
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE eac81530e7 | project=p-391c62b5 tuto=house/Facile active=true step=bass_2 done=10 playing=false
+#82 SON Son : 1 note du synthé.
+#82 > touche 517 703
+#82 DOIGT rien
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6965d573c3 | project=p-391c62b5 tuto=house/Facile active=true step=bass_2 done=10 playing=false
+#83 SON Son : 1 note du synthé.
+#83 > touche 294 978
+#83 DOIGT tuto_need_folded « Copier sur les mesures suivantes »
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4f5c45b1bb | project=p-391c62b5 tuto=house/Facile active=true step=bass_2 done=11 playing=false
+#84 SON Son : rien ne joue.
+#84 > fin
+#84 FIN : fin

@@ -1,0 +1,10 @@
+lang=ja
+device=phone
+font=130
+mode=pro
+amenee=tuto:synthwave:1
+gestes.max=188
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

@@ -1,0 +1,9 @@
+Écran 61 (588x1278)
+texte « It's ready » @ 118,477
+texte « Ready: My-song-20261119-074350.m4a, a copy is also in Music › BenStudio. » @ 294,555
+texte « Length: 2 min 51 s » @ 118,604
+texte « Level: like streaming music (−14) » @ 186,637
+texte « No clipping. » @ 91,670
+texte « M4A file: light, plays on every device. » @ 207,703
+texte « See my files » @ 372,789
+texte « OK » @ 508,789

@@ -1,0 +1,53 @@
+Écran 112 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 178,42
+bouton « Pro » @ 385,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 539,42
+bouton ● @ 611,42
+bouton ▶ « dit deel » @ 683,42
+bouton ▶ « het nummer » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [coupé] @ 59,204
+onglet « Acid 303 Baslijn » @ 195,204
+onglet « Zang Microfoon » @ 383,204
+onglet « Remix Splitsen » @ 561,204
+bouton « Sub Zuivere sub » ⋮ @ 764,204
+image ← @ 10,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+bouton « Sub · maat 3/4 Nog 2 gestippelde noten om aan te tikken » @ 450,334
+texte « mt » @ 84,394
+bouton « 2 » [coupé] @ 171,402
+bouton « 3 » @ 378,402
+bouton « 4 » @ 698,402
+texte « A♭ » [coupé] @ 84,443
+texte « G » @ 84,473
+texte « G♭ » @ 84,515
+texte « F » @ 84,557
+texte « E » @ 84,599
+texte « E♭ » @ 84,641
+texte « D » @ 84,683
+texte « D♭ » @ 84,725
+texte « C2 » [coupé] @ 84,755
+dessin [coupé] @ 492,599
+texte « Het basgeluid Hoofdstuk 6/17 · Stap 1/2 · Pro » @ 356,814
+icône (liste) « Hoofdstukken » @ 749,815
+icône ⌄ @ 843,815
+image (coupe) @ 57,949
+texte « Goed gedaan, het is gelukt! » @ 277,912
+texte « Luister naar je resultaat en tik op ‘Volgende stap’ wanneer je wilt. » @ 475,969
+bouton « Volgende stap   » → @ 450,1169
+bouton ▶ «  Luister naar je resultaat » @ 294,1267
+bouton ▶ «  Luister naar het voorbeeld » @ 687,1267
+icône ← @ 57,1267
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

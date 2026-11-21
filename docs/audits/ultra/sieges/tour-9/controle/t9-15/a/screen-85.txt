@@ -1,0 +1,56 @@
+Écran 85 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 206,42
+bouton « Simple » @ 455,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ▶ « esta parte » @ 689,42
+bouton ▶ « la canción » @ 779,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 855,114
+onglet « Acid 303 Línea de bajo » @ 104,186
+bouton « Bajo Bajo redondo » @ 292,186
+bouton « Acordes Piano FM » ⋮ @ 474,186
+icône ♪ « Sonido » @ 636,186
+bouton + «  Pista » @ 790,186
+icône « Parte: A » ▾ @ 76,264
+texte « A tiempo 50 % » @ 472,351
+texte « 100 % » @ 619,351
+texte « Borrar » @ 723,351
+bouton « Acordes » [sélectionné] @ 109,351
+bouton « Bajo fantasma » [sélectionné] @ 278,351
+texte « Acordes · compás 2/8 » @ 164,417
+bouton « Copiar » @ 790,432
+texte « ¡Patrón colocado! El resto se copia: » @ 239,444
+texte « comp. » @ 84,489
+bouton « 2 » @ 486,501
+bouton « 3 » [coupé] @ 853,501
+texte « Sol » [coupé] @ 84,546
+texte « Sol♭ » @ 84,580
+texte « Fa » @ 84,622
+texte « Mi » @ 84,664
+texte « Mi♭ » @ 84,706
+texte « Re » @ 84,748
+texte « Re♭ » @ 84,790
+texte « Do3 » @ 84,832
+texte « Si » [coupé] @ 84,866
+dessin [coupé] @ 492,706
+texte « El piano eléctrico Capítulo 4/13 · Paso 3/3 · Fácil » @ 364,927
+icône (liste) « Capítulos » @ 757,927
+icône ⌄ @ 843,927
+texte « Te toca: toca “Copiar en los compases siguientes”. » @ 310,1008
+texte « ▸ ¿Por qué? » @ 450,1050
+bouton ⊕ «   Copiar en los compases siguientes » @ 450,1116
+bouton ▶ «  Escuchar el ejemplo » @ 232,1200
+bouton (œil) «  Muéstramelo » @ 667,1200
+icône ← «  Anterior » @ 97,1281
+icône « Siguiente  » → @ 795,1281
+onglet (lignes et note) « Mi canción » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Teclado » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Compartir » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Anotar » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 318,1479

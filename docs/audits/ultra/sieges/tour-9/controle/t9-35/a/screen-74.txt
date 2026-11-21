@@ -1,0 +1,44 @@
+Écran 74 (900x1509)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 212,42
+bouton « 간단 » @ 467,42
+icône ↶ @ 555,42
+bouton ● @ 627,42
+bouton ▶ « 이 파트 » @ 699,42
+bouton ▶ « 곡 » @ 783,42
+icône ⋮ @ 855,42
+bouton « 136  템포 » @ 105,144
+bouton « ? » @ 855,144
+onglet « Acid 303 베이스 라인 » @ 133,266
+bouton « 코드 스웜 » @ 322,265
+bouton « 멜로디 벨 » ⋮ @ 486,265
+icône ♪ « 사운드 » @ 676,266
+bouton + «  트랙 » [coupé] @ 824,265
+image → @ 889,266
+icône « 파트: A » ▾ @ 95,363
+texte « 100% » @ 114,446
+texte « 지우기 » @ 263,445
+texte « 박자 맞춤 50% » [coupé] @ 593,400
+bouton « 멜로디 · 2/8마디 탭할 점선 노트가 1개 남았어요 » @ 450,550
+texte « 마디 » [coupé] @ 84,635
+bouton « 2 » [coupé] @ 486,635
+bouton « 3 » [coupé] @ 853,635
+texte « 쇳소리 한 방 5/13장 · 2/2단계 · 쉬움 » @ 378,723
+icône (liste) « 챕터 » @ 771,724
+icône ⌄ @ 843,724
+texte « 직접 해 보세요: 2마디 끝의 노트를 쓰세요. » @ 394,838
+texte « • 마디: 리듬의 한 바퀴, 네 박자예요. “1, 2, 3, 4”로 세요. » @ 450,933
+texte « ▸ 왜요? » @ 450,1024
+bouton (doigt qui touche) «   직접 할게요 » @ 450,1102
+bouton ▶ «  예시 듣기 » @ 232,1189
+bouton (œil) «  보여 주세요 » @ 667,1189
+icône ← «  이전 » @ 94,1276
+icône « 다음  » → @ 805,1276
+onglet (lignes et note) « 내 곡 » @ 85,1389
+onglet (quatre carrés) « 리듬 » @ 268,1389
+onglet (touches de piano) « 건반 » [sélectionné] @ 451,1389
+onglet (curseurs) « 믹스 » @ 633,1389
+onglet (trois points reliés) « 공유 » @ 815,1389
+texte « 피드백 모드 » @ 303,1479
+texte « ●  REC » @ 649,1479
+texte « ✎  메모 » @ 760,1479
+texte « ⋯ » @ 852,1479

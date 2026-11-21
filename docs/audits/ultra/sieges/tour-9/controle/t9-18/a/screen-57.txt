@@ -1,0 +1,34 @@
+Écran 57 (1035x1243)
+texte « Efeitos · pad 3 (Caixa) » @ 277,60
+bouton « Rumble » [coupé] @ 151,121
+bouton « Sem efeito » [coupé] @ 303,121
+texte « Toque num clima para experimentar: você sempre pode voltar com Desfazer. » @ 517,186
+texte « Segure o dedo num clima para ouvi-lo; solte e seu som volta. » @ 366,238
+bouton « ? » @ 304,285
+texte « Pad XY, cima-baixo: » @ 181,285
+bouton « Espaço » [sélectionné] @ 150,355
+bouton « Sujeira » @ 282,355
+bouton « Movimento » @ 434,355
+texte « ↑ Distante » @ 517,415
+texte « ← Sombrio » @ 283,700
+texte « ↓ Seco » @ 517,700
+texte « Brilhante → » @ 751,700
+texte « Deslize o dedo para distorcer o som ao vivo. Dois toques: volta ao som original. » @ 449,737
+curseur [état « Neutro », à 50 %] @ 195,802
+texte « Cor » @ 195,856
+texte « Neutro » @ 195,881
+curseur [état « 0 », à 0 %] @ 409,802
+texte « Sujeira » @ 409,856
+texte « 0 » @ 409,881
+curseur [état « 0 », à 0 %] @ 624,802
+texte « Movimento » @ 623,856
+texte « 0 » @ 624,881
+curseur [état « 0 », à 0 %] @ 839,802
+texte « Espaço » @ 839,856
+texte « 0 » @ 839,881
+texte « Reverb e eco compartilhados » @ 237,922
+texte « Acordes: depois · Caixa ✓ » @ 221,974
+texte « Envio reverb » @ 492,1003
+texte « 76% » @ 912,1003
+curseur [état « 76% », à 76 %] @ 517,1054
+texte « Fechar » @ 892,1171

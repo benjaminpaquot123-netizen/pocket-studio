@@ -1,0 +1,75 @@
+Écran 71 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 180,42
+bouton « プロ » @ 393,42
+bouton « F · ドロップ 2 » ▾ @ 542,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 122  BPM » @ 83,123
+icône « イントロ 小節 1/96 » ▾ @ 254,123
+bouton (flèches en boucle) « ループ » [état « オフ »] @ 871,123
+bouton « ? » @ 990,123
+onglet « ドラム 16パッド » [sélectionné] @ 90,205
+onglet « Acid 303 ベースライン » @ 277,205
+onglet « ボーカル マイク » @ 470,205
+onglet « リミックス 分離 » @ 660,205
+bouton « ベース 丸いベース » @ 850,205
+bouton « サブ ピュアなサブ » [coupé] @ 978,205
+image → @ 1024,206
+texte « パート：F · ドロップ 2 » @ 164,275
+bouton « スタジオキック FX » @ 75,368
+bouton « キック 2 » @ 200,368
+bouton « スネア » @ 325,368
+bouton « スネア 2 » @ 450,368
+bouton « クラップ FX » @ 75,474
+bouton « ハイハット L 30 » @ 200,474
+bouton « オープンハイハット R 30 » @ 325,474
+bouton « ロータム » @ 450,474
+bouton « ミッドタム R 45 » [coupé] @ 75,558
+bouton « ハイタム » [coupé] @ 200,558
+bouton « リム R 50 » [coupé] @ 325,558
+bouton « カウベル » [coupé] @ 450,558
+bouton « 追従 » [coupé] @ 603,312
+texte « 小節 1/4 · シェイカー » @ 687,383
+bouton « 1 » [état « 空 »] @ 575,463
+bouton [état « 空 »] @ 632,462
+bouton [état « ヒット、強さ 100 % »] @ 688,462
+bouton [état « 空 »] @ 744,462
+bouton « 2 » [état « 空 »] @ 800,462
+bouton [état « 空 »] @ 856,462
+bouton [état « 空 »] @ 912,462
+bouton [état « 空 »] @ 968,462
+bouton « 3 » [état « 空 »] @ 575,533
+bouton [état « 空 »] @ 632,532
+bouton [état « 空 »] @ 688,532
+bouton [état « 空 »] @ 744,532
+bouton « 4 » [état « 空 »] @ 800,532
+bouton [état « 空 »] @ 856,532
+bouton [état « 空 »] @ 912,532
+bouton [état « 空 »] @ 968,532
+texte « トランジション チャプター 13/17 · 完了 · プロ » @ 425,635
+icône (liste) « チャプター » @ 885,635
+icône ⌄ @ 978,635
+image (coupe) @ 57,752
+texte « よくできました、章クリア！ » @ 272,733
+texte « 今の曲を聴いてから、次の章へ進もう：「エフェクト」。 » @ 417,772
+bouton « 次の章   » → @ 517,851
+bouton ▶ «  自分の曲を聴く » @ 327,935
+bouton ▶ «  例を聴く » @ 788,935
+icône ← @ 57,935
+icône ↶ « 元に戻す » @ 149,1023
+icône ↷ « やり直す » [désactivé] @ 339,1023
+bouton ▶ « 曲 » @ 524,1023
+texte « 122 テンポ » @ 708,1023
+icône (trois points reliés) « シェア » @ 893,1023
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » [sélectionné] @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  メモ » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 385,1213

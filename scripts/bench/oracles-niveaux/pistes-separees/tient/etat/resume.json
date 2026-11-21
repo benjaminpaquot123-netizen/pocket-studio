@@ -1,0 +1,20 @@
+{
+ "projects": [
+  {
+   "id": "p1",
+   "name": "Trois",
+   "open": true,
+   "parts": 0,
+   "seconds": 0,
+   "tracks": 1
+  }
+ ],
+ "open": "p1",
+ "stem_sets": 0,
+ "shared": [
+  "Trois-pistes.zip"
+ ],
+ "prefs": {
+  "simpleMode": false
+ }
+}

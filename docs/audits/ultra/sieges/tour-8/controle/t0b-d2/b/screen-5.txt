@@ -1,0 +1,4 @@
+Écran 5 (588x1278)
+texte « Pas » @ 68,498
+texte « Une case de la grille : un seizième de mesure. Touche une case pour y mettre un coup, touche-la encore pour l'enlever ; glisse le doigt pour en mettre plusieurs. Appui long sur un coup : sa force et ses roulements. » @ 294,621
+texte « Compris » @ 489,768

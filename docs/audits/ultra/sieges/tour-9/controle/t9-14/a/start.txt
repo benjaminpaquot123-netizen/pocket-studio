@@ -1,0 +1,10 @@
+lang=nl
+device=foldable
+font=200
+mode=pro
+amenee=tuto:boom_bap:5
+gestes.max=153
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

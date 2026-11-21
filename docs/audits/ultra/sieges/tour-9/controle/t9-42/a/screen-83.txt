@@ -1,0 +1,41 @@
+Écran 83 (1035x1243)
+icône (dossier ouvert) ✓ « My jungle Saved » @ 358,42
+bouton « Simple » @ 758,42
+bouton ● @ 846,42
+bouton ▶ « this part » @ 918,42
+icône ⋮ @ 990,42
+bouton « 165  Tempo » @ 83,114
+icône « Intro bar 1/128 » ▾ @ 241,114
+bouton « ? » @ 990,114
+image (rond coché) @ 0,0
+texte « Ready to share? » @ 518,161
+champ « Name » contenu « My jungle » @ 518,246
+icône ✕ @ 932,253
+bouton « M4A · for sharing » [sélectionné] @ 182,349
+bouton « WAV · max quality » @ 425,349
+bouton (trois points reliés) «   Share » @ 518,445
+bouton (dossier) « My files » › @ 496,547
+bouton « ? » @ 946,547
+texte « Export your song Chapter 15/15 · Step 1/1 · Easy » @ 433,637
+icône (liste) « Chapters » @ 894,637
+icône ⌄ @ 978,637
+image (coupe) @ 57,741
+texte « Well done, you did it! » @ 198,727
+texte « Listen to your result, then tap “Next step” whenever you like. » @ 362,755
+bouton « Next step   » → @ 517,859
+icône ← @ 57,943
+bouton ▶ «  Listen to your result » @ 558,943
+icône ↶ « Undo » @ 147,1027
+image ↷ @ 329,1017
+bouton ▶ « the song » @ 512,1027
+texte « 165 Tempo » @ 700,1027
+icône ⋮ « More » @ 889,1027
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » [sélectionné] @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Note » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 385,1213

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material3.Switch
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -294,6 +296,10 @@ data class ShareSheetUi(
     val seconds: Int,
     val parts: Int,
     val checks: List<ShareCheck>,
+    /** Tour 9, F125: the song's rows (a part played twice counts twice, as the home and Structure count them). */
+    val rows: Int = parts,
+    /** Tour 9, F122: « Partager » renames a default-named project too (off: it keeps its name). */
+    val renameProject: Boolean = true,
     val format: ExportFormat = ExportFormat.M4a,
     val playing: Boolean = false,
     val running: Boolean = false,
@@ -324,6 +330,8 @@ fun shareExportLufs(p: Project): Double? = LoudnessTargets.of(p)?.toDouble()
 
 class ShareSheetActions(
     val setName: (String) -> Unit = {},
+    /** Tour 9, F122: « Renommer aussi le projet » turned on or off. */
+    val renameProject: (Boolean) -> Unit = {},
     val setFormat: (ExportFormat) -> Unit = {},
     /** « Partager »: the name kept, the song exported in the format chosen, then Android's share sheet. */
     val share: () -> Unit = {},
@@ -387,8 +395,12 @@ fun ShareSheetContent(
     // alone, so that what scrolls above (the name, the duration) keeps a line more.
     androidx.compose.foundation.layout.BoxWithConstraints(modifier.fillMaxWidth()) {
     val short = constraints.hasBoundedHeight && maxHeight < 500.dp
+    // Tour 9, F123 (seat t9-74, en, 200 %): so narrow that M4A and WAV take a line each, the pinned chips left what
+    // scrolls a band where the name field showed only its label. There, M4A / WAV scroll with the rest, under the name.
+    val cramped = constraints.hasBoundedHeight && maxHeight < 380.dp && maxWidth < 300.dp
+    // Tour 8, captures8: the sheet ends where « Mes fichiers » does (a 12 dp empty band lay under it, in both modes).
     Column(
-        Modifier.fillMaxWidth().padding(bottom = 12.dp).then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
+        Modifier.fillMaxWidth().then(if (page) Modifier else Modifier.navigationBarsPadding()).testTag("share_sheet"),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
     // Lot 6, U4 / U15 / N7 (seats A c, F a, H a, D a): the line cut by the bottom edge, right above the pinned M4A / WAV
@@ -403,7 +415,12 @@ fun ShareSheetContent(
     androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth().weight(1f, fill = false).layout { measurable, c ->
         val h = if (c.hasBoundedHeight) snapHeight(stops, topPad.roundToPx(), c.maxHeight) else c.maxHeight
         val p = measurable.measure(c.copy(minHeight = minOf(c.minHeight, h), maxHeight = h))
-        layout(p.width, p.height) { p.place(0, 0) }
+        // Tour 8, captures8: the scrollable tail is there for a sheet that scrolls; when all of it fits (nothing to
+        // scroll), the sheet ends at its last line and the tail no longer leaves an empty band above M4A / WAV.
+        val lines = stops.lines
+        val fits = lines.size >= 2 && topPad.roundToPx() + lines.last().bottom <= p.height
+        val shown = if (fits) maxOf(c.minHeight, topPad.roundToPx() + lines[lines.size - 2].bottom) else p.height
+        layout(p.width, shown) { p.place(0, 0) }
     }) {
     SnapColumn(
         Modifier.fillMaxWidth().fadingVerticalEdges(scroll, SCROLL_FADE).verticalScroll(scroll).padding(horizontal = 20.dp).padding(top = topPad),
@@ -422,28 +439,56 @@ fun ShareSheetContent(
         // Lot 6, U16 (seat F a #66): otherwise the label is « Nom » alone (it read « Nom du morceau envoyé », « already
         // sent? », after a share closed without sending); the line under it says the project keeps its name.
         // Round 2, n° 26: the name selected at the touch, what is typed replaces it.
-        val renames = ui.projectName?.let { shareRenamesProject(it, ui.name) || ShareSong.isDefaultName(it) } ?: true
+        // Tour 9, F122 (seats t9-02, t9-26): known before exporting, and avoidable: « Renommer aussi le projet » off,
+        // the project keeps its default name.
+        val canRename = ui.projectName?.let { ShareSong.isDefaultName(it) } == true
+        val renames = ui.renameProject && (ui.projectName?.let { shareRenamesProject(it, ui.name) || ShareSong.isDefaultName(it) } ?: true)
         com.pocketstudio.app.ui.SelectAllTextField(
             value = ui.name, onValueChange = actions.setName, label = { Text(if (renames) tr("Nom du morceau (et du projet)") else tr("Nom")) },
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
             modifier = Modifier.fillMaxWidth().testTag("share_name"),
         )
         // Testers (lot « tuto 4 »): « Mon projet 1 » became « Mon morceau » without a word.
-        ui.projectName?.let { DefaultNames.shown(it).trim() }?.takeIf { it.isNotEmpty() && it != ui.name.trim() }?.let { old ->
-            if (renames) Text(tr("« Partager » renomme aussi le projet « %s ».", old), style = MaterialTheme.typography.bodySmall,
-                color = Neon.TextSecondary, modifier = Modifier.testTag("share_renames"))
-            else Text(tr("Le projet garde son nom « %s ».", old), style = MaterialTheme.typography.bodySmall,
-                color = Neon.TextSecondary, modifier = Modifier.testTag("share_keeps_name"))
+        // Tour 9, F122: the sentence is the switch's own label (one line, not two): the bars under it stay whole in sight.
+        val old = ui.projectName?.let { DefaultNames.shown(it).trim() }?.takeIf { it.isNotEmpty() && it != ui.name.trim() }
+        val sentence: (@Composable (Modifier) -> Unit)? = old?.let {
+            { m: Modifier ->
+                if (renames) Text(tr("« Partager » renomme aussi le projet « %s ».", it), style = MaterialTheme.typography.bodySmall,
+                    color = Neon.TextSecondary, modifier = m.testTag("share_renames"))
+                else Text(tr("Le projet garde son nom « %s ».", it), style = MaterialTheme.typography.bodySmall,
+                    color = Neon.TextSecondary, modifier = m.testTag("share_keeps_name"))
+            }
         }
+        // Tour 9 (base-rouges2): the switch row is 48 dp tall; under the name it pushed « Longueur de la boucle » out of
+        // a small phone's sight (« partager » took a scroll, budget 3 touches, G1). It sits under the loop's length now;
+        // the label of the name field above still says whether the project is renamed.
+        val renameRow: @Composable () -> Unit = {
+            Row(
+                Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                    .toggleable(value = ui.renameProject, role = Role.Switch, onValueChange = actions.renameProject)
+                    .testTag("share_rename_project"),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (sentence != null) sentence(Modifier.weight(1f))
+                else Text(tr("Renommer aussi le projet"), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                Switch(checked = ui.renameProject, onCheckedChange = null, modifier = Modifier.padding(start = 8.dp))
+            }
+        }
+        if (!canRename) sentence?.invoke(Modifier)
+        if (cramped) FormatChips(ui, actions)
         // How long it lasts, and one last listen (the saturation is checked while it plays).
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Tour 8, R (seat 3a #64): one line whole or not at all; the edge cut it under the clock (hi, 130 %) and
+        // « ▶ सुनो » showed as an empty outline.
+        Row(Modifier.layoutId(WHOLE_LINE), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(shareClock(ui.seconds), style = MonoStyle.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold), color = Neon.Cyan,
                         modifier = Modifier.testTag("share_duration"))
                     // Its own column beside the clock: wrapped (130 %), its second line no longer runs into the clock.
                     Text(
-                        if (ui.parts == 0) tr("une partie en boucle") else trCount(ui.parts, "1 partie", "%d parties"),
+                        // Tour 9, F125 (seat t9-55): the home counts the song's rows (11), this its parts (6): both said.
+                        if (ui.parts == 0) tr("une partie en boucle") else trCount(ui.parts, "1 partie", "%d parties") +
+                            (if (ui.rows > ui.parts) " " + tr("(avec les reprises : %d)", ui.rows) else ""),
                         style = MaterialTheme.typography.bodyMedium, color = Neon.TextSecondary, modifier = Modifier.padding(start = 10.dp).weight(1f, fill = false),
                     )
                 }
@@ -457,7 +502,7 @@ fun ShareSheetContent(
                     // Tour 6, control seat Ac-3 (screen 45): beside a sentence on two lines, « détails ? » read in its middle
                     // (« comme la musique de détails ? club »): the sentence whole, then « détails » and its « ? » under it.
                     Text(
-                        tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), shareLevelWords(lufs, ui.exportLufs?.let { ui.target?.choice })),
+                        shareSigned(tr("Volume : %s, %s", String.format(com.pocketstudio.model.i18n.I18n.lang.locale, "%.1f", lufs).replace('-', '−'), shareLevelWords(lufs, ui.exportLufs?.let { ui.target?.choice }))),
                         style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.fillMaxWidth().testTag("share_loudness"),
                     )
                     if (!simple) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
@@ -469,7 +514,9 @@ fun ShareSheetContent(
                     }
                     if (details && !simple) {
                         Text(
-                            tr("%s LUFS · crête %s dBTP", LoudnessTargets.format(ui.lufs ?: lufs), ui.truePeakDb?.let { LoudnessTargets.format(it) } ?: "—"),
+                            // Tour 9, F121 (seat t9-22): the reading is the one heard while listening, not the file's.
+                            shareSigned(ui.lufs?.let { heard -> tr("Mesuré pendant l'écoute : %s LUFS · crête %s dBTP", LoudnessTargets.format(heard), ui.truePeakDb?.let { LoudnessTargets.format(it) } ?: "—") }
+                                ?: tr("%s LUFS · crête %s dBTP", LoudnessTargets.format(lufs), ui.truePeakDb?.let { LoudnessTargets.format(it) } ?: "—")),
                             style = MonoStyle.copy(fontSize = 12.sp), color = Neon.TextSecondary, modifier = Modifier.testTag("share_loudness_details"),
                         )
                     }
@@ -499,13 +546,14 @@ fun ShareSheetContent(
                 }
             }
         }
+        if (canRename) renameRow()
         // Audit ultra round 3 (n° 10, seats A d 3, F b 26): the target chosen here, where the song leaves (it was only
         // said, « se règle dans Mix », and only once set there). The same setting as Mix's. Pro keeps it above the checks.
         // Tour 7 lot 5 D3: the same plain target chips in both modes (Pro's LUFS stay in Mix and under « détails »).
         if (!simple || ui.checks.isEmpty()) ui.target?.let { SimpleTargetPicker(it, actions.chooseTarget, enabled = !ui.running) }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = (if (ui.checks.isEmpty()) Modifier.layoutId(WHOLE_LINE) else Modifier).testTag("share_checks")) {
             if (ui.checks.isEmpty()) {
-                CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok")
+                CheckLine(Icons.Filled.CheckCircle, Neon.Acid, tr("Tout est prêt : aucun solo oublié, aucune piste coupée."), "share_check_ok", merged = true)
             }
             ui.checks.forEach { check -> CheckRow(check, ui, actions, simple) }
         }
@@ -557,18 +605,7 @@ fun ShareSheetContent(
     }
         // Testers (lot « tuto 4 »): M4A or WAV stays in sight with « Partager » (a short page, the tutorial's
         // panel under it, cut the chips in half at the scroll's edge).
-        FlowRow(
-            Modifier.padding(horizontal = 20.dp), itemVerticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            // The chips say what they are (« M4A · pour partager »): on one line on a phone, no « Format » before them.
-            listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (format, label) ->
-                FilterChip(
-                    selected = ui.format == format, onClick = { actions.setFormat(format) }, label = { Text(label) },
-                    colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_format_${format.name}"),
-                )
-            }
-        }
+        if (!cramped) FormatChips(ui, actions, Modifier.padding(horizontal = 20.dp))
         ui.rightsProject?.let { com.pocketstudio.app.remix.RightsLine(it, Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) }
         Button(
             onClick = actions.share, enabled = ui.name.isNotBlank() && !ui.running,
@@ -584,15 +621,47 @@ fun ShareSheetContent(
     }
 }
 
+/** M4A or WAV: the chips say what they are (« M4A · pour partager »), on one line on a phone, no « Format » before them. */
+@Composable
+private fun FormatChips(ui: ShareSheetUi, actions: ShareSheetActions, modifier: Modifier = Modifier) {
+    FlowRow(
+        modifier, itemVerticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        listOf(ExportFormat.M4a to tr("M4A · pour partager"), ExportFormat.Wav to tr("WAV · qualité max")).forEach { (format, label) ->
+            FilterChip(
+                selected = ui.format == format, onClick = { actions.setFormat(format) }, label = { Text(label) },
+                colors = pillColors(), modifier = Modifier.heightIn(min = 48.dp).testTag("share_format_${format.name}"),
+            )
+        }
+    }
+}
+
 /**
  * The words of the share line's level: the target's own when the file aims at Club or Streaming (bench replay of Ac-2:
  * « Club · −8 LUFS » chosen, the line said « très fort (les plateformes le baisseront) »), else what [lufs] sounds like.
  */
 internal fun shareLevelWords(lufs: Double, choice: com.pocketstudio.model.TargetChoice?): String = when (choice) {
     com.pocketstudio.model.TargetChoice.CLUB -> tr("fort, comme la musique de club")
-    com.pocketstudio.model.TargetChoice.STREAMING -> tr("comme la musique en streaming (−14)")
-    else -> Loudness.describe(lufs)
+    com.pocketstudio.model.TargetChoice.STREAMING -> shareStreamingWords()
+    // Tour 9, F121 (seat t9-59): Auto aims at the style's level (−9 for a techno), not « club ».
+    com.pocketstudio.model.TargetChoice.AUTO -> tr("le volume habituel de ton style")
+    else -> Loudness.describe(lufs).let { if (it == tr("comme la musique en streaming (−14)")) shareStreamingWords() else it }
 }
+
+/** Tour 9, F121 (seats t9-14, t9-22): « (−14) » alone meant nothing: the unit and whose level it is. */
+internal fun shareStreamingWords(): String = tr("comme la musique en streaming (−14 LUFS, le niveau de Spotify et YouTube)")
+
+/**
+ * Tour 9, F030: in a right-to-left interface each signed number of « Partager » (« −14 », « −14,4 ») keeps its minus
+ * on its left, glued to its digits: the sign and the digits form one left-to-right isolate ([ltrNumber]). Arabic
+ * read « 14− » (the bidi algorithm put a bare minus on the right). Unchanged left to right.
+ */
+internal fun shareSigned(text: String): String =
+    if (!com.pocketstudio.model.i18n.I18n.lang.rtl) text
+    else SIGNED.replace(text) { com.pocketstudio.model.i18n.ltrNumber(it.value) }
+
+private val SIGNED = Regex("""[−\-+][0-9٠-٩۰-۹](?:[0-9٠-٩۰-۹.,٫٬]*[0-9٠-٩۰-۹])?""")
 
 /** One line of [SnapColumn]: where it starts and ends, in pixels; [whole]: never to be cut by the edge ([WHOLE_LINE]). */
 internal data class SnapLine(val top: Int, val bottom: Int, val whole: Boolean)
@@ -667,9 +736,9 @@ private fun SimpleTargetPicker(pick: com.pocketstudio.app.mixer.TargetPick, choo
         // Its « ? », in plain words made of the level's own (translated) words: no LUFS in the Mode simple.
         com.pocketstudio.ui.HelpDot(
             com.pocketstudio.ui.Help(tr("Volume visé"), listOf(
-                tr("Streaming") + " : " + tr("comme la musique en streaming (−14)"),
+                tr("Streaming") + " : " + shareStreamingWords(),
                 tr("Club") + " : " + tr("fort, comme la musique de club"),
-            ).joinToString("\n")),
+            ).joinToString("\n").let(::shareSigned)),
             about = listOf("share_target_*"),
         )
     }
@@ -724,8 +793,11 @@ private fun CheckRow(check: ShareCheck, ui: ShareSheetUi, actions: ShareSheetAct
 }
 
 @Composable
-private fun CheckLine(icon: ImageVector, color: Color, text: String, tag: String) {
-    Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth().testTag(tag)) {
+private fun CheckLine(icon: ImageVector, color: Color, text: String, tag: String, merged: Boolean = false) {
+    Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(10.dp),
+        // Tour 9, F126: the green check and its sentence read as one line, never a lone picture without a meaning.
+        // Warnings keep their ⚠ apart: the bench writes it before the sentence (BenchSelfTest).
+        modifier = Modifier.fillMaxWidth().testTag(tag).then(if (merged) Modifier.semantics(mergeDescendants = true) {} else Modifier)) {
         Icon(icon, contentDescription = null, tint = color, modifier = Modifier.padding(top = 1.dp).size(20.dp))
         Text(text, style = MaterialTheme.typography.bodyMedium, color = if (color == Neon.TextSecondary) Neon.TextPrimary else color, modifier = Modifier.weight(1f))
     }
@@ -799,6 +871,8 @@ fun ShareSheetRoute(
     // Audit final: only a name typed here is kept (per project); otherwise the field follows the
     // project's own name (another project opened, a rename elsewhere), never a stale one.
     var edited by rememberSaveable(rhythmVm.projectId) { mutableStateOf<String?>(null) }
+    // Tour 9, F122: « Renommer aussi le projet », on by default (as before), per project.
+    var renameOn by rememberSaveable(rhythmVm.projectId) { mutableStateOf(true) }
     val name = edited ?: initialShareName(project.name)
     // T5-8MES: the length Mix shows and sends (the default loop until one is picked), not a second count of its own.
     val loopBars = export.bars
@@ -806,7 +880,8 @@ fun ShareSheetRoute(
     val checks = remember(project, levels, loopBars) { shareChecks(project, com.pocketstudio.app.ui.mixerStrips(project), levels, loopBars) }
     val ui = (
         ShareSheetUi(
-            name = name, seconds = shareSeconds(project, loopBars), parts = project.song.size, checks = checks, projectName = project.name, rightsProject = project,
+            name = name, seconds = shareSeconds(project, loopBars), parts = project.song.map { it.scene }.distinct().size, rows = project.song.size,
+            renameProject = renameOn, checks = checks, projectName = project.name, rightsProject = project,
             format = prefs.format, playing = transport.playing, running = export.running, canLower = levels.canLower, lufs = levels.lufs,
             truePeakDb = levels.truePeakDb, lossDb = levels.lossDb, exportLufs = shareExportLufs(project),
             // Tour 6, seat A c (E1): the target is offered in the Mode simple too (plain words, SimpleTargetPicker), so
@@ -818,13 +893,14 @@ fun ShareSheetRoute(
     val actions = (
         ShareSheetActions(
             setName = { edited = it.take(ProjectCatalog.MAX_NAME) },
+            renameProject = { renameOn = it },
             setFormat = prefs::choose,
             share = {
                 if (export.running) {
                     Toast.makeText(context, tr("Un export est déjà en cours : attends qu'il finisse."), Toast.LENGTH_SHORT).show()
                 } else {
                     val clean = name.trim()
-                    if (shareRenamesProject(project.name, clean)) rhythmVm.renameProject(clean)
+                    if (renameOn && shareRenamesProject(project.name, clean)) rhythmVm.renameProject(clean)
                     edited = null
                     if (!page) close()
                     rhythmVm.shareSong(prefs.format, title = clean)
@@ -845,7 +921,7 @@ fun ShareSheetRoute(
             otherExports = { if (!page) close(); otherExports() },
             video = {
                 val clean = name.trim()
-                if (shareRenamesProject(project.name, clean)) rhythmVm.renameProject(clean)
+                if (renameOn && shareRenamesProject(project.name, clean)) rhythmVm.renameProject(clean)
                 edited = null
                 if (!page) close()
                 video()

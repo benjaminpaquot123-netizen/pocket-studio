@@ -1,0 +1,61 @@
+Écran 25 (1035x1243)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 299,42
+texte « Pro » @ 625,42
+icône ↶ @ 697,42
+icône ↷ [désactivé] @ 769,42
+bouton ● @ 841,42
+bouton ▶ « esta parte » @ 915,42
+icône (trois points reliés) @ 990,42
+bouton « 126  BPM » @ 73,114
+icône « Intro comp. 1/48 » ▾ @ 228,114
+bouton (flèches en boucle) « Loop » [état « desligado »] @ 887,114
+bouton « ? » @ 990,114
+icône ▶ « G · Fim × 1  ·  8 comp. » @ 155,198
+icône − [désactivé] @ 304,198
+icône + @ 376,198
+icône ⋮ @ 448,198
+texte « − / + : repetições. Cinza: duração fixa (sugerida ou Live) ou só 1 vez. » @ 263,279
+texte « Adicionar no fim: » @ 126,333
+bouton « + A · Groove » @ 141,396
+bouton « + B · Intro » @ 336,396
+bouton « + C · Intro 2 » @ 137,476
+bouton « + D · Drop » @ 329,476
+titre « BLOCOS » [état « Expandido »] @ 637,207
+bouton « ? » @ 702,207
+texte « Toque num bloco: ele assume no próximo compasso. » @ 771,268
+bouton « 8 » [sélectionné] @ 679,343
+bouton « 16 » @ 760,343
+bouton « 24 » @ 843,343
+texte « Mostrar: » @ 592,343
+bouton « A Groove 8 comp. » @ 600,433
+bouton « B Intro 8 comp. » @ 714,433
+bouton « C Intro 2 em seguida » @ 828,433
+bouton « D Drop 8 comp. » @ 942,433
+bouton « E Break 8 comp. » [coupé] @ 600,496
+bouton « F Drop 2 8 comp. » [coupé] @ 714,496
+bouton « G Fim 8 comp. » [coupé] @ 828,496
+bouton « H vazio » [coupé] @ 942,496
+icône (liste) « Capítulos » @ 892,553
+texte « Organize suas partes Capítulo 9/14 · Etapa 1/2 · Pro » @ 431,553
+icône ⌄ @ 978,553
+image (coupe) @ 57,657
+texte « Parabéns, deu certo! » @ 198,643
+texte « Ouça seu resultado e toque em “Próxima etapa” quando quiser. » @ 378,671
+bouton « Próxima etapa   » → @ 517,859
+icône ← @ 57,943
+bouton ■ «  Parar » @ 327,943
+bouton ▶ «  Ouvir o exemplo » @ 788,943
+icône ↶ « Desfazer » @ 141,1027
+icône ↷ « Refazer » [désactivé] @ 317,1027
+bouton ■ « a música » @ 494,1027
+texte « 126 Andamento » @ 681,1027
+icône (trois points reliés) « Compartilhar » @ 880,1027
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 99,1123
+onglet (touches de piano) « Sons » @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Mais » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Anotar » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentários » @ 385,1213

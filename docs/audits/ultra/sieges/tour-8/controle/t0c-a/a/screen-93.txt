@@ -1,0 +1,17 @@
+Écran 93 (588x1278)
+icône ✕ @ 528,60
+texte « Tuto de A à Z » @ 258,60
+bouton « 1 La vitesse et la couleur du morceau 2/3 » @ 294,144
+bouton « 2 Le kick et le grondement 2/4 » @ 294,225
+bouton « 3 Le clap » (rond coché) @ 294,306
+bouton « 4 Les charleys 2/3 » @ 294,387
+bouton « 5 La basse 3/4 » @ 294,468
+bouton « 6 Le stab (un accord court) » (rond coché) @ 294,549
+bouton « 7 Le riff 2/3 » @ 294,630
+bouton « 8 Ta première partie : le Groove, ta boucle de base » (rond coché) @ 294,729
+bouton « 9 Comprendre les parties » (rond coché) @ 294,828
+bouton « 10 Construis tes parties » (rond coché) @ 294,909
+bouton « 11 Range tes parties » (rond coché) [coupé] @ 294,972
+bouton « Continuer en Pro (tous les outils) » @ 294,1038
+bouton ↺ «  Recommencer le tuto (nouveau projet vide) » @ 294,1128
+texte « Quitter le tuto (tu pourras le reprendre) » @ 294,1218

@@ -1,0 +1,46 @@
+Écran 37 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ▶ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 98,123
+icône « Intro compás 2/96 » ▾ @ 308,123
+bouton « ? » @ 543,123
+bouton « Acordes de la canción B · Intro Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m C · Subida La♭  La♭  Fa m  Fa m  La♭  La♭  Fa m  Fa m D · Drop Fa m  La♭  Si♭  Si♭  Fa m  La♭  Si♭  Si♭ E · Break Fa m  La♭  Fa m  La♭  Fa m  La♭  Fa m  La♭ F · Drop 2 Fa m  La♭  Si♭  Si♭  Fa m  La♭  Si♭  Si♭ G · Fin Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m Toca para cambiar los acordes de toda la canción. » [coupé] @ 294,182
+icône ▶ « B · Intro 28 comp.  ·  suena » @ 186,271
+icône − [désactivé] @ 366,271
+icône + [désactivé] @ 438,271
+icône ⋮ @ 510,271
+icône ▶ « C · Subida 4 comp.  ·  después » @ 186,395
+icône − [désactivé] @ 366,395
+icône + [désactivé] @ 438,395
+icône ⋮ @ 510,395
+icône ▶ « D · Drop 16 comp. » [coupé] @ 186,475
+icône − [désactivé, coupé] @ 366,481
+icône + [désactivé, coupé] @ 438,481
+icône ⋮ [coupé] @ 510,481
+texte « Las transiciones Capítulo 10/13 · Paso 1/3 · Fácil » @ 202,555
+icône (liste) « Capítulos » @ 439,556
+icône ⌄ @ 531,556
+texte « Te toca: toca “Ir a la parte “Subida””. » @ 276,662
+texte « ▸ ¿Por qué? » @ 294,714
+bouton ⊕ «   Ir a la parte “Subida” » @ 294,783
+bouton ▶ «  Escuchar el ejemplo » @ 154,881
+bouton (œil) «  Muéstramelo » @ 433,881
+icône ← «  Anterior » @ 112,976
+icône « Siguiente  » → @ 466,976
+icône ↶ « Deshacer » @ 72,1061
+image ↷ @ 185,1048
+bouton ■ « la canción » @ 304,1061
+texte « 120 Tempo » @ 424,1061
+icône ⋮ « Más » @ 527,1061
+onglet (lignes et note) « Mi canción » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Ritmo » @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 356,1248
+texte « ✎  Anotar » @ 454,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 160,1248

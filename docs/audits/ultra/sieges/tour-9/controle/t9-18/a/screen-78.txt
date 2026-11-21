@@ -1,0 +1,82 @@
+Écran 78 (1035x1243)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 299,42
+texte « Pro » @ 625,42
+icône ↶ @ 697,42
+icône ↷ [désactivé] @ 769,42
+bouton ● @ 841,42
+bouton ▶ « esta parte » @ 915,42
+icône (trois points reliés) @ 990,42
+bouton « 126  BPM » @ 73,114
+icône « Drop comp. 33/120 » ▾ @ 242,114
+bouton (flèches en boucle) « Loop » [état « desligado »] @ 887,114
+bouton « ? » @ 990,114
+texte « Deslize um fader para o volume; toque no nome de uma faixa para ver os efeitos e as curvas dela. » [coupé] @ 263,165
+texte « Bateria » [coupé] @ 20,252
+bouton (casque) [coupé, état « desligado »] @ 20,327
+texte « Acid 303 » @ 91,252
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 64,327
+bouton (casque) [état « desligado »] @ 118,327
+curseur [état « +0,0 dB », à 80 %] @ 91,498
+texte « +0,0 » @ 91,649
+texte « Acordes » @ 211,252
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 184,327
+bouton (casque) [état « desligado »] @ 238,327
+curseur [état « +0,0 dB », à 80 %] @ 211,498
+texte « +0,0 » @ 211,649
+image (étincelles) @ 187,681
+texte « 1 » @ 205,681
+image (courbe) @ 223,681
+texte « 1 » @ 241,681
+texte « Baixo » @ 331,252
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 304,327
+bouton (casque) [état « desligado »] @ 358,327
+curseur [état « +0,0 dB », à 80 %] @ 331,498
+texte « +0,0 » @ 331,649
+texte « Melodia » @ 451,252
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 424,327
+bouton (casque) [état « desligado »] @ 478,327
+curseur [état « +0,0 dB », à 80 %] @ 451,498
+texte « +0,0 » @ 451,649
+image (courbe) @ 60,781
+texte « Curvas e efeitos » @ 187,771
+texte « 1 ajuste se mexe sozinho. » [coupé] @ 208,792
+texte « Suavizar » @ 613,193
+icône (loupe −) [désactivé] @ 722,193
+icône (loupe +) @ 822,193
+texte « ×1 » @ 772,193
+texte « Desenhe com o dedo; dois toques rápidos apagam um ponto. “Suavizar” acerta um traço tremido, “Desfazer” o desfaz. » @ 771,292
+texte « 18,0 kHz » @ 589,367
+texte « 849 Hz » @ 593,457
+texte « 40 Hz » @ 599,547
+texte « tempo » @ 589,576
+texte « 1 » @ 641,574
+texte « 3 » @ 688,574
+texte « 5 » @ 733,574
+texte « 7 » @ 777,574
+texte « 9 » @ 823,574
+texte « 11 » @ 870,574
+texte « 13 » @ 917,574
+texte « 15 » @ 962,574
+titre « SAÍDA MASTER » [état « Expandido »] @ 673,673
+bouton « ? » @ 774,673
+texte « Volume: — » @ 605,719
+texte « Volume master » [coupé] @ 731,785
+texte « −6,0 dB » [coupé] @ 952,788
+icône (liste) « Capítulos » @ 892,844
+texte « A mixagem Capítulo 12/14 · Etapa 1/3 · Pro » @ 431,844
+icône ⌃ @ 978,844
+icône « Sua vez: no Mix, abaixe um pouco o fader da faixa “Melodia”, depois o da faixa “Acordes”. Ler » ⌃ @ 517,943
+icône ↶ « Desfazer » @ 141,1027
+icône ↷ « Refazer » [désactivé] @ 317,1027
+bouton ▶ « a música » @ 494,1027
+texte « 126 Andamento » @ 681,1027
+icône (trois points reliés) « Compartilhar » @ 880,1027
+onglet (ligne brisée et points) « Estrutura » @ 99,1123
+onglet (touches de piano) « Sons » @ 309,1123
+onglet (curseurs) « Mix » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Mais » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Anotar » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentários » @ 385,1213

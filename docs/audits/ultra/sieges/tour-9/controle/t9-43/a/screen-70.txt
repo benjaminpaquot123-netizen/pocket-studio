@@ -1,0 +1,15 @@
+Écran 70 (900x1509)
+texte « Een spoor toevoegen » @ 278,98
+bouton (étincelles) «   Schrijf een melodie voor me » @ 450,176
+texte « Een Melodie-spoor met 4 maten al geschreven in de toonsoort van het nummer. Met ongedaan maken haal je het weg. » @ 450,284
+bouton (vagues) « Acid 303 De piepende bas van acid house, vakje voor vakje » @ 450,401
+texte « Of een spoor om zelf te vullen, met het juiste geluid: » @ 436,485
+bouton (éclair) « Melodie (lead) Een hoog geluid voor een melodietje » @ 450,569
+bouton (nuage) « Akkoorden (pad) Aangehouden akkoorden voor de sfeer » @ 450,672
+bouton (vagues) « Bas De lage noten onder de drums » @ 450,775
+bouton (vagues) « 808-bas De trapbas die van noot naar noot glijdt » @ 450,878
+bouton (points épars) « Arpeggio Houd een akkoord vast: de noten één voor één » @ 450,981
+bouton (points épars) « Pluck / percussief Een kort, knallend geluid » @ 450,1084
+bouton (micro) «   Zang (microfoon): over het nummer zingen of rappen » @ 450,1201
+texte « Leeg spoor (basisgeluid) » @ 450,1308
+texte « Annuleren » @ 450,1398

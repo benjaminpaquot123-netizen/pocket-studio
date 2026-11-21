@@ -1,0 +1,83 @@
+Écran 71 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 116,42
+bouton « Pro » @ 262,42
+bouton « F · Build-up » ▾ @ 409,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône (flèches en boucle) « Build-up Takt 1/4 » ▾ @ 263,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+onglet « Drums 16 Pads » [sélectionné] @ 87,204
+onglet « Acid 303 Bassline » @ 259,204
+onglet « Vocals Mikrofon » @ 438,204
+onglet « Remix Trennen » @ 608,204
+bouton « Bass Plaits » @ 753,204
+bouton « Akkorde Pluck » [coupé] @ 849,204
+image → @ 889,205
+texte « Teil: F · Build-up » @ 132,273
+titre « STEPS: TECHNO · CLAP · BUILD-UP » [coupé, état « Aufgeklappt »] @ 362,311
+bouton « ? » [coupé] @ 571,311
+bouton « Alle Pads » [coupé] @ 770,312
+texte « Takt » @ 70,384
+bouton « 1 » @ 143,384
+bouton « 2 » @ 224,384
+bouton « 3 » @ 305,384
+bouton « 4 » [sélectionné] @ 386,384
+bouton « Folgen » @ 502,384
+texte « Takt 4/4 · Techno · Clap » @ 205,468
+bouton « 1 » [état « Schlag, Stärke 90 % »] @ 90,553
+bouton [état « Schlag, Stärke 91 % »] @ 192,553
+bouton [état « Schlag, Stärke 92 % »] @ 294,553
+bouton [état « Schlag, Stärke 93 % »] @ 397,553
+bouton « 2 » [état « Schlag, Stärke 93 % »] @ 500,553
+bouton [état « Schlag, Stärke 94 % »] @ 603,553
+bouton [état « Schlag, Stärke 95 % »] @ 706,553
+bouton [état « Schlag, Stärke 96 % »] @ 809,553
+bouton « 3 » [état « Schlag, Stärke 97 % »] @ 90,634
+bouton [état « Schlag, Stärke 98 % »] @ 192,634
+bouton [état « Schlag, Stärke 98 % »] @ 294,634
+bouton « ×4 » [état « Schlag, Stärke 99 %, 4 Wiederholungen »] @ 397,634
+bouton « 4 » [état « leer »] @ 500,634
+bouton [état « leer »] @ 603,634
+bouton [état « leer »] @ 706,634
+bouton [état « leer »] @ 809,634
+bouton « Schläge » [sélectionné] @ 122,720
+bouton « Rolls » @ 265,720
+bouton « Panorama » @ 421,720
+bouton « Tonhöhe » @ 604,720
+bouton « Velocity » @ 774,720
+texte « Füllen » @ 79,804
+texte « alles » @ 163,804
+texte « 1/2 » @ 246,804
+texte « 1/4 » @ 321,804
+texte « ◀ » @ 396,804
+texte « ▶ » @ 471,804
+texte « Löschen » @ 581,804
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,906
+texte « Länge » @ 83,1008
+bouton « 1 Takt » @ 196,1008
+bouton « 2 » @ 305,1008
+bouton « 3 » @ 386,1008
+bouton « 4 » [sélectionné] @ 467,1008
+texte « Die Übergänge: von einem Teil zum nächsten Kapitel 12/16 · Schritt 1/3 · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône (rond coché) « Geschafft Nächster Schritt » → @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ■ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

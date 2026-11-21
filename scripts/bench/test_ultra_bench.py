@@ -215,6 +215,8 @@ def main():
     with tempfile.TemporaryDirectory() as d:
         last_screen_image_after_waits(d)
     with tempfile.TemporaryDirectory() as d:
+        image_refused_while_the_seat_goes_on(d)
+    with tempfile.TemporaryDirectory() as d:
         banc7_stamp_reason(d)
     with tempfile.TemporaryDirectory() as d:
         banc7_budget_and_launcher_stall(d)
@@ -261,6 +263,7 @@ def main():
         fusion_forged(d)
         toy_batch_is_its_own(d)
         ci_state_reads_every_job(d)
+        ci_state_without_gh(d)
         portal_queue(d)
         portal_traces(d)
         zone_report(d)
@@ -275,6 +278,8 @@ def main():
         corrections_by_target(d)
     with tempfile.TemporaryDirectory() as d:
         seats_from_ids(d)
+    with tempfile.TemporaryDirectory() as d:
+        niveaux_levels(d)
     with tempfile.TemporaryDirectory() as d:
         comebacks(d)
     with tempfile.TemporaryDirectory() as d:
@@ -607,25 +612,82 @@ def comebacks(d):
     check("[nouveau] grave ×1 (A/a#4)" in text, "refused by a reader: another defect:\n" + text)
 
 
+def niveaux_levels(d):
+    """Lot « niveaux » (PLAN-NIVEAUX): the four level missions read the saved project (« reussie » on a holding one,
+    « non » and what is missing on a failing one); fabrique asks each seat its level; the dashboard counts per level."""
+    import shutil
+    fixtures = os.path.join(HERE, "oracles-niveaux")
+    for mission in ("mon-morceau", "boucle-imposee", "projet-vide", "pistes-separees"):
+        for case, want in (("tient", "mission=reussie"), ("ne-tient-pas", "mission=non")):
+            seat = os.path.join(d, mission, case)
+            shutil.copytree(os.path.join(fixtures, mission, case), seat)
+            out = run(os.path.join(HERE, "seat-metrics.py"), seat, "--mission", mission)
+            check(want in out, f"{mission}/{case}: {want}:\n" + out)
+            got = json.load(open(os.path.join(seat, "mesures.json"), encoding="utf-8"))
+            if case == "ne-tient-pas":
+                check("manque" in got["pourquoi"], f"{mission}: the missing goal is said: {got['pourquoi']}")
+            check(got.get("niveau") in ("2", "3", "4"), f"{mission}/{case}: the seat's level copied into mesures.json: {got.get('niveau')}")
+    # Fabrique: a level per seat, « libre » none, « reprendre » kept out of round 8.
+    tour = os.path.join(d, "tour-9")
+    os.makedirs(tour)
+    fab = os.path.join(HERE, "fabrique-sieges.py")
+    def refused(row, words):
+        write(os.path.join(tour, "sieges-proposes.tsv"), row)
+        r = subprocess.run([sys.executable, "-I", fab, tour], capture_output=True, text=True)
+        check(r.returncode != 0 and all(w in r.stdout + r.stderr for w in words), f"refused {words}:\n" + r.stdout + r.stderr)
+    refused("A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006\n", ["Aa", "niveau"])
+    refused("A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006\t7\n", ["Aa", "niveau"])
+    refused("A\ta\tfr\tphone\t100\tsimple\t-\tlibre\t40\tEnfant\tP006\t2\n", ["Aa", "libre"])
+    refused("A\ta\tfr\tphone\t100\tsimple\t-\treprendre\t40\tEnfant\tP006\t2\n", ["Aa", "reprendre", "tour 8"])
+    write(os.path.join(tour, "sieges-proposes.tsv"),
+          "A\ta\tfr\tphone\t100\tpro\t-\tboucle-imposee\t80\tPro\tP006\t4\n"
+          "A\tb\tfr\tphone\t100\tsimple\t-\tlibre\t40\tCurieux\tP006\n"
+          "A\tc\tfr\tphone\t100\tsimple\t-\tlibre\t40\tCurieux\tP006\tX\n")
+    run(fab, tour)
+    check("niveau=4" in open(os.path.join(tour, "lotA", "a", "start.txt"), encoding="utf-8").read(), "start.txt carries the level")
+    check(os.path.isfile(os.path.join(tour, "lotA", "a", "boucle.json")), "the imposed loop's sheet is in the seat")
+    check("The loop to rebuild" in open(os.path.join(tour, "briefs", "Aa.txt"), encoding="utf-8").read(), "the brief says the loop")
+    tsv = open(os.path.join(tour, "sieges.tsv"), encoding="utf-8").read().splitlines()
+    check(tsv[0].endswith("\tniveau") and tsv[1].endswith("\t4"), "sieges.tsv keeps the level:\n" + "\n".join(tsv))
+    # The dashboard: one row per level, a libre seat fills none.
+    for s, (result, help_) in {"a": ("reussie", 0), "b": ("reussie", 1), "c": ("non", 0)}.items():
+        write(os.path.join(tour, "lotA", s, "mesures.json"), json.dumps(
+            {"resultat": result, "mission": "x", "mesures": {"gestes": 10, "gestes_premier_son": 3, "appels_aide": help_}}))
+    write(os.path.join(tour, "lotA", "a", "rapport.md"), "symptome: surprise\nsymptome: incompris\n- ecran: 2 | vu: BPM | attendu: tempo\n")
+    write(os.path.join(tour, "sieges.tsv"), "lot\tsiege\tlang\tdevice\tfont\tmode\toptions\tmission\tgestes\tprofil\tpromesses\tniveau\n"
+          "A\ta\tfr\tphone\t100\tpro\t-\tboucle-imposee\t80\tPro\tP006\t4\n"
+          "A\tb\tfr\tphone\t100\tsimple\t-\tlibre\t40\tCurieux\tP006\t\n"
+          "A\tc\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tCurieux\tP006\t0\n")
+    sys.path.insert(0, HERE)
+    try:
+        rows = __import__("tableau-de-bord").levels(tour, docs=d)
+    finally:
+        sys.path.remove(HERE)
+    check(len(rows) == 5 and [r[0][0] for r in rows] == list("01234"), f"one row per level 0 to 4: {rows}")
+    check(rows[4][1:5] == (1, 1, 0, "0") and rows[4][7:] == (1, 2), f"the pro seat: alone, a surprise, two words: {rows[4]}")
+    check(rows[0][1:5] == (1, 0, 0, "1"), f"the curious seat blocked: {rows[0]}")
+    check(sum(r[1] for r in rows) == 2, f"the libre seat fills no row: {rows}")
+
+
 def seats_from_ids(d):
     """Banc fiable 2.3: a seat's promises from catalogue ids and free texts; an id twice is refused."""
     tour = os.path.join(d, "tour-9")
     os.makedirs(tour)
     write(os.path.join(tour, "sieges-proposes.tsv"),
-          "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006 ; libre: le pad 2 sonne\n")
+          "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006 ; libre: le pad 2 sonne\t1\n")
     out = run(os.path.join(HERE, "fabrique-sieges.py"), tour)
     check("1 sièges" in out, out)
     brief = open(os.path.join(tour, "briefs", "Aa.txt"), encoding="utf-8").read()
     check("id=P006 | « Pad Live · NOUVEAU" in brief and "id=t9-Aa-1 | le pad 2 sonne" in brief, "ids resolved:\n" + brief)
     check("P006 ; t9-Aa-1" in open(os.path.join(tour, "sieges.tsv"), encoding="utf-8").read(), "sieges.tsv keeps the ids")
-    write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006 ; P6\n")
+    write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP006 ; P6\t1\n")
     r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "fabrique-sieges.py"), tour], capture_output=True, text=True)
     check(r.returncode != 0 and "twice" in (r.stdout + r.stderr), "the same id twice is refused")
     # PLAN-RESTE 6.4: more than 5 promises is refused, naming the seat (it used to truncate to 5 without a word).
-    write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP001 ; P002 ; P003 ; P004 ; P005 ; libre: le pad 2 sonne\n")
+    write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP001 ; P002 ; P003 ; P004 ; P005 ; libre: le pad 2 sonne\t1\n")
     r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "fabrique-sieges.py"), tour], capture_output=True, text=True)
     check(r.returncode != 0 and "Aa: 6 promises, 5 at most" in (r.stdout + r.stderr), "6 promises are refused, the seat named:\n" + r.stdout + r.stderr)
-    write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP001 ; P002 ; P003 ; P004 ; P005\n")
+    write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone\t100\tsimple\t-\tpadlive\t40\tEnfant\tP001 ; P002 ; P003 ; P004 ; P005\t1\n")
     out = run(os.path.join(HERE, "fabrique-sieges.py"), tour)
     check("1 sièges" in out and open(os.path.join(tour, "briefs", "Aa.txt"), encoding="utf-8").read().count("  - id=") == 5, "5 promises pass whole")
 
@@ -636,11 +698,11 @@ def banc7_budget_and_launcher_stall(d):
     output (PS_STALL_MIN) although a seat may wait 30 min for its tester's next gesture (timeout.minutes=30)."""
     tour = os.path.join(d, "tour-9")
     os.makedirs(tour)
-    write(os.path.join(tour, "sieges-proposes.tsv"), "D\ta\tfr\tphone\t100\tsimple\t-\ttuto-facile\t120\tDébutant\tlibre: le tuto se finit\n")
+    write(os.path.join(tour, "sieges-proposes.tsv"), "D\ta\tfr\tphone\t100\tsimple\t-\ttuto-facile\t120\tDébutant\tlibre: le tuto se finit\t1\n")
     r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "fabrique-sieges.py"), tour], capture_output=True, text=True)
     check(r.returncode != 0 and "Da" in (r.stdout + r.stderr) and "250" in (r.stdout + r.stderr),
           "a whole tutorial with 120 gestures is refused, naming the seat and the 250 it needs:\n" + r.stdout + r.stderr)
-    write(os.path.join(tour, "sieges-proposes.tsv"), "D\ta\tfr\tphone\t100\tsimple\t-\ttuto-facile\t250\tDébutant\tlibre: le tuto se finit\n")
+    write(os.path.join(tour, "sieges-proposes.tsv"), "D\ta\tfr\tphone\t100\tsimple\t-\ttuto-facile\t250\tDébutant\tlibre: le tuto se finit\t1\n")
     run(os.path.join(HERE, "fabrique-sieges.py"), tour)
     check("gestes.max=250" in open(os.path.join(tour, "lotD", "a", "start.txt"), encoding="utf-8").read(), "250 gestures pass")
     # The launcher: its Gradle queue waits longer than the longest seat's timeout (its own watchdog ends a silent seat first).
@@ -711,6 +773,29 @@ def banc7_stamp_reason(d):
     tester = os.path.join(HERE, "..", "human-tester.sh")
     r = subprocess.run(["bash", tester, lot], capture_output=True, text=True, timeout=120)
     check(r.returncode == 3 and "start.txt" in r.stderr, "the launcher passes the stamp's reason on:\n" + r.stderr)
+
+
+def image_refused_while_the_seat_goes_on(d):
+    """Tour 8, lot banc9 (point d): the last screen's image is given only once « fin » is played or the seat ended. An
+    image asked at turn n while the seat goes on (its last command a touch, no fin.txt) stays refused, cap reached."""
+    act = os.path.join(HERE, "..", "human-act.py")
+    seat = os.path.join(d, "controle", "banc9", "a")
+    write(os.path.join(seat, "start.txt"), "lang=fr\n")
+    for k in range(1, 6):
+        write(os.path.join(seat, f"cmd-{k}.txt"), "touche 100 200")
+    write(os.path.join(seat, "images.txt"), "1\n2\n")
+    write(os.path.join(seat, "turn"), "6")
+    write(os.path.join(seat, "cmd-6.txt"), "touche 100 200")
+    from PIL import Image
+    Image.new("RGB", (40, 80), (20, 20, 20)).save(os.path.join(seat, "screen-6.png"))
+    out = run(act, seat, "regarde", "image")
+    check("Plafond" in out and "écran 6" not in out, "the seat goes on: the image of screen 6 stays refused:\n" + out)
+    check("6" not in read_lines(os.path.join(seat, "images.txt")), "a refused image is not counted:\n" + out)
+
+
+def read_lines(path):
+    with open(path, encoding="utf-8") as f:
+        return [l.strip() for l in f if l.strip()]
 
 
 def last_screen_image_after_waits(d):
@@ -3091,6 +3176,53 @@ def ci_state_reads_every_job(d):
     check(got.get("ci_build") == "rouge", f"red wins over running: {got}")
     got = state(emulator=("completed", "failure"), publish=("completed", "skipped"))
     check(got == {"ci_build": "vert", "ci_emulateur": "rouge"}, f"the emulator's job is ci_emulateur's, the skipped publication nobody's: {got}")
+CI_NO_GH = """#!/usr/bin/env bash
+# A gh that is not signed in (or absent): every call fails.
+exit 4
+"""
+
+CI_FAKE_CURL = """#!/usr/bin/env bash
+# Stand-in for curl on GitHub's public API (no token): the JSON GitHub sends, from the toy's files; the URL is noted.
+url="${@: -1}"
+echo "$url" >> "$PS_TOY_CI/urls"
+case "$url" in
+  *"/actions/runs?head_sha="*) cat "$PS_TOY_CI/runs.json" ;;
+  *"/actions/runs/"*"/jobs"*) cat "$PS_TOY_CI/jobs.json" ;;
+  *) exit 22 ;;
+esac
+"""
+
+
+def ci_state_without_gh(d):
+    """Tour 9, L9 (défaut 4): where gh is missing or not signed in (a lot's machine), ci-etat.sh answered « ? » and the
+    pre-flight said nothing of a red CI. It reads the same state from GitHub's public API with curl, no token."""
+    import json
+    toy = os.path.join(d, "ci-etat-curl")
+    for name, body in (("gh", CI_NO_GH), ("curl", CI_FAKE_CURL)):
+        write(os.path.join(toy, "bin", name), body)
+        os.chmod(os.path.join(toy, "bin", name), 0o755)
+    write(os.path.join(toy, "runs.json"), json.dumps({"total_count": 1, "workflow_runs": [
+        {"id": 7, "name": "CI", "status": "completed", "conclusion": "failure"}]}))
+    env = dict(os.environ, PATH=os.path.join(toy, "bin") + os.pathsep + os.environ["PATH"], PS_TOY_CI=toy)
+
+    def state(jobs):
+        write(os.path.join(toy, "jobs.json"), json.dumps({"total_count": len(jobs), "jobs": [
+            {"name": n, "status": st, "conclusion": c} for n, st, c in jobs]}))
+        out = subprocess.run(["bash", os.path.join(HERE, "ci-etat.sh")], env=env, capture_output=True, text=True).stdout
+        return dict(l.split("\t", 1) for l in out.splitlines() if l.startswith("ci_"))
+
+    green = [("Build, unit tests, screenshots", "completed", "success"), ("Emulator smoke test", "completed", "success"),
+             ("Publish APK", "completed", "skipped")]
+    got = state(green)
+    check(got == {"ci_build": "vert", "ci_emulateur": "vert"}, f"without gh, the public API read: every job green: {got}")
+    got = state([("Build, unit tests, screenshots", "completed", "failure"), ("Emulator smoke test", "completed", "success")])
+    check(got == {"ci_build": "rouge", "ci_emulateur": "vert"}, f"without gh, a red job read: {got}")
+    got = state([("Build, unit tests, screenshots", "in_progress", None), ("Emulator smoke test", "queued", None)])
+    check(got == {"ci_build": "en cours", "ci_emulateur": "en cours"}, f"without gh, a running job read (null conclusion): {got}")
+    urls = open(os.path.join(toy, "urls"), encoding="utf-8").read()
+    check("https://api.github.com/repos/" in urls and "head_sha=" in urls, f"the public API asked: {urls}")
+
+
 QUEUE_PORTAL = """#!/usr/bin/env bash
 # Stand-in for the portal: says what it was given, refuses the zone « refused », merges the others.
 tour="$1"; zone="$2"
@@ -3663,6 +3795,15 @@ def zone_report(d):
     code, out, asked, moved = merge("diese")
     check(code == 0 and moved and "--tests FooTest.works" in asked and "FooTest#works" not in asked,
           "« Classe#méthode » in « tests: » reaches Gradle as « Classe.méthode »:\n" + out + asked)
+    git_toy(root, "reset", "-q", "--hard", "HEAD~2")
+    # Tour 9 L10: a report that copies the Gradle command (« :app:testDebugUnitTest --tests '*Foo*' ») gives its bare
+    # filters, never « --tests » nor the task as a filter (else Gradle fails on « --tests » with no argument).
+    branch("commande", "# Rapport\n\ntests: :app:testDebugUnitTest --tests 'FooTest' --tests \"*Foo*\"\n\n"
+           "- chemin: Accueil | test: FooTest#works\n")
+    code, out, asked, moved = merge("commande")
+    check(code == 0 and moved and "--tests FooTest" in asked and "--tests *Foo*" in asked
+          and "--tests --tests" not in asked and "testDebugUnitTest --tests :app" not in asked and "'" not in asked,
+          "a « tests: » line copied from the Gradle command gives its bare filters:\n" + out + asked)
     git_toy(root, "reset", "-q", "--hard", "HEAD~2")
     branch("rapportok", good)
     code, out, asked, moved = merge("rapportok")

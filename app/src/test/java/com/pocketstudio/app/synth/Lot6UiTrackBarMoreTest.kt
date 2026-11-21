@@ -27,8 +27,9 @@ import org.robolectric.annotation.GraphicsMode
 /**
  * Lot 6, R19 (its TrackBar part: « + 트랙 » D b q9, « 303 basu » F b q1, « Geschlossene Hi-Hats » B b-suite q9): the
  * row of tracks went on past the screen's edge with a chip cut there, its soft fade read as a plain cut. While the row
- * goes on off screen, its edge carries a sign (a chevron over the fade) on that side; it takes no touch (the chip under
- * it still answers), and at the row's end it is gone.
+ * goes on off screen, its edge carries a sign (an arrow) on that side; it takes no touch, and at the row's end it is gone.
+ * Tour 8, captures8: the sign lay over the row and covered the last chip's text; it now sits beside the row, outside
+ * what scrolls ([Tour8CapturesTest]), and the chip cut at the row's edge still answers.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -60,7 +61,7 @@ class Lot6UiTrackBarMoreTest {
         val row = node("track_bar")!!.boundsInRoot
         val more = node("track_bar_more")
         assertNotNull("the row goes on past the right edge: a sign there", more)
-        assertEquals("on the row's right edge", row.right, more!!.boundsInRoot.right, 2f)
+        assertEquals("right after the row's right edge, not over it", row.right, more!!.boundsInRoot.left, 2f)
         assertFalse("the sign takes no touch", more.config.contains(SemanticsActions.OnClick))
         assertNull("at the start, nothing before", node("track_bar_less"))
         // Half way: both sides go on.
@@ -80,15 +81,17 @@ class Lot6UiTrackBarMoreTest {
     fun proKorean() = goesOn(Lang.KO, simple = false)
 
     @Test
-    fun theChipUnderTheSignStillAnswers() {
+    fun theChipCutAtTheEdgeStillAnswers() {
         var picked = -1
         I18n.lang = Lang.FR
         val tracks = List(6) { InstrumentTrack(it, "Geschlossene Hi-Hats $it") }
         compose.setContent { PocketStudioTheme { TrackBar(TracksUi(tracks, 0, select = { picked = it })) } }
         compose.waitForIdle()
         val more = node("track_bar_more")!!.boundsInRoot
-        // The chip cut at the edge, under the sign.
-        val cut = (1 until 6).first { node("track_$it")!!.boundsInRoot.let { b -> b.left < more.left && b.right >= more.left } }
+        val edge = node("track_bar")!!.boundsInRoot.right
+        assertTrue("the sign beside the row ($more), the row's edge at $edge", more.left >= edge - 1f)
+        // The chip cut at the row's edge, right before the sign.
+        val cut = (1 until 6).first { node("track_$it")!!.boundsInRoot.let { b -> b.left < edge && b.right >= edge - 1f } }
         compose.onNodeWithTag("track_$cut").performClick()
         compose.waitForIdle()
         assertEquals(cut, picked)

@@ -115,7 +115,7 @@
         },
         {
           "id": "perc_do",
-          "text": "À toi : sur le pad de percussion, touche les cases en pointillé : un coup tous les trois pas.",
+          "text": "À toi : sur le pad « Rim », touche les cases en pointillé : un coup tous les trois pas.",
           "why": "Tous les trois pas, elle tourne « à côté » du rythme : l'esprit des triolets du riddim. On la garde pour le Drop 2.",
           "check": "lane:perc",
           "spot": "rhythm.pattern",
@@ -424,7 +424,7 @@
           "id": "fill",
           "text": "À toi : dans la dernière mesure de la Montée, appui long sur le dernier coup de « Clap », et « ×4 » sous « Roulement ».",
           "textPro": "À toi : dans la partie « Montée », dernière mesure, pad « Clap » : appui long sur le dernier coup avant le dernier temps, puis « Roulement » ×3 ou ×4.",
-          "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence. Ici, une dernière rafale avant le silence.",
+          "why": "Entre deux parties, un petit événement prévient l'oreille : un roulement, un silence. Ici, une rafale avant le silence.",
           "check": "fill",
           "spot": "rhythm.pattern",
           "target": "clap",

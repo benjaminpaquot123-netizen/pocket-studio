@@ -1,0 +1,76 @@
+Écran 52 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 194,42
+texte « Pro » @ 415,42
+bouton « A » ▾ @ 490,42
+icône ↶ @ 565,42
+icône ↷ [désactivé] @ 637,42
+bouton ● @ 709,42
+bouton ▶ « bagian ini » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » [sélectionné] @ 71,183
+onglet « Acid 303 Bassline » @ 212,183
+onglet « Vokal Mikrofon » @ 365,183
+onglet « Remix Pisahkan » @ 516,183
+bouton + «  Trek » @ 672,183
+texte « Bagian: A » @ 68,243
+texte « Birama 2/2 · Roland TR-909 · Snare » @ 225,300
+bouton « 1 » [état « kosong »] @ 90,385
+bouton [état « kosong »] @ 192,385
+bouton [état « kosong »] @ 294,385
+bouton [état « kosong »] @ 397,385
+bouton « 2 » [état « kosong »] @ 500,385
+bouton [état « kosong »] @ 603,385
+bouton [état « kosong »] @ 706,385
+bouton [état « kosong »] @ 809,385
+bouton « 3 » [état « kosong »] @ 90,466
+bouton [état « kosong »] @ 192,466
+bouton [état « kosong »] @ 294,466
+bouton [état « kosong »] @ 397,466
+bouton « 4 » [état « pukulan, kekuatan 100 % »] @ 500,466
+bouton [état « pukulan, kekuatan 100 % »] @ 603,466
+bouton [état « pukulan, kekuatan 100 % »] @ 706,466
+bouton [état « pukulan, kekuatan 100 % »] @ 809,466
+bouton « Pukulan » [sélectionné] @ 108,552
+bouton « Roll » @ 225,552
+bouton « Pan » @ 320,552
+bouton « Pitch » @ 422,552
+bouton « Velocity » @ 545,552
+texte « semua » @ 114,636
+texte « 1/2 » @ 200,636
+texte « 1/4 » @ 275,636
+texte « ◀ » @ 350,636
+texte « ▶ » @ 425,636
+texte « Hapus » @ 510,636
+texte « Isi » @ 53,636
+texte « Sentuh kotak untuk menambah pukulan, geser jari untuk mengecat beberapa. Tekan lama pukulan: kekuatan dan roll (×2 sampai ×8). » @ 450,711
+texte « Panjang » [coupé] @ 81,772
+bouton « 1 birama » [coupé] @ 197,768
+bouton « 2 » [coupé, sélectionné] @ 309,768
+bouton « 3 » [coupé] @ 390,768
+bouton « 4 » [coupé] @ 471,768
+icône (liste) « Bab » @ 771,822
+texte « Hoover (akor) Bab 4/14 · Langkah 1/1 · Pro » @ 378,822
+icône ⌄ @ 843,822
+texte « Giliranmu: buat trek Akor (suara “Hoover”): F♯ dalam oktaf, dipukul dua kali dalam 2 birama; “Salin” mengikuti progresi i–i–VI–VII (D, E). » @ 450,921
+texte « ▸ Kenapa? » @ 450,981
+bouton ⊕ «   Buat trek Akor » @ 450,1044
+bouton ▶ «  Dengar contohnya » @ 232,1128
+bouton (œil) «  Tunjukkan » @ 667,1128
+icône ← «  Sebelumnya » @ 119,1209
+icône « Berikutnya  » → @ 789,1209
+icône ↶ « Urungkan » @ 124,1293
+icône ↷ « Ulangi » [désactivé] @ 285,1293
+bouton ▶ « lagu » @ 445,1293
+texte « 175 Tempo » @ 610,1293
+icône (trois points reliés) « Bagikan » @ 776,1293
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

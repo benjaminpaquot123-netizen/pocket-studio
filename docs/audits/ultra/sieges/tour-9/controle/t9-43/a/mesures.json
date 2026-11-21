@@ -1,0 +1,49 @@
+{
+  "siege": "a",
+  "niveau": "3",
+  "options": {
+    "lang": "nl",
+    "device": "tablet8",
+    "font": "130",
+    "mode": "pro",
+    "amenee": "tuto:liquid_dnb:1",
+    "gestes.max": "150",
+    "mission": "tuto-pro",
+    "profil": "confirmé",
+    "niveau": "3",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 114,
+    "images": 6,
+    "gestes_premier_son": 1,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 13,
+    "touchers_desactives": 0,
+    "retours": 1,
+    "retours_immediats": 0,
+    "ecrans": 121,
+    "ecrans_revisites": 11,
+    "defilements_sans_toucher": 1,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 1,
+    "constats_layout": 111,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 4.5,
+      "simule": 2.4,
+      "jvm": 10.7,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-pro",
+  "resultat": "reussie",
+  "pourquoi": "« liquid_dnb » en Pro : 17 étape(s), 5 chapitre(s) entier(s) sur 17"
+}

@@ -1,0 +1,54 @@
+Écran 81 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 184,42
+bouton « 专业 » @ 400,42
+bouton « A » ▾ @ 480,42
+icône ↶ @ 556,42
+icône ↷ [désactivé] @ 628,42
+bouton ● @ 700,42
+bouton ■ « 这个段落 » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+icône (flèches en boucle) « A 小节 1/2 » [désactivé] @ 239,123
+bouton « ? » @ 855,123
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 105,205
+onglet « Acid 303 贝斯线 » @ 296,205
+onglet « 人声 麦克风 » @ 457,205
+onglet « Remix 分离 » @ 598,205
+bouton + «  音轨 » @ 758,206
+texte « 段落：A » @ 71,275
+texte « 采集整首歌： » @ 118,339
+texte « 1 小节 » @ 259,339
+texte « 2 小节 » @ 384,339
+texte « 4 小节 » @ 512,339
+texte « 恢复为 开镲 音色 » @ 166,423
+bouton « 节拍器 » @ 109,555
+bouton « 倒数 » @ 241,555
+bouton « ? » @ 327,555
+bouton « 效果 » @ 808,555
+texte « Swing » @ 85,626
+bouton « ? » @ 150,626
+texte « 32% » @ 826,626
+curseur [état « 32% », à 31 %] @ 450,697
+texte « 打击乐 第 2/14 章 · 第 10/10 步 · 专业 » @ 378,826
+icône (liste) « 章节 » @ 771,826
+icône ⌄ @ 843,826
+texte « 听你所有的打击乐，然后听示例的。 » @ 261,915
+texte « ▸ 为什么？ » @ 450,967
+bouton ■ «   停止 » @ 450,1036
+bouton ▶ «  听示例 » @ 450,1120
+icône ← «  上一步 » @ 99,1201
+icône « 下一步  » → @ 801,1201
+icône ↶ « 撤销 » @ 124,1289
+icône ↷ « 重做 » [désactivé] @ 284,1289
+bouton ■ « 歌曲 » @ 444,1289
+texte « 122 速度 » @ 610,1289
+icône (trois points reliés) « 分享 » @ 776,1289
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 671,1479
+texte « ✎  记一笔 » @ 767,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 317,1479

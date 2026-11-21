@@ -20,6 +20,6 @@
  "Partie « %s » créée : tout le Groove y joue.": "Part “%s” made: the whole Groove plays in it.",
  "Partie « %1$s » créée (copie du Groove) : sans %2$s.": "Part “%1$s” made (a copy of the Groove): without %2$s.",
  "Sa basse est à toi d'écrire : les notes en pointillé.": "Its bass is yours to write: the dotted notes.",
- "Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.": "Its snare speeds up bar after bar, and its last beat goes quiet.",
- "Son pad « %s » accélère mesure après mesure, et son dernier temps se tait.": "Its pad “%s” speeds up bar after bar, and its last beat goes quiet."
+ "Sa caisse claire accélère mesure après mesure.": "Its snare speeds up bar after bar.",
+ "Son pad « %s » accélère mesure après mesure.": "Its pad “%s” speeds up bar after bar."
 }

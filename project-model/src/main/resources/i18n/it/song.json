@@ -13,7 +13,6 @@
   "Afficher :": "Mostra:",
   "Aide de la ligne du temps": "Aiuto della linea del tempo",
   "Ajouter :": "Aggiungi:",
-  "Ajouter à la fin :": "Aggiungi alla fine:",
   "Ajouter à la suite": "Aggiungi dopo",
   "Annuler la dernière action": "Annulla l'ultima azione",
   "Annuler la prise": "Annulla la take",
@@ -275,8 +274,8 @@
   "Terminé": "Fatto",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Il tuo brano è vuoto: aggiungi le tue parti nell'ordine in cui suonano (Intro, Strofa, Ritornello…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Tocca un pad per lanciare il suo suono, ritoccalo per fermarlo. Tutto resta a tempo.",
-  "Touche une partie : elle joue juste après celle en cours.": "Tocca una parte: suona subito dopo quella attuale.",
-  "Touche une partie pour écouter le morceau à partir d'elle.": "Tocca una parte per ascoltare il brano da lì.",
+  "Touche une partie pour régler sa longueur ; ▶ la joue juste après celle en cours.": "Tocca una parte per regolarne la durata; ▶ la suona subito dopo quella attuale.",
+  "Touche une partie pour régler sa longueur ; ▶ écoute le morceau à partir d'elle.": "Tocca una parte per regolarne la durata; ▶ suona il brano da lì.",
   "Toucher la règle : jouer depuis cette partie.": "Tocca il righello: suona da quella parte.",
   "Toucher une case : couper ou remettre la piste dans cette partie.": "Tocca una casella: muta o riattiva la traccia in questa parte.",
   "Tout couper": "Ferma tutto",
@@ -404,5 +403,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Suona le note: suonano sulla Acid 303. Tocca di nuovo la casella per fermare: il loop si allinea alla battuta.",
   "Le micro ne répond pas : réessaie.": "Il microfono non risponde: riprova.",
   "Vider la case": "Svuota la casella",
-  "Annuler possible": "Si può annullare"
+  "Annuler possible": "Si può annullare",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : ripetizioni. Grigi: durata fissa (consigliata o Live) o 1 sola volta."
 }

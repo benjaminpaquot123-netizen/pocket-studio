@@ -1,0 +1,398 @@
+#0 SIEGE lang=en device=foldable font=100 mode=simple theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:jungle:9
+#0 PREMIER ECRAN reel_s=3.9 simule_s=2.4 jvm_s=9.2 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:jungle:9
+#0 AMENEE > touche 518 570 (welcome_learn)
+#0 AMENEE > touche 263 1108 (mode_card_simple)
+#0 AMENEE > touche 517 1178 (tuto_style_jungle)
+#0 AMENEE chapitres 1 à 8 construits dans le projet
+#0 AMENEE > touche 894 601 (tuto_chapters)
+#0 AMENEE > touche 517 792 (tuto_chapter_8)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 33c7529113 | project=p-506a46e3 tuto=jungle/Facile active=true step=brick done=14 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 4 » 3.56:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Why? » 662 x 20 dp (touch 662 x 48)
+#1 > touche 517 859
+#1 DOIGT tuto_mark «   Got it »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8ce2d82caf | project=p-506a46e3 tuto=jungle/Facile active=true step=map_intro done=15 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « Intro » 4.15:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « 32 » 2.79:1 (needs 4.5:1, 12 sp)
+#2 > touche 517 859
+#2 DOIGT tuto_listen «  Listen to the example »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 38541d96a4 | project=p-506a46e3 tuto=jungle/Facile active=true step=map_intro done=15 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 3 s).
+#3 > attends 4
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f63e527699 | project=p-506a46e3 tuto=jungle/Facile active=true step=map_intro done=16 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 517 859
+#4 DOIGT tuto_next_big « Next step   »
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE bc33859243 | project=p-506a46e3 tuto=jungle/Facile active=true step=map_montee done=16 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « 4 » 1.85:1 (needs 4.5:1, 12 sp)
+#5 > touche 625 580
+#5 DOIGT rien (texte « 4 »)
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE bc33859243 | project=p-506a46e3 tuto=jungle/Facile active=true step=map_montee done=16 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 517 859
+#6 DOIGT tuto_listen «  Listen to the example »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 26202dc75d | project=p-506a46e3 tuto=jungle/Facile active=true step=map_montee done=16 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 3 s).
+#7 > attends 4
+#8 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9148c2521b | project=p-506a46e3 tuto=jungle/Facile active=true step=map_montee done=17 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 517 859
+#8 DOIGT tuto_next_big « Next step   »
+#9 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9b649addcf | project=p-506a46e3 tuto=jungle/Facile active=true step=map_drop done=17 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « Drop » 3.09:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#9 > touche 517 859
+#9 DOIGT tuto_listen «  Listen to the example »
+#10 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b7779c388c | project=p-506a46e3 tuto=jungle/Facile active=true step=map_drop done=17 playing=false
+#10 SON Son : l'exemple du tuto joue (encore 3 s).
+#10 > attends 4
+#11 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 380b96befa | project=p-506a46e3 tuto=jungle/Facile active=true step=map_drop done=18 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 517 859
+#11 DOIGT tuto_next_big « Next step   »
+#12 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a768a92bfd | project=p-506a46e3 tuto=jungle/Facile active=true step=map_break done=18 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Break » 3.78:1 (needs 4.5:1, 12 sp)
+#12 LAYOUT CONTRAST « 12 » 2.53:1 (needs 4.5:1, 12 sp)
+#12 > touche 517 859
+#12 DOIGT tuto_listen «  Listen to the example »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8d13a2c8a1 | project=p-506a46e3 tuto=jungle/Facile active=true step=map_break done=18 playing=false
+#13 SON Son : l'exemple du tuto joue (encore 3 s).
+#13 > attends 4
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5e9f702898 | project=p-506a46e3 tuto=jungle/Facile active=true step=map_break done=19 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 859
+#14 DOIGT tuto_next_big « Next step   »
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE db09bb2e70 | project=p-506a46e3 tuto=jungle/Facile active=true step=map_drop2 done=19 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT CONTRAST « Drop 2 » 3.09:1 (needs 4.5:1, 12 sp)
+#15 > touche 517 859
+#15 DOIGT tuto_listen «  Listen to the example »
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b45611253d | project=p-506a46e3 tuto=jungle/Facile active=true step=map_drop2 done=19 playing=false
+#16 SON Son : l'exemple du tuto joue (encore 3 s).
+#16 > attends 4
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 03f2cb5ed2 | project=p-506a46e3 tuto=jungle/Facile active=true step=map_drop2 done=20 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 517 859
+#17 DOIGT tuto_next_big « Next step   »
+#18 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6c2c42dd6f | project=p-506a46e3 tuto=jungle/Facile active=true step=map_phrases done=20 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 12 » 4.28:1 (needs 4.5:1, 12 sp)
+#18 > touche 517 859
+#18 DOIGT tuto_mark «   Got it »
+#19 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7b9d41ed41 | project=p-506a46e3 tuto=jungle/Facile active=true step=map_phrases done=21 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 517 859
+#19 DOIGT tuto_next_big « Next chapter   »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d75bb8d787 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_intro done=21 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 517 778
+#20 DOIGT tuto_need «   Create the “Intro” part »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 8961419af4 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_intro done=22 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 327 943
+#21 DOIGT tuto_play_mine «  Listen to your result »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6b66948cec | project=p-506a46e3 tuto=jungle/Facile active=true step=make_intro done=22 playing=true
+#22 SON Son : la musique du projet joue en boucle.
+#22 > touche 327 943
+#22 DOIGT tuto_play_mine «  Stop »
+#23 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 8961419af4 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_intro done=22 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 517 859
+#23 DOIGT tuto_next_big « Next step   »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b03425a974 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_montee done=22 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 768 862
+#24 DOIGT tuto_show «  Show me »
+#25 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 28b703900a | project=p-506a46e3 tuto=jungle/Facile active=true step=make_montee done=22 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « Stop » 3.91:1 (needs 4.5:1, 14 sp)
+#25 > attends 3
+#26 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 330151870e | project=p-506a46e3 tuto=jungle/Facile active=true step=make_montee done=22 playing=false
+#26 SON Son : rien ne joue.
+#26 > attends 3
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f92c63ec61 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_montee done=22 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 961 649
+#27 DOIGT tuto_kit_later « Later »
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6e20e5cc96 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_montee done=22 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « + New empty part » 1.66:1 (needs 4.5:1, 14 sp)
+#28 LAYOUT CONTRAST « Chords » 1.54:1 (needs 4.5:1, 14 sp)
+#28 > touche 517 778
+#28 DOIGT tuto_need «   Create the “Build-up” part »
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 05e30ba918 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_montee done=23 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 517 859
+#29 DOIGT tuto_next_big « Next step   »
+#30 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 8bac0d9042 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_drop done=23 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 517 712
+#30 DOIGT tuto_why « ▸ Why? »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 13a3067cd7 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_drop done=23 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT TARGET « ▾ Why? » 662 x 20 dp (touch 662 x 48)
+#31 > touche 517 778
+#31 DOIGT tuto_need «   Create the “Drop” part »
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1cfb18c174 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_drop done=24 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 517 859
+#32 DOIGT tuto_next_big « Next step   »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fef4b5d20b | project=p-506a46e3 tuto=jungle/Facile active=true step=make_break done=24 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 517 778
+#33 DOIGT tuto_need «   Create the “Break” part »
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a060b6b0e6 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_break done=25 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 517 859
+#34 DOIGT tuto_next_big « Next step   »
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1b07ef6e56 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_drop2 done=25 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 517 778
+#35 DOIGT tuto_need «   Create the “Drop 2” part »
+#36 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 66a6e1287e | project=p-506a46e3 tuto=jungle/Facile active=true step=make_drop2 done=26 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 147 1027
+#36 DOIGT thumb_undo « Undo »
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE cb61f2d3b2 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_drop2 done=26 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 517 859
+#37 DOIGT tuto_next_big « Next step   »
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 98641fbb9a | project=p-506a46e3 tuto=jungle/Facile active=true step=make_fin done=26 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 329 1027
+#38 DOIGT thumb_redo « Redo »
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3a12824b7e | project=p-506a46e3 tuto=jungle/Facile active=true step=make_fin done=26 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 517 778
+#39 DOIGT tuto_need «   Create the “End” part »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3a2eaf8892 | project=p-506a46e3 tuto=jungle/Facile active=true step=make_fin done=27 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 517 859
+#40 DOIGT tuto_next_big « Next chapter   »
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 497e0f9ed6 | project=p-506a46e3 tuto=jungle/Facile active=true step=song_order done=27 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 517 778
+#41 DOIGT tuto_do «   I'll do it »
+#42 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3f272755d9 | project=p-506a46e3 tuto=jungle/Facile active=true step=song_order done=27 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « + A · Groove » 4.06:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « + B · Intro » 4.06:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « + C · Build-up » 4.12:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « + D · Drop » 4.12:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « + E · Break » 4.23:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « + F · Drop 2 » 4.23:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « + G · End » 4.25:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « + New part (copy of G · End) » 4.30:1 (needs 4.5:1, 14 sp)
+#42 LAYOUT CONTRAST « + New empty part » 4.37:1 (needs 4.5:1, 14 sp)
+#42 > touche 336 229
+#42 DOIGT add_part_1 « + B · Intro »
+#43 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 9cbd6355aa | project=p-506a46e3 tuto=jungle/Facile active=true step=song_order done=27 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « + A · Groove » 4.23:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « + B · Intro » 3.50:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « + C · Build-up » 4.25:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « + D · Drop » 4.25:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « + E · Break » 4.25:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « + F · Drop 2 » 4.25:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « + G · End » 4.30:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « + New part (copy of G · End) » 4.37:1 (needs 4.5:1, 14 sp)
+#43 LAYOUT CONTRAST « + New empty part » 4.43:1 (needs 4.5:1, 14 sp)
+#43 > touche 352 465
+#43 DOIGT add_part_3 « + D · Drop »
+#44 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 44c1e197b0 | project=p-506a46e3 tuto=jungle/Facile active=true step=song_order done=27 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 133 546
+#44 DOIGT add_part_4 « + E · Break »
+#45 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE e6999db566 | project=p-506a46e3 tuto=jungle/Facile active=true step=song_order done=27 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 149 465
+#45 DOIGT add_part_2 « + C · Build-up »
+#46 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 4cf6c83c17 | project=p-506a46e3 tuto=jungle/Facile active=true step=song_order done=27 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 328 546
+#46 DOIGT add_part_5 « + F · Drop 2 »
+#47 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3c98f858c9 | project=p-506a46e3 tuto=jungle/Facile active=true step=song_order done=27 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 125 627
+#47 DOIGT add_part_6 « + G · End »
+#48 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1c1b38e9f7 | project=p-506a46e3 tuto=jungle/Facile active=true step=song_order done=28 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 517 943
+#48 DOIGT tuto_next_folded « Passed »
+#49 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 54f14018c9 | project=p-506a46e3 tuto=jungle/Facile active=true step=song_phrases done=28 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT OVERLAP « Tap to change the chords of the whole song. » over the touchable « Tempo: 165 beats per minute Change the t » (67 x 4 dp)
+#49 LAYOUT OVERLAP « Tap to change the chords of the whole song. » over the touchable « Play from a part » (96 x 4 dp)
+#49 > touche 517 778
+#49 DOIGT tuto_need «   Set the suggested lengths »
+#50 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ef57975885 | project=p-506a46e3 tuto=jungle/Facile active=true step=song_phrases done=29 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT OVERLAP « Tap to change the chords of the whole song. » over the touchable « Play from a part » (99 x 4 dp)
+#50 > touche 517 859
+#50 DOIGT tuto_next_big « Next chapter   »
+#51 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0805cc6301 | project=p-506a46e3 tuto=jungle/Facile active=true step=fill done=29 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 517 778
+#51 DOIGT tuto_need «   Go to the “Build-up” part »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fe61feb4c2 | project=p-506a46e3 tuto=jungle/Facile active=true step=fill done=29 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « Snare » 4.09:1 (needs 4.5:1, 14 sp)
+#52 LAYOUT CONTRAST « STEPS: SNARE · BUILD-UP » 2.25:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « ? » 1.36:1 (needs 4.5:1, 12 sp)
+#52 LAYOUT CONTRAST « All pads » 1.26:1 (needs 4.5:1, 14 sp)
+#52 > appui-long 744 614
+#52 DOIGT step_59 « Step 12 »
+#53 ROUTE dialogue:roll_menu | MODE simple | EMPREINTE ec799e2abd | project=p-506a46e3 tuto=jungle/Facile active=true step=fill done=29 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 546 602
+#53 DOIGT roll_4 « ×4 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d9df8fb2c3 | project=p-506a46e3 tuto=jungle/Facile active=true step=fill done=30 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 517 943
+#54 DOIGT tuto_next_folded « Passed »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 334bb8aa5f | project=p-506a46e3 tuto=jungle/Facile active=true step=gap done=30 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « Bar 4/4 · Hi-hat » 4.25:1 (needs 4.5:1, 13 sp)
+#55 > touche 517 778
+#55 DOIGT tuto_do «   I'll do it »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f6ffa3b01b | project=p-506a46e3 tuto=jungle/Facile active=true step=gap done=30 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « Bar 4/4 · Hi-hat » 3.34:1 (needs 4.5:1, 13 sp)
+#56 > touche 800 406
+#56 DOIGT step_60 « Step 13 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d132fd889f | project=p-506a46e3 tuto=jungle/Facile active=true step=gap done=30 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 912 406
+#57 DOIGT step_62 « Step 15 »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7b135ccbd9 | project=p-506a46e3 tuto=jungle/Facile active=true step=gap done=31 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 978 844
+#58 DOIGT tuto_fold
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5923917e51 | project=p-506a46e3 tuto=jungle/Facile active=true step=gap done=31 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 327 943
+#59 DOIGT tuto_play_mine «  Listen to my song »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bdaa713c64 | project=p-506a46e3 tuto=jungle/Facile active=true step=gap done=31 playing=true
+#60 SON Son : le morceau joue (partie « B »).
+#60 > touche 327 943
+#60 DOIGT tuto_play_mine «  Stop »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 64ab770ce7 | project=p-506a46e3 tuto=jungle/Facile active=true step=gap done=31 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 517 859
+#61 DOIGT tuto_next_big « Next chapter   »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8c67c472b7 | project=p-506a46e3 tuto=jungle/Facile active=true step=reverb_hear done=31 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 517 859
+#62 DOIGT tuto_listen «  Listen to the example »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6f023ab24a | project=p-506a46e3 tuto=jungle/Facile active=true step=reverb_hear done=31 playing=false
+#63 SON Son : l'exemple du tuto joue (encore 7 s).
+#63 > attends 5
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bbfde0a9e3 | project=p-506a46e3 tuto=jungle/Facile active=true step=reverb_hear done=32 playing=false
+#64 SON Son : l'exemple du tuto joue (encore 2 s).
+#64 > touche 517 859
+#64 DOIGT tuto_next_big « Next step   »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6dda93b717 | project=p-506a46e3 tuto=jungle/Facile active=true step=riser_hear done=32 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 517 859
+#65 DOIGT tuto_listen «  Listen to the example »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3a8428ea67 | project=p-506a46e3 tuto=jungle/Facile active=true step=riser_hear done=32 playing=false
+#66 SON Son : l'exemple du tuto joue (encore 3 s).
+#66 > attends 8
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1a96cd7e91 | project=p-506a46e3 tuto=jungle/Facile active=true step=riser_hear done=33 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 517 859
+#67 DOIGT tuto_next_big « Next chapter   »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d1d3e743a5 | project=p-506a46e3 tuto=jungle/Facile active=true step=levels done=33 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 727 1123
+#68 DOIGT tab_simple_Mix « Mix »
+#69 ROUTE tab_simple_Mix | MODE simple | EMPREINTE a98b63c167 | project=p-506a46e3 tuto=jungle/Facile active=true step=levels done=33 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CONTRAST « Output » 4.45:1 (needs 4.5:1, 13 sp)
+#69 > touche 517 778
+#69 DOIGT tuto_do «   I'll do it »
+#70 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 67b3c7b749 | project=p-506a46e3 tuto=jungle/Facile active=true step=levels done=33 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT OVERLAP « Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own. » over the touchable « Tempo: 165 beats per minute Change the t » (81 x 4 dp)
+#70 LAYOUT OVERLAP « Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own. » over the touchable « Play from a part » (99 x 4 dp)
+#70 LAYOUT OVERLAP « Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own. » over the touchable « Label the screen » (8 x 4 dp)
+#70 LAYOUT CONTRAST « Chords » 3.99:1 (needs 4.5:1, 13 sp)
+#70 LAYOUT CONTRAST « Output » 4.34:1 (needs 4.5:1, 13 sp)
+#70 > glisse 339 400 339 440
+#70 DOIGT mix_fader_5 « Volume of Chords »
+#71 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE ab4791fc07 | project=p-506a46e3 tuto=jungle/Facile active=true step=levels done=33 playing=false
+#71 SON Son : rien ne joue.
+#71 > glisse 462 400 462 450
+#71 DOIGT mix_fader_6 « Volume of Melody »
+#72 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE b0b48249a3 | project=p-506a46e3 tuto=jungle/Facile active=true step=levels done=34 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 978 844
+#72 DOIGT tuto_fold
+#73 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 9328ba7df6 | project=p-506a46e3 tuto=jungle/Facile active=true step=levels done=34 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « Output » 4.38:1 (needs 4.5:1, 13 sp)
+#73 > touche 517 859
+#73 DOIGT tuto_next_big « Next chapter   »
+#74 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 86fd5b2cb1 | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=34 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 936 1123
+#74 DOIGT tab_simple_Envoyer « Share »
+#75 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 365e5ab38e | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=34 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 932 268
+#75 DOIGT name_clear
+#76 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 92a14276a2 | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=34 playing=false
+#76 SON Son : rien ne joue.
+#76 > ecris My jungle
+#77 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 2a104505a2 | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=34 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 518 255
+#77 DOIGT share_name « Song name (and the project's) »
+#77 DIALOGUE 0.3 s
+#78 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 80a85d0e45 | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=34 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT OVERLAP « Ready to share? » over the touchable « Tempo: 165 beats per minute Change the t » (60 x 4 dp)
+#78 LAYOUT OVERLAP « Ready to share? » over the touchable « Play from a part » (59 x 4 dp)
+#78 > ecris My jungle
+#78 DIALOGUE 0.2 s
+#79 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 91acb7b873 | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=34 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 518 445
+#79 DOIGT share_go «   Share »
+#79 DIALOGUE 0.3 s
+#80 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 73ff241b64 | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=34 playing=false
+#80 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#80 > attends 15
+#80 PARTAGE My-jungle-song-20261119-080240.m4a
+#80 DIALOGUE 2.0 s
+#81 ROUTE dialogue:« Share my song · My-jungle-song » | MODE simple | EMPREINTE 5fd6dc44e4 | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=35 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 517 509
+#81 DOIGT vue « WhatsApp »
+#81 DIALOGUE 0.2 s
+#82 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 629f579117 | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=35 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 857 771
+#82 DOIGT share_bilan_ok « OK »
+#82 DIALOGUE 0.2 s
+#83 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 990fa6b8ba | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=35 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 517 859
+#83 DOIGT tuto_next_big « Next step   »
+#83 DIALOGUE 0.2 s
+#84 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 3d8cef9ca7 | project=p-506a46e3 tuto=jungle/Facile active=true step=share done=35 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT CUT « Listen to a clip of a finished jungle song: the stumbling, rolling drums, the deep bass, then the howling hoover. That's what you're going to build, block by block. » ellipsized (« … »)
+#84 LAYOUT CUT « Before you start: on a pad, “FX” means an effect is already on it (it makes the sound punchier), “L 30” or “R 45” that the sound is placed a little to the left or right. Everything is ready: you have nothing to set. » ellipsized (« … »)
+#84 LAYOUT CUT « Listen to the jungle kick (the bass drum, the drums' big “boom”) alone: two close hits at the start, two more after the middle. » ellipsized (« … »)
+#84 > fin
+#84 FIN : fin

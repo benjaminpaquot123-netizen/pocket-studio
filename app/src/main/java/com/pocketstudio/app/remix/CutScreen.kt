@@ -233,8 +233,17 @@ fun CutScreen(
                   // Tour 7, lot 2 D3 (2c #16): a message (« Listo… ») grows the send bar at the scroll's end; the column
                   // follows it down, so the message and the four buttons stay in view instead of going under the bar.
                   val said = busy ?: note ?: message
+                  // Tour 8, R (decoupe2): a message left from before (it lives until « OK ») does not move the column on
+                  // arrival, so the instruction stays on top; only a message that comes while the screen is open does.
+                  // Tour 9, L10 F139: that old message is never followed later either (a work that came and went, leaving it
+                  // under): only a message other than the one found on arrival brings the column down.
+                  val arrived = androidx.compose.runtime.remember { booleanArrayOf(false) }
+                  val old = androidx.compose.runtime.remember { arrayOf(message) }
+                  if (message != old[0]) old[0] = null
                   if (scrollsAll) androidx.compose.runtime.LaunchedEffect(said) {
-                      if (said != null) {
+                      val first = !arrived[0]
+                      arrived[0] = true
+                      if (said != null && !first && said != old[0]) {
                           androidx.compose.runtime.withFrameNanos { }
                           scroll.animateScrollTo(scroll.maxValue)
                       }
@@ -681,7 +690,7 @@ private fun SendBar(model: CutModel, actions: StemBoardActions, work: State<Stem
         if (said != null) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(said, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.weight(1f).testTag("cut_message"))
-                if (busy == null) TextButton(onClick = { dismissNote(); actions.dismissMessage() }, modifier = Modifier.testTag("cut_message_ok")) { Text("OK") }
+                if (busy == null) TextButton(onClick = { dismissNote(); actions.dismissMessage() }, modifier = Modifier.testTag("cut_message_ok")) { Text(tr("OK")) }
             }
         }
         if (model.single && hint) SpanHint()

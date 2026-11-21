@@ -1,0 +1,444 @@
+#0 SIEGE lang=ar device=phone font=200 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:hard_techno:8
+#0 PREMIER ECRAN reel_s=3.6 simule_s=2.4 jvm_s=8.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:hard_techno:8
+#0 AMENEE > touche 294 979 (welcome_learn)
+#0 AMENEE > touche 294 651 (mode_card_simple)
+#0 AMENEE > touche 294 934 (tuto_style_hard_techno)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 129 242 (tuto_chapters)
+#0 AMENEE > touche 294 719 (tuto_chapter_7)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f096942016 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_intro done=12 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT OVERLAP « 150 » over « الفصل 8/13 · الخطوة 1/8 · سهل » (54 x 34 dp)
+#1 LAYOUT OVERLAP « الفصل 8/13 · الخطوة 1/8 · سهل » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (137 x 52 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 625
+#1 DOIGT tuto_need «   أنشئ الجزء «مقدمة» »
+#2 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 38cf56d9e5 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_intro done=13 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 294 726
+#2 DOIGT tuto_next_big « الخطوة التالية   »
+#3 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 72c4c20026 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_intro2 done=13 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT OVERLAP « 150 » over « الفصل 8/13 · الخطوة 2/8 · سهل » (54 x 34 dp)
+#3 LAYOUT OVERLAP « الفصل 8/13 · الخطوة 2/8 · سهل » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (137 x 52 dp)
+#3 > touche 294 536
+#3 DOIGT tuto_why « ▸ لماذا؟ »
+#4 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 91a897dd8e | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_intro2 done=13 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « 150 » over « الفصل 8/13 · الخطوة 2/8 · سهل » (54 x 32 dp)
+#4 LAYOUT OVERLAP « الفصل 8/13 · الخطوة 2/8 · سهل » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (137 x 45 dp)
+#4 > touche 294 551
+#4 DOIGT tuto_text_more « تابع القراءة »
+#5 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d0710f1b78 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_intro2 done=13 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 50 313
+#5 DOIGT rien (texte « كل جزء جديد يبدأ من نسخة من الغروف: تزيل »)
+#6 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d0710f1b78 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_intro2 done=13 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 294 638
+#6 DOIGT tuto_need «   أنشئ الجزء «مقدمة 2» »
+#7 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a3e2ff70ab | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_intro2 done=14 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 372 865
+#7 DOIGT tuto_play_mine «  استمع إلى نتيجتك »
+#8 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 84a7e369ab | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_intro2 done=14 playing=true
+#8 SON Son : la musique du projet joue en boucle.
+#8 LAYOUT OVERLAP « الفصل 8/13 · الخطوة 2/8 · سهل » over the touchable « التشغيل من جزء » (117 x 65 dp)
+#8 LAYOUT OVERLAP « الفصول » over the touchable « التشغيل من جزء » (11 x 27 dp)
+#8 > touche 372 865
+#8 DOIGT tuto_play_mine «  إيقاف »
+#9 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a3e2ff70ab | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_intro2 done=14 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 294 739
+#9 DOIGT tuto_next_big « الخطوة التالية   »
+#10 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a529ebacec | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_drop done=14 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 150 » over « الفصل 8/13 · الخطوة 3/8 · سهل » (54 x 34 dp)
+#10 LAYOUT OVERLAP « الفصل 8/13 · الخطوة 3/8 · سهل » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (137 x 52 dp)
+#10 > touche 154 751
+#10 DOIGT tuto_show «  أرني »
+#11 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 58c2991f24 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_drop done=14 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#11 LAYOUT CONTRAST « إيقاف » 3.91:1 (needs 4.5:1, 14 sp)
+#11 > attends 5
+#12 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a529ebacec | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_drop done=14 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 294 625
+#12 DOIGT tuto_need «   أنشئ الجزء «دروب» »
+#13 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 616f5db63b | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_drop done=15 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 150 608
+#13 DOIGT tuto_text_more « تابع القراءة »
+#14 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c16138b48d | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_drop done=15 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 294 579
+#14 DOIGT tuto_text_more « تابع القراءة »
+#15 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ad1f1a9777 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_drop done=15 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 294 726
+#15 DOIGT tuto_next_big « الخطوة التالية   »
+#16 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 66ad11a142 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_break done=15 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « 150 » over « الفصل 8/13 · الخطوة 4/8 · سهل » (54 x 34 dp)
+#16 LAYOUT OVERLAP « الفصل 8/13 · الخطوة 4/8 · سهل » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (137 x 52 dp)
+#16 > touche 73 451
+#16 DOIGT tuto_kit_later « لاحقًا »
+#17 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c728d7f4ae | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_break done=15 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 294 625
+#17 DOIGT tuto_need «   أنشئ الجزء «فاصل» »
+#18 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 77bf6ca61c | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_break done=16 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 294 726
+#18 DOIGT tuto_next_big « الخطوة التالية   »
+#19 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c96e3fc00b | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_montee done=16 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT OVERLAP « 150 » over « ابنِ أجزاءك » (54 x 34 dp)
+#19 LAYOUT OVERLAP « ابنِ أجزاءك » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (105 x 41 dp)
+#19 > touche 294 625
+#19 DOIGT tuto_need «   أنشئ الجزء «تصاعد» »
+#20 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e1eb0811c2 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_montee done=17 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 294 726
+#20 DOIGT tuto_next_big « الخطوة التالية   »
+#21 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 0d52d40a5c | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_faux done=17 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 294 625
+#21 DOIGT tuto_need «   أنشئ الجزء «دروب زائف» »
+#22 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f3550967d3 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_faux done=18 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 294 726
+#22 DOIGT tuto_next_big « الخطوة التالية   »
+#23 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 05ae53f78b | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_drop2 done=18 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 483 877
+#23 DOIGT tuto_prev «  السابق »
+#24 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE dd2ccdee11 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_faux done=18 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 294 770
+#24 DOIGT tuto_next_big « الخطوة التالية   »
+#25 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 05ae53f78b | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_drop2 done=18 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 294 625
+#25 DOIGT tuto_need «   أنشئ الجزء «دروب 2» »
+#26 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 8e0574d037 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_drop2 done=19 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 294 726
+#26 DOIGT tuto_next_big « الخطوة التالية   »
+#27 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 66fc43ab25 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_fin done=19 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 294 625
+#27 DOIGT tuto_need «   أنشئ الجزء «النهاية» »
+#28 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 09cf19a005 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=make_fin done=20 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 294 726
+#28 DOIGT tuto_next_big « الفصل التالي   »
+#29 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 02ab9bdd9e | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT OVERLAP « 150 » over « الفصل 9/13 · الخطوة 1/2 · سهل » (54 x 32 dp)
+#29 LAYOUT OVERLAP « الفصل 9/13 · الخطوة 1/2 · سهل » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (137 x 45 dp)
+#29 > touche 294 638
+#29 DOIGT tuto_do «   سأفعلها »
+#30 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 021516b20a | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CUT « دورك: في «أغنيتي»، تحت «إضافة»، اضغط بالترتيب مقدمة ومقدمة 2 ودروب وفاصل وتصاعد ودروب زائف ودروب 2 والنهاية. » ellipsized (« … »)
+#30 LAYOUT CONTRAST « + A · غروف » 4.06:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + B · مقدمة » 4.12:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + C · مقدمة 2 » 4.16:1 (needs 4.5:1, 14 sp)
+#30 > touche 416 447
+#30 DOIGT add_part_1 « + B · مقدمة »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 327bba1f14 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#31 SON Son : rien ne joue.
+#31 > glisse 300 550 300 250
+#31 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fc4a4b2709 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#32 SON Son : rien ne joue.
+#32 > glisse 300 550 300 250
+#32 DOIGT add_part_1 « + B · مقدمة »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9f1d798ba4 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 397 360
+#33 DOIGT add_part_2 « + C · مقدمة 2 »
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 788d2ba707 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#34 SON Son : rien ne joue.
+#34 > glisse 300 560 300 160
+#34 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1dfa51a7bd | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#35 SON Son : rien ne joue.
+#35 > glisse 300 560 300 260
+#35 DOIGT add_part_2 « + C · مقدمة 2 »
+#36 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d6545211d3 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 419 361
+#36 DOIGT add_part_3 « + D · دروب »
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c69a5d6e91 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#37 SON Son : rien ne joue.
+#37 > glisse 300 560 300 160
+#37 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9d2dd7a797 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#38 SON Son : rien ne joue.
+#38 > glisse 300 560 300 260
+#38 DOIGT add_part_2 « + C · مقدمة 2 »
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fe1cae88bf | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 421 462
+#39 DOIGT add_part_4 « + E · فاصل »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4d0dd7351e | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#40 SON Son : rien ne joue.
+#40 > glisse 300 560 300 160
+#40 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1aaeacd9af | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#41 SON Son : rien ne joue.
+#41 > glisse 300 560 300 260
+#41 DOIGT add_part_2 « + C · مقدمة 2 »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 94d6b01f71 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#42 SON Son : rien ne joue.
+#42 > glisse 300 560 300 360
+#42 DOIGT add_part_5 « + F · تصاعد »
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4f37d1f2cc | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 415 387
+#43 DOIGT add_part_5 « + F · تصاعد »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE aa9c213d8c | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#44 SON Son : rien ne joue.
+#44 > glisse 300 560 300 160
+#44 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1bd01dcb2a | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#45 SON Son : rien ne joue.
+#45 > glisse 300 560 300 260
+#45 DOIGT add_part_2 « + C · مقدمة 2 »
+#46 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 237cc13e5a | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#46 SON Son : rien ne joue.
+#46 > glisse 300 560 300 360
+#46 DOIGT add_part_5 « + F · تصاعد »
+#47 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE cc4537e844 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 379 488
+#47 DOIGT add_part_6 « + G · دروب زائف »
+#48 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b0d5d32313 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#48 SON Son : rien ne joue.
+#48 > glisse 300 560 300 160
+#48 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#49 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c2dd1edb4e | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#49 SON Son : rien ne joue.
+#49 > glisse 300 560 300 260
+#49 DOIGT add_part_2 « + C · مقدمة 2 »
+#50 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1fea88ff74 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#50 SON Son : rien ne joue.
+#50 > glisse 300 560 300 360
+#50 DOIGT add_part_4 « + E · فاصل »
+#51 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3b158138e2 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#51 SON Son : rien ne joue.
+#51 > glisse 300 560 300 360
+#51 DOIGT add_part_6 « + G · دروب زائف »
+#52 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a757a42356 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 401 473
+#52 DOIGT add_part_7 « + H · دروب 2 »
+#53 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 80a65a957d | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#53 SON Son : rien ne joue.
+#53 > glisse 300 560 300 160
+#53 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#54 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a76232b160 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#54 SON Son : rien ne joue.
+#54 > glisse 300 560 300 260
+#54 DOIGT add_part_2 « + C · مقدمة 2 »
+#55 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 40c8e39a46 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#55 SON Son : rien ne joue.
+#55 > glisse 300 560 300 360
+#55 DOIGT add_part_5 « + F · تصاعد »
+#56 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 922b470ec3 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#56 SON Son : rien ne joue.
+#56 > glisse 300 560 300 360
+#56 DOIGT add_part_7 « + H · دروب 2 »
+#57 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ca6f414179 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#57 SON Son : rien ne joue.
+#57 > glisse 300 560 300 460
+#57 DOIGT rien
+#58 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bc5d0da309 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=20 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CUT « + جزء جديد (نسخة من I · النهاية) » lines dropped (more lines than room)
+#58 > touche 423 438
+#58 DOIGT add_part_8 « + I · النهاية »
+#59 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2679d68387 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_order done=21 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 294 855
+#59 DOIGT tuto_next_folded « نجحت »
+#60 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE dc259f3f12 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_phrases done=21 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT OVERLAP « رتّب أجزاءك » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (115 x 3 dp)
+#60 > touche 294 681
+#60 DOIGT tuto_need «   أعطِ الأطوال المقترحة »
+#61 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE cade07f809 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=song_phrases done=22 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CUT « المازورة 1/128 » lines dropped (more lines than room)
+#61 LAYOUT CONTRAST « المازورة 1/128 » 3.64:1 (needs 4.5:1, 14 sp)
+#61 > touche 294 782
+#61 DOIGT tuto_next_big « الفصل التالي   »
+#62 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ad38221e64 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=gap done=22 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT OVERLAP « 150 » over « الانتقالات » (54 x 34 dp)
+#62 LAYOUT OVERLAP « الانتقالات » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (91 x 41 dp)
+#62 LAYOUT OVERLAP « الفصل 10/13 · الخطوة 1/2 · سهل » over the touchable « التشغيل من جزء » (122 x 16 dp)
+#62 LAYOUT OVERLAP « الفصول » over the touchable « التشغيل من جزء » (13 x 3 dp)
+#62 > touche 294 625
+#62 DOIGT tuto_need «   اذهب إلى الجزء «تصاعد» »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8833a99e58 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=gap done=22 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CUT « دورك: في نهاية التصاعد، امسح ضربات النبضة الأخيرة: صمت قبل الدروب الزائف. » ellipsized (« … »)
+#63 > glisse 300 540 300 300
+#63 DOIGT rien (texte « 4 ضربات زائدة هنا (مشطوبة) »)
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e03a6b7f97 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=gap done=22 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 325 462
+#64 DOIGT step_60 « الخطوة 13 »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1b0416fed5 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=gap done=22 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 389 462
+#65 DOIGT step_61 « الخطوة 14 »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cd8f1bfead | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=gap done=22 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 453 462
+#66 DOIGT step_62 « الخطوة 15 »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bb4a14ca92 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=gap done=22 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 517 462
+#67 DOIGT step_63 « الخطوة 16 »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 69b109c963 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=gap done=23 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « 1 » 2.44:1 (needs 4.5:1, 12 sp)
+#68 LAYOUT CONTRAST « 2 » 2.64:1 (needs 4.5:1, 12 sp)
+#68 > touche 294 855
+#68 DOIGT tuto_next_folded « نجحت »
+#69 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2e826ae1c1 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=crash done=23 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT OVERLAP « الفصل 10/13 · الخطوة 2/2 · سهل » over the touchable « التشغيل من جزء » (113 x 16 dp)
+#69 > touche 294 625
+#69 DOIGT tuto_need «   اذهب إلى الجزء «دروب 2» »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b268c4b568 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=crash done=23 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CUT « دورك: في الجزء «دروب 2»، اضغط أول خانة تمامًا في باد الصنج: الدروب الحقيقي هنا. » ellipsized (« … »)
+#70 > touche 70 552
+#70 DOIGT rien
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b268c4b568 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=crash done=23 playing=false
+#71 SON Son : rien ne joue.
+#71 > glisse 300 540 300 300
+#71 DOIGT rien (texte « بقيت هنا خانة منقّطة واحدة (1) »)
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0a4c2a08f2 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=crash done=23 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « 1 » 3.09:1 (needs 4.5:1, 12 sp)
+#72 > touche 70 379
+#72 DOIGT step_0 « الخطوة 1 »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f04e6e3088 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=crash done=24 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « 1 » 2.51:1 (needs 4.5:1, 12 sp)
+#73 LAYOUT CONTRAST « 2 » 1.72:1 (needs 4.5:1, 12 sp)
+#73 > touche 294 855
+#73 DOIGT tuto_chapter_end_folded « أحسنت، انتهى الفصل! »
+#74 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 3498e58659 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=crash done=24 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 294 726
+#74 DOIGT tuto_next_big « الفصل التالي   »
+#75 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 25003c63b4 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=reverb_hear done=24 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT OVERLAP « 150 » over « المؤثرات » (54 x 18 dp)
+#75 LAYOUT OVERLAP « المؤثرات » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (83 x 23 dp)
+#75 > touche 294 776
+#75 DOIGT tuto_listen «  استمع إلى المثال »
+#76 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9b7b19bdbb | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=reverb_hear done=24 playing=false
+#76 SON Son : l'exemple du tuto joue (encore 7 s).
+#76 > attends 8
+#77 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a45d1e8521 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=reverb_hear done=25 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 294 726
+#77 DOIGT tuto_next_big « الخطوة التالية   »
+#78 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 42255ad074 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=filter_hear done=25 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 294 776
+#78 DOIGT tuto_listen «  استمع إلى المثال »
+#79 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b2c2a0772d | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=filter_hear done=25 playing=false
+#79 SON Son : l'exemple du tuto joue (encore 3 s).
+#79 > attends 10
+#80 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7d0bf3bd4f | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=filter_hear done=26 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 294 726
+#80 DOIGT tuto_next_big « الفصل التالي   »
+#81 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8f180937ec | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=levels done=26 playing=false
+#81 SON Son : rien ne joue.
+#81 LAYOUT OVERLAP « 150 » over « الفصل 12/13 · الخطوة 1/1 · سهل » (54 x 32 dp)
+#81 LAYOUT OVERLAP « المزج: المستويات » over the touchable « الوضع بسيط. المس لتغيير الوضع. تغيير الو » (9 x 45 dp)
+#81 LAYOUT OVERLAP « الفصل 12/13 · الخطوة 1/1 · سهل » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (137 x 45 dp)
+#81 LAYOUT OVERLAP « الفصل 12/13 · الخطوة 1/1 · سهل » over the touchable « التشغيل من جزء » (116 x 65 dp)
+#81 LAYOUT OVERLAP « الفصول » over the touchable « التشغيل من جزء » (13 x 27 dp)
+#81 LAYOUT OVERLAP « دورك: في تبويب «المكس»، اخفض قليلًا فيدرَي مسارَي «الكوردات» و«اللحن». » over the touchable « التشغيل من جزء » (175 x 10 dp)
+#81 > touche 174 1137
+#81 DOIGT tab_simple_Mix « المكس »
+#82 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 387c3598ad | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=levels done=26 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 294 627
+#82 DOIGT tuto_do «   سأفعلها »
+#83 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 61439bb0f4 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=levels done=26 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT CUT « دورك: في تبويب «المكس»، اخفض قليلًا فيدرَي مسارَي «الكوردات» و«اللحن». » ellipsized (« … »)
+#83 LAYOUT CONTRAST « الكوردات » 3.92:1 (needs 4.5:1, 13 sp)
+#83 > glisse 355 425 355 480
+#83 DOIGT mix_fader_2 « مستوى الكوردات »
+#84 ROUTE tab_simple_Mix | MODE simple | EMPREINTE fcf3440a73 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=levels done=26 playing=false
+#84 SON Son : rien ne joue.
+#84 > glisse 240 445 240 500
+#84 DOIGT mix_fader_5 « مستوى اللحن »
+#85 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 0c56e67a80 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=levels done=27 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 294 855
+#85 DOIGT tuto_chapter_end_folded « أحسنت، انتهى الفصل! »
+#86 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 269333de90 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=levels done=27 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 294 726
+#86 DOIGT tuto_next_big « الفصل التالي   »
+#87 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 7ad57f6394 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=share done=27 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT OVERLAP « 150 » over « صدّر مقطوعتك » (54 x 19 dp)
+#87 LAYOUT OVERLAP « صدّر مقطوعتك » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (137 x 24 dp)
+#87 > touche 54 1136
+#87 DOIGT tab_simple_Envoyer « مشاركة »
+#88 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 51e7b26a46 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=share done=27 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 294 776
+#88 DOIGT tuto_do «   سأفعلها »
+#89 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE a3a0e24ca4 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=share done=27 playing=false
+#89 SON Son : rien ne joue.
+#89 LAYOUT CUT « ملفاتي » drawn past its parent's edge (down, 17 dp shown of 22)
+#89 LAYOUT CUT « ? » lines cut (taller than its box)
+#89 LAYOUT CUT « دورك: شارك مقطوعتك: التطبيق يصنع منها ملفًا صوتيًا. «M4A» يصنع ملفًا خفيفًا لأصدقائك، و«WAV» يحفظ جودة الاستوديو. » ellipsized (« … »)
+#89 LAYOUT TARGET « ملفاتي » 323 x 17 dp (touch 323 x 48)
+#89 LAYOUT TARGET « ما معنى «ملفاتي»؟ ? » 29 x 17 dp (touch 48 x 48)
+#89 > touche 294 489
+#89 DOIGT share_go «   مشاركة »
+#90 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 42ead9fe39 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=share done=27 playing=false
+#90 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#90 > attends 10
+#90 PARTAGE أغنيتي-الأغنية-20261119-075013.m4a
+#91 ROUTE dialogue:« شارك أغنيتي · أغنيتي-الأغنية-2 » | MODE simple | EMPREINTE 4c3c0ab81d | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=share done=28 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 294 585
+#91 DOIGT vue « WhatsApp »
+#92 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE f65d415710 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=share done=28 playing=false
+#92 SON Son : rien ne joue.
+#92 LAYOUT CUT « جاهز: أغنيتي-الأغنية-20261119-075013.m4a، وتوجد نسخة أيضًا في Music › BenStudio. » a word split over two lines
+#92 > touche 83 1019
+#92 DOIGT share_bilan_ok « OK »
+#93 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 6ab2d84aee | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=share done=28 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 294 855
+#93 DOIGT tuto_next_folded « نجحت »
+#94 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE fc52395106 | project=p-6d3b4c52 tuto=hard_techno/Facile active=true step=share done=28 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT CUT « الفصل 1/13 · سرعة المقطوعة ولونها » ellipsized (« … »)
+#94 LAYOUT CUT « استمع إلى مقتطف من الهارد تكنو: كيك مشبَّع يتبعه هدير، على 150 BPM، صفارات ريف وانطلاقة كاذبة قبل الدروب الحقيقي. هذا ما ستبنيه. » ellipsized (« … »)
+#94 LAYOUT OVERLAP « 150 » over « صدّر مقطوعتك » (54 x 18 dp)
+#94 LAYOUT OVERLAP « صدّر مقطوعتك » over the touchable « السرعة: 150 نبضة في الدقيقة تغيير السرعة » (137 x 23 dp)
+#94 > fin
+#94 FIN : fin

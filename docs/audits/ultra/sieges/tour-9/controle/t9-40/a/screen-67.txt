@@ -1,0 +1,19 @@
+Écran 67 (588x1278)
+texte « Coup 12 » @ 258,337
+icône ✕ @ 534,337
+texte « Force » @ 57,402
+bouton « Fort » [sélectionné] @ 70,468
+bouton « Moyen » @ 199,468
+bouton « Doux » @ 336,468
+texte « Roulement » @ 92,533
+bouton « ×1 » [sélectionné] @ 58,599
+bouton « ×2 » @ 148,599
+bouton « ×3 » @ 240,599
+bouton « ×4 » @ 334,599
+bouton « ×6 » @ 427,599
+bouton « ×8 » @ 520,599
+texte « Triolet » @ 62,664
+bouton « 3 sur 2 cases » @ 133,730
+bouton « ↗ Montant » [désactivé] @ 114,811
+bouton « Égal » [désactivé, sélectionné] @ 271,811
+bouton « ↘ Descendant » [désactivé] @ 139,883

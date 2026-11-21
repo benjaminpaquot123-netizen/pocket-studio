@@ -1,0 +1,49 @@
+Écran 23 (540x1170)
+bouton (dossier ouvert) ✓ @ 110,42
+bouton « 간단 » @ 263,42
+bouton ● @ 351,42
+bouton ▶ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+bouton « 185  템포 » @ 105,144
+bouton « ? » @ 495,144
+icône « 파트: A » ▾ @ 95,240
+texte « 여기 점선 칸이 3개 남았어요 » [coupé] @ 274,294
+bouton « 1 » [état « 히트, 세기 100 % »] @ 67,356
+bouton [état « 비어 있음 »] @ 124,356
+bouton [état « 비어 있음 »] @ 182,356
+bouton [état « 비어 있음 »] @ 240,356
+bouton « 2 » [état « 비어 있음, 점선: 눌러요 »] @ 298,356
+bouton [état « 비어 있음 »] @ 356,356
+bouton [état « 비어 있음 »] @ 414,356
+bouton [état « 비어 있음 »] @ 472,356
+bouton « 3 » [état « 비어 있음, 점선: 눌러요 »] @ 67,427
+bouton [état « 비어 있음 »] @ 124,427
+bouton [état « 비어 있음 »] @ 182,427
+bouton [état « 비어 있음 »] @ 240,427
+bouton « 4 » [état « 비어 있음, 점선: 눌러요 »] @ 298,427
+bouton [état « 비어 있음 »] @ 356,427
+bouton [état « 비어 있음 »] @ 414,427
+bouton [état « 비어 있음 »] @ 472,427
+texte « 채우기 » @ 94,508
+texte « 전체 » @ 198,507
+texte « 1/2 » @ 290,507
+texte « 1/4 » @ 375,507
+texte « ◀ » @ 456,507
+texte « 드럼 2/11장 · 2/5단계 · 쉬움 » @ 198,630
+icône (liste) « 챕터 » @ 411,631
+icône ⌃ @ 483,631
+icône « 직접 해 보세요: “Gabber · 큰북 1” 패드에서 점선 칸을 탭하세요. 박마다 하나씩이에요. 읽기 » ⌃ @ 270,802
+texte « 185 템포 » @ 376,933
+icône ↶ « 실행 취소 » @ 65,934
+image ↷ @ 180,915
+bouton ▶ « 곡 » @ 282,934
+icône ⋮ « 더보기 » @ 479,933
+onglet (lignes et note) « 내 곡 » @ 49,1050
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 160,1050
+onglet (touches de piano) « 건반 » @ 271,1050
+onglet (curseurs) « 믹스 » @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « 피드백 모드 » @ 123,1140
+texte « ●  REC » @ 289,1140
+texte « ✎  메모 » @ 400,1140
+texte « ⋯ » @ 492,1140

@@ -1,0 +1,64 @@
+Écran 46 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 2 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 100  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône « Partie : A » ▾ @ 82,180
+bouton « Cymbale D 40 » [coupé] @ 84,229
+bouton « Maracas G 50 » [coupé] @ 224,229
+bouton « Conga » [coupé] @ 364,229
+bouton « Laser » [coupé] @ 504,229
+bouton « Kit : Studio » ▾ @ 112,284
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 394,284
+titre « PAS : CLAQUEMENT DE MAINS » [état « Déplié »] @ 198,392
+bouton « ? » @ 332,392
+bouton « Tous les pads » @ 450,392
+texte « Mesure » @ 79,476
+bouton « 1 » @ 161,476
+bouton « 2 » [sélectionné] @ 242,476
+bouton « Suivre » @ 344,476
+texte « Mesure 2/2 · Claquement de mains » @ 223,545
+texte « Encore 1 case en pointillé ici » @ 205,574
+bouton « 1 » [état « vide »] @ 70,643
+bouton [état « vide »] @ 133,643
+bouton [état « vide »] @ 197,644
+bouton [état « vide »] @ 261,644
+bouton « 2 » [état « coup, force 100 % »] @ 325,644
+bouton [état « vide »] @ 389,644
+bouton [état « vide »] @ 453,644
+bouton [état « vide »] @ 517,644
+bouton « 3 » [état « vide »] @ 70,722
+bouton [état « vide »] @ 133,722
+bouton [état « vide »] @ 197,723
+bouton [état « vide »] @ 261,723
+bouton « 4 » [état « vide, en pointillé : à toucher »] @ 325,723
+bouton [état « vide »] @ 389,723
+bouton [état « vide »] @ 453,723
+bouton [état « vide »] @ 517,723
+texte « tout » [coupé] @ 152,804
+texte « 1/2 » [coupé] @ 227,804
+texte « 1/4 » [coupé] @ 302,804
+texte « ◀ » [coupé] @ 377,804
+texte « ▶ » [coupé] @ 452,804
+texte « Remplir » @ 77,808
+icône (liste) « Chapitres » @ 444,879
+texte « Le clap Chapitre 3/15 · Fait · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône (coupe) « Bravo, chapitre fini ! » ⌃ @ 294,978
+icône ↶ « Annuler » @ 69,1062
+icône ↷ « Rétablir » @ 175,1062
+bouton ▶ « le morceau » @ 288,1062
+texte « 100 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

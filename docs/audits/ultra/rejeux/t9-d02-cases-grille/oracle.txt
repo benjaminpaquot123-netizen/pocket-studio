@@ -1,0 +1,4 @@
+source=docs/audits/ultra/sieges/tour-9/controle/t9-65/a
+rejeu.n=1
+rejeu.attendu=bouton « 1 » [état «
+rejeu.absent=bouton « 1 » [coupé, état «

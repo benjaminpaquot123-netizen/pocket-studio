@@ -1,0 +1,52 @@
+Écran 86 (588x1278)
+icône (dossier ouvert) ✓ @ 127,42
+bouton « Einfach » @ 297,42
+bouton ● @ 385,42
+bouton ▶ « dieser Teil » @ 464,42
+icône ⋮ @ 543,42
+icône « Intro Takt 1/96 » ▾ @ 385,144
+bouton « 116  Tempo » @ 136,144
+bouton « ? » @ 543,144
+icône « Teil: D · Build-up » ▾ @ 193,240
+texte « Takt 4/4 · Snare » [coupé] @ 204,291
+bouton « 1 » [état « leer »] @ 70,364
+bouton [état « leer »] @ 133,364
+bouton [état « leer »] @ 197,365
+bouton [état « leer »] @ 261,365
+bouton « 2 » [état « Schlag, Stärke 100 % »] @ 325,365
+bouton [état « leer »] @ 389,365
+bouton [état « leer »] @ 453,365
+bouton [état « leer »] @ 517,365
+bouton « 3 » [état « leer »] @ 70,443
+bouton [état « leer »] @ 133,443
+bouton [état « leer »] @ 197,444
+bouton [état « Schlag, Stärke 36 % »] @ 261,444
+bouton « 4 » [état « Schlag, Stärke 100 % »] @ 325,444
+bouton [état « Schlag, Stärke 100 % »] @ 389,444
+bouton [état « Schlag, Stärke 100 % »] @ 453,444
+bouton [état « Schlag, Stärke 100 % »] @ 517,444
+texte « Füllen » @ 96,529
+texte « alles » @ 209,529
+texte « 1/2 » @ 309,529
+texte « 1/4 » @ 394,529
+texte « ◀ » @ 475,529
+texte « ▶ » @ 78,601
+texte « Löschen » @ 211,601
+texte « Die Übergänge Kapitel 10/13 · Schritt 1/1 · Einfach » @ 208,726
+icône (liste) « Kapitel » @ 445,726
+icône ⌃ @ 531,726
+icône « Du bist dran: Ende des Build-ups, Pad „Snare“: Tippe auf die 4 Kästchen des letzten Schlags. Lesen » ⌃ @ 294,895
+texte « 116 Tempo » @ 422,1020
+icône ↶ « Rückgängig » @ 56,1021
+image ↷ @ 152,1013
+icône ▶ « der Song » @ 280,1021
+icône ⋮ « Mehr » @ 533,1020
+onglet (lignes et note) « Mein Song » @ 54,1145
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 174,1145
+onglet (touches de piano) « Tastatur » @ 294,1145
+onglet (curseurs) « Mix » @ 414,1145
+onglet (trois points reliés) « Teilen » @ 534,1145
+texte « ●  REC » @ 272,1248
+texte « ✎  Notieren » @ 416,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback-Modus » @ 114,1248

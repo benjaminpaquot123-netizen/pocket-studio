@@ -1,0 +1,30 @@
+Écran 13 (900x1509)
+dessin @ 450,525
+texte « 곡의 키 » @ 395,601
+texte « 닫기 » @ 821,601
+texte « 곡의 키: G · 프리지안 » @ 197,685
+texte « 스케일 » @ 78,757
+bouton « 메이저 » @ 100,837
+bouton « 마이너 » @ 262,837
+bouton « 도리안 » @ 424,837
+bouton « 마이너 펜타 » @ 631,837
+bouton « 메이저 펜타 » @ 145,918
+bouton « 블루스 » @ 352,918
+bouton « 프리지안 » @ 534,918
+bouton « 하모닉 마이너 » @ 165,999
+texte « 키 » @ 42,1078
+bouton « C » @ 63,1158
+bouton « C♯ » @ 156,1158
+bouton « D » @ 249,1158
+bouton « E♭ » @ 336,1158
+bouton « E » @ 423,1158
+bouton « F » @ 510,1158
+bouton « F♯ » @ 600,1158
+bouton « G » @ 690,1158
+bouton « A♭ » @ 778,1158
+bouton « A » @ 63,1239
+bouton « B♭ » @ 150,1239
+bouton « B » @ 237,1239
+image (rond coché) @ 58,1333
+texte « 성공! 곡의 색깔을 골랐어요. » @ 329,1333
+bouton « 튜토리얼로 돌아가기 » @ 450,1432

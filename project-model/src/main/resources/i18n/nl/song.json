@@ -13,7 +13,6 @@
   "Afficher :": "Tonen:",
   "Aide de la ligne du temps": "Hulp bij de tijdlijn",
   "Ajouter :": "Toevoegen:",
-  "Ajouter à la fin :": "Achteraan toevoegen:",
   "Ajouter à la suite": "Erachter toevoegen",
   "Annuler la dernière action": "Ongedaan maken",
   "Annuler la prise": "Opname annuleren",
@@ -275,8 +274,8 @@
   "Terminé": "Klaar",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Je nummer is leeg: voeg je delen toe in de volgorde waarin ze spelen (Intro, Couplet, Refrein…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Tik op een pad om het geluid te starten, tik nog eens om het te stoppen. Alles blijft op de tel.",
-  "Touche une partie : elle joue juste après celle en cours.": "Tik op een deel: het speelt direct na het huidige.",
-  "Touche une partie pour écouter le morceau à partir d'elle.": "Tik op een deel om het nummer vanaf daar te horen.",
+  "Touche une partie pour régler sa longueur ; ▶ la joue juste après celle en cours.": "Tik op een deel om de lengte in te stellen; ▶ speelt het direct na het huidige.",
+  "Touche une partie pour régler sa longueur ; ▶ écoute le morceau à partir d'elle.": "Tik op een deel om de lengte in te stellen; ▶ speelt het nummer vanaf daar.",
   "Toucher la règle : jouer depuis cette partie.": "Tik op de liniaal: speel vanaf dat deel.",
   "Toucher une case : couper ou remettre la piste dans cette partie.": "Tik op een vakje: het spoor in dit deel dempen of terugzetten.",
   "Tout couper": "Alles stoppen",
@@ -404,5 +403,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Speel op de noten: ze klinken op de Acid 303. Tik het vak opnieuw aan om te stoppen: de loop valt op de maat.",
   "Le micro ne répond pas : réessaie.": "De microfoon reageert niet: probeer het opnieuw.",
   "Vider la case": "Vak leegmaken",
-  "Annuler possible": "Ongedaan te maken"
+  "Annuler possible": "Ongedaan te maken",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : herhalingen. Grijs: vaste duur (aangeraden of Live) of maar 1 keer."
 }

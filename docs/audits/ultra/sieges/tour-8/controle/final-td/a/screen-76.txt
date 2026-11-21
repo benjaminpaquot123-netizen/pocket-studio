@@ -1,0 +1,44 @@
+Écran 76 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 203,42
+bouton « プロ » @ 438,42
+bouton « A » ▾ @ 522,42
+icône ↶ @ 602,42
+icône ↷ [désactivé] @ 674,42
+bouton ● @ 746,42
+bouton ▶ « このパート » @ 826,42
+bouton ▶ « 曲 » @ 918,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 114,144
+bouton « ? » @ 990,144
+onglet « ドラム 16パッド » [coupé] @ 28,265
+onglet « Acid 303 ベースライン » @ 185,266
+onglet « ボーカル マイク » @ 441,265
+onglet « リミックス 分離 » @ 681,265
+bouton « ベース Plaits » ⋮ @ 915,265
+image ← @ 10,266
+image → @ 1024,266
+texte « パート：A » @ 112,361
+texte « 消去 » @ 100,442
+texte « リズム補正 50% » [coupé] @ 626,397
+texte « 100% » [coupé] @ 868,397
+bouton « ベース · 小節 4/8 ↑ タップする点線のノートがあと 4 個 ここをタップ » @ 517,547
+texte « 小節 » @ 84,636
+bouton « 4 » @ 486,636
+bouton « 5 » [coupé] @ 920,636
+texte « G♭ » @ 84,690
+texte « F » @ 84,732
+texte « E » [coupé] @ 84,763
+dessin [coupé] @ 559,721
+texte « ベース チャプター 5/16 · ステップ 3/4 · プロ » @ 426,842
+icône (liste) « チャプター » @ 886,843
+icône ⌃ @ 978,843
+icône « あなたの番：「次の小節にコピー」、次に4小節目を書こう：G♭（短2度）と1オクターブ上の F でフレーズを閉じる。もう一度「コピー」。 読む » ⌃ @ 517,988
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » [sélectionné] @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 780,1213
+texte « ✎  メモ » @ 893,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 368,1213

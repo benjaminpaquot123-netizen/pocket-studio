@@ -1,0 +1,5 @@
+Écran 112 (1035x1243)
+texte « Ik maak je nummer klaar… » @ 467,473
+texte « Controle » @ 211,561
+texte « Kies daarna de app om het te versturen. » @ 491,663
+texte « Annuleren » @ 784,765

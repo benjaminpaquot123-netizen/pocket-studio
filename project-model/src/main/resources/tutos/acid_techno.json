@@ -33,7 +33,7 @@
         {
           "id": "key",
           "text": "À toi : choisis la couleur du morceau, sombre : La phrygien. « Je le fais » ouvre la fiche Tonalité, les bons boutons y sont entourés.",
-          "textPro": "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure Si♭. « Je le fais » ouvre la fiche Tonalité.",
+          "textPro": "À toi : règle la tonalité sur La phrygien : la 303 tourne sur La, son octave et la seconde mineure La#. « Je le fais » ouvre la fiche Tonalité.",
           "why": "Phrygien : une gamme sombre. La 303 reste presque toujours sur la même note : la gamme lui donne ses quelques couleurs.",
           "check": "key",
           "spot": "tuto.key",
@@ -50,8 +50,8 @@
       "steps": [
         {
           "id": "ready",
-          "text": "Avant de commencer : ton kit est déjà celui de l'acid techno (une 909), et la piste « Acid 303 » a déjà le son du style. Tu n'as rien à régler.",
-          "textPro": "Déjà prêt : la 909 de « Fais-moi un morceau » (kick « crunch », charleys 909), et la 303 avec son son du style (sans notes) : saturation, écho et pompe sur sa tranche."
+          "text": "Avant de commencer : ton kit est déjà celui de l'acid techno, avec le pad « Kick studio » accordé sur la tonalité, et la piste « Acid 303 » a déjà le son du style. Sa ligne est encore vide : les notes que tu vois dans sa grille sont des guides, tu les écriras plus tard. Tu n'as rien à régler.",
+          "textPro": "Déjà prêt : le kit de « Fais-moi un morceau » pour l'acid techno (le pad « Kick studio », accordé sur La), et la 303 avec le son du style : saturation, écho et pompe sur sa tranche. Sa ligne est vide : les notes de sa grille sont des guides, tu les écriras plus tard."
         },
         {
           "id": "kick_do",
@@ -133,7 +133,7 @@
         },
         {
           "id": "acid_do",
-          "text": "À toi : ouvre l'onglet Acide et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : Si♭ à la place du Sol, la dernière case vide.",
+          "text": "À toi : ouvre l'onglet « Acid 303 » et écris la ligne de 2 mesures, case par case : les notes en pointillé (La, son octave, Do, Sol, Mi), puis les accents (!) sur 4 cases et les slides (⌒) sur 3. La mesure 2 est la variante : La# à la place du Sol, la dernière case vide.",
           "why": "L'accent fait crier une note, le slide la lie à la suivante : avec trois notes seulement, la 303 parle.",
           "levels": "p",
           "check": "notes:acid",
@@ -336,7 +336,7 @@
           "text": "À toi : automatise la « Coupure » de la 303 sur le Drop : « Automatiser un réglage », « Acid 303 », « Coupure », « Par partie », et dessine sur la boucle du Drop (1 mesure) une courbe qui monte jusqu'au milieu puis redescend : le filtre s'ouvre et se ferme à chaque mesure.",
           "why": "La ligne ne change presque pas : c'est le filtre qui raconte l'histoire.",
           "levels": "p",
-          "check": "automation:wave",
+          "check": "automation:loop",
           "spot": "song.automation",
           "target": "acid",
           "part": "Drop",

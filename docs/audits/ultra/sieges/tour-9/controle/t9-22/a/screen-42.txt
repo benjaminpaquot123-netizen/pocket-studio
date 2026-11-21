@@ -1,0 +1,54 @@
+Écran 42 (1035x1243)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 346,42
+bouton « Semplice » @ 737,42
+bouton ● @ 827,42
+bouton ▶ « questa parte » @ 908,42
+icône ⋮ @ 990,42
+bouton « 174  Tempo » @ 98,123
+icône « Intro battuta 1/28 » ▾ @ 303,123
+bouton « ? » @ 990,123
+icône ▶ « E · Break × 1  ·  8 batt. » @ 155,218
+icône − [désactivé] @ 304,218
+icône + @ 376,218
+icône ⋮ @ 448,218
+texte « − / + : ripetizioni. Grigi: durata fissa (consigliata o Live) o 1 sola volta. » @ 263,322
+texte « Aggiungi alla fine: » @ 161,390
+bouton « + A · Groove » @ 163,459
+bouton « + B · Intro » @ 144,540
+bouton « + C · Build-up » @ 171,621
+bouton « + D · Drop » @ 146,702
+bouton « + E · Break » @ 369,702
+bouton « + F · Drop 2 » [coupé] @ 156,759
+bouton « + G · Fine » [coupé] @ 381,759
+titre « LE MIE TRACCE » [état « Espanso »] @ 674,222
+texte « Tocca il nome di una traccia per cambiarne il suono; ▶ per ascoltarla da sola. » @ 771,306
+bouton « Batteria Cambia il suono » › @ 696,414
+bouton ▶ @ 882,414
+icône (curseurs) @ 957,414
+bouton « Basso Cambia il suono » › @ 696,524
+bouton ▶ @ 882,524
+icône (curseurs) @ 957,524
+bouton « Accordi Cambia il suono » › @ 696,634
+bouton ▶ @ 882,634
+icône (curseurs) @ 957,634
+bouton « Melodia Cambia il suono » › [coupé] @ 696,734
+bouton ▶ [coupé] @ 882,737
+icône (curseurs) [coupé] @ 957,740
+texte « Ordina le tue parti Capitolo 11/15 · Passo 1/2 · Facile » @ 430,817
+icône (liste) « Capitoli » @ 890,818
+icône ⌃ @ 978,818
+icône « Tocca a te: in “Il mio brano”, sotto “Aggiungi”, tocca in ordine i pulsanti che finiscono con Intro, Build-up, Drop, Break, Build-up, Drop 2 e Fine (per esempio “+ B · Intro”). Le durate non sono ancora quelle giuste: il passo successivo le regola. Leggi » ⌃ @ 517,930
+bouton ▶ « il brano » @ 521,1026
+icône ↶ « Annulla » @ 142,1026
+image ↷ @ 330,1013
+texte « 174 Tempo » @ 709,1026
+icône ⋮ « Altro » @ 893,1026
+onglet (lignes et note) « Il mio brano » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Ritmo » @ 309,1123
+onglet (touches de piano) « Tastiera » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Condividi » @ 936,1123
+texte « ●  REC » @ 799,1213
+texte « ✎  Annota » @ 899,1213
+texte « ⋯ » @ 987,1213
+texte « Modalità feedback » @ 381,1213

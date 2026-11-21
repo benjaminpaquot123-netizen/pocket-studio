@@ -1,0 +1,57 @@
+Écran 30 (540x1170)
+bouton (dossier ouvert) ✓ @ 102,42
+bouton « Basit » @ 246,42
+bouton ● @ 333,42
+bouton ▶ « bu bölüm » @ 414,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Bölüm: A » ▾ @ 96,198
+titre « ADIMLAR: TRAMPET » [coupé, état « Genişletildi »] @ 164,251
+bouton « ? » [coupé] @ 265,246
+bouton « Tüm pad'ler » [coupé] @ 392,247
+texte « Ölçü » @ 72,321
+bouton « 1 » @ 148,321
+bouton « 2 » [sélectionné] @ 229,321
+bouton « Takip et » @ 352,321
+texte « Ölçü 2/2 · Trampet » @ 173,387
+texte « Burada 1 noktalı kutu daha var » @ 264,425
+bouton « 1 » [état « boş »] @ 67,490
+bouton [état « boş »] @ 124,490
+bouton [état « boş »] @ 182,490
+bouton [état « boş »] @ 240,490
+bouton « 2 » [état « boş »] @ 298,490
+bouton [état « boş »] @ 356,490
+bouton [état « boş »] @ 414,490
+bouton [état « boş »] @ 472,490
+bouton « 3 » [état « boş, noktalı: dokun »] @ 67,561
+bouton [état « boş »] @ 124,561
+bouton [état « boş »] @ 182,561
+bouton [état « boş »] @ 240,561
+bouton « 4 » [état « boş »] @ 298,561
+bouton [état « boş »] @ 356,561
+bouton [état « boş »] @ 414,561
+bouton [état « boş »] @ 472,561
+texte « Doldur » @ 82,641
+texte « tümü » [coupé] @ 172,635
+texte « 1/2 » [coupé] @ 259,635
+texte « 1/4 » [coupé] @ 334,635
+texte « ◀ » [coupé] @ 409,635
+texte « Trampet ve clap Aşama 3/15 · Adım 1/2 · Kolay » @ 176,726
+icône (liste) « Aşamalar » @ 389,727
+icône ⌃ @ 483,727
+icône « Sıra sende: “Trampet” pad'inde noktalı kutuya dokun: ölçüde yalnızca bir tane, ortada. Oku » ⌃ @ 270,857
+icône ↶ « Geri al » @ 64,953
+image ↷ @ 164,940
+bouton ▶ « şarkı » @ 264,953
+texte « 140 Tempo » @ 370,953
+icône ⋮ « Diğer » @ 476,953
+onglet (lignes et note) « Şarkım » @ 49,1050
+onglet (quatre carrés) « Ritim » [sélectionné] @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

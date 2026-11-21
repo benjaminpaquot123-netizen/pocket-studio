@@ -1,0 +1,44 @@
+Écran 97 (588x1278)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 114,42
+texte « Pro » @ 255,42
+icône ↶ @ 327,42
+bouton ● @ 399,42
+bouton ▶ « ta część » @ 471,42
+icône (trois points reliés) @ 543,42
+bouton « 142  BPM » @ 73,114
+icône « Intro takt 1/124 » ▾ @ 223,114
+bouton (flèches en boucle) [état « wył. »] @ 462,114
+bouton « ? » @ 543,114
+image (courbe) @ 0,0
+bouton « Automatyzuj » [coupé] @ 165,148
+bouton « Co gra » [coupé] @ 423,148
+titre « KRZYWE » [état « Rozwinięte »] @ 217,252
+bouton « ? » @ 199,252
+bouton ● « Nagraj » @ 469,252
+texte « Spraw, żeby ustawienie ruszało się samo: wybierz je, potem narysuj krzywą (palcem albo linią w dwóch dotknięciach). » [coupé] @ 294,315
+texte « Efekty Rozdział 13/16 · Krok 3/3 · Pro » @ 207,378
+icône (liste) « Rozdziały » @ 444,378
+icône ⌄ @ 531,378
+texte « Twoja kolej: zautomatyzuj filtr pianina na Intro: „Automatyzuj ustawienie”, „Melodia”, „Filtr (przemiatanie)”, „Na część” i krzywa rosnąca od początku do końca Intro: pianino wychodzi z mgły. » @ 294,531
+bouton « Pobierz zestaw Drill (3 MB) » @ 243,678
+texte « Później » @ 510,678
+texte « ▸ Dlaczego? » @ 294,744
+bouton (doigt qui touche) «   Zrobię to » @ 294,807
+bouton ▶ «  Posłuchaj przykładu » @ 154,894
+bouton (œil) «  Pokaż mi » @ 433,894
+icône ← «  Wstecz » @ 93,978
+icône « Dalej  » → @ 506,978
+icône ↶ « Cofnij » @ 71,1062
+icône ↷ « Ponów » [désactivé] @ 177,1062
+bouton ▶ « utwór » @ 284,1062
+texte « 142 Tempo » @ 396,1062
+icône (trois points reliés) « Udostępnij » @ 513,1062
+onglet (ligne brisée et points) « Struktura » @ 54,1158
+onglet (touches de piano) « Dźwięki » @ 174,1158
+onglet (curseurs) « Miks » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Więcej » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Zanotuj » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Tryb uwag » @ 162,1248

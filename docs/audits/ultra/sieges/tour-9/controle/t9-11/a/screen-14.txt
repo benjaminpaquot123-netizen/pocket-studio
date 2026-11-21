@@ -1,0 +1,49 @@
+Écran 14 (900x1509)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 284,42
+bouton « Simple » @ 612,42
+bouton ● @ 701,42
+bouton ▶ « this part » @ 778,42
+icône ⋮ @ 855,42
+bouton « 112  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Part: A » ▾ @ 99,240
+bouton « Studio bass drum FX » @ 123,330
+bouton « Bass drum 2 » @ 341,330
+bouton « Snare » @ 559,330
+bouton « Snare 2 » @ 777,330
+bouton « Amapiano · Handclap FX » @ 123,408
+bouton « Hi-hat FX L 30 » @ 341,408
+bouton « Open hi-hat R 30 » @ 559,408
+bouton « Low tom » @ 777,408
+bouton « Mid tom R 45 » @ 123,486
+bouton « High tom » @ 341,486
+bouton « Drum rim FX R 50 » @ 559,486
+bouton « Bell » @ 777,486
+bouton « Cymbal FX R 40 » @ 123,564
+bouton « Maracas L 50 » @ 341,564
+bouton « Conga » @ 559,564
+bouton « Laser » @ 777,564
+texte « Tap a pad to hear it; its cells hold the hits. Long press: change the sound. » @ 627,684
+bouton « Kit: Amapiano » ▾ @ 189,684
+titre « STEPS: STUDIO BASS DRUM » [état « Expanded »] @ 349,846
+bouton « ? » @ 635,846
+bouton « All pads » @ 757,846
+texte « Studio bass drum » [coupé] @ 218,929
+texte « The song's speed and colour Chapter 1/12 · Done · Easy » @ 357,1009
+icône (liste) « Chapters » @ 750,1009
+icône ⌃ @ 843,1009
+icône (coupe) « Well done, chapter finished! » ⌃ @ 450,1152
+icône ↶ « Undo » @ 109,1277
+image ↷ @ 258,1257
+icône ▶ « the song » @ 436,1278
+texte « 112 Tempo » @ 629,1277
+icône ⋮ « More » @ 793,1277
+onglet (lignes et note) « My song » @ 85,1389
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 268,1389
+onglet (touches de piano) « Keyboard » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Share » @ 815,1389
+texte « ●  REC » @ 637,1479
+texte « ✎  Note » @ 754,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 297,1479

@@ -1,0 +1,10 @@
+lang=ja
+device=tablet8
+font=100
+mode=pro
+amenee=tuto:acid_techno:1
+gestes.max=153
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

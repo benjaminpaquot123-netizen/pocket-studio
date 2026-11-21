@@ -1,0 +1,277 @@
+#0 SIEGE lang=ar device=foldable font=200 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:acid_house:4
+#0 PREMIER ECRAN reel_s=4.3 simule_s=2.4 jvm_s=9.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:acid_house:4
+#0 AMENEE > touche 518 776 (welcome_learn)
+#0 AMENEE > touche 772 990 (mode_card_simple)
+#0 AMENEE > touche 517 1152 (tuto_style_acid_house)
+#0 AMENEE chapitres 1 à 3 construits dans le projet
+#0 AMENEE > touche 129 348 (tuto_chapters)
+#0 AMENEE > touche 517 536 (tuto_chapter_3)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 39a564f77a | project=p-129bc141 tuto=acid_house/Facile active=true step=groove_name done=8 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 517 687
+#1 DOIGT tuto_need «   سمِّ الجزء «دروب» »
+#2 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ca713be84a | project=p-129bc141 tuto=acid_house/Facile active=true step=groove_name done=9 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 707 886
+#2 DOIGT tuto_play_mine «  استمع إلى أغنيتي »
+#3 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c6f08e98fa | project=p-129bc141 tuto=acid_house/Facile active=true step=groove_name done=9 playing=true
+#3 SON Son : la musique du projet joue en boucle.
+#3 LAYOUT OVERLAP « المازورة 1/1 » over « جزؤك الأول: الدروب » (45 x 7 dp)
+#3 LAYOUT OVERLAP « جزؤك الأول: الدروب » over the touchable « التشغيل من جزء » (51 x 9 dp)
+#3 > touche 517 788
+#3 DOIGT tuto_next_big « الفصل التالي   »
+#4 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE bdd62944f2 | project=p-129bc141 tuto=acid_house/Facile active=true step=map_intro done=9 playing=true
+#4 SON Son : la musique du projet joue en boucle.
+#4 LAYOUT OVERLAP « 120 » over « فهم الأجزاء » (54 x 34 dp)
+#4 LAYOUT OVERLAP « فهم الأجزاء » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (110 x 45 dp)
+#4 LAYOUT OVERLAP « الفصل 5/9 · الخطوة 1/3 · سهل » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (15 x 4 dp)
+#4 > touche 517 695
+#4 DOIGT tuto_text_more « تابع القراءة »
+#5 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5fffd7f1d0 | project=p-129bc141 tuto=acid_house/Facile active=true step=map_intro done=9 playing=true
+#5 SON Son : la musique du projet joue en boucle.
+#5 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#5 > touche 517 695
+#5 DOIGT tuto_text_more « تابع القراءة »
+#6 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 47633ffde7 | project=p-129bc141 tuto=acid_house/Facile active=true step=map_intro done=9 playing=true
+#6 SON Son : la musique du projet joue en boucle.
+#6 > touche 517 782
+#6 DOIGT tuto_listen «  استمع إلى المثال »
+#7 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 30698f2185 | project=p-129bc141 tuto=acid_house/Facile active=true step=map_intro done=9 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 3 s).
+#7 > attends 4
+#8 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ee28246ecb | project=p-129bc141 tuto=acid_house/Facile active=true step=map_intro done=10 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 98 883
+#8 DOIGT tuto_next « التالي  »
+#9 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5447ffe682 | project=p-129bc141 tuto=acid_house/Facile active=true step=map_drop done=10 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « الفصل 5/9 · الخطوة 2/3 · سهل » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (26 x 4 dp)
+#9 > touche 517 695
+#9 DOIGT tuto_text_more « تابع القراءة »
+#10 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 580733bbdf | project=p-129bc141 tuto=acid_house/Facile active=true step=map_drop done=10 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « 16 » 2.08:1 (needs 4.5:1, 12 sp)
+#10 > touche 517 782
+#10 DOIGT tuto_listen «  استمع إلى المثال »
+#11 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 6a3722866a | project=p-129bc141 tuto=acid_house/Facile active=true step=map_drop done=10 playing=false
+#11 SON Son : l'exemple du tuto joue (encore 3 s).
+#11 > attends 5
+#12 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 473c58c9d4 | project=p-129bc141 tuto=acid_house/Facile active=true step=map_drop done=11 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 517 782
+#12 DOIGT tuto_next_big « الخطوة التالية   »
+#13 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f15370b433 | project=p-129bc141 tuto=acid_house/Facile active=true step=map_break done=11 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « الفصل 5/9 · الخطوة 3/3 · سهل » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (26 x 4 dp)
+#13 > touche 517 620
+#13 DOIGT tuto_why « ▸ لماذا؟ »
+#14 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9f8ae44f56 | project=p-129bc141 tuto=acid_house/Facile active=true step=map_break done=11 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 782
+#14 DOIGT tuto_listen «  استمع إلى المثال »
+#15 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 46edff2795 | project=p-129bc141 tuto=acid_house/Facile active=true step=map_break done=11 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > attends 5
+#16 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 007f6ccff8 | project=p-129bc141 tuto=acid_house/Facile active=true step=map_break done=12 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « الفصل 5/9 · تم · سهل » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (137 x 4 dp)
+#16 > touche 517 782
+#16 DOIGT tuto_next_big « الفصل التالي   »
+#17 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9f8e0e67f9 | project=p-129bc141 tuto=acid_house/Facile active=true step=make_intro done=12 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 266 785
+#17 DOIGT tuto_show «  أرني »
+#18 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 508a7b7125 | project=p-129bc141 tuto=acid_house/Facile active=true step=make_intro done=12 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « + جزء جديد (نسخة من B · مقدمة) » lines dropped (more lines than room)
+#18 LAYOUT CONTRAST « + B · مقدمة » 4.32:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « إيقاف » 3.91:1 (needs 4.5:1, 14 sp)
+#18 > attends 4
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6f116fdb3e | project=p-129bc141 tuto=acid_house/Facile active=true step=make_intro done=12 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CUT « + جزء جديد (نسخة من A · دروب) » lines dropped (more lines than room)
+#19 > touche 82 861
+#19 DOIGT tuto_next « التالي  »
+#20 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d938f6f8b2 | project=p-129bc141 tuto=acid_house/Facile active=true step=make_intro done=12 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT OVERLAP « 120 » over « ابنِ أجزاءك » (54 x 22 dp)
+#20 LAYOUT OVERLAP « 120 » over « الفصل 6/9 · الخطوة 1/4 · سهل » (16 x 12 dp)
+#20 LAYOUT OVERLAP « ابنِ أجزاءك » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (105 x 35 dp)
+#20 LAYOUT OVERLAP « الفصل 6/9 · الخطوة 1/4 · سهل » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (18 x 17 dp)
+#20 > touche 517 687
+#20 DOIGT tuto_need «   أنشئ الجزء «مقدمة» »
+#21 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 7346083dda | project=p-129bc141 tuto=acid_house/Facile active=true step=make_intro done=13 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 517 788
+#21 DOIGT tuto_next_big « الخطوة التالية   »
+#22 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e4e88423d4 | project=p-129bc141 tuto=acid_house/Facile active=true step=make_groove done=13 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 517 687
+#22 DOIGT tuto_need «   أنشئ الجزء «غروف» »
+#23 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 291f06e01f | project=p-129bc141 tuto=acid_house/Facile active=true step=make_groove done=14 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT OVERLAP « 120 » over « ابنِ أجزاءك » (54 x 34 dp)
+#23 LAYOUT OVERLAP « ابنِ أجزاءك » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (105 x 40 dp)
+#23 > touche 517 788
+#23 DOIGT tuto_next_big « الخطوة التالية   »
+#24 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 42b15a8293 | project=p-129bc141 tuto=acid_house/Facile active=true step=make_break done=14 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 517 687
+#24 DOIGT tuto_need «   أنشئ الجزء «فاصل» »
+#25 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 297326d2bc | project=p-129bc141 tuto=acid_house/Facile active=true step=make_break done=15 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT OVERLAP « 120 » over « الفصل 6/9 · الخطوة 3/4 · سهل » (27 x 12 dp)
+#25 LAYOUT OVERLAP « الفصل 6/9 · الخطوة 3/4 · سهل » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (29 x 17 dp)
+#25 > touche 517 788
+#25 DOIGT tuto_next_big « الخطوة التالية   »
+#26 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE cc329629d9 | project=p-129bc141 tuto=acid_house/Facile active=true step=make_fin done=15 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 517 687
+#26 DOIGT tuto_need «   أنشئ الجزء «النهاية» »
+#27 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 6aa169bbd8 | project=p-129bc141 tuto=acid_house/Facile active=true step=make_fin done=16 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT OVERLAP « 120 » over « الفصل 6/9 · تم · سهل » (54 x 12 dp)
+#27 LAYOUT OVERLAP « الفصل 6/9 · تم · سهل » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (137 x 17 dp)
+#27 > touche 517 788
+#27 DOIGT tuto_next_big « الفصل التالي   »
+#28 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2decd0cd4b | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « 120 » over « رتّب أجزاءك » (54 x 22 dp)
+#28 LAYOUT OVERLAP « 120 » over « الفصل 7/9 · الخطوة 1/2 · سهل » (12 x 12 dp)
+#28 LAYOUT OVERLAP « رتّب أجزاءك » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (115 x 35 dp)
+#28 LAYOUT OVERLAP « الفصل 7/9 · الخطوة 1/2 · سهل » over the touchable « السرعة: 120 نبضة في الدقيقة تغيير السرعة » (14 x 17 dp)
+#28 > touche 517 687
+#28 DOIGT tuto_do «   سأفعلها »
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3314d8b4c4 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « + A · دروب » 4.12:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + B · مقدمة » 3.09:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + C · غروف » 3.14:1 (needs 4.5:1, 14 sp)
+#29 > touche 863 447
+#29 DOIGT add_part_1 « + B · مقدمة »
+#30 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 88cf83a7b7 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#30 SON Son : rien ne joue.
+#30 > glisse 780 580 780 290
+#30 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 57d74b8e82 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#31 SON Son : rien ne joue.
+#31 > glisse 780 580 780 330
+#31 DOIGT add_part_1 « + B · مقدمة »
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 8494ff947e | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « + B · مقدمة » 4.38:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + C · غروف » 4.40:1 (needs 4.5:1, 14 sp)
+#32 > touche 863 496
+#32 DOIGT add_part_2 « + C · غروف »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e1b866d050 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#33 SON Son : rien ne joue.
+#33 > glisse 780 600 780 260
+#33 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3cccf6b417 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CONTRAST « + B · مقدمة » 4.40:1 (needs 4.5:1, 14 sp)
+#34 > glisse 780 600 780 300
+#34 DOIGT add_part_1 « + B · مقدمة »
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 557644e680 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « + C · غروف » 4.39:1 (needs 4.5:1, 14 sp)
+#35 > glisse 780 300 780 420
+#35 DOIGT add_part_1 « + B · مقدمة »
+#36 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 70fe9bd007 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 866 294
+#36 DOIGT add_part_0 « + A · دروب »
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f2bd0a3f84 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#37 SON Son : rien ne joue.
+#37 > glisse 780 600 780 260
+#37 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b0ef2b9038 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « + B · مقدمة » 4.39:1 (needs 4.5:1, 14 sp)
+#38 > glisse 780 580 780 380
+#38 DOIGT rien
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9fa322ca86 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 866 555
+#39 DOIGT add_part_3 « + D · فاصل »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0821605db2 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#40 SON Son : rien ne joue.
+#40 > glisse 780 600 780 330
+#40 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2646efcccb | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 866 498
+#41 DOIGT add_part_0 « + A · دروب »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 66874b5a8b | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#42 SON Son : rien ne joue.
+#42 > glisse 780 600 780 260
+#42 DOIGT rien (texte « − / + : التكرار. رمادي: مدة ثابتة (مقترح »)
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d74fe8a7b9 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#43 SON Son : rien ne joue.
+#43 > glisse 780 600 780 300
+#43 DOIGT add_part_2 « + C · غروف »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a53be775d4 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=16 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 864 556
+#44 DOIGT add_part_4 « + E · النهاية »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 093cb08d6c | project=p-129bc141 tuto=acid_house/Facile active=true step=song_order done=17 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 517 861
+#45 DOIGT tuto_next_folded « نجحت »
+#46 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f5a103c6e5 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_phrases done=17 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 517 687
+#46 DOIGT tuto_need «   أعطِ الأطوال المقترحة »
+#47 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 08067ce4d2 | project=p-129bc141 tuto=acid_house/Facile active=true step=song_phrases done=18 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 517 788
+#47 DOIGT tuto_next_big « الفصل التالي   »
+#48 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 05667690a5 | project=p-129bc141 tuto=acid_house/Facile active=true step=filter_hear done=18 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 517 782
+#48 DOIGT tuto_listen «  استمع إلى المثال »
+#49 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 00ddc708ca | project=p-129bc141 tuto=acid_house/Facile active=true step=filter_hear done=18 playing=false
+#49 SON Son : l'exemple du tuto joue (encore 3 s).
+#49 > attends 5
+#50 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 6b836b774f | project=p-129bc141 tuto=acid_house/Facile active=true step=filter_hear done=19 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 517 788
+#50 DOIGT tuto_next_big « الفصل التالي   »
+#51 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 0b8b03b72c | project=p-129bc141 tuto=acid_house/Facile active=true step=share done=19 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 517 782
+#51 DOIGT tuto_do «   سأفعلها »
+#52 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 41aadfbf6b | project=p-129bc141 tuto=acid_house/Facile active=true step=share done=19 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CUT « ? » lines cut (taller than its box)
+#52 > touche 518 471
+#52 DOIGT share_go «   مشاركة »
+#53 ROUTE dialogue:share_progress | MODE simple | EMPREINTE bca4b5f942 | project=p-129bc141 tuto=acid_house/Facile active=true step=share done=19 playing=false
+#53 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#53 > attends 15
+#53 PARTAGE أغنيتي-الأغنية-20261119-072559.m4a
+#54 ROUTE dialogue:« شارك أغنيتي · أغنيتي-الأغنية-2 » | MODE simple | EMPREINTE 89bde06af0 | project=p-129bc141 tuto=acid_house/Facile active=true step=share done=20 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 517 856
+#54 DOIGT vue « Files »
+#55 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 5bf993e91c | project=p-129bc141 tuto=acid_house/Facile active=true step=share done=20 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « جاهز » 1.23:1 (needs 3.0:1, 24 sp)
+#55 LAYOUT CONTRAST « عرض ملفاتي » 3.64:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « OK » 3.64:1 (needs 4.5:1, 14 sp)
+#55 > touche 180 893
+#55 DOIGT share_bilan_ok « OK »
+#56 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE c1e8bad274 | project=p-129bc141 tuto=acid_house/Facile active=true step=share done=20 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 517 861
+#56 DOIGT tuto_next_folded « نجحت »
+#57 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 630815b9e8 | project=p-129bc141 tuto=acid_house/Facile active=true step=share done=20 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « استمع إلى مقتطف من مقطوعة أسيد هاوس مكتملة: خط بيس يدور في حلقة ويتغير صوته بلا توقف، فوق آلة إيقاع بسيطة جدًا. » ellipsized (« … »)
+#57 LAYOUT CUT « استمع إلى الـ303 وحدها: حلقة من مازورة واحدة تقفز بين الأوكتافات، فيها نوتات تصرخ (الـaccents) ونوتات تنزلق (الـslides). » ellipsized (« … »)
+#57 > fin
+#57 FIN : fin

@@ -13,7 +13,6 @@
   "Afficher :": "Göster:",
   "Aide de la ligne du temps": "Zaman çizelgesi yardımı",
   "Ajouter :": "Ekle:",
-  "Ajouter à la fin :": "Sona ekle:",
   "Ajouter à la suite": "Arkasına ekle",
   "Annuler la dernière action": "Geri al",
   "Annuler la prise": "Kaydı iptal et",
@@ -275,8 +274,8 @@
   "Terminé": "Bitti",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Şarkın boş: bölümlerini çaldıkları sırayla ekle (Giriş, Kıta, Nakarat…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Sesini başlatmak için bir pad'e dokun, durdurmak için yeniden dokun. Her şey vuruşa oturmuş kalır.",
-  "Touche une partie : elle joue juste après celle en cours.": "Bir bölüme dokun: şu ankinin hemen ardından çalar.",
-  "Touche une partie pour écouter le morceau à partir d'elle.": "Şarkıyı o bölümden dinlemek için ona dokun.",
+  "Touche une partie pour régler sa longueur ; ▶ la joue juste après celle en cours.": "Uzunluğunu ayarlamak için bir bölüme dokun; ▶ onu şu ankinin hemen ardından çalar.",
+  "Touche une partie pour régler sa longueur ; ▶ écoute le morceau à partir d'elle.": "Uzunluğunu ayarlamak için bir bölüme dokun; ▶ şarkıyı o bölümden çalar.",
   "Toucher la règle : jouer depuis cette partie.": "Cetvele dokun: o bölümden çal.",
   "Toucher une case : couper ou remettre la piste dans cette partie.": "Bir kutuya dokun: kanalı bu bölümde sustur ya da sesini aç.",
   "Tout couper": "Hepsini durdur",
@@ -404,5 +403,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Notaları çal: Acid 303'te çalarlar. Durdurmak için kutuya tekrar dokun: döngü ölçüye oturur.",
   "Le micro ne répond pas : réessaie.": "Mikrofon yanıt vermiyor: yeniden dene.",
   "Vider la case": "Kutuyu temizle",
-  "Annuler possible": "Geri alınabilir"
+  "Annuler possible": "Geri alınabilir",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : tekrar. Gri: sabit süre (önerilen ya da Live) ya da 1 kez."
 }

@@ -1,0 +1,42 @@
+Écran 114 (900x1509)
+texte « Effecten · Sub » @ 181,62
+texte « Effecten actief: 1 van 8 » @ 207,133
+bouton « 1. Pomp » @ 306,196
+icône ⏻ @ 597,196
+icône ⌃ [désactivé] @ 669,196
+icône ⌄ [désactivé] @ 741,196
+icône ✕ @ 813,196
+bouton + «   Effect toevoegen » @ 450,274
+texte « Kant-en-klare sferen » @ 195,346
+bouton « ? » @ 360,346
+bouton « Voor: Bas » [sélectionné] @ 140,416
+bouton ★ « Favorieten » @ 348,416
+bouton « Sfeer » @ 528,416
+bouton « Kleur » @ 660,416
+bouton « Vuil » @ 780,416
+bouton « Beweging » [coupé] @ 844,416
+texte « Stijl: » @ 76,500
+bouton « Acid » @ 166,500
+bouton « Techno » @ 305,500
+bouton « DnB » @ 441,500
+bouton « Dubstep » @ 584,500
+bouton « House » @ 743,500
+bouton « Lo-fi » [coupé] @ 835,500
+bouton « Vette bas » @ 140,584
+bouton « Growl » @ 302,584
+bouton « Dubstep-wob » @ 493,584
+bouton « DnB-reese » @ 717,584
+bouton « EDM-pomp » @ 152,656
+bouton « Pomp » @ 326,656
+bouton « Krokant » @ 477,656
+bouton « Vervorming » @ 669,656
+bouton « Geen effect » @ 156,728
+texte « Tik op een sfeer om hem te proberen: je kunt altijd terug met Ongedaan maken. » @ 450,812
+texte « Houd je vinger op een sfeer om hem te horen; laat los en je geluid komt terug. » @ 450,896
+texte « XY-pad, op-neer: » @ 156,966
+bouton « ? » @ 291,965
+bouton « Ruimte » [sélectionné] @ 123,1035
+bouton « Vuil » @ 254,1035
+bouton « Beweging » @ 407,1035
+texte « ↑ Ver weg » @ 450,1099
+texte « Sluiten » @ 783,1437

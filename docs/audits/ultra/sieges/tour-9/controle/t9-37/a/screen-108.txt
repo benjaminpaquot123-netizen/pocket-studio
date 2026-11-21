@@ -1,0 +1,49 @@
+Écran 108 (540x1170)
+icône « 我的项目 1 » ✓ @ 274,36
+bouton « 专业 » @ 490,36
+bouton (dossier ouvert) @ 81,114
+bouton « A » ▾ @ 192,114
+icône ↶ @ 268,114
+bouton ● @ 340,114
+bouton ▶ « 这个段落 » @ 417,114
+icône (trois points reliés) @ 495,114
+bouton « 140  BPM » @ 83,195
+bouton « ? » @ 495,195
+onglet « 人声 麦克风 » [coupé] @ 49,277
+onglet « Remix 分离 » @ 154,277
+bouton « 808 808 » @ 281,277
+bouton « 旋律 机器人声 » ⋮ @ 429,277
+image ← @ 10,278
+image → @ 529,278
+texte « 段落：A » @ 71,347
+texte « − » [coupé] @ 146,375
+texte « + » [coupé] @ 316,375
+texte « 对齐 50% » @ 398,425
+texte « 100% » [coupé] @ 490,425
+bouton « 和弦 » @ 95,425
+bouton « 幽灵贝斯 » [sélectionné] @ 232,425
+bouton « 旋律 · 第 2/8 小节 所有虚线音符都放好了 » @ 270,507
+texte « 小节 » @ 69,571
+bouton « 2 » @ 297,578
+dessin [coupé] @ 69,622
+dessin @ 69,649
+dessin [coupé] @ 69,675
+dessin [coupé] @ 297,649
+texte « 人声片段 第 6/15 章 · 已完成 · 专业 » @ 198,738
+icône (liste) « 章节 » @ 411,738
+icône ⌃ @ 483,738
+icône (coupe) « 太棒了，本章完成！ » ⌃ @ 270,851
+icône ↶ « 撤销 » @ 64,950
+icône ↷ « 重做 » [désactivé] @ 164,950
+bouton ▶ « 歌曲 » @ 264,950
+texte « 140 速度 » @ 370,950
+icône (trois points reliés) « 分享 » @ 476,950
+onglet (ligne brisée et points) « 结构 » @ 49,1050
+onglet (touches de piano) « 音色 » [sélectionné] @ 160,1050
+onglet (curseurs) « 混音 » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « 更多 » @ 491,1050
+texte « ●  REC » @ 311,1140
+texte « ✎  记一笔 » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « 反馈模式 » @ 137,1140

@@ -1,0 +1,6 @@
+Écran 80 (1035x1243)
+texte « Getting your song ready… » @ 357,500
+texte « Making the sound, then compressing it to M4A. » @ 367,563
+texte «   16% » @ 873,605
+texte « Then pick the app to send it with. » @ 284,645
+texte « Cancel » @ 847,731

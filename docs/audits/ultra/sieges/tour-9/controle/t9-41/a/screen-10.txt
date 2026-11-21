@@ -1,0 +1,25 @@
+Écran 10 (540x1170)
+texte « The song's speed and colour Chapter 1/15 · Step 3/3 · Easy » @ 177,148
+icône (liste) « Chapters » @ 390,148
+icône ⌄ @ 483,148
+texte « Your turn: a slightly sad colour. “I'll do it” opens the Key sheet: tap “Minor”, then “G”. » @ 270,437
+texte « ▸ Why? » @ 270,600
+bouton (doigt qui touche) «   I'll do it » @ 270,720
+bouton ▶ «  Listen to the example » @ 142,823
+bouton (œil) «  Show me » @ 397,823
+icône ← «  Previous » @ 141,926
+icône « Next  » → @ 436,926
+icône ▶ « the song » @ 249,1030
+texte « 165 Tempo » @ 388,1029
+icône ↶ « Undo » @ 47,1030
+image ↷ @ 130,1012
+icône ⋮ « More » @ 492,1030
+onglet (lignes et note) « My song » @ 49,1095
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1095
+onglet (touches de piano) « Keyboard » @ 271,1095
+onglet (curseurs) « Mix » @ 381,1095
+onglet (trois points reliés) « Share » @ 491,1095
+texte « ●  REC » @ 277,1140
+texte « ✎  Note » @ 394,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 117,1140

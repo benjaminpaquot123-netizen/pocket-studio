@@ -1,0 +1,52 @@
+Écran 85 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 174  Tempo » @ 98,123
+icône « Intro mesure 1/128 » ▾ @ 315,123
+bouton « ? » @ 543,123
+texte « À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule. » [coupé] @ 297,169
+bouton « Batterie ▸ » [état « fermé »] @ 75,244
+curseur [état « Normal », à 80 %] @ 84,425
+texte « Normal » @ 84,586
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 55,653
+bouton ▶ @ 109,640
+texte « Basse » @ 216,232
+curseur [état « Normal », à 80 %] @ 216,401
+texte « Normal » @ 216,562
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 190,629
+bouton ▶ @ 241,616
+texte « Accords » @ 339,229
+curseur [état « −2 », à 71 %] @ 339,395
+texte « −2 » @ 339,556
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 313,623
+bouton ▶ @ 364,610
+texte « Mélodie » @ 462,229
+curseur [état « −2 », à 71 %] @ 462,396
+texte « −2 » @ 462,557
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 436,624
+bouton ▶ @ 487,611
+texte « Sortie » [coupé] @ 564,232
+curseur [coupé, état « −6 », à 60 %] @ 559,401
+texte « Lance ▶ » [coupé] @ 554,578
+texte « Aucun conseil pour l'instant : règle à l'oreille. » [coupé] @ 294,768
+texte « Le mix : les volumes Chapitre 14/15 · Fait · Facile » @ 201,852
+icône (liste) « Chapitres » @ 438,853
+icône ⌃ @ 531,853
+icône (coupe) « Bravo, chapitre fini ! » ⌃ @ 294,965
+icône ↶ « Annuler » @ 65,1061
+image ↷ @ 168,1048
+bouton ▶ « le morceau » @ 291,1061
+texte « 174 Tempo » @ 419,1061
+icône ⋮ « Plus » @ 524,1061
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » [sélectionné] @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

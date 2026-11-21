@@ -1,0 +1,65 @@
+Écran 75 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 178,42
+bouton « Pro » @ 385,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 539,42
+bouton ● @ 611,42
+bouton ▶ « dit deel » @ 683,42
+bouton ▶ « het nummer » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [coupé] @ 68,204
+onglet « Acid 303 Baslijn » @ 212,204
+onglet « Zang Microfoon » @ 400,204
+onglet « Remix Splitsen » @ 578,204
+bouton « Bas Ronde bas » ⋮ @ 772,204
+image ← @ 10,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+icône (poubelle et traits) «  Wissen » [désactivé] @ 795,354
+bouton « Klavier » @ 90,354
+bouton « Noten » [sélectionné] @ 237,354
+texte « Geluid van het spoor instellen ↓ » @ 254,441
+bouton ● «  Mijn melodie opnemen » @ 373,534
+icône (chronomètre) «  1 » @ 783,534
+bouton « ? » @ 860,534
+bouton « ✏ Tekenen » [sélectionné] @ 143,651
+bouton « ⬚ Selecteren » @ 367,651
+bouton « Alles zien » @ 579,651
+texte « − » @ 169,726
+texte « + » @ 333,726
+texte «   Zoom » @ 84,726
+texte « 102% » @ 251,726
+texte « Loop » @ 72,807
+texte « − » [désactivé] @ 155,807
+texte « 1 maat » @ 243,807
+texte « + » @ 330,807
+bouton « 1/16 » @ 175,882
+bouton « 1/8 » [sélectionné] @ 281,882
+bouton « 1/4 » @ 382,882
+bouton « 1/2 » @ 482,882
+texte «   Noot » @ 78,882
+bouton « 1/8 » @ 187,957
+bouton « 1/16 » [sélectionné] @ 293,957
+bouton « 1/16 t » @ 414,957
+bouton « 1/32 » @ 537,957
+texte «   Raster » @ 87,957
+texte « In de maat 50% » @ 646,1038
+bouton « Akkoorden » @ 141,1038
+bouton « Bas als schaduw » [sélectionné] @ 380,1038
+texte « 100% » [coupé] @ 99,1094
+texte « Wissen » [désactivé, coupé] @ 228,1094
+texte « De bas Hoofdstuk 5/17 · Stap 2/2 · Pro » @ 356,1157
+icône (liste) « Hoofdstukken » @ 749,1158
+icône ⌃ @ 843,1158
+icône « Nu jij: maak het spoor Bas (‘Ronde bas’, zachte pomp). Maat 1 in de pianorol: de grondtoon F aangehouden, dezelfde korter, de kwint C; ‘Kopiëren naar de volgende maten’ zet hem op E en dan op A; dan de aanloop van maat 4 (A, C, E, D, C). Lees » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

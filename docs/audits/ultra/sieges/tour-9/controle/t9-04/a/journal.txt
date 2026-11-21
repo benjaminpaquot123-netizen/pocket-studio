@@ -1,0 +1,314 @@
+#0 SIEGE lang=ja device=phone font=130 mode=pro theme=- fresh=non gestes.max=153 lit=oui main=both amenee=tuto:acid_techno:6
+#0 PREMIER ECRAN reel_s=3.9 simule_s=2.4 jvm_s=10.0 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:acid_techno:6
+#0 AMENEE > touche 294 1013 (launch_learn)
+#0 AMENEE > touche 294 1118 (mode_card_pro)
+#0 AMENEE > touche 294 595 (tuto_style_acid_techno)
+#0 AMENEE chapitres 1 à 5 construits dans le projet
+#0 AMENEE > touche 438 434 (tuto_chapters)
+#0 AMENEE > touche 294 642 (tuto_chapter_5)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 504efd872b | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_intro done=9 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « パート：A · グルーヴ » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 294 805
+#1 DOIGT tuto_need «   パート「イントロ」を作る »
+#2 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE e0b1265258 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_intro done=10 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 294 805
+#2 DOIGT tuto_next_big « 次のステップ   »
+#3 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 3fdf41affd | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_intro2 done=10 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 294 805
+#3 DOIGT tuto_need «   パート「イントロ 2」を作る »
+#4 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE b11e0d01ef | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_intro2 done=11 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 531 364
+#4 DOIGT tuto_fold
+#5 ROUTE tab_Structure | MODE pro | EMPREINTE f8cb5f6689 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_intro2 done=11 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « + 新しいパート（C · イントロ 2のコピー） » lines dropped (more lines than room)
+#5 > touche 294 959
+#5 DOIGT tuto_next_folded « 成功 »
+#6 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE a156d1d9b2 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_drop done=11 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 506 654
+#6 DOIGT tuto_kit_later « あとで »
+#7 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 297e1edd70 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_drop done=11 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 294 805
+#7 DOIGT tuto_need «   パート「ドロップ」を作る »
+#8 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 5611c51dd5 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_drop done=12 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 294 805
+#8 DOIGT tuto_next_big « 次のステップ   »
+#9 ROUTE tab_Structure | MODE pro | EMPREINTE 454868f8e3 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_break done=12 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 294 805
+#9 DOIGT tuto_need «   パート「ブレイク」を作る »
+#10 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE dcf5f6d5a5 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_break done=13 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 294 805
+#10 DOIGT tuto_next_big « 次のステップ   »
+#11 ROUTE tab_Structure | MODE pro | EMPREINTE 23e11b3387 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_montee done=13 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 294 805
+#11 DOIGT tuto_need «   パート「ビルドアップ」を作る »
+#12 ROUTE tab_Structure | MODE pro | EMPREINTE f8ae226cd4 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_montee done=14 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 294 694
+#12 DOIGT tuto_text_more « 続きを読む »
+#13 ROUTE tab_Structure | MODE pro | EMPREINTE 1aefcdd6fa | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_montee done=14 playing=false
+#13 SON Son : rien ne joue.
+#13 > glisse 300 680 300 590
+#13 DOIGT rien (texte « パート「ビルドアップ」を作りました（グルーヴのコピー）：スタジオキック, オープ »)
+#14 ROUTE tab_Structure | MODE pro | EMPREINTE fca6c1a9a9 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_montee done=14 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 294 805
+#14 DOIGT tuto_next_big « 次のステップ   »
+#15 ROUTE tab_Structure | MODE pro | EMPREINTE 42eb56e79f | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_drop2 done=14 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 294 805
+#15 DOIGT tuto_need «   パート「ドロップ 2」を作る »
+#16 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c869ca1a1a | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_drop2 done=15 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 294 805
+#16 DOIGT tuto_next_big « 次のステップ   »
+#17 ROUTE tab_Structure | MODE pro | EMPREINTE 5040e2ee1f | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_fin done=15 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 294 805
+#17 DOIGT tuto_need «   パート「エンディング」を作る »
+#18 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 5434cbf9c1 | project=p-d308e461 tuto=acid_techno/Pro active=true step=make_fin done=16 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 294 805
+#18 DOIGT tuto_next_big « 次の章   »
+#19 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE d1e94e7097 | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 294 805
+#19 DOIGT tuto_do «   自分でやる »
+#20 ROUTE tab_Structure | MODE pro | EMPREINTE b3f116107f | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « あなたの番：「構成」で、イントロ、イントロ 2、ドロップ、ブレイク、ビルドアップ、ドロップ 2、エンディングの順に追加しよう。 » ellipsized (« … »)
+#20 LAYOUT CONTRAST « + A · グルーヴ » 3.99:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « + B · イントロ » 3.99:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « + C · イントロ 2 » 4.06:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « + D · ドロップ » 4.06:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « + E · ブレイク » 4.12:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « + F · ビルドアップ » 4.12:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « + G · ドロップ 2 » 4.16:1 (needs 4.5:1, 14 sp)
+#20 > touche 169 327
+#20 DOIGT add_part_1 « + B · イントロ »
+#21 ROUTE tab_Structure | MODE pro | EMPREINTE 38c5d2b42e | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « 小節 1/2 » drawn past its parent's edge (down, 21 dp shown of 27)
+#21 LAYOUT CONTRAST « + A · グルーヴ » 4.12:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « + B · イントロ » 3.42:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « + C · イントロ 2 » 4.16:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « + D · ドロップ » 4.16:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « + E · ブレイク » 4.18:1 (needs 4.5:1, 14 sp)
+#21 > touche 183 599
+#21 DOIGT add_part_2 « + C · イントロ 2 »
+#22 ROUTE tab_Structure | MODE pro | EMPREINTE 7ec1cb8183 | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « 小節 1/4 » drawn past its parent's edge (down, 21 dp shown of 27)
+#22 > touche 170 680
+#22 DOIGT add_part_3 « + D · ドロップ »
+#23 ROUTE tab_Structure | MODE pro | EMPREINTE dc6457feb6 | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CUT « 小節 1/6 » drawn past its parent's edge (down, 21 dp shown of 27)
+#23 > glisse 450 650 450 400
+#23 DOIGT rien
+#24 ROUTE tab_Structure | MODE pro | EMPREINTE 685b923b05 | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 168 535
+#24 DOIGT add_part_4 « + E · ブレイク »
+#25 ROUTE tab_Structure | MODE pro | EMPREINTE cf19adf104 | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « 小節 1/8 » drawn past its parent's edge (down, 21 dp shown of 27)
+#25 > glisse 450 650 450 400
+#25 DOIGT rien
+#26 ROUTE tab_Structure | MODE pro | EMPREINTE 7dda86a316 | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 196 616
+#26 DOIGT add_part_5 « + F · ビルドアップ »
+#27 ROUTE tab_Structure | MODE pro | EMPREINTE b1ff5038f6 | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CUT « 小節 1/12 » drawn past its parent's edge (down, 21 dp shown of 27)
+#27 > glisse 450 650 450 400
+#27 DOIGT rien
+#28 ROUTE tab_Structure | MODE pro | EMPREINTE 59a899afa3 | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#28 SON Son : rien ne joue.
+#28 > glisse 450 650 450 350
+#28 DOIGT rien
+#29 ROUTE tab_Structure | MODE pro | EMPREINTE 32a29c1e6d | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CUT « + 新しいパート（H · エンディングのコピー） » lines dropped (more lines than room)
+#29 > touche 183 465
+#29 DOIGT add_part_6 « + G · ドロップ 2 »
+#30 ROUTE tab_Structure | MODE pro | EMPREINTE de5fe5633d | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CUT « 小節 1/14 » drawn past its parent's edge (down, 21 dp shown of 27)
+#30 > glisse 450 700 450 250
+#30 DOIGT rien
+#31 ROUTE tab_Structure | MODE pro | EMPREINTE 5bc9f0bfef | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=16 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 198 578
+#31 DOIGT add_part_7 « + H · エンディング »
+#32 ROUTE tab_Structure | MODE pro | EMPREINTE 1ae0725a7f | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_order done=17 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CUT « 小節 1/16 » drawn past its parent's edge (down, 21 dp shown of 27)
+#32 > touche 294 959
+#32 DOIGT tuto_next_folded « 成功 »
+#33 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 78884e799c | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_phrases done=17 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 294 805
+#33 DOIGT tuto_need «   おすすめの長さにする »
+#34 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE d96f20c724 | project=p-d308e461 tuto=acid_techno/Pro active=true step=song_phrases done=18 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CUT « 小節 1/128 » drawn past its parent's edge (down, 21 dp shown of 27)
+#34 > touche 294 886
+#34 DOIGT tuto_next_big « 次の章   »
+#35 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE f4d4bcfe38 | project=p-d308e461 tuto=acid_techno/Pro active=true step=gap done=18 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 294 805
+#35 DOIGT tuto_need «   パート「ビルドアップ」へ移動 »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE dc66368958 | project=p-d308e461 tuto=acid_techno/Pro active=true step=gap done=18 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « あなたの番：「ビルドアップ」パートの最後の小節で、最後の拍のヒットを消そう（赤い×をそれぞれタップ）。ドロップ 2 の直前に1拍の無音。 » ellipsized (« … »)
+#36 LAYOUT CONTRAST « ステップ：ハイハット · ビルドアップ » 2.60:1 (needs 4.5:1, 12 sp)
+#36 LAYOUT CONTRAST « ? » 1.78:1 (needs 4.5:1, 12 sp)
+#36 LAYOUT CONTRAST « 全パッド » 1.75:1 (needs 4.5:1, 14 sp)
+#36 > touche 325 711
+#36 DOIGT step_60 « ステップ 13 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 99684f4d3b | project=p-d308e461 tuto=acid_techno/Pro active=true step=gap done=18 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 389 711
+#37 DOIGT step_61 « ステップ 14 »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 3d5d89f22b | project=p-d308e461 tuto=acid_techno/Pro active=true step=gap done=18 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 517 711
+#38 DOIGT step_63 « ステップ 16 »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 8bcc30cf4a | project=p-d308e461 tuto=acid_techno/Pro active=true step=gap done=19 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 294 959
+#39 DOIGT tuto_next_folded « 成功 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE aaf84711c7 | project=p-d308e461 tuto=acid_techno/Pro active=true step=crash done=19 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « 小節 4/4 · シンバル » 2.62:1 (needs 4.5:1, 13 sp)
+#40 > touche 236 114
+#40 DOIGT top_scene « 再生中のパート：F · ビルドアップ。タップでパートを切り替え。 »
+#41 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE 525b82402e | project=p-d308e461 tuto=acid_techno/Pro active=true step=crash done=19 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 355 466
+#41 DOIGT scene_pick_3 « D · ドロップ »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 11067ba35d | project=p-d308e461 tuto=acid_techno/Pro active=true step=crash done=19 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CUT « 小節 33/128 » drawn past its parent's edge (down, 21 dp shown of 27)
+#42 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#42 > touche 70 405
+#42 DOIGT step_0 « ステップ 1 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE 7ceebafe75 | project=p-d308e461 tuto=acid_techno/Pro active=true step=crash done=20 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 294 805
+#43 DOIGT tuto_next_big « 次の章   »
+#44 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE da4c8cbe50 | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter done=20 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 294 805
+#44 DOIGT tuto_do «   自分でやる »
+#45 ROUTE tab_Mix | MODE pro | EMPREINTE a099bd2c9e | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter done=21 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « ? » 3.29:1 (needs 4.5:1, 12 sp)
+#45 LAYOUT CONTRAST « 録音 » 3.59:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « 設定を自動で動かそう：設定を選んで、カーブを描きます（指で、または2回タップで直線）。 » 3.99:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST «  鳴っているもの » 4.06:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « Acid 303 » 4.23:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST « 空にする » 3.33:1 (needs 4.5:1, 14 sp)
+#45 LAYOUT CONTRAST « 303 のフィルターを開閉：アシッドの「ミョーン」。 » 4.12:1 (needs 4.5:1, 13 sp)
+#45 > touche 387 607
+#45 COUVERT « ドラム » couvre « 空にする »
+#45 REFUS doigt couvert : « ドラム » couvre « 空にする »
+#46 ROUTE tab_Mix | MODE pro | EMPREINTE 56ac894e8d | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter done=21 playing=false
+#46 SON Son : rien ne joue.
+#46 > glisse 300 690 300 300
+#46 DOIGT rien (texte « 303 のフィルターを開閉：アシッドの「ミョーン」。 »)
+#47 ROUTE tab_Mix | MODE pro | EMPREINTE e652fd8d4b | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter done=21 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 294 959
+#47 DOIGT tuto_next_folded « 成功 »
+#48 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 94448f96d4 | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter_intro done=21 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 294 805
+#48 DOIGT tuto_need «   パート「イントロ 2」へ移動 »
+#49 ROUTE tab_Mix | MODE pro | EMPREINTE 27174916e1 | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter_intro done=21 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT CUT « あなたの番：イントロ 2 でも 303 の「カットオフ」をオートメーションしよう：最初から最後まで上がるカーブ。ラインは閉じた状態で入ってきて開いていく。 » ellipsized (« … »)
+#49 > glisse 300 690 300 250
+#49 DOIGT rien (texte « 303 のフィルターを開閉：アシッドの「ミョーン」。 »)
+#50 ROUTE tab_Mix | MODE pro | EMPREINTE d23a952718 | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter_intro done=21 playing=false
+#50 SON Son : rien ne joue.
+#50 > glisse 300 690 300 250
+#50 DOIGT rien (texte « パート C のステップ（パートごとに別々）。 »)
+#51 ROUTE tab_Mix | MODE pro | EMPREINTE f7f2551011 | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter_intro done=21 playing=false
+#51 SON Son : rien ne joue.
+#51 > glisse 500 650 500 300
+#51 DOIGT rien (texte « 指で描こう。ダブルタップで点を消去。「スムーズ」で震えた線をなめらかに、「キャン »)
+#52 ROUTE tab_Mix | MODE pro | EMPREINTE d3d83323e1 | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter_intro done=21 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CUT « 1 » drawn past its parent's edge (down, 18 dp shown of 21)
+#52 LAYOUT CUT « 2 » drawn past its parent's edge (down, 18 dp shown of 21)
+#52 LAYOUT CUT « 3 » drawn past its parent's edge (down, 18 dp shown of 21)
+#52 LAYOUT CUT « 4 » drawn past its parent's edge (down, 18 dp shown of 21)
+#52 > glisse 115 522 565 360
+#52 DOIGT rien (texte « 0% »)
+#53 ROUTE tab_Mix | MODE pro | EMPREINTE 9c81d43df3 | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter_intro done=21 playing=false
+#53 SON Son : rien ne joue.
+#53 > glisse 135 388 540 212
+#53 DOIGT rien
+#54 ROUTE tab_Mix | MODE pro | EMPREINTE 748faa0d47 | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter_intro done=22 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST « クリップなし：問題ありません。 » 4.31:1 (needs 4.5:1, 13 sp)
+#54 > touche 294 959
+#54 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#55 ROUTE tab_Mix | MODE pro | EMPREINTE 31a9abc26f | project=p-d308e461 tuto=acid_techno/Pro active=true step=filter_intro done=22 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 294 805
+#55 DOIGT tuto_next_big « 次の章   »
+#56 ROUTE tab_Mix | MODE pro | EMPREINTE 8127d666ed | project=p-d308e461 tuto=acid_techno/Pro active=true step=levels done=22 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 294 805
+#56 DOIGT tuto_do «   自分でやる »
+#57 ROUTE tab_Mix | MODE pro | EMPREINTE ade67647d5 | project=p-d308e461 tuto=acid_techno/Pro active=true step=levels done=22 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « あなたの番：ミックスで 303 のスライダーを少し下げ、次に「クラップ」パッドのスライダーも下げよう。 » ellipsized (« … »)
+#57 LAYOUT CONTRAST « +0.0 » 3.33:1 (needs 4.5:1, 12 sp)
+#57 LAYOUT CONTRAST « 3 » 3.85:1 (needs 4.5:1, 12 sp)
+#57 LAYOUT CONTRAST « 1 » 4.43:1 (needs 4.5:1, 12 sp)
+#57 > glisse 204 516 204 576
+#57 COUVERT « ドラム » couvre « Acid 303 の音量 »
+#57 REFUS doigt couvert : « ドラム » couvre « Acid 303 の音量 »
+#58 ROUTE tab_Mix | MODE pro | EMPREINTE ed05c1bf1c | project=p-d308e461 tuto=acid_techno/Pro active=true step=levels done=22 playing=false
+#58 SON Son : rien ne joue.
+#58 > glisse 196 436 196 496
+#58 COUVERT « ドラム » couvre « Acid 303 の音量 »
+#58 REFUS doigt couvert : « ドラム » couvre « Acid 303 の音量 »
+#59 ROUTE tab_Mix | MODE pro | EMPREINTE ed05c1bf1c | project=p-d308e461 tuto=acid_techno/Pro active=true step=levels done=22 playing=false
+#59 SON Son : rien ne joue.
+#59 > glisse 76 436 76 476
+#59 COUVERT « ドラム » couvre « ドラム の音量 »
+#59 REFUS doigt couvert : « ドラム » couvre « ドラム の音量 »
+#60 ROUTE tab_Mix | MODE pro | EMPREINTE ed05c1bf1c | project=p-d308e461 tuto=acid_techno/Pro active=true step=levels done=22 playing=false
+#60 SON Son : rien ne joue.
+#60 RIEN NE CHANGE (3 écrans identiques)
+#60 > touche 196 520
+#60 COUVERT « ドラム » couvre « Acid 303 の音量 »
+#60 REFUS doigt couvert : « ドラム » couvre « Acid 303 の音量 »
+#61 ROUTE tab_Mix | MODE pro | EMPREINTE ed05c1bf1c | project=p-d308e461 tuto=acid_techno/Pro active=true step=levels done=22 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 204 270
+#61 COUVERT « ドラム » couvre « Acid 303 »
+#61 REFUS doigt couvert : « ドラム » couvre « Acid 303 »
+#62 ROUTE tab_Mix | MODE pro | EMPREINTE ed05c1bf1c | project=p-d308e461 tuto=acid_techno/Pro active=true step=levels done=22 playing=false
+#62 SON Son : rien ne joue.
+#62 RIEN NE CHANGE (5 écrans identiques)
+#62 FIN : rien ne change (5 écrans identiques)

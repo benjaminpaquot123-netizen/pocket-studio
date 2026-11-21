@@ -1,0 +1,28 @@
+Écran 3 (540x1170)
+texte « The song's speed and colour Chapter 1/15 · Step 1/3 · Easy » @ 177,148
+icône (liste) « Chapters » @ 390,148
+icône ⌄ @ 483,148
+image (rond coché) @ 36,326
+texte « Listen to a clip of a finished jungle song: the stumbling, rolling drums, the deep bass, then the howling hoover. That's what you're going to build, block by block. » [coupé] @ 289,342
+texte « Downloading the kit… 0 % » @ 263,421
+texte « Later » @ 466,498
+texte « ▸ Why? » @ 270,577
+icône « Read on » ⌄ @ 270,640
+bouton « Next step   » → @ 270,726
+bouton ■ «  Stop listening » @ 223,840
+icône « Next  » → @ 436,840
+icône ← [désactivé] @ 57,840
+texte « 120 Tempo » @ 388,968
+icône ↶ « Undo » [désactivé] @ 47,969
+image ↷ @ 130,951
+icône ▶ « the song » @ 249,969
+icône ⋮ « More » @ 492,969
+onglet (lignes et note) « My song » @ 49,1065
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1065
+onglet (touches de piano) « Keyboard » @ 271,1065
+onglet (curseurs) « Mix » @ 381,1065
+onglet (trois points reliés) « Share » @ 491,1065
+texte « ●  REC » @ 277,1140
+texte « ✎  Note » @ 394,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 117,1140

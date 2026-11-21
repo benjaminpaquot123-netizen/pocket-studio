@@ -1,0 +1,4 @@
+Écran 13 (588x1278)
+texte « Część do edycji » @ 315,183
+icône ✓ « A · Refren » @ 352,240
+icône + « Nowa pusta część » @ 352,314

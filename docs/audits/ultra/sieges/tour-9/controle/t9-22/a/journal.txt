@@ -1,0 +1,356 @@
+#0 SIEGE lang=it device=foldable font=130 mode=simple theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:dnb:9
+#0 PREMIER ECRAN reel_s=4.1 simule_s=2.4 jvm_s=10.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:dnb:9
+#0 AMENEE > touche 518 653 (welcome_learn)
+#0 AMENEE > touche 263 1085 (mode_card_simple)
+#0 AMENEE > touche 517 1169 (tuto_style_dnb)
+#0 AMENEE chapitres 1 à 8 construits dans le projet
+#0 AMENEE > touche 890 457 (tuto_chapters)
+#0 AMENEE > touche 517 877 (tuto_chapter_8)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b02726ec80 | project=p-83330347 tuto=dnb/Facile active=true step=brick done=14 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Salvato » lines cut (taller than its box)
+#1 LAYOUT CUT « Semplice » ellipsized (« … »)
+#1 LAYOUT CONTRAST « 8 » 3.56:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 8 » 4.28:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 449 660
+#1 DOIGT tuto_kit_download « Scarica il kit Drum & bass (2 MB) »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 28570071fb | project=p-83330347 tuto=dnb/Facile active=true step=brick done=14 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 517 857
+#2 DOIGT tuto_mark «   Ho capito »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 03bade8e2f | project=p-83330347 tuto=dnb/Facile active=true step=map_intro done=15 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « Grancassa da studio » ellipsized (« … »)
+#3 LAYOUT CUT « Drum & bass · Rullante » ellipsized (« … »)
+#3 LAYOUT CONTRAST « 24 » 2.79:1 (needs 4.5:1, 12 sp)
+#3 > touche 517 857
+#3 DOIGT tuto_listen «  Ascolta l'esempio »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d5c656e6a3 | project=p-83330347 tuto=dnb/Facile active=true step=map_intro done=15 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 3 s).
+#4 > attends 4
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6b94a14d23 | project=p-83330347 tuto=dnb/Facile active=true step=map_intro done=16 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 517 857
+#5 DOIGT tuto_next_big « Passo successivo   »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2ebdcbe0eb | project=p-83330347 tuto=dnb/Facile active=true step=map_montee done=16 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « 8 » 1.85:1 (needs 4.5:1, 12 sp)
+#6 > touche 517 857
+#6 DOIGT tuto_listen «  Ascolta l'esempio »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 646bb115b7 | project=p-83330347 tuto=dnb/Facile active=true step=map_montee done=16 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 3 s).
+#7 > attends 4
+#8 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e978e45efd | project=p-83330347 tuto=dnb/Facile active=true step=map_montee done=17 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 517 857
+#8 DOIGT tuto_next_big « Passo successivo   »
+#9 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e026943622 | project=p-83330347 tuto=dnb/Facile active=true step=map_drop done=17 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#9 > touche 517 857
+#9 DOIGT tuto_listen «  Ascolta l'esempio »
+#10 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2eb4b74ae6 | project=p-83330347 tuto=dnb/Facile active=true step=map_drop done=17 playing=false
+#10 SON Son : l'exemple du tuto joue (encore 3 s).
+#10 > attends 4
+#11 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 324d16fe4e | project=p-83330347 tuto=dnb/Facile active=true step=map_drop done=18 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 517 857
+#11 DOIGT tuto_next_big « Passo successivo   »
+#12 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 1c0a6f8453 | project=p-83330347 tuto=dnb/Facile active=true step=map_break done=18 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « 8 » 2.53:1 (needs 4.5:1, 12 sp)
+#12 > touche 517 857
+#12 DOIGT tuto_listen «  Ascolta l'esempio »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9945b8701b | project=p-83330347 tuto=dnb/Facile active=true step=map_break done=18 playing=false
+#13 SON Son : l'exemple du tuto joue (encore 3 s).
+#13 > attends 4
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE da605a4900 | project=p-83330347 tuto=dnb/Facile active=true step=map_break done=19 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 857
+#14 DOIGT tuto_next_big « Passo successivo   »
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0f40d9e38c | project=p-83330347 tuto=dnb/Facile active=true step=map_drop2 done=19 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 517 857
+#15 DOIGT tuto_listen «  Ascolta l'esempio »
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE dc38535a5d | project=p-83330347 tuto=dnb/Facile active=true step=map_drop2 done=19 playing=false
+#16 SON Son : l'exemple du tuto joue (encore 3 s).
+#16 > attends 4
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d2e11b0b9c | project=p-83330347 tuto=dnb/Facile active=true step=map_drop2 done=20 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 517 857
+#17 DOIGT tuto_next_big « Passo successivo   »
+#18 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a16470076f | project=p-83330347 tuto=dnb/Facile active=true step=map_phrases done=20 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 80 788
+#18 DOIGT tuto_why « ▸ Perché? »
+#19 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c623d7dca6 | project=p-83330347 tuto=dnb/Facile active=true step=map_phrases done=20 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 517 857
+#19 DOIGT tuto_mark «   Ho capito »
+#20 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b7ca1c1039 | project=p-83330347 tuto=dnb/Facile active=true step=map_phrases done=21 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 517 857
+#20 DOIGT tuto_next_big « Capitolo successivo   »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c52d4f63dc | project=p-83330347 tuto=dnb/Facile active=true step=make_intro done=21 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « Drum & bass · Hi-hat » ellipsized (« … »)
+#21 LAYOUT CUT « Drum & bass · Hi-hat aperto » ellipsized (« … »)
+#21 LAYOUT CUT « Drum & bass · Bordo del tamburo » ellipsized (« … »)
+#21 LAYOUT CONTRAST « Tom medio » 3.09:1 (needs 4.5:1, 14 sp)
+#21 > touche 517 776
+#21 DOIGT tuto_need «   Crea la parte “Intro” »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 517f1b7197 | project=p-83330347 tuto=dnb/Facile active=true step=make_intro done=22 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « + Nuova parte (copia di B · Intro) » lines dropped (more lines than room)
+#22 > touche 517 857
+#22 DOIGT tuto_next_big « Passo successivo   »
+#23 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b559633265 | project=p-83330347 tuto=dnb/Facile active=true step=make_montee done=22 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 517 776
+#23 DOIGT tuto_need «   Crea la parte “Build-up” »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d22e70a76e | project=p-83330347 tuto=dnb/Facile active=true step=make_montee done=23 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 517 857
+#24 DOIGT tuto_next_big « Passo successivo   »
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2c4d61eb3d | project=p-83330347 tuto=dnb/Facile active=true step=make_drop done=23 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « + Nuova parte (copia di C · Build-up) » lines dropped (more lines than room)
+#25 > touche 768 860
+#25 DOIGT tuto_show «  Mostrami »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c635181267 | project=p-83330347 tuto=dnb/Facile active=true step=make_drop done=23 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CUT « + Nuova parte (copia di D · Drop) » lines dropped (more lines than room)
+#26 LAYOUT CONTRAST « Ferma » 3.91:1 (needs 4.5:1, 14 sp)
+#26 > attends 3
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1fe97fb560 | project=p-83330347 tuto=dnb/Facile active=true step=make_drop done=23 playing=false
+#27 SON Son : rien ne joue.
+#27 > attends 3
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 972f110b11 | project=p-83330347 tuto=dnb/Facile active=true step=make_drop done=23 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « + Nuova parte (copia di C · Build-up) » 3.61:1 (needs 4.5:1, 14 sp)
+#28 > touche 517 776
+#28 DOIGT tuto_need «   Crea la parte “Drop” »
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE be140ab1fa | project=p-83330347 tuto=dnb/Facile active=true step=make_drop done=24 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 517 857
+#29 DOIGT tuto_next_big « Passo successivo   »
+#30 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6de8414cce | project=p-83330347 tuto=dnb/Facile active=true step=make_break done=24 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 517 776
+#30 DOIGT tuto_need «   Crea la parte “Break” »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fc9ca78067 | project=p-83330347 tuto=dnb/Facile active=true step=make_break done=25 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 517 857
+#31 DOIGT tuto_next_big « Passo successivo   »
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 37c09d31d4 | project=p-83330347 tuto=dnb/Facile active=true step=make_drop2 done=25 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 517 776
+#32 DOIGT tuto_need «   Crea la parte “Drop 2” »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6fb222e52a | project=p-83330347 tuto=dnb/Facile active=true step=make_drop2 done=26 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 517 857
+#33 DOIGT tuto_next_big « Passo successivo   »
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 97b2479a15 | project=p-83330347 tuto=dnb/Facile active=true step=make_fin done=26 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 517 776
+#34 DOIGT tuto_need «   Crea la parte “Fine” »
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b54e5dbcee | project=p-83330347 tuto=dnb/Facile active=true step=make_fin done=27 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 517 857
+#35 DOIGT tuto_next_big « Capitolo successivo   »
+#36 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 09b0fd38d4 | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=27 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 517 857
+#36 DOIGT rien
+#37 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 09b0fd38d4 | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=27 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 978 345
+#37 DOIGT tuto_fold
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b420030642 | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=27 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CUT « + Nuova parte (copia di G · Fine) » lines dropped (more lines than room)
+#38 LAYOUT CUT « Tocca a te: in “Il mio brano”, sotto “Aggiungi”, tocca in ordine i pulsanti che finiscono con Intro, Build-up, Drop, Break, Build-up, Drop 2 e Fine (per esempio “+ B · Intro”). Le durate non sono ancora quelle giuste: il passo successivo le regola. » ellipsized (« … »)
+#38 > touche 144 327
+#38 DOIGT add_part_1 « + B · Intro »
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 66dd633091 | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=27 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 171 621
+#39 DOIGT add_part_2 « + C · Build-up »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4b6a03c3ee | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=27 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 146 735
+#40 DOIGT add_part_3 « + D · Drop »
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 56298b6c28 | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=27 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 369 702
+#41 DOIGT add_part_4 « + E · Break »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2276445f1b | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=27 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 171 621
+#42 DOIGT add_part_2 « + C · Build-up »
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4c5bc7e7c3 | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=27 playing=false
+#43 SON Son : rien ne joue.
+#43 > glisse 260 700 260 450
+#43 DOIGT rien
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0616ca6a42 | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=27 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 156 601
+#44 DOIGT add_part_5 « + F · Drop 2 »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 39535502f9 | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=27 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CONTRAST « + F · Drop 2 » 1.22:1 (needs 4.5:1, 14 sp)
+#45 > touche 381 755
+#45 DOIGT add_part_6 « + G · Fine »
+#46 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 633dbe8e7a | project=p-83330347 tuto=dnb/Facile active=true step=song_order done=28 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 517 930
+#46 DOIGT tuto_next_folded « Riuscito »
+#47 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d568f8b8e2 | project=p-83330347 tuto=dnb/Facile active=true step=song_phrases done=28 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 517 776
+#47 DOIGT tuto_need «   Imposta le durate consigliate »
+#48 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 50f8be8976 | project=p-83330347 tuto=dnb/Facile active=true step=song_phrases done=29 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 517 857
+#48 DOIGT tuto_next_big « Capitolo successivo   »
+#49 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d7f240c8e4 | project=p-83330347 tuto=dnb/Facile active=true step=fill done=29 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 517 776
+#49 DOIGT tuto_need «   Vai nella parte “Build-up” »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dea7d47da7 | project=p-83330347 tuto=dnb/Facile active=true step=fill done=29 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT « I pad suonano, le caselle tengono i colpi. Pressione lunga: cambia il suono. » ellipsized (« … »)
+#50 LAYOUT CUT « Battuta 4/4 · Drum & bass · Rullante » ellipsized (« … »)
+#50 LAYOUT CONTRAST « Drum & bass · Rullante » 3.71:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « PASSI: DRUM & BASS · RULLANTE · BUILD-UP » 3.54:1 (needs 4.5:1, 12 sp)
+#50 > appui-long 744 632
+#50 DOIGT step_59 « Passo 12 »
+#51 ROUTE dialogue:roll_menu | MODE simple | EMPREINTE 62ed26f76b | project=p-83330347 tuto=dnb/Facile active=true step=fill done=29 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 509 626
+#51 DOIGT roll_4 « ×4 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 37327171e1 | project=p-83330347 tuto=dnb/Facile active=true step=fill done=30 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 517 930
+#52 DOIGT tuto_next_folded « Riuscito »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 80cfc46e0e | project=p-83330347 tuto=dnb/Facile active=true step=gap done=30 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « Drum & bass · Hi-hat » 4.06:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « Battuta 4/4 · Drum & bass · Hi-hat » 1.21:1 (needs 4.5:1, 13 sp)
+#53 > touche 517 776
+#53 DOIGT tuto_do «   Lo faccio io »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 085a4005be | project=p-83330347 tuto=dnb/Facile active=true step=gap done=30 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CONTRAST « Battuta 4/4 · Drum & bass · Hi-hat » 1.26:1 (needs 4.5:1, 13 sp)
+#54 LAYOUT CONTRAST « 4 » 4.13:1 (needs 4.5:1, 12 sp)
+#54 > touche 800 404
+#54 DOIGT step_60 « Passo 13 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0c723ea209 | project=p-83330347 tuto=dnb/Facile active=true step=gap done=31 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « Battuta 4/4 · Drum & bass · Hi-hat » 3.52:1 (needs 4.5:1, 13 sp)
+#55 LAYOUT CONTRAST « 4 » 3.92:1 (needs 4.5:1, 12 sp)
+#55 > touche 517 930
+#55 DOIGT tuto_chapter_end_folded « Bravo, capitolo finito! »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5cbb2d7d84 | project=p-83330347 tuto=dnb/Facile active=true step=gap done=31 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « Battuta 4/4 · Drum & bass · Hi-hat » 3.56:1 (needs 4.5:1, 13 sp)
+#56 > touche 327 941
+#56 DOIGT tuto_play_mine «  Ascolta il mio brano »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2b54df8cb6 | project=p-83330347 tuto=dnb/Facile active=true step=gap done=31 playing=true
+#57 SON Son : le morceau joue (partie « B »).
+#57 > attends 5
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f9dd6b27f4 | project=p-83330347 tuto=dnb/Facile active=true step=gap done=31 playing=true
+#58 SON Son : le morceau joue (partie « B »).
+#58 > touche 327 941
+#58 DOIGT tuto_play_mine «  Ferma »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 21c5618868 | project=p-83330347 tuto=dnb/Facile active=true step=gap done=31 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 517 857
+#59 DOIGT tuto_next_big « Capitolo successivo   »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e7f6fbe574 | project=p-83330347 tuto=dnb/Facile active=true step=reverb_hear done=31 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 517 857
+#60 DOIGT tuto_listen «  Ascolta l'esempio »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2ac41a7ff5 | project=p-83330347 tuto=dnb/Facile active=true step=reverb_hear done=31 playing=false
+#61 SON Son : l'exemple du tuto joue (encore 7 s).
+#61 > attends 4
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4893eb4d42 | project=p-83330347 tuto=dnb/Facile active=true step=reverb_hear done=32 playing=false
+#62 SON Son : l'exemple du tuto joue (encore 3 s).
+#62 > touche 517 857
+#62 DOIGT tuto_next_big « Passo successivo   »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e8ee992cba | project=p-83330347 tuto=dnb/Facile active=true step=riser_hear done=32 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 517 857
+#63 DOIGT tuto_listen «  Ascolta l'esempio »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 92929e8ce5 | project=p-83330347 tuto=dnb/Facile active=true step=riser_hear done=32 playing=false
+#64 SON Son : l'exemple du tuto joue (encore 3 s).
+#64 > attends 8
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bf5ae84ea1 | project=p-83330347 tuto=dnb/Facile active=true step=riser_hear done=33 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 517 857
+#65 DOIGT tuto_next_big « Capitolo successivo   »
+#66 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c813f51a66 | project=p-83330347 tuto=dnb/Facile active=true step=levels done=33 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 517 776
+#66 DOIGT tuto_do «   Lo faccio io »
+#67 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 73ab3d0221 | project=p-83330347 tuto=dnb/Facile active=true step=levels done=33 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CUT « Tocca a te: fare il mix vuol dire regolare il volume di ogni traccia. Nella scheda “Mix”, abbassa un po' lo slider della traccia “Accordi”, poi quello della traccia “Melodia”. Sotto il cursore, “Normale” diventa “−2”, “−4”…: più basso, meno forte. » ellipsized (« … »)
+#67 LAYOUT CONTRAST « Accordi » 3.99:1 (needs 4.5:1, 13 sp)
+#67 LAYOUT CONTRAST « Uscita » 4.34:1 (needs 4.5:1, 13 sp)
+#67 LAYOUT TARGET « Ascolta “Basso” da solo, in loop » 15 x 40 dp (touch 48 x 48)
+#67 LAYOUT TARGET « Ascolta “Accordi” da solo, in loop » 15 x 40 dp (touch 48 x 48)
+#67 LAYOUT TARGET « Ascolta “Melodia” da solo, in loop » 15 x 40 dp (touch 48 x 48)
+#67 > touche 727 1123
+#67 DOIGT tab_simple_Mix « Mix »
+#68 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 73ab3d0221 | project=p-83330347 tuto=dnb/Facile active=true step=levels done=33 playing=false
+#68 SON Son : rien ne joue.
+#68 > glisse 339 396 339 440
+#68 DOIGT mix_fader_5 « Volume di Accordi »
+#69 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 6172c6ebcf | project=p-83330347 tuto=dnb/Facile active=true step=levels done=33 playing=false
+#69 SON Son : rien ne joue.
+#69 > glisse 462 396 462 440
+#69 DOIGT mix_fader_6 « Volume di Melodia »
+#70 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 63bcdc95f5 | project=p-83330347 tuto=dnb/Facile active=true step=levels done=34 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 978 818
+#70 DOIGT tuto_fold
+#71 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 256cc3cc3b | project=p-83330347 tuto=dnb/Facile active=true step=levels done=34 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 517 857
+#71 DOIGT tuto_next_big « Capitolo successivo   »
+#72 ROUTE tab_simple_Mix | MODE simple | EMPREINTE b19167da05 | project=p-83330347 tuto=dnb/Facile active=true step=share done=34 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 936 1123
+#72 DOIGT tab_simple_Envoyer « Condividi »
+#73 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 3e19460a41 | project=p-83330347 tuto=dnb/Facile active=true step=share done=34 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 518 407
+#73 DOIGT share_go «   Condividi »
+#74 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 06aa8a8e23 | project=p-83330347 tuto=dnb/Facile active=true step=share done=34 playing=false
+#74 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#74 > attends 5
+#74 PARTAGE Il-mio-brano-20261119-075211.m4a
+#75 ROUTE dialogue:« Condividi il mio brano · Il-mi » | MODE simple | EMPREINTE 1ec0d3d9bc | project=p-83330347 tuto=dnb/Facile active=true step=share done=35 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 517 800
+#75 DOIGT vue « Files »
+#76 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 2fb7b287f6 | project=p-83330347 tuto=dnb/Facile active=true step=share done=35 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 857 803
+#76 DOIGT share_bilan_ok « OK »
+#77 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 64bb11addb | project=p-83330347 tuto=dnb/Facile active=true step=share done=35 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 517 857
+#77 DOIGT tuto_next_big « Passo successivo   »
+#78 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 2eac7f6387 | project=p-83330347 tuto=dnb/Facile active=true step=share done=35 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT CUT « Ascolta un estratto di drum & bass finita: il Build-up (la tensione sale), poi il Drop (tutto cade di colpo, con un basso enorme che ruggisce). È quello che costruirai, blocco dopo blocco. » ellipsized (« … »)
+#78 LAYOUT CUT « Prima di iniziare: su un pad, “FX” vuol dire che c'è già un effetto (rende il suono più incisivo), “S 30” o “D 45” che il suono è posizionato un po' a sinistra o a destra. È tutto pronto: non devi regolare niente. » ellipsized (« … »)
+#78 LAYOUT CUT « Ascolta la cassa (il grosso “bum” della batteria) della drum & bass, da sola: corta e secca, due colpi per battuta. » ellipsized (« … »)
+#78 > fin
+#78 FIN : fin

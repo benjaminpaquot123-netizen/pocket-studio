@@ -13,7 +13,6 @@
   "Afficher :": "दिखाओ:",
   "Aide de la ligne du temps": "टाइमलाइन मदद",
   "Ajouter :": "जोड़ो:",
-  "Ajouter à la fin :": "आख़िर में जोड़ो:",
   "Ajouter à la suite": "इसके बाद जोड़ो",
   "Annuler la dernière action": "अनडू",
   "Annuler la prise": "टेक कैंसल करो",
@@ -275,8 +274,8 @@
   "Terminé": "हो गया",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "तुम्हारा गाना खाली है: अपने पार्ट उसी क्रम में जोड़ो जिसमें वो बजते हैं (इंट्रो, अंतरा, मुखड़ा…)।",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "पैड का साउंड शुरू करने के लिए टैप करो, रोकने के लिए फिर टैप करो। सब बीट पर ही रहता है।",
-  "Touche une partie : elle joue juste après celle en cours.": "एक पार्ट पर टैप करो: वो अभी वाले के ठीक बाद बजेगा।",
-  "Touche une partie pour écouter le morceau à partir d'elle.": "वहाँ से गाना सुनने के लिए किसी पार्ट पर टैप करो।",
+  "Touche une partie pour régler sa longueur ; ▶ la joue juste après celle en cours.": "लंबाई बदलने के लिए किसी पार्ट पर टैप करो; ▶ उसे अभी वाले के ठीक बाद बजाता है।",
+  "Touche une partie pour régler sa longueur ; ▶ écoute le morceau à partir d'elle.": "लंबाई बदलने के लिए किसी पार्ट पर टैप करो; ▶ वहाँ से गाना बजाता है।",
   "Toucher la règle : jouer depuis cette partie.": "रूलर पर टैप: उस पार्ट से बजाओ।",
   "Toucher une case : couper ou remettre la piste dans cette partie.": "खाने पर टैप: इस पार्ट में ट्रैक म्यूट या अनम्यूट करो।",
   "Tout couper": "सब रोको",
@@ -404,5 +403,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "नोट्स बजाओ: वे Acid 303 पर बजते हैं। रोकने के लिए खाने को फिर छुओ: लूप बार पर बैठ जाता है।",
   "Le micro ne répond pas : réessaie.": "माइक जवाब नहीं दे रहा: फिर से कोशिश करो।",
   "Vider la case": "खाना ख़ाली करो",
-  "Annuler possible": "अनडू हो सकता है"
+  "Annuler possible": "अनडू हो सकता है",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : दोहराव। धूसर: तय लंबाई (सुझाई या Live) या सिर्फ़ 1 बार।"
 }

@@ -1,0 +1,35 @@
+Écran 40 (1035x1243)
+dessin @ 518,36
+texte « パート 2 · B · イントロ » @ 247,100
+texte « 閉じる » @ 913,121
+texte « 8 小節  ·  2 回再生 » @ 178,148
+texte « 曲中で 2 回再生。編集する範囲： » @ 274,204
+bouton (étincelles) « このパートだけ » @ 287,282
+bouton (crayon) « 2 個すべて » @ 749,282
+bouton (barres de son) « 最後にフィル » @ 287,381
+bouton ❚❚ « 後にブレイク · 4小節 » @ 749,381
+bouton ❚❚ « 後にブレイク · 8小節 » @ 287,480
+bouton (courbe qui monte) « 前にビルドアップ · 4小節 » @ 749,480
+bouton (courbe qui monte) « 前にビルドアップ · 8小節 » @ 287,579
+bouton (haut-parleur et ondes) « フェードイン » @ 749,579
+bouton (haut-parleur et une onde) « フェードアウト » @ 287,678
+bouton (drapeau) « エンディングを追加 » @ 749,678
+texte « エネルギー：3 » @ 155,755
+bouton « 1 · パッド » @ 147,827
+bouton « 2 · ＋ベース » @ 341,827
+bouton « 3 · ＋ドラム » [sélectionné] @ 552,827
+bouton « 4 · 全開 » @ 737,827
+texte « 長さ » @ 90,898
+champ « 小節 » contenu « 8 » @ 306,989
+icône ✕ @ 353,997
+icône − [désactivé] @ 98,989
+icône + @ 179,989
+texte « OK » [désactivé] @ 441,989
+texte « パート » @ 104,1079
+icône (crayon) « 名前を変更 » @ 167,1151
+icône (curseurs) « 鳴っているもの » @ 412,1151
+icône ↑ « 上へ移動 » @ 642,1151
+icône ↓ « 下へ移動 » [désactivé] @ 831,1151
+icône (deux feuilles) « 複製 » [coupé] @ 125,1215
+icône + « 後ろに挿入 » [coupé] @ 300,1215
+icône (poubelle) « 外す » [coupé] @ 475,1215

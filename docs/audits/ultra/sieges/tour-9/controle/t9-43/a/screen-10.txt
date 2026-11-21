@@ -1,0 +1,31 @@
+Écran 10 (900x1509)
+dessin @ 450,754
+dessin @ 450,683
+texte « Toonsoort van het nummer » @ 384,755
+texte « Sluiten » @ 810,755
+texte « Toonsoort van het nummer: A · Mineur » @ 281,826
+texte « Toonladder » @ 100,882
+bouton « Majeur » @ 90,954
+bouton « Mineur » @ 236,954
+bouton « Dorisch » @ 388,954
+bouton « Mineur-penta » @ 583,954
+bouton « Majeur-penta » @ 137,1035
+bouton « Blues » @ 316,1035
+bouton « Frygisch » @ 461,1035
+bouton « Harmonisch mineur » @ 705,1035
+texte « Grondtoon » @ 96,1106
+bouton « C » @ 63,1178
+bouton « C♯ » @ 150,1178
+bouton « D » @ 237,1178
+bouton « E♭ » @ 324,1178
+bouton « E » @ 411,1178
+bouton « F » @ 498,1178
+bouton « F♯ » @ 585,1178
+bouton « G » @ 672,1178
+bouton « A♭ » @ 759,1178
+bouton « A » @ 63,1259
+bouton « B♭ » @ 150,1259
+bouton « B » @ 237,1259
+image (rond coché) @ 58,1345
+texte « Gelukt! De kleur van het nummer is gekozen. » @ 413,1345
+bouton « Terug naar de tutorial » @ 450,1434

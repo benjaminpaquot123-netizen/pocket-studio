@@ -1,0 +1,37 @@
+Écran 14 (588x1278)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Pro » @ 236,42
+icône ↶ @ 311,42
+bouton ● @ 383,42
+bouton ▶ « bagian ini » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 175  BPM » @ 83,123
+bouton « ? » @ 543,123
+texte « Garis waktu menyusun bagianmu secara berurutan, masing-masing dengan panjangnya dalam birama. Tambahkan secara berurutan. » [coupé] @ 294,208
+texte « Tambah: » @ 100,287
+bouton « + A · Groove » @ 163,356
+bouton « + B · Intro » @ 395,356
+bouton « + C · Build-up » @ 171,437
+bouton « + D · Drop » @ 414,437
+bouton « + E · Break » @ 151,518
+bouton « + Bagian baru (salinan E · Break) » @ 294,599
+bouton « + Bagian baru kosong » @ 227,680
+bouton (barres de son) «   Yang main di lagu » @ 294,764
+texte « Bangun bagian-bagianmu Bab 8/14 · Langkah 5/6 · Pro » @ 222,852
+icône (liste) « Bab » @ 459,853
+icône ⌃ @ 531,853
+bouton « Buat bagian “Drop 2” » → @ 294,965
+icône ↶ « Urungkan » @ 79,1061
+icône ↷ « Ulangi » [désactivé] @ 194,1061
+bouton ▶ « lagu » @ 297,1061
+texte « 175 Tempo » @ 405,1061
+icône (trois points reliés) « Bagikan » @ 518,1061
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 54,1158
+onglet (touches de piano) « Suara » @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Lainnya » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Catat » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode masukan » @ 162,1248

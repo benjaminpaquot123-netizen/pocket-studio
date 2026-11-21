@@ -1,0 +1,404 @@
+#0 SIEGE lang=tr device=foldable font=200 mode=simple theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:dubstep:9
+#0 PREMIER ECRAN reel_s=3.4 simule_s=2.4 jvm_s=7.8 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:dubstep:9
+#0 AMENEE > touche 518 850 (welcome_learn)
+#0 AMENEE > touche 263 979 (mode_card_simple)
+#0 AMENEE > touche 517 1152 (tuto_style_dubstep)
+#0 AMENEE chapitres 1 à 8 construits dans le projet
+#0 AMENEE > touche 883 329 (tuto_chapters)
+#0 AMENEE > touche 517 893 (tuto_chapter_8)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e9e3c3aa7d | project=p-d4e30325 tuto=dubstep/Facile active=true step=brick done=15 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Kaydedildi » lines cut (taller than its box)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 517 819
+#1 DOIGT tuto_mark «   Anladım »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0e46f58f9b | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_intro done=16 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#2 > touche 517 819
+#2 DOIGT tuto_listen «  Örneği dinle »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9ffde28112 | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_intro done=16 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 3 s).
+#3 > attends 4
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a61d4cc9a2 | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_intro done=17 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 517 819
+#4 DOIGT tuto_next_big « Sonraki adım   »
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 88c5f9b1f2 | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_montee done=17 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 517 819
+#5 DOIGT tuto_listen «  Örneği dinle »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b13a8d12e8 | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_montee done=17 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 3 s).
+#6 > attends 5
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8070b8816f | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_montee done=18 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 517 819
+#7 DOIGT tuto_next_big « Sonraki adım   »
+#8 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 03a9b3c8f5 | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_drop done=18 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#8 > touche 517 819
+#8 DOIGT tuto_listen «  Örneği dinle »
+#9 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6ffd1b6f9e | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_drop done=18 playing=false
+#9 SON Son : l'exemple du tuto joue (encore 3 s).
+#9 > attends 5
+#10 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a203422323 | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_drop done=19 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 517 819
+#10 DOIGT tuto_next_big « Sonraki adım   »
+#11 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8075e3e72c | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_break done=19 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « 8 » 2.53:1 (needs 4.5:1, 12 sp)
+#11 > touche 517 819
+#11 DOIGT tuto_listen «  Örneği dinle »
+#12 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e10457e669 | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_break done=19 playing=false
+#12 SON Son : l'exemple du tuto joue (encore 3 s).
+#12 > attends 5
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0bdcfc64d1 | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_break done=20 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 517 819
+#13 DOIGT tuto_next_big « Sonraki adım   »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 92da24f1e2 | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_drop2 done=20 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 819
+#14 DOIGT tuto_listen «  Örneği dinle »
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 53b2f1d87b | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_drop2 done=20 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > attends 5
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 3bafe9a90e | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_drop2 done=21 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 517 819
+#16 DOIGT tuto_next_big « Sonraki adım   »
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 09095b3aed | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_phrases done=21 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 956 602
+#17 DOIGT tuto_kit_later « Sonra »
+#18 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0e085d766f | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_phrases done=21 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « 8 » 3.56:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 8 » 4.28:1 (needs 4.5:1, 12 sp)
+#18 > touche 517 819
+#18 DOIGT tuto_mark «   Anladım »
+#19 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b06cd18f44 | project=p-d4e30325 tuto=dubstep/Facile active=true step=map_phrases done=22 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 517 825
+#19 DOIGT tuto_next_big « Sonraki bölüm   »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1e104b3186 | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_intro done=22 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « ADIMLAR: BÜYÜK DAVUL 1 » a word split over two lines
+#20 LAYOUT OVERLAP « Büyük davul 1 » over « FX » (24 x 11 dp)
+#20 > touche 517 736
+#20 DOIGT tuto_need «   “Giriş” bölümünü oluştur »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 51f56488e6 | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_intro done=23 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 517 825
+#21 DOIGT tuto_next_big « Sonraki adım   »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f02d437aad | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_montee done=23 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 517 736
+#22 DOIGT tuto_need «   “Yükseliş” bölümünü oluştur »
+#23 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d7b9ff8df4 | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_montee done=24 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 517 825
+#23 DOIGT tuto_next_big « Sonraki adım   »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a4f8552c76 | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_drop done=24 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 517 736
+#24 DOIGT tuto_need «   “Drop” bölümünü oluştur »
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f9f1090b81 | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_drop done=25 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 327 911
+#25 DOIGT tuto_play_mine «  Sonucunu dinle »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 86877c5f8d | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_drop done=25 playing=true
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 327 911
+#26 DOIGT tuto_play_mine «  Durdur »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f9f1090b81 | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_drop done=25 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 517 825
+#27 DOIGT tuto_next_big « Sonraki adım   »
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 35657b098c | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_break done=25 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 517 736
+#28 DOIGT tuto_need «   “Break” bölümünü oluştur »
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0b5003190a | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_break done=26 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 517 825
+#29 DOIGT tuto_next_big « Sonraki adım   »
+#30 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4838d44ff6 | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_drop2 done=26 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 517 736
+#30 DOIGT tuto_need «   “Drop 2” bölümünü oluştur »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9593adc83f | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_drop2 done=27 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 517 825
+#31 DOIGT tuto_next_big « Sonraki adım   »
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4a66820fb2 | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_fin done=27 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 517 736
+#32 DOIGT tuto_need «   “Bitiş” bölümünü oluştur »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 21ef4999d5 | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_fin done=28 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 978 415
+#33 DOIGT tuto_fold
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 8c37376baa | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_fin done=28 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 978 743
+#34 DOIGT tuto_fold
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2f5e695898 | project=p-d4e30325 tuto=dubstep/Facile active=true step=make_fin done=28 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 517 825
+#35 DOIGT tuto_next_big « Sonraki bölüm   »
+#36 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE b03764d17a | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 517 736
+#36 DOIGT tuto_do «   Ben yaparım »
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ec6a7f9865 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « Sıra sende: “Şarkım” ekranında, “Ekle” altında, Giriş, Yükseliş, Drop, Break, Yükseliş, Drop 2 ve Bitiş ile biten düğmelere sırayla dokun (örneğin “+ B · Giriş”). Süreler henüz doğru değil: sonraki adım onları ayarlar. » ellipsized (« … »)
+#37 LAYOUT CONTRAST « + A · Groove » 4.12:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « + B · Giriş » 4.16:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « + C · Yükseliş » 4.23:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « + D · Drop » 4.25:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « + E · Break » 4.25:1 (needs 4.5:1, 14 sp)
+#37 > touche 170 381
+#37 DOIGT add_part_1 « + B · Giriş »
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f50f246c8b | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « + A · Groove » 4.25:1 (needs 4.5:1, 14 sp)
+#38 > glisse 200 620 200 250
+#38 DOIGT add_part_0 « + A · Groove »
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2e388098a6 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 208 478
+#39 DOIGT add_part_2 « + C · Yükseliş »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ca3485c60c | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CUT « C · Yükseliş » ellipsized (« … »)
+#40 > glisse 200 650 200 200
+#40 DOIGT rien (texte « Sona ekle: »)
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE addfeea95a | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 173 547
+#41 DOIGT add_part_3 « + D · Drop »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 57e83f7964 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#42 SON Son : rien ne joue.
+#42 > glisse 200 650 200 200
+#42 DOIGT rien (texte « Sona ekle: »)
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b9d7b5a671 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 180 636
+#43 DOIGT add_part_4 « + E · Break »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6df1df70ea | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#44 SON Son : rien ne joue.
+#44 > glisse 200 650 200 200
+#44 DOIGT rien (texte « Sona ekle: »)
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c88b18d8fc | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 208 458
+#45 DOIGT add_part_2 « + C · Yükseliş »
+#46 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5aeb9aff90 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#46 SON Son : rien ne joue.
+#46 > glisse 200 650 200 150
+#46 DOIGT rien (texte « Sona ekle: »)
+#47 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b94d956074 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 188 650
+#47 DOIGT add_part_5 « + F · Drop 2 »
+#48 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c0e53babc5 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#48 SON Son : rien ne joue.
+#48 > glisse 200 650 200 100
+#48 DOIGT rien (texte « Sona ekle: »)
+#49 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d02e270758 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#49 SON Son : rien ne joue.
+#49 > glisse 200 600 200 250
+#49 DOIGT add_part_5 « + F · Drop 2 »
+#50 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 37fadaf212 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=28 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT « + Yeni bölüm (G · Bitiş kopyası) » lines dropped (more lines than room)
+#50 > touche 169 388
+#50 DOIGT add_part_6 « + G · Bitiş »
+#51 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 25df497075 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_order done=29 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 517 886
+#51 DOIGT tuto_next_folded « Başarıldı »
+#52 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 862a0855e5 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_phrases done=29 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 517 736
+#52 DOIGT tuto_need «   Önerilen süreleri ver »
+#53 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 69fe870085 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_phrases done=30 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 558 911
+#53 DOIGT tuto_play_mine «  Şarkımı dinle »
+#54 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 30eb33f6a9 | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_phrases done=30 playing=true
+#54 SON Son : le morceau joue (partie « B »).
+#54 > attends 6
+#55 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0a02fab32d | project=p-d4e30325 tuto=dubstep/Facile active=true step=song_phrases done=30 playing=true
+#55 SON Son : le morceau joue (partie « B »).
+#55 > touche 517 825
+#55 DOIGT tuto_next_big « Sonraki bölüm   »
+#56 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9a5e131fcd | project=p-d4e30325 tuto=dubstep/Facile active=true step=fill done=30 playing=true
+#56 SON Son : le morceau joue (partie « B »).
+#56 > touche 517 736
+#56 DOIGT tuto_need «   “Yükseliş” bölümüne git »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f66dd8747a | project=p-d4e30325 tuto=dubstep/Facile active=true step=fill done=30 playing=true
+#57 SON Son : la musique du projet joue en boucle.
+#57 LAYOUT CUT « Sen düzenlerken döngüde çalar. Şarkıya dönmek için üstteki ⟳ Döngü. » ellipsized (« … »)
+#57 LAYOUT CUT « Ölçü 2/4 · Büyük davul 1 » ellipsized (« … »)
+#57 LAYOUT CUT « Döngü » drawn past its parent's edge (down, 32 dp shown of 37)
+#57 > touche 517 736
+#57 DOIGT tuto_do «   Ben yaparım »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b8845bb5e3 | project=p-d4e30325 tuto=dubstep/Facile active=true step=fill done=30 playing=true
+#58 SON Son : la musique du projet joue en boucle.
+#58 LAYOUT CUT « R 50 » lines dropped (more lines than room)
+#58 LAYOUT CUT « Ölçü 4/4 · Büyük davul 1 » ellipsized (« … »)
+#58 LAYOUT OVERLAP « El çırpma » over « FX » (24 x 11 dp)
+#58 LAYOUT OVERLAP « Hi-hat » over « L 30 » (42 x 3 dp)
+#58 LAYOUT OVERLAP « Açık hi-hat » over « R 30 » (39 x 10 dp)
+#58 LAYOUT OVERLAP « Orta tom » over « R 45 » (33 x 11 dp)
+#58 LAYOUT OVERLAP « Davul kenarı » over « FX » (21 x 10 dp)
+#58 LAYOUT OVERLAP « Davul kenarı » over « R 50 » (12 x 10 dp)
+#58 LAYOUT CONTRAST « El çırpma » 3.66:1 (needs 4.5:1, 14 sp)
+#58 > glisse 770 600 770 300
+#58 DOIGT rien (texte « Ölçü 4/4 · Büyük davul 1 »)
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ed9ef6b782 | project=p-d4e30325 tuto=dubstep/Facile active=true step=fill done=30 playing=true
+#59 SON Son : la musique du projet joue en boucle.
+#59 LAYOUT CONTRAST « 1 » 3.75:1 (needs 4.5:1, 12 sp)
+#59 LAYOUT CONTRAST « 2 » 3.23:1 (needs 4.5:1, 12 sp)
+#59 > appui-long 744 454
+#59 DOIGT step_59 « Adım 12 »
+#60 ROUTE dialogue:roll_menu | MODE simple | EMPREINTE 16a52d2cfa | project=p-d4e30325 tuto=dubstep/Facile active=true step=fill done=30 playing=true
+#60 SON Son : la musique du projet joue en boucle.
+#60 > touche 377 832
+#60 DOIGT roll_3 « ×3 »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 128a0bb2ce | project=p-d4e30325 tuto=dubstep/Facile active=true step=fill done=31 playing=true
+#61 SON Son : la musique du projet joue en boucle.
+#61 LAYOUT CUT « ×3 » lines cut (taller than its box)
+#61 > touche 517 886
+#61 DOIGT tuto_next_folded « Başarıldı »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0fc8d26ed9 | project=p-d4e30325 tuto=dubstep/Facile active=true step=gap done=31 playing=true
+#62 SON Son : la musique du projet joue en boucle.
+#62 > touche 517 736
+#62 DOIGT tuto_do «   Ben yaparım »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 34288ca6b8 | project=p-d4e30325 tuto=dubstep/Facile active=true step=gap done=31 playing=true
+#63 SON Son : la musique du projet joue en boucle.
+#63 LAYOUT CUT « Burada fazladan vuruş (üstü çizili): 3 » ellipsized (« … »)
+#63 LAYOUT CUT « Sıra sende: “Yükseliş” bölümünde, son ölçüde, son vuruştaki vuruşları sil (her kırmızı çarpıya dokun): Drop'tan hemen önce bir vuruşluk sessizlik. » ellipsized (« … »)
+#63 LAYOUT CONTRAST « Burada fazladan vuruş (üstü çizili): 3 » 2.43:1 (needs 3.0:1, 14 sp)
+#63 LAYOUT CONTRAST « 4 » 4.13:1 (needs 4.5:1, 12 sp)
+#63 > touche 800 529
+#63 DOIGT step_60 « Adım 13 »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bd0f10f812 | project=p-d4e30325 tuto=dubstep/Facile active=true step=gap done=31 playing=true
+#64 SON Son : la musique du projet joue en boucle.
+#64 LAYOUT CUT « Burada fazladan vuruş (üstü çizili): 2 » ellipsized (« … »)
+#64 LAYOUT CONTRAST « Burada fazladan vuruş (üstü çizili): 2 » 2.43:1 (needs 3.0:1, 14 sp)
+#64 > touche 912 529
+#64 DOIGT step_62 « Adım 15 »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c4c3136ccb | project=p-d4e30325 tuto=dubstep/Facile active=true step=gap done=31 playing=true
+#65 SON Son : la musique du projet joue en boucle.
+#65 LAYOUT CUT « Burada fazladan vuruş (üstü çizili): 1 » ellipsized (« … »)
+#65 LAYOUT CONTRAST « Burada fazladan vuruş (üstü çizili): 1 » 2.43:1 (needs 3.0:1, 14 sp)
+#65 > touche 968 529
+#65 DOIGT step_63 « Adım 16 »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2d912d65ec | project=p-d4e30325 tuto=dubstep/Facile active=true step=gap done=32 playing=true
+#66 SON Son : la musique du projet joue en boucle.
+#66 > touche 517 886
+#66 DOIGT tuto_chapter_end_folded « Bravo, bölüm bitti! »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f5b4cbc0c4 | project=p-d4e30325 tuto=dubstep/Facile active=true step=gap done=32 playing=true
+#67 SON Son : la musique du projet joue en boucle.
+#67 > touche 517 825
+#67 DOIGT tuto_next_big « Sonraki bölüm   »
+#68 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7589b79a62 | project=p-d4e30325 tuto=dubstep/Facile active=true step=reverb_hear done=32 playing=true
+#68 SON Son : la musique du projet joue en boucle.
+#68 > touche 517 819
+#68 DOIGT tuto_listen «  Örneği dinle »
+#69 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE cf71a40a04 | project=p-d4e30325 tuto=dubstep/Facile active=true step=reverb_hear done=32 playing=false
+#69 SON Son : l'exemple du tuto joue (encore 7 s).
+#69 LAYOUT CUT « Döngüde (⟳ Döngü). ▶ bu bölümü tek başına çalar. » lines cut (taller than its box)
+#69 > attends 6
+#70 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2918979751 | project=p-d4e30325 tuto=dubstep/Facile active=true step=reverb_hear done=33 playing=false
+#70 SON Son : l'exemple du tuto joue (encore 1 s).
+#70 > touche 517 819
+#70 DOIGT tuto_next_big « Sonraki adım   »
+#71 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c234e5b025 | project=p-d4e30325 tuto=dubstep/Facile active=true step=riser_hear done=33 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CUT « Bölüm: C · Yükseliş » drawn past its parent's edge (down, 31 dp shown of 37)
+#71 > touche 517 819
+#71 DOIGT tuto_listen «  Örneği dinle »
+#72 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 69cd0b3d64 | project=p-d4e30325 tuto=dubstep/Facile active=true step=riser_hear done=33 playing=false
+#72 SON Son : l'exemple du tuto joue (encore 3 s).
+#72 > attends 8
+#73 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a20738d041 | project=p-d4e30325 tuto=dubstep/Facile active=true step=riser_hear done=34 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 517 825
+#73 DOIGT tuto_next_big « Sonraki bölüm   »
+#74 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5e162775c2 | project=p-d4e30325 tuto=dubstep/Facile active=true step=levels done=34 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 727 1123
+#74 DOIGT tab_simple_Mix « Mix »
+#75 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE e40c68d860 | project=p-d4e30325 tuto=dubstep/Facile active=true step=levels done=34 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 517 736
+#75 DOIGT tuto_do «   Ben yaparım »
+#76 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 3c2b525707 | project=p-d4e30325 tuto=dubstep/Facile active=true step=levels done=34 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT CUT « Sıra sende: “Mix” sekmesinde “Akorlar” kanalının sürgüsünü biraz indir, sonra “Melodi” kanalınınkini. Kaydırıcının altında “Normal”, “−2”, “−4”… olur: ne kadar düşükse o kadar kısık. » ellipsized (« … »)
+#76 LAYOUT CONTRAST « Akorlar » 3.99:1 (needs 4.5:1, 13 sp)
+#76 LAYOUT CONTRAST « Çıkış » 4.40:1 (needs 4.5:1, 13 sp)
+#76 > glisse 347 362 347 420
+#76 DOIGT mix_fader_5 « Akorlar seviyesi »
+#77 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 89989a5f75 | project=p-d4e30325 tuto=dubstep/Facile active=true step=levels done=34 playing=false
+#77 SON Son : rien ne joue.
+#77 > glisse 469 366 469 420
+#77 DOIGT mix_fader_6 « Melodi seviyesi »
+#78 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 223dc6dc45 | project=p-d4e30325 tuto=dubstep/Facile active=true step=levels done=35 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 517 886
+#78 DOIGT tuto_chapter_end_folded « Bravo, bölüm bitti! »
+#79 ROUTE tab_simple_Mix | MODE simple | EMPREINTE a6ec0df65b | project=p-d4e30325 tuto=dubstep/Facile active=true step=levels done=35 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 517 825
+#79 DOIGT tuto_next_big « Sonraki bölüm   »
+#80 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 3bc47280a4 | project=p-d4e30325 tuto=dubstep/Facile active=true step=share done=35 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 936 1123
+#80 DOIGT tab_simple_Envoyer « Paylaş »
+#81 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 5a6d1c97e2 | project=p-d4e30325 tuto=dubstep/Facile active=true step=share done=35 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 978 435
+#81 DOIGT tuto_fold
+#82 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE e4853e962c | project=p-d4e30325 tuto=dubstep/Facile active=true step=share done=35 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT CUT « ? » lines cut (taller than its box)
+#82 LAYOUT CUT « Sıra sende: parçanı paylaş, uygulama bir ses dosyası yapar. “M4A” arkadaşların için hafif bir dosya yapar, “WAV” stüdyo kalitesini korur. » ellipsized (« … »)
+#82 > touche 518 531
+#82 DOIGT share_go «   Paylaş »
+#83 ROUTE dialogue:share_progress | MODE simple | EMPREINTE ff2dff2cda | project=p-d4e30325 tuto=dubstep/Facile active=true step=share done=35 playing=false
+#83 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#83 > attends 5
+#83 PARTAGE Şarkım-şarkı-20261119-075145.m4a
+#84 ROUTE dialogue:« Şarkımı paylaş · Şarkım-şarkı- » | MODE simple | EMPREINTE f5b3018dea | project=p-d4e30325 tuto=dubstep/Facile active=true step=share done=36 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 517 836
+#84 DOIGT vue « Files »
+#85 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 2a2583bcc1 | project=p-d4e30325 tuto=dubstep/Facile active=true step=share done=36 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT CONTRAST « Dosyalarımı gör » 1.46:1 (needs 4.5:1, 14 sp)
+#85 LAYOUT CONTRAST « OK » 1.46:1 (needs 4.5:1, 14 sp)
+#85 > touche 853 887
+#85 DOIGT share_bilan_ok « OK »
+#86 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 687109e363 | project=p-d4e30325 tuto=dubstep/Facile active=true step=share done=36 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 517 886
+#86 DOIGT tuto_next_folded « Başarıldı »
+#87 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 681f472ea7 | project=p-d4e30325 tuto=dubstep/Facile active=true step=share done=36 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT CUT « Bitmiş bir dubstep parçasından bir kesit dinle: Yükseliş, sonra basın “vob vob” yaptığı ağır ve yavaş Drop. Blok blok kuracağın şey bu. » ellipsized (« … »)
+#87 LAYOUT CUT « Başlamadan önce: bir pad'de “FX”, üzerine zaten bir efekt konmuş demektir (sesi daha vurucu yapar), “L 30” ya da “R 45” sesin biraz sola ya da sağa yerleştirildiği demektir. Her şey hazır: ayarlayacak bir şey yok. » ellipsized (« … »)
+#87 > fin
+#87 FIN : fin

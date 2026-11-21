@@ -1,0 +1,56 @@
+Écran 3 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 288,42
+bouton « Simple » @ 618,42
+bouton ● @ 706,42
+bouton ▶ « esta parte » @ 780,42
+icône ⋮ @ 855,42
+bouton « 100  Tempo » @ 83,114
+bouton « ? » @ 855,114
+icône « Parte: A » ▾ @ 76,180
+bouton « Bombo de estudio FX » @ 123,270
+bouton « Bombo 2 » @ 341,270
+bouton « Caja » @ 559,270
+bouton « Caja 2 » @ 777,270
+bouton « Palmada FX » @ 123,348
+bouton « Hi-hat I 30 » @ 341,348
+bouton « Hi-hat abierto D 30 » @ 559,348
+bouton « Tom grave » @ 777,348
+bouton « Tom medio D 45 » @ 123,426
+bouton « Tom agudo » @ 341,426
+bouton « Aro del tambor D 50 » @ 559,426
+bouton « Campana » @ 777,426
+bouton « Platillo FX D 40 » @ 123,504
+bouton « Maracas I 50 » @ 341,504
+bouton « Conga » @ 559,504
+bouton « Láser » @ 777,504
+bouton ▾ « Kit: Estudio » [coupé] @ 115,553
+texte « Los pads suenan, las casillas guardan los golpes. Mantén pulsado: cambiar el sonido. » [coupé] @ 553,558
+icône (liste) « Capítulos » @ 757,609
+texte « La velocidad y el color del tema Capítulo 1/13 · Paso 2/3 · Fácil » @ 364,609
+icône ⌄ @ 843,609
+texte « Ejemplo saltado sin escucharlo. » @ 178,687
+texte « Te toca: ajusta el tempo (la velocidad del tema) a 120 BPM. “Lo hago yo” abre la ficha Tempo. » @ 450,747
+texte « Un tema nuevo empieza a 100 BPM: tú le das la velocidad del estilo. » @ 357,807
+texte « • BPM: la velocidad de la canción, en pulsos por minuto. » @ 277,844
+bouton « Descargar el kit Deep house (4 MB) » @ 387,915
+texte « Más tarde » @ 810,915
+texte « ▸ ¿Por qué? » @ 450,981
+bouton (doigt qui touche) «   Lo hago yo » @ 450,1044
+bouton ▶ «  Escuchar el ejemplo » @ 232,1128
+bouton (œil) «  Muéstramelo » @ 667,1128
+icône ← «  Anterior » @ 97,1209
+icône « Siguiente  » → @ 795,1209
+icône ↶ « Deshacer » [désactivé] @ 123,1293
+image ↷ @ 282,1283
+bouton ▶ « la canción » @ 444,1293
+texte « 100 Tempo » @ 612,1293
+icône ⋮ « Más » @ 777,1293
+onglet (lignes et note) « Mi canción » @ 85,1389
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 268,1389
+onglet (touches de piano) « Teclado » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Compartir » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Anotar » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 318,1479

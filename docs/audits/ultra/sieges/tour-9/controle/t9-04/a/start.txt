@@ -1,0 +1,10 @@
+lang=ja
+device=phone
+font=130
+mode=pro
+amenee=tuto:acid_techno:6
+gestes.max=153
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

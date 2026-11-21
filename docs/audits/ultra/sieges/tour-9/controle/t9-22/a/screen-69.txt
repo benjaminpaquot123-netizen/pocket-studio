@@ -1,0 +1,52 @@
+Écran 69 (1035x1243)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 346,42
+bouton « Semplice » @ 737,42
+bouton ● @ 827,42
+bouton ▶ « questa parte » @ 908,42
+icône ⋮ @ 990,42
+bouton « 174  Tempo » @ 98,123
+icône « Intro battuta 1/128 » ▾ @ 312,123
+bouton « ? » @ 990,123
+texte « Tocca a te: alza ciò che deve sentirsi, abbassa ciò che disturba. Tocca ▶ per ascoltare una traccia da sola. » [coupé] @ 520,169
+bouton « Batteria ▸ » [état « chiuso »] @ 75,244
+curseur [état « Normale », à 80 %] @ 84,425
+texte « Normale » @ 84,586
+bouton (haut-parleur et ondes) [allumé, état « attivo »] @ 61,653
+bouton ▶ @ 121,640
+texte « Basso » @ 216,232
+curseur [état « Normale », à 80 %] @ 216,401
+texte « Normale » @ 216,562
+bouton (haut-parleur et ondes) [allumé, état « attivo »] @ 202,629
+bouton ▶ @ 253,616
+texte « Accordi » @ 339,229
+curseur [état « −2 », à 72 %] @ 339,396
+texte « −2 » @ 339,557
+bouton (haut-parleur et ondes) [allumé, état « attivo »] @ 325,624
+bouton ▶ @ 376,611
+texte « Melodia » @ 462,229
+curseur [état « Normale », à 80 %] @ 462,396
+texte « Normale » @ 462,557
+bouton (haut-parleur et ondes) [allumé, état « attivo »] @ 448,624
+bouton ▶ @ 499,611
+texte « Uscita » @ 597,232
+curseur [état « −6 », à 60 %] @ 597,401
+texte « Premi ▶ » @ 597,578
+texte « Nessun consiglio per ora: fidati delle orecchie. » [coupé] @ 342,751
+texte « Il mix: i volumi Capitolo 14/15 · Passo 1/1 · Facile » @ 430,817
+icône (liste) « Capitoli » @ 890,818
+icône ⌃ @ 978,818
+icône « Tocca a te: fare il mix vuol dire regolare il volume di ogni traccia. Nella scheda “Mix”, abbassa un po' lo slider della traccia “Accordi”, poi quello della traccia “Melodia”. Sotto il cursore, “Normale” diventa “−2”, “−4”…: più basso, meno forte. Leggi » ⌃ @ 517,930
+bouton ▶ « il brano » @ 521,1026
+icône ↶ « Annulla » @ 142,1026
+image ↷ @ 330,1013
+texte « 174 Tempo » @ 709,1026
+icône ⋮ « Altro » @ 893,1026
+onglet (lignes et note) « Il mio brano » @ 99,1123
+onglet (quatre carrés) « Ritmo » @ 309,1123
+onglet (touches de piano) « Tastiera » @ 518,1123
+onglet (curseurs) « Mix » [sélectionné] @ 727,1123
+onglet (trois points reliés) « Condividi » @ 936,1123
+texte « ●  REC » @ 799,1213
+texte « ✎  Annota » @ 899,1213
+texte « ⋯ » @ 987,1213
+texte « Modalità feedback » @ 381,1213

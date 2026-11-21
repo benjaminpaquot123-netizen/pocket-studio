@@ -1,0 +1,56 @@
+Écran 81 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 198,42
+bouton « Simple » @ 439,42
+icône ↶ @ 527,42
+bouton ● @ 599,42
+bouton ▶ « cette partie » @ 678,42
+bouton ▶ « le morceau » @ 776,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+onglet « Acid 303 Ligne de basse » @ 112,186
+bouton « Basse Basse growl » @ 304,186
+bouton « Accords Nappe » ⋮ @ 479,186
+icône ♪ « Son » @ 624,186
+bouton + «  Piste » @ 762,186
+icône « Partie : A » ▾ @ 82,264
+texte « En rythme 50 % » @ 515,351
+texte « 100 % » @ 668,351
+texte « Effacer » @ 777,351
+bouton « Accords » [sélectionné] @ 109,351
+bouton « Basse en fantôme » [sélectionné] @ 296,351
+bouton « Accords · mesure 4/8 Toutes les notes en pointillé sont posées » @ 450,432
+texte « mes. » @ 84,489
+bouton « 4 » @ 486,501
+bouton « 5 » [coupé] @ 853,501
+texte « Fa » [coupé] @ 84,537
+texte « Mi » @ 84,561
+texte « Mi♭ » @ 84,603
+texte « Ré » @ 84,645
+texte « Ré♭ » @ 84,687
+texte « Do4 » @ 84,729
+texte « Si » @ 84,771
+texte « Si♭ » @ 84,813
+texte « La » @ 84,855
+texte « La♭ » @ 84,897
+texte « Sol » [coupé] @ 84,924
+dessin [coupé] @ 492,732
+texte « Les accords Chapitre 6/15 · Fait · Facile » @ 363,978
+icône (liste) « Chapitres » @ 756,978
+icône ⌄ @ 843,978
+image (coupe) @ 57,1095
+texte « Bravo, chapitre fini ! » @ 194,1068
+texte « Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « La mélodie ». » @ 475,1110
+bouton « Chapitre suivant   » → @ 450,1197
+icône ← @ 57,1281
+bouton ▶ «  Écouter mon morceau » @ 294,1281
+bouton ▶ «  Écouter l'exemple » @ 687,1281
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » @ 268,1389
+onglet (touches de piano) « Clavier » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

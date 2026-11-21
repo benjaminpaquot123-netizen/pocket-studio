@@ -1,0 +1,66 @@
+Écran 64 (1035x1243)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 346,42
+bouton « Basit » @ 738,42
+bouton ● @ 828,42
+bouton ■ « bu bölüm » @ 909,42
+icône ⋮ @ 990,42
+icône (flèches en boucle) « Yükseliş ölçü 1/4 » ▾ @ 391,144
+bouton « 140  Tempo » @ 136,144
+bouton (flèches en boucle) « Döngü » [allumé, état « açık »] @ 849,144
+bouton « ? » @ 990,144
+icône (flèches en boucle) « Bölüm: C · Yükseliş » ▾ @ 234,240
+texte « Sen düzenlerken döngüde çalar. Şarkıya dönmek için üstteki ⟳ Döngü. » @ 517,322
+bouton « Büyük davul 1 FX » @ 75,446
+bouton « Büyük davul 2 » @ 200,446
+bouton « Trampet FX » @ 325,446
+bouton « Trampet 2 » @ 450,446
+bouton « El çırpma FX » @ 75,552
+bouton « Hi-hat L 30 » @ 200,552
+bouton « Açık hi-hat R 30 » @ 325,552
+bouton « Pes tom » @ 450,552
+bouton « Orta tom R 45 » [coupé] @ 75,643
+bouton « Tiz tom » [coupé] @ 200,643
+bouton « Davul kenarı FX R 50 » [coupé] @ 325,643
+bouton « Çan » [coupé] @ 450,643
+texte « Burada fazladan vuruş (üstü çizili): 2 » [coupé] @ 776,398
+bouton « 1 » [état « vuruş, güç %62 »] @ 575,460
+bouton [état « boş »] @ 632,459
+bouton [état « vuruş, güç %49 »] @ 688,459
+bouton [état « boş »] @ 744,459
+bouton « 2 » [état « vuruş, güç %53 »] @ 800,459
+bouton [état « boş »] @ 856,459
+bouton [état « vuruş, güç %49 »] @ 912,459
+bouton [état « boş »] @ 968,459
+bouton « 3 » [état « boş »] @ 575,530
+bouton [état « boş »] @ 632,529
+bouton [état « vuruş, güç %62 »] @ 688,529
+bouton [état « boş »] @ 744,529
+bouton « 4 » [état « boş »] @ 800,529
+bouton [état « boş »] @ 856,529
+bouton [état « vuruş, güç %57, üstü çizili: kaldır »] @ 912,529
+bouton [état « vuruş, güç %28, üstü çizili: kaldır »] @ 968,529
+texte « Doldur » @ 610,610
+texte « tümü » @ 734,610
+texte « 1/2 » @ 839,610
+texte « 1/4 » @ 924,610
+texte « ◀ » [coupé] @ 586,664
+texte « ▶ » [coupé] @ 661,664
+texte « Temizle » [coupé] @ 786,664
+texte « Geçişler Aşama 12/15 · Adım 2/2 · Kolay » @ 423,743
+icône (liste) « Aşamalar » @ 883,743
+icône ⌃ @ 978,743
+icône « Sıra sende: “Yükseliş” bölümünde, son ölçüde, son vuruştaki vuruşları sil (her kırmızı çarpıya dokun): Drop'tan hemen önce bir vuruşluk sessizlik. Oku » ⌃ @ 517,886
+bouton ▶ « şarkı » @ 518,1012
+texte « 140 Tempo » @ 707,1011
+icône ↶ « Geri al » @ 144,1011
+image ↷ @ 337,991
+icône ⋮ « Diğer » @ 899,1011
+onglet (lignes et note) « Şarkım » @ 99,1123
+onglet (quatre carrés) « Ritim » [sélectionné] @ 309,1123
+onglet (touches de piano) « Klavye » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Paylaş » @ 936,1123
+texte « ●  REC » @ 757,1213
+texte « ✎  Not al » @ 882,1213
+texte « ⋯ » @ 987,1213
+texte « Geri bildirim modu » @ 357,1213

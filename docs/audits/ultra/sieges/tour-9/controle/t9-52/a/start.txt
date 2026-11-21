@@ -1,0 +1,10 @@
+lang=it
+device=phone
+font=130
+mode=simple
+amenee=tuto:phonk:1
+gestes.max=150
+mission=tuto-facile
+profil=curieux
+niveau=0
+timeout.minutes=30

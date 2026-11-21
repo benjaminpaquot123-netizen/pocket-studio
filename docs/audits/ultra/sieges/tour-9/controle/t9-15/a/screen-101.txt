@@ -1,0 +1,46 @@
+Écran 101 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 288,42
+bouton « Simple » @ 618,42
+bouton ● @ 706,42
+bouton ▶ « esta parte » @ 780,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 855,114
+bouton « Acordes Cambiar el sonido » › @ 300,198
+bouton ▶ « Escuchar sola » @ 672,198
+icône (curseurs) @ 822,198
+bouton « Melodía Cambiar el sonido » › @ 300,308
+bouton ▶ « Escuchar sola » @ 672,308
+icône (curseurs) @ 822,308
+titre « LA CANCIÓN » [état « Desplegado »] @ 152,437
+bouton « ? » @ 240,437
+texte « La línea de tiempo pone tus partes en orden, cada una con su duración en compases. Añádelos en orden. » @ 450,498
+texte « Añadir: » @ 77,552
+bouton « + A · Groove » @ 141,615
+bouton « + Nueva parte (copia de A · Groove) » @ 468,615
+bouton « + Nueva parte vacía » @ 180,696
+bouton (barres de son) «   Lo que suena en la canción » @ 450,780
+texte « Tu primera parte: el Groove Capítulo 6/13 · Hecho · Fácil » @ 364,906
+icône (liste) « Capítulos » @ 757,906
+icône ⌄ @ 843,906
+image (coupe) @ 57,1023
+texte « ¡Bravo, capítulo terminado! » @ 230,996
+texte « Escucha tu canción tal como está ahora y luego pasa al capítulo siguiente: “Entender las partes”. » @ 475,1038
+bouton « Capítulo siguiente   » → @ 450,1125
+icône ← @ 57,1209
+bouton ▶ «  Escuchar mi canción » @ 294,1209
+bouton ▶ «  Escuchar el ejemplo » @ 687,1209
+icône ↶ « Deshacer » @ 123,1293
+image ↷ @ 282,1283
+bouton ▶ « la canción » @ 444,1293
+texte « 120 Tempo » @ 612,1293
+icône ⋮ « Más » @ 777,1293
+onglet (lignes et note) « Mi canción » [sélectionné] @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Teclado » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Compartir » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Anotar » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 318,1479

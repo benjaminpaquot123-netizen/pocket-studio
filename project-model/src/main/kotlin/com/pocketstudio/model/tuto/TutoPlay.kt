@@ -2,6 +2,7 @@ package com.pocketstudio.model.tuto
 
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.switchScene
 
 /**
  * One step of a course, played as the app plays it (tour 7, audit « Fable », § 3.1): what it watches taken when the
@@ -53,12 +54,52 @@ object TutoPlay {
     /** [p] once the main button [need] is touched, and the track it made; null when it can do nothing ([TutoChecks.fulfil]). */
     fun press(need: TutoNeed, step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): Pair<Project, Int?>? = TutoChecks.fulfil(need, step, p, target, level)
 
+    /**
+     * « Je le fais » on an effect step (tour 8, seat e, ch.13: it only opened the effect sheet, the send stayed at
+     * 0 % and no curve was drawn): [p] with the step's gesture made on [channel] alone, the strip the app goes to
+     * (a send, an insert: one strip per touch, the next touch the next one), or its curve drawn; null for a step of
+     * another kind, or when there is nothing left to make there.
+     */
+    fun doHere(step: TutoStep, p: Project, target: TutoTarget, channel: Int?, level: TutoLevel? = null): Project? {
+        val c = step.check
+        return when {
+            c.startsWith("send:") || c.startsWith("insert:") -> {
+                val ch = channel ?: return null
+                val made = TutoChecks.show(step, p, target, level)?.mixer?.channels?.getOrNull(ch) ?: return null
+                p.copy(mixer = p.mixer.copy(channels = p.mixer.channels.mapIndexed { i, x -> if (i == ch) made else x })).takeIf { it != p }
+            }
+            // Only the curves and the strips they work on (the filter it adds there), never the rest of the project
+            // the show hands back (review of T0b: the user's work came from the show, not from [p]).
+            c.startsWith("automation") -> {
+                val made = TutoChecks.show(step, p, target, level) ?: return null
+                val strips = made.automation.filter { it !in p.automation }.map { it.target.ch }.toSet()
+                // A loop curve is drawn on one part: show that part, so the curve drawn is the one on screen (control e, ch.13).
+                val loopPart = if (c == "automation:" + TutoChecks.LOOP_SHAPE) TutoChecks.namedScene(p, step.part).takeIf { it >= 0 && it != p.scene } else null
+                val base = loopPart?.let(p::switchScene) ?: p
+                base.copy(
+                    automation = made.automation,
+                    mixer = base.mixer.copy(channels = base.mixer.channels.mapIndexed { i, x ->
+                        if (i in strips) made.mixer.channels.getOrNull(i)?.let { x.copy(inserts = it.inserts) } ?: x else x
+                    }),
+                ).takeIf { it != p }
+            }
+            else -> null
+        }
+    }
+
     /** « Montre-moi » of [step] on [p]: its frames, the last one being what the user is to reach; null when it has none.
      *  [level]: the course's level, so the show leaves to a later step of that level what it teaches. */
     fun showMe(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): TutoDemo? = TutoChecks.demo(step, p, target, level)
 
     /** Whether [step] has a « Montre-moi » on [p]: [showMe] is not null (the panel's button and the step's main button read this one answer). */
     fun canShow(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel? = null): Boolean = TutoChecks.canShow(step, p, target, level)
+
+    /**
+     * Whether [need] asks for a part [p] holds, with nothing in it (tour 8, seat d, V2: the « Montée » emptied, the
+     * panel said there was no such part): its button fills it, no word says it is missing.
+     */
+    fun emptyPart(p: Project, need: TutoNeed?): Boolean =
+        need is TutoNeed.Part && p.allScenes.any { TutoChecks.isLabel(it.label, need.label) && it.isEmpty }
 
     /** Whether [step] is ticked on [p] ([base]: what it watched when it began). */
     fun done(step: TutoStep, p: Project, target: TutoTarget, base: Any?): Boolean = TutoChecks.done(step, p, target, base)
@@ -100,6 +141,28 @@ object TutoPlay {
         if (step.check == "crash" && need == null && !ticked) return TutoChecks.CRASH_LANE to setOf(0)
         return TutoChecks.hint(step, target, steps)
     }
+
+    /**
+     * Tour 9, F093 (seat t9-68, zh: « 点一下 » on a cell its words ask a long press for): the dotted cells of [step]
+     * a tap does not make, at [level]: a soft hit when its words there name « Doux », a roll or a triplet of a
+     * ":rolls" step. Empty for any other step.
+     */
+    fun longPressCells(step: TutoStep, target: TutoTarget, steps: Int, level: TutoLevel): Set<Int> {
+        val c = step.check
+        if (!c.startsWith("lane:")) return emptySet()
+        val line = target.line(TutoChecks.argOf(c), TutoChecks.partOf(step)) ?: return emptySet()
+        val soft = "« Doux »" in step.textFor(level)
+        val rolls = c.endsWith(":rolls")
+        return com.pocketstudio.model.StarterWizard.hits(line, steps)
+            .filter { (_, h) -> (soft && h.velocity < TutoChecks.SOFT_VELOCITY) || (rolls && (h.repeats > 1 || h.isTriplet)) }.keys
+    }
+
+    /**
+     * The dotted cell the « Touche ici » ring goes round (tour 8, seat a, ch.3: no ring on the Clap's cells): the
+     * first of [cells] in the bar shown ([from] until [until]) not yet [filled]; null when the bar holds none to touch.
+     */
+    fun ringed(cells: Set<Int>, filled: Set<Int>, from: Int, until: Int): Int? =
+        cells.filter { it in from until until && it !in filled }.minOrNull()
 
     /** The hits [step] crosses out in the part shown, null when it takes none, while a button is to touch first, or in a part that is not the step's own. */
     fun toErase(step: TutoStep, p: Project, target: TutoTarget?, need: TutoNeed?): Map<Int, Set<Int>>? =

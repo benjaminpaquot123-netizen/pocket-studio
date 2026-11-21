@@ -22,6 +22,7 @@ import com.pocketstudio.model.track
 import com.pocketstudio.model.tuto.TutoChecks
 import com.pocketstudio.model.tuto.TutoCourse
 import com.pocketstudio.model.tuto.TutoLevel
+import com.pocketstudio.model.tuto.TutoPlay
 import com.pocketstudio.model.tuto.TutoProgress
 import com.pocketstudio.model.tuto.TutoStep
 import com.pocketstudio.model.tuto.TutoTarget
@@ -38,6 +39,14 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.time.Duration
 import kotlin.math.abs
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.yield
 
 /**
  * Owner (2026-10-28): every course of `tutos/` (jump up first, each style's file then: a course
@@ -50,7 +59,7 @@ import kotlin.math.abs
  */
 @RunWith(ParameterizedRobolectricTestRunner::class)
 @Config(qualifiers = "w360dp-h780dp")
-class TutoJourneyTest(private val style: String, private val level: TutoLevel, private val langTag: String) {
+class TutoJourneyTest(private val style: String, private val level: TutoLevel, private val langTag: String, private val load: String) {
     companion object {
         /**
          * Audit ultra (§2): French on every run; German (the longest texts) and Arabic (right to left) at
@@ -61,9 +70,34 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
 
         // The French case keeps its old name (« jump_up Pro »); another language says its code after it.
         @JvmStatic
-        @ParameterizedRobolectricTestRunner.Parameters(name = "{0} {1}{2}")
+        @ParameterizedRobolectricTestRunner.Parameters(name = "{0} {1}{2}{3}")
         fun courses(): List<Array<Any>> = LANGS.flatMap { l ->
-            TutoCourse.STYLES.flatMap { s -> TutoLevel.entries.map { arrayOf<Any>(s, it, if (l == Lang.FR) "" else " ${l.code}") } }
+            TutoCourse.STYLES.flatMap { s -> TutoLevel.entries.map { arrayOf<Any>(s, it, if (l == Lang.FR) "" else " ${l.code}", "") } }
+        } + listOf(arrayOf<Any>("jump_up", TutoLevel.Facile, "", LOADED))
+
+        /**
+         * Tour 9 (banc, « TutoJourneyTest instable »): jump_up sometimes failed under a heavy load (« tuto_do » not found).
+         * The tutorial's looks run off the main thread (TutoController.check on Dispatchers.Default): this case keeps those
+         * threads busy, so that its buttons land late every time, as on a loaded machine, and the journey must wait for them.
+         */
+        const val LOADED = " sous charge"
+        private const val HOG_MS = 300L
+    }
+
+    private val loaded = load == LOADED
+    private var hog: Job? = null
+
+    /** Dispatchers.Default kept busy (twice as many spinners as its threads, each giving way every [HOG_MS]) until [end]. */
+    private fun loadTheWorkers() {
+        val scope = CoroutineScope(Dispatchers.Default + Job().also { hog = it })
+        repeat(2 * Runtime.getRuntime().availableProcessors().coerceAtLeast(2)) {
+            scope.launch {
+                while (isActive) {
+                    val until = System.nanoTime() + HOG_MS * 1_000_000
+                    while (System.nanoTime() < until) Unit
+                    yield()
+                }
+            }
         }
     }
 
@@ -86,6 +120,8 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
 
     @After
     fun end() {
+        hog?.let { runBlocking { it.cancelAndJoin() } }
+        hog = null
         com.pocketstudio.app.learn.SpotChecks.log = null
         TutoTestHooks.player = null
         TutoTestHooks.kitOffer = true
@@ -137,6 +173,7 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
 
     private fun journey(level: TutoLevel) {
         TutoTestHooks.player = player
+        if (loaded) loadTheWorkers()
         // n° 19–20: every control a step points at (« Je le fais », its button, « Montre-moi ») is checked once shown.
         com.pocketstudio.app.learn.SpotChecks.log = mutableListOf()
         // Offline, whatever the catalogue: the built-in kit (the offer is TutoKitTest's).
@@ -276,9 +313,18 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                 closeSheet()
             }
             c.startsWith("lane:") -> {
-                if (has("tuto_need")) click("tuto_need")
-                await("need met") { !has("tuto_need") }
-                if (!has("tuto_do")) unfold()
+                // Tour 9 (banc, « TutoJourneyTest instable »): the step's button is set by a look made off the main thread
+                // (TutoController.check): under load it lands after the screen was read (the panel folded, « Ajouter … »
+                // instead of « Je le fais »). What the project needs (the same rule, TutoPlay.button) is waited for on
+                // the screen, the panel open, before it is touched.
+                if (TutoPlay.button(s, p(), target, null, level) != null) {
+                    await("${s.id}: its button") { unfold(); has("tuto_need") }
+                    click("tuto_need")
+                }
+                await("${s.id}: « Je le fais »") {
+                    unfold()
+                    TutoPlay.button(s, p(), target, null, level) == null && !has("tuto_need") && has("tuto_do")
+                }
                 click("tuto_do")
                 // Tour 7: a Facile piece that only asks for « Doux » (techno clap_2) finds its cells all hit: none is dotted.
                 val softOnly = TutoChecks.onlySoftnessMissing(s, p(), target)
@@ -326,16 +372,21 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                 }
             }
             // "triplet:<role>": a triplet put on a hit of the pad as a user would (long press › « Triolet » › « 3 sur 2 cases »),
-            // where the style's line has one, else on the last beat of the first bar.
+            // where the style's line has them (every one: trap's step says cells 13 and 15, tour 9 F032), else on the
+            // last beat of the first bar.
             c.startsWith("triplet:") -> {
                 if (has("tuto_do")) click("tuto_do")
                 val role = c.removePrefix("triplet:")
                 h.vm.selectPad(TutoChecks.laneOf(role))
                 val line = target.line(role)!!
-                val cell = StarterWizard.hits(line, p().drums.steps).entries.firstOrNull { it.value.span > 1 }?.key ?: 12
-                if (p().drums.lanes[TutoChecks.laneOf(role)].hits[cell] == null) h.vm.toggleStep(cell)
-                h.vm.setSpread(cell, 3, 2, 0)
-                compose.waitForIdle()
+                val steps = p().drums.steps
+                val cells = StarterWizard.hits(line, steps).filter { (s, hit) -> hit.isTriplet && s + hit.span <= steps }.keys.sorted()
+                    .ifEmpty { listOf(12) }
+                for (cell in cells) {
+                    if (p().drums.lanes[TutoChecks.laneOf(role)].hits[cell] == null) h.vm.toggleStep(cell)
+                    h.vm.setSpread(cell, 3, 2, 0)
+                    compose.waitForIdle()
+                }
                 closeSheetIfAny()
             }
             c == "velocity:hat" -> {
@@ -451,9 +502,14 @@ class TutoJourneyTest(private val style: String, private val level: TutoLevel, p
                     await("${s.id}: the hits to take away, crossed out") { has("tuto_erase") }
                 }
                 closeSheetIfAny()
+                // Tour 8 (T0b): « Je le fais » on an effect step makes the gesture itself; then nothing is left to
+                // replay, but the step must be done, else there was no way to do it.
                 val done = TutoChecks.show(s, p(), target)
-                assertNotNull("${s.id}: no way to do it", done)
-                h.vm.session.edit { done!! }
+                if (done == null) {
+                    assertTrue("${s.id}: neither done by \"Je le fais\" nor doable", TutoChecks.done(s, p(), target, null))
+                } else {
+                    h.vm.session.edit { done }
+                }
             }
         }
     }

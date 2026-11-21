@@ -1,0 +1,19 @@
+Écran 51 (1035x1243)
+icône ✕ @ 715,364
+texte « Colpo 12 » @ 436,364
+texte « Velocity » @ 249,429
+bouton « Forte » [sélectionné] @ 253,495
+bouton « Medio » @ 387,495
+bouton « Morbido » @ 541,495
+texte « Rullata » @ 240,560
+bouton « ×1 » [sélectionné] @ 233,626
+bouton « ×2 » @ 323,626
+bouton « ×3 » @ 415,626
+bouton « ×4 » @ 509,626
+bouton « ×6 » @ 602,626
+bouton « ×8 » @ 695,626
+texte « Terzina » @ 244,691
+bouton « 3 su 2 caselle » @ 310,757
+bouton « ↗ In salita » [désactivé] @ 285,838
+bouton « Uguale » [désactivé, sélectionné] @ 456,838
+bouton « ↘ In discesa » [désactivé] @ 643,838

@@ -1,0 +1,47 @@
+Écran 88 (540x1170)
+bouton (dossier ouvert) ✓ @ 79,42
+bouton « 专业 » @ 191,42
+icône ↶ @ 268,42
+bouton ● @ 340,42
+bouton ▶ « 这个段落 » @ 417,42
+icône (trois points reliés) @ 495,42
+bouton « 140  BPM » @ 83,123
+bouton « ? » @ 495,123
+image (courbe) @ 0,0
+texte « 音量 » @ 248,213
+bouton « ? » @ 482,213
+texte « 滑动推子调音量；点音轨名称查看它的效果和曲线。 » @ 270,277
+texte « 鼓 » @ 84,380
+bouton (haut-parleur et ondes) [allumé, état « 开 »] @ 57,455
+bouton (casque) [état « 关 »] @ 111,455
+curseur [coupé, état « +0.0 dB », à 80 %] @ 84,590
+texte « Acid 303 » @ 204,380
+bouton (haut-parleur et ondes) [allumé, état « 开 »] @ 177,455
+bouton (casque) [état « 关 »] @ 231,455
+curseur [coupé, état « +0.0 dB », à 80 %] @ 204,590
+texte « 808 » @ 324,380
+bouton (haut-parleur et ondes) [allumé, état « 开 »] @ 297,455
+bouton (casque) [état « 关 »] @ 351,455
+curseur [coupé, état « +0.0 dB », à 80 %] @ 324,590
+texte « Remix » @ 444,380
+bouton (haut-parleur et ondes) [allumé, état « 开 »] @ 417,455
+bouton (casque) [état « 关 »] @ 471,455
+curseur [coupé, état « +0.0 dB », à 80 %] @ 444,590
+texte « 808 第 5/15 章 · 已完成 · 专业 » @ 198,738
+icône (liste) « 章节 » @ 411,738
+icône ⌃ @ 483,738
+icône (coupe) « 太棒了，本章完成！ » ⌃ @ 270,851
+icône ↶ « 撤销 » @ 64,950
+icône ↷ « 重做 » [désactivé] @ 164,950
+bouton ▶ « 歌曲 » @ 264,950
+texte « 140 速度 » @ 370,950
+icône (trois points reliés) « 分享 » @ 476,950
+onglet (ligne brisée et points) « 结构 » @ 49,1050
+onglet (touches de piano) « 音色 » @ 160,1050
+onglet (curseurs) « 混音 » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « 更多 » @ 491,1050
+texte « ●  REC » @ 311,1140
+texte « ✎  记一笔 » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « 反馈模式 » @ 137,1140

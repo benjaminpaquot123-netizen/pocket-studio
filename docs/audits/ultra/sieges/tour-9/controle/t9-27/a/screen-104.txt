@@ -1,0 +1,51 @@
+Écran 104 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 233,42
+texte « Pro » @ 493,42
+icône ↶ @ 565,42
+icône ↷ [désactivé] @ 637,42
+bouton ● @ 709,42
+bouton ▶ « bagian ini » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Timeline » [désactivé] @ 91,192
+onglet « Bagian » [sélectionné] @ 216,192
+titre « LAGUNYA » [état « Terbuka »] @ 136,285
+bouton « ? » @ 208,285
+texte « Garis waktu menyusun bagianmu secara berurutan, masing-masing dengan panjangnya dalam birama. Tambahkan secara berurutan. » @ 450,346
+texte « Tambah: » @ 85,400
+bouton « + Bagian baru (salinan A) » @ 325,463
+bouton « + Bagian baru kosong » @ 648,463
+bouton « + A » @ 96,463
+bouton (barres de son) «   Yang main di lagu » @ 450,547
+titre « PENGATURAN LAGU » [état « Terbuka »] @ 450,613
+texte « Di akhir: » @ 82,679
+bouton « berhenti » [sélectionné] @ 202,679
+bouton « mulai ulang » @ 363,679
+texte « Selama diputar: » [coupé] @ 119,761
+bouton « ikuti lagu » [coupé, sélectionné] @ 281,756
+bouton « tetap di bagianku » [coupé] @ 475,756
+icône (liste) « Bab » @ 771,822
+texte « Bagian pertamamu: Groove Bab 6/14 · Langkah 2/2 · Pro » @ 378,822
+icône ⌄ @ 843,822
+texte « Giliranmu: beri nama scene ini “Groove”: loop lengkap, sumber bagian-bagian lainnya. » @ 450,921
+texte « ▸ Kenapa? » @ 450,981
+bouton ⊕ «   Beri nama bagian “Groove” » @ 450,1044
+bouton ▶ «  Dengar contohnya » @ 232,1128
+bouton (œil) «  Tunjukkan » @ 667,1128
+icône ← «  Sebelumnya » @ 119,1209
+icône « Berikutnya  » → @ 789,1209
+icône ↶ « Urungkan » @ 124,1293
+icône ↷ « Ulangi » [désactivé] @ 285,1293
+bouton ▶ « lagu » @ 445,1293
+texte « 175 Tempo » @ 610,1293
+icône (trois points reliés) « Bagikan » @ 776,1293
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

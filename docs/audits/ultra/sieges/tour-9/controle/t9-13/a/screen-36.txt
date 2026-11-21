@@ -1,0 +1,40 @@
+Écran 36 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 86,114
+bouton « A » ▾ @ 202,114
+icône ↶ @ 278,114
+bouton ● @ 350,114
+bouton ▶ « dit deel » @ 422,114
+icône (trois points reliés) @ 495,114
+bouton « 92  BPM » @ 74,195
+bouton « ? » @ 495,195
+onglet « Drums 16 pads » [sélectionné] @ 87,265
+onglet « Acid 303 Baslijn » @ 260,265
+onglet « Zang Microfoon » [coupé] @ 438,265
+image → @ 529,266
+texte « De drums Hoofdstuk 2/14 · Stap 3/8 · Pro » @ 176,365
+icône (liste) « Hoofdstukken » @ 389,366
+icône ⌄ @ 483,366
+texte « Nu jij: tik op de pad ‘Akai MPC60 · Hi-hat’ de gestippelde vakjes aan: achtsten, en twee kleine extra noten. » [coupé] @ 270,472
+texte « ▸ Waarom? » @ 270,524
+icône « Verder lezen » ⌄ @ 270,578
+bouton (doigt qui touche) «   Ik doe het » @ 270,677
+bouton ▶ «  Luister naar het voorbeeld » @ 142,774
+bouton (œil) «  Laat zien » @ 397,774
+icône ← «  Vorige » @ 101,868
+icône « Volgende  » → @ 418,868
+icône ↶ « Ongedaan maken » @ 57,953
+icône ↷ « Opnieuw » [désactivé] @ 157,953
+icône ▶ « het nummer » @ 276,953
+texte « 92 Tempo » @ 396,953
+icône (trois points reliés) « Delen » @ 489,953
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 297,1140
+texte « ✎  Noteren » @ 400,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 130,1140

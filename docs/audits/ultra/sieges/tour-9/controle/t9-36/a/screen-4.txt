@@ -1,0 +1,60 @@
+Écran 4 (588x1278)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 150,42
+texte « 간단 » @ 327,42
+bouton ● @ 399,42
+bouton ▶ « 이 파트 » @ 471,42
+icône ⋮ @ 543,42
+bouton « 136  템포 » @ 69,114
+bouton « ? » @ 543,114
+icône « 파트: A · 그루브 » ▾ @ 104,180
+bouton « 단단한 큰북 » [coupé] @ 84,267
+bouton « 큰북 2 » [coupé] @ 224,267
+bouton « 스네어 FX » [coupé] @ 364,267
+bouton « 낮은 울림 FX » [coupé] @ 504,267
+texte « 파트 이해하기 7/13장 · 2/5단계 · 쉬움 » @ 222,348
+icône (liste) « 챕터 » @ 459,348
+icône ⌄ @ 531,348
+image (rond coché) @ 36,426
+texte « 인트로를 들어 보세요: 킥, 럼블, 하이햇. » @ 256,429
+texte « 에너지 » @ 48,470
+texte « 인트로 » @ 53,565
+texte « 16 » @ 53,591
+texte « 16 » @ 121,577
+texte « 드롭 » @ 190,565
+texte « 16 » @ 190,591
+texte « 8 » @ 242,577
+texte « 8 » @ 278,577
+texte « 16 » @ 331,577
+texte « 드롭 2 » @ 433,565
+texte « 32 » @ 433,591
+texte « 끝 » @ 535,565
+texte « 16 » @ 534,591
+texte «  인트로 » @ 65,627
+texte «  인트로 2 » @ 162,627
+texte «  드롭 » @ 250,627
+texte «  Drop B » @ 335,626
+texte «  브레이크 » @ 438,627
+texte «  드롭 2 » @ 535,627
+texte «  끝 » @ 48,658
+texte « 각 숫자: 파트의 길이(마디). » @ 127,689
+bouton « Industrial techno 킷 다운로드 (3 MB) » @ 247,760
+texte « 나중에 » @ 514,760
+texte « ▸ 왜요? » @ 294,826
+bouton « 다음 단계   » → @ 294,894
+icône ← @ 57,978
+bouton ▶ «  예시 듣기 » @ 276,978
+icône « 다음  » → @ 513,978
+icône ↶ « 실행 취소 » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 곡 » @ 288,1062
+texte « 136 템포 » @ 402,1062
+icône ⋮ « 더보기 » @ 516,1062
+onglet (lignes et note) « 내 곡 » @ 54,1158
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 174,1158
+onglet (touches de piano) « 건반 » @ 294,1158
+onglet (curseurs) « 믹스 » @ 414,1158
+onglet (trois points reliés) « 공유 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  메모 » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « 피드백 모드 » @ 162,1248

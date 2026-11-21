@@ -1,0 +1,38 @@
+Écran 109 (540x1170)
+bouton (dossier ouvert) ✓ @ 104,42
+bouton « Simple » @ 252,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 165  Tempo » @ 136,144
+bouton « ? » @ 495,144
+onglet « Acid 303 Bass line » [coupé] @ 110,262
+bouton « Bass Round bass » ⋮ @ 364,262
+image ← @ 10,263
+image → @ 529,263
+icône « Part: A » ▾ @ 99,356
+bouton « Bass · bar 2/8 1 more dotted note to tap » [coupé] @ 270,404
+texte « bar » @ 69,449
+bouton « 2 » @ 297,449
+dessin [coupé] @ 69,492
+dessin @ 69,517
+dessin [coupé] @ 69,542
+dessin [coupé] @ 297,517
+texte « The bass Chapter 5/15 · Step 3/3 · Easy » @ 177,644
+icône (liste) « Chapters » @ 390,644
+icône ⌃ @ 483,644
+icône « Your turn: tap the 4 notes of bar 2. Read » ⌃ @ 270,813
+icône ▶ « the song » @ 249,939
+texte « 165 Tempo » @ 388,938
+icône ↶ « Undo » @ 47,939
+image ↷ @ 130,921
+icône ⋮ « More » @ 492,939
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » @ 160,1050
+onglet (touches de piano) « Keyboard » [sélectionné] @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 277,1140
+texte « ✎  Note » @ 394,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 117,1140

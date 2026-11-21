@@ -9,7 +9,7 @@
   "À toi : écris les 5 notes de la mesure 2.": "Nu jij: schrijf de 5 noten van maat 2.",
   "À toi : écris les 4 notes de la mesure 2.": "Nu jij: schrijf de 4 noten van maat 2.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "Nu jij: tik op de onderste noot van elk gestippeld akkoord in maat 1: het hele akkoord komt erin.",
-  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Nu jij: ‘Ik doe het’ opent het blad Toon: tik op de twee omcirkelde knoppen.",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Nu jij: ‘Ik doe het’ opent het blad ‘Toonsoort van het nummer’: tik op de twee omcirkelde knoppen.",
   "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "Nu jij: tik op de pad ‘Kick’ de gestippelde vakjes van de 2 maten aan.",
   "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "Nu jij: tik op de pad ‘Snare’ de gestippelde vakjes van de 2 maten aan.",
   "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "Nu jij: tik op de pad ‘Hi-hat’ de gestippelde vakjes van de 2 maten aan.",
@@ -21,5 +21,5 @@
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "Nu jij: tik onder ‘Toevoegen’ op volgorde op: Intro, Refrein, Couplet, Pre-refrein, Refrein, Couplet, Pre-refrein, Refrein, dan Intro als slot.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "Nu jij: tik onder ‘Toevoegen’ op volgorde op: Intro, Couplet, Pre-refrein, Refrein, Post-refrein, Couplet, Pre-refrein, Refrein, Brug, Refrein, dan Intro als slot.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "Nu jij: geef elk deel zijn lengte: Intro 4 maten, Couplet 8, Pre-refrein 4, Refrein 16 (8 de 2e keer, 16 de 3e), Post-refrein 4, Brug 8, Einde 4.",
-  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Nu jij: zet in het tabblad ‘Mix’ de schuiven ‘Akkoorden’ en ‘Melodie’ wat lager. Onder de schuif wordt ‘Normaal’ ‘−2’."
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Nu jij: zet in het tabblad ‘Mix’ de schuiven ‘Akkoorden’ en ‘Melodie’ wat lager. Onder de schuif wordt ‘Normaal’ ‘−1’."
 }

@@ -1,0 +1,616 @@
+#0 SIEGE lang=fr device=phone360 font=100 mode=simple theme=- fresh=non gestes.max=160 lit=oui main=both amenee=tuto:afrobeats:1
+#0 PREMIER ECRAN reel_s=4.1 simule_s=2.4 jvm_s=9.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:afrobeats:1
+#0 AMENEE > touche 270 693 (welcome_learn)
+#0 AMENEE > touche 270 807 (mode_card_simple)
+#0 AMENEE > touche 270 1105 (tuto_style_afrobeats)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 60ff4c70e1 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Mon projet 1 » ellipsized (« … »)
+#1 LAYOUT CUT « Sauvegardé » wider than its box (by 18.1 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Pourquoi ? » 332 x 20 dp (touch 332 x 48)
+#1 > touche 270 786
+#1 DOIGT tuto_listen «  Écouter l'exemple »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7da21d2557 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 445 870
+#2 DOIGT tuto_next « Suivant  »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 3a511d5c30 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=tempo done=1 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « Partie : A » lines cut (taller than its box)
+#3 LAYOUT TARGET « Partie : A Changer de partie » 85 x 6 dp (touch 85 x 48)
+#3 > touche 270 699
+#3 DOIGT tuto_do «   Je le fais »
+#4 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 655ecdf81e | project=p-e81898d1 tuto=afrobeats/Facile active=true step=tempo done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « Tempo » over the touchable « Fermer la feuille » (73 x 28 dp)
+#4 LAYOUT OVERLAP « ? » over the touchable « Fermer la feuille » (7 x 15 dp)
+#4 LAYOUT OVERLAP « Fermer » over the touchable « Fermer la feuille » (48 x 20 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « Fermer la feuille » (86 x 53 dp)
+#4 LAYOUT OVERLAP «  BPM » over the touchable « Fermer la feuille » (39 x 24 dp)
+#4 LAYOUT OVERLAP « 70 » over the touchable « Fermer la feuille » (21 x 19 dp)
+#4 LAYOUT OVERLAP « 90 » over the touchable « Fermer la feuille » (21 x 19 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#4 LAYOUT OVERLAP « 140 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#4 LAYOUT OVERLAP « 174 » over the touchable « Fermer la feuille » (32 x 19 dp)
+#4 LAYOUT OVERLAP « ½ » over the touchable « Fermer la feuille » (14 x 24 dp)
+#4 LAYOUT OVERLAP « ×2 » over the touchable « Fermer la feuille » (21 x 24 dp)
+#4 LAYOUT OVERLAP « 1 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 2 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 3 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 4 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 5 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 6 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 7 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 8 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 9 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#4 LAYOUT OVERLAP « 0 » over the touchable « Fermer la feuille » (14 x 27 dp)
+#4 LAYOUT OVERLAP « OK » over the touchable « Fermer la feuille » (33 x 27 dp)
+#4 LAYOUT OVERLAP « Taper en rythme » over the touchable « Fermer la feuille » (128 x 24 dp)
+#4 LAYOUT OVERLAP « Touche ici à chaque temps : le tempo suit. » over the touchable « Fermer la feuille » (254 x 18 dp)
+#4 > touche 103 744
+#4 DOIGT tempo_key_1 « 1 »
+#5 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 14bcd4475a | project=p-e81898d1 tuto=afrobeats/Facile active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « 1 » over the touchable « Fermer la feuille » (29 x 53 dp)
+#5 LAYOUT OVERLAP « Entre 40 et 300 » over the touchable « Fermer la feuille » (104 x 20 dp)
+#5 > touche 270 1005
+#5 DOIGT tempo_key_0 « 0 »
+#6 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 63f13dd4ce | project=p-e81898d1 tuto=afrobeats/Facile active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 10 » over the touchable « Fermer la feuille » (57 x 53 dp)
+#6 > touche 270 831
+#6 DOIGT tempo_key_5 « 5 »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE d8e44d5a6d | project=p-e81898d1 tuto=afrobeats/Facile active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 105 » over the touchable « Fermer la feuille » (86 x 53 dp)
+#7 > touche 437 1005
+#7 DOIGT tempo_key_ok « OK »
+#8 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cb916b5fb8 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=tempo done=2 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 270 870
+#8 DOIGT tuto_next_folded « Réussi »
+#9 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 302a4c70ec | project=p-e81898d1 tuto=afrobeats/Facile active=true step=key done=2 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 270 699
+#9 DOIGT tuto_do «   Je le fais »
+#10 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 84a38ca52d | project=p-e81898d1 tuto=afrobeats/Facile active=true step=key done=2 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « Tonalité du morceau » over the touchable « Fermer la feuille » (215 x 28 dp)
+#10 LAYOUT OVERLAP « Tonalité du morceau : aucune » over the touchable « Fermer la feuille » (195 x 20 dp)
+#10 LAYOUT OVERLAP « Gamme » over the touchable « Fermer la feuille » (52 x 20 dp)
+#10 LAYOUT OVERLAP « Majeure » over the touchable « Fermer la feuille » (64 x 24 dp)
+#10 LAYOUT OVERLAP « Mineure » over the touchable « Fermer la feuille » (62 x 24 dp)
+#10 LAYOUT OVERLAP « Dorienne » over the touchable « Fermer la feuille » (68 x 24 dp)
+#10 LAYOUT OVERLAP « Penta mineure » over the touchable « Fermer la feuille » (108 x 24 dp)
+#10 LAYOUT OVERLAP « Penta majeure » over the touchable « Fermer la feuille » (108 x 24 dp)
+#10 LAYOUT OVERLAP « Blues » over the touchable « Fermer la feuille » (42 x 24 dp)
+#10 LAYOUT OVERLAP « Phrygienne » over the touchable « Fermer la feuille » (85 x 24 dp)
+#10 LAYOUT OVERLAP « Mineure harmonique » over the touchable « Fermer la feuille » (156 x 24 dp)
+#10 LAYOUT OVERLAP « Tonique » over the touchable « Fermer la feuille » (55 x 20 dp)
+#10 LAYOUT OVERLAP « Do » over the touchable « Fermer la feuille » (21 x 24 dp)
+#10 LAYOUT OVERLAP « Do♯ » over the touchable « Fermer la feuille » (29 x 24 dp)
+#10 LAYOUT OVERLAP « Ré » over the touchable « Fermer la feuille » (19 x 24 dp)
+#10 LAYOUT OVERLAP « Mi♭ » over the touchable « Fermer la feuille » (24 x 24 dp)
+#10 LAYOUT OVERLAP « Mi » over the touchable « Fermer la feuille » (19 x 24 dp)
+#10 LAYOUT OVERLAP « Fa » over the touchable « Fermer la feuille » (18 x 24 dp)
+#10 LAYOUT OVERLAP « Fa♯ » over the touchable « Fermer la feuille » (26 x 24 dp)
+#10 LAYOUT OVERLAP « Sol » over the touchable « Fermer la feuille » (23 x 24 dp)
+#10 LAYOUT OVERLAP « La♭ » over the touchable « Fermer la feuille » (23 x 24 dp)
+#10 LAYOUT OVERLAP « La » over the touchable « Fermer la feuille » (19 x 24 dp)
+#10 LAYOUT OVERLAP « Si♭ » over the touchable « Fermer la feuille » (19 x 24 dp)
+#10 LAYOUT OVERLAP « Si » over the touchable « Fermer la feuille » (14 x 24 dp)
+#10 > touche 90 561
+#10 DOIGT tuto_scale_Major « Majeure »
+#11 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 34ad8f8df4 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=key done=2 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Tonalité du morceau : Do · Majeure » over the touchable « Fermer la feuille » (230 x 20 dp)
+#11 > touche 411 1017
+#11 DOIGT tuto_root_9 « La »
+#12 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 3e8c18c9ca | project=p-e81898d1 tuto=afrobeats/Facile active=true step=key done=3 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Tonalité du morceau : La · Majeure » over the touchable « Fermer la feuille » (228 x 20 dp)
+#12 LAYOUT OVERLAP « Réussi ! La couleur du morceau est choisie. » over the touchable « Fermer la feuille » (273 x 48 dp)
+#12 LAYOUT OVERLAP « Revenir au tuto » over the touchable « Fermer la feuille » (106 x 20 dp)
+#12 > touche 270 1095
+#12 DOIGT tuto_key_continue « Revenir au tuto »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b13fe6be2a | project=p-e81898d1 tuto=afrobeats/Facile active=true step=key done=3 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 270 870
+#13 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b031e3b394 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=key done=3 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 270 786
+#14 DOIGT tuto_next_big « Chapitre suivant   »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE eaf3ae5893 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=ready done=3 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 270 786
+#15 DOIGT tuto_mark «   J'ai compris »
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 184529b27c | project=p-e81898d1 tuto=afrobeats/Facile active=true step=shaker_do done=4 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « 1 » 2.72:1 (needs 4.5:1, 12 sp)
+#16 LAYOUT CONTRAST « 2 » 3.90:1 (needs 4.5:1, 12 sp)
+#16 > touche 270 699
+#16 DOIGT tuto_do «   Je le fais »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e75aa43f98 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=shaker_do done=4 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « 1 » 2.55:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « 2 » 3.84:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « 3 » 3.73:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « 4 » 3.85:1 (needs 4.5:1, 12 sp)
+#17 > touche 152 448
+#17 DOIGT fill_1 « tout »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 453f415a4f | project=p-e81898d1 tuto=afrobeats/Facile active=true step=shaker_do done=5 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « Charley » 1.28:1 (needs 4.5:1, 13 sp)
+#18 > touche 270 870
+#18 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 12dcd06d46 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=shaker_do done=5 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Charley » 1.26:1 (needs 4.5:1, 13 sp)
+#19 > touche 142 786
+#19 DOIGT tuto_play_mine «  Écouter mon morceau »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 494f461626 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=shaker_do done=5 playing=true
+#20 SON Son : la musique du projet joue en boucle.
+#20 > touche 270 699
+#20 DOIGT tuto_next_big « Chapitre suivant   »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9eaa1b7142 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=kick_do done=5 playing=true
+#21 SON Son : la musique du projet joue en boucle.
+#21 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#21 > touche 270 699
+#21 DOIGT tuto_need «   Passer à 2 mesures »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2c8e9c4c74 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=kick_do done=5 playing=true
+#22 SON Son : la musique du projet joue en boucle.
+#22 LAYOUT CONTRAST « Mesure » 1.41:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 1 » 1.62:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 2 » 1.36:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « Suivre » 1.30:1 (needs 4.5:1, 14 sp)
+#22 > touche 67 380
+#22 DOIGT step_0 « Pas 1 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3cb543f42b | project=p-e81898d1 tuto=afrobeats/Facile active=true step=kick_do done=5 playing=true
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 414 380
+#23 DOIGT step_6 « Pas 7 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6c0254ce77 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=kick_do done=5 playing=true
+#24 SON Son : la musique du projet joue en boucle.
+#24 LAYOUT CONTRAST « 3 » 3.60:1 (needs 4.5:1, 12 sp)
+#24 > touche 67 451
+#24 DOIGT step_8 « Pas 9 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d4f37f7cc4 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=kick_do done=5 playing=true
+#25 SON Son : la musique du projet joue en boucle.
+#25 LAYOUT CUT « Mesure 1/2 · Grosse caisse 1 » ellipsized (« … »)
+#25 > touche 362 300
+#25 DOIGT tuto_bar_go « Mesure 2 · 4 cases → »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 00bfb27983 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=kick_do done=5 playing=true
+#26 SON Son : la musique du projet joue en boucle.
+#26 LAYOUT CONTRAST « 1 » 1.28:1 (needs 4.5:1, 14 sp)
+#26 LAYOUT CONTRAST « 2 » 1.64:1 (needs 4.5:1, 14 sp)
+#26 > touche 67 380
+#26 DOIGT step_16 « Pas 1 »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4921adbe26 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=kick_do done=5 playing=true
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 414 380
+#27 DOIGT step_22 « Pas 7 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3130c00f0a | project=p-e81898d1 tuto=afrobeats/Facile active=true step=kick_do done=5 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 67 451
+#28 DOIGT step_24 « Pas 9 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ff2fdbaa65 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=kick_do done=5 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 414 451
+#29 DOIGT step_30 « Pas 15 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8c540f4061 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=kick_do done=6 playing=true
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 270 870
+#30 DOIGT tuto_next_folded « Réussi »
+#31 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a1d67ae586 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=rim_do done=6 playing=true
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT CONTRAST « 2 » 2.57:1 (needs 4.5:1, 12 sp)
+#31 > touche 483 357
+#31 DOIGT tuto_fold
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fc104f46b9 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=rim_do done=6 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 LAYOUT CUT « À toi : sur le pad « Bord de caisse », touche les 5 cases en pointillé : le 2e et le 4e temps. » ellipsized (« … »)
+#32 LAYOUT CONTRAST « 2 » 3.40:1 (needs 4.5:1, 12 sp)
+#32 > touche 298 296
+#32 DOIGT step_4 « Pas 5 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 990d9c45ae | project=p-e81898d1 tuto=afrobeats/Facile active=true step=rim_do done=6 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 LAYOUT CONTRAST « 4 » 3.41:1 (needs 4.5:1, 12 sp)
+#33 > touche 298 367
+#33 DOIGT step_12 « Pas 13 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 276535237e | project=p-e81898d1 tuto=afrobeats/Facile active=true step=rim_do done=6 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 LAYOUT CUT « Mesure 1/2 · Caisse » ellipsized (« … »)
+#34 LAYOUT CONTRAST « Mesure 1/2 · Caisse » 1.30:1 (needs 4.5:1, 13 sp)
+#34 LAYOUT CONTRAST « Mesure 2 · 3 cases → » 1.30:1 (needs 3.0:1, 14 sp)
+#34 > touche 362 234
+#34 DOIGT tuto_bar_go « Mesure 2 · 3 cases → »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 83fda19991 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=rim_do done=6 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 298 296
+#35 DOIGT step_20 « Pas 5 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c4b4bbc4e4 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=rim_do done=6 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 298 367
+#36 DOIGT step_28 « Pas 13 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c5e8bc66db | project=p-e81898d1 tuto=afrobeats/Facile active=true step=rim_do done=6 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 356 367
+#37 DOIGT step_29 « Pas 14 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d98e6a1d6f | project=p-e81898d1 tuto=afrobeats/Facile active=true step=rim_do done=7 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT CONTRAST « Mesure 2/2 · Caisse » 1.32:1 (needs 4.5:1, 13 sp)
+#38 > touche 270 870
+#38 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1a19bd46c9 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=rim_do done=7 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 LAYOUT CONTRAST « Mesure 2/2 · Caisse » 1.25:1 (needs 4.5:1, 13 sp)
+#39 > touche 270 699
+#39 DOIGT tuto_next_big « Chapitre suivant   »
+#40 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fbb9be95e7 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 LAYOUT CONTRAST « 1 » 3.00:1 (needs 4.5:1, 12 sp)
+#40 > touche 270 699
+#40 DOIGT tuto_do «   Je le fais »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7719705c4c | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 LAYOUT CONTRAST « 1 » 2.73:1 (needs 4.5:1, 12 sp)
+#41 LAYOUT CONTRAST « 4 » 4.28:1 (needs 4.5:1, 12 sp)
+#41 > touche 67 296
+#41 DOIGT step_0 « Pas 1 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d098353ced | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 > touche 240 296
+#42 DOIGT step_3 « Pas 4 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8eec21207b | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 414 296
+#43 DOIGT step_6 « Pas 7 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cd24f8dba0 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 182 367
+#44 DOIGT step_10 « Pas 11 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9e81d411f6 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 LAYOUT CONTRAST « 4 » 3.93:1 (needs 4.5:1, 12 sp)
+#45 > touche 298 367
+#45 DOIGT step_12 « Pas 13 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6eb523f846 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 LAYOUT CUT « Mesure 1/2 · Bord de caisse » ellipsized (« … »)
+#46 LAYOUT CONTRAST « Mesure 1/2 · Bord de caisse » 1.30:1 (needs 4.5:1, 13 sp)
+#46 LAYOUT CONTRAST « Mesure 2 · 5 cases → » 1.30:1 (needs 3.0:1, 14 sp)
+#46 > touche 362 234
+#46 DOIGT tuto_bar_go « Mesure 2 · 5 cases → »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ff3e2be704 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CONTRAST « 1 » 3.55:1 (needs 4.5:1, 12 sp)
+#47 > touche 67 296
+#47 DOIGT step_16 « Pas 1 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 61fedde378 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 240 296
+#48 DOIGT step_19 « Pas 4 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4f93d4a08d | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 414 296
+#49 DOIGT step_22 « Pas 7 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a1ed393870 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#50 SON Son : la musique du projet joue en boucle.
+#50 > touche 182 367
+#50 DOIGT step_26 « Pas 11 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE adb91688cc | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=7 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 > touche 298 367
+#51 DOIGT step_28 « Pas 13 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 228c3499ba | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=8 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 LAYOUT CONTRAST « Mesure 2/2 · Bord de caisse » 1.32:1 (needs 4.5:1, 13 sp)
+#52 > retour
+#52 RETOUR
+#53 ROUTE launch | MODE simple | EMPREINTE fe104356ee | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=8 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 270 294
+#53 DOIGT launch_continue « Continuer »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3f9cd6b6a5 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=conga_do done=8 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 270 870
+#54 DOIGT tuto_next_folded « Réussi »
+#55 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 68c98efb23 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=drums_hear done=8 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 212 519
+#55 DOIGT tuto_kit_download « Télécharger le kit Afrobeats (2 Mo) »
+#56 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fbcdb9ff2a | project=p-e81898d1 tuto=afrobeats/Facile active=true step=drums_hear done=8 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 270 705
+#56 DOIGT tuto_play_mine «   Écouter ton résultat »
+#57 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 37befecc78 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=drums_hear done=8 playing=true
+#57 SON Son : la musique du projet joue en boucle.
+#57 > attends 10
+#58 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 37befecc78 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=drums_hear done=8 playing=true
+#58 SON Son : la musique du projet joue en boucle.
+#58 > touche 270 789
+#58 DOIGT tuto_listen «  Écouter l'exemple »
+#59 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d336daee6e | project=p-e81898d1 tuto=afrobeats/Facile active=true step=drums_hear done=8 playing=false
+#59 SON Son : l'exemple du tuto joue (encore 3 s).
+#59 > attends 4
+#60 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 65d2f192e9 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=drums_hear done=9 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 445 870
+#60 DOIGT rien
+#61 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 65d2f192e9 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=drums_hear done=9 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 270 699
+#61 DOIGT tuto_next_big « Chapitre suivant   »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4abe25b17d | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_hear done=9 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 270 786
+#62 DOIGT tuto_listen «  Écouter l'exemple »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 00f87f02ca | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_hear done=9 playing=false
+#63 SON Son : l'exemple du tuto joue (encore 3 s).
+#63 > attends 8
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1d6e1f4e06 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_hear done=10 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 445 870
+#64 DOIGT tuto_next « Suivant  »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3a55beead1 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_do done=10 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 270 699
+#65 DOIGT tuto_need «   Créer la piste Basse »
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1674b1ba1c | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_do done=10 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CUT « ↑ Encore 3 notes en pointillé à toucher » ellipsized (« … »)
+#66 LAYOUT TARGET « Si0 Jouer » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « La♯0 Jouer » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « La0 Jouer » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « Sol♯0 Jouer » 36 x 20 dp (touch 48 x 48)
+#66 LAYOUT TARGET « Sol0 Jouer » 36 x 20 dp (touch 48 x 48)
+#66 > touche 170 628
+#66 DOIGT rien
+#67 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE beedbf1324 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_do done=10 playing=false
+#67 SON Son : 1 note du synthé.
+#67 LAYOUT CUT « ↑ Encore 2 notes en pointillé à toucher » ellipsized (« … »)
+#67 > touche 272 628
+#67 DOIGT rien
+#68 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 44f6bfb501 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_do done=10 playing=false
+#68 SON Son : 1 note du synthé.
+#68 LAYOUT CUT « ↑ Encore 1 note en pointillé à toucher » ellipsized (« … »)
+#68 > touche 347 628
+#68 DOIGT rien
+#69 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9bf42a1913 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_do done=10 playing=false
+#69 SON Son : 1 note du synthé.
+#69 LAYOUT CUT « Encore 2 notes en pointillé, plus haut ↑ » ellipsized (« … »)
+#69 > touche 420 432
+#69 DOIGT tuto_notes_left « Basse · mesure 1/8 »
+#70 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 82881ec839 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_do done=10 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT TARGET « Fa♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#70 LAYOUT TARGET « Fa1 Jouer » 36 x 20 dp (touch 48 x 48)
+#70 LAYOUT TARGET « Mi1 Jouer » 36 x 20 dp (touch 48 x 48)
+#70 LAYOUT TARGET « Ré♯1 Jouer » 36 x 20 dp (touch 48 x 48)
+#70 LAYOUT TARGET « Ré1 Jouer » 36 x 20 dp (touch 48 x 48)
+#70 > touche 422 628
+#70 DOIGT rien
+#71 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b311427684 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_do done=10 playing=false
+#71 SON Son : 1 note du synthé.
+#71 > touche 472 566
+#71 DOIGT rien
+#72 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 14425ad216 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_do done=11 playing=false
+#72 SON Son : 1 note du synthé.
+#72 > touche 270 870
+#72 DOIGT tuto_next_folded « Réussi »
+#73 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9b3207a428 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_2 done=11 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 270 699
+#73 DOIGT tuto_need «   Copier sur les mesures suivantes »
+#74 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9b3207a428 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_2 done=11 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 270 699
+#74 DOIGT tuto_need «   Copier sur les mesures suivantes »
+#75 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3dec2dfbc8 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=bass_2 done=12 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 270 699
+#75 DOIGT tuto_next_big « Chapitre suivant   »
+#76 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b95da61199 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_hear done=12 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 270 786
+#76 DOIGT tuto_listen «  Écouter l'exemple »
+#77 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d66520c844 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_hear done=12 playing=false
+#77 SON Son : l'exemple du tuto joue (encore 3 s).
+#77 > touche 445 870
+#77 DOIGT tuto_next « Suivant  »
+#78 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 283c7c9463 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_do done=13 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 270 699
+#78 DOIGT tuto_need «   Créer la piste Accords »
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 220bb7bbe8 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_do done=13 playing=false
+#79 SON Son : rien ne joue.
+#79 LAYOUT CUT « Piano électrique » ellipsized (« … »)
+#79 LAYOUT CUT « ↓ Accords en pointillé à toucher : 5 » ellipsized (« … »)
+#79 LAYOUT CUT « À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose. » ellipsized (« … »)
+#79 LAYOUT TARGET « Mi3 Jouer » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Ré♯3 Jouer » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Ré3 Jouer » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Do♯3 Jouer » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Do3 Do3 Jouer » 36 x 20 dp (touch 48 x 48)
+#79 LAYOUT TARGET « Si2 Jouer » 36 x 20 dp (touch 48 x 48)
+#79 > touche 420 432
+#79 DOIGT tuto_notes_left « Accords · mesure 1/8 »
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3139286f93 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_do done=13 playing=false
+#80 SON Son : rien ne joue.
+#80 LAYOUT TARGET « Mi3 Jouer » 36 x 14 dp (touch 48 x 48)
+#80 LAYOUT TARGET « Ré♯3 Jouer » 36 x 14 dp (touch 48 x 48)
+#80 LAYOUT TARGET « Ré3 Jouer » 36 x 14 dp (touch 48 x 48)
+#80 LAYOUT TARGET « Do♯3 Jouer » 36 x 14 dp (touch 48 x 48)
+#80 LAYOUT TARGET « Do3 Do3 Jouer » 36 x 14 dp (touch 48 x 48)
+#80 LAYOUT TARGET « Si2 Jouer » 36 x 14 dp (touch 48 x 48)
+#80 LAYOUT TARGET « La♯2 Jouer » 36 x 14 dp (touch 48 x 48)
+#80 LAYOUT TARGET « La2 Jouer » 36 x 14 dp (touch 48 x 48)
+#80 > touche 122 702
+#80 DOIGT rien
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7c3232aa6f | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_do done=13 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 196 702
+#81 DOIGT rien
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7f9c72c728 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_do done=13 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 284 702
+#82 DOIGT rien
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 63872ac3b0 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_do done=13 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 372 702
+#83 DOIGT rien
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 29337272c3 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_do done=13 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 446 702
+#84 DOIGT rien
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 843ee579d4 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_do done=14 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 270 870
+#85 DOIGT tuto_next_folded « Réussi »
+#86 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 595260fd0d | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_end done=14 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 270 699
+#86 DOIGT tuto_need «   Copier sur les mesures suivantes »
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 595260fd0d | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_end done=14 playing=false
+#87 SON Son : rien ne joue.
+#87 > attends 3
+#88 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 595260fd0d | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_end done=14 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 270 699
+#88 DOIGT tuto_need «   Copier sur les mesures suivantes »
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE df36759e87 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=pad_end done=15 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 270 699
+#89 DOIGT tuto_next_big « Chapitre suivant   »
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a45e95ba90 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_hear done=15 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 270 786
+#90 DOIGT tuto_listen «  Écouter l'exemple »
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 54df045955 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_hear done=15 playing=false
+#91 SON Son : l'exemple du tuto joue (encore 3 s).
+#91 > attends 6
+#92 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1a01b9f19f | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_hear done=16 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 445 870
+#92 DOIGT tuto_next « Suivant  »
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4036f77196 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_do done=16 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 270 699
+#93 DOIGT tuto_need «   Créer la piste Mélodie »
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1df6a7fc77 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_do done=16 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT CUT « ↑ Encore 4 notes en pointillé à toucher » ellipsized (« … »)
+#94 LAYOUT TARGET « Fa4 Jouer » 36 x 14 dp (touch 48 x 48)
+#94 LAYOUT TARGET « Mi4 Jouer » 36 x 14 dp (touch 48 x 48)
+#94 LAYOUT TARGET « Ré♯4 Jouer » 36 x 14 dp (touch 48 x 48)
+#94 LAYOUT TARGET « Ré4 Jouer » 36 x 14 dp (touch 48 x 48)
+#94 LAYOUT TARGET « Do♯4 Jouer » 36 x 14 dp (touch 48 x 48)
+#94 LAYOUT TARGET « Do4 Do4 Jouer » 36 x 14 dp (touch 48 x 48)
+#94 LAYOUT TARGET « Si3 Jouer » 36 x 14 dp (touch 48 x 48)
+#94 LAYOUT TARGET « La♯3 Jouer » 36 x 14 dp (touch 48 x 48)
+#94 LAYOUT TARGET « La3 Jouer » 36 x 14 dp (touch 48 x 48)
+#94 > touche 110 711
+#94 DOIGT rien
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d6452ccdd5 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_do done=16 playing=false
+#95 SON Son : 1 note du synthé.
+#95 > touche 170 670
+#95 DOIGT rien
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4c1f6b8673 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_do done=16 playing=false
+#96 SON Son : 1 note du synthé.
+#96 > touche 233 628
+#96 DOIGT rien
+#97 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d50cfd16bf | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_do done=16 playing=false
+#97 SON Son : 1 note du synthé.
+#97 > touche 297 566
+#97 DOIGT rien
+#98 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 6be94fe097 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_do done=16 playing=false
+#98 SON Son : 1 note du synthé.
+#98 LAYOUT CUT « Encore 5 notes en pointillé, plus haut ↑ » ellipsized (« … »)
+#98 > touche 420 432
+#98 DOIGT tuto_notes_left « Mélodie · mesure 1/8 »
+#99 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7e582a6d17 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_do done=16 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT TARGET « La♯4 Jouer » 36 x 14 dp (touch 48 x 48)
+#99 LAYOUT TARGET « La4 Jouer » 36 x 14 dp (touch 48 x 48)
+#99 LAYOUT TARGET « Sol♯4 Jouer » 36 x 14 dp (touch 48 x 48)
+#99 LAYOUT TARGET « Sol4 Jouer » 36 x 14 dp (touch 48 x 48)
+#99 LAYOUT TARGET « Fa♯4 Jouer » 36 x 14 dp (touch 48 x 48)
+#99 > touche 422 628
+#99 DOIGT rien
+#100 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c35df21454 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_do done=17 playing=false
+#100 SON Son : 1 note du synthé.
+#100 LAYOUT CUT « Encore 4 notes en pointillé, plus loin → » ellipsized (« … »)
+#100 > touche 270 870
+#100 DOIGT tuto_next_folded « Réussi »
+#101 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1b990e6f72 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_2 done=17 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 270 699
+#101 DOIGT tuto_do «   Je le fais »
+#102 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e0c4f0306c | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_2 done=17 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 184 566
+#102 DOIGT rien
+#103 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2e23633c69 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_2 done=17 playing=false
+#103 SON Son : 1 note du synthé.
+#103 > touche 221 628
+#103 DOIGT rien
+#104 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ea5ed33b9d | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_2 done=17 playing=false
+#104 SON Son : 1 note du synthé.
+#104 > touche 347 670
+#104 DOIGT rien
+#105 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 97288ff9f9 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_2 done=17 playing=false
+#105 SON Son : 1 note du synthé.
+#105 LAYOUT CUT « Encore 1 note en pointillé, plus haut ↑ » ellipsized (« … »)
+#105 > touche 420 432
+#105 DOIGT tuto_notes_left « Mélodie · mesure 2/8 »
+#106 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 06bfc2ceaa | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_2 done=17 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 122 628
+#106 DOIGT rien
+#107 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE a898c99d79 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_2 done=17 playing=false
+#107 SON Son : 1 note du synthé.
+#107 > touche 270 870
+#107 DOIGT tuto_need_folded « Copier sur les mesures suivantes »
+#108 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8ff24ba3b9 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_2 done=18 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 270 870
+#108 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#109 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1ccfa40dd8 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=lead_2 done=18 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 270 699
+#109 DOIGT tuto_next_big « Chapitre suivant   »
+#110 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 162b33b022 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=groove_hear done=18 playing=false
+#110 SON Son : rien ne joue.
+#110 > touche 270 705
+#110 DOIGT tuto_play_mine «   Écouter ton résultat »
+#111 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 815dae62e8 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=groove_hear done=18 playing=true
+#111 SON Son : la musique du projet joue en boucle.
+#111 > attends 3
+#112 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bdcd6bf65c | project=p-e81898d1 tuto=afrobeats/Facile active=true step=groove_hear done=18 playing=true
+#112 SON Son : la musique du projet joue en boucle.
+#112 > touche 270 789
+#112 DOIGT tuto_listen «  Écouter l'exemple »
+#113 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE e114e382c2 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=groove_hear done=18 playing=false
+#113 SON Son : l'exemple du tuto joue (encore 3 s).
+#113 > attends 8
+#114 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 70d0f2c6a4 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=groove_hear done=19 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 270 699
+#114 DOIGT tuto_next_big « Étape suivante   »
+#115 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 964a488757 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=groove_name done=19 playing=false
+#115 SON Son : rien ne joue.
+#115 > touche 270 699
+#115 DOIGT tuto_need «   Nommer la partie « Refrain » »
+#116 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f605f03d6a | project=p-e81898d1 tuto=afrobeats/Facile active=true step=groove_name done=20 playing=false
+#116 SON Son : rien ne joue.
+#116 LAYOUT CUT « + Nouvelle partie (copie de A · Refrain) » lines dropped (more lines than room)
+#116 > touche 483 477
+#116 DOIGT tuto_fold
+#117 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4df94bc989 | project=p-e81898d1 tuto=afrobeats/Facile active=true step=groove_name done=20 playing=false
+#117 SON Son : rien ne joue.
+#117 > fin
+#117 FIN : fin

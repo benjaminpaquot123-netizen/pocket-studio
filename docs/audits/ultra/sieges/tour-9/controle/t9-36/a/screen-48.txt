@@ -1,0 +1,57 @@
+Écran 48 (588x1278)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 150,42
+texte « 간단 » @ 327,42
+bouton ● @ 399,42
+bouton ▶ « 이 파트 » @ 471,42
+icône ⋮ @ 543,42
+bouton « 136  템포 » @ 69,114
+icône (flèches en boucle) « 드롭 2 5/8마디 » ▾ @ 210,114
+bouton « ? » @ 543,114
+icône « 파트: G · 드롭 2 » ▾ @ 103,180
+texte « 심벌 » @ 75,251
+bouton « 1 » [allumé, état « 히트, 세기 100 % »] @ 70,334
+bouton [état « 비어 있음 »] @ 133,334
+bouton [état « 비어 있음 »] @ 197,335
+bouton [état « 비어 있음 »] @ 261,335
+bouton « 2 » [état « 비어 있음 »] @ 325,335
+bouton [état « 비어 있음 »] @ 389,335
+bouton [état « 비어 있음 »] @ 453,335
+bouton [état « 비어 있음 »] @ 517,335
+bouton « 3 » [état « 비어 있음 »] @ 70,413
+bouton [état « 비어 있음 »] @ 133,413
+bouton [état « 비어 있음 »] @ 197,414
+bouton [état « 비어 있음 »] @ 261,414
+bouton « 4 » [état « 비어 있음 »] @ 325,414
+bouton [état « 비어 있음 »] @ 389,414
+bouton [état « 비어 있음 »] @ 453,414
+bouton [état « 비어 있음 »] @ 517,414
+texte « 채우기 » [coupé] @ 68,486
+texte « 전체 » [coupé] @ 134,478
+texte « 1/2 » [coupé] @ 209,478
+texte « 1/4 » [coupé] @ 284,478
+texte « ◀ » [coupé] @ 359,478
+texte « ▶ » [coupé] @ 434,478
+icône (liste) « 챕터 » @ 459,536
+texte « 이펙트 11/13장 · 1/1단계 · 쉬움 » @ 222,536
+icône ⌄ @ 531,536
+texte « 리버브를 들어 보세요: 스네어와 드론을 먼저 리버브 없이, 그다음 리버브와 함께. 격납고 안에 들어온 것 같아요. » @ 294,653
+bouton « Industrial techno 킷 다운로드 (3 MB) » @ 247,764
+texte « 나중에 » @ 514,764
+texte « ▸ 왜요? » @ 294,830
+bouton ▶ «  예시 듣기 » @ 294,894
+icône ← «  이전 » @ 75,978
+icône « 다음  » → @ 513,978
+icône ↶ « 실행 취소 » @ 72,1062
+image ↷ @ 180,1050
+bouton ■ « 곡 » @ 288,1062
+texte « 136 템포 » @ 402,1062
+icône ⋮ « 더보기 » @ 516,1062
+onglet (lignes et note) « 내 곡 » @ 54,1158
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 174,1158
+onglet (touches de piano) « 건반 » @ 294,1158
+onglet (curseurs) « 믹스 » @ 414,1158
+onglet (trois points reliés) « 공유 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  메모 » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « 피드백 모드 » @ 162,1248

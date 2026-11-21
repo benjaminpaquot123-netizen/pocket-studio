@@ -1,0 +1,20 @@
+fusion: cc99fcfa1d82b105641eb7eb7ced40172bcbed23
+branche: eq/tour-9-miettesB
+tete: c23fd5d290d709134d4b1c3420969af54630c4ea
+relecture: docs/audits/ultra/tour-9-miettesB-relecture.md
+relu: 2ac94718
+filtres: *Tour9LayersOwnSoundNameTest* *Tour9RollFinishTest* *Tour9DoneBarGoesTest* *DoneBarNextTouchTest* *Tour6TutoCellsPanel100Test*
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

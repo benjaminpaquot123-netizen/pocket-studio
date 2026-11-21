@@ -1,0 +1,56 @@
+Écran 7 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 283,42
+bouton « Simple » @ 608,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+icône « Partie : A » ▾ @ 82,180
+bouton « Grosse caisse studio FX » @ 123,270
+bouton « Grosse caisse 2 » @ 341,270
+bouton « Drum & bass · Caisse FX » @ 559,270
+bouton « Caisse 2 » @ 777,270
+bouton « Claquement de mains FX » @ 123,348
+bouton « Drum & bass · Charley G 30 » @ 341,348
+bouton « Charley ouvert D 30 » @ 559,348
+bouton « Tom grave » @ 777,348
+bouton « Tom médium D 45 » @ 123,426
+bouton « Tom aigu » @ 341,426
+bouton « Drum & bass · Bord de caisse FX D 50 » @ 559,426
+bouton « Cloche » @ 777,426
+bouton « Cymbale FX D 40 » @ 123,504
+bouton « Maracas G 50 » @ 341,504
+bouton « Conga » @ 559,504
+bouton « Laser » @ 777,504
+bouton « Kit : Drum & bass » ▾ @ 144,582
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 582,582
+titre « PAS : GROSSE CAISSE STUDIO » [état « Déplié »] @ 354,688
+bouton « ? » @ 423,688
+bouton « Tous les pads » [coupé] @ 762,687
+texte « La vitesse et la couleur du morceau Chapitre 1/15 · Étape 3/3 · Facile » @ 363,756
+icône (liste) « Chapitres » @ 756,756
+icône ⌄ @ 843,756
+texte « À toi : une couleur sombre. « Je le fais » ouvre la fiche Tonalité : touche « Phrygienne », puis « Fa ». » @ 450,855
+texte « • Phrygienne : une gamme sombre, un peu inquiétante. » @ 271,913
+texte « • Tonalité : la note de départ du morceau et sa couleur, joyeuse ou sombre. » @ 361,943
+texte « ▸ Pourquoi ? » @ 450,981
+bouton (doigt qui touche) «   Je le fais » @ 450,1044
+bouton ▶ «  Écouter l'exemple » @ 232,1128
+bouton (œil) «  Montre-moi » @ 667,1128
+icône ← «  Précédent » @ 107,1209
+icône « Suivant  » → @ 805,1209
+icône ↶ « Annuler » @ 121,1293
+image ↷ @ 279,1283
+bouton ▶ « le morceau » @ 444,1293
+texte « 174 Tempo » @ 615,1293
+icône ⋮ « Plus » @ 779,1293
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » [sélectionné] @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

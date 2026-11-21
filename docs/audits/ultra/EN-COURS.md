@@ -1,75 +1,56 @@
 # En cours
 
-Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`.
+Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`. L'histoire du 13 au 19 novembre (tours 6, 7 et 8) est dans `docs/archive/EN-COURS-2026-11-13-a-19.md` : elle ne se suit pas.
 
-- **Mise à jour** : 2026-11-18, 05 h 50 UTC.
+- **Mise à jour** : 2026-11-21, 9 h 40 (heure belge). Arrêt demandé par Benjamin ; reprise : dernière ligne de ce fichier.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
-- **Temps en cours** : tour 7, P6/P7 terminé et rangé : blocs 0, 1, 2, 3, 4 et 0b dans l'intégration (tête `5209db96`, CI 361 verte sur `0e26e60d`), clés retirées, captures remises à jour, revue de fin de tour sans grave. Toutes les discussions du tour sont archivées. PR vers `main` ouverte ; fusion à sa CI verte. Ensuite : tour 8 (`PLAN-TOUR-8-brouillon.md`, lot T0 d'abord).
-- **Dernier départ jugé** : `1585bb46` (tour 6, 19 sièges, 12 novembre). Sièges de contrôle du tuto joués sur `9f26c244`.
-- **Intégration** : branche `ccr-80af1a1b-mn0wec` ; tout y est poussé après chaque portail.
+- **Temps en cours** : RÉPARATION du tour 9. Liste gelée (Benjamin : « Objectif. Terminé Tout les défaut trouvé et stoppé ») : `docs/audits/ultra/tour-9-tri/` (défauts D01…D18, finitions F001…F136). Plus aucun siège qui cherche ; des testeurs neufs constatent seulement. Toute faute neuve vue pendant la réparation entre dans la liste. On s'arrête quand la liste est vide. Points à Benjamin seulement sur sa demande (on le tutoie).
+- **Intégration** : branche `ccr-80af1a1b-mn0wec`, tête poussée `7455749a5` (CI 44537768073 en cours) ; commits de texte locaux dans `/home/user/fx-int2` à pousser après elle.
+- **Lots ouverts** (un fichier = un lot) :
+  - L1 tuto-panneau (sous-agent du chef, `/home/user/wt-L1`, `eq/tour-9-L1`) : D02, D13 (visibilité), D14.
+  - L7 piano roll (sous-agent du chef, `/home/user/wt-L7`, `eq/tour-9-L7`) : D06, S17 ; selftest en cours.
+  - L6 Structure `session_014RxrDMkhUdqXCdciTjjS1T` (`eq/tour-9-L6`) : D08, D10 + F100…F111.
+  - L2 Mix `session_014RxrDMZBvLi55WqYcZy7t7` (`eq/tour-9-L2`) : D01, D11, D12, S30, S34 + F023…F030 (Mix), F130, F136.
+  - L8 feuilles et partage `session_014RxrDKvhB4oNgXkVj2tghN` (`eq/tour-9-L8`) : F127, F131 (graves) + F030 (Partage), F119…F135.
+  - L4 grille rythme `session_014RxrDNJtiS2AgPKRrbmdzj` (`eq/tour-9-L4`) : D04 (bloquant), S56, S76, F053 (graves) + F047…F057.
+  - L9 banc et tests creux `session_014RxrDKb4jSvE5dmsmczsoZ` (`eq/tour-9-L9`) : D17 (banc), 3 tests creux, pré-vol sur clone coupé, ci-etat.sh, Coquille2SeatTest p5.
+- **Paquets** : 1 = L1, L7, L6 ; 2 = L2, L3, L4 ; puis L8, L5, secondes passes. L3 (validation, D03 D07 D09 D15 D18 S67) s'ouvre après L1 (le tuto est une seule zone) ; L5 (contenu des cours) après L3. Le message de repli muet des kits (D17, AppRoot) attend la fermeture de L1.
+- **Pas encore de lot** : L10 divers (F139 CutScreen, F142 SynthScreen, F131 Retour avec tuto ouvert dans AppRoot, message D17 de repli du kit ; après L1), secondes passes L1 (22 finitions) et L7 (7).
+- **Branches de rapports pas entrées** : `aud/tour-9-*-r2`, `aud/tour-9-verif-d17`.
 
 ## En arrivant (toute discussion, avant toute mission)
 
-1. Remplis le cache des tests : `bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*BenchSelfTest'` (si Maven répond 429, réessaie toutes les dix minutes).
-2. Écris au chef d'orchestre, en une ligne : « prêt : <un nom court> ; modifier l'appli : oui/non ; pousser une branche neuve : oui/non ; tests chauds : oui/non ».
-3. Économie de quota (Benjamin, 13 novembre) : aucun texte pour Benjamin dans ta discussion, pas de résumé ni de récit d'étape ; tes messages au chef tiennent en une ligne ; sorties de commandes filtrées (`tail`, `grep`), jamais un fichier entier quand un extrait suffit ; un sous-agent seulement quand la fiche le demande.
-4. Attends ta fiche (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
+1. Lis seulement `CLAUDE.md`, cette page et ta fiche. Pas `PROGRESS.md`, pas les issues, pas le test de nuit : c'est le travail du chef.
+2. La machine est préparée au démarrage : SDK Android dans `/opt/android-sdk`, cache des tests rempli, `local.properties` écrit. Vérifie : `ls /opt/android-sdk/platforms`. Si le dossier manque (environnement sans script de préparation), suis la recette de `docs/audits/ultra/tour-8-fiches/LISEZ-MOI.md`, puis `bash scripts/bench/gradle-file.sh :app:testDebugUnitTest --tests '*BenchSelfTest'`.
+3. Pas de message « prêt » (boost éco, 19 novembre) : la fiche est dans ton message d'ouverture, tu travailles tout de suite ; tu n'écris au chef qu'une fois, « fini <sha> » ou « bloqué : … ».
+4. Économie de quota (Benjamin, 13 novembre) : aucun texte pour Benjamin dans ta discussion, pas de résumé ni de récit d'étape ; tes messages au chef tiennent en une ligne ; sorties de commandes filtrées (`tail`, `grep`), jamais un fichier entier quand un extrait suffit ; un sous-agent seulement quand la fiche le demande.
+5. Ta fiche est dans ton message d'ouverture (ton rôle, tes fichiers, ton commit). Aucune question à Benjamin : une ligne au chef.
+6. Quand tu as poussé : « fini », puis silence. Tu n'attends pas ta CI ; le chef te réveille seulement si elle est rouge.
 
-## Ce qui n'est pas vert
+## Ce qui n'est pas vert (19 novembre)
 
-**Au 18 novembre, 06 h 50 (heure belge)** : la CI de la PR vers `main` tourne (pas encore lue). 14 captures de référence encore périmées (4 montrent un défaut : feuille de partage, flèche sur « + Piste » à 130 % ; 10 à réenregistrer), simple avertissement dans la CI. Détail : `docs/REVIEW.md`.
+- Le tour 8 n'est pas dans `main` ; sa revue de fin de phase n'est pas faite.
+- Tuto, 2 graves connus (chapitre 12, maracas) et P6-grille (japonais, pliable, 200 %) : pas pris, pour le tour 9.
+- `Coquille2SeatTest.p5` capricieux ; 4 à 6 captures bougent d'une CI à l'autre (`shell_audio_pages_end_*`, `130_land_nav_sheet_share`, `sons_synth_take`, `share_overrun_*`).
+- `corrections.tsv` n'a pas les verdicts du contrôle final (17 « pas pris », 23 « tentés » jamais confirmés).
+- `scripts/bench/ci-etat.sh` ne répond pas (outil `gh` non connecté) : la garde « CI rouge ou en cours » du pré-vol ne voit rien.
+- Les 4 pilotes des niveaux et les sièges d'élargissement n'ont jamais été joués.
+- Le script de préparation de l'environnement est posé (19 novembre) mais pas encore vu tourner au démarrage d'une discussion neuve.
+- Sur une machine du cloud, `pre-vol.sh --ci --rapide` est recalé par `test_portail4.py` (historique git coupé) : faux rouge local, vert sur la CI ; à réparer dans le lot « machinerie ».
 
-**Au 16 novembre, 01 h 55 (heure belge)** : rien de rouge. Ouvert pour mardi : les points du tour 7 non encore traités (ligne « Temps en cours »).
+## Prochain départ (tour 9)
 
-**Au 14 novembre au soir** : seulement la CI finale de l'intégration avant la fusion dans main. Les points ci-dessous datent du 13 novembre et sont réglés.
+Pas avant : le rangement du tour 8 (branches de sièges, revue, PR vers `main`), le lot « machinerie » fusionné, `selftest.sh` vert, et un siège pilote par mission neuve. Ordre conseillé et règles de dépense : `PREPARATION-TOUR-9.md` §5 et §6. Le chef note son compteur d'unités au départ et à la clôture.
 
-1. **CI de la tête** (`9f26c244`, passage 43375199284) : « Emulator smoke test » ROUGE depuis 06 h 44 (`JourneyTest.aFirstSongInTheModeSimple` : « nothing tagged wizard after 15000 ms ») ; le reste de ce passage est vert (tests, captures, bancs ; l'endurance finit). **Cause trouvée (07 h 50)** : le lot « tutoconsignes » (`b621715da`) a écrit dans `PlainWords.kt` un motif `(?iU)…` ; le moteur de motifs du téléphone (ICU) refuse le drapeau « U », la JVM des tests et du banc l'accepte. Sur un vrai téléphone, l'assistant et le panneau du tuto en Mode simple plantent : **ne rien installer sur un téléphone depuis cette tête.** Réparation : lot « emulateur », avec un test de garde sur tous les motifs de l'appli.
-2. **Le tuto** : les trois contrôles vont au « Bravo », mais 12 défauts corrigés sur 32, trois graves neufs (flèches contradictoires au chapitre 7, doubles-croches refusées au chapitre 4 du tuto Pro, flottement après « Copier sur les mesures suivantes »), trois chapitres bloqués. Lot 10 « tutofleches » en cours.
-3. **Le juge du chantier** : 68 écarts (8 après le lot « juge7 »), presque tous des paires rouge/vert dépareillées. À ramener par le lot du banc « portail3 ».
-4. **Les rejeux** : un seul (`t4-26-prise-clavier`) ; aucun des bloquants ou graves corrigés dans la nuit n'a le sien. Lot du banc « rejeux7 ».
-5. **Le lot 5 « langues2 »** (textes coupés) : fait et relu dans la discussion « Sons modernes », pas poussé : sa branche porte l'essai de sons ; il attend l'accord de Benjamin pour une branche neuve.
-6. **Captures de référence** : seize périmées depuis le lot 1 (signalées par le lot 5), à réenregistrer et à regarder.
-7. **Suivi du tour 6** : `sieges/tour-6/hors-banc.tsv` incomplet ; `docs/REVIEW.md` sans les « moyens » des relectures du tour 6.
-8. **Paquet du portail** : le paquet 2 a reçu 17 fusions sans CI entre elles. C'est l'écart que la règle 13.6 ferme : le paquet 3 ne s'ouvre qu'après une CI verte.
+## Arrêt du 2026-11-20 (ordre de Benjamin)
+- Entrés : L9, L10, L8, L5b, L1, L17, L12, L2, L16, L11.
+- En attente (finis, refusés au portail) : L3 (sortie 5, TutoJourneyTest), L7 (3, F133 après revue), L4 (4, conflit Help.kt), L6 (3, changements après revue), L15 (5, oracle de rejeu).
+- En pause sans revue : L5a, L13, L14.
+- Pas vert : TutoReadabilityBudgetTest (depuis L5b), captures audio_pages_end instables, tempo_sheet / nl_tempo_sheet / tracks rouges sur la base, écarts du juge 123 → 125.
+- Reprise éco (2026-11-20, soir) : L7, L4, L6 entrés après fusion de l'intégration côté chef (captures et F111 pris de l'intégration, test F111 du lot retiré car doublon non branché). Juge : 134 écarts. Restent : L3, L15 (rouges), L5a, L13, L14 (sans relecture).
 
-**09 h 40** : lot « emulateur » fusionné et poussé (`b3617da21`), CI lancée sur cette tête. Le portail est FERMÉ jusqu'à son vert, émulateur compris. En attente pour le paquet 3 : `tutofleches` (agent local, en cours), `langues2` (`eq/tour-6-langues2`), et les lots du banc `portail3` (`eq/tour-6-portail3`, juge 68 → 15) et `rejeux7` (`eq/tour-6-rejeux7`, 3 rejeux). Contrôle du tuto : sur la tête poussée, pendant la CI du paquet 3, par Testeurs 2 et 3 ; le lot est retiré s'il échoue.
-
-**11 h 47** : CI 43402800379 VERTE sur `b3617da21` (émulateur compris). Paquet 3 ouvert : `tutofleches`, `langues2`, `portail3` ; puis CI et contrôle du tuto par les trois testeurs. `rejeux7` au paquet 4.
-
-**12 h 30** : paquet 3 = `tutofleches` (`b4ac25f21`) + `portail3` (`afd7fa918`), CI lancée. `langues2` refusé (conflit avec `tutofleches` sur `i18n/*/tuto*.json`), rendu à « Sons modernes » ; il passera seul, en tête du paquet 4, avec `rejeux7`. Contrôle du tuto en cours sur `b4ac25f21` : Testeur 1 (fr), 2 (ja), 3 (de Pro). Contrôles sur `b3617da21` : Pad Live 2/3 corrigés, Remix voix 1/8, Exports 1/7 : lots « remix2 » et « exports2 » à ouvrir. Lot du banc « ci3 » (CI en moins d'une heure) chez « Banc · portail3 ». Audit `AUDIT-PARALLELE.md` : gel par zone, CI de chaque lot sur sa branche avant le portail (dès le paquet 4).
-
-**14 h 20 (heure belge ; les heures plus haut sont en UTC)** : lots ouverts dans des discussions à elles, branche poussée, contrôle par un siège AVANT le portail : `tuto3` (session_014RxrDP876zy2EEdoGR97qE, zone tuto), `remix2` (session_014RxrDKfQRPMPDTVzpApVD1, `app/…/remix/`), `exports2` (session_014RxrDL1ZNw6Jw2xsHSp5Ut, `app/…/export/`, `MyExports.kt`). Contrôles du tuto sur `b4ac25f21` : fr 233 gestes, 12 hésités, 0 bloqué ; ja 176, 8, 0 ; de Pro 219, 10, 1 bloqué (ch. 7, déjà là avant) : lot gardé, `tuto3` ouvert. Règle « corrigé se mérite » (§ 13.5) en vigueur.
-
-**19 h 42 (heure belge)** : CI 43477060206 VERTE sur `5025b7712` (tutofleches, portail3, tutoordre, ci3, tutoordre2 ; CI en 42 min). Paquet 5 ouvert : `langues2` seul en tête, puis `remix2` et `exports2` (validés par leur siège avant le portail : remix 5 sur 5 visés, exports 4 sur 5). `tutocourse` (cause de fond du tuto : regards qui répondent dans le désordre, défaut de l'appli sur téléphone lent) : porté par le dépanneur Fable sur `eq/tour-6-tutocourse-contre`, relu par tuto3, deux CI vertes exigées ; `tuto3` (validé par trois sièges) entre après lui. Compteur de Benjamin : constatées dans l'appli 16, à la porte 17, sur 55 rejouées.
-
-**20 h 25 (heure belge) — DÉCISION DE BENJAMIN** : pleins pouvoirs au chef (« oui pour tout, recommandé pour tout »). On ne s'arrête que quand toutes les erreurs remontées par les testeurs le 13 novembre sont constatées corrigées par un siège ; puis tout est fusionné (intégration, puis `main` par une PR quand la CI est verte) et le chef s'arrête jusqu'à « continue ». Plus aucun lot neuf hors de cette liste :
-1. Entrés dans le paquet 5 : `langues2` (`ade5ba57e`). À entrer : `exports2` (refait sa fusion), `remix2b` (histoire refaite en paires, arbre identique), puis CI.
-2. `tutocourse` (cause de fond du tuto ; `eq/tour-6-tutocourse-contre`, une CI verte sur `db8ba2c8`, la seconde en cours), puis `tuto3`, puis CI.
-3. Lots du banc prêts : `rejeux7`, `portail4`, `constate`.
-4. Lots à faire pour le reste des erreurs du jour, un siège de contrôle avant le portail : `padlive2` (ouvert, session_014RxrDNP6EU2ViWpMiTQdrp) ; `tuto4` (vocabulaire du tuto en toutes langues, T3, T8, départ Reverb du Clap, restes des sièges ; après `tutocourse` et `tuto3`) ; `coquille2` (fichiers partagés `RhythmViewModel.kt` / `AppRoot.kt` : restes « pas pris » de remix2 et d'exports2 ; seul, en dernier).
-
-## Lots ouverts (un fichier = un seul lot ouvert ; 17 novembre)
-
-| Lot | Zone | Fichiers | Discussion | Branche | État |
-|---|---|---|---|---|---|
-| `tuto2` | tuto : lot 1 D4, fin de D3 (carte du kit), textes Facile reggaeton/afrobeats, texte de `partMade` | `app/…/tuto/*`, `model/tuto/*`, `resources/tutos/*.json`, `i18n/*/tuto*.json`, `PianoRoll.kt`, `RhythmScreen.kt`, `PlainWords.kt` | « Tour 7 · tuto2 » | `eq/tour-7-tuto2` | ouvert ; contrôle par un siège avant le portail |
-| `decoupe2` | Remix : lot 2 D2 (puces Phrases, poignée Fin, pouce gauche) | `app/…/remix/*`, `session/SessionScreen.kt` | « Tour 7 · decoupe2 » | `eq/tour-7-decoupe2` | ouvert |
-| `guide2` | Guide et coquille : lot 3 D2, D3 (pages Mix et Sons), D7 si possible | `app/…/guide/*`, `ui/AppRoot.kt`, `AppSpaces.kt`, `Spaces.kt`, `TopBar.kt`, `ModeChoice.kt`, `mixer/*`, `sounds/*`, `LibraryScreen.kt`, `MySoundLibrary.kt`, `i18n/*/*.json` hors tuto | « Tour 7 · guide2 » | `eq/tour-7-guide2` | ouvert |
-| `banc8` | banc : B1 (siège court ancré avec le projet construit), B2 (rejeux du tour 6 ré-ancrés) | `app/src/test/…/human/*`, `scripts/bench/*`, `scripts/human-*`, `docs/audits/ultra/rejeux/*` | « Tour 7 · banc8 » | `eq/tour-7-banc8` | ouvert |
-
-Règles de toute fiche depuis le 17 novembre : « demander au chef » et « travailler en silence » (`GABARIT-FICHES-V3.md`).
-
-## File du portail
-
-1. Chaque lot fini : fusion dans `ccr-80af1a1b-mn0wec` dans l'ordre d'arrivée, tests complets après chaque fusion.
-2. `tuto2` seulement après son siège de contrôle (0 chapitre bloqué, 0 grave neuf).
-3. Puis CI complète, PR vers `main`, fusion ; mesure des unités par défaut corrigé (repère : 22 M).
-
-## Discussions
-
-- Les quatre lots ci-dessus (étiquette `tour-7`).
-- Testeurs et lots du tour 6 : fermés.
-
-## Prochain départ
-
-Pas avant : la CI verte, le tuto passé par son contrôle (0 chapitre bloqué, 0 grave neuf), le lot « portail3 » fusionné, et le lot du banc « niveaux » (`PLAN-NIVEAUX.md` : huit missions neuves). Avant la vague : un siège pilote par mission (13.4).
+- 2026-11-20 nuit : L14 fusionné (30b800810 ; conflit TutoPanel.kt résolu par le chef, deux côtés gardés). Rouge sur la base, pas des lots : T9PanelTargetTest#fillCellsAboveThePanelIn360At200Japanese. Suivant : relecture neuve de L5a.
+- 2026-11-20 nuit : L5a fusionné (1f3b5b7ad), après ménage du disque (1,1 Go libre faisait échouer les tests). Suivant : L3.
+- 2026-11-20 : L3 fusionné (a7c4ab95a ; TutoJourneyTest hat_triplet réparé côté test : l'élève simulé pose un triolet sur chaque triolet de la boucle, F032). En cours : L15 (assistant ici), L13, base-rouges et miettesB (discussions). MiettesA fermée sans commit : renameScene (une ligne dans AppRoot.kt, après L15), F034/F101 (tuto, après L13/L15), F032 reste (JSON du tuto).
+- 2026-11-20 soir : miettesB (cc99fcfa1) et base-rouges (b55c9209e) fusionnés. textes refusé au portail (conflit dans corrections.tsv seulement) : renvoyé à sa discussion pour fusionner l'intégration. En cours : L13 (rapport final), banc TutoJourneyTest, D10 (renommer depuis « A ▾ », relecture manquante). Ensuite V1 → fiche tuto → V2, puis le tour 10 de contrôle (47 sièges).
+- 2026-11-21 matin (arrêt demandé par Benjamin : « Arrête toi après les tenté ») : entrés D10, banc-journey, base-rouges2 (270aadf35), textes (b7fce6776), L13 (d44d233b3, fusion à la main par le chef : seul rouge T9PanelTargetTest japonais 200 %, message identique à la base CI 403). En attente : « problèmes difficiles » `ccr-69119313-or4u42` (80563220 ; D09, F034, durcissement p5) : il lui manque une relecture neuve en dernier commit et la fusion de l'intégration (sa discussion est fermée : nouvelle discussion à ouvrir) ; ci-rapide `ccr-f384f197-wsy8kx` (4360850a) attend une CI verte sur une tête qui contient l'intégration. Rien lancé : mini-contrôle (plan dans le carnet du chef, 7 sièges + pilote M1), lots tuto V1 → fiche-tuto (D06 = le rouge T9) → V2, tour 10. Compteur : 155 tentés dans l'appli sur 166, 2 en attente, 0 vérifié par un testeur, 8 à corriger.

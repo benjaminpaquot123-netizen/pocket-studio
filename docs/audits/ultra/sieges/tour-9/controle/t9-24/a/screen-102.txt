@@ -1,0 +1,58 @@
+Écran 102 (588x1278)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 114,42
+texte « Pro » @ 255,42
+icône ↶ @ 327,42
+bouton ● @ 399,42
+bouton ▶ « ta część » @ 471,42
+icône (trois points reliés) @ 543,42
+bouton « 142  BPM » @ 73,114
+icône « Intro takt 1/124 » ▾ @ 223,114
+bouton (flèches en boucle) [état « wył. »] @ 462,114
+bouton « ? » @ 543,114
+curseur [état « +0,0 dB », à 80 %] @ 84,199
+texte « +0,0 » @ 84,273
+image (étincelles) @ 76,305
+texte « 3 » @ 96,305
+curseur [état « +0,0 dB », à 80 %] @ 204,199
+texte « +0,0 » @ 204,273
+curseur [état « +0,0 dB », à 80 %] @ 324,199
+texte « +0,0 » @ 324,273
+image (étincelles) @ 318,305
+texte « 1 » @ 336,305
+curseur [état « +0,0 dB », à 80 %] @ 444,199
+texte « +0,0 » @ 444,273
+image (étincelles) @ 436,305
+texte « 2 » @ 456,305
+curseur [coupé, état « +0,0 dB », à 80 %] @ 546,199
+texte « +0,0 » [coupé] @ 557,273
+image (étincelles) @ 540,305
+texte « 1 » @ 558,305
+image (courbe) [coupé] @ 568,305
+image (courbe) @ 60,409
+texte « Krzywe i efekty » @ 183,395
+texte « 1 ustawienie rusza się samo. » @ 223,426
+bouton « Pokaż krzywe » @ 165,488
+bouton « Co gra » @ 423,488
+titre « KRZYWE » [état « Rozwinięte »] @ 217,623
+bouton « ? » @ 199,623
+bouton ● « Nagraj » @ 469,623
+texte « Spraw, żeby ustawienie ruszało się samo: wybierz je, potem narysuj krzywą (palcem albo linią w dwóch dotknięciach). » @ 294,711
+bouton + «  Automatyzuj ustawienie » @ 223,797
+icône (liste) « Rozdziały » @ 444,879
+texte « Miks Rozdział 14/16 · Krok 1/2 · Pro » @ 207,879
+icône ⌃ @ 531,879
+icône « Twoja kolej: w Miksie ścisz trochę „Akordy” i „Melodia”: najpierw 808 i kick, potem werbel, potem hi-haty. Czytaj » ⌃ @ 294,978
+icône ↶ « Cofnij » @ 71,1062
+icône ↷ « Ponów » [désactivé] @ 177,1062
+bouton ▶ « utwór » @ 284,1062
+texte « 142 Tempo » @ 396,1062
+icône (trois points reliés) « Udostępnij » @ 513,1062
+onglet (ligne brisée et points) « Struktura » @ 54,1158
+onglet (touches de piano) « Dźwięki » @ 174,1158
+onglet (curseurs) « Miks » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Więcej » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Zanotuj » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Tryb uwag » @ 162,1248

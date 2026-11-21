@@ -1,0 +1,58 @@
+Écran 35 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+bouton « ? » @ 543,114
+icône « パート：A » ▾ @ 84,180
+texte « 太鼓のふち » [coupé] @ 105,226
+bouton « 1 » [état « 空 »] @ 70,305
+bouton [état « 空 »] @ 133,305
+bouton [état « 空 »] @ 197,306
+bouton [allumé, état « ヒット、強さ 100 % »] @ 261,306
+bouton « 2 » [état « 空 »] @ 325,306
+bouton [état « 空 »] @ 389,306
+bouton [état « ヒット、強さ 100 % »] @ 453,306
+bouton [état « 空 »] @ 517,306
+bouton « 3 » [état « 空 »] @ 70,384
+bouton [état « 空 »] @ 133,384
+bouton [état « ヒット、強さ 100 % »] @ 197,385
+bouton [état « 空 »] @ 261,385
+bouton « 4 » [état « 空 »] @ 325,385
+bouton [état « ヒット、強さ 100 % »] @ 389,385
+bouton [état « 空 »] @ 453,385
+bouton [état « 空 »] @ 517,385
+texte « すべて » @ 147,470
+texte « 1/2 » @ 229,470
+texte « 1/4 » @ 304,470
+texte « ◀ » @ 379,470
+texte « ▶ » @ 454,470
+texte « 埋める » @ 71,470
+texte « 曲の速さと雰囲気 チャプター 1/15 · 完了 · かんたん » @ 207,558
+icône (liste) « チャプター » @ 444,558
+icône ⌄ @ 531,558
+texte « もうできています！ » @ 115,636
+texte « 曲にはこのステップで必要なものがもうありました：触るところはありません。 » @ 294,679
+bouton « キット テクノ をダウンロード（4 MB） » @ 247,764
+texte « あとで » @ 514,764
+texte « ▸ なぜ？ » @ 294,830
+bouton « 次の章   » → @ 294,894
+icône ← @ 57,978
+bouton ▶ «  自分の曲を聴く » @ 216,978
+bouton ▶ «  例を聴く » @ 453,978
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » [sélectionné] @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

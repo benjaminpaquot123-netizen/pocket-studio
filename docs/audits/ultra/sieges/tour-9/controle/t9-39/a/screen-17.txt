@@ -1,0 +1,67 @@
+Écran 17 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 283,42
+bouton « Simple » @ 608,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+icône « Partie : A » ▾ @ 82,180
+titre « PAS : GROSSE CAISSE STUDIO » [coupé, état « Déplié »] @ 354,227
+bouton « ? » [coupé] @ 423,227
+bouton « Tous les pads » [coupé] @ 762,228
+texte « Grosse caisse studio » @ 156,285
+texte « Encore 2 cases en pointillé ici » @ 213,314
+bouton « 1 » [état « vide, en pointillé : à toucher »] @ 90,385
+bouton [état « vide »] @ 192,385
+bouton [état « vide »] @ 294,385
+bouton [état « vide »] @ 397,385
+bouton « 2 » [état « vide »] @ 500,385
+bouton [état « vide »] @ 603,385
+bouton [état « vide »] @ 706,385
+bouton [état « vide »] @ 809,385
+bouton « 3 » [état « vide »] @ 90,466
+bouton [état « vide »] @ 192,466
+bouton [état « vide, en pointillé : à toucher »] @ 294,466
+bouton [état « vide »] @ 397,466
+bouton « 4 » [état « vide »] @ 500,466
+bouton [état « vide »] @ 603,466
+bouton [état « vide »] @ 706,466
+bouton [état « vide »] @ 809,466
+texte « Remplir » @ 77,552
+texte « tout » @ 152,552
+texte « 1/2 » @ 227,552
+texte « 1/4 » @ 302,552
+texte « ◀ » [désactivé] @ 377,552
+texte « ▶ » [désactivé] @ 452,552
+texte « Effacer » [désactivé] @ 540,552
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » @ 450,627
+bouton « 1 mesure » [coupé, sélectionné] @ 215,691
+bouton « 2 » [coupé] @ 330,691
+bouton « 3 » [coupé] @ 411,691
+bouton « 4 » [coupé] @ 492,691
+texte « Longueur » [coupé] @ 89,696
+icône (liste) « Chapitres » @ 756,753
+texte « Le kick Chapitre 2/15 · Étape 3/3 · Facile » @ 363,753
+icône ⌄ @ 843,753
+texte « À toi : sur le pad « Grosse caisse studio » (le bouton qui joue le kick), touche les cases en pointillé. Chaque case est un moment de la boucle. » @ 450,852
+texte « ▸ Pourquoi ? » @ 450,912
+bouton (doigt qui touche) «   Je le fais » @ 450,1044
+bouton ▶ «  Écouter l'exemple » @ 232,1128
+bouton (œil) «  Montre-moi » @ 667,1128
+icône ← «  Précédent » @ 107,1209
+icône « Suivant  » → @ 805,1209
+icône ↶ « Annuler » @ 121,1293
+image ↷ @ 279,1283
+bouton ▶ « le morceau » @ 444,1293
+texte « 174 Tempo » @ 615,1293
+icône ⋮ « Plus » @ 779,1293
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » [sélectionné] @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

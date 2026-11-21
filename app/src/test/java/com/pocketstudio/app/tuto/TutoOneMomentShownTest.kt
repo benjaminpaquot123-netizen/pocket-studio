@@ -53,7 +53,9 @@ class TutoOneMomentShownTest {
                 shown = TutoUi(TutoProgress(style, level, current = s.id), chapters, c, i, open = true, need = need)
                 compose.waitForIdle()
                 val w = words()
-                val phrase = tr("À toi : touche « %s ».", needLabel(need, style))
+                // Tour 9, F058: the button's own quotes are dropped inside the phrase's.
+                val label = needLabel(need, style).filterNot { it in "«»“”„「」『』\"‘’" }.replace(Regex("\\s{2,}"), " ").trim()
+                val phrase = tr("À toi : touche « %s ».", label)
                 val text = tr(s.textFor(level))
                 seen[level] = (seen[level] ?: 0) + 1
                 val case = "$style ${level.name} ${s.id}"

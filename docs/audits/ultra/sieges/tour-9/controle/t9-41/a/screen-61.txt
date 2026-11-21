@@ -1,0 +1,50 @@
+Écran 61 (540x1170)
+bouton (dossier ouvert) ✓ @ 104,42
+bouton « Simple » @ 252,42
+bouton ● @ 341,42
+bouton ▶ « this part » @ 418,42
+icône ⋮ @ 495,42
+bouton « 165  Tempo » @ 136,144
+bouton « ? » @ 495,144
+icône « Part: A » ▾ @ 99,240
+texte « 1 more dotted cell here » [coupé] @ 274,300
+bouton « 1 » [état « empty »] @ 67,369
+bouton [état « empty »] @ 124,369
+bouton [état « empty »] @ 182,369
+bouton [état « empty »] @ 240,369
+bouton « 2 » [état « hit, strength 100 % »] @ 298,369
+bouton [état « empty »] @ 356,369
+bouton [état « empty »] @ 414,369
+bouton [état « hit, strength 100 % »] @ 472,369
+bouton « 3 » [état « empty »] @ 67,440
+bouton [état « hit, strength 100 % »] @ 124,440
+bouton [état « empty »] @ 182,440
+bouton [état « empty »] @ 240,440
+bouton « 4 » [état « empty »] @ 298,440
+bouton [état « empty »] @ 356,440
+bouton [état « empty, dotted: tap it »] @ 414,440
+bouton [état « empty »] @ 472,440
+texte « Fill » @ 67,521
+texte « all » @ 132,521
+texte « 1/2 » @ 211,521
+texte « 1/4 » @ 296,521
+texte « ◀ » @ 377,521
+texte « ▶ » @ 452,521
+texte « The Amen snare Chapter 3/15 · Step 1/1 · Easy » @ 177,644
+icône (liste) « Chapters » @ 390,644
+icône ⌃ @ 483,644
+icône « Your turn: on the “Jungle · Snare” pad, tap the dotted cells of each bar. One hit comes late: that's on purpose. Read » ⌃ @ 270,813
+icône ▶ « the song » @ 249,939
+texte « 165 Tempo » @ 388,938
+icône ↶ « Undo » @ 47,939
+image ↷ @ 130,921
+icône ⋮ « More » @ 492,939
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 160,1050
+onglet (touches de piano) « Keyboard » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 277,1140
+texte « ✎  Note » @ 394,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 117,1140

@@ -1,0 +1,89 @@
+Écran 44 (1035x1243)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 224,42
+texte « Pro » @ 476,42
+bouton « E · Break » ▾ @ 586,42
+icône ↶ @ 697,42
+icône ↷ [désactivé] @ 769,42
+bouton ● @ 841,42
+bouton ▶ « esta parte » @ 915,42
+icône (trois points reliés) @ 990,42
+bouton « 126  BPM » @ 73,114
+icône « Intro comp. 1/120 » ▾ @ 235,114
+bouton (flèches en boucle) « Loop » [état « desligado »] @ 887,114
+bouton « ? » @ 990,114
+onglet « Bateria 16 pads » [sélectionné] @ 77,183
+onglet « Acid 303 Linha de baixo » @ 248,183
+onglet « Voz Microfone » @ 432,183
+onglet « Remix Separar » @ 584,183
+bouton « Acordes String machine » @ 756,183
+bouton « Baixo Baixo redondo » [coupé] @ 938,183
+image → @ 1024,184
+texte « Parte: E · Break » @ 98,243
+bouton « Kick de estúdio FX » @ 75,330
+bouton « Kick 2 » @ 200,330
+bouton « Caixa FX » @ 325,330
+bouton « Caixa 2 » @ 450,330
+bouton « Clap » @ 75,436
+bouton « Hi-hat E 30 » @ 200,436
+bouton « Hi-hat aberto D 30 » @ 325,436
+bouton « Tom grave » @ 450,436
+bouton « Tom médio D 45 » @ 75,542
+bouton « Tom agudo » @ 200,542
+bouton « Rim FX D 50 » @ 325,542
+bouton « Cowbell » @ 450,542
+bouton « Prato D 40 » @ 75,648
+bouton « Shaker E 50 » @ 200,648
+bouton « Conga » @ 325,648
+bouton « Zap » @ 450,648
+bouton « Kit: Estúdio » ▾ @ 115,747
+texte « Os pads soam, os quadrados guardam as batidas. Toque e segure: trocar o som. » @ 366,746
+titre « PASSOS: HI-HAT · BREAK » [coupé, état « Expandido »] @ 671,282
+bouton « ? » [coupé] @ 771,275
+bouton « Todos os pads » [coupé] @ 893,276
+texte « Hi-hat » @ 595,348
+bouton « 1 » [état « batida, intensidade 60% »] @ 575,428
+bouton [état « batida, intensidade 35% »] @ 632,427
+bouton [état « vazio »] @ 688,427
+bouton [état « batida, intensidade 35% »] @ 744,427
+bouton « 2 » [état « batida, intensidade 60% »] @ 800,427
+bouton [état « batida, intensidade 35% »] @ 856,427
+bouton [état « vazio »] @ 912,427
+bouton [état « batida, intensidade 35% »] @ 968,427
+bouton « 3 » [état « batida, intensidade 60% »] @ 575,498
+bouton [état « batida, intensidade 35% »] @ 632,497
+bouton [état « vazio »] @ 688,497
+bouton [état « batida, intensidade 35% »] @ 744,497
+bouton « 4 » [état « vazio »] @ 800,497
+bouton [état « vazio »] @ 856,497
+bouton [état « vazio »] @ 912,497
+bouton [état « vazio »] @ 968,497
+bouton « Batidas » [sélectionné] @ 613,578
+bouton « Rufos » @ 737,578
+bouton « Pan » @ 842,578
+bouton « Altura » @ 943,578
+texte « tudo » @ 683,662
+texte « 1/2 » @ 758,662
+texte « 1/4 » @ 833,662
+texte « ◀ » @ 908,662
+texte « Preencher » @ 597,662
+texte « ▶ » @ 586,734
+texte « Limpar » @ 673,734
+texte « Toque num quadrado para adicionar uma batida, deslize o dedo para pintar várias. Toque e segure uma batida: intensidade e rufos (×2 a ×8). » [coupé] @ 771,789
+icône (liste) « Capítulos » @ 892,844
+texte « As transições Capítulo 10/14 · Etapa 1/2 · Pro » @ 431,844
+icône ⌃ @ 978,844
+icône (rond coché) « Feito Próxima etapa » → @ 517,943
+icône ↶ « Desfazer » @ 141,1027
+icône ↷ « Refazer » [désactivé] @ 317,1027
+bouton ▶ « a música » @ 494,1027
+texte « 126 Andamento » @ 681,1027
+icône (trois points reliés) « Compartilhar » @ 880,1027
+onglet (ligne brisée et points) « Estrutura » @ 99,1123
+onglet (touches de piano) « Sons » [sélectionné] @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Mais » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Anotar » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentários » @ 385,1213

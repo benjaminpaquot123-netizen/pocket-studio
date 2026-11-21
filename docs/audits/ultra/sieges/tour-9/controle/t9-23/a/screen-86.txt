@@ -1,0 +1,50 @@
+Écran 86 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 172,42
+bouton « Pro » @ 378,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ▶ « ta część » @ 693,42
+bouton ▶ « utwór » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Acid 303 Linia basu » [coupé] @ 130,262
+onglet « Wokal Mikrofon » @ 364,262
+onglet « Remix Rozdziel » @ 600,262
+bouton « 808 808 » ⋮ @ 799,262
+image ← @ 10,263
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « 100% » @ 114,435
+texte « Wyczyść » [désactivé] @ 296,435
+texte « Do rytmu 50% » [coupé] @ 625,390
+bouton « 808 · takt 1/8 ↑ Jeszcze 2 kropkowane nuty do dotknięcia Dotknij tutaj » @ 450,536
+texte « takt » @ 84,621
+bouton « 1 » @ 486,621
+bouton « 2 » [coupé] @ 853,621
+texte « C2 » [coupé] @ 84,657
+texte « B » @ 84,682
+texte « B♭ » @ 84,724
+texte « A » @ 84,766
+texte « G♯ » @ 84,808
+texte « G » @ 84,850
+texte « F♯ » @ 84,892
+texte « F » @ 84,934
+texte « E » @ 84,976
+texte « E♭ » @ 84,1018
+texte « D » [coupé] @ 84,1042
+dessin [coupé] @ 492,850
+texte « Ślizgające się 808 Rozdział 5/16 · Krok 2/4 · Pro » @ 356,1112
+icône (liste) « Rozdziały » @ 749,1112
+icône ⌃ @ 843,1112
+icône « Twoja kolej: utwórz ścieżkę Bas („Bas 808”, w piano rollu). Takt 1: G2, potem G2, które ślizga się do G3. Takt 2: E♭2, które ślizga się do B♭2 (kwinty), potem E♭2, które ślizga się do taktu 3. „Kopiuj”: takt 3 w C. Takt 4: trzymane D3, potem długi ślizg w dół do G2. „Kopiuj”. Czytaj » ⌃ @ 450,1255
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

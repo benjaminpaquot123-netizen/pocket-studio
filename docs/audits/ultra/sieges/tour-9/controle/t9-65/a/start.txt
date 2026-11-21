@@ -1,0 +1,10 @@
+lang=ja
+device=phone360
+font=200
+mode=pro
+amenee=tuto:synthwave:9
+gestes.max=181
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

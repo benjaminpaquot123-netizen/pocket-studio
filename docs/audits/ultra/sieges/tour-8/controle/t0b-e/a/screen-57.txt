@@ -1,0 +1,65 @@
+Écran 57 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 224,42
+bouton « Pro » @ 478,42
+icône ↶ @ 553,42
+icône ↷ [désactivé] @ 625,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône (trois points reliés) @ 855,42
+bouton « 132  BPM » @ 83,123
+icône « Intro Takt 1/128 » ▾ @ 264,123
+bouton (flèches en boucle) « Loop » [état « aus »] @ 743,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+bouton (curseurs) «  Einstellung zeigen » [coupé] @ 221,191
+bouton « Loop » @ 100,265
+bouton « Pro Teil » @ 243,265
+bouton « Song » [sélectionné] @ 387,265
+bouton « 1 Punkt pro Takt » [sélectionné] @ 175,346
+bouton « 1 Punkt pro Schlag (¼ Takt) » @ 525,346
+texte « Ein Wert pro Takt über den ganzen Song (128 Takte); er gleitet von Punkt zu Punkt. » @ 450,427
+bouton (pinceau) « Zeichnen » [sélectionné] @ 142,508
+bouton (courbe) « Linie » @ 321,508
+bouton (carré en pointillé) « Bereich » @ 487,508
+texte « Glätten » @ 653,508
+icône (loupe −) @ 78,586
+icône (loupe +) @ 186,586
+icône ← [désactivé] @ 267,586
+icône → @ 531,586
+texte « ×2 » @ 132,586
+texte « Takte 1 bis 64 » @ 399,586
+texte « Zeichne mit dem Finger; zweimal schnell tippen löscht einen Punkt. „Glätten“ macht eine zittrige Linie weich, „Rückgängig“ nimmt sie zurück. » @ 450,703
+texte « 18,0 kHz » @ 81,800
+texte « 849 Hz » @ 81,886
+texte « 40 Hz » @ 82,972
+texte « Takt » @ 81,1007
+texte « 1 » @ 134,1007
+texte « 9 » @ 229,1007
+texte « 17 » @ 325,1007
+texte « 25 » @ 419,1007
+texte « 33 » @ 511,1007
+texte « 41 » @ 601,1007
+texte « 49 » @ 695,1007
+texte « 57 » @ 785,1007
+texte « Teil » [coupé] @ 81,1029
+texte « B · Intro » [coupé] @ 180,1030
+texte « C · Intro 2 » [coupé] @ 375,1030
+texte « D · Drop » [coupé] @ 549,1030
+texte « Die Effekte Kapitel 13/16 · Erledigt · Pro » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône (coupe) « Bravo, Kapitel geschafft! » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+icône ↷ « Wiederholen » [désactivé] @ 317,1292
+bouton ▶ « der Song » @ 494,1292
+texte « 132 Tempo » @ 650,1292
+icône (trois points reliés) « Teilen » @ 796,1292
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Sounds » @ 268,1389
+onglet (curseurs) « Mix » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Mehr » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

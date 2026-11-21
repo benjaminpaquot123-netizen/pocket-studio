@@ -1,0 +1,82 @@
+Écran 54 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 358,42
+bouton « Simple » @ 758,42
+bouton ● @ 846,42
+bouton ▶ « this part » @ 918,42
+icône ⋮ @ 990,42
+bouton « 165  Tempo » @ 83,114
+icône « Intro bar 1/128 » ▾ @ 241,114
+bouton « ? » @ 990,114
+icône « Part: C · Build-up » ▾ @ 123,180
+bouton « Studio bass drum FX » @ 75,282
+bouton « Bass drum 2 » @ 200,282
+bouton « Snare FX » @ 325,282
+bouton « Snare 2 » @ 450,282
+bouton « Handclap » @ 75,388
+bouton « Hi-hat L 30 » @ 200,388
+bouton « Open hi-hat R 30 » @ 325,388
+bouton « Low tom » @ 450,388
+bouton « Mid tom R 45 » @ 75,494
+bouton « High tom » @ 200,494
+bouton « Drum rim R 50 » @ 325,494
+bouton « Bell » @ 450,494
+bouton « Cymbal R 40 » @ 75,600
+bouton « Maracas L 50 » @ 200,600
+bouton « Conga » @ 325,600
+bouton « Laser » @ 450,600
+bouton « Kit: Drum & bass » ▾ @ 141,699
+texte « Tap a pad to hear it; its cells hold the hits. Long press: change the sound. » @ 392,698
+bouton « Metronome » [coupé] @ 125,791
+bouton « Count-in » [coupé] @ 290,791
+texte « ? » [coupé] @ 393,793
+titre « STEPS: SNARE · BUILD-UP » [coupé, état « Expanded »] @ 705,228
+bouton « ? » [coupé] @ 838,227
+bouton « All pads » [coupé] @ 926,228
+texte « Bar » @ 567,300
+bouton « 1 » @ 629,300
+bouton « 2 » @ 710,300
+bouton « 3 » @ 791,300
+bouton « 4 » [sélectionné] @ 872,300
+bouton « Follow » @ 608,381
+texte « Bar 4/4 · Snare » @ 637,465
+bouton « 1 » [état « hit, strength 90 % »] @ 575,545
+bouton [état « hit, strength 91 % »] @ 632,544
+bouton [état « hit, strength 92 % »] @ 688,544
+bouton [état « hit, strength 93 % »] @ 744,544
+bouton « 2 » [état « hit, strength 93 % »] @ 800,544
+bouton [état « hit, strength 94 % »] @ 856,544
+bouton [état « hit, strength 95 % »] @ 912,544
+bouton [état « hit, strength 96 % »] @ 968,544
+bouton « 3 » [état « hit, strength 97 % »] @ 575,615
+bouton [état « hit, strength 98 % »] @ 632,614
+bouton [état « hit, strength 98 % »] @ 688,614
+bouton « ×4 » [état « hit, strength 99 %, 4 repeats »] @ 744,614
+bouton « 4 » [état « empty »] @ 800,614
+bouton [état « empty »] @ 856,614
+bouton [état « empty »] @ 912,614
+bouton [état « empty »] @ 968,614
+texte « all » @ 617,695
+texte « 1/2 » @ 692,695
+texte « 1/4 » @ 767,695
+texte « ◀ » @ 842,695
+texte « ▶ » @ 917,695
+texte « Fill » @ 564,695
+texte « Clear » @ 589,766
+icône (liste) « Chapters » @ 894,844
+texte « Transitions Chapter 12/15 · Step 1/2 · Easy » @ 433,844
+icône ⌃ @ 978,844
+icône (rond coché) « Passed Next step » → @ 517,943
+icône ↶ « Undo » @ 147,1027
+image ↷ @ 329,1017
+bouton ▶ « the song » @ 512,1027
+texte « 165 Tempo » @ 700,1027
+icône ⋮ « More » @ 889,1027
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Note » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 385,1213

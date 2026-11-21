@@ -1,0 +1,601 @@
+#0 SIEGE lang=ja device=foldable font=200 mode=pro theme=- fresh=non gestes.max=120 lit=oui main=both amenee=tuto:techno:3
+#0 PREMIER ECRAN reel_s=4.2 simule_s=2.4 jvm_s=9.3 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:techno:3
+#0 AMENEE > touche 518 972 (launch_learn)
+#0 AMENEE > touche 771 978 (mode_card_pro)
+#0 AMENEE > touche 517 404 (tuto_style_techno)
+#0 AMENEE chapitres 1 à 2 construits dans le projet
+#0 AMENEE > touche 886 357 (tuto_chapters)
+#0 AMENEE > touche 517 381 (tuto_chapter_2)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ce794853b4 | project=p-7c091698 tuto=techno/Pro active=true step=clap_do done=5 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « ドラム » lines cut (taller than its box)
+#1 LAYOUT CUT « Acid 303 » lines cut (taller than its box)
+#1 LAYOUT CUT « ボーカル » lines cut (taller than its box)
+#1 LAYOUT CUT « リミックス » lines cut (taller than its box)
+#1 LAYOUT CUT « 保存しました » lines cut (taller than its box)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT CONTRAST « Acid 303 » 3.10:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « ボーカル » 3.10:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « リミックス » 3.10:1 (needs 4.5:1, 14 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ドラム 16パッド » 141 x 9 dp (touch 141 x 48)
+#1 LAYOUT TARGET « Acid 303 ベースライン » 188 x 9 dp (touch 188 x 48)
+#1 LAYOUT TARGET « ボーカル マイク » 141 x 9 dp (touch 141 x 48)
+#1 LAYOUT TARGET « リミックス 分離 » 167 x 9 dp (touch 167 x 48)
+#1 > touche 517 646
+#1 DOIGT tuto_text_more « 続きを読む »
+#2 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 3243561188 | project=p-7c091698 tuto=techno/Pro active=true step=clap_do done=5 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « 構成 » drawn past its parent's edge (down, 34 dp shown of 37)
+#2 LAYOUT CUT « サウンド » drawn past its parent's edge (down, 34 dp shown of 37)
+#2 LAYOUT CUT « ミックス » drawn past its parent's edge (down, 34 dp shown of 37)
+#2 LAYOUT CUT « その他 » drawn past its parent's edge (down, 34 dp shown of 37)
+#2 LAYOUT OVERLAP « 132 » over « チャプター 3/16 · ステップ 1/1 · プロ » (54 x 4 dp)
+#2 LAYOUT OVERLAP « 132 » over « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » (54 x 12 dp)
+#2 LAYOUT OVERLAP « チャプター 3/16 · ステップ 1/1 · プロ » over the touchable « プロモード。タップでモードを変更。 モードを変える » (55 x 8 dp)
+#2 LAYOUT OVERLAP « チャプター 3/16 · ステップ 1/1 · プロ » over the touchable « テンポ：132 BPM テンポを変更 » (132 x 11 dp)
+#2 LAYOUT OVERLAP « チャプター » over the touchable « このパートを再生 このパートを再生 » (48 x 8 dp)
+#2 LAYOUT OVERLAP « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » over the touchable « テンポ：132 BPM テンポを変更 » (132 x 19 dp)
+#2 LAYOUT OVERLAP « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » over the touchable « 画面にラベルを表示 » (30 x 19 dp)
+#2 > glisse 517 900 517 400
+#2 DOIGT rien
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 3243561188 | project=p-7c091698 tuto=techno/Pro active=true step=clap_do done=5 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 517 748
+#3 DOIGT tuto_do «   自分でやる »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE fec1e269aa | project=p-7c091698 tuto=techno/Pro active=true step=clap_do done=5 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « R 50 » lines dropped (more lines than room)
+#4 LAYOUT CUT « ここに点線のマスがあと 3 個 » ellipsized (« … »)
+#4 LAYOUT CUT « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » ellipsized (« … »)
+#4 LAYOUT OVERLAP « リム » over « FX » (22 x 4 dp)
+#4 LAYOUT OVERLAP « リム » over « R 50 » (12 x 4 dp)
+#4 LAYOUT CONTRAST « クラップ » 4.09:1 (needs 4.5:1, 14 sp)
+#4 LAYOUT CONTRAST « 2 » 2.42:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « 4 » 3.50:1 (needs 4.5:1, 12 sp)
+#4 > touche 800 475
+#4 DOIGT step_4 « ステップ 5 »
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE 07ec679e18 | project=p-7c091698 tuto=techno/Pro active=true step=clap_do done=5 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « ここに点線のマスがあと 2 個 » ellipsized (« … »)
+#5 LAYOUT CONTRAST « 4 » 2.42:1 (needs 4.5:1, 12 sp)
+#5 > touche 800 545
+#5 DOIGT step_12 « ステップ 13 »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE 614d105b57 | project=p-7c091698 tuto=techno/Pro active=true step=clap_do done=5 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CUT « ここに点線のマスがあと 1 個 » ellipsized (« … »)
+#6 > appui-long 968 545
+#6 DOIGT step_15 « ステップ 16 »
+#7 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE e65df80b86 | project=p-7c091698 tuto=techno/Pro active=true step=clap_do done=5 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 738 273
+#7 DOIGT roll_force_2 « ソフト »
+#8 ROUTE tab_Sons | MODE pro | EMPREINTE 664cae6607 | project=p-7c091698 tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 517 736
+#8 DOIGT tuto_text_more « 続きを読む »
+#9 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c2a6beb3e9 | project=p-7c091698 tuto=techno/Pro active=true step=clap_do done=6 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CUT « 16パッド » lines cut (taller than its box)
+#9 LAYOUT CUT « ベースライン » lines cut (taller than its box)
+#9 LAYOUT CUT « マイク » lines cut (taller than its box)
+#9 LAYOUT CUT « 分離 » lines cut (taller than its box)
+#9 > touche 517 813
+#9 DOIGT tuto_next_big « 次の章   »
+#10 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 1a045b7d4e | project=p-7c091698 tuto=techno/Pro active=true step=open_hat_do done=6 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 517 723
+#10 DOIGT tuto_do «   自分でやる »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE 997fa710ae | project=p-7c091698 tuto=techno/Pro active=true step=open_hat_do done=6 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT CUT « ここに点線のマスがあと 4 個 » ellipsized (« … »)
+#11 LAYOUT CUT « あなたの番：「オープンハイハット」パッドで、裏拍（拍と拍のあいだ、キックとキックのちょうど真ん中）に置こう。 » ellipsized (« … »)
+#11 LAYOUT CONTRAST « オープンハイハット » 4.41:1 (needs 4.5:1, 14 sp)
+#11 > touche 325 568
+#11 DOIGT pad_6 « オープンハイハット »
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE 58c7c08f5a | project=p-7c091698 tuto=techno/Pro active=true step=open_hat_do done=6 playing=false
+#12 SON Son : le pad « オープンハイハット » sonne.
+#12 > touche 688 475
+#12 DOIGT step_2 « ステップ 3 »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE 6b09b6d001 | project=p-7c091698 tuto=techno/Pro active=true step=open_hat_do done=6 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 912 475
+#13 DOIGT step_6 « ステップ 7 »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE ebf2a4515e | project=p-7c091698 tuto=techno/Pro active=true step=open_hat_do done=6 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 688 545
+#14 DOIGT step_10 « ステップ 11 »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE d343e582c1 | project=p-7c091698 tuto=techno/Pro active=true step=open_hat_do done=6 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 912 545
+#15 DOIGT step_14 « ステップ 15 »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE 8ac19411b2 | project=p-7c091698 tuto=techno/Pro active=true step=open_hat_do done=7 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 517 875
+#16 DOIGT tuto_next_folded « 成功 »
+#17 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e5a9c5c908 | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 517 723
+#17 DOIGT tuto_do «   自分でやる »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 23351f1dea | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « ここに点線のマスがあと 12 個 » ellipsized (« … »)
+#18 LAYOUT CUT « あなたの番：「ハイハット」パッドで16分を置こう。裏拍は除く（そこは「オープンハイハット」が鳴る）。キックの下では弱めに。 » ellipsized (« … »)
+#18 LAYOUT CONTRAST « ハイハット » 4.06:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 1 » 2.55:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 2 » 3.71:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 3 » 3.71:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 4 » 3.71:1 (needs 4.5:1, 12 sp)
+#18 > touche 200 568
+#18 DOIGT pad_5 « ハイハット »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE ff34161062 | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#19 SON Son : le pad « ハイハット » sonne.
+#19 > touche 575 475
+#19 DOIGT step_0 « ステップ 1 »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE ac2c54fe42 | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « ここに点線のマスがあと 11 個 » ellipsized (« … »)
+#20 > touche 632 475
+#20 DOIGT step_1 « ステップ 2 »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE bf53c4ab39 | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « ここに点線のマスがあと 10 個 » ellipsized (« … »)
+#21 > touche 744 475
+#21 DOIGT step_3 « ステップ 4 »
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 6e8466ce9e | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « ここに点線のマスがあと 9 個 » ellipsized (« … »)
+#22 LAYOUT CONTRAST « 2 » 3.22:1 (needs 4.5:1, 12 sp)
+#22 > touche 800 475
+#22 DOIGT step_4 « ステップ 5 »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE 229ac390e9 | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CUT « ここに点線のマスがあと 8 個 » ellipsized (« … »)
+#23 > touche 856 475
+#23 DOIGT step_5 « ステップ 6 »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE a674c96b6e | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CUT « ここに点線のマスがあと 7 個 » ellipsized (« … »)
+#24 > touche 968 475
+#24 DOIGT step_7 « ステップ 8 »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 584365f77d | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « ここに点線のマスがあと 6 個 » ellipsized (« … »)
+#25 LAYOUT CONTRAST « 3 » 3.22:1 (needs 4.5:1, 12 sp)
+#25 > touche 575 545
+#25 DOIGT step_8 « ステップ 9 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE 49d5abe98a | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CUT « ここに点線のマスがあと 5 個 » ellipsized (« … »)
+#26 > touche 632 545
+#26 DOIGT step_9 « ステップ 10 »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE cfc5dcaacb | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 744 545
+#27 DOIGT step_11 « ステップ 12 »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE 1e1fca629a | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « 4 » 3.22:1 (needs 4.5:1, 12 sp)
+#28 > touche 800 545
+#28 DOIGT step_12 « ステップ 13 »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE c89c5df1eb | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 856 545
+#29 DOIGT step_13 « ステップ 14 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE d1454913e0 | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=7 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 968 545
+#30 DOIGT step_15 « ステップ 16 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE 0557ebfebd | project=p-7c091698 tuto=techno/Pro active=true step=hat_do done=8 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 517 875
+#31 DOIGT tuto_next_folded « 成功 »
+#32 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e2c1cbc930 | project=p-7c091698 tuto=techno/Pro active=true step=perc_do done=8 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 517 723
+#32 DOIGT tuto_do «   自分でやる »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 0e5d7f1320 | project=p-7c091698 tuto=techno/Pro active=true step=perc_do done=8 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 325 640
+#33 DOIGT pad_10 « リム »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE f3c4a919cc | project=p-7c091698 tuto=techno/Pro active=true step=perc_do done=8 playing=false
+#34 SON Son : le pad « リム » sonne.
+#34 > touche 744 475
+#34 DOIGT step_3 « ステップ 4 »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE 583254291f | project=p-7c091698 tuto=techno/Pro active=true step=perc_do done=8 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 912 475
+#35 DOIGT step_6 « ステップ 7 »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE 15e30a8e5d | project=p-7c091698 tuto=techno/Pro active=true step=perc_do done=8 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 688 545
+#36 DOIGT step_10 « ステップ 11 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE a32c9421e1 | project=p-7c091698 tuto=techno/Pro active=true step=perc_do done=8 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 856 545
+#37 DOIGT step_13 « ステップ 14 »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 531c725135 | project=p-7c091698 tuto=techno/Pro active=true step=perc_do done=9 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 517 875
+#38 DOIGT tuto_next_folded « 成功 »
+#39 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 4413bf4ae4 | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 517 723
+#39 DOIGT tuto_do «   自分でやる »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 55f72e4fd4 | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 517 875
+#40 DOIGT tuto_folded_text « あなたの番：「シンバル」パッド（ライド）で、ドロップ用に8分を置こう。 »
+#41 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 4413bf4ae4 | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 517 646
+#41 DOIGT tuto_text_more « 続きを読む »
+#42 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 373fa20d8a | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT OVERLAP « 132 » over « ハイハットとパーカッション » (54 x 34 dp)
+#42 LAYOUT OVERLAP « ハイハットとパーカッション » over the touchable « テンポ：132 BPM テンポを変更 » (132 x 38 dp)
+#42 LAYOUT OVERLAP « チャプター 4/16 · ステップ 4/5 · プロ » over the touchable « テンポ：132 BPM テンポを変更 » (132 x 7 dp)
+#42 > touche 517 723
+#42 DOIGT tuto_do «   自分でやる »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE 55f72e4fd4 | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#43 SON Son : rien ne joue.
+#43 > glisse 260 600 260 420
+#43 DOIGT rien
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE c36cbe8944 | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT OVERLAP « リム » over « FX » (22 x 6 dp)
+#44 LAYOUT OVERLAP « リム » over « R 50 » (12 x 6 dp)
+#44 LAYOUT CONTRAST « クラップ » 4.11:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « ハイハット » 3.92:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « オープンハイハット » 2.25:1 (needs 4.5:1, 14 sp)
+#44 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#44 > touche 75 605
+#44 DOIGT pad_12 « シンバル »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 59729804b4 | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#45 SON Son : le pad « シンバル » sonne.
+#45 > touche 575 475
+#45 DOIGT step_0 « ステップ 1 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE f70e74c08d | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 688 475
+#46 DOIGT step_2 « ステップ 3 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE 7e57d7d347 | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 800 475
+#47 DOIGT step_4 « ステップ 5 »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE 51125d5b98 | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 912 475
+#48 DOIGT step_6 « ステップ 7 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE 560c2fdc2a | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 575 545
+#49 DOIGT step_8 « ステップ 9 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE c10df1b235 | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 688 545
+#50 DOIGT step_10 « ステップ 11 »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE c40b604270 | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 800 545
+#51 DOIGT step_12 « ステップ 13 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 3863754fad | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=9 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 912 545
+#52 DOIGT step_14 « ステップ 15 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 7ed06bb89e | project=p-7c091698 tuto=techno/Pro active=true step=ride_do done=10 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 517 875
+#53 DOIGT tuto_next_folded « 成功 »
+#54 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 52349aed08 | project=p-7c091698 tuto=techno/Pro active=true step=drums_hear done=10 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 517 723
+#54 DOIGT tuto_play_mine «   結果を聴く »
+#55 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ebd1d1533c | project=p-7c091698 tuto=techno/Pro active=true step=drums_hear done=10 playing=true
+#55 SON Son : la musique du projet joue en boucle.
+#55 LAYOUT OVERLAP « 小節 1/1 » over « ハイハットとパーカッション » (102 x 12 dp)
+#55 LAYOUT OVERLAP « ハイハットとパーカッション » over the touchable « パートから再生 » (114 x 14 dp)
+#55 > attends 4
+#56 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ebd1d1533c | project=p-7c091698 tuto=techno/Pro active=true step=drums_hear done=10 playing=true
+#56 SON Son : la musique du projet joue en boucle.
+#56 > touche 517 810
+#56 DOIGT tuto_listen «  例を聴く »
+#57 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 738837cc18 | project=p-7c091698 tuto=techno/Pro active=true step=drums_hear done=10 playing=false
+#57 SON Son : l'exemple du tuto joue (encore 3 s).
+#57 > attends 4
+#58 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d8d0342fca | project=p-7c091698 tuto=techno/Pro active=true step=drums_hear done=11 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 517 813
+#58 DOIGT tuto_next_big « 次の章   »
+#59 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e1bb908c0f | project=p-7c091698 tuto=techno/Pro active=true step=bass_hear done=11 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CUT « 16パッド » drawn past its parent's edge (down, 28 dp shown of 36)
+#59 LAYOUT CUT « ベースライン » drawn past its parent's edge (down, 29 dp shown of 36)
+#59 LAYOUT CUT « マイク » drawn past its parent's edge (down, 28 dp shown of 36)
+#59 LAYOUT CUT « 分離 » drawn past its parent's edge (down, 28 dp shown of 36)
+#59 > touche 517 807
+#59 DOIGT tuto_listen «  例を聴く »
+#60 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 83e9097c39 | project=p-7c091698 tuto=techno/Pro active=true step=bass_hear done=11 playing=false
+#60 SON Son : l'exemple du tuto joue (encore 3 s).
+#60 > attends 5
+#61 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE a17840d7d3 | project=p-7c091698 tuto=techno/Pro active=true step=bass_hear done=12 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 517 807
+#61 DOIGT tuto_next_big « 次のステップ   »
+#62 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE a442eb7299 | project=p-7c091698 tuto=techno/Pro active=true step=bass_do done=12 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT OVERLAP « ベース » over the touchable « テンポ：132 BPM テンポを変更 » (77 x 4 dp)
+#62 > touche 517 723
+#62 DOIGT tuto_need «   ベーストラックを作る »
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE ae8bf3f37f | project=p-7c091698 tuto=techno/Pro active=true step=bass_do done=12 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CUT « 小節 » drawn past its parent's edge (down, 32 dp shown of 36)
+#63 LAYOUT CUT « 1 » drawn past its parent's edge (down, 32 dp shown of 37)
+#63 LAYOUT CUT « 2 » drawn past its parent's edge (down, 32 dp shown of 37)
+#63 LAYOUT CUT « G♭ » drawn past its parent's edge (down, 21 dp shown of 33)
+#63 LAYOUT CUT « F » drawn past its parent's edge (down, 28 dp shown of 32)
+#63 LAYOUT CUT « マイプロジェクト 1 » ellipsized (« … »)
+#63 LAYOUT CUT « あなたの番：ベーストラックを作り（音は「Plaits」、ポンプはもう設定済み）、ピアノロールに1小節目を書こう：キックの間に16分を2つずつ、全部 F。 » ellipsized (« … »)
+#63 > touche 194 721
+#63 DOIGT rien
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE 8cfa3ad579 | project=p-7c091698 tuto=techno/Pro active=true step=bass_do done=12 playing=false
+#64 SON Son : 1 note du synthé.
+#64 > touche 262 721
+#64 DOIGT rien
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE f0e2de1c23 | project=p-7c091698 tuto=techno/Pro active=true step=bass_do done=12 playing=false
+#65 SON Son : 1 note du synthé.
+#65 > touche 374 721
+#65 DOIGT rien
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE bda436503d | project=p-7c091698 tuto=techno/Pro active=true step=bass_do done=12 playing=false
+#66 SON Son : 1 note du synthé.
+#66 > touche 442 721
+#66 DOIGT rien
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 8547d4afb3 | project=p-7c091698 tuto=techno/Pro active=true step=bass_do done=12 playing=false
+#67 SON Son : 1 note du synthé.
+#67 > touche 554 721
+#67 DOIGT rien
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE 86b28a070e | project=p-7c091698 tuto=techno/Pro active=true step=bass_do done=12 playing=false
+#68 SON Son : 1 note du synthé.
+#68 > touche 622 721
+#68 DOIGT rien
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE db3fad61a6 | project=p-7c091698 tuto=techno/Pro active=true step=bass_do done=12 playing=false
+#69 SON Son : 1 note du synthé.
+#69 > touche 734 721
+#69 DOIGT rien
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE fc18a971b8 | project=p-7c091698 tuto=techno/Pro active=true step=bass_do done=12 playing=false
+#70 SON Son : 1 note du synthé.
+#70 > touche 802 721
+#70 DOIGT rien
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE f4e60db053 | project=p-7c091698 tuto=techno/Pro active=true step=bass_do done=13 playing=false
+#71 SON Son : 1 note du synthé.
+#71 > touche 517 988
+#71 DOIGT tuto_next_folded « 成功 »
+#72 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 3dbd4f27aa | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CUT « Plaits » lines cut (taller than its box)
+#72 LAYOUT CONTRAST « ベースライン » 3.10:1 (needs 4.5:1, 12 sp)
+#72 LAYOUT CONTRAST « マイク » 3.10:1 (needs 4.5:1, 12 sp)
+#72 LAYOUT CONTRAST « 分離 » 3.10:1 (needs 4.5:1, 12 sp)
+#72 > touche 517 836
+#72 DOIGT tuto_need «   次の小節にコピー »
+#73 ROUTE tab_Sons | MODE pro | EMPREINTE 1872e61165 | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CUT « ↑ タップする点線のノートがあと 7 個 » ellipsized (« … »)
+#73 LAYOUT CUT « 4 » drawn past its parent's edge (down, 32 dp shown of 37)
+#73 LAYOUT CUT « 5 » drawn past its parent's edge (down, 32 dp shown of 37)
+#73 LAYOUT CUT « G♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#73 LAYOUT CUT « あなたの番：「次の小節にコピー」、次に4小節目を書こう：G♭（短2度）と1オクターブ上の F でフレーズを閉じる。もう一度「コピー」。 » ellipsized (« … »)
+#73 > touche 194 732
+#73 DOIGT rien
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 8e18666663 | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#74 SON Son : 1 note du synthé.
+#74 LAYOUT CUT « ↑ タップする点線のノートがあと 6 個 » ellipsized (« … »)
+#74 > touche 262 732
+#74 DOIGT rien
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE 70ad7950ea | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#75 SON Son : 1 note du synthé.
+#75 LAYOUT CUT « ↑ タップする点線のノートがあと 5 個 » ellipsized (« … »)
+#75 > touche 374 732
+#75 DOIGT rien
+#76 ROUTE tab_Sons | MODE pro | EMPREINTE 9ea7ccb2c9 | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#76 SON Son : 1 note du synthé.
+#76 LAYOUT CUT « ↑ タップする点線のノートがあと 4 個 » ellipsized (« … »)
+#76 > touche 442 732
+#76 DOIGT rien
+#77 ROUTE tab_Sons | MODE pro | EMPREINTE fc2e34804b | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#77 SON Son : 1 note du synthé.
+#77 LAYOUT CUT « ↑ タップする点線のノートがあと 3 個 » ellipsized (« … »)
+#77 > touche 554 732
+#77 DOIGT rien
+#78 ROUTE tab_Sons | MODE pro | EMPREINTE 74bcbbe757 | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#78 SON Son : 1 note du synthé.
+#78 LAYOUT CUT « ↑ タップする点線のノートがあと 2 個 » ellipsized (« … »)
+#78 > touche 622 732
+#78 DOIGT rien
+#79 ROUTE tab_Sons | MODE pro | EMPREINTE 35438f92f6 | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#79 SON Son : 1 note du synthé.
+#79 LAYOUT CUT « ↑ タップする点線のノートがあと 1 個 » ellipsized (« … »)
+#79 > touche 733 690
+#79 DOIGT rien
+#80 ROUTE tab_Sons | MODE pro | EMPREINTE 96b5f2470c | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#80 SON Son : 1 note du synthé.
+#80 LAYOUT CUT « 点線のノートがあと 1 個、もっと上 ↑ » ellipsized (« … »)
+#80 > touche 850 547
+#80 DOIGT tuto_notes_left « ベース · 小節 4/8 »
+#81 ROUTE tab_Sons | MODE pro | EMPREINTE 877b97fbdd | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 800 721
+#81 DOIGT rien
+#82 ROUTE tab_Sons | MODE pro | EMPREINTE 4024264ce2 | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=13 playing=false
+#82 SON Son : 1 note du synthé.
+#82 > touche 517 988
+#82 DOIGT tuto_need_folded « 次の小節にコピー »
+#83 ROUTE tab_Sons | MODE pro | EMPREINTE 50e8e72675 | project=p-7c091698 tuto=techno/Pro active=true step=bass_end done=14 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 517 988
+#83 DOIGT tuto_next_folded « 成功 »
+#84 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 8f77f47c77 | project=p-7c091698 tuto=techno/Pro active=true step=bass_cutoff done=14 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT CUT « パート：A » lines cut (taller than its box)
+#84 > touche 517 836
+#84 DOIGT tuto_do «   自分でやる »
+#85 ROUTE tab_Sons | MODE pro | EMPREINTE 9d4ca581d2 | project=p-7c091698 tuto=techno/Pro active=true step=bass_cutoff done=14 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT CUT « あなたの番：「トラックの音を設定 ↓」をタップしよう。このボタンはノートのページのいちばん上、「鍵盤」と「ノート」のすぐ下にある（見えないときはページを上にスクロール）。ページがトラックの音まで下がる。「カットオフ」を 15 以上上げよう。ベースが開いて、噛みつくような音になる。 » ellipsized (« … »)
+#85 LAYOUT CONTRAST « 35 » 3.53:1 (needs 4.5:1, 14 sp)
+#85 LAYOUT LABEL « plaits_knob_2 » long press without text nor description
+#85 LAYOUT LABEL « plaits_knob_3 » long press without text nor description
+#85 LAYOUT LABEL « plaits_knob_4 » long press without text nor description
+#85 > glisse 372 546 650 546
+#85 DOIGT plaits_param_2 « カットオフ »
+#86 ROUTE tab_Sons | MODE pro | EMPREINTE 5710baa703 | project=p-7c091698 tuto=techno/Pro active=true step=bass_cutoff done=15 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 517 988
+#86 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#87 ROUTE tab_Sons | MODE pro | EMPREINTE 65afc97d52 | project=p-7c091698 tuto=techno/Pro active=true step=bass_cutoff done=15 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 517 926
+#87 DOIGT tuto_next_big « 次の章   »
+#88 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5640f71e50 | project=p-7c091698 tuto=techno/Pro active=true step=pad_do done=15 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 517 836
+#88 DOIGT tuto_need «   コードトラックを作る »
+#89 ROUTE tab_Sons | MODE pro | EMPREINTE abfeecd8ac | project=p-7c091698 tuto=techno/Pro active=true step=pad_do done=15 playing=false
+#89 SON Son : rien ne joue.
+#89 LAYOUT CUT « C4 » drawn past its parent's edge (down, 28 dp shown of 32)
+#89 LAYOUT CUT « B » drawn past its parent's edge (down, 28 dp shown of 32)
+#89 LAYOUT CUT « B♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#89 LAYOUT CUT « A » drawn past its parent's edge (down, 28 dp shown of 32)
+#89 LAYOUT CUT « A♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#89 LAYOUT CUT « G » drawn past its parent's edge (down, 28 dp shown of 32)
+#89 LAYOUT CUT « あなたの番：コードトラックを作り（音は「プラック」で短いプラック、ダブエコー）、1小節目を書こう：F マイナーのスタブを2つ、拍からずらして（ステップ 4 と 11）。 » ellipsized (« … »)
+#89 > touche 283 711
+#89 DOIGT rien
+#90 ROUTE tab_Sons | MODE pro | EMPREINTE abfeecd8ac | project=p-7c091698 tuto=techno/Pro active=true step=pad_do done=15 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 283 585
+#90 DOIGT rien
+#91 ROUTE tab_Sons | MODE pro | EMPREINTE 97936fa64d | project=p-7c091698 tuto=techno/Pro active=true step=pad_do done=15 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT CUT « D » drawn past its parent's edge (down, 20 dp shown of 32)
+#91 LAYOUT CUT « D♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#91 LAYOUT CONTRAST « 1 » 3.69:1 (needs 4.5:1, 14 sp)
+#91 > touche 283 417
+#91 DOIGT tuto_notes_left « コード · 小節 1/8 »
+#92 ROUTE tab_Sons | MODE pro | EMPREINTE aff591adb0 | project=p-7c091698 tuto=techno/Pro active=true step=pad_do done=15 playing=false
+#92 SON Son : rien ne joue.
+#92 LAYOUT CUT « D♭ » lines cut (taller than its box)
+#92 LAYOUT CUT « C4 » lines cut (taller than its box)
+#92 LAYOUT CUT « B » lines cut (taller than its box)
+#92 LAYOUT CUT « B♭ » lines cut (taller than its box)
+#92 LAYOUT CUT « A » lines cut (taller than its box)
+#92 LAYOUT CUT « A♭ » lines cut (taller than its box)
+#92 LAYOUT CUT « G » lines cut (taller than its box)
+#92 LAYOUT CUT « G♭ » lines cut (taller than its box)
+#92 LAYOUT CUT « F » lines cut (taller than its box)
+#92 LAYOUT CUT « E » lines cut (taller than its box)
+#92 LAYOUT CONTRAST « タップする点線のコード：1 » 4.36:1 (needs 4.5:1, 14 sp)
+#92 LAYOUT TARGET « C4 C4 再生 » 56 x 21 dp (touch 56 x 48)
+#92 LAYOUT TARGET « B3 B 再生 » 56 x 21 dp (touch 56 x 48)
+#92 LAYOUT TARGET « B♭3 B♭ 再生 » 56 x 21 dp (touch 56 x 48)
+#92 LAYOUT TARGET « A3 A 再生 » 56 x 21 dp (touch 56 x 48)
+#92 LAYOUT TARGET « A♭3 A♭ 再生 » 56 x 21 dp (touch 56 x 48)
+#92 LAYOUT TARGET « G3 G 再生 » 56 x 21 dp (touch 56 x 48)
+#92 LAYOUT TARGET « G♭3 G♭ 再生 » 56 x 21 dp (touch 56 x 48)
+#92 LAYOUT TARGET « F3 F 再生 » 56 x 21 dp (touch 56 x 48)
+#92 > touche 598 711
+#92 DOIGT rien
+#93 ROUTE tab_Sons | MODE pro | EMPREINTE b2c08c3f57 | project=p-7c091698 tuto=techno/Pro active=true step=pad_do done=15 playing=false
+#93 SON Son : rien ne joue.
+#93 LAYOUT CUT « E♭ » lines cut (taller than its box)
+#93 LAYOUT CUT « D » lines cut (taller than its box)
+#93 LAYOUT CUT « C3 » lines cut (taller than its box)
+#93 LAYOUT TARGET « E3 E 再生 » 56 x 21 dp (touch 56 x 48)
+#93 LAYOUT TARGET « E♭3 E♭ 再生 » 56 x 21 dp (touch 56 x 48)
+#93 LAYOUT TARGET « D3 D 再生 » 56 x 21 dp (touch 56 x 48)
+#93 LAYOUT TARGET « D♭3 D♭ 再生 » 56 x 21 dp (touch 56 x 48)
+#93 LAYOUT TARGET « C3 C3 再生 » 56 x 21 dp (touch 56 x 48)
+#93 LAYOUT TARGET « B2 B 再生 » 56 x 21 dp (touch 56 x 48)
+#93 > touche 598 585
+#93 DOIGT rien
+#94 ROUTE tab_Sons | MODE pro | EMPREINTE 8d3fbf09b2 | project=p-7c091698 tuto=techno/Pro active=true step=pad_do done=16 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 598 417
+#94 DOIGT rien
+#95 ROUTE tab_Sons | MODE pro | EMPREINTE de809e4f0e | project=p-7c091698 tuto=techno/Pro active=true step=pad_do done=16 playing=false
+#95 SON Son : 3 notes du synthé.
+#95 > touche 517 988
+#95 DOIGT tuto_next_folded « 成功 »
+#96 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 4fb318fc78 | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 517 836
+#96 DOIGT tuto_need «   次の小節にコピー »
+#97 ROUTE tab_Sons | MODE pro | EMPREINTE 8848891590 | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#97 SON Son : rien ne joue.
+#97 LAYOUT CUT « あなたの番：「次の小節にコピー」、次に4小節目を G♭ メジャー（♭II）で書いて、もう一度「コピー」。 » ellipsized (« … »)
+#97 LAYOUT TARGET « D♭4 D♭ 再生 » 56 x 21 dp (touch 56 x 48)
+#97 > touche 283 430
+#97 DOIGT rien
+#98 ROUTE tab_Sons | MODE pro | EMPREINTE 8848891590 | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 283 522
+#98 DOIGT rien
+#99 ROUTE tab_Sons | MODE pro | EMPREINTE e6c3cc1289 | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT TARGET « E♭4 E♭ 再生 » 56 x 21 dp (touch 56 x 48)
+#99 LAYOUT TARGET « D4 D 再生 » 56 x 21 dp (touch 56 x 48)
+#99 > glisse 700 740 700 540
+#99 DOIGT rien
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE 07b07bf4ff | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 283 638
+#100 DOIGT rien
+#101 ROUTE tab_Sons | MODE pro | EMPREINTE 07b07bf4ff | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 850 405
+#101 DOIGT tuto_notes_left « コード · 小節 4/8 »
+#102 ROUTE tab_Sons | MODE pro | EMPREINTE c93f070041 | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 598 524
+#102 DOIGT rien
+#103 ROUTE tab_Sons | MODE pro | EMPREINTE 928ed06c4f | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 950 990
+#103 DOIGT tuto_folded_text « あなたの番：「次の小節にコピー」、次に4小節目を G♭ メジャー（♭II）で書い »
+#104 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 71d0f017dc | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#104 SON Son : rien ne joue.
+#104 > touche 517 836
+#104 DOIGT tuto_do «   自分でやる »
+#105 ROUTE tab_Sons | MODE pro | EMPREINTE 928ed06c4f | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#105 SON Son : rien ne joue.
+#105 > glisse 1010 420 1010 760
+#105 DOIGT rien
+#106 ROUTE tab_Sons | MODE pro | EMPREINTE f4e77657e3 | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 517 518
+#106 DOIGT tuto_notes_left « コード · 小節 4/8 »
+#107 ROUTE tab_Sons | MODE pro | EMPREINTE 3d3164336b | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#107 SON Son : rien ne joue.
+#107 LAYOUT CONTRAST « タップする点線のコード：1 » 4.31:1 (needs 4.5:1, 14 sp)
+#107 LAYOUT TARGET « D4 再生 » 56 x 9 dp (touch 56 x 48)
+#107 LAYOUT TARGET « D♭4 再生 » 56 x 9 dp (touch 56 x 48)
+#107 LAYOUT TARGET « C4 再生 » 56 x 9 dp (touch 56 x 48)
+#107 LAYOUT TARGET « B3 再生 » 56 x 9 dp (touch 56 x 48)
+#107 LAYOUT TARGET « B♭3 再生 » 56 x 9 dp (touch 56 x 48)
+#107 LAYOUT TARGET « A3 再生 » 56 x 9 dp (touch 56 x 48)
+#107 LAYOUT TARGET « A♭3 再生 » 56 x 9 dp (touch 56 x 48)
+#107 LAYOUT TARGET « G3 再生 » 56 x 9 dp (touch 56 x 48)
+#107 LAYOUT TARGET « G♭3 再生 » 56 x 9 dp (touch 56 x 48)
+#107 LAYOUT TARGET « F3 再生 » 56 x 9 dp (touch 56 x 48)
+#107 > touche 598 661
+#107 DOIGT rien
+#108 ROUTE tab_Sons | MODE pro | EMPREINTE 050e7f2ca6 | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=16 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 517 988
+#108 DOIGT tuto_need_folded « 次の小節にコピー »
+#109 ROUTE tab_Sons | MODE pro | EMPREINTE ee25a7eb5d | project=p-7c091698 tuto=techno/Pro active=true step=pad_end done=17 playing=false
+#109 SON Son : rien ne joue.
+#109 > fin
+#109 FIN : fin

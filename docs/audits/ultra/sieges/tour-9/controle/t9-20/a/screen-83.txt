@@ -1,0 +1,33 @@
+Écran 83 (588x1278)
+icône (dossier ouvert) ✓ @ 127,42
+bouton « Einfach » @ 297,42
+bouton ● @ 385,42
+bouton ▶ « dieser Teil » @ 464,42
+icône ⋮ @ 543,42
+texte « Die Übergänge Kapitel 10/13 · Schritt 1/1 · Einfach » @ 208,173
+icône (liste) « Kapitel » @ 445,173
+icône ⌄ @ 531,173
+texte « Du bist dran: Ende des Build-ups, Pad „Snare“: Tippe auf die 4 Kästchen des letzten Schlags. » [coupé] @ 294,343
+bouton « Kit Disco / Funk laden (2 MB) » @ 236,463
+texte « Später » @ 503,463
+texte « ▸ Warum? » @ 294,542
+icône « Weiterlesen » ⌄ @ 294,605
+bouton (doigt qui touche) «   Ich mach's » @ 294,689
+bouton ▶ «  Beispiel anhören » @ 154,803
+bouton (œil) «  Zeig's mir » @ 433,803
+icône ← «  Zurück » @ 125,917
+icône « Weiter  » → @ 467,917
+texte « 116 Tempo » @ 422,1020
+icône ↶ « Rückgängig » @ 56,1021
+image ↷ @ 152,1013
+icône ▶ « der Song » @ 280,1021
+icône ⋮ « Mehr » @ 533,1020
+onglet (lignes et note) « Mein Song » @ 54,1145
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 174,1145
+onglet (touches de piano) « Tastatur » @ 294,1145
+onglet (curseurs) « Mix » @ 414,1145
+onglet (trois points reliés) « Teilen » @ 534,1145
+texte « ●  REC » @ 272,1248
+texte « ✎  Notieren » @ 416,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback-Modus » @ 114,1248

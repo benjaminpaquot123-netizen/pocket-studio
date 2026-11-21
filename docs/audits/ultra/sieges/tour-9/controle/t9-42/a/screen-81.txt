@@ -1,0 +1,7 @@
+Écran 81 (1035x1243)
+texte « Share my song · My-jungle-song-20261119-080240.m4a » @ 517,442
+bouton « WhatsApp » @ 517,509
+bouton « Messages » @ 517,581
+bouton « Gmail » @ 517,653
+bouton « Drive » @ 517,725
+bouton « Files » @ 517,797

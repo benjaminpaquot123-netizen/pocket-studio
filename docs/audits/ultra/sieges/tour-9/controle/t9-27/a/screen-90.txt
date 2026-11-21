@@ -1,0 +1,80 @@
+Écran 90 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 188,42
+texte « Pro » @ 403,42
+bouton « A » ▾ @ 478,42
+icône ↶ @ 553,42
+bouton ● @ 625,42
+bouton ▶ « bagian ini » @ 698,42
+bouton ▶ « lagu » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » [coupé] @ 54,186
+onglet « Acid 303 Bassline » @ 169,186
+onglet « Vokal Mikrofon » @ 322,186
+onglet « Remix Pisahkan » @ 473,186
+bouton « Akor Hoover » @ 612,186
+bouton « Melodi Lead square » ⋮ @ 779,186
+image ← @ 10,187
+image → @ 889,187
+texte « Bagian: A » @ 68,249
+titre « PENGATURAN SUARA » [état « Terbuka »] @ 175,301
+texte « Bentuk gelombang » @ 135,346
+bouton (dents de scie) « Saw » @ 102,409
+bouton (créneaux) « Square » [sélectionné] @ 246,409
+bouton (zigzag) « Triangle » @ 410,409
+dessin @ 240,472
+texte « Cutoff » @ 73,472
+texte « 4,0 kHz » @ 398,472
+dessin @ 660,472
+texte « Resonance » @ 517,472
+texte « 20% » @ 833,472
+curseur [état « 4,0 kHz », à 78 %] @ 240,535
+curseur [état « 20% », à 20 %] @ 660,535
+dessin @ 240,598
+texte « Envelope filter » @ 113,598
+texte « 40% » @ 413,598
+dessin @ 660,598
+texte « Attack » @ 494,598
+texte « 2 ms » @ 832,598
+curseur [état « 40% », à 40 %] @ 240,661
+curseur [état « 2 ms », à 5 %] @ 660,661
+dessin @ 240,724
+texte « Release » @ 81,724
+texte « 196 ms » @ 398,724
+dessin @ 660,733
+texte « Ketebalan (detune) » @ 565,733
+texte « 52% » @ 824,733
+curseur [état « 52% », à 52 %] @ 660,784
+curseur [état « 196 ms », à 62 %] @ 240,787
+dessin @ 240,856
+texte « Sub bass » @ 88,856
+texte « 0% » @ 420,856
+dessin @ 660,862
+bouton « ? » @ 670,862
+texte « Unison (supersaw) » @ 555,863
+texte « 1 suara » @ 819,862
+curseur [état « 0% », à 0 %] @ 240,919
+curseur [état « 1 suara », à 0 %] @ 660,932
+dessin @ 240,995
+texte « Lebar unison » @ 106,995
+texte « 30% » @ 413,995
+dessin @ 660,995
+texte « Volume » @ 498,995
+texte « 60% » @ 833,995
+curseur [état « 30% », à 30 %] @ 240,1058
+curseur [état « 60% », à 60 %] @ 660,1058
+icône ⌄ « Pengaturan lanjutan » [coupé] @ 182,1123
+icône (liste) « Bab » @ 771,1182
+texte « Riff Bab 5/14 · Langkah 2/2 · Pro » @ 378,1182
+icône ⌃ @ 843,1182
+icône « Giliranmu: di “Atur suara trek” Melodi, naikkan “Ketebalan (detune)” minimal 15: riff-nya jadi lebih lebar dan lebih galak. Baca » ⌃ @ 450,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

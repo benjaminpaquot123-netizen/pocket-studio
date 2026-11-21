@@ -1,0 +1,10 @@
+lang=es
+device=foldable
+font=130
+mode=simple
+amenee=tuto:lofi:1
+gestes.max=150
+mission=tuto-facile
+profil=débutant motivé
+niveau=1
+timeout.minutes=30

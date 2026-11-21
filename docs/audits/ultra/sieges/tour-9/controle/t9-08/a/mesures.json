@@ -1,0 +1,49 @@
+{
+  "siege": "a",
+  "niveau": "4",
+  "options": {
+    "lang": "zh-CN",
+    "device": "phone",
+    "font": "200",
+    "mode": "pro",
+    "amenee": "tuto:afro_house:6",
+    "gestes.max": "160",
+    "mission": "tuto-pro",
+    "profil": "pro",
+    "niveau": "4",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 37,
+    "images": 7,
+    "gestes_premier_son": 1,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 9,
+    "touchers_desactives": 0,
+    "retours": 0,
+    "retours_immediats": 0,
+    "ecrans": 44,
+    "ecrans_revisites": 2,
+    "defilements_sans_toucher": 9,
+    "appels_aide": 0,
+    "abandon": "rien ne change (5 écrans identiques)",
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 21,
+    "plantage": false,
+    "fin": "rien ne change (5 écrans identiques)",
+    "premier_ecran_s": {
+      "reel": 4.8,
+      "simule": 2.4,
+      "jvm": 11.0,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-pro",
+  "resultat": "reussie",
+  "pourquoi": "« afro_house » en Pro : 24 étape(s), 4 chapitre(s) entier(s) sur 14"
+}

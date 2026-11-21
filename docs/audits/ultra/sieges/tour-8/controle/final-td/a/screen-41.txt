@@ -1,0 +1,44 @@
+Écran 41 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 245,42
+bouton « プロ » @ 522,42
+bouton « A » ▾ @ 606,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 114,144
+bouton « ? » @ 990,144
+onglet « ドラム 16パッド » [sélectionné] @ 118,216
+onglet « Acid 303 ベースライン » @ 374,216
+onglet « ボーカル マイク » @ 630,216
+onglet « リミックス 分離 » @ 870,216
+bouton + «  トラック » [coupé] @ 1009,217
+image → @ 1024,217
+texte « ハイハットとパーカッション チャプター 4/16 · ステップ 4/5 · プロ » @ 426,297
+icône (liste) « チャプター » @ 886,298
+icône ⌄ @ 978,298
+texte « あなたの番：「シンバル」パッド（ライド）で、ドロップ用に8分を置こう。 » [coupé] @ 517,412
+bouton « テクノ キットをダウンロード（4 MB） » @ 464,501
+texte « あとで » @ 955,501
+texte « ▸ なぜ？ » @ 517,580
+icône « 続きを読む » ⌄ @ 517,646
+bouton (doigt qui touche) «   自分でやる » @ 517,723
+bouton ▶ «  例を聴く » @ 266,810
+bouton (œil) «  見せて » @ 768,810
+icône ← «  前へ » @ 97,897
+icône « 次へ  » → @ 937,897
+texte « 132 テンポ » @ 718,1006
+icône ↶ « 元に戻す » @ 149,1006
+icône ↷ « やり直す » [désactivé] @ 363,1006
+bouton ▶ « 曲 » @ 548,1007
+icône (trois points reliés) « シェア » @ 903,1006
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » [sélectionné] @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 780,1213
+texte « ✎  メモ » @ 893,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 368,1213

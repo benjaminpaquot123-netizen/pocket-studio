@@ -7,6 +7,9 @@ import com.pocketstudio.model.i18n.tr
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -85,7 +88,7 @@ class WelcomeActions(
  * opened (the activity rebuilds), a short dialog offers to play it ([playDemo]).
  */
 @Composable
-fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, simple: Boolean = false) {
+fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, simple: Boolean = false, inline: Boolean = false) {
     // Kept through the rebuild that opening the demo does.
     var demoReady by rememberSaveable(key = "demo_ready") { mutableStateOf(false) }
     // A project is being opened (the activity rebuilds then): the choices stay until it is.
@@ -94,10 +97,22 @@ fun FirstLaunch(show: Boolean, actions: WelcomeActions, playDemo: () -> Unit, si
     // Retour comes back to the choices. The way touched waits here (kept through a rotation).
     var asking by rememberSaveable(key = "welcome_asking") { mutableStateOf<String?>(null) }
     if (show || leaving) {
-        ScaledDialog(
-            onDismissRequest = { if (asking != null) asking = null else { leaving = false; demoReady = false; actions.later() } },
-            properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false),
-        ) {
+        val dismiss = { if (asking != null) asking = null else { leaving = false; demoReady = false; actions.later() } }
+        // [inline]: drawn in the app's own window, over the studio, as « Que veux-tu faire ? » is (Benjamin's video,
+        // 2026-11-21: as a window of its own it waited for the opening's logo to end, the studio flashing in between).
+        val frame: @Composable (@Composable () -> Unit) -> Unit = if (inline) { body ->
+            androidx.activity.compose.BackHandler(onBack = dismiss)
+            // Takes every touch (the studio under it never gets one); clear of the status and navigation bars.
+            Surface(color = Neon.Background, modifier = Modifier.fillMaxSize().testTag("welcome_page")) {
+                Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) { body() }
+            }
+        } else { body ->
+            ScaledDialog(
+                onDismissRequest = dismiss,
+                properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnClickOutside = false),
+            ) { body() }
+        }
+        frame {
             Surface(color = Neon.Background, modifier = Modifier.fillMaxSize()) {
                 val start: (String) -> Unit = { way ->
                     when (way) {

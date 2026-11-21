@@ -150,7 +150,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         catalog.deleteForever(item.entry)
         forgetGoneJournals()
         AppLog.add("Projet supprimé définitivement : « ${item.name} »")
-        if (_state.value.deleted?.first == item.entry) _state.value = _state.value.copy(deleted = null)
+        if (_state.value.deleted?.first == item.entry) _state.update { it.copy(deleted = null) }
         refreshNow()
     }
 
@@ -159,7 +159,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         val n = catalog.emptyTrash()
         forgetGoneJournals()
         AppLog.add("Corbeille vidée : $n projet(s)")
-        _state.value = _state.value.copy(deleted = null)
+        _state.update { it.copy(deleted = null) }
         refreshNow()
     }
 
@@ -181,7 +181,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         }
         val entry = catalog.delete(info.id)
         AppLog.add("Projet mis à la corbeille : « ${info.name} »")
-        _state.value = _state.value.copy(deleted = entry to com.pocketstudio.model.DefaultNames.shown(info.name))
+        _state.update { it.copy(deleted = entry to com.pocketstudio.model.DefaultNames.shown(info.name)) }
         refreshNow()
     }
 
@@ -197,7 +197,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
 
     /** A line under the buttons of « Mes projets ». */
     fun say(message: String, ok: Boolean = false) {
-        _state.value = _state.value.copy(message = message, messageOk = ok)
+        _state.update { it.copy(message = message, messageOk = ok) }
     }
 
     /** The project and its sounds as a .zip in the export folder; [then] gets the file (to share it). [saveFirst]: see [duplicate]. */
@@ -220,7 +220,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             .let { File(it.parentFile, it.name.removeSuffix(".wav") + ".pocketstudio.zip") }
         val missing = file.outputStream().use { catalog.exportZip(id, it) }
         AppLog.add("Projet exporté : ${file.length() / 1024} Ko, sons absents : $missing")
-        if (missing > 0) _state.value = _state.value.copy(message = tr("%d son(s) du projet ne sont plus sur l'appareil : le .zip part sans eux.", missing), messageOk = false)
+        if (missing > 0) _state.update { it.copy(message = tr("%d son(s) du projet ne sont plus sur l'appareil : le .zip part sans eux.", missing), messageOk = false) }
         val kept = com.pocketstudio.app.export.WavExporter.copyToDocuments(app, file, "application/zip")
         AppLog.add("Projet exporté : copie dans Documents › BenStudio : $kept")
         withContext(Dispatchers.Main) { then(SavedZip(file, kept)) }
@@ -247,7 +247,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         val name = ProjectCatalog.beforeSessionName(info.name)
         catalog.restoreOpening(info.id, name)
         AppLog.add("Version d'avant la séance copiée")
-        _state.value = _state.value.copy(message = tr("Copie faite : « %s ». Touche-la pour l'ouvrir.", com.pocketstudio.model.DefaultNames.shown(name)), messageOk = true)
+        _state.update { it.copy(message = tr("Copie faite : « %s ». Touche-la pour l'ouvrir.", com.pocketstudio.model.DefaultNames.shown(name)), messageOk = true) }
         refreshNow()
     }
 
@@ -258,12 +258,10 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         val imported = stream.use { catalog.importZip(it) }
         AppLog.add("Projet importé, sons absents : ${imported.missingSounds}")
         val name = catalog.info(imported.id)?.name?.let { com.pocketstudio.model.DefaultNames.shown(it) }
-        _state.value = if (imported.missingSounds == 0) {
-            _state.value.copy(message = tr("Projet importé : « %s ». Touche-le pour l'ouvrir.", name), messageOk = true)
-        } else {
-            // Imported all the same: a sound missing from the .zip no longer refuses the whole project.
-            _state.value.copy(message = tr("Projet importé : « %s », sans %d son(s) absent(s) du .zip.", name, imported.missingSounds), messageOk = false)
-        }
+        val whole = imported.missingSounds == 0
+        // Imported all the same: a sound missing from the .zip no longer refuses the whole project.
+        val message = if (whole) tr("Projet importé : « %s ». Touche-le pour l'ouvrir.", name) else tr("Projet importé : « %s », sans %d son(s) absent(s) du .zip.", name, imported.missingSounds)
+        _state.update { it.copy(message = message, messageOk = whole) }
         refreshNow()
     }
 
@@ -271,7 +269,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
         val (entry, _) = _state.value.deleted ?: return
         io(tr("Restauration")) {
             catalog.restore(entry)
-            _state.value = _state.value.copy(deleted = null)
+            _state.update { it.copy(deleted = null) }
             refreshNow()
         }
     }
@@ -280,28 +278,33 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
     fun restore(item: TrashedProject) = io(tr("Restauration")) {
         catalog.restore(item.entry)
         AppLog.add("Projet restauré : « ${item.name} »")
-        if (_state.value.deleted?.first == item.entry) _state.value = _state.value.copy(deleted = null)
+        if (_state.value.deleted?.first == item.entry) _state.update { it.copy(deleted = null) }
         refreshNow()
     }
 
     fun dismissDeleted() {
-        _state.value = _state.value.copy(deleted = null)
+        _state.update { it.copy(deleted = null) }
     }
 
     fun dismissMessage() {
-        _state.value = _state.value.copy(message = null, messageOk = false)
+        _state.update { it.copy(message = null, messageOk = false) }
     }
 
     /** Runs [saveFirst]; false: says the open project could not be saved (and the caller stops). */
     private suspend fun saved(saveFirst: suspend () -> Boolean): Boolean {
         if (withContext(Dispatchers.Main) { saveFirst() }) return true
         AppLog.add("Projet ouvert non sauvegardé : copie ou envoi refusé")
-        _state.value = _state.value.copy(message = tr("Le projet n'a pas pu être sauvegardé (appareil plein ?) : libère de la place (la corbeille peut se vider), puis réessaie."), messageOk = false)
+        _state.update { it.copy(message = tr("Le projet n'a pas pu être sauvegardé (appareil plein ?) : libère de la place (la corbeille peut se vider), puis réessaie."), messageOk = false) }
         return false
     }
 
     private fun refreshNow() {
-        _state.value = _state.value.copy(projects = catalog.list(), trash = catalog.trashed(), loading = false)
+        // p5 (CI 398, 403: « Chargement de la liste… » for good): the lists read first, then one atomic change. A
+        // write of the whole state read before the lists were (as every `_state.value = _state.value.copy` here was)
+        // undoes what another thread wrote meanwhile.
+        val projects = catalog.list()
+        val trash = catalog.trashed()
+        _state.update { it.copy(projects = projects, trash = trash, loading = false) }
     }
 
     /**
@@ -325,7 +328,7 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: Exception) {
                 AppLog.add("$what impossible : ${e.message}")
                 val message = tr("%s impossible (%s).", what, e.message ?: tr("erreur"))
-                _state.value = _state.value.copy(message = message, messageOk = false, loading = false)
+                _state.update { it.copy(message = message, messageOk = false, loading = false) }
                 withContext(Dispatchers.Main) { failed(message) }
             } finally {
                 if (counts) {

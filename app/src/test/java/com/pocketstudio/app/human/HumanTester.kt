@@ -1065,6 +1065,13 @@ abstract class HumanTester(private val seat: String) {
         val until = System.currentTimeMillis() + LIST_WAIT_REAL_MS
         while (centerOf(tag) == null && centerOf("projects_loading") != null && waits < 400 &&
             (waits < 40 || System.currentTimeMillis() < until)) { play("attends 0.5"); waits++ }
+        // CI 398 and 403 (p5): the list never came in 60 s and nothing said why. What the app's own threads do then is printed
+        // (the test's output, kept with its result): a worker held in an operation, or no worker left at all.
+        if (centerOf(tag) == null && centerOf("projects_loading") != null) println(
+            "BANC liste jamais chargée (« $tag », $waits attentes) :\n" + Thread.getAllStackTraces().entries
+                .filter { (t, st) -> t !== Thread.currentThread() && st.any { it.className.startsWith("com.pocketstudio") } }
+                .joinToString("\n") { (t, st) -> "fil " + t.name + " " + t.state + " :\n" + st.take(14).joinToString("\n") { "    at $it" } }
+                .ifEmpty { "aucun fil de l'appli au travail (l'ouvrier de la liste n'existe plus ?)" })
         return waits
     }
 

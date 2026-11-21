@@ -225,6 +225,10 @@ class Coquille2SeatTest : HumanTester("coquille2") {
         assertTrue("no Montée made", montee >= 0)
         if (v.project.value.scene != montee) v.selectScene(montee)
         act("attends 1")
+        // The panel open in full (its step, the kit's offer, « なぜ？ ») covers the grid's line: the seat had touched
+        // « 自分でやる », the panel folded, the grid and its line in sight.
+        tap("tuto_do")
+        act("attends 1")
         fun saysThePadShown(at: String) {
             val shown = com.pocketstudio.app.rhythm.padName(v.project.value, v.transport.value.selectedPad)
             val said = screenLines().mapNotNull { Regex("« → ([^»]+) »").find(it)?.groupValues?.get(1)?.trim() }

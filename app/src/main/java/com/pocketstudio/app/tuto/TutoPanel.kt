@@ -645,12 +645,16 @@ fun TutoPanel(
     // button; all come back when it is closed (« ▾ Pourquoi ? » stays).
     var whyShed by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
     val shedAt = if (reading) shed else whyShed
-    var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedAt) { mutableIntStateOf(0) }
+    // Tour 9 (portal, L13): the kit offer pinned under the words raises the panel's cap on every step (F016: the map's
+    // steps only), by its height and what the instruction's line and a half still lacks ([kitMissing]); come late, the
+    // panel's height is taken again with it (the height held without it left the instruction 0 px at 200 %).
+    val kitShown = step.id != READY_STEP && kit != null && ui.demo == null && !ui.bravo && shedAt < 2
+    var held by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedAt, kitShown) { mutableIntStateOf(0) }
     // Testers (lot « tuto 4 »): a height taken while « Montre-moi »'s one-line caption showed cut the step's
     // words once it ended; the end's card takes the room it needs.
     val holding = ui.open && held > 0 && !end
     // How many times the height held was taken again for the words' least room ([WordsRoom]).
-    var regrown by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedAt) { mutableIntStateOf(0) }
+    var regrown by remember(step.id, ui.open, ui.progress.level, end, cellsToTouch, readAll, shedAt, kitShown) { mutableIntStateOf(0) }
     // Tour 6 (N31): « Lire la suite » lay over « ▸ Pourquoi ? » (a touch there read on). « Pourquoi ? » and « Lire la
     // suite » are under the scrolling words, never in them: neither under the other, « Pourquoi ? » never cut by the
     // words' room (Arabic at 130 %), the panel's height as before. The words' scroll is the step's own (the step
@@ -658,8 +662,12 @@ fun TutoPanel(
     // Tour 7 P6/P7 bloc 0b: the examples folded (below), the words are measured again from the start: « Lire la suite »'s
     // room, taken while the examples overflowed, is not kept under words that now fit.
     var examplesHeight by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
-    // Tour 9 (F016 under F003): on a step of the song's map, the kit offer's height (px) is added to the panel's cap.
+    // Tour 9 (F016 under F003): the kit offer's height (px) is added to the panel's cap; [kitMissing] (px): what the
+    // words' least room still lacks with the offer pinned (portal, L13: at 200 % the offer, « Pourquoi ? » and the
+    // buttons left the instruction 0 px), added too, taken three times at most.
     var kitTall by remember { mutableIntStateOf(0) }
+    var kitMissing by remember(step.id, ui.open, ui.progress.level, kitShown) { mutableIntStateOf(0) }
+    var kitGrown by remember(step.id, ui.open, ui.progress.level, kitShown) { mutableIntStateOf(0) }
     var examplesFolded by remember(step.id, ui.open, ui.progress.level) { mutableStateOf(false) }
     val words = remember(step.id, ui.open, examplesFolded) { androidx.compose.foundation.ScrollState(0) }
     // Tour 7 D3 (seat lotA/a, ohat_do above the grid): the room's bottom fell inside a line of the words (half a line seen
@@ -705,7 +713,7 @@ fun TutoPanel(
         // Tour 9 F003 (seats t9-11, t9-29, t9-41, t9-56): at 200 % the unfolded panel covered the whole work area (the
         // piano under it gone). Upright, it takes at most [PANEL_MAX_SHARE] of the screen's height; the words scroll in
         // what is left (their room is weighted below), the buttons stay whole.
-        modifier = modifier.fillMaxWidth().then(if (readAll) Modifier else panelCap(whyOpen && why != null, if (kit != null && chapter.map && map.isNotEmpty()) with(LocalDensity.current) { kitTall.toDp() + 6.dp } else 0.dp)).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
+        modifier = modifier.fillMaxWidth().then(if (readAll) Modifier else panelCap(whyOpen && why != null, if (kitShown) with(LocalDensity.current) { (kitTall + kitMissing).toDp() + 6.dp } else 0.dp)).border(2.dp, Neon.Cyan.copy(alpha = 0.6f), shape).guideEdge(beat, Neon.Cyan).testTag("tuto_panel")
             .onGloballyPositioned { val b = it.boundsInWindow().bottom; if (b != bottomPx) bottomPx = b },
     ) {
         Column(
@@ -825,6 +833,7 @@ fun TutoPanel(
                 if (holding) Modifier.weight(1f) else Modifier.weight(1f, fill = false), holding, most, least,
                 mapRoom = chapter.map && map.isNotEmpty(),
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
+                kitShort = if (kitShown) { { m -> if (kitGrown < 3) { kitGrown++; kitMissing += m } } } else null,
                 short = if (reading) { { if (shed == shedAt && shed < 3) shed++ } } else null,
                 // « Pourquoi ? » opened leaves the instruction a line at least (its first one, in sight over the reason).
                 whyLeaves = if (whyOpen) with(density) { MaterialTheme.typography.bodyLarge.lineHeight.roundToPx() } else 0,
@@ -889,7 +898,7 @@ fun TutoPanel(
             // Pinned under the words, one row (« Télécharger le kit House (4 Mo) », « Plus tard »): always whole in sight.
             // It takes its room from the words above it, never from the buttons below (round 3, n° 28: an offer coming
             // late never moves the panel's buttons under a finger).
-            if (step.id != READY_STEP && kit != null && ui.demo == null && !ui.bravo && shedAt < 2) {
+            if (kitShown && kit != null) {
                 // Tour 9 F016: one child, known to [WordsRoom] (on a map step it never takes the map's room).
                 Box(Modifier.layoutId(KIT_ROOM).onSizeChanged { kitTall = it.height }) { CompositionLocalProvider(LocalKitPinned provides true) { kit() } }
             }
@@ -928,7 +937,8 @@ fun TutoPanel(
 @Composable
 private fun WordsRoom(
     modifier: Modifier, holding: Boolean, most: androidx.compose.ui.unit.Dp, least: Int, mapRoom: Boolean = false, starved: () -> Unit,
-    short: (() -> Unit)? = null, whyLeaves: Int = 0, whyMin: Int = 0, whyShort: (() -> Unit)? = null, content: @Composable () -> Unit,
+    short: (() -> Unit)? = null, whyLeaves: Int = 0, whyMin: Int = 0, whyShort: (() -> Unit)? = null, kitShort: ((Int) -> Unit)? = null,
+    content: @Composable () -> Unit,
 ) {
     androidx.compose.ui.layout.Layout(content, modifier) { ms, c ->
         val gap = 6.dp.roundToPx()
@@ -952,6 +962,8 @@ private fun WordsRoom(
         if (holding && least > 0 && cap - fixed < least) starved()
         // Not held, the most the panel may take does not hold the words' least room: [short] is told.
         if (!holding && short != null && least > 0 && c.hasBoundedHeight && c.maxHeight - fixed < least) short()
+        // The kit offer pinned and the words' least room not held: [kitShort] is told what is missing (px).
+        if (kitShort != null && least > 0 && bounded && c.maxHeight - fixed < least) kitShort(least - (c.maxHeight - fixed))
         val room = maxOf(cap - fixed, 0)
         val words = ms.firstOrNull()?.measure(wide.copy(maxHeight = room))
         val height = ((words?.height ?: 0) + fixed).coerceIn(if (holding) c.minHeight else minOf(52.dp.roundToPx(), cap), maxOf(cap, c.minHeight))
@@ -1557,8 +1569,9 @@ internal const val PANEL_REASON_SHARE = 0.85f
 
 /**
  * The panel's height cap: [PANEL_MAX_SHARE] of an upright screen (on its side, the panel is as before), [PANEL_REASON_SHARE]
- * with « Pourquoi ? »'s reason opened (none once « Lire la suite » is touched: the whole instruction asked for, replay t9-d14). [kit]: the kit offer pinned on a step of the song's map adds its own height and its gap (F016:
- * the map keeps the height it has without the offer), within [PANEL_REASON_SHARE].
+ * with « Pourquoi ? »'s reason opened (none once « Lire la suite » is touched: the whole instruction asked for, replay t9-d14).
+ * [kit]: the kit offer pinned under the words adds its own height, its gap and what the instruction still lacks (F016, then
+ * every step: the map keeps the height it has without the offer), within [PANEL_REASON_SHARE].
  */
 @Composable
 private fun panelCap(reasonOpen: Boolean = false, kit: androidx.compose.ui.unit.Dp = 0.dp): Modifier {

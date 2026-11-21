@@ -1275,7 +1275,11 @@ object TutoChecks {
         while (b < bars.size && (bars[b].notes.isEmpty() || bars[b].from != null)) {
             val bar = bars[b]
             bar.from?.let { from ->
-                copies += written.filter { it.start / BAR_TICKS == from }.map {
+                // D09: a bar that repeats one this same touch writes (bar 6 as bar 2, itself the first bar moved) is copied
+                // from it too; read from the written notes alone, it was left for a second touch.
+                val there = written.filter { it.start / BAR_TICKS == from }
+                val source = there + copies.filter { c -> c.start / BAR_TICKS == from && there.none { it.pitch == c.pitch && it.start == c.start } }
+                copies += source.map {
                     it.copy(start = it.start + (b - from) * BAR_TICKS, pitch = if (bar.shift == 0) it.pitch else TutoTarget.followed(it.pitch, bar.shift, target.harmony, floor), played = null)
                 }
             }

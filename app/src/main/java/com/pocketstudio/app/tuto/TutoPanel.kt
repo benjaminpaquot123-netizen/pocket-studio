@@ -644,8 +644,8 @@ fun TutoPanel(
     // go the same way (its head, the kit offer, then the row of the example) until the reason has two lines under its
     // button; all come back when it is closed (« ▾ Pourquoi ? » stays).
     var whyShed by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
-    // Tour 9 (portal, L13): the kit offer come late over a height held, the instruction without its line and a half: the
-    // panel's head goes ([kitShed]), the panel staying where it is (the finger meant for its buttons, TutoKitUnderFinger).
+    // Tour 9 (portal, L13): the kit offer come late over a height held, taken again twice already, and the instruction
+    // still without a whole line: the panel's head goes ([kitShed]), the panel staying where it is (TutoKitUnderFinger).
     var kitShed by remember(step.id, ui.open, ui.progress.level) { mutableIntStateOf(0) }
     val shedHeld = if (reading) shed else whyShed
     val shedAt = if (reading) shed else maxOf(whyShed, kitShed)
@@ -836,7 +836,7 @@ fun TutoPanel(
                 if (holding) Modifier.weight(1f) else Modifier.weight(1f, fill = false), holding, most, least,
                 mapRoom = chapter.map && map.isNotEmpty(),
                 starved = { if (regrown < 2) { regrown++; held = 0 } },
-                kitShort = if (kitShown) { { m -> if (holding) { if (kitShed < 1) kitShed = 1 } else if (kitGrown < 3) { kitGrown++; kitMissing += m } } } else null,
+                kitShort = if (kitShown) { { m -> if (holding) { if (kitShed < 1 && regrown >= 2 && m * 3 > least) kitShed = 1 } else if (kitGrown < 3) { kitGrown++; kitMissing += m } } } else null,
                 short = if (reading) { { if (shed == shedAt && shed < 3) shed++ } } else null,
                 // « Pourquoi ? » opened leaves the instruction a line at least (its first one, in sight over the reason).
                 whyLeaves = if (whyOpen) with(density) { MaterialTheme.typography.bodyLarge.lineHeight.roundToPx() } else 0,

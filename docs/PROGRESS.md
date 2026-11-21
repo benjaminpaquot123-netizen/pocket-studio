@@ -8,6 +8,7 @@ Page courte, lue par le chef à chaque début de session. Tout ce qui date d'ava
 - En pause sans revue : L5a, L13, L14. L18 et L19 archivés vides.
 
 ## Prochaine étape exacte
+0. (2026-11-21) Reprise : voir la dernière ligne de `docs/audits/ultra/EN-COURS.md` (problèmes difficiles à relire et fusionner, CI complète, ci-rapide, mini-contrôle, puis fiche-tuto pour le rouge T9).
 1. Déjà fusionnés : L7, L4, L6, L14, L5a. Reste, un à la fois : L3 (rouge TutoJourneyTest hat_triplet, aussi rouge sur la base), L15 (oracle japonais tab_Sons), L13 (inachevé), puis les miettes (restes L2/L7, F101, F111, L6 renameScene, L17 F032/F034, L3 F031/F041).
 2. Remettre au vert TutoReadabilityBudgetTest et les captures instables, puis la grande vérification et un tour de testeurs neufs.
 

@@ -81,6 +81,22 @@ class Scenarios(
         }
     }
 
+    /**
+     * A sheet a failed scenario left open (the part's, the strip's) is closed before the next one:
+     * the robot does not touch under another window, and one red must not make three.
+     */
+    private fun fermerFeuilles() {
+        for (sheet in listOf("part_sheet", "strip_sheet")) {
+            if (j.exists(sheet)) runCatching { j.tap("${sheet}_close"); j.awaitGone(sheet, 5_000) }
+        }
+    }
+
+    /** The open song with the Pro tabs, no sheet over it. */
+    private fun auStudio() {
+        fermerFeuilles()
+        e.auStudioPro()
+    }
+
     private fun lu(): ProjetVu = appli.projet() ?: error("le projet ouvert ne se lit pas")
 
     /** Waits until the project on the disk says [ok]; the last one read (null: no file). */
@@ -102,7 +118,7 @@ class Scenarios(
      * back to the same project.
      */
     fun projet(): String {
-        e.auStudioPro()
+        auStudio()
         val p = lu()
         val d = surDisque { it.nom == p.nom && it.parties == p.parties }
         check(d != null) { "aucun fichier de projet sur le disque pour « ${p.nom} » après ${sauvegardeMs / 1000} s" }
@@ -111,22 +127,31 @@ class Scenarios(
         j.tap("top_projects")
         j.await("projects")
         val listed = runCatching { j.await("project_${p.id}", 5_000) }.isSuccess
+        // The list is lazy: with more projects than the screen shows, a row out of sight has no node,
+        // so its absence proves nothing. Red only when the whole list is on screen.
+        val rows = j.tagsMatching(Regex("project_.+")).size
+        val hidden = !listed && rows >= LISTE_PLEINE
         j.tap("projects_back")
         j.tap("launch_continue")
         j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000)
-        check(listed) { "« ${p.nom} » n'est pas dans Mes projets" }
+        check(listed || hidden) { "« ${p.nom} » n'est pas dans Mes projets" }
         val back = lu()
         check(back.id == p.id && back.parties == p.parties) { "« Continuer » ne rouvre pas le même morceau : « ${back.nom} », ${back.parties} parties" }
         bilan(PROJET, "parties" to p.parties, "sur_disque" to true)
-        return "« ${p.nom} » relu sur le disque (${d.parties} parties), dans Mes projets, rouvert par « Continuer »"
+        val list = if (listed) "dans Mes projets" else "pas vu dans Mes projets (liste plus longue que l'écran, non vérifié)"
+        return "« ${p.nom} » relu sur le disque (${d.parties} parties), $list, rouvert par « Continuer »"
     }
 
     /** Intermediate: Structure › a part's « ⋯ » › « Break 4 mesures ». Oracle: one part more in the song, and on the disk. */
     fun structure(): String {
-        e.auStudioPro()
+        auStudio()
         val before = lu().parties
         j.tap("tab_Structure")
-        j.partIntent(PARTIE, "part_break_4")
+        try {
+            j.partIntent(PARTIE, "part_break_4")
+        } finally {
+            fermerFeuilles()
+        }
         check(attendre(5_000) { lu().parties == before + 1 }) { "le break ne s'ajoute pas au morceau : ${lu().parties} parties (avant : $before)" }
         val d = surDisque { it.parties == before + 1 }
         check(d?.parties == before + 1) { "le break n'est pas enregistré : ${d?.parties ?: "aucun fichier"} parties sur le disque (attendu : ${before + 1})" }
@@ -139,23 +164,31 @@ class Scenarios(
      * strip in the project, the same on the disk, and the song still sounds (no silence, no NaN).
      */
     fun effets(): String {
-        e.auStudioPro()
+        auStudio()
         val before = lu().effets
         // The first strip with room for one more effect (the assistant's songs come with some).
         val ch = (0 until minOf(before.size, PISTES)).firstOrNull { before[it].size < ProjetVu.EFFETS_MAX } ?: 0
         fun n(p: List<List<String>>) = p.getOrNull(ch).orEmpty().count { it == EFFET }
         j.tap("tab_Mix")
         j.await("mixer")
-        j.tap("strip_more_$ch")
-        j.await("strip_sheet")
-        j.tap("fx_add_$ch")
-        j.await("fx_picker_$ch")
-        j.tap("fx_pick_${ch}_$EFFET")
-        val added = attendre(5_000) { n(lu().effets) == n(before) + 1 }
-        val chip = j.tagsMatching(Regex("fx_chip_${ch}_\\d+")).isNotEmpty()
-        // The list closed, then the sheet: the studio as a user leaves it.
-        runCatching { j.tap("fx_add_$ch") }
-        runCatching { j.tap("strip_sheet_close"); j.awaitGone("strip_sheet", 5_000) }
+        val chips = Regex("fx_chip_${ch}_\\d+")
+        val added: Boolean
+        val chip: Boolean
+        try {
+            j.tap("strip_more_$ch")
+            j.await("strip_sheet")
+            // The strip already shows the effects it came with: one chip more, not « a chip ».
+            val shown = j.tagsMatching(chips).size
+            j.tap("fx_add_$ch")
+            j.await("fx_picker_$ch")
+            j.tap("fx_pick_${ch}_$EFFET")
+            added = attendre(5_000) { n(lu().effets) == n(before) + 1 }
+            chip = attendre(5_000) { j.tagsMatching(chips).size == shown + 1 }
+            // The list closed, then the sheet: the studio as a user leaves it.
+            runCatching { if (j.exists("fx_picker_$ch")) j.tap("fx_add_$ch") }
+        } finally {
+            fermerFeuilles()
+        }
         check(added) { "l'effet ne s'ajoute pas à la piste ${ch + 1} : ${lu().effets.getOrNull(ch).orEmpty().ifEmpty { listOf("aucun") }.joinToString(", ")}" }
         check(chip) { "l'effet est dans le projet mais la piste ${ch + 1} ne le montre pas" }
         val d = surDisque { n(it.effets) == n(before) + 1 }
@@ -172,7 +205,7 @@ class Scenarios(
 
     /** Pro: the Live, its ▶, then its ▶ again. Oracle: the engine plays and sound comes out, then it stops. */
     fun live(): String {
-        e.auStudioPro()
+        auStudio()
         e.arreter()
         j.tap("tab_Live")
         j.await("live_screen")
@@ -197,7 +230,7 @@ class Scenarios(
 
     /** The song played [decrochagesMs]: no dropout, the worst block and the longest gap inside the thresholds. */
     fun decrochages(): String {
-        e.auStudioPro()
+        auStudio()
         val by = e.lancerLecture()
         val b = t.ecouter(DECROCHAGES, decrochagesMs)
         e.arreter()
@@ -238,6 +271,9 @@ class Scenarios(
         /** The effect added (short, never refused for being « long »), and the strips tried for a free slot. */
         const val EFFET = "EQ"
         const val PISTES = 4
+
+        /** Rows of « Mes projets » from which the list may run past the screen. */
+        const val LISTE_PLEINE = 5
 
         val LISTE = listOf(
             Scenario(DEBUTANT, "Débutant : un morceau par l'assistant, et il joue", NIVEAU_DEBUTANT, 420_000),
@@ -318,7 +354,7 @@ class Scenarios(
         fun json(lines: List<Carnet.Ligne>, about: List<Pair<String, String>>): String {
             val r = resultats(lines)
             val items = r.map { x ->
-                val numbers = x.mesures.map { (k, v) -> k to (v.toFloatOrNull()?.let { JsonText.number(it) } ?: JsonText.string(v)) }
+                val numbers = x.mesures.map { (k, v) -> k to (v.toLongOrNull()?.toString() ?: v.toFloatOrNull()?.let { JsonText.number(it) } ?: JsonText.string(v)) }
                 JsonText.obj(
                     "id" to JsonText.string(x.scenario.id), "nom" to JsonText.string(x.scenario.label), "niveau" to JsonText.string(x.scenario.niveau),
                     "resultat" to JsonText.string(x.resultat), "feu" to x.feu?.let { JsonText.string(it.mot) }, "secondes" to x.secondes?.toString(),

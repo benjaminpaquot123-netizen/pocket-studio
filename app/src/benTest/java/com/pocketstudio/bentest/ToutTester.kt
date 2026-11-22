@@ -67,6 +67,13 @@ class ToutTester(
 
     private fun feu(step: String, f: Pair<Feu, String>) = carnet.add(Carnet.FEU, step, f.first.mot + ";" + f.second)
 
+    /** Neither passed nor failed: nothing could be measured ([why]); a grey light, and the note « Scénarios » reads. */
+    private fun nonMesure(step: String, why: String): String {
+        feu(step, Feu.GRIS to why)
+        carnet.add(Carnet.NOTE, step, "$NON_MESURE;$why")
+        return "non mesuré : $why"
+    }
+
     private fun chaleur(step: String): String {
         val c = appli.chaleur() ?: return ""
         carnet.add(Carnet.MESURE, step, "chaleur;" + c.mesure())
@@ -205,6 +212,8 @@ class ToutTester(
 
     /** Three round trips (the speaker heard by the microphone), their median for the light. */
     fun latence(): String {
+        // Through the speaker and the microphone: with the sound cut, a « measure » is the room's noise (the Xiaomi's 501.71 ms).
+        appli.volume()?.takeIf { it.coupe() }?.let { return nonMesure("latence", "$SON_COUPE (${it.text()})") }
         e.auStudioPro()
         val values = ArrayList<Double>()
         val fails = ArrayList<String>()
@@ -217,6 +226,12 @@ class ToutTester(
         if (values.isEmpty()) {
             feu("latence", Feu.ROUGE to "aucune mesure")
             error("aucune mesure : ${fails.distinct().joinToString(" ; ")}")
+        }
+        if (fails.size * 2 > values.size + fails.size) {
+            return nonMesure(
+                "latence",
+                "${fails.size} mesures ratées sur ${values.size + fails.size}, ce n'est pas une mesure (lu : ${values.joinToString(", ") { fmt(it) }} ms ; ${fails.distinct().joinToString(" ; ")})",
+            )
         }
         val median = values.sorted()[values.size / 2]
         feu("latence", Feux.latence(median).let { it to if (it == Feu.VERT) "" else "${fmt(median)} ms" })
@@ -391,6 +406,10 @@ class ToutTester(
     }
 
     companion object {
+        /** A step that could not measure leaves « non_mesure;<why> » in the logbook. */
+        const val NON_MESURE = "non_mesure"
+        const val SON_COUPE = "son coupé : remonte le volume pour mesurer la latence"
+
         /** The two heaviest styles, played cold at the start and hot at the end. */
         val LOURDS = listOf("jump_up", "dnb")
 

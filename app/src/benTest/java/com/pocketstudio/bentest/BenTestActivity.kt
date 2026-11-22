@@ -76,6 +76,7 @@ class BenTestActivity : ComponentActivity() {
                         allow = { p -> ask.launch(p) },
                         start = { Robot.start(application, Robot.ECLAIR) },
                         startTout = { Robot.start(application, Robot.TOUT) },
+                        startScenarios = { Robot.start(application, Robot.SCENARIOS) },
                         startRetest = { ids -> Robot.start(application, Robot.TOUT, ids) },
                         startOreille = { Robot.start(application, Robot.OREILLE) },
                         startMicro = {
@@ -113,6 +114,8 @@ class BenTestActions(
     val start: () -> Unit = {},
     /** « Tout tester » (T1). */
     val startTout: () -> Unit = {},
+    /** « Scénarios »: real use by level, a few minutes. */
+    val startScenarios: () -> Unit = {},
     /** « Retester les corrections »: the chosen steps' ids. */
     val startRetest: (Set<String>) -> Unit = {},
     /** « Questions à l'oreille » (T3). */
@@ -162,7 +165,7 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     Button(onClick = actions.resume, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_reprendre")) { Text("Reprendre") }
                 }
                 etat.verdict?.let {
-                    Text((when (etat.passage) { Robot.TOUT -> "Tout tester terminé : "; Robot.OREILLE -> "Questions à l'oreille terminées : "; Robot.MICRO -> "Écoute au micro terminée : "; else -> "Essai éclair terminé : " }) + it, style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
+                    Text((when (etat.passage) { Robot.TOUT -> "Tout tester terminé : "; Robot.SCENARIOS -> "Scénarios terminés : "; Robot.OREILLE -> "Questions à l'oreille terminées : "; Robot.MICRO -> "Écoute au micro terminée : "; else -> "Essai éclair terminé : " }) + it, style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
                     if (etat.extraits > 0) Text(
                         "Le rapport contient ${etat.extraits} extrait" + (if (etat.extraits > 1) "s" else "") + " de 2 s enregistré" + (if (etat.extraits > 1) "s" else "") + " par le micro, autour d'un problème entendu. Rien d'autre du micro.",
                         color = Neon.Amber, modifier = Modifier.testTag("bentest_extraits"),
@@ -207,6 +210,8 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                         color = Neon.TextSecondary,
                     )
                     Button(onClick = actions.startTout, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_tout")) { Text("Tout tester") }
+                    Text("Scénarios : environ 7 minutes, sans rien toucher. Le robot joue comme un débutant, un moyen et un pro : morceau, projet enregistré, break, effet, Live, export, latence, décrochages.", color = Neon.TextSecondary)
+                    OutlinedButton(onClick = actions.startScenarios, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_scenarios")) { Text("Scénarios") }
                     Text("Essai éclair : environ 5 minutes. Le robot fait 3 morceaux, 1 export, visite 5 écrans, puis te pose 1 question.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_lancer")) { Text("Lancer l'essai éclair") }
                     Text("Questions à l'oreille : environ 10 minutes. Le robot lance les morceaux, une question à la fois s'affiche en haut de l'écran : ✅ ou ❌.", color = Neon.TextSecondary)

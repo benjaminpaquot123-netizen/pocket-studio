@@ -36,6 +36,12 @@ interface Appli {
     /** The open project, in memory and read back from its file (« Scénarios »); null when it cannot be read. */
     fun projet(): ProjetVu? = null
 
+    /** Android's « retour » on the studio (a full-screen view, the Live's pads, a dialog close by it). Default: nothing. */
+    fun retour() = Unit
+
+    /** Whether the studio's activity is the one in front (Tracker's resumed state); null when unknown. */
+    fun studioDevant(): Boolean? = null
+
     /** [seconds]: the length the app measured on its file (null: none). */
     data class ExportVu(val running: Boolean, val files: List<File>, val error: String?, val seconds: Double? = null)
 

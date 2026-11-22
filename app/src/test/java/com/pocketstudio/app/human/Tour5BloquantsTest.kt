@@ -3,6 +3,7 @@ package com.pocketstudio.app.human
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.onAllNodesWithTag
+import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.allScenes
 import com.pocketstudio.model.instrumentTracks
 import com.pocketstudio.model.sceneView
@@ -81,6 +82,23 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         .firstOrNull()?.config?.getOrNull(SemanticsProperties.Text)?.joinToString("") { it.text }
         ?: ("(no part header)\n" + screenLines().joinToString("\n"))
 
+    /** The editor's header as a person reads it: « title / note ». */
+    private fun header(): String = headerTitle() + " / " + headerNote()
+
+    /** Waits, as a person watching the playhead does, for the first steps of a bar (a bar: 16 steps). */
+    private fun waitForTheStartOfABar() {
+        val until = System.currentTimeMillis() + 60_000L
+        while (true) {
+            val step = NativeEngine.playPosition() % 16
+            assertTrue("it plays\n" + screenLines().joinToString("\n"), playing() && step >= 0)
+            if (step < 5) return
+            assertTrue("the start of a bar never came (step $step)", System.currentTimeMillis() < until)
+            // The time left to the bar line (a step: 15 s / tempo), less the half second the bench takes to look again.
+            val left = (16.5 - step) * 15.0 / project()!!.tempoBpm - 0.45
+            act("attends ${"%.2f".format(java.util.Locale.ROOT, left.coerceAtLeast(0.1))}")
+        }
+    }
+
     /** A a #27: the song plays (the seat had pressed the Guide's « Écouter »), Clavier, the part menu › another part. */
     @Test
     fun simplePartPickedWhileTheSongPlaysIsTheOneEdited() {
@@ -128,7 +146,7 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
             val name = project()!!.sceneTitle(want)
             // Right after the touch (the part takes over at the next bar line, up to 3 s at 84 BPM), the header says the
             // choice is taken: its title, or its note while the part waits for its bar.
-            val atOnce = headerTitle() + " / " + headerNote()
+            val atOnce = header()
             assertTrue("$what: right after the touch, the header names $name: $atOnce", atOnce.contains(name))
             act("attends 4")
             assertEquals("$what: the part edited\n" + screenLines().joinToString("\n"), want, project()!!.scene)
@@ -138,6 +156,43 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         pick("part_pick_2", "C")
         pick("part_pick_1", "B")
         pick("part_new", "a new part")
+    }
+
+    /**
+     * Lot « fable5 », the red that came and went in [simplePartsPickedAfterTheGuidesListenAreEdited] (« right after the
+     * touch, the header names M: Partie : B · Couplet / Elle tourne en boucle… », a header no screen ever showed).
+     * From the touch until the part picked has arrived on its bar line, every look at the header names it: the note
+     * while it waits (« M arrive à la prochaine mesure… »), the title once it is there. The looks follow one another
+     * without a pause, so that one of them falls on the very frame where the part arrives; a pick has one such frame
+     * only, hence the ten picks.
+     */
+    @Test
+    fun everyLookAtTheHeaderNamesThePartPickedUntilItArrives() {
+        simpleSong(family = "calm", style = "lofi")
+        waitFor("the Guide's « Écouter »") { reachTag("guide_option_drop") != null }
+        tap("guide_option_drop")
+        assertTrue("the Guide's « Écouter » plays the song", playing())
+        tap("tab_simple_Clavier")
+        val picks = 10
+        var watched = 0
+        repeat(picks) { round ->
+            val want = 2 - round % 3 // C, B, A, C…: never the part shown
+            tap("part_header_pick")
+            // Touched early in a bar, the part waits long enough for the looks to see it arrive.
+            waitForTheStartOfABar()
+            tap("part_pick_$want")
+            val name = project()!!.sceneTitle(want)
+            var looks = 0
+            do {
+                val arrived = project()!!.scene == want
+                val look = header()
+                looks++
+                assertTrue("pick ${round + 1}, look $looks after the touch (part arrived: $arrived): the header names $name: $look", look.contains(name))
+                assertTrue("pick ${round + 1}: $name still not there after $looks looks: $look", looks < 1_000)
+            } while (!arrived)
+            if (looks > 1) watched++
+        }
+        assertTrue("the looks saw the part arrive ($watched picks of $picks)", watched >= picks / 2)
     }
     private fun notesIn(p: com.pocketstudio.model.Project): Int =
         p.allScenes.indices.sumOf { s -> p.sceneView(s).instrumentTracks.sumOf { it.notes.notes.size } }

@@ -2,6 +2,7 @@ package com.pocketstudio.app.human
 
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onAllNodesWithTag
 import com.pocketstudio.engine.NativeEngine
 import com.pocketstudio.model.allScenes
@@ -82,8 +83,17 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
         .firstOrNull()?.config?.getOrNull(SemanticsProperties.Text)?.joinToString("") { it.text }
         ?: ("(no part header)\n" + screenLines().joinToString("\n"))
 
-    /** The editor's header as a person reads it: « title / note ». */
-    private fun header(): String = headerTitle() + " / " + headerNote()
+    /**
+     * The editor's header as a person reads it, « title / note », in ONE look. Read in two (the title, then the note),
+     * the app's time went on between them (a frame per look while the song plays), and a part arriving right there
+     * gave the title of one screen with the note of the next: a header nobody ever saw (lot « fable5 »).
+     */
+    private fun header(): String {
+        val drawn = compose.onAllNodes(hasTestTag("part_header_title") or hasTestTag("part_header_note"), useUnmergedTree = true).fetchSemanticsNodes()
+        fun text(tag: String) = drawn.firstOrNull { it.config.getOrNull(SemanticsProperties.TestTag) == tag }
+            ?.config?.getOrNull(SemanticsProperties.Text)?.joinToString("") { it.text }
+        return (text("part_header_title") ?: ("(no part header)\n" + screenLines().joinToString("\n"))) + " / " + (text("part_header_note") ?: "")
+    }
 
     /** Waits, as a person watching the playhead does, for the first steps of a bar (a bar: 16 steps). */
     private fun waitForTheStartOfABar() {

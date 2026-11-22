@@ -33,6 +33,9 @@ interface Appli {
     /** BenStudio Test's screen in front with [question]; waits (at most [maxMs]) for the answer, null without one. */
     fun demander(question: String, maxMs: Long): Boolean?
 
+    /** The open project, in memory and read back from its file (« Scénarios »); null when it cannot be read. */
+    fun projet(): ProjetVu? = null
+
     /** [seconds]: the length the app measured on its file (null: none). */
     data class ExportVu(val running: Boolean, val files: List<File>, val error: String?, val seconds: Double? = null)
 

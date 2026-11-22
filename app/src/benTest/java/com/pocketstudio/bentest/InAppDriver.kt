@@ -95,6 +95,19 @@ class InAppDriver(
         action?.invoke(value) == true
     }.also { if (it) main.pause(FRAME_MS * 4) }
 
+    /** Every vertical list of the top window back at its top (its own accessibility action, as TalkBack's scroll). */
+    fun enHaut() {
+        main.run {
+            val top = roots().lastOrNull() ?: return@run
+            for (n in top.semanticsOwner.getAllSemanticsNodes(mergingEnabled = false)) {
+                val by = n.config.getOrNull(SemanticsActions.ScrollBy)?.action ?: continue
+                val range = n.config.getOrNull(SemanticsProperties.VerticalScrollAxisRange) ?: continue
+                by(0f, if (range.reverseScrolling) 1e6f else -1e6f)
+            }
+        }
+        main.pause(FRAME_MS * 4)
+    }
+
     private fun one(tag: String): Found {
         val all = tagged(tag, merged = true)
         // Two windows can hold it while a sheet opens over the screen: the top one (the last window) is the one a finger meets.

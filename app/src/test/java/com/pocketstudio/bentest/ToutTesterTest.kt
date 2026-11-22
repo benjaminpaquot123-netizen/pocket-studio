@@ -211,10 +211,12 @@ class ToutTesterTest {
         assertEquals(Feu.VERT, light(0.69f, 1f).first)
         assertEquals(Feu.ORANGE to "pire bloc vrai 70 %", light(0.7f, 1f))
         assertEquals(Feu.ORANGE, light(1f, 1f).first)
-        assertEquals(Feu.ROUGE to "pire bloc vrai 120 %", light(1.2f, 1f))
-        assertEquals(Feu.ORANGE to "plus long écart 1,5 blocs", light(0.2f, 1.5f))
-        assertEquals(Feu.ROUGE, light(0.2f, 2.1f).first)
-        assertEquals(Feu.ORANGE, light(0.2f, 2f).first)
+        assertEquals(Feu.ORANGE, light(1.5f, 1f).first)
+        assertEquals(Feu.ROUGE to "pire bloc vrai 160 %", light(1.6f, 1f))
+        assertEquals(Feu.VERT, light(0.2f, 2f).first)
+        assertEquals(Feu.ORANGE to "plus long écart 2,5 blocs", light(0.2f, 2.5f))
+        assertEquals(Feu.ROUGE, light(0.2f, 4.1f).first)
+        assertEquals(Feu.ORANGE, light(0.2f, 4f).first)
         // Unknown (0): no light from it.
         assertEquals(Feu.VERT, Feux.style(Ecoute.bilan(reads(5) { steady(it) }, 3)).first)
     }

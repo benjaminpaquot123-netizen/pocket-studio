@@ -297,7 +297,7 @@ class ScenariosRemiseTest {
     @Test
     fun aRedByMeasureLeavesAPictureTheTagsAndTheThresholdPassed() {
         // The Xiaomi's run, 2026-11-22: « pire bloc vrai 116 % », « plus long écart 12 blocs » in red, no clue in the zip.
-        val s = Studio().apply { cpuWorst = 1.16f; gapWorst = 12f }
+        val s = Studio().apply { cpuWorst = 1.6f; gapWorst = 12f }
         val c = Carnet(tmp.newFile())
         val shots = tmp.newFolder()
         val r = run(s, Scenarios.DECROCHAGES, c = c, shots = shots).single()
@@ -306,8 +306,8 @@ class ScenariosRemiseTest {
         assertTrue("the tags are written", File(shots, "echec-decrochages-tags.txt").isFile)
         val clues = indices(Scenarios.resume(c.lines(), emptyList()))
         assertTrue(clues, "captures/echec-decrochages.jpg" in clues && "captures/echec-decrochages-tags.txt" in clues)
-        assertTrue(clues, "pire bloc vrai 116 %" in clues && "100 %" in clues)
-        assertTrue(clues, "plus long écart 12" in clues && "2 blocs" in clues)
+        assertTrue(clues, "pire bloc vrai 160 %" in clues && "150 %" in clues)
+        assertTrue(clues, "plus long écart 12" in clues && "4 blocs" in clues)
     }
 
     @Test

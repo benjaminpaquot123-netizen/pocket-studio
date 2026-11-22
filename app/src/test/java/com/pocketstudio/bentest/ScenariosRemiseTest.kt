@@ -145,4 +145,59 @@ class ScenariosRemiseTest {
         val s = Studio().apply { where = "bentest"; landscape = true }
         assertPassed(run(s, Scenarios.STRUCTURE, Scenarios.LIVE))
     }
+
+    // --- One red does not make the next ones red ------------------------------------------------------
+
+    @Test
+    fun aScenarioThatLeftAFullScreenViewDoesNotBringDownTheNextOne() {
+        val s = Studio().apply { breakOpensTimeline = true }
+        val r = run(s, Scenarios.STRUCTURE, Scenarios.LIVE)
+        assertEquals(Scenarios.ECHOUE, r.first { it.scenario.id == Scenarios.STRUCTURE }.resultat)
+        assertPassed(r.filter { it.scenario.id == Scenarios.LIVE })
+        assertTrue("« retour » closes the full-screen view", s.backs >= 1)
+    }
+
+    @Test
+    fun aScenarioThatLeftBenStudioTestsScreenInFrontDoesNotBringDownTheNextOne() {
+        val s = Studio()
+        val c = Carnet(tmp.newFile())
+        // The phone went back to BenStudio Test's screen between two scenarios.
+        val sc = Scenarios(
+            Journey(s), s, s, c, tmp.newFolder(), ecran = { s.tags(Regex(".+")) },
+            ecouteMs = 100, decrochagesMs = 100, sauvegardeMs = 100, liveMs = 200, liveEcouteMs = 50, effetEcouteMs = 50,
+        )
+        val steps = sc.etapes().filter { it.name in setOf(Scenarios.STRUCTURE, Scenarios.LIVE) }
+        Passage(c, steps, crashText = { null }).run { step -> s.idles = 0; if (step.name == Scenarios.LIVE) s.where = "bentest" }
+        assertPassed(Scenarios.resultats(c.lines()).filter { it.scenario.id in setOf(Scenarios.STRUCTURE, Scenarios.LIVE) })
+        assertEquals(1, s.opened)
+    }
+
+    // --- A failed scenario leaves a picture and the tags on screen ------------------------------------
+
+    @Test
+    fun aFailedScenarioLeavesAPictureAndTheTagsOnScreenInTheReport() {
+        val s = Studio().apply { breakOpensTimeline = true }
+        val c = Carnet(tmp.newFile())
+        val shots = tmp.newFolder()
+        run(s, Scenarios.STRUCTURE, c = c, shots = shots)
+        val picture = File(shots, "echec-structure.jpg")
+        val tags = File(shots, "echec-structure-tags.txt")
+        assertTrue("the picture is taken", picture.isFile && picture in s.shots)
+        assertTrue("the tags are written", tags.isFile)
+        val text = tags.readText()
+        assertTrue(text, "timeline_screen" in text && "thumb_play" in text && "studio devant : oui" in text)
+        assertTrue(c.lines().any { it.kind == Carnet.NOTE && it.step == Scenarios.STRUCTURE && "captures/echec-structure.jpg" in it.text && "captures/echec-structure-tags.txt" in it.text })
+        val resume = Scenarios.resume(c.lines(), emptyList())
+        assertTrue(resume, "## Indices" in resume && "captures/echec-structure.jpg" in resume && "captures/echec-structure-tags.txt" in resume)
+    }
+
+    @Test
+    fun aPassedRunLeavesNoClue() {
+        val s = Studio()
+        val c = Carnet(tmp.newFile())
+        val shots = tmp.newFolder()
+        assertPassed(run(s, Scenarios.STRUCTURE, c = c, shots = shots))
+        assertTrue(shots.listFiles().orEmpty().none { it.name.startsWith("echec-") })
+        assertTrue("## Indices" !in Scenarios.resume(c.lines(), emptyList()))
+    }
 }

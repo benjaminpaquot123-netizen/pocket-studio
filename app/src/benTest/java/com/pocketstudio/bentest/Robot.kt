@@ -21,7 +21,10 @@ import com.pocketstudio.app.journey.Journey
 import com.pocketstudio.app.report.CrashReporter
 import com.pocketstudio.app.report.JournalJson
 import com.pocketstudio.app.rhythm.RhythmViewModel
+import com.pocketstudio.app.rhythm.ProjectOpening
 import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.model.EffectType
+import com.pocketstudio.model.Project
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -66,6 +69,9 @@ object Robot {
     /** « Écoute au micro » (T1b). */
     const val MICRO = "micro"
 
+    /** « Scénarios »: a few minutes of real use by level, each with its oracle. */
+    const val SCENARIOS = "scenarios"
+
     private val _etat = MutableStateFlow(Etat())
     val etat: StateFlow<Etat> = _etat
     private val answers = LinkedBlockingQueue<Boolean>()
@@ -80,7 +86,7 @@ object Robot {
 
     /** Which run the logbook holds (kept beside it: a run picked up after a crash is the same one). */
     private fun passageFile(context: Context) = File(dir(context), "passage.txt")
-    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO } ?: ECLAIR
+    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO || it == SCENARIOS } ?: ECLAIR
 
     /** « Retester les corrections »: the ids chosen (the file exists only for such a run), and the last « Tout tester » kept (ids and lights). */
     private fun retestFile(context: Context) = File(dir(context), "retest.txt")
@@ -109,6 +115,7 @@ object Robot {
             TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             OREILLE -> QuestionsOreille(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             MICRO -> EcouteMicro(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), MicroReel(context), HautParleurReel(context), carnet(context), sons(context)).etapes()
+            SCENARIOS -> Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             else -> EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
         }
         return subset(all, passage, if (retest) retest(context) else null)
@@ -122,6 +129,7 @@ object Robot {
         when (passage) {
             TOUT, MICRO -> Rapport.bilanFeux(lines, steps).verdict()
             OREILLE -> QuestionsOreille.verdict(lines)
+            SCENARIOS -> Scenarios.verdict(lines)
             else -> Rapport.bilan(lines, steps).verdict()
         }
 
@@ -174,6 +182,7 @@ object Robot {
                     val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
                     EcouteMicro(Pose(essai, Journey(driver)), MicroReel(app), HautParleurReel(app), c, sons(app)).etapes()
                 }
+                SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
                 else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
             }
             val steps = subset(all, which, retest(app))
@@ -270,8 +279,12 @@ object Robot {
         val steps = etapes(context, passage)
         val about = about(context)
         val texts = buildList {
-            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE, micro = passage == MICRO))
+            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO || passage == SCENARIOS, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE, micro = passage == MICRO))
             add("mesures.json" to Rapport.json(lines, about))
+            if (passage == SCENARIOS) {
+                add("scenarios.json" to Scenarios.json(lines, about))
+                add("resume.md" to Scenarios.resume(lines, about))
+            }
             add("carnet.tsv" to (if (c.file.isFile) c.file.readText() else ""))
             add("journal.json" to runCatching { JournalJson.current(about) }.getOrDefault("{}"))
             CrashReporter.pendingCrash()?.let { add("plantage.txt" to it) }
@@ -390,6 +403,18 @@ private class AppliReelle(private val app: Application, private val main: MainTh
     override fun capture(file: File): Boolean = main.run { Captures.windows(WindowInspector.getGlobalWindowViews(), file) }
 
     override fun demander(question: String, maxMs: Long): Boolean? = Robot.ask(app, question, maxMs)
+
+    override fun projet(): ProjetVu? {
+        val (id, p) = main.run {
+            val a = tracker.studio as? ComponentActivity ?: return@run null
+            val vm = ViewModelProvider(a)[RhythmViewModel::class.java]
+            vm.projectId to vm.project.value
+        } ?: return null
+        fun effets(of: Project) = of.mixer.channels.map { ch -> ch.inserts.filter { it.effect != EffectType.NONE }.map { it.effect.name } }
+        // Read off the main thread, by the app's own store: what a restart would find.
+        val disk = runCatching { ProjectOpening.projectStore(app).load(id) }.getOrNull()
+        return ProjetVu(id, p.name, p.song.size, effets(p), disk?.let { ProjetVu.Disque(it.name, it.song.size, effets(it)) })
+    }
 
     // Niveau 3: the question is a banner over the studio itself (the studio stays in front, the music goes on).
     override fun poser(question: Question, maxMs: Long): Reponse {

@@ -115,7 +115,8 @@ class ScenariosTest {
 
         override fun ouvrirStudio() = Unit
         override fun export() = Appli.ExportVu(false, emptyList(), null)
-        override fun capture(file: File) = false
+        var shots = false
+        override fun capture(file: File): Boolean = shots && runCatching { file.writeText("jpg") }.isSuccess
         override fun demander(question: String, maxMs: Long): Boolean? = null
         override fun projet() = ProjetVu(id, "Mon morceau", parties, effets, disque)
     }
@@ -243,6 +244,61 @@ class ScenariosTest {
         assertEquals(Scenarios.ECHOUE, r.resultat)
         assertTrue(r.detail, r.detail.contains("décrochage"))
         assertTrue(r.mesures.toString(), r.mesures.any { it.first == "decrochages" && it.second.toInt() > 0 })
+    }
+
+    // --- A crash of the app --------------------------------------------------------------------------
+
+    /**
+     * The app dies in a scenario (its process killed: an exception on the main thread, the engine, an ANR):
+     * the robot's thread dies with it. Relaunched, the run notes that scenario as failed by a crash with its
+     * cause, the picture and the tags of the screen, and goes on with the next ones to the end; the report
+     * is written all the same.
+     */
+    @Test
+    fun aCrashInAScenarioIsItsFailureWithItsCluesAndTheRunGoesOn() {
+        val c = carnet()
+        // The first life of the app: « écrans » ended, « structure » began, then the process died.
+        c.add(Carnet.DEBUT, Scenarios.ECRANS)
+        c.add(Carnet.REUSSI, Scenarios.ECRANS, "5 écrans")
+        c.add(Carnet.DEBUT, Scenarios.STRUCTURE)
+        // The second life: the run picked up.
+        val s = Studio().apply { shots = true }
+        val captures = tmp.newFolder()
+        val sc = Scenarios(Journey(s), s, s, c, captures, ecouteMs = 300, decrochagesMs = 300, sauvegardeMs = 300, liveMs = 300, liveEcouteMs = 60, effetEcouteMs = 60)
+        val wanted = setOf(Scenarios.ECRANS, Scenarios.STRUCTURE, Scenarios.EFFETS, Scenarios.LIVE)
+        val crash = "Version 1.2.3 · thread main\njava.lang.IllegalStateException: boom\n\tat com.pocketstudio.app.Studio.play(Studio.kt:12)"
+        Passage(c, sc.etapes().filter { it.name in wanted }, crashText = { crash }, onCrash = sc::apresPlantage).run()
+        val lines = c.lines()
+        assertTrue(lines.any { it.kind == Carnet.PLANTAGE && it.step == Scenarios.STRUCTURE && it.text.contains("IllegalStateException: boom") })
+        // The clues of the crashed scenario: the screen as the robot finds it, and every tag on it.
+        val indice = lines.lastOrNull { it.step == Scenarios.STRUCTURE && it.kind == Carnet.NOTE && it.text.startsWith("indice;") }
+        assertTrue(lines.toString(), indice != null && indice.text.contains("capture=captures/echec-structure.jpg") && indice.text.contains("tags=captures/echec-structure-tags.txt"))
+        assertTrue(File(captures, "echec-structure-tags.txt").readText().contains("space_bar"))
+        // The run went on and ended.
+        for (next in listOf(Scenarios.EFFETS, Scenarios.LIVE)) assertTrue(next, lines.any { it.step == next && it.kind == Carnet.REUSSI })
+        assertTrue(lines.any { it.kind == Carnet.FINI })
+        // The report says it: failed by a crash, its cause and its clues.
+        val r = Scenarios.resultats(lines).associateBy { it.scenario.id }.getValue(Scenarios.STRUCTURE)
+        assertEquals(Scenarios.ECHOUE, r.resultat)
+        assertTrue(r.detail, r.detail.startsWith("plantage de l'appli") && r.detail.contains("boom"))
+        assertEquals("captures/echec-structure.jpg", r.indices.toMap()["capture"])
+        assertTrue(Scenarios.json(lines, about).contains("plantage de l'appli"))
+        assertTrue(Scenarios.resume(lines, about).contains("plantage de l'appli"))
+    }
+
+    @Test
+    fun aCrashWhoseCauseCannotBeReadStillSaysItCrashed() {
+        val c = carnet()
+        c.add(Carnet.DEBUT, Scenarios.LIVE)
+        val s = Studio()
+        val sc = scenarios(s, c)
+        Passage(c, sc.etapes().filter { it.name == Scenarios.LIVE }, crashText = { null }, onCrash = sc::apresPlantage).run()
+        val r = Scenarios.resultats(c.lines()).first { it.scenario.id == Scenarios.LIVE }
+        assertEquals(Scenarios.ECHOUE, r.resultat)
+        assertTrue(r.detail, r.detail.startsWith("plantage de l'appli") && r.detail.contains("cause non lue"))
+        // Without a picture, the tags all the same.
+        assertEquals("", r.indices.toMap()["capture"])
+        assertTrue(r.indices.toString(), r.indices.toMap()["tags"].orEmpty().endsWith("echec-live-tags.txt"))
     }
 
     // --- The report ----------------------------------------------------------------------------------

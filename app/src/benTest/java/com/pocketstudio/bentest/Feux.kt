@@ -29,7 +29,7 @@ object Feux {
 
     fun latence(ms: Double): Feu = when {
         ms <= 50.0 -> Feu.VERT
-        ms <= 70.0 -> Feu.ORANGE
+        ms <= LATENCE_MAX -> Feu.ORANGE
         else -> Feu.ROUGE
     }
 
@@ -80,6 +80,20 @@ object Feux {
         if (b.alertes.isNotEmpty()) parts += Feu.ORANGE to b.alertes.joinToString(", ") { it.kind.lowercase(Locale.ROOT) + " à ${it.second} s" }
         return Feu.pire(parts.map { it.first }) to parts.joinToString(", ") { it.second }
     }
+
+    /** The red thresholds a listening passed, each as the value read against its threshold (resume.md's « Indices »). */
+    fun depasses(b: Ecoute.Bilan): List<String> = listOfNotNull(
+        b.xruns.takeIf { it > 0 }?.let { "$it décrochage(s) lu(s) contre 0 permis" },
+        b.cpuWorst.takeIf { blocVrai(it) == Feu.ROUGE }?.let { "pire bloc vrai ${Ecoute.pct(it)} lu contre 100 % au plus" },
+        b.gapWorst.takeIf { ecart(it) == Feu.ROUGE }?.let { "plus long écart ${fmt(it.toDouble()).replace('.', ',')} blocs lu contre 2 blocs au plus" },
+        "valeur invalide (NaN) lue contre aucune permise".takeIf { b.nonFinite },
+    )
+
+    /** The latency's red threshold passed, null when it is not. */
+    fun depasseLatence(ms: Double): String? =
+        if (latence(ms) == Feu.ROUGE) "latence ${String.format(Locale.ROOT, "%.2f", ms)} ms lue contre ${LATENCE_MAX.toInt()} ms au plus" else null
+
+    private const val LATENCE_MAX = 70.0
 
     fun fmt(v: Double) = String.format(Locale.ROOT, "%.1f", v)
 }

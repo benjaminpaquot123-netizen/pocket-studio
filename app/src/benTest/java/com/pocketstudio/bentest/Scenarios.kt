@@ -55,8 +55,8 @@ class Scenarios(
      * A step that starts from the studio whatever the one before left ([remiseAZero]), and whose failure
      * leaves what the robot saw in the logbook.
      */
-    private fun etape(name: String, label: String, maxMs: Long, work: () -> String) = Etape(name, label, maxMs) {
-        try {
+    private fun etape(name: String, label: String, maxMs: Long, work: () -> String) = Etape(name, label, maxMs) { deadline ->
+        val text = try {
             son(name)
             remiseAZero(name)
             work()
@@ -65,6 +65,16 @@ class Scenarios(
             indices(name)
             throw t
         }
+        // A failure by a measure (a red threshold) or by the time: the same clues as when the robot gets lost.
+        if (rouge(name) || System.currentTimeMillis() > deadline) indices(name)
+        text
+    }
+
+    /** [step] has a red light since it last began. */
+    private fun rouge(step: String): Boolean {
+        val lines = carnet.lines()
+        val from = lines.indexOfLast { it.step == step && it.kind == Carnet.DEBUT }.coerceAtLeast(0)
+        return lines.drop(from).any { it.step == step && it.kind == Carnet.FEU && Feu.of(it.text.substringBefore(';')) == Feu.ROUGE }
     }
 
     /**
@@ -104,6 +114,12 @@ class Scenarios(
     }
 
     private fun feu(step: String, f: Pair<Feu, String>) = carnet.add(Carnet.FEU, step, f.first.mot + ";" + f.second)
+
+    /** A listening's light, and the red thresholds it passed (value read against threshold) for the clues. */
+    private fun feuEcoute(step: String, b: Ecoute.Bilan) {
+        feu(step, Feux.style(b))
+        Feux.depasses(b).forEach { carnet.add(Carnet.NOTE, step, "${ToutTester.SEUIL};$it") }
+    }
 
     /** The numbers a scenario leaves for scenarios.json (« bilan;k=v;… »). */
     private fun bilan(step: String, vararg fields: Pair<String, Any?>) =
@@ -268,7 +284,7 @@ class Scenarios(
         val b = t.ecouter(EFFETS, effetEcouteMs)
         e.arreter()
         ecoute(EFFETS, b)
-        feu(EFFETS, Feux.style(b))
+        feuEcoute(EFFETS, b)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec l'effet" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec l'effet : ${b.text()}" }
         return "égaliseur ajouté à la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()}"
@@ -293,7 +309,7 @@ class Scenarios(
         check(heard) { "le Live joue mais aucun son ne sort : crête ${fmt(peak)}" }
         checkNotNull(b)
         ecoute(LIVE, b)
-        feu(LIVE, Feux.style(b))
+        feuEcoute(LIVE, b)
         check(stopped) { "le Live ne s'arrête pas : ▶ touché une seconde fois, le moteur joue encore" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son du Live" }
         return "le Live joue (${b.text()}), puis s'arrête"
@@ -306,7 +322,7 @@ class Scenarios(
         val b = t.ecouter(DECROCHAGES, decrochagesMs)
         e.arreter()
         ecoute(DECROCHAGES, b)
-        feu(DECROCHAGES, Feux.style(b))
+        feuEcoute(DECROCHAGES, b)
         check(b.reads > 0) { "aucune mesure" }
         check(b.playing * 2 >= b.reads) { "la lecture s'est arrêtée toute seule : ${b.text()}" }
         return "lecture par $by : ${b.text()}"
@@ -380,6 +396,8 @@ class Scenarios(
             val scenario: Scenario, val feu: Feu?, val resultat: String, val detail: String, val secondes: Long?, val mesures: List<Pair<String, String>>,
             /** The failure's clues in the zip: the picture and the tag list (empty: not taken). */
             val indices: List<Pair<String, String>> = emptyList(),
+            /** The thresholds a failure by measure passed, each as the value read against its threshold. */
+            val seuils: List<String> = emptyList(),
         )
 
         /** Passed: green, or orange (it works, a number is to be watched); failed: red (the step failed, crashed, or a number is out). */
@@ -408,6 +426,9 @@ class Scenarios(
                     if (begin != null && end != null) (end.atMs - begin.atMs) / 1000 else null,
                     mesures + if (nonMesure != null) emptyList() else mediane(s.id, mine),
                     mine.filter { it.kind == Carnet.NOTE && it.text.startsWith("$INDICE;") }.lastOrNull()?.let { l -> l.text.removePrefix("$INDICE;").split(';').mapNotNull { f -> f.split('=', limit = 2).takeIf { it.size == 2 }?.let { it[0] to it[1] } } }.orEmpty(),
+                    if (feu != Feu.ROUGE) emptyList() else mine.filter { it.kind == Carnet.NOTE && it.text.startsWith("${ToutTester.SEUIL};") }.map { it.text.substringAfter(';') }.distinct()
+                        // A red without a threshold of its own (« fichier illisible »): its light's reason.
+                        .ifEmpty { if (end?.kind == Carnet.REUSSI) why else emptyList() },
                 )
             }
         }
@@ -493,13 +514,14 @@ class Scenarios(
                 appendLine("## Mesures")
                 numbers.forEach { x -> appendLine("- ${x.scenario.label} : " + x.mesures.joinToString(", ") { (k, v) -> "${k.replace('_', ' ')} $v" }) }
             }
-            val clues = r.filter { it.indices.isNotEmpty() }
+            val clues = r.filter { it.indices.isNotEmpty() || it.seuils.isNotEmpty() }
             if (clues.isNotEmpty()) {
                 appendLine()
                 appendLine("## Indices")
                 clues.forEach { x ->
                     val m = x.indices.toMap()
-                    appendLine("- ${x.scenario.label} : capture ${m["capture"].orEmpty().ifEmpty { "pas prise" }}, tags ${m["tags"].orEmpty().ifEmpty { "pas écrits" }}")
+                    val seuil = if (x.seuils.isEmpty()) "" else "seuil dépassé : ${x.seuils.joinToString(" ; ")} ; "
+                    appendLine("- ${x.scenario.label} : $seuil" + "capture ${m["capture"].orEmpty().ifEmpty { "pas prise" }}, tags ${m["tags"].orEmpty().ifEmpty { "pas écrits" }}")
                 }
             }
         }

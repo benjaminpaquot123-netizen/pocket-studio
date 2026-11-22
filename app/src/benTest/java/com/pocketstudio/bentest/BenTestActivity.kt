@@ -2,6 +2,7 @@ package com.pocketstudio.bentest
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -55,6 +56,7 @@ class BenTestActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         Robot.look(this)
+        reprendre(intent)
         setContent {
             PocketStudioTheme {
                 val etat by Robot.etat.collectAsStateWithLifecycle()
@@ -94,6 +96,18 @@ class BenTestActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        reprendre(intent)
+    }
+
+    /** Relaunched by the run's guard after the app died in a step ([Garde]): the run picks up by itself, the next step reopening the studio. */
+    private fun reprendre(intent: Intent?) {
+        if (intent?.getBooleanExtra(Garde.REPRENDRE, false) != true) return
+        intent.removeExtra(Garde.REPRENDRE)
+        Robot.start(application)
     }
 
     private fun send() {

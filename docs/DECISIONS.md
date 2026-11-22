@@ -1576,3 +1576,4 @@
 - 2026-11-20 : Benjamin : « si ça coûte un peu plus en quotat tant que c'est productif c'est ok ». Lot ci-rapide (CI 62 → 40 min) confié à la discussion audit vitesse : cache du jar Robolectric + annulation des CI périmées sur les branches de lot. Retour arrière : revenir à l'ancien ci.yml.
 - 2026-11-21 · lot « difficiles » (tour-9) : 1 décision(s) dans `docs/decisions/tour-9-difficiles.md`
 - 2026-11-22 · lot « flash » (tour-9) : 3 décision(s) dans `docs/decisions/tour-9-flash.md`
+- 2026-11-22 · lot « flash2 » (tour-9) : 3 décision(s) dans `docs/decisions/tour-9-flash2.md`

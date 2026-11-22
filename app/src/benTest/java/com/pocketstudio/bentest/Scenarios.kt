@@ -70,6 +70,9 @@ class Scenarios(
         text
     }
 
+    /** The app died in [step] (noted as a crash by [Passage]): its clues. */
+    fun apresPlantage(step: String) = Unit
+
     /** [step] has a red light since it last began. */
     private fun rouge(step: String): Boolean {
         val lines = carnet.lines()

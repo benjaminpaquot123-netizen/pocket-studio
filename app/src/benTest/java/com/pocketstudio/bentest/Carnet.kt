@@ -97,6 +97,8 @@ class Passage(
     val etapes: List<Etape>,
     private val clock: () -> Long = System::currentTimeMillis,
     private val crashText: () -> String? = { null },
+    /** Hears each step the app died in, once noted (the clues of what the screen shows now). */
+    private val onCrash: (String) -> Unit = {},
 ) {
     /** Steps begun and never ended (the app died in them), each noted once as a crash. Returns their names. */
     fun recover(): List<String> {

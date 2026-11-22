@@ -693,4 +693,13 @@ class ScenariosTest {
         assertEquals("${Scenarios.LISTE.size} passés, 0 échoué", Scenarios.verdict(all))
         assertTrue(Scenarios.json(all, about).contains("\"tout_passe\":true") || Scenarios.json(all, about).contains("\"tout_passe\": true"))
     }
+
+    @Test
+    fun theRedoPackHoldsTheFailedScenariosOnlyAndAllExist() {
+        val ids = Scenarios.LISTE.map { it.id }.toSet()
+        assertEquals(78, Scenarios.RATES_IDS.size)
+        assertTrue(Scenarios.RATES_IDS.all { it in ids })
+        assertEquals(Scenarios.RATES_IDS, Scenarios.liste(Scenarios.RATES).map { it.id }.toSet())
+        assertTrue("debutant" !in Scenarios.RATES_IDS)
+    }
 }

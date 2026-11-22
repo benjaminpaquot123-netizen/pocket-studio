@@ -51,9 +51,13 @@ class Scenarios(
         }
     }
 
-    /** A step whose failure leaves what the robot saw in the logbook. */
+    /**
+     * A step that starts from the studio whatever the one before left ([remiseAZero]), and whose failure
+     * leaves what the robot saw in the logbook.
+     */
     private fun etape(name: String, label: String, maxMs: Long, work: () -> String) = Etape(name, label, maxMs) {
         try {
+            remiseAZero(name)
             work()
         } catch (t: Throwable) {
             e.noterEcran(name)
@@ -89,6 +93,35 @@ class Scenarios(
         for (sheet in listOf("part_sheet", "strip_sheet")) {
             if (j.exists(sheet)) runCatching { j.tap("${sheet}_close"); j.awaitGone(sheet, 5_000) }
         }
+    }
+
+    /**
+     * The studio's main screen in front before each scenario, whatever the one before left. The robot knows
+     * where it is by the [Tracker] (the studio's activity resumed or not: [Appli.studioDevant]) and by the
+     * screen's markers: BenStudio Test's own screen in front (a run started there, the phone's first run of
+     * 2026-11-22: 9 scenarios waiting for a tab_Structure that was never opened), a sheet or the assistant
+     * over the song, a full-screen view hiding the bar (Android's « retour »).
+     */
+    private fun remiseAZero(step: String) {
+        repeat(ESSAIS_REMISE) { essai ->
+            val tags = ecran()
+            val devant = appli.studioDevant() ?: tags.any { !it.startsWith("bentest_") }
+            if (!devant) {
+                carnet.add(Carnet.NOTE, step, "remise à zéro : le studio n'est pas devant, il est rouvert")
+                appli.ouvrirStudio()
+                runCatching { j.awaitAny("intro", "welcome", "launch", "projects", "wizard", *EssaiEclair.STUDIO, timeoutMs = 30_000) }
+                runCatching { j.awaitGone("intro", 60_000) }
+            }
+            runCatching { fermerFeuilles() }
+            runCatching { e.fermerAssistant() }
+            if (PRET.any { j.exists(it) }) return
+            if (essai < ESSAIS_REMISE - 1) {
+                carnet.add(Carnet.NOTE, step, "remise à zéro : ni barre ni accueil à l'écran, « retour »")
+                appli.retour()
+                j.idle(800)
+            }
+        }
+        error("remise à zéro : l'écran principal ne revient pas après $ESSAIS_REMISE essais")
     }
 
     /** The open song with the Pro tabs, no sheet over it. */
@@ -288,6 +321,10 @@ class Scenarios(
         )
 
         /** [LISTE] as steps without work (to read a logbook). */
+        /** The screens a scenario starts from: the studio (its bar, or its rail lying down), the welcome, the projects. */
+        private val PRET = listOf(*EssaiEclair.STUDIO, "launch", "projects", "welcome")
+        private const val ESSAIS_REMISE = 4
+
         private val NOMS = LISTE.map { s -> Etape(s.id, s.label, s.maxMs) { "" } }
 
         const val PASSE = "passé"

@@ -289,4 +289,44 @@ class ScenariosRemiseTest {
         assertPassed(run(Studio(), Scenarios.STRUCTURE, c = c))
         assertEquals("Son : allumé", Scenarios.resume(c.lines(), emptyList()).lines()[2])
     }
+
+    // --- A failure by a measure (a threshold passed) leaves its clues too -----------------------------
+
+    private fun indices(resume: String) = resume.substringAfter("## Indices", "")
+
+    @Test
+    fun aRedByMeasureLeavesAPictureTheTagsAndTheThresholdPassed() {
+        // The Xiaomi's run, 2026-11-22: « pire bloc vrai 116 % », « plus long écart 12 blocs » in red, no clue in the zip.
+        val s = Studio().apply { cpuWorst = 1.16f; gapWorst = 12f }
+        val c = Carnet(tmp.newFile())
+        val shots = tmp.newFolder()
+        val r = run(s, Scenarios.DECROCHAGES, c = c, shots = shots).single()
+        assertEquals(r.detail, Scenarios.ECHOUE, r.resultat)
+        assertTrue("the picture is taken", File(shots, "echec-decrochages.jpg").isFile)
+        assertTrue("the tags are written", File(shots, "echec-decrochages-tags.txt").isFile)
+        val clues = indices(Scenarios.resume(c.lines(), emptyList()))
+        assertTrue(clues, "captures/echec-decrochages.jpg" in clues && "captures/echec-decrochages-tags.txt" in clues)
+        assertTrue(clues, "pire bloc vrai 116 %" in clues && "100 %" in clues)
+        assertTrue(clues, "plus long écart 12" in clues && "2 blocs" in clues)
+    }
+
+    @Test
+    fun aLatencyOverItsThresholdLeavesItsCluesAndTheThreshold() {
+        val s = Studio().apply { latences += listOf(85.0, 85.0, 85.0) }
+        val c = Carnet(tmp.newFile())
+        val shots = tmp.newFolder()
+        val r = run(s, Scenarios.LATENCE, c = c, shots = shots).single()
+        assertEquals(r.detail, Scenarios.ECHOUE, r.resultat)
+        assertTrue(File(shots, "echec-latence.jpg").isFile && File(shots, "echec-latence-tags.txt").isFile)
+        val clues = indices(Scenarios.resume(c.lines(), emptyList()))
+        assertTrue(clues, "85.00 ms" in clues && "70 ms" in clues)
+    }
+
+    @Test
+    fun anOrangeByMeasureLeavesNoClue() {
+        val s = Studio().apply { cpuWorst = 0.75f }
+        val shots = tmp.newFolder()
+        assertPassed(run(s, Scenarios.DECROCHAGES, shots = shots))
+        assertTrue(shots.listFiles().orEmpty().none { it.name.startsWith("echec-") })
+    }
 }

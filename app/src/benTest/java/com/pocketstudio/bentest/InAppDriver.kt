@@ -77,7 +77,17 @@ class InAppDriver(
     private fun nodes(merged: Boolean): List<Found> =
         roots().flatMap { r -> r.semanticsOwner.getAllSemanticsNodes(mergingEnabled = merged).map { Found(it, r) } }
 
-    private fun tagged(tag: String, merged: Boolean) = nodes(merged).filter { it.node.config.getOrNull(SemanticsProperties.TestTag) == tag }
+    private fun tagged(tag: String, merged: Boolean) = nodes(merged).filter { f ->
+        // « texte:Renommer »: an item the app gives no tag (a menu's), found by the words it shows.
+        if (tag.startsWith(TEXTE)) f.node.config.getOrNull(SemanticsProperties.Text)?.any { it.text == tag.removePrefix(TEXTE) } == true
+        else f.node.config.getOrNull(SemanticsProperties.TestTag) == tag
+    }
+
+    /** Types [text] in the field tagged [tag] (its whole content replaced, as the keyboard's own « coller » would). False: no such field. */
+    fun saisir(tag: String, text: String): Boolean = main.run {
+        val action = tagged(tag, merged = true).lastOrNull()?.node?.config?.getOrNull(SemanticsActions.SetText)?.action
+        action?.invoke(androidx.compose.ui.text.AnnotatedString(text)) == true
+    }.also { if (it) main.pause(FRAME_MS * 4) }
 
     private fun one(tag: String): Found {
         val all = tagged(tag, merged = true)
@@ -230,6 +240,9 @@ class InAppDriver(
     }
 
     companion object {
+        /** The prefix of a pseudo-tag that finds a node by its words ([tagged]). */
+        const val TEXTE = "texte:"
+
         /** A finger's press, well under a long press (400 ms and more). */
         const val PRESS_MS = 60L
         const val FRAME_MS = 17L

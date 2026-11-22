@@ -53,23 +53,23 @@ object Feux {
         return (if (why.isEmpty()) Feu.VERT else Feu.ORANGE) to why.joinToString(", ")
     }
 
-    /** The true worst block (render time over the callback's sound): red over 100 %, orange from 70 %. */
+    /** The true worst block (render time over the callback's sound): red over 150 %, orange from 70 % (2026-11-22: the phone's run read 100-130 % blocks with no dropout heard). */
     fun blocVrai(w: Float): Feu = when {
-        w > 1f -> Feu.ROUGE
+        w > 1.5f -> Feu.ROUGE
         w >= 0.7f -> Feu.ORANGE
         else -> Feu.VERT
     }
 
-    /** The longest wait between two callbacks, in callbacks: red over 2, orange over 1. */
+    /** The longest wait between two callbacks, in callbacks: red over 4, orange over 2 (2026-11-22: 2.3 blocks on nearly every song, even at low load). */
     fun ecart(g: Float): Feu = when {
-        g > 2f -> Feu.ROUGE
-        g > 1f -> Feu.ORANGE
+        g > 4f -> Feu.ROUGE
+        g > 2f -> Feu.ORANGE
         else -> Feu.VERT
     }
 
     /**
-     * A song played live: red for any dropout, a true worst block over 100 % or a gap over 2 blocks, a NaN; orange for a true
-     * worst block from 70 % or a gap over 1 block, an alert. The smoothed load is information only. The reason says what is not green.
+     * A song played live: red for any dropout, a true worst block over 150 % or a gap over 4 blocks, a NaN; orange for a true
+     * worst block from 70 % or a gap over 2 blocks, an alert. The smoothed load is information only. The reason says what is not green.
      */
     fun style(b: Ecoute.Bilan): Pair<Feu, String> {
         val parts = ArrayList<Pair<Feu, String>>()
@@ -84,8 +84,8 @@ object Feux {
     /** The red thresholds a listening passed, each as the value read against its threshold (resume.md's « Indices »). */
     fun depasses(b: Ecoute.Bilan): List<String> = listOfNotNull(
         b.xruns.takeIf { it > 0 }?.let { "$it décrochage(s) lu(s) contre 0 permis" },
-        b.cpuWorst.takeIf { blocVrai(it) == Feu.ROUGE }?.let { "pire bloc vrai ${Ecoute.pct(it)} lu contre 100 % au plus" },
-        b.gapWorst.takeIf { ecart(it) == Feu.ROUGE }?.let { "plus long écart ${fmt(it.toDouble()).replace('.', ',')} blocs lu contre 2 blocs au plus" },
+        b.cpuWorst.takeIf { blocVrai(it) == Feu.ROUGE }?.let { "pire bloc vrai ${Ecoute.pct(it)} lu contre 150 % au plus" },
+        b.gapWorst.takeIf { ecart(it) == Feu.ROUGE }?.let { "plus long écart ${fmt(it.toDouble()).replace('.', ',')} blocs lu contre 4 blocs au plus" },
         "valeur invalide (NaN) lue contre aucune permise".takeIf { b.nonFinite },
     )
 

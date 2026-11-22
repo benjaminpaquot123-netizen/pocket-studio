@@ -1078,12 +1078,19 @@ class Scenarios(
          */
         const val RAPIDE = "rapide"
         const val COMPLET = "complet"
-        val PAQUETS = listOf(RAPIDE, COMPLET)
+        /** « Refaire les ratés »: the scenarios failed or not measured in the 2026-11-22 run (sound cut, Android Auto). */
+        const val RATES = "rates"
+        val RATES_IDS = setOf("annuler_retablir", "pads_live", "arriere_plan", "latence", "lecture_longue", "images", "style_techno", "style_detroit", "style_acid_techno", "style_hard_techno", "style_industrial_techno", "style_retro_techno", "style_acidcore", "style_deep_house", "style_tech_house", "style_acid_house", "style_uk_garage", "style_jump_up", "style_minimal", "style_gabber", "style_afro_house", "style_speed_garage", "style_amapiano", "style_disco", "style_liquid_dnb", "style_neurofunk", "style_jungle", "style_riddim", "style_trap", "style_drill", "style_phonk", "style_boom_bap", "style_grime", "style_jersey_club", "style_lofi", "style_reggaeton", "style_afrobeats", "style_synthwave", "style_pop", "effet_compressor", "effet_saturation", "effet_chorus", "effet_filter", "effet_pump", "effet_flanger", "effet_phaser", "effet_gate", "effet_tremolo", "effet_widener", "effet_bitcrusher", "effet_param_eq", "effet_robot", "effet_wah", "effet_vinyl", "effet_radio", "effet_chopper", "effet_distortion", "effet_echo", "effet_ping_pong", "effet_reverb", "effet_auto_pan", "effet_ott", "effet_freq_shift", "effet_tape_stop", "effet_wobble", "effet_clipper", "effet_bass_exciter", "tempo_bas", "partie_retirer", "partie_dupliquer", "partie_montee", "pad_2", "pad_3", "pad_4", "pad_5", "pad_6", "pad_7", "pad_8")
+        val PAQUETS = listOf(RAPIDE, COMPLET, RATES)
         const val DUREE_COMPLET_MAX_S = 65 * 60
         private const val PAQUET = "paquet"
 
         /** A pack's scenarios. */
-        fun liste(paquet: String): List<Scenario> = if (paquet == RAPIDE) LISTE.filter { it.geste == null } else LISTE
+        fun liste(paquet: String): List<Scenario> = when (paquet) {
+            RAPIDE -> LISTE.filter { it.geste == null }
+            RATES -> LISTE.filter { it.id in RATES_IDS }
+            else -> LISTE
+        }
 
         /** The pack the logbook's last scenarios were played in (none noted: the full list). */
         fun paquet(lines: List<Carnet.Ligne>): String {

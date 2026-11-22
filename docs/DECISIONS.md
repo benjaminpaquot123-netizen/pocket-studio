@@ -1577,3 +1577,4 @@
 - 2026-11-21 · lot « difficiles » (tour-9) : 1 décision(s) dans `docs/decisions/tour-9-difficiles.md`
 - 2026-11-22 · lot « flash » (tour-9) : 3 décision(s) dans `docs/decisions/tour-9-flash.md`
 - 2026-11-22 · lot « flash2 » (tour-9) : 3 décision(s) dans `docs/decisions/tour-9-flash2.md`
+- 2026-11-22 · Benjamin : si le passage robot de BenStudio Test (lot bentest-robot, Fable) marche bien, les prochains tours de tests passent par lui plutôt que par le banc (plus réaliste, plus productif). Retour arrière : revenir au banc (scripts/human-tester.sh).

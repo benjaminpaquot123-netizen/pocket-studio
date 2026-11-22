@@ -22,18 +22,19 @@ unzip -q -o "$APK" 'classes*.dex' -d "$DEX_DIR"
 for f in "$DEX_DIR"/classes*.dex; do "$BT/dexdump" -d "$f" 2>/dev/null; done > "$DEX_DIR/dump.txt"
 
 for cls in bentest/BenTestActivity bentest/InAppDriver bentest/EssaiEclair bentest/ToutTester bentest/Ecoute bentest/Carnet app/journey/Journey \
-    bentest/EcouteMicro bentest/MicroReel bentest/HautParleurReel bentest/Guet bentest/Bandes bentest/Courbe bentest/Empreinte; do
+    bentest/EcouteMicro bentest/MicroReel bentest/HautParleurReel bentest/Guet bentest/Bandes bentest/Courbe bentest/Empreinte bentest/Scenarios; do
     grep -q "Class descriptor *: 'Lcom/pocketstudio/$cls;'" "$DEX_DIR/dump.txt" || { echo "FAIL: robot class $cls missing" >&2; exit 1; }
 done
 
-# The tags the essai éclair and « Tout tester » touch or wait for (EssaiEclair.kt, ToutTester.kt, Journey.kt); a trailing _ is a prefix the app completes
+# The tags the essai éclair, « Tout tester » and « Scénarios » touch or wait for (EssaiEclair.kt, ToutTester.kt, Scenarios.kt, Journey.kt); a trailing _ is a prefix the app completes
 # (« _family_ »: StyleFamilies builds « wizard_family_… » from its own tag).
 TAGS="intro welcome welcome_later top_mode mode_card_pro mode_switch launch launch_continue launch_new starter_wizard
 mode_card_simple wizard _family_ wizard_style_ wizard_style_choose_ wizard_create_now guide_card_ guide_option_
 guide_panel guide_bar thumb_play top_song top_projects projects projects_back tab_ structure_parts mixer export_what_
 export_format_ export live_screen space_bar space_rail simple_
 export_advanced export_format_Flac top_share share_video share_close video_create video_close guide_skip guide_all_done
-guide_measuring guide_loading wizard_close new_project new_project_back"
+guide_measuring guide_loading wizard_close new_project new_project_back
+strip_more_ strip_sheet strip_sheet_close fx_add_ fx_picker_ fx_pick_ fx_chip_ live_play part_menu_ part_sheet part_break_4 project_"
 app_strings="$(awk '
     /Class descriptor/ { robot = ($0 ~ /Lcom\/pocketstudio\/(bentest|app\/journey)\//) }
     /const-string/ && !robot { if (match($0, /"[^"]*"/)) print substr($0, RSTART + 1, RLENGTH - 2) }

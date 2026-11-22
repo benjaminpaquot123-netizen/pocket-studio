@@ -352,9 +352,14 @@ internal class Tracker : Application.ActivityLifecycleCallbacks {
     @Volatile
     var sorties: Sorties? = null
 
+    /** Whether the studio's activity is resumed (in front), as Android says it: where the robot is. */
+    @Volatile
+    var devant = false
+
     override fun onActivityResumed(activity: Activity) {
         if (activity is MainActivity) {
             studio = activity
+            devant = true
             Banniere.attacher(activity)
             sorties?.retour()
             keep(activity)
@@ -367,7 +372,9 @@ internal class Tracker : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
     override fun onActivityStarted(activity: Activity) = Unit
-    override fun onActivityPaused(activity: Activity) = Unit
+    override fun onActivityPaused(activity: Activity) {
+        if (activity === studio) devant = false
+    }
     override fun onActivityStopped(activity: Activity) {
         if (activity !is MainActivity) return
         val on = activity.getSystemService(android.os.PowerManager::class.java)?.isInteractive ?: true
@@ -398,6 +405,19 @@ private class AppliReelle(private val app: Application, private val main: MainTh
         val a = tracker.studio as? ComponentActivity ?: return@run Appli.ExportVu(true, emptyList(), null)
         val e = ViewModelProvider(a)[RhythmViewModel::class.java].export.value
         Appli.ExportVu(e.running, e.files, e.error, e.seconds)
+    }
+
+    override fun studioDevant(): Boolean = tracker.devant
+
+    /**
+     * Android's « retour » on the studio, by its own handlers (a full-screen view, the Live's pads): only when
+     * one is there, since with none the system's « retour » would close the studio itself.
+     */
+    override fun retour() {
+        main.run {
+            val d = (tracker.studio as? ComponentActivity)?.onBackPressedDispatcher ?: return@run
+            if (d.hasEnabledCallbacks()) d.onBackPressed()
+        }
     }
 
     override fun capture(file: File): Boolean = main.run { Captures.windows(WindowInspector.getGlobalWindowViews(), file) }

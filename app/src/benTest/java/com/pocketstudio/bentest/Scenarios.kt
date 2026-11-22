@@ -45,6 +45,8 @@ class Scenarios(
     private val paquet: String = COMPLET,
     /** The short listening of the full pack's scenarios (an effect, a tempo, a screen switched while playing). */
     private val courtMs: Long = 3_000,
+    /** Scrolls the screen's lists back to their top ([InAppDriver.enHaut]): the Mix left scrolled down on the export settings. */
+    private val enHaut: () -> Unit = {},
 ) {
     private val e = EssaiEclair(j, sonde, appli, carnet, captures, ecouteMs, ecran)
     private val t = ToutTester(j, sonde, appli, carnet, captures, ecouteMs, ecran)
@@ -222,6 +224,8 @@ class Scenarios(
      * the robot does not touch under another window, and one red must not make three.
      */
     private fun fermerFeuilles() {
+        // « Insérer après la partie N » left open covers the whole studio (2026-11-22: 15 scenarios failed under it).
+        if (j.tagsMatching(PICK).isNotEmpty()) runCatching { j.tap("texte:Annuler"); attendre(3_000) { j.tagsMatching(PICK).isEmpty() } }
         for (sheet in listOf("part_sheet", "strip_sheet")) {
             if (j.exists(sheet)) runCatching { j.tap("${sheet}_close"); j.awaitGone(sheet, 5_000) }
         }
@@ -341,8 +345,7 @@ class Scenarios(
         val added: Boolean
         val chip: Boolean
         try {
-            j.tap("strip_more_$ch")
-            j.await("strip_sheet")
+            ouvrirBandeau(ch)
             // The strip already shows the effects it came with: one chip more, not « a chip ».
             val shown = j.tagsMatching(chips).size
             j.tap("fx_add_$ch")
@@ -483,6 +486,18 @@ class Scenarios(
     private fun bandeau(ch: Int) {
         j.tap("tab_Mix")
         j.await("mixer")
+        ouvrirBandeau(ch)
+    }
+
+    /** The strip's « ⋯ », its list back at the top first, three tries (2026-11-22: 14 sheets never opened, the Mix scrolled down). */
+    private fun ouvrirBandeau(ch: Int) {
+        repeat(3) { essai ->
+            runCatching { enHaut() }
+            j.idle(300)
+            runCatching { j.tap("strip_more_$ch") }
+            if (attendre(3_000) { j.exists("strip_sheet") }) return
+            carnet.add(Carnet.NOTE, "", "bandeau $ch : la feuille ne s'ouvre pas, essai ${essai + 2}")
+        }
         j.tap("strip_more_$ch")
         j.await("strip_sheet")
     }
@@ -906,6 +921,8 @@ class Scenarios(
             j.openPartSheet(PARTIE)
             there = attendre(2_000) { j.exists(tag) }
             if (there) j.tap(tag)
+            // « Insérer » asks which part to insert: the first one offered.
+            if (there && tag.startsWith("part_insert") && attendre(3_000) { j.tagsMatching(PICK).isNotEmpty() }) j.tap(j.tagsMatching(PICK).first())
         } finally {
             fermerFeuilles()
         }
@@ -1198,6 +1215,8 @@ class Scenarios(
 
         /** [LISTE] as steps without work (to read a logbook). */
         /** The screens a scenario starts from: the studio (its bar, or its rail lying down), the welcome, the projects. */
+        /** « Insérer après la partie N »'s choices. */
+        private val PICK = Regex("pick_scene_\\d+")
         private val PRET = listOf(*EssaiEclair.STUDIO, "launch", "projects", "welcome")
         private const val ESSAIS_REMISE = 4
         private const val INDICE = "indice"

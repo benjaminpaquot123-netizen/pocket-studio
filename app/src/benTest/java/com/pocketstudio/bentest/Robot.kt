@@ -187,12 +187,12 @@ object Robot {
                     val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
                     EcouteMicro(Pose(essai, Journey(driver)), MicroReel(app), HautParleurReel(app), c, sons(app)).etapes()
                 }
-                SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app)).etapes()
+                SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), enHaut = driver::enHaut).etapes()
                 else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
             }
             val steps = subset(all, which, retest(app))
             // A scenario the app died in: its clues (the ones taken as it died, else the screen now).
-            val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app)) else null
+            val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), enHaut = driver::enHaut) else null
             val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() }, onCrash = { clues?.apresPlantage(it) })
             Garde.installer(app, shots)
             runCatching {
@@ -422,7 +422,9 @@ internal class Tracker : Application.ActivityLifecycleCallbacks {
 /** [Appli] on the phone. */
 private class AppliReelle(private val app: Application, private val main: MainThread, private val tracker: Tracker) : Appli {
     override fun ouvrirStudio() {
-        app.startActivity(Intent(app, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        // REORDER_TO_FRONT: the studio's activity over BenStudio Test's own screen in the same task (2026-11-22: after
+        // Benjamin left the app and came back, NEW_TASK alone brought the task back with the robot's screen on top).
+        app.startActivity(Intent(app, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
     }
 
     override fun export(): Appli.ExportVu = main.run {

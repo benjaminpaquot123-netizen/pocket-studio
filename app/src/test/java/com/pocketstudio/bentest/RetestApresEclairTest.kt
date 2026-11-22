@@ -89,7 +89,7 @@ class RetestApresEclairTest {
     private val appli = object : Appli {
         override fun ouvrirStudio() {
             opened = System.currentTimeMillis()
-            studioDevant()
+            mettreStudioDevant()
         }
 
         override fun export(): Appli.ExportVu {
@@ -149,7 +149,7 @@ class RetestApresEclairTest {
     }
 
     /** The studio in front (AppliReelle.ouvrirStudio: startActivity, singleTask): resumed and shown, the bench stopped and hidden. */
-    private fun studioDevant() {
+    private fun mettreStudioDevant() {
         banc?.let { b -> if (b.get().lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) b.pause().stop(); montrer(b.get(), false) }
         val s = studio
         if (s == null) {

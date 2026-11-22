@@ -86,6 +86,10 @@ object Robot {
 
     /** Which run the logbook holds (kept beside it: a run picked up after a crash is the same one). */
     private fun passageFile(context: Context) = File(dir(context), "passage.txt")
+    /** « Scénarios »: the pack chosen (rapides: the first 31; complets: all of them). */
+    private fun paquetFile(context: Context) = File(dir(context), "paquet.txt")
+    fun paquet(context: Context): String = runCatching { paquetFile(context).readText().trim() }.getOrNull()?.takeIf { it in Scenarios.PAQUETS } ?: Scenarios.RAPIDE
+
     fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO || it == SCENARIOS } ?: ECLAIR
 
     /** « Retester les corrections »: the ids chosen (the file exists only for such a run), and the last « Tout tester » kept (ids and lights). */
@@ -115,7 +119,7 @@ object Robot {
             TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             OREILLE -> QuestionsOreille(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             MICRO -> EcouteMicro(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), MicroReel(context), HautParleurReel(context), carnet(context), sons(context)).etapes()
-            SCENARIOS -> Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+            SCENARIOS -> Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context), paquet = paquet(context)).etapes()
             else -> EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
         }
         return subset(all, passage, if (retest) retest(context) else null)
@@ -152,10 +156,11 @@ object Robot {
     }
 
     /** Starts (or picks up, [passage] null) the essai éclair or « Tout tester ». */
-    fun start(app: Application, passage: String? = null, retest: Set<String>? = null) {
+    fun start(app: Application, passage: String? = null, retest: Set<String>? = null, paquet: String? = null) {
         if (_etat.value.running) return
         if (passage != null) runCatching {
             dir(app).mkdirs(); passageFile(app).writeText(passage)
+            if (paquet != null) paquetFile(app).writeText(paquet)
             if (retest != null) Retest.ecrireChoix(retestFile(app), retest) else retestFile(app).delete()
         }
         val which = passage(app)
@@ -182,12 +187,12 @@ object Robot {
                     val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
                     EcouteMicro(Pose(essai, Journey(driver)), MicroReel(app), HautParleurReel(app), c, sons(app)).etapes()
                 }
-                SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir).etapes()
+                SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app)).etapes()
                 else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
             }
             val steps = subset(all, which, retest(app))
             // A scenario the app died in: its clues (the ones taken as it died, else the screen now).
-            val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir) else null
+            val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app)) else null
             val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() }, onCrash = { clues?.apresPlantage(it) })
             Garde.installer(app, shots)
             runCatching {
@@ -224,6 +229,7 @@ object Robot {
         if (_etat.value.running) return
         carnet(context).clear()
         passageFile(context).delete()
+        paquetFile(context).delete()
         retestFile(context).delete()
         captures(context).deleteRecursively()
         sons(context).deleteRecursively()
@@ -453,12 +459,16 @@ private class AppliReelle(private val app: Application, private val main: MainTh
         return ProjetVu(
             id, p.name, p.song.size, effets(p), disk?.let(::disque),
             tempo = p.tempoBpm, muets = p.mixer.channels.map { it.mute }, solos = p.mixer.channels.map { it.solo },
+            volumes = p.mixer.channels.map { it.volume }, pans = p.mixer.channels.map { it.pan },
         )
     }
 
     private fun effets(of: Project) = of.mixer.channels.map { ch -> ch.inserts.filter { it.effect != EffectType.NONE }.map { it.effect.name } }
 
-    private fun disque(p: Project) = ProjetVu.Disque(p.name, p.song.size, effets(p), p.tempoBpm, p.mixer.channels.map { it.mute }, p.mixer.channels.map { it.solo })
+    private fun disque(p: Project) = ProjetVu.Disque(
+        p.name, p.song.size, effets(p), p.tempoBpm, p.mixer.channels.map { it.mute }, p.mixer.channels.map { it.solo },
+        p.mixer.channels.map { it.volume }, p.mixer.channels.map { it.pan },
+    )
 
     override fun projets(): Map<String, ProjetVu.Disque>? = runCatching {
         val store = ProjectOpening.projectStore(app)

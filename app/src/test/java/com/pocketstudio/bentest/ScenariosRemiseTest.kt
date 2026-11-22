@@ -235,7 +235,7 @@ class ScenariosRemiseTest {
         val verdict = Scenarios.verdict(c.lines())
         assertTrue(verdict, "1 non mesuré" in verdict && "0 échoué" in verdict && "0 passé" in verdict)
         val resume = Scenarios.resume(c.lines(), emptyList())
-        assertTrue(resume, "Niveau mesure : 0 sur 4 (1 non mesuré)" in resume)
+        assertTrue(resume, "Niveau mesure : 0 sur ${Scenarios.LISTE.count { it.niveau == Scenarios.NIVEAU_MESURE }} (1 non mesuré)" in resume)
         assertTrue(resume, "non mesuré (son coupé)" in resume && "❌" !in resume)
         assertTrue(resume, resume.lines().take(4).any { it == "Son : coupé" })
         val json = Scenarios.json(c.lines(), emptyList())

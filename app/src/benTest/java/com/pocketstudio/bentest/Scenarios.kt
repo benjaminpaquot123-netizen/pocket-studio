@@ -57,6 +57,7 @@ class Scenarios(
      */
     private fun etape(name: String, label: String, maxMs: Long, work: () -> String) = Etape(name, label, maxMs) {
         try {
+            son(name)
             remiseAZero(name)
             work()
         } catch (t: Throwable) {
@@ -64,6 +65,15 @@ class Scenarios(
             indices(name)
             throw t
         }
+    }
+
+    /**
+     * The phone's sound as the scenario begins (« Son : coupé / allumé » at the head of resume.md). A run with the
+     * sound cut is a normal one: only the measures through the speaker are « non mesuré (son coupé) ».
+     */
+    private fun son(step: String) {
+        val v = runCatching { appli.volume() }.getOrNull() ?: return
+        carnet.add(Carnet.NOTE, step, "$SON;" + (if (v.coupe()) SON_COUPE else SON_ALLUME) + ";" + v.text())
     }
 
     /**
@@ -353,6 +363,9 @@ class Scenarios(
         private val PRET = listOf(*EssaiEclair.STUDIO, "launch", "projects", "welcome")
         private const val ESSAIS_REMISE = 4
         private const val INDICE = "indice"
+        private const val SON = "son"
+        const val SON_COUPE = "coupé"
+        const val SON_ALLUME = "allumé"
 
         private val NOMS = LISTE.map { s -> Etape(s.id, s.label, s.maxMs) { "" } }
 
@@ -380,17 +393,20 @@ class Scenarios(
                 val feu = feux[s.id]
                 val why = mine.filter { it.kind == Carnet.FEU }.mapNotNull { l -> l.text.split(';', limit = 2).takeIf { Feu.of(it[0]) == feu }?.getOrNull(1)?.takeIf { it.isNotBlank() } }
                 val mesures = mine.filter { it.kind == Carnet.MESURE }.flatMap { l -> champs(s.id, l.text) }
+                // Nothing could be measured (the sound cut, too many failed measures): neither passed nor failed.
+                val nonMesure = mine.lastOrNull { it.kind == Carnet.NOTE && it.text.startsWith("${ToutTester.NON_MESURE};") }
+                    ?.text?.substringAfter(';')?.takeIf { feu == Feu.GRIS && end?.kind == Carnet.REUSSI }
                 Resultat(
                     s, feu,
                     when (feu) {
                         null -> PAS_JOUE
                         Feu.VERT, Feu.ORANGE -> PASSE
-                        Feu.GRIS -> NON_CONCLUANT
+                        Feu.GRIS -> if (nonMesure != null) NON_MESURE else NON_CONCLUANT
                         Feu.ROUGE -> ECHOUE
                     },
-                    listOfNotNull(end?.text?.takeIf { it.isNotBlank() }, why.joinToString(", ").takeIf { it.isNotEmpty() && end?.kind == Carnet.REUSSI && feu != Feu.VERT }).joinToString(" ; "),
+                    nonMesure ?: listOfNotNull(end?.text?.takeIf { it.isNotBlank() }, why.joinToString(", ").takeIf { it.isNotEmpty() && end?.kind == Carnet.REUSSI && feu != Feu.VERT }).joinToString(" ; "),
                     if (begin != null && end != null) (end.atMs - begin.atMs) / 1000 else null,
-                    mesures + mediane(s.id, mine),
+                    mesures + if (nonMesure != null) emptyList() else mediane(s.id, mine),
                     mine.filter { it.kind == Carnet.NOTE && it.text.startsWith("$INDICE;") }.lastOrNull()?.let { l -> l.text.removePrefix("$INDICE;").split(';').mapNotNull { f -> f.split('=', limit = 2).takeIf { it.size == 2 }?.let { it[0] to it[1] } } }.orEmpty(),
                 )
             }
@@ -418,6 +434,7 @@ class Scenarios(
                 add("${n(PASSE)} passé" + if (n(PASSE) > 1) "s" else "")
                 add("${n(ECHOUE)} échoué" + if (n(ECHOUE) > 1) "s" else "")
                 if (n(NON_CONCLUANT) > 0) add("${n(NON_CONCLUANT)} non concluant" + if (n(NON_CONCLUANT) > 1) "s" else "")
+                if (n(NON_MESURE) > 0) add("${n(NON_MESURE)} non mesuré" + if (n(NON_MESURE) > 1) "s" else "")
                 if (n(PAS_JOUE) > 0) add("${n(PAS_JOUE)} pas joué" + if (n(PAS_JOUE) > 1) "s" else "")
             }.joinToString(", ")
         }
@@ -433,7 +450,9 @@ class Scenarios(
                     "detail" to JsonText.string(x.detail), "mesures" to JsonText.obj(*numbers.toTypedArray()),
                 )
             }
-            val levels = niveaux(r).map { (level, ok, all) -> JsonText.obj("niveau" to JsonText.string(level), "passes" to ok.toString(), "scenarios" to all.toString()) }
+            val levels = niveaux(r).map { n ->
+                JsonText.obj("niveau" to JsonText.string(n.niveau), "passes" to n.passes.toString(), "non_mesures" to n.nonMesures.toString(), "scenarios" to n.scenarios.toString())
+            }
             return JsonText.obj(
                 *about.map { (k, v) -> k to JsonText.string(v) }.toTypedArray(),
                 "passage" to JsonText.string("scenarios"), "verdict" to JsonText.string(verdict(lines)), "tout_passe" to r.all { it.resultat == PASSE }.toString(),
@@ -446,11 +465,15 @@ class Scenarios(
             val r = resultats(lines)
             appendLine("# BenStudio Test : scénarios")
             appendLine()
+            appendLine("Son : ${son(lines) ?: "inconnu"}")
+            appendLine()
             about.forEach { (k, v) -> appendLine("- $k : $v") }
             appendLine()
             appendLine("**Verdict : ${verdict(lines)}**" + (duree(lines)?.let { " (passage de ${it / 60} min ${it % 60} s)" } ?: ""))
             appendLine()
-            niveaux(r).forEach { (level, ok, all) -> appendLine("- Niveau $level : $ok sur $all") }
+            niveaux(r).forEach { n ->
+                appendLine("- Niveau ${n.niveau} : ${n.passes} sur ${n.scenarios}" + if (n.nonMesures > 0) " (${n.nonMesures} non mesuré" + (if (n.nonMesures > 1) "s)" else ")") else "")
+            }
             appendLine()
             appendLine("| Scénario | Niveau | Résultat | Durée | Ce qu'il a lu |")
             appendLine("|---|---|---|---|---|")
@@ -459,6 +482,7 @@ class Scenarios(
                     PASSE -> if (x.feu == Feu.ORANGE) "🟠 passé, à surveiller" else "✅ passé"
                     ECHOUE -> "❌ échoué"
                     NON_CONCLUANT -> "⚪ non concluant"
+                    NON_MESURE -> if (x.detail.startsWith(ToutTester.SON_COUPE)) "⚪ non mesuré (son coupé)" else "⚪ non mesuré"
                     else -> "pas joué"
                 }
                 appendLine("| ${x.scenario.label} | ${x.scenario.niveau} | $mark | ${x.secondes?.let { "$it s" } ?: ""} | ${x.detail.replace("|", "/").replace("\n", " ")} |")
@@ -480,9 +504,17 @@ class Scenarios(
             }
         }
 
-        /** level, scenarios passed, scenarios of that level. */
-        private fun niveaux(r: List<Resultat>): List<Triple<String, Int, Int>> =
-            r.groupBy { it.scenario.niveau }.map { (level, of) -> Triple(level, of.count { it.resultat == PASSE }, of.size) }
+        /** A level's scenarios: passed, not measured (counted apart: neither passed nor failed), all. */
+        private data class Niveau(val niveau: String, val passes: Int, val nonMesures: Int, val scenarios: Int)
+
+        private fun niveaux(r: List<Resultat>): List<Niveau> =
+            r.groupBy { it.scenario.niveau }.map { (level, of) -> Niveau(level, of.count { it.resultat == PASSE }, of.count { it.resultat == NON_MESURE }, of.size) }
+
+        /** The phone's sound the last scenario began with: « coupé » or « allumé »; null: unknown. */
+        fun son(lines: List<Carnet.Ligne>): String? {
+            val ids = LISTE.map { it.id }.toSet()
+            return lines.lastOrNull { it.step in ids && it.kind == Carnet.NOTE && it.text.startsWith("$SON;") }?.text?.split(';')?.getOrNull(1)
+        }
 
         /** From the first scenario's beginning to the last line of one. */
         private fun duree(lines: List<Carnet.Ligne>): Long? {

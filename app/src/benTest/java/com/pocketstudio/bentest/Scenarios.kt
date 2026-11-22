@@ -31,24 +31,57 @@ class Scenarios(
     private val liveEcouteMs: Long = 4_000,
     /** How long the song is listened to with its new effect. */
     private val effetEcouteMs: Long = 6_000,
+    /** How long each style's new song is listened to, then the long playback, then the music with the studio behind another screen. */
+    private val styleEcouteMs: Long = 10_000,
+    private val longueMs: Long = 120_000,
+    private val fondMs: Long = 8_000,
+    /** Types [text] in the field tagged [tag] ([InAppDriver.saisir]); false: no such field (or not on the phone). */
+    private val saisir: (String, String) -> Boolean = { _, _ -> false },
 ) {
     private val e = EssaiEclair(j, sonde, appli, carnet, captures, ecouteMs, ecran)
     private val t = ToutTester(j, sonde, appli, carnet, captures, ecouteMs, ecran)
+    private val ts = ToutTester(j, sonde, appli, carnet, captures, styleEcouteMs, ecran)
+
+    /** Each scenario's work (its gestures and its oracle), by its id. */
+    private val travaux: Map<String, () -> String> = mapOf(
+        DEBUTANT to { debutant() },
+        ECRANS to { e.ecrans() },
+        TEMPO to { tempo() },
+        MUET to { muet() },
+        ANNULER to { annulerRetablir() },
+        PADS to { pads() },
+        PROJET to { projet() },
+        STRUCTURE to { structure() },
+        DUPLIQUER to { dupliquer() },
+        RENOMMER to { renommer() },
+        SUPPRIMER to { supprimer() },
+        SOLO to { solo() },
+        REPRISE to { reprise() },
+        ARRIERE_PLAN to { arrierePlan() },
+        EFFETS to { effets() },
+        EFFETS_PLUSIEURS to { effetsPlusieurs() },
+        ANNULER_EFFET to { annulerEffet() },
+        TEMPO_LECTURE to { tempoLecture() },
+        ROTATION_LECTURE to { rotationLecture() },
+        LIVE to { live() },
+        EXPORT to { t.export("m4a") },
+        EXPORT_WAV to { t.export("wav") },
+        EXPORT_FLAC to { t.export("flac") },
+        LATENCE to { t.latence() },
+        DECROCHAGES to { decrochages() },
+        LECTURE_LONGUE to { lectureLongue() },
+        IMAGES to { t.images() },
+        STYLE_TRANCE to { ts.style(STYLE_TRANCE, "trance") },
+        STYLE_DUBSTEP to { ts.style(STYLE_DUBSTEP, "dubstep") },
+        STYLE_DNB to { ts.style(STYLE_DNB, "dnb") },
+        GUIDE to { t.guide("house") },
+    )
+
+    /** The scenarios of [LISTE] without a work of their own (none: a test checks it). */
+    internal fun sansTravail(): List<String> = LISTE.map { it.id }.filter { it !in travaux }
 
     fun etapes(): List<Etape> = LISTE.map { s ->
-        etape(s.id, s.label, s.maxMs) {
-            when (s.id) {
-                DEBUTANT -> debutant()
-                ECRANS -> e.ecrans()
-                PROJET -> projet()
-                STRUCTURE -> structure()
-                EFFETS -> effets()
-                LIVE -> live()
-                EXPORT -> t.export("m4a")
-                LATENCE -> t.latence()
-                else -> decrochages()
-            }
-        }
+        etape(s.id, s.label, s.maxMs) { (travaux[s.id] ?: error("scénario sans travail : ${s.id}"))() }
     }
 
     /**
@@ -159,6 +192,7 @@ class Scenarios(
         for (sheet in listOf("part_sheet", "strip_sheet")) {
             if (j.exists(sheet)) runCatching { j.tap("${sheet}_close"); j.awaitGone(sheet, 5_000) }
         }
+        if (j.exists("tempo_sheet")) runCatching { j.tap("tempo_close"); j.awaitGone("tempo_sheet", 5_000) }
     }
 
     /**
@@ -328,20 +362,394 @@ class Scenarios(
     }
 
     /** The song played [decrochagesMs]: no dropout, the worst block and the longest gap inside the thresholds. */
-    fun decrochages(): String {
+    fun decrochages(): String = lecture(DECROCHAGES, decrochagesMs)
+
+    /** The song played [longueMs] (2 min) without a stop: the same oracle as [decrochages], over a long time. */
+    fun lectureLongue(): String = lecture(LECTURE_LONGUE, longueMs)
+
+    private fun lecture(step: String, ms: Long): String {
         auStudio()
         val by = e.lancerLecture()
-        val b = t.ecouter(DECROCHAGES, decrochagesMs)
+        val b = t.ecouter(step, ms)
         e.arreter()
-        ecoute(DECROCHAGES, b)
-        feuEcoute(DECROCHAGES, b)
+        ecoute(step, b)
+        feuEcoute(step, b)
         check(b.reads > 0) { "aucune mesure" }
         check(b.playing * 2 >= b.reads) { "la lecture s'est arrêtée toute seule : ${b.text()}" }
+        check(!b.nonFinite) { "valeur invalide (NaN) dans le son" }
         return "lecture par $by : ${b.text()}"
     }
 
+    // --- The scenarios added on 2026-11-22 -------------------------------------------------------------
+
+    /** Neither passed nor failed: the phone cannot play this scenario ([why]); a grey light and the note the report reads. */
+    private fun nonMesure(step: String, why: String): String {
+        feu(step, Feu.GRIS to why)
+        carnet.add(Carnet.NOTE, step, "${ToutTester.NON_MESURE};$why")
+        return "non mesuré : $why"
+    }
+
+    private fun ouvrirTempo() {
+        if (!j.exists("top_tempo")) j.tap("tab_Structure")
+        j.tap("top_tempo")
+        j.await("tempo_sheet")
+    }
+
+    /** Beginner: the tempo's « + », then « − ». Oracle: the project's tempo up, the same on the disk, then back down. */
+    fun tempo(): String {
+        auStudio()
+        val before = lu().tempo
+        var after = before
+        val up: Boolean
+        var d: ProjetVu.Disque? = null
+        val down: Boolean
+        try {
+            ouvrirTempo()
+            j.tap("tempo_plus")
+            up = attendre(5_000) { lu().tempo > before }
+            after = lu().tempo
+            if (up) d = surDisque { it.tempo == after }
+            j.tap("tempo_minus")
+            down = attendre(5_000) { lu().tempo < after }
+        } finally {
+            fermerFeuilles()
+        }
+        check(up) { "le tempo ne change pas : ${fmt(before)} bpm après « + »" }
+        check(d?.tempo == after) { "le tempo n'est pas enregistré : ${d?.tempo?.let(::fmt) ?: "aucun fichier"} bpm sur le disque (attendu : ${fmt(after)})" }
+        check(down) { "« − » ne fait pas redescendre le tempo : ${fmt(lu().tempo)} bpm" }
+        bilan(TEMPO, "tempo_avant" to fmt(before), "tempo_apres" to fmt(after))
+        return "tempo ${fmt(before)} puis ${fmt(after)} bpm, enregistré, puis redescendu à ${fmt(lu().tempo)}"
+    }
+
+    /** Pro: the tempo raised by 5 while the song plays. Oracle: the project's tempo changed, the music never stops, no dropout. */
+    fun tempoLecture(): String {
+        auStudio()
+        val before = lu().tempo
+        val by = e.lancerLecture()
+        val b: Ecoute.Bilan
+        val changed: Boolean
+        try {
+            ouvrirTempo()
+            repeat(PAS_TEMPO) { j.tap("tempo_plus") }
+            changed = attendre(5_000) { lu().tempo >= before + PAS_TEMPO - 0.01 }
+            b = t.ecouter(TEMPO_LECTURE, effetEcouteMs)
+            repeat(PAS_TEMPO) { runCatching { j.tap("tempo_minus") } }
+        } finally {
+            fermerFeuilles()
+            e.arreter()
+        }
+        ecoute(TEMPO_LECTURE, b)
+        feuEcoute(TEMPO_LECTURE, b)
+        check(changed) { "le tempo ne monte pas pendant la lecture : ${fmt(lu().tempo)} bpm (avant : ${fmt(before)})" }
+        check(b.playing * 2 >= b.reads) { "la lecture s'arrête quand le tempo change : ${b.text()}" }
+        check(!b.nonFinite) { "valeur invalide (NaN) dans le son" }
+        return "tempo ${fmt(before)} puis ${fmt(before + PAS_TEMPO)} bpm en jouant (lecture par $by) : ${b.text()}"
+    }
+
+    /** A strip's sheet in the mixer. */
+    private fun bandeau(ch: Int) {
+        j.tap("tab_Mix")
+        j.await("mixer")
+        j.tap("strip_more_$ch")
+        j.await("strip_sheet")
+    }
+
+    /** A strip's « Muet » or « Solo » ([tag]) on, then off. Oracle: the project's flag, the same on the disk, then back. */
+    private fun bascule(step: String, what: String, tag: String, ch: Int, of: (ProjetVu) -> List<Boolean>, ofDisk: (ProjetVu.Disque) -> List<Boolean>): String {
+        auStudio()
+        val before = of(lu()).getOrNull(ch) ?: error("pas de piste ${ch + 1} dans le projet")
+        val on: Boolean
+        var d: ProjetVu.Disque? = null
+        val off: Boolean
+        try {
+            bandeau(ch)
+            j.tap("${tag}_$ch")
+            on = attendre(5_000) { of(lu()).getOrNull(ch) == !before }
+            if (on) d = surDisque { ofDisk(it).getOrNull(ch) == !before }
+            j.tap("${tag}_$ch")
+            off = attendre(5_000) { of(lu()).getOrNull(ch) == before }
+        } finally {
+            fermerFeuilles()
+        }
+        check(on) { "« $what » touché, la piste ${ch + 1} ne change pas dans le projet" }
+        check(d != null && ofDisk(d).getOrNull(ch) == !before) { "« $what » n'est pas enregistré sur le disque (piste ${ch + 1})" }
+        check(off) { "« $what » touché une seconde fois, la piste ${ch + 1} ne revient pas" }
+        bilan(step, "piste" to ch + 1)
+        return "« $what » sur la piste ${ch + 1} : mis, enregistré, puis enlevé"
+    }
+
+    /** Beginner: the first strip muted, then not. */
+    fun muet(): String = bascule(MUET, "Muet", "sheet_mute", 0, { it.muets }, { it.muets })
+
+    /** Intermediate: the second strip soloed, then not. */
+    fun solo(): String = bascule(SOLO, "Solo", "sheet_solo", 1, { it.solos }, { it.solos })
+
+    /** Beginner: a break added, « Annuler », « Rétablir ». Oracle: the parts one more, back, one more again, on the disk. */
+    fun annulerRetablir(): String {
+        auStudio()
+        val before = lu().parties
+        j.tap("tab_Structure")
+        try {
+            j.partIntent(PARTIE, "part_break_4")
+        } finally {
+            fermerFeuilles()
+        }
+        check(attendre(5_000) { lu().parties == before + 1 }) { "le break ne s'ajoute pas au morceau : ${lu().parties} parties (avant : $before)" }
+        if (!j.exists("top_undo")) return nonMesure(ANNULER, "pas de bouton « Annuler » dans la barre (réglage de l'appli)")
+        j.tap("top_undo")
+        check(attendre(5_000) { lu().parties == before }) { "« Annuler » ne retire pas le break : ${lu().parties} parties (attendu : $before)" }
+        check(runCatching { j.await("top_redo", 5_000) }.isSuccess) { "pas de « Rétablir » après « Annuler »" }
+        j.tap("top_redo")
+        check(attendre(5_000) { lu().parties == before + 1 }) { "« Rétablir » ne remet pas le break : ${lu().parties} parties (attendu : ${before + 1})" }
+        val d = surDisque { it.parties == before + 1 }
+        check(d?.parties == before + 1) { "après « Rétablir », ${d?.parties ?: "aucun fichier"} parties sur le disque (attendu : ${before + 1})" }
+        bilan(ANNULER, "parties" to before + 1)
+        return "break ajouté ($before puis ${before + 1} parties), annulé ($before), rétabli (${before + 1}), enregistré"
+    }
+
+    /** [types] added one by one to strip [ch] by its sheet's list: each one in the project before the next. */
+    private fun ajouter(ch: Int, types: List<String>) {
+        bandeau(ch)
+        try {
+            for (type in types) {
+                val n = lu().effets.getOrNull(ch).orEmpty().size
+                if (!j.exists("fx_picker_$ch")) {
+                    j.tap("fx_add_$ch")
+                    j.await("fx_picker_$ch")
+                }
+                j.tap("fx_pick_${ch}_$type")
+                check(attendre(5_000) { lu().effets.getOrNull(ch).orEmpty().size == n + 1 }) {
+                    "$type ne s'ajoute pas à la piste ${ch + 1} : ${lu().effets.getOrNull(ch).orEmpty().ifEmpty { listOf("aucun") }.joinToString(", ")}"
+                }
+            }
+            runCatching { if (j.exists("fx_picker_$ch")) j.tap("fx_add_$ch") }
+        } finally {
+            fermerFeuilles()
+        }
+    }
+
+    /** The first strip with room for [n] effects more (null: none among the first ones). */
+    private fun place(n: Int): Int? {
+        val fx = lu().effets
+        return (0 until minOf(fx.size, PISTES_MAX)).firstOrNull { fx[it].size + n <= ProjetVu.EFFETS_MAX }
+    }
+
+    /** Pro: three effects on one strip. Oracle: the three in the project and on the disk, and the song still sounds (no NaN). */
+    fun effetsPlusieurs(): String {
+        auStudio()
+        val ch = place(TROIS.size) ?: return nonMesure(EFFETS_PLUSIEURS, "aucune des $PISTES_MAX premières pistes n'a ${TROIS.size} places libres")
+        val want = (lu().effets[ch] + TROIS).sorted()
+        ajouter(ch, TROIS)
+        check(lu().effets[ch].sorted() == want) { "la piste ${ch + 1} a ${lu().effets[ch].joinToString(", ")} (attendu : ${want.joinToString(", ")})" }
+        val d = surDisque { it.effets.getOrNull(ch).orEmpty().sorted() == want }
+        check(d != null && d.effets.getOrNull(ch).orEmpty().sorted() == want) { "les trois effets ne sont pas enregistrés sur le disque (piste ${ch + 1})" }
+        val by = e.lancerLecture()
+        val b = t.ecouter(EFFETS_PLUSIEURS, effetEcouteMs)
+        e.arreter()
+        ecoute(EFFETS_PLUSIEURS, b)
+        feuEcoute(EFFETS_PLUSIEURS, b)
+        check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec les trois effets" }
+        check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec les trois effets : ${b.text()}" }
+        return "${TROIS.joinToString(", ")} sur la piste ${ch + 1}, enregistrés ; lecture par $by : ${b.text()}"
+    }
+
+    /** Pro: an effect added, then « Annuler ». Oracle: the strip's effects back as they were, in the project and on the disk. */
+    fun annulerEffet(): String {
+        auStudio()
+        val ch = place(1) ?: return nonMesure(ANNULER_EFFET, "aucune des $PISTES_MAX premières pistes n'a de place libre")
+        val before = lu().effets[ch].sorted()
+        ajouter(ch, listOf(EFFET_ANNULE))
+        if (!j.exists("top_undo")) return nonMesure(ANNULER_EFFET, "pas de bouton « Annuler » dans la barre (réglage de l'appli)")
+        j.tap("top_undo")
+        check(attendre(5_000) { lu().effets[ch].sorted() == before }) { "« Annuler » ne retire pas l'effet : ${lu().effets[ch].joinToString(", ")} sur la piste ${ch + 1}" }
+        val d = surDisque { it.effets.getOrNull(ch).orEmpty().sorted() == before }
+        check(d != null && d.effets.getOrNull(ch).orEmpty().sorted() == before) { "l'effet annulé reste sur le disque (piste ${ch + 1})" }
+        return "$EFFET_ANNULE ajouté à la piste ${ch + 1} puis annulé, le disque aussi"
+    }
+
+    /** Beginner: a pad of the Live touched. Oracle: the engine plays and sound comes out. */
+    fun pads(): String {
+        auStudio()
+        e.arreter()
+        j.tap("tab_Live")
+        j.await("live_screen")
+        val pad = j.tagsMatching(Regex("live_pad_.+")).firstOrNull()
+        if (pad == null) {
+            runCatching { j.tap("tab_Structure") }
+            return nonMesure(PADS, "aucun pad à l'écran du Live pour ce morceau")
+        }
+        j.tap(pad)
+        val started = attendre(liveMs) { sonde.lire().playing }
+        var peak = 0f
+        val heard = started && attendre(liveMs) { peak = maxOf(peak, sonde.lire().peak); peak > EssaiEclair.NIVEAU_MIN }
+        runCatching { if (j.exists("live_stop_all")) j.tap("live_stop_all") }
+        runCatching { j.tap("tab_Structure") }
+        e.arreter()
+        check(started) { "pad $pad touché, le moteur ne joue pas" }
+        check(heard) { "pad $pad touché, le moteur joue mais aucun son ne sort : crête ${fmt(peak)}" }
+        bilan(PADS, "crete" to fmt(peak))
+        return "pad $pad : le son sort (crête ${fmt(peak)})"
+    }
+
+    private fun versProjets() {
+        if (!j.exists("top_projects")) j.tap("tab_Structure")
+        j.tap("top_projects")
+        j.await("projects")
+    }
+
+    private fun versStudio() {
+        runCatching { j.awaitGone("project_name_field", 2_000) }
+        if (j.exists("projects")) j.tap("projects_back")
+        if (runCatching { j.await("launch", 5_000) }.isSuccess) j.tap("launch_continue")
+        j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000)
+    }
+
+    /** A project's « ⋯ », then its item [names] (an item without a tag: found by its words, French or English). */
+    private fun menu(id: String, names: List<String>) {
+        j.tap("project_menu_$id")
+        var item: String? = null
+        attendre(3_000) { item = names.map { InAppDriver.TEXTE + it }.firstOrNull { j.exists(it) }; item != null }
+        j.tap(item ?: error("« ${names.first()} » n'est pas dans le menu du projet"))
+    }
+
+    /** The copy this run made (the only project besides the open one that the robot may rename or delete). */
+    private var copie: String? = null
+
+    /** Intermediate: « Mes projets » › the open song's « ⋯ » › « Dupliquer ». Oracle: one project more on the disk, with the same parts. */
+    fun dupliquer(): String {
+        auStudio()
+        val p = lu()
+        val before = appli.projets() ?: return nonMesure(DUPLIQUER, "la liste des projets ne se lit pas ici")
+        versProjets()
+        try {
+            menu(p.id, listOf("Dupliquer", "Duplicate"))
+            var added = emptyMap<String, ProjetVu.Disque>()
+            attendre(sauvegardeMs) { added = appli.projets().orEmpty() - before.keys; added.isNotEmpty() }
+            check(added.size == 1) { if (added.isEmpty()) "aucune copie sur le disque après ${sauvegardeMs / 1000} s" else "${added.size} projets nouveaux au lieu d'un" }
+            val (id, d) = added.entries.first()
+            copie = id
+            check(d.parties == p.parties) { "la copie « ${d.nom} » a ${d.parties} parties (l'original : ${p.parties})" }
+            bilan(DUPLIQUER, "parties" to d.parties)
+            return "copie « ${d.nom} » de « ${p.nom} » sur le disque (${d.parties} parties)"
+        } finally {
+            versStudio()
+        }
+    }
+
+    /** Intermediate: the robot's copy renamed. Oracle: its file on the disk has the new name. Never one of the user's projects. */
+    fun renommer(): String {
+        auStudio()
+        val id = copie?.takeIf { it != lu().id } ?: return nonMesure(RENOMMER, "pas de copie faite par le robot à renommer (« Dupliquer » n'a pas abouti)")
+        versProjets()
+        try {
+            menu(id, listOf("Renommer", "Rename"))
+            j.await("project_name_field", 5_000)
+            check(saisir("project_name_field", NOM_ROBOT)) { "le champ du nom ne prend pas le texte" }
+            j.tap("project_rename_ok")
+            var d: ProjetVu.Disque? = null
+            check(attendre(sauvegardeMs) { d = appli.projets()?.get(id); d?.nom == NOM_ROBOT }) { "le nouveau nom n'est pas enregistré : « ${d?.nom ?: "?"} » sur le disque (attendu : « $NOM_ROBOT »)" }
+            return "copie renommée « $NOM_ROBOT », relue sur le disque"
+        } finally {
+            versStudio()
+        }
+    }
+
+    /**
+     * Intermediate: the robot's copy deleted. Oracle: it leaves the disk's list. Only a project the robot made (this run's
+     * copy, else one under its name): never one of the user's.
+     */
+    fun supprimer(): String {
+        auStudio()
+        val open = lu().id
+        val all = appli.projets() ?: return nonMesure(SUPPRIMER, "la liste des projets ne se lit pas ici")
+        val id = (copie?.takeIf { it in all } ?: all.entries.firstOrNull { it.value.nom == NOM_ROBOT }?.key)?.takeIf { it != open }
+            ?: return nonMesure(SUPPRIMER, "aucun projet fait par le robot à supprimer (« Dupliquer » n'a pas abouti)")
+        versProjets()
+        try {
+            j.tap("project_menu_$id")
+            j.tap("project_delete_$id")
+            check(attendre(sauvegardeMs) { appli.projets()?.containsKey(id) == false }) { "le projet supprimé est encore sur le disque après ${sauvegardeMs / 1000} s" }
+            copie = null
+            val undo = j.exists("project_deleted")
+            return "copie du robot supprimée : plus dans Mes projets" + if (undo) ", « Annuler » proposé" else ""
+        } finally {
+            versStudio()
+        }
+    }
+
+    /** Intermediate: the studio closed, then opened again. Oracle: « Continuer » brings back the same song, with its parts. */
+    fun reprise(): String {
+        auStudio()
+        e.arreter()
+        val p = lu()
+        surDisque { it.parties == p.parties }
+        if (!appli.relancerStudio()) return nonMesure(REPRISE, "le studio ne se ferme et ne se rouvre pas d'ici")
+        // The studio is opened again by [Appli.relancerStudio]: its opening, then « Que veux-tu faire ? » or the song.
+        j.awaitAny("intro", "welcome", "launch", *EssaiEclair.STUDIO, timeoutMs = 60_000)
+        j.awaitGone("intro", 60_000)
+        val how = if (j.exists("launch")) "« Continuer »" else "rouvert sur le morceau"
+        e.auStudioPro()
+        val back = lu()
+        check(back.id == p.id && back.parties == p.parties) { "rouvert sur « ${back.nom} » (${back.parties} parties) au lieu de « ${p.nom} » (${p.parties} parties)" }
+        return "studio fermé puis rouvert ($how) : « ${p.nom} », ${p.parties} parties"
+    }
+
+    /** Intermediate: the song plays, the studio goes behind another screen. Oracle: the music goes on in the background, then the studio comes back. */
+    fun arrierePlan(): String {
+        auStudio()
+        val by = e.lancerLecture()
+        var b: Ecoute.Bilan? = null
+        val done = try {
+            appli.arrierePlan { b = t.ecouter(ARRIERE_PLAN, fondMs) }
+        } finally {
+            if (appli.studioDevant() == false) attendre(15_000) { appli.studioDevant() != false }
+        }
+        val back = appli.studioDevant() != false
+        e.arreter()
+        if (!done) return nonMesure(ARRIERE_PLAN, "le studio ne passe pas derrière un autre écran ici")
+        val heard = checkNotNull(b)
+        ecoute(ARRIERE_PLAN, heard)
+        feuEcoute(ARRIERE_PLAN, heard)
+        check(heard.playing * 2 >= heard.reads) { "la musique s'arrête quand l'appli passe au fond : ${heard.text()}" }
+        check(heard.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence quand l'appli passe au fond : ${heard.text()}" }
+        check(back) { "le studio ne revient pas devant" }
+        return "au fond ${fondMs / 1000} s (lecture par $by) : ${heard.text()} ; studio revenu"
+    }
+
+    /** Pro: the phone turned while the song plays. Oracle: the studio comes back each time and the music never stops. */
+    fun rotationLecture(): String {
+        auStudio()
+        val by = e.lancerLecture()
+        val lying: Boolean
+        val standing: Boolean
+        val b: Ecoute.Bilan
+        try {
+            appli.orienter(true)
+            j.idle(1_500)
+            j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000)
+            lying = sonde.lire().playing
+            appli.orienter(false)
+            j.idle(1_500)
+            j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000)
+            standing = sonde.lire().playing
+            b = t.ecouter(ROTATION_LECTURE, liveEcouteMs)
+        } finally {
+            appli.orienter(null)
+            e.arreter()
+        }
+        ecoute(ROTATION_LECTURE, b)
+        feuEcoute(ROTATION_LECTURE, b)
+        check(lying) { "la musique s'arrête quand le téléphone se couche" }
+        check(standing && b.playing * 2 >= b.reads) { "la musique s'arrête quand le téléphone se redresse : ${b.text()}" }
+        return "couché puis debout en jouant (lecture par $by) : ${b.text()}"
+    }
+
     /** One scenario of the run: its step's name, what the report calls it, whose use it is. */
-    data class Scenario(val id: String, val label: String, val niveau: String, val maxMs: Long)
+    data class Scenario(
+        val id: String, val label: String, val niveau: String, val maxMs: Long,
+        /** Its usual length on a phone (the run's estimate, under 20 min in all), and the precise result its oracle reads. */
+        val estimeS: Int = 0, val oracle: String = "",
+    )
 
     companion object {
         const val DEBUTANT = "debutant"
@@ -355,6 +763,44 @@ class Scenarios(
         const val EXPORT = "export_m4a"
         const val LATENCE = "latence"
         const val DECROCHAGES = "decrochages"
+
+        // Added on 2026-11-22 (30 scenarios).
+        const val TEMPO = "tempo"
+        const val MUET = "muet"
+        const val ANNULER = "annuler_retablir"
+        const val PADS = "pads_live"
+        const val DUPLIQUER = "dupliquer"
+        const val RENOMMER = "renommer"
+        const val SUPPRIMER = "supprimer"
+        const val SOLO = "solo"
+        const val REPRISE = "reprise_fermeture"
+        const val ARRIERE_PLAN = "arriere_plan"
+        const val EFFETS_PLUSIEURS = "effets_plusieurs"
+        const val ANNULER_EFFET = "annuler_effet"
+        const val TEMPO_LECTURE = "tempo_lecture"
+        const val ROTATION_LECTURE = "rotation_lecture"
+        const val LECTURE_LONGUE = "lecture_longue"
+
+        /** The names « Tout tester » writes these lights under. */
+        const val EXPORT_WAV = "export_wav"
+        const val EXPORT_FLAC = "export_flac"
+        const val IMAGES = "images"
+        const val STYLE_TRANCE = "style_trance"
+        const val STYLE_DUBSTEP = "style_dubstep"
+        const val STYLE_DNB = "style_dnb"
+        const val GUIDE = "guide_house"
+
+        /** The name the robot gives its copy: the only project, with this run's copy, it may delete. */
+        const val NOM_ROBOT = "BenStudio Test (copie du robot)"
+
+        /** The effects put together on one strip, and the one added then undone. */
+        val TROIS = listOf("EQ", "COMPRESSOR", "FILTER")
+        const val EFFET_ANNULE = "COMPRESSOR"
+        const val PISTES_MAX = 8
+        const val PAS_TEMPO = 5
+
+        /** The whole run's estimated length at most (Benjamin, 2026-11-22: « le passage entier reste sous 20 min »). */
+        const val DUREE_MAX_S = 20 * 60
 
         const val NIVEAU_DEBUTANT = "débutant"
         const val NIVEAU_MOYEN = "moyen"
@@ -375,15 +821,37 @@ class Scenarios(
         const val LISTE_PLEINE = 5
 
         val LISTE = listOf(
-            Scenario(DEBUTANT, "Débutant : un morceau par l'assistant, et il joue", NIVEAU_DEBUTANT, 420_000),
-            Scenario(ECRANS, "Débutant : les cinq écrans s'ouvrent", NIVEAU_DEBUTANT, 120_000),
-            Scenario(PROJET, "Moyen : le morceau est enregistré et se rouvre", NIVEAU_MOYEN, 120_000),
-            Scenario(STRUCTURE, "Moyen : ajouter un break à la structure", NIVEAU_MOYEN, 120_000),
-            Scenario(EFFETS, "Pro : un effet sur une piste du mixeur", NIVEAU_PRO, 180_000),
-            Scenario(LIVE, "Pro : jouer puis arrêter le Live", NIVEAU_PRO, 120_000),
-            Scenario(EXPORT, "Export M4A relu", NIVEAU_MOYEN, 600_000),
-            Scenario(LATENCE, "Latence aller-retour", NIVEAU_MESURE, 120_000),
-            Scenario(DECROCHAGES, "Décrochages audio (30 s de lecture)", NIVEAU_MESURE, 180_000),
+            Scenario(DEBUTANT, "Débutant : un morceau par l'assistant, et il joue", NIVEAU_DEBUTANT, 420_000, 90, "le moteur joue et le son sort (ni silence ni NaN)"),
+            Scenario(ECRANS, "Débutant : les cinq écrans s'ouvrent", NIVEAU_DEBUTANT, 120_000, 30, "le repère de chaque écran à l'écran"),
+            Scenario(TEMPO, "Débutant : changer le tempo", NIVEAU_DEBUTANT, 90_000, 15, "le tempo du projet et du disque"),
+            Scenario(MUET, "Débutant : couper une piste (Muet)", NIVEAU_DEBUTANT, 90_000, 12, "le « muet » de la piste dans le projet et sur le disque"),
+            Scenario(ANNULER, "Débutant : annuler puis rétablir", NIVEAU_DEBUTANT, 90_000, 15, "le nombre de parties après chaque geste, puis sur le disque"),
+            Scenario(PADS, "Débutant : toucher un pad du Live", NIVEAU_DEBUTANT, 90_000, 15, "le moteur joue et la crête du son"),
+            Scenario(PROJET, "Moyen : le morceau est enregistré et se rouvre", NIVEAU_MOYEN, 120_000, 20, "le projet relu sur le disque, rouvert par « Continuer »"),
+            Scenario(STRUCTURE, "Moyen : ajouter un break à la structure", NIVEAU_MOYEN, 120_000, 15, "le nombre de parties du projet et du disque"),
+            Scenario(DUPLIQUER, "Moyen : dupliquer le morceau", NIVEAU_MOYEN, 90_000, 15, "un projet de plus sur le disque, avec les mêmes parties"),
+            Scenario(RENOMMER, "Moyen : renommer la copie", NIVEAU_MOYEN, 90_000, 15, "le nom de la copie sur le disque"),
+            Scenario(SUPPRIMER, "Moyen : supprimer la copie", NIVEAU_MOYEN, 90_000, 12, "la copie absente de la liste du disque"),
+            Scenario(SOLO, "Moyen : une piste en solo", NIVEAU_MOYEN, 90_000, 12, "le « solo » de la piste dans le projet et sur le disque"),
+            Scenario(REPRISE, "Moyen : fermer le studio et le rouvrir", NIVEAU_MOYEN, 150_000, 20, "le même projet (id et parties) après la réouverture"),
+            Scenario(ARRIERE_PLAN, "Moyen : la musique continue au fond", NIVEAU_MOYEN, 90_000, 20, "le transport joue et le son sort, studio derrière"),
+            Scenario(EFFETS, "Pro : un effet sur une piste du mixeur", NIVEAU_PRO, 180_000, 25, "l'égaliseur dans le projet, sur le disque et sur la piste ; le son"),
+            Scenario(EFFETS_PLUSIEURS, "Pro : trois effets sur une piste", NIVEAU_PRO, 180_000, 25, "les trois effets dans le projet et sur le disque ; le son"),
+            Scenario(ANNULER_EFFET, "Pro : annuler un effet ajouté", NIVEAU_PRO, 120_000, 15, "les effets de la piste revenus, projet et disque"),
+            Scenario(TEMPO_LECTURE, "Pro : changer le tempo en jouant", NIVEAU_PRO, 90_000, 15, "le tempo du projet ; la lecture sans arrêt ni décrochage"),
+            Scenario(ROTATION_LECTURE, "Pro : tourner le téléphone en jouant", NIVEAU_PRO, 120_000, 15, "le transport joue couché puis debout"),
+            Scenario(LIVE, "Pro : jouer puis arrêter le Live", NIVEAU_PRO, 120_000, 20, "le moteur joue, le son sort, puis il s'arrête"),
+            Scenario(EXPORT, "Export M4A relu", NIVEAU_MOYEN, 600_000, 60, "le fichier relu : durée, crête, temps pris"),
+            Scenario(EXPORT_WAV, "Export WAV relu", NIVEAU_MOYEN, 600_000, 45, "le fichier relu : durée, crête, temps pris"),
+            Scenario(EXPORT_FLAC, "Export FLAC relu", NIVEAU_PRO, 600_000, 45, "le fichier relu : durée, crête, temps pris"),
+            Scenario(LATENCE, "Latence aller-retour", NIVEAU_MESURE, 120_000, 30, "la latence mesurée au micro (médiane)"),
+            Scenario(DECROCHAGES, "Décrochages audio (30 s de lecture)", NIVEAU_MESURE, 180_000, 40, "les décrochages, le pire bloc, le plus long écart"),
+            Scenario(LECTURE_LONGUE, "Pro : une lecture de 2 minutes", NIVEAU_PRO, 240_000, 125, "les décrochages et l'arrêt sur 2 min"),
+            Scenario(IMAGES, "Mémoire et images lentes", NIVEAU_MESURE, 240_000, 50, "la part d'images lentes par écran, la mémoire"),
+            Scenario(STYLE_TRANCE, "Débutant : un morceau trance", NIVEAU_DEBUTANT, 360_000, 60, "le moteur joue, le son sort, les décrochages"),
+            Scenario(STYLE_DUBSTEP, "Moyen : un morceau dubstep", NIVEAU_MOYEN, 360_000, 60, "le moteur joue, le son sort, les décrochages"),
+            Scenario(STYLE_DNB, "Style lourd : drum and bass, décrochages", NIVEAU_MESURE, 360_000, 60, "les décrochages et le pire bloc d'un style lourd"),
+            Scenario(GUIDE, "Débutant : le Guide jusqu'au bout", NIVEAU_DEBUTANT, 480_000, 150, "« Tout est fait » à l'écran du Guide"),
         )
 
         /** [LISTE] as steps without work (to read a logbook). */
@@ -451,7 +919,7 @@ class Scenarios(
 
         /** A scenario's own numbers: its « bilan » lines, and the export's reading of its file. */
         private fun champs(step: String, text: String): List<Pair<String, String>> {
-            val keep = text.startsWith("bilan;") || (step == EXPORT && text.startsWith("octets="))
+            val keep = text.startsWith("bilan;") || (step.startsWith("export_") && text.startsWith("octets="))
             if (!keep) return emptyList()
             return text.removePrefix("bilan;").split(';').mapNotNull { f -> f.split('=', limit = 2).takeIf { it.size == 2 && it[1].isNotEmpty() }?.let { it[0] to it[1] } }
         }
@@ -571,8 +1039,15 @@ class Scenarios(
  * The open project as a scenario's oracle reads it: in memory (what the screens show) and read back
  * from its file ([disque], null without a file). [effets]: each strip's effects, by name.
  */
-data class ProjetVu(val id: String, val nom: String, val parties: Int, val effets: List<List<String>>, val disque: Disque?) {
-    data class Disque(val nom: String, val parties: Int, val effets: List<List<String>>)
+data class ProjetVu(
+    val id: String, val nom: String, val parties: Int, val effets: List<List<String>>, val disque: Disque?,
+    /** The tempo (bpm), and each strip muted or soloed. */
+    val tempo: Double = 0.0, val muets: List<Boolean> = emptyList(), val solos: List<Boolean> = emptyList(),
+) {
+    data class Disque(
+        val nom: String, val parties: Int, val effets: List<List<String>>,
+        val tempo: Double = 0.0, val muets: List<Boolean> = emptyList(), val solos: List<Boolean> = emptyList(),
+    )
 
     companion object {
         /** A strip's effects at most (the model's own limit). */

@@ -504,6 +504,15 @@ private class AppliReelle(private val app: Application, private val main: MainTh
 
     override fun latenceEchec(): String = latencyFailure
 
+    override fun volume(): Appli.Volume? = runCatching {
+        val audio = app.getSystemService(android.media.AudioManager::class.java) ?: return@runCatching null
+        val music = android.media.AudioManager.STREAM_MUSIC
+        Appli.Volume(
+            audio.getStreamVolume(music), audio.getStreamMaxVolume(music),
+            silencieux = audio.ringerMode == android.media.AudioManager.RINGER_MODE_SILENT, muet = audio.isStreamMute(music),
+        )
+    }.getOrNull()
+
     override fun memoireMo(): Int? = runCatching {
         val info = android.os.Debug.MemoryInfo()
         android.os.Debug.getMemoryInfo(info)

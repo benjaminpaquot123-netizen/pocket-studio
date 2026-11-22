@@ -235,8 +235,9 @@ class ScenariosRemiseTest {
         val verdict = Scenarios.verdict(c.lines())
         assertTrue(verdict, "1 non mesuré" in verdict && "0 échoué" in verdict && "0 passé" in verdict)
         val resume = Scenarios.resume(c.lines(), emptyList())
-        assertTrue(resume, "Niveau mesure : 0 sur 1 (1 non mesuré)" in resume)
-        assertTrue(resume, "non mesuré" in resume && "❌" !in resume)
+        assertTrue(resume, "Niveau mesure : 0 sur 2 (1 non mesuré)" in resume)
+        assertTrue(resume, "non mesuré (son coupé)" in resume && "❌" !in resume)
+        assertTrue(resume, resume.lines().take(4).any { it == "Son : coupé" })
         val json = Scenarios.json(c.lines(), emptyList())
         assertTrue(json, "non mesuré" in json && "non_mesures" in json)
     }
@@ -269,5 +270,23 @@ class ScenariosRemiseTest {
         assertEquals(r.detail, Scenarios.PASSE, r.resultat)
         assertEquals(3, s.latencyCalls)
         assertTrue(r.mesures.toString(), r.mesures.any { it.first == "latence_ms" })
+    }
+
+    @Test
+    fun withTheSoundCutEverythingButTheSpeakersMeasuresRunsAsUsual() {
+        // Benjamin, 2026-11-22: the test is often run with the sound cut; it is a normal case, not an error.
+        val s = Studio().apply { volume = Appli.Volume(0, 15); latences += listOf(40.0, 40.0, 40.0) }
+        val c = Carnet(tmp.newFile())
+        val r = run(s, Scenarios.STRUCTURE, Scenarios.LIVE, Scenarios.LATENCE, Scenarios.DECROCHAGES, c = c)
+        assertPassed(r.filter { it.scenario.id != Scenarios.LATENCE })
+        assertEquals(Scenarios.NON_MESURE, r.first { it.scenario.id == Scenarios.LATENCE }.resultat)
+        assertEquals("Son : coupé", Scenarios.resume(c.lines(), emptyList()).lines()[2])
+    }
+
+    @Test
+    fun withTheSoundOnTheResumeSaysSo() {
+        val c = Carnet(tmp.newFile())
+        assertPassed(run(Studio(), Scenarios.STRUCTURE, c = c))
+        assertEquals("Son : allumé", Scenarios.resume(c.lines(), emptyList()).lines()[2])
     }
 }

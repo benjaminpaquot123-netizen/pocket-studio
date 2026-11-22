@@ -44,8 +44,13 @@ interface Appli {
 
     /** The media volume ([niveau] out of [max]), the music stream muted ([muet]), the phone silent ([silencieux]). */
     data class Volume(val niveau: Int, val max: Int, val silencieux: Boolean = false, val muet: Boolean = false) {
-        /** No sound out of the speaker to measure with. */
-        fun coupe(): Boolean = false
+        /** No sound out of the speaker to measure with: the volume at 0 or under [MIN] of its course, the stream muted, the phone silent. */
+        fun coupe(): Boolean = muet || silencieux || niveau <= 0 || (max > 0 && niveau.toDouble() / max < MIN)
+
+        companion object {
+            /** Under a fifth of the course, the sweep or the latency's click is lost in the room. */
+            const val MIN = 0.2
+        }
 
         fun text() = "volume média $niveau sur $max" + (if (muet) ", coupé" else "") + (if (silencieux) ", mode silencieux" else "")
     }

@@ -67,6 +67,9 @@ class ToutTester(
 
     private fun feu(step: String, f: Pair<Feu, String>) = carnet.add(Carnet.FEU, step, f.first.mot + ";" + f.second)
 
+    /** The red thresholds [step] passed (« seuil;<value read against threshold> »), for the scenarios' clues. */
+    private fun seuils(step: String, what: List<String>) = what.forEach { carnet.add(Carnet.NOTE, step, "$SEUIL;$it") }
+
     /** Neither passed nor failed: nothing could be measured ([why]); a grey light, and the note « Scénarios » reads. */
     private fun nonMesure(step: String, why: String): String {
         feu(step, Feu.GRIS to why)
@@ -91,6 +94,7 @@ class ToutTester(
         e.arreter()
         if (j.exists("guide_panel")) runCatching { j.tap("guide_bar") }
         feu(step, Feux.style(b))
+        seuils(step, Feux.depasses(b))
         check(b.reads > 0) { "aucune mesure" }
         check(b.playing * 2 >= b.reads) { "la lecture s'est arrêtée toute seule : ${b.text()}" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence : ${b.text()}" }
@@ -235,6 +239,7 @@ class ToutTester(
         }
         val median = values.sorted()[values.size / 2]
         feu("latence", Feux.latence(median).let { it to if (it == Feu.VERT) "" else "${fmt(median)} ms" })
+        seuils("latence", listOfNotNull(Feux.depasseLatence(median)))
         return "${fmt(median)} ms (mesures : ${values.joinToString(", ") { fmt(it) }}" + (if (fails.isEmpty()) ")" else ", ${fails.size} ratée(s))")
     }
 
@@ -408,6 +413,9 @@ class ToutTester(
     companion object {
         /** A step that could not measure leaves « non_mesure;<why> » in the logbook. */
         const val NON_MESURE = "non_mesure"
+
+        /** A red threshold passed: « seuil;<value read against threshold> ». */
+        const val SEUIL = "seuil"
         const val SON_COUPE = "son coupé : remonte le volume pour mesurer la latence"
 
         /** The two heaviest styles, played cold at the start and hot at the end. */

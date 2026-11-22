@@ -13,6 +13,7 @@ import com.pocketstudio.model.ProjectCatalog
 import com.pocketstudio.model.ProjectInfo
 import com.pocketstudio.model.TrashedProject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,7 +54,20 @@ class ProjectsViewModel(app: Application) : AndroidViewModel(app) {
      * first work took the catalog first, said « loaded », and the unused first project was still there).
      */
     private val operations = Channel<suspend () -> Unit>(Channel.UNLIMITED).also { queue ->
-        viewModelScope.launch(Dispatchers.IO) { for (operation in queue) operation() }
+        viewModelScope.launch(Dispatchers.IO) {
+            for (operation in queue) {
+                // p5 (CI 398, 403, 410: « Chargement de la liste… » for good, no thread at work): one operation ended by a
+                // cancellation of its own while this model lives stopped the only worker, and every later look at the list
+                // waited forever. The worker ends only with the model; any other end of one operation lets the next run.
+                try {
+                    operation()
+                } catch (e: kotlinx.coroutines.CancellationException) {
+                    if (!isActive) throw e
+                    AppLog.add("Opération sur les projets interrompue : ${e.message}")
+                    _state.update { it.copy(loading = false) }
+                }
+            }
+        }
     }
     private val running = AtomicInteger(0)
 

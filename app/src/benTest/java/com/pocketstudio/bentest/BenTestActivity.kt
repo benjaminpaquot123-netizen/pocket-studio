@@ -78,7 +78,8 @@ class BenTestActivity : ComponentActivity() {
                         allow = { p -> ask.launch(p) },
                         start = { Robot.start(application, Robot.ECLAIR) },
                         startTout = { Robot.start(application, Robot.TOUT) },
-                        startScenarios = { Robot.start(application, Robot.SCENARIOS) },
+                        startScenarios = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.RAPIDE) },
+                        startScenariosComplets = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.COMPLET) },
                         startRetest = { ids -> Robot.start(application, Robot.TOUT, ids) },
                         startOreille = { Robot.start(application, Robot.OREILLE) },
                         startMicro = {
@@ -130,6 +131,8 @@ class BenTestActions(
     val startTout: () -> Unit = {},
     /** « Scénarios »: real use by level, a few minutes. */
     val startScenarios: () -> Unit = {},
+    /** « Scénarios complets »: all of them (about an hour at most). */
+    val startScenariosComplets: () -> Unit = {},
     /** « Retester les corrections »: the chosen steps' ids. */
     val startRetest: (Set<String>) -> Unit = {},
     /** « Questions à l'oreille » (T3). */
@@ -224,8 +227,10 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                         color = Neon.TextSecondary,
                     )
                     Button(onClick = actions.startTout, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_tout")) { Text("Tout tester") }
-                    Text("Scénarios : environ 7 minutes, sans rien toucher. Le robot joue comme un débutant, un moyen et un pro : morceau, projet enregistré, break, effet, Live, export, latence, décrochages.", color = Neon.TextSecondary)
-                    OutlinedButton(onClick = actions.startScenarios, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_scenarios")) { Text("Scénarios") }
+                    Text("Scénarios rapides : ${Scenarios.liste(Scenarios.RAPIDE).size} scénarios, environ 7 minutes, sans rien toucher. Le robot joue comme un débutant, un moyen et un pro : morceau, projet enregistré, break, effet, Live, export, latence, décrochages.", color = Neon.TextSecondary)
+                    OutlinedButton(onClick = actions.startScenarios, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_scenarios")) { Text("Scénarios rapides") }
+                    Text("Scénarios complets : ${Scenarios.LISTE.size} scénarios, de 30 minutes à 1 heure, chargeur branché. En plus : tous les styles, chaque effet, chaque piste, les pads, les tempos extrêmes, les répétitions, le Guide sur 3 styles.", color = Neon.TextSecondary)
+                    OutlinedButton(onClick = actions.startScenariosComplets, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_scenarios_complets")) { Text("Scénarios complets") }
                     Text("Essai éclair : environ 5 minutes. Le robot fait 3 morceaux, 1 export, visite 5 écrans, puis te pose 1 question.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_lancer")) { Text("Lancer l'essai éclair") }
                     Text("Questions à l'oreille : environ 10 minutes. Le robot lance les morceaux, une question à la fois s'affiche en haut de l'écran : ✅ ou ❌.", color = Neon.TextSecondary)

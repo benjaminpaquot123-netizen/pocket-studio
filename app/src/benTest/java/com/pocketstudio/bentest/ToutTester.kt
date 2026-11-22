@@ -128,7 +128,7 @@ class ToutTester(
      * Mix › Exporter › « La scène » in [format] (m4a, wav, flac), or the 9:16 video: the file read
      * back, its length against the app's, its true peak, the time it took against the time planned.
      */
-    fun export(format: String): String {
+    fun export(format: String, step: String = "export_$format"): String {
         val started = System.currentTimeMillis()
         e.auStudioPro()
         if (format == "video") return video(started)
@@ -162,7 +162,7 @@ class ToutTester(
         }
         val took = (System.currentTimeMillis() - started) / 1000.0
         val file = mine(v).maxBy { it.lastModified() }
-        return relu("export_$format", format.uppercase(Locale.ROOT), file, took, v.seconds, PREVU.getValue(format))
+        return relu(step, format.uppercase(Locale.ROOT), file, took, v.seconds, PREVU.getValue(format))
     }
 
     /** Partager › « Vidéo pour les réseaux » › Créer: the MP4 read back (9:16 standing), then the share menu it opens left. */

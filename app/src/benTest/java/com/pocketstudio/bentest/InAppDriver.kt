@@ -89,6 +89,12 @@ class InAppDriver(
         action?.invoke(androidx.compose.ui.text.AnnotatedString(text)) == true
     }.also { if (it) main.pause(FRAME_MS * 4) }
 
+    /** Sets the slider tagged [tag] to [value] (its own accessibility action, as TalkBack does). False: no such slider. */
+    fun regler(tag: String, value: Float): Boolean = main.run {
+        val action = tagged(tag, merged = true).lastOrNull()?.node?.config?.getOrNull(SemanticsActions.SetProgress)?.action
+        action?.invoke(value) == true
+    }.also { if (it) main.pause(FRAME_MS * 4) }
+
     private fun one(tag: String): Found {
         val all = tagged(tag, merged = true)
         // Two windows can hold it while a sheet opens over the screen: the top one (the last window) is the one a finger meets.

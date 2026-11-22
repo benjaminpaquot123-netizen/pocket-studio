@@ -1,0 +1,20 @@
+fusion: bb4b404fcf42d388a553f47ac21fb9f49fb2fbe7
+branche: eq/tour-9-flash
+tete: 6a10bd5d0ab223a087a3750300dde2b50c92c06e
+relecture: docs/audits/ultra/tour-9-flash-relecture.md
+relu: 31b287167
+filtres: *HomeAndPadsTest *LaunchFlowTest *ScaledWindowsTest *FirstLaunchTest *NavScreenshotTest *PremiereInstallationTest *BenchSelfTest *Tour3RenameIdleTest *Tour3StudioRenameIdleTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

@@ -186,14 +186,19 @@ object Robot {
                 else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
             }
             val steps = subset(all, which, retest(app))
-            val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() })
+            // A scenario the app died in: its clues (the ones taken as it died, else the screen now).
+            val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran) else null
+            val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() }, onCrash = { clues?.apresPlantage(it) })
+            Garde.installer(app, shots)
             runCatching {
                 passage.run { e ->
+                    Garde.etape(e.name, e.maxMs)
                     driver.deadlineMs = System.currentTimeMillis() + e.maxMs
                     sorties.etape = e.name
                     _etat.update { it.copy(step = e.label) }
                 }
             }.onFailure { c.add(Carnet.NOTE, "robot", "arrêt : $it") }
+            Garde.etape(null)
             sorties.etape = null
             tracker.sorties = null
             tracker.keepScreenOn = false
@@ -274,20 +279,22 @@ object Robot {
 
     fun writeReport(context: Context): RapportZip.Ecrit {
         val c = carnet(context)
-        val lines = c.lines()
+        val lines = runCatching { c.lines() }.getOrDefault(emptyList())
         val passage = passage(context)
-        val steps = etapes(context, passage)
+        val steps = runCatching { etapes(context, passage) }.getOrDefault(emptyList())
         val about = about(context)
         val texts = buildList {
-            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO || passage == SCENARIOS, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE, micro = passage == MICRO))
-            add("mesures.json" to Rapport.json(lines, about))
+            // Always sendable: a part that cannot be written says so, the others go.
+            fun part(name: String, text: () -> String?) = runCatching(text).fold({ t -> t?.let { add(name to it) } }, { add(name to "illisible : $it") })
+            part("rapport.md") { Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO || passage == SCENARIOS, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE, micro = passage == MICRO) }
+            part("mesures.json") { Rapport.json(lines, about) }
             if (passage == SCENARIOS) {
-                add("scenarios.json" to Scenarios.json(lines, about))
-                add("resume.md" to Scenarios.resume(lines, about))
+                part("scenarios.json") { Scenarios.json(lines, about) }
+                part("resume.md") { Scenarios.resume(lines, about) }
             }
-            add("carnet.tsv" to (if (c.file.isFile) c.file.readText() else ""))
-            add("journal.json" to runCatching { JournalJson.current(about) }.getOrDefault("{}"))
-            CrashReporter.pendingCrash()?.let { add("plantage.txt" to it) }
+            part("carnet.tsv") { if (c.file.isFile) c.file.readText() else "" }
+            part("journal.json") { runCatching { JournalJson.current(about) }.getOrDefault("{}") }
+            part("plantage.txt") { CrashReporter.pendingCrash() }
         }
         val pictures = captures(context).listFiles()?.sortedBy { it.name }?.map { "captures/${it.name}" to it }.orEmpty() +
             sons(context).listFiles()?.sortedBy { it.name }?.map { "sons/${it.name}" to it }.orEmpty()

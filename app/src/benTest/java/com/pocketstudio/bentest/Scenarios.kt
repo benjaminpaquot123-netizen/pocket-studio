@@ -70,8 +70,17 @@ class Scenarios(
         text
     }
 
-    /** The app died in [step] (noted as a crash by [Passage]): its clues. */
-    fun apresPlantage(step: String) = Unit
+    /**
+     * The app died in [step] (noted as a crash by [Passage], the run picked up): its clues. Those the robot
+     * took as the app died ([Robot]'s crash guard writes them under the same names) are kept, else the screen
+     * as it is now.
+     */
+    fun apresPlantage(step: String) {
+        val picture = File(captures, "echec-$step.jpg")
+        val list = File(captures, "echec-$step-tags.txt")
+        if (list.isFile) carnet.add(Carnet.NOTE, step, "$INDICE;capture=" + (if (picture.isFile) "captures/${picture.name}" else "") + ";tags=captures/${list.name}")
+        else indices(step)
+    }
 
     /** [step] has a red light since it last began. */
     private fun rouge(step: String): Boolean {
@@ -388,6 +397,10 @@ class Scenarios(
 
         private val NOMS = LISTE.map { s -> Etape(s.id, s.label, s.maxMs) { "" } }
 
+        /** A scenario the app died in, as the report says it, and when neither its trace nor Android's exit record could be read. */
+        const val PLANTAGE = "plantage de l'appli"
+        const val PLANTAGE_SANS_CAUSE = "cause non lue (ni trace ni rapport d'Android)"
+
         const val PASSE = "passé"
         const val ECHOUE = "échoué"
         const val NON_CONCLUANT = "non concluant"
@@ -425,7 +438,7 @@ class Scenarios(
                         Feu.GRIS -> if (nonMesure != null) NON_MESURE else NON_CONCLUANT
                         Feu.ROUGE -> ECHOUE
                     },
-                    nonMesure ?: listOfNotNull(end?.text?.takeIf { it.isNotBlank() }, why.joinToString(", ").takeIf { it.isNotEmpty() && end?.kind == Carnet.REUSSI && feu != Feu.VERT }).joinToString(" ; "),
+                    nonMesure ?: if (end?.kind == Carnet.PLANTAGE) "$PLANTAGE : " + end.text.ifBlank { PLANTAGE_SANS_CAUSE } else listOfNotNull(end?.text?.takeIf { it.isNotBlank() }, why.joinToString(", ").takeIf { it.isNotEmpty() && end?.kind == Carnet.REUSSI && feu != Feu.VERT }).joinToString(" ; "),
                     if (begin != null && end != null) (end.atMs - begin.atMs) / 1000 else null,
                     mesures + if (nonMesure != null) emptyList() else mediane(s.id, mine),
                     mine.filter { it.kind == Carnet.NOTE && it.text.startsWith("$INDICE;") }.lastOrNull()?.let { l -> l.text.removePrefix("$INDICE;").split(';').mapNotNull { f -> f.split('=', limit = 2).takeIf { it.size == 2 }?.let { it[0] to it[1] } } }.orEmpty(),

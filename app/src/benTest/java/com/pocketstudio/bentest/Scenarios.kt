@@ -61,8 +61,36 @@ class Scenarios(
             work()
         } catch (t: Throwable) {
             e.noterEcran(name)
+            indices(name)
             throw t
         }
+    }
+
+    /**
+     * The clues of a failure, in the report's zip: a picture of the screen and every tag on it (the known
+     * markers first), with where the robot was by Android ([Appli.studioDevant]); their paths in a note.
+     */
+    private fun indices(step: String) {
+        val picture = File(captures, "echec-$step.jpg")
+        val list = File(captures, "echec-$step-tags.txt")
+        val shot = runCatching { captures.mkdirs(); appli.capture(picture) && picture.isFile }.getOrDefault(false)
+        val written = runCatching {
+            val all = ecran().distinct()
+            val known = all.filter { it in EssaiEclair.REPERES }
+            val devant = when (appli.studioDevant()) { true -> "oui"; false -> "non"; null -> "inconnu" }
+            list.writeText(
+                buildString {
+                    appendLine("studio devant : $devant")
+                    appendLine("repères : " + known.ifEmpty { listOf("aucun") }.joinToString(", "))
+                    appendLine("tags à l'écran (${all.size}) :")
+                    (known + (all - known.toSet())).forEach { appendLine(it) }
+                },
+            )
+        }.isSuccess
+        carnet.add(
+            Carnet.NOTE, step,
+            "$INDICE;capture=" + (if (shot) "captures/${picture.name}" else "") + ";tags=" + (if (written) "captures/${list.name}" else ""),
+        )
     }
 
     private fun feu(step: String, f: Pair<Feu, String>) = carnet.add(Carnet.FEU, step, f.first.mot + ";" + f.second)
@@ -324,6 +352,7 @@ class Scenarios(
         /** The screens a scenario starts from: the studio (its bar, or its rail lying down), the welcome, the projects. */
         private val PRET = listOf(*EssaiEclair.STUDIO, "launch", "projects", "welcome")
         private const val ESSAIS_REMISE = 4
+        private const val INDICE = "indice"
 
         private val NOMS = LISTE.map { s -> Etape(s.id, s.label, s.maxMs) { "" } }
 
@@ -333,7 +362,11 @@ class Scenarios(
         const val PAS_JOUE = "pas joué"
 
         /** One scenario as the logbook has it. */
-        data class Resultat(val scenario: Scenario, val feu: Feu?, val resultat: String, val detail: String, val secondes: Long?, val mesures: List<Pair<String, String>>)
+        data class Resultat(
+            val scenario: Scenario, val feu: Feu?, val resultat: String, val detail: String, val secondes: Long?, val mesures: List<Pair<String, String>>,
+            /** The failure's clues in the zip: the picture and the tag list (empty: not taken). */
+            val indices: List<Pair<String, String>> = emptyList(),
+        )
 
         /** Passed: green, or orange (it works, a number is to be watched); failed: red (the step failed, crashed, or a number is out). */
         fun resultats(lines: List<Carnet.Ligne>): List<Resultat> {
@@ -357,6 +390,7 @@ class Scenarios(
                     listOfNotNull(end?.text?.takeIf { it.isNotBlank() }, why.joinToString(", ").takeIf { it.isNotEmpty() && end?.kind == Carnet.REUSSI && feu != Feu.VERT }).joinToString(" ; "),
                     if (begin != null && end != null) (end.atMs - begin.atMs) / 1000 else null,
                     mesures + mediane(s.id, mine),
+                    mine.filter { it.kind == Carnet.NOTE && it.text.startsWith("$INDICE;") }.lastOrNull()?.let { l -> l.text.removePrefix("$INDICE;").split(';').mapNotNull { f -> f.split('=', limit = 2).takeIf { it.size == 2 }?.let { it[0] to it[1] } } }.orEmpty(),
                 )
             }
         }
@@ -433,6 +467,15 @@ class Scenarios(
                 appendLine()
                 appendLine("## Mesures")
                 numbers.forEach { x -> appendLine("- ${x.scenario.label} : " + x.mesures.joinToString(", ") { (k, v) -> "${k.replace('_', ' ')} $v" }) }
+            }
+            val clues = r.filter { it.indices.isNotEmpty() }
+            if (clues.isNotEmpty()) {
+                appendLine()
+                appendLine("## Indices")
+                clues.forEach { x ->
+                    val m = x.indices.toMap()
+                    appendLine("- ${x.scenario.label} : capture ${m["capture"].orEmpty().ifEmpty { "pas prise" }}, tags ${m["tags"].orEmpty().ifEmpty { "pas écrits" }}")
+                }
             }
         }
 

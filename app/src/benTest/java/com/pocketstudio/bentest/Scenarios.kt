@@ -359,6 +359,7 @@ class Scenarios(
         const val PASSE = "passé"
         const val ECHOUE = "échoué"
         const val NON_CONCLUANT = "non concluant"
+        const val NON_MESURE = "non mesuré"
         const val PAS_JOUE = "pas joué"
 
         /** One scenario as the logbook has it. */

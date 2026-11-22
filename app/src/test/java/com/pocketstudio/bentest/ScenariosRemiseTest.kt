@@ -37,6 +37,15 @@ class ScenariosRemiseTest {
         // The faults: the break's touch opens the full-screen timeline (and adds nothing).
         var breakOpensTimeline = false
 
+        // The phone's sound and the latency's measures (null: a measure that failed), taken in order.
+        var volume: Appli.Volume? = Appli.Volume(10, 15)
+        val latences = ArrayList<Double?>()
+        var latencyCalls = 0
+
+        // The engine's true worst block and longest gap while it plays.
+        var cpuWorst = 0.3f
+        var gapWorst = 1f
+
         /** Waits a step may make before it gives up, as the phone's driver does at the step's end. */
         var idles = 0
         var cap = 300
@@ -90,7 +99,15 @@ class ScenariosRemiseTest {
             }
         }
 
-        override fun lire() = Sonde.Lecture(0, 0.2f, if (playing) 0.5f else 0f, false, true, playing, cpuWorst = 0.3f, gapWorst = 1f)
+        override fun lire() = Sonde.Lecture(0, 0.2f, if (playing) 0.5f else 0f, false, true, playing, cpuWorst = cpuWorst, gapWorst = gapWorst)
+
+        override fun volume() = volume
+        override fun latence(): Double? {
+            latencyCalls++
+            return latences.removeFirstOrNull()
+        }
+
+        override fun latenceEchec() = "pas de retour, niveau 0.00"
 
         /** The app's launcher activity: from BenStudio Test's screen, « Que veux-tu faire ? ». */
         override fun ouvrirStudio() {
@@ -199,5 +216,58 @@ class ScenariosRemiseTest {
         assertPassed(run(s, Scenarios.STRUCTURE, c = c, shots = shots))
         assertTrue(shots.listFiles().orEmpty().none { it.name.startsWith("echec-") })
         assertTrue("## Indices" !in Scenarios.resume(c.lines(), emptyList()))
+    }
+
+    // --- The phone's sound cut: the latency is not measured -------------------------------------------
+
+    private fun latency(s: Studio, c: Carnet = Carnet(tmp.newFile())) = run(s, Scenarios.LATENCE, c = c).single()
+
+    @Test
+    fun withTheMediaVolumeAtZeroTheLatencyIsNotMeasured() {
+        // The Xiaomi's run, 2026-11-22: sound cut, « 501.71 ms (mesures : 501.71, 2 ratée(s)) » in red.
+        val s = Studio().apply { volume = Appli.Volume(0, 15); latences += listOf(501.71, null, null) }
+        val c = Carnet(tmp.newFile())
+        val r = latency(s, c)
+        assertEquals(r.detail, Scenarios.NON_MESURE, r.resultat)
+        assertTrue(r.detail, "son coupé : remonte le volume pour mesurer la latence" in r.detail)
+        assertEquals("no measure through a muted speaker", 0, s.latencyCalls)
+        assertTrue(r.mesures.toString(), r.mesures.none { it.first == "latence_ms" })
+        val verdict = Scenarios.verdict(c.lines())
+        assertTrue(verdict, "1 non mesuré" in verdict && "0 échoué" in verdict && "0 passé" in verdict)
+        val resume = Scenarios.resume(c.lines(), emptyList())
+        assertTrue(resume, "Niveau mesure : 0 sur 1 (1 non mesuré)" in resume)
+        assertTrue(resume, "non mesuré" in resume && "❌" !in resume)
+        val json = Scenarios.json(c.lines(), emptyList())
+        assertTrue(json, "non mesuré" in json && "non_mesures" in json)
+    }
+
+    @Test
+    fun aVolumeTooLowOrTheSilentModeOrAMutedStreamIsSoundCutToo() {
+        for (v in listOf(Appli.Volume(1, 15), Appli.Volume(10, 15, silencieux = true), Appli.Volume(10, 15, muet = true))) {
+            val s = Studio().apply { volume = v; latences += listOf(40.0, 40.0, 40.0) }
+            val r = latency(s)
+            assertEquals("$v : ${r.detail}", Scenarios.NON_MESURE, r.resultat)
+            assertEquals(0, s.latencyCalls)
+        }
+    }
+
+    @Test
+    fun aLatencyWithMoreThanHalfItsMeasuresFailedIsNotAMeasure() {
+        val s = Studio().apply { latences += listOf(501.71, null, null) }
+        val c = Carnet(tmp.newFile())
+        val r = latency(s, c)
+        assertEquals(r.detail, Scenarios.NON_MESURE, r.resultat)
+        assertTrue(r.detail, "2" in r.detail && "ratée" in r.detail)
+        assertTrue(r.mesures.toString(), r.mesures.none { it.first == "latence_ms" })
+        assertTrue(Scenarios.verdict(c.lines()), "1 non mesuré" in Scenarios.verdict(c.lines()))
+    }
+
+    @Test
+    fun aLatencyWithTheSoundUpAndItsMeasuresTakenIsRead() {
+        val s = Studio().apply { latences += listOf(40.0, null, 42.0) }
+        val r = latency(s)
+        assertEquals(r.detail, Scenarios.PASSE, r.resultat)
+        assertEquals(3, s.latencyCalls)
+        assertTrue(r.mesures.toString(), r.mesures.any { it.first == "latence_ms" })
     }
 }

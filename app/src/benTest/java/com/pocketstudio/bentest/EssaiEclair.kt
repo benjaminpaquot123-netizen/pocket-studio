@@ -42,6 +42,14 @@ interface Appli {
     /** Whether the studio's activity is the one in front (Tracker's resumed state); null when unknown. */
     fun studioDevant(): Boolean? = null
 
+    /** The media volume ([niveau] out of [max]), the music stream muted ([muet]), the phone silent ([silencieux]). */
+    data class Volume(val niveau: Int, val max: Int, val silencieux: Boolean = false, val muet: Boolean = false) {
+        /** No sound out of the speaker to measure with. */
+        fun coupe(): Boolean = false
+
+        fun text() = "volume média $niveau sur $max" + (if (muet) ", coupé" else "") + (if (silencieux) ", mode silencieux" else "")
+    }
+
     /** [seconds]: the length the app measured on its file (null: none). */
     data class ExportVu(val running: Boolean, val files: List<File>, val error: String?, val seconds: Double? = null)
 
@@ -61,6 +69,9 @@ interface Appli {
 
     /** What the last failed [latence] said. */
     fun latenceEchec(): String = ""
+
+    /** The phone's media volume (STREAM_MUSIC) and its silent mode, read before a measure through the speaker; null: unknown. */
+    fun volume(): Volume? = null
 
     /** The app's memory (PSS, MB). */
     fun memoireMo(): Int? = null

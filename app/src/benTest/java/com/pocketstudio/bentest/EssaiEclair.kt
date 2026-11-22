@@ -42,6 +42,18 @@ interface Appli {
     /** Whether the studio's activity is the one in front (Tracker's resumed state); null when unknown. */
     fun studioDevant(): Boolean? = null
 
+    /** Every project on the disk (« Mes projets »): its id to what its file holds; null when it cannot be read here. */
+    fun projets(): Map<String, ProjetVu.Disque>? = null
+
+    /**
+     * The studio behind another screen (BenStudio Test's own, as when the user leaves for another app) while
+     * [pendant] runs, then in front again. False: not possible here (nothing run).
+     */
+    fun arrierePlan(pendant: () -> Unit): Boolean = false
+
+    /** The studio closed (its screen finished, the process kept), then opened again as from the phone's icon. False: not possible here. */
+    fun relancerStudio(): Boolean = false
+
     /** The media volume ([niveau] out of [max]), the music stream muted ([muet]), the phone silent ([silencieux]). */
     data class Volume(val niveau: Int, val max: Int, val silencieux: Boolean = false, val muet: Boolean = false) {
         /** No sound out of the speaker to measure with: the volume at 0 or under [MIN] of its course, the stream muted, the phone silent. */

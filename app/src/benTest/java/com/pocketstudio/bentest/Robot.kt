@@ -182,12 +182,12 @@ object Robot {
                     val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
                     EcouteMicro(Pose(essai, Journey(driver)), MicroReel(app), HautParleurReel(app), c, sons(app)).etapes()
                 }
-                SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
+                SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir).etapes()
                 else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
             }
             val steps = subset(all, which, retest(app))
             // A scenario the app died in: its clues (the ones taken as it died, else the screen now).
-            val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran) else null
+            val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir) else null
             val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() }, onCrash = { clues?.apresPlantage(it) })
             Garde.installer(app, shots)
             runCatching {
@@ -244,6 +244,17 @@ object Robot {
 
     @Volatile
     private var sorties: Sorties? = null
+
+    /** The robot itself takes the studio out of the front (a scenario's background, its closing): not an exit to note. */
+    internal fun sortieVoulue(on: Boolean) {
+        sorties?.voulue = on
+    }
+
+    /** BenStudio Test's own screen over the studio (the studio in the background, the app still in front for Android). */
+    internal fun robotDevant(app: Application) = bringBack(app)
+
+    /** The studio in front again after [robotDevant]. */
+    internal fun studioDevant(app: Application, tracker: Tracker) = bringStudioBack(app, tracker)
 
     /** The studio back in front after the app left (another app opened): the task to the front, else its launcher activity reordered to front. */
     private fun bringStudioBack(app: Application, tracker: Tracker) {
@@ -437,10 +448,60 @@ private class AppliReelle(private val app: Application, private val main: MainTh
             val vm = ViewModelProvider(a)[RhythmViewModel::class.java]
             vm.projectId to vm.project.value
         } ?: return null
-        fun effets(of: Project) = of.mixer.channels.map { ch -> ch.inserts.filter { it.effect != EffectType.NONE }.map { it.effect.name } }
         // Read off the main thread, by the app's own store: what a restart would find.
         val disk = runCatching { ProjectOpening.projectStore(app).load(id) }.getOrNull()
-        return ProjetVu(id, p.name, p.song.size, effets(p), disk?.let { ProjetVu.Disque(it.name, it.song.size, effets(it)) })
+        return ProjetVu(
+            id, p.name, p.song.size, effets(p), disk?.let(::disque),
+            tempo = p.tempoBpm, muets = p.mixer.channels.map { it.mute }, solos = p.mixer.channels.map { it.solo },
+        )
+    }
+
+    private fun effets(of: Project) = of.mixer.channels.map { ch -> ch.inserts.filter { it.effect != EffectType.NONE }.map { it.effect.name } }
+
+    private fun disque(p: Project) = ProjetVu.Disque(p.name, p.song.size, effets(p), p.tempoBpm, p.mixer.channels.map { it.mute }, p.mixer.channels.map { it.solo })
+
+    override fun projets(): Map<String, ProjetVu.Disque>? = runCatching {
+        val store = ProjectOpening.projectStore(app)
+        store.list().mapNotNull { id -> runCatching { store.load(id) }.getOrNull()?.let { id to disque(it) } }.toMap()
+    }.getOrNull()
+
+    /** Waits (on the robot's thread) until [ok], at most [ms]. */
+    private fun attendre(ms: Long, ok: () -> Boolean): Boolean {
+        val end = System.currentTimeMillis() + ms
+        while (!ok()) {
+            if (System.currentTimeMillis() > end) return false
+            Thread.sleep(100)
+        }
+        return true
+    }
+
+    override fun arrierePlan(pendant: () -> Unit): Boolean {
+        Robot.sortieVoulue(true)
+        try {
+            Robot.robotDevant(app)
+            if (!attendre(10_000) { !tracker.devant }) return false
+            pendant()
+        } finally {
+            Robot.studioDevant(app, tracker)
+            attendre(15_000) { tracker.devant }
+            Robot.sortieVoulue(false)
+        }
+        return true
+    }
+
+    override fun relancerStudio(): Boolean {
+        Robot.sortieVoulue(true)
+        try {
+            // BenStudio Test in front first: the studio is opened again by an app on screen (Android lets it).
+            Robot.robotDevant(app)
+            if (!attendre(10_000) { !tracker.devant }) return false
+            main.run { tracker.studio?.finish() }
+            if (!attendre(15_000) { tracker.studio == null }) return false
+            ouvrirStudio()
+            return attendre(30_000) { tracker.devant }
+        } finally {
+            Robot.sortieVoulue(false)
+        }
     }
 
     // Niveau 3: the question is a banner over the studio itself (the studio stays in front, the music goes on).

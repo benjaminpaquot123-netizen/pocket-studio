@@ -46,6 +46,9 @@ open class ScenariosVraisEcransTest {
         override fun click(tag: String) {
             touched += tag
             if (tag in setOf("thumb_play", "top_song", "live_play")) playing = !playing
+            // A pad of the Live launches its cell; « ■ Tout » stops them.
+            if (tag.startsWith("live_pad_")) playing = true
+            if (tag == "live_stop_all") playing = false
             d.click(tag)
         }
 
@@ -126,6 +129,17 @@ open class ScenariosVraisEcransTest {
         assertEquals(parts, h.vm.project.value.song.size)
         // « Annuler » took the curve back: the project is as before.
         assertEquals(0, ProjetVu.montee(h.vm.project.value))
+    }
+
+    @Test
+    fun aPadOfTheLiveIsFoundByItsRealNameThenTheSecondOne() {
+        h.start()
+        val v = Vrai()
+        val first = jouer(v, "pads_live")
+        assertTrue(first, first.contains("le son sort"))
+        val second = jouer(v, "pad_2")
+        assertTrue(second, second.contains("le son sort"))
+        assertTrue(v.touched.toString(), v.touched.any { Regex("live_pad_.+_\\d+").matches(it) })
     }
 }
 

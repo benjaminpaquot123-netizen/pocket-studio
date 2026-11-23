@@ -1,6 +1,6 @@
 # Plan d'action après les passages du robot « BenStudio Test »
 
-Demandé par Benjamin le 2026-11-23 (« Prévois le plan d'action avec tous les nouveaux tests […] comment analyser et réparer, et des améliorations de l'ensemble »). Démarrage : 2026-11-24 à 2 h 05 (heure belge), à plein quota, trois discussions neuves en Opus 5.5.
+Demandé par Benjamin le 2026-11-23 (« Prévois le plan d'action avec tous les nouveaux tests […] comment analyser et réparer, et des améliorations de l'ensemble »). Démarrage : 2026-11-24 à 2 h 05 (heure belge), à plein quota, quatre discussions neuves : trois en Opus 5.5 et une en Fable 5.2 pour le moteur son.
 
 ## 1. D'où on part (constats mesurés)
 
@@ -23,7 +23,7 @@ Rapports gardés hors dépôt (bloc-notes du chef) : téléphone Xiaomi Android 
 | C13 | Lecture longue comptée « plantage » quand Benjamin ferme l'appli à la main | téléphone | robot |
 | C14 | Volume à 2 sur 15 : compté coupé, mais le test démarre quand même | tablette | robot |
 
-## 2. Trois discussions, trois zones qui ne se touchent pas
+## 2. Quatre discussions, quatre zones qui ne se touchent pas
 
 Chaque discussion reçoit une fiche fermée (gabarit `GABARIT-FICHES-V3.md`) : ses fichiers, ses constats, la preuve attendue. Aucune ne pousse sur l'intégration ; le chef fusionne par le portail.
 
@@ -34,11 +34,18 @@ Chaque discussion reçoit une fiche fermée (gabarit `GABARIT-FICHES-V3.md`) : s
 - Nouveaux tests : section 3.
 - Preuve : tests du robot verts ; chaque réparation a son test rouge avant, vert après.
 
-### Discussion B : « Son et puissance »
-- Zone : `engine/**` et le service audio de l'appli (fichiers exacts via `docs/CARTE-CODE.md`).
-- Analyser d'abord, sans rien changer : profil de la charge par style sur `./scripts/host-tests.sh` et `./scripts/live-bench.sh` avec un processeur bridé, pour savoir quelle brique coûte (synthés, effets, réverbération).
-- Réparer : C1 (mode « appareil modeste » : tampon plus grand et qualité allégée, choisi tout seul quand la charge dépasse un seuil, sans allocation ni verrou dans le callback), C2, C3, C4 (reprise propre au changement de sortie), C5.
-- Preuve : écoute en direct sans trou avec le processeur bridé ; rejeu rouge puis vert pour chaque constat.
+### Discussion B : « Moteur son » (Fable 5.2, décision de Benjamin du 2026-11-23 : « il faut vraiment qu'il se consacre à ça, et donc en Fable »)
+- Zone, à elle seule : `engine/**` (cœur C++ et tests Linux). Personne d'autre n'y touche.
+- But : optimiser le moteur son au maximum, pour qu'une tablette d'entrée de gamme joue tous les styles sans coupure.
+- Analyser d'abord, sans rien changer : profil de la charge par style et par brique (synthés, effets, réverbération, mixage) sur `./scripts/host-tests.sh` et `./scripts/live-bench.sh` avec un processeur bridé ; classement des briques par coût.
+- Réparer et optimiser : C1 et C3 ; calcul vectorisé, tables au lieu de calculs répétés, voix inutiles coupées, effets au repos qui ne coûtent rien ; mode « appareil modeste » (tampon plus grand, qualité allégée) déclenché par une mesure atomique, sans allocation ni verrou dans le callback.
+- Garde-fou : le rendu reste le même à l'oreille (comparaison avant / après sur les rendus hors-ligne), aucun NaN, aucune saturation.
+- Preuve : tableau de charge avant / après par style ; écoute en direct sans trou avec le processeur bridé.
+
+### Discussion D : « Service audio » (Opus 5.5)
+- Zone : le côté Kotlin du son (service audio, sorties, micro) ; rien dans `engine/**`, ni dans les écrans, ni dans `benTest`.
+- Réparer : C2 (Live qui s'arrête seul), C4 (reprise propre au changement de sortie), C5 (micro indisponible).
+- Preuve : rejeu rouge puis vert pour chaque constat.
 
 ### Discussion C : « Fluidité et mémoire »
 - Zone : les écrans Compose (Mix, Live, Projets, Sons, Structure) et leurs modèles ; rien dans `engine/**` ni dans `benTest`.
@@ -63,11 +70,22 @@ Chaque discussion reçoit une fiche fermée (gabarit `GABARIT-FICHES-V3.md`) : s
 | Économie d'énergie | lecture sans coupure quand le téléphone est en mode économie |
 | Export vidéo | le fichier existe, dure la bonne durée, contient du son |
 
+### Le grand catalogue (Benjamin, 2026-11-23 : « genre 500 scénarios […] t'en fais moins si tu juges que j'exagère »)
+
+Choix du chef : viser environ 400 scénarios (131 aujourd'hui), pas 500 à tout prix : un scénario n'entre que s'il a un oracle précis et s'il peut trouver une faute qu'aucun autre ne trouve. Ils sont fabriqués par croisement, pas écrits un par un :
+- chaque style × (lecture, changement de tempo, export) ;
+- chaque effet × (ajout, réglage aux deux bouts, retrait, annuler) et les paires d'effets les plus lourdes ;
+- chaque écran × (rotation, arrière-plan, fermeture brutale) ;
+- chaque geste de la structure et du piano roll × annuler / rétablir ;
+- les cas limites : tempo le plus bas et le plus haut, projet vide, projet énorme, 16 pistes, noms très longs, stockage presque plein.
+
+Rangés en paquets par thème de 20 minutes au plus (Son, Effets, Écrans, Structure, Live, Exports, Limites, Endurance), plus « Rapide » et « Refaire les ratés ». Le tout passe en une nuit, téléphone branché.
+
 Chaque test neuf a son oracle précis et passe d'abord sur le banc (`scripts/bench/selftest.sh` vert) avant d'aller sur le téléphone.
 
 ## 4. Ordre de marche
 
-1. 2 h 05 : le chef ouvre A, B et C avec leurs fiches. A, B et C commencent toutes par l'analyse et rendent une page de conclusions au chef avant de réparer.
+1. 2 h 05 : le chef ouvre A, B, C et D avec leurs fiches. Toutes commencent toutes par l'analyse et rendent une page de conclusions au chef avant de réparer.
 2. Réparations : « rouge: sujet » puis « vert: même sujet », relecture neuve en dernier commit, CI complète du lot verte sur une tête qui contient l'intégration.
 3. Fusion par paquets de trois lots au plus, CI verte entre deux paquets. D'abord `eq/bentest-robot-2` et le lot fable5 (`ccr-56d43d5b-vfdmoc`, 0758fd6cf), avec la décision de seuil notée dans `DECISIONS.md`.
 4. Le chef compile le robot v8 en local et l'envoie à Benjamin.

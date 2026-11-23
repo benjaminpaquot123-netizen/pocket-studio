@@ -57,6 +57,15 @@ Chaque discussion reçoit une fiche fermée (gabarit `GABARIT-FICHES-V3.md`) : s
 - Réparer : C6, C7, C8, et « Rétablir » si C9 révèle aussi une faute de l'appli.
 - Preuve : tests unitaires et captures des seuls écrans touchés ; pas de capture changée sans raison.
 
+### Chantier F : « Sons actuels » (Benjamin, 2026-11-23 : les sons font « cheap », pour tous les styles)
+Recherche faite le 23 novembre (licences lues sur les pages). Conclusions :
+- La cause principale : les packs de styles sont fabriqués par un petit modèle d'IA (Stable Audio Open Small, 8 pas, consignes vagues).
+- Aucun vendeur ne publie de licence « son dans une appli » : les packs payants (Splice, Loopmasters, 99Sounds, MusicRadar…) interdisent de les mettre dans une appli. Les 100 € restent en réserve, à n'utiliser que contre un accord écrit d'un vendeur.
+- Plan à 0 € :
+  1. Synthèse, dans la zone de B (moteur, Fable), après sa mesure de charge : kicks modernes et rumble (préréglages « peak-time », « hard »), 808 plus saturée, basse « rominimal » refaite, cloche phonk en FM. Ce qui coûte le moins de calcul gagne.
+  2. Échantillons CC0 Freesound (licence vérifiée son par son) pour hats, claps, percussions, voix découpées, grincement de lit de la Jersey Club, breaks : nouvelle discussion F (Opus 5.5), zone `scripts/packs/**` et `THIRD_PARTY.md`, après la clé Freesound de Benjamin.
+  3. Écoute avant / après de chaque style, par le chemin d'écoute en direct, avant d'entrer dans l'appli.
+
 ## 3. Nouveaux tests du robot (v8)
 
 | Test | Ce qu'il lit |
@@ -104,6 +113,8 @@ Chaque test neuf a son oracle précis et passe d'abord sur le banc (`scripts/ben
 - La tablette devient l'appareil de référence « modeste » : ce qui passe chez elle passe partout.
 
 ## 6. Ce que Benjamin est seul à pouvoir faire
+
+- Créer un compte gratuit Freesound et une clé d'accès (pour le chantier F), à donner par le formulaire sécurisé, jamais dans la conversation.
 
 - Installer le robot v8 sur le téléphone et la tablette, lancer le test, envoyer les deux rapports.
 - Pendant le test : son à moitié, pas de voiture, ne pas fermer l'appli.

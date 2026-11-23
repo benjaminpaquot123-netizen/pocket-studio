@@ -2,6 +2,7 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`. L'histoire du 13 au 19 novembre (tours 6, 7 et 8) est dans `docs/archive/EN-COURS-2026-11-13-a-19.md` : elle ne se suit pas.
 
+- **Prochain départ** : 2026-11-24, 2 h 05 : `docs/audits/ultra/PLAN-APRES-ROBOT.md` (cinq discussions E, A, B, C, D ; section 7 « Audit Fable » fait foi ; rappel `trig_01CN1EkYPspt76rNhzHDSjSf`). Le reste de cette page date du tour 9.
 - **Mise à jour** : 2026-11-21, 9 h 40 (heure belge). Arrêt demandé par Benjamin ; reprise : dernière ligne de ce fichier.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
 - **Temps en cours** : RÉPARATION du tour 9. Liste gelée (Benjamin : « Objectif. Terminé Tout les défaut trouvé et stoppé ») : `docs/audits/ultra/tour-9-tri/` (défauts D01…D18, finitions F001…F136). Plus aucun siège qui cherche ; des testeurs neufs constatent seulement. Toute faute neuve vue pendant la réparation entre dans la liste. On s'arrête quand la liste est vide. Points à Benjamin seulement sur sa demande (on le tutoie).
@@ -55,3 +56,13 @@ Pas avant : le rangement du tour 8 (branches de sièges, revue, PR vers `main`),
 - 2026-11-20 soir : miettesB (cc99fcfa1) et base-rouges (b55c9209e) fusionnés. textes refusé au portail (conflit dans corrections.tsv seulement) : renvoyé à sa discussion pour fusionner l'intégration. En cours : L13 (rapport final), banc TutoJourneyTest, D10 (renommer depuis « A ▾ », relecture manquante). Ensuite V1 → fiche tuto → V2, puis le tour 10 de contrôle (47 sièges).
 - 2026-11-21 matin (arrêt demandé par Benjamin : « Arrête toi après les tenté ») : entrés D10, banc-journey, base-rouges2 (270aadf35), textes (b7fce6776), L13 (d44d233b3, fusion à la main par le chef : seul rouge T9PanelTargetTest japonais 200 %, message identique à la base CI 403). En attente : « problèmes difficiles » `ccr-69119313-or4u42` (80563220 ; D09, F034, durcissement p5) : il lui manque une relecture neuve en dernier commit et la fusion de l'intégration (sa discussion est fermée : nouvelle discussion à ouvrir) ; ci-rapide `ccr-f384f197-wsy8kx` (4360850a) attend une CI verte sur une tête qui contient l'intégration. Rien lancé : mini-contrôle (plan dans le carnet du chef, 7 sièges + pilote M1), lots tuto V1 → fiche-tuto (D06 = le rouge T9) → V2, tour 10. Compteur : 155 tentés dans l'appli sur 166, 2 en attente, 0 vérifié par un testeur, 8 à corriger.
 - 2026-11-22 nuit : entrés difficiles (e83a4d4bf), rouges3 (8ee635e44 ; CI 408 verte, aperçu APK publié sur `preview`) et flash (bb4b404fc ; clignotement du studio avant « Bienvenue » au premier lancement, retour de Benjamin du 21 ; test de renommage corrigé : il touchait « Plus tard » sans défiler). Compteur : 157 tentés sur 166 + flash, 0 constaté. Suivant : CI sur la tête, puis latence aller-retour 958 ms et décrochages du rapport robot (Xiaomi), mini-contrôle, V1 → fiche-tuto → V2, tour 10.
+
+## Nuit du 23 au 24 (chef, départ 22 h 38 belge)
+- Disque : 16 Go libres. CI de ea301e4f0 : verte (build + émulateur). `eq/bentest-robot-2` poussée (2c0cab99c).
+- E `session_014RxrDJTJsxYa4FwifVpjiV` → `aud/tour-9-audit-E`
+- A1 `session_014RxrDJZuWGMePqYEYv9M2R` → `eq/tour-9-robot1`
+- B1 (Fable) `session_014RxrDKH5zKy69vtaKtvjiC` → `eq/tour-9-moteur1`
+- D `session_014RxrDLaW2Jz5kqVwsYnKER` → `eq/tour-9-audio1`
+- C `session_014RxrDLsNnZqNvpZR7hA2CA` → `eq/tour-9-fluide1`
+- fable5 `session_014RxrDNyMFnVcN1Br4QVUTB` → `eq/tour-9-fable5`
+- F0 : sous-agent du chef, bloc-notes `ecoute-f0` (rien dans git).

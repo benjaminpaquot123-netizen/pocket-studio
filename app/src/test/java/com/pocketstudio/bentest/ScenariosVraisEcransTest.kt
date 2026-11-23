@@ -27,7 +27,7 @@ import java.io.File
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = "w360dp-h780dp")
-class ScenariosVraisEcransTest {
+open class ScenariosVraisEcransTest {
     @get:Rule
     val compose = createAndroidComposeRule<ComponentActivity>()
 
@@ -109,4 +109,21 @@ class ScenariosVraisEcransTest {
         assertEquals(2, v.touched.count { it == "live_play" })
         assertEquals(1, v.count("tab_Structure", false))
     }
+
+    /** Runs the scenario [id] as the robot does (its reset first, its oracle at the end). */
+    private fun jouer(v: Vrai, id: String): String = scenarios(v).etapes().first { it.name == id }.work(Long.MAX_VALUE)
+
+    @Test
+    fun aBuildUpAddsItsCurveNotAPartThenUndoTakesItBack() {
+        h.start()
+        val v = Vrai()
+        val parts = v.projet().parties
+        val text = jouer(v, "partie_montee")
+        assertTrue(text, text.contains("courbe de montée"))
+        assertEquals(parts, h.vm.project.value.song.size)
+    }
 }
+
+/** The same guard on a tablet: what a narrow phone finds, a tablet finds too. */
+@Config(qualifiers = "w800dp-h1280dp-hdpi")
+class ScenariosVraisEcransTabletteTest : ScenariosVraisEcransTest()

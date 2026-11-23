@@ -2,6 +2,7 @@
 
 Tenu par le chef d'orchestre (méthode v3, `docs/audits/AUDIT-ULTRA.md` §13.7). Une page, mise à jour à chaque événement. C'est aussi la fiche de reprise : qui reprend le rôle de chef lit ce fichier, puis `docs/PROGRESS.md`. L'histoire du 13 au 19 novembre (tours 6, 7 et 8) est dans `docs/archive/EN-COURS-2026-11-13-a-19.md` : elle ne se suit pas.
 
+- **Prochain départ** : 2026-11-24, 2 h 05 : `docs/audits/ultra/PLAN-APRES-ROBOT.md` (cinq discussions E, A, B, C, D ; section 7 « Audit Fable » fait foi ; rappel `trig_01CN1EkYPspt76rNhzHDSjSf`). Le reste de cette page date du tour 9.
 - **Mise à jour** : 2026-11-21, 9 h 40 (heure belge). Arrêt demandé par Benjamin ; reprise : dernière ligne de ce fichier.
 - **Chef d'orchestre** : la discussion principale, `session_01NqonxZBBysqqWBbnsC2VTP` (outil `send_message`).
 - **Temps en cours** : RÉPARATION du tour 9. Liste gelée (Benjamin : « Objectif. Terminé Tout les défaut trouvé et stoppé ») : `docs/audits/ultra/tour-9-tri/` (défauts D01…D18, finitions F001…F136). Plus aucun siège qui cherche ; des testeurs neufs constatent seulement. Toute faute neuve vue pendant la réparation entre dans la liste. On s'arrête quand la liste est vide. Points à Benjamin seulement sur sa demande (on le tutoie).

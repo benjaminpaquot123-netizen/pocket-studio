@@ -12,9 +12,13 @@ namespace ps {
 //    second (the app's « charge »). One callback 20 times too slow moves it by a few percent only.
 //  - takeWorstBlock(): the slowest callback since the last take, the same ratio, neither smoothed nor
 //    capped (the « pire bloc »): a stall inside the callback.
-//  - takeWorstGap(): the longest wait between the starts of two callbacks since the last take, over
-//    the duration of the first one's frames: 1 is on time; a callback started late (the thread kept
-//    off its core) shows here and not in the worst block.
+//  - takeWorstGap(): how late the latest callback started since the last take, in blocks: 1 is on
+//    time, 16 is 15 blocks late; a callback started late (the thread kept off its core) shows here
+//    and not in the worst block. Late is measured against the frames already asked for (a callback
+//    is due when the frames before it are played), not against the block before it alone, and a
+//    block is the usual one (see below): a device that asks for blocks of unequal sizes reads the
+//    same as one that asks for equal ones (tour 9, C3: a small block before a normal wait read as
+//    several blocks).
 class CallbackLoad {
 public:
     // A gap longer than this is the stream stopped and opened again, not a callback late.
@@ -30,9 +34,21 @@ public:
         smoothed_ += k * (std::min(ratio, 4.0f) - smoothed_);
         published_.store(smoothed_, std::memory_order_relaxed);
         raise(worstBlock_, ratio);
-        if (lastLasted_ > 0.0f) {
-            const double gap = started - lastStarted_;
-            if (gap >= 0.0 && gap < kRestartGapSeconds) raise(worstGap_, static_cast<float>(gap / lastLasted_));
+        const double gap = started - lastStarted_;
+        if (lastLasted_ > 0.0f && gap >= 0.0 && gap < kRestartGapSeconds) {
+            // Due when the frames asked before it are played; kDrift lets the device's clock run a
+            // little slower than ours without the difference piling up as lateness.
+            due_ += static_cast<double>(lastLasted_) * (1.0 + kDrift);
+            const double late = std::max(0.0, started - due_);
+            const float usual = usualBlock(lasted);
+            raise(worstGap_, 1.0f + static_cast<float>(late) / usual);
+            // Early: the device had room, the schedule follows it. More than a block late: the
+            // frames are lost, said once, and the schedule starts again from here.
+            if (started < due_ || static_cast<float>(late) > usual) due_ = started;
+        } else {
+            due_ = started;  // the first callback, or the stream opened again
+            usualSquares_ = usualSum_ = 0.0f;
+            usualBlock(lasted);
         }
         lastStarted_ = started;
         lastLasted_ = lasted;
@@ -52,7 +68,21 @@ private:
         }
     }
 
+    // The block a frame usually comes in: the blocks' durations averaged over about half a second,
+    // each weighted by its own duration (a few small blocks among normal ones barely move it; equal
+    // blocks give their own duration).
+    float usualBlock(float lasted) {
+        const float keep = 1.0f - std::min(1.0f, lasted / 0.5f);
+        usualSquares_ = usualSquares_ * keep + lasted * lasted;
+        usualSum_ = usualSum_ * keep + lasted;
+        return usualSquares_ / usualSum_;
+    }
+
+    static constexpr double kDrift = 0.001;
+
     float smoothed_ = 0.0f;  // audio thread
+    double due_ = 0.0;
+    float usualSquares_ = 0.0f, usualSum_ = 0.0f;
     double lastStarted_ = 0.0;
     float lastLasted_ = 0.0f;  // 0: no callback yet
     std::atomic<float> published_{0.0f};

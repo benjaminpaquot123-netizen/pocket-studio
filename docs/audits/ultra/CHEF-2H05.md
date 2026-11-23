@@ -9,7 +9,7 @@ Consigne de Benjamin (2026-11-23, soir) : « Tout ce qu'on vient de parler, tu l
 ## 0. Pièges connus
 
 1. **Disque** : 462 Mo libres. Le disque affiche 252 Go mais n'en donne que 40 environ : « libérer 15 Go » est hors de portée. But réaliste : **10 Go**. Jamais de portail sous 4 Go. Liste et ordre : section 1.
-2. **`Scenarios.kt` et le robot n'existent que dans `/home/user/bt-build`** (`eq/bentest-robot-2`, 2c0cab99c ; GitHub n'a que l'ancien `eq/bentest-robot`). E en a besoin autant que A1. Le chef ne pousse que l'intégration (règle de sa session) : pousser cette branche demande l'accord écrit de Benjamin (question posée le 23 au soir). Sans accord à 2 h 05 : E et A1 sont des sous-agents du chef dans `/home/user/bt-build` (E en lecture seule), après le nettoyage du disque ; le lot A1 attend l'accord pour sa CI.
+2. **`Scenarios.kt` et le robot n'existent que dans `/home/user/bt-build`** (`eq/bentest-robot-2`, 2c0cab99c ; GitHub n'a que l'ancien `eq/bentest-robot`). E en a besoin autant que A1. Le chef ne pousse que l'intégration (règle de sa session) : Benjamin a donné son accord écrit le 23 au soir (« Oui ») pour pousser les branches de travail `eq/…` : le chef pousse cette branche en premier après le disque. Repli seulement si le push est refusé : E et A1 sont des sous-agents du chef dans `/home/user/bt-build` (E en lecture seule), après le nettoyage du disque ; le lot A1 attend l'accord pour sa CI.
 3. **Le plan n'est pas dans la branche du robot** : E et A1 le lisent par `git show` (c'est écrit dans leur fiche).
 4. **`portail-file.sh` refusera deux fois** : `/home/user/fx-int2` est en tête détachée, et le paquet 9 compte déjà 27 lots. La recette qui marche est en section 6.
 5. **Pas de CI automatique sur une branche `eq/…`** (pas de PR). Le chef la lance à la main (section 5).
@@ -17,7 +17,7 @@ Consigne de Benjamin (2026-11-23, soir) : « Tout ce qu'on vient de parler, tu l
 7. **Le lot fable5 n'est pas prêt pour le portail** : pas de relecture, 10 commits de retard, pas de CI, mauvais nom de branche. Fiche en section 3.
 8. **Mémoire du chef** : 137 k sur 200 k le 23 au soir ; un compactage arrivera dans la nuit. Chaque identifiant (discussion, branche, sha, numéro de CI) s'écrit dans `EN-COURS.md` dès qu'il existe. Le chef ne lit jamais un journal ni un rapport entier : `tail`, ou un sous-agent.
 9. **La clé Freesound n'existe qu'ici** (dossier `secrets` du bloc-notes) : F0 est un sous-agent du chef. Jamais la clé dans une fiche, un commit, un journal ou un message.
-10. **Pousser** : le chef pousse seulement l'intégration `ccr-80af1a1b-mn0wec` (`eq/bentest-robot-2` et `eq/tour-9-fable5` seulement avec l'accord écrit de Benjamin). Les discussions poussent leur branche `eq/…` ou `aud/…` neuve. Jamais `main`, jamais la PR #60.
+10. **Pousser** : le chef pousse seulement l'intégration `ccr-80af1a1b-mn0wec` et les branches de travail `eq/…` (accord écrit de Benjamin, 2026-11-23 : « Oui ») ; jamais `main`. Les discussions poussent leur branche `eq/…` ou `aud/…` neuve. Jamais `main`, jamais la PR #60.
 11. **Modèle** : une discussion neuve prend le modèle du chef si on ne dit rien. Toujours écrire `model`.
 
 ## 1. Départ (10 minutes, dans cet ordre)
@@ -31,7 +31,7 @@ Consigne de Benjamin (2026-11-23, soir) : « Tout ce qu'on vient de parler, tu l
 2. `/home/user/fx-int2` : `git fetch origin ccr-80af1a1b-mn0wec`, la tête locale égale `FETCH_HEAD`. Le dossier `docs/audits/ultra/rejeux/_echecs/` non suivi reste là.
 3. CI de la tête : `scripts/bench/ci-etat.sh` (il répond maintenant, sans `gh`). Rouge ou en cours : une ligne de note, et tout part quand même ; rien ne fusionne avant le vert.
 4. La clé est présente : test de taille du fichier, sans l'afficher.
-5. Seulement si Benjamin a dit oui par écrit : `git -C /home/user/bt-build push origin 2c0cab99c:refs/heads/eq/bentest-robot-2`. Sinon (par défaut) : A1 et E sont des sous-agents du chef dans `/home/user/bt-build` (E en lecture seule).
+5. Accord de Benjamin donné : `git -C /home/user/bt-build push origin 2c0cab99c:refs/heads/eq/bentest-robot-2`. Si le push est refusé : A1 et E sont des sous-agents du chef dans `/home/user/bt-build` (E en lecture seule).
 6. Écrire dans `EN-COURS.md` (local, pas poussé tout de suite) : heure de départ, place libre, état de la CI.
 
 ## 2. Ce qui démarre
@@ -48,7 +48,7 @@ Consigne de Benjamin (2026-11-23, soir) : « Tout ce qu'on vient de parler, tu l
 
 Ouvrir une discussion : `create_session` avec `source_url` = `https://github.com/benjaminpaquot123-netizen/pocket-studio`, `source_revision`, `model`, `title`, `clone_depth: 1000` (un historique coupé donne de faux rouges au pré-vol), `prompt` = la fiche + les règles communes. Jamais `permission_mode: "plan"` (elle attendrait quelqu'un toute la nuit). Les cinq dans le même tour, puis les deux sous-agents. Noter aussitôt les cinq identifiants dans `EN-COURS.md`.
 
-Sous-agents du chef : F0, et sans accord de Benjamin E (lecture seule) et A1 ; un seul Gradle local à la fois (A1).
+Sous-agent du chef : F0 (et E, A1 seulement dans le repli) ; un seul Gradle local à la fois.
 
 ## 3. Les fiches (à coller telles quelles)
 

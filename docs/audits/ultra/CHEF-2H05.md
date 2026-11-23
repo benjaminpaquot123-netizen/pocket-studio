@@ -165,7 +165,7 @@ Les deux fiches de `docs/AIDE-FUSIONS-TESTS.md` font foi. Trois lots au plus par
   3. les essais d'écoute : combien, et comment les écouter ;
   4. ce qu'il doit faire, un test à la fois, quand il a ses appareils (aucun à l'hôtel) ;
   5. « Ce qui n'est pas vert ».
-- Les MP3 ne vont ni dans git ni dans une version publiée sans une décision notée.
+- Les MP3 ne vont ni dans git ni dans une version publiée : au réveil, le chef les envoie dans la conversation (`SendUserFile`), un fichier « avant puis après » par style, comme d'habitude avec Benjamin.
 
 ## 8. Clôture de la nuit
 

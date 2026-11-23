@@ -48,7 +48,7 @@ Consigne de Benjamin (2026-11-23, soir) : « Tout ce qu'on vient de parler, tu l
 
 Ouvrir une discussion : `create_session` avec `source_url` = `https://github.com/benjaminpaquot123-netizen/pocket-studio`, `source_revision`, `model`, `title`, `clone_depth: 1000` (un historique coupé donne de faux rouges au pré-vol), `prompt` = la fiche + les règles communes. Jamais `permission_mode: "plan"` (elle attendrait quelqu'un toute la nuit). Les cinq dans le même tour, puis les deux sous-agents. Noter aussitôt les cinq identifiants dans `EN-COURS.md`.
 
-Au plus deux sous-agents du chef à la fois (F0 et fable5). Le sous-agent fable5 ne lance aucun Gradle local.
+Sous-agents du chef : F0, et sans accord de Benjamin E (lecture seule) et A1 ; un seul Gradle local à la fois (A1).
 
 ## 3. Les fiches (à coller telles quelles)
 

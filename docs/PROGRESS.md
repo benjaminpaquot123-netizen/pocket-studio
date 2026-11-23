@@ -8,6 +8,8 @@ Page courte, lue par le chef à chaque début de session. Tout ce qui date d'ava
 - En pause sans revue : L5a, L13, L14. L18 et L19 archivés vides.
 
 ## Prochaine étape exacte
+
+- **2026-11-24, 2 h 05 (heure belge)** : démarrer `docs/audits/ultra/PLAN-APRES-ROBOT.md` (cinq discussions neuves : E audit des scénarios, A Robot, B Moteur son en Fable 5.2, C Fluidité et mémoire, D Service audio ; la section 7 « Audit Fable » fait foi). Rappel posé : `trig_01CN1EkYPspt76rNhzHDSjSf`.
 0. (2026-11-22) Entrés : difficiles, rouges3, flash (voir dernière ligne de `EN-COURS.md`). Suivant : CI sur la tête, latence robot Xiaomi, mini-contrôle, V1 → fiche-tuto → V2, tour 10.
 0b. (2026-11-21) Reprise : voir la dernière ligne de `docs/audits/ultra/EN-COURS.md` (problèmes difficiles à relire et fusionner, CI complète, ci-rapide, mini-contrôle, puis fiche-tuto pour le rouge T9).
 1. Déjà fusionnés : L7, L4, L6, L14, L5a. Reste, un à la fois : L3 (rouge TutoJourneyTest hat_triplet, aussi rouge sur la base), L15 (oracle japonais tab_Sons), L13 (inachevé), puis les miettes (restes L2/L7, F101, F111, L6 renameScene, L17 F032/F034, L3 F031/F041).

@@ -23,9 +23,13 @@ Rapports gardés hors dépôt (bloc-notes du chef) : téléphone Xiaomi Android 
 | C13 | Lecture longue comptée « plantage » quand Benjamin ferme l'appli à la main | téléphone | robot |
 | C14 | Volume à 2 sur 15 : compté coupé, mais le test démarre quand même | tablette | robot |
 
-## 2. Quatre discussions, quatre zones qui ne se touchent pas
+## 2. Cinq discussions, cinq zones qui ne se touchent pas
 
 Chaque discussion reçoit une fiche fermée (gabarit `GABARIT-FICHES-V3.md`) : ses fichiers, ses constats, la preuve attendue. Aucune ne pousse sur l'intégration ; le chef fusionne par le portail.
+
+### Discussion E : « Audit de la fabrique de scénarios » (Opus 5.5, lecture seule ; Benjamin, 2026-11-23 : « il faut que ce soit synchro, l'un et puis l'autre »)
+- Démarre à 2 h 05 avec les autres. Elle relit la façon de fabriquer et de juger les scénarios (`Scenarios.kt` et ses tests) : scénarios vraiment distincts ou copies, oracles qui peuvent mentir, restes laissés d'un scénario au suivant, recherche des éléments à l'écran, seuils, et le bon dessin pour passer à environ 400.
+- **Verrou** : la discussion A ne crée aucun scénario neuf tant que l'audit n'est pas rendu et que le chef ne lui a pas transmis ses conclusions. En attendant, A fait seulement ses réparations (C9 à C14) et le confort.
 
 ### Discussion A : « Robot » (l'outil de mesure d'abord)
 - Zone : `app/src/benTest/**`, `app/src/test/java/com/pocketstudio/bentest/**`, `scripts/bentest/**`. Base : `eq/bentest-robot-2` (2c0cab99c).

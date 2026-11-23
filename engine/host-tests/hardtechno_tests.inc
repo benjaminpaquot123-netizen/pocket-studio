@@ -51,6 +51,40 @@ void testWorstGapSeesALateCallback() {
     CHECK(after >= 0.99f && after <= 1.01f);
 }
 
+// Unequal blocks (tour 9, C3: four styles read « 4.1 to 4.6 blocks » on a tablet). A device that asks
+// every 2 ms for a small block then a large one starves nobody (192 frames every 4 ms), yet the wait
+// after the small block, over that small block's duration, read as six blocks.
+void testWorstGapWithUnequalBlocksOnTime() {
+    ps::CallbackLoad load;
+    const float small = 16.0f / kRate, large = 176.0f / kRate;
+    double t = 50.0;
+    for (int i = 0; i < 2000; ++i, t += kBurst) load.add(0.2f * kBurst, i % 2 ? large : small, t);
+    const float gap = load.takeWorstGap();
+    std::printf("  16/176 frames asked every 2 ms, none late: worst gap %.2f blocks\n", gap);
+    CHECK(gap >= 1.0f && gap < 2.0f);
+}
+
+// The same 6 ms of lateness reads the same whichever block came before it (it read 19 blocks after
+// the small one and 2.6 after the large one).
+void testWorstGapSameLatenessSameReading() {
+    const float small = 16.0f / kRate, large = 176.0f / kRate;
+    float seen[2] = {0.0f, 0.0f};
+    for (int which = 0; which < 2; ++which) {
+        ps::CallbackLoad load;
+        double t = 50.0;
+        for (int i = 0; i < 2000; ++i) {
+            const float lasted = i % 2 ? large : small;
+            if (i == 1200 + which) t += 0.006;  // which 0: after a large block; 1: after a small one
+            load.add(0.2f * lasted, lasted, t);
+            t += lasted;  // each callback starts when the frames before it are played
+        }
+        seen[which] = load.takeWorstGap();
+    }
+    std::printf("  6 ms late after a large block: %.2f blocks; after a small one: %.2f\n", seen[0], seen[1]);
+    CHECK(seen[0] > 1.5f && seen[1] > 1.5f);
+    CHECK(std::fabs(seen[0] - seen[1]) < 0.05f * seen[0]);
+}
+
 // The engine keeps both while it renders: real callbacks, measured from outside too.
 void testEngineReportsItsWorstBlock() {
     ps::Engine engine(kRate);
@@ -76,4 +110,6 @@ void testEngineReportsItsWorstBlock() {
 #define PS_HARDTECHNO_TESTS                                                        \
     {"ht_worst_block_sees_one_slow_callback", hardtechno::testWorstBlockSeesOneSlowCallback}, \
     {"ht_worst_gap_sees_a_late_callback", hardtechno::testWorstGapSeesALateCallback},       \
+    {"ht_worst_gap_unequal_blocks_on_time", hardtechno::testWorstGapWithUnequalBlocksOnTime}, \
+    {"ht_worst_gap_same_lateness_same_reading", hardtechno::testWorstGapSameLatenessSameReading}, \
     {"ht_engine_reports_its_worst_block", hardtechno::testEngineReportsItsWorstBlock},

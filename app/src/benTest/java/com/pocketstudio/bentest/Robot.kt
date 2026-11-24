@@ -584,6 +584,10 @@ private class AppliReelle(private val app: Application, private val main: MainTh
 
     override fun latenceEchec(): String = latencyFailure
 
+    override fun microAutorise(): Boolean? = runCatching {
+        app.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    }.getOrNull()
+
     override fun volume(): Appli.Volume? = runCatching {
         val audio = app.getSystemService(android.media.AudioManager::class.java) ?: return@runCatching null
         val music = android.media.AudioManager.STREAM_MUSIC

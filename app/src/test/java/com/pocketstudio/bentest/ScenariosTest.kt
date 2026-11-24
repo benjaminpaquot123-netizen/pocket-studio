@@ -39,6 +39,8 @@ class ScenariosTest {
         var breakAdds = true
         var chipShown = true
         var liveSound = true
+        /** The engine reads NaN while it plays. */
+        var nan = false
         /** The engine stops by itself after this many readings while the Live plays (tour 9, C2); null: never. */
         var liveStopsAfter: Int? = null
         private var liveReads = 0
@@ -188,7 +190,7 @@ class ScenariosTest {
             if (behind && stopsBehind) playing = false
             if (playing && tab == "Live" && liveStopsAfter != null && ++liveReads > liveStopsAfter!!) playing = false
             val sound = playing && (tab != "Live" || liveSound)
-            return Sonde.Lecture(xruns, 0.2f, if (sound) 0.5f else 0f, false, true, playing, cpuWorst = 0.3f, gapWorst = 1f)
+            return Sonde.Lecture(xruns, 0.2f, if (sound) 0.5f else 0f, playing && nan, true, playing, cpuWorst = 0.3f, gapWorst = 1f)
         }
 
         override fun ouvrirStudio() = Unit
@@ -353,6 +355,10 @@ class ScenariosTest {
             val hidden = played(Studio().apply { undoShown = false }, id).only(id)
             assertEquals(hidden.detail, Scenarios.NON_MESURE, hidden.resultat)
             assertTrue(hidden.detail, hidden.detail.contains("pas de bouton « Annuler »"))
+            // A bad sound stays a red even when the effect cannot be taken off.
+            val bad = played(Studio().apply { undoShown = false; nan = true }, id).only(id)
+            assertEquals(bad.detail, Scenarios.ECHOUE, bad.resultat)
+            assertTrue(bad.detail, bad.detail.contains("NaN"))
         }
     }
 

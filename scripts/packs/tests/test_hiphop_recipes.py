@@ -142,5 +142,16 @@ class FullHipHop(unittest.TestCase):
         self.assertIn('808', s.get('mix', {}).get('pump', []))
 
 
+class TrapFlute(unittest.TestCase):
+    """Lot L6: the VSCO-2 flute (sustain vibrato) lets go fast, as on a trap flute loop."""
+
+    def test_wood_release_is_short(self):
+        inst = json.loads((PACKS_DIR / 'instruments.json').read_text())
+        bois = next(i for i in inst['instruments'] if i['id'] == 'instrument_bois')
+        self.assertTrue(0.15 <= bois['release'] <= 0.25, bois['release'])
+        flute = next(p for p in bois['parts'] if p['sfz'] == 'FluteSusVib.sfz')
+        self.assertTrue(flute.get('loop'), 'the held note keeps its vibrato')
+
+
 if __name__ == '__main__':
     unittest.main()

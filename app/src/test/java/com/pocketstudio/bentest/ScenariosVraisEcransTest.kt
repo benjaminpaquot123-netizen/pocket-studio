@@ -141,6 +141,20 @@ open class ScenariosVraisEcransTest {
         assertTrue(second, second.contains("le son sort"))
         assertTrue(v.touched.toString(), v.touched.any { Regex("live_pad_.+_\\d+").matches(it) })
     }
+
+    @Test
+    fun theEffectsScenariosLeaveTheStripsAsTheyFoundThem() {
+        h.start()
+        val v = Vrai()
+        val before = v.projet().effets
+        for (id in listOf("effets", "effets_plusieurs", "effet_chorus")) {
+            val text = jouer(v, id)
+            assertTrue("$id : $text", !text.startsWith("non mesuré"))
+            // Each scenario took its effects off again: the next one finds the same room.
+            assertEquals(id, before, v.projet().effets)
+            assertEquals(id, before, v.projet().disque?.effets)
+        }
+    }
 }
 
 /** The same guard on a tablet: what a narrow phone finds, a tablet finds too. */

@@ -312,8 +312,10 @@ class ScenariosTest {
         val text = scenarios(s, c).effets()
         // Strip 1 is full (4 effects): the second one takes it.
         assertTrue(text, text.contains("égaliseur ajouté à la piste 2"))
-        assertEquals(listOf("PUMP", "EQ"), s.effets[1])
-        assertEquals(listOf("PUMP", "EQ"), s.disque!!.effets[1])
+        // Added, read back, heard, then taken off by « Annuler »: the strip as it was, on the disk too.
+        assertTrue(text, text.contains("retiré par « Annuler »"))
+        assertEquals(listOf("PUMP"), s.effets[1])
+        assertEquals(listOf("PUMP"), s.disque!!.effets[1])
         assertTrue(s.touched.toString(), s.touched.containsAll(listOf("strip_more_1", "fx_add_1", "fx_pick_1_EQ", "strip_sheet_close")))
         // The studio is left as a user leaves it: the sheet closed, the song stopped.
         assertEquals("", s.sheet)
@@ -327,6 +329,21 @@ class ScenariosTest {
         val unsaved = Studio().apply { saves = false }
         fails("n'est pas enregistré sur le disque (piste 2)") { scenarios(unsaved).effets() }
         assertEquals("", unsaved.sheet)
+    }
+
+    @Test
+    fun anEffectWithNoRoomIsNotMeasuredAndOneLeftBehindFails() {
+        // Every strip full: no strip 1 « quand même », the scenario says why it could not play.
+        val full = Studio().apply { effets = List(4) { List(ProjetVu.EFFETS_MAX) { "PUMP" } } }
+        val text = scenarios(full).effets()
+        assertTrue(text, text.startsWith("non mesuré"))
+        assertFalse(full.touched.toString(), full.touched.any { it.startsWith("fx_pick_") })
+        // « Annuler » that does not take the effect off: the strip is left dirty, so red, not a silent pass.
+        fails("l'effet reste sur la piste 2") { scenarios(Studio().apply { undoWorks = false }).effets() }
+        fails("les effets restent sur la piste 2") { scenarios(Studio().apply { undoWorks = false }).effetsPlusieurs() }
+        val left = played(Studio().apply { undoWorks = false }, "effet_chorus").only("effet_chorus")
+        assertEquals(Scenarios.ECHOUE, left.resultat)
+        assertTrue(left.detail, left.detail.contains("l'effet reste sur la piste"))
     }
 
     // --- The Live ------------------------------------------------------------------------------------
@@ -469,7 +486,9 @@ class ScenariosTest {
         val s = Studio()
         val text = scenarios(s).effetsPlusieurs()
         assertTrue(text, text.contains("EQ, COMPRESSOR, FILTER sur la piste 2"))
-        assertEquals(listOf("PUMP", "EQ", "COMPRESSOR", "FILTER"), s.disque!!.effets[1])
+        // Taken off again by « Annuler », so the next scenarios find room.
+        assertEquals(listOf("PUMP"), s.effets[1])
+        assertEquals(listOf("PUMP"), s.disque!!.effets[1])
         assertFalse(s.playing)
         val full = Studio().apply { effets = List(4) { listOf("A", "B") } }
         assertTrue(scenarios(full).effetsPlusieurs().startsWith("non mesuré"))

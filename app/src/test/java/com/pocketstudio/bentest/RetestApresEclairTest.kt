@@ -89,7 +89,7 @@ class RetestApresEclairTest {
     private val appli = object : Appli {
         override fun ouvrirStudio() {
             opened = System.currentTimeMillis()
-            studioDevant()
+            mettreStudioDevant()
         }
 
         override fun export(): Appli.ExportVu {
@@ -149,7 +149,7 @@ class RetestApresEclairTest {
     }
 
     /** The studio in front (AppliReelle.ouvrirStudio: startActivity, singleTask): resumed and shown, the bench stopped and hidden. */
-    private fun studioDevant() {
+    private fun mettreStudioDevant() {
         banc?.let { b -> if (b.get().lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) b.pause().stop(); montrer(b.get(), false) }
         val s = studio
         if (s == null) {
@@ -278,17 +278,21 @@ class RetestApresEclairTest {
         File(Robot.dir(app), "passage.txt").writeText(Robot.ECLAIR)
         val candidats = Robot.candidats(app)
         assertFalse("the opening is not offered: ${candidats.map { it.id }}", candidats.any { it.id == "ouverture" })
-        assertEquals(listOf("style_techno"), candidats.filter { it.coche }.map { it.id })
+        // The new tests never played are ticked too (chef, 2026-11-24).
+        assertEquals(listOf("style_techno"), candidats.filter { it.coche && it.id !in Retest.NOUVEAUX }.map { it.id })
         assertEquals(Feu.VERT, candidats.single { it.id == "style_house" }.feu)
     }
 
-    /** Nothing ticked (no run saved at all): the checklist says what to do; once « Retester » is touched it is gone. */
+    /**
+     * No run saved at all: only the new tests are ticked; « Tout décocher » leaves nothing and the checklist says
+     * what to do; once « Retester » is touched it is gone.
+     */
     @Test
     fun theChecklistWithNothingTickedSaysToTickAndClosesBeforeTheRun() {
         var etat by androidx.compose.runtime.mutableStateOf(Robot.Etat())
         var started: Set<String>? = null
         val candidats = Robot.candidats(app)
-        assertTrue(candidats.none { it.coche })
+        assertEquals(candidats.filter { it.id in Retest.NOUVEAUX }.map { it.id }, candidats.filter { it.coche }.map { it.id })
         banc = Robolectric.buildActivity(ComponentActivity::class.java).setup().also { c ->
             c.get().setContent {
                 PocketStudioTheme {
@@ -298,6 +302,7 @@ class RetestApresEclairTest {
         }
         val j = Journey(driver)
         j.tap("bentest_retest")
+        j.tap("bentest_retest_rien")
         j.await("bentest_retest_aide")
         j.tap("bentest_retest_style_techno")
         j.tap("bentest_retest_go")

@@ -21,7 +21,10 @@ import com.pocketstudio.app.journey.Journey
 import com.pocketstudio.app.report.CrashReporter
 import com.pocketstudio.app.report.JournalJson
 import com.pocketstudio.app.rhythm.RhythmViewModel
+import com.pocketstudio.app.rhythm.ProjectOpening
 import com.pocketstudio.engine.NativeEngine
+import com.pocketstudio.model.EffectType
+import com.pocketstudio.model.Project
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -54,6 +57,9 @@ object Robot {
         val message: String? = null,
         /** « Écoute au micro »: the 2 s extracts of the microphone the report holds (said before it is sent). */
         val extraits: Int = 0,
+        /** « Test [numero] sur [total] » while the robot works (0 when no run is counted). */
+        val numero: Int = 0,
+        val total: Int = 0,
     )
 
     /** The essai éclair (T0) and « Tout tester » (T1, niveau 1). */
@@ -65,6 +71,12 @@ object Robot {
 
     /** « Écoute au micro » (T1b). */
     const val MICRO = "micro"
+
+    /** « Scénarios »: a few minutes of real use by level, each with its oracle. */
+    const val SCENARIOS = "scenarios"
+
+    /** « Tests guidés » (lot A2): an output changed, the battery saver; Benjamin does the gesture, never at night. */
+    const val GUIDES = "guides"
 
     private val _etat = MutableStateFlow(Etat())
     val etat: StateFlow<Etat> = _etat
@@ -80,7 +92,11 @@ object Robot {
 
     /** Which run the logbook holds (kept beside it: a run picked up after a crash is the same one). */
     private fun passageFile(context: Context) = File(dir(context), "passage.txt")
-    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO } ?: ECLAIR
+    /** « Scénarios »: the pack chosen (rapides: the first 31; complets: all of them). */
+    private fun paquetFile(context: Context) = File(dir(context), "paquet.txt")
+    fun paquet(context: Context): String = runCatching { paquetFile(context).readText().trim() }.getOrNull()?.takeIf { it in Scenarios.PAQUETS } ?: Scenarios.RAPIDE
+
+    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO || it == SCENARIOS || it == GUIDES } ?: ECLAIR
 
     /** « Retester les corrections »: the ids chosen (the file exists only for such a run), and the last « Tout tester » kept (ids and lights). */
     private fun retestFile(context: Context) = File(dir(context), "retest.txt")
@@ -88,13 +104,18 @@ object Robot {
     fun retest(context: Context): Set<String>? = Retest.lireChoix(retestFile(context))
 
     /** The checklist: every « Tout tester » step (id, label), its last light, ticked by default when red or not conclusive. */
-    data class Candidat(val id: String, val label: String, val feu: Feu?, val coche: Boolean)
+    data class Candidat(val id: String, val label: String, val feu: Feu?, val coche: Boolean, val groupe: String = Retest.groupe(id))
 
     fun candidats(context: Context): List<Candidat> {
         val all = Retest.proposees(etapes(context, TOUT, retest = false))
         // No run kept by this version: the last saved logbook (any run, any version), else the last report's.
         val last = Retest.lire(derniereFile(context)).ifEmpty { Retest.repli(carnet(context).lines(), rapports(context), all) }
-        val ticked = Retest.parDefaut(last, all)
+        return candidatsDe(all, last)
+    }
+
+    /** [all] with their [last] lights: red, not conclusive and never played new tests ticked. */
+    internal fun candidatsDe(all: List<Etape>, last: Map<String, Feu?>): List<Candidat> {
+        val ticked = Retest.parDefaut(last, all, Retest.NOUVEAUX)
         return all.map { Candidat(it.name, it.label, last[it.name], it.name in ticked) }
     }
 
@@ -106,9 +127,14 @@ object Robot {
     private fun etapes(context: Context, passage: String = passage(context), retest: Boolean = true): List<Etape> {
         val j = Journey(InAppDriver(LooperMainThread()))
         val all = when (passage) {
-            TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+            // The checklist and a retest offer every scenario too.
+            TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes().let { tout ->
+                if (!retest || retest(context) != null) Retest.avecScenarios(tout, Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context), paquet = Scenarios.COMPLET).etapes()) else tout
+            }
             OREILLE -> QuestionsOreille(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             MICRO -> EcouteMicro(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), MicroReel(context), HautParleurReel(context), carnet(context), sons(context)).etapes()
+            SCENARIOS -> Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context), paquet = paquet(context)).etapes()
+            GUIDES -> Epreuves(j, NativeSonde, NoAppli, carnet(context), captures(context)).guides()
             else -> EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
         }
         return subset(all, passage, if (retest) retest(context) else null)
@@ -120,8 +146,9 @@ object Robot {
 
     private fun verdict(lines: List<Carnet.Ligne>, steps: List<Etape>, passage: String): String =
         when (passage) {
-            TOUT, MICRO -> Rapport.bilanFeux(lines, steps).verdict()
+            TOUT, MICRO, GUIDES -> Rapport.bilanFeux(lines, steps).verdict()
             OREILLE -> QuestionsOreille.verdict(lines)
+            SCENARIOS -> Scenarios.verdict(lines)
             else -> Rapport.bilan(lines, steps).verdict()
         }
 
@@ -144,10 +171,11 @@ object Robot {
     }
 
     /** Starts (or picks up, [passage] null) the essai éclair or « Tout tester ». */
-    fun start(app: Application, passage: String? = null, retest: Set<String>? = null) {
+    fun start(app: Application, passage: String? = null, retest: Set<String>? = null, paquet: String? = null) {
         if (_etat.value.running) return
         if (passage != null) runCatching {
             dir(app).mkdirs(); passageFile(app).writeText(passage)
+            if (paquet != null) paquetFile(app).writeText(paquet)
             if (retest != null) Retest.ecrireChoix(retestFile(app), retest) else retestFile(app).delete()
         }
         val which = passage(app)
@@ -165,7 +193,11 @@ object Robot {
             val appli = AppliReelle(app, main, tracker)
             val shots = captures(app).apply { mkdirs() }
             val all = when (which) {
-                TOUT -> ToutTester(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
+                TOUT -> ToutTester(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes().let { tout ->
+                    // A retest may have chosen scenarios: they run in the same list.
+                    if (retest(app) == null) tout
+                    else Retest.avecScenarios(tout, Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = Scenarios.COMPLET, enHaut = driver::enHaut).etapes())
+                }
                 OREILLE -> {
                     val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
                     QuestionsOreille(Pose(essai, Journey(driver)), NativeSonde, appli, c, shots).etapes()
@@ -174,23 +206,30 @@ object Robot {
                     val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
                     EcouteMicro(Pose(essai, Journey(driver)), MicroReel(app), HautParleurReel(app), c, sons(app)).etapes()
                 }
+                SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), enHaut = driver::enHaut).etapes()
+                GUIDES -> Epreuves(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).guides()
                 else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
             }
             val steps = subset(all, which, retest(app))
-            val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() })
+            // A scenario the app died in: its clues (the ones taken as it died, else the screen now).
+            val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), enHaut = driver::enHaut) else null
+            val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() }, onCrash = { clues?.apresPlantage(it) }, compteur = true)
+            Garde.installer(app, shots)
             runCatching {
                 passage.run { e ->
+                    Garde.etape(e.name, e.maxMs)
                     driver.deadlineMs = System.currentTimeMillis() + e.maxMs
                     sorties.etape = e.name
-                    _etat.update { it.copy(step = e.label) }
+                    _etat.update { it.copy(step = e.label, numero = passage.numero(e), total = passage.total) }
                 }
             }.onFailure { c.add(Carnet.NOTE, "robot", "arrêt : $it") }
+            Garde.etape(null)
             sorties.etape = null
             tracker.sorties = null
             tracker.keepScreenOn = false
             appli.orienter(null)
-            if (which == TOUT) runCatching {
-                // The last « Tout tester » kept for the next retest: a retest only replaces the steps it ran.
+            if (which == TOUT || which == SCENARIOS) runCatching {
+                // The last « Tout tester » or scenarios kept for the next retest: a run only replaces the steps it ran.
                 val f = derniereFile(app)
                 Retest.ecrire(f, Retest.fusion(Retest.lire(f), Rapport.feux(c.lines(), passage.etapes)))
             }
@@ -210,6 +249,7 @@ object Robot {
         if (_etat.value.running) return
         carnet(context).clear()
         passageFile(context).delete()
+        paquetFile(context).delete()
         retestFile(context).delete()
         captures(context).deleteRecursively()
         sons(context).deleteRecursively()
@@ -230,6 +270,17 @@ object Robot {
 
     @Volatile
     private var sorties: Sorties? = null
+
+    /** The robot itself takes the studio out of the front (a scenario's background, its closing): not an exit to note. */
+    internal fun sortieVoulue(on: Boolean) {
+        sorties?.voulue = on
+    }
+
+    /** BenStudio Test's own screen over the studio (the studio in the background, the app still in front for Android). */
+    internal fun robotDevant(app: Application) = bringBack(app)
+
+    /** The studio in front again after [robotDevant]. */
+    internal fun studioDevant(app: Application, tracker: Tracker) = bringStudioBack(app, tracker)
 
     /** The studio back in front after the app left (another app opened): the task to the front, else its launcher activity reordered to front. */
     private fun bringStudioBack(app: Application, tracker: Tracker) {
@@ -265,16 +316,22 @@ object Robot {
 
     fun writeReport(context: Context): RapportZip.Ecrit {
         val c = carnet(context)
-        val lines = c.lines()
+        val lines = runCatching { c.lines() }.getOrDefault(emptyList())
         val passage = passage(context)
-        val steps = etapes(context, passage)
+        val steps = runCatching { etapes(context, passage) }.getOrDefault(emptyList())
         val about = about(context)
         val texts = buildList {
-            add("rapport.md" to Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE, micro = passage == MICRO))
-            add("mesures.json" to Rapport.json(lines, about))
-            add("carnet.tsv" to (if (c.file.isFile) c.file.readText() else ""))
-            add("journal.json" to runCatching { JournalJson.current(about) }.getOrDefault("{}"))
-            CrashReporter.pendingCrash()?.let { add("plantage.txt" to it) }
+            // Always sendable: a part that cannot be written says so, the others go.
+            fun part(name: String, text: () -> String?) = runCatching(text).fold({ t -> t?.let { add(name to it) } }, { add(name to "illisible : $it") })
+            part("rapport.md") { Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO || passage == SCENARIOS || passage == GUIDES, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE, micro = passage == MICRO) }
+            part("mesures.json") { Rapport.json(lines, about) }
+            if (passage == SCENARIOS) {
+                part("scenarios.json") { Scenarios.json(lines, about) }
+                part("resume.md") { Scenarios.resume(lines, about) }
+            }
+            part("carnet.tsv") { if (c.file.isFile) c.file.readText() else "" }
+            part("journal.json") { runCatching { JournalJson.current(about) }.getOrDefault("{}") }
+            part("plantage.txt") { CrashReporter.pendingCrash() }
         }
         val pictures = captures(context).listFiles()?.sortedBy { it.name }?.map { "captures/${it.name}" to it }.orEmpty() +
             sons(context).listFiles()?.sortedBy { it.name }?.map { "sons/${it.name}" to it }.orEmpty()
@@ -307,6 +364,7 @@ object NativeSonde : Sonde {
         return Sonde.Lecture(
             s.xruns, NativeEngine.cpuLoadNow(), peak, s.nonFinite, s.running, playing = NativeEngine.currentStep() >= 0, lufs = lufs, drive = drive, lane = lane,
             cpuWorst = fresh.maxOfOrNull { it.cpuWorst } ?: 0f, gapWorst = fresh.maxOfOrNull { it.gapWorst } ?: 0f,
+            burst = s.framesPerBurst, buffer = s.bufferSize, rate = s.sampleRate,
         )
     }
 }
@@ -339,9 +397,14 @@ internal class Tracker : Application.ActivityLifecycleCallbacks {
     @Volatile
     var sorties: Sorties? = null
 
+    /** Whether the studio's activity is resumed (in front), as Android says it: where the robot is. */
+    @Volatile
+    var devant = false
+
     override fun onActivityResumed(activity: Activity) {
         if (activity is MainActivity) {
             studio = activity
+            devant = true
             Banniere.attacher(activity)
             sorties?.retour()
             keep(activity)
@@ -354,7 +417,9 @@ internal class Tracker : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
     override fun onActivityStarted(activity: Activity) = Unit
-    override fun onActivityPaused(activity: Activity) = Unit
+    override fun onActivityPaused(activity: Activity) {
+        if (activity === studio) devant = false
+    }
     override fun onActivityStopped(activity: Activity) {
         if (activity !is MainActivity) return
         val on = activity.getSystemService(android.os.PowerManager::class.java)?.isInteractive ?: true
@@ -378,7 +443,9 @@ internal class Tracker : Application.ActivityLifecycleCallbacks {
 /** [Appli] on the phone. */
 private class AppliReelle(private val app: Application, private val main: MainThread, private val tracker: Tracker) : Appli {
     override fun ouvrirStudio() {
-        app.startActivity(Intent(app, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        // REORDER_TO_FRONT: the studio's activity over BenStudio Test's own screen in the same task (2026-11-22: after
+        // Benjamin left the app and came back, NEW_TASK alone brought the task back with the robot's screen on top).
+        app.startActivity(Intent(app, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
     }
 
     override fun export(): Appli.ExportVu = main.run {
@@ -387,9 +454,115 @@ private class AppliReelle(private val app: Application, private val main: MainTh
         Appli.ExportVu(e.running, e.files, e.error, e.seconds)
     }
 
+    override fun studioDevant(): Boolean = tracker.devant
+
+    /**
+     * Android's « retour » on the studio, by its own handlers (a full-screen view, the Live's pads): only when
+     * one is there, since with none the system's « retour » would close the studio itself.
+     */
+    override fun retour() {
+        main.run {
+            val d = (tracker.studio as? ComponentActivity)?.onBackPressedDispatcher ?: return@run
+            if (d.hasEnabledCallbacks()) d.onBackPressed()
+        }
+    }
+
+    // The app's session state, not the engine (no part index in the probe): an engine hook is for an app lot.
+    override fun partieJouee(): Int? = main.run {
+        val a = tracker.studio as? ComponentActivity ?: return@run null
+        ViewModelProvider(a)[RhythmViewModel::class.java].sessionUi.value.shownSongIndex.takeIf { it >= 0 }
+    }
+
     override fun capture(file: File): Boolean = main.run { Captures.windows(WindowInspector.getGlobalWindowViews(), file) }
 
     override fun demander(question: String, maxMs: Long): Boolean? = Robot.ask(app, question, maxMs)
+
+    override fun projet(): ProjetVu? {
+        val (id, p) = main.run {
+            val a = tracker.studio as? ComponentActivity ?: return@run null
+            val vm = ViewModelProvider(a)[RhythmViewModel::class.java]
+            vm.projectId to vm.project.value
+        } ?: return null
+        // Read off the main thread, by the app's own store: what a restart would find.
+        val disk = runCatching { ProjectOpening.projectStore(app).load(id) }.getOrNull()
+        return ProjetVu(
+            id, p.name, p.song.size, effets(p), disk?.let(::disque),
+            tempo = p.tempoBpm, muets = p.mixer.channels.map { it.mute }, solos = p.mixer.channels.map { it.solo },
+            volumes = p.mixer.channels.map { it.volume }, pans = p.mixer.channels.map { it.pan }, montee = ProjetVu.montee(p), pads = ProjetVu.pads(p),
+        )
+    }
+
+    private fun effets(of: Project) = of.mixer.channels.map { ch -> ch.inserts.filter { it.effect != EffectType.NONE }.map { it.effect.name } }
+
+    private fun disque(p: Project) = ProjetVu.Disque(
+        p.name, p.song.size, effets(p), p.tempoBpm, p.mixer.channels.map { it.mute }, p.mixer.channels.map { it.solo },
+        p.mixer.channels.map { it.volume }, p.mixer.channels.map { it.pan }, ProjetVu.montee(p),
+    )
+
+    override fun projets(): Map<String, ProjetVu.Disque>? = runCatching {
+        val store = ProjectOpening.projectStore(app)
+        store.list().mapNotNull { id -> runCatching { store.load(id) }.getOrNull()?.let { id to disque(it) } }.toMap()
+    }.getOrNull()
+
+    /** Waits (on the robot's thread) until [ok], at most [ms]. */
+    private fun attendre(ms: Long, ok: () -> Boolean): Boolean {
+        val end = System.currentTimeMillis() + ms
+        while (!ok()) {
+            if (System.currentTimeMillis() > end) return false
+            Thread.sleep(100)
+        }
+        return true
+    }
+
+    override fun arrierePlan(pendant: () -> Unit): Boolean {
+        Robot.sortieVoulue(true)
+        try {
+            Robot.robotDevant(app)
+            if (!attendre(10_000) { !tracker.devant }) return false
+            pendant()
+        } finally {
+            Robot.studioDevant(app, tracker)
+            attendre(15_000) { tracker.devant }
+            Robot.sortieVoulue(false)
+        }
+        return true
+    }
+
+    override fun relancerStudio(): Boolean {
+        Robot.sortieVoulue(true)
+        try {
+            // BenStudio Test in front first: the studio is opened again by an app on screen (Android lets it).
+            Robot.robotDevant(app)
+            if (!attendre(10_000) { !tracker.devant }) return false
+            main.run { tracker.studio?.finish() }
+            if (!attendre(15_000) { tracker.studio == null }) return false
+            ouvrirStudio()
+            return attendre(30_000) { tracker.devant }
+        } finally {
+            Robot.sortieVoulue(false)
+        }
+    }
+
+    override fun prendreSon(duck: Boolean, pendant: () -> Unit): Boolean {
+        val audio = app.getSystemService(android.media.AudioManager::class.java) ?: return false
+        val attrs = android.media.AudioAttributes.Builder()
+            .setUsage(if (duck) android.media.AudioAttributes.USAGE_NOTIFICATION else android.media.AudioAttributes.USAGE_VOICE_COMMUNICATION)
+            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build()
+        val gain = if (duck) android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK else android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT
+        val request = android.media.AudioFocusRequest.Builder(gain).setAudioAttributes(attrs).setOnAudioFocusChangeListener { }.build()
+        val granted = audio.requestAudioFocus(request) == android.media.AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+        try {
+            pendant()
+        } finally {
+            audio.abandonAudioFocusRequest(request)
+        }
+        return granted
+    }
+
+    override fun rafraichissementHz(): Float? = runCatching { main.run { tracker.studio?.display?.refreshRate } }.getOrNull()
+
+    override fun economieEnergie(): Boolean? = runCatching { app.getSystemService(android.os.PowerManager::class.java)?.isPowerSaveMode }.getOrNull()
 
     // Niveau 3: the question is a banner over the studio itself (the studio stays in front, the music goes on).
     override fun poser(question: Question, maxMs: Long): Reponse {
@@ -458,6 +631,19 @@ private class AppliReelle(private val app: Application, private val main: MainTh
     }
 
     override fun latenceEchec(): String = latencyFailure
+
+    override fun microAutorise(): Boolean? = runCatching {
+        app.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    }.getOrNull()
+
+    override fun volume(): Appli.Volume? = runCatching {
+        val audio = app.getSystemService(android.media.AudioManager::class.java) ?: return@runCatching null
+        val music = android.media.AudioManager.STREAM_MUSIC
+        Appli.Volume(
+            audio.getStreamVolume(music), audio.getStreamMaxVolume(music),
+            silencieux = audio.ringerMode == android.media.AudioManager.RINGER_MODE_SILENT, muet = audio.isStreamMute(music),
+        )
+    }.getOrNull()
 
     override fun memoireMo(): Int? = runCatching {
         val info = android.os.Debug.MemoryInfo()

@@ -64,7 +64,7 @@ open class ScenariosVraisEcransTest {
             val disk = runCatching { ProjectOpening.projectStore(h.app).load(h.vm.projectId) }.getOrNull()
             return ProjetVu(
                 h.vm.projectId, p.name, p.song.size, effets(p), disk?.let { ProjetVu.Disque(it.name, it.song.size, effets(it), montee = ProjetVu.montee(it)) },
-                montee = ProjetVu.montee(p),
+                montee = ProjetVu.montee(p), pads = ProjetVu.pads(p),
             )
         }
     }

@@ -60,6 +60,8 @@ class ScenariosTest {
         var pans = List(4) { 0f }
         var sliders = true
         var livePads = 4
+        /** The Live grid tags its cells by track and row: here the drums of each row. */
+        fun padTags() = List(livePads) { "live_pad_drums_$it" }
         val others = LinkedHashMap<String, ProjetVu.Disque>()
         var menu: String? = null
         var renaming: String? = null
@@ -117,7 +119,7 @@ class ScenariosTest {
                                 if (picker) { add("fx_picker_$ch"); com.pocketstudio.model.EffectType.entries.forEach { add("fx_pick_${ch}_${it.name}") } }
                             }
                         }
-                        "Live" -> { addAll(listOf("live_screen", "live_play", "live_stop_all")); if (pads) repeat(livePads) { add("live_pad_$it") } }
+                        "Live" -> { addAll(listOf("live_screen", "live_play", "live_stop_all")); if (pads) addAll(padTags()) }
                         else -> {
                             add("top_tempo"); add("structure_parts")
                             if (sheet == "tempo") addAll(listOf("tempo_sheet", "tempo_plus", "tempo_minus", "tempo_half", "tempo_double", "tempo_close"))
@@ -190,7 +192,7 @@ class ScenariosTest {
         var shots = false
         override fun capture(file: File): Boolean = shots && runCatching { file.writeText("jpg") }.isSuccess
         override fun demander(question: String, maxMs: Long): Boolean? = null
-        override fun projet() = ProjetVu(id, "Mon morceau", parties, effets, disque, tempo, muets, solos, volumes, pans, montee)
+        override fun projet() = ProjetVu(id, "Mon morceau", parties, effets, disque, tempo, muets, solos, volumes, pans, montee, padTags())
 
         /** A strip sheet's slider set (InAppDriver.regler). */
         fun regler(tag: String, value: Float): Boolean {
@@ -476,7 +478,7 @@ class ScenariosTest {
     @Test
     fun aPadOfTheLiveSoundsOrIsNotMeasured() {
         val s = Studio()
-        assertTrue(scenarios(s).pads().contains("pad live_pad_0 : le son sort"))
+        assertTrue(scenarios(s).pads().contains("pad live_pad_drums_0 : le son sort"))
         assertFalse(s.playing)
         assertEquals("Structure", s.tab)
         assertTrue(scenarios(Studio().apply { pads = false }).pads().startsWith("non mesuré"))

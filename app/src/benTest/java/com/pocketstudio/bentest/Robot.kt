@@ -461,7 +461,7 @@ private class AppliReelle(private val app: Application, private val main: MainTh
         return ProjetVu(
             id, p.name, p.song.size, effets(p), disk?.let(::disque),
             tempo = p.tempoBpm, muets = p.mixer.channels.map { it.mute }, solos = p.mixer.channels.map { it.solo },
-            volumes = p.mixer.channels.map { it.volume }, pans = p.mixer.channels.map { it.pan }, montee = ProjetVu.montee(p),
+            volumes = p.mixer.channels.map { it.volume }, pans = p.mixer.channels.map { it.pan }, montee = ProjetVu.montee(p), pads = ProjetVu.pads(p),
         )
     }
 

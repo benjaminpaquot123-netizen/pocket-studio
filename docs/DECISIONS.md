@@ -1582,3 +1582,4 @@
 - 2026-11-23 : le chef peut pousser des branches de travail `eq/…` en plus de l'intégration (Benjamin : « Oui »). Raison : le robot et ses réparations ont leur CI tout de suite, une nuit gagnée. Retour arrière : repli des sous-agents locaux décrit dans `docs/audits/ultra/CHEF-2H05.md`.
 - 2026-11-23 (nuit) : Benjamin dort. Consigne : silence total vers lui (chef et discussions), tous droits entre discussions, toutes demandes et licences acceptées, options recommandées prises d'office. Retour arrière : sa prochaine consigne.
 - 2026-11-24 · lot « fable5 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-fable5.md`
+- 2026-11-24 · lot « maven » (tour-9) : 2 décision(s) dans `docs/decisions/tour-9-maven.md`

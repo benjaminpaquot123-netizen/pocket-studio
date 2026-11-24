@@ -31,3 +31,8 @@ Ce qui a été vérifié pour arriver là :
 Avis : découpage solide, contrôle de complétude sérieux, aucun test perdu ni affaibli ; filets à épaissir (classes héritées, garde-fou `policy`) — fusion possible
 
 Verdict : 0 bloquant, 0 grave
+
+## Relecture complémentaire (commit 2cbc31b76)
+- Changement : ligne « tests: » du rapport, noms complets des trois classes (le portail ne trouvait pas les noms courts).
+- Vérifié : les trois paquets correspondent aux fichiers de test.
+- Verdict : 0 bloquant, 0 grave.

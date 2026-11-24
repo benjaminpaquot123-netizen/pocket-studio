@@ -79,7 +79,45 @@ class Epreuves(
      * still plays with sound, or ▶ starts it again with sound; the studio in front, no crash.
      */
     fun perteSon(): String {
-        error("not yet")
+        val step = PERTE
+        propre(step)
+        e.lancerLecture()
+        var duck: Ecoute.Bilan? = null
+        if (!appli.prendreSon(duck = true) { duck = t.ecouter(step, perteMs) }) {
+            e.arreter()
+            return nonMesure(step, "le robot ne peut pas prendre le son ici")
+        }
+        var pris: Ecoute.Bilan? = null
+        val grantedFull = appli.prendreSon(duck = false) { pris = t.ecouter(step, perteMs) }
+        j.idle(1_000)
+        val stoppedBack = !sonde.lire().playing
+        val relance = if (stoppedBack) e.lancerLecture() else null
+        val apres = t.ecouter(step, ecouteMs / 2)
+        e.arreter()
+        val d = duck!!
+        val p = pris
+        val devant = appli.studioDevant()
+        bilan(
+            step, "baisse_en_lecture" to d.playing, "baisse_lectures" to d.reads, "baisse_coupures" to coupures(d).size,
+            "pris_en_lecture" to (p?.playing ?: ""), "pris_lectures" to (p?.reads ?: ""), "pris_muet_en_lecture" to (p?.let(::muetEnLecture) ?: ""),
+            "relance" to (relance != null), "apres_coupures" to coupures(apres).size, "devant" to devant,
+        )
+        val rouge = ArrayList<String>()
+        if (d.playing < d.reads) rouge += "la lecture s'est arrêtée quand une notification a seulement baissé le son"
+        coupures(d).forEach { rouge += "son baissé : $it" }
+        if (p != null && muetEnLecture(p) > 0) rouge += "son pris : ${muetEnLecture(p)} s en lecture mais muet"
+        if (apres.playing < apres.reads) rouge += "la lecture ne repart pas une fois le son rendu"
+        coupures(apres).forEach { rouge += "après : $it" }
+        if (devant == false) rouge += "le studio n'est plus devant"
+        val orange = if (p != null && p.playing == p.reads) listOf("la lecture a continué pendant que l'autre appli avait le son") else emptyList()
+        feu(step, (if (rouge.isNotEmpty()) Feu.ROUGE else if (orange.isNotEmpty()) Feu.ORANGE else Feu.VERT) to (rouge + orange).joinToString(", "))
+        check(rouge.isEmpty()) { rouge.joinToString(" ; ") }
+        val how = when {
+            !grantedFull -> "l'autre appli n'a pas eu le son"
+            relance != null -> "la lecture s'est arrêtée, ▶ l'a relancée"
+            else -> "la lecture a continué"
+        }
+        return "son baissé : ${d.text()} ; son pris : $how ; ensuite ${apres.text()}"
     }
 
     /**
@@ -87,12 +125,43 @@ class Epreuves(
      * no quarter second silent while it plays, no jump, no NaN, the song plays on.
      */
     fun changementKit(): String {
-        error("not yet")
+        val step = KIT
+        propre(step)
+        e.lancerLecture()
+        val reads = ArrayList<Ecoute.Lu>()
+        val chosen = ArrayList<String>()
+        var fewer = false
+        var n = 0
+        val b = t.ecouter(step, ecouteMs) { lu ->
+            reads += lu
+            n++
+            if ((n == KIT_PREMIER || n == KIT_SECOND) && !fewer) {
+                val k = choisirKit(if (n == KIT_PREMIER) 1 else 0)
+                if (k == null) fewer = true else chosen += k
+            }
+        }
+        e.arreter()
+        if (fewer) return nonMesure(step, "moins de 2 kits proposés")
+        val trous = trous(reads)
+        bilan(step, "kits" to chosen.joinToString(","), "trous" to trous, "coupures" to coupures(b).size, "en_lecture" to b.playing, "lectures" to b.reads)
+        val rouge = ArrayList<String>()
+        if (chosen.size < 2) rouge += "${chosen.size} kit(s) changé(s) sur 2"
+        if (b.playing < b.reads) rouge += "la lecture s'est arrêtée"
+        if (trous > 0) rouge += "$trous quart(s) de seconde muet(s) en lecture (trou de plus de 200 ms)"
+        coupures(b).forEach { rouge += it }
+        feu(step, (if (rouge.isEmpty()) Feu.VERT else Feu.ROUGE) to rouge.joinToString(", "))
+        check(rouge.isEmpty()) { rouge.joinToString(" ; ") }
+        return "kits ${chosen.joinToString(" puis ")} pendant la lecture ; ${b.text()}"
     }
 
     /** The drums' « Changer le son », then the [index]th kit offered; its tag, null when there are not 2 kits. */
     private fun choisirKit(index: Int): String? {
-        if (!j.exists(DRUMS_NAME)) j.tap("tab_Structure")
+        if (!j.exists(DRUMS_NAME)) {
+            if (!j.exists("structure_timeline")) j.tap("tab_Structure")
+            // The Structure shows its parts: its switch to the timeline, where each track has its name.
+            if (!j.exists(DRUMS_NAME) && j.exists("structure_timeline")) j.tap("structure_timeline")
+            j.await(DRUMS_NAME)
+        }
         j.tap(DRUMS_NAME)
         j.await("kit_sheet")
         val choices = j.tagsMatching(Regex("kit_choice_.+"))
@@ -117,8 +186,8 @@ class Epreuves(
         /** A light, common style: the trials measure the phone, not the heaviest song. */
         const val STYLE = "house"
 
-        /** The drums' name on the Structure (SongPart.DRUMS): « Changer le son ». */
-        const val DRUMS_NAME = "timeline_name_1"
+        /** The drums' name on the Structure's timeline (SongPart.DRUMS): « Changer le son ». */
+        const val DRUMS_NAME = "timeline_name_drums"
 
         /** The readings at which a kit is put on (one second, then three seconds in). */
         const val KIT_PREMIER = 4
@@ -131,9 +200,16 @@ class Epreuves(
         fun muetEnLecture(b: Ecoute.Bilan): Int = b.secondes.count { it.playing && it.peakDb < Ecoute.SILENCE_DB }
 
         /** Quarter seconds that played silent (each is over 200 ms of nothing), outside a quiet part the song plans. */
-        fun trous(reads: List<Ecoute.Lu>): Int = 0
+        fun trous(reads: List<Ecoute.Lu>): Int = reads.count {
+            it.playing && Ecoute.db(if (it.peak.isFinite()) it.peak else 0f) < Ecoute.SILENCE_DB && (it.lane == null || it.lane >= Ecoute.LANE_QUIET)
+        }
 
         /** What breaks the sound in a listening: silence, a jump, NaN, a gap between callbacks of 200 ms or more. */
-        fun coupures(b: Ecoute.Bilan): List<String> = emptyList()
+        fun coupures(b: Ecoute.Bilan): List<String> = buildList {
+            b.alertes.filter { it.kind == "SILENCE" || it.kind == "SAUT" }.forEach { add(it.text()) }
+            muetEnLecture(b).takeIf { it > 0 && b.alertes.none { a -> a.kind == "SILENCE" } }?.let { add("$it s muette(s) en lecture") }
+            if (b.nonFinite) add("valeur invalide (NaN) dans le son")
+            if (b.blocMs > 0f && b.gapWorst * b.blocMs >= TROU_MS) add(String.format(Locale.ROOT, "écart de %.0f ms entre deux blocs", b.gapWorst * b.blocMs))
+        }
     }
 }

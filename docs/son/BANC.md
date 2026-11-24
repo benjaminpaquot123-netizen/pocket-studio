@@ -77,6 +77,14 @@ Depuis S5, pour un morceau en version de mix 2 (le mode 1 du rapport de `ps_rend
 
 Depuis S5b (le test d'écoute A/B de Benjamin : des Montées qui finissaient plus fort que leur Drop) : chaque Drop doit tomber au moins 1 LU au-dessus de la fin de la Montée qui le précède, après master (`drop_minus_montee_end`, bloquant, +1,5 visé). Listés sans bloquer : l'Intro à moins de 8 LU sous le Drop ou le Refrain, et chaque Montée à +2 LU sur ses 4 dernières mesures (au lieu de +3 : la mesure manque à 170 BPM et plus, et varie de 2 à 3 LU entre styles d'une famille).
 
+Depuis L4 (grand remplacement, « le corps » du son ; tout est listé, rien ne bloque) : `song-bench.sh` rend chaque piste du projet seule avant master (les voies sur lesquelles le morceau pose un volume, `C 20` : 0-3, 5-15, 32-35 ; `--no-tracks` saute ce passage) et `ps_measure --track voie:fichier.wav` lit au Drop / Refrain :
+- `drop_tracks` : combien de pistes sonnent ensemble (médiane des mesures ; une piste compte à 24 dB au plus sous la somme). Cible ≥ 5.
+- `hf_occupancy` : la part des fenêtres de 10 ms où l'aigu (> 6 kHz, 4e ordre) est à 30 dB au plus sous la moyenne pleine bande. Indicatif seulement : il ne sépare pas nos morceaux (0,39 à 0,77) des références libres (0,11 à 0,49).
+- `floor_between_hits` : le fond entre deux coups, par temps le dixième le plus bas de l'enveloppe de 5 ms contre la moyenne du temps (dB), médiane des temps. Cible ≥ −8,5 dB pour les styles chanson (Refrain) ; un mix club sec et pompé descend à −10 / −21 et reste bon.
+- `transitions` : à chaque changement de section (un fill ou un crash compte avec la section d'avant), une mesure après contre une mesure avant : sonie, la même au téléphone (passe-haut 300 Hz) et la bande qui bouge le plus. Brutal (Benjamin trouve certains changements trop brutaux) : une chute de plus de 8 LU, ou de plus de 8 dB au téléphone, ou une montée de plus de 6 LU vers autre chose qu'un Drop, un Refrain ou un faux drop. Le rapport les liste dans « Changements de section (L4) ».
+
+Calibrage (2026-11-24, eq/gr-l1, quatre morceaux contre deux morceaux libres gardés hors du dépôt : un mix tech house du domaine public et un instrumental hip-hop CC0) : 4 pistes ensemble dans chaque morceau (rouge) ; fond entre deux coups boom bap −9,7 et house −10,1 contre −7,5 pour la référence hip-hop ; deux changements brutaux, la sortie Drop → Intro de la techno (−9,1 dB au téléphone, −4,2 LU) et de la house (−8,5 dB, −1,9 LU). `scripts/bench/test_ps_measure_body.py` prouve chaque mesure sur des morceaux synthétiques (creux contre plein, une coupure qui tombe au téléphone).
+
 ## Étapes 1 et 2 en bref (médianes sur 37 styles, sons intégrés)
 
 | Mesure (médiane, 37 styles) | Avant l'étape 1 | Après l'étape 1 | Après l'étape 2 | Cible |

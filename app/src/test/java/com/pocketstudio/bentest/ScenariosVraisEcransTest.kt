@@ -60,9 +60,14 @@ open class ScenariosVraisEcransTest {
             return Reponse(Verdict.OUI)
         }
         val touched = ArrayList<String>()
+        /** A hole while the kit sheet is open (the gestures of « Changement de kit »): silence although it plays. */
+        var muetKit = false
+        @Volatile private var kitOuvert = false
 
         override fun click(tag: String) {
             touched += tag
+            if (tag == Epreuves.DRUMS_NAME) kitOuvert = true
+            if (tag.startsWith("kit_choice_") || tag == "kit_sheet_close") kitOuvert = false
             if (tag in setOf("thumb_play", "top_song", "live_play")) playing = !playing
             // A pad of the Live launches its cell; « ■ Tout » stops them.
             if (tag.startsWith("live_pad_")) playing = true
@@ -87,7 +92,7 @@ open class ScenariosVraisEcransTest {
             d.click(tag)
         }
 
-        override fun lire() = Sonde.Lecture(0, 0.2f, if (playing) 0.5f else 0f, false, true, playing, cpuWorst = 0.3f, gapWorst = 1f)
+        override fun lire() = Sonde.Lecture(0, 0.2f, if (playing && !(muetKit && kitOuvert)) 0.5f else 0f, false, true, playing, cpuWorst = 0.3f, gapWorst = 1f)
         override fun ouvrirStudio() = Unit
 
         /** « Another app » takes the sound: a duck lowers it (plays on), a call stops the song as PlaybackService does. */
@@ -274,6 +279,15 @@ open class ScenariosVraisEcransTest {
         assertTrue(text, before != h.vm.project.value)
     }
 
+    /** Fresh review, grave 2: a hole during the kit gestures themselves is heard (the listening's reads wait for them). */
+    @Test
+    fun aHoleWhileTheKitIsChangedIsRed() {
+        h.start()
+        val v = Vrai().apply { muetKit = true }
+        val err = runCatching { epreuves(v, ecouteMs = 10_000).changementKit() }.exceptionOrNull()
+        assertTrue(err.toString(), err?.message?.contains("muet") == true)
+    }
+
     /** Lot A2, 3: the long listening plays on and reads the memory at both ends. */
     @Test
     fun theEnduranceListensThroughAndReadsTheMemory() {
@@ -372,3 +386,7 @@ open class ScenariosVraisEcransTest {
         assertEquals(listOf(Epreuves.ECO, "${Epreuves.ECO}_fin"), off.questions)
     }
 }
+
+/** The same guard on a tablet: what a narrow phone finds, a tablet finds too. */
+@Config(qualifiers = "w800dp-h1280dp-hdpi")
+class ScenariosVraisEcransTabletteTest : ScenariosVraisEcransTest()

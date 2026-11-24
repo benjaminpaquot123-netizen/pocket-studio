@@ -64,6 +64,8 @@ open class ScenariosVraisEcransTest {
             return true
         }
         override fun export() = Appli.ExportVu(false, emptyList(), null)
+        override fun memoireMo() = 200
+        override fun imagesFin() = 100 to 2
         override fun capture(file: File) = false
         override fun demander(question: String, maxMs: Long): Boolean? = null
 
@@ -73,7 +75,7 @@ open class ScenariosVraisEcransTest {
             val disk = runCatching { ProjectOpening.projectStore(h.app).load(h.vm.projectId) }.getOrNull()
             return ProjetVu(
                 h.vm.projectId, p.name, p.song.size, effets(p), disk?.let { ProjetVu.Disque(it.name, it.song.size, effets(it), montee = ProjetVu.montee(it)) },
-                montee = ProjetVu.montee(p), pads = ProjetVu.pads(p),
+                tempo = p.tempoBpm, montee = ProjetVu.montee(p), pads = ProjetVu.pads(p),
             )
         }
     }
@@ -169,7 +171,7 @@ open class ScenariosVraisEcransTest {
 
     private fun epreuves(v: Vrai, ecouteMs: Long = 1_000) = Epreuves(
         Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecouteMs = ecouteMs, ecran = { v.tags(Regex(".+")) },
-        perteMs = 1_000, nouveauMorceau = {},
+        perteMs = 1_000, nouveauMorceau = {}, enduranceMs = 2_000, allers = 2, imagesMs = 200,
     )
 
     /** Lot A2, 1: the sound lowered by a notification plays on; taken by a call it stops, then ▶ brings it back with sound. */
@@ -195,6 +197,64 @@ open class ScenariosVraisEcransTest {
         assertEquals(2, v.touched.count { it == Epreuves.DRUMS_NAME })
         assertEquals(0, v.count("kit_sheet", false))
         assertTrue(text, before != h.vm.project.value)
+    }
+
+    /** Lot A2, 3: the long listening plays on and reads the memory at both ends. */
+    @Test
+    fun theEnduranceListensThroughAndReadsTheMemory() {
+        h.start()
+        val v = Vrai()
+        val text = epreuves(v).endurance()
+        assertTrue(text, text.startsWith("2 s de lecture") && text.contains("mémoire 200 Mo puis 200 Mo"))
+        assertTrue(text, !v.playing)
+    }
+
+    /** Lot A2, 3: Mes projets then « Continuer », again and again, comes back to the same song. */
+    @Test
+    fun theProjectIsOpenedAndClosedAgainAndAgain() {
+        h.start()
+        val v = Vrai()
+        val id = h.vm.projectId
+        val text = epreuves(v).fuiteMemoire()
+        assertTrue(text, text.startsWith("2 allers-retours"))
+        assertEquals(2, v.touched.count { it == "top_projects" })
+        assertEquals(id, h.vm.projectId)
+    }
+
+    /** Lot A2, 3: no restart here: « non mesuré », and the tempo raised for the trial is put back. */
+    @Test
+    fun theHardStopPutsTheTempoBackWhenItCannotRestart() {
+        h.start()
+        val v = Vrai()
+        val tempo = h.vm.project.value.tempoBpm
+        val text = epreuves(v).arretBrutal()
+        assertTrue(text, text.startsWith("non mesuré"))
+        assertEquals(1, v.touched.count { it == "tempo_plus" })
+        assertEquals(tempo, h.vm.project.value.tempoBpm, 0.001)
+        assertEquals(0, v.count("tempo_sheet", false))
+        assertTrue(epreuves(v).demarrageFroid().startsWith("non mesuré"))
+    }
+
+    /** Lot A2, 3: « Très sûr » chosen in Réglages for one listening, then « Rapide » back. */
+    @Test
+    fun theLargeBufferIsListenedThenTheNormalOneComesBack() {
+        h.start()
+        val v = Vrai()
+        val text = epreuves(v).tamponLarge()
+        assertTrue(text, text.startsWith("normal : ") && text.contains("très sûr : "))
+        assertEquals(listOf("buffer_6", "buffer_2"), v.touched.filter { it.startsWith("buffer_") })
+        assertEquals(2, com.pocketstudio.app.settings.SettingsStore.state.value.bufferBursts)
+    }
+
+    /** Lot A2, 3: Réglages (the témoin) then each screen, their frames counted, the song stopped after. */
+    @Test
+    fun eachScreenIsCountedNextToTheStillOne() {
+        h.start()
+        val v = Vrai()
+        val text = epreuves(v).imagesTemoin()
+        assertTrue(text, text.contains("reglages 2 %") && EssaiEclair.SCREENS.all { text.contains("${it.first} 2 %") })
+        assertTrue(text, !v.playing)
+        assertTrue(v.count("space_bar", false) + v.count("space_rail", false) > 0)
     }
 }
 

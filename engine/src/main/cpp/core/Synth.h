@@ -170,6 +170,9 @@ private:
         std::array<daisysp::Oscillator, 6> unison;  // detuned copies of oscillator 1
         daisysp::LadderFilter ladder, ladderR;  // the right channel's filter: only while the sound is wide
         daisysp::Svf svf, svfR;
+        // Lot B2: the cutoff at the last tick, set on a state-variable filter only when it plays (its
+        // SetFreq costs a sine and a power); svfAt / svfRAt: the cutoff each one has (NaN: none yet).
+        float fc = 0.0f, svfAt = NAN, svfRAt = NAN;
         Down2x downL, downR;  // Oversample: the oscillators' two samples per frame filtered down
         daisysp::Adsr ampEnv, filterEnv;
         int note = -1;

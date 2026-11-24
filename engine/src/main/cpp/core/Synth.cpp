@@ -7,7 +7,16 @@
 namespace ps {
 
 namespace {
-constexpr int kControlRate = 16;  // filter and pitch modulation updated every 16 samples
+constexpr int kControlRate = 16;
+
+// Lot B2: a state-variable filter takes the voice's cutoff only when it plays. Its SetFreq depends
+// on the cutoff alone (with SetRes, in any order), so a late set gives the same filter bit for bit.
+inline void tuneSvf(daisysp::Svf& svf, float& at, float fc) {
+    if (at != fc) {
+        svf.SetFreq(fc);
+        at = fc;
+    }
+}  // filter and pitch modulation updated every 16 samples
 
 float envTime(float v) { return 0.001f * std::pow(5000.0f, v); }  // 1 ms .. 5 s
 float midiToHz(int note) { return 440.0f * std::pow(2.0f, (note - 69) / 12.0f); }
@@ -39,6 +48,7 @@ void Synth::prepare(int sampleRate) {
         }
         v.svf.Init(sr);
         v.svfR.Init(sr);
+        v.svfAt = v.svfRAt = NAN;  // Init set its own cutoff
         v.downL.set_coefs(hiir::coef::C2x094::X2::_coef_list.data());
         v.downR.set_coefs(hiir::coef::C2x094::X2::_coef_list.data());
         v.ampEnv.Init(sr);
@@ -470,7 +480,7 @@ void Synth::renderLegacy(float* mono, int numFrames) {
                 v.sub.SetFreq(hz * 0.5f);
                 const float fc = std::min(nyquistGuard, cutoffHz * std::pow(2.0f, envOctaves * fenv + sweepOctaves * lfo2));
                 v.ladder.SetFreq(fc);
-                v.svf.SetFreq(fc);
+                v.fc = fc;
             }
             float osc1 = v.osc1.Process();
             if (copies > 0) {
@@ -484,6 +494,7 @@ void Synth::renderLegacy(float* mono, int numFrames) {
             if (filterType == 0) {
                 filtered = v.ladder.Process(source);
             } else {
+                tuneSvf(v.svf, v.svfAt, v.fc);
                 v.svf.Process(source);
                 filtered = filterType == 1 ? v.svf.Low() : (filterType == 2 ? v.svf.High() : v.svf.Band());
             }
@@ -569,6 +580,7 @@ void Synth::render(float* left, float* right, int numFrames) {
             for (auto& v : voices_) {
                 v.ladderR = v.ladder;
                 v.svfR = v.svf;
+                v.svfRAt = v.svfAt;
                 v.cleanR = v.cleanL;
                 v.preU[1] = v.preU[0];
                 v.preF[1] = v.preF[0];
@@ -763,10 +775,9 @@ void Synth::renderVoices(int from, int to) {
                 const float velOctaves = velCut > 0.0f ? std::clamp(2.0f * velCut * (v.velocity - 0.7f) / 0.3f, -2.0f * velCut, 2.0f * velCut) : 0.0f;
                 const float fc = std::min(nyquistGuard, cutoffHz * std::pow(2.0f, envOctaves * fenv + sweepOctaves * lfo2 + v.cycle + velOctaves));
                 v.ladder.SetFreq(fc);
-                v.svf.SetFreq(fc);
+                v.fc = fc;
                 if constexpr (Wide) {
                     v.ladderR.SetFreq(fc);
-                    v.svfR.SetFreq(fc);
                 }
             }
             float mid[kSub], side[kSub];
@@ -801,16 +812,17 @@ void Synth::renderVoices(int from, int to) {
             }
             if constexpr (Wide) sd *= widthNow_;
             const float gain = amp * (0.3f + 0.7f * v.velocity);
-            auto filter = [&](daisysp::LadderFilter& ladder, daisysp::Svf& svf, float x) {
+            auto filter = [&](daisysp::LadderFilter& ladder, daisysp::Svf& svf, float& svfAt, float x) {
                 if (filterType == 0) return ladder.Process(x);
+                tuneSvf(svf, svfAt, v.fc);
                 svf.Process(x);
                 return filterType == 1 ? svf.Low() : (filterType == 2 ? svf.High() : svf.Band());
             };
             if constexpr (Wide) {
-                outL += filter(v.ladder, v.svf, m + sd) * gain;
-                outR += filter(v.ladderR, v.svfR, m - sd) * gain;
+                outL += filter(v.ladder, v.svf, v.svfAt, m + sd) * gain;
+                outR += filter(v.ladderR, v.svfR, v.svfRAt, m - sd) * gain;
             } else {
-                outL += filter(v.ladder, v.svf, m) * gain;
+                outL += filter(v.ladder, v.svf, v.svfAt, m) * gain;
             }
         }
         tmpL_[static_cast<size_t>(i - from)] = level * outL;
@@ -1028,14 +1040,13 @@ void Synth::renderLeads(int from, int to) {
                 if (keyTrack > 0.0f) octaves += keyTrack * (v.semis - 60.0f) / 12.0f;
                 const float fc = std::min(nyquistGuard, cutoffHz * std::pow(2.0f, octaves));
                 v.ladder.SetFreq(fc);
-                v.svf.SetFreq(fc);
+                v.fc = fc;
                 if (cleanLadder) {
                     const float g = std::tan(3.14159265f * std::min(fc, 0.45f * static_cast<float>(sampleRate_)) / static_cast<float>(sampleRate_));
                     v.ladderG = g / (1.0f + g);
                 }
                 if constexpr (Wide) {
                     v.ladderR.SetFreq(fc);
-                    v.svfR.SetFreq(fc);
                 }
             }
             float mid[kSub], side[kSub];
@@ -1103,17 +1114,18 @@ void Synth::renderLeads(int from, int to) {
                 v.preF[ch] = F;
                 return y * preComp_;
             };
-            auto filter = [&](daisysp::LadderFilter& ladder, Voice::Ladder4& clean, daisysp::Svf& svf, float x, int ch) {
+            auto filter = [&](daisysp::LadderFilter& ladder, Voice::Ladder4& clean, daisysp::Svf& svf, float& svfAt, float x, int ch) {
                 if (preDrive > 0.0f) x = drive(x, ch);
                 if (filterType == 0) return cleanLadder ? clean.process(x, v.ladderG, ladderK) : ladder.Process(x);
+                tuneSvf(svf, svfAt, v.fc);
                 svf.Process(x);
                 return filterType == 1 ? svf.Low() : (filterType == 2 ? svf.High() : svf.Band());
             };
             if constexpr (Wide) {
-                outL += filter(v.ladder, v.cleanL, v.svf, m + sd, 0) * gain;
-                outR += filter(v.ladderR, v.cleanR, v.svfR, m - sd, 1) * gain;
+                outL += filter(v.ladder, v.cleanL, v.svf, v.svfAt, m + sd, 0) * gain;
+                outR += filter(v.ladderR, v.cleanR, v.svfR, v.svfRAt, m - sd, 1) * gain;
             } else {
-                outL += filter(v.ladder, v.cleanL, v.svf, m, 0) * gain;
+                outL += filter(v.ladder, v.cleanL, v.svf, v.svfAt, m, 0) * gain;
             }
             if (clickLevel > 0.0f && v.click > 1.0e-4f) {
                 // The click over the filter: the attack's « tick », as hard as the note is struck.

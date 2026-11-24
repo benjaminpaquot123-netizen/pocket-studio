@@ -6,3 +6,4 @@ StyleRecipes.kt regenerated locally (not committed: the chef regenerates it at t
 
 - i18n: ModelTextsTest.everyDataTextHasItsTranslations (6 house texts × 14 languages), I18nCatalogTest.noTranslationIsLeftUnused (old acid text).
 - tracks: SimpleMelodyTest.aMelodyTrackOfItsOwnSoundingAsTheLead and aTakeIsHeardThroughTheSong (NPE: the house fills the 8 instrument tracks, Basse, Piano, Lead, Contre-chant, Doublure, Montée, Voix, Sub drop; « ma mélodie » has no room).
+- guides: GuideParcoursTest.theParcoursAreWhatTheGeneratorWrites (make_guides.py: « vocal » is now an object {type, sample} in hip-hop recipes, cards_for crashes).

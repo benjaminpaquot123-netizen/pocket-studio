@@ -71,6 +71,9 @@ private fun shortName(type: EffectType): String = when (type) {
     EffectType.WOBBLE -> "Wobble"
     EffectType.CLIPPER -> "Clip"
     EffectType.BASS_EXCITER -> tr("Basse+")
+    EffectType.TRANSIENT -> tr("Attaque")
+    EffectType.DRUM_BUS -> tr("Bus batt.")
+    EffectType.MID_SIDE_EQ -> tr("Mono")
 }
 
 /** One-line summary of a channel's effects, e.g. "EQ · Comp · Réverbe". */

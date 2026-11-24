@@ -3,7 +3,7 @@
 Branche `eq/tour-9-moteur2`, partie de `eq/tour-9-moteur1` (6c1ba159). Cible : les trois briques les plus
 chères du tableau de B1 (synth 16,9 %, fx-saturation 14,0 %, mixer-strips 12,4 % du total).
 
-## Les trois optimisations (même son, au bit près)
+## Les trois optimisations (même son)
 
 1. **fx-saturation / clipper / distorsion : un drive au repos après un long silence** (`DriveShaper.h`).
    Quand l'entrée vaut exactement 0 pendant `kQuietFrames` = 2048 échantillons (≈ 43 ms), le drive saute
@@ -86,3 +86,16 @@ Le reste du coût de synth est dans DaisySP (Svf::Process, Ladder, Oscillator ; 
 une brique tierce qu'on ne modifie pas.
 
 ## Vérifications
+
+- `./scripts/host-tests.sh` sur la tête finale : ALL PASSED (0 échec), dont les 3 tests `m2_drive_*`.
+- `./scripts/live-bench.sh` : 37/37 styles sans alerte. CPU ralenti x3 (`--cpu-scale 3`, tampon de
+  2 rafales) : 4 passages à la fois sur 4 cœurs, quelques blocs isolés en retard sur 5 styles ;
+  rejoués seuls deux fois chacun : 9 passages sur 10 sans aucun bloc en retard, le dixième (disco) un
+  seul pic à 72 % sur un bloc (machine partagée, pas le moteur : charge moyenne de disco 5,8 %).
+- Relecture neuve (sous-agent) : aucun point grave. Points mineurs, laissés tels quels :
+  - pendant le repos, le drive sort des zéros exacts là où l'ancien code laissait mourir des queues
+    dénormales (< 1e-43, ≈ −860 dB) et un `-0.0` devient `+0.0` : rendus identiques, et moins de
+    calcul dénormal ; on dit donc « rendus identiques » plutôt que « au bit près partout » ;
+  - au repos, un gain infini ne produit plus de NaN (entrée déjà cassée, plutôt mieux) ;
+  - les envois sautés du mixeur et le réglage paresseux du filtre ne sont couverts que par les
+    37 rendus identiques, pas par un test dédié.

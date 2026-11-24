@@ -1,7 +1,10 @@
 package com.pocketstudio.bentest
 
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.performSemanticsAction
 import com.pocketstudio.app.journey.ComposeRuleDriver
 import com.pocketstudio.app.journey.Journey
 import com.pocketstudio.app.journey.JourneyDriver
@@ -64,19 +67,30 @@ open class ScenariosVraisEcransTest {
             val disk = runCatching { ProjectOpening.projectStore(h.app).load(h.vm.projectId) }.getOrNull()
             fun disque(d: Project) = ProjetVu.Disque(
                 d.name, d.song.size, effets(d), d.tempoBpm, d.mixer.channels.map { it.mute }, d.mixer.channels.map { it.solo },
-                d.mixer.channels.map { it.volume }, d.mixer.channels.map { it.pan }, ProjetVu.montee(d),
+                d.mixer.channels.map { it.volume }, d.mixer.channels.map { it.pan }, ProjetVu.montee(d), ProjetVu.reglages(d),
             )
             return ProjetVu(
                 h.vm.projectId, p.name, p.song.size, effets(p), disk?.let(::disque),
                 tempo = p.tempoBpm, muets = p.mixer.channels.map { it.mute }, solos = p.mixer.channels.map { it.solo },
                 volumes = p.mixer.channels.map { it.volume }, pans = p.mixer.channels.map { it.pan },
-                montee = ProjetVu.montee(p), pads = ProjetVu.pads(p),
+                montee = ProjetVu.montee(p), pads = ProjetVu.pads(p), reglages = ProjetVu.reglages(p),
             )
+        }
+
+        /** The slider [tag] set by its own accessibility action, as the phone's driver does ([InAppDriver.regler]). */
+        fun regler(tag: String, value: Float): Boolean {
+            val nodes = compose.onAllNodesWithTag(tag).fetchSemanticsNodes()
+            if (nodes.none { SemanticsActions.SetProgress in it.config }) return false
+            compose.onAllNodesWithTag(tag)[nodes.indexOfLast { SemanticsActions.SetProgress in it.config }]
+                .performSemanticsAction(SemanticsActions.SetProgress) { it(value) }
+            compose.waitForIdle()
+            return true
         }
     }
 
-    private fun scenarios(v: Vrai) = Scenarios(
-        Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecran = { v.tags(Regex(".+")) },
+    private fun scenarios(v: Vrai, ids: Set<String> = emptySet()) = Scenarios(
+        Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecran = { v.tags(Regex(".+")) }, regler = v::regler,
+        paquet = if (ids.isEmpty()) Scenarios.COMPLET else Scenarios.RATES, rates = ids,
         ecouteMs = 1_000, decrochagesMs = 1_000, sauvegardeMs = 20_000, liveMs = 5_000, liveEcouteMs = 1_000, effetEcouteMs = 1_000,
     )
 
@@ -127,7 +141,48 @@ open class ScenariosVraisEcransTest {
     }
 
     /** Runs the scenario [id] as the robot does (its reset first, its oracle at the end). */
-    private fun jouer(v: Vrai, id: String): String = scenarios(v).etapes().first { it.name == id }.work(Long.MAX_VALUE)
+    private fun jouer(v: Vrai, id: String): String = scenarios(v, setOf(id)).etapes().first { it.name == id }.work(Long.MAX_VALUE)
+
+    /** Plays [ids] of the catalogue one after the other: each must pass, and leave the song as it found it. */
+    private fun catalogue(vararg ids: String): Vrai {
+        h.start()
+        val v = Vrai()
+        val before = v.projet().trace()
+        for (id in ids) {
+            val text = jouer(v, id)
+            assertTrue("$id : $text", !text.startsWith("non mesuré") && !text.startsWith("échoué"))
+            assertEquals(id, before, v.projet().trace())
+        }
+        return v
+    }
+
+    @Test
+    fun anEffectIsTakenOffByItsCrossOnTheRealStrip() {
+        val v = catalogue("effet_retrait_eq", "effet_retrait_chorus")
+        assertTrue(v.touched.toString(), v.touched.any { it.startsWith("fx_remove_") })
+    }
+
+    @Test
+    fun anEffectsKnobIsTurnedToItsEndsOnTheRealEditor() {
+        catalogue("effet_reglage_eq_max", "effet_reglage_compressor_min")
+    }
+
+    @Test
+    fun eachTabIsFoundAgainAfterARotation() {
+        catalogue("onglet_mix_rotation", "onglet_live_rotation", "onglet_projets_rotation")
+    }
+
+    @Test
+    fun aPartsGestureIsRedoneByTheRealRedo() {
+        val v = catalogue("partie_redo_insert", "partie_redo_duplicate")
+        assertTrue(v.touched.toString(), v.touched.any { it in Scenarios.REDO })
+    }
+
+    @Test
+    fun theTempoIsTypedToItsLimitsOnTheRealKeypad() {
+        val v = catalogue("limite_tempo_max", "limite_tempo_min")
+        assertTrue(v.touched.toString(), v.touched.contains("tempo_key_ok"))
+    }
 
     @Test
     fun aBuildUpAddsItsCurveNotAPartThenUndoTakesItBack() {

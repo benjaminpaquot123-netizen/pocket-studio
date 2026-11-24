@@ -75,28 +75,65 @@ class ScenariosTest {
         var typed = ""
         var behind = false
         var montee = 0
-        private val undo = ArrayList<Triple<Int, List<List<String>>, Int>>()
-        private val redo = ArrayList<Triple<Int, List<List<String>>, Int>>()
+        /** Each effect's knobs, beside [effets]. */
+        var reglages: List<List<List<Float>>> = effets.map { l -> l.map { listOf(0.5f, 0.5f) } }
+
+        // Tour 9, A3: the catalogue's faults.
+        /** « ✕ » on an effect's chip takes it off. */
+        var removes = true
+        /** An effect's first knob follows its slider. */
+        var knobs = true
+        /** A knob's turn is saved. */
+        var knobsSaved = true
+        /** The keypad's OK refuses a tempo outside 40..300, and « + »/« − » stop there. */
+        var tempoClamps = true
+        /** « Rétablir » redoes. */
+        var redoes = true
+        /** Turning the phone sends the robot back to Structure. */
+        var rotationLoses = false
+        /** A relaunch opens another song. */
+        var relaunchElsewhere = false
+        var keyTyped = ""
+        var editor: Pair<Int, Int>? = null
+        val orientations = ArrayList<Boolean?>()
+
+        /** What « Annuler » puts back (the tempo only for the keypad's step). */
+        private data class Snap(val parties: Int, val effets: List<List<String>>, val montee: Int, val reglages: List<List<List<Float>>>, val tempo: Double?)
+        private val undo = ArrayList<Snap>()
+        private val redo = ArrayList<Snap>()
 
         private var id = "p1"
 
         private fun save() {
-            if (saves) disque = ProjetVu.Disque("Mon morceau", parties, effets, tempo, muets, solos, volumes, pans, montee)
+            if (saves) disque = ProjetVu.Disque("Mon morceau", parties, effets, tempo, muets, solos, volumes, pans, montee, if (knobsSaved) reglages else disque?.reglages.orEmpty())
         }
 
-        private fun change(work: () -> Unit) {
-            undo += Triple(parties, effets, montee)
+        /** The knobs as long as the effects (a test sets [effets] alone). */
+        private fun norm() {
+            reglages = effets.mapIndexed { i, e -> val r = reglages.getOrNull(i).orEmpty(); e.indices.map { r.getOrNull(it) ?: listOf(0.5f, 0.5f) } }
+        }
+
+        private fun change(withTempo: Boolean = false, work: () -> Unit) {
+            norm()
+            undo += Snap(parties, effets, montee, reglages, if (withTempo) tempo else null)
             redo.clear()
             work()
             save()
         }
 
-        private fun back(from: ArrayList<Triple<Int, List<List<String>>, Int>>, to: ArrayList<Triple<Int, List<List<String>>, Int>>) {
+        private fun back(from: ArrayList<Snap>, to: ArrayList<Snap>) {
             if (!undoWorks || from.isEmpty()) return
-            to += Triple(parties, effets, montee)
-            val (p, e, m) = from.removeAt(from.size - 1)
-            parties = p; effets = e; montee = m
+            val s = from.removeAt(from.size - 1)
+            to += Snap(parties, effets, montee, reglages, if (s.tempo != null) tempo else null)
+            parties = s.parties; effets = s.effets; montee = s.montee; reglages = s.reglages
+            s.tempo?.let { tempo = it }
             save()
+        }
+
+        /** [type] on strip [ch], with its knobs. */
+        private fun addFx(ch: Int, type: String) {
+            effets = effets.mapIndexed { i, e -> if (i == ch) e + type else e }
+            reglages = reglages.mapIndexed { i, r -> if (i == ch) r + listOf(listOf(0.5f, 0.5f)) else r }
         }
 
         init { save() }
@@ -111,7 +148,7 @@ class ScenariosTest {
                 }
                 "launch" -> { add("launch"); add("launch_continue") }
                 else -> {
-                    addAll(listOf("space_bar", "tab_Mix", "tab_Live", "tab_Structure"))
+                    addAll(listOf("space_bar", "tab_Mix", "tab_Live", "tab_Structure", "tab_Sons"))
                     if (tab != "Live") addAll(listOf("top_projects", "thumb_play"))
                     if (undoShown) add("top_undo")
                     if (undoShown && redo.isNotEmpty()) add("top_redo")
@@ -122,14 +159,19 @@ class ScenariosTest {
                             if (sheet.startsWith("strip")) {
                                 val ch = sheet.removePrefix("strip").toInt()
                                 addAll(listOf("strip_sheet", "strip_sheet_close", "fx_add_$ch", "sheet_mute_$ch", "sheet_solo_$ch", "sheet_volume_$ch", "sheet_pan_$ch"))
-                                if (chipShown) effets[ch].indices.forEach { add("fx_chip_${ch}_$it") }
+                                if (chipShown) effets[ch].indices.forEach { add("fx_chip_${ch}_$it"); add("fx_remove_${ch}_$it") }
+                                editor?.takeIf { it.first == ch && it.second in effets[ch].indices }?.let { (c, sl) -> add("fx_editor_${c}_$sl"); add("fxp_${c}_${sl}_0"); add("fxp_${c}_${sl}_1") }
                                 if (picker) { add("fx_picker_$ch"); com.pocketstudio.model.EffectType.entries.forEach { add("fx_pick_${ch}_${it.name}") } }
                             }
                         }
+                        "Sons" -> repeat(4) { add("track_$it") }
                         "Live" -> { addAll(listOf("live_screen", "live_play", "live_stop_all")); if (pads) addAll(padTags()) }
                         else -> {
                             add("top_tempo"); add("structure_parts")
-                            if (sheet == "tempo") addAll(listOf("tempo_sheet", "tempo_plus", "tempo_minus", "tempo_half", "tempo_double", "tempo_close"))
+                            if (sheet == "tempo") {
+                                addAll(listOf("tempo_sheet", "tempo_plus", "tempo_minus", "tempo_half", "tempo_double", "tempo_close", "tempo_key_erase", "tempo_key_ok"))
+                                ('0'..'9').forEach { add("tempo_key_$it") }
+                            }
                             repeat(parties) { add("part_menu_$it") }
                             if (sheet == "part") addAll(listOf("part_sheet", "part_break_4", "part_buildup_4", "part_ending", "part_insert_1", "part_remove_1", "part_duplicate_1"))
                         }
@@ -162,16 +204,23 @@ class ScenariosTest {
                 tag == "part_buildup_4" -> { sheet = ""; if (breakAdds) change { montee += 3 } }
                 tag in listOf("part_ending", "part_insert_1", "part_duplicate_1") -> { sheet = ""; if (breakAdds) change { parties++ } }
                 tag == "part_remove_1" -> { sheet = ""; if (breakAdds) change { parties-- } }
-                tag == "tempo_half" -> if (tempoMoves && tempo / 2 >= 30.0) { tempo /= 2; save() }
+                tag == "tempo_half" -> if (tempoMoves && tempo / 2 >= 40.0) { tempo /= 2; save() }
                 tag == "tempo_double" -> if (tempoMoves && tempo * 2 <= 300.0) { tempo *= 2; save() }
                 tag == "top_tempo" -> sheet = "tempo"
                 tag == "tempo_close" -> sheet = ""
-                tag == "tempo_plus" -> if (tempoMoves) { tempo += 1; save() }
-                tag == "tempo_minus" -> if (tempoMoves) { tempo -= 1; save() }
+                tag == "tempo_plus" -> if (tempoMoves && (!tempoClamps || tempo + 1 <= 300.0)) { tempo += 1; save() }
+                tag == "tempo_minus" -> if (tempoMoves && (!tempoClamps || tempo - 1 >= 40.0)) { tempo -= 1; save() }
+                tag == "tempo_key_erase" -> keyTyped = keyTyped.dropLast(1)
+                tag.startsWith("tempo_key_") && tag.last().isDigit() -> keyTyped += tag.last()
+                tag == "tempo_key_ok" -> {
+                    val v = keyTyped.toDoubleOrNull()
+                    if (v != null && tempoMoves && (!tempoClamps || v in 40.0..300.0)) { change(withTempo = true) { tempo = v }; sheet = "" }
+                    keyTyped = ""
+                }
                 tag.startsWith("sheet_mute_") -> if (mutes) { val ch = tag.removePrefix("sheet_mute_").toInt(); muets = muets.mapIndexed { i, m -> if (i == ch) !m else m }; save() }
                 tag.startsWith("sheet_solo_") -> if (mutes) { val ch = tag.removePrefix("sheet_solo_").toInt(); solos = solos.mapIndexed { i, m -> if (i == ch) !m else m }; save() }
                 tag == "top_undo" -> back(undo, redo)
-                tag == "top_redo" -> back(redo, undo)
+                tag == "top_redo" -> if (redoes) back(redo, undo)
                 tag.startsWith("live_pad_") -> playing = true
                 tag == "live_stop_all" -> playing = false
                 tag.startsWith("project_menu_") -> menu = tag.removePrefix("project_menu_")
@@ -180,12 +229,21 @@ class ScenariosTest {
                 tag == "project_rename_ok" -> { val r = renaming!!; if (renames) others[r] = others.getValue(r).copy(nom = typed); renaming = null }
                 tag.startsWith("project_delete_") -> { if (deletes) others.remove(tag.removePrefix("project_delete_")); menu = null }
                 tag.startsWith("strip_more_") -> sheet = "strip" + tag.removePrefix("strip_more_")
-                tag == "strip_sheet_close" -> { sheet = ""; picker = false }
+                tag == "strip_sheet_close" -> { sheet = ""; picker = false; editor = null }
+                tag.startsWith("fx_chip_") -> tag.split('_').let { editor = it[2].toInt() to it[3].toInt() }
+                tag.startsWith("fx_remove_") -> if (removes) tag.split('_').let { p ->
+                    val ch = p[2].toInt(); val sl = p[3].toInt()
+                    editor = null
+                    change {
+                        effets = effets.mapIndexed { i, e -> if (i == ch) e.filterIndexed { k, _ -> k != sl } else e }
+                        reglages = reglages.mapIndexed { i, r -> if (i == ch) r.filterIndexed { k, _ -> k != sl } else r }
+                    }
+                }
                 tag.startsWith("fx_add_") -> picker = !picker
                 tag.startsWith("fx_pick_") -> {
                     val ch = tag.split('_')[2].toInt()
                     val type = tag.split('_').drop(3).joinToString("_")
-                    change { effets = effets.mapIndexed { i, e -> if (i == ch) e + type else e } }
+                    change { addFx(ch, type) }
                 }
             }
         }
@@ -204,11 +262,17 @@ class ScenariosTest {
         var shots = false
         override fun capture(file: File): Boolean = shots && runCatching { file.writeText("jpg") }.isSuccess
         override fun demander(question: String, maxMs: Long): Boolean? = null
-        override fun projet() = ProjetVu(id, "Mon morceau", parties, effets, disque, tempo, muets, solos, volumes, pans, montee, padTags())
+        override fun projet() = ProjetVu(id, "Mon morceau", parties, effets, disque, tempo, muets, solos, volumes, pans, montee, padTags(), reglages.also { norm() }.let { reglages })
 
         /** A strip sheet's slider set (InAppDriver.regler). */
         fun regler(tag: String, value: Float): Boolean {
             if (!sliders || tag !in screen()) return false
+            if (tag.startsWith("fxp_")) {
+                if (!knobs) return true
+                val (ch, sl, k) = tag.removePrefix("fxp_").split('_').map { it.toInt() }
+                change { reglages = reglages.mapIndexed { i, r -> if (i != ch) r else r.mapIndexed { q, kn -> if (q != sl) kn else kn.mapIndexed { x, v -> if (x == k) value else v } } } }
+                return true
+            }
             val ch = tag.substringAfterLast('_').toInt()
             if (tag.startsWith("sheet_volume_")) volumes = volumes.mapIndexed { i, v -> if (i == ch) value else v }
             else pans = pans.mapIndexed { i, v -> if (i == ch) value else v }
@@ -222,8 +286,13 @@ class ScenariosTest {
             try { pendant() } finally { behind = false }
             return true
         }
+        override fun orienter(couche: Boolean?) {
+            orientations += couche
+            if (couche != null && rotationLoses) { tab = "Structure"; sheet = ""; where = "studio" }
+        }
         override fun relancerStudio(): Boolean {
             if (!canLeave) return false
+            if (relaunchElsewhere) reopens = "p2"
             playing = false; where = "launch"; tab = "Structure"; sheet = ""
             return true
         }
@@ -264,11 +333,11 @@ class ScenariosTest {
 
     private fun carnet() = Carnet(tmp.newFile())
 
-    private fun scenarios(s: Studio, c: Carnet = carnet(), paquet: String = Scenarios.COMPLET) = Scenarios(
+    private fun scenarios(s: Studio, c: Carnet = carnet(), paquet: String = Scenarios.COMPLET, rates: Set<String> = emptySet()) = Scenarios(
         Journey(s), s, s, c, tmp.newFolder(), ecran = { emptyList() },
         ecouteMs = 300, decrochagesMs = 300, sauvegardeMs = 300, liveMs = 300, liveEcouteMs = 60, effetEcouteMs = 60,
         styleEcouteMs = 60, longueMs = 300, fondMs = 300, saisir = { tag, text -> tag in s.tags(Regex(".*")) && run { s.typed = text; true } },
-        regler = s::regler, paquet = paquet, courtMs = 60, enduranceMs = 300, focusMs = 10, tamponMs = 300,
+        regler = s::regler, paquet = paquet, rates = rates, courtMs = 60, enduranceMs = 300, focusMs = 10, tamponMs = 300,
     )
 
     /** The scenarios [ids] played as the robot plays them, and their results. */
@@ -796,12 +865,135 @@ class ScenariosTest {
     }
 
     @Test
-    fun theRedoPackHoldsTheFailedScenariosOnlyAndAllExist() {
-        val ids = Scenarios.LISTE.map { it.id }.toSet()
-        assertEquals(78, Scenarios.RATES_IDS.size)
-        assertTrue(Scenarios.RATES_IDS.all { it in ids })
-        assertEquals(Scenarios.RATES_IDS, Scenarios.liste(Scenarios.RATES).map { it.id }.toSet())
-        assertTrue("debutant" !in Scenarios.RATES_IDS)
+    fun theRedoPackIsComputedFromTheLastRunNotWrittenByHand() {
+        // No run yet: nothing to redo.
+        assertEquals(emptyList<Scenarios.Scenario>(), Scenarios.liste(Scenarios.RATES))
+        val rates = setOf("tempo", Scenarios.CATALOGUE.first().id, "pas_un_scenario")
+        // The ids the last run did not pass, in the catalogue's order; an unknown id is left out.
+        assertEquals(listOf("tempo", Scenarios.CATALOGUE.first().id), Scenarios.liste(Scenarios.RATES, rates).map { it.id })
+        assertEquals(listOf("tempo", Scenarios.CATALOGUE.first().id), scenarios(Studio(), paquet = Scenarios.RATES, rates = rates).etapes().map { it.name })
+    }
+
+    // --- The catalogue (tour 9, A3) ------------------------------------------------------------------
+
+    /** The scenarios [ids] of the whole catalogue played as the robot plays them, and their results. */
+    private fun joue(s: Studio, vararg ids: String): List<Scenarios.Companion.Resultat> {
+        val c = carnet()
+        Passage(c, scenarios(s, c, paquet = Scenarios.RATES, rates = ids.toSet()).etapes(), crashText = { null }).run()
+        return Scenarios.resultats(c.lines()).filter { it.scenario.id in ids }.also { assertEquals(ids.size, it.size) }
+    }
+
+    private fun passe(s: Studio, vararg ids: String) =
+        joue(s, *ids).forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
+
+    private fun rate(s: Studio, id: String, why: String) {
+        val r = joue(s, id).single()
+        assertEquals(r.detail, Scenarios.ECHOUE, r.resultat)
+        assertTrue(r.detail, r.detail.contains(why))
+    }
+
+    @Test
+    fun theCatalogueHasUniqueIdsAThemeEachAndPacksOfHalfAnHourAtMost() {
+        val ids = Scenarios.TOUS.map { it.id }
+        assertEquals(ids.size, ids.toSet().size)
+        assertTrue("${Scenarios.CATALOGUE.size}", Scenarios.CATALOGUE.size >= 150)
+        assertTrue("${ids.size}", ids.size in 300..450)
+        // Every scenario has a theme, and is in exactly one pack of its theme.
+        // Every scenario with a gesture has a theme and is in exactly one pack of its theme; the others are the quick pack's.
+        val themed = Scenarios.TOUS.filter { Scenarios.theme(it) != null }
+        assertEquals(
+            (Scenarios.TOUS - themed.toSet()).map { it.id }.sorted(),
+            (Scenarios.liste(Scenarios.RAPIDE) + Scenarios.liste(Scenarios.GUIDES)).map { it.id }.sorted(),
+        )
+        assertTrue(Scenarios.CATALOGUE.all { it in themed })
+        val packed = Scenarios.CHUNKS.values.flatten().map { it.id }
+        assertEquals(themed.map { it.id }.sorted(), packed.sorted())
+        Scenarios.CHUNKS.forEach { (name, l) ->
+            assertTrue(name, l.sumOf { it.estimeS } <= Scenarios.DUREE_PAQUET_MAX_S)
+            assertTrue(name, name in Scenarios.PAQUETS)
+            assertEquals(name, l, Scenarios.liste(name))
+            assertTrue(name, l.all { Scenarios.theme(it) == name.substringBeforeLast('_') })
+        }
+        for (th in Scenarios.THEMES.keys) assertTrue(th, Scenarios.CHUNKS.keys.any { it.startsWith(th + "_") })
+        assertTrue(Scenarios.liste(Scenarios.GUIDES).isNotEmpty())
+        assertEquals("Son 1", Scenarios.nomPaquet("son_1"))
+        assertEquals("Écrans 2", Scenarios.nomPaquet("ecrans_2"))
+        // The quick pack stays small; the full list stays as it was.
+        assertEquals(Scenarios.LISTE, Scenarios.liste(Scenarios.COMPLET))
+        // Each scenario has its oracle.
+        Scenarios.CATALOGUE.forEach { assertTrue(it.id, it.oracle.isNotBlank() && it.estimeS > 0) }
+    }
+
+    @Test
+    fun anEffectTakenOffByItsCrossLeavesTheProjectAndTheDiskThenUndoBringsItBack() {
+        val s = Studio()
+        val before = s.effets
+        passe(s, "effet_retrait_eq", "effet_retrait_compressor")
+        assertEquals(before, s.effets)
+        assertEquals(before, s.disque!!.effets)
+        assertTrue(s.touched.toString(), s.touched.any { it.startsWith("fx_remove_") })
+    }
+
+    @Test
+    fun aCrossThatDoesNotTakeTheEffectOffFails() {
+        val s = Studio().apply { removes = false }
+        rate(s, "effet_retrait_eq", "ne retire pas")
+    }
+
+    @Test
+    fun anEffectsKnobTurnedToItsEndsIsInTheProjectAndOnTheDisk() {
+        val s = Studio()
+        val before = s.effets
+        passe(s, "effet_reglage_eq_max", "effet_reglage_eq_min")
+        assertEquals(before, s.effets)
+        assertTrue(s.touched.toString(), s.touched.any { it.startsWith("fx_chip_") })
+    }
+
+    @Test
+    fun aKnobThatDoesNotMoveOrIsNotSavedFails() {
+        rate(Studio().apply { knobs = false }, "effet_reglage_eq_max", "le projet a")
+        rate(Studio().apply { knobsSaved = false }, "effet_reglage_eq_min", "pas enregistré sur le disque")
+    }
+
+    @Test
+    fun eachScreenComesBackAfterARotationTheBackgroundAndARelaunch() {
+        val s = Studio()
+        passe(s, "onglet_mix_rotation", "onglet_sons_fond", "onglet_projets_relance", "onglet_live_rotation")
+        // Turned, straightened, then let free: never left lying.
+        assertEquals(listOf(true, false, null, true, false, null), s.orientations)
+        assertEquals("studio", s.where)
+    }
+
+    @Test
+    fun aScreenLostByARotationOrARelaunchOnAnotherSongFails() {
+        rate(Studio().apply { rotationLoses = true }, "onglet_mix_rotation", "perdu quand le téléphone se couche")
+        rate(Studio().apply { relaunchElsewhere = true }, "onglet_structure_relance", "rouvert sur")
+    }
+
+    @Test
+    fun aPartsGestureRedoneIsInTheSongAndOnTheDiskThenUndone() {
+        val s = Studio()
+        passe(s, "partie_redo_insert", "partie_redo_remove", "partie_redo_duplicate", "partie_redo_ending")
+        assertEquals(4, s.parties)
+        assertEquals(4, s.disque!!.parties)
+    }
+
+    @Test
+    fun aRedoThatDoesNothingFails() {
+        rate(Studio().apply { redoes = false }, "partie_redo_duplicate", "« Rétablir » ne refait pas")
+    }
+
+    @Test
+    fun theTempoAtItsLimitsIsKeptAndOneBpmPastIsRefused() {
+        val s = Studio()
+        passe(s, "limite_tempo_max", "limite_tempo_min")
+        assertEquals(120.0, s.tempo, 0.001)
+        assertEquals(120.0, s.disque!!.tempo, 0.001)
+    }
+
+    @Test
+    fun aTempoPastTheLimitAcceptedFails() {
+        rate(Studio().apply { tempoClamps = false }, "limite_tempo_max", "sortir le tempo de la limite")
     }
 
     // --- The « seul » pack (tour 9, A2) ---------------------------------------------------------------

@@ -109,7 +109,10 @@ class ToutTester(
         while (System.currentTimeMillis() < end) {
             j.idle(250)
             val r = sonde.lire()
-            val lu = Ecoute.Lu(System.currentTimeMillis(), r.xruns, r.cpu, r.peak, r.nonFinite, r.playing, r.lufs, r.drive, r.lane, r.cpuWorst, r.gapWorst)
+            val lu = Ecoute.Lu(System.currentTimeMillis(), r.xruns, r.cpu, r.peak, r.nonFinite, r.playing, r.lufs, r.drive, r.lane, r.cpuWorst, r.gapWorst,
+                blocMs = if (r.burst > 0 && r.rate > 0) r.burst * 1000f / r.rate else 0f,
+                tamponBlocs = if (r.burst > 0 && r.buffer > 0) r.buffer.toFloat() / r.burst else 0f,
+            )
             reads += lu
             also(lu)
             carnet.add(

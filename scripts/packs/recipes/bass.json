@@ -3,8 +3,8 @@
   "id": "dnb",
   "vocal": "shout",
   "references": [
-   "Sub Focus & Dimension – Desire (2019)",
    "Chase & Status x Bou – Baddadan (2023)",
+   "Sub Focus & Dimension – Desire (2019)",
    "Dimension – Offender (2020)",
    "Sub Focus – Rock It (2009)",
    "Pendulum – Tarantula (2005)",
@@ -104,8 +104,7 @@
    "voicing": "seventh",
    "octave": 4,
    "sound": "Nappe",
-   "layer": "Machine à cordes",
-   "double": "both"
+   "layer": "Machine à cordes"
   },
   "bass": {
    "pattern": "R-------..R-----R-------..R--/O-R-------..R-----R---5---..R-3-..",
@@ -134,13 +133,12 @@
    "lead": true
   },
   "notes": "Classic 174 BPM two-step: kick on step 1 and step 11 (the 'and' of beat 3), snares on beats 2 and 4, ghost snares only in bar 2. The reese bass (two detuned saws, from Kevin Saunderson's 'Reese', popularised in DnB by Renegade 'Terrorist' 1994) is held long and follows the kick; play it in F2 so that its sub oscillator sits in F1 (~44 Hz) and duck it under kick and snare. The pad lives in intro/breakdown; the drop is drums + reese only, so a beginner can mute chords there.",
-  "bass_tip": "Une basse « reese » d'aujourd'hui : deux synthés désaccordés qui grondent et respirent ensemble. Elle tient sur la grosse caisse, et à la fin de la 2e mesure elle glisse vers l'aigu, comme un coup de manette.",
+  "bass_tip": "Une basse « reese » : deux synthés un peu désaccordés qui grondent ensemble. Elle tient sur la grosse caisse, et à la fin de la 2e mesure elle glisse vers l'aigu, comme un coup de manette.",
   "pad_tip": "Une nappe tenue qui pose l'ambiance dès l'intro, comme dans les vrais morceaux ; seule dans la pause, elle laisse respirer avant le retour de la batterie.",
   "lead_tip": "Un riff de synthé large et brillant, façon Pendulum : à allumer pour un drop qui explose.",
   "fx": [
    {
     "on": "bass",
-    "preset": "reese_dnb",
     "insert": "PUMP"
    },
    {
@@ -204,7 +202,6 @@
    "hat",
    "perc"
   ],
-  "body": true,
   "mix": {
    "pump": [
     "808",
@@ -217,9 +214,9 @@
  {
   "id": "liquid_dnb",
   "references": [
+   "Netsky – Memory Lane (2010)",
    "Netsky – Rio (2015)",
    "Sub Focus & Wilkinson – Air I Breathe (2020)",
-   "Netsky – Memory Lane (2010)",
    "High Contrast – If We Ever (2007)",
    "London Elektricity – Just One Second (2008)",
    "LTJ Bukem – Horizons (1995)"
@@ -313,8 +310,7 @@
    "octave": 3,
    "sound": "Rhodes FM",
    "voice_lead": true,
-   "layer": "Nappe",
-   "double": "octave"
+   "layer": "Nappe"
   },
   "bass": {
    "pattern": "R-------..R---5-R-------.5..R-3-",
@@ -420,7 +416,6 @@
    "sound": "Cloche FM",
    "rhythm": "..X.....X...X..."
   },
-  "body": true,
   "mix": {
    "pump": [
     "808",
@@ -433,8 +428,8 @@
  {
   "id": "neurofunk",
   "references": [
-   "Noisia & The Upbeats – Dead Limit (2016)",
    "Noisia – Stigma (2010)",
+   "Noisia & The Upbeats – Dead Limit (2016)",
    "Noisia – Diplodocus (2012)",
    "Mefjus – Emulation (2014)",
    "Phace & Misanthrop – Desert Orgy (2009)"
@@ -518,13 +513,12 @@
    "rhythm": "X---------------",
    "voicing": "sus2",
    "octave": 4,
-   "sound": "Essaim",
-   "double": "both"
+   "sound": "Essaim"
   },
   "bass": {
    "pattern": "R-.R--.R-.......R-.R--.R-...R-O-",
    "octave": 2,
-   "sound": "pack:neurofunk:bass|Basse neuro",
+   "sound": "pack:neurofunk:bass|Basse qui parle",
    "glide": false,
    "sub": true,
    "variation": "R-.R--.R-.......R-.R--.R-...R-O-R-.R--.R-.......R-.R--.R-.5.R-..",
@@ -588,7 +582,6 @@
    "hat",
    "perc"
   ],
-  "body": true,
   "mix": {
    "pump": [
     "808"
@@ -601,8 +594,8 @@
   "id": "jungle",
   "rewind": true,
   "references": [
-   "Nia Archives – Baianá (2022)",
    "M-Beat feat. General Levy – Incredible (1994)",
+   "Nia Archives – Baianá (2022)",
    "Shy FX & UK Apachi – Original Nuttah (1994)",
    "Renegade – Terrorist (1994)",
    "Origin Unknown – Valley of the Shadows (1993)"
@@ -691,8 +684,7 @@
    "rhythm": "X---------------",
    "voicing": "seventh",
    "octave": 4,
-   "sound": "Nappe chaude",
-   "double": "both"
+   "sound": "Nappe chaude"
   },
   "bass": {
    "pattern": "R-------..R---5-R-----3-..5---7-",
@@ -759,7 +751,6 @@
    "lead",
    "hat"
   ],
-  "body": true,
   "mix": {
    "pump": [
     "808",
@@ -865,8 +856,7 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 4,
-   "sound": "Nappe",
-   "double": "both"
+   "sound": "Nappe"
   },
   "bass": {
    "pattern": "R-.R..R-..R-....R-.R..R-..R--/O-R-.R..5-..3-....R-..............",
@@ -958,7 +948,6 @@
     ]
    }
   ],
-  "body": true,
   "mix": {
    "pump": [
     "808"
@@ -970,14 +959,14 @@
  {
   "id": "dubstep",
   "references": [
-   "Skrillex, Flowdan & Fred again.. – Rumble (2022)",
    "Skrillex – Scary Monsters and Nice Sprites (2010)",
+   "Skrillex, Flowdan & Fred again.. – Rumble (2022)",
    "Rusko – Cockney Thug (2007)",
    "Benga & Coki – Night (2007)",
    "Skream – Midnight Request Line (2005)",
    "Digital Mystikz – Anti War Dub (2006)"
   ],
-  "description_fr": "Une basse qui fait « wob wob » et qui gronde, sur un rythme lourd qui semble joué au ralenti : le dubstep, né à Londres vers 2005, avec le gros son d'aujourd'hui.",
+  "description_fr": "Une basse qui fait « wob wob » sur un rythme lourd qui semble joué au ralenti : le dubstep d'origine, né à Londres vers 2005, plus sombre et plus lent que celui de Skrillex.",
   "bpm": 140,
   "swing": 0.15,
   "root": "E",
@@ -1061,8 +1050,7 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 4,
-   "sound": "Nappe",
-   "double": "both"
+   "sound": "Nappe"
   },
   "bass": {
    "pattern": "R-------..R---O-R-----------2-..R---R---..R-5---R-------....3-O-",
@@ -1091,7 +1079,7 @@
    "lead": true
   },
   "notes": "UK dubstep (Croydon/Brixton, FWD>> and DMZ nights): ~140 BPM felt half-time, kick on 1 and snare/clap on beat 3, hats and percussion in normal time with moderate shuffle; a kick triplet between beats 1 and 3 is a common variation. Minor or phrygian keys, very sparse arrangement, lots of space. The bass is the point: a clean sine sub below ~100 Hz plus a mid 'wobble' made by an LFO on the filter cutoff synced at 1/4, 1/8 or 1/16. The bass pattern retriggers in a 3-3-2 grouping to fake the wob; if the synth can sync a filter LFO, hold one long note per chord instead. Stay in E1-F1 for the sub. Dub delay on the snare and pad is idiomatic. Phase 24: 'Basse wobble' = filter LFO synced at 1/8 and restarted on each note, so the bass holds long notes following the kick; played in E2 so its sub oscillator gives E1.",
-  "bass_tip": "La « wobble » d'aujourd'hui : un filtre s'ouvre et se ferme en rythme sur chaque note tenue, saturée jusqu'à gronder. Au second Drop, elle change de voix pour une basse riddim encore plus méchante.",
+  "bass_tip": "La « wobble » : un filtre s'ouvre et se ferme en rythme sur chaque note tenue, ça fait « wob wob ». À la fin, elle monte d'une note, juste assez pour faire frissonner.",
   "pad_tip": "Une nappe sombre avec de l'écho, dès l'intro et seule dans la pause : elle pose le décor avant que la basse n'arrive.",
   "fx": [
    {
@@ -1161,7 +1149,6 @@
    "hat",
    "perc"
   ],
-  "body": true,
   "mix": {
    "pump": [
     "808",
@@ -1265,8 +1252,7 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 4,
-   "sound": "Nappe",
-   "double": "both"
+   "sound": "Nappe"
   },
   "bass": {
    "pattern": "R--.R--.....O-..R--.R--...3-O-..",
@@ -1348,7 +1334,6 @@
    "hat",
    "perc"
   ],
-  "body": true,
   "mix": {
    "pump": [
     "808"
@@ -1474,8 +1459,7 @@
     "accent": 4,
     "rate": 24
    },
-   "layer": "Machine à cordes",
-   "double": "octave"
+   "layer": "Machine à cordes"
   },
   "bass": {
    "pattern": "R-R.R-R.R-R.R-R.R-R.R-R.R-R.R.O.",
@@ -1563,10 +1547,6 @@
     ]
    }
   ],
-  "texture": {
-   "sound": "Nappe chaude"
-  },
-  "body": true,
   "mix": {
    "pump": [
     "808",
@@ -1686,8 +1666,7 @@
    "voicing": "seventh",
    "octave": 3,
    "sound": "gm:Acoustic Grand Piano",
-   "voice_lead": true,
-   "double": "octave"
+   "voice_lead": true
   },
   "bass": {
    "pattern": "R---r-O-R---r-5-",
@@ -1763,7 +1742,6 @@
    }
   ],
   "riser": true,
-  "body": true,
   "mix": {
    "pump": [
     "chords"

@@ -891,7 +891,7 @@
     "808"
    ],
    "glue_blend": 0.6,
-   "bus_drive": 0.4
+   "bus_drive": 0.2
   },
   "body": true
  },
@@ -1016,12 +1016,12 @@
       0.38
      ],
      "groove": [
-      0.32,
-      0.45
+      0.3,
+      0.36
      ],
      "drop": [
-      0.45,
-      0.58
+      0.55,
+      0.62
      ],
      "break": [
       0.28,
@@ -1049,7 +1049,7 @@
     "env_mod": {
      "groove": [
       0.6,
-      0.75
+      0.66
      ],
      "drop": [
       0.75,
@@ -1098,12 +1098,14 @@
   ],
   "notes": "The TB-303 is the whole track: one looped pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw drum-machine drums (909 since lot L9): continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break. Lot L9: acid techno today (Charlotte de Witte, Amelie Lens): 130 BPM, a 909 kick punched, a two-bar Squelchy riff, high resonance, more accents and glides, cutoff, resonance and envelope moving in every section.",
   "drop": [
-   "open_hat"
+   "open_hat",
+   "shaker",
+   "perc"
   ],
   "riser": true,
   "mix": {
    "glue_blend": 0.6,
-   "bus_drive": 0.4
+   "bus_drive": 0.15
   },
   "texture": {
    "sound": "Souffle"

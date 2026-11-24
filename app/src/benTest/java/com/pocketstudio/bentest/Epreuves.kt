@@ -46,6 +46,15 @@ class Epreuves(
         etape(IMAGES, "Images lentes par écran, avec un écran témoin", 300_000) { imagesTemoin() },
     )
 
+    /**
+     * The guided pack (« Tests guidés »): a gesture only a hand can do (an output changed, the battery saver), asked by the
+     * banner. Never in « Tout tester » nor the night's run: nobody is there to answer.
+     */
+    fun guides(): List<Etape> = listOf(
+        etape(SORTIE, "Changer de sortie : le son revient en moins de 2 s", 300_000) { sortieChange() },
+        etape(ECO, "Économie d'énergie : la lecture tient", 300_000) { economie() },
+    )
+
     private fun etape(name: String, label: String, maxMs: Long, work: () -> String) = Etape(name, label, maxMs) {
         try {
             work()
@@ -133,6 +142,75 @@ class Epreuves(
             else -> "la lecture a continué"
         }
         return "son baissé : ${d.text()} ; son pris : $how ; ensuite ${apres.text()}"
+    }
+
+    /** Sound heard right now: the song plays and its peak is over the silence. */
+    private fun sonEntendu(): Boolean = sonde.lire().let { it.playing && Ecoute.db(if (it.peak.isFinite()) it.peak else 0f) >= Ecoute.SILENCE_DB }
+
+    /**
+     * Guided: Benjamin plugs or unplugs a headset (or a Bluetooth speaker) while the song plays. The sound must be heard
+     * again within [RETOUR_MS] of his « Fait »; when the app stopped the song (an unplugged headset: Android's « noisy »),
+     * within [RETOUR_MS] of ▶. The phone must see the output change, else « non mesuré ».
+     */
+    fun sortieChange(): String {
+        val step = SORTIE
+        propre(step)
+        val avant = appli.materiel()
+        e.lancerLecture()
+        try {
+            val r = appli.poser(Question(SORTIE, "Branche ou débranche ton casque (ou ton enceinte Bluetooth) maintenant, puis touche « Fait ».", GUIDE_MS, action = "Fait"), GUIDE_MS)
+            if (r.verdict != Verdict.OUI) return nonMesure(step, "pas de sortie changée (${r.verdict.mot})")
+            val apres = appli.materiel()
+            if (apres == avant) return nonMesure(step, "le téléphone ne voit aucun changement de sortie")
+            val arretee = !sonde.lire().playing
+            if (arretee) e.lancerLecture()
+            val t0 = System.currentTimeMillis()
+            val revenu = attendre(RETOUR_MS) { sonEntendu() }
+            val ms = System.currentTimeMillis() - t0
+            val ensuite = t.ecouter(step, ecouteMs / 2)
+            bilan(step, "arretee" to arretee, "revenu" to revenu, "retour_ms" to ms, "ensuite_coupures" to coupures(ensuite).size, "materiel" to "$avant>$apres")
+            val rouge = ArrayList<String>()
+            if (!revenu) rouge += "le son n'est pas revenu en ${RETOUR_MS / 1000} s" + if (arretee) " après ▶" else ""
+            if (ensuite.playing < ensuite.reads) rouge += "la lecture s'arrête sur la nouvelle sortie"
+            coupures(ensuite).forEach { rouge += "ensuite : $it" }
+            feu(step, (if (rouge.isEmpty()) Feu.VERT else Feu.ROUGE) to rouge.joinToString(", "))
+            check(rouge.isEmpty()) { rouge.joinToString(" ; ") }
+            return (if (arretee) "la lecture s'est arrêtée, ▶ : " else "") + "son revenu en $ms ms ; ensuite ${ensuite.text()}"
+        } finally {
+            e.arreter()
+        }
+    }
+
+    /**
+     * Guided: Benjamin turns the battery saver on (the shade, without leaving the app); the robot reads that it is on,
+     * then the song must play through without a hole. The saver is asked off again at the end.
+     */
+    fun economie(): String {
+        val step = ECO
+        propre(step)
+        val r = appli.poser(Question(ECO, "Active l'économie d'énergie depuis le volet du haut (sans quitter l'appli), puis touche « Fait ».", GUIDE_MS, action = "Fait"), GUIDE_MS)
+        if (r.verdict != Verdict.OUI) return nonMesure(step, "économie d'énergie pas activée (${r.verdict.mot})")
+        try {
+            val on = appli.economieEnergie() ?: return nonMesure(step, "le robot ne lit pas l'économie d'énergie ici")
+            if (!on) return nonMesure(step, "l'économie d'énergie n'est pas allumée selon le téléphone")
+            e.auStudioPro()
+            e.lancerLecture()
+            val b = try {
+                t.ecouter(step, ecouteMs)
+            } finally {
+                e.arreter()
+            }
+            bilan(step, "economie" to on, "xruns" to b.xruns, "coupures" to coupures(b).size, "en_lecture" to b.playing, "lectures" to b.reads)
+            val rouge = ArrayList<String>()
+            if (b.playing < b.reads) rouge += "la lecture s'est arrêtée en économie d'énergie"
+            coupures(b).forEach { rouge += it }
+            val orange = if (b.xruns > 0) listOf("${b.xruns} décrochage(s) en économie d'énergie") else emptyList()
+            feu(step, (if (rouge.isNotEmpty()) Feu.ROUGE else if (orange.isNotEmpty()) Feu.ORANGE else Feu.VERT) to (rouge + orange).joinToString(", "))
+            check(rouge.isEmpty()) { rouge.joinToString(" ; ") }
+            return "économie d'énergie allumée : ${b.text()}"
+        } finally {
+            appli.poser(Question("${ECO}_fin", "Tu peux couper l'économie d'énergie, puis touche « Fait ».", GUIDE_MS, action = "Fait"), GUIDE_MS)
+        }
     }
 
     /**
@@ -446,6 +524,12 @@ class Epreuves(
         const val TEMOIN = "reglages"
 
         /** « Mode du son »: the largest buffer the app offers (« Très sûr », no 8), and the normal (« Rapide »). */
+        const val SORTIE = "sortie_change"
+        const val ECO = "economie_energie"
+        /** The sound back within this after the output changed (or after ▶ when the app stopped it). */
+        const val RETOUR_MS = 2_000L
+        /** How long a guided question waits for Benjamin. */
+        const val GUIDE_MS = 120_000L
         const val TAMPON_LARGE = 6
         const val TAMPON_NORMAL = 2
 

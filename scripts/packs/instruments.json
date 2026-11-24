@@ -131,6 +131,7 @@
   },
   {
    "id": "instrument_bois",
+   "recipes": {"flute": [67, 100]},
    "name": "Bois",
    "category": "woodwinds",
    "kind": "lead",

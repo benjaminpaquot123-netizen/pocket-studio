@@ -77,6 +77,7 @@ object SoundLooks {
         "kicks", "kick" -> SoundLook(Icons.Filled.Adjust, KICK)
         "caisses claires", "snare" -> SoundLook(Icons.Filled.TripOrigin, SNARE)
         "claps", "clap" -> SoundLook(Icons.Filled.FrontHand, CLAP)
+        "claquements de doigts", "snap" -> SoundLook(Icons.Filled.FrontHand, CLAP)
         "charleys fermés", "hat" -> SoundLook(Icons.Filled.BlurOn, HAT)
         "charleys ouverts", "open_hat" -> SoundLook(Icons.Filled.BlurOn, OPEN_HAT)
         "percussions", "perc" -> SoundLook(Icons.Filled.Album, PERC)

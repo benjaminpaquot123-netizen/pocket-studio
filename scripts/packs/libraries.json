@@ -239,6 +239,27 @@
     "/Idiophones/",
     "/Membranophones/Struck Membranophones/"
    ]
+  },
+  {
+   "id": "fs-claps",
+   "type": "freesound",
+   "list": "freesound/claps.json",
+   "roles": [
+    "snap"
+   ],
+   "title": "Freesound finger snaps (Grand remplacement)",
+   "author": "several Freesound authors (credited one by one in pack.json)",
+   "licence": "CC0-1.0",
+   "page": "https://freesound.org"
+  },
+  {
+   "id": "fs-percs",
+   "type": "freesound",
+   "list": "freesound/percs.json",
+   "title": "Freesound percussion (Grand remplacement)",
+   "author": "several Freesound authors (credited one by one in pack.json)",
+   "licence": "CC0-1.0",
+   "page": "https://freesound.org"
   }
  ],
  "packs": [
@@ -1440,6 +1461,111 @@
      "tags": [
       "verre",
       "cristal"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "grand_remplacement",
+   "name": "Grand remplacement",
+   "family": "Acoustique",
+   "version": 1,
+   "max_seconds": 2.5,
+   "max_per_rule": 12,
+   "sources": [
+    "fs-claps",
+    "fs-percs"
+   ],
+   "rules": [
+    {
+     "match": "^fs-claps/snap/",
+     "kind": "snap",
+     "slug": "doigts",
+     "label": "Claquement de doigts",
+     "tags": [
+      "doigts",
+      "snap",
+      "claquement"
+     ]
+    },
+    {
+     "match": "^fs-percs/tom/",
+     "kind": "tom",
+     "slug": "tom",
+     "label": "Tom",
+     "tags": [
+      "tom",
+      "fût"
+     ]
+    },
+    {
+     "match": "^fs-percs/hand_perc/",
+     "kind": "perc",
+     "slug": "main",
+     "label": "Percussion à main",
+     "tags": [
+      "conga",
+      "bongo",
+      "djembé",
+      "main"
+     ]
+    },
+    {
+     "match": "^fs-percs/shaker_tambourine/",
+     "kind": "perc",
+     "slug": "shaker",
+     "label": "Shaker et tambourin",
+     "tags": [
+      "shaker",
+      "tambourin",
+      "maracas"
+     ]
+    },
+    {
+     "match": "^fs-percs/cowbell_clave_wood/",
+     "kind": "perc",
+     "slug": "bois",
+     "label": "Cloche et bois",
+     "tags": [
+      "cloche",
+      "cowbell",
+      "clave",
+      "bois",
+      "woodblock"
+     ]
+    },
+    {
+     "match": "^fs-percs/metal_perc/",
+     "kind": "perc",
+     "slug": "metal",
+     "label": "Percussion métallique",
+     "tags": [
+      "métal",
+      "metal",
+      "cloche"
+     ]
+    },
+    {
+     "match": "^fs-percs/log_drum/",
+     "kind": "perc",
+     "slug": "log_drum",
+     "label": "Log drum",
+     "tags": [
+      "log drum",
+      "amapiano",
+      "bois"
+     ]
+    },
+    {
+     "match": "^fs-percs/jersey_bed_squeak/",
+     "kind": "perc",
+     "slug": "grincement",
+     "label": "Grincement de lit",
+     "tags": [
+      "jersey",
+      "grincement",
+      "lit",
+      "squeak"
      ]
     }
    ]

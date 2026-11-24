@@ -116,6 +116,18 @@ class PackCatalogTest {
         assertTrue(result.installed.isEmpty() && result.failed.isEmpty())
     }
 
+    /** Lot « Grand remplacement »: finger snaps are a family of their own, kept by the app and found by its name. */
+    @Test
+    fun fingerSnapsAreAFamilyTheSearchFinds() {
+        assertEquals("Claquements de doigts", SoundPacks.KIND_LABELS["snap"])
+        val pack = PackManifest("grand_remplacement", "Grand remplacement", sounds = listOf(PackSound("snap_doigts_01.flac", "snap", "Claquement de doigts 1")))
+        assertEquals(listOf("snap_doigts_01.flac"), PackSearch.find("claquements doigts", listOf(pack)).map { it.sound.file })
+        assertEquals(listOf("snap_doigts_01.flac"), PackSearch.find("snap", listOf(pack)).map { it.sound.file })
+        val root = Json.parseToJsonElement(File("../scripts/packs/libraries.json").readText()).jsonObject
+        val grand = root["packs"]!!.jsonArray.map { it.jsonObject }.single { it["id"]!!.jsonPrimitive.content == "grand_remplacement" }
+        assertTrue(grand["rules"]!!.jsonArray.any { it.jsonObject["kind"]!!.jsonPrimitive.content == "snap" })
+    }
+
     /** The packs the CI builds from free libraries: kinds the app keeps, safe ids, names translated. */
     @Test
     fun theLibraryPacksMatchTheApp() {

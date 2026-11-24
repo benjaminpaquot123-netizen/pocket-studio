@@ -30,6 +30,8 @@ object SoundPacks {
         "mallet" to "Percussions mélodiques",
         "vocal" to "Voix",
         "foley" to "Bruitages",
+        // Finger snaps (pack « Grand remplacement »): after the foley, so the family chips seen first stay the same.
+        "snap" to "Claquements de doigts",
         "fx" to "Effets",
         "loop" to "Boucles",
     )

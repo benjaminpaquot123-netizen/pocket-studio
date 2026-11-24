@@ -2,16 +2,21 @@
 
 usage: library_pack.py libraries.json PACK_ID OUT_DIR [--cache DIR] [--only SOURCE_ID ...]
 
-Each source is fetched once into the cache (a zip, single files, a Kenney page's zip, or a sparse
-git checkout at a pinned commit). The pack's rules pick files by regular expression on
+Each source is fetched once into the cache (a zip, single files, a Kenney page's zip, a sparse
+git checkout at a pinned commit, or a Freesound list: freesound/<family>.json, each sound under
+"<role>/fs<id>.<ext>"). Freesound originals come with an OAuth token in FREESOUND_OAUTH_TOKEN
+(checked against the list's sha256), else the HQ previews with FREESOUND_API_KEY; with neither, the
+source is skipped (said in the log). Secrets are never printed; a Freesound sound is credited on its own. The pack's rules pick files by regular expression on
 "<source id>/<path inside it>" (first matching rule wins, files no rule takes are left out), at
 most the rule's `max` per rule, spread evenly over the matches. Each sound is trimmed (silence
 before a hit), cut to `max_seconds` with a fade, normalized to -1 dBFS, made mono when both sides
 are the same, and written as 16-bit FLAC <kind>_<slug>_<n>.flac; pack.json lists names, kinds,
 tags (the app searches them) and the credits of each source used.
 """
+import hashlib
 import io
 import json
+import os
 import re
 import subprocess
 import sys
@@ -27,28 +32,89 @@ UA = {'User-Agent': 'pocket-studio-packs (+https://github.com/benjaminpaquot123-
 
 # The kinds the app knows (SoundPacks.KIND_LABELS): a sound of another kind would be dropped.
 KINDS = {'kick', 'snare', 'clap', 'hat', 'open_hat', 'ride', 'perc', 'tom', '808', 'bass', 'stab', 'pad', 'lead',
-         'pluck', 'keys', 'mallet', 'vocal', 'foley', 'fx', 'loop'}
+         'pluck', 'keys', 'mallet', 'vocal', 'foley', 'fx', 'loop', 'snap'}
+FREESOUND = 'https://freesound.org'
 
 
-def get(url, tries=4):
+def http_get(url, headers, tries=4):
+    """The body at url; headers may hold a secret, so errors name the url only."""
     last = None
     for _ in range(tries):
         try:
-            with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=120) as r:
+            with urllib.request.urlopen(urllib.request.Request(url, headers={**UA, **headers}), timeout=120) as r:
                 return r.read()
         except Exception as e:  # network hiccup: try again
-            last = e
+            last = type(e).__name__ + (f' {e.code}' if hasattr(e, 'code') else '')
     raise RuntimeError(f'{url}: {last}')
 
 
-def fetch(source, cache):
-    """The source's folder in the cache, downloaded once."""
+def get(url):
+    return http_get(url, {})
+
+
+def sniff(data):
+    """The file extension of an audio file's bytes (Freesound originals come in any format)."""
+    for magic, ext in ((b'RIFF', '.wav'), (b'fLaC', '.flac'), (b'FORM', '.aiff'), (b'OggS', '.ogg')):
+        if data[:4] == magic:
+            return ext
+    return None
+
+
+def fetch_freesound(source, d, lib_dir):
+    """The sounds of a Freesound list, one file per sound id; False when no key is given."""
+    token = os.environ.get('FREESOUND_OAUTH_TOKEN', '').strip()
+    key = os.environ.get('FREESOUND_API_KEY', '').strip()
+    if not token and not key:
+        print(f"{source['id']}: no FREESOUND_API_KEY (nor FREESOUND_OAUTH_TOKEN), Freesound source skipped", flush=True)
+        return False
+    print(f"{source['id']}: Freesound {'originals' if token else 'HQ previews'}", flush=True)
+    roles = set(source.get('roles', []))
+    credits, seen = {}, set()
+    for e in json.loads((lib_dir / source['list']).read_text()):
+        sid = e.get('id')
+        if roles and e['role'] not in roles:
+            continue
+        if sid is None:
+            print(f"{source['id']}: {e['name']} is not on Freesound ({e['licence']}), left out", flush=True)
+            continue
+        if sid in seen:
+            continue
+        seen.add(sid)
+        try:
+            if token:
+                data = http_get(f'{FREESOUND}/apiv2/sounds/{sid}/download/', {'Authorization': f'Bearer {token}'})
+                if e.get('sha256') and hashlib.sha256(data).hexdigest() != e['sha256']:
+                    print(f"{source['id']}: {sid} original differs from its sha256, left out", flush=True)
+                    continue
+            else:
+                info = json.loads(http_get(f'{FREESOUND}/apiv2/sounds/{sid}/', {'Authorization': f'Token {key}'}))
+                data = http_get(info['previews']['preview-hq-ogg'], {})
+        except Exception as x:  # one sound missing does not stop the pack
+            print(f"{source['id']}: {sid} not downloaded ({x})", flush=True)
+            continue
+        ext = sniff(data)
+        if ext is None:
+            print(f"{source['id']}: {sid} is not WAV, FLAC, AIFF or Ogg, left out", flush=True)
+            continue
+        rel = f"{e['role']}/fs{sid}{ext}"
+        (d / e['role']).mkdir(parents=True, exist_ok=True)
+        (d / rel).write_bytes(data)
+        credits[rel] = {'title': e['name'], 'author': e['author'], 'licence': e['licence'], 'page': e['url']}
+    (d / 'credits.json').write_text(json.dumps(credits, ensure_ascii=False, indent=1))
+    return True
+
+
+def fetch(source, cache, lib_dir=Path('.')):
+    """The source's folder in the cache, downloaded once; None when the source is skipped."""
     d = cache / source['id']
     if (d / '.done').exists():
         return d
     d.mkdir(parents=True, exist_ok=True)
     kind = source['type']
-    if kind == 'kenney':
+    if kind == 'freesound':
+        if not fetch_freesound(source, d, lib_dir):
+            return None
+    elif kind == 'kenney':
         page = get(source['page']).decode('utf-8', 'replace')
         slug = source['page'].rstrip('/').rsplit('/', 1)[1]
         m = re.search(rf"https://kenney\.nl/media/pages/assets/{re.escape(slug)}/[^'\"]+\.zip", page)
@@ -138,10 +204,14 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
 
     used = [sources[s] for s in pack['sources'] if only is None or s in only]
-    files = []
+    files, own = [], {}
     for s in used:
-        root = fetch(s, cache)
+        root = fetch(s, cache, Path(lib_path).parent)
+        if root is None:
+            continue
         base = root / 'repo' if s['type'] == 'git' else root
+        if s['type'] == 'freesound':
+            own.update({(s['id'], rel): c for rel, c in json.loads((root / 'credits.json').read_text()).items()})
         for f in sorted(base.rglob('*'), key=lambda p: natural(str(p))):
             if f.is_file() and f.suffix.lower() in AUDIO and '.git' not in f.parts:
                 files.append((f"{s['id']}/{f.relative_to(base).as_posix()}".lower(), f, s['id']))
@@ -157,7 +227,7 @@ def main():
                 picked[i].append((key, f, sid))
                 break
 
-    sounds, credited = [], set()
+    sounds, credited, per_sound = [], set(), []
     for i, rule in enumerate(pack['rules']):
         kind = rule['kind']
         if kind not in KINDS:
@@ -180,10 +250,17 @@ def main():
             sf.write(out / name, take.astype(np.float32), rate, subtype='PCM_16')
             sounds.append({'file': name, 'kind': kind, 'name': f"{rule['label']} {n}", 'tags': rule.get('tags', [])})
             credited.add(sid)
+            c = own.get((sid, f.relative_to(cache / sid).as_posix()))
+            if c is not None and c not in per_sound:
+                per_sound.append(c)
         print(f"{pack_id}: {rule['slug']} {n} sounds", flush=True)
 
+    if not sounds:
+        print(f'{pack_id}: no sound, no pack written', flush=True)
+        return
     credits = [{'title': sources[s]['title'], 'author': sources[s]['author'], 'licence': sources[s]['licence'],
-                'page': sources[s]['page']} for s in pack['sources'] if s in credited]
+                'page': sources[s]['page']} for s in pack['sources'] if s in credited and sources[s]['type'] != 'freesound']
+    credits += per_sound
     (out / 'pack.json').write_text(json.dumps({
         'id': pack['id'], 'name': pack['name'], 'family': pack['family'], 'bpm': 120, 'version': pack['version'],
         'sounds': sounds, 'credits': credits,

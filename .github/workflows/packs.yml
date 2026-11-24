@@ -190,6 +190,10 @@ jobs:
           python-version: '3.13'
       - run: pip install -q -r scripts/packs/requirements.txt
       - name: Build
+        # Freesound sources (pack « Grand remplacement »): HQ previews with this key; without the secret
+        # they are skipped and the log says so (a pack left with no sound is not written).
+        env:
+          FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
         run: python scripts/packs/library_pack.py scripts/packs/libraries.json ${{ matrix.pack }} out/${{ matrix.pack }} --cache "$RUNNER_TEMP/sources"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -251,7 +255,7 @@ jobs:
         run: |
           gh release create "$TAG" dist/* --latest=false --target main \
             --title "Packs de sons par style" \
-            --notes "Sons générés avec Stable Audio Open Small (Powered by Stability AI, voir LICENSE-stable-audio et NOTICE-stable-audio) par scripts/packs, et sons libres (CC0 : Kenney, OpenGameArt, VCSL ; auteurs dans le pack.json de chaque pack et THIRD_PARTY.md). Instruments échantillonnés : Splendid Grand Piano (Akai, domaine public), Salamander Grand Piano V3 (Alexander Holm, CC BY 3.0), VS Chamber Orchestra Community Edition (Versilian Studios, CC0). Un .zip par pack ; index.json liste les versions, tailles et empreintes vérifiées par l'appli."
+            --notes "Sons générés avec Stable Audio Open Small (Powered by Stability AI, voir LICENSE-stable-audio et NOTICE-stable-audio) par scripts/packs, et sons libres (CC0 : Kenney, OpenGameArt, VCSL, Freesound ; auteurs dans le pack.json de chaque pack et THIRD_PARTY.md). Instruments échantillonnés : Splendid Grand Piano (Akai, domaine public), Salamander Grand Piano V3 (Alexander Holm, CC BY 3.0), VS Chamber Orchestra Community Edition (Versilian Studios, CC0). Un .zip par pack ; index.json liste les versions, tailles et empreintes vérifiées par l'appli."
       - name: Catalogue the app reads
         env:
           GH_TOKEN: ${{ github.token }}

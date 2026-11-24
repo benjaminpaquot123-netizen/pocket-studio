@@ -46,7 +46,7 @@ object AutoTempo {
     }
 
     /** Library kinds that are hits (never a tempo), whatever their length. */
-    private val HIT_KINDS = setOf("kick", "snare", "clap", "hat", "open_hat", "perc", "tom", "ride", "foley")
+    private val HIT_KINDS = setOf("kick", "snare", "clap", "snap", "hat", "open_hat", "perc", "tom", "ride", "foley")
 
     /** A sound of the library that has no tempo: a kit's hit, a party sound (a horn, a shout), a hit [kind]. */
     fun isHit(hitSource: Boolean, kind: String?): Boolean = hitSource || kind in HIT_KINDS

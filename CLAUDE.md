@@ -29,7 +29,7 @@ Au début de chaque session, le chef d'orchestre (ou une discussion sans fiche) 
   - le chef ne lit jamais un journal brut : tout résultat d'outil de plus de 5 k jetons est filtré (`ci-etat.sh`, `ci-rouge.sh`) ou confié à un sous-agent ;
   - les équipes écrivent une seule fois, à la fin, au second ; une branche voisine se lit, elle ne se fusionne pas sans ordre du plan ;
   - tâche d'arrière-plan longue (portail) : délai maximal (2 h) ; effort « medium » permis sur les lots purement mécaniques, jamais sur le second.
-- Fable (2026-11-15) : seulement sur une discussion neuve ou un sous-agent, avec une fiche courte (le problème, les fichiers, la preuve attendue). Jamais en passant une longue discussion sur Fable : elle a sa propre limite, vidée le 15 novembre par la discussion principale. Benjamin décide quand.
+- Fable (2026-11-15) : seulement sur une discussion neuve ou un sous-agent, avec une fiche courte (le problème, les fichiers, la preuve attendue). Jamais en passant une longue discussion sur Fable : elle a sa propre limite, vidée le 15 novembre par la discussion principale. Autorisation de Benjamin (2026-11-24) : le chef lance Fable lui-même quand un problème lui semble délicat (cause pas claire, rouge qui va et vient, choix lourd), et le dit en une ligne dans le point suivant.
 - Discussions (2026-11-15) : l'agent ouvre, pilote et ferme lui-même les discussions et sous-agents, toujours en Opus 5.5. Fable 5.2 seulement quand il est nécessaire, et en demandant d'abord à Benjamin.
 - Toujours parler français avec Benjamin (conversation, messages, rappels).
 - Messages pour lui : français, courts, sans jargon, écoutables en audio. Humour Kaamelott bienvenu dans les changelogs.

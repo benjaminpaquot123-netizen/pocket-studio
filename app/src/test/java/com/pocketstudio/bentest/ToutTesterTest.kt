@@ -215,10 +215,29 @@ class ToutTesterTest {
         assertEquals(Feu.ROUGE to "pire bloc vrai 160 %", light(1.6f, 1f))
         assertEquals(Feu.VERT, light(0.2f, 2f).first)
         assertEquals(Feu.ORANGE to "plus long écart 2,5 blocs", light(0.2f, 2.5f))
-        assertEquals(Feu.ROUGE, light(0.2f, 4.1f).first)
+        // Tour 9, C3: a gap over 4 blocks with no dropout counted is orange at most (the gap is divided by the block before).
+        assertEquals(Feu.ORANGE, light(0.2f, 4.1f).first)
         assertEquals(Feu.ORANGE, light(0.2f, 4f).first)
         // Unknown (0): no light from it.
         assertEquals(Feu.VERT, Feux.style(Ecoute.bilan(reads(5) { steady(it) }, 3)).first)
+    }
+
+    @Test
+    fun `vert - a gap over 4 blocks is red only with a dropout counted, and it is read in ms beside the buffer`() {
+        fun bilan(xruns: Int) = Ecoute.bilan(
+            reads(5) { i -> steady(i).copy(xruns = if (i == 19) 3 + xruns else 3, gapWorst = if (i == 4) 4.3f else 1f, blocMs = 5.33f, tamponBlocs = 2f) }, 3,
+        )
+        val quiet = bilan(0)
+        assertEquals(Feu.ORANGE, Feux.style(quiet).first)
+        assertTrue(Feux.style(quiet).second, "plus long écart 4,3 blocs (≈ 22,9 ms ; tampon 2 blocs de 5,3 ms)" in Feux.style(quiet).second)
+        assertTrue(Feux.depasses(quiet).toString(), Feux.depasses(quiet).isEmpty())
+        assertTrue(quiet.text(), "≈ 22,9 ms ; tampon 2 blocs de 5,3 ms" in quiet.text())
+        val heard = bilan(1)
+        assertEquals(Feu.ROUGE, Feux.style(heard).first)
+        assertTrue(Feux.depasses(heard).toString(), Feux.depasses(heard).any { "plus long écart 4,3 blocs (≈ 22,9 ms" in it && "contre 4 blocs au plus" in it })
+        // The block unknown: the gap in blocks alone, as before.
+        val bare = Ecoute.bilan(reads(5) { i -> steady(i).copy(gapWorst = if (i == 4) 4.3f else 1f) }, 3)
+        assertTrue(Feux.style(bare).second, Feux.style(bare).second == "plus long écart 4,3 blocs")
     }
 
     @Test

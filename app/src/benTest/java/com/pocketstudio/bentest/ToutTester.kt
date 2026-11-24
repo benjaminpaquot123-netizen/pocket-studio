@@ -218,6 +218,10 @@ class ToutTester(
     fun latence(): String {
         // Through the speaker and the microphone: with the sound cut, a « measure » is the room's noise (the Xiaomi's 501.71 ms).
         appli.volume()?.takeIf { it.coupe() }?.let { return nonMesure("latence", "$SON_COUPE (${it.text()})") }
+        // Tour 9, C5: without RECORD_AUDIO the engine answers MicUnavailable; that is the phone's setting, not a fault.
+        if (appli.microAutorise() == false) {
+            return nonMesure("latence", "micro non autorisé : touche « Autoriser le micro » dans les réglages de l'appli pour mesurer la latence")
+        }
         e.auStudioPro()
         val values = ArrayList<Double>()
         val fails = ArrayList<String>()
@@ -226,6 +230,9 @@ class ToutTester(
             if (ms != null) values += ms else fails += appli.latenceEchec()
             carnet.add(Carnet.MESURE, "latence", "ms=${ms?.let(::fmt) ?: ""}")
             j.idle(500)
+        }
+        if (values.isEmpty() && fails.all { "MicUnavailable" in it }) {
+            return nonMesure("latence", "micro occupé ou indisponible : le moteur n'a pas pu l'ouvrir (${fails.distinct().joinToString(" ; ")})")
         }
         if (values.isEmpty()) {
             feu("latence", Feu.ROUGE to "aucune mesure")

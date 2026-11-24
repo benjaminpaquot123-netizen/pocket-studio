@@ -47,6 +47,10 @@ chemin: Mixeur → piste → Effets → « + » → liste : Bus batterie, Graves
 chemin: Mixeur → piste à 8 effets → liste grisée avec les trois effets neufs | test: ScreenshotTest#effectsFull
 chemin: Mixeur → piste → Effets → dernier effet de la liste ajouté et affiché | test: Tour9EffectAddTest#f029_anEffectAddedFromTheBottomOfTheListIsShown
 
+## Relecture neuve (0 grave)
+- Moyen corrigé : le texte du préréglage « Corps » promettait « le kick garde son pic » ; l'attaque peut monter un coup d'environ 3 dB sur la piste. Nouveau texte : « au même volume moyen » (14 langues).
+- Mineurs laissés (pour un lot suivant) : retombée de l'attaque figée sur les sons de moins de 40 ms (slowR_ = fastR_) ; sous le plancher, le bus batterie relève encore un petit signal jusqu'à +12 dB ; « Graves mono » à 0 garde un passe-haut 10 Hz sur les côtés ; latence du bus batterie non compensée (comme Saturation) ; `DrumBus::p_` de taille 4 ; nom court « Mono » ambigu ; pas de test Kotlin des deux préréglages.
+
 ## Ce qui n'est pas vert
 - `verifyRoborazziDebug` sur ScreenshotTest : `rhythm`, `rhythm_after_wizard`, `session`, `timeline` diffèrent déjà sans ce lot (« Tous les pads » passe à la ligne) : hors de ma zone, non touchés.
 - Claque du kick en trap en léger recul avec les réglages B : à régler dans les recettes (conseil V4 ci-dessus).

@@ -858,7 +858,7 @@ private fun Grid(
         // rows fold so that they all fit, then the notes are framed (below), instead of going from one to the other.
         // Lot « fable6 » (alert « a-V1 »): the rows are judged where the touch leaves the time, the bar it goes to in sight.
         val at = if (touched) com.pocketstudio.model.tuto.TutoRollHint.atBar(aimed, shown, barSteps) else shown
-        val fold = if (touched) com.pocketstudio.model.tuto.TutoRollHint.folded(left, at, barSteps, with(density) { MIN_ROW.dp.toPx() }) else null
+        val fold = if (touched) com.pocketstudio.model.tuto.TutoRollHint.folded(left, at, barSteps, with(density) { MIN_ROW.dp.toPx() }, at.left != shown.left) else null
         if (fold != null) {
             folding = com.pocketstudio.model.tuto.TutoRollHint.aside(aimed, at, barSteps) ?: com.pocketstudio.model.tuto.TutoRollHint.next(aimed, at, barSteps)
             // The bar first: the framing (below) reads the time in sight.

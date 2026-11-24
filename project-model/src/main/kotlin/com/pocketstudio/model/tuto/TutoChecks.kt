@@ -2587,12 +2587,14 @@ object TutoRollHint {
      * the rows ([aside]) that cannot come in with the others. The roll folds its rows to it, then [framed]. Null: no
      * note out of the rows, they already fit (then [brought] frames them), or rows under [minRow] would be needed.
      */
-    fun folded(left: List<Note>, v: TutoRollView, barSteps: Int, minRow: Float): Float? {
+    fun folded(left: List<Note>, v: TutoRollView, barSteps: Int, minRow: Float, arrived: Boolean = false): Float? {
         if (v.right <= v.left || v.rowPx <= 0f || v.bottom - v.top < v.rowPx - 1f) return null
         val all = pool(left, barSteps).filter { inTime(it, v) }
-        // Lot « fable6 »: any of them out of the rows, the one spoken of too (a touch that comes from another bar finds
-        // none of them in the rows: it centred one, and the fold waited for a second touch).
-        if (all.none { !inRows(it, v) }) return null
+        // Lot « fable6 »: [arrived] (the touch comes from another bar, [v] is [atBar]): any of them out of the rows, the
+        // one spoken of too (it finds none of them in the rows: it centred one, and the fold waited for a second touch).
+        // In the bar in sight, only a note out of the rows while the one spoken of is in them ([aside]): with none in the
+        // rows, the touch brings the one spoken of (and lights it), it does not fold to notes still out of sight.
+        if (if (arrived) all.none { !inRows(it, v) } else aside(left, v, barSteps) == null) return null
         val rows = all.maxOf { it.pitch } - all.minOf { it.pitch } + 1
         val sight = v.bottom - v.top
         if (rows * v.rowPx <= sight + 1f) return null

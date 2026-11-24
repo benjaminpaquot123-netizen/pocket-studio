@@ -343,7 +343,7 @@
     ]
    }
   ],
-  "notes": "Modern hard techno runs 145-160 BPM (150 is the common middle). Schranz roots: compressed 909 percussion loops (the 3-step perc loop against the 4/4), a clap roll every 2 bars. The signature low end is the rolling bass (three 16ths between the kicks) pumped by the kick; the kick gets the punch preset (compressor + saturation), harder than techno, cleaner than gabber. The harmonic part is a hoover stab in octaves (3-3-2-ish), not chords. Supersaw lead (hard trance) off by default. References verified on the web (2024); 'Marco Leckbert – Schranz Will Never Die' could not be verified and was dropped.",
+  "notes": "Modern hard techno runs 145-160 BPM (150 is the common middle). Schranz roots: compressed 909 percussion loops (the 3-step perc loop against the 4/4), a clap roll every 2 bars. The signature low end is the rolling bass (three 16ths between the kicks) pumped by the kick; the kick gets the punch preset (compressor + saturation), harder than techno, cleaner than gabber. The harmonic part is a hoover stab in octaves (3-3-2-ish), not chords. Supersaw lead (hard trance) off by default. References verified on the web (2024); 'Marco Leckbert – Schranz Will Never Die' could not be verified and was dropped. Bench target (L3): the lead in solo at least 6 dB under the kick in the Drop; measured -4.4 dB (red).",
   "drop": [
    "ride"
   ],
@@ -510,7 +510,7 @@
     ]
    }
   ],
-  "notes": "The overdriven TR-909 kick IS the bass: tuned to the key and distorted until it 'sings' the root. The built-in kick sits at 47 Hz (F#1), so the key is F#: the kick plays the root, and its distortion (distortion preset) adds the audible harmonics. A pack kick is not retuned (no per-recipe pad pitch yet). The bass part stays off; if used, it doubles the kick on F#1. Early Rotterdam 150-180 BPM, 190-200 by the mid-90s. Top layer: a hoover/choir stab held on the 1, plus a piercing minor riff in 8ths over a pedal root (lead, off). Closed hats moved off the open hat's steps.",
+  "notes": "The overdriven TR-909 kick IS the bass: tuned to the key and distorted until it 'sings' the root. The built-in kick sits at 47 Hz (F#1), so the key is F#: the kick plays the root, and its distortion (distortion preset) adds the audible harmonics. A pack kick is not retuned (no per-recipe pad pitch yet). The bass part stays off; if used, it doubles the kick on F#1. Early Rotterdam 150-180 BPM, 190-200 by the mid-90s. Top layer: a hoover/choir stab held on the 1, plus a piercing minor riff in 8ths over a pedal root (lead, off). Closed hats moved off the open hat's steps. Bench target (L3): the lead in solo at least 6 dB under the kick in the Drop; measured -6.0 dB (red).",
   "build": true,
   "riser": true,
   "sweeps": [
@@ -1018,7 +1018,7 @@
     ]
    }
   ],
-  "notes": "Uplifting trance 135-140 BPM. Club form: Intro (drums), Groove (+ bass and chords), Drop (+ the lead), Break (chords and lead alone, no kick nor bass), Drop. The 'trance gate': a held supersaw chord chopped in 3-3-2, the lead on the same accents. Bass and chords pumped by the kick (pump preset), big reverb on chords and lead, delay on the lead. Default mood dark = Am-F-C-G ('Sombre / épique'), the euphoric major vi-IV-I-V is 'happy'. Missing (engine): a snare roll and a filter sweep at the end of the Break (lines play the same in every section that has them).",
+  "notes": "Uplifting trance 135-140 BPM. Club form: Intro (drums), Groove (+ bass and chords), Drop (+ the lead), Break (chords and lead alone, no kick nor bass), Drop. The 'trance gate': a held supersaw chord chopped in 3-3-2, the lead on the same accents. Bass and chords pumped by the kick (pump preset), big reverb on chords and lead, delay on the lead. Default mood dark = Am-F-C-G ('Sombre / épique'), the euphoric major vi-IV-I-V is 'happy'. Missing (engine): a snare roll and a filter sweep at the end of the Break (lines play the same in every section that has them). Bench target (L3): the lead in solo at least 6 dB under the kick in the Drop; measured -5.3 dB (red).",
   "riser": true,
   "sweeps": [
    {

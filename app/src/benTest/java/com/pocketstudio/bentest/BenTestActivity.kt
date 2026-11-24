@@ -208,25 +208,40 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     OutlinedButton(onClick = { micro = false }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bentest_micro_retour")) { Text("Retour") }
                 } else if (etat.interrompu == null && etat.verdict == null && liste) {
                     Text("Retester les corrections : coche les étapes à refaire", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
-                    if (candidats.none { it.coche }) {
+                    if (coches.none { it.value }) {
                         Text(
                             (if (candidats.none { it.feu != null }) "Aucun passage enregistré sur ce téléphone. " else "") + "Coche les étapes à revoir.",
                             color = Neon.TextSecondary, modifier = Modifier.testTag("bentest_retest_aide"),
                         )
                     }
-                    candidats.forEach { c ->
-                        // The whole row ticks (a finger on the step's name, not only on the small box).
-                        Row(
-                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
-                                .toggleable(value = coches[c.id] == true, role = androidx.compose.ui.semantics.Role.Checkbox, onValueChange = { coches[c.id] = it })
-                                .testTag("bentest_retest_${c.id}"),
-                        ) {
-                            androidx.compose.material3.Checkbox(checked = coches[c.id] == true, onCheckedChange = null)
-                            Text(c.label + (c.feu?.let { " (dernier passage : ${it.mot})" } ?: ""), color = Neon.TextPrimary)
+                    val n = coches.count { it.value }
+                    Button(
+                        onClick = { actions.startRetest(coches.filterValues { it }.keys.toSet()); liste = false },
+                        enabled = n > 0, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_retest_lancer"),
+                    ) { Text("Lancer les $n cochées") }
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                        OutlinedButton(onClick = { candidats.forEach { coches[it.id] = true } }, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("bentest_retest_tout")) { Text("Tout cocher") }
+                        OutlinedButton(onClick = { candidats.forEach { coches[it.id] = false } }, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("bentest_retest_rien")) { Text("Tout décocher") }
+                    }
+                    // Ticked on opening first (the order is the opening's, so a row never jumps under the finger), then each group.
+                    val (dabord, reste) = candidats.partition { it.coche }
+                    val sections = listOf("À refaire" to dabord) +
+                        reste.groupBy { it.groupe }.toList().sortedBy { (g, _) -> Retest.GROUPES.indexOf(g).let { if (it < 0) Int.MAX_VALUE else it } }
+                    sections.filter { it.second.isNotEmpty() }.forEach { (titre, lignes) ->
+                        Text(titre, style = MaterialTheme.typography.titleSmall, color = Neon.Cyan, modifier = Modifier.padding(top = 8.dp))
+                        lignes.forEach { c ->
+                            // The whole row ticks (a finger on the step's name, not only on the small box).
+                            Row(
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                                    .toggleable(value = coches[c.id] == true, role = androidx.compose.ui.semantics.Role.Checkbox, onValueChange = { coches[c.id] = it })
+                                    .testTag("bentest_retest_${c.id}"),
+                            ) {
+                                androidx.compose.material3.Checkbox(checked = coches[c.id] == true, onCheckedChange = null)
+                                Text(c.label + (c.feu?.let { " (dernier passage : ${it.mot})" } ?: " (jamais joué)"), color = Neon.TextPrimary)
+                            }
                         }
                     }
-                    val n = coches.count { it.value }
                     Button(
                         onClick = { actions.startRetest(coches.filterValues { it }.keys.toSet()); liste = false },
                         enabled = n > 0, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_retest_go"),

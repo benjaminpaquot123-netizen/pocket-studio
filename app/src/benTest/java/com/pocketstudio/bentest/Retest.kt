@@ -22,9 +22,45 @@ object Retest {
     /** The steps offered in the checklist: all but the [PREALABLES]. */
     fun proposees(etapes: List<Etape>): List<Etape> = etapes.filter { it.name !in PREALABLES }
 
-    /** The steps to tick by default: red (a failed or crashed step is red), not conclusive. A green, orange or undone step is not. */
-    fun parDefaut(derniere: Map<String, Feu?>, etapes: List<Etape>): Set<String> =
-        etapes.map { it.name }.filter { derniere[it] == Feu.ROUGE || derniere[it] == Feu.GRIS }.toSet()
+    /**
+     * The steps to tick by default: red (a failed or crashed step is red), not conclusive. A green, orange or undone
+     * step is not. A step of [nouveaux] never played ([derniere] does not have it) is ticked too.
+     */
+    fun parDefaut(derniere: Map<String, Feu?>, etapes: List<Etape>, nouveaux: Set<String> = emptySet()): Set<String> =
+        etapes.map { it.name }.filter { derniere[it] == Feu.ROUGE || derniere[it] == Feu.GRIS || (it in nouveaux && it !in derniere) }.toSet()
+
+    /** The tests added by lot A2 (the phone's trials, the load tests): ticked until a run has played them. */
+    val NOUVEAUX: Set<String> = setOf(
+        Epreuves.PERTE, Epreuves.KIT, Epreuves.ENDURANCE, Epreuves.FUITE, Epreuves.FROID, Epreuves.BRUTAL, Epreuves.VIDEO, Epreuves.TAMPON, Epreuves.IMAGES,
+    ) + CHARGE
+
+    /** The load tests (the scenarios that repeat a gesture). */
+    val CHARGE: Set<String> get() = setOf("jouer_arreter_10", "fond_reprise_5", "changer_partie_10", "quitter_en_jouant")
+
+    /**
+     * « Tout tester »'s steps then every scenario « Tout tester » does not already have (the same id runs once,
+     * its « Tout tester » version): what the checklist offers.
+     */
+    fun avecScenarios(tout: List<Etape>, scenarios: List<Etape>): List<Etape> {
+        val ids = tout.map { it.name }.toSet()
+        return tout + scenarios.filter { it.name !in ids }
+    }
+
+    /** The checklist's title for [id]. */
+    fun groupe(id: String): String = when {
+        id in CHARGE -> "Charge"
+        id.startsWith("style") -> "Styles"
+        id.startsWith("partie") || id == "structure" -> "Parties"
+        id.startsWith("effet") || id == "annuler_effet" -> "Effets"
+        id.startsWith("export") -> "Exports"
+        id.startsWith("guide") -> "Guide"
+        id.startsWith("pad") || id == "live" -> "Live"
+        id in NOUVEAUX -> "Épreuves du téléphone"
+        else -> "Autres"
+    }
+
+    /** The groups' order on the checklist. */
+    val GROUPES = listOf("Styles", "Charge", "Parties", "Effets", "Live", "Exports", "Guide", "Épreuves du téléphone", "Autres")
 
     /** [etapes] reduced to the [PREALABLES] then [choisies], in their order, [DERNIERE] last whatever the order was. */
     fun choisir(etapes: List<Etape>, choisies: Set<String>): List<Etape> {

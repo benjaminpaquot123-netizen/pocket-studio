@@ -98,12 +98,13 @@ def shaker(n, rng):
 
 
 def song(stems, gains):
-    """The song: each stem over the whole length, scaled per section (gains: label -> linear)."""
+    """The song: each stem over the whole length, scaled per section (gains: label -> linear, or a
+    list with one gain per stem)."""
     out = [0.0] * TOTAL
     bounds = [s for _, s in SECTIONS] + [TOTAL]
     for k, (label, start) in enumerate(SECTIONS):
-        g = gains[label]
-        for x in stems:
+        for j, x in enumerate(stems):
+            g = gains[label][j] if isinstance(gains[label], list) else gains[label]
             for i in range(start, bounds[k + 1]):
                 out[i] += g * x[i]
     return out
@@ -132,7 +133,8 @@ def measure(exe, d, name, stems, gains):
     args = [exe, wav, os.path.join(d, "song.pscmd")]
     for k, x in enumerate(stems):
         stem = os.path.join(d, f"{name}.track{k}.wav")
-        write_wav(stem, song([x], gains))
+        one = {label: [g[k]] if isinstance(g, list) else g for label, g in gains.items()}
+        write_wav(stem, song([x], one))
         args += ["--track", f"{k}:{stem}"]
     r = subprocess.run(args, check=True, capture_output=True, text=True)
     return json.loads(r.stdout)
@@ -154,6 +156,9 @@ def main():
         pscmd(os.path.join(d, "song.pscmd"))
         hollow = measure(exe, d, "hollow", [k, b], {"Groove": 0.5, "Drop": 1.0, "Break": 0.18})
         full = measure(exe, d, "full", [k, b, p, h, s], {"Groove": 0.5, "Drop": 1.0, "Break": 0.63})
+        # A Break that keeps the kick and the bass but drops the pad, the hats and the shaker: a modest
+        # fall in loudness, a deep one on a phone speaker (which hardly plays the lows).
+        thin = measure(exe, d, "thin", [k, b, p, h, s], {"Groove": 0.5, "Drop": 1.0, "Break": [1.0, 1.0, 0.0, 0.0, 0.0]})
     for name, m in (("hollow", hollow), ("full", full)):
         print(name, {key: m.get(key) for key in ("drop_tracks", "hf_occupancy", "floor_between_hits", "brutal_transitions")})
         print(name, "transitions", m.get("transitions"))
@@ -180,6 +185,13 @@ def main():
     hd = jump(hollow, "Drop")
     check("Groove -> Drop: +6 LU into a Drop, not brutal", hd is not None and 5 < hd["jump_lu"] < 7 and not hd["brutal"])
     check("hollow: 1 brutal transition, full: 0", hollow.get("brutal_transitions") == 1 and full.get("brutal_transitions") == 0)
+    # Benjamin listens on his phone: a fall that a phone hears as more than 8 dB is brutal too, even
+    # when the loudness falls less.
+    tb = jump(thin, "Break")
+    print("thin", "transitions", thin.get("transitions"))
+    check("thin: Drop -> Break falls < 8 LU but > 8 dB on a phone",
+          tb is not None and tb["jump_lu"] > -8 and tb["phone_db"] is not None and tb["phone_db"] < -8)
+    check("thin: the Break is brutal (phone)", tb is not None and tb["brutal"])
     if failures:
         print(f"{len(failures)} check(s) failed")
         return 1

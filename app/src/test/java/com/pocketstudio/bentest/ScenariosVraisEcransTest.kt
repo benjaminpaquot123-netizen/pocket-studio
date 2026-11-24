@@ -54,6 +54,15 @@ open class ScenariosVraisEcransTest {
 
         override fun lire() = Sonde.Lecture(0, 0.2f, if (playing) 0.5f else 0f, false, true, playing, cpuWorst = 0.3f, gapWorst = 1f)
         override fun ouvrirStudio() = Unit
+
+        /** « Another app » takes the sound: a duck lowers it (plays on), a call stops the song as PlaybackService does. */
+        val focus = ArrayList<Boolean>()
+        override fun prendreSon(duck: Boolean, pendant: () -> Unit): Boolean {
+            focus += duck
+            if (!duck) playing = false
+            pendant()
+            return true
+        }
         override fun export() = Appli.ExportVu(false, emptyList(), null)
         override fun capture(file: File) = false
         override fun demander(question: String, maxMs: Long): Boolean? = null
@@ -156,6 +165,36 @@ open class ScenariosVraisEcransTest {
             assertEquals(id, before, v.projet().effets)
             assertEquals(id, before, v.projet().disque?.effets)
         }
+    }
+
+    private fun epreuves(v: Vrai, ecouteMs: Long = 1_000) = Epreuves(
+        Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecouteMs = ecouteMs, ecran = { v.tags(Regex(".+")) },
+        perteMs = 1_000, nouveauMorceau = {},
+    )
+
+    /** Lot A2, 1: the sound lowered by a notification plays on; taken by a call it stops, then ▶ brings it back with sound. */
+    @Test
+    fun theSoundTakenByAnotherAppComesBackWithPlay() {
+        h.start()
+        val v = Vrai()
+        val text = epreuves(v).perteSon()
+        assertEquals(listOf(true, false), v.focus)
+        assertTrue(text, text.contains("la lecture s'est arrêtée, ▶ l'a relancée"))
+        assertTrue(text, v.playing.not())
+    }
+
+    /** Lot A2, 2: two kits put on the drums from their name while the song plays, the song never stopped. */
+    @Test
+    fun twoKitsArePutOnTheDrumsWhileTheSongPlays() {
+        h.start()
+        val v = Vrai()
+        val before = h.vm.project.value
+        val text = epreuves(v, ecouteMs = 10_000).changementKit()
+        assertTrue(text, text.startsWith("kits "))
+        assertEquals(2, v.touched.count { it.startsWith("kit_choice_") })
+        assertEquals(2, v.touched.count { it == Epreuves.DRUMS_NAME })
+        assertEquals(0, v.count("kit_sheet", false))
+        assertTrue(text, before != h.vm.project.value)
     }
 }
 

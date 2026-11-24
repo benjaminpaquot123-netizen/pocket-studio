@@ -363,6 +363,7 @@ class ToutTester(
         val mem = appli.memoireMo()
         carnet.add(Carnet.MESURE, "images", "memoire_mo=${mem ?: ""}")
         // An empty measure is never green (audit E, K1): no frame counted on a screen says nothing of its smoothness.
+        if (empty.isNotEmpty()) return nonMesure("images", "aucune image comptée sur ${empty.joinToString(", ")}")
         feu("images", Feu.pire(feux) to why.joinToString(", "))
         return "images lentes : ${parts.joinToString(", ")} ; mémoire ${mem?.let { "$it Mo" } ?: "inconnue"}"
     }

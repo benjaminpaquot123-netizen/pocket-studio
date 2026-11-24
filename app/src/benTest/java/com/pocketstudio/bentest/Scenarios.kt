@@ -1624,7 +1624,7 @@ class Scenarios(
         }
 
         /** More than [NON_MESURES_MAX] of the run not measured: the run says little, it fails (audit E). */
-        fun tropDeNonMesures(r: List<Resultat>): Boolean = false
+        fun tropDeNonMesures(r: List<Resultat>): Boolean = r.isNotEmpty() && r.count { it.resultat == NON_MESURE } > r.size * NON_MESURES_MAX
         const val NON_MESURES_MAX = 0.05
 
         /** « 7 passés, 1 échoué, 1 pas joué ». */

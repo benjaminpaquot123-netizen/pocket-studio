@@ -1,5 +1,5 @@
 # Tour 9, lot « fable5 » : relecture neuve
-Relu : be0069237
+Relu : d04557284
 
 Lu : le lot ccr-56d43d5b-vfdmoc (rouge 21d11465, vert 6b644908, docs 0758fd6cf), fusionné avec origin/ccr-80af1a1b-mn0wec (docs seulement : CHEF-2H05, PLAN-APRES-ROBOT, EN-COURS, PROGRESS, DECISIONS ; aucun code). Aucun Gradle lancé (consigne de la fiche) : les rouges et verts sont ceux du rapport.
 
@@ -15,6 +15,6 @@ Lu : le lot ccr-56d43d5b-vfdmoc (rouge 21d11465, vert 6b644908, docs 0758fd6cf),
 - Seuils du test neuf (`watched >= picks / 2`, case < 5, 0,45 s, 1 000 lectures) : expliqués dans le KDoc et dans `docs/decisions/tour-9-fable5.md`, pas dans `docs/DECISIONS.md`. Le rapport ne prétend pas qu'ils y soient ; aucune décision de seuil citée n'y manque. Le seuil « la moitié des choix » n'a pas de ligne de décision à lui.
 - Ligne 355 (test de la ligne d'attente) recolle encore `headerTitle()` et une note lue à part, mais seulement dans un message d'erreur : pas de faux rouge possible.
 - Coût annoncé : environ 25 s de plus dans la classe.
-- Pas de CI complète sur cette tête (c'est au chef) ; « tenté » reste juste dans `corrections.tsv`.
+- Pas de CI complète sur cette tête (c'est au chef).
 
 Verdict : 0 bloquant, 0 grave — fusion possible

@@ -108,6 +108,13 @@ android {
             isIncludeAndroidResources = true
             all {
                 it.systemProperty("robolectric.pixelCopyRenderMode", "hardware")
+                // Robolectric's Android jar from Google's Maven Central mirror: repo1.maven.org rate-limits it
+                // (429, 2026-11-24, every Robolectric class failed). CI prefetches it too (scripts/ci/robolectric-jar.sh).
+                it.systemProperty(
+                    "robolectric.dependency.repo.url",
+                    (project.findProperty("robolectric.repo") as String?)
+                        ?: "https://maven-central.storage-download.googleapis.com/maven2",
+                )
                 // Audit ultra round 1 (n° 17): file names in UTF-8 as on a phone (a POSIX locale made « ó » a « ? » on the bench).
                 it.environment("LC_ALL", "C.UTF-8")
                 // SDK 36 Robolectric needs JDK internals on JDK 21+.

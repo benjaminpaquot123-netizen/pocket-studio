@@ -29,8 +29,8 @@ chemin: Mes projets, fuite mémoire (robot) | test: ScenariosVraisEcransTest#the
 chemin: arrêt brutal et démarrage froid (robot) | test: ScenariosVraisEcransTest#theHardStopPutsTheTempoBackWhenItCannotRestart
 chemin: Réglages, tampon large (robot) | test: ScenariosVraisEcransTest#theLargeBufferIsListenedThenTheNormalOneComesBack
 chemin: images lentes, écran témoin (robot) | test: ScenariosVraisEcransTest#eachScreenIsCountedNextToTheStillOne
-chemin: BenStudio Test, compteur (robot) | test: CompteurTest
-chemin: BenStudio Test, Retester les corrections (robot) | test: RetestCandidatsTest
+chemin: BenStudio Test, compteur (robot) | test: CompteurTest#theCounterAdvancesAndTheLogbookSaysEachResult
+chemin: BenStudio Test, Retester les corrections (robot) | test: RetestCandidatsTest#theRedIsTickedTheGreenIsNotTheNewTestIs
 chemin: Structure, changer de partie pendant la lecture (robot) | test: ScenariosVraisEcransTest#thePartIsChangedTenTimesWhileTheSongPlays
 chemin: Mes projets, quitter pendant la lecture (robot) | test: ScenariosVraisEcransTest#theSongIsLeftWhilePlayingForAnotherProjectThenComesBackIntact
 chemin: Tests guidés, sortie (robot) | test: ScenariosVraisEcransTest#theSoundIsBackAfterTheOutputChanged

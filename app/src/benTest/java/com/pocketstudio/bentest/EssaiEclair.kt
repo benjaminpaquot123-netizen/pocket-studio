@@ -98,6 +98,20 @@ interface Appli {
     /** The app's memory (PSS, MB). */
     fun memoireMo(): Int? = null
 
+    // Tour 9, A2: the tests Benjamin played alone on his phone.
+
+    /** The process's last cold start as Android noted it (Android 15+); null: unknown. */
+    fun demarrage(): Demarrage? = null
+
+    /** Kills the app's process at once (the run relaunched by itself); false: not possible here (nothing done). */
+    fun tuer(): Boolean = false
+
+    /** Another app takes the audio focus for [ms] (as a call or a voice message would), then gives it back; false: not possible here. */
+    fun prendreFocus(ms: Long): Boolean = false
+
+    /** The engine's output buffer set to [blocs] bursts (null: back to the app's setting); false: not possible here. */
+    fun tampon(blocs: Int?): Boolean = false
+
     /** Starts counting the studio's frames; [imagesFin]: drawn, slow (over 16.7 ms). */
     fun imagesDebut() = Unit
     fun imagesFin(): Pair<Int, Int>? = null
@@ -131,6 +145,9 @@ interface Appli {
 
     /** The last [lignes] lines of the app's journal. */
     fun journalFin(lignes: Int): String = ""
+
+    /** [ms]: from the launch to the first frame drawn; [par]: what started the process. */
+    data class Demarrage(val ms: Long, val par: String)
 
     data class VideoVu(val running: Boolean, val file: File?, val error: String?, val seconds: Int? = null)
 

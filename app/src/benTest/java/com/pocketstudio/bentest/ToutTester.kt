@@ -134,7 +134,7 @@ class ToutTester(
     fun export(format: String, step: String = "export_$format"): String {
         val started = System.currentTimeMillis()
         e.auStudioPro()
-        if (format == "video") return video(started)
+        if (format == "video") return video(started, step)
         j.tap("tab_Mix")
         j.await("mixer")
         j.tap("export_what_Loop")
@@ -169,7 +169,7 @@ class ToutTester(
     }
 
     /** Partager › « Vidéo pour les réseaux » › Créer: the MP4 read back (9:16 standing), then the share menu it opens left. */
-    private fun video(started: Long): String {
+    private fun video(started: Long, step: String = "export_video"): String {
         if (!j.exists("top_share")) j.tap("tab_Structure")
         j.tap("top_share")
         j.await("share_video", 30_000)
@@ -196,7 +196,7 @@ class ToutTester(
         j.awaitAny(*EssaiEclair.STUDIO, "video_sheet", timeoutMs = 30_000)
         if (j.exists("video_close")) runCatching { j.tap("video_close") }
         if (j.exists("share_close")) runCatching { j.tap("share_close") }
-        return relu("export_video", "Vidéo 9:16", v.file!!, took, v.seconds?.toDouble(), PREVU.getValue("video"), video = true)
+        return relu(step, "Vidéo 9:16", v.file!!, took, v.seconds?.toDouble(), PREVU.getValue("video"), video = true)
     }
 
     private fun relu(step: String, label: String, file: File, took: Double, attendu: Double?, prevuParSeconde: Double, video: Boolean = false): String {

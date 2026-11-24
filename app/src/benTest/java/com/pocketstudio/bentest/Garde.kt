@@ -58,6 +58,11 @@ internal object Garde {
         runCatching { if (name != null) armer(maxMs + MARGE_MS) else annuler() }
     }
 
+    /** The app is about to be killed on purpose (« Sauvegarde après arrêt brutal »): the run relaunched in a few seconds. */
+    fun relancerBientot() {
+        runCatching { armer(APRES_MORT_MS) }
+    }
+
     /** The screen as the app dies, under the names of a failure's clues. */
     private fun indices(step: String) {
         val dir = captures ?: return

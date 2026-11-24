@@ -598,6 +598,46 @@ private class AppliReelle(private val app: Application, private val main: MainTh
         )
     }.getOrNull()
 
+    override fun demarrage(): Appli.Demarrage? = runCatching {
+        if (Build.VERSION.SDK_INT < 35) return@runCatching null
+        val am = app.getSystemService(android.app.ActivityManager::class.java) ?: return@runCatching null
+        val cold = am.getHistoricalProcessStartReasons(10).firstOrNull { it.startType == android.app.ApplicationStartInfo.START_TYPE_COLD } ?: return@runCatching null
+        val t = cold.startupTimestamps
+        val launch = t[android.app.ApplicationStartInfo.START_TIMESTAMP_LAUNCH] ?: return@runCatching null
+        val frame = t[android.app.ApplicationStartInfo.START_TIMESTAMP_FIRST_FRAME] ?: return@runCatching null
+        val par = cold.intent?.component?.shortClassName ?: "raison ${cold.reason}"
+        Appli.Demarrage((frame - launch) / 1_000_000, par)
+    }.getOrNull()
+
+    override fun tuer(): Boolean {
+        // The run relaunched by Garde's alarm in a few seconds, the logbook already on the disk.
+        Garde.relancerBientot()
+        android.os.Process.killProcess(android.os.Process.myPid())
+        return true
+    }
+
+    override fun prendreFocus(ms: Long): Boolean = runCatching {
+        val audio = app.getSystemService(android.media.AudioManager::class.java) ?: return@runCatching false
+        val attrs = android.media.AudioAttributes.Builder()
+            .setUsage(android.media.AudioAttributes.USAGE_VOICE_COMMUNICATION)
+            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH).build()
+        val request = android.media.AudioFocusRequest.Builder(android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+            .setAudioAttributes(attrs).setOnAudioFocusChangeListener { }.build()
+        if (audio.requestAudioFocus(request) != android.media.AudioManager.AUDIOFOCUS_REQUEST_GRANTED) return@runCatching false
+        try {
+            Thread.sleep(ms)
+        } finally {
+            audio.abandonAudioFocusRequest(request)
+        }
+        true
+    }.getOrDefault(false)
+
+    override fun tampon(blocs: Int?): Boolean = runCatching {
+        if (!NativeEngine.isNative) return@runCatching false
+        NativeEngine.setBufferBursts(blocs ?: com.pocketstudio.app.settings.SettingsStore.state.value.bufferBursts)
+        true
+    }.getOrDefault(false)
+
     override fun memoireMo(): Int? = runCatching {
         val info = android.os.Debug.MemoryInfo()
         android.os.Debug.getMemoryInfo(info)

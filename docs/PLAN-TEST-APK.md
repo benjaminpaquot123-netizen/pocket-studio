@@ -158,3 +158,14 @@ Dans le rapport (« Envoyer le rapport ») : `scenarios.json` (verdict, compte p
 **Ce que ça remplace, et ce que ça ne remplace pas.** Le robot répond en quelques minutes à « est-ce que les chemins principaux marchent encore sur l'APK, et le son tient-il ? ». Il ne juge ni la lisibilité, ni le tuto, ni ce qu'un débutant comprend : pour ça, les sièges du banc restent.
 
 **Preuves sur la machine de l'agent.** `ScenariosTest` : chaque oracle sur un faux studio, sain puis avec un défaut à la fois (pas de sauvegarde, break sans effet, effet non montré, Live muet, Live qui ne s'arrête pas, décrochages), et le rapport. `ScenariosVraisEcransTest` : les gestes de `projet`, `structure`, `effets` et `live` sur les vrais écrans (Robolectric, sans moteur : « joue » y est simulé d'après le ▶ touché). `scripts/bentest/check-apk.sh` : la classe et les étiquettes des nouveaux gestes sont dans l'APK après R8.
+
+## Le paquet « Tests longs » (tour 9, lot A2, 2026-11-24)
+Ce que Benjamin testait sur son téléphone, joué par le robot seul (bouton « Tests longs », environ 25 min, 0 geste). Ordre et oracle :
+- **Démarrage à froid** (`demarrage_froid`) : le temps d'Android du lancement à la première image ; vert ≤ 2 s, orange ≤ 5 s, rouge au-delà. Android 15 ou plus, sinon « non mesuré ».
+- **10 minutes de lecture** (`endurance_10min`) : ni arrêt, ni NaN, les décrochages ; la mémoire avant et après (rouge si elle monte d'au moins 20 Mo et de plus de 20 %).
+- **Fuite de mémoire** (`fuite_memoire`) : « Mes projets » ouvert et fermé 20 fois ; la mémoire après la 20e contre la 1re, le même morceau ouvert.
+- **Perte du son** (`focus_audio`) : le robot prend le son 3 s comme un appel ; la lecture repart, le studio reste devant.
+- **Gros tampon** (`tampon_8`) : 8 blocs pendant 15 s ; lecture, ni NaN, pas plus de décrochages qu'avec le tampon habituel ; le tampon est toujours remis.
+- **Vidéo avec son** (`export_video_son`) : la vidéo relue ; une crête sous -50 dBTP est un son muet, donc rouge (vaut pour tout export).
+- **Arrêt brutal** (`arret_brutal` puis `arret_brutal_relu`) : tempo + 1, sauvé sur le disque, l'appli tuée sans fermeture ; la garde la relance, le robot reprend et relit le même morceau avec ce tempo (projet et disque), puis remet le tempo.
+Déjà couverts ailleurs : Live 30 s, délai du son (latence), images lentes par écran.

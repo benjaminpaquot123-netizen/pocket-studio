@@ -50,6 +50,12 @@ class Carnet(val file: File, private val clock: () -> Long = System::currentTime
         /** « Écoute au micro »'s numbers: « bruit;csv », « courbe;csv », « empreinte;style;… », « anomalie;… » (EcouteMicro.kt). */
         const val MICRO = "micro"
 
+        /**
+         * A NOTE's head, written by a step just before it kills the app on purpose (« Sauvegarde après arrêt
+         * brutal »): the step the app died in is then a success, not a crash.
+         */
+        const val ARRET_VOULU = "arret_voulu"
+
         /** A logbook's text read back (a report zip's carnet.tsv too). */
         fun lire(text: String): List<Ligne> = text.lines().mapNotNull { raw ->
             // A line cut by the crash itself (half written) is left out.
@@ -104,7 +110,14 @@ class Passage(
     fun recover(): List<String> {
         val lines = carnet.lines()
         val ended = lines.filter { it.kind == Carnet.REUSSI || it.kind == Carnet.ECHEC || it.kind == Carnet.PLANTAGE }.map { it.step }.toSet()
-        val crashed = lines.filter { it.kind == Carnet.DEBUT && it.step !in ended }.map { it.step }.distinct()
+        val begun = lines.filter { it.kind == Carnet.DEBUT && it.step !in ended }.map { it.step }.distinct()
+        // A step that killed the app on purpose: its note after its last beginning.
+        val voulus = begun.filter { step ->
+            val from = lines.indexOfLast { it.step == step && it.kind == Carnet.DEBUT }
+            lines.drop(from).any { it.step == step && it.kind == Carnet.NOTE && it.text.startsWith("${Carnet.ARRET_VOULU};") }
+        }
+        voulus.forEach { carnet.add(Carnet.REUSSI, it, "arrêt brutal voulu : l'appli tuée puis relancée") }
+        val crashed = begun - voulus.toSet()
         crashed.forEach { step ->
             carnet.add(Carnet.PLANTAGE, step, runCatching { crashText() }.getOrNull()?.lineSequence()?.take(12)?.joinToString("\n").orEmpty())
             // Its clues never stop the run.

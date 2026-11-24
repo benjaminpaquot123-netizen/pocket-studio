@@ -187,10 +187,11 @@ class ScenariosTest {
 
         override fun lire(): Sonde.Lecture {
             if (playing && dropouts) xruns++
+            if (playing && bigDrops && buffer > 192) xruns++
             if (behind && stopsBehind) playing = false
             if (playing && tab == "Live" && liveStopsAfter != null && ++liveReads > liveStopsAfter!!) playing = false
             val sound = playing && (tab != "Live" || liveSound)
-            return Sonde.Lecture(xruns, 0.2f, if (sound) 0.5f else 0f, playing && nan, true, playing, cpuWorst = 0.3f, gapWorst = 1f)
+            return Sonde.Lecture(xruns, 0.2f, if (sound) 0.5f else 0f, playing && nan, true, playing, cpuWorst = 0.3f, gapWorst = 1f, buffer = buffer)
         }
 
         override fun ouvrirStudio() = Unit
@@ -222,7 +223,39 @@ class ScenariosTest {
             return true
         }
         override fun studioDevant(): Boolean = !behind
+
+        // Tour 9, A2: the « seul » pack's hooks. Null/false: the phone cannot tell, as on old Android.
+        /** The memory each read gives in turn (the last one repeats); null: unknown. */
+        var memoires: List<Int>? = null
+        private var memoireReads = 0
+        var demarre: Appli.Demarrage? = null
+        var focusTaken = true
+        /** The music stays stopped once another app had the sound. */
+        var focusStops = false
+        var tamponSet = true
+        var buffer = 192
+        /** The big buffer drops out on each reading. */
+        var bigDrops = false
+        var tampons = ArrayList<Int?>()
+        /** The app can be killed: here a throw, as the robot never comes back from a real kill. */
+        var kills = false
+        override fun tuer(): Boolean = if (kills) throw Tue() else false
+        override fun memoireMo(): Int? = memoires?.let { it[minOf(memoireReads++, it.size - 1)] }
+        override fun demarrage() = demarre
+        override fun prendreFocus(ms: Long): Boolean {
+            if (!focusTaken) return false
+            if (focusStops) playing = false
+            return true
+        }
+        override fun tampon(blocs: Int?): Boolean {
+            if (!tamponSet) return false
+            tampons += blocs
+            buffer = if (blocs == null) 192 else 96 * blocs
+            return true
+        }
     }
+
+    private class Tue : RuntimeException("tuée")
 
     private fun carnet() = Carnet(tmp.newFile())
 
@@ -230,7 +263,7 @@ class ScenariosTest {
         Journey(s), s, s, c, tmp.newFolder(), ecran = { emptyList() },
         ecouteMs = 300, decrochagesMs = 300, sauvegardeMs = 300, liveMs = 300, liveEcouteMs = 60, effetEcouteMs = 60,
         styleEcouteMs = 60, longueMs = 300, fondMs = 300, saisir = { tag, text -> tag in s.tags(Regex(".*")) && run { s.typed = text; true } },
-        regler = s::regler, paquet = paquet, courtMs = 60,
+        regler = s::regler, paquet = paquet, courtMs = 60, enduranceMs = 300, focusMs = 10, tamponMs = 300,
     )
 
     /** The scenarios [ids] played as the robot plays them, and their results. */
@@ -753,5 +786,183 @@ class ScenariosTest {
         assertTrue(Scenarios.RATES_IDS.all { it in ids })
         assertEquals(Scenarios.RATES_IDS, Scenarios.liste(Scenarios.RATES).map { it.id }.toSet())
         assertTrue("debutant" !in Scenarios.RATES_IDS)
+    }
+
+    // --- The « seul » pack (tour 9, A2) ---------------------------------------------------------------
+
+    private fun feux(c: Carnet, step: String) = c.lines().filter { it.kind == Carnet.FEU && it.step == step }.map { it.text }
+
+    @Test
+    fun theAlonePackFitsItsTimeAndIsReadBackFromTheLogbook() {
+        val seuls = Scenarios.SEULS
+        assertEquals(seuls, Scenarios.liste(Scenarios.SEUL))
+        assertTrue(Scenarios.SEUL in Scenarios.PAQUETS)
+        assertEquals(seuls.size, seuls.map { it.id }.toSet().size)
+        assertTrue(seuls.none { s -> Scenarios.LISTE.any { it.id == s.id } })
+        assertTrue(seuls.sumOf { it.estimeS } <= Scenarios.DUREE_SEUL_MAX_S)
+        seuls.forEach { s ->
+            assertTrue(s.id, s.oracle.isNotBlank())
+            assertTrue(s.id, s.estimeS > 0 && s.estimeS * 1000L <= s.maxMs)
+        }
+        // The kill comes before its read back, right after it.
+        val ids = seuls.map { it.id }
+        assertEquals(ids.indexOf(Scenarios.ARRET) + 1, ids.indexOf(Scenarios.ARRET_RELU))
+        assertEquals(ids, scenarios(Studio(), paquet = Scenarios.SEUL).etapes().map { it.name })
+        val c = carnet()
+        c.add(Carnet.NOTE, Scenarios.DEMARRAGE, "paquet;${Scenarios.SEUL}")
+        assertEquals(Scenarios.SEUL, Scenarios.paquet(c.lines()))
+    }
+
+    @Test
+    fun theAlonePackPlaysToTheEndOnAHealthyStudio() {
+        val s = Studio().apply { memoires = listOf(100, 102, 104, 106); demarre = Appli.Demarrage(900, "StudioActivity") }
+        val c = carnet()
+        val steps = scenarios(s, c, Scenarios.SEUL).etapes().filter { it.name != Scenarios.VIDEO_SON }
+        Passage(c, steps, crashText = { null }).run()
+        val ended = c.lines().filter { it.kind == Carnet.REUSSI || it.kind == Carnet.ECHEC || it.kind == Carnet.PLANTAGE }
+        assertEquals(steps.map { it.name }.toSet(), ended.map { it.step }.toSet())
+        assertEquals(ended.joinToString { "${it.step}:${it.text}" }, emptyList<String>(), ended.filter { it.kind != Carnet.REUSSI }.map { it.step })
+        // The made-up app cannot be killed: the kill and its read back say so, the tempo put back.
+        assertEquals(120.0, s.tempo, 0.0)
+        assertEquals(120.0, s.disque!!.tempo, 0.0)
+        assertTrue(c.lines().any { it.step == Scenarios.ARRET_RELU && it.kind == Carnet.NOTE && it.text.contains("n'a pas eu lieu") })
+    }
+
+    @Test
+    fun enduranceLightsTheMemoryAndFailsOnABadSound() {
+        val c = carnet()
+        val text = scenarios(Studio().apply { memoires = listOf(100, 104) }, c).endurance()
+        assertTrue(text, text.contains("mémoire 100 → 104 Mo"))
+        assertTrue(feux(c, Scenarios.ENDURANCE).toString(), feux(c, Scenarios.ENDURANCE).any { it.startsWith("vert;mémoire") })
+        val leak = carnet()
+        scenarios(Studio().apply { memoires = listOf(100, 200) }, leak).endurance()
+        assertTrue(feux(leak, Scenarios.ENDURANCE).toString(), feux(leak, Scenarios.ENDURANCE).any { it.startsWith("rouge;mémoire 100 → 200") })
+        // No memory on this phone: the sound still read, no memory light.
+        val none = carnet()
+        assertTrue(scenarios(Studio(), none).endurance().contains("mémoire ? → ? Mo"))
+        assertTrue(feux(none, Scenarios.ENDURANCE).none { it.contains("mémoire") })
+        fails("NaN") { scenarios(Studio().apply { nan = true }).endurance() }
+    }
+
+    @Test
+    fun theLeakTestOpensMyProjectsTwentyTimesAndReadsTheMemory() {
+        val s = Studio().apply { memoires = listOf(100, 100, 108) }
+        val c = carnet()
+        val text = scenarios(s, c).fuite()
+        assertTrue(text, text.contains("mémoire 100 → 108 Mo"))
+        assertEquals(Scenarios.OUVERTURES, s.touched.count { it == "top_projects" })
+        assertEquals(Scenarios.OUVERTURES, s.touched.count { it == "projects_back" })
+        assertTrue(feux(c, Scenarios.FUITE).any { it.startsWith("vert;") })
+        fails("fuite de mémoire") { scenarios(Studio().apply { memoires = listOf(100, 100, 200) }).fuite() }
+        fails("le morceau ouvert n'est plus") { scenarios(Studio().apply { memoires = listOf(100); reopens = "p2" }).fuite() }
+        val none = Studio()
+        assertTrue(scenarios(none).fuite().startsWith("non mesuré"))
+        assertFalse(none.touched.contains("top_projects"))
+    }
+
+    @Test
+    fun theColdStartIsGreenUnderTwoSecondsAndRedOverFive() {
+        assertTrue(scenarios(Studio()).demarrage().startsWith("non mesuré"))
+        val c = carnet()
+        assertTrue(scenarios(Studio().apply { demarre = Appli.Demarrage(1_500, "StudioActivity") }, c).demarrage().contains("1500 ms"))
+        assertTrue(feux(c, Scenarios.DEMARRAGE).any { it.startsWith("vert;") })
+        assertTrue(c.lines().any { it.kind == Carnet.MESURE && it.step == Scenarios.DEMARRAGE && it.text.contains("1500") })
+        scenarios(Studio().apply { demarre = Appli.Demarrage(3_000, "x") }).demarrage()
+        fails("trop lent") { scenarios(Studio().apply { demarre = Appli.Demarrage(6_000, "x") }).demarrage() }
+        assertEquals(Feu.VERT, Scenarios.demarrageFeu(2_000).first)
+        assertEquals(Feu.ORANGE, Scenarios.demarrageFeu(2_001).first)
+        assertEquals(Feu.ORANGE, Scenarios.demarrageFeu(5_000).first)
+        assertEquals(Feu.ROUGE, Scenarios.demarrageFeu(5_001).first)
+    }
+
+    @Test
+    fun theMemoryLightIsRedOnlyForABigRise() {
+        assertEquals(Feu.VERT, Scenarios.memoireFeu(100, 119).first)
+        assertEquals(Feu.ROUGE, Scenarios.memoireFeu(100, 121).first)
+        // 20 MB on a big app is to watch, not a leak.
+        assertEquals(Feu.ORANGE, Scenarios.memoireFeu(300, 330).first)
+        assertEquals(Feu.VERT, Scenarios.memoireFeu(300, 250).first)
+    }
+
+    @Test
+    fun theKilledSongIsReadBackWithItsTempo() {
+        val s = Studio().apply { kills = true }
+        val c = carnet()
+        assertTrue(runCatching { scenarios(s, c).arret() }.exceptionOrNull() is Tue)
+        assertEquals(121.0, s.disque!!.tempo, 0.0)
+        assertTrue(c.lines().any { it.step == Scenarios.ARRET && it.kind == Carnet.NOTE && it.text == "${Carnet.ARRET_VOULU};p1;121.0" })
+        // The relaunch: the robot picks up with the read back.
+        s.relancerStudio()
+        val text = scenarios(s, c).arretRelu()
+        assertTrue(text, text.contains("tempo 121.00 gardé"))
+        assertEquals(120.0, s.tempo, 0.0)
+        // Another song reopened, or the tempo lost: red.
+        val lost = Studio().apply { kills = true }
+        val lc = carnet()
+        runCatching { scenarios(lost, lc).arret() }
+        lost.relancerStudio(); lost.reopens = "p9"
+        fails("au lieu du morceau tué") { scenarios(lost, lc).arretRelu() }
+        val c2 = carnet()
+        c2.add(Carnet.NOTE, Scenarios.ARRET, "${Carnet.ARRET_VOULU};p1;125.0")
+        fails("le tempo est 120.00 au lieu de 125.00") { scenarios(Studio(), c2).arretRelu() }
+        // A save that does not reach the disk fails before the kill.
+        fails("n'est pas sur le disque") { scenarios(Studio().apply { kills = true; saves = false }).arret() }
+        assertTrue(scenarios(Studio()).arretRelu().startsWith("non mesuré"))
+    }
+
+    @Test
+    fun aDeliberateKillEndsItsStepAsPassedNotAsACrash() {
+        val c = carnet()
+        c.add(Carnet.DEBUT, Scenarios.ARRET)
+        c.add(Carnet.NOTE, Scenarios.ARRET, "${Carnet.ARRET_VOULU};p1;121.0")
+        c.add(Carnet.DEBUT, "autre")
+        val crashed = Passage(c, emptyList()).recover()
+        assertEquals(listOf("autre"), crashed)
+        assertEquals(Carnet.REUSSI, c.lines().last { it.step == Scenarios.ARRET }.kind)
+        assertEquals(Carnet.PLANTAGE, c.lines().last { it.step == "autre" }.kind)
+        // A note from an earlier beginning does not cover a later death.
+        val old = carnet()
+        old.add(Carnet.DEBUT, Scenarios.ARRET)
+        old.add(Carnet.NOTE, Scenarios.ARRET, "${Carnet.ARRET_VOULU};p1;121.0")
+        old.add(Carnet.DEBUT, Scenarios.ARRET)
+        assertEquals(listOf(Scenarios.ARRET), Passage(old, emptyList()).recover())
+    }
+
+    @Test
+    fun theMusicPlaysAgainAfterAnotherAppHadTheSound() {
+        val s = Studio()
+        val text = scenarios(s).focus()
+        assertTrue(text, text.startsWith("son pris"))
+        assertFalse(s.playing)
+        val stops = scenarios(Studio().apply { focusStops = true }).focus()
+        assertTrue(stops, stops.contains("relancée"))
+        val no = Studio().apply { focusTaken = false }
+        assertTrue(scenarios(no).focus().startsWith("non mesuré"))
+        assertFalse(no.playing)
+        fails("NaN") { scenarios(Studio().apply { nan = true }).focus() }
+    }
+
+    @Test
+    fun theBigBufferPlaysAndIsAlwaysPutBack() {
+        val s = Studio()
+        val c = carnet()
+        val text = scenarios(s, c).tampon()
+        assertTrue(text, text.startsWith("tampon de 8 blocs"))
+        assertEquals(listOf(8, null), s.tampons)
+        assertEquals(192, s.buffer)
+        assertFalse(s.playing)
+        assertTrue(c.lines().any { it.kind == Carnet.MESURE && it.step == Scenarios.TAMPON && it.text.contains("768") })
+        val drops = Studio().apply { bigDrops = true }
+        fails("plus de décrochages avec le gros tampon") { scenarios(drops).tampon() }
+        assertEquals(listOf(8, null), drops.tampons)
+        assertTrue(scenarios(Studio().apply { tamponSet = false }).tampon().startsWith("non mesuré"))
+    }
+
+    @Test
+    fun aSilentExportIsRed() {
+        assertEquals(Feu.ROUGE, Feux.export(true, 0.05, -80.0, 7.0, 9.0).first)
+        assertTrue(Feux.export(true, 0.05, Double.NEGATIVE_INFINITY, 7.0, 9.0).second.contains("son muet"))
+        assertEquals(Feu.VERT, Feux.export(true, 0.05, -49.0, 7.0, 9.0).first)
+        assertEquals(Feu.VERT, Feux.export(true, 0.05, null, 7.0, 9.0).first)
     }
 }

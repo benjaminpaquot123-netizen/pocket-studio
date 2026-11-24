@@ -45,6 +45,8 @@ object Feux {
      */
     fun export(relu: Boolean, ecartS: Double?, creteDbtp: Double?, prisS: Double, prevuS: Double): Pair<Feu, String> {
         if (!relu) return Feu.ROUGE to "fichier illisible"
+        // Tour 9, A2: a file with no sound (a video without its audio track's music) is a failure, whatever else it has.
+        if (creteDbtp != null && creteDbtp < MUET_DBTP) return Feu.ROUGE to "son muet : crête ${fmt(creteDbtp)} dBTP"
         val why = listOfNotNull(
             ecartS?.takeIf { it > 0.1 }?.let { "durée à ${fmt(it)} s de celle prévue" },
             creteDbtp?.takeIf { it >= -1.0 }?.let { "crête ${fmt(it)} dBTP" },
@@ -98,6 +100,9 @@ object Feux {
         if (latence(ms) == Feu.ROUGE) "latence ${String.format(Locale.ROOT, "%.2f", ms)} ms lue contre ${LATENCE_MAX.toInt()} ms au plus" else null
 
     private const val LATENCE_MAX = 70.0
+
+    /** Under this true peak an exported file is silent (a song played back peaks near -1 dBTP; -inf: nothing at all). */
+    const val MUET_DBTP = -50.0
 
     fun fmt(v: Double) = String.format(Locale.ROOT, "%.1f", v)
 }

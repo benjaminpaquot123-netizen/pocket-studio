@@ -51,6 +51,10 @@ class Scenarios(
     private val courtMs: Long = 3_000,
     /** Scrolls the screen's lists back to their top ([InAppDriver.enHaut]): the Mix left scrolled down on the export settings. */
     private val enHaut: () -> Unit = {},
+    /** The « seul » pack's long listenings: the endurance, the audio focus taken away, the big buffer. */
+    private val enduranceMs: Long = 600_000,
+    private val focusMs: Long = 3_000,
+    private val tamponMs: Long = 15_000,
 ) {
     private val e = EssaiEclair(j, sonde, appli, carnet, captures, ecouteMs, ecran)
     private val t = ToutTester(j, sonde, appli, carnet, captures, ecouteMs, ecran)
@@ -89,10 +93,18 @@ class Scenarios(
         STYLE_DUBSTEP to { ts.style(STYLE_DUBSTEP, "dubstep") },
         STYLE_DNB to { ts.style(STYLE_DNB, "dnb") },
         GUIDE to { t.guide("house") },
+        ENDURANCE to { endurance() },
+        FUITE to { fuite() },
+        DEMARRAGE to { demarrage() },
+        ARRET to { arret() },
+        ARRET_RELU to { arretRelu() },
+        FOCUS to { focus() },
+        TAMPON to { tampon() },
+        VIDEO_SON to { t.export("video", VIDEO_SON) },
     )
 
     /** The scenarios of [LISTE] without a work of their own (none: a test checks it). */
-    internal fun sansTravail(): List<String> = LISTE.filter { travail(it) == null }.map { it.id }
+    internal fun sansTravail(): List<String> = (LISTE + SEULS).filter { travail(it) == null }.map { it.id }
 
     fun etapes(): List<Etape> = liste(paquet).map { s ->
         etape(s.id, s.label, s.maxMs) { (travail(s) ?: error("scénario sans travail : ${s.id}"))() }
@@ -1089,6 +1101,159 @@ class Scenarios(
         return "$FONDS fois au fond puis devant (lecture par $by) : la musique joue, le studio revient"
     }
 
+    // --- The « seul » pack (tour 9, A2: what Benjamin tested on his phone, played alone) ---------------
+
+    /** Endurance: the song played [enduranceMs] (10 min). Oracle: no stop, no NaN; the memory before and after. */
+    fun endurance(): String {
+        auStudio()
+        val avant = appli.memoireMo()
+        val text = lecture(ENDURANCE, enduranceMs)
+        val apres = appli.memoireMo()
+        bilan(ENDURANCE, "memoire_avant_mo" to avant, "memoire_apres_mo" to apres)
+        if (avant != null && apres != null) feu(ENDURANCE, memoireFeu(avant, apres))
+        return text + " ; mémoire ${avant ?: "?"} → ${apres ?: "?"} Mo"
+    }
+
+    /** « Mes projets » opened and closed [OUVERTURES] times. Oracle: the memory after the last against after the first, the same song open. */
+    fun fuite(): String {
+        auStudio()
+        e.arreter()
+        if (appli.memoireMo() == null) return nonMesure(FUITE, "la mémoire ne se lit pas sur ce téléphone")
+        val p = lu()
+        var premiere = 0
+        for (i in 1..OUVERTURES) {
+            if (!j.exists("top_projects")) j.tap("tab_Structure")
+            j.tap("top_projects")
+            j.await("projects")
+            j.tap("projects_back")
+            j.awaitAny("launch", *EssaiEclair.STUDIO, timeoutMs = 15_000)
+            if (j.exists("launch")) j.tap("launch_continue")
+            j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 15_000)
+            if (i == 1 || i == OUVERTURES) {
+                Runtime.getRuntime().gc()
+                j.idle(1_500)
+                val mo = appli.memoireMo() ?: return nonMesure(FUITE, "la mémoire ne se lit plus")
+                if (i == 1) premiere = mo else {
+                    val f = memoireFeu(premiere, mo)
+                    bilan(FUITE, "ouvertures" to OUVERTURES, "memoire_premiere_mo" to premiere, "memoire_derniere_mo" to mo)
+                    feu(FUITE, f)
+                    check(lu().id == p.id) { "après $OUVERTURES ouvertures, le morceau ouvert n'est plus « ${p.nom} »" }
+                    check(f.first != Feu.ROUGE) { "fuite de mémoire : ${f.second}" }
+                    return "$OUVERTURES fois « Mes projets » ouvert et fermé : ${f.second}"
+                }
+            }
+        }
+        error("inatteignable")
+    }
+
+    /** The studio's last cold start, as Android timed it. Oracle: launch to first image under 2 s (green), 5 s (orange). */
+    fun demarrage(): String {
+        val d = appli.demarrage() ?: return nonMesure(DEMARRAGE, "Android 15 ou plus, après un démarrage à froid")
+        bilan(DEMARRAGE, "ms" to d.ms, "par" to d.par)
+        val f = demarrageFeu(d.ms)
+        feu(DEMARRAGE, f)
+        check(f.first != Feu.ROUGE) { "démarrage à froid trop lent : ${f.second}" }
+        return "démarrage à froid (${d.par}) : ${f.second}"
+    }
+
+    /**
+     * The tempo changed, saved, then the app killed as a phone does it (no closing). The next step
+     * ([arretRelu]) reads the song back after the relaunch.
+     */
+    fun arret(): String {
+        auStudio()
+        e.arreter()
+        val p = lu()
+        val before = p.tempo
+        ouvrirTempo()
+        j.tap("tempo_plus")
+        check(attendre(5_000) { lu().tempo > before }) { "le « + » du tempo ne change rien (${fmt(before)})" }
+        val after = lu().tempo
+        runCatching { j.tap("tempo_close"); j.awaitGone("tempo_sheet", 5_000) }
+        val d = surDisque { it.tempo == after }
+        check(d?.tempo == after) { "le tempo ${fmt(after)} n'est pas sur le disque après ${sauvegardeMs / 1000} s (${d?.tempo?.let(::fmt) ?: "pas de fichier"})" }
+        carnet.add(Carnet.NOTE, ARRET, "${Carnet.ARRET_VOULU};${p.id};$after")
+        if (!appli.tuer()) {
+            runCatching { ouvrirTempo(); j.tap("tempo_minus"); j.tap("tempo_close") }
+            return nonMesure(ARRET, "l'appli ne se tue pas d'ici")
+        }
+        error("l'appli tuée vit encore")
+    }
+
+    /** After [arret]: the same song, with the tempo saved just before the kill. */
+    fun arretRelu(): String {
+        val lines = carnet.lines()
+        val at = lines.indexOfLast { it.step == ARRET && it.kind == Carnet.NOTE && it.text.startsWith("${Carnet.ARRET_VOULU};") }
+        if (at < 0) return nonMesure(ARRET_RELU, "pas d'arrêt brutal avant")
+        // The kill that did not happen (the tempo put back): nothing to read back.
+        if (lines.drop(at).any { it.step == ARRET && it.kind == Carnet.NOTE && it.text.startsWith("${ToutTester.NON_MESURE};") }) {
+            return nonMesure(ARRET_RELU, "l'arrêt brutal n'a pas eu lieu")
+        }
+        val note = lines[at]
+        val (id, tempo) = note.text.split(';').let { it[1] to it[2].toDouble() }
+        auStudio()
+        val back = lu()
+        check(back.id == id) { "après l'arrêt brutal, le studio rouvre « ${back.nom} » au lieu du morceau tué" }
+        check(back.tempo == tempo) { "après l'arrêt brutal, le tempo est ${fmt(back.tempo)} au lieu de ${fmt(tempo)}" }
+        check(back.disque?.tempo == tempo) { "après l'arrêt brutal, le disque a le tempo ${back.disque?.tempo?.let(::fmt)} au lieu de ${fmt(tempo)}" }
+        runCatching { ouvrirTempo(); j.tap("tempo_minus"); attendre(5_000) { lu().tempo < tempo }; j.tap("tempo_close") }
+        return "après l'arrêt brutal : « ${back.nom} », tempo ${fmt(tempo)} gardé"
+    }
+
+    /** Another app takes the sound [focusMs] (a call, a voice message). Oracle: the music plays again after, the studio in front. */
+    fun focus(): String {
+        auStudio()
+        val by = e.lancerLecture()
+        if (!appli.prendreFocus(focusMs)) {
+            e.arreter()
+            return nonMesure(FOCUS, "le son ne se prend pas d'ici")
+        }
+        j.idle(1_000)
+        val relance = !sonde.lire().playing
+        if (relance) e.lancerLecture()
+        val b = t.ecouter(FOCUS, 5_000)
+        e.arreter()
+        ecoute(FOCUS, b)
+        bilan(FOCUS, "relance" to if (relance) "oui" else "non")
+        feuEcoute(FOCUS, b)
+        check(b.reads > 0) { "aucune mesure" }
+        check(b.playing * 2 >= b.reads) { "après la perte du son, la musique ne repart pas : ${b.text()}" }
+        check(!b.nonFinite) { "valeur invalide (NaN) dans le son" }
+        check(appli.studioDevant() != false) { "après la perte du son, le studio n'est plus devant" }
+        return "son pris ${focusMs / 1000} s puis rendu (lecture par $by${if (relance) ", relancée" else ""}) : ${b.text()}"
+    }
+
+    /** The engine's biggest buffer ([TAMPON_GROS] blocks). Oracle: it plays, no NaN, no more dropouts than the usual buffer. */
+    fun tampon(): String {
+        auStudio()
+        val by = e.lancerLecture()
+        val normal = t.ecouter("${TAMPON}_normal", 5_000)
+        val avant = sonde.lire().buffer
+        if (!appli.tampon(TAMPON_GROS)) {
+            e.arreter()
+            return nonMesure(TAMPON, "le tampon du moteur ne se règle pas d'ici")
+        }
+        val gros: Ecoute.Bilan
+        val pendant: Int
+        try {
+            j.idle(500)
+            pendant = sonde.lire().buffer
+            gros = t.ecouter(TAMPON, tamponMs)
+        } finally {
+            appli.tampon(null)
+        }
+        e.arreter()
+        ecoute(TAMPON, gros)
+        bilan(TAMPON, "tampon_avant" to avant, "tampon_pendant" to pendant, "decrochages_normal" to normal.xruns)
+        feuEcoute(TAMPON, gros)
+        if (avant > 0 && pendant <= avant) feu(TAMPON, Feu.ORANGE to "le tampon lu n'a pas grandi ($avant → $pendant)")
+        check(gros.reads > 0) { "aucune mesure" }
+        check(gros.playing * 2 >= gros.reads) { "avec le gros tampon, la lecture s'arrête : ${gros.text()}" }
+        check(!gros.nonFinite) { "valeur invalide (NaN) dans le son" }
+        check(gros.xruns <= normal.xruns) { "plus de décrochages avec le gros tampon (${gros.xruns}) qu'avec le tampon habituel (${normal.xruns})" }
+        return "tampon de $TAMPON_GROS blocs (lecture par $by) : ${gros.text()}"
+    }
+
     /** One scenario of the run: its step's name, what the report calls it, whose use it is. */
     data class Scenario(
         val id: String, val label: String, val niveau: String, val maxMs: Long,
@@ -1162,20 +1327,67 @@ class Scenarios(
         /** « Refaire les ratés »: the scenarios failed or not measured in the 2026-11-22 run (sound cut, Android Auto). */
         const val RATES = "rates"
         val RATES_IDS = setOf("annuler_retablir", "pads_live", "arriere_plan", "latence", "lecture_longue", "images", "style_techno", "style_detroit", "style_acid_techno", "style_hard_techno", "style_industrial_techno", "style_retro_techno", "style_acidcore", "style_deep_house", "style_tech_house", "style_acid_house", "style_uk_garage", "style_jump_up", "style_minimal", "style_gabber", "style_afro_house", "style_speed_garage", "style_amapiano", "style_disco", "style_liquid_dnb", "style_neurofunk", "style_jungle", "style_riddim", "style_trap", "style_drill", "style_phonk", "style_boom_bap", "style_grime", "style_jersey_club", "style_lofi", "style_reggaeton", "style_afrobeats", "style_synthwave", "style_pop", "effet_compressor", "effet_saturation", "effet_chorus", "effet_filter", "effet_pump", "effet_flanger", "effet_phaser", "effet_gate", "effet_tremolo", "effet_widener", "effet_bitcrusher", "effet_param_eq", "effet_robot", "effet_wah", "effet_vinyl", "effet_radio", "effet_chopper", "effet_distortion", "effet_echo", "effet_ping_pong", "effet_reverb", "effet_auto_pan", "effet_ott", "effet_freq_shift", "effet_tape_stop", "effet_wobble", "effet_clipper", "effet_bass_exciter", "tempo_bas", "partie_retirer", "partie_dupliquer", "partie_montee", "pad_2", "pad_3", "pad_4", "pad_5", "pad_6", "pad_7", "pad_8")
-        val PAQUETS = listOf(RAPIDE, COMPLET, RATES)
+        val PAQUETS = listOf(RAPIDE, COMPLET, RATES, SEUL)
         const val DUREE_COMPLET_MAX_S = 65 * 60
+        /** « Tests longs »: what the phone tested alone (tour 9, A2), played apart from the other packs. */
+        const val SEUL = "seul"
+        const val DUREE_SEUL_MAX_S = 30 * 60
+        const val ENDURANCE = "endurance_10min"
+        const val FUITE = "fuite_memoire"
+        const val DEMARRAGE = "demarrage_froid"
+        const val ARRET = "arret_brutal"
+        const val ARRET_RELU = "arret_brutal_relu"
+        const val FOCUS = "focus_audio"
+        const val TAMPON = "tampon_8"
+        const val VIDEO_SON = "export_video_son"
+        const val OUVERTURES = 20
+        const val TAMPON_GROS = 8
+        /** The memory's rise that is a leak: over 20 % and at least 20 MB (red); 20 MB alone is to be watched (orange). */
+        const val FUITE_MAX = 0.20
+        const val FUITE_MIN_MO = 20
+        /** A cold start's launch to first image (Android vitals: 5 s is « excessive »). */
+        const val DEMARRAGE_VERT_MS = 2_000L
+        const val DEMARRAGE_MAX_MS = 5_000L
+
+        fun memoireFeu(avant: Int, apres: Int): Pair<Feu, String> {
+            val hausse = apres - avant
+            val text = "mémoire $avant → $apres Mo"
+            return when {
+                hausse >= FUITE_MIN_MO && hausse > avant * FUITE_MAX -> Feu.ROUGE to "$text (+$hausse Mo, plus de ${(FUITE_MAX * 100).toInt()} %)"
+                hausse >= FUITE_MIN_MO -> Feu.ORANGE to "$text (+$hausse Mo)"
+                else -> Feu.VERT to text
+            }
+        }
+
+        fun demarrageFeu(ms: Long): Pair<Feu, String> = when {
+            ms <= DEMARRAGE_VERT_MS -> Feu.VERT to "$ms ms"
+            ms <= DEMARRAGE_MAX_MS -> Feu.ORANGE to "$ms ms (plus de ${DEMARRAGE_VERT_MS / 1000} s)"
+            else -> Feu.ROUGE to "$ms ms (plus de ${DEMARRAGE_MAX_MS / 1000} s)"
+        }
+
+        val SEULS = listOf(
+            Scenario(DEMARRAGE, "Mesure : le démarrage à froid", NIVEAU_MESURE, 180_000, 60, "le temps d'Android du lancement à la première image"),
+            Scenario(ENDURANCE, "Mesure : 10 minutes de lecture", NIVEAU_MESURE, 720_000, 640, "l'arrêt et les décrochages sur 10 min ; la mémoire avant et après"),
+            Scenario(FUITE, "Mesure : 20 fois « Mes projets » ouvert et fermé", NIVEAU_MESURE, 600_000, 300, "la mémoire après la 20e fois contre la 1re"),
+            Scenario(FOCUS, "Moyen : une autre appli prend le son", NIVEAU_MOYEN, 120_000, 40, "la lecture repart après, le studio devant"),
+            Scenario(TAMPON, "Pro : le plus gros tampon du moteur (8 blocs)", NIVEAU_PRO, 180_000, 60, "la lecture, ni NaN ni plus de décrochages qu'avant"),
+            Scenario(VIDEO_SON, "Moyen : la vidéo exportée a du son", NIVEAU_MOYEN, 600_000, 120, "la vidéo relue : image, durée, crête du son"),
+            Scenario(ARRET, "Moyen : l'appli tuée d'un coup", NIVEAU_MOYEN, 120_000, 40, "le tempo changé est sur le disque avant l'arrêt"),
+            Scenario(ARRET_RELU, "Moyen : le morceau après l'arrêt brutal", NIVEAU_MOYEN, 120_000, 30, "le même morceau et son tempo, projet et disque"),
+        )
         private const val PAQUET = "paquet"
 
         /** A pack's scenarios. */
         fun liste(paquet: String): List<Scenario> = when (paquet) {
             RAPIDE -> LISTE.filter { it.geste == null }
             RATES -> LISTE.filter { it.id in RATES_IDS }
+            SEUL -> SEULS
             else -> LISTE
         }
 
         /** The pack the logbook's last scenarios were played in (none noted: the full list). */
         fun paquet(lines: List<Carnet.Ligne>): String {
-            val ids = LISTE.map { it.id }.toSet()
+            val ids = (LISTE + SEULS).map { it.id }.toSet()
             return lines.lastOrNull { it.step in ids && it.kind == Carnet.NOTE && it.text.startsWith("$PAQUET;") }?.text?.substringAfter(';')?.takeIf { it in PAQUETS } ?: COMPLET
         }
 
@@ -1468,13 +1680,13 @@ class Scenarios(
 
         /** The phone's sound the last scenario began with: « coupé » or « allumé »; null: unknown. */
         fun son(lines: List<Carnet.Ligne>): String? {
-            val ids = LISTE.map { it.id }.toSet()
+            val ids = (LISTE + SEULS).map { it.id }.toSet()
             return lines.lastOrNull { it.step in ids && it.kind == Carnet.NOTE && it.text.startsWith("$SON;") }?.text?.split(';')?.getOrNull(1)
         }
 
         /** From the first scenario's beginning to the last line of one. */
         private fun duree(lines: List<Carnet.Ligne>): Long? {
-            val ids = LISTE.map { it.id }.toSet()
+            val ids = (LISTE + SEULS).map { it.id }.toSet()
             val mine = lines.filter { it.step in ids }
             val begin = mine.firstOrNull { it.kind == Carnet.DEBUT } ?: return null
             return (mine.last().atMs - begin.atMs) / 1000

@@ -183,8 +183,8 @@ object DrumHumanizer {
     const val GHOST_LOW = 0.15f
     const val GHOST_HIGH = 0.28f
 
-    /** The toms of the kit (low, mid, high), on their own pads. */
-    val TOM_LANES = listOf(7, 8, 9)
+    /** The toms a fill plays (low, high), on their own pads; pad 9 is the Snap's (format v2), never a tom. */
+    val TOM_LANES = listOf(7, 8)
 
     /**
      * The last bar of [lanes] ([steps] steps) ending on [ending]: over its last beat ([beats] = 1,
@@ -192,7 +192,7 @@ object DrumHumanizer {
      * Only lines already playing in the bar get the fill, except the kit's toms, which a fill may
      * always call on; in club music the kick stops under it.
      */
-    fun ending(lanes: List<DrumLane>, steps: Int, ending: Ending, beats: Int = 1, sung: Boolean = false): List<DrumLane> {
+    fun ending(lanes: List<DrumLane>, steps: Int, ending: Ending, beats: Int = 1, sung: Boolean = false, tomLine: Boolean = false): List<DrumLane> {
         if (steps < 16) return lanes
         val out = lanes.toMutableList()
         val len = (beats.coerceIn(1, 2)) * 4
@@ -231,13 +231,14 @@ object DrumHumanizer {
                 put(lane, steps - 1, 0.95f, 2, 1)
             }
             Ending.Toms -> {
-                // The high and the low tom of the kit; the mid one only where the style's tom line plays (its pad).
-                val mid = if (has(Role.Tom)) Role.Tom.lane else 9
+                // The high tom (pad 8) and the low one (pad 7); pad 9 is the Snap's and stays as it is. When the
+                // style's tom line ([tomLine]) is silent in this part, its pad stays silent too: the low tom only.
+                val high = if (tomLine && !has(Role.Tom)) 7 else Role.Tom.lane
                 val end = if (snare != null) lane else 7
-                for (l in setOf(9, 7, mid)) clear(l)
+                for (l in setOf(high, 7)) clear(l)
                 if (snare != null) clear(lane)
-                // High, mid, low in eighths (16ths over the last beat), the snare (or the low tom) doubled last.
-                val order = listOf(9, 9, mid, mid, 7, 7, end, end).let { o -> if (len == 4) listOf(9, mid, 7, end) else o }
+                // High then low in eighths (16ths over the last beat), the snare (or the low tom) doubled last.
+                val order = listOf(high, high, high, 7, 7, 7, end, end).let { o -> if (len == 4) listOf(high, high, 7, end) else o }
                 for (i in 0 until len) {
                     val l = order[i * order.size / len]
                     if (len > 4 && i < len / 2 && i % 2 == 1) continue

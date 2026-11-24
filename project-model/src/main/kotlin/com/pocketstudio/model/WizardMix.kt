@@ -223,6 +223,49 @@ internal object WizardMix {
         BUS_GLUE[1],
     )
 
+    /** A drum bus glue in parallel: deeper (threshold, ratio) since only [StyleMix.glueBlend] of it is heard. */
+    const val PARALLEL_THRESHOLD = 0.45f
+    const val PARALLEL_RATIO = 0.4f
+
+    /** The pump a style asks for on its 808 or its chords ([StyleMix.pump]): depth, release, keyed by the kick. */
+    val STYLE_PUMP = Insert(EffectType.PUMP.ordinal, listOf(0.5f, 0.35f, 0f))
+
+    /**
+     * [channels] with [mix] (format v2, h): the drum bus's compressor in parallel at [StyleMix.glueBlend]
+     * (deeper, its mix knob at the blend), its saturation's drive at [StyleMix.busDrive], a pump keyed by
+     * the kick on the 808's pad ("808", when it plays) and on the chords ("chords"). What [mix] leaves
+     * null stays as it is; a channel with a pump already or no free slot keeps its own.
+     */
+    internal fun withStyleMix(project: Project, channels: List<Channel>, mix: StarterWizard.StyleMix, partOfTrack: Map<Int, Part>): List<Channel> {
+        val out = channels.toMutableList()
+        out[0] = out[0].copy(inserts = out[0].inserts.map { ins ->
+            when {
+                mix.glueBlend != null && ins.type == EffectType.COMPRESSOR.ordinal -> ins.copy(params = ins.params.toMutableList().also { v ->
+                    while (v.size <= GLUE_MIX) v += 1f
+                    if (mix.glueBlend < 1f) { v[0] = PARALLEL_THRESHOLD; v[1] = PARALLEL_RATIO }
+                    v[GLUE_MIX] = mix.glueBlend
+                })
+                mix.busDrive != null && ins.type == EffectType.SATURATION.ordinal -> ins.copy(params = ins.params.toMutableList().also { it[0] = mix.busDrive })
+                else -> ins
+            }
+        }).sanitized()
+        fun pumped(ch: Int) {
+            if (ch !in out.indices || out[ch].inserts.any { it.type == EffectType.PUMP.ordinal }) return
+            val free = out[ch].inserts.indexOfFirst { it.type == 0 }
+            if (free >= 0) out[ch] = out[ch].copy(inserts = out[ch].inserts.toMutableList().also { it[free] = STYLE_PUMP }).sanitized()
+        }
+        val lane808 = StudioDrums.LANE_808
+        val plays808 = (listOf(project.drums) + project.scenes.map { it.drums }).any { it.lanes.getOrNull(lane808)?.hits?.isNotEmpty() == true }
+        if ("808" in mix.pump && plays808) pumped(Mixer.padChannel(lane808))
+        if ("chords" in mix.pump) partOfTrack.filterValues { it == Part.Pad }.keys
+            .filter { id -> project.instrumentTracks.any { it.id == id } }
+            .forEach { pumped(InstrumentTrack.mixerChannel(it)) }
+        return out
+    }
+
+    /** The compressor's mix knob (dry / wet). */
+    const val GLUE_MIX = 8
+
     /** The master's glue since S5: RMS, 1.8:1, attack 30 ms, release 150 ms (about 2 dB at most), then its saturation. */
     val MASTER_GLUE_V2 = listOf(
         Insert(EffectType.COMPRESSOR.ordinal, listOf(0.6f, 0.2f, 0.853f, 0.546f, 0f, 0f, 1f, 0.5f, 1f)),
@@ -323,6 +366,8 @@ internal object WizardMix {
         var channels = p.mixer.channels.toMutableList()
         fun replaced(list: List<Insert>, from: Insert, to: Insert) = list.map { if (it.type == from.type && it.params == from.sanitized().params) to else it }
         channels[0] = channels[0].copy(inserts = replaced(channels[0].inserts, BUS_GLUE[0].sanitized(), BUS_GLUE_V2[0])).sanitized()
+        // Format v2 (h): the style's own drum bus (its glue in parallel, its saturation's drive) and its pumps.
+        style.mix?.let { mix -> channels = withStyleMix(p, channels, mix, partOfTrack).toMutableList() }
         val master = replaced(p.mixer.master, MASTER_GLUE[0].sanitized(), MASTER_GLUE_V2[0]).map { it.sanitized() }
         // The Punch (on a pad, on the drums): 10 ms.
         val punch = FxPresets.byId("punch")?.inserts?.firstOrNull()?.sanitized()

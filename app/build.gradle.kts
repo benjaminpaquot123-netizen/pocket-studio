@@ -143,6 +143,16 @@ android {
                 // PLAN-RESTE 4.3: a run's JUnit XML in a folder of its own (-Ptest.results.dir), so that two self-tests (or two
                 // passes of one) never read or wipe each other's results in the shared build/test-results.
                 providers.gradleProperty("test.results.dir").orNull?.let { d -> it.reports.junitXml.outputLocation.set(file(d)) }
+                // CI shards (scripts/ci/shards.py): -Pshard.classes=<file> runs only the top-level classes listed there (one per
+                // line; a nested class follows its outer class). The CI checks that the shards' lists make the whole suite.
+                providers.gradleProperty("shard.classes").orNull?.let { path ->
+                    val mine = rootProject.file(path).readLines().map { l -> l.trim() }.filter { l -> l.isNotEmpty() }.toSet()
+                    it.inputs.property("shard.classes", mine.sorted().joinToString(","))
+                    it.exclude(org.gradle.api.specs.Spec<org.gradle.api.file.FileTreeElement> { e ->
+                        !e.isDirectory && e.name.endsWith(".class") &&
+                            e.path.removeSuffix(".class").substringBefore('$').replace('/', '.') !in mine
+                    })
+                }
                 // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.
                 // The suite itself (audit stage 1, flaky tests): a worker runs hundreds of Robolectric classes, more than one
                 // sandbox at a time; at Gradle's default 512 MB its old generation filled up (99.9 %, 500 full GCs): tests

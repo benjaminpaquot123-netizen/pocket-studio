@@ -1488,6 +1488,8 @@ object StarterWizard {
 
     /** Format v2 (d): the chords' double (saved in French, a default name). */
     const val DOUBLE_TRACK = "Doublure"
+    /** The doubling's highest note (the melodic tracks' top, C7). */
+    const val DOUBLE_TOP = 96
 
     /** The double under the chords (dB, over a held pad's level): it brightens the Drop, it is not a second part. */
     const val DOUBLE_DB = -6f
@@ -1677,7 +1679,8 @@ object StarterWizard {
             val high = chord.maxBy { it.pitch }
             high.copy(pitch = high.pitch + 24, length = chord.maxOf { it.length }, velocity = high.velocity * 0.8f)
         }
-        val notes = (octave + top).filter { it.pitch <= 108 }.distinctBy { it.start to it.pitch }.sortedWith(compareBy({ it.start }, { it.pitch }))
+        // Over the melodic range's top, an octave down (a held top note two octaves up hurts in the treble).
+        val notes = (octave + top).map { n -> n.copy(pitch = n.pitch - 12 * Math.floorDiv(maxOf(0, n.pitch - DOUBLE_TOP + 11), 12)) }.distinctBy { it.start to it.pitch }.sortedWith(compareBy({ it.start }, { it.pitch }))
         return clip.copy(notes = notes, hidden = emptyList())
     }
 

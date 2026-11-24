@@ -87,6 +87,9 @@ interface Appli {
     /** What the last failed [latence] said. */
     fun latenceEchec(): String = ""
 
+    /** Whether the app may record from the microphone (RECORD_AUDIO); null: unknown. */
+    fun microAutorise(): Boolean? = null
+
     /** The phone's media volume (STREAM_MUSIC) and its silent mode, read before a measure through the speaker; null: unknown. */
     fun volume(): Volume? = null
 

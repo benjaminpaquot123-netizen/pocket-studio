@@ -2515,50 +2515,69 @@ object TutoRollHint {
         return if (y(n, v) < v.top) TutoWay.Higher else TutoWay.Lower
     }
 
+    /** How far along the time (pixels) the roll goes to show [n]: its bar from its first sixteenth when a bar fits the width. */
+    private fun along(n: Note, v: TutoRollView, barSteps: Int): Float {
+        val bar = barSteps * v.stepPx
+        return when {
+            inTime(n, v) -> 0f
+            bar > 0f && bar <= v.right - v.left + 1f -> (x(n, v) / bar).toInt() * bar - v.left
+            else -> x(n, v) - 2 * v.stepPx - v.left
+        }
+    }
+
+    /**
+     * Tour 9, lot « fable6 » (alert « a-V1 »: control p8 and p8b of tour 7, « mesures 1 et 4 : le premier toucher ne
+     * montre que 2 notes sur 6, la flèche passe à ↓ et il faut toucher une deuxième fois »): [v] where a touch on the
+     * line leaves it along the time, the bar of [next] in sight. The rows are judged THERE: judged where the touch
+     * started (the bar before, no dotted note left in its time), the touch only centred the one note spoken of, and
+     * the others of its bar stayed above or below the rows until a second touch.
+     */
+    fun atBar(left: List<Note>, v: TutoRollView, barSteps: Int): TutoRollView {
+        val n = next(left, v, barSteps) ?: return v
+        val dx = along(n, v, barSteps)
+        return v.copy(left = v.left + dx, right = v.right + dx)
+    }
+
     /**
      * How far a touch on the line scrolls the roll to bring [next] into view: (pixels along the time, pixels along
      * the rows), zero along an axis where the note already is and no other is hidden ([aside]). Along the time, its bar from its first sixteenth
      * when a bar ([barSteps] sixteenths) fits the width (seat H a: the bar's last notes were cut at the edge).
      * [touched]: false when the step itself asks (« Je le fais », « Copier »): the note asked for stays in sight, no
-     * other one is gone to.
+     * other one is gone to. [all]: every dotted note drawn, when [left] is only those aimed at (the chords' bottom
+     * notes): a touch frames them all, the chord whole (lot « fable6 »: its top notes stayed above the rows, « ↑ »).
      */
-    fun brought(left: List<Note>, v: TutoRollView, barSteps: Int, touched: Boolean = true): Pair<Float, Float> {
+    fun brought(left: List<Note>, v: TutoRollView, barSteps: Int, touched: Boolean = true, all: List<Note> = left): Pair<Float, Float> {
         val n = next(left, v, barSteps) ?: return 0f to 0f
-        val bar = barSteps * v.stepPx
-        val dx = when {
-            inTime(n, v) -> 0f
-            bar > 0f && bar <= v.right - v.left + 1f -> (x(n, v) / bar).toInt() * bar - v.left
-            else -> x(n, v) - 2 * v.stepPx - v.left
-        }
+        val dx = along(n, v, barSteps)
+        // Lot « fable6 »: a touch judges the rows where it leaves the time ([atBar]).
+        val w = if (touched) v.copy(left = v.left + dx, right = v.right + dx) else v
         // A dotted note of the time in sight out of the rows ([aside]): all of them when they fit the rows, else as far
         // towards it as the note the line speaks of stays whole in sight, if that shows it (else the roll goes to it, below).
-        val hidden = if (touched) aside(left, v, barSteps) else null
-        val mid = (v.top + v.bottom) / 2
+        val hidden = if (touched) aside(left, w, barSteps) else null
+        val mid = (w.top + w.bottom) / 2
+        val bar = if (touched && w.rowPx > 0f) pool(all, barSteps).filter { inTime(it, w) } else emptyList()
+        val top = bar.minOfOrNull { y(it, w) } ?: 0f
+        val bottom = (bar.maxOfOrNull { y(it, w) } ?: 0f) + w.rowPx
+        // Lot « fable6 »: one touch shows every dotted note of the bar it goes to whenever they fit the rows in sight,
+        // whichever of them was in the rows before (none, when the touch comes from another bar).
+        val framed = bar.any { !inRows(it, w) } && bottom - top <= w.bottom - w.top + 1f
         val dy = when {
-            hidden != null -> {
-                val all = pool(left, barSteps).filter { inTime(it, v) }
-                val top = all.minOf { y(it, v) }
-                val bottom = all.maxOf { y(it, v) } + v.rowPx
-                when {
-                    bottom - top <= v.bottom - v.top + 1f -> (top + bottom) / 2 - mid
-                    y(hidden, v) < v.top -> y(n, v) + v.rowPx - v.bottom
-                    else -> y(n, v) - v.top
-                }
-            }
-            inRows(n, v) -> 0f
-            else -> y(n, v) + v.rowPx / 2 - mid
+            framed -> (top + bottom) / 2 - mid
+            hidden != null -> if (y(hidden, w) < w.top) y(n, w) + w.rowPx - w.bottom else y(n, w) - w.top
+            inRows(n, w) -> 0f
+            else -> y(n, w) + w.rowPx / 2 - mid
         }
-        val there = v.copy(left = v.left + dx, right = v.right + dx, top = v.top + dy, bottom = v.bottom + dy)
-        val move = dx to dy + whole(left, there, n)
-        if (hidden == null) return move
+        val there = w.copy(top = w.top + dy, bottom = w.bottom + dy)
+        val move = dx to dy + whole(all, there, n)
+        if (hidden == null || framed) return move
         // Second control of « fable-repar » (seat a, V1; house bass, the high « La » an octave over the low ones, more
         // than the rows above the panel): going towards the hidden note as far as the one in sight stays there slid
         // the low notes down to the panel's edge and showed nothing new; it took a second touch. One touch shows the
         // hidden note: when it cannot come in with the note spoken of, the roll goes to it, whole at the edge nearest
         // to the others (the line then tells of the ones left behind).
-        if (inRows(hidden, v.copy(top = v.top + move.second, bottom = v.bottom + move.second))) return move
-        val to = if (y(hidden, v) < v.top) y(hidden, v) - v.top else y(hidden, v) + v.rowPx - v.bottom
-        return 0f to to + whole(left, v.copy(top = v.top + to, bottom = v.bottom + to), hidden)
+        if (inRows(hidden, w.copy(top = w.top + move.second, bottom = w.bottom + move.second))) return move
+        val to = if (y(hidden, w) < w.top) y(hidden, w) - w.top else y(hidden, w) + w.rowPx - w.bottom
+        return dx to to + whole(all, w.copy(top = w.top + to, bottom = w.bottom + to), hidden)
     }
 
     /**
@@ -2569,8 +2588,11 @@ object TutoRollHint {
      * note out of the rows, they already fit (then [brought] frames them), or rows under [minRow] would be needed.
      */
     fun folded(left: List<Note>, v: TutoRollView, barSteps: Int, minRow: Float): Float? {
-        aside(left, v, barSteps) ?: return null
+        if (v.right <= v.left || v.rowPx <= 0f || v.bottom - v.top < v.rowPx - 1f) return null
         val all = pool(left, barSteps).filter { inTime(it, v) }
+        // Lot « fable6 »: any of them out of the rows, the one spoken of too (a touch that comes from another bar finds
+        // none of them in the rows: it centred one, and the fold waited for a second touch).
+        if (all.none { !inRows(it, v) }) return null
         val rows = all.maxOf { it.pitch } - all.minOf { it.pitch } + 1
         val sight = v.bottom - v.top
         if (rows * v.rowPx <= sight + 1f) return null
@@ -2589,12 +2611,13 @@ object TutoRollHint {
      * The note a touch on the line (or the step asking, [touched] false) lights: the one brought from out of the rows
      * ([aside]) once it is in sight, else [next]. [up] and [down]: how far the rows can still scroll (pixels).
      */
-    fun lit(left: List<Note>, v: TutoRollView, barSteps: Int, touched: Boolean = true, up: Float = Float.MAX_VALUE, down: Float = Float.MAX_VALUE): Note? {
+    fun lit(left: List<Note>, v: TutoRollView, barSteps: Int, touched: Boolean = true, up: Float = Float.MAX_VALUE, down: Float = Float.MAX_VALUE, all: List<Note> = left): Note? {
         val next = next(left, v, barSteps) ?: return null
         // The move the rows really make: at the keyboard's edge the note gone to stays out of sight, and is not lit.
-        val dy = brought(left, v, barSteps, touched).second.coerceIn(-up.coerceAtLeast(0f), down.coerceAtLeast(0f))
-        val there = v.copy(top = v.top + dy, bottom = v.bottom + dy)
-        return (if (touched) aside(left, v, barSteps) else null)?.takeIf { inRows(it, there) } ?: next
+        val dy = brought(left, v, barSteps, touched, all).second.coerceIn(-up.coerceAtLeast(0f), down.coerceAtLeast(0f))
+        val w = if (touched) atBar(left, v, barSteps) else v
+        val there = w.copy(top = w.top + dy, bottom = w.bottom + dy)
+        return (if (touched) aside(left, w, barSteps) else null)?.takeIf { inRows(it, there) } ?: next
     }
 
     /**

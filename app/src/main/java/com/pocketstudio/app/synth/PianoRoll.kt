@@ -856,16 +856,20 @@ private fun Grid(
         com.pocketstudio.model.tuto.TutoRollHint.next(aimed, shown, barSteps) ?: return@LaunchedEffect
         // Tour 8, T0a: the dotted notes of the time in sight too far apart for the rows (house bass, its two « La »): the
         // rows fold so that they all fit, then the notes are framed (below), instead of going from one to the other.
-        val fold = if (touched) com.pocketstudio.model.tuto.TutoRollHint.folded(left, shown, barSteps, with(density) { MIN_ROW.dp.toPx() }) else null
+        // Lot « fable6 » (alert « a-V1 »): the rows are judged where the touch leaves the time, the bar it goes to in sight.
+        val at = if (touched) com.pocketstudio.model.tuto.TutoRollHint.atBar(aimed, shown, barSteps) else shown
+        val fold = if (touched) com.pocketstudio.model.tuto.TutoRollHint.folded(left, at, barSteps, with(density) { MIN_ROW.dp.toPx() }) else null
         if (fold != null) {
-            folding = com.pocketstudio.model.tuto.TutoRollHint.aside(aimed, shown, barSteps)
+            folding = com.pocketstudio.model.tuto.TutoRollHint.aside(aimed, at, barSteps) ?: com.pocketstudio.model.tuto.TutoRollHint.next(aimed, at, barSteps)
+            // The bar first: the framing (below) reads the time in sight.
+            if (at.left != shown.left) hScroll.scrollTo(at.left.roundToInt().coerceIn(0, hScroll.maxValue))
             // A whole number of pixels a row ([rowHeight] rounds): a little under, never over the row that fits.
             zoomBy(1f, (fold - 0.45f) / rowPx)
             return@LaunchedEffect
         }
-        val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(aimed, shown, barSteps, touched)
+        val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(aimed, shown, barSteps, touched, left)
         // The note the touch brings from out of the rows is the one lit (control « tuto2 », seat a), once in sight.
-        lit = com.pocketstudio.model.tuto.TutoRollHint.lit(aimed, shown, barSteps, touched, vScroll.value.toFloat(), (vScroll.maxValue - vScroll.value).toFloat())
+        lit = com.pocketstudio.model.tuto.TutoRollHint.lit(aimed, shown, barSteps, touched, vScroll.value.toFloat(), (vScroll.maxValue - vScroll.value).toFloat(), left)
         if (dx != 0f) hScroll.animateScrollTo((hScroll.value + dx).roundToInt().coerceIn(0, hScroll.maxValue))
         if (dy != 0f) vScroll.animateScrollTo((vScroll.value + dy).roundToInt().coerceIn(0, vScroll.maxValue))
     }

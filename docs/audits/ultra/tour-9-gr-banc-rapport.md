@@ -8,6 +8,8 @@ Banc « corps » du son : ps_measure mesure les pistes qui sonnent ensemble au D
 - Seuils : fond ≥ −8,5 dB (chansons) rouge sur boom bap S7, vert sur une référence hip-hop CC0 (−7,5) ; pistes ≥ 5 sans référence à pistes ; aigu sans cible (les références ne se séparent pas de nos morceaux).
 - host-tests verts ; aucun audio commité ; moteur temps réel non touché (live-bench non relancé).
 
-tests: scripts/bench/test_ps_measure_body.py scripts/bench/test_report.py
+tests: aucun : banc hors appli, aucun code de l'appli touché (tests du lot : python3 -I scripts/bench/test_ps_measure_body.py, python3 -I scripts/bench/test_report.py, tous verts)
+
+chemin: banc song-bench → export des styles lu par ps_measure | test: SongBenchExport#recordsTheExportOfEveryStyle
 
 Limite : test_ps_measure_body.py n'est lancé ni par le pré-vol ni par la CI (hors liste). Statut : tenté.

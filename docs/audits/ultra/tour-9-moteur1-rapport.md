@@ -5,7 +5,7 @@ Tout est « tenté » : rien n'est « corrigé » tant qu'un testeur ne l'a pas 
 
 **Le son n'a pas changé.** Six morceaux (techno, jump_up, lofi, acidcore, phonk, grime), 30 s chacun, joués par `ps_live` avant le lot et après : fichiers son identiques à l'octet près. La mesure par brique n'est compilée que dans une construction de mesure (`PS_PROFILE`), jamais dans l'appli ni dans les tests.
 
-tests: aucun : lot du moteur et de ses bancs, aucun fichier Kotlin touché ; preuves côté moteur : `scripts/host-tests.sh` (382 tests, 0 échec), dont `ht_worst_gap_unequal_blocks_on_time`, `ht_worst_gap_same_lateness_same_reading` et les cinq `sb_*` ; `scripts/bench/live_selftest.py` vert ; les 37 morceaux rejoués 150 s par `ps_live`, 37 « ok », 0 alerte.
+tests: aucun : lot du moteur et de ses bancs, aucun fichier Kotlin touché ; preuves côté moteur : `scripts/host-tests.sh` (377 tests, 0 échec), dont `ht_worst_gap_unequal_blocks_on_time`, `ht_worst_gap_same_lateness_same_reading` et les cinq `sb_*` ; `scripts/bench/live_selftest.py` vert ; les 37 morceaux rejoués 150 s par `ps_live`, 37 « ok », 0 alerte.
 
 ## Chemins
 

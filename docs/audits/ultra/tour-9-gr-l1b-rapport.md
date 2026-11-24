@@ -12,7 +12,7 @@ Fichiers :
 
 tests: com.pocketstudio.model.BodyHeardTest com.pocketstudio.model.PartIntentsTest com.pocketstudio.model.StarterWizardTest com.pocketstudio.model.StyleBodyTest com.pocketstudio.app.bench.LiveSongRecorder
 
-chemin: assistant → morceau en un geste → lecture en direct (corps v2 câblé ; aucun style ne l'active encore) | test: BodyHeardTest#theBodyShakerIsHeard
+chemin: assistant → morceau en un geste → lecture en direct (corps v2 câblé ; aucun style ne l'active encore ; preuve modèle : BodyHeardTest) | test: LiveSongRecorder#recordsTheLivePlaybackOfEveryStyle
 
 Mineurs de la relecture L1 :
 - pompe « chords » retirée par honest() : corrigé (le canal pompé par le style est sauté) ;

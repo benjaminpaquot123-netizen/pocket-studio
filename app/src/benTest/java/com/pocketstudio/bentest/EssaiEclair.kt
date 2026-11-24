@@ -56,6 +56,18 @@ interface Appli {
     /** The studio closed (its screen finished, the process kept), then opened again as from the phone's icon. False: not possible here. */
     fun relancerStudio(): Boolean = false
 
+    /**
+     * Another app's sound takes the audio focus while [pendant] runs, then gives it back: a notification that may
+     * lower ours ([duck]) or a call that takes it. False: not possible here (nothing run).
+     */
+    fun prendreSon(duck: Boolean, pendant: () -> Unit): Boolean = false
+
+    /** The studio's screen refresh rate (Hz); null when unknown. */
+    fun rafraichissementHz(): Float? = null
+
+    /** Whether the phone's battery saver is on; null when unknown. */
+    fun economieEnergie(): Boolean? = null
+
     /** The media volume ([niveau] out of [max]), the music stream muted ([muet]), the phone silent ([silencieux]). */
     data class Volume(val niveau: Int, val max: Int, val silencieux: Boolean = false, val muet: Boolean = false) {
         /** No sound out of the speaker to measure with: the volume at 0 or under [MIN] of its course, the stream muted, the phone silent. */

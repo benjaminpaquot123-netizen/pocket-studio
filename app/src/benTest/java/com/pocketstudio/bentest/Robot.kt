@@ -517,6 +517,27 @@ private class AppliReelle(private val app: Application, private val main: MainTh
         }
     }
 
+    override fun prendreSon(duck: Boolean, pendant: () -> Unit): Boolean {
+        val audio = app.getSystemService(android.media.AudioManager::class.java) ?: return false
+        val attrs = android.media.AudioAttributes.Builder()
+            .setUsage(if (duck) android.media.AudioAttributes.USAGE_NOTIFICATION else android.media.AudioAttributes.USAGE_VOICE_COMMUNICATION)
+            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build()
+        val gain = if (duck) android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK else android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT
+        val request = android.media.AudioFocusRequest.Builder(gain).setAudioAttributes(attrs).setOnAudioFocusChangeListener { }.build()
+        val granted = audio.requestAudioFocus(request) == android.media.AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+        try {
+            pendant()
+        } finally {
+            audio.abandonAudioFocusRequest(request)
+        }
+        return granted
+    }
+
+    override fun rafraichissementHz(): Float? = runCatching { main.run { tracker.studio?.display?.refreshRate } }.getOrNull()
+
+    override fun economieEnergie(): Boolean? = runCatching { app.getSystemService(android.os.PowerManager::class.java)?.isPowerSaveMode }.getOrNull()
+
     // Niveau 3: the question is a banner over the studio itself (the studio stays in front, the music goes on).
     override fun poser(question: Question, maxMs: Long): Reponse {
         return Banniere.poser(question, maxMs)

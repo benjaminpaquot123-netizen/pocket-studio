@@ -2,7 +2,7 @@
 
 Relecteur : sous-agent neuf (n'a pas écrit le code), diff b0ac8fe3..eq/gr-banc.
 
-relu : a91152f6b
+relu : b390e1280 (a91152f6b relu à l'origine ; b390e1280 = même arbre, lot republié en gr-banc2 : seuls deux sujets « rouge: » reformulés et ce rapport renommé)
 
 Rien de grave. ps_measure recompilé, test_ps_measure_body.py et test_report.py verts ; cas limites essayés (sans .pscmd, piste de 0,1 s sous un mix de 6 s, mix muet, section vide) : JSON strict (null, jamais nan), aucun plantage. Guillemets awk dans le sh -c de song-bench justes ; report.py lit un vieux JSON sans les nouvelles clés.
 
@@ -16,6 +16,6 @@ Mineurs :
 
 Complément (chef, 2026-11-24) : depuis dc87eaa3, seul le rapport de zone a été ajouté (doc, aucun code) ; relu, conforme.
 
-Verdict : 0 bloquant, 0 grave
-
 Renommage (chef, 2026-11-24) : lot republié en gr-banc2, mêmes arbres ; seuls deux sujets « rouge: » reformulés pour s'apparier à leur « vert: ». Rien à relire de plus.
+
+Verdict : 0 bloquant, 0 grave

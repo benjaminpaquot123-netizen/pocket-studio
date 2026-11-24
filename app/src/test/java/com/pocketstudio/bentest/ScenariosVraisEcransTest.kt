@@ -100,7 +100,9 @@ open class ScenariosVraisEcransTest {
         val text = scenarios(v).effets()
         assertTrue(text, text.contains("égaliseur ajouté à la piste"))
         val after = v.projet()
-        assertEquals(before.sumOf { it.size } + 1, after.effets.sumOf { it.size })
+        // Added, heard, then taken off by « Annuler »: the strips as they were, on the disk too (C10).
+        assertTrue(text, text.contains("retiré par « Annuler »"))
+        assertEquals(before, after.effets)
         assertEquals(after.effets, after.disque?.effets)
         // Left as a user leaves it: no sheet over the mixer.
         assertEquals(0, v.count("strip_sheet", false))

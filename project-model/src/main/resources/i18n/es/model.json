@@ -270,7 +270,6 @@
   "La güira, un grattoir métallique qui roule sans arrêt : elle arrive au refrain.": "La güira, un raspador metálico que rueda sin parar: entra en el estribillo.",
   "La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups.": "El house clásico, nacido en Chicago: un piano alegre, un kick en cada tiempo y un “tss” entre los golpes.",
   "La house d'Afrique du Sud portée par les percussions : congas, shaker, marimba et nappes chaudes.": "El house sudafricano llevado por la percusión: congas, shaker, marimba y pads cálidos.",
-  "La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle.": "El house de Chicago de 1987 con su pequeña máquina mágica, la TB-303, que hace “chillar” una línea de bajo en bucle.",
   "La house des gros clubs d'aujourd'hui : un rythme sec qui roule, une basse accrocheuse, presque pas d'accords.": "El house de los grandes clubs de hoy: un ritmo seco que rueda, un bajo pegadizo, casi sin acordes.",
   "La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil.": "El house suave y cálido: piano eléctrico aterciopelado, bajo redondo, ambiente de atardecer.",
   "La house sud-africaine plus lente : une basse qui rebondit comme un tambour de bois (le « log drum ») et un piano jazzy.": "El house sudafricano más lento: un bajo que rebota como un tambor de madera (el “log drum”) y un piano jazzy.",
@@ -883,5 +882,11 @@
   "Rim (cerclage)": "Rim (aro)",
   "Le bord de la caisse frappé : un « toc » sec et boisé qui marque le rythme sans l'alourdir.": "El aro de la caja golpeado: un “toc” seco y amaderado que marca el ritmo sin hacerlo pesado.",
   "Un tambour à main chaud et rond : il donne un balancement latin ou africain au groove.": "Un tambor de mano cálido y redondo: da al groove un balanceo latino o africano.",
-  "Un « tchik-tchik » de graines secouées en doubles croches : il remplit le haut du spectre et fait avancer.": "Un “chic-chic” de semillas agitadas en semicorcheas: llena la parte alta del espectro y empuja hacia delante."
+  "Un « tchik-tchik » de graines secouées en doubles croches : il remplit le haut du spectre et fait avancer.": "Un “chic-chic” de semillas agitadas en semicorcheas: llena la parte alta del espectro y empuja hacia delante.",
+  "Une conga qui tourne autour du « toc » : avec le shaker, elle fait le lit d'aigus qui roule.": "Una conga que gira alrededor del “toc”: con el shaker, forma la cama de agudos que rueda.",
+  "Un petit clap juste avant la boucle suivante : il relance le groove, à côté du vieux clap.": "Una palmada justo antes del siguiente bucle: relanza el groove, junto a la palmada antigua.",
+  "L'acid d'aujourd'hui, née à Chicago en 1987 : la petite machine magique, la TB-303, fait « couiner » une ligne de basse qui tourne et s'ouvre, sur un kick de 909 qui frappe.": "El acid de hoy, nacido en Chicago en 1987: la pequeña máquina mágica, la TB-303, hace “chillar” una línea de bajo que gira y se abre, sobre un bombo 909 que pega.",
+  "La grosse caisse de la 909 sur chaque temps, courte et qui frappe fort : c'est elle qui tient la 303 qui couine.": "El bombo de la 909 en cada tiempo, corto y pegando fuerte: es el que sostiene la 303 que chilla.",
+  "Le charley de la 909 en continu, un coup fort, un coup doux.": "El charles de la 909 sin parar, un golpe fuerte, un golpe suave.",
+  "Un shaker serré en doubles croches : il fait briller le haut pendant que la 303 tourne.": "Un shaker apretado en semicorcheas: hace brillar los agudos mientras la 303 gira."
 }

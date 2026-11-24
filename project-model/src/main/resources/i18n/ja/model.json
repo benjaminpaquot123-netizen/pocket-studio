@@ -270,7 +270,6 @@
   "La güira, un grattoir métallique qui roule sans arrêt : elle arrive au refrain.": "グイラ、ノンストップで刻む金属のスクレーパー：サビで入ります。",
   "La house classique, née à Chicago : un piano joyeux, un kick sur chaque temps et un « tchi » entre les coups.": "シカゴ生まれのクラシックなハウス：楽しげなピアノ、毎拍のキック、ヒットの間の「チッ」。",
   "La house d'Afrique du Sud portée par les percussions : congas, shaker, marimba et nappes chaudes.": "パーカッションが引っ張る南アフリカのハウス：コンガ、シェイカー、マリンバ、温かいパッド。",
-  "La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle.": "1987年のシカゴ・ハウス。小さな魔法のマシン TB-303 が、ループするベースラインを「キュンキュン」鳴かせます。",
   "La house des gros clubs d'aujourd'hui : un rythme sec qui roule, une basse accrocheuse, presque pas d'accords.": "今の大箱クラブのハウス：乾いて転がるビート、耳に残るベース、コードはほとんどなし。",
   "La house douce et chaude : piano électrique feutré, basse ronde, ambiance coucher de soleil.": "やわらかく温かいハウス：まろやかなエレピ、丸いベース、夕焼けの雰囲気。",
   "La house sud-africaine plus lente : une basse qui rebondit comme un tambour de bois (le « log drum ») et un piano jazzy.": "ゆったりした南アフリカのハウス：木の太鼓（「ログドラム」）のように弾むベースと、ジャジーなピアノ。",
@@ -883,5 +882,11 @@
   "Rim (cerclage)": "Rim（リム）",
   "Le bord de la caisse frappé : un « toc » sec et boisé qui marque le rythme sans l'alourdir.": "スネアの縁を打つ音：リズムを重くせずに刻む、乾いた木のような「トッ」。",
   "Un tambour à main chaud et rond : il donne un balancement latin ou africain au groove.": "温かく丸いハンドドラム：グルーヴにラテンやアフリカの揺れを与えます。",
-  "Un « tchik-tchik » de graines secouées en doubles croches : il remplit le haut du spectre et fait avancer.": "16分で振る種の「チャカチャカ」：帯域の上を埋めて前へ進めます。"
+  "Un « tchik-tchik » de graines secouées en doubles croches : il remplit le haut du spectre et fait avancer.": "16分で振る種の「チャカチャカ」：帯域の上を埋めて前へ進めます。",
+  "Une conga qui tourne autour du « toc » : avec le shaker, elle fait le lit d'aigus qui roule.": "「トック」のまわりを回るコンガ：シェイカーと一緒に、転がる高音の土台を作ります。",
+  "Un petit clap juste avant la boucle suivante : il relance le groove, à côté du vieux clap.": "次のループの直前の小さなクラップ：古いクラップの隣で、グルーヴを再び盛り上げます。",
+  "L'acid d'aujourd'hui, née à Chicago en 1987 : la petite machine magique, la TB-303, fait « couiner » une ligne de basse qui tourne et s'ouvre, sur un kick de 909 qui frappe.": "1987年シカゴ生まれの今のアシッド：小さな魔法のマシン TB-303 が、回り続けるベースラインを「キュイーン」と鳴らして開き、パンチのある 909 キックに乗せます。",
+  "La grosse caisse de la 909 sur chaque temps, courte et qui frappe fort : c'est elle qui tient la 303 qui couine.": "毎拍の 909 キック、短く力強く：鳴き続ける 303 を支えるのはこれです。",
+  "Le charley de la 909 en continu, un coup fort, un coup doux.": "909 のハイハットを途切れなく、強く一打、弱く一打。",
+  "Un shaker serré en doubles croches : il fait briller le haut pendant que la 303 tourne.": "16分音符のタイトなシェイカー：303 が回る間、高音を輝かせます。"
 }

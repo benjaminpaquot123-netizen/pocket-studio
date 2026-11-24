@@ -44,14 +44,15 @@ done
 for zone in "${zones[@]}"; do
   b="eq/$tour-$zone"
   git rev-parse -q --verify "refs/heads/$b" > /dev/null && continue
-  if git rev-parse -q --verify "refs/remotes/origin/$b" > /dev/null; then git branch -q "$b" "origin/$b"; continue; fi
+  if git rev-parse -q --verify "refs/remotes/origin/$b" > /dev/null; then git branch -q "$b" "origin/$b"; echo "$b : créée depuis origin"; continue; fi
   git fetch -q origin "refs/heads/$b:refs/heads/$b" 2> /dev/null || refuse "la branche $b n'existe ni ici ni sur origin."
   echo "$b : créée depuis origin"
 done
 prevol_out="$(bash scripts/bench/pre-vol.sh "$tour" "${zones[@]}" 2>&1 || true)"
 printf '%s\n' "$prevol_out" | grep -q 'PRÉ-VOL : PRÊT' || { printf '%s\n' "$prevol_out" >&2; refuse "PRÉ-VOL pas PRÊT (ci-dessus)."; }
 paquet="$(mktemp -d)"
-trap 'rm -rf "${paquet:?}"' EXIT
+keep=0
+trap '[ "$keep" = 1 ] || rm -rf "${paquet:?}"' EXIT
 : > "$paquet/fusions"
 PS_PAQUET_ETAPE=controle PS_PAQUET_LOT="$paquet" "${portal[@]}" || refuse "les contrôles d'une zone ont refusé (ci-dessus)."
 mapfile -t union < <(cat "$paquet"/filtres-* 2> /dev/null | awk 'NF && !seen[$0]++')
@@ -101,12 +102,14 @@ echo "Pré-contrôle : PRÊT (${zones[*]}; ${#union[@]} filtre(s))."
 start="$(git rev-parse HEAD)"
 fallback() {
   echo "Paquet rouge ($1) : retour à $(git rev-parse --short "$start"), puis zone par zone." >&2
+  keep=1; echo "Dossier du paquet gardé pour le diagnostic : $paquet" >&2
   git merge --abort 2> /dev/null || true
-  git reset -q --keep "$start" 2> /dev/null || git reset -q --hard "$start"
+  git reset -q --keep "$start" || { echo "REFUSÉ : retour à $(git rev-parse --short "$start") impossible sans perdre des changements (ci-dessus) : rien n'est effacé, à régler à la main." >&2; exit 2; }
   set +e; "${portal[@]}"; code=$?; set -e
   exit "$code"
 }
 PS_PAQUET_ETAPE=fusion PS_PAQUET_LOT="$paquet" "${portal[@]}" || fallback "fusions"
+git rev-parse HEAD > "$paquet/tete"
 green=1
 env -u PS_REJEUX_DIR PS_REJEUX_SELFTEST="$paquet" scripts/bench/rejeu-defauts.sh > "$paquet/rejeux.txt" 2>&1 || green=0
 cat "$paquet/rejeux.txt"

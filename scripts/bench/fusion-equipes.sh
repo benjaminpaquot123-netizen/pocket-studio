@@ -46,6 +46,15 @@ for zone in "${zones[@]}"; do
   read_sha="$(printf '%s\n' "$text" | sed -n 's/^.*[Rr]elu *: *\([0-9a-f]\{7,40\}\).*$/\1/p' | head -1)"
   merged="$(awk -v z="$zone" '$1 == z { m = $2 } END { print m }' "$PS_PAQUET_LOT/fusions")"
   [ -n "$merged" ] || { echo "$zone: no merge of this zone in the batch ($PS_PAQUET_LOT/fusions)." >&2; exit 3; }
+  # (Never a trace for a merge the batch did not make and test: the merge is this zone's own « Merge team » of its
+  # branch's head, in the history; the self-test ran on the batch's head « tete », and since it only docs/ moved.)
+  tete_paquet="$(cat "$PS_PAQUET_LOT/tete" 2> /dev/null || true)"
+  { [ "$(git log -1 --format=%s "$merged" 2> /dev/null)" = "Merge team $zone of $tour (audit ultra)" ] \
+    && [ "$(git rev-parse -q --verify "$merged^2")" = "$(git rev-parse "eq/$tour-$zone")" ] \
+    && [ -n "$tete_paquet" ] && git merge-base --is-ancestor "$merged" "$tete_paquet" \
+    && git merge-base --is-ancestor "$tete_paquet" HEAD \
+    && git diff --quiet "$tete_paquet" HEAD -- . ':(exclude)docs'; } \
+    || { echo "$zone: $merged is not this batch's tested merge of eq/$tour-$zone (no trace written)." >&2; exit 3; }
   before="$(git rev-parse HEAD)"
   avant="$(git rev-parse "$merged^1")"
   base="$(git merge-base "$avant" "eq/$tour-$zone")"
@@ -243,6 +252,15 @@ for zone in "${zones[@]}"; do
   count_of() { sed -n 's/^chantier : \([0-9][0-9]*\) écart.*/\1/p' | tail -1; }
   short_shas() { sed -E 's/\b([0-9a-f]{7})[0-9a-f]{1,33}\b/\1/g'; }
   judge_now="$(count_of < "$trace/selftest-chantier.txt")"
+  if [ "$etape" = traces ] && [ -n "$judge_now" ]; then
+    # (Batch: the merges of the zones still to trace have no traces yet; their « fusion sans trace » are owed by the
+    # next steps, not counted here. The next zone's trace and the next lot compare against the true count.)
+    owed="$(awk -v z="$zone" 'f { print substr($2, 1, 7) } $1 == z { f = 1 }' "$lot/fusions" \
+      | awk 'NR == FNR { p[$1] = 1; next } / : fusion sans trace du portail$/ && (substr($1, 1, 7) in p)' - "$trace/selftest-chantier.txt" | wc -l)"
+    if [ "$owed" -gt 0 ]; then
+      judge_now=$((judge_now - owed)); echo "$zone: judge: $owed « fusion sans trace » of this batch's next zones, traced next: not counted"
+    fi
+  fi
   prev_commit="$(git log -1 --format=%H --grep='^Portal traces of the merge ' "$before" -- "$traces_root" || true)"
   prev_file=""; prev_text=""
   [ -z "$prev_commit" ] || prev_file="$(git diff-tree --no-commit-id --name-only -r "$prev_commit" -- "$traces_root" | grep '/selftest-chantier\.txt$' | head -1 || true)"
@@ -283,7 +301,9 @@ for zone in "${zones[@]}"; do
   if from_paquet 8 && [ -f docs/audits/ultra/corrections.tsv ] && [ -f scripts/bench/reparations.py ]; then
     computed+=(docs/audits/ultra/corrections.tsv)
     proofs=(); for f in "${zone_filters[@]}"; do proofs+=("filtre:$f"); done
-    python3 -I scripts/bench/reparations.py --rejoue "eq/$tour-$zone" "base:$base" "tete:$avant" "rejeux:$lot/rejeux.txt" "fusion:$merged" "${proofs[@]}" | sed "s/^/$zone: /"
+    # Batch traces: the head before this zone's merge is $avant (scoped: clean_merge still resets to $before).
+    ( [ "$etape" != traces ] || before="$avant"
+      python3 -I scripts/bench/reparations.py --rejoue "eq/$tour-$zone" "base:$base" "tete:$before" "rejeux:$lot/rejeux.txt" "fusion:$merged" "${proofs[@]}" ) | sed "s/^/$zone: /"
     git diff --quiet -- docs/audits/ultra/corrections.tsv || index+=(docs/audits/ultra/corrections.tsv)
   fi
   # PLAN-RESTE 7.1: the round's reports fused again (the new keys into base.tsv) and the dashboard recomputed on every

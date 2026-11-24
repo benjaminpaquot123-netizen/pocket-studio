@@ -55,9 +55,11 @@ echo "t1-clavier : oracle tenu"
 JUDGE_MAIN = """
 
 if __name__ == "__main__":
-    import glob
-    print('traces vues' if glob.glob('docs/audits/ultra/portail/*/fusion.txt') else 'fusion sans trace du portail')
-    print('chantier : 0 écarts')
+    # The toy's judge: the real « fusion sans trace du portail » count, as the portal reads it after each trace.
+    gaps = merge_trace_gaps(".")
+    for g in gaps:
+        print(g)
+    print(f'chantier : {len(gaps)} écarts')
 """
 
 PREVOL = """#!/usr/bin/env bash
@@ -203,6 +205,35 @@ class Batch(unittest.TestCase):
         # The batch's merges were undone before the fallback: a's merge is a fresh one on the start.
         self.assertEqual(git(root, "rev-parse", "HEAD~1^1").strip(), start)
         self.assertEqual(judge(root), [])
+
+    def test_the_judge_never_refuses_a_batch_for_its_own_next_traces(self):
+        # A previous portal trace at 0 gaps (zone p through the portal alone), then a batch of three: when a's trace is
+        # written, b's and c's merges have none yet; that is owed by the next steps, not a judge gone up (no boost).
+        root = toy(self.d, "juge", zones=("p", "a", "b", "c"))
+        code, out, said = run(root, "scripts/bench/fusion-equipes.sh", "tour-9", "p")
+        self.assertEqual(code, 0, out)
+        self.assertIn("p: judge: 0 écarts", out)
+        code, out, said = run(root, GATE, "tour-9", "a", "b", "c")
+        self.assertEqual(code, 0, out)
+        self.assertEqual(said.count("selftest"), 1, "no fallback zone by zone:\n" + out)
+        self.assertIn("a: judge: 2 « fusion sans trace » of this batch's next zones, traced next: not counted", out)
+        self.assertIn("a: judge: 0 écarts", out)
+        self.assertIn("c: judge: 0 écarts", out)
+        self.assertEqual(judge(root), [])
+
+    def test_the_traces_step_refuses_a_merge_the_batch_did_not_make(self):
+        # A merge made by hand and a folder made by hand: no portal trace for it.
+        root = toy(self.d, "faux", zones=("a",))
+        git(root, "merge", "-q", "--no-ff", "-m", "Merge team a of tour-9 (audit ultra)", "eq/tour-9-a")
+        merged = git(root, "rev-parse", "HEAD").strip()
+        lot = os.path.join(self.d, "lot-faux")
+        for name, text in (("fusions", f"a {merged}\n"), ("filtres-a", ""), ("selftest.ok", "x\n"),
+                           ("selftest-resume.txt", "x\n"), ("selftest-chantier.txt", "x\n"), ("rejeux.txt", "x\n")):
+            write(os.path.join(lot, name), text)
+        code, out, said = run(root, "scripts/bench/fusion-equipes.sh", "tour-9", "a", PS_PAQUET_ETAPE="traces", PS_PAQUET_LOT=lot)
+        self.assertEqual(code, 3, out)
+        self.assertIn("is not this batch's tested merge", out)
+        self.assertNotIn("Portal traces of the merge of a (tour-9)", subjects(root))
 
     def test_batch_mode_from_paquet_10(self):
         root = toy(self.d, "neuf", paquet=9)

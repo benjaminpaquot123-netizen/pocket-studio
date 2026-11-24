@@ -120,8 +120,9 @@ jobs:
     name: Build, unit tests, screenshots
     runs-on: ubuntu-latest
     needs: quick
-    # Unit tests and screenshots: about 43 minutes in the single job (run 43402800379).
-    timeout-minutes: 75
+    # Unit tests and screenshots: about 43 minutes in the single job (run 43402800379), up to 66.5 on a slow
+    # runner (robot1, 2026-11-24): 75 cut green runs short.
+    timeout-minutes: 100
     env:
       VERSION_CODE: ${{ github.run_number }}
       RELEASE_CHANNEL: ${{ github.event_name == 'push' && 'stable' || 'preview' }}

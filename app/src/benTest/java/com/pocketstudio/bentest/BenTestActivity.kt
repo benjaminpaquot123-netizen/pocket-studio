@@ -70,6 +70,7 @@ class BenTestActivity : ComponentActivity() {
                 val granted = remember(refresh) { PERMISSIONS.associate { (p, _) -> p to (ContextCompat.checkSelfPermission(this, p) == PackageManager.PERMISSION_GRANTED) } }
                 LaunchedEffect(Unit) { Robot.look(this@BenTestActivity) }
                 val candidats = remember(etat.running, etat.verdict) { Robot.candidats(this@BenTestActivity) }
+                val rates = remember(etat.running, etat.verdict) { Robot.rates(this@BenTestActivity).size }
                 BenTestScreen(
                     etat = etat,
                     candidats = candidats,
@@ -83,7 +84,7 @@ class BenTestActivity : ComponentActivity() {
                         startRates = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.RATES) },
                         startSeul = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.SEUL) },
                         startPaquet = { name -> Robot.start(application, Robot.SCENARIOS, paquet = name) },
-                        rates = Robot.rates(this).size,
+                        rates = rates,
                         startRetest = { ids -> Robot.start(application, Robot.TOUT, ids) },
                         startOreille = { Robot.start(application, Robot.OREILLE) },
                         startMicro = {

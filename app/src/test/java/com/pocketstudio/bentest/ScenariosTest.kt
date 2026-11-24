@@ -874,6 +874,17 @@ class ScenariosTest {
         assertEquals(listOf("tempo", Scenarios.CATALOGUE.first().id), scenarios(Studio(), paquet = Scenarios.RATES, rates = rates).etapes().map { it.name })
     }
 
+    @Test
+    fun aRedoRunKeepsWhatItDidNotReachAndTheStopsSequelsBringTheStop() {
+        fun r(id: String, res: String) = Scenarios.Companion.Resultat(Scenarios.TOUS.first { it.id == id }, null, res, "", null, emptyList())
+        val c = Scenarios.CATALOGUE.first().id
+        // « tempo » passed now; « c » was not reached (run cut short): it stays; « effets » failed now: it comes in.
+        assertEquals(setOf(c, "effets"), Scenarios.ratesApres(setOf("tempo", c), listOf(r("tempo", Scenarios.PASSE), r("effets", Scenarios.ECHOUE))))
+        // The reread after a brutal stop is redone with its stop, in the seuls' order.
+        assertEquals(listOf(Scenarios.ARRET, Scenarios.ARRET_RELU), Scenarios.liste(Scenarios.RATES, setOf(Scenarios.ARRET_RELU)).map { it.id })
+        assertEquals(listOf(Scenarios.ARRET, Scenarios.DEMARRAGE), Scenarios.liste(Scenarios.RATES, setOf(Scenarios.DEMARRAGE)).map { it.id })
+    }
+
     // --- The catalogue (tour 9, A3) ------------------------------------------------------------------
 
     /** The scenarios [ids] of the whole catalogue played as the robot plays them, and their results. */

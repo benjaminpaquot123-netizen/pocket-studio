@@ -211,9 +211,10 @@ object Robot {
             tracker.sorties = null
             tracker.keepScreenOn = false
             appli.orienter(null)
-            // What did not pass, for « Refaire les ratés » (a « ratés » run keeps only what still fails).
+            // What did not pass, for « Refaire les ratés »: the earlier ones kept unless they now passed, plus this run's
+            // (a pack run cut short leaves the scenarios it did not reach as they were).
             if (which == SCENARIOS) runCatching {
-                ratesFile(app).writeText(Scenarios.resultats(c.lines()).filter { it.resultat != Scenarios.PASSE }.joinToString("\n") { it.scenario.id })
+                ratesFile(app).writeText(Scenarios.ratesApres(rates(app), Scenarios.resultats(c.lines())).joinToString("\n"))
             }
             if (which == TOUT) runCatching {
                 // The last « Tout tester » kept for the next retest: a retest only replaces the steps it ran.

@@ -1168,6 +1168,8 @@ class Scenarios(
                 val now = lu().effets[ch]
                 idx = now.indices.firstOrNull { it >= before.size || now[it] != before[it] } ?: before.size
                 vieux = lu().reglages.getOrNull(ch)?.getOrNull(idx)?.getOrNull(0) ?: Float.NaN
+                // A knob already at the end aimed at would pass with a dead slider: not measured, not green.
+                if (abs(vieux - cible) < PAS_REGLAGE) return nonMesure(step, "${et.params[0].label} de $type est déjà à ${fmt(cible)}")
                 if (!j.exists("fx_editor_${ch}_$slot")) {
                     j.tap("fx_chip_${ch}_$slot")
                     attendre(3_000) { j.exists("fx_editor_${ch}_$slot") }
@@ -1296,6 +1298,15 @@ class Scenarios(
             fermerFeuilles()
         }
         if (!there) return nonMesure(step, "pas de « $tag » dans la feuille de la partie ${PARTIE + 1}")
+        try {
+            return partieRedoSuite(step, tag, delta, before)
+        } finally {
+            // A failure half-way leaves the song as found for the next scenario.
+            runCatching { repeat(3) { if (lu().parties != before && j.exists("top_undo")) { j.tap("top_undo"); attendre(3_000) { lu().parties == before } } } }
+        }
+    }
+
+    private fun partieRedoSuite(step: String, tag: String, delta: Int, before: Int): String {
         check(attendre(5_000) { lu().parties == before + delta }) { "${lu().parties} parties après le geste (avant : $before, attendu : ${before + delta})" }
         annuler("le geste « $tag »")
         check(attendre(5_000) { lu().parties == before }) { "« Annuler » ne remet pas le morceau : ${lu().parties} parties (attendu : $before)" }
@@ -1356,7 +1367,7 @@ class Scenarios(
             fermerFeuilles()
             e.arreter()
             // The whole sheet is one undo step: « Annuler » until the tempo is back.
-            repeat(3) { if (abs(lu().tempo - before) > 0.01 && j.exists("top_undo")) { j.tap("top_undo"); attendre(3_000) { abs(lu().tempo - before) < 0.01 } } }
+            runCatching { repeat(3) { if (abs(lu().tempo - before) > 0.01 && j.exists("top_undo")) { j.tap("top_undo"); attendre(3_000) { abs(lu().tempo - before) < 0.01 } } } }
         }
         ecoute(step, b)
         feuEcoute(step, b)
@@ -1717,10 +1728,20 @@ class Scenarios(
         )
         private const val PAQUET = "paquet"
 
+        /** The ids to redo after a run: the earlier ones that did not pass this time either (or were not reached), and this run's failures. */
+        fun ratesApres(avant: Set<String>, run: List<Resultat>): Set<String> {
+            val passes = run.filter { it.resultat == PASSE }.map { it.scenario.id }.toSet()
+            return TOUS.map { it.id }.filter { (it in avant && it !in passes) || run.any { r -> r.scenario.id == it && r.resultat != PASSE } }.toSet()
+        }
+
         /** A pack's scenarios. */
         fun liste(paquet: String, rates: Set<String> = emptySet()): List<Scenario> = when (paquet) {
             RAPIDE -> LISTE.filter { it.geste == null }
-            RATES -> TOUS.filter { it.id in rates }
+            // The brutal stop's sequels need the stop just before them: it is played again with them.
+            RATES -> {
+                val ids = if (rates.any { it == ARRET_RELU || it == DEMARRAGE }) rates + ARRET else rates
+                TOUS.filter { it.id in ids }
+            }
             SEUL -> SEULS
             GUIDES -> TOUS.filter { it.geste?.startsWith("guide:") == true }
             else -> CHUNKS[paquet] ?: LISTE

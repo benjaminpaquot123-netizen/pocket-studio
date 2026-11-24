@@ -441,7 +441,12 @@ internal object WizardMix {
                 .filter { it in channels.indices && it != Mixer.MASTER }.toSet()
             var padPump = 0f
             var bassPump = 0f
+            // The style's own pump on its chords (format v2, « chords ») stays where it was put: the bus ducks the rest.
+            val chordsPumped = if (style.mix?.pump?.contains("chords") == true) {
+                partOfTrack.filterValues { it == Part.Pad }.keys.map { InstrumentTrack.mixerChannel(it) }.toSet()
+            } else emptySet()
             for (ch in members) {
+                if (ch in chordsPumped) continue
                 val c = channels[ch]
                 val pumps = c.inserts.filter { it.type == EffectType.PUMP.ordinal && it.params.getOrElse(2) { 0f } < 0.5f }
                 if (pumps.isEmpty()) continue

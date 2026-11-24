@@ -35,25 +35,28 @@ class RecipeFormatV2Test {
     private fun json(text: String) = Json.parseToJsonElement(text)
 
     /** The converter run on [recipe] alone: (exit code, generated text or the error). */
-    private fun convert(recipe: JsonObject): Pair<Int, String> {
+    private fun convert(recipe: JsonObject, catalogues: File? = null): Pair<Int, String> {
         assumeTrue("converter not found", script.isFile)
         val input = File.createTempFile("recipe", ".json").apply { deleteOnExit(); writeText(buildJsonArray { add(recipe) }.toString()) }
         val out = File.createTempFile("StyleRecipes", ".kt").apply { deleteOnExit() }
-        val process = runCatching { ProcessBuilder("python3", "-I", script.path, out.path, input.path).redirectErrorStream(true).start() }.getOrNull()
+        val process = runCatching {
+            ProcessBuilder("python3", "-I", script.path, out.path, input.path).redirectErrorStream(true)
+                .apply { catalogues?.let { environment()["PS_PACK_CATALOGUES"] = it.path } }.start()
+        }.getOrNull()
         assumeTrue("python3 is not available", process != null)
         val log = process!!.inputStream.bufferedReader().readText()
         assumeTrue("python3 did not finish", process.waitFor(60, TimeUnit.SECONDS))
         return process.exitValue() to if (process.exitValue() == 0) out.readText() else log
     }
 
-    private fun accepted(recipe: JsonObject): String {
-        val (code, text) = convert(recipe)
+    private fun accepted(recipe: JsonObject, catalogues: File? = null): String {
+        val (code, text) = convert(recipe, catalogues)
         assertEquals(text, 0, code)
         return text
     }
 
-    private fun refused(recipe: JsonObject, why: String) {
-        val (code, text) = convert(recipe)
+    private fun refused(recipe: JsonObject, why: String, catalogues: File? = null) {
+        val (code, text) = convert(recipe, catalogues)
         assertNotEquals("accepted: $why", 0, code)
         assertTrue("$why: $text", "recipe error" in text)
     }
@@ -65,6 +68,57 @@ class RecipeFormatV2Test {
 
     private fun drum(role: String, extra: String = "") =
         json("""{"role": "$role", "pattern": "....X.......X...", "tip_fr": "t"$extra}""").jsonObject
+
+    /** Catalogues of test: a voice pack and an instrument open to recipes, a pack that is not. */
+    private fun catalogues(): File {
+        val dir = kotlin.io.path.createTempDirectory("catalogues").toFile().apply { deleteOnExit() }
+        File(dir, "libraries.json").writeText(
+            """{"sources": [], "packs": [
+              {"id": "voix_test", "recipes": true, "rules": [{"slug": "yeah", "kind": "vocal"}, {"slug": "skrrt", "kind": "vocal"}]},
+              {"id": "perc_test", "recipes": true, "rules": [{"slug": "shaker", "kind": "perc"}, {"slug": "doigts", "kind": "clap"}]},
+              {"id": "ferme", "rules": [{"slug": "x", "kind": "perc"}]}]}""",
+        )
+        File(dir, "instruments.json").writeText(
+            """{"sources": [], "instruments": [
+              {"id": "instrument_test", "recipes": {"flute": [67, 100]}, "category": "woodwinds", "kind": "lead", "fallback": "Lead"},
+              {"id": "instrument_ferme", "category": "piano", "kind": "keys", "fallback": "Piano FM"}]}""",
+        )
+        return dir
+    }
+
+    @Test
+    fun everyPackOpenToRecipesIsAccepted() {
+        val cat = catalogues()
+        val lead = { sound: String -> trap().with("lead" to JsonObject(trap()["lead"]!!.jsonObject + ("sound" to JsonPrimitive(sound)))) }
+        val recipe = drums(lead("lib:instrument_test:flute"), { i, d ->
+            when (i) {
+                0 -> d.with("layers" to json("""["lib:perc_test:doigts"]"""))
+                else -> d
+            }
+        }, drum("shaker", ""","source": "lib:perc_test:shaker"""")).with("vocal" to json("""{"type": "answer", "sample": "voix_test:yeah"}"""))
+        val text = accepted(recipe, cat)
+        assertTrue(text, "Part.Lead to \"instrument_test:flute\"" in text)
+        assertTrue(text, "lead = \"Lead\"" in text || "\"Lead\"" in text)
+        assertTrue(text, "Role.Shaker to \"perc_test:shaker\"" in text)
+        assertTrue(text, "lib:perc_test:doigts" in text)
+        assertTrue(text, "vocalSample = \"voix_test:yeah\"" in text)
+        val shaker = { src: String -> drums(trap(), { _, d -> d }, drum("shaker", ""","source": "$src"""")) }
+        refused(shaker("lib:perc_test:cloche"), "a sound the pack does not have", cat)
+        refused(shaker("lib:ferme:x"), "a pack not open to recipes", cat)
+        refused(shaker("lib:instrument_test:flute"), "an instrument as a drum sound", cat)
+        refused(lead("lib:instrument_test:hautbois"), "a part the instrument does not have", cat)
+        refused(lead("lib:instrument_ferme:piano"), "an instrument not open to recipes", cat)
+        refused(lead("lib:voix_test:yeah"), "a sample pack as a melodic instrument", cat)
+        refused(trap().with("vocal" to json("""{"type": "answer", "sample": "voix_test:nope"}""")), "an unknown chop", cat)
+    }
+
+    @Test
+    fun anInstrumentNamedByTheRecipeComesFirst() {
+        val style = StarterWizard.STYLES.first()
+        val flute = style.copy(melody = style.melody.copy(packSounds = mapOf(StarterWizard.Part.Lead to "instrument_test:flute")))
+        val installed = listOf(PackManifest("instrument_test", "Bois test", instrument = MultiInstrument(category = "woodwinds")))
+        assertEquals("instrument_test", StarterWizard.soundsFor(StarterWizard.Part.Lead, flute, installed).first().multi?.pack)
+    }
 
     @Test
     fun aRecipeWithoutTheNewFieldsIsWrittenAsBefore() {

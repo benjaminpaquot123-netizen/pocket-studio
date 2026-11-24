@@ -104,7 +104,7 @@
    "voicing": "seventh",
    "octave": 4,
    "sound": "Nappe",
-   "layer": "Machine à cordes"
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-------..R-----R-------..R--/O-R-------..R-----R---5---..R-3-..",
@@ -146,35 +146,6 @@
     "reverb": 0.3
    },
    {
-    "on": "chords",
-    "insert": "PUMP",
-    "params": [
-     0.55,
-     0.4,
-     0
-    ]
-   },
-   {
-    "on": "bass",
-    "insert": "OTT",
-    "params": [
-     0.45,
-     0.5,
-     0.6,
-     0.6
-    ]
-   },
-   {
-    "on": "lead",
-    "insert": "OTT",
-    "params": [
-     0.4,
-     0.5,
-     0.6,
-     0.6
-    ]
-   },
-   {
     "on": "kick",
     "preset": "punch"
    },
@@ -203,12 +174,14 @@
    "perc"
   ],
   "mix": {
-   "pump": [
-    "808",
-    "chords"
-   ],
    "glue_blend": 0.6,
-   "bus_drive": 0.35
+   "bus_drive": 0.35,
+   "pump": [
+    "chords"
+   ]
+  },
+  "counter": {
+   "sound": "Pluck"
   }
  },
  {
@@ -310,12 +283,13 @@
    "octave": 3,
    "sound": "Rhodes FM",
    "voice_lead": true,
-   "layer": "Nappe"
+   "layer": "Nappe",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-------..R---5-R-------.5..R-3-",
    "octave": 2,
-   "sound": "Sub chaud",
+   "sound": "Basse ronde",
    "glide": false,
    "sub": true,
    "variation": "R-------..R---5-R-------.5..R-3-R-------..R---5-O-----7-..5-3-.."
@@ -355,15 +329,6 @@
    },
    {
     "on": "chords",
-    "insert": "PUMP",
-    "params": [
-     0.45,
-     0.4,
-     0
-    ]
-   },
-   {
-    "on": "chords",
     "reverb": 0.35,
     "insert": "AUTO_PAN",
     "params": [
@@ -380,16 +345,6 @@
      0.4,
      0.4,
      0.35
-    ]
-   },
-   {
-    "on": "lead",
-    "insert": "OTT",
-    "params": [
-     0.3,
-     0.5,
-     0.6,
-     0.6
     ]
    },
    {
@@ -417,10 +372,6 @@
    "rhythm": "..X.....X...X..."
   },
   "mix": {
-   "pump": [
-    "808",
-    "chords"
-   ],
    "glue_blend": 0.5,
    "bus_drive": 0.2
   }
@@ -513,7 +464,8 @@
    "rhythm": "X---------------",
    "voicing": "sus2",
    "octave": 4,
-   "sound": "Essaim"
+   "sound": "Essaim",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-.R--.R-.......R-.R--.R-...R-O-",
@@ -549,7 +501,7 @@
   "fx": [
    {
     "on": "bass",
-    "preset": "growl",
+    "preset": "fat_bass",
     "insert": "PUMP"
    },
    {
@@ -583,11 +535,11 @@
    "perc"
   ],
   "mix": {
-   "pump": [
-    "808"
-   ],
    "glue_blend": 0.6,
    "bus_drive": 0.4
+  },
+  "counter": {
+   "sound": "Pluck"
   }
  },
  {
@@ -684,12 +636,13 @@
    "rhythm": "X---------------",
    "voicing": "seventh",
    "octave": 4,
-   "sound": "Nappe chaude"
+   "sound": "Nappe chaude",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-------..R---5-R-----3-..5---7-",
    "octave": 2,
-   "sound": "Sub chaud",
+   "sound": "Basse ronde",
    "glide": false,
    "sub": true
   },
@@ -752,12 +705,11 @@
    "hat"
   ],
   "mix": {
-   "pump": [
-    "808",
-    "chords"
-   ],
    "glue_blend": 0.6,
    "bus_drive": 0.35
+  },
+  "counter": {
+   "sound": "Pluck"
   }
  },
  {
@@ -856,7 +808,8 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 4,
-   "sound": "Nappe"
+   "sound": "Nappe",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-.R..R-..R-....R-.R..R-..R--/O-R-.R..5-..3-....R-..............",
@@ -914,16 +867,6 @@
     "insert": "PUMP"
    },
    {
-    "on": "lead",
-    "insert": "OTT",
-    "params": [
-     0.35,
-     0.5,
-     0.6,
-     0.6
-    ]
-   },
-   {
     "on": "kick",
     "preset": "punch"
    },
@@ -949,9 +892,6 @@
    }
   ],
   "mix": {
-   "pump": [
-    "808"
-   ],
    "glue_blend": 0.6,
    "bus_drive": 0.4
   }
@@ -1050,7 +990,8 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 4,
-   "sound": "Nappe"
+   "sound": "Nappe",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-------..R---O-R-----------2-..R---R---..R-5---R-------....3-O-",
@@ -1084,7 +1025,7 @@
   "fx": [
    {
     "on": "bass",
-    "preset": "growl",
+    "preset": "fat_bass",
     "insert": "PUMP"
    },
    {
@@ -1099,25 +1040,6 @@
    {
     "on": "lead",
     "preset": "dub_echo"
-   },
-   {
-    "on": "chords",
-    "insert": "PUMP",
-    "params": [
-     0.6,
-     0.45,
-     0
-    ]
-   },
-   {
-    "on": "master",
-    "insert": "OTT",
-    "params": [
-     0.3,
-     0.5,
-     0.5,
-     0.5
-    ]
    },
    {
     "on": "kick",
@@ -1150,12 +1072,11 @@
    "perc"
   ],
   "mix": {
-   "pump": [
-    "808",
-    "chords"
-   ],
    "glue_blend": 0.6,
    "bus_drive": 0.4
+  },
+  "counter": {
+   "sound": "Pluck"
   }
  },
  {
@@ -1252,7 +1173,8 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 4,
-   "sound": "Nappe"
+   "sound": "Nappe",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R--.R--.....O-..R--.R--...3-O-..",
@@ -1285,7 +1207,7 @@
   "fx": [
    {
     "on": "bass",
-    "preset": "growl",
+    "preset": "fat_bass",
     "insert": "FLANGER"
    },
    {
@@ -1335,11 +1257,11 @@
    "perc"
   ],
   "mix": {
-   "pump": [
-    "808"
-   ],
    "glue_blend": 0.6,
    "bus_drive": 0.45
+  },
+  "counter": {
+   "sound": "Pluck"
   }
  },
  {
@@ -1459,7 +1381,7 @@
     "accent": 4,
     "rate": 24
    },
-   "layer": "Machine à cordes"
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-R.R-R.R-R.R-R.R-R.R-R.R-R.R.O.",
@@ -1501,23 +1423,8 @@
     "insert": "PUMP"
    },
    {
-    "on": "chords",
-    "insert": "PUMP",
-    "reverb": 0.3
-   },
-   {
     "on": "lead",
     "delay": 0.25
-   },
-   {
-    "on": "bass",
-    "insert": "OTT",
-    "params": [
-     0.3,
-     0.5,
-     0.6,
-     0.6
-    ]
    },
    {
     "on": "kick",
@@ -1548,12 +1455,11 @@
    }
   ],
   "mix": {
-   "pump": [
-    "808",
-    "chords"
-   ],
    "glue_blend": 0.5,
    "bus_drive": 0.25
+  },
+  "counter": {
+   "sound": "Pluck"
   }
  },
  {
@@ -1666,7 +1572,8 @@
    "voicing": "seventh",
    "octave": 3,
    "sound": "gm:Acoustic Grand Piano",
-   "voice_lead": true
+   "voice_lead": true,
+   "double": "octave"
   },
   "bass": {
    "pattern": "R---r-O-R---r-5-",
@@ -1712,26 +1619,6 @@
     "delay": 0.2
    },
    {
-    "on": "bass",
-    "insert": "OTT",
-    "params": [
-     0.3,
-     0.5,
-     0.6,
-     0.6
-    ]
-   },
-   {
-    "on": "lead",
-    "insert": "OTT",
-    "params": [
-     0.3,
-     0.5,
-     0.6,
-     0.6
-    ]
-   },
-   {
     "on": "kick",
     "preset": "punch"
    },
@@ -1743,11 +1630,11 @@
   ],
   "riser": true,
   "mix": {
-   "pump": [
-    "chords"
-   ],
    "glue_blend": 0.5,
    "bus_drive": 0.25
+  },
+  "counter": {
+   "sound": "Pluck"
   }
  }
 ]

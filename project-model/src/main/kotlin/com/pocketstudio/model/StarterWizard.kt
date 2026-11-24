@@ -2519,7 +2519,12 @@ object StarterWizard {
                 p = p.withTrack(p.track(id).copy(notes = if (spec.vocal) clip else clip.copy(notes = emptyList())))
             }
             tracks.riser?.let { id -> p = p.withTrack(p.track(id).copy(notes = riserNotes(spec, sceneSteps))) }
-            tracks.double?.let { id -> if (spec.base != 2) p = p.withTrack(p.track(id).copy(notes = p.track(id).notes.copy(notes = emptyList()))) }
+            // The doubling follows the chords: only in a Drop, cut like them, silent where they are out.
+            tracks.double?.let { id ->
+                val chordsOut = partOfTrack.filterValues { it == Part.Pad }.keys.all { p.track(it).notes.notes.isEmpty() }
+                val clip = p.track(id).notes.let { if (spec.base != 2 || chordsOut) it.copy(notes = emptyList()) else windowed(it, spec, false, chords = true) }
+                p = p.withTrack(p.track(id).copy(notes = clip))
+            }
             // Held under the whole song, but quiet on the beat of silence before a Drop.
             tracks.texture?.let { id -> p = p.withTrack(p.track(id).copy(notes = textureNotes(sceneSteps, full.harmony).let { c -> if (spec.silence) windowed(c, spec.copy(half = -1), false, false) else c })) }
             tracks.subDrop?.let { id -> p = p.withTrack(p.track(id).copy(notes = subDropNotes(spec, sceneSteps, full.harmony))) }

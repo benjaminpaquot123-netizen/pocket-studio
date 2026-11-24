@@ -131,6 +131,7 @@
   },
   {
    "id": "instrument_bois",
+   "recipes": {"flute": [67, 100]},
    "name": "Bois",
    "category": "woodwinds",
    "kind": "lead",
@@ -142,7 +143,7 @@
    "max_ram_mb": 32,
    "veltrack": 0.4,
    "attack": 0.02,
-   "release": 0.4,
+   "release": 0.2,
    "seconds": [[0, 3.0], [127, 3.0]],
    "parts": [
     {"sfz": "BassoonSus.sfz", "keys": [24, 51], "layers": 2, "loop": true},

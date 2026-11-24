@@ -491,6 +491,68 @@
    "lexicon": "lead"
   },
   {
+   "id": "sound.counter",
+   "stage": 1,
+   "target": "counter",
+   "kind": "decide",
+   "simple": true,
+   "title": "Le contre-chant : la réponse",
+   "why": "Une deuxième ligne qui répond au lead dans ses silences, au 2e refrain surtout : le morceau grandit.",
+   "simpleTitle": "La réponse",
+   "simpleWhy": "Une petite mélodie qui répond à la première.",
+   "when": "Au début, piste par piste : le kick d'abord.",
+   "applicable": [
+    "has:counter"
+   ],
+   "done": [
+    "has:counter",
+    "by_hand|changed:counter"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce son",
+     "why": "Il tient son rôle : on passe au suivant.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "other",
+     "label": "Autre idée de son",
+     "why": "Un autre son du même rôle, écouté avec le reste.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.track",
+      "target": "counter"
+     }
+    },
+    {
+     "id": "where",
+     "label": "Où il joue",
+     "why": "Les parties où la piste joue : une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "counter"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "counter"
+     }
+    }
+   ],
+   "lexicon": "lead"
+  },
+  {
    "id": "sound.riser",
    "stage": 1,
    "target": "riser",
@@ -896,6 +958,16 @@
     }
    ],
    "elsewhere": [
+    {
+     "id": "copy_counter",
+     "label": "La même chaîne pour le contre-chant",
+     "why": "Les deux lignes sonnent dans le même espace.",
+     "action": {
+      "type": "copyChain",
+      "target": "lead",
+      "to": "counter"
+     }
+    },
     {
      "id": "favorite",
      "label": "Garder ce son dans mes favoris",

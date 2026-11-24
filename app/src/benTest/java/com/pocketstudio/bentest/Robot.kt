@@ -462,6 +462,12 @@ private class AppliReelle(private val app: Application, private val main: MainTh
         }
     }
 
+    // The app's session state, not the engine (no part index in the probe): an engine hook is for an app lot.
+    override fun partieJouee(): Int? = main.run {
+        val a = tracker.studio as? ComponentActivity ?: return@run null
+        ViewModelProvider(a)[RhythmViewModel::class.java].sessionUi.value.shownSongIndex.takeIf { it >= 0 }
+    }
+
     override fun capture(file: File): Boolean = main.run { Captures.windows(WindowInspector.getGlobalWindowViews(), file) }
 
     override fun demander(question: String, maxMs: Long): Boolean? = Robot.ask(app, question, maxMs)

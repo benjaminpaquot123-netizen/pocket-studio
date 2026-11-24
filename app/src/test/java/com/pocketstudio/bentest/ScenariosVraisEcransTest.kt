@@ -42,6 +42,8 @@ open class ScenariosVraisEcransTest {
     private inner class Vrai(private val d: JourneyDriver = ComposeRuleDriver(compose)) : JourneyDriver by d, Sonde, Appli {
         var playing = false
         var partie = -1
+        /** The other project opened from « Mes projets » (see [click]); null: the harness's own. */
+        var ailleurs: String? = null
         override fun partieJouee(): Int? = partie.takeIf { playing && it >= 0 }
         val touched = ArrayList<String>()
 
@@ -53,6 +55,21 @@ open class ScenariosVraisEcransTest {
             if (tag == "live_stop_all") playing = false
             // A part's ▶ on the Structure plays the song from it (or queues it while the song plays).
             if (tag.startsWith("part_play_")) { playing = true; partie = tag.removePrefix("part_play_").toInt() }
+            // Another project in « Mes projets »: the app rebuilds its activity on it (Activity.recreate), which leaves
+            // no screen to this rule under Robolectric. Played here: this one saved, the list closed, the other one
+            // read from the disk as the open one; the song stops with the old screens. The list is closed by the open
+            // project's own row (the app's « resume », no rebuild). The phone does the real rebuild.
+            val id = tag.removePrefix("project_")
+            if (tag.startsWith("project_") && id in ProjectOpening.projectStore(h.app).list()) {
+                if (id != h.vm.projectId) {
+                    kotlinx.coroutines.runBlocking { h.vm.flushNow() }
+                    playing = false
+                    ailleurs = id
+                    d.click("project_${h.vm.projectId}")
+                    return
+                }
+                ailleurs = null
+            }
             d.click(tag)
         }
 
@@ -79,6 +96,10 @@ open class ScenariosVraisEcransTest {
         }
 
         override fun projet(): ProjetVu {
+            ailleurs?.let { id ->
+                val o = ProjectOpening.projectStore(h.app).load(id) ?: error("$id n'est plus sur le disque")
+                return ProjetVu(id, o.name, o.song.size, emptyList(), ProjetVu.Disque(o.name, o.song.size, emptyList()))
+            }
             val p = h.vm.project.value
             fun effets(of: Project) = of.mixer.channels.map { ch -> ch.inserts.filter { it.effect != EffectType.NONE }.map { it.effect.name } }
             val disk = runCatching { ProjectOpening.projectStore(h.app).load(h.vm.projectId) }.getOrNull()

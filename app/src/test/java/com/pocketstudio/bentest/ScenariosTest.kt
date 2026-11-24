@@ -257,9 +257,9 @@ class ScenariosTest {
             assertTrue(level, Scenarios.LISTE.count { it.niveau == level } >= 15)
             assertTrue(level, Scenarios.liste(Scenarios.RAPIDE).count { it.niveau == level } >= 4)
         }
-        // The quick pack: the first 31; the full one: 100 more, by tables.
+        // The quick pack: the first 31; the full one: 102 more, by tables (2b and 2c last).
         assertEquals(31, Scenarios.liste(Scenarios.RAPIDE).size)
-        assertEquals(131, Scenarios.LISTE.size)
+        assertEquals(133, Scenarios.LISTE.size)
         assertEquals(Scenarios.liste(Scenarios.RAPIDE).map { it.id }, scenarios(Studio(), paquet = Scenarios.RAPIDE).etapes().map { it.name })
         // Every style of the assistant has its scenario, and the exports' styles exist.
         val styles = com.pocketstudio.model.StarterWizard.STYLES.map { it.id }

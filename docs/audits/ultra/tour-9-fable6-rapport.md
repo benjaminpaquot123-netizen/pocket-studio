@@ -21,7 +21,7 @@ Les trois « défauts qui reviennent » de la zone tuto (registre, lignes 9 à 1
 
 et, dans `docs/audits/ultra/corrections.tsv`, une ligne (colonnes de la ligne 349) :
 
-    tour-9	a-V1	a	-	constaté	a8e520d95	Tour9Fable6TouchHereEveryBarTest#everyDottedNoteIsOneTouchAway	un toucher sur la ligne amène toute la mesure en vue	TutoChecks.kt, PianoRoll.kt	téléphone, 100 %, house leçon 3 : à chaque note demandée, la note à poser est en vue au-dessus du panneau et le rond "Touche ici" est dessus ; je la pose d'un toucher	<siège>	<source>
+    tour-9	a-V1	a	-	constaté	a8e520d95	Tour9Fable6TouchHereEveryBar#everyDottedNoteIsOneTouchAway	un toucher sur la ligne amène toute la mesure en vue	TutoChecks.kt, PianoRoll.kt	téléphone, 100 %, house leçon 3 : à chaque note demandée, la note à poser est en vue au-dessus du panneau et le rond "Touche ici" est dessus ; je la pose d'un toucher	<siège>	<source>
 
 tests: *Tour9Fable6TouchHereEveryBarTest *Tour9Fable6EmptyPartNeverDoneTest *Tour9Fable6NothingOutOfItsPartTest *Tour8TutoTouchHere* *PianoRollBigTextDotted* *Tour6TutoFlechesRollTest *Tour6TutoLineGoTest *T9PanelTargetTest *Tour9RollFinishTest
 

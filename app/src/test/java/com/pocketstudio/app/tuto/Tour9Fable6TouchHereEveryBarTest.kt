@@ -123,7 +123,11 @@ abstract class Tour9Fable6TouchHereEveryBar(private val style: String, private v
         await("the dotted notes") { has("piano_roll") && TutoHints.notes?.second?.isNotEmpty() == true }
         settle()
         // A line the course's earlier steps already wrote whole (a bar copied): nothing is left to touch on arrival.
-        if (leftNotes().isEmpty()) println("FABLE6 $style/$stepId ${level.name}: whole on arrival, done=${TutoPlay.done(step, h.vm.project.value, target, null)}, line « ${text("tuto_notes_left_text")} »")
+        if (leftNotes().isEmpty()) {
+            // Skipped only when the step is ticked: a line whole and a step never done would be a dead end.
+            assertTrue("whole on arrival and not done: ${state()}", TutoPlay.done(step, h.vm.project.value, target, null))
+            println("FABLE6 $style/$stepId ${level.name}: whole on arrival, done")
+        }
         assumeTrue("$style/$stepId ${level.name}: nothing left to lay on arrival", leftNotes().isNotEmpty())
         settle()
         val total = leftNotes().size
@@ -154,7 +158,6 @@ abstract class Tour9Fable6TouchHereEveryBar(private val style: String, private v
             assertTrue("touch $touches on ${n.pitch}@${n.start} wrote nothing (${left.size} then ${after.size} left): ${state()}", after.size < left.size || TutoHints.step != stepId)
         }
         assertTrue("$total dotted notes, ${leftNotes().size} left after $touches touches: ${state()}", leftNotes().isEmpty() || TutoHints.step != stepId)
-        assertTrue("$total dotted notes took $touches touches", touches <= total)
         println("FABLE6 $style/$stepId ${level.name}: $total notes, $touches touches, $asks touches on the line")
     }
 

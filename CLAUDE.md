@@ -24,7 +24,12 @@ Au début de chaque session, le chef d'orchestre (ou une discussion sans fiche) 
   - une discussion de plus de 200 k ne reçoit plus de travail neuf ;
   - le chef confie les longues lectures à des sous-agents et ne garde que leur conclusion.
   Le compactage automatique vers 200 k est posé dans `.claude/settings.json` (vérifié : compactage à 144 k).
-- Fable (2026-11-15) : seulement sur une discussion neuve ou un sous-agent, avec une fiche courte (le problème, les fichiers, la preuve attendue). Jamais en passant une longue discussion sur Fable : elle a sa propre limite, vidée le 15 novembre par la discussion principale. Benjamin décide quand.
+- Économie de quota (Benjamin, 2026-11-24 ; `docs/audits/PLAN-ECONOMIE-QUOTA.md`, audité par Fable) :
+  - un « second » (discussion neuve, Opus, relevée vers 120 k) porte portails, pré-vols, push de l'intégration et CI ; un seul pousseur à la fois, nommé dans `EN-COURS.md` ; les neuf garde-fous du plan font foi ;
+  - le chef ne lit jamais un journal brut : tout résultat d'outil de plus de 5 k jetons est filtré (`ci-etat.sh`, `ci-rouge.sh`) ou confié à un sous-agent ;
+  - les équipes écrivent une seule fois, à la fin, au second ; une branche voisine se lit, elle ne se fusionne pas sans ordre du plan ;
+  - tâche d'arrière-plan longue (portail) : délai maximal (2 h) ; effort « medium » permis sur les lots purement mécaniques, jamais sur le second.
+- Fable (2026-11-15) : seulement sur une discussion neuve ou un sous-agent, avec une fiche courte (le problème, les fichiers, la preuve attendue). Jamais en passant une longue discussion sur Fable : elle a sa propre limite, vidée le 15 novembre par la discussion principale. Autorisation de Benjamin (2026-11-24) : le chef lance Fable lui-même quand un problème lui semble délicat (cause pas claire, rouge qui va et vient, choix lourd), et le dit en une ligne dans le point suivant.
 - Discussions (2026-11-15) : l'agent ouvre, pilote et ferme lui-même les discussions et sous-agents, toujours en Opus 5.5. Fable 5.2 seulement quand il est nécessaire, et en demandant d'abord à Benjamin.
 - Toujours parler français avec Benjamin (conversation, messages, rappels).
 - Messages pour lui : français, courts, sans jargon, écoutables en audio. Humour Kaamelott bienvenu dans les changelogs.
@@ -55,7 +60,7 @@ Ordre des étapes, règles anti-conflit et sources : `docs/PLAN-REPRISE.md`.
 
 ## Travail à plusieurs discussions (méthode v3, Benjamin, 2026-11-13)
 Détail et raisons : `docs/audits/AUDIT-ULTRA.md` §13. État du moment, à lire en arrivant : `docs/audits/ultra/EN-COURS.md`. Consignes types : `docs/audits/ultra/GABARIT-FICHES-V3.md`.
-- La discussion principale est le chef d'orchestre : elle distribue le travail par fiches, fusionne seule (par le portail), pousse seule sur l'intégration et parle seule à Benjamin. Décision de Benjamin : ses fiches valent ses consignes pour ce travail, dans les limites de ce fichier (jamais de push sur l'intégration ni sur `main`, pas de PR, rien de destructif, aucun secret). En cas de doute : une ligne au chef, pas une question à Benjamin.
+- La discussion principale est le chef d'orchestre : elle distribue le travail par fiches, fusionne (par le portail) et pousse sur l'intégration, elle-même ou par son « second », et parle seule à Benjamin. Décision de Benjamin : ses fiches valent ses consignes pour ce travail, dans les limites de ce fichier (jamais de push sur l'intégration ni sur `main`, pas de PR, rien de destructif, aucun secret). En cas de doute : une ligne au chef, pas une question à Benjamin.
 - En arrivant, une discussion répond d'abord : « prêt : nom ; modifier l'appli oui/non ; pousser une branche neuve oui/non ; tests chauds oui/non ». Un rôle par discussion : testeur, correcteur, banc, lecteur-trieur ou vérificateur. Un testeur ne lit ni ne modifie le code de l'appli ; un correcteur ne joue pas de siège.
 - Audit et correction ne se mélangent pas : un siège joue un commit nommé et l'écrit (« code testé ») ; pendant une vague de testeurs, rien n'entre dans l'appli ni dans le banc ; un lot ne part que d'un tri fini.
 - Un fichier = un seul lot ouvert ; hors de sa liste de fichiers, on ne touche à rien, on le demande. Le tuto est une seule zone : un lot à la fois, et il n'entre que si un débutant neuf a rejoué ses chapitres sur la branche du lot (0 chapitre bloqué, 0 grave neuf).

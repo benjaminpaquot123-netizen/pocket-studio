@@ -1584,3 +1584,5 @@
 - 2026-11-24 · lot « fable5 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-fable5.md`
 - 2026-11-24 · lot « maven » (tour-9) : 2 décision(s) dans `docs/decisions/tour-9-maven.md`
 - 2026-11-24 · lot « ci-rapide » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-ci-rapide.md`
+- 2026-11-24 · économie de quota : plan audité par Fable appliqué (second pour la machinerie, pas de journal brut, compactage à 140 k). Raison : le chef coûte le plus. Retour arrière : remettre 200000 dans .claude/settings.json et la ligne « fusionne seule » de CLAUDE.md.
+- 2026-11-24 · Fable : Benjamin autorise le chef à le lancer seul sur un problème délicat (discussion neuve, fiche courte). Retour arrière : remettre « Benjamin décide quand » dans CLAUDE.md.

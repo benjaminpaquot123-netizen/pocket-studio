@@ -20,6 +20,7 @@ its list of classes in one JVM, as before; the job « Build, unit tests, screens
     shards.py selftest
 """
 import argparse
+import re
 import glob
 import json
 import os
@@ -38,6 +39,8 @@ ROBO_REPORTS = "app/build/reports/roborazzi/debug"
 ROBO_OUTPUTS = "app/build/outputs/roborazzi"
 PLAN_DIR = "build/shard"
 
+
+POLICY_MAX = 50  # minutes; the slowest job (emulator smoke) takes 16 to 19
 
 def top_level(name):
     """com.x.Outer$Inner (or a path to its class file) -> com.x.Outer."""
@@ -382,6 +385,38 @@ def cmd_selftest(_args):
     return 1 if fails else 0
 
 
+def cmd_policy(args):
+    """The permanent rule (Benjamin, 2026-11-24: fast CI, many checks side by side, for the rest of the project):
+    every job of the workflow has a time limit of POLICY_MAX minutes at most, the unit tests stay a matrix of shards,
+    and the shard counts written in the workflow agree. A job that grows past the limit is split, not given more time."""
+    text = open(args.workflow, encoding="utf-8").read()
+    body = text.split("\njobs:\n", 1)[1] if "\njobs:\n" in text else ""
+    jobs = re.split(r"(?m)^  (?=[A-Za-z_][\w-]*:\s*$)", body)[1:]
+    problems = []
+    if not jobs:
+        problems.append("no job found")
+    for j in jobs:
+        jid = j.split(":", 1)[0]
+        m = re.search(r"(?m)^    timeout-minutes:\s*(\d+)\s*$", j)
+        if not m:
+            problems.append(f"job « {jid} » has no timeout-minutes")
+        elif int(m.group(1)) > POLICY_MAX:
+            problems.append(f"job « {jid} » may run {m.group(1)} minutes (limit {POLICY_MAX}): split it instead")
+    tests = next((j for j in jobs if j.startswith("tests:")), "")
+    m = re.search(r"(?m)^        shard:\s*\[([\d, ]+)\]", tests)
+    n = len(m.group(1).split(",")) if m else 0
+    if n < 2:
+        problems.append("the unit tests are not a matrix of shards (job « tests », matrix.shard)")
+    else:
+        counts = set(re.findall(r"matrix\.shard \}\}/(\d+)", text)) | set(re.findall(r"--shards (\d+)", text))
+        if counts != {str(n)}:
+            problems.append(f"shard counts disagree: matrix has {n}, the workflow writes {sorted(counts)}")
+    for pr in problems:
+        print(f"PROBLEME {pr}")
+    print(f"ci policy: {len(jobs)} jobs, {n} shards, limit {POLICY_MAX} min: {'OK' if not problems else 'REFUSED'}")
+    return 1 if problems else 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -400,6 +435,9 @@ def main():
     p.add_argument("--shards", type=int, required=True)
     p.add_argument("--merge-into")
     p.set_defaults(func=cmd_check)
+    p = sub.add_parser("policy")
+    p.add_argument("workflow", nargs="?", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".github", "workflows", "ci.yml"))
+    p.set_defaults(func=cmd_policy)
     p = sub.add_parser("selftest")
     p.set_defaults(func=cmd_selftest)
     args = parser.parse_args()

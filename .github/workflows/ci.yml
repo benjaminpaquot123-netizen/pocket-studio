@@ -41,6 +41,8 @@ jobs:
           scripts/bench/pre-vol.sh --ci --rapide
           # The unit tests' shards (lot « ci-rapide »): the split and its check, on toy classes.
           python3 -I scripts/ci/shards.py selftest
+          # The permanent rule: no job without a time limit or above 50 minutes, the tests stay in shards.
+          python3 -I scripts/ci/shards.py policy
 
   engine:
     name: Engine tests (Linux)
@@ -119,6 +121,7 @@ jobs:
     name: Separation tests (Linux)
     runs-on: ubuntu-latest
     needs: quick
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -578,6 +581,7 @@ jobs:
     needs: [quick, engine, sanitizers, separation, tests, build, sound, live, apk, smoke]
     # Forks and bots get no secrets: they build and test, but never publish.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 30
     # Releases: the only job that writes (and the only one with the signing secret, in one step).
     permissions:
       contents: write

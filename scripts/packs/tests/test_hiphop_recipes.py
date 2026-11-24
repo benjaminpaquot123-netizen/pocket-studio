@@ -152,6 +152,18 @@ class TrapFlute(unittest.TestCase):
         flute = next(p for p in bois['parts'] if p['sfz'] == 'FluteSusVib.sfz')
         self.assertTrue(flute.get('loop'), 'the held note keeps its vibrato')
 
+    def test_trap_lead_is_the_flute_dark_and_in_a_plate(self):
+        t = styles()['trap']
+        self.assertTrue(t['lead']['sound'].startswith('lib:instrument_bois:flute'), t['lead']['sound'])
+        self.assertTrue(t['lead']['sound'].endswith('|Cloche FM'), 'the old bell when the flute is not installed')
+        fx = [f for f in t['fx'] if f['on'] == 'lead']
+        lp = next(f for f in fx if f.get('insert') == 'FILTER')
+        # cutoff 40 Hz * 450^x: 6 to 8 kHz, low-pass (type 0)
+        self.assertTrue(6000 <= 40 * 450 ** lp['params'][0] <= 8000, lp)
+        self.assertLess(lp['params'][2], 1 / 3)
+        self.assertTrue(any(f.get('insert') == 'REVERB' for f in fx), 'a plate')
+        self.assertEqual('Cloche FM', (t.get('counter') or {}).get('sound'), 'the bell kept, as the answer')
+
 
 class TrapVoices(unittest.TestCase):
     """Lot L7: real ad-lib voices (CC0 on Freesound, each page read), open to recipes."""
@@ -175,6 +187,15 @@ class TrapVoices(unittest.TestCase):
             self.assertTrue(src['page'].startswith('https://freesound.org/people/'), sid)
             for url in src['urls']:
                 self.assertRegex(url, r'^https://cdn\.freesound\.org/previews/\d+/\d+_\d+-hq\.ogg$')
+
+    def test_adlibs_sung_in_the_hiphop_styles(self):
+        slugs = {r['slug'] for r in self.pack['rules']}
+        for sid in ('trap', 'drill', 'phonk', 'jersey_club'):
+            vocal = styles()[sid].get('vocal')
+            self.assertIsInstance(vocal, dict, sid)
+            pack, _, slug = vocal['sample'].partition(':')
+            self.assertEqual('voix_adlib', pack, sid)
+            self.assertIn(slug, slugs, sid)
 
 
 if __name__ == '__main__':

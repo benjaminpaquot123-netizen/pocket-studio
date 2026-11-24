@@ -12,4 +12,6 @@ Fichier : scripts/packs/recipes/bass.json seul. StyleRecipes.kt et les guides (d
 - Banc (song-bench Drop, grave 60–250) : dnb −4,5, jungle −4,0, liquid −4,6, synthwave −3,5, pop −3,1 ; dubstep −8,2, neurofunk −8,2, jump_up −8,2, riddim −6,9 (sous la cible −6). Live-bench 9/9 sans alerte.
 - A/B : /tmp/claude-0/-home-user-pocket-studio/94c2dbf7-5428-546f-bcdc-51b55439e7f8/scratchpad/ab (avant / après par style).
 
-tests: aucun : recettes seules ; preuve :project-model:test complet vert, song-bench et live-bench ci-dessus.
+tests: com.pocketstudio.model.RecipeFormatV2Test com.pocketstudio.model.HonestMixTest com.pocketstudio.model.RoleMixTest com.pocketstudio.app.bench.LiveSongRecorder
+
+chemin: assistant → morceau en un geste → lecture en direct (9 styles bass) | test: LiveSongRecorder#recordsTheLivePlaybackOfEveryStyle

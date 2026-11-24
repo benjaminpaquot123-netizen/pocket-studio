@@ -1269,6 +1269,11 @@
     "source": "afrobeats",
     "tip_fr": "Les congas sautillent entre les coups de kick, comme une réponse.",
     "voice": "conga"
+   },
+   {
+    "role": "open_hat",
+    "pattern": "......x.......x.",
+    "tip_fr": "Un charley ouvert léger à contretemps : il donne de l'air au-dessus des shakers."
    }
   ],
   "progressions": {
@@ -1345,7 +1350,7 @@
   "bass_tip": "Une basse ronde et liée qui suit le kick et rebondit vers l'aigu.",
   "pad_tip": "Le piano électrique joue des petits coups qui sautillent (3-3-4-3-3) : c'est lui qui fait danser.",
   "lead_tip": "La guitare : une phrase de deux mesures en question-réponse sur la pentatonique, dès l'intro. Le pluck lui répond dans ses silences.",
-  "notes": "Groove before everything: continuous 16th shaker (kit shaker; the pack only has closed hats) with light swing (57%), uneven kick (1, 2-and, 3), soft rim backbeat, congas answering; never a hard trap snare nor four-on-the-floor. Happy by default (I-V-vi-IV). Rhodes comping in 3-3-4-3-3 with longer notes, the signature; round tied bass; marimba hook in the chorus. Recent tracks borrow the amapiano log drum as bass ('Log drum').",
+  "notes": "Groove before everything: continuous 16th shaker (kit shaker; the pack only has closed hats) with light swing (57%), uneven kick (1, 2-and, 3), soft rim backbeat, congas answering; never a hard trap snare nor four-on-the-floor. Happy by default (I-V-vi-IV). Rhodes comping in 3-3-4-3-3 with longer notes, the signature; round tied bass; marimba hook in the chorus. Recent tracks borrow the amapiano log drum as bass ('Log drum'). Modern body (Burna Boy, Rema, Wizkid): the shaker groove and the congas stay the signature; a light open hat off the beat brings air, full body (pluck answer, texture, doubled keys) in the Drop.",
   "fx": [
    {
     "on": "chords",
@@ -1372,6 +1377,10 @@
   ],
   "counter": {
    "sound": "Pluck"
+  },
+  "body": true,
+  "mix": {
+   "glue_blend": 0.7
   }
  }
 ]

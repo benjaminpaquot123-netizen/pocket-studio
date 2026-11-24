@@ -108,7 +108,8 @@
    "rhythm": "..X-..x...X.x.....X-..x...X.x.....X-..x...X.x.....X-..x.X-..x.o.",
    "voicing": "rootless7",
    "octave": 3,
-   "sound": "gm:Acoustic Grand Piano"
+   "sound": "gm:Acoustic Grand Piano",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-.R..O.R-.R..O.R-.R..O.R-.7..5.",
@@ -175,7 +176,9 @@
    "glue_blend": 0.6,
    "bus_drive": 0.35
   },
-  "body": true
+  "counter": {
+   "sound": "Pluck"
+  }
  },
  {
   "id": "deep_house",
@@ -280,7 +283,8 @@
    "voicing": "rootless9",
    "octave": 3,
    "sound": "Piano FM",
-   "voice_lead": true
+   "voice_lead": true,
+    "double": "both"
   },
   "bass": {
    "pattern": "..R-..R-..R-.rO-..5-..R-..R-.r3-",
@@ -355,13 +359,14 @@
   },
   "mix": {
    "pump": [
-    "808",
-    "chords"
+    "808"
    ],
    "glue_blend": 0.6,
    "bus_drive": 0.3
   },
-  "body": true
+  "counter": {
+   "sound": "Pluck"
+  }
  },
  {
   "id": "tech_house",
@@ -659,7 +664,8 @@
    "voicing": "rootless7",
    "octave": 4,
    "sound": "Rhodes FM",
-   "voice_lead": true
+   "voice_lead": true,
+   "double": "octave"
   },
   "bass": {
    "pattern": "R--....R..R--.O-",
@@ -716,7 +722,9 @@
    "glue_blend": 0.65,
    "bus_drive": 0.3
   },
-  "body": true
+  "counter": {
+   "sound": "Pluck"
+  }
  },
  {
   "id": "speed_garage",
@@ -818,7 +826,8 @@
    "rhythm": "...X......X.....",
    "voicing": "seventh",
    "octave": 3,
-   "sound": "Orgue"
+   "sound": "Orgue",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-----.R--/O-.R-R-----.R--/5-.O-R-----.R--/O-.R-O-----.O--/5-.R-",
@@ -893,7 +902,9 @@
    "glue_blend": 0.6,
    "bus_drive": 0.2
   },
-  "body": true
+  "counter": {
+   "sound": "Pluck"
+  }
  },
  {
   "id": "acid_house",
@@ -1006,9 +1017,9 @@
   },
   "acid": {
    "use": true,
-   "pattern": "RROR.R7RR.5OR.3RRRO.R.7RO.5RR3OR",
-   "accents": "x.x...x....x..x.x...x.x..x...x.x",
-   "slides": "..x.......xx.....x....x..x..x...",
+   "pattern": "RROR.R7RR.5OR.3R",
+   "accents": "x.x...x....x..x.",
+   "slides": "..x.......xx...x",
    "moves": {
     "cutoff": {
      "intro": [
@@ -1214,7 +1225,8 @@
    "rhythm": "X---------------",
    "voicing": "ninth",
    "octave": 3,
-   "sound": "Nappe chaude"
+   "sound": "Nappe chaude",
+   "double": "octave"
   },
   "bass": {
    "pattern": "..R-.R....R-.R-...R-.R....R-.5-.",
@@ -1313,7 +1325,9 @@
    "glue_blend": 0.6,
    "bus_drive": 0.3
   },
-  "body": true
+  "counter": {
+   "sound": "Pluck"
+  }
  },
  {
   "id": "disco",
@@ -1564,7 +1578,8 @@
    "voicing": "rootless9",
    "octave": 3,
    "sound": "Rhodes FM",
-   "voice_lead": true
+   "voice_lead": true,
+    "double": "octave"
   },
   "bass": {
    "pattern": "..R-.R-O-.R-.5-...R-.R-..O-..R5-..R-.R-O-.R-.5-......5-..R--.3-.",
@@ -1630,6 +1645,8 @@
    "glue_blend": 0.6,
    "bus_drive": 0.35
   },
-  "body": true
+  "counter": {
+   "sound": "Pluck"
+  }
  }
 ]

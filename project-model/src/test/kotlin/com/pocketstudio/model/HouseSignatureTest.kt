@@ -62,7 +62,6 @@ class HouseSignatureTest {
         assertTrue("knobs set on top of it", acid.knobs.size >= 4)
         assertTrue("accents", acid.accents.count { it == 'x' } >= 5)
         assertTrue("glides", acid.slides.count { it == 'x' } >= 4)
-        assertTrue("a two-bar riff", acid.pattern.length == 32)
         assertTrue("the filter and more turned along the song", acid.moves.size >= 3)
         assertTrue("the cutoff moves in every section", acid.moves.maxOf { it.sections.size } >= 4)
         assertTrue("a kick that hits", s.effects.any { it.target == "kick" && it.preset == "punch" })

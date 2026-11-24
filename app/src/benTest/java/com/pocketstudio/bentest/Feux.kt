@@ -60,22 +60,26 @@ object Feux {
         else -> Feu.VERT
     }
 
-    /** The longest wait between two callbacks, in callbacks: red over 4, orange over 2 (2026-11-22: 2.3 blocks on nearly every song, even at low load). */
-    fun ecart(g: Float): Feu = when {
-        g > 4f -> Feu.ROUGE
+    /**
+     * The longest wait between two callbacks, in callbacks: orange over 2 (2026-11-22: 2.3 blocks on nearly every song, even
+     * at low load); over 4 it is red only with a dropout counted (tour 9, C3: the gap is divided by the block before it, so a
+     * long wait the buffer absorbed is not a sound heard).
+     */
+    fun ecart(g: Float, xruns: Int = 0): Feu = when {
+        g > 4f && xruns > 0 -> Feu.ROUGE
         g > 2f -> Feu.ORANGE
         else -> Feu.VERT
     }
 
     /**
-     * A song played live: red for any dropout, a true worst block over 150 % or a gap over 4 blocks, a NaN; orange for a true
-     * worst block from 70 % or a gap over 2 blocks, an alert. The smoothed load is information only. The reason says what is not green.
+     * A song played live: red for any dropout, a true worst block over 150 %, a gap over 4 blocks with a dropout, a NaN; orange
+     * for a true worst block from 70 % or a gap over 2 blocks (over 4 without a dropout), an alert. The smoothed load is information only. The reason says what is not green.
      */
     fun style(b: Ecoute.Bilan): Pair<Feu, String> {
         val parts = ArrayList<Pair<Feu, String>>()
         if (b.xruns > 0) parts += Feu.ROUGE to "${b.xruns} décrochage(s)"
         blocVrai(b.cpuWorst).takeIf { it != Feu.VERT }?.let { parts += it to "pire bloc vrai ${Ecoute.pct(b.cpuWorst)}" }
-        ecart(b.gapWorst).takeIf { it != Feu.VERT }?.let { parts += it to "plus long écart ${fmt(b.gapWorst.toDouble()).replace('.', ',')} blocs" }
+        ecart(b.gapWorst, b.xruns).takeIf { it != Feu.VERT }?.let { parts += it to b.ecartTexte() }
         if (b.nonFinite) parts += Feu.ROUGE to "valeur invalide (NaN)"
         if (b.alertes.isNotEmpty()) parts += Feu.ORANGE to b.alertes.joinToString(", ") { it.kind.lowercase(Locale.ROOT) + " à ${it.second} s" }
         return Feu.pire(parts.map { it.first }) to parts.joinToString(", ") { it.second }
@@ -85,7 +89,7 @@ object Feux {
     fun depasses(b: Ecoute.Bilan): List<String> = listOfNotNull(
         b.xruns.takeIf { it > 0 }?.let { "$it décrochage(s) lu(s) contre 0 permis" },
         b.cpuWorst.takeIf { blocVrai(it) == Feu.ROUGE }?.let { "pire bloc vrai ${Ecoute.pct(it)} lu contre 150 % au plus" },
-        b.gapWorst.takeIf { ecart(it) == Feu.ROUGE }?.let { "plus long écart ${fmt(it.toDouble()).replace('.', ',')} blocs lu contre 4 blocs au plus" },
+        b.takeIf { ecart(it.gapWorst, it.xruns) == Feu.ROUGE }?.let { "${it.ecartTexte()} lu contre 4 blocs au plus" },
         "valeur invalide (NaN) lue contre aucune permise".takeIf { b.nonFinite },
     )
 

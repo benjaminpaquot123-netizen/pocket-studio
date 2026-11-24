@@ -14,6 +14,8 @@ interface Sonde {
         val lufs: Float = Float.NaN, val drive: Float = Float.NaN, val lane: Float? = null,
         /** The slowest callback (render time over its sound's duration, not smoothed) and the longest wait between two callbacks (in callbacks) since the reading before; 0: unknown. */
         val cpuWorst: Float = 0f, val gapWorst: Float = 0f,
+        /** Tour 9, C3: the stream's block (frames), output buffer (frames) and rate (Hz), to read a gap in ms; 0: unknown. */
+        val burst: Int = 0, val buffer: Int = 0, val rate: Int = 0,
     )
 
     fun lire(): Lecture

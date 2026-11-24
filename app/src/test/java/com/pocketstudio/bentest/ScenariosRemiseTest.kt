@@ -4,6 +4,7 @@ import androidx.compose.ui.geometry.Rect
 import com.pocketstudio.app.journey.Journey
 import com.pocketstudio.app.journey.JourneyDriver
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -339,7 +340,8 @@ class ScenariosRemiseTest {
         val clues = indices(Scenarios.resume(c.lines(), emptyList()))
         assertTrue(clues, "captures/echec-decrochages.jpg" in clues && "captures/echec-decrochages-tags.txt" in clues)
         assertTrue(clues, "pire bloc vrai 160 %" in clues && "150 %" in clues)
-        assertTrue(clues, "plus long écart 12" in clues && "4 blocs" in clues)
+        // Tour 9, C3: a long gap with no dropout counted is orange, so it is not a red threshold passed.
+        assertFalse(clues, "plus long écart 12" in clues)
     }
 
     @Test

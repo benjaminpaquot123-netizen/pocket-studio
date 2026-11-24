@@ -305,9 +305,9 @@ class SongShapeTest {
 
     @Test
     fun vocalsAnswerStabShoutAndCrush() {
-        // House and jersey club: chops that answer the hook in its rests; trap: a stab every 4 bars; drum & bass: a shout;
+        // Deep house and jersey club (house lost its chop in round 9, gr-house2): chops that answer the hook in its rests; trap: a stab every 4 bars; drum & bass: a shout;
         // phonk: a crushed hit. All sung by the built-in voice, on a « Voix » track.
-        for (id in listOf("house", "deep_house", "tech_house", "jersey_club", "trap", "dnb", "jump_up", "phonk")) {
+        for (id in listOf("deep_house", "tech_house", "jersey_club", "trap", "dnb", "jump_up", "phonk")) {
             val s = style(id)
             assertNotNull(id, s.vocal)
             val p = song(s, Part.entries.toSet())

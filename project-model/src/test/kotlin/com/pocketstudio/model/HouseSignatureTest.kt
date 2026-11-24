@@ -9,7 +9,7 @@ import org.junit.Test
  * The house family's signature sound (grand remplacement v2, lots L9 and L2 tech house, `R/house.json`):
  * each style leads with recent landmark tracks, has a body (doubled chords, a texture or the default body),
  * its drum bus pushed (kick and bass in front) and a real chop where it has a voice; tech house keeps its
- * old clap and its approved effects; acid squeals and moves; amapiano's log drum sits on a background.
+ * old clap (on 2 and 4 since round 9) and its approved effects; acid squeals and moves; amapiano's log drum sits on a background.
  */
 class HouseSignatureTest {
     private val ids = listOf("house", "deep_house", "tech_house", "uk_garage", "speed_garage", "acid_house", "afro_house", "disco", "amapiano")
@@ -37,7 +37,7 @@ class HouseSignatureTest {
         assertEquals("the old clap, frozen (its own kit)", null, s.kit[StarterWizard.Role.Clap])
         assertEquals("no file swapped in for the clap", null, s.kitSounds[StarterWizard.Role.Clap])
         assertTrue("no layer on the clap", s.lines.first { it.role == StarterWizard.Role.Clap }.layers.isEmpty())
-        assertEquals("the old clap's pattern", "....X.......X.......X.......Xo..", s.lines.first { it.role == StarterWizard.Role.Clap }.pattern)
+        assertEquals("the old clap on 2 and 4, no echo (round 9, gr-house2)", "....X.......X.......X.......X...", s.lines.first { it.role == StarterWizard.Role.Clap }.pattern)
         assertEquals(
             "the approved effects, sends included",
             listOf(
@@ -49,7 +49,6 @@ class HouseSignatureTest {
             s.effects,
         )
         assertTrue("a conga in the high bed", s.lines.any { it.role == StarterWizard.Role.Conga })
-        assertTrue("snaps on the turnarounds (the clap voice on the rim lane)", s.lines.any { it.role == StarterWizard.Role.Rim && it.voice == 4 })
         assertEquals("organ stabs doubled", StarterWizard.ChordDouble.Octave, s.melody.chordDouble)
     }
 

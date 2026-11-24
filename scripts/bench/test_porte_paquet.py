@@ -83,7 +83,7 @@ def git(root, *args, check=True):
     return r.stdout
 
 
-def toy(d, name, portal_text=None, zones=("a", "b", "c"), culprit=None):
+def toy(d, name, portal_text=None, zones=("a", "b", "c"), culprit=None, paquet=10):
     """A toy integration workshop: the real portal (or portal_text), the real gate, stand-ins for the self-test, the
     replays, Gradle, the stamp, the pre-flight and the judge; one test class app/src/test/…/FooTest.kt; one team branch
     per zone, reviewed (« relu : <sha> », « Verdict : 0 bloquant, 0 grave »)."""
@@ -93,8 +93,8 @@ def toy(d, name, portal_text=None, zones=("a", "b", "c"), culprit=None):
         write(os.path.join(bench, "fusion-equipes.sh"), portal_text if portal_text is not None else f.read(), 0o755)
     if os.path.isfile(os.path.join(HERE, "porte-paquet.sh")):
         shutil.copy(os.path.join(HERE, "porte-paquet.sh"), os.path.join(bench, "porte-paquet.sh"))
-    write(os.path.join(bench, "portail-paquet.txt"), "paquet: 1\n")
-    for extra in ("relecture-verdict.py", "decisions-index.sh", "rapport-zone.py"):
+    write(os.path.join(bench, "portail-paquet.txt"), f"paquet: {paquet}\n")
+    for extra in ("relecture-verdict.py", "decisions-index.sh", "rapport-zone.py", "reparations.py", "json-merge-ok.py"):
         shutil.copy(os.path.join(HERE, extra), os.path.join(bench, extra))
     write(os.path.join(bench, "selftest.sh"), SELFTEST, 0o755)
     write(os.path.join(bench, "rejeu-defauts.sh"), REJEUX, 0o755)
@@ -104,13 +104,16 @@ def toy(d, name, portal_text=None, zones=("a", "b", "c"), culprit=None):
     with open(os.path.join(HERE, "verifie-chantier.py"), encoding="utf-8") as f:
         write(os.path.join(bench, "verifie-chantier.py"), f.read().split('\nif __name__ == "__main__":', 1)[0] + JUDGE_MAIN)
     write(os.path.join(root, "docs", "audits", "ultra", "rejeux", "t1-clavier", "start.txt"), "lang=fr\n")
-    write(os.path.join(root, "app", "src", "test", "java", "com", "toy", "FooTest.kt"), "package com.toy\n\nclass FooTest\n")
+    write(os.path.join(root, "app", "src", "test", "java", "com", "toy", "FooTest.kt"), "package com.toy\n\nimport org.junit.Test\n\nclass FooTest {\n    @Test\n    fun works() {}\n}\n")
     git(root, "init", "-q", "-b", "fx-int")
     git(root, "add", "-A")
     git(root, "commit", "-q", "-m", "toy")
     for z in zones:
         git(root, "checkout", "-q", "-b", f"eq/tour-9-{z}", "fx-int")
         write(os.path.join(root, "zones", f"{z}.txt"), f"{z}\n")
+        # The zone report the portal reads from batch 2: its targeted tests and its list of paths.
+        write(os.path.join(root, "docs", "audits", "ultra", f"tour-9-{z}-rapport.md"),
+              "# Rapport\n\ntests: FooTest\n\n- chemin: Accueil | test: FooTest#works\n")
         if z == culprit:
             write(os.path.join(root, "rouge.txt"), "x\n")
         git(root, "add", "-A")
@@ -127,7 +130,8 @@ def toy(d, name, portal_text=None, zones=("a", "b", "c"), culprit=None):
 def run(root, script, *args, **env):
     calls = os.path.join(root, ".git", "toy-calls.txt")
     open(calls, "w").close()
-    e = dict(ENV, PS_TOY_CALLS=calls, PS_PAQUET_DISQUE_MIN_GO="0", **env)
+    e = dict(ENV, PS_TOY_CALLS=calls, PS_PAQUET_DISQUE_MIN_GO="0")
+    e.update(env)
     r = subprocess.run(["bash", os.path.join(root, *script.split("/")), *args], cwd=root, capture_output=True, text=True, env=e)
     with open(calls, encoding="utf-8") as f:
         said = f.read()
@@ -199,6 +203,14 @@ class Batch(unittest.TestCase):
         # The batch's merges were undone before the fallback: a's merge is a fresh one on the start.
         self.assertEqual(git(root, "rev-parse", "HEAD~1^1").strip(), start)
         self.assertEqual(judge(root), [])
+
+    def test_batch_mode_from_paquet_10(self):
+        root = toy(self.d, "neuf", paquet=9)
+        code, out, said = run(root, GATE, "tour-9", "a", "b")
+        self.assertNotEqual(code, 0, out)
+        self.assertIn("from_paquet 10", out)
+        self.assertNotIn("selftest", said)
+        self.assertNotIn("Merge team a of tour-9 (audit ultra)", subjects(root))
 
     def test_more_than_three_zones_refused(self):
         root = toy(self.d, "quatre", zones=("a", "b", "c", "e"))

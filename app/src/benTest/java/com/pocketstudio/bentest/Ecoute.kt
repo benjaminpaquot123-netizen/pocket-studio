@@ -29,6 +29,9 @@ object Ecoute {
         val lane: Float? = null,
         val cpuWorst: Float = 0f,
         val gapWorst: Float = 0f,
+        /** One block's duration (ms) and the output buffer (in blocks) as the stream has them; 0: unknown. */
+        val blocMs: Float = 0f,
+        val tamponBlocs: Float = 0f,
     )
 
     /** One second: its peak (dBFS), its last short-term level and live gain, its curve (the lowest), whether it all played. */
@@ -49,6 +52,9 @@ object Ecoute {
         val cpuWorst: Float = 0f,
         val gapWorst: Float = 0f,
         val nonFinite: Boolean,
+        /** The stream's block (ms) and buffer (blocks) while listening; 0: unknown. */
+        val blocMs: Float = 0f,
+        val tamponBlocs: Float = 0f,
         val secondes: List<Seconde>,
         val alertes: List<Alerte>,
     ) {

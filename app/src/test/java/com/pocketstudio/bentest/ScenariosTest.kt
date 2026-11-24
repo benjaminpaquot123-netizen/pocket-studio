@@ -348,6 +348,12 @@ class ScenariosTest {
         val left = played(Studio().apply { undoWorks = false }, "effet_chorus").only("effet_chorus")
         assertEquals(Scenarios.ECHOUE, left.resultat)
         assertTrue(left.detail, left.detail.contains("l'effet reste sur la piste"))
+        // No « Annuler » in the bar (the app's setting): not measured, never a false red (fresh review, grave).
+        for (id in listOf(Scenarios.EFFETS, Scenarios.EFFETS_PLUSIEURS, "effet_chorus")) {
+            val hidden = played(Studio().apply { undoShown = false }, id).only(id)
+            assertEquals(hidden.detail, Scenarios.NON_MESURE, hidden.resultat)
+            assertTrue(hidden.detail, hidden.detail.contains("pas de bouton « Annuler »"))
+        }
     }
 
     // --- The Live ------------------------------------------------------------------------------------

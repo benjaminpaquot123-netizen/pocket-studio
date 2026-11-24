@@ -2,6 +2,9 @@ package com.pocketstudio.bentest
 
 import com.pocketstudio.app.journey.Journey
 import com.pocketstudio.app.report.JsonText
+import com.pocketstudio.model.allScenes
+import com.pocketstudio.model.cellHasContent
+import com.pocketstudio.model.liveColumns
 import com.pocketstudio.model.EffectType
 import java.io.File
 import java.util.Locale
@@ -111,7 +114,7 @@ class Scenarios(
             "export" -> g.getOrNull(2)?.let { format -> { ts.style(id, a) + " ; " + t.export(format, id) } }
             "montee" -> { { montee(id, a) } }
             "partie" -> g.getOrNull(2)?.toIntOrNull()?.let { delta -> { partie(id, a, delta) } }
-            "pad" -> a.toIntOrNull()?.let { i -> { toucherPad(id, "live_pad_$i") } }
+            "pad" -> a.toIntOrNull()?.let { i -> { toucherPad(id, i) } }
             "ecrans" -> ECRANS_LECTURE[a]?.let { tabs -> { lectureEcrans(id, tabs) } }
             "repetition" -> when (a) { "jouer" -> { { jouerArreter(id) } }; "fond" -> { { fondReprise(id) } }; else -> null }
             "guide" -> { { t.guide(a) } }
@@ -619,16 +622,27 @@ class Scenarios(
     /** Beginner: a pad of the Live touched. Oracle: the engine plays and sound comes out. */
     fun pads(): String = toucherPad(PADS, null)
 
-    /** The pad tagged [wanted] (null: the first one on the screen) touched in the Live. */
-    private fun toucherPad(step: String, wanted: String?): String {
+    /**
+     * The Live's pad number [rang] (0: the first; null: the first one shown) among the cells that have something
+     * to play, by the grid's own tags (`live_pad_<track>_<row>`), touched.
+     */
+    private fun toucherPad(step: String, rang: Int?): String {
         auStudio()
         e.arreter()
+        val full = lu().pads
         j.tap("tab_Live")
         j.await("live_screen")
-        val pad = if (wanted == null) j.tagsMatching(Regex("live_pad_\\d+")).firstOrNull() else wanted.takeIf { attendre(2_000) { j.exists(it) } }
+        attendre(2_000) { full.any { j.exists(it) } }
+        val shown = full.filter { j.exists(it) }
+        val pad = if (rang == null) shown.firstOrNull() else full.getOrNull(rang)?.takeIf { it in shown }
         if (pad == null) {
             runCatching { j.tap("tab_Structure") }
-            return nonMesure(step, if (wanted == null) "aucun pad à l'écran du Live pour ce morceau" else "pas de pad ${wanted.removePrefix("live_pad_").toInt() + 1} à l'écran du Live pour ce morceau")
+            val why = when {
+                full.isEmpty() -> "aucune case du Live n'a de son dans ce morceau"
+                rang == null || rang < full.size -> "les ${full.size} cases pleines du Live ne sont pas à l'écran"
+                else -> "pas de pad ${rang + 1} : ce morceau a ${full.size} cases pleines dans le Live"
+            }
+            return nonMesure(step, why)
         }
         j.tap(pad)
         val started = attendre(liveMs) { sonde.lire().playing }
@@ -1447,6 +1461,8 @@ data class ProjetVu(
     val volumes: List<Float> = emptyList(), val pans: List<Float> = emptyList(),
     /** The points of the song's build-up curve ([montee]): a « Montée » draws them, it adds no part. */
     val montee: Int = 0,
+    /** The Live cells with something to play, as the grid tags them (`live_pad_<track>_<row>`), row by row. */
+    val pads: List<String> = emptyList(),
 ) {
     data class Disque(
         val nom: String, val parties: Int, val effets: List<List<String>>,
@@ -1463,6 +1479,13 @@ data class ProjetVu(
         fun montee(p: com.pocketstudio.model.Project): Int {
             val target = com.pocketstudio.model.AutoTarget.live(com.pocketstudio.model.AutoTarget.LIVE_BUILD_UP)
             return p.automation.firstOrNull { it.target == target }?.songValues?.count { it != null } ?: 0
+        }
+
+        /** [p]'s Live cells that have something to play, by the grid's tag, row by row then track by track. */
+        fun pads(p: com.pocketstudio.model.Project): List<String> = with(com.pocketstudio.model.LiveSlots) {
+            p.allScenes.indices.flatMap { scene ->
+                p.liveColumns.filter { of(it) != null && p.cellHasContent(it, scene) }.map { "live_pad_${it}_$scene" }
+            }
         }
     }
 }

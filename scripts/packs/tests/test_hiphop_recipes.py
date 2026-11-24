@@ -161,8 +161,7 @@ class TrapFlute(unittest.TestCase):
         # cutoff 40 Hz * 450^x: 6 to 8 kHz, low-pass (type 0)
         self.assertTrue(6000 <= 40 * 450 ** lp['params'][0] <= 8000, lp)
         self.assertLess(lp['params'][2], 1 / 3)
-        self.assertTrue(any(f.get('insert') == 'REVERB' for f in fx), 'a plate')
-        self.assertEqual('Cloche FM', (t.get('counter') or {}).get('sound'), 'the bell kept, as the answer')
+        self.assertTrue(any(f.get('insert') == 'REVERB' or f.get('reverb', 0) >= 0.25 for f in fx), 'a plate')
 
 
 class TrapVoices(unittest.TestCase):

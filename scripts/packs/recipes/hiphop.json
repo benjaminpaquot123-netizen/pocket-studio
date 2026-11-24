@@ -166,7 +166,7 @@
  },
  {
   "id": "trap",
-  "vocal": "stab",
+  "vocal": {"type": "stab", "sample": "voix_adlib:yeah"},
   "references": [
    "Travis Scott – FE!N (2023)",
    "Future – Mask Off (2017)",
@@ -190,10 +190,7 @@
     "role": "clap",
     "pattern": "........X.......",
     "source": "trap",
-    "layers": [
-     "tr808"
-    ],
-    "tip_fr": "Un seul clap par mesure, sur le 3, doublé d'un clap de 808 : c'est ce qui rend le groove lent et lourd."
+    "tip_fr": "Un seul clap par mesure, sur le 3 : c'est ce qui rend le groove lent et lourd."
    },
    {
     "role": "snare",
@@ -282,7 +279,7 @@
    "pattern": "O-----5-3-----..R-----3-5---....",
    "arp_rate": 24,
    "octave": 5,
-   "sound": "Cloche FM",
+   "sound": "lib:instrument_bois:flute|Cloche FM",
    "on_key": true
   },
   "acid": {
@@ -319,14 +316,15 @@
    },
    {
     "on": "lead",
-    "delay": 0.2
+    "delay": 0.15
    },
    {
     "on": "lead",
-    "preset": "pluck_pingpong"
+    "insert": "FILTER",
+    "params": [0.85, 0.1, 0.0, 1.0]
    }
   ],
-  "notes": "Half-time: 140 BPM but one clap per bar on beat 3, so it feels like 70. Modern trap (Mask Off, Metro Boomin): room to breathe, the 808 carries the song. It hits with the kick and slides up an octave into its 3rd note ('/', glide), pumped by the kick (mix pump); 'Croustillant' saturates it a little. Beat 3 stacks the clap (+ an 808 clap layer), a dry 808 snare and a finger snap; a rare perc before the turn. Hat rolls: accents and softer hits, a 1/32 triplet on 3-e of bar 1, then 2, 3 and 4 hits per sixteenth on the 4th beat of bar 2. The strings hold half a bar out of two (holes); no counter-melody. The dark melody leaves rests (2-bar cell). For a darker modern 808 use pack:modern_808:808.",
+  "notes": "Half-time: 140 BPM but one clap per bar on beat 3, so it feels like 70. Modern trap (Mask Off, Metro Boomin): room to breathe, the 808 carries the song. It hits with the kick and slides up an octave into its 3rd note ('/', glide), pumped by the kick (mix pump); 'Croustillant' saturates it a little. Beat 3 stacks the clap with a dry 808 snare and a finger snap; a rare perc before the turn. Hat rolls: accents and softer hits, a 1/32 triplet on 3-e of bar 1, then 2, 3 and 4 hits per sixteenth on the 4th beat of bar 2. The strings hold half a bar out of two (holes); no counter-melody. The dark melody leaves rests (2-bar cell), on the VSCO-2 flute (sustain vibrato, short release, low-passed near 7 kHz, a 2 s plate: the Mask Off loop); the FM bell when the flute is not installed. Ad-lib « yeah » from the CC0 voice pack. For a darker modern 808 use pack:modern_808:808.",
   "riser": true,
   "mix": {
    "pump": [
@@ -471,6 +469,7 @@
   ],
   "notes": "Two-bar pocket is the whole identity: snare on beat 3 of bar 1, then on beat 4 of bar 2 (UK drill). Hats are really triplets and skips; the 16th grid approximates them with 3-hit rolls. The 808 slides once per bar ('/', glide), timed with a kick: up to the octave in bar 1, to the fifth in bar 2. Dark mood in harmonic minor (i-VI-iv-V with a major V): the sinister drill colour. Cold piano melody is the signature; strings join in the chorus. Modern body (Central Cee, Pop Smoke): the sliding 808 stays the signature and is ducked by the kick; the late snare is stacked with a clap; dark bells answer the piano in the Drop; full body (texture, doubled strings).",
   "riser": true,
+  "vocal": {"type": "stab", "sample": "voix_adlib:brrr"},
   "body": true,
   "counter": {
    "sound": "Cloche FM"
@@ -637,7 +636,7 @@
  },
  {
   "id": "phonk",
-  "vocal": "crush",
+  "vocal": {"type": "crush", "sample": "voix_adlib:skrrt"},
   "references": [
    "Kordhell – Murder in My Mind (2022)",
    "DVRST – Close Eyes (2021)",
@@ -946,7 +945,7 @@
  },
  {
   "id": "jersey_club",
-  "vocal": "answer",
+  "vocal": {"type": "answer", "sample": "voix_adlib:kick_it"},
   "references": [
    "Lil Uzi Vert – Just Wanna Rock (2022)",
    "Drake – Sticky (2022)",
@@ -1393,7 +1392,7 @@
   },
   "body": true,
   "mix": {
-   "pump": ["808", "chords"],
+   "pump": ["808"],
    "glue_blend": 0.5
   }
  }

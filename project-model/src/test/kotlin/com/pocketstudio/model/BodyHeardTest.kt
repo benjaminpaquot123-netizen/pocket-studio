@@ -13,7 +13,7 @@ import org.junit.Test
  * the Snap's pad alone.
  */
 class BodyHeardTest {
-    private fun trap() = StarterWizard.style("trap")!!
+    private fun trap() = PlainStyles.plain("trap")
 
     private fun build(style: StarterWizard.Style, extras: StarterWizard.Extras = StarterWizard.Extras()): Project {
         val parts = StarterWizard.defaultParts(style).associateWith { StarterWizard.soundsFor(it, style).first() }
@@ -39,8 +39,9 @@ class BodyHeardTest {
 
     @Test
     fun layersPlayWithTheirLine() {
-        val kick = trap().lines.first { it.role == Role.Kick }
-        val style = trap().copy(lines = trap().lines.map { if (it === kick) it.copy(layers = listOf("kit:0")) else it })
+        val trap = trap()
+        val kick = trap.lines.first { it.role == Role.Kick }
+        val style = trap.copy(lines = trap.lines.map { if (it === kick) it.copy(layers = listOf("kit:0")) else it })
         val (role, spec, lane) = StarterWizard.layerLanes(style).single()
         assertEquals(Role.Kick, role)
         assertEquals("kit:0", spec)

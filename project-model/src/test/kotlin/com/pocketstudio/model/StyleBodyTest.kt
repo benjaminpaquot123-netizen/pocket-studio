@@ -13,7 +13,7 @@ import org.junit.Test
  * as before.
  */
 class StyleBodyTest {
-    private fun trap() = StarterWizard.style("trap")!!
+    private fun trap() = PlainStyles.plain("trap")
 
     private fun build(style: StarterWizard.Style): Project {
         val parts = StarterWizard.defaultParts(style).associateWith { StarterWizard.soundsFor(it, style).first() }
@@ -25,7 +25,9 @@ class StyleBodyTest {
 
     @Test
     fun withoutTheNewFieldsTheStyleIsUntouched() {
-        for (style in StarterWizard.STYLES) assertSame(style.id, style, StarterWizard.withBody(style))
+        for (style in StarterWizard.STYLES.map { PlainStyles.plain(it) }) assertSame(style.id, style, StarterWizard.withBody(style))
+        // A style's own body (its team converted it): the defaults go only where it said nothing.
+        for (style in StarterWizard.STYLES.filter { it.body }) assertEquals(style.id, style.melody.counter ?: StarterWizard.BODY_COUNTER, StarterWizard.withBody(style).melody.counter)
         val p = build(trap())
         for (name in listOf(StarterWizard.DOUBLE_TRACK, StarterWizard.TEXTURE_TRACK)) assertEquals(name, null, p.trackNamed(name))
         assertTrue("no parallel glue", p.mixer.channels[0].inserts.none { it.type == EffectType.COMPRESSOR.ordinal && it.params.getOrNull(WizardMix.GLUE_MIX)?.let { v -> v < 1f } == true })

@@ -25,9 +25,40 @@ class RecipeFormatV2Test {
     private val root = File("..").canonicalFile
     private val script = File(root, "scripts/packs/recipes_to_kotlin.py")
 
+    /**
+     * The trap recipe stripped of every format v2 field (body, texture, loop, mix, vocal sample, doubled
+     * chords, layers, lib sounds, the new roles): an old-format recipe whatever the styles' teams convert.
+     */
     private fun trap(): JsonObject {
         val all = Json.parseToJsonElement(File(root, "scripts/packs/recipes/hiphop.json").readText()).jsonArray
-        return all.first { (it.jsonObject["id"] as JsonPrimitive).content == "trap" }.jsonObject
+        return plain(all.first { (it.jsonObject["id"] as JsonPrimitive).content == "trap" }.jsonObject)
+    }
+
+    private fun plain(recipe: JsonObject): JsonObject {
+        fun JsonObject.without(vararg keys: String) = JsonObject(this - keys.toSet())
+        fun JsonObject.plainSound(): JsonObject {
+            val sound = (this["sound"] as? JsonPrimitive)?.content ?: return this
+            if (!sound.startsWith("lib:")) return this
+            val preset = sound.substringAfter('|', "")
+            return if (preset.isEmpty()) without("sound") else JsonObject(this + ("sound" to JsonPrimitive(preset)))
+        }
+        val drums = recipe["drums"]!!.jsonArray.map { it.jsonObject }
+            .filter { (it["role"] as JsonPrimitive).content !in setOf("snap", "rim", "conga", "shaker") }
+            .map { d ->
+                val source = (d["source"] as? JsonPrimitive)?.content
+                val plainSource = if (source != null && source.startsWith("lib:")) source.removePrefix("lib:").substringBefore(':') else null
+                d.without("layers").let { if (plainSource != null) JsonObject(it + ("source" to JsonPrimitive(plainSource))) else it }
+            }
+        val vocal = recipe["vocal"]
+        return JsonObject(
+            recipe.without("body", "texture", "loop", "mix") + listOfNotNull(
+                "drums" to JsonArray(drums),
+                (vocal as? JsonObject)?.let { "vocal" to it["type"]!! },
+                (recipe["chords"] as? JsonObject)?.let { "chords" to it.without("double").plainSound() },
+                (recipe["bass"] as? JsonObject)?.let { "bass" to it.plainSound() },
+                (recipe["lead"] as? JsonObject)?.let { "lead" to it.plainSound() },
+            ),
+        )
     }
 
     private fun JsonObject.with(vararg fields: Pair<String, JsonElement>) = JsonObject(this + fields)

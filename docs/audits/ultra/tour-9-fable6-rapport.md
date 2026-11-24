@@ -28,7 +28,7 @@ tests: *Tour9Fable6TouchHereEveryBarTest *Tour9Fable6EmptyPartNeverDoneTest *Tou
 ## Chemins
 
 chemin: Tuto > ligne de notes (basse, accords, mélodie) > toucher la ligne « Encore N notes », chaque mesure | test: Tour9Fable6TouchHereEveryBar#everyDottedNoteIsOneTouchAway
-chemin: Tuto ch. 3 house, première mesure, « Touche ici » | test: Tour8TutoTouchHereTest#simpleOneTouchShowsTheBar
+chemin: Tuto ch. 3 house, première mesure, « Touche ici » | test: Tour8TutoTouchHere#simpleOneTouchShowsTheBar
 chemin: Tuto > Drop, puis une autre partie montrée | test: Tour7TutoDottedInItsPartTest#theCrashIsNotDottedInAnotherPart
 chemin: Tuto > partie « Montée » vide | test: Tour8TutoGesturesEmptyPartTest#anEmptyPartIsNotSaidMissing
 

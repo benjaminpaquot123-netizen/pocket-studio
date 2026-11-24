@@ -62,7 +62,7 @@ def measure(step, body):
 
 
 def main():
-    key = os.environ.get("FREESOUND_API_KEY", "")
+    key = os.environ.get("FREESOUND_API_KEY", "").strip()
     if not key:
         print("FAIL: secret FREESOUND_API_KEY is not set")
         return 1

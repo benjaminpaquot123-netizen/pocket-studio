@@ -39,6 +39,9 @@ class ScenariosTest {
         var breakAdds = true
         var chipShown = true
         var liveSound = true
+        /** The engine stops by itself after this many readings while the Live plays (tour 9, C2); null: never. */
+        var liveStopsAfter: Int? = null
+        private var liveReads = 0
         var liveStops = true
         var reopens = "p1"
         var dropouts = false
@@ -183,6 +186,7 @@ class ScenariosTest {
         override fun lire(): Sonde.Lecture {
             if (playing && dropouts) xruns++
             if (behind && stopsBehind) playing = false
+            if (playing && tab == "Live" && liveStopsAfter != null && ++liveReads > liveStopsAfter!!) playing = false
             val sound = playing && (tab != "Live" || liveSound)
             return Sonde.Lecture(xruns, 0.2f, if (sound) 0.5f else 0f, false, true, playing, cpuWorst = 0.3f, gapWorst = 1f)
         }
@@ -352,9 +356,19 @@ class ScenariosTest {
     fun theLivePlaysThenStops() {
         val s = Studio()
         val text = scenarios(s).live()
-        assertTrue(text, text.startsWith("le Live joue") && text.endsWith("puis s'arrête"))
+        assertTrue(text, text.startsWith("le Live joue") && "sans s'arrêter" in text && text.endsWith("puis le robot l'arrête"))
         assertEquals(listOf("tab_Live", "live_play", "live_play", "tab_Structure"), s.touched)
         assertFalse(s.playing)
+    }
+
+    @Test
+    fun aLiveThatStopsByItselfBeforeTheRobotTouchesItFails() {
+        // Tour 9, C2: « le Live joue 4 s puis s'arrête » — red only when the engine stops before the robot's second ▶.
+        val s = Studio().apply { liveStopsAfter = 4 }
+        val e = runCatching { scenarios(s).live() }.exceptionOrNull()
+        assertTrue("the Live stopped by itself and the scenario passed", e is IllegalStateException)
+        assertTrue(e!!.message, "s'arrête tout seul" in e.message!! && "avant que le robot" in e.message!!)
+        assertEquals("the robot did not touch ▶ a second time", listOf("tab_Live", "live_play", "tab_Structure"), s.touched)
     }
 
     @Test

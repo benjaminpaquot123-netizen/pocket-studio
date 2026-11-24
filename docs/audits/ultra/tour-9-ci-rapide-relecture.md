@@ -1,6 +1,6 @@
 # Tour 9, lot « ci-rapide » : relecture neuve
 
-Relu : 36baa1da
+Relu : 2cbc31b76 (avant : 36baa1da)
 
 Commits relus : 77a4759d, 7dd14931, e7db06ff, cd02945e, c3d8a090, 5b54498a, 36baa1da. Joués ici : `shards.py selftest` (OK) et `shards.py policy` (OK, 11 jobs, 6 lots), plus `policy` sur des copies cassées de `ci.yml` (dans le dossier de travail, rien dans le dépôt). Ni Gradle ni la suite complète.
 
@@ -30,9 +30,9 @@ Ce qui a été vérifié pour arriver là :
 
 Avis : découpage solide, contrôle de complétude sérieux, aucun test perdu ni affaibli ; filets à épaissir (classes héritées, garde-fou `policy`) — fusion possible
 
-Verdict : 0 bloquant, 0 grave
+Verdict initial : 0 bloquant, 0 grave
 
 ## Relecture complémentaire (commit 2cbc31b76)
 - Changement : ligne « tests: » du rapport, noms complets des trois classes (le portail ne trouvait pas les noms courts).
 - Vérifié : les trois paquets correspondent aux fichiers de test.
-- Verdict : 0 bloquant, 0 grave.
+Verdict : 0 bloquant, 0 grave

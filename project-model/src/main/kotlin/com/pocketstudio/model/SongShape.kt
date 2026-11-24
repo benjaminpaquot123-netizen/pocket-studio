@@ -235,10 +235,13 @@ object SongShape {
     const val HALF_BARS = 4
 
     /** The drum lines in the order they come in, a new one every 8 bars (The Bells, Energy Flash): the kick and its rumble first. */
-    private val ENTRY = listOf(Role.Kick, Role.Perc, Role.Tom, Role.Hat, Role.Perc2, Role.Clap, Role.Snare, Role.OpenHat, Role.Ride, Role.Bass808)
+    internal val ENTRY = listOf(
+        Role.Kick, Role.Perc, Role.Conga, Role.Tom, Role.Hat, Role.Shaker, Role.Perc2, Role.Rim,
+        Role.Clap, Role.Snap, Role.Snare, Role.OpenHat, Role.Ride, Role.Bass808,
+    )
 
     /** The lines a techno Drop takes out for 8 bars (one of them, the first it plays): mutes by loops. */
-    private val MUTES = listOf(Role.Perc2, Role.Perc, Role.Tom, Role.OpenHat, Role.Ride, Role.Hat)
+    internal val MUTES = listOf(Role.Perc2, Role.Perc, Role.Conga, Role.Rim, Role.Shaker, Role.Tom, Role.OpenHat, Role.Ride, Role.Hat)
 
     /** The lines that are the bass of the beat: out of the bars before a Drop with the bass. */
     val BASS_LINES = setOf(Role.Kick, Role.Bass808, Role.Rumble)

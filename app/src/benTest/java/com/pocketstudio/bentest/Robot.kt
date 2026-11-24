@@ -344,6 +344,7 @@ object NativeSonde : Sonde {
         return Sonde.Lecture(
             s.xruns, NativeEngine.cpuLoadNow(), peak, s.nonFinite, s.running, playing = NativeEngine.currentStep() >= 0, lufs = lufs, drive = drive, lane = lane,
             cpuWorst = fresh.maxOfOrNull { it.cpuWorst } ?: 0f, gapWorst = fresh.maxOfOrNull { it.gapWorst } ?: 0f,
+            burst = s.framesPerBurst, buffer = s.bufferSize, rate = s.sampleRate,
         )
     }
 }

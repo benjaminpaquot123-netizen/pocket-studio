@@ -63,7 +63,18 @@ object Ecoute {
 
         /** « pire bloc vrai 80 %, plus long écart 1,2 blocs »: empty when the engine does not say. */
         fun blocs(): String = if (cpuWorst <= 0f && gapWorst <= 0f) "" else
-            "pire bloc vrai ${pct(cpuWorst)}, plus long écart ${String.format(Locale.ROOT, "%.1f", gapWorst).replace('.', ',')} blocs"
+            "pire bloc vrai ${pct(cpuWorst)}, ${ecartTexte()}"
+
+        /**
+         * Tour 9, C3: « plus long écart 4,3 blocs (≈ 22,9 ms ; tampon 2 blocs de 5,3 ms) », the gap read in ms beside the
+         * output buffer when the stream says its block; « plus long écart 4,3 blocs » otherwise.
+         */
+        fun ecartTexte(): String {
+            val head = "plus long écart ${un(gapWorst)} blocs"
+            if (blocMs <= 0f) return head
+            val buffer = if (tamponBlocs > 0f) " ; tampon ${String.format(Locale.ROOT, "%.0f", tamponBlocs)} blocs de ${un(blocMs)} ms" else ""
+            return "$head (≈ ${un(gapWorst * blocMs)} ms$buffer)"
+        }
 
         fun text() = "${reads / READS_PER_SECOND} s (en lecture ${playing / READS_PER_SECOND} s), $xruns décrochage(s), charge moyenne ${pct(cpuMean)} (lissée, pour info ; pire ${pct(cpuMax)}), " +
             (blocs().takeIf { it.isNotEmpty() }?.let { "$it, " } ?: "") +
@@ -152,10 +163,14 @@ object Ecoute {
         cpuWorst = reads.maxOfOrNull { it.cpuWorst } ?: 0f,
         gapWorst = reads.maxOfOrNull { it.gapWorst } ?: 0f,
         nonFinite = reads.any { it.nonFinite },
+        blocMs = reads.lastOrNull { it.blocMs > 0f }?.blocMs ?: 0f,
+        tamponBlocs = reads.lastOrNull { it.tamponBlocs > 0f }?.tamponBlocs ?: 0f,
         secondes = secondes(reads),
         alertes = alertes(reads),
     )
 
     fun fmt(v: Float) = String.format(Locale.ROOT, "%.2f", v)
+    /** One decimal, French comma. */
+    fun un(v: Float) = String.format(Locale.ROOT, "%.1f", v).replace('.', ',')
     fun pct(v: Float) = String.format(Locale.ROOT, "%.0f %%", v * 100)
 }

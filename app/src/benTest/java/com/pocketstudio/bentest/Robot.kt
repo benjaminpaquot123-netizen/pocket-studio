@@ -88,6 +88,9 @@ object Robot {
     private fun passageFile(context: Context) = File(dir(context), "passage.txt")
     /** « Scénarios »: the pack chosen (rapides: the first 31; complets: all of them). */
     private fun paquetFile(context: Context) = File(dir(context), "paquet.txt")
+    /** The scenarios the last run did not pass, for « Refaire les ratés » (written at the end of a run of scenarios). */
+    private fun ratesFile(context: Context) = File(dir(context), "rates.txt")
+    fun rates(context: Context): Set<String> = runCatching { ratesFile(context).readLines().map { it.trim() }.filter { it.isNotEmpty() }.toSet() }.getOrNull().orEmpty()
     fun paquet(context: Context): String = runCatching { paquetFile(context).readText().trim() }.getOrNull()?.takeIf { it in Scenarios.PAQUETS } ?: Scenarios.RAPIDE
 
     fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO || it == SCENARIOS } ?: ECLAIR
@@ -119,7 +122,7 @@ object Robot {
             TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             OREILLE -> QuestionsOreille(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             MICRO -> EcouteMicro(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), MicroReel(context), HautParleurReel(context), carnet(context), sons(context)).etapes()
-            SCENARIOS -> Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context), paquet = paquet(context)).etapes()
+            SCENARIOS -> Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context), paquet = paquet(context), rates = rates(context)).etapes()
             else -> EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
         }
         return subset(all, passage, if (retest) retest(context) else null)
@@ -187,12 +190,12 @@ object Robot {
                     val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
                     EcouteMicro(Pose(essai, Journey(driver)), MicroReel(app), HautParleurReel(app), c, sons(app)).etapes()
                 }
-                SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), enHaut = driver::enHaut).etapes()
+                SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), rates = rates(app), enHaut = driver::enHaut).etapes()
                 else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
             }
             val steps = subset(all, which, retest(app))
             // A scenario the app died in: its clues (the ones taken as it died, else the screen now).
-            val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), enHaut = driver::enHaut) else null
+            val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), rates = rates(app), enHaut = driver::enHaut) else null
             val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() }, onCrash = { clues?.apresPlantage(it) })
             Garde.installer(app, shots)
             runCatching {
@@ -208,6 +211,10 @@ object Robot {
             tracker.sorties = null
             tracker.keepScreenOn = false
             appli.orienter(null)
+            // What did not pass, for « Refaire les ratés » (a « ratés » run keeps only what still fails).
+            if (which == SCENARIOS) runCatching {
+                ratesFile(app).writeText(Scenarios.resultats(c.lines()).filter { it.resultat != Scenarios.PASSE }.joinToString("\n") { it.scenario.id })
+            }
             if (which == TOUT) runCatching {
                 // The last « Tout tester » kept for the next retest: a retest only replaces the steps it ran.
                 val f = derniereFile(app)
@@ -230,6 +237,7 @@ object Robot {
         carnet(context).clear()
         passageFile(context).delete()
         paquetFile(context).delete()
+        ratesFile(context).delete()
         retestFile(context).delete()
         captures(context).deleteRecursively()
         sons(context).deleteRecursively()
@@ -462,7 +470,7 @@ private class AppliReelle(private val app: Application, private val main: MainTh
         return ProjetVu(
             id, p.name, p.song.size, effets(p), disk?.let(::disque),
             tempo = p.tempoBpm, muets = p.mixer.channels.map { it.mute }, solos = p.mixer.channels.map { it.solo },
-            volumes = p.mixer.channels.map { it.volume }, pans = p.mixer.channels.map { it.pan }, montee = ProjetVu.montee(p), pads = ProjetVu.pads(p),
+            volumes = p.mixer.channels.map { it.volume }, pans = p.mixer.channels.map { it.pan }, montee = ProjetVu.montee(p), pads = ProjetVu.pads(p), reglages = ProjetVu.reglages(p),
         )
     }
 
@@ -470,7 +478,7 @@ private class AppliReelle(private val app: Application, private val main: MainTh
 
     private fun disque(p: Project) = ProjetVu.Disque(
         p.name, p.song.size, effets(p), p.tempoBpm, p.mixer.channels.map { it.mute }, p.mixer.channels.map { it.solo },
-        p.mixer.channels.map { it.volume }, p.mixer.channels.map { it.pan }, ProjetVu.montee(p),
+        p.mixer.channels.map { it.volume }, p.mixer.channels.map { it.pan }, ProjetVu.montee(p), ProjetVu.reglages(p),
     )
 
     override fun projets(): Map<String, ProjetVu.Disque>? = runCatching {

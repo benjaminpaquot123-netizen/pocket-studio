@@ -47,6 +47,8 @@ class Scenarios(
     private val regler: (String, Float) -> Boolean = { _, _ -> false },
     /** The pack played: [RAPIDE] (the first 31) or [COMPLET] (all of them). */
     private val paquet: String = COMPLET,
+    /** The ids the last run did not pass (the [RATES] pack plays them again; Robot's rates.txt). */
+    private val rates: Set<String> = emptySet(),
     /** The short listening of the full pack's scenarios (an effect, a tempo, a screen switched while playing). */
     private val courtMs: Long = 3_000,
     /** Scrolls the screen's lists back to their top ([InAppDriver.enHaut]): the Mix left scrolled down on the export settings. */
@@ -104,9 +106,9 @@ class Scenarios(
     )
 
     /** The scenarios of [LISTE] without a work of their own (none: a test checks it). */
-    internal fun sansTravail(): List<String> = (LISTE + SEULS).filter { travail(it) == null }.map { it.id }
+    internal fun sansTravail(): List<String> = TOUS.filter { travail(it) == null }.map { it.id }
 
-    fun etapes(): List<Etape> = liste(paquet).map { s ->
+    fun etapes(): List<Etape> = liste(paquet, rates).map { s ->
         etape(s.id, s.label, s.maxMs, rangeLeProjet(s)) { (travail(s) ?: error("scénario sans travail : ${s.id}"))() }
     }
 
@@ -131,6 +133,12 @@ class Scenarios(
             "ecrans" -> ECRANS_LECTURE[a]?.let { tabs -> { lectureEcrans(id, tabs) } }
             "repetition" -> when (a) { "jouer" -> { { jouerArreter(id) } }; "fond" -> { { fondReprise(id) } }; else -> null }
             "guide" -> { { t.guide(a) } }
+            "style_tempo" -> { { ts.style(id, a) + " ; " + tempoExtreme(id, haut = true, enJouant = true) } }
+            "effet_retrait" -> { { effetRetrait(id, a) } }
+            "effet_reglage" -> g.getOrNull(2)?.takeIf { it == "min" || it == "max" }?.let { end -> { effetReglage(id, a, end == "max") } }
+            "onglet" -> g.getOrNull(2)?.takeIf { it in QUOI_ONGLET }?.let { how -> { onglet(id, a, how) } }
+            "partie_redo" -> g.getOrNull(2)?.toIntOrNull()?.let { delta -> { partieRedo(id, a, delta) } }
+            "limite" -> when (a) { "min" -> { { tempoLimite(id, false) } }; "max" -> { { tempoLimite(id, true) } }; else -> null }
             else -> null
         }
     }
@@ -600,8 +608,10 @@ class Scenarios(
         check(attendre(5_000) { lu().parties == before + 1 }) { "le break ne s'ajoute pas au morceau : ${lu().parties} parties (avant : $before)" }
         annuler("le break")
         check(attendre(5_000) { lu().parties == before }) { "« Annuler » ne retire pas le break : ${lu().parties} parties (attendu : $before)" }
-        check(runCatching { j.await("top_redo", 5_000) }.isSuccess) { "pas de « Rétablir » après « Annuler »" }
-        j.tap("top_redo")
+        // A narrow phone has no room for « Rétablir » in the bar: it is in the thumb bar.
+        val redo = REDO.firstOrNull { attendre(5_000) { j.exists(it) } }
+        check(redo != null) { "pas de « Rétablir » après « Annuler »" }
+        j.tap(redo)
         check(attendre(5_000) { lu().parties == before + 1 }) { "« Rétablir » ne remet pas le break : ${lu().parties} parties (attendu : ${before + 1})" }
         val d = surDisque { it.parties == before + 1 }
         check(d?.parties == before + 1) { "après « Rétablir », ${d?.parties ?: "aucun fichier"} parties sur le disque (attendu : ${before + 1})" }
@@ -1059,6 +1069,305 @@ class Scenarios(
         return "courbe de montée : ${before.montee} points, puis ${after.montee}, enregistrée, ${before.parties} parties avant et après, puis ${before.montee} après « Annuler »"
     }
 
+    // --- The catalogue (tour 9, lot A3): one crossing each, one fault no other scenario finds ------------
+
+    /** The slots of strip [ch]'s effect chips on screen (its sheet open). */
+    private fun puces(ch: Int): Set<Int> =
+        j.tagsMatching(Regex("fx_chip_${ch}_(\\d+)")).mapNotNull { it.substringAfterLast('_').toIntOrNull() }.toSet()
+
+    /**
+     * [type] added to strip [ch] by its sheet's list, the sheet left open: the new chip's slot (null: no new chip
+     * on screen). The caller closes the sheet.
+     */
+    private fun ajouterUn(ch: Int, type: String): Int? {
+        bandeau(ch)
+        val had = puces(ch)
+        val n = lu().effets.getOrNull(ch).orEmpty().size
+        if (!j.exists("fx_picker_$ch")) {
+            j.tap("fx_add_$ch")
+            j.await("fx_picker_$ch")
+        }
+        j.tap("fx_pick_${ch}_$type")
+        check(attendre(5_000) { lu().effets.getOrNull(ch).orEmpty().size == n + 1 }) {
+            "$type ne s'ajoute pas à la piste ${ch + 1} : ${lu().effets.getOrNull(ch).orEmpty().ifEmpty { listOf("aucun") }.joinToString(", ")}"
+        }
+        runCatching { if (j.exists("fx_picker_$ch")) j.tap("fx_add_$ch") }
+        attendre(3_000) { (puces(ch) - had).isNotEmpty() }
+        return (puces(ch) - had).singleOrNull()
+    }
+
+    /** Why a long effect (a reverb, a delay) cannot go in the song any more (null: it can). */
+    private fun tropDeLongs(et: EffectType): String? {
+        if (!et.long) return null
+        val n = lu().effets.flatten().count { name -> EffectType.entries.firstOrNull { it.name == name }?.let { EffectType.samePool(it, et) } == true }
+        return if (n >= EffectType.longLimit(et)) "déjà $n effets de ce genre dans le morceau (l'appli en permet ${EffectType.longLimit(et)})" else null
+    }
+
+    /** The strip [ch] for one effect [type] more (an error text when there is none, or the type is unknown). */
+    private fun placePour(type: String): Pair<Int?, String?> {
+        val et = EffectType.entries.firstOrNull { it.name == type } ?: return null to "l'appli n'a pas d'effet $type"
+        tropDeLongs(et)?.let { return null to it }
+        val ch = place(1) ?: return null to "aucune des $PISTES_MAX premières pistes n'a de place libre"
+        return ch to null
+    }
+
+    /**
+     * Pro: an effect [type] added, then taken off by its « ✕ » (not by « Annuler »), then « Annuler » brings it back.
+     * Oracle: gone from the project and the disk after ✕, back after « Annuler », then the strip as it was.
+     */
+    private fun effetRetrait(step: String, type: String): String {
+        auStudio()
+        val (ch, why) = placePour(type)
+        if (ch == null) return nonMesure(step, why.orEmpty())
+        val before = lu().effets[ch].sorted()
+        val want = (before + type).sorted()
+        try {
+            val slot = try { ajouterUn(ch, type) } catch (t: Throwable) { fermerFeuilles(); throw t }
+            try {
+                check(slot != null) { "$type ajouté à la piste ${ch + 1}, mais aucune nouvelle puce d'effet à l'écran" }
+                check(j.exists("fx_remove_${ch}_$slot")) { "pas de « ✕ Retirer l'effet » pour $type (piste ${ch + 1})" }
+                j.tap("fx_remove_${ch}_$slot")
+            } finally {
+                fermerFeuilles()
+            }
+            check(attendre(5_000) { lu().effets[ch].sorted() == before }) { "« ✕ » ne retire pas $type : ${lu().effets[ch].joinToString(", ")}" }
+            val d = surDisque { it.effets.getOrNull(ch).orEmpty().sorted() == before }
+            check(d?.effets?.getOrNull(ch).orEmpty().sorted() == before && d != null) { "$type retiré reste sur le disque (piste ${ch + 1})" }
+            annuler("le retrait de $type")
+            check(attendre(5_000) { lu().effets[ch].sorted() == want }) { "« Annuler » ne remet pas $type sur la piste ${ch + 1} : ${lu().effets[ch].joinToString(", ")}" }
+            val back = surDisque { it.effets.getOrNull(ch).orEmpty().sorted() == want }
+            check(back?.effets?.getOrNull(ch).orEmpty().sorted() == want && back != null) { "$type remis par « Annuler » n'est pas sur le disque (piste ${ch + 1})" }
+            check(retirer(ch, before, 2)) { "la piste ${ch + 1} ne revient pas comme avant : ${lu().effets[ch].joinToString(", ")}" }
+        } finally {
+            runCatching { retirer(ch, before, 3) }
+        }
+        bilan(step, "piste" to ch + 1)
+        return "$type sur la piste ${ch + 1}, retiré par « ✕ » (projet et disque), remis par « Annuler », puis la piste comme avant"
+    }
+
+    /**
+     * Pro: an effect [type] added, its first knob turned to its [haut] end (1) or its low end (0). Oracle: the knob's
+     * value in the project and on the disk; after « Annuler » the old value or no effect; the song still sounds.
+     */
+    private fun effetReglage(step: String, type: String, haut: Boolean): String {
+        auStudio()
+        val et = EffectType.entries.firstOrNull { it.name == type } ?: return nonMesure(step, "l'appli n'a pas d'effet $type")
+        if (et.params.isEmpty()) return nonMesure(step, "$type n'a pas de réglage")
+        val (ch, why) = placePour(type)
+        if (ch == null) return nonMesure(step, why.orEmpty())
+        val before = lu().effets[ch]
+        val cible = if (haut) 1f else 0f
+        var lu0 = Float.NaN
+        var vieux = Float.NaN
+        var idx = -1
+        try {
+            val set: Boolean
+            try {
+                val slot = ajouterUn(ch, type)
+                check(slot != null) { "$type ajouté à la piste ${ch + 1}, mais aucune nouvelle puce d'effet à l'écran" }
+                val now = lu().effets[ch]
+                idx = now.indices.firstOrNull { it >= before.size || now[it] != before[it] } ?: before.size
+                vieux = lu().reglages.getOrNull(ch)?.getOrNull(idx)?.getOrNull(0) ?: Float.NaN
+                if (!j.exists("fx_editor_${ch}_$slot")) {
+                    j.tap("fx_chip_${ch}_$slot")
+                    attendre(3_000) { j.exists("fx_editor_${ch}_$slot") }
+                }
+                set = regler("fxp_${ch}_${slot}_0", cible)
+            } finally {
+                fermerFeuilles()
+            }
+            if (!set) return nonMesure(step, "le premier réglage de $type ne se règle pas d'ici")
+            fun valeur(p: ProjetVu) = p.reglages.getOrNull(ch)?.getOrNull(idx)?.getOrNull(0)
+            check(attendre(5_000) { valeur(lu())?.let { abs(it - cible) < PAS_REGLAGE } == true }) {
+                "${et.params[0].label} de $type réglé à ${fmt(cible)}, le projet a ${valeur(lu())?.let(::fmt) ?: "rien"}"
+            }
+            lu0 = valeur(lu()) ?: Float.NaN
+            val d = surDisque { r -> r.reglages.getOrNull(ch)?.getOrNull(idx)?.getOrNull(0)?.let { abs(it - cible) < PAS_REGLAGE } == true }
+            check(d?.reglages?.getOrNull(ch)?.getOrNull(idx)?.getOrNull(0)?.let { abs(it - cible) < PAS_REGLAGE } == true) {
+                "${et.params[0].label} de $type à ${fmt(cible)} n'est pas enregistré sur le disque (piste ${ch + 1})"
+            }
+            val by = e.lancerLecture()
+            val b = try { t.ecouter(step, courtMs) } finally { e.arreter() }
+            ecoute(step, b)
+            feuEcoute(step, b)
+            check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec $type à ${fmt(cible)}" }
+            check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec $type à ${fmt(cible)} : ${b.text()}" }
+            // « Annuler »: the knob back, or (the knob's step merged with the add) the effect gone.
+            annuler("le réglage de $type")
+            check(attendre(5_000) { lu().effets[ch] == before || valeur(lu())?.let { abs(it - vieux) < PAS_REGLAGE } == true }) {
+                "« Annuler » ne remet pas ${et.params[0].label} de $type : ${valeur(lu())?.let(::fmt) ?: "rien"} (avant : ${fmt(vieux)})"
+            }
+            check(retirer(ch, before.sorted(), 3)) { "la piste ${ch + 1} ne revient pas comme avant : ${lu().effets[ch].joinToString(", ")}" }
+            bilan(step, "piste" to ch + 1, "avant" to fmt(vieux), "apres" to fmt(lu0))
+            return "${et.params[0].label} de $type (piste ${ch + 1}) : ${fmt(vieux)} puis ${fmt(lu0)}, enregistré ; lecture par $by : ${b.text()} ; annulé"
+        } finally {
+            runCatching { retirer(ch, before.sorted(), 3) }
+        }
+    }
+
+    /** Waits for the screen [mark] (ending in _: a prefix) of a tab. */
+    private fun ecranLa(mark: String, ms: Long = 15_000): Boolean =
+        if (mark.endsWith("_")) attendre(ms) { j.tagsMatching(Regex(Regex.escape(mark) + ".+")).isNotEmpty() } else attendre(ms) { j.exists(mark) }
+
+    /** [open] touched (from Structure when the top bar is not there), then its [mark] on screen. */
+    private fun ouvrirOnglet(open: String, mark: String) {
+        if (!j.exists(open)) j.tap("tab_Structure")
+        j.tap(open)
+        check(ecranLa(mark)) { "l'écran « $open » ne s'ouvre pas" }
+    }
+
+    /** Back to the song from a screen (Mes projets: « ← » then « Continuer »). */
+    private fun quitterOnglet() {
+        if (j.exists("projects") && !j.exists("launch")) runCatching { j.tap("projects_back"); j.await("launch") }
+        if (j.exists("launch")) runCatching { j.tap("launch_continue") }
+        runCatching { j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000) }
+        runCatching { if (j.exists("tab_Structure")) j.tap("tab_Structure") }
+    }
+
+    /**
+     * Intermediate: the screen [name] open, then the phone turned ([how] « rotation »), the app sent behind another
+     * screen (« fond ») or the studio closed and opened again (« relance »). Oracle: the same screen comes back (the
+     * same song after a relaunch, untouched).
+     */
+    private fun onglet(step: String, name: String, how: String): String {
+        val (_, open, mark) = EssaiEclair.SCREENS.firstOrNull { it.first == name } ?: error("pas d'écran « $name »")
+        auStudio()
+        val before = lu()
+        try {
+            ouvrirOnglet(open, mark)
+            when (how) {
+                "rotation" -> {
+                    try {
+                        appli.orienter(true)
+                        j.idle(1_500)
+                        check(ecranLa(mark, 30_000)) { "« $name » perdu quand le téléphone se couche" }
+                        appli.orienter(false)
+                        j.idle(1_500)
+                        check(ecranLa(mark, 30_000)) { "« $name » perdu quand le téléphone se redresse" }
+                    } finally {
+                        appli.orienter(null)
+                    }
+                }
+                "fond" -> {
+                    val done = try {
+                        appli.arrierePlan { j.idle(1_000) }
+                    } finally {
+                        if (appli.studioDevant() == false) attendre(15_000) { appli.studioDevant() != false }
+                    }
+                    if (!done) return nonMesure(step, "le studio ne passe pas derrière un autre écran ici")
+                    check(appli.studioDevant() != false) { "le studio ne revient pas devant" }
+                    check(ecranLa(mark, 30_000)) { "« $name » perdu après un passage au fond" }
+                }
+                "relance" -> {
+                    surDisque { ecarts(before.trace(), it.trace()).isEmpty() }
+                    if (!appli.relancerStudio()) return nonMesure(step, "le studio ne se ferme et ne se rouvre pas d'ici")
+                    j.awaitAny("intro", "welcome", "launch", *EssaiEclair.STUDIO, timeoutMs = 60_000)
+                    j.awaitGone("intro", 60_000)
+                    e.auStudioPro()
+                    val back = lu()
+                    check(back.id == before.id) { "rouvert sur « ${back.nom} » au lieu de « ${before.nom} »" }
+                    val diff = ecarts(before.trace(), back.trace())
+                    check(diff.isEmpty()) { "le morceau rouvert n'est plus le même : ${diff.joinToString(", ")}" }
+                    ouvrirOnglet(open, mark)
+                }
+                else -> error("geste « $how » inconnu")
+            }
+        } finally {
+            runCatching { quitterOnglet() }
+        }
+        return "« $name » ouvert, ${QUOI_ONGLET[how] ?: how}, et le même écran revient"
+    }
+
+    /**
+     * Intermediate: a part's gesture [tag] ([delta] parts), « Annuler », then « Rétablir ». Oracle: the parts [delta] more
+     * again after « Rétablir », in the project and on the disk; then « Annuler » once more (tidying).
+     */
+    private fun partieRedo(step: String, tag: String, delta: Int): String {
+        auStudio()
+        val before = lu().parties
+        j.tap("tab_Structure")
+        val there: Boolean
+        try {
+            j.openPartSheet(PARTIE)
+            there = attendre(2_000) { j.exists(tag) }
+            if (there) j.tap(tag)
+            if (there && tag.startsWith("part_insert") && attendre(3_000) { j.tagsMatching(PICK).isNotEmpty() }) j.tap(j.tagsMatching(PICK).first())
+        } finally {
+            fermerFeuilles()
+        }
+        if (!there) return nonMesure(step, "pas de « $tag » dans la feuille de la partie ${PARTIE + 1}")
+        check(attendre(5_000) { lu().parties == before + delta }) { "${lu().parties} parties après le geste (avant : $before, attendu : ${before + delta})" }
+        annuler("le geste « $tag »")
+        check(attendre(5_000) { lu().parties == before }) { "« Annuler » ne remet pas le morceau : ${lu().parties} parties (attendu : $before)" }
+        // A narrow phone has no room for « Rétablir » in the bar: it is in the thumb bar.
+        val redo = REDO.firstOrNull { attendre(5_000) { j.exists(it) } }
+        check(redo != null) { "pas de « Rétablir » après « Annuler »" }
+        j.tap(redo)
+        check(attendre(5_000) { lu().parties == before + delta }) { "« Rétablir » ne refait pas « $tag » : ${lu().parties} parties (attendu : ${before + delta})" }
+        val d = surDisque { it.parties == before + delta }
+        check(d?.parties == before + delta) { "après « Rétablir », ${d?.parties ?: "aucun fichier"} parties sur le disque (attendu : ${before + delta})" }
+        annuler("le geste « $tag » rétabli")
+        check(attendre(5_000) { lu().parties == before }) { "le second « Annuler » ne remet pas le morceau : ${lu().parties} parties (attendu : $before)" }
+        val back = surDisque { it.parties == before }
+        check(back?.parties == before) { "${back?.parties ?: "aucun fichier"} parties sur le disque après le second « Annuler » (attendu : $before)" }
+        bilan(step, "parties_avant" to before, "parties_apres" to before + delta)
+        return "« $tag » : $before parties, ${before + delta}, annulé ($before), rétabli (${before + delta}), enregistré, puis annulé"
+    }
+
+    /** [n] typed on the tempo sheet's keypad (the sheet open). */
+    private fun taper(n: Int) {
+        repeat(3) { if (j.exists("tempo_key_erase")) runCatching { j.tap("tempo_key_erase") } }
+        n.toString().forEach { j.tap("tempo_key_$it") }
+    }
+
+    /**
+     * Pro: the tempo typed at the app's lowest ([haut] false) or highest, then « − » or « + » past it, then one bpm
+     * outside typed. Oracle: the limit in the project and on the disk, « − »/« + » stays there, the bpm outside is
+     * refused (OK does nothing), the song plays there with sound, no NaN; then « Annuler » puts the tempo back.
+     */
+    private fun tempoLimite(step: String, haut: Boolean): String {
+        auStudio()
+        val before = lu().tempo
+        val limit = if (haut) TEMPO_MAX else TEMPO_MIN
+        val past = if (haut) limit + 1 else limit - 1
+        var by: String? = null
+        val b: Ecoute.Bilan
+        try {
+            ouvrirTempo()
+            if (!j.exists("tempo_key_ok")) return nonMesure(step, "pas de pavé de chiffres dans la feuille du tempo")
+            taper(limit)
+            j.tap("tempo_key_ok")
+            check(attendre(5_000) { abs(lu().tempo - limit) < 0.01 }) { "$limit tapé puis OK, le tempo est à ${fmt(lu().tempo)} bpm" }
+            val d = surDisque { abs(it.tempo - limit) < 0.01 }
+            check(d?.let { abs(it.tempo - limit) < 0.01 } == true) { "le tempo $limit bpm n'est pas enregistré sur le disque" }
+            fermerFeuilles()
+            ouvrirTempo()
+            runCatching { j.tap(if (haut) "tempo_plus" else "tempo_minus") }
+            j.idle(500)
+            check(abs(lu().tempo - limit) < 0.01) { "« ${if (haut) "+" else "−"} » fait sortir le tempo de la limite : ${fmt(lu().tempo)} bpm" }
+            taper(past)
+            runCatching { j.tap("tempo_key_ok") }
+            j.idle(500)
+            check(abs(lu().tempo - limit) < 0.01) { "$past bpm tapé est accepté : ${fmt(lu().tempo)} bpm (l'appli joue de $TEMPO_MIN à $TEMPO_MAX)" }
+            fermerFeuilles()
+            by = e.lancerLecture()
+            b = t.ecouter(step, courtMs)
+        } finally {
+            fermerFeuilles()
+            e.arreter()
+            // The whole sheet is one undo step: « Annuler » until the tempo is back.
+            repeat(3) { if (abs(lu().tempo - before) > 0.01 && j.exists("top_undo")) { j.tap("top_undo"); attendre(3_000) { abs(lu().tempo - before) < 0.01 } } }
+        }
+        ecoute(step, b)
+        feuEcoute(step, b)
+        check(b.joueTout) { "la lecture s'arrête à $limit bpm : ${b.text()}" }
+        check(!b.nonFinite) { "valeur invalide (NaN) dans le son à $limit bpm" }
+        check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence à $limit bpm : ${b.text()}" }
+        check(attendre(5_000) { abs(lu().tempo - before) < 0.01 }) { "« Annuler » ne remet pas le tempo à ${fmt(before)} : ${fmt(lu().tempo)} bpm" }
+        bilan(step, "tempo_avant" to fmt(before), "tempo_limite" to limit)
+        return "tempo $limit bpm tapé, enregistré, « ${if (haut) "+" else "−"} » et $past refusés ; lecture par $by : ${b.text()} ; remis à ${fmt(before)}"
+    }
+
     /** Intermediate: the screens [tabs] (tab, its marker) opened while the song plays. Oracle: the transport plays at each one, and sound comes out. */
     private fun lectureEcrans(step: String, tabs: List<Pair<String, String>>): String {
         auStudio()
@@ -1356,8 +1665,9 @@ class Scenarios(
         const val COMPLET = "complet"
         /** « Refaire les ratés »: the scenarios failed or not measured in the 2026-11-22 run (sound cut, Android Auto). */
         const val RATES = "rates"
-        val RATES_IDS = setOf("annuler_retablir", "pads_live", "arriere_plan", "latence", "lecture_longue", "images", "style_techno", "style_detroit", "style_acid_techno", "style_hard_techno", "style_industrial_techno", "style_retro_techno", "style_acidcore", "style_deep_house", "style_tech_house", "style_acid_house", "style_uk_garage", "style_jump_up", "style_minimal", "style_gabber", "style_afro_house", "style_speed_garage", "style_amapiano", "style_disco", "style_liquid_dnb", "style_neurofunk", "style_jungle", "style_riddim", "style_trap", "style_drill", "style_phonk", "style_boom_bap", "style_grime", "style_jersey_club", "style_lofi", "style_reggaeton", "style_afrobeats", "style_synthwave", "style_pop", "effet_compressor", "effet_saturation", "effet_chorus", "effet_filter", "effet_pump", "effet_flanger", "effet_phaser", "effet_gate", "effet_tremolo", "effet_widener", "effet_bitcrusher", "effet_param_eq", "effet_robot", "effet_wah", "effet_vinyl", "effet_radio", "effet_chopper", "effet_distortion", "effet_echo", "effet_ping_pong", "effet_reverb", "effet_auto_pan", "effet_ott", "effet_freq_shift", "effet_tape_stop", "effet_wobble", "effet_clipper", "effet_bass_exciter", "tempo_bas", "partie_retirer", "partie_dupliquer", "partie_montee", "pad_2", "pad_3", "pad_4", "pad_5", "pad_6", "pad_7", "pad_8")
-        val PAQUETS = listOf(RAPIDE, COMPLET, RATES, SEUL)
+        const val GUIDES = "guides"
+        /** Every pack the robot can play: the first ones, then each theme's chunks ([THEMES]). */
+        val PAQUETS by lazy { listOf(RAPIDE, COMPLET, RATES, SEUL, GUIDES) + CHUNKS.keys }
         const val DUREE_COMPLET_MAX_S = 65 * 60
         /** « Tests longs »: what the phone tested alone (tour 9, A2), played apart from the other packs. */
         const val SEUL = "seul"
@@ -1408,16 +1718,67 @@ class Scenarios(
         private const val PAQUET = "paquet"
 
         /** A pack's scenarios. */
-        fun liste(paquet: String): List<Scenario> = when (paquet) {
+        fun liste(paquet: String, rates: Set<String> = emptySet()): List<Scenario> = when (paquet) {
             RAPIDE -> LISTE.filter { it.geste == null }
-            RATES -> LISTE.filter { it.id in RATES_IDS }
+            RATES -> TOUS.filter { it.id in rates }
             SEUL -> SEULS
-            else -> LISTE
+            GUIDES -> TOUS.filter { it.geste?.startsWith("guide:") == true }
+            else -> CHUNKS[paquet] ?: LISTE
+        }
+
+        /** The theme of a scenario ([THEMES]); null: the quick pack's own (no table line). */
+        fun theme(s: Scenario): String? {
+            if (s in SEULS) return "endurance"
+            val kind = s.geste?.substringBefore(':') ?: return null
+            return THEMES.entries.firstOrNull { kind in it.value }?.key
+        }
+
+        /** The themes, by the kind of their gesture. */
+        val THEMES = linkedMapOf(
+            "son" to setOf("style", "style_tempo", "tempo", "muet", "solo", "volume", "pan"),
+            "effets" to setOf("effet", "effet_retrait", "effet_reglage"),
+            "ecrans" to setOf("ecrans", "onglet"),
+            "structure" to setOf("partie", "montee", "partie_redo"),
+            "live" to setOf("pad"),
+            "exports" to setOf("export"),
+            "limites" to setOf("limite"),
+            "endurance" to setOf("repetition"),
+        )
+
+        /** A pack's name for Benjamin (« Son 1 », « Guidés »). */
+        fun nomPaquet(name: String): String {
+            if (name == GUIDES) return "Guidés"
+            val th = name.substringBeforeLast('_')
+            val word = mapOf(
+                "son" to "Son", "effets" to "Effets", "ecrans" to "Écrans", "structure" to "Structure", "live" to "Live",
+                "exports" to "Exports", "limites" to "Limites", "endurance" to "Endurance",
+            )[th] ?: th
+            return "$word ${name.substringAfterLast('_')}"
+        }
+
+        /** A pack's longest estimate: half an hour. */
+        const val DUREE_PAQUET_MAX_S = 30 * 60
+
+        /** Each theme cut into packs of [DUREE_PAQUET_MAX_S] at most, by estimate (« son_1 », « son_2 »…), in the list's order. */
+        val CHUNKS: Map<String, List<Scenario>> by lazy {
+            val out = LinkedHashMap<String, List<Scenario>>()
+            for (th in THEMES.keys) {
+                var n = 0
+                var cur = ArrayList<Scenario>()
+                var sum = 0
+                for (s in TOUS.filter { theme(it) == th }) {
+                    if (cur.isNotEmpty() && sum + s.estimeS > DUREE_PAQUET_MAX_S) { out["${th}_${++n}"] = cur; cur = ArrayList(); sum = 0 }
+                    cur += s
+                    sum += s.estimeS
+                }
+                if (cur.isNotEmpty()) out["${th}_${++n}"] = cur
+            }
+            out
         }
 
         /** The pack the logbook's last scenarios were played in (none noted: the full list). */
         fun paquet(lines: List<Carnet.Ligne>): String {
-            val ids = (LISTE + SEULS).map { it.id }.toSet()
+            val ids = TOUS.map { it.id }.toSet()
             return lines.lastOrNull { it.step in ids && it.kind == Carnet.NOTE && it.text.startsWith("$PAQUET;") }?.text?.substringAfter(';')?.takeIf { it in PAQUETS } ?: COMPLET
         }
 
@@ -1543,6 +1904,58 @@ class Scenarios(
             Scenario(GUIDE, "Débutant : le Guide jusqu'au bout", NIVEAU_DEBUTANT, 480_000, 150, "« Tout est fait » à l'écran du Guide"),
         ) + tables()
 
+        /** The great catalogue (tour 9, lot A3): one crossing each, played by the theme packs. */
+        val CATALOGUE: List<Scenario> by lazy { catalogue() }
+
+        /** Every scenario: the full pack, the catalogue, the « seul » pack. */
+        val TOUS: List<Scenario> by lazy { LISTE + CATALOGUE + SEULS }
+
+        /** The tempo's ends, as the app keeps them. */
+        /** « Rétablir »: the bar's, or the thumb bar's on a narrow phone. */
+        val REDO = listOf("top_redo", "thumb_redo")
+        val TEMPO_MIN = com.pocketstudio.model.Project.MIN_TEMPO.toInt()
+        val TEMPO_MAX = com.pocketstudio.model.Project.MAX_TEMPO.toInt()
+
+        /** An effect knob's step the oracle forgives (the slider's own rounding). */
+        const val PAS_REGLAGE = 0.02f
+
+        /** The screens' crossings: what was done to the screen. */
+        val QUOI_ONGLET = mapOf(
+            "rotation" to "le téléphone couché puis redressé",
+            "fond" to "le studio passé au fond puis revenu",
+            "relance" to "le studio fermé puis rouvert",
+        )
+
+        /** The part gestures « Rétablir » is tried on: the tag and the parts it adds. */
+        val GESTES_PARTIE = listOf("part_insert_$PARTIE" to 1, "part_remove_$PARTIE" to -1, "part_duplicate_$PARTIE" to 1, "part_ending" to 1)
+
+        private fun nom(t: EffectType) = t.name.lowercase(Locale.ROOT)
+
+        private fun catalogue(): List<Scenario> = buildList {
+            for (st in STYLES_NEUFS) {
+                add(Scenario("style_tempo_$st", "Pro : un morceau ${st.replace('_', ' ')}, le tempo doublé en jouant", NIVEAU_PRO, 420_000, 70, "le style joue, puis le tempo monté (projet, disque), la lecture sans arrêt ni NaN", "style_tempo:$st"))
+            }
+            val exported = EXPORTS_STYLES.map { it.first }.toSet()
+            for (st in STYLES_NEUFS.filter { it !in exported }) {
+                add(Scenario("export_style_${st}_wav", "Moyen : un morceau ${st.replace('_', ' ')} exporté en WAV", NIVEAU_MOYEN, 600_000, 75, "le fichier relu : durée, crête, temps pris", "export:$st:wav"))
+            }
+            val types = EffectType.entries.filter { it != EffectType.NONE }
+            for (t in types) {
+                add(Scenario("effet_retrait_${nom(t)}", "Pro : l'effet ${nom(t).replace('_', ' ')} retiré par ✕, puis « Annuler »", NIVEAU_PRO, 120_000, 18, "retiré (projet, disque) par ✕, remis par « Annuler », puis la piste comme avant", "effet_retrait:${t.name}"))
+            }
+            for (t in types.filter { it.params.isNotEmpty() }) for (end in listOf("min", "max")) {
+                add(Scenario("effet_reglage_${nom(t)}_$end", "Pro : ${nom(t).replace('_', ' ')}, son premier réglage au ${if (end == "min") "minimum" else "maximum"}", NIVEAU_PRO, 120_000, 20, "la valeur du réglage (projet, disque), le son sans NaN, puis « Annuler »", "effet_reglage:${t.name}:$end"))
+            }
+            for ((name, _, _) in EssaiEclair.SCREENS) for ((how, what) in QUOI_ONGLET) {
+                add(Scenario("onglet_${name}_$how", "Moyen : l'écran $name, $what", NIVEAU_MOYEN, 150_000, if (how == "relance") 40 else 20, "le même écran revient${if (how == "relance") ", le même morceau" else ""}", "onglet:$name:$how"))
+            }
+            for ((tag, delta) in GESTES_PARTIE) {
+                add(Scenario("partie_redo_${tag.removePrefix("part_").substringBefore('_')}", "Moyen : « ${tag.removePrefix("part_").substringBefore('_')} », annuler puis rétablir", NIVEAU_MOYEN, 90_000, 15, "les parties après « Rétablir » (projet, disque), puis comme avant", "partie_redo:$tag:$delta"))
+            }
+            add(Scenario("limite_tempo_min", "Pro : le tempo au plus bas ($TEMPO_MIN bpm) tapé au pavé", NIVEAU_PRO, 120_000, 20, "$TEMPO_MIN bpm (projet, disque), « − » et ${TEMPO_MIN - 1} refusés, la lecture avec du son", "limite:min"))
+            add(Scenario("limite_tempo_max", "Pro : le tempo au plus haut ($TEMPO_MAX bpm) tapé au pavé", NIVEAU_PRO, 120_000, 20, "$TEMPO_MAX bpm (projet, disque), « + » et ${TEMPO_MAX + 1} refusés, la lecture avec du son", "limite:max"))
+        }
+
         /** [LISTE] as steps without work (to read a logbook). */
         /** The screens a scenario starts from: the studio (its bar, or its rail lying down), the welcome, the projects. */
         /** « Insérer après la partie N »'s choices. */
@@ -1577,7 +1990,9 @@ class Scenarios(
 
         /** Passed: green, or orange (it works, a number is to be watched); failed: red (the step failed, crashed, or a number is out). */
         fun resultats(lines: List<Carnet.Ligne>): List<Resultat> {
-            val list = liste(paquet(lines))
+            val pack = paquet(lines)
+            // The « ratés » pack: the ids this logbook began (the list it was given is the robot's, not the logbook's).
+            val list = if (pack == RATES) TOUS.filter { s -> lines.any { it.step == s.id && it.kind == Carnet.DEBUT } } else liste(pack)
             val feux = Rapport.feux(lines, noms(list))
             return list.map { s ->
                 val from = lines.indexOfLast { it.step == s.id && it.kind == Carnet.DEBUT }.coerceAtLeast(0)
@@ -1715,20 +2130,20 @@ class Scenarios(
 
         /** The phone's sound the last scenario began with: « coupé » or « allumé »; null: unknown. */
         fun son(lines: List<Carnet.Ligne>): String? {
-            val ids = (LISTE + SEULS).map { it.id }.toSet()
+            val ids = TOUS.map { it.id }.toSet()
             return lines.lastOrNull { it.step in ids && it.kind == Carnet.NOTE && it.text.startsWith("$SON;") }?.text?.split(';')?.getOrNull(1)
         }
 
         /** From the first scenario's beginning to the last line of one. */
         private fun duree(lines: List<Carnet.Ligne>): Long? {
-            val ids = (LISTE + SEULS).map { it.id }.toSet()
+            val ids = TOUS.map { it.id }.toSet()
             val mine = lines.filter { it.step in ids }
             val begin = mine.firstOrNull { it.kind == Carnet.DEBUT } ?: return null
             return (mine.last().atMs - begin.atMs) / 1000
         }
 
         /** Scenarios that open another song (a style, a guide, an export of a style) are not held to [commeAvant]. */
-        fun rangeLeProjet(s: Scenario): Boolean = s.geste?.substringBefore(':') !in setOf("style", "guide", "export") && s.id !in OUVRENT_UN_MORCEAU
+        fun rangeLeProjet(s: Scenario): Boolean = s.geste?.substringBefore(':') !in setOf("style", "style_tempo", "guide", "export") && s.id !in OUVRENT_UN_MORCEAU
 
         /** Ids that open, make or reopen a song by themselves (their work is their own). */
         val OUVRENT_UN_MORCEAU by lazy { setOf(DEBUTANT, PROJET, DUPLIQUER, SUPPRIMER, STYLE_TRANCE, STYLE_DUBSTEP, STYLE_DNB, GUIDE) }
@@ -1746,6 +2161,11 @@ class Scenarios(
                 if (a.solos != b.solos) add("solos")
                 if (!close(a.volumes, b.volumes)) add("volumes")
                 if (!close(a.pans, b.pans)) add("panoramiques")
+                // Settings: only when both sides read them (an older reader leaves them empty).
+                if (a.reglages.isNotEmpty() && b.reglages.isNotEmpty()) {
+                    val same = a.reglages.size == b.reglages.size && a.reglages.zip(b.reglages).all { (x, y) -> x.size == y.size && x.zip(y).all { (u, v) -> close(u, v) } }
+                    if (!same) add("réglages d'effets")
+                }
             }
         }
 
@@ -1768,27 +2188,35 @@ data class ProjetVu(
     val montee: Int = 0,
     /** The Live cells with something to play, as the grid tags them (`live_pad_<track>_<row>`), row by row. */
     val pads: List<String> = emptyList(),
+    /** Each strip's effects' settings, effect by effect in slot order ([reglages]). */
+    val reglages: List<List<List<Float>>> = emptyList(),
 ) {
     data class Disque(
         val nom: String, val parties: Int, val effets: List<List<String>>,
         val tempo: Double = 0.0, val muets: List<Boolean> = emptyList(), val solos: List<Boolean> = emptyList(),
         val volumes: List<Float> = emptyList(), val pans: List<Float> = emptyList(),
         val montee: Int = 0,
+        val reglages: List<List<List<Float>>> = emptyList(),
     ) {
-        fun trace() = Trace(parties, effets.map { it.sorted() }, tempo, muets, solos, volumes, pans, montee)
+        fun trace() = Trace(parties, effets.map { it.sorted() }, tempo, muets, solos, volumes, pans, montee, reglages)
     }
 
     /** What [Scenarios.commeAvant] compares: the song's content, without its name. */
     data class Trace(
         val parties: Int, val effets: List<List<String>>, val tempo: Double, val muets: List<Boolean>, val solos: List<Boolean>,
         val volumes: List<Float>, val pans: List<Float>, val montee: Int,
+        val reglages: List<List<List<Float>>> = emptyList(),
     )
 
-    fun trace() = Trace(parties, effets.map { it.sorted() }, tempo, muets, solos, volumes, pans, montee)
+    fun trace() = Trace(parties, effets.map { it.sorted() }, tempo, muets, solos, volumes, pans, montee, reglages)
 
     companion object {
         /** A strip's effects at most (the model's own limit). */
         const val EFFETS_MAX = com.pocketstudio.model.Layers.MAX_INSERTS
+
+        /** [p]'s strips' effects' settings: per strip, per effect (NONE left out, slot order), its parameters. */
+        fun reglages(p: com.pocketstudio.model.Project): List<List<List<Float>>> =
+            p.mixer.channels.map { ch -> ch.inserts.filter { it.effect != EffectType.NONE }.map { it.params.toList() } }
 
         /** The points drawn on [p]'s song build-up curve (what `buildUpBefore` writes; 0: none). */
         fun montee(p: com.pocketstudio.model.Project): Int {

@@ -82,6 +82,8 @@ class BenTestActivity : ComponentActivity() {
                         startScenariosComplets = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.COMPLET) },
                         startRates = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.RATES) },
                         startSeul = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.SEUL) },
+                        startPaquet = { name -> Robot.start(application, Robot.SCENARIOS, paquet = name) },
+                        rates = Robot.rates(this).size,
                         startRetest = { ids -> Robot.start(application, Robot.TOUT, ids) },
                         startOreille = { Robot.start(application, Robot.OREILLE) },
                         startMicro = {
@@ -138,6 +140,10 @@ class BenTestActions(
     /** « Refaire les ratés »: only the scenarios failed or not measured last time. */
     val startRates: () -> Unit = {},
     val startSeul: () -> Unit = {},
+    /** A pack of the catalogue by its name (« guides », « son_1 »…). */
+    val startPaquet: (String) -> Unit = {},
+    /** How many scenarios the last run did not pass. */
+    val rates: Int = 0,
     /** « Retester les corrections »: the chosen steps' ids. */
     val startRetest: (Set<String>) -> Unit = {},
     /** « Questions à l'oreille » (T3). */
@@ -232,7 +238,7 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                         color = Neon.TextSecondary,
                     )
                     Button(onClick = actions.startTout, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_tout")) { Text("Tout tester") }
-                    Text("Refaire les ratés : ${Scenarios.liste(Scenarios.RATES).size} scénarios ratés ou non mesurés la dernière fois. Son allumé, volume à moitié, sans couper ni quitter l'appli.", color = Neon.TextSecondary)
+                    Text("Refaire les ratés : ${actions.rates} scénarios ratés ou non mesurés la dernière fois. Son allumé, volume à moitié, sans couper ni quitter l'appli.", color = Neon.TextSecondary)
                     Button(onClick = actions.startRates, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_rates")) { Text("Refaire les ratés") }
                     Text("Scénarios rapides : ${Scenarios.liste(Scenarios.RAPIDE).size} scénarios, environ 7 minutes, sans rien toucher. Le robot joue comme un débutant, un moyen et un pro : morceau, projet enregistré, break, effet, Live, export, latence, décrochages.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.startScenarios, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_scenarios")) { Text("Scénarios rapides") }
@@ -240,6 +246,14 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     OutlinedButton(onClick = actions.startScenariosComplets, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_scenarios_complets")) { Text("Scénarios complets") }
                     Text("Tests longs : ${Scenarios.SEULS.size} tests, environ 25 minutes, chargeur branché, son allumé. Ce que tu testais à la main : 10 minutes de lecture, mémoire, démarrage, appli tuée d'un coup, son pris par une autre appli, gros tampon, vidéo avec son.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.startSeul, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_seul")) { Text("Tests longs") }
+                    Text("Grand catalogue : ${Scenarios.TOUS.size} scénarios en paquets d'une demi-heure au plus, par thème. Chargeur branché, son allumé.", color = Neon.TextSecondary)
+                    for (name in listOf(Scenarios.GUIDES) + Scenarios.CHUNKS.keys) {
+                        val l = Scenarios.liste(name)
+                        val min = (l.sumOf { it.estimeS } + 59) / 60
+                        OutlinedButton(onClick = { actions.startPaquet(name) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bentest_paquet_$name")) {
+                            Text("${Scenarios.nomPaquet(name)} : ${l.size} scénarios, environ $min min")
+                        }
+                    }
                     Text("Essai éclair : environ 5 minutes. Le robot fait 3 morceaux, 1 export, visite 5 écrans, puis te pose 1 question.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_lancer")) { Text("Lancer l'essai éclair") }
                     Text("Questions à l'oreille : environ 10 minutes. Le robot lance les morceaux, une question à la fois s'affiche en haut de l'écran : ✅ ou ❌.", color = Neon.TextSecondary)

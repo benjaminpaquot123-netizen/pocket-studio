@@ -520,6 +520,11 @@
     "source": "lofi",
     "tip_fr": "Un shaker (une petite maraca) presque inaudible juste avant chaque temps, pour la texture.",
     "voice": "shaker"
+   },
+   {
+    "role": "snap",
+    "pattern": "....o.......o...",
+    "tip_fr": "Un claquement de doigts tout doux avec la caisse claire : ça fait « chambre », intime."
    }
   ],
   "progressions": {
@@ -565,7 +570,8 @@
    "rhythm": "X-------x-----X-------X---x...X-",
    "voicing": "ninth",
    "octave": 3,
-   "sound": "Rhodes FM"
+   "sound": "Rhodes FM",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R---------R-5---",
@@ -616,7 +622,18 @@
     "delay": 0.2
    }
   ],
-  "notes": "Jazz harmony is the point: ii-V-I and IVmaj7-vi-ii-V loops in 9th voicings on a soft Rhodes (dreamy avoids the iii, whose 9th would be minor). The Rhodes is the signature, with 'Vieux vinyle' crackle on it and 'Vinyle chaud' on the drums. Heavy lazy swing (62%): the app's swing only delays odd 16ths, so the hats and the shaker have hits there. Soft snare. Bass soft and warm, on the kicks, no 808. The lead is only a lazy fill at the end of the bar."
+  "notes": "Jazz harmony is the point: ii-V-I and IVmaj7-vi-ii-V loops in 9th voicings on a soft Rhodes (dreamy avoids the iii, whose 9th would be minor). The Rhodes is the signature, with 'Vieux vinyle' crackle on it and 'Vinyle chaud' on the drums. Heavy lazy swing (62%): the app's swing only delays odd 16ths, so the hats and the shaker have hits there. Soft snare. Bass soft and warm, on the kicks, no 808. The lead is only a lazy fill at the end of the bar. Modern body (Lofi Girl sets): rain behind the dusty Rhodes from start to end, the Rhodes doubled an octave up in the Drop for body in the mids, a soft vibraphone answer, a finger snap on the snare, drums glued in parallel.",
+  "texture": {
+   "sound": "Pluie"
+  },
+  "counter": {
+   "sound": "Vibraphone FM"
+  },
+  "body": true,
+  "mix": {
+   "glue_blend": 0.6,
+   "bus_drive": 0.2
+  }
  },
  {
   "id": "phonk",

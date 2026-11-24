@@ -244,6 +244,7 @@
  "packs": [
   {
    "id": "bruitages_maison",
+   "recipes": true,
    "name": "Bruitages : maison et objets",
    "family": "Bruitages",
    "version": 1,
@@ -941,6 +942,7 @@
   },
   {
    "id": "percussions_acoustiques",
+   "recipes": true,
    "name": "Percussions acoustiques",
    "family": "Acoustique",
    "version": 1,

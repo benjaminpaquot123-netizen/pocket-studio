@@ -2,12 +2,13 @@
  {
   "id": "techno",
   "references": [
+   "Charlotte de Witte – Doppler (2021)",
    "Amelie Lens – Hypnotized (2019)",
+   "Enrico Sangiuliano – Symbiosis (2018)",
    "Adam Beyer & Bart Skils – Your Mind (2018)",
-   "Ben Klock – Subzero (2009)",
-   "Laurent Garnier – Crispy Bacon (1997)"
+   "Ben Klock – Subzero (2009)"
   ],
-  "description_fr": "La techno des clubs de Berlin : un gros kick sur chaque temps, une basse qui roule entre les coups, des boucles hypnotiques.",
+  "description_fr": "La techno des grands clubs d'aujourd'hui : un kick qui frappe sur chaque temps, un grondement grave qui roule dessous, une basse sourde et des boucles hypnotiques.",
   "bpm": 132,
   "swing": 0.05,
   "root": "F",
@@ -34,7 +35,10 @@
     "role": "hat",
     "pattern": "ox.oxx.oox.oxx.o",
     "source": "techno",
-    "tip_fr": "Les petits charleys fermés remplissent tous les trous entre les coups pour que le rythme roule."
+    "tip_fr": "Les petits charleys fermés, secs et métalliques, remplissent tous les trous entre les coups pour que le rythme roule.",
+    "layers": [
+     "industrial_techno"
+    ]
    },
    {
     "role": "perc",
@@ -106,10 +110,10 @@
   },
   "lead": {
    "type": "riff",
-   "pattern": "R-..O-..R-......r-..o-..R-..3-..",
+   "pattern": "R..R..R.R..R..R.R..R..R.R..R..r.",
    "arp_rate": 24,
-   "octave": 4,
-   "sound": "Lead filtré"
+   "octave": 3,
+   "sound": "Stab métallique"
   },
   "acid": {
    "use": false,
@@ -120,16 +124,31 @@
   "defaults": {
    "bass": true,
    "chords": true,
-   "lead": true
+   "lead": false
   },
   "default_mood": "dark",
   "bass_tip": "Une basse sourde qui roule entre les coups de kick, jamais en même temps : le grave reste propre et ça tourne. Elle se baisse à chaque kick (la pompe).",
   "pad_tip": "Pas de vraie nappe : un petit accord court avec un écho qui se répète, presque toujours le même. C'est ce qui hypnotise.",
-  "lead_tip": "Un petit riff filtré de deux mesures qui respire : une note, son octave, un silence. Il arrive au Drop et tourne en boucle.",
+  "lead_tip": "Pas de mélodie au départ : le kick, le grondement et la basse font tout. Pour qui veut, une seule note métallique, grave et filtrée, qui revient en 3-3-2 et hypnotise.",
   "fx": [
+   {
+    "on": "kick",
+    "preset": "punch"
+   },
    {
     "on": "bass",
     "preset": "pump"
+   },
+   {
+    "on": "bass",
+    "insert": "SATURATION",
+    "params": [
+     0.3,
+     0.35,
+     0.6,
+     0.7,
+     1.0
+    ]
    },
    {
     "on": "chords",
@@ -154,22 +173,28 @@
     "reverb": 0.15
    },
    {
-    "on": "lead",
-    "delay": 0.25
-   },
-   {
     "on": "rumble",
     "preset": "rumble"
+   },
+   {
+    "on": "lead",
+    "insert": "PARAM_EQ",
+    "params": [
+     0.392,
+     0.4167,
+     0.2416,
+     0.0
+    ],
+    "delay": 0.2
    }
   ],
-  "notes": "Berlin / peak-time techno. Harmony almost static (phrygian i-bII at most). The rolling bass sits on the three 16ths between kicks and is ducked by the kick (pump). The chord is a short dub stab (minor 7th) through the dub echo preset; keep it sparse. Berghain 128-135 BPM, peak-time 130-138. Optional lead = one-note hypnotic 3-3-3-3-2-2 loop. No signature: the beat is the star, the DJ intro is drums only.",
+  "notes": "Modern Berlin / peak-time techno (2018-2024: Charlotte de Witte, Amelie Lens, Enrico Sangiuliano). Kick, rumble and bass up front: the kick goes through the punch preset, the rumble (the kick replayed through the rumble preset) rolls under it, the bass is saturated a little and ducked by the kick (pump). No lead by default (Benjamin, 2026-11-24: the old filtered octave riff sounded like Oxygene): the optional lead is one dark metallic note in a 3-3-2 loop, octave 3, low-passed and cut under 200 Hz, never in the Break. Harmony almost static (phrygian i-bII at most). The chord is a short dub stab (minor 7th) through the dub echo preset, closed before the Drop and opening in it. Metallic closed hats (the industrial pack layered on the techno one), ride in the Drop. Drum bus glued in parallel with a little drive. Berghain 128-135 BPM, peak-time 130-138.",
   "drop": [
    "open_hat",
    "ride"
   ],
   "break": [
    "chords",
-   "lead",
    "hat",
    "perc"
   ],
@@ -178,19 +203,35 @@
    {
     "on": "chords",
     "groove": [
-     0.3,
-     0.55
+     0.25,
+     0.5
     ],
     "drop": [
-     0.55,
-     0.9
+     0.5,
+     0.85
     ],
     "break": [
-     0.3,
-     0.75
+     0.25,
+     0.7
     ]
+   },
+   {
+    "on": "lead",
+    "groove": [
+     0.25,
+     0.35
+    ],
+    "drop": [
+     0.35,
+     0.5
+    ],
+    "resonance": 0.45
    }
-  ]
+  ],
+  "mix": {
+   "glue_blend": 0.6,
+   "bus_drive": 0.35
+  }
  },
  {
   "id": "retro_techno",
@@ -365,7 +406,7 @@
    "Emmanuel Top – Acid Phase (1994)",
    "Plastikman – Krakpot (1993)"
   ],
-  "description_fr": "La techno acide : une ligne qui couine et se tord (la fameuse TB-303 de Roland) tourne en boucle sur un kick 909 qui cogne.",
+  "description_fr": "La techno acide d'aujourd'hui : une ligne qui couine, se tord et s'ouvre petit à petit (la fameuse TB-303 de Roland) tourne en boucle sur un kick qui cogne et un grondement grave.",
   "bpm": 138,
   "swing": 0.0,
   "root": "A",
@@ -398,6 +439,11 @@
     "role": "ride",
     "pattern": "..o...o...o...o.",
     "tip_fr": "Une cymbale ride qui tinte à chaque contretemps : elle arrive au Drop et le fait briller."
+   },
+   {
+    "role": "rumble",
+    "pattern": "X...X...X...X...",
+    "tip_fr": "Un grondement grave rejoué derrière chaque kick : il donne le poids des clubs d'aujourd'hui sous la ligne acide."
    }
   ],
   "progressions": {
@@ -460,22 +506,60 @@
   },
   "acid": {
    "use": true,
-   "pattern": "RRO.RO.3R.OR7.O5",
-   "accents": "..x....x..x...x.",
-   "slides": ".x.........x..x.",
+   "pattern": "RRO.RO.3R.OR7.O5RRO.R3.OR.OR7.5O",
+   "accents": "..x....x..x...x...x...x...x..x..",
+   "slides": ".x.........x..x..x....x....x..x.",
+   "sound": "Squelchy",
+   "knobs": {
+    "drive": 0.45
+   },
    "moves": {
     "cutoff": {
      "groove": [
-      0.3,
-      0.42
+      0.2,
+      0.38
      ],
      "drop": [
-      0.45,
-      0.55
+      0.4,
+      0.6
      ],
      "break": [
-      0.28,
+      0.18,
+      0.7
+     ]
+    },
+    "resonance": {
+     "groove": [
+      0.72,
+      0.85
+     ],
+     "drop": [
+      0.85,
+      0.93
+     ],
+     "break": [
+      0.8,
+      0.95
+     ]
+    },
+    "env_mod": {
+     "groove": [
+      0.45,
       0.65
+     ],
+     "drop": [
+      0.7,
+      0.9
+     ],
+     "break": [
+      0.4,
+      0.85
+     ]
+    },
+    "decay": {
+     "drop": [
+      0.2,
+      0.38
      ]
     }
    }
@@ -497,7 +581,7 @@
    },
    {
     "on": "kick",
-    "preset": "crunch"
+    "preset": "punch"
    },
    {
     "on": "acid",
@@ -507,13 +591,21 @@
      0.35,
      0
     ]
+   },
+   {
+    "on": "rumble",
+    "preset": "rumble"
    }
   ],
-  "notes": "The TB-303 line IS the track and the bass: nothing else is on by default (no bass, chords nor lead), no percussion line either, so the 303 is alone between the 909 hits; it carries the Break too. The acid track stays on the key's root for its one bar, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III; the classic bII move would clash with the 303 until the acid line follows the chords). 303: mostly roots, octave jumps, b3 and b7, slides into the octave jumps, 4 sparse accents; crunch preset + a little delay. Crunchy 909 kick. Tempo: Plastikman/Hardfloor ~130, London acid techno 135-145. Optional lead: a second, higher 303-like riff. The 303's cutoff moves gently along the song (song automation): a little brighter in each Drop, a slow sweep up through the Break.",
+  "notes": "Modern acid techno: the TB-303 line IS the track and the bass; nothing else is on by default (no bass, chords nor lead), so the 303 is alone between the kick hits; it carries the Break too. Modern means it squeals and evolves: the Squelchy 303 (high resonance) with some drive, a two-bar riff, and four knobs turned along the song (cutoff, resonance, env_mod, decay): closed and tight in the Groove, opening and squealing in each Drop, a long sweep up through the Break. A rumble (the kick replayed through the rumble preset) rolls under the kick, the kick goes through punch, the drum bus is glued. The acid track stays on the key's root, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III). 303: mostly roots, octave jumps, b3, 5 and b7, slides into the octave jumps, sparse accents; crunch preset + a little delay. Tempo: London acid techno 135-145. Optional lead: a second, higher 303-like riff.",
   "riser": true,
   "drop": [
    "ride"
-  ]
+  ],
+  "mix": {
+   "glue_blend": 0.6,
+   "bus_drive": 0.35
+  }
  },
  {
   "id": "detroit",

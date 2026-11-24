@@ -270,7 +270,7 @@
   },
   "lead": {
    "type": "riff",
-   "pattern": "R-------R---..O-R-------R---5---",
+   "pattern": "R-------R---..R-R-------R---5---",
    "arp_rate": 24,
    "octave": 4,
    "sound": "Supersaw"
@@ -284,12 +284,12 @@
   "defaults": {
    "bass": false,
    "chords": true,
-   "lead": true
+   "lead": false
   },
   "default_mood": "dark",
   "bass_tip": "En option : une basse très grave et saturée qui roule entre les kicks, en plus du grondement (le rumble de la batterie).",
   "pad_tip": "Le synthé « aspirateur » (hoover) frappé en rafale : la sirène de rave.",
-  "lead_tip": "Un gros synthé épais emprunté à la hard trance, qui crie un motif court pour faire lever les bras.",
+  "lead_tip": "En option : un gros synthé épais emprunté à la hard trance, qui reste sur la même note sans sauter d'octave, sous le kick. Éteint au départ : ici, c'est le kick et le grondement qui mènent.",
   "fx": [
    {
     "on": "bass",
@@ -336,10 +336,10 @@
     "on": "lead",
     "insert": "PARAM_EQ",
     "params": [
-     0.392,
-     0.4167,
-     0.2416,
-     0.0
+     0.593,
+     0.333,
+     0.0,
+     0.715
     ]
    }
   ],
@@ -456,7 +456,7 @@
   },
   "lead": {
    "type": "riff",
-   "pattern": "R-R-O-R-5-R-3-R-R-R-O-R-7-------",
+   "pattern": "R-R-R-R-5-R-3-R-R-R-R-R-7-------",
    "arp_rate": 24,
    "octave": 4,
    "sound": "Lead carré"
@@ -507,6 +507,16 @@
      0.4167,
      0.2416,
      0.0
+    ]
+   },
+   {
+    "on": "lead",
+    "insert": "PARAM_EQ",
+    "params": [
+     0.593,
+     0.333,
+     0.0,
+     0.715
     ]
    }
   ],
@@ -1015,6 +1025,16 @@
      0.5,
      0.5,
      0.5
+    ]
+   },
+   {
+    "on": "lead",
+    "insert": "PARAM_EQ",
+    "params": [
+     0.593,
+     0.389,
+     0.0,
+     0.715
     ]
    }
   ],

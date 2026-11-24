@@ -686,7 +686,7 @@ void TransientShaper::reset() {
     fresh_ = true;
 }
 
-void TransientShaper::process(float* l, float* r, int n) { (void)l; (void)r; (void)n; return;  // red: not implemented yet
+void TransientShaper::process(float* l, float* r, int n) {
     const float attack = 2.0f * p_[0] - 1.0f, sustain = 2.0f * p_[1] - 1.0f;
     const float mix = p_[2], out = dbGain(12.0f * p_[3] - 6.0f);
     if (fresh_) {
@@ -745,7 +745,7 @@ void DrumBus::reset() {
     fresh_ = true;
 }
 
-void DrumBus::process(float* l, float* r, int n) { (void)l; (void)r; (void)n; return;  // red: not implemented yet
+void DrumBus::process(float* l, float* r, int n) {
     const float drive = driveGain(p_[0]), mix = p_[1], out = dbGain(12.0f * p_[2] - 6.0f);
     if (fresh_) {
         drive_ = drive;
@@ -837,7 +837,7 @@ void MidSideEq::reset() {
     fresh_ = true;
 }
 
-void MidSideEq::process(float* l, float* r, int n) { (void)l; (void)r; (void)n; return;  // red: not implemented yet
+void MidSideEq::process(float* l, float* r, int n) {
     if (fresh_) {
         const float hz = monoHz(p_[0]), low = 12.0f * p_[1] - 6.0f, high = 12.0f * p_[2] - 6.0f;
         if (hz != hzNow_ || low != lowDbNow_ || high != highDbNow_) {

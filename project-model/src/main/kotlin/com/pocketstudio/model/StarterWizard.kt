@@ -813,12 +813,20 @@ object StarterWizard {
         val plan = planFor(style, style.lines.map { it.role }.filter { it in sounds }.toSet(), partOfTrack.values.toSet() + listOfNotNull(Part.Bass.takeIf { bass808 != null }), withAcid)
             .let { if (recipe.body && style.lines.any { it.role == Role.Shaker } && recipe.lines.none { it.role == Role.Shaker } && Role.Shaker in sounds) withShakerInDrop(style, it) else it }
         // The counter-melody: the lead's motif answered in its rests (or the chords in short hits), in the Drop (or the Refrain).
-        val counterTrack = if (!plan.counter || mood == null) null
-        else withCounterTrack(project, style, mood, leadVersions[Version.Chorus])?.let { (p, id) -> project = p; id }
         // Format v2 (d, e): the chords doubled in the Drop, a texture held under the whole song; after the
         // counter-melody, and only while tracks are left for the riser, the vocal and the sub drop (they are heard more).
         val later = listOf(plan.riser, mood != null && partOfTrack.isNotEmpty() && style.vocal != null, partOfTrack.isNotEmpty() && !plan.form.sung).count { it }
-        fun room() = InstrumentTrack.MAX - project.tracks.size > later
+        // Tour 9 (gr-styles): a style with a body (doubled chords or a texture) keeps one track free for the user's
+        // own melody (« ma mélodie »). The body gives way in this order: the texture first, then the counter-melody;
+        // never the sub, the bass, the vocal nor the doubled chords (Benjamin: « du corps ; kick et basse devant »).
+        val mine = if (style.melody.chordDouble != null || style.melody.texture != null) 1 else 0
+        val doubles = style.melody.chordDouble != null && chordsTrack != null
+        // Added tracks take the ids 1 until MAX: [free] is what is left once [adding] more are in.
+        fun free(adding: Int) = InstrumentTrack.MAX - 1 - project.tracks.size - adding
+        val withCounter = plan.counter && mood != null && (mine == 0 || free(1 + (if (doubles) 1 else 0)) >= later + mine)
+        val counterTrack = if (!withCounter) null
+        else withCounterTrack(project, style, mood!!, leadVersions[Version.Chorus])?.let { (p, id) -> project = p; id }
+        fun room() = if (mine == 0) InstrumentTrack.MAX - project.tracks.size > later else free(1) >= later + mine
         val doubleTrack = style.melody.chordDouble?.takeIf { room() }?.let { kind -> chordsTrack?.let { withDoubleTrack(project, it, kind) } }?.let { (p, id) -> project = p; id }
         val textureTrack = style.melody.texture?.takeIf { partOfTrack.isNotEmpty() && room() }?.let { withTextureTrack(project, it) }?.let { (p, id) -> project = p; id }
         project = withEffects(project, style, sounds.keys, partOfTrack, withAcid, bass808 = bass808 != null)

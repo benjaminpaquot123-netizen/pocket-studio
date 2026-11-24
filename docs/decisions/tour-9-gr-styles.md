@@ -1,0 +1,4 @@
+# Tour 9, gr-styles : décisions
+
+- **InstrumentTrack.MAX reste à 8.** Le moteur C++ est taillé pour 8 pistes (`kTracks` dans `Engine.h` et `AudioTracks.h`, `kLayerTracks` dans `Mixer.h`), et la table de mixage, l'automation et le format de sauvegarde en dépendent. Monter MAX toucherait le thread audio et les vieux projets : trop risqué pour un lot de styles. Retour arrière : aucun (rien n'a changé côté moteur).
+- **Un style avec du corps (accords doublés ou texture) garde une piste libre pour « ma mélodie ».** Ce qui cède, dans l'ordre : la texture, puis le contre-chant. Jamais le sub, la basse, la voix ni la doublure (Benjamin : « du corps ; kick et basse devant »). La house perd ainsi son contre-chant ; sa doublure reste. Retour arrière : `mine = 0` dans `StarterWizard.build`.

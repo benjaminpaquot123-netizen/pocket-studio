@@ -28,4 +28,14 @@ class SoundCategoriesTest {
         val kick = afro.lines.first { it.voice == null && it.role.id == "kick" }
         assertEquals("pack:" + afro.id, soundCategories(kick.role, afro.id, installed).first().id)
     }
+
+    @Test
+    fun aNamedSoundOfAnotherKindDoesNotCrashTheList() {
+        // The style names, for its hat, a file of a pack that has no hat (a loop): the list still opens, kit and packs.
+        val loops = PackManifest("loops", "Loops", sounds = listOf(PackSound("groove.wav", "loop", "Groove")))
+        val hat = afro.lines.first { it.role.id == "hat" }.role
+        val style = afro.copy(kitSounds = mapOf(hat to "loops:groove.wav"))
+        val list = soundCategoriesOf(hat, style, listOf(loops, packFor(afro)))
+        assertEquals(true, list.any { it.id == KIT_CATEGORY })
+    }
 }

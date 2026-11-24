@@ -214,11 +214,15 @@ private const val PACK_PREFIX = "pack:"
  * TR-909 for rave techno) when downloaded, then the style's own pack, then the built-in kit, then
  * the other packs that have that kind of sound.
  */
-fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>): List<SoundCategory> {
+fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>): List<SoundCategory> =
+    // Its body (lot gr-l1b): the shaker a style with [StarterWizard.Style.body] gets offers its kit voice too.
+    soundCategoriesOf(role, styleId?.let(StarterWizard::style)?.let(StarterWizard::withBody), installed)
+
+/** [soundCategories] for [style] as it plays (its body included). */
+internal fun soundCategoriesOf(role: Role, style: StarterWizard.Style?, installed: List<PackManifest>): List<SoundCategory> {
+    val styleId = style?.id
     val label = tr(SoundPacks.KIND_LABELS[role.packKind] ?: role.title)
     // The kit voice the style asks for this line (a shaker, a cowbell) is offered first.
-    // Its body (lot gr-l1b): the shaker a style with [StarterWizard.Style.body] gets offers its kit voice too.
-    val style = styleId?.let(StarterWizard::style)?.let(StarterWizard::withBody)
     val voice = style?.lines?.firstOrNull { it.role == role }?.voice
     val voices = (listOfNotNull(voice) + role.builtIn).distinct()
     val kit = SoundCategory(KIT_CATEGORY, tr("Sons intégrés"), voices.map { SoundOption(SoundRef.Kit(it), DrumKitInfo.names[it]) })

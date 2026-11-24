@@ -106,6 +106,7 @@ class RecipeFormatV2Test {
         refused(kick("source" to JsonPrimitive("lib:nowhere:kick")), "an unknown pack")
         refused(kick("source" to JsonPrimitive("lib:tr808:")), "no sound")
         refused(kick("source" to JsonPrimitive("lib:tr808:../kick")), "a path")
+        refused(kick("source" to JsonPrimitive("lib:tr808:..")), "the parent folder")
         refused(kick("layers" to json("[]")), "no layer")
         refused(kick("layers" to json("""["tr909", "tr808", "tr707", "cr78"]""")), "4 layers on a line")
         refused(kick("layers" to json("""["tr909", "tr909"]""")), "twice the same")

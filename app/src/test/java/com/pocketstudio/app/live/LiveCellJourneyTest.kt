@@ -279,6 +279,9 @@ class LiveCellJourneyTest {
             screens.closeAll()
         } finally {
             com.pocketstudio.engine.NativeEngine.sink = null
+            // The sounds kept here live in a process-wide library: the next test class must find it empty.
+            java.io.File(app.filesDir, "mysounds").deleteRecursively()
+            kotlinx.coroutines.runBlocking { com.pocketstudio.app.library.MySoundLibrary.refresh(app) }
         }
     }
 

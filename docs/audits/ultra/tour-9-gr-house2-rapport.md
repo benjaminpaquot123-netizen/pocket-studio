@@ -26,8 +26,8 @@ tests: :project-model:test (complet, 1301, vert) ; :app:testDebugUnitTest *OneTo
 
 chemin: Projets → « Partir d'un style » en une touche, morceau fait | test: OneTouchStyleTest#aModeChosenOnceOneTouchMakesTheSong
 chemin: assistant → lecture en direct des styles house | test: LiveSongRecorder#recordsTheLivePlaybackOfEveryStyle
-chemin: assistant → acid house, la 303 entre les kicks et qui s'ouvre | test: HouseRetouchTest#theAcidLineStaysOffTheKick, HouseRetouchTest#theAcidSongBuildsInsteadOfStartingAllAtOnce
-chemin: assistant → house, tech house, afro house | test: HouseRetouchTest#houseLosesItsDatedSounds, HouseRetouchTest#techHouseStartsCleanAndClapsOnce, HouseRetouchTest#afroHouseStartsOnItsHandDrums
+- tests du modèle (acid house, 303 entre les kicks et qui s'ouvre) : HouseRetouchTest#theAcidLineStaysOffTheKick, HouseRetouchTest#theAcidSongBuildsInsteadOfStartingAllAtOnce
+- tests du modèle (house, tech house, afro house) : HouseRetouchTest#houseLosesItsDatedSounds, HouseRetouchTest#techHouseStartsCleanAndClapsOnce, HouseRetouchTest#afroHouseStartsOnItsHandDrums
 
 ## À confier (lot tuto)
 

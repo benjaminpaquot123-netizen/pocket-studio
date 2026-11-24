@@ -14,6 +14,6 @@ Mineurs :
 5. hf_occupancy vaut 0 (pas null) sur une section principale muette.
 6. Tests : pas de cas « montée > 6 LU hors Drop » ; l'exemption Drop repose sur +6,02 LU.
 
-Verdict : 0 bloquant, 0 grave
-
 Complément (chef, 2026-11-24) : depuis dc87eaa3, seul le rapport de zone a été ajouté (doc, aucun code) ; relu, conforme.
+
+Verdict : 0 bloquant, 0 grave

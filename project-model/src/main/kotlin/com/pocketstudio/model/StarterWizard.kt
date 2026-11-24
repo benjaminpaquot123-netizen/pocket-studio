@@ -1486,7 +1486,7 @@ object StarterWizard {
     internal fun withBody(style: Style): Style {
         if (!style.body) return style
         val m = style.melody
-        val hasShaker = style.lines.any { it.role == Role.Shaker || it.voice == 13 || it.voice == Role.Shaker.lane }
+        val hasShaker = style.lines.any { it.role == Role.Shaker || it.voice == 13 }
         val mix = style.mix ?: StyleMix()
         return style.copy(
             lines = if (hasShaker) style.lines else style.lines + BODY_SHAKER,

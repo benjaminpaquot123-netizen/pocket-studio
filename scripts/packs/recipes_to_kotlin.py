@@ -269,7 +269,7 @@ def lib_sound(spec, gid, what, prefix):
     check(isinstance(spec, str) and spec.startswith(prefix), f"{gid} {what}: \"{prefix}<pack>:<sound>\" expected, got {spec}")
     pack, _, snd = spec[len(prefix):].partition(":")
     check(pack in PACKS, f"{gid} {what}: unknown pack {pack}")
-    check(bool(SOUND_NAME.match(snd)), f"{gid} {what}: bad sound name {snd!r}")
+    check(bool(SOUND_NAME.match(snd)) and snd.strip(".") != "", f"{gid} {what}: bad sound name {snd!r}")
     return pack, snd
 
 

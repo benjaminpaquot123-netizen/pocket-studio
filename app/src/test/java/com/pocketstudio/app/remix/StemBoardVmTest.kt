@@ -169,6 +169,7 @@ class StemBoardVmTest {
     @Test
     fun aStretchIsKeptInMyLibraryWithTheSongsTempoAndKey() {
         File(app.filesDir, "mysounds").deleteRecursively()
+        assertEquals("another test left its sounds in the library", emptyList<Any>(), com.pocketstudio.app.library.MySoundLibrary.sounds.value)
         val vm = open()
         val set = withSong(vm)
         val before = vm.project.value

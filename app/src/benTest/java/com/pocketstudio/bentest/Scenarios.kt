@@ -341,7 +341,8 @@ class Scenarios(
         auStudio()
         val before = lu().effets
         // The first strip with room for one more effect (the assistant's songs come with some).
-        val ch = (0 until minOf(before.size, PISTES)).firstOrNull { before[it].size < ProjetVu.EFFETS_MAX } ?: 0
+        val ch = (0 until minOf(before.size, PISTES)).firstOrNull { before[it].size < ProjetVu.EFFETS_MAX }
+            ?: return nonMesure(EFFETS, "aucune des $PISTES premières pistes n'a de place libre")
         fun n(p: List<List<String>>) = p.getOrNull(ch).orEmpty().count { it == EFFET }
         j.tap("tab_Mix")
         j.await("mixer")
@@ -373,7 +374,8 @@ class Scenarios(
         feuEcoute(EFFETS, b)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec l'effet" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec l'effet : ${b.text()}" }
-        return "égaliseur ajouté à la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()}"
+        check(retirer(ch, before[ch].sorted(), 1)) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
+        return "égaliseur ajouté à la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
     }
 
     /** Pro: the Live, its ▶, then its ▶ again. Oracle: the engine plays and sound comes out, then it stops. */
@@ -580,6 +582,23 @@ class Scenarios(
         }
     }
 
+    /**
+     * Tidying after an effect scenario: « Annuler » touched up to [fois] times until strip [ch] has its effects
+     * [was] again, in the project and on the disk. False when it does not: the strip is left dirty, and the next
+     * scenarios would find no room (C10), so the scenario says it rather than pass in silence.
+     */
+    private fun retirer(ch: Int, was: List<String>, fois: Int): Boolean {
+        fun clean(fx: List<List<String>>) = fx.getOrNull(ch).orEmpty().sorted() == was
+        repeat(fois) {
+            if (clean(lu().effets)) return@repeat
+            if (!j.exists("top_undo")) return false
+            val n = lu().effets.getOrNull(ch).orEmpty().size
+            j.tap("top_undo")
+            attendre(5_000) { lu().effets.getOrNull(ch).orEmpty().size < n }
+        }
+        return attendre(5_000) { clean(lu().effets) } && surDisque { clean(it.effets) }?.let { clean(it.effets) } == true
+    }
+
     /** The first strip with room for [n] effects more (null: none among the first ones). */
     private fun place(n: Int): Int? {
         val fx = lu().effets
@@ -590,7 +609,8 @@ class Scenarios(
     fun effetsPlusieurs(): String {
         auStudio()
         val ch = place(TROIS.size) ?: return nonMesure(EFFETS_PLUSIEURS, "aucune des $PISTES_MAX premières pistes n'a ${TROIS.size} places libres")
-        val want = (lu().effets[ch] + TROIS).sorted()
+        val was = lu().effets[ch].sorted()
+        val want = (was + TROIS).sorted()
         ajouter(ch, TROIS)
         check(lu().effets[ch].sorted() == want) { "la piste ${ch + 1} a ${lu().effets[ch].joinToString(", ")} (attendu : ${want.joinToString(", ")})" }
         val d = surDisque { it.effets.getOrNull(ch).orEmpty().sorted() == want }
@@ -602,7 +622,8 @@ class Scenarios(
         feuEcoute(EFFETS_PLUSIEURS, b)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec les trois effets" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec les trois effets : ${b.text()}" }
-        return "${TROIS.joinToString(", ")} sur la piste ${ch + 1}, enregistrés ; lecture par $by : ${b.text()}"
+        check(retirer(ch, was, TROIS.size)) { "les effets restent sur la piste ${ch + 1} : « Annuler » ne les a pas retirés (${lu().effets[ch].joinToString(", ")})" }
+        return "${TROIS.joinToString(", ")} sur la piste ${ch + 1}, enregistrés ; lecture par $by : ${b.text()} ; retirés par « Annuler »"
     }
 
     /** Pro: an effect added, then « Annuler ». Oracle: the strip's effects back as they were, in the project and on the disk. */
@@ -866,11 +887,11 @@ class Scenarios(
         val b = try { t.ecouter(step, courtMs) } finally { e.arreter() }
         ecoute(step, b)
         feuEcoute(step, b)
-        // Tidying, not the oracle: the effect taken off so that the next ones find room (« Annuler » has its own scenarios).
-        val undone = j.exists("top_undo") && runCatching { j.tap("top_undo"); attendre(5_000) { lu().effets[ch].sorted() == before } }.getOrDefault(false)
+        val undone = retirer(ch, before, 1)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec $type" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec $type : ${b.text()}" }
-        return "$type sur la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; " + if (undone) "retiré par « Annuler »" else "resté sur la piste"
+        check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
+        return "$type sur la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
     }
 
     /**

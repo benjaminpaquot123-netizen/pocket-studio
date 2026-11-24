@@ -1122,8 +1122,9 @@ int main(int argc, char** argv) {
         // Transitions: at each change of section (a fill or a crash belongs to the section before it),
         // the loudness of the bar after against the bar before (LU), the same through a phone (300 Hz),
         // and the band (of the six) that moves most (dB, its share of the total). Brutal (Benjamin: some
-        // changes are too abrupt): a fall of more than 8 LU at once, or a rise of more than 6 LU into
-        // anything but a Drop, a Refrain or a fake drop.
+        // changes are too abrupt, and he listens on a phone): a fall of more than 8 LU at once, or of more
+        // than 8 dB through a phone (on the real songs the outros fall 2-4 LU but 8.5-9 dB on a phone),
+        // or a rise of more than 6 LU into anything but a Drop, a Refrain or a fake drop.
         {
             std::vector<std::string> owner(sections.size());
             for (size_t i = 0; i < sections.size(); ++i) {
@@ -1148,11 +1149,12 @@ int main(int argc, char** argv) {
                 size_t most = 0;
                 for (size_t k = 1; k < 6; ++k) if (std::fabs(moves[k]) > std::fabs(moves[most])) most = k;
                 const bool landing = owner[i] == "Drop" || owner[i] == "Refrain" || owner[i] == "Faux drop";
-                const bool hard = jump < -8 || (jump > 6 && !landing);
+                const double phone = pb > 1e-12 && pa > 1e-12 ? db(pa / pb) : NAN;
+                const bool hard = jump < -8 || (std::isfinite(phone) && phone < -8) || (jump > 6 && !landing);
                 if (hard) ++brutal;
                 std::printf("%s{\"from\": %s, \"to\": %s, \"at\": %s, \"jump_lu\": %s, \"phone_db\": %s, \"band\": \"%s\", \"band_db\": %s, \"brutal\": %s}",
                             first ? "" : ", ", quoted(owner[i - 1]).c_str(), quoted(owner[i]).c_str(), num(static_cast<double>(at) / a.rate).c_str(),
-                            num(jump).c_str(), pb > 1e-12 && pa > 1e-12 ? num(db(pa / pb)).c_str() : "null", names[most],
+                            num(jump).c_str(), std::isfinite(phone) ? num(phone).c_str() : "null", names[most],
                             bb.valid && ba.valid ? num(moves[most]).c_str() : "null", hard ? "true" : "false");
                 first = false;
             }

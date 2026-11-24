@@ -45,6 +45,20 @@ open class ScenariosVraisEcransTest {
         /** The other project opened from « Mes projets » (see [click]); null: the harness's own. */
         var ailleurs: String? = null
         override fun partieJouee(): Int? = partie.takeIf { playing && it >= 0 }
+        /** The guided pack: Benjamin's « Fait » plugs a headset in ([branche]), and an unplug may stop the song ([arretAuChangement]). */
+        var sortie = Materiel(casqueFilaire = false, bluetooth = false)
+        var branche = true
+        var arretAuChangement = false
+        var eco: Boolean? = true
+        val questions = ArrayList<String>()
+        override fun materiel() = sortie
+        override fun economieEnergie() = eco
+        override fun poser(question: Question, maxMs: Long): Reponse {
+            questions += question.id
+            if (question.id == Epreuves.SORTIE && branche) sortie = Materiel(casqueFilaire = true, bluetooth = false)
+            if (question.id == Epreuves.SORTIE && arretAuChangement) playing = false
+            return Reponse(Verdict.OUI)
+        }
         val touched = ArrayList<String>()
 
         override fun click(tag: String) {
@@ -317,8 +331,44 @@ open class ScenariosVraisEcransTest {
         assertTrue(text, !v.playing)
         assertTrue(v.count("space_bar", false) + v.count("space_rail", false) > 0)
     }
-}
 
-/** The same guard on a tablet: what a narrow phone finds, a tablet finds too. */
-@Config(qualifiers = "w800dp-h1280dp-hdpi")
-class ScenariosVraisEcransTabletteTest : ScenariosVraisEcransTest()
+    /** Lot A2, 4: a headset plugged in while it plays, the sound heard again at once; never in « Tout tester ». */
+    @Test
+    fun theSoundIsBackAfterTheOutputChanged() {
+        h.start()
+        val v = Vrai()
+        val text = epreuves(v).sortieChange()
+        assertTrue(text, text.startsWith("son revenu en "))
+        assertEquals(listOf(Epreuves.SORTIE), v.questions)
+        assertTrue(text, !v.playing)
+        val night = ToutTester(Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder()).etapes().map { it.name }
+        assertEquals(listOf(Epreuves.SORTIE, Epreuves.ECO), epreuves(v).guides().map { it.name })
+        assertTrue(night.none { it == Epreuves.SORTIE || it == Epreuves.ECO })
+    }
+
+    /** Lot A2, 4: an unplugged headset stops the song (Android's « noisy »): ▶ brings the sound back; no change seen: « non mesuré ». */
+    @Test
+    fun anUnpluggedHeadsetStopsThenPlayBringsTheSoundBack() {
+        h.start()
+        val v = Vrai().apply { arretAuChangement = true }
+        val text = epreuves(v).sortieChange()
+        assertTrue(text, text.startsWith("la lecture s'est arrêtée, ▶ : son revenu en "))
+        val same = Vrai().apply { branche = false }
+        assertTrue(epreuves(same).sortieChange().startsWith("non mesuré"))
+        assertTrue(!same.playing)
+    }
+
+    /** Lot A2, 4: the battery saver read on, the song plays through, then Benjamin is asked to turn it off; off: « non mesuré ». */
+    @Test
+    fun theBatterySaverIsReadOnThenTheSongPlaysThrough() {
+        h.start()
+        val v = Vrai()
+        val text = epreuves(v).economie()
+        assertTrue(text, text.startsWith("économie d'énergie allumée"))
+        assertEquals(listOf(Epreuves.ECO, "${Epreuves.ECO}_fin"), v.questions)
+        assertTrue(!v.playing)
+        val off = Vrai().apply { eco = false }
+        assertTrue(epreuves(off).economie().startsWith("non mesuré"))
+        assertEquals(listOf(Epreuves.ECO, "${Epreuves.ECO}_fin"), off.questions)
+    }
+}

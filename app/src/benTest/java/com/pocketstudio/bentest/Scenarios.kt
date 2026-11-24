@@ -373,9 +373,10 @@ class Scenarios(
         e.arreter()
         ecoute(EFFETS, b)
         feuEcoute(EFFETS, b)
-        val undone = retirer(ch, before[ch].sorted(), 1) ?: return nonMesure(EFFETS, LAISSE)
+        val undone = retirer(ch, before[ch].sorted(), 1)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec l'effet" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec l'effet : ${b.text()}" }
+        if (undone == null) return nonMesure(EFFETS, LAISSE)
         check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         return "égaliseur ajouté à la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
     }
@@ -628,9 +629,10 @@ class Scenarios(
         e.arreter()
         ecoute(EFFETS_PLUSIEURS, b)
         feuEcoute(EFFETS_PLUSIEURS, b)
-        val undone = retirer(ch, was, TROIS.size) ?: return nonMesure(EFFETS_PLUSIEURS, LAISSE)
+        val undone = retirer(ch, was, TROIS.size)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec les trois effets" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec les trois effets : ${b.text()}" }
+        if (undone == null) return nonMesure(EFFETS_PLUSIEURS, LAISSE)
         check(undone) { "les effets restent sur la piste ${ch + 1} : « Annuler » ne les a pas retirés (${lu().effets[ch].joinToString(", ")})" }
         return "${TROIS.joinToString(", ")} sur la piste ${ch + 1}, enregistrés ; lecture par $by : ${b.text()} ; retirés par « Annuler »"
     }
@@ -896,9 +898,10 @@ class Scenarios(
         val b = try { t.ecouter(step, courtMs) } finally { e.arreter() }
         ecoute(step, b)
         feuEcoute(step, b)
-        val undone = retirer(ch, before, 1) ?: return nonMesure(step, LAISSE)
+        val undone = retirer(ch, before, 1)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec $type" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec $type : ${b.text()}" }
+        if (undone == null) return nonMesure(step, LAISSE)
         check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         return "$type sur la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
     }

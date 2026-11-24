@@ -47,6 +47,9 @@ interface Appli {
     /** Every project on the disk (« Mes projets »): its id to what its file holds; null when it cannot be read here. */
     fun projets(): Map<String, ProjetVu.Disque>? = null
 
+    /** The song's part the app plays (its index); null when unknown here or not playing. */
+    fun partieJouee(): Int? = null
+
     /**
      * The studio behind another screen (BenStudio Test's own, as when the user leaves for another app) while
      * [pendant] runs, then in front again. False: not possible here (nothing run).

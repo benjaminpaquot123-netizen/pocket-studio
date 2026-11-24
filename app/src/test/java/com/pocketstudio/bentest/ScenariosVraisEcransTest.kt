@@ -41,6 +41,8 @@ open class ScenariosVraisEcransTest {
     /** The real screens, and an engine that plays when a ▶ was touched an odd number of times. */
     private inner class Vrai(private val d: JourneyDriver = ComposeRuleDriver(compose)) : JourneyDriver by d, Sonde, Appli {
         var playing = false
+        var partie = -1
+        override fun partieJouee(): Int? = partie.takeIf { playing && it >= 0 }
         val touched = ArrayList<String>()
 
         override fun click(tag: String) {
@@ -49,6 +51,8 @@ open class ScenariosVraisEcransTest {
             // A pad of the Live launches its cell; « ■ Tout » stops them.
             if (tag.startsWith("live_pad_")) playing = true
             if (tag == "live_stop_all") playing = false
+            // A part's ▶ on the Structure plays the song from it (or queues it while the song plays).
+            if (tag.startsWith("part_play_")) { playing = true; partie = tag.removePrefix("part_play_").toInt() }
             d.click(tag)
         }
 
@@ -69,6 +73,11 @@ open class ScenariosVraisEcransTest {
         override fun capture(file: File) = false
         override fun demander(question: String, maxMs: Long): Boolean? = null
 
+        override fun projets(): Map<String, ProjetVu.Disque> {
+            val store = ProjectOpening.projectStore(h.app)
+            return store.list().mapNotNull { id -> store.load(id)?.let { id to ProjetVu.Disque(it.name, it.song.size, emptyList()) } }.toMap()
+        }
+
         override fun projet(): ProjetVu {
             val p = h.vm.project.value
             fun effets(of: Project) = of.mixer.channels.map { ch -> ch.inserts.filter { it.effect != EffectType.NONE }.map { it.effect.name } }
@@ -80,8 +89,8 @@ open class ScenariosVraisEcransTest {
         }
     }
 
-    private fun scenarios(v: Vrai) = Scenarios(
-        Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecran = { v.tags(Regex(".+")) },
+    private fun scenarios(v: Vrai, courtMs: Long = 3_000) = Scenarios(
+        Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecran = { v.tags(Regex(".+")) }, courtMs = courtMs,
         ecouteMs = 1_000, decrochagesMs = 1_000, sauvegardeMs = 20_000, liveMs = 5_000, liveEcouteMs = 1_000, effetEcouteMs = 1_000,
     )
 
@@ -130,7 +139,38 @@ open class ScenariosVraisEcransTest {
     }
 
     /** Runs the scenario [id] as the robot does (its reset first, its oracle at the end). */
-    private fun jouer(v: Vrai, id: String): String = scenarios(v).etapes().first { it.name == id }.work(Long.MAX_VALUE)
+    private fun jouer(v: Vrai, id: String, courtMs: Long = 3_000): String = scenarios(v, courtMs).etapes().first { it.name == id }.work(Long.MAX_VALUE)
+
+    /** Chef 2b: the part changed 10 times by its ▶ on the Structure while the song plays; each chosen part is the one played. */
+    @Test
+    fun thePartIsChangedTenTimesWhileTheSongPlays() {
+        h.start()
+        val v = Vrai()
+        val text = jouer(v, "changer_partie_10", courtMs = 500)
+        assertTrue(text, text.startsWith("10 fois"))
+        val taps = v.touched.filter { it.startsWith("part_play_") }
+        assertEquals(taps.toString(), 10, taps.size)
+        assertTrue(taps.toString(), taps.toSet().size >= 2)
+        assertTrue(text, !v.playing)
+        assertTrue(Scenarios.liste(Scenarios.COMPLET).first { it.id == "changer_partie_10" }.maxMs <= 180_000)
+    }
+
+    /** Chef 2c: Mes projets while the song plays, another project opened, then the first one again: intact, silent after ■. */
+    @Test
+    fun theSongIsLeftWhilePlayingForAnotherProjectThenComesBackIntact() {
+        h.start()
+        val v = Vrai()
+        val first = v.projet()
+        val store = ProjectOpening.projectStore(h.app)
+        store.save("autre_robot", h.vm.project.value.copy(name = "Autre"))
+        val text = jouer(v, "quitter_en_jouant", courtMs = 500)
+        assertTrue(text, text.contains("rouvert") && !text.startsWith("non mesuré"))
+        assertTrue(v.touched.toString(), "project_autre_robot" in v.touched && "project_${first.id}" in v.touched)
+        assertEquals(first.id, h.vm.projectId)
+        assertEquals(first.parties, store.load(first.id)?.song?.size)
+        assertTrue(text, !v.playing)
+        assertTrue(Scenarios.liste(Scenarios.COMPLET).first { it.id == "quitter_en_jouant" }.maxMs <= 180_000)
+    }
 
     @Test
     fun aBuildUpAddsItsCurveNotAPartThenUndoTakesItBack() {

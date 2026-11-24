@@ -360,7 +360,10 @@
     "role": "snare",
     "pattern": "........X...................X...",
     "source": "drill",
-    "tip_fr": "Caisse claire sur le 3 de la 1re mesure, puis sur le 4 de la 2e : ce décalage fait tout le style."
+    "tip_fr": "Caisse claire sur le 3 de la 1re mesure, puis sur le 4 de la 2e : ce décalage fait tout le style.",
+    "layers": [
+     "kit:clap"
+    ]
    },
    {
     "role": "hat",
@@ -466,8 +469,18 @@
     "reverb": 0.25
    }
   ],
-  "notes": "Two-bar pocket is the whole identity: snare on beat 3 of bar 1, then on beat 4 of bar 2 (UK drill). Hats are really triplets and skips; the 16th grid approximates them with 3-hit rolls. The 808 slides once per bar ('/', glide), timed with a kick: up to the octave in bar 1, to the fifth in bar 2. Dark mood in harmonic minor (i-VI-iv-V with a major V): the sinister drill colour. Cold piano melody is the signature; strings join in the chorus.",
-  "riser": true
+  "notes": "Two-bar pocket is the whole identity: snare on beat 3 of bar 1, then on beat 4 of bar 2 (UK drill). Hats are really triplets and skips; the 16th grid approximates them with 3-hit rolls. The 808 slides once per bar ('/', glide), timed with a kick: up to the octave in bar 1, to the fifth in bar 2. Dark mood in harmonic minor (i-VI-iv-V with a major V): the sinister drill colour. Cold piano melody is the signature; strings join in the chorus. Modern body (Central Cee, Pop Smoke): the sliding 808 stays the signature and is ducked by the kick; the late snare is stacked with a clap; dark bells answer the piano in the Drop; full body (texture, doubled strings).",
+  "riser": true,
+  "body": true,
+  "counter": {
+   "sound": "Cloche FM"
+  },
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "bus_drive": 0.25
+  }
  },
  {
   "id": "lofi",

@@ -101,13 +101,18 @@ object Robot {
     fun retest(context: Context): Set<String>? = Retest.lireChoix(retestFile(context))
 
     /** The checklist: every « Tout tester » step (id, label), its last light, ticked by default when red or not conclusive. */
-    data class Candidat(val id: String, val label: String, val feu: Feu?, val coche: Boolean)
+    data class Candidat(val id: String, val label: String, val feu: Feu?, val coche: Boolean, val groupe: String = Retest.groupe(id))
 
     fun candidats(context: Context): List<Candidat> {
         val all = Retest.proposees(etapes(context, TOUT, retest = false))
         // No run kept by this version: the last saved logbook (any run, any version), else the last report's.
         val last = Retest.lire(derniereFile(context)).ifEmpty { Retest.repli(carnet(context).lines(), rapports(context), all) }
-        val ticked = Retest.parDefaut(last, all)
+        return candidatsDe(all, last)
+    }
+
+    /** [all] with their [last] lights: red, not conclusive and never played new tests ticked. */
+    internal fun candidatsDe(all: List<Etape>, last: Map<String, Feu?>): List<Candidat> {
+        val ticked = Retest.parDefaut(last, all, Retest.NOUVEAUX)
         return all.map { Candidat(it.name, it.label, last[it.name], it.name in ticked) }
     }
 
@@ -119,7 +124,10 @@ object Robot {
     private fun etapes(context: Context, passage: String = passage(context), retest: Boolean = true): List<Etape> {
         val j = Journey(InAppDriver(LooperMainThread()))
         val all = when (passage) {
-            TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+            // The checklist and a retest offer every scenario too.
+            TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes().let { tout ->
+                if (!retest || retest(context) != null) Retest.avecScenarios(tout, Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context), paquet = Scenarios.COMPLET).etapes()) else tout
+            }
             OREILLE -> QuestionsOreille(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             MICRO -> EcouteMicro(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), MicroReel(context), HautParleurReel(context), carnet(context), sons(context)).etapes()
             SCENARIOS -> Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context), paquet = paquet(context)).etapes()
@@ -181,7 +189,11 @@ object Robot {
             val appli = AppliReelle(app, main, tracker)
             val shots = captures(app).apply { mkdirs() }
             val all = when (which) {
-                TOUT -> ToutTester(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
+                TOUT -> ToutTester(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes().let { tout ->
+                    // A retest may have chosen scenarios: they run in the same list.
+                    if (retest(app) == null) tout
+                    else Retest.avecScenarios(tout, Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = Scenarios.COMPLET, enHaut = driver::enHaut).etapes())
+                }
                 OREILLE -> {
                     val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
                     QuestionsOreille(Pose(essai, Journey(driver)), NativeSonde, appli, c, shots).etapes()
@@ -211,8 +223,8 @@ object Robot {
             tracker.sorties = null
             tracker.keepScreenOn = false
             appli.orienter(null)
-            if (which == TOUT) runCatching {
-                // The last « Tout tester » kept for the next retest: a retest only replaces the steps it ran.
+            if (which == TOUT || which == SCENARIOS) runCatching {
+                // The last « Tout tester » or scenarios kept for the next retest: a run only replaces the steps it ran.
                 val f = derniereFile(app)
                 Retest.ecrire(f, Retest.fusion(Retest.lire(f), Rapport.feux(c.lines(), passage.etapes)))
             }

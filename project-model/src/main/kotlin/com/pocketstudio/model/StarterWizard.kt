@@ -578,7 +578,9 @@ object StarterWizard {
         // for this part (a lo-fi's piano), the others offered after the library's sounds.
         val instruments = installed.filter { it.instrument != null && MultiInstruments.suits(it.instrument.category, part) }
             .mapNotNull { MultiInstruments.partSound(it) }
-        val styleInstrument = MultiInstruments.forStyle(style.id, part)?.let { id -> instruments.firstOrNull { it.multi?.pack == id } }
+        // A recipe's "lib:<instrument>:<part>" (the trap's flute) names it in packSounds; else the table.
+        val styleInstrument = (packChoice?.get(0)?.takeIf { id -> instruments.any { it.multi?.pack == id } } ?: MultiInstruments.forStyle(style.id, part))
+            ?.let { id -> instruments.firstOrNull { it.multi?.pack == id } }
         val packs = installed.filter { it.instrument == null }.sortedBy { if (it.id == chosenPack?.id) 0 else if (it.id == style.id) 1 else 2 }.flatMap { m ->
             val own = m.id == style.id || m.id == chosenPack?.id
             // The chosen kind first in the chosen pack (its stabs for a rave lead).

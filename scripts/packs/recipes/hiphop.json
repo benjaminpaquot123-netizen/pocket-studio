@@ -1103,7 +1103,10 @@
     "role": "snare",
     "pattern": "...X..X....X..X.",
     "source": "reggaeton",
-    "tip_fr": "C'est le dembow, le cœur du style : la caisse claire tape juste avant les temps 2 et 4, puis juste après."
+    "tip_fr": "C'est le dembow, le cœur du style : la caisse claire tape juste avant les temps 2 et 4, puis juste après.",
+    "layers": [
+     "kit:clap"
+    ]
    },
    {
     "role": "hat",
@@ -1128,6 +1131,11 @@
     "role": "open_hat",
     "pattern": "..............x.",
     "tip_fr": "Un charley ouvert à la fin de chaque mesure : il relance le dembow au refrain."
+   },
+   {
+    "role": "conga",
+    "pattern": "..o...o...o.o...",
+    "tip_fr": "Des congas jouées à la main entre les coups du dembow : ça chauffe la boucle."
    }
   ],
   "progressions": {
@@ -1210,8 +1218,15 @@
     "reverb": 0.2
    }
   ],
-  "notes": "Dembow = kick on every quarter + snare on 16ths 4, 7, 12, 15 (1-based): 'boom-ch-boom-chick', from Shabba Ranks' 'Dem Bow' riddim (1990). Straight, 90-100 BPM. Chord stabs lock to the snare (Gasolina era) and are the signature. The 808 hits 1, 2-and, 3 and slides into the fifth (modern style). Lead on Marimba an octave above the stabs (a nylon guitar is not in the library; 'Pluck' was the same sound as the stabs). Timbale fill on the high tom. i-VI-III-VII in B minor = Despacito.",
-  "riser": true
+  "notes": "Dembow = kick on every quarter + snare on 16ths 4, 7, 12, 15 (1-based): 'boom-ch-boom-chick', from Shabba Ranks' 'Dem Bow' riddim (1990). Straight, 90-100 BPM. Chord stabs lock to the snare (Gasolina era) and are the signature. The 808 hits 1, 2-and, 3 and slides into the fifth (modern style). Lead on Marimba an octave above the stabs (a nylon guitar is not in the library; 'Pluck' was the same sound as the stabs). Timbale fill on the high tom. i-VI-III-VII in B minor = Despacito. Modern body (Bad Bunny, Karol G, Feid): the dembow stays the signature, its snare stacked with a clap, hand congas between the hits, the 808 ducked by the kick, full body in the Drop.",
+  "riser": true,
+  "body": true,
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "bus_drive": 0.2
+  }
  },
  {
   "id": "afrobeats",

@@ -41,6 +41,8 @@ class ScenariosRemiseTest {
         var volume: Appli.Volume? = Appli.Volume(10, 15)
         val latences = ArrayList<Double?>()
         var latencyCalls = 0
+        var micro: Boolean? = true
+        var echec = "pas de retour, niveau 0.00"
 
         // The engine's true worst block and longest gap while it plays.
         var cpuWorst = 0.3f
@@ -107,7 +109,8 @@ class ScenariosRemiseTest {
             return latences.removeFirstOrNull()
         }
 
-        override fun latenceEchec() = "pas de retour, niveau 0.00"
+        override fun latenceEchec() = echec
+        override fun microAutorise() = micro
 
         /** The app's launcher activity: from BenStudio Test's screen, « Que veux-tu faire ? ». */
         override fun ouvrirStudio() {
@@ -250,6 +253,35 @@ class ScenariosRemiseTest {
             assertEquals("$v : ${r.detail}", Scenarios.NON_MESURE, r.resultat)
             assertEquals(0, s.latencyCalls)
         }
+    }
+
+    @Test
+    fun withoutTheMicrophonePermissionTheLatencyIsNotMeasuredAndNotTried() {
+        // Tour 9, C5: « Délai du son non mesuré : MicUnavailable » — the robot started without asking for the microphone.
+        val s = Studio().apply { micro = false; latences += listOf(40.0, 40.0, 40.0) }
+        val c = Carnet(tmp.newFile())
+        val r = latency(s, c)
+        assertEquals(r.detail, Scenarios.NON_MESURE, r.resultat)
+        assertTrue(r.detail, "micro non autorisé" in r.detail && "Autoriser le micro" in r.detail)
+        assertEquals("no measure without the microphone", 0, s.latencyCalls)
+        assertTrue(Scenarios.verdict(c.lines()), "1 non mesuré" in Scenarios.verdict(c.lines()) && "0 échoué" in Scenarios.verdict(c.lines()))
+    }
+
+    @Test
+    fun aMicrophoneTheEngineCannotOpenIsNotMeasuredRatherThanFailed() {
+        val s = Studio().apply { echec = "départ MicUnavailable"; latences += listOf(null, null, null) }
+        val r = latency(s)
+        assertEquals(r.detail, Scenarios.NON_MESURE, r.resultat)
+        assertTrue(r.detail, "micro occupé ou indisponible" in r.detail && "MicUnavailable" in r.detail)
+        assertEquals(3, s.latencyCalls)
+    }
+
+    @Test
+    fun noMeasureForAnotherReasonStillFails() {
+        val s = Studio().apply { latences += listOf(null, null, null) }
+        val r = latency(s)
+        assertEquals(r.detail, Scenarios.ECHOUE, r.resultat)
+        assertTrue(r.detail, "aucune mesure" in r.detail)
     }
 
     @Test

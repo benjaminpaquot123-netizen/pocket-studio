@@ -73,18 +73,18 @@ class BassRecipesTest {
     fun theDropHasBodyWithKickAndBassUpFront() {
         fun fx(id: String, target: String, insert: String) =
             style(id).effects.filter { it.target == target && it.insert == insert }
-        // A low shelf-like bell (about 120 Hz, at least +3,6 dB) gives the Drop its body.
+        // A wide bell (about 120 Hz, at least +3,6 dB) gives the Drop its body.
         for (id in listOf("dubstep", "neurofunk", "jump_up", "riddim")) {
             assertTrue("$id: bass body", fx(id, "bass", "PARAM_EQ").any { it.params[0] <= 0.3f && it.params[1] >= 0.6f })
         }
-        // The kick stays in front: its low end raised on its own channel.
+        // The kick stays in front: a bell at about 60 Hz on its own pad (no shelf EQ on a pad).
         for (id in listOf("dnb", "dubstep", "pop")) {
-            assertTrue("$id: kick low end", fx(id, "kick", "EQ").any { it.params[0] >= 0.6f })
+            assertTrue("$id: kick low end", fx(id, "kick", "PARAM_EQ").any { it.params[0] <= 0.2f && it.params[1] >= 0.6f })
         }
         // Doubles and counter-melodies narrower than before, with their lows kept in the middle.
         for (id in listOf("dnb", "dubstep", "neurofunk", "jump_up")) {
-            assertTrue("$id: narrow chords", fx(id, "chords", "WIDENER").all { it.params[0] <= 0.35f && it.params.getOrElse(1) { 0f } >= 0.5f })
-            assertTrue("$id: chords widener", fx(id, "chords", "WIDENER").isNotEmpty())
+            assertTrue("$id: narrow chords", fx(id, "pad", "WIDENER").all { it.params[0] <= 0.35f && it.params.getOrElse(1) { 0f } >= 0.5f })
+            assertTrue("$id: chords widener", fx(id, "pad", "WIDENER").isNotEmpty())
         }
     }
 }

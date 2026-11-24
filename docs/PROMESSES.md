@@ -1,0 +1,27 @@
+# 🤘 La fucking liste des promesses 🤘 à Benjamin (à relire à chaque point et après chaque fusion)
+- [ ] 2026-11-24 Robot A2 (coupure, son pris par une autre appli, changement de son en jeu…) : lancé (session_014RxrDMHzNeezYEe2ZXa22v) ; à fusionner puis version test locale.
+- [x] 2026-11-24 v9 locale (réparations robot A1) : à envoyer dès la fin de compilation.
+- [ ] Rappel 20 h : version test à jour.
+- [ ] Écoute groupée des nouveaux sons quand les équipes de styles ont fini.
+- [ ] gr-banc fini a91152f6b (pré-vol PRÊT) : à fusionner avec le paquet des sons.
+- [ ] 2026-11-24 Compteur « Test 3 sur 12 » dans BenStudio Test + tests parties en jeu / quitter en jeu (demandés à robot-a2) : dans la prochaine version test.
+- [ ] 2026-11-24 Retester : cases cochées toutes seules (rouges + nouveaux), bouton Lancer en haut, Tout cocher/décocher (demandé à robot-a2).
+- [ ] 2026-11-24 Retester propose aussi les tests de charge/parties/effets (Scenarios.kt), groupés par titres (demandé à robot-a2).
+- [ ] gr-hiphop fini b1a7ec9c9 (session archivée) ; 12 rouges project-model confiés à gr-l1b ; après sa réparation : refusionner, écoute A/B rendue ici, THIRD_PARTY ad-libs (8 aperçus CC0 dans le message hip-hop).
+| à faire | 2026-11-24 | L12 moteur attaque et poids (corps, kick devant) lancé (session_014RxrDNFa3DRjrzZ91AWHd2) ; à fusionner + écoute A/B |
+- [ ] gr-house fini 3b38648b5 (archivée) ; 6 rouges confiés à gr-l1b ; résonance acid 0,92 dans le break à plafonner (~0,75) au moment de l'écoute ; StyleRecipes à régénérer à la fusion ; écoute A/B rendue ici.
+- [ ] Audit appliqué (19 h UTC) : CI des lots avec l'intégration (eq/ci-gr-l1b e4edf51c3, eq/ci-economie-quota 9ffd75c44, eq/ci-robot1b c0a9efb34) ; lot porte-paquet session_014RxrDLsNmzrfrcFGeNDvgT ; lot gr-styles (hip-hop + house) session_014RxrDJYTCDxTGWGqjWNeda ; prochain paquet à la porte : gr-l1b + economie-quota + robot1b.
+- [ ] gr-l12 fini e17592fe ; CI avec intégration : eq/ci-gr-l12 0777df26c ; 4 diffs ScreenshotTest « Tous les pads » (hors lot) à traiter ; claquement kick trap → lot recettes.
+- [ ] robot-a2 fini 50014995c ; CI avec intégration eq/ci-robot-a2 3cce54803 ; à fusionner puis v9 locale pour Benjamin (Retester + compteur + 2b/2c).
+- [ ] Audit V2 : gr-banc embarque gr-l1. Chef a relu les 3 lignes f3c425370..b0ac8fe32 (hasShaker simplifié, refus « .. », nom de son « . » refusé) : conforme. Après le portail gr-banc, commit doc de décision dans fx-int2 (gr-l1 entre avec gr-banc), puis pousser. gr-l1b en tête du paquet suivant. Pas d'APK depuis la tête intermédiaire.
+- [ ] Désormais : UNE CI par paquet (intégration + 3 lots, eq/ci-paquet-N), lots avec code d'abord ; plus de CI par lot. Relancer techno (rien poussé depuis 18 h 43).
+- [ ] porte-paquet fini 9c0bde7b : 1er de paquet suivant (avec gr-l1b, robot-a2), puis utiliser porte-paquet.sh.
+- [ ] gr-bass fini ccf50247 mais grave/kick/largeur ratés → lot gr-bass2 session_014RxrDLuiR4wtzmenQ8VF2z. À la fusion : régénérer StyleRecipes.kt ET guides (make_guides.py). A/B dans autre conteneur (illisible ici).
+- [ ] gr-styles (hip-hop+house) fini 042775a8 : à fusionner (contient gr-l1b + intégration 9f0c5eb8 + hiphop + house) ; régénérer StyleRecipes ; THIRD_PARTY ad-libs ; deep_house sans nappe (voulu) ; jump_up sans place ma mélodie.
+- gr-techno fini a8a4dcdf3 (eq/tour-9-gr-techno, contient l1b) ; acidcore aigus −10 dB ; régénérer StyleRecipes à la fusion ; paquet suivant avec gr-styles. A/B techno à rendre ensuite.
+- 2026-11-24 22h, Benjamin : « C'est oui pour tout. Tu as tous les droits pour tout. C'est recommandé pour tout. J'accepte les licences. Et n'oublie pas de retenir tout ce qu'on s'est dit. » Audit V2 validé en entier.
+  Nuit : portail gr-banc → commit décision gr-l1 + règles V2 dans CLAUDE.md + RETOURS (A/B) dans docs/RETOURS.md + PROMESSES dans docs → push → CI. Paquet suivant (porte-paquet, gr-styles, gr-techno ; robot-a2 après) en une CI. gr-bass2 à son tour. Lot « house moins ringarde » avec ses retours A/B (garder deep house et trap). A/B techno pour le réveil, par style.
+- 22h55 : gr-banc republié en eq/tour-9-gr-banc2 (mêmes arbres, 2 sujets rouge reformulés ; pré-vol PRÊT) ; portail lancé (boiviyi0h).
+- 22h58 : avant-après techno en cours (envoyé). Lot gr-house2 lancé : session_014RxrDLyY7dtKbqYn2DZXD8.
+- 23h26 : gr-house2 autorisé sur i18n/*/model.json. À confier au lot tuto après gr-house2 : tutos afro_house (pad Tom médium, toc de bois) et tech_house (clap et un écho, rim textPro) ne collent plus au son. Avant-après techno envoyé.
+- 23h45 : gr-house2 FINI 8c5248bf (pré-vol PRÊT), à mettre dans un paquet (conflit possible StyleRecipes, régénérer à la fusion). Avant-après house v2 en rendu (envoyé). Session à archiver après fusion.

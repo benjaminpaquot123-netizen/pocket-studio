@@ -175,10 +175,7 @@
   ],
   "mix": {
    "glue_blend": 0.6,
-   "bus_drive": 0.35,
-   "pump": [
-    "chords"
-   ]
+   "bus_drive": 0.35
   },
   "counter": {
    "sound": "Pluck"
@@ -808,8 +805,7 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 4,
-   "sound": "Nappe",
-   "double": "octave"
+   "sound": "Nappe"
   },
   "bass": {
    "pattern": "R-.R..R-..R-....R-.R..R-..R--/O-R-.R..5-..3-....R-..............",

@@ -14,7 +14,9 @@ Rouge après le pré-contrôle : retour au commit de départ, puis le portail zo
 
 Garde-fou : les étapes de paquet ne valent qu'à partir de `from_paquet 10` ; sans `PS_PAQUET_ETAPE`, le portail se comporte octet pour octet comme avant (test `PortalUnchangedWithoutBatch`). Le juge (`verifie-chantier.py`) accepte déjà les traces d'un paquet sans changement : test avec le vrai juge, 0 « fusion sans trace du portail ».
 
-Preuves : `test_porte_paquet.py` 12 tests verts ; `test_socle.py`, `test_ultra_bench.py`, `test_portail3.py`, `test_portail4.py` verts ; `selftest.sh` vert ; empreinte pre-vol inchangée (« 18 90127c7c59 »).
+Preuves : `test_porte_paquet.py` 14 tests verts (dont, après la première relecture : le juge ne monte pas pour les traces à venir du même paquet, et l'étape « traces » refuse une fusion que le paquet n'a pas testée ; corrections en 0121aa26) ; `test_socle.py`, `test_ultra_bench.py`, `test_portail3.py`, `test_portail4.py` verts ; `selftest.sh` vert sur 0121aa26 (389 verts, 0 rouge) ; empreinte pre-vol inchangée (« 18 90127c7c59 »).
+
+chemin: banc, le paquet passe l'union des filtres par la file Gradle ; un test ordinaire de l'appli y garde son verdict | test: OrdinaryTestsLeaveNothingTest#c_anOrdinaryTestThatLeavesTheAppsWorkStartedLateIsRedItself
 
 tests: aucun : lot du banc seul, aucun code de l'appli touché (preuves par les tests du banc ci-dessus)
 

@@ -65,27 +65,28 @@ class ScenariosTest {
         var renaming: String? = null
         var typed = ""
         var behind = false
-        private val undo = ArrayList<Pair<Int, List<List<String>>>>()
-        private val redo = ArrayList<Pair<Int, List<List<String>>>>()
+        var montee = 0
+        private val undo = ArrayList<Triple<Int, List<List<String>>, Int>>()
+        private val redo = ArrayList<Triple<Int, List<List<String>>, Int>>()
 
         private var id = "p1"
 
         private fun save() {
-            if (saves) disque = ProjetVu.Disque("Mon morceau", parties, effets, tempo, muets, solos, volumes, pans)
+            if (saves) disque = ProjetVu.Disque("Mon morceau", parties, effets, tempo, muets, solos, volumes, pans, montee)
         }
 
         private fun change(work: () -> Unit) {
-            undo += parties to effets
+            undo += Triple(parties, effets, montee)
             redo.clear()
             work()
             save()
         }
 
-        private fun back(from: ArrayList<Pair<Int, List<List<String>>>>, to: ArrayList<Pair<Int, List<List<String>>>>) {
+        private fun back(from: ArrayList<Triple<Int, List<List<String>>, Int>>, to: ArrayList<Triple<Int, List<List<String>>, Int>>) {
             if (!undoWorks || from.isEmpty()) return
-            to += parties to effets
-            val (p, e) = from.removeAt(from.size - 1)
-            parties = p; effets = e
+            to += Triple(parties, effets, montee)
+            val (p, e, m) = from.removeAt(from.size - 1)
+            parties = p; effets = e; montee = m
             save()
         }
 
@@ -145,7 +146,9 @@ class ScenariosTest {
                 tag == "live_play" -> if (!playing) playing = true else if (liveStops) playing = false
                 tag.startsWith("part_menu_") -> sheet = "part"
                 tag == "part_break_4" -> { sheet = ""; if (breakAdds) change { parties++ } }
-                tag in listOf("part_buildup_4", "part_ending", "part_insert_1", "part_duplicate_1") -> { sheet = ""; if (breakAdds) change { parties++ } }
+                // A Montée draws its curve before the part (buildUpBefore): no part more.
+                tag == "part_buildup_4" -> { sheet = ""; if (breakAdds) change { montee += 3 } }
+                tag in listOf("part_ending", "part_insert_1", "part_duplicate_1") -> { sheet = ""; if (breakAdds) change { parties++ } }
                 tag == "part_remove_1" -> { sheet = ""; if (breakAdds) change { parties-- } }
                 tag == "tempo_half" -> if (tempoMoves && tempo / 2 >= 30.0) { tempo /= 2; save() }
                 tag == "tempo_double" -> if (tempoMoves && tempo * 2 <= 300.0) { tempo *= 2; save() }
@@ -187,7 +190,7 @@ class ScenariosTest {
         var shots = false
         override fun capture(file: File): Boolean = shots && runCatching { file.writeText("jpg") }.isSuccess
         override fun demander(question: String, maxMs: Long): Boolean? = null
-        override fun projet() = ProjetVu(id, "Mon morceau", parties, effets, disque, tempo, muets, solos, volumes, pans)
+        override fun projet() = ProjetVu(id, "Mon morceau", parties, effets, disque, tempo, muets, solos, volumes, pans, montee)
 
         /** A strip sheet's slider set (InAppDriver.regler). */
         fun regler(tag: String, value: Float): Boolean {
@@ -587,6 +590,8 @@ class ScenariosTest {
         val s = Studio()
         played(s, *ids).forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
         assertEquals(4, s.parties)
+        assertEquals(0, s.montee)
+        assertEquals(Scenarios.ECHOUE, played(Studio().apply { undoWorks = false }, "partie_montee").only("partie_montee").resultat)
         assertEquals(Scenarios.ECHOUE, played(Studio().apply { undoWorks = false }, "partie_fin").only("partie_fin").resultat)
         assertEquals(Scenarios.NON_MESURE, played(Studio().apply { undoShown = false }, "partie_inserer").only("partie_inserer").resultat)
     }

@@ -109,6 +109,7 @@ class Scenarios(
             "effet" -> { { effet(id, a) } }
             "tempo" -> { { tempoExtreme(id, haut = a != "bas", enJouant = a == "haut_lecture") } }
             "export" -> g.getOrNull(2)?.let { format -> { ts.style(id, a) + " ; " + t.export(format, id) } }
+            "montee" -> { { montee(id, a) } }
             "partie" -> g.getOrNull(2)?.toIntOrNull()?.let { delta -> { partie(id, a, delta) } }
             "pad" -> a.toIntOrNull()?.let { i -> { toucherPad(id, "live_pad_$i") } }
             "ecrans" -> ECRANS_LECTURE[a]?.let { tabs -> { lectureEcrans(id, tabs) } }
@@ -937,6 +938,36 @@ class Scenarios(
         return "$before parties, puis ${before + delta}, enregistré, puis $before après « Annuler »"
     }
 
+    /**
+     * Structure › a part's « ⋯ » › [tag] (a « Montée »), then « Annuler ». Oracle: the song's build-up curve gets its
+     * points in the project and on the disk while the parts stay as they are (a Montée draws a curve before the part,
+     * it adds none: `buildUpBefore`), then « Annuler » takes the curve back.
+     */
+    private fun montee(step: String, tag: String): String {
+        auStudio()
+        val before = lu()
+        j.tap("tab_Structure")
+        val there: Boolean
+        try {
+            j.openPartSheet(PARTIE)
+            there = attendre(2_000) { j.exists(tag) }
+            if (there) j.tap(tag)
+        } finally {
+            fermerFeuilles()
+        }
+        if (!there) return nonMesure(step, "pas de « $tag » dans la feuille de la partie ${PARTIE + 1}")
+        check(attendre(5_000) { lu().montee != before.montee }) { "pas de courbe de montée après le geste : ${lu().montee} points (avant : ${before.montee})" }
+        val after = lu()
+        check(after.parties == before.parties) { "${after.parties} parties après la montée (avant : ${before.parties}) : une montée ajoute une courbe, pas une partie" }
+        val d = surDisque { it.montee == after.montee }
+        check(d?.montee == after.montee) { "${d?.montee ?: "aucun fichier"} points de montée sur le disque (attendu : ${after.montee})" }
+        if (!j.exists("top_undo")) return nonMesure(step, "pas de bouton « Annuler » dans la barre (réglage de l'appli)")
+        j.tap("top_undo")
+        check(attendre(5_000) { lu().montee == before.montee }) { "« Annuler » ne retire pas la montée : ${lu().montee} points (attendu : ${before.montee})" }
+        bilan(step, "montee_avant" to before.montee, "montee_apres" to after.montee, "parties" to before.parties)
+        return "courbe de montée : ${before.montee} points, puis ${after.montee}, enregistrée, ${before.parties} parties avant et après, puis ${before.montee} après « Annuler »"
+    }
+
     /** Intermediate: the screens [tabs] (tab, its marker) opened while the song plays. Oracle: the transport plays at each one, and sound comes out. */
     private fun lectureEcrans(step: String, tabs: List<Pair<String, String>>): String {
         auStudio()
@@ -1157,7 +1188,7 @@ class Scenarios(
             add(Scenario("partie_inserer", "Moyen : insérer une partie puis annuler", NIVEAU_MOYEN, 90_000, 12, "une partie de plus (projet, disque), puis comme avant", "partie:part_insert_$PARTIE:1"))
             add(Scenario("partie_retirer", "Moyen : retirer une partie puis annuler", NIVEAU_MOYEN, 90_000, 12, "une partie de moins (projet, disque), puis comme avant", "partie:part_remove_$PARTIE:-1"))
             add(Scenario("partie_dupliquer", "Moyen : dupliquer une partie puis annuler", NIVEAU_MOYEN, 90_000, 12, "une partie de plus (projet, disque), puis comme avant", "partie:part_duplicate_$PARTIE:1"))
-            add(Scenario("partie_montee", "Pro : une montée avant une partie, puis annuler", NIVEAU_PRO, 90_000, 12, "une partie de plus (projet, disque), puis comme avant", "partie:part_buildup_4:1"))
+            add(Scenario("partie_montee", "Pro : une montée avant une partie, puis annuler", NIVEAU_PRO, 90_000, 12, "une courbe de montée (projet, disque), autant de parties, puis comme avant", "montee:part_buildup_4"))
             add(Scenario("partie_fin", "Pro : ajouter une fin, puis annuler", NIVEAU_PRO, 90_000, 12, "une partie de plus (projet, disque), puis comme avant", "partie:part_ending:1"))
             for (i in 1..7) add(Scenario("pad_${i + 1}", "Débutant : le pad ${i + 1} du Live", NIVEAU_DEBUTANT, 60_000, 8, "le moteur joue et la crête du son", "pad:$i"))
             add(Scenario("lecture_mix", "Moyen : ouvrir le Mix en jouant", NIVEAU_MOYEN, 90_000, 12, "le transport joue sur le Mix, le son sort", "ecrans:mix"))
@@ -1414,15 +1445,24 @@ data class ProjetVu(
     val tempo: Double = 0.0, val muets: List<Boolean> = emptyList(), val solos: List<Boolean> = emptyList(),
     /** Each strip's volume and pan. */
     val volumes: List<Float> = emptyList(), val pans: List<Float> = emptyList(),
+    /** The points of the song's build-up curve ([montee]): a « Montée » draws them, it adds no part. */
+    val montee: Int = 0,
 ) {
     data class Disque(
         val nom: String, val parties: Int, val effets: List<List<String>>,
         val tempo: Double = 0.0, val muets: List<Boolean> = emptyList(), val solos: List<Boolean> = emptyList(),
         val volumes: List<Float> = emptyList(), val pans: List<Float> = emptyList(),
+        val montee: Int = 0,
     )
 
     companion object {
         /** A strip's effects at most (the model's own limit). */
         const val EFFETS_MAX = com.pocketstudio.model.Layers.MAX_INSERTS
+
+        /** The points drawn on [p]'s song build-up curve (what `buildUpBefore` writes; 0: none). */
+        fun montee(p: com.pocketstudio.model.Project): Int {
+            val target = com.pocketstudio.model.AutoTarget.live(com.pocketstudio.model.AutoTarget.LIVE_BUILD_UP)
+            return p.automation.firstOrNull { it.target == target }?.songValues?.count { it != null } ?: 0
+        }
     }
 }

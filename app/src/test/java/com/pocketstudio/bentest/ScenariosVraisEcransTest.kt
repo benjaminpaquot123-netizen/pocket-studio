@@ -59,7 +59,10 @@ open class ScenariosVraisEcransTest {
             val p = h.vm.project.value
             fun effets(of: Project) = of.mixer.channels.map { ch -> ch.inserts.filter { it.effect != EffectType.NONE }.map { it.effect.name } }
             val disk = runCatching { ProjectOpening.projectStore(h.app).load(h.vm.projectId) }.getOrNull()
-            return ProjetVu(h.vm.projectId, p.name, p.song.size, effets(p), disk?.let { ProjetVu.Disque(it.name, it.song.size, effets(it)) })
+            return ProjetVu(
+                h.vm.projectId, p.name, p.song.size, effets(p), disk?.let { ProjetVu.Disque(it.name, it.song.size, effets(it), montee = ProjetVu.montee(it)) },
+                montee = ProjetVu.montee(p),
+            )
         }
     }
 
@@ -121,6 +124,8 @@ open class ScenariosVraisEcransTest {
         val text = jouer(v, "partie_montee")
         assertTrue(text, text.contains("courbe de montée"))
         assertEquals(parts, h.vm.project.value.song.size)
+        // « Annuler » took the curve back: the project is as before.
+        assertEquals(0, ProjetVu.montee(h.vm.project.value))
     }
 }
 

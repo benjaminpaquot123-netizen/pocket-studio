@@ -461,7 +461,7 @@ private class AppliReelle(private val app: Application, private val main: MainTh
         return ProjetVu(
             id, p.name, p.song.size, effets(p), disk?.let(::disque),
             tempo = p.tempoBpm, muets = p.mixer.channels.map { it.mute }, solos = p.mixer.channels.map { it.solo },
-            volumes = p.mixer.channels.map { it.volume }, pans = p.mixer.channels.map { it.pan },
+            volumes = p.mixer.channels.map { it.volume }, pans = p.mixer.channels.map { it.pan }, montee = ProjetVu.montee(p),
         )
     }
 
@@ -469,7 +469,7 @@ private class AppliReelle(private val app: Application, private val main: MainTh
 
     private fun disque(p: Project) = ProjetVu.Disque(
         p.name, p.song.size, effets(p), p.tempoBpm, p.mixer.channels.map { it.mute }, p.mixer.channels.map { it.solo },
-        p.mixer.channels.map { it.volume }, p.mixer.channels.map { it.pan },
+        p.mixer.channels.map { it.volume }, p.mixer.channels.map { it.pan }, ProjetVu.montee(p),
     )
 
     override fun projets(): Map<String, ProjetVu.Disque>? = runCatching {

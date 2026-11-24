@@ -653,4 +653,220 @@ void BassExciter::process(float* l, float* r, int n) {
     }
 }
 
+// --- L12: transient shaper (« Attaque ») -----------------------------------------------------
+
+namespace {
+float dbGain(float db) { return std::exp2(db * 0.16609640f); }  // 10^(db/20)
+float ratioDb(float a, float b) {
+    constexpr float kFloor = 1e-6f;  // under -120 dBFS: silence, no gap read
+    if (a < kFloor || b < kFloor) return 0.0f;
+    return 6.0205999f * std::log2(a / b);
+}
+}  // namespace
+
+void TransientShaper::prepare(float rate) {
+    fastA_ = timeCoef(rate, 0.3f);
+    fastR_ = timeCoef(rate, 40.0f);
+    slowA_ = timeCoef(rate, 15.0f);
+    slowR_ = fastR_;
+    longR_ = timeCoef(rate, 250.0f);
+    shortR_ = timeCoef(rate, 30.0f);
+    glide_ = timeCoef(rate, 10.0f);
+    reset();
+}
+
+void TransientShaper::setParam(int p, float v) {
+    if (p < 0 || p >= kParams || !std::isfinite(v)) return;
+    p_[static_cast<size_t>(p)] = std::clamp(v, 0.0f, 1.0f);
+}
+
+void TransientShaper::reset() {
+    fast_ = slow_ = long_ = short_ = 0.0f;
+    gainDb_ = 0.0f;
+    fresh_ = true;
+}
+
+void TransientShaper::process(float* l, float* r, int n) { (void)l; (void)r; (void)n; return;  // red: not implemented yet
+    const float attack = 2.0f * p_[0] - 1.0f, sustain = 2.0f * p_[1] - 1.0f;
+    const float mix = p_[2], out = dbGain(12.0f * p_[3] - 6.0f);
+    if (fresh_) {
+        attack_ = attack;
+        sustain_ = sustain;
+        mix_ = mix;
+        out_ = out;
+        fresh_ = false;
+    }
+    for (int i = 0; i < n; ++i) {
+        const float xl = l[i], xr = r[i];
+        if (!std::isfinite(xl) || !std::isfinite(xr)) {
+            // A NaN or an infinity: silence out, the followers start again (left NaN, they would stay so).
+            fast_ = slow_ = long_ = short_ = 0.0f;
+            l[i] = r[i] = 0.0f;
+            continue;
+        }
+        const float a = std::max(std::fabs(xl), std::fabs(xr));
+        fast_ += (a > fast_ ? fastA_ : fastR_) * (a - fast_);
+        slow_ += (a > slow_ ? slowA_ : slowR_) * (a - slow_);
+        long_ += (a > long_ ? fastA_ : longR_) * (a - long_);
+        short_ += (a > short_ ? fastA_ : shortR_) * (a - short_);
+        attack_ += (attack - attack_) * glide_;
+        sustain_ += (sustain - sustain_) * glide_;
+        mix_ += (mix - mix_) * glide_;
+        out_ += (out - out_) * glide_;
+        // Each gap at most 24 dB counts, halved: a knob at its end moves a hit by up to 12 dB.
+        const float hit = std::min(24.0f, std::max(0.0f, ratioDb(fast_, slow_)));
+        const float tail = std::min(24.0f, std::max(0.0f, ratioDb(long_, short_)));
+        gainDb_ = std::clamp(0.5f * (attack_ * hit + sustain_ * tail), -kMaxDb, kMaxDb);
+        const float g = out_ * (1.0f + mix_ * (dbGain(gainDb_) - 1.0f));
+        l[i] = finiteOr0(xl * g);
+        r[i] = finiteOr0(xr * g);
+    }
+}
+
+// --- L12: drum bus saturation (« Bus batterie ») ---------------------------------------------
+
+// The curve's input at the running peak: -6 dB of it at drive 0 (nearly straight: +0.6 dB under
+// the peak), +12 dB at the top (the soft clip's ceiling: up to +12 dB under the peak).
+float DrumBus::driveGain(float v) { return 0.5f * dbGain(18.0f * std::clamp(v, 0.0f, 1.0f)); }
+
+void DrumBus::prepare(float rate) {
+    release_ = timeCoef(rate, 1500.0f);
+    glide_ = timeCoef(rate, 10.0f);
+    reset();
+}
+
+void DrumBus::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void DrumBus::reset() {
+    sh_.reset();
+    postRing_.fill(0.0f);
+    ring_ = 0;
+    peak_ = 0.0f;
+    fresh_ = true;
+}
+
+void DrumBus::process(float* l, float* r, int n) { (void)l; (void)r; (void)n; return;  // red: not implemented yet
+    const float drive = driveGain(p_[0]), mix = p_[1], out = dbGain(12.0f * p_[2] - 6.0f);
+    if (fresh_) {
+        drive_ = drive;
+        mix_ = mix;
+        out_ = out;
+        fresh_ = false;
+    }
+    // The curve at gain g, scaled so that 1 (the running peak) comes out at 1: f(g u) / f(g).
+    struct Curve {
+        double f(double x) const { return shape.f(x); }
+        double F(double x) const { return shape.F(x); }
+        SoftClipShape shape;
+    } const curve{};
+    constexpr int kChunk = DriveShaperPair::kMaxBlock;
+    constexpr float kFloor = 1e-3f;  // under -60 dBFS the scale stops: silence is not lifted up
+    float xl[kChunk], xr[kChunk], gain[kChunk], post[kChunk], yl[kChunk], yr[kChunk], dl[kChunk], dr[kChunk];
+    float mixAt[kChunk];
+    for (int from = 0; from < n; from += kChunk) {
+        const int m = std::min(kChunk, n - from);
+        float* bl = l + from;
+        float* br = r + from;
+        for (int i = 0; i < m; ++i) {
+            xl[i] = std::isfinite(bl[i]) ? bl[i] : 0.0f;
+            xr[i] = std::isfinite(br[i]) ? br[i] : 0.0f;
+            const float a = std::max(std::fabs(xl[i]), std::fabs(xr[i]));
+            peak_ = a > peak_ ? a : peak_ + (a - peak_) * release_;
+            drive_ += (drive - drive_) * glide_;
+            mix_ += (mix - mix_) * glide_;
+            out_ += (out - out_) * glide_;
+            const float ref = std::max(kFloor, peak_);
+            gain[i] = drive_ / ref;
+            // The output's scale lined up with the shaped sound (kDelay frames old): a louder hit
+            // raises the peak at once, and the frames shaped before it keep the scale they had.
+            postRing_[static_cast<size_t>(ring_)] = ref / static_cast<float>(curve.f(drive_)) * out_;
+            ring_ = ring_ == DriveShaperPair::kDelay ? 0 : ring_ + 1;
+            post[i] = postRing_[static_cast<size_t>(ring_)];
+            mixAt[i] = mix_;
+        }
+        sh_.process(xl, xr, yl, yr, dl, dr, m, gain, nullptr, curve);
+        for (int i = 0; i < m; ++i) {
+            const float wl = yl[i] * post[i], wr = yr[i] * post[i];
+            bl[i] = finiteOr0(out_ * dl[i] + mixAt[i] * (wl - out_ * dl[i]));
+            br[i] = finiteOr0(out_ * dr[i] + mixAt[i] * (wr - out_ * dr[i]));
+        }
+    }
+}
+
+// --- L12: mid/side EQ (« Graves mono ») ------------------------------------------------------
+
+float MidSideEq::monoHz(float v) { return v <= 0.0f ? 10.0f : expMap(v, 40.0f, 300.0f); }
+
+void MidSideEq::prepare(float rate) {
+    rate_ = rate;
+    filterGlide_ = 1.0f - std::exp(-static_cast<float>(kStep) / (0.02f * rate));
+    hzNow_ = monoHz(p_[0]);
+    lowDbNow_ = 12.0f * p_[1] - 6.0f;
+    highDbNow_ = 12.0f * p_[2] - 6.0f;
+    update();
+    reset();
+}
+
+void MidSideEq::setParam(int p, float v) { setClamped(p_, p, v); }
+
+void MidSideEq::update() {
+    sideA_.highPassQ(rate_, hzNow_, 0.5412f);
+    sideB_.highPassQ(rate_, hzNow_, 1.3066f);
+    midLow_.lowShelf(rate_, 120.0f, lowDbNow_);
+    sideHigh_.highShelf(rate_, std::min(6000.0f, 0.4f * rate_), highDbNow_);
+}
+
+void MidSideEq::glide() {
+    const float hz = monoHz(p_[0]), low = 12.0f * p_[1] - 6.0f, high = 12.0f * p_[2] - 6.0f;
+    if (hz == hzNow_ && low == lowDbNow_ && high == highDbNow_) return;
+    hzNow_ += (hz - hzNow_) * filterGlide_;
+    lowDbNow_ += (low - lowDbNow_) * filterGlide_;
+    highDbNow_ += (high - highDbNow_) * filterGlide_;
+    if (std::fabs(hz - hzNow_) < 1e-3f * hz) hzNow_ = hz;
+    if (std::fabs(low - lowDbNow_) < 1e-3f) lowDbNow_ = low;
+    if (std::fabs(high - highDbNow_) < 1e-3f) highDbNow_ = high;
+    update();
+}
+
+void MidSideEq::reset() {
+    sideA_.reset();
+    sideB_.reset();
+    midLow_.reset();
+    sideHigh_.reset();
+    countdown_ = 0;
+    fresh_ = true;
+}
+
+void MidSideEq::process(float* l, float* r, int n) { (void)l; (void)r; (void)n; return;  // red: not implemented yet
+    if (fresh_) {
+        const float hz = monoHz(p_[0]), low = 12.0f * p_[1] - 6.0f, high = 12.0f * p_[2] - 6.0f;
+        if (hz != hzNow_ || low != lowDbNow_ || high != highDbNow_) {
+            hzNow_ = hz;
+            lowDbNow_ = low;
+            highDbNow_ = high;
+            update();
+        }
+        fresh_ = false;
+    }
+    for (int i = 0; i < n; ++i) {
+        if (--countdown_ < 0) {
+            glide();
+            countdown_ = kStep - 1;
+        }
+        const float xl = l[i], xr = r[i];
+        if (!std::isfinite(xl) || !std::isfinite(xr)) {
+            sideA_.reset();
+            sideB_.reset();
+            midLow_.reset();
+            sideHigh_.reset();
+            l[i] = r[i] = 0.0f;
+            continue;
+        }
+        const float mid = midLow_.process(0.5f * (xl + xr));
+        const float side = sideHigh_.process(sideB_.process(sideA_.process(0.5f * (xl - xr))));
+        l[i] = finiteOr0(mid + side);
+        r[i] = finiteOr0(mid - side);
+    }
+}
+
 }  // namespace ps

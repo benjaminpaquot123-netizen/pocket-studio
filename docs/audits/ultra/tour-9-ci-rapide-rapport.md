@@ -3,7 +3,7 @@
 Branche : eq/tour-9-ci-rapide. Commits : 77a4759d, 7dd14931, e7db06ff, cd02945e, rouge c3d8a090, vert 5b54498a.
 Tout est « tenté » : aucun « corrigé » tant qu'un testeur neuf ne l'a pas constaté.
 
-tests: nav.MySoundsJourneyTest remix.StemBoardVmTest live.LiveCellJourneyTest
+tests: com.pocketstudio.app.nav.MySoundsJourneyTest com.pocketstudio.app.remix.StemBoardVmTest com.pocketstudio.app.live.LiveCellJourneyTest
 
 ## Chemins
 

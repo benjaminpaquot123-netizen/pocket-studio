@@ -540,8 +540,8 @@
       0.6
      ],
      "break": [
-      0.18,
-      0.7
+      0.15,
+      0.5
      ]
     },
     "resonance": {
@@ -554,8 +554,8 @@
       0.93
      ],
      "break": [
-      0.8,
-      0.95
+      0.75,
+      0.88
      ]
     },
     "env_mod": {
@@ -569,13 +569,17 @@
      ],
      "break": [
       0.4,
-      0.85
+      0.7
      ]
     },
     "decay": {
      "drop": [
       0.2,
       0.38
+     ],
+     "break": [
+      0.15,
+      0.25
      ]
     }
    }
@@ -597,7 +601,7 @@
    },
    {
     "on": "kick",
-    "preset": "punch"
+    "preset": "crunch"
    },
    {
     "on": "acid",
@@ -613,16 +617,12 @@
     "preset": "rumble"
    }
   ],
-  "notes": "Modern acid techno: the TB-303 line IS the track and the bass; nothing else is on by default (no bass, chords nor lead), so the 303 is alone between the kick hits; it carries the Break too. Modern means it squeals and evolves: the Squelchy 303 (high resonance) with some drive, a two-bar riff, and four knobs turned along the song (cutoff, resonance, env_mod, decay): closed and tight in the Groove, opening and squealing in each Drop, a long sweep up through the Break. A rumble (the kick replayed through the rumble preset) rolls under the kick, the kick goes through punch, the drum bus is glued. The acid track stays on the key's root, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III). 303: mostly roots, octave jumps, b3, 5 and b7, slides into the octave jumps, sparse accents; crunch preset + a little delay. Tempo: London acid techno 135-145. Optional lead: a second, higher 303-like riff.",
+  "notes": "Modern acid techno: the TB-303 line IS the track and the bass; nothing else is on by default (no bass, chords nor lead), so the 303 is alone between the kick hits; it carries the Break too. Modern means it squeals and evolves: the Squelchy 303 (high resonance) with some drive, a two-bar riff, and four knobs turned along the song (cutoff, resonance, env_mod, decay): closed and tight in the Groove, opening and squealing in each Drop, a long sweep up through the Break. A rumble (the kick replayed through the rumble preset) rolls under the kick, the kick keeps its crunch, no bus glue (it flattened the Break against the Drop: Drop - Break fell to +3.1 LU); the 303 shortens and closes in the Break so the Drop stays 4 LU above it. The acid track stays on the key's root, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III). 303: mostly roots, octave jumps, b3, 5 and b7, slides into the octave jumps, sparse accents; crunch preset + a little delay. Tempo: London acid techno 135-145. Optional lead: a second, higher 303-like riff.",
   "riser": true,
   "drop": [
    "ride",
    "perc2"
-  ],
-  "mix": {
-   "glue_blend": 0.6,
-   "bus_drive": 0.35
-  }
+  ]
  },
  {
   "id": "detroit",

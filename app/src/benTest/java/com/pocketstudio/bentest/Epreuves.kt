@@ -229,7 +229,7 @@ class Epreuves(
             reads += lu
             n++
             if ((n == KIT_PREMIER || n == KIT_SECOND) && !fewer) {
-                val k = choisirKit(if (n == KIT_PREMIER) 1 else 0)
+                val k = lirePendant(step, reads) { choisirKit(if (n == KIT_PREMIER) 1 else 0, reads) }
                 if (k == null) fewer = true else chosen += k
             }
         }
@@ -486,8 +486,38 @@ class Epreuves(
 
     private fun mo(v: Int?) = v?.let { "$it Mo" } ?: "inconnue"
 
-    /** The drums' « Changer le son », then the [index]th kit offered; its tag, null when there are not 2 kits. */
-    private fun choisirKit(index: Int): String? {
+    /** One reading of the probe now (the listening's own reads wait while a gesture runs). */
+    private fun luMaintenant(): Ecoute.Lu {
+        val r = sonde.lire()
+        return Ecoute.Lu(System.currentTimeMillis(), r.xruns, r.cpu, r.peak, r.nonFinite, r.playing, r.lufs, r.drive, r.lane)
+    }
+
+    /**
+     * [work] (gestures that can take seconds) with the probe read every 250 ms on its own thread, so a hole
+     * during the gestures is heard ([trous]); those readings join [into] and the logbook.
+     */
+    private fun <T> lirePendant(step: String, into: MutableList<Ecoute.Lu>, work: () -> T): T {
+        val got = java.util.Collections.synchronizedList(ArrayList<Ecoute.Lu>())
+        val stop = java.util.concurrent.atomic.AtomicBoolean(false)
+        val th = Thread {
+            while (!stop.get()) {
+                try { Thread.sleep(250) } catch (_: InterruptedException) { break }
+                if (!stop.get()) runCatching { got += luMaintenant() }
+            }
+        }.apply { isDaemon = true; start() }
+        try {
+            return work()
+        } finally {
+            stop.set(true)
+            th.interrupt()
+            th.join(1_000)
+            synchronized(got) { into += got }
+            carnet.add(Carnet.MESURE, step, "geste;lectures=${got.size};muettes=${trous(got)}")
+        }
+    }
+
+    /** The drums' « Changer le son », then the [index]th kit offered; its tag, null when there are not 2 kits. Each gesture is followed by a reading into [reads]. */
+    private fun choisirKit(index: Int, reads: MutableList<Ecoute.Lu>): String? {
         if (!j.exists(DRUMS_NAME)) {
             if (!j.exists("structure_timeline")) j.tap("tab_Structure")
             // The Structure shows its parts: its switch to the timeline, where each track has its name.
@@ -496,6 +526,7 @@ class Epreuves(
         }
         j.tap(DRUMS_NAME)
         j.await("kit_sheet")
+        reads += luMaintenant()
         val choices = j.tagsMatching(Regex("kit_choice_.+"))
         if (choices.size < 2) {
             j.tap("kit_sheet_close")
@@ -504,6 +535,7 @@ class Epreuves(
         }
         val tag = choices[index]
         j.tap(tag)
+        reads += luMaintenant()
         if (!attendre(5_000) { !j.exists("kit_sheet") }) {
             j.tap("kit_sheet_close")
             j.awaitGone("kit_sheet", 5_000)

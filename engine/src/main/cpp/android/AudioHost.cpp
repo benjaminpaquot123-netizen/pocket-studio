@@ -77,8 +77,8 @@ bool AudioHost::openOutputLocked(oboe::SharingMode sharing) {
         output_.reset();
         return false;
     }
-    // Two bursts is the usual sweet spot between latency and glitch safety (user setting).
-    output_->setBufferSizeInFrames(output_->getFramesPerBurst() * bufferBursts_);
+    // The user's bursts on a fast path; a safe floor on a slow one (car, Bluetooth, shared mixer).
+    output_->setBufferSizeInFrames(bufferFramesLocked());
     output_->setPerformanceHintEnabled(true);
     LOGI("output: rate=%d burst=%d api=%s sharing=%s", output_->getSampleRate(),
          output_->getFramesPerBurst(), output_->getAudioApi() == oboe::AudioApi::AAudio ? "AAudio" : "OpenSL",
@@ -236,7 +236,27 @@ void AudioHost::stop() {
 void AudioHost::setBufferBursts(int bursts) {
     std::lock_guard<std::mutex> guard(lock_);
     bufferBursts_ = bursts < 1 ? 1 : (bursts > 8 ? 8 : bursts);
-    if (output_) output_->setBufferSizeInFrames(output_->getFramesPerBurst() * bufferBursts_);
+    if (output_) output_->setBufferSizeInFrames(bufferFramesLocked());
+}
+
+// Mirror of OutputBuffer.frames (engine/src/main/java/.../OutputBuffer.kt, tested by
+// OutputChangeBufferTest): both change together. A fast path (low latency granted, bursts of 4 ms or
+// less) keeps the user's bursts; any other path (Android Auto, Bluetooth, a shared mixer after a
+// reroute) pulls big chunks and gets at least 40 ms, in whole bursts. Never above the capacity.
+int AudioHost::bufferFramesLocked() const {
+    const int burst = output_->getFramesPerBurst();
+    if (burst <= 0) return 0;
+    const int rate = output_->getSampleRate() > 0 ? output_->getSampleRate() : kSampleRate;
+    int frames = burst * bufferBursts_;
+    const bool fast = output_->getPerformanceMode() == oboe::PerformanceMode::LowLatency && burst <= rate * 4 / 1000;
+    if (!fast) {
+        const int floor = rate * 40 / 1000;
+        const int floorFrames = ((floor + burst - 1) / burst) * burst;
+        if (floorFrames > frames) frames = floorFrames;
+    }
+    const int capacity = output_->getBufferCapacityInFrames();
+    if (capacity > 0 && frames > capacity) frames = capacity;
+    return frames;
 }
 
 bool AudioHost::post(const Command& command) {

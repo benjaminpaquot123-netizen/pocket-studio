@@ -147,6 +147,8 @@ private:
     std::atomic<bool> testInterrupted_{false};
     bool wantRunning_ = false;
     int bufferBursts_ = 2;
+    // Output buffer for the open stream (lock_ held): user bursts, floored on a slow path.
+    int bufferFramesLocked() const;
     int xrunBase_ = 0;
     int lastXruns_ = 0;
     int restarts_ = 0;  // guarded by lock_; see StreamInfo::restarts

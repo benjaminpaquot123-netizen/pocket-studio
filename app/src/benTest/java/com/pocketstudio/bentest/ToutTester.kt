@@ -96,7 +96,7 @@ class ToutTester(
         feu(step, Feux.style(b))
         seuils(step, Feux.depasses(b))
         check(b.reads > 0) { "aucune mesure" }
-        check(b.playing * 2 >= b.reads) { "la lecture s'est arrêtée toute seule : ${b.text()}" }
+        check(b.joueTout) { "la lecture s'est arrêtée toute seule : ${b.text()}" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence : ${b.text()}" }
         return "lecture par $by : ${b.text()}" + (if (heat.isNotEmpty()) " ; $heat" else "")
     }
@@ -412,7 +412,7 @@ class ToutTester(
             var onAgain = 0
             val b = ecouter(step, eteintMs) { if (appli.ecranAllume()) onAgain++ }
             val (f, why) = Feux.style(b)
-            feu(step, if (b.playing * 2 < b.reads) Feu.ROUGE to "la lecture s'est arrêtée écran éteint" else f to why)
+            feu(step, if (!b.joueTout) Feu.ROUGE to "la lecture s'est arrêtée écran éteint" else f to why)
             return "écran éteint après $offAfter s ; puis ${b.text()}" + (if (onAgain > 0) " (écran rallumé ${onAgain / 4} s)" else "")
         } finally {
             appli.arreterLecture()

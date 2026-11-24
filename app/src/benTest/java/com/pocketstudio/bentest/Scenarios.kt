@@ -107,7 +107,7 @@ class Scenarios(
     internal fun sansTravail(): List<String> = (LISTE + SEULS).filter { travail(it) == null }.map { it.id }
 
     fun etapes(): List<Etape> = liste(paquet).map { s ->
-        etape(s.id, s.label, s.maxMs) { (travail(s) ?: error("scénario sans travail : ${s.id}"))() }
+        etape(s.id, s.label, s.maxMs, rangeLeProjet(s)) { (travail(s) ?: error("scénario sans travail : ${s.id}"))() }
     }
 
     /** A scenario's work: its own ([travaux]), else the one its table line describes ([Scenario.geste]). */
@@ -139,12 +139,13 @@ class Scenarios(
      * A step that starts from the studio whatever the one before left ([remiseAZero]), and whose failure
      * leaves what the robot saw in the logbook.
      */
-    private fun etape(name: String, label: String, maxMs: Long, work: () -> String) = Etape(name, label, maxMs) { deadline ->
+    private fun etape(name: String, label: String, maxMs: Long, range: Boolean = false, work: () -> String) = Etape(name, label, maxMs) { deadline ->
         val text = try {
             carnet.add(Carnet.NOTE, name, "$PAQUET;$paquet")
             son(name)
             remiseAZero(name)
-            work()
+            val avant = if (range) appli.projet() else null
+            work().also { if (avant != null) commeAvant(avant) }
         } catch (t: Throwable) {
             e.noterEcran(name)
             indices(name)
@@ -278,6 +279,25 @@ class Scenarios(
         error("remise à zéro : l'écran principal ne revient pas après $ESSAIS_REMISE essais")
     }
 
+    /**
+     * Audit E: a scenario leaves the song as it found it, in memory and on the disk, else the next one starts
+     * from a dirty project and a fault hides behind another. Not checked when the scenario opened another song.
+     */
+    private fun commeAvant(avant: ProjetVu) {
+        val now = appli.projet() ?: return
+        if (now.id != avant.id) return
+        val ecarts = ArrayList<String>()
+        check(attendre(5_000) { ecarts(avant.trace(), appli.projet()?.trace()).isEmpty() }) {
+            "le scénario ne remet pas le morceau comme il l'a trouvé : " + ecarts(avant.trace(), appli.projet()?.trace()).joinToString(", ")
+        }
+        // The disk ends as the song was in memory, or as the file was (a save still to come is not the scenario's).
+        val fichier = avant.disque?.trace() ?: return
+        val d = surDisque { ecarts(avant.trace(), it.trace()).isEmpty() || ecarts(fichier, it.trace()).isEmpty() }
+        if (d != null && ecarts(fichier, d.trace()).isEmpty()) return
+        ecarts += ecarts(avant.trace(), d?.trace())
+        check(ecarts.isEmpty()) { "le disque ne revient pas comme avant le scénario : " + ecarts.joinToString(", ") }
+    }
+
     /** The open song with the Pro tabs, no sheet over it. */
     private fun auStudio() {
         fermerFeuilles()
@@ -285,6 +305,12 @@ class Scenarios(
     }
 
     private fun lu(): ProjetVu = appli.projet() ?: error("le projet ouvert ne se lit pas")
+
+    /** « Annuler » in the bar; none is red (audit E): [what] would stay in the project the next scenario finds. */
+    private fun annuler(what: String) {
+        check(j.exists("top_undo")) { "pas de bouton « Annuler » dans la barre : $what reste dans le projet" }
+        j.tap("top_undo")
+    }
 
     /** Waits until the project on the disk says [ok]; the last one read (null: no file). */
     private fun surDisque(ok: (ProjetVu.Disque) -> Boolean): ProjetVu.Disque? {
@@ -342,8 +368,12 @@ class Scenarios(
         check(attendre(5_000) { lu().parties == before + 1 }) { "le break ne s'ajoute pas au morceau : ${lu().parties} parties (avant : $before)" }
         val d = surDisque { it.parties == before + 1 }
         check(d?.parties == before + 1) { "le break n'est pas enregistré : ${d?.parties ?: "aucun fichier"} parties sur le disque (attendu : ${before + 1})" }
+        annuler("le break")
+        check(attendre(5_000) { lu().parties == before }) { "« Annuler » ne retire pas le break : ${lu().parties} parties (attendu : $before)" }
+        val back = surDisque { it.parties == before }
+        check(back?.parties == before) { "le break annulé reste sur le disque : ${back?.parties ?: "aucun fichier"} parties (attendu : $before)" }
         bilan(STRUCTURE, "parties_avant" to before, "parties_apres" to before + 1)
-        return "break ajouté après la partie ${PARTIE + 1} : $before parties, puis ${before + 1}, enregistré"
+        return "break ajouté après la partie ${PARTIE + 1} : $before parties, puis ${before + 1}, enregistré, puis $before après « Annuler »"
     }
 
     /**
@@ -388,7 +418,6 @@ class Scenarios(
         val undone = retirer(ch, before[ch].sorted(), 1)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec l'effet" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec l'effet : ${b.text()}" }
-        if (undone == null) return nonMesure(EFFETS, LAISSE)
         check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         return "égaliseur ajouté à la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
     }
@@ -437,7 +466,7 @@ class Scenarios(
         ecoute(step, b)
         feuEcoute(step, b)
         check(b.reads > 0) { "aucune mesure" }
-        check(b.playing * 2 >= b.reads) { "la lecture s'est arrêtée toute seule : ${b.text()}" }
+        check(b.joueTout) { "la lecture s'est arrêtée toute seule : ${b.text()}" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son" }
         return "lecture par $by : ${b.text()}"
     }
@@ -472,13 +501,13 @@ class Scenarios(
             after = lu().tempo
             if (up) d = surDisque { it.tempo == after }
             j.tap("tempo_minus")
-            down = attendre(5_000) { lu().tempo < after }
+            down = attendre(5_000) { abs(lu().tempo - before) < 0.01 }
         } finally {
             fermerFeuilles()
         }
         check(up) { "le tempo ne change pas : ${fmt(before)} bpm après « + »" }
         check(d?.tempo == after) { "le tempo n'est pas enregistré : ${d?.tempo?.let(::fmt) ?: "aucun fichier"} bpm sur le disque (attendu : ${fmt(after)})" }
-        check(down) { "« − » ne fait pas redescendre le tempo : ${fmt(lu().tempo)} bpm" }
+        check(down) { "« − » ne remet pas le tempo à ${fmt(before)} : ${fmt(lu().tempo)} bpm" }
         bilan(TEMPO, "tempo_avant" to fmt(before), "tempo_apres" to fmt(after))
         return "tempo ${fmt(before)} puis ${fmt(after)} bpm, enregistré, puis redescendu à ${fmt(lu().tempo)}"
     }
@@ -503,7 +532,7 @@ class Scenarios(
         ecoute(TEMPO_LECTURE, b)
         feuEcoute(TEMPO_LECTURE, b)
         check(changed) { "le tempo ne monte pas pendant la lecture : ${fmt(lu().tempo)} bpm (avant : ${fmt(before)})" }
-        check(b.playing * 2 >= b.reads) { "la lecture s'arrête quand le tempo change : ${b.text()}" }
+        check(b.joueTout) { "la lecture s'arrête quand le tempo change : ${b.text()}" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son" }
         return "tempo ${fmt(before)} puis ${fmt(before + PAS_TEMPO)} bpm en jouant (lecture par $by) : ${b.text()}"
     }
@@ -569,16 +598,20 @@ class Scenarios(
             fermerFeuilles()
         }
         check(attendre(5_000) { lu().parties == before + 1 }) { "le break ne s'ajoute pas au morceau : ${lu().parties} parties (avant : $before)" }
-        if (!j.exists("top_undo")) return nonMesure(ANNULER, "pas de bouton « Annuler » dans la barre (réglage de l'appli)")
-        j.tap("top_undo")
+        annuler("le break")
         check(attendre(5_000) { lu().parties == before }) { "« Annuler » ne retire pas le break : ${lu().parties} parties (attendu : $before)" }
         check(runCatching { j.await("top_redo", 5_000) }.isSuccess) { "pas de « Rétablir » après « Annuler »" }
         j.tap("top_redo")
         check(attendre(5_000) { lu().parties == before + 1 }) { "« Rétablir » ne remet pas le break : ${lu().parties} parties (attendu : ${before + 1})" }
         val d = surDisque { it.parties == before + 1 }
         check(d?.parties == before + 1) { "après « Rétablir », ${d?.parties ?: "aucun fichier"} parties sur le disque (attendu : ${before + 1})" }
+        // Tidying: « Annuler » once more, the song as the scenario found it, on the disk too.
+        annuler("le break rétabli")
+        check(attendre(5_000) { lu().parties == before }) { "le second « Annuler » ne retire pas le break : ${lu().parties} parties (attendu : $before)" }
+        val back = surDisque { it.parties == before }
+        check(back?.parties == before) { "le break annulé reste sur le disque : ${back?.parties ?: "aucun fichier"} parties (attendu : $before)" }
         bilan(ANNULER, "parties" to before + 1)
-        return "break ajouté ($before puis ${before + 1} parties), annulé ($before), rétabli (${before + 1}), enregistré"
+        return "break ajouté ($before puis ${before + 1} parties), annulé ($before), rétabli (${before + 1}), enregistré, puis annulé ($before)"
     }
 
     /** [types] added one by one to strip [ch] by its sheet's list: each one in the project before the next. */
@@ -605,16 +638,15 @@ class Scenarios(
     /**
      * Tidying after an effect scenario: « Annuler » touched up to [fois] times until strip [ch] has its effects
      * [was] again, in the project and on the disk. False when it does not: the strip is left dirty, and the next
-     * scenarios would find no room (C10), so the scenario says it rather than pass in silence. Null: no « Annuler » in
-     * the bar (the app's setting), so not measured rather than a false red.
+     * scenarios would find no room (C10), so the scenario says it rather than pass in silence. No « Annuler » in the bar
+     * is red too (audit E: a gesture the robot cannot take back leaves the project dirty).
      */
-    private fun retirer(ch: Int, was: List<String>, fois: Int): Boolean? {
+    private fun retirer(ch: Int, was: List<String>, fois: Int): Boolean {
         fun clean(fx: List<List<String>>) = fx.getOrNull(ch).orEmpty().sorted() == was
         repeat(fois) {
             if (clean(lu().effets)) return@repeat
-            if (!j.exists("top_undo")) return null
             val n = lu().effets.getOrNull(ch).orEmpty().size
-            j.tap("top_undo")
+            annuler("l'effet de la piste ${ch + 1}")
             attendre(5_000) { lu().effets.getOrNull(ch).orEmpty().size < n }
         }
         return attendre(5_000) { clean(lu().effets) } && surDisque { clean(it.effets) }?.let { clean(it.effets) } == true
@@ -644,7 +676,6 @@ class Scenarios(
         val undone = retirer(ch, was, TROIS.size)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec les trois effets" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec les trois effets : ${b.text()}" }
-        if (undone == null) return nonMesure(EFFETS_PLUSIEURS, LAISSE)
         check(undone) { "les effets restent sur la piste ${ch + 1} : « Annuler » ne les a pas retirés (${lu().effets[ch].joinToString(", ")})" }
         return "${TROIS.joinToString(", ")} sur la piste ${ch + 1}, enregistrés ; lecture par $by : ${b.text()} ; retirés par « Annuler »"
     }
@@ -655,8 +686,7 @@ class Scenarios(
         val ch = place(1) ?: return nonMesure(ANNULER_EFFET, "aucune des $PISTES_MAX premières pistes n'a de place libre")
         val before = lu().effets[ch].sorted()
         ajouter(ch, listOf(EFFET_ANNULE))
-        if (!j.exists("top_undo")) return nonMesure(ANNULER_EFFET, "pas de bouton « Annuler » dans la barre (réglage de l'appli)")
-        j.tap("top_undo")
+        annuler("l'effet $EFFET_ANNULE")
         check(attendre(5_000) { lu().effets[ch].sorted() == before }) { "« Annuler » ne retire pas l'effet : ${lu().effets[ch].joinToString(", ")} sur la piste ${ch + 1}" }
         val d = surDisque { it.effets.getOrNull(ch).orEmpty().sorted() == before }
         check(d != null && d.effets.getOrNull(ch).orEmpty().sorted() == before) { "l'effet annulé reste sur le disque (piste ${ch + 1})" }
@@ -820,7 +850,7 @@ class Scenarios(
         val heard = checkNotNull(b)
         ecoute(ARRIERE_PLAN, heard)
         feuEcoute(ARRIERE_PLAN, heard)
-        check(heard.playing * 2 >= heard.reads) { "la musique s'arrête quand l'appli passe au fond : ${heard.text()}" }
+        check(heard.joueTout) { "la musique s'arrête quand l'appli passe au fond : ${heard.text()}" }
         check(heard.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence quand l'appli passe au fond : ${heard.text()}" }
         check(back) { "le studio ne revient pas devant" }
         return "au fond ${fondMs / 1000} s (lecture par $by) : ${heard.text()} ; studio revenu"
@@ -842,7 +872,7 @@ class Scenarios(
             j.idle(1_500)
             j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000)
             standing = sonde.lire().playing
-            b = t.ecouter(ROTATION_LECTURE, minOf(liveEcouteMs, 4_000))
+            b = t.ecouter(ROTATION_LECTURE, liveEcouteMs)
         } finally {
             appli.orienter(null)
             e.arreter()
@@ -850,7 +880,7 @@ class Scenarios(
         ecoute(ROTATION_LECTURE, b)
         feuEcoute(ROTATION_LECTURE, b)
         check(lying) { "la musique s'arrête quand le téléphone se couche" }
-        check(standing && b.playing * 2 >= b.reads) { "la musique s'arrête quand le téléphone se redresse : ${b.text()}" }
+        check(standing && b.joueTout) { "la musique s'arrête quand le téléphone se redresse : ${b.text()}" }
         return "couché puis debout en jouant (lecture par $by) : ${b.text()}"
     }
 
@@ -913,7 +943,6 @@ class Scenarios(
         val undone = retirer(ch, before, 1)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec $type" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec $type : ${b.text()}" }
-        if (undone == null) return nonMesure(step, LAISSE)
         check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         return "$type sur la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
     }
@@ -961,7 +990,7 @@ class Scenarios(
         feuEcoute(step, b)
         check(moved) { "le tempo ne ${if (haut) "monte" else "descend"} pas : ${fmt(lu().tempo)} bpm (avant : ${fmt(before)})" }
         check(d?.let { abs(it.tempo - after) < 0.01 } == true) { "le tempo ${fmt(after)} bpm n'est pas enregistré sur le disque" }
-        check(b.playing * 2 >= b.reads) { "la lecture s'arrête à ${fmt(after)} bpm : ${b.text()}" }
+        check(b.joueTout) { "la lecture s'arrête à ${fmt(after)} bpm : ${b.text()}" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son à ${fmt(after)} bpm" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence à ${fmt(after)} bpm : ${b.text()}" }
         bilan(step, "tempo_avant" to fmt(before), "tempo_apres" to fmt(after))
@@ -990,9 +1019,10 @@ class Scenarios(
         check(attendre(5_000) { lu().parties == before + delta }) { "${lu().parties} parties après le geste (avant : $before, attendu : ${before + delta})" }
         val d = surDisque { it.parties == before + delta }
         check(d?.parties == before + delta) { "${d?.parties ?: "aucun fichier"} parties sur le disque (attendu : ${before + delta})" }
-        if (!j.exists("top_undo")) return nonMesure(step, "pas de bouton « Annuler » dans la barre (réglage de l'appli)")
-        j.tap("top_undo")
+        annuler("le geste « $tag »")
         check(attendre(5_000) { lu().parties == before }) { "« Annuler » ne remet pas le morceau : ${lu().parties} parties (attendu : $before)" }
+        val back = surDisque { it.parties == before }
+        check(back?.parties == before) { "après « Annuler », ${back?.parties ?: "aucun fichier"} parties sur le disque (attendu : $before)" }
         bilan(step, "parties_avant" to before, "parties_apres" to before + delta)
         return "$before parties, puis ${before + delta}, enregistré, puis $before après « Annuler »"
     }
@@ -1020,9 +1050,10 @@ class Scenarios(
         check(after.parties == before.parties) { "${after.parties} parties après la montée (avant : ${before.parties}) : une montée ajoute une courbe, pas une partie" }
         val d = surDisque { it.montee == after.montee }
         check(d?.montee == after.montee) { "${d?.montee ?: "aucun fichier"} points de montée sur le disque (attendu : ${after.montee})" }
-        if (!j.exists("top_undo")) return nonMesure(step, "pas de bouton « Annuler » dans la barre (réglage de l'appli)")
-        j.tap("top_undo")
+        annuler("la montée")
         check(attendre(5_000) { lu().montee == before.montee }) { "« Annuler » ne retire pas la montée : ${lu().montee} points (attendu : ${before.montee})" }
+        val back = surDisque { it.montee == before.montee }
+        check(back?.montee == before.montee) { "la montée annulée reste sur le disque : ${back?.montee ?: "aucun fichier"} points (attendu : ${before.montee})" }
         bilan(step, "montee_avant" to before.montee, "montee_apres" to after.montee, "parties" to before.parties)
         return "courbe de montée : ${before.montee} points, puis ${after.montee}, enregistrée, ${before.parties} parties avant et après, puis ${before.montee} après « Annuler »"
     }
@@ -1048,7 +1079,7 @@ class Scenarios(
         ecoute(step, b)
         feuEcoute(step, b)
         check(stops.isEmpty()) { "la musique s'arrête en ouvrant ${stops.distinct().joinToString(", ")}" }
-        check(b.playing * 2 >= b.reads) { "la lecture s'arrête après les changements d'écran : ${b.text()}" }
+        check(b.joueTout) { "la lecture s'arrête après les changements d'écran : ${b.text()}" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence après les changements d'écran : ${b.text()}" }
         return "${tabs.size} écran(s) ouverts en jouant (lecture par $by) : ${b.text()}"
@@ -1061,7 +1092,7 @@ class Scenarios(
         var departs = 0
         var arrets = 0
         repeat(REPETITIONS) {
-            if (runCatching { e.lancerLecture() }.isFailure) departs++
+            if (runCatching { e.lancerLecture() }.isFailure || !attendre(5_000) { sonde.lire().playing }) departs++
             e.arreter()
             if (!attendre(5_000) { !sonde.lire().playing }) arrets++
         }
@@ -1088,7 +1119,7 @@ class Scenarios(
                 if (!appli.arrierePlan { b = t.ecouter(step, courtMs) }) return nonMesure(step, "le studio ne passe pas derrière un autre écran ici")
                 if (appli.studioDevant() == false && !attendre(15_000) { appli.studioDevant() != false }) absent++
                 val x = b
-                if (x == null || x.playing * 2 < x.reads || x.secondes.none { it.peakDb > Ecoute.SILENCE_DB }) muettes++
+                if (x == null || !x.joueTout || x.secondes.none { it.peakDb > Ecoute.SILENCE_DB }) muettes++
                 if (x != null) feuEcoute(step, x)
             }
         } finally {
@@ -1217,7 +1248,7 @@ class Scenarios(
         feuEcoute(FOCUS, b)
         if (relance) feu(FOCUS, Feu.ORANGE to "la musique ne repart pas seule après la perte du son")
         check(b.reads > 0) { "aucune mesure" }
-        check(b.playing * 2 >= b.reads) { "après la perte du son, la musique ne repart pas : ${b.text()}" }
+        check(b.joueTout) { "après la perte du son, la musique ne repart pas : ${b.text()}" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son" }
         check(appli.studioDevant() != false) { "après la perte du son, le studio n'est plus devant" }
         return "son pris ${focusMs / 1000} s puis rendu (lecture par $by${if (relance) ", relancée" else ""}) : ${b.text()}"
@@ -1248,7 +1279,7 @@ class Scenarios(
         feuEcoute(TAMPON, gros)
         if (avant > 0 && pendant <= avant) feu(TAMPON, Feu.ORANGE to "le tampon lu n'a pas grandi ($avant → $pendant)")
         check(gros.reads > 0) { "aucune mesure" }
-        check(gros.playing * 2 >= gros.reads) { "avec le gros tampon, la lecture s'arrête : ${gros.text()}" }
+        check(gros.joueTout) { "avec le gros tampon, la lecture s'arrête : ${gros.text()}" }
         check(!gros.nonFinite) { "valeur invalide (NaN) dans le son" }
         check(gros.xruns <= normal.xruns) { "plus de décrochages avec le gros tampon (${gros.xruns}) qu'avec le tampon habituel (${normal.xruns})" }
         return "tampon de $TAMPON_GROS blocs (lecture par $by) : ${gros.text()}"
@@ -1289,8 +1320,6 @@ class Scenarios(
         const val ARRIERE_PLAN = "arriere_plan"
         const val EFFETS_PLUSIEURS = "effets_plusieurs"
 
-        /** Why an effect scenario is not measured when it cannot take its effect off (no « Annuler » in the bar). */
-        const val LAISSE = "pas de bouton « Annuler » dans la barre (réglage de l'appli) : l'effet reste sur la piste"
         const val ANNULER_EFFET = "annuler_effet"
         const val TEMPO_LECTURE = "tempo_lecture"
         const val ROTATION_LECTURE = "rotation_lecture"
@@ -1692,6 +1721,28 @@ class Scenarios(
             return (mine.last().atMs - begin.atMs) / 1000
         }
 
+        /** Scenarios that open another song (a style, a guide, an export of a style) are not held to [commeAvant]. */
+        fun rangeLeProjet(s: Scenario): Boolean = s.geste?.substringBefore(':') !in setOf("style", "guide", "export") && s.id !in OUVRENT_UN_MORCEAU
+
+        /** Ids that open, make or reopen a song by themselves (their work is their own). */
+        val OUVRENT_UN_MORCEAU by lazy { setOf(DEBUTANT, PROJET, DUPLIQUER, SUPPRIMER, STYLE_TRANCE, STYLE_DUBSTEP, STYLE_DNB, GUIDE) }
+
+        /** What differs between two [ProjetVu.Trace]s, by name (empty: the same song). */
+        fun ecarts(a: ProjetVu.Trace, b: ProjetVu.Trace?): List<String> {
+            if (b == null) return listOf("projet illisible")
+            fun close(x: List<Float>, y: List<Float>) = x.size == y.size && x.zip(y).all { (u, v) -> abs(u - v) < 0.01f }
+            return buildList {
+                if (abs(a.tempo - b.tempo) >= 0.01) add("tempo ${fmt(a.tempo)} → ${fmt(b.tempo)}")
+                if (a.parties != b.parties) add("parties ${a.parties} → ${b.parties}")
+                if (a.montee != b.montee) add("montée ${a.montee} → ${b.montee} points")
+                if (a.effets != b.effets) add("effets ${a.effets} → ${b.effets}")
+                if (a.muets != b.muets) add("muets")
+                if (a.solos != b.solos) add("solos")
+                if (!close(a.volumes, b.volumes)) add("volumes")
+                if (!close(a.pans, b.pans)) add("panoramiques")
+            }
+        }
+
         fun fmt(v: Float) = if (v.isFinite()) String.format(Locale.ROOT, "%.2f", v) else ""
         fun fmt(v: Double) = String.format(Locale.ROOT, "%.2f", v)
     }
@@ -1717,7 +1768,17 @@ data class ProjetVu(
         val tempo: Double = 0.0, val muets: List<Boolean> = emptyList(), val solos: List<Boolean> = emptyList(),
         val volumes: List<Float> = emptyList(), val pans: List<Float> = emptyList(),
         val montee: Int = 0,
+    ) {
+        fun trace() = Trace(parties, effets.map { it.sorted() }, tempo, muets, solos, volumes, pans, montee)
+    }
+
+    /** What [Scenarios.commeAvant] compares: the song's content, without its name. */
+    data class Trace(
+        val parties: Int, val effets: List<List<String>>, val tempo: Double, val muets: List<Boolean>, val solos: List<Boolean>,
+        val volumes: List<Float>, val pans: List<Float>, val montee: Int,
     )
+
+    fun trace() = Trace(parties, effets.map { it.sorted() }, tempo, muets, solos, volumes, pans, montee)
 
     companion object {
         /** A strip's effects at most (the model's own limit). */

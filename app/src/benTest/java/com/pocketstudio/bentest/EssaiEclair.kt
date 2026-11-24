@@ -259,7 +259,7 @@ class EssaiEclair(
         check(m.reads > 0) { "aucune mesure" }
         check(!m.nonFinite) { "valeur invalide (NaN) dans le son" }
         check(m.loudSeconds > 0) { "silence : ${m.text()}" }
-        check(m.playing * 2 >= m.reads) { "la lecture s'est arrêtée toute seule : ${m.text()}" }
+        check(m.joueTout) { "la lecture s'est arrêtée toute seule : ${m.text()}" }
         return "lecture par $by : ${m.text()}"
     }
 
@@ -442,6 +442,9 @@ class EssaiEclair(
     /** [playing]: the readings the transport ran in. */
     data class Mesure(val reads: Int, val xruns: Int, val cpuMax: Float, val cpuMean: Float, val peakMax: Float, val loudSeconds: Int, val nonFinite: Boolean, val playing: Int = 0) {
         fun text() = "${reads / 4} s (en lecture ${playing / 4} s), $xruns décrochage(s), charge moyenne ${pct(cpuMean)} (pire ${pct(cpuMax)}), crête ${fmt(peakMax.toDouble())}"
+
+        /** Played through: at most one reading missed (audit E, no « half of it » threshold). */
+        val joueTout: Boolean get() = reads > 0 && reads - playing <= 1
     }
 
     /** [ms] of sound read 4 times a second, each read in the logbook. */

@@ -58,6 +58,12 @@ object Ecoute {
         val secondes: List<Seconde>,
         val alertes: List<Alerte>,
     ) {
+        /**
+         * The engine played through the whole listening: at most one reading missed (the first one may come before the
+         * transport says it plays). No « half of it » threshold (audit E): a song that stops halfway is red.
+         */
+        val joueTout: Boolean get() = reads > 0 && reads - playing <= 1
+
         /** The loudest short-term level heard (LUFS), null when the engine gave none. */
         fun lufsMax(): Float? = secondes.map { it.lufs }.filter { it.isFinite() }.maxOrNull()
 

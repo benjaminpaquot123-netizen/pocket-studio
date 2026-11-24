@@ -75,6 +75,9 @@ object Robot {
     /** « Scénarios »: a few minutes of real use by level, each with its oracle. */
     const val SCENARIOS = "scenarios"
 
+    /** « Tests guidés » (lot A2): an output changed, the battery saver; Benjamin does the gesture, never at night. */
+    const val GUIDES = "guides"
+
     private val _etat = MutableStateFlow(Etat())
     val etat: StateFlow<Etat> = _etat
     private val answers = LinkedBlockingQueue<Boolean>()
@@ -93,7 +96,7 @@ object Robot {
     private fun paquetFile(context: Context) = File(dir(context), "paquet.txt")
     fun paquet(context: Context): String = runCatching { paquetFile(context).readText().trim() }.getOrNull()?.takeIf { it in Scenarios.PAQUETS } ?: Scenarios.RAPIDE
 
-    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO || it == SCENARIOS } ?: ECLAIR
+    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO || it == SCENARIOS || it == GUIDES } ?: ECLAIR
 
     /** « Retester les corrections »: the ids chosen (the file exists only for such a run), and the last « Tout tester » kept (ids and lights). */
     private fun retestFile(context: Context) = File(dir(context), "retest.txt")
@@ -131,6 +134,7 @@ object Robot {
             OREILLE -> QuestionsOreille(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             MICRO -> EcouteMicro(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), MicroReel(context), HautParleurReel(context), carnet(context), sons(context)).etapes()
             SCENARIOS -> Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context), paquet = paquet(context)).etapes()
+            GUIDES -> Epreuves(j, NativeSonde, NoAppli, carnet(context), captures(context)).guides()
             else -> EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
         }
         return subset(all, passage, if (retest) retest(context) else null)
@@ -142,7 +146,7 @@ object Robot {
 
     private fun verdict(lines: List<Carnet.Ligne>, steps: List<Etape>, passage: String): String =
         when (passage) {
-            TOUT, MICRO -> Rapport.bilanFeux(lines, steps).verdict()
+            TOUT, MICRO, GUIDES -> Rapport.bilanFeux(lines, steps).verdict()
             OREILLE -> QuestionsOreille.verdict(lines)
             SCENARIOS -> Scenarios.verdict(lines)
             else -> Rapport.bilan(lines, steps).verdict()
@@ -203,6 +207,7 @@ object Robot {
                     EcouteMicro(Pose(essai, Journey(driver)), MicroReel(app), HautParleurReel(app), c, sons(app)).etapes()
                 }
                 SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), enHaut = driver::enHaut).etapes()
+                GUIDES -> Epreuves(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).guides()
                 else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
             }
             val steps = subset(all, which, retest(app))
@@ -318,7 +323,7 @@ object Robot {
         val texts = buildList {
             // Always sendable: a part that cannot be written says so, the others go.
             fun part(name: String, text: () -> String?) = runCatching(text).fold({ t -> t?.let { add(name to it) } }, { add(name to "illisible : $it") })
-            part("rapport.md") { Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO || passage == SCENARIOS, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE, micro = passage == MICRO) }
+            part("rapport.md") { Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO || passage == SCENARIOS || passage == GUIDES, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE, micro = passage == MICRO) }
             part("mesures.json") { Rapport.json(lines, about) }
             if (passage == SCENARIOS) {
                 part("scenarios.json") { Scenarios.json(lines, about) }

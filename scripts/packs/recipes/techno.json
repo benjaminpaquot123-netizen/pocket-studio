@@ -17,10 +17,7 @@
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "techno",
-    "tip_fr": "Le kick tape chaque temps sans jamais s'arrêter : c'est le moteur du morceau.",
-    "layers": [
-     "kit:kick2"
-    ]
+    "tip_fr": "Le kick tape chaque temps sans jamais s'arrêter : c'est le moteur du morceau."
    },
    {
     "role": "open_hat",
@@ -110,7 +107,7 @@
    "voicing": "seventh",
    "octave": 3,
    "sound": "Pluck",
-   "double": "octave"
+   "double": "top"
   },
   "bass": {
    "pattern": ".rR-.rRr.rR-.rRr.rR-.rRr.rR-.rR.",
@@ -198,7 +195,7 @@
     "delay": 0.2
    }
   ],
-  "notes": "Modern Berlin / peak-time techno (2018-2024: Charlotte de Witte, Amelie Lens, Enrico Sangiuliano). Kick, rumble and bass up front: the kick goes through the punch preset, the rumble (the kick replayed through the rumble preset) rolls under it, the bass is saturated a little and ducked by the kick (pump). No lead by default (Benjamin, 2026-11-24: the old filtered octave riff sounded like Oxygene): the optional lead is one dark metallic note in a 3-3-2 loop, octave 3, low-passed and cut under 200 Hz, never in the Break. Harmony almost static (phrygian i-bII at most). The chord is a short dub stab (minor 7th) through the dub echo preset, closed before the Drop and opening in it. Metallic closed hats (the industrial pack layered on the techno one), ride in the Drop. Drum bus glued in parallel with a little drive. Berghain 128-135 BPM, peak-time 130-138. Body (2026-11-24): the kick doubled by the kit's second kick, a texture held under the song, the chords doubled (octave).",
+  "notes": "Modern Berlin / peak-time techno (2018-2024: Charlotte de Witte, Amelie Lens, Enrico Sangiuliano). Kick, rumble and bass up front: the kick goes through the punch preset, the rumble (the kick replayed through the rumble preset) rolls under it, the bass is saturated a little and ducked by the kick (pump). No lead by default (Benjamin, 2026-11-24: the old filtered octave riff sounded like Oxygene): the optional lead is one dark metallic note in a 3-3-2 loop, octave 3, low-passed and cut under 200 Hz, never in the Break. Harmony almost static (phrygian i-bII at most). The chord is a short dub stab (minor 7th) through the dub echo preset, closed before the Drop and opening in it. Metallic closed hats (the industrial pack layered on the techno one), ride in the Drop. Drum bus glued in parallel with a little drive. Berghain 128-135 BPM, peak-time 130-138. Body (2026-11-24): a texture held under the song, the chords doubled (top).",
   "drop": [
    "open_hat",
    "ride",
@@ -265,10 +262,7 @@
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "tr909",
-    "tip_fr": "Le kick de la boîte à rythmes 909, sec et puissant, comme dans les raves de 1991.",
-    "layers": [
-     "kit:kick2"
-    ]
+    "tip_fr": "Le kick de la boîte à rythmes 909, sec et puissant, comme dans les raves de 1991."
    },
    {
     "role": "clap",
@@ -395,7 +389,7 @@
     "delay": 0.2
    }
   ],
-  "notes": "The hook is ONE riff (signature: it plays in every section), never pop chords: 1990-92 tracks used 2-3 elements around one motif. A stab was a one-shot chord sample (choir, orchestra hit) or a hoover played across the keys, so the chord moves in parallel: the lead riff uses the retro_techno stab one note per hit (falls back to the Hoover synth). Optional chords part (off): a Mentasm/Dominator hoover holding long notes, instead of the riff. Plain TR-909 drums, accelerating snare roll (x234) every 2 bars, a rave laser zap. Tempo 125-135 (Mentasm ~127, Anasthasia ~128). 2 Unlimited dropped (eurodance), replaced by L.A. Style (Dutch, 1991). Body (2026-11-24): the kick doubled by the kit's second kick, a texture held under the song.",
+  "notes": "The hook is ONE riff (signature: it plays in every section), never pop chords: 1990-92 tracks used 2-3 elements around one motif. A stab was a one-shot chord sample (choir, orchestra hit) or a hoover played across the keys, so the chord moves in parallel: the lead riff uses the retro_techno stab one note per hit (falls back to the Hoover synth). Optional chords part (off): a Mentasm/Dominator hoover holding long notes, instead of the riff. Plain TR-909 drums, accelerating snare roll (x234) every 2 bars, a rave laser zap. Tempo 125-135 (Mentasm ~127, Anasthasia ~128). 2 Unlimited dropped (eurodance), replaced by L.A. Style (Dutch, 1991). Body (2026-11-24): a texture held under the song.",
   "sweeps": [
    {
     "on": "lead",
@@ -435,10 +429,7 @@
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "acid_techno",
-    "tip_fr": "Un kick 909 un peu saturé sur chaque temps, qui cogne sans s'arrêter.",
-    "layers": [
-     "kit:kick2"
-    ]
+    "tip_fr": "Un kick 909 un peu saturé sur chaque temps, qui cogne sans s'arrêter."
    },
    {
     "role": "open_hat",
@@ -630,7 +621,7 @@
     "preset": "rumble"
    }
   ],
-  "notes": "Modern acid techno: the TB-303 line IS the track and the bass; nothing else is on by default (no bass, chords nor lead), so the 303 is alone between the kick hits; it carries the Break too. Modern means it squeals and evolves: the Squelchy 303 (high resonance) with some drive, a two-bar riff, and four knobs turned along the song (cutoff, resonance, env_mod, decay): closed and tight in the Groove, opening and squealing in each Drop, a long sweep up through the Break. A rumble (the kick replayed through the rumble preset) rolls under the kick, the kick keeps its crunch, no bus glue (it flattened the Break against the Drop: Drop - Break fell to +3.1 LU); the 303 shortens and closes in the Break so the Drop stays 4 LU above it. The acid track stays on the key's root, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III). 303: mostly roots, octave jumps, b3, 5 and b7, slides into the octave jumps, sparse accents; crunch preset + a little delay. Tempo: London acid techno 135-145. Optional lead: a second, higher 303-like riff. Body (2026-11-24): the kick doubled by the kit's second kick, a texture held under the song.",
+  "notes": "Modern acid techno: the TB-303 line IS the track and the bass; nothing else is on by default (no bass, chords nor lead), so the 303 is alone between the kick hits; it carries the Break too. Modern means it squeals and evolves: the Squelchy 303 (high resonance) with some drive, a two-bar riff, and four knobs turned along the song (cutoff, resonance, env_mod, decay): closed and tight in the Groove, opening and squealing in each Drop, a long sweep up through the Break. A rumble (the kick replayed through the rumble preset) rolls under the kick, the kick keeps its crunch, no bus glue (it flattened the Break against the Drop: Drop - Break fell to +3.1 LU); the 303 shortens and closes in the Break so the Drop stays 4 LU above it. The acid track stays on the key's root, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III). 303: mostly roots, octave jumps, b3, 5 and b7, slides into the octave jumps, sparse accents; crunch preset + a little delay. Tempo: London acid techno 135-145. Optional lead: a second, higher 303-like riff. Body (2026-11-24): a texture held under the song.",
   "riser": true,
   "drop": [
    "ride",
@@ -658,10 +649,7 @@
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "detroit",
-    "tip_fr": "Le kick sur chaque temps, régulier comme une chaîne d'usine de voitures (Detroit, c'est la ville des voitures).",
-    "layers": [
-     "kit:kick2"
-    ]
+    "tip_fr": "Le kick sur chaque temps, régulier comme une chaîne d'usine de voitures (Detroit, c'est la ville des voitures)."
    },
    {
     "role": "snare",
@@ -787,7 +775,7 @@
     "insert": "SATURATION"
    }
   ],
-  "notes": "Detroit harmony = minor 7th chords moved in parallel, string sounds; the dorian i7-IV7 vamp is the default mood (happy). The strings are the signature: they play in every section, from the intro (Strings of Life opens on them). Chords hit in a syncopated 3-3-4-3-3 pattern with short holds. Drums: 808/909, light MPC swing, rimshot never on the kick, rolling hats (no closed hat under the open one). Bass one octave down (A1 55 Hz to D3 147 Hz instead of up to D4 294 Hz), octave jumps kept. Jeff Mills variant: 135-140 BPM, one hypnotic bell loop (the optional arpeggio lead). Body (2026-11-24): the kick doubled by the kit's second kick, a texture held under the song, the chords doubled (octave).",
+  "notes": "Detroit harmony = minor 7th chords moved in parallel, string sounds; the dorian i7-IV7 vamp is the default mood (happy). The strings are the signature: they play in every section, from the intro (Strings of Life opens on them). Chords hit in a syncopated 3-3-4-3-3 pattern with short holds. Drums: 808/909, light MPC swing, rimshot never on the kick, rolling hats (no closed hat under the open one). Bass one octave down (A1 55 Hz to D3 147 Hz instead of up to D4 294 Hz), octave jumps kept. Jeff Mills variant: 135-140 BPM, one hypnotic bell loop (the optional arpeggio lead). Body (2026-11-24): a texture held under the song, the chords doubled (octave).",
   "drop": [
    "ride"
   ],

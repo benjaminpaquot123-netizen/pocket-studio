@@ -17,3 +17,5 @@ Mineurs :
 Complément (chef, 2026-11-24) : depuis dc87eaa3, seul le rapport de zone a été ajouté (doc, aucun code) ; relu, conforme.
 
 Verdict : 0 bloquant, 0 grave
+
+Renommage (chef, 2026-11-24) : lot republié en gr-banc2, mêmes arbres ; seuls deux sujets « rouge: » reformulés pour s'apparier à leur « vert: ». Rien à relire de plus.

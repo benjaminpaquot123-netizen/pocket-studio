@@ -82,6 +82,28 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
           automation curve: each section from its start value to its end value; the outro runs the intro backwards)}.
     knobs: cutoff, resonance, env_mod, decay, accent, tuning, waveform, drive, level (moves: not tuning, waveform, level).
   "references": every landmark track, the most recent / best known first (all are shown).
+
+Frozen format v2 (grand remplacement v2, lot L1; every field optional, a recipe without them makes the same style):
+  (a) drums[].source "lib:<pack>:<sound>": the line plays that very sound of the library (a file name of the
+      pack, letters, digits, '_', '-', '.'); the pack is the line's source as before (Style.kitSounds).
+  (b) drums[].layers: up to 3 more sounds played with the line, on free pads, each a pack id, "lib:<pack>:<sound>"
+      or "kit:<voice>" (VOICES); 4 layers at most in a style (Line.layers, StarterWizard.layerLanes).
+  (c) roles snap (lane 9), rim (lane 11), conga (lane 14), shaker (lane 15): their own lines, the kit voice of
+      their name when the recipe gives none (clap, rim, conga, shaker).
+  (d) chords.double: octave|top|both: in the Drop, the chords doubled an octave up, and/or their top note held
+      over the bar an octave up (Melody.chordDouble, the « Doublure » track).
+  (e) "texture": {"sound": <preset>}: a background track held from start to end on the key's root and fifth
+      (Melody.texture, the « Texture » track).
+  (f) "loop": {"sound": "<pack>:<sound>", "bars": 1|2|4|8}: a loop clip on an audio track, stretched to the
+      tempo, from the Groove to the end (Style.loop, AudioTracks).
+  (g) "vocal": {"type": answer|stab|shout|crush, "sample": "<pack>:<sound>"} (or the type alone as before): the
+      « Voix » track plays that chop instead of « Voix robot » (Style.vocalSample).
+  (h) "mix": {"pump": ["808", "chords"] (the 808 = the bass part and an 808 line), "glue_blend": 0..1, "bus_drive": 0..1}: those parts ducked by the kick,
+      the drum bus's compressor mixed in parallel at that blend (1 = all compressed), its saturation's drive.
+  "body": true: the full default body for the style (lot L1): a counter-melody (« Pluck » unless "counter"), a
+      shaker in sixteenths in the Drop when the style has none, the chords doubled (both), a texture
+      (« Souffle » unless "texture"), a pack transition in the Montée (fx), the drum bus in parallel (0.7).
+      The pump on the 808 of trap and drill and the lows in mono under 120 Hz are there already (StudioDrums, WideMix).
 """
 import json
 import os
@@ -137,7 +159,14 @@ NAMES = {
 ORDER = list(NAMES)
 
 ROLES = {"kick": "Kick", "snare": "Snare", "clap": "Clap", "hat": "Hat", "open_hat": "OpenHat", "perc": "Perc", "808": "Bass808",
-         "tom": "Tom", "ride": "Ride", "perc2": "Perc2", "rumble": "Rumble"}
+         "tom": "Tom", "ride": "Ride", "perc2": "Perc2", "rumble": "Rumble",
+         "snap": "Snap", "rim": "Rim", "conga": "Conga", "shaker": "Shaker"}
+# Format v2 roles: the kit voice they play when the recipe names none (their pad is not their voice).
+ROLE_VOICE = {"snap": "clap", "rim": "rim", "conga": "conga", "shaker": "shaker"}
+SOUND_NAME = re.compile(r"^[A-Za-z0-9_.\-]+$")
+CHORD_DOUBLES = {"octave": "Octave", "top": "Top", "both": "Both"}
+PUMPS = {"808", "chords"}
+MAX_LAYERS = 4
 SCALES = {
     "minor": "Minor", "major": "Major", "dorian": "Dorian", "phrygian": "Phrygian", "minor_pentatonic": "MinorPentatonic",
     "major_pentatonic": "MajorPentatonic", "blues": "Blues", "harmonic_minor": "HarmonicMinor",
@@ -235,6 +264,21 @@ def sound_of(gid, part, spec):
     return DEFAULT_PRESET[part], None
 
 
+def lib_sound(spec, gid, what, prefix):
+    """"<prefix><pack>:<sound>" checked, as (pack, sound)."""
+    check(isinstance(spec, str) and spec.startswith(prefix), f"{gid} {what}: \"{prefix}<pack>:<sound>\" expected, got {spec}")
+    pack, _, snd = spec[len(prefix):].partition(":")
+    check(pack in PACKS, f"{gid} {what}: unknown pack {pack}")
+    check(bool(SOUND_NAME.match(snd)), f"{gid} {what}: bad sound name {snd!r}")
+    return pack, snd
+
+
+def unit(v, gid, what):
+    x = num(v)
+    check(x is not None and 0 <= x <= 1, f"{gid} {what}: 0..1, got {v}")
+    return x
+
+
 def triplets(pattern, gid, what):
     # A triplet ('T', 't') covers its step and the next: that one is '.', inside the bar.
     for i, c in enumerate(pattern):
@@ -267,14 +311,14 @@ def style(r):
     gid = r["id"]
     check(gid in NAMES, f"unknown id {gid}")
     name, family = NAMES[gid]
-    lines, kit = [], {}
+    lines, kit, kit_sounds, n_layers = [], {}, {}, 0
     for d in r["drums"]:
         role = ROLES.get(d["role"])
         check(role is not None, f"{gid}: role {d['role']}")
         pat = line(d["pattern"], DRUM_CHARS, gid, d["role"], lengths=(16, 32))
         triplets(pat, gid, d["role"])
         check(any(c not in "." for c in pat), f"{gid} {d['role']}: no hit")
-        voice = d.get("voice")
+        voice = d.get("voice", ROLE_VOICE.get(d["role"]))
         check(voice is None or voice in VOICES, f"{gid} {d['role']}: unknown voice {voice} ({sorted(VOICES)})")
         extra = f", voice = {VOICES[voice]}" if voice is not None else ""
         if d.get("build"):
@@ -282,8 +326,25 @@ def style(r):
             extra += f", build = {kstr(d['build'])}"
         if d.get("off"):
             extra += ", off = true"
+        lay = d.get("layers")
+        if lay is not None:
+            check(isinstance(lay, list) and 1 <= len(lay) <= 3, f"{gid} {d['role']} layers: a list of 1 to 3 sounds")
+            for x in lay:
+                if isinstance(x, str) and x.startswith("kit:"):
+                    check(x[4:] in VOICES, f"{gid} {d['role']} layer: unknown kit voice {x[4:]}")
+                elif isinstance(x, str) and x.startswith("lib:"):
+                    lib_sound(x, gid, d["role"] + " layer", "lib:")
+                else:
+                    check(x in PACKS, f"{gid} {d['role']} layer: {x} is neither a pack, \"lib:<pack>:<sound>\" nor \"kit:<voice>\"")
+            check(len(set(lay)) == len(lay), f"{gid} {d['role']} layers: twice the same sound")
+            n_layers += len(lay)
+            check(n_layers <= MAX_LAYERS, f"{gid}: {MAX_LAYERS} layers at most in a style")
+            extra += f", layers = listOf({', '.join(kstr('kit:' + str(VOICES[x[4:]]) if x.startswith('kit:') else x) for x in lay)})"
         lines.append(f'                Line(Role.{role}, {kstr(pat)}, {kstr(d["tip_fr"])}{extra}),')
         src = d.get("source", gid)
+        if isinstance(src, str) and src.startswith("lib:"):
+            src, snd = lib_sound(src, gid, d["role"] + " source", "lib:")
+            kit_sounds[role] = f"{src}:{snd}"
         check(src in PACKS, f"{gid} {d['role']}: unknown source {src}")
         if src != gid:
             kit[role] = src
@@ -336,6 +397,35 @@ def style(r):
     counter = ctr.get("sound")
     check(counter is None or counter in PRESETS, f"{gid} counter: unknown sound {counter}")
     counter_rhythm = line(ctr["rhythm"], CHORD_CHARS, gid, "counter") if ctr.get("rhythm") else ""
+    double = c.get("double")
+    check(double is None or double in CHORD_DOUBLES, f"{gid} chords double: {double} ({sorted(CHORD_DOUBLES)})")
+    check(double is None or c.get("type") != "none", f"{gid} chords double: no chords to double")
+    tex = r.get("texture")
+    check(tex is None or isinstance(tex, dict) and tex.get("sound") in PRESETS, f"{gid} texture: {{\"sound\": <a sound of the library>}}, got {tex}")
+    texture = tex and tex["sound"]
+    lp = r.get("loop")
+    loop = None
+    if lp is not None:
+        check(isinstance(lp, dict), f"{gid} loop: {{\"sound\": \"<pack>:<sound>\", \"bars\": 1|2|4|8}}")
+        pack_, snd_ = lib_sound(lp.get("sound"), gid, "loop", "")
+        bars = lp.get("bars", 1)
+        check(bars in (1, 2, 4, 8) and not isinstance(bars, bool), f"{gid} loop: bars 1, 2, 4 or 8, got {bars}")
+        loop = f"StarterWizard.LoopSpec({kstr(pack_)}, {kstr(snd_)}, bars = {bars})"
+    mix = r.get("mix")
+    mix_args = []
+    if mix is not None:
+        check(isinstance(mix, dict) and mix and set(mix) <= {"pump", "glue_blend", "bus_drive"}, f"{gid} mix: pump, glue_blend, bus_drive")
+        pump = mix.get("pump", [])
+        check(isinstance(pump, list) and set(pump) <= PUMPS and len(set(pump)) == len(pump), f"{gid} mix pump: a list of {sorted(PUMPS)}")
+        check("chords" not in pump or c.get("type") != "none", f"{gid} mix pump: no chords")
+        if pump:
+            mix_args.append(f"pump = setOf({', '.join(kstr(x) for x in pump)})")
+        if "glue_blend" in mix:
+            mix_args.append(f"glueBlend = {unit(mix['glue_blend'], gid, 'mix glue_blend')}f")
+        if "bus_drive" in mix:
+            mix_args.append(f"busDrive = {unit(mix['bus_drive'], gid, 'mix bus_drive')}f")
+    body = r.get("body", False)
+    check(isinstance(body, bool), f"{gid} body: true or false")
     pad_layer = c.get("layer")
     check(pad_layer is None or pad_layer in PRESETS, f"{gid} chords layer: unknown sound {pad_layer}")
     check(not sub or "Sub pur" in PRESETS, f"{gid} bass: no « Sub pur » sound for the sub layer")
@@ -400,6 +490,12 @@ def style(r):
     check(not light or (club and form != "build" and not riser), f"{gid}: a light transition needs the club form without a riser")
     check(not (fake_drop or rewind) or club or form == "build", f"{gid}: a fake drop or a rewind needs the club form")
     vocal = r.get("vocal")
+    vocal_sample = None
+    if isinstance(vocal, dict):
+        check(set(vocal) <= {"type", "sample"} and "sample" in vocal, f"{gid} vocal: {{\"type\", \"sample\": \"<pack>:<sound>\"}}")
+        vp, vs = lib_sound(vocal["sample"], gid, "vocal sample", "")
+        vocal_sample = f"{vp}:{vs}"
+        vocal = vocal.get("type", "answer")
     check(vocal is None or vocal in VOCALS, f"{gid}: vocal {vocal} ({sorted(VOCALS)})")
     fxs = []
     for fx in r.get("fx", []):
@@ -497,11 +593,17 @@ def style(r):
         out.append(f"                chordArp = {chord_arp},")
     if c.get("voice_lead"):
         out.append("                chordVoiceLead = true,")
+    if double:
+        out.append(f"                chordDouble = StarterWizard.ChordDouble.{CHORD_DOUBLES[double]},")
+    if texture:
+        out.append(f"                texture = {kstr(texture)},")
     out += [
         "            ),",
         f"            references = listOf({', '.join(kstr(x) for x in r['references'])}),",
         f"            kit = mapOf({', '.join(f'Role.{k} to {kstr(v)}' for k, v in kit.items())}),",
     ]
+    if kit_sounds:
+        out.append(f"            kitSounds = mapOf({', '.join(f'Role.{k} to {kstr(v)}' for k, v in kit_sounds.items())}),")
     if form:
         out.append(f"            form = SongForm.{FORMS[form]},")
     if fxs:
@@ -522,6 +624,14 @@ def style(r):
         out.append("            lightBuild = true,")
     if vocal:
         out.append(f"            vocal = Vocal.{VOCALS[vocal]},")
+    if vocal_sample:
+        out.append(f"            vocalSample = {kstr(vocal_sample)},")
+    if loop:
+        out.append(f"            loop = {loop},")
+    if mix_args:
+        out.append(f"            mix = StarterWizard.StyleMix({', '.join(mix_args)}),")
+    if body:
+        out.append("            body = true,")
     out.append("        ),")
     return "\n".join(l[4:] if l.startswith("    ") else l for l in out)
 

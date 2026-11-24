@@ -99,7 +99,8 @@ class StarterWizardTest {
 
     @Test
     fun melodicPartsAreInTheKeyAndLocked() {
-        for (style in StarterWizard.STYLES) {
+        // On the styles without their format v2 body (its tracks: BodyHeardTest, StyleBodyTest).
+        for (style in StarterWizard.STYLES.map { PlainStyles.plain(it) }) {
             // The proposed sounds exist in the library, and the bass rhythm is a bar.
             StarterWizard.Part.entries.forEach { part ->
                 val first = StarterWizard.soundsFor(part, style).first()
@@ -342,7 +343,7 @@ class StarterWizardTest {
         val club = StarterWizard.scenePlan(setOf(R.Kick, R.Hat), setOf(P.Bass, P.Pad), acid = false, signature = P.Pad, form = StarterWizard.SongForm.Club)
         assertEquals(setOf(0, 1, 2, 3), club.parts[P.Pad])
         // Built: a style whose chords are its signature has them in every scene.
-        val boomBap = StarterWizard.style("boom_bap")!!.let { it.copy(melody = it.melody.copy(signature = P.Pad)) }
+        val boomBap = PlainStyles.plain("boom_bap").let { it.copy(melody = it.melody.copy(signature = P.Pad)) }
         val parts = listOf(P.Bass, P.Pad).associateWith { StarterWizard.soundsFor(it, boomBap).first() }
         val p = StarterWizard.build(boomBap, boomBap.lines.associate { it.role to null }, StarterWizard.Mood.Dark, parts)
         // Its Pont too (the chords without kick nor bass), and every variant of the song.
@@ -601,7 +602,8 @@ class StarterWizardTest {
 
     @Test
     fun theStylesEffectsGoOnWhatIsUsed() {
-        val base = StarterWizard.style("lofi")!!
+        // Without a counter-melody, a riser or a vocal: their tracks would take mixer channels of their own.
+        val base = PlainStyles.plain("lofi").let { it.copy(melody = it.melody.copy(counter = null), riser = false, vocal = null) }
         val style = base.copy(
             effects = listOf(
                 StarterWizard.StyleFx("pad", insert = "VINYL"),

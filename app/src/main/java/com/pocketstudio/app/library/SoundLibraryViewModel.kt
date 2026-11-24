@@ -214,11 +214,15 @@ private const val PACK_PREFIX = "pack:"
  * TR-909 for rave techno) when downloaded, then the style's own pack, then the built-in kit, then
  * the other packs that have that kind of sound.
  */
-fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>): List<SoundCategory> {
+fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>): List<SoundCategory> =
+    // Its body (lot gr-l1b): the shaker a style with [StarterWizard.Style.body] gets offers its kit voice too.
+    soundCategoriesOf(role, styleId?.let(StarterWizard::style)?.let(StarterWizard::withBody), installed)
+
+/** [soundCategories] for [style] as it plays (its body included). */
+internal fun soundCategoriesOf(role: Role, style: StarterWizard.Style?, installed: List<PackManifest>): List<SoundCategory> {
+    val styleId = style?.id
     val label = tr(SoundPacks.KIND_LABELS[role.packKind] ?: role.title)
     // The kit voice the style asks for this line (a shaker, a cowbell) is offered first.
-    // Its body (lot gr-l1b): the shaker a style with [StarterWizard.Style.body] gets offers its kit voice too.
-    val style = styleId?.let(StarterWizard::style)?.let(StarterWizard::withBody)
     val voice = style?.lines?.firstOrNull { it.role == role }?.voice
     val voices = (listOfNotNull(voice) + role.builtIn).distinct()
     val kit = SoundCategory(KIT_CATEGORY, tr("Sons intégrés"), voices.map { SoundOption(SoundRef.Kit(it), DrumKitInfo.names[it]) })
@@ -231,9 +235,10 @@ fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>)
     // Format v2 (a): the very file the style names for this line ("pack:sound"), first, when its pack is downloaded.
     val named = style?.kitSounds?.get(role)?.let { com.pocketstudio.model.PackRefs.resolve(it, installed) }
     if (named != null) {
-        val pack = packs.first { it.id == PACK_PREFIX + named.packId }
-        val chosen = pack.options.firstOrNull { (it.ref as SoundRef.Pack).sound == named.sound }
-        if (chosen != null) return listOf(pack.copy(options = listOf(chosen) + (pack.options - chosen))) + listOf(kit) + (packs - pack)
+        // A named file of another kind (a loop named for the hat): its pack offers nothing for this line, the usual order then.
+        val pack = packs.firstOrNull { it.id == PACK_PREFIX + named.packId }
+        val chosen = pack?.options?.firstOrNull { (it.ref as SoundRef.Pack).sound == named.sound }
+        if (pack != null && chosen != null) return listOf(pack.copy(options = listOf(chosen) + (pack.options - chosen))) + listOf(kit) + (packs - pack)
     }
     val first = packs.filter { it.id == PACK_PREFIX + machine }
     val own = packs.filter { it.id == PACK_PREFIX + styleId } - first.toSet()

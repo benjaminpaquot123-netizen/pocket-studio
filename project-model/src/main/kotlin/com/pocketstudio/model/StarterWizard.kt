@@ -1971,7 +1971,8 @@ object StarterWizard {
     fun planFor(style: Style, lines: Set<Role>, parts: Set<Part>, acid: Boolean): ScenePlan =
         scenePlan(lines, parts, acid, style.melody.signature, style.form, style.drop, style.breakWith, acidInBreak = acidBreaks(style), bridge = style.form.sung)
             .let { if (style.riser && (lines.isNotEmpty() || parts.isNotEmpty() || acid)) it.copy(riser = true) else it }
-            .let { if (style.melody.counter != null && parts.isNotEmpty()) it.copy(counter = true) else it }
+            // The counter answers the lead or the chords: with neither, it would make its own chord stabs, longer than the song's loop.
+            .let { if (style.melody.counter != null && (Part.Lead in parts || Part.Pad in parts)) it.copy(counter = true) else it }
             .let { plan -> plan.copy(variants = SongShape.shape(style, plan).scenes.drop(plan.count)) }
 
     /** [style]'s 303 turns its knobs in the Break (the acid house filter opening): it keeps playing there, chords or not. */
@@ -2519,7 +2520,8 @@ object StarterWizard {
             }
             tracks.riser?.let { id -> p = p.withTrack(p.track(id).copy(notes = riserNotes(spec, sceneSteps))) }
             tracks.double?.let { id -> if (spec.base != 2) p = p.withTrack(p.track(id).copy(notes = p.track(id).notes.copy(notes = emptyList()))) }
-            tracks.texture?.let { id -> p = p.withTrack(p.track(id).copy(notes = textureNotes(sceneSteps, full.harmony))) }
+            // Held under the whole song, but quiet on the beat of silence before a Drop.
+            tracks.texture?.let { id -> p = p.withTrack(p.track(id).copy(notes = textureNotes(sceneSteps, full.harmony).let { c -> if (spec.silence) windowed(c, spec.copy(half = -1), false, false) else c })) }
             tracks.subDrop?.let { id -> p = p.withTrack(p.track(id).copy(notes = subDropNotes(spec, sceneSteps, full.harmony))) }
             // A song's short Intro (4 bars when the song would run long) and the Montée (its 4-bar roll): their clips cut to them.
             val bars = if (spec.base == 0 && spec.half < 0) introBars else if (built != null) BUILD_STEPS / 16 else sceneSteps / 16

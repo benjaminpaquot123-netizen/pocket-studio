@@ -153,5 +153,29 @@ class TrapFlute(unittest.TestCase):
         self.assertTrue(flute.get('loop'), 'the held note keeps its vibrato')
 
 
+class TrapVoices(unittest.TestCase):
+    """Lot L7: real ad-lib voices (CC0 on Freesound, each page read), open to recipes."""
+
+    def setUp(self):
+        self.lib = json.loads((PACKS_DIR / 'libraries.json').read_text())
+        self.pack = next((p for p in self.lib['packs'] if p['id'] == 'voix_adlib'), None)
+
+    def test_adlib_pack_open_to_recipes(self):
+        self.assertIsNotNone(self.pack)
+        self.assertTrue(self.pack.get('recipes'))
+        slugs = {r['slug'] for r in self.pack['rules']}
+        self.assertTrue({'yeah', 'skrrt', 'brrr'} <= slugs, sorted(slugs))
+        self.assertTrue(all(r['kind'] == 'vocal' for r in self.pack['rules']))
+
+    def test_every_voice_is_a_cc0_freesound_preview(self):
+        sources = {s['id']: s for s in self.lib['sources']}
+        for sid in self.pack['sources']:
+            src = sources[sid]
+            self.assertEqual('CC0-1.0', src['licence'], sid)
+            self.assertTrue(src['page'].startswith('https://freesound.org/people/'), sid)
+            for url in src['urls']:
+                self.assertRegex(url, r'^https://cdn\.freesound\.org/previews/\d+/\d+_\d+-hq\.ogg$')
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -155,6 +155,19 @@ def main():
     code, err, md = run([measure("techno")], kick={"techno": [part("Breakdown", 0.1, 4.0, hits=5)]})
     check("fewer than 8 hits: left out", code == 0 and "pas de kick" in md)
 
+    # L4: the song's « body », listed (never blocking): 4 tracks together, a boom bap floor at -9.7,
+    # a Drop -> Intro a phone hears falling 9.1 dB; the transitions table lists every change.
+    tr = [{"from": "Drop", "to": "Intro", "at": 276.4, "jump_lu": -4.2, "phone_db": -9.1, "band": "mid", "band_db": -9.2, "brutal": True}]
+    code, err, md = run([measure("techno", drop_tracks=4, hf_occupancy=0.77, floor_between_hits=-4.4, transitions=tr, brutal_transitions=1),
+                         measure("boom_bap", main="Refrain", drop_tracks=5, hf_occupancy=0.39, floor_between_hits=-9.7, transitions=[], brutal_transitions=0)])
+    check("L4 listed, not blocking", code == 0)
+    check("4 tracks together fail the 5-track target", "| Au moins 5 pistes sonnent ensemble au Drop / Refrain | 1 sur 2 | techno (4) |" in md)
+    check("a song-style floor at -9.7 fails, a club one is not judged", "| boom_bap (−9,7) |" in md and "Fond entre deux coups ≥ −8,5 dB" in md)
+    check("a brutal Drop -> Intro is named with its phone fall", "techno (Drop → Intro −9,1 dB tél.)" in md)
+    check("the transitions table lists it", "## Changements de section (L4)" in md and "| techno | 276,4 | Drop → Intro | −4,2 | −9,1 | mid (−9,2) | oui |" in md)
+    code, err, md = run([measure("acidcore")])
+    check("a style the bench did not measure for L4: no L4 criteria", code == 0 and "pistes sonnent" not in md and "Changements de section" not in md)
+
     print("ALL PASSED" if not failures else f"{failures} FAILURE(S)")
     sys.exit(1 if failures else 0)
 

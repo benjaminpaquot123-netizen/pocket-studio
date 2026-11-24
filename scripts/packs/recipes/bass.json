@@ -3,7 +3,9 @@
   "id": "dnb",
   "vocal": "shout",
   "references": [
+   "Sub Focus & Dimension – Desire (2019)",
    "Chase & Status x Bou – Baddadan (2023)",
+   "Dimension – Offender (2020)",
    "Sub Focus – Rock It (2009)",
    "Pendulum – Tarantula (2005)",
    "Shimon & Andy C – Body Rock (2001)",
@@ -20,13 +22,19 @@
     "role": "kick",
     "pattern": "X.........X.....X.........X.....",
     "source": "dnb",
-    "tip_fr": "Le « two-step » : un coup sur le 1, le second juste après le 3. Seulement deux coups par mesure : c'est ce qui fait rouler le rythme."
+    "tip_fr": "Le « two-step » : un coup sur le 1, le second juste après le 3. Seulement deux coups par mesure : c'est ce qui fait rouler le rythme.",
+    "layers": [
+     "kit:kick2"
+    ]
    },
    {
     "role": "snare",
     "pattern": "....X..o.o..X.....o.X..o....X.2.",
     "source": "dnb",
-    "tip_fr": "Caisse claire sèche sur les temps 2 et 4. Autour, de petits coups très doux (des « notes fantômes ») font rouler le rythme, et un double coup à la fin relance la boucle."
+    "tip_fr": "Caisse claire sèche sur les temps 2 et 4. Autour, de petits coups très doux (des « notes fantômes ») font rouler le rythme, et un double coup à la fin relance la boucle.",
+    "layers": [
+     "kit:clap"
+    ]
    },
    {
     "role": "hat",
@@ -95,12 +103,14 @@
    "rhythm": "X---------------",
    "voicing": "seventh",
    "octave": 4,
-   "sound": "Nappe"
+   "sound": "Nappe",
+   "layer": "Machine à cordes",
+   "double": "both"
   },
   "bass": {
    "pattern": "R-------..R-----R-------..R--/O-R-------..R-----R---5---..R-3-..",
    "octave": 2,
-   "sound": "Basse reese",
+   "sound": "Reese moderne",
    "glide": true,
    "sub": true,
    "variation": "R-------..R-----R-------..R--/O-R---R---..R-----O-------..5-R-.."
@@ -124,21 +134,18 @@
    "lead": true
   },
   "notes": "Classic 174 BPM two-step: kick on step 1 and step 11 (the 'and' of beat 3), snares on beats 2 and 4, ghost snares only in bar 2. The reese bass (two detuned saws, from Kevin Saunderson's 'Reese', popularised in DnB by Renegade 'Terrorist' 1994) is held long and follows the kick; play it in F2 so that its sub oscillator sits in F1 (~44 Hz) and duck it under kick and snare. The pad lives in intro/breakdown; the drop is drums + reese only, so a beginner can mute chords there.",
-  "bass_tip": "Une basse « reese » : deux synthés un peu désaccordés qui grondent ensemble. Elle tient sur la grosse caisse, et à la fin de la 2e mesure elle glisse vers l'aigu, comme un coup de manette.",
+  "bass_tip": "Une basse « reese » d'aujourd'hui : deux synthés désaccordés qui grondent et respirent ensemble. Elle tient sur la grosse caisse, et à la fin de la 2e mesure elle glisse vers l'aigu, comme un coup de manette.",
   "pad_tip": "Une nappe tenue qui pose l'ambiance dès l'intro, comme dans les vrais morceaux ; seule dans la pause, elle laisse respirer avant le retour de la batterie.",
   "lead_tip": "Un riff de synthé large et brillant, façon Pendulum : à allumer pour un drop qui explose.",
   "fx": [
    {
     "on": "bass",
+    "preset": "reese_dnb",
     "insert": "PUMP"
    },
    {
     "on": "chords",
     "reverb": 0.3
-   },
-   {
-    "on": "snare",
-    "reverb": 0.15
    },
    {
     "on": "chords",
@@ -148,6 +155,35 @@
      0.4,
      0
     ]
+   },
+   {
+    "on": "bass",
+    "insert": "OTT",
+    "params": [
+     0.45,
+     0.5,
+     0.6,
+     0.6
+    ]
+   },
+   {
+    "on": "lead",
+    "insert": "OTT",
+    "params": [
+     0.4,
+     0.5,
+     0.6,
+     0.6
+    ]
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
+   },
+   {
+    "on": "snare",
+    "preset": "punch",
+    "reverb": 0.15
    }
   ],
   "signature": "chords",
@@ -167,11 +203,22 @@
    "lead",
    "hat",
    "perc"
-  ]
+  ],
+  "body": true,
+  "mix": {
+   "pump": [
+    "808",
+    "chords"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.35
+  }
  },
  {
   "id": "liquid_dnb",
   "references": [
+   "Netsky – Rio (2015)",
+   "Sub Focus & Wilkinson – Air I Breathe (2020)",
    "Netsky – Memory Lane (2010)",
    "High Contrast – If We Ever (2007)",
    "London Elektricity – Just One Second (2008)",
@@ -186,7 +233,10 @@
     "role": "kick",
     "pattern": "X.........X.....X.x.......X.....",
     "source": "liquid_dnb",
-    "tip_fr": "Le « two-step » (un coup sur le 1, un autre juste après le 3), avec un petit coup en plus au début de la deuxième mesure pour faire rouler."
+    "tip_fr": "Le « two-step » (un coup sur le 1, un autre juste après le 3), avec un petit coup en plus au début de la deuxième mesure pour faire rouler.",
+    "layers": [
+     "kit:kick2"
+    ]
    },
    {
     "role": "snare",
@@ -263,12 +313,13 @@
    "octave": 3,
    "sound": "Rhodes FM",
    "voice_lead": true,
-   "layer": "Nappe"
+   "layer": "Nappe",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-------..R---5-R-------.5..R-3-",
    "octave": 2,
-   "sound": "Basse ronde",
+   "sound": "Sub chaud",
    "glide": false,
    "sub": true,
    "variation": "R-------..R---5-R-------.5..R-3-R-------..R---5-O-----7-..5-3-.."
@@ -299,12 +350,12 @@
   "lead_tip": "Des petites notes de pluck qui égrènent les accords : elles arrivent au drop, comme des gouttes de lumière.",
   "fx": [
    {
-    "on": "lead",
-    "delay": 0.3
-   },
-   {
     "on": "bass",
     "insert": "PUMP"
+   },
+   {
+    "on": "lead",
+    "delay": 0.3
    },
    {
     "on": "chords",
@@ -334,6 +385,24 @@
      0.4,
      0.35
     ]
+   },
+   {
+    "on": "lead",
+    "insert": "OTT",
+    "params": [
+     0.3,
+     0.5,
+     0.6,
+     0.6
+    ]
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
+   },
+   {
+    "on": "snare",
+    "preset": "punch"
    }
   ],
   "build": true,
@@ -350,11 +419,21 @@
   "counter": {
    "sound": "Cloche FM",
    "rhythm": "..X.....X...X..."
+  },
+  "body": true,
+  "mix": {
+   "pump": [
+    "808",
+    "chords"
+   ],
+   "glue_blend": 0.5,
+   "bus_drive": 0.2
   }
  },
  {
   "id": "neurofunk",
   "references": [
+   "Noisia & The Upbeats – Dead Limit (2016)",
    "Noisia – Stigma (2010)",
    "Noisia – Diplodocus (2012)",
    "Mefjus – Emulation (2014)",
@@ -369,13 +448,19 @@
     "role": "kick",
     "pattern": "X.........X.....X......X..x.....",
     "source": "neurofunk",
-    "tip_fr": "« Two-step » serré (un coup sur le 1, un juste après le 3) ; dans la deuxième mesure, un coup arrive plus tôt, juste avant le 3, pour surprendre."
+    "tip_fr": "« Two-step » serré (un coup sur le 1, un juste après le 3) ; dans la deuxième mesure, un coup arrive plus tôt, juste avant le 3, pour surprendre.",
+    "layers": [
+     "kit:kick2"
+    ]
    },
    {
     "role": "snare",
     "pattern": "....X.......X.......X.......X..o",
     "source": "neurofunk",
-    "tip_fr": "Une caisse claire tranchante sur 2 et 4, sans fioritures : c'est elle qui tient tout le morceau."
+    "tip_fr": "Une caisse claire tranchante sur 2 et 4, sans fioritures : c'est elle qui tient tout le morceau.",
+    "layers": [
+     "kit:snare2"
+    ]
    },
    {
     "role": "hat",
@@ -433,12 +518,13 @@
    "rhythm": "X---------------",
    "voicing": "sus2",
    "octave": 4,
-   "sound": "Essaim"
+   "sound": "Essaim",
+   "double": "both"
   },
   "bass": {
    "pattern": "R-.R--.R-.......R-.R--.R-...R-O-",
    "octave": 2,
-   "sound": "pack:neurofunk:bass|Basse qui parle",
+   "sound": "pack:neurofunk:bass|Basse neuro",
    "glide": false,
    "sub": true,
    "variation": "R-.R--.R-.......R-.R--.R-...R-O-R-.R--.R-.......R-.R--.R-.5.R-..",
@@ -469,12 +555,20 @@
   "fx": [
    {
     "on": "bass",
-    "preset": "fat_bass",
+    "preset": "growl",
     "insert": "PUMP"
    },
    {
     "on": "lead",
     "insert": "FLANGER"
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
+   },
+   {
+    "on": "snare",
+    "preset": "punch"
    }
   ],
   "build": true,
@@ -493,15 +587,23 @@
    "lead",
    "hat",
    "perc"
-  ]
+  ],
+  "body": true,
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.4
+  }
  },
  {
   "id": "jungle",
   "rewind": true,
   "references": [
+   "Nia Archives – Baianá (2022)",
    "M-Beat feat. General Levy – Incredible (1994)",
    "Shy FX & UK Apachi – Original Nuttah (1994)",
-   "Nia Archives – Baianá (2022)",
    "Renegade – Terrorist (1994)",
    "Origin Unknown – Valley of the Shadows (1993)"
   ],
@@ -514,13 +616,19 @@
     "role": "kick",
     "pattern": "X.X.......Xx....X.X.......X.....",
     "source": "jungle",
-    "tip_fr": "Les grosses caisses de l'« Amen » : un solo de batterie de quelques secondes sur un disque de 1969, découpé et accéléré dans des milliers de morceaux. Deux coups rapprochés au début, deux autres après le 3."
+    "tip_fr": "Les grosses caisses de l'« Amen » : un solo de batterie de quelques secondes sur un disque de 1969, découpé et accéléré dans des milliers de morceaux. Deux coups rapprochés au début, deux autres après le 3.",
+    "layers": [
+     "kit:kick2"
+    ]
    },
    {
     "role": "snare",
     "pattern": "....X..o.x..X..o....X..o.3....X.",
     "source": "jungle",
-    "tip_fr": "La caisse claire de l'Amen avec ses petits coups en cascade et un roulement ; dans la 2e mesure, le dernier coup arrive en retard : c'est la signature."
+    "tip_fr": "La caisse claire de l'Amen avec ses petits coups en cascade et un roulement ; dans la 2e mesure, le dernier coup arrive en retard : c'est la signature.",
+    "layers": [
+     "kit:snare2"
+    ]
    },
    {
     "role": "hat",
@@ -583,12 +691,13 @@
    "rhythm": "X---------------",
    "voicing": "seventh",
    "octave": 4,
-   "sound": "Nappe chaude"
+   "sound": "Nappe chaude",
+   "double": "both"
   },
   "bass": {
    "pattern": "R-------..R---5-R-----3-..5---7-",
    "octave": 2,
-   "sound": "Basse ronde",
+   "sound": "Sub chaud",
    "glide": false,
    "sub": true
   },
@@ -624,26 +733,21 @@
     "reverb": 0.3
    },
    {
-    "on": "drums",
-    "preset": "punch"
-   },
-   {
-    "on": "drums",
-    "insert": "SATURATION",
-    "params": [
-     0.3,
-     0.75,
-     1.0,
-     0.7
-    ]
-   },
-   {
     "on": "bass",
     "insert": "PUMP"
    },
    {
+    "on": "kick",
+    "preset": "punch"
+   },
+   {
     "on": "snare",
+    "preset": "punch",
     "reverb": 0.15
+   },
+   {
+    "on": "drums",
+    "insert": "SATURATION"
    }
   ],
   "drop": [
@@ -654,7 +758,16 @@
    "chords",
    "lead",
    "hat"
-  ]
+  ],
+  "body": true,
+  "mix": {
+   "pump": [
+    "808",
+    "chords"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.35
+  }
  },
  {
   "id": "jump_up",
@@ -677,7 +790,10 @@
     "role": "kick",
     "pattern": "X.........X.....",
     "source": "dnb",
-    "tip_fr": "Le « two-step » de la drum & bass : un coup sur le 1, un juste après le 3. Un kick court qui claque : la basse prend toute la place autour."
+    "tip_fr": "Le « two-step » de la drum & bass : un coup sur le 1, un juste après le 3. Un kick court qui claque : la basse prend toute la place autour.",
+    "layers": [
+     "kit:kick2"
+    ]
    },
    {
     "role": "snare",
@@ -688,7 +804,10 @@
    {
     "role": "clap",
     "pattern": "....X.......X...",
-    "tip_fr": "Un clap pile sur la caisse claire : les deux ensemble font un « clac » plus épais et plus large."
+    "tip_fr": "Un clap pile sur la caisse claire : les deux ensemble font un « clac » plus épais et plus large.",
+    "layers": [
+     "kit:snare"
+    ]
    },
    {
     "role": "hat",
@@ -746,7 +865,8 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 4,
-   "sound": "Nappe"
+   "sound": "Nappe",
+   "double": "both"
   },
   "bass": {
    "pattern": "R-.R..R-..R-....R-.R..R-..R--/O-R-.R..5-..3-....R-..............",
@@ -790,15 +910,6 @@
     "reverb": 0.35
    },
    {
-    "on": "kick",
-    "preset": "punch"
-   },
-   {
-    "on": "snare",
-    "preset": "punch",
-    "reverb": 0.15
-   },
-   {
     "on": "master",
     "insert": "OTT",
     "params": [
@@ -811,6 +922,25 @@
    {
     "on": "lead",
     "insert": "PUMP"
+   },
+   {
+    "on": "lead",
+    "insert": "OTT",
+    "params": [
+     0.35,
+     0.5,
+     0.6,
+     0.6
+    ]
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
+   },
+   {
+    "on": "snare",
+    "preset": "punch",
+    "reverb": 0.15
    }
   ],
   "build": true,
@@ -827,18 +957,27 @@
      1.0
     ]
    }
-  ]
+  ],
+  "body": true,
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.4
+  }
  },
  {
   "id": "dubstep",
   "references": [
+   "Skrillex, Flowdan & Fred again.. – Rumble (2022)",
    "Skrillex – Scary Monsters and Nice Sprites (2010)",
    "Rusko – Cockney Thug (2007)",
    "Benga & Coki – Night (2007)",
    "Skream – Midnight Request Line (2005)",
    "Digital Mystikz – Anti War Dub (2006)"
   ],
-  "description_fr": "Une basse qui fait « wob wob » sur un rythme lourd qui semble joué au ralenti : le dubstep d'origine, né à Londres vers 2005, plus sombre et plus lent que celui de Skrillex.",
+  "description_fr": "Une basse qui fait « wob wob » et qui gronde, sur un rythme lourd qui semble joué au ralenti : le dubstep, né à Londres vers 2005, avec le gros son d'aujourd'hui.",
   "bpm": 140,
   "swing": 0.15,
   "root": "E",
@@ -847,7 +986,10 @@
     "role": "kick",
     "pattern": "X.........x.....X.....x...x.....",
     "source": "dubstep",
-    "tip_fr": "Une grosse caisse sur le 1, un rappel après la caisse claire ; dans la 2e mesure, un coup en plus qui bouscule. Peu de coups, chacun pèse lourd."
+    "tip_fr": "Une grosse caisse sur le 1, un rappel après la caisse claire ; dans la 2e mesure, un coup en plus qui bouscule. Peu de coups, chacun pèse lourd.",
+    "layers": [
+     "kit:kick2"
+    ]
    },
    {
     "role": "snare",
@@ -858,7 +1000,10 @@
    {
     "role": "clap",
     "pattern": "........X.......",
-    "tip_fr": "Un clap pile sur la caisse claire : les deux ensemble font un « clac » plus épais et plus large."
+    "tip_fr": "Un clap pile sur la caisse claire : les deux ensemble font un « clac » plus épais et plus large.",
+    "layers": [
+     "kit:snare2"
+    ]
    },
    {
     "role": "hat",
@@ -916,14 +1061,16 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 4,
-   "sound": "Nappe"
+   "sound": "Nappe",
+   "double": "both"
   },
   "bass": {
    "pattern": "R-------..R---O-R-----------2-..R---R---..R-5---R-------....3-O-",
    "octave": 2,
    "sound": "Basse wobble",
    "glide": false,
-   "sub": true
+   "sub": true,
+   "switch": "Basse riddim"
   },
   "lead": {
    "type": "riff",
@@ -944,13 +1091,13 @@
    "lead": true
   },
   "notes": "UK dubstep (Croydon/Brixton, FWD>> and DMZ nights): ~140 BPM felt half-time, kick on 1 and snare/clap on beat 3, hats and percussion in normal time with moderate shuffle; a kick triplet between beats 1 and 3 is a common variation. Minor or phrygian keys, very sparse arrangement, lots of space. The bass is the point: a clean sine sub below ~100 Hz plus a mid 'wobble' made by an LFO on the filter cutoff synced at 1/4, 1/8 or 1/16. The bass pattern retriggers in a 3-3-2 grouping to fake the wob; if the synth can sync a filter LFO, hold one long note per chord instead. Stay in E1-F1 for the sub. Dub delay on the snare and pad is idiomatic. Phase 24: 'Basse wobble' = filter LFO synced at 1/8 and restarted on each note, so the bass holds long notes following the kick; played in E2 so its sub oscillator gives E1.",
-  "bass_tip": "La « wobble » : un filtre s'ouvre et se ferme en rythme sur chaque note tenue, ça fait « wob wob ». À la fin, elle monte d'une note, juste assez pour faire frissonner.",
+  "bass_tip": "La « wobble » d'aujourd'hui : un filtre s'ouvre et se ferme en rythme sur chaque note tenue, saturée jusqu'à gronder. Au second Drop, elle change de voix pour une basse riddim encore plus méchante.",
   "pad_tip": "Une nappe sombre avec de l'écho, dès l'intro et seule dans la pause : elle pose le décor avant que la basse n'arrive.",
   "fx": [
    {
-    "on": "snare",
-    "reverb": 0.2,
-    "delay": 0.3
+    "on": "bass",
+    "preset": "growl",
+    "insert": "PUMP"
    },
    {
     "on": "clap",
@@ -966,10 +1113,6 @@
     "preset": "dub_echo"
    },
    {
-    "on": "bass",
-    "preset": "fat_bass"
-   },
-   {
     "on": "chords",
     "insert": "PUMP",
     "params": [
@@ -977,6 +1120,26 @@
      0.45,
      0
     ]
+   },
+   {
+    "on": "master",
+    "insert": "OTT",
+    "params": [
+     0.3,
+     0.5,
+     0.5,
+     0.5
+    ]
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
+   },
+   {
+    "on": "snare",
+    "preset": "punch",
+    "reverb": 0.2,
+    "delay": 0.3
    }
   ],
   "lead_tip": "Quelques notes de cloche, rares et inquiétantes, avec beaucoup d'écho : à allumer pour l'ambiance.",
@@ -997,7 +1160,16 @@
    "lead",
    "hat",
    "perc"
-  ]
+  ],
+  "body": true,
+  "mix": {
+   "pump": [
+    "808",
+    "chords"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.4
+  }
  },
  {
   "id": "riddim",
@@ -1018,7 +1190,10 @@
     "role": "kick",
     "pattern": "X.......o.......",
     "source": "riddim",
-    "tip_fr": "Grosse caisse sur le 1, et une plus douce cachée sous la caisse claire pour qu'elle frappe plus fort."
+    "tip_fr": "Grosse caisse sur le 1, et une plus douce cachée sous la caisse claire pour qu'elle frappe plus fort.",
+    "layers": [
+     "kit:kick2"
+    ]
    },
    {
     "role": "snare",
@@ -1029,7 +1204,10 @@
    {
     "role": "clap",
     "pattern": "........X.......",
-    "tip_fr": "Un clap posé pile sur la caisse claire : les deux ensemble font le gros « clac » du riddim."
+    "tip_fr": "Un clap posé pile sur la caisse claire : les deux ensemble font le gros « clac » du riddim.",
+    "layers": [
+     "kit:snare2"
+    ]
    },
    {
     "role": "hat",
@@ -1087,7 +1265,8 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 4,
-   "sound": "Nappe"
+   "sound": "Nappe",
+   "double": "both"
   },
   "bass": {
    "pattern": "R--.R--.....O-..R--.R--...3-O-..",
@@ -1120,7 +1299,7 @@
   "fx": [
    {
     "on": "bass",
-    "preset": "fat_bass",
+    "preset": "growl",
     "insert": "FLANGER"
    },
    {
@@ -1136,6 +1315,14 @@
      0.5,
      0.5
     ]
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
+   },
+   {
+    "on": "snare",
+    "preset": "punch"
    }
   ],
   "build": true,
@@ -1160,12 +1347,21 @@
    "bass",
    "hat",
    "perc"
-  ]
+  ],
+  "body": true,
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.45
+  }
  },
  {
   "id": "synthwave",
   "references": [
    "The Weeknd – Blinding Lights (2019)",
+   "The Midnight – Days of Thunder (2014)",
    "Kavinsky – Nightcall (2010)",
    "Kyle Dixon & Michael Stein – Stranger Things (générique) (2016)",
    "The Midnight – Shadows (2017)",
@@ -1181,13 +1377,19 @@
     "role": "kick",
     "pattern": "X...X...X...X...",
     "source": "synthwave",
-    "tip_fr": "Grosse caisse sur chaque temps, comme une boîte à rythmes des années 80 qui avance tout droit."
+    "tip_fr": "Grosse caisse sur chaque temps, comme une boîte à rythmes des années 80 qui avance tout droit.",
+    "layers": [
+     "kit:kick2"
+    ]
    },
    {
     "role": "snare",
     "pattern": "....X.......X...",
     "source": "linndrum",
-    "tip_fr": "Une caisse claire énorme sur 2 et 4, noyée dans la réverbération : le son des années 80 (celui de la boîte à rythmes LinnDrum)."
+    "tip_fr": "Une caisse claire énorme sur 2 et 4, noyée dans la réverbération : le son des années 80 (celui de la boîte à rythmes LinnDrum).",
+    "layers": [
+     "kit:clap"
+    ]
    },
    {
     "role": "clap",
@@ -1271,7 +1473,9 @@
     "gate": 0.6,
     "accent": 4,
     "rate": 24
-   }
+   },
+   "layer": "Machine à cordes",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-R.R-R.R-R.R-R.R-R.R-R.R-R.R.O.",
@@ -1309,10 +1513,6 @@
     "preset": "wide_alive"
    },
    {
-    "on": "snare",
-    "reverb": 0.5
-   },
-   {
     "on": "bass",
     "insert": "PUMP"
    },
@@ -1324,6 +1524,25 @@
    {
     "on": "lead",
     "delay": 0.25
+   },
+   {
+    "on": "bass",
+    "insert": "OTT",
+    "params": [
+     0.3,
+     0.5,
+     0.6,
+     0.6
+    ]
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
+   },
+   {
+    "on": "snare",
+    "preset": "punch",
+    "reverb": 0.5
    }
   ],
   "riser": true,
@@ -1343,7 +1562,19 @@
      1.0
     ]
    }
-  ]
+  ],
+  "texture": {
+   "sound": "Nappe chaude"
+  },
+  "body": true,
+  "mix": {
+   "pump": [
+    "808",
+    "chords"
+   ],
+   "glue_blend": 0.5,
+   "bus_drive": 0.25
+  }
  },
  {
   "id": "pop",
@@ -1365,7 +1596,10 @@
     "pattern": "X...X...X...X...",
     "source": "pop",
     "tip_fr": "Grosse caisse sur chaque temps au refrain, comme la pop disco ; au couplet, seulement sur le 1 et le 3, avec un petit coup juste avant le 3 pour faire rebondir.",
-    "build": "X.....x.X......."
+    "build": "X.....x.X.......",
+    "layers": [
+     "kit:kick2"
+    ]
    },
    {
     "role": "snare",
@@ -1377,7 +1611,10 @@
     "role": "clap",
     "pattern": "....X.......X...",
     "source": "pop",
-    "tip_fr": "Le clap sur 2 et 4 : c'est là qu'on tape dans les mains."
+    "tip_fr": "Le clap sur 2 et 4 : c'est là qu'on tape dans les mains.",
+    "layers": [
+     "kit:snare"
+    ]
    },
    {
     "role": "hat",
@@ -1449,7 +1686,8 @@
    "voicing": "seventh",
    "octave": 3,
    "sound": "gm:Acoustic Grand Piano",
-   "voice_lead": true
+   "voice_lead": true,
+   "double": "octave"
   },
   "bass": {
    "pattern": "R---r-O-R---r-5-",
@@ -1491,14 +1729,47 @@
     "reverb": 0.25
    },
    {
-    "on": "snare",
-    "reverb": 0.2
+    "on": "lead",
+    "delay": 0.2
+   },
+   {
+    "on": "bass",
+    "insert": "OTT",
+    "params": [
+     0.3,
+     0.5,
+     0.6,
+     0.6
+    ]
    },
    {
     "on": "lead",
-    "delay": 0.2
+    "insert": "OTT",
+    "params": [
+     0.3,
+     0.5,
+     0.6,
+     0.6
+    ]
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
+   },
+   {
+    "on": "snare",
+    "preset": "punch",
+    "reverb": 0.2
    }
   ],
-  "riser": true
+  "riser": true,
+  "body": true,
+  "mix": {
+   "pump": [
+    "chords"
+   ],
+   "glue_blend": 0.5,
+   "bus_drive": 0.25
+  }
  }
 ]

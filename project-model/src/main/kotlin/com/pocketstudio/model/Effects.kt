@@ -369,6 +369,41 @@ enum class EffectType(val label: String, val params: List<Param>, val defaults: 
         "Fait entendre la basse sur un téléphone ou une petite enceinte : ajoute ses harmoniques, que l'oreille transforme en grave. Presque rien de plus sur une grosse sono.",
         EffectGroup.COLOUR,
     ),
+    // L12: attack and weight (engine TransientShaper, DrumBus, MidSideEq in ExtraEffects.cpp).
+    TRANSIENT(
+        "Attaque",
+        listOf(
+            Param("Attaque", ::signedPercent),
+            Param("Maintien", ::signedPercent),
+            Param("Mix", ::percentOf),
+            Param("Sortie", ::sixDb),
+        ),
+        listOf(0.65f, 0.5f, 1f, 0.5f),
+        "Rend chaque coup plus franc (ou plus doux) et allonge ou raccourcit sa queue, sans toucher au volume moyen.",
+        EffectGroup.DYNAMICS,
+    ),
+    DRUM_BUS(
+        "Bus batterie",
+        listOf(
+            Param("Chaleur") { v -> val db = 18f * v - 6f; (if (db >= 0.05f) "+" else "") + num("%.1f dB", db) },
+            Param("Mix", ::percentOf),
+            Param("Sortie", ::sixDb),
+        ),
+        listOf(0.5f, 0.6f, 0.5f, 0f),
+        "Une saturation douce pour toute la batterie : plus de corps et de densité, le pic du kick ne bouge pas.",
+        EffectGroup.COLOUR,
+    ),
+    MID_SIDE_EQ(
+        "Graves mono",
+        listOf(
+            Param("Mono sous") { if (it <= 0f) tr("Coupé") else hz(expMap(it, 40f, 300f)) },
+            Param("Graves du centre", ::sixDb),
+            Param("Aigus des côtés", ::sixDb),
+        ),
+        listOf(0.5f, 0.5f, 0.5f, 0f),
+        "Met les graves au centre (plus solides sur une sono ou un téléphone) et peut ouvrir les aigus sur les côtés.",
+        EffectGroup.SPACE,
+    ),
     ;
 
     /** Seconds of memory: the engine holds only a few of these (see [LONG_LIMITS]). */
@@ -524,6 +559,14 @@ private fun eqDb(v: Float): String {
     return (if (db >= 0.05f) "+" else "") + num("%.1f dB", db)
 }
 private fun percentOf(v: Float) = percent((v * 100).roundToInt())
+private fun signedPercent(v: Float): String {
+    val p = ((2f * v - 1f) * 100).roundToInt()
+    return (if (p > 0) "+" else "") + percent(p)
+}
+private fun sixDb(v: Float): String {
+    val db = 12f * v - 6f
+    return (if (db >= 0.05f) "+" else "") + num("%.1f dB", db)
+}
 private fun shiftHz(v: Float) = EffectType.shiftHz(v)
 /** The wobble's speeds (the engine's Wobble::stepsOf, slowest first). */
 private fun wobbleRate(v: Float) = listOf("1/1", "1/2", "1/4", tr("1/4 triolet"), "1/8", tr("1/8 triolet"), "1/16", tr("1/16 triolet"), "1/32")[(v * 9).toInt().coerceIn(0, 8)]

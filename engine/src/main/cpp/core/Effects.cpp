@@ -1183,6 +1183,9 @@ void InsertSlot::prepare(float rate) {
     wobble_.prepare(rate);
     clipper_.prepare(rate);
     exciter_.prepare(rate);
+    transient_.prepare(rate);
+    drumBus_.prepare(rate);
+    midSide_.prepare(rate);
 }
 
 namespace {
@@ -1270,6 +1273,9 @@ void InsertSlot::resetState() {
         case WobbleFx: wobble_.reset(); break;
         case ClipperFx: clipper_.reset(); break;
         case BassExciterFx: exciter_.reset(); break;
+        case TransientFx: transient_.reset(); break;
+        case DrumBusFx: drumBus_.reset(); break;
+        case MidSideEqFx: midSide_.reset(); break;
         default: break;
     }
 }
@@ -1332,6 +1338,9 @@ void InsertSlot::setParam(int p, float v) {
         case WobbleFx: wobble_.setParam(p, v); break;
         case ClipperFx: clipper_.setParam(p, v); break;
         case BassExciterFx: exciter_.setParam(p, v); break;
+        case TransientFx: transient_.setParam(p, v); break;
+        case DrumBusFx: drumBus_.setParam(p, v); break;
+        case MidSideEqFx: midSide_.setParam(p, v); break;
         case EchoFx:
         case PingPongFx: if (echo_) echo_->setParam(p, v); break;
         case ReverbFx: if (reverb_) reverb_->setParam(p, v); break;
@@ -1367,6 +1376,9 @@ void InsertSlot::process(float* l, float* r, int n) {
         case WobbleFx: wobble_.process(l, r, n); break;
         case ClipperFx: clipper_.process(l, r, n); break;
         case BassExciterFx: exciter_.process(l, r, n); break;
+        case TransientFx: transient_.process(l, r, n); break;
+        case DrumBusFx: drumBus_.process(l, r, n); break;
+        case MidSideEqFx: midSide_.process(l, r, n); break;
         case EchoFx:
         case PingPongFx: if (echo_) echo_->process(l, r, n); break;
         case ReverbFx: if (reverb_) reverb_->process(l, r, n); break;

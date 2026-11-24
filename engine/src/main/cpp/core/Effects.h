@@ -748,6 +748,76 @@ private:
     bool fresh_ = true;  // the amount and the filters start at their settings (no glide after a reset)
 };
 
+// L12 « Moteur : attaque et poids » (tour 9). A transient shaper (« Attaque »): two pairs of
+// envelope followers on the sound's level, one fast against one slow for the hits' attack, one
+// long against one short for their tails; the gain (in dB) follows each pair's gap, scaled by its
+// knob (0.5: untouched). No look-ahead, no latency. Params: attack, sustain, mix, output
+// (0.5: 0 dB, +-6 dB).
+class TransientShaper {
+public:
+    static constexpr int kParams = 4;
+    static constexpr float kMaxDb = 12.0f;  // each knob at its end: up to +-12 dB on a hit
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+    float lastGainDb() const { return gainDb_; }  // tests
+
+private:
+    std::array<float, kParams> p_{0.65f, 0.5f, 1.0f, 0.5f};
+    float fastA_ = 0, fastR_ = 0, slowA_ = 0, slowR_ = 0, longR_ = 0, shortR_ = 0, glide_ = 0;
+    float fast_ = 0, slow_ = 0, long_ = 0, short_ = 0;
+    float attack_ = 0, sustain_ = 0, mix_ = 1, out_ = 1, gainDb_ = 0;
+    bool fresh_ = true;
+};
+
+// L12: the drum bus's soft saturation (« Bus batterie »): DaisySP's soft clip at 4x with
+// antiderivative anti-aliasing (DriveShaper), its input scaled to the bus's running peak (instant
+// rise, 1.5 s fall): a hit at that peak comes out at its own level, what is under it (the body,
+// the tails, the hats) comes up by up to the drive. Denser drums, the kick's peak kept. Params:
+// drive (0..1: the curve's input at the peak from -6 to +12 dB), mix, output (0.5: 0 dB, +-6 dB). The output is DriveShaperPair::kDelay frames late.
+class DrumBus {
+public:
+    static constexpr int kParams = 3;
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+    static float driveGain(float v);
+
+private:
+    std::array<float, 4> p_{0.5f, 0.6f, 0.5f, 0.0f};
+    std::array<float, DriveShaperPair::kDelay + 1> postRing_{};
+    int ring_ = 0;
+    float peak_ = 0.0f, release_ = 0.0f, glide_ = 0.0f, drive_ = 1.0f, mix_ = 0.6f, out_ = 1.0f;
+    bool fresh_ = true;
+    DriveShaperPair sh_;
+};
+
+// L12: a mid/side EQ (« Graves mono »): the sides high-passed under a cutoff (4th order: the lows in
+// mono, off at 0), the middle's lows and the sides' highs on shelves (0.5: 0 dB, +-6 dB).
+// Params: mono under (0: off, else 40..300 Hz), middle lows (shelf at 120 Hz), side highs (shelf at 6 kHz).
+class MidSideEq {
+public:
+    static constexpr int kParams = 3;
+    void prepare(float rate);
+    void setParam(int p, float v);
+    void reset();
+    void process(float* l, float* r, int n);
+    static float monoHz(float v);  // 0: off (10 Hz, nothing heard)
+
+private:
+    void update();
+    void glide();
+    static constexpr int kStep = 16;
+    float rate_ = 48000;
+    std::array<float, 4> p_{0.5f, 0.5f, 0.5f, 0.0f};
+    Biquad sideA_, sideB_, midLow_, sideHigh_;
+    float hzNow_ = 0, lowDbNow_ = 0, highDbNow_ = 0, filterGlide_ = 0.5f;
+    int countdown_ = 0;
+    bool fresh_ = true;
+};
+
 class InsertSlot {
 public:
     enum Type {
@@ -755,7 +825,8 @@ public:
         FlangerFx = 7, PhaserFx = 8, GateFx = 9, TremoloFx = 10, WidenerFx = 11, Crusher = 12, ParamEqFx = 13,
         RobotFx = 14, WahFx = 15, VinylFx = 16, RadioFx = 17, ChopperFx = 18,
         DistortionFx = 19, EchoFx = 20, PingPongFx = 21, ReverbFx = 22, AutoPanFx = 23, OttFx = 24,
-        FreqShiftFx = 25, TapeStopFx = 26, WobbleFx = 27, ClipperFx = 28, BassExciterFx = 29, kTypes = 30
+        FreqShiftFx = 25, TapeStopFx = 26, WobbleFx = 27, ClipperFx = 28, BassExciterFx = 29,
+        TransientFx = 30, DrumBusFx = 31, MidSideEqFx = 32, kTypes = 33
     };
     // Whether `type` needs a unit of the pool (seconds of memory).
     static bool isLong(int type) { return type == EchoFx || type == PingPongFx || type == ReverbFx || type == TapeStopFx; }
@@ -833,6 +904,9 @@ private:
     Wobble wobble_;
     SoftClipper clipper_;
     BassExciter exciter_;
+    TransientShaper transient_;
+    DrumBus drumBus_;
+    MidSideEq midSide_;
     const float* key_ = nullptr;
 };
 

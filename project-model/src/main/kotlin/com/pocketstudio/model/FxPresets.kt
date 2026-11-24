@@ -86,6 +86,11 @@ object FxPresets {
             listOf(fx(EffectType.PUMP, 0.8f, 0.4f, 0f))),
         FxPreset("punch", "Punch", "Plus serré et plus fort, pour une batterie qui claque.", "Rythme",
             listOf(fx(EffectType.COMPRESSOR, 0.45f, 0.45f, 0.45f, 0.3f), fx(EffectType.SATURATION, 0.25f, 0.8f, 0.6f, 0.7f))),
+        // L12: attack and weight for the whole kit, and the lows in mono.
+        FxPreset("body", "Corps", "Des coups plus francs, une batterie plus dense et un peu plus forte.", "Rythme",
+            listOf(fx(EffectType.TRANSIENT, 0.65f, 0.5f, 1f, 0.5f), fx(EffectType.DRUM_BUS, 0.5f, 0.6f, 0.5f))),
+        FxPreset("mono_lows", "Graves au centre", "Les graves au milieu, solides sur une sono comme sur un téléphone.", "Couleur",
+            listOf(fx(EffectType.MID_SIDE_EQ, 0.5f, 0.5f, 0.5f))),
         // The electronic music classics (phase 25).
         FxPreset("scream_lead", "Lead qui crie", "Saturé, il perce le mix ; un écho à la croche pointée le suit.", "Saleté",
             listOf(fx(EffectType.DISTORTION, 0.6f, 0.65f, 0f, 1f), fx(EffectType.ECHO, 0.42f, 0.35f, 0.5f, 0.3f))),
@@ -136,7 +141,7 @@ object FxPresets {
         SoundKind.BASS -> listOf("fat_bass", "growl", "wob_dubstep", "reese_dnb", "edm_pump", "pump", "crunch", "distortion")
         SoundKind.PAD -> listOf("wide_alive", "space", "cathedral", "edm_pump", "underwater", "dream")
         SoundKind.KEYS -> listOf("small_room", "warm_vinyl", "lofi_tape", "wide_alive", "dub_deep")
-        SoundKind.DRUMS -> listOf("punch", "edm_pump", "crunch", "lofi_tape", "small_room", "rumble")
+        SoundKind.DRUMS -> listOf("punch", "body", "edm_pump", "crunch", "lofi_tape", "small_room", "rumble")
         SoundKind.ACID -> listOf("dub_deep", "fat_bass", "wob_dubstep", "crunch", "jet", "pump")
         SoundKind.AUDIO -> listOf(VOICE_RAP, VOICE_CLEAR, "small_room", "dub_deep", "radio", "phone", "cathedral")
     }.mapNotNull { byId(it) }

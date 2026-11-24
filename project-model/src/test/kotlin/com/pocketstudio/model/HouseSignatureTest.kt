@@ -37,10 +37,16 @@ class HouseSignatureTest {
         assertEquals("the old clap, frozen (its own kit)", null, s.kit[StarterWizard.Role.Clap])
         assertEquals("no file swapped in for the clap", null, s.kitSounds[StarterWizard.Role.Clap])
         assertTrue("no layer on the clap", s.lines.first { it.role == StarterWizard.Role.Clap }.layers.isEmpty())
+        assertEquals("the old clap's pattern", "....X.......X.......X.......Xo..", s.lines.first { it.role == StarterWizard.Role.Clap }.pattern)
         assertEquals(
-            "the approved effects",
-            listOf("bass" to "pump", "lead" to "", "clap" to "", "kick" to "punch"),
-            s.effects.take(4).map { it.target to it.preset },
+            "the approved effects, sends included",
+            listOf(
+                StarterWizard.StyleFx("bass", preset = "pump"),
+                StarterWizard.StyleFx("lead", delay = 0.3f),
+                StarterWizard.StyleFx("clap", reverb = 0.15f),
+                StarterWizard.StyleFx("kick", preset = "punch"),
+            ),
+            s.effects,
         )
         assertTrue("a conga in the high bed", s.lines.any { it.role == StarterWizard.Role.Conga })
         assertTrue("snaps on the turnarounds (the clap voice on the rim lane)", s.lines.any { it.role == StarterWizard.Role.Rim && it.voice == 4 })

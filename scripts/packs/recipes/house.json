@@ -6,9 +6,9 @@
    "sample": "vocal_chops:vocal_03"
   },
   "references": [
-   "Dom Dolla – Rhyme Dust (2023)",
+   "MK & Dom Dolla – Rhyme Dust (2023)",
    "Fred again.. – Delilah (pull me out of this) (2022)",
-   "Purple Disco Machine – Hypnotized (2020)",
+   "Purple Disco Machine & Sophie and the Giants – Hypnotized (2020)",
    "Robin S – Show Me Love (1992)",
    "Marshall Jefferson – Move Your Body (1986)",
    "Joe Smooth – Promised Land (1987)",
@@ -370,8 +370,8 @@
    "sample": "vocal_chops:vocal_12"
   },
   "references": [
+   "John Summit & Hayla – Where You Are (2023)",
    "Mau P – Drugs From Amsterdam (2022)",
-   "John Summit – Where You Are (2023)",
    "Fisher – Losing It (2018)",
    "Patrick Topping – Forget (2014)",
    "Green Velvet – La La Land (2001)"
@@ -562,8 +562,8 @@
    "sample": "vocal_chops:vocal_05"
   },
   "references": [
-   "Interplanetary Criminal & Eliza Rose – B.O.T.A. (Baddest of Them All) (2022)",
    "Jorja Smith – Little Things (2023)",
+   "Interplanetary Criminal & Eliza Rose – B.O.T.A. (Baddest of Them All) (2022)",
    "Artful Dodger feat. Craig David – Re-Rewind (1999)",
    "Sweet Female Attitude – Flowers (Sunship Edit) (2000)",
    "Shanks & Bigfoot – Sweet Like Chocolate (1999)",
@@ -726,7 +726,7 @@
   },
   "references": [
    "Sammy Virji – If U Need It (2023)",
-   "Interplanetary Criminal – Slow Burner (2022)",
+   "Interplanetary Criminal – Slow Burner (2021)",
    "Double 99 – RipGroove (1997)",
    "Sneaker Pimps – Spin Spin Sugar (Armand's Dark Garage Mix) (1997)",
    "187 Lockdown – Gunman (1997)",
@@ -904,7 +904,7 @@
    "A Guy Called Gerald – Voodoo Ray (1988)",
    "Sleezy D – I've Lost Control (1986)"
   ],
-  "description_fr": "La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle.",
+  "description_fr": "L'acid d'aujourd'hui, née à Chicago en 1987 : la petite machine magique, la TB-303, fait « couiner » une ligne de basse qui tourne et s'ouvre, sur un kick de 909 qui frappe.",
   "bpm": 130,
   "swing": 0.05,
   "root": "A",
@@ -925,7 +925,7 @@
     "role": "hat",
     "pattern": "xoxoxoxoxoxoxoxo",
     "source": "tr909",
-    "tip_fr": "Le charley de la 707 en continu, un coup fort, un coup doux."
+    "tip_fr": "Le charley de la 909 en continu, un coup fort, un coup doux."
    },
    {
     "role": "perc",
@@ -1096,7 +1096,7 @@
     "preset": "punch"
    }
   ],
-  "notes": "The TB-303 is the whole track: one 16-step pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw TR-707 drums: continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break. Lot L9: acid techno today (Charlotte de Witte, Amelie Lens): 130 BPM, a 909 kick punched, a two-bar Squelchy riff, high resonance, more accents and glides, cutoff, resonance and envelope moving in every section.",
+  "notes": "The TB-303 is the whole track: one looped pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw drum-machine drums (909 since lot L9): continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break. Lot L9: acid techno today (Charlotte de Witte, Amelie Lens): 130 BPM, a 909 kick punched, a two-bar Squelchy riff, high resonance, more accents and glides, cutoff, resonance and envelope moving in every section.",
   "drop": [
    "open_hat"
   ],

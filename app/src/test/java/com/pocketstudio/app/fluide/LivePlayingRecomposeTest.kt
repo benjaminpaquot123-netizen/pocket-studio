@@ -136,6 +136,8 @@ class LivePlayingRecomposeTest {
         val report = "Live : ${c.total} scopes composed again in 60 readings\n${c.top()}"
         println(report)
         assertTrue(report, c.total <= LIVE_MAX)
+        // Nothing of ours follows the step (20 in these readings): once a beat at most, twice for Text's own (« ? »: the library's, summed).
+        assertTrue(report, c.byScope.filterKeys { it != "?" }.values.all { it <= 2 * BEATS })
         // Its ring fills at each step: drawn in its own layer, not the whole top bar again.
         assertTrue("the counter draws in the top bar's layer", hasOwnLayer(compose.onNodeWithTag("live_counter", useUnmergedTree = true).fetchSemanticsNode()))
     }
@@ -165,7 +167,8 @@ class LivePlayingRecomposeTest {
 
     companion object {
         // Measured 70 before C6 (2026-11-23): the bar counter composed again at each step (20), its two FitTexts with
-        // it (50). Its text changes once a beat: composed again then only (5 beats in these readings).
-        const val LIVE_MAX = 25
+        // it (50). After: its figures alone, once a beat (5 beats in these readings), about 7 scopes each (the Text's own).
+        const val LIVE_MAX = 35
+        const val BEATS = 5
     }
 }

@@ -877,48 +877,72 @@ private fun TakeChoice(label: String, selected: Boolean, tag: String, choose: ()
  */
 @Composable
 private fun Counter(ui: LiveScreenUi) {
-    val p = ui.project
-    // The only part of the bar that follows the clock (it alone recomposes, 30 times a second).
-    val step = ui.clockOf()
-    val waiting = ui.grid?.hasPending == true
-    // Waiting: the frame counts down to the first launch line armed (each keeps the quantum it was armed with).
-    val q = ui.grid?.let { g -> nextLaunchQuantum(g, step, p.liveQuantumSteps) } ?: p.liveQuantumSteps
-    val ring = if (step < 0) 0f else (step % q) / q.toFloat()
-    val bar = step / p.stepsPerBar + 1
-    val beat = step % p.stepsPerBar / 4 + 1
-    val text = if (step < 0) "–" else "$bar.$beat"
+    val now = rememberUpdatedState(ui)
+    // C6 (tour 9): the clock moves 30 times a second, the figures only once a beat. The composition reads the beat
+    // alone (it composes again then only); the ring reads the clock in its own layer's draw (redrawn, never composed).
+    val shown = remember { androidx.compose.runtime.derivedStateOf {
+        val u = now.value
+        val step = u.clockOf()
+        if (step < 0) -1 to 0 else step / u.project.stepsPerBar + 1 to step % u.project.stepsPerBar / 4 + 1
+    } }
     val unit = tr("mesure")
-    val said = if (step < 0) unit.replaceFirstChar { it.titlecase() } + " · " + tr("Arrêté") else tr("Mesure %d", bar) + " · " + tr("temps") + " " + beat
-    val accent = if (waiting) Neon.Cyan else Neon.Outline
     val track = Neon.SurfaceHigh
+    val cyan = Neon.Cyan
+    val outline = Neon.Outline
     Column(
         // Tour 9 L11 (N3): wider with a big text size (its figures stay readable, never shrunk to nothing), taller if need be.
         Modifier.width(COUNTER_W * androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceIn(1f, COUNTER_GROWTH)).heightIn(min = 48.dp)
-            .drawBehind {
+            .graphicsLayer()
+            .drawWithCache {
                 val stroke = 3.dp.toPx()
                 val frame = counterFrame(stroke / 2, stroke / 2, size.width - stroke, size.height - stroke, 12.dp.toPx())
-                drawPath(frame, track, style = Stroke(stroke))
-                if (ring > 0f) {
-                    val measure = androidx.compose.ui.graphics.PathMeasure().apply { setPath(frame, false) }
-                    val done = androidx.compose.ui.graphics.Path()
-                    measure.getSegment(0f, measure.length * ring, done, true)
-                    drawPath(done, accent, style = Stroke(stroke, cap = StrokeCap.Round))
+                val measure = androidx.compose.ui.graphics.PathMeasure().apply { setPath(frame, false) }
+                val done = androidx.compose.ui.graphics.Path()
+                val trackStyle = Stroke(stroke)
+                val ringStyle = Stroke(stroke, cap = StrokeCap.Round)
+                onDrawBehind {
+                    drawPath(frame, track, style = trackStyle)
+                    val u = now.value
+                    val step = u.clockOf()
+                    if (step >= 0) {
+                        // Waiting: the frame counts down to the first launch line armed (each keeps the quantum it was armed with).
+                        val q = u.grid?.let { g -> nextLaunchQuantum(g, step, u.project.liveQuantumSteps) } ?: u.project.liveQuantumSteps
+                        val ring = (step % q) / q.toFloat()
+                        if (ring > 0f) {
+                            done.rewind()
+                            measure.getSegment(0f, measure.length * ring, done, true)
+                            drawPath(done, if (u.grid?.hasPending == true) cyan else outline, style = ringStyle)
+                        }
+                    }
                 }
             }
-            .semantics(mergeDescendants = true) { contentDescription = said }
+            .semantics(mergeDescendants = true) {}
             .testTag("live_counter")
             .padding(horizontal = 4.dp, vertical = 3.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        com.pocketstudio.ui.FitText(
-            text, style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold, lineHeight = 18.sp), color = Neon.TextPrimary, maxLines = 1,
-        )
+        CounterFigures(shown, unit)
         // Without the small labels' wide spacing: « compasso », « Schlag » fit at a big font size.
         com.pocketstudio.ui.FitText(
             unit, style = MaterialTheme.typography.labelSmall.copy(lineHeight = 12.sp, letterSpacing = 0.sp), color = Neon.TextSecondary, maxLines = 1, min = 7.sp,
         )
     }
+}
+
+/**
+ * The counter's figures (« 30.2 ») and what TalkBack says of the whole counter: the only part that composes
+ * again, once a beat ([shown]: bar and beat, bar -1 when stopped). The counter merges this description.
+ */
+@Composable
+private fun CounterFigures(shown: State<Pair<Int, Int>>, unit: String) {
+    val (bar, beat) = shown.value
+    val text = if (bar < 0) "–" else "$bar.$beat"
+    val said = if (bar < 0) unit.replaceFirstChar { it.titlecase() } + " · " + tr("Arrêté") else tr("Mesure %d", bar) + " · " + tr("temps") + " " + beat
+    com.pocketstudio.ui.FitText(
+        text, modifier = Modifier.semantics { contentDescription = said },
+        style = MonoStyle.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold, lineHeight = 18.sp), color = Neon.TextPrimary, maxLines = 1,
+    )
 }
 
 /** The counter's width: as ● REC beside it. */

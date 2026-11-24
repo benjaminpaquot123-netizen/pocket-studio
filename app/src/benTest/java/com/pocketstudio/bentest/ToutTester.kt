@@ -101,12 +101,15 @@ class ToutTester(
         return "lecture par $by : ${b.text()}" + (if (heat.isNotEmpty()) " ; $heat" else "")
     }
 
-    /** [ms] of what plays, read 4 times a second ([Ecoute.Lu] each in the logbook), then the level of each second. */
+    /**
+     * [ms] of what plays, read 4 times a second ([Ecoute.Lu] each in the logbook), then the level of each second.
+     * At least one full second is read, however slow the waits: a level is only told for full seconds.
+     */
     fun ecouter(step: String, ms: Long, also: (Ecoute.Lu) -> Unit = {}): Ecoute.Bilan {
         val first = sonde.lire()
         val reads = ArrayList<Ecoute.Lu>()
         val end = System.currentTimeMillis() + ms
-        while (System.currentTimeMillis() < end) {
+        while (System.currentTimeMillis() < end || reads.size < Ecoute.READS_PER_SECOND) {
             j.idle(250)
             val r = sonde.lire()
             val lu = Ecoute.Lu(System.currentTimeMillis(), r.xruns, r.cpu, r.peak, r.nonFinite, r.playing, r.lufs, r.drive, r.lane, r.cpuWorst, r.gapWorst,

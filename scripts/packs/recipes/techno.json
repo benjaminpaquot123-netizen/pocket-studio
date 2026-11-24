@@ -55,6 +55,12 @@
     "role": "rumble",
     "pattern": "X...X...X...X...",
     "tip_fr": "Le grondement de la techno de Berlin : un grave sale et accordé qui roule entre les coups de kick, sous la basse."
+   },
+   {
+    "role": "perc2",
+    "pattern": "X...............................",
+    "voice": "cymbal",
+    "tip_fr": "Une cymbale crash sur le premier temps toutes les deux mesures : l'impact qui ouvre chaque phrase du Drop."
    }
   ],
   "progressions": {
@@ -191,7 +197,8 @@
   "notes": "Modern Berlin / peak-time techno (2018-2024: Charlotte de Witte, Amelie Lens, Enrico Sangiuliano). Kick, rumble and bass up front: the kick goes through the punch preset, the rumble (the kick replayed through the rumble preset) rolls under it, the bass is saturated a little and ducked by the kick (pump). No lead by default (Benjamin, 2026-11-24: the old filtered octave riff sounded like Oxygene): the optional lead is one dark metallic note in a 3-3-2 loop, octave 3, low-passed and cut under 200 Hz, never in the Break. Harmony almost static (phrygian i-bII at most). The chord is a short dub stab (minor 7th) through the dub echo preset, closed before the Drop and opening in it. Metallic closed hats (the industrial pack layered on the techno one), ride in the Drop. Drum bus glued in parallel with a little drive. Berghain 128-135 BPM, peak-time 130-138.",
   "drop": [
    "open_hat",
-   "ride"
+   "ride",
+   "perc2"
   ],
   "break": [
    "chords",
@@ -231,6 +238,9 @@
   "mix": {
    "glue_blend": 0.6,
    "bus_drive": 0.35
+  },
+  "texture": {
+   "sound": "Vent"
   }
  },
  {
@@ -444,6 +454,12 @@
     "role": "rumble",
     "pattern": "X...X...X...X...",
     "tip_fr": "Un grondement grave rejoué derrière chaque kick : il donne le poids des clubs d'aujourd'hui sous la ligne acide."
+   },
+   {
+    "role": "perc2",
+    "pattern": "X...............................",
+    "voice": "cymbal",
+    "tip_fr": "Une cymbale crash sur le premier temps toutes les deux mesures : l'impact qui ouvre chaque phrase du Drop."
    }
   ],
   "progressions": {
@@ -600,7 +616,8 @@
   "notes": "Modern acid techno: the TB-303 line IS the track and the bass; nothing else is on by default (no bass, chords nor lead), so the 303 is alone between the kick hits; it carries the Break too. Modern means it squeals and evolves: the Squelchy 303 (high resonance) with some drive, a two-bar riff, and four knobs turned along the song (cutoff, resonance, env_mod, decay): closed and tight in the Groove, opening and squealing in each Drop, a long sweep up through the Break. A rumble (the kick replayed through the rumble preset) rolls under the kick, the kick goes through punch, the drum bus is glued. The acid track stays on the key's root, so no progression puts a bass note a semitone from its notes (dark: i alone, future i-VII, dreamy i-III). 303: mostly roots, octave jumps, b3, 5 and b7, slides into the octave jumps, sparse accents; crunch preset + a little delay. Tempo: London acid techno 135-145. Optional lead: a second, higher 303-like riff.",
   "riser": true,
   "drop": [
-   "ride"
+   "ride",
+   "perc2"
   ],
   "mix": {
    "glue_blend": 0.6,

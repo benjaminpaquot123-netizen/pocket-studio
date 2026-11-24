@@ -161,7 +161,10 @@
    "lead",
    "rumble"
   ],
-  "riser": true
+  "riser": true,
+  "texture": {
+   "sound": "Vent"
+  }
  },
  {
   "id": "hard_techno",
@@ -215,6 +218,12 @@
     "role": "rumble",
     "pattern": "X...X...X...X...",
     "tip_fr": "Le grondement : un grave sale et accordé au kick. Il roule entre les coups et se tait quand le kick tape."
+   },
+   {
+    "role": "perc2",
+    "pattern": "X...............................",
+    "voice": "cymbal",
+    "tip_fr": "Une cymbale crash sur le premier temps toutes les deux mesures : l'impact qui ouvre chaque phrase du Drop."
    }
   ],
   "progressions": {
@@ -282,12 +291,12 @@
    "slides": ""
   },
   "defaults": {
-   "bass": false,
+   "bass": true,
    "chords": true,
    "lead": false
   },
   "default_mood": "dark",
-  "bass_tip": "En option : une basse très grave et saturée qui roule entre les kicks, en plus du grondement (le rumble de la batterie).",
+  "bass_tip": "Une basse très grave et saturée qui roule entre les kicks, en couche avec le grondement (le rumble de la batterie) : le grave tient tout le Drop.",
   "pad_tip": "Le synthé « aspirateur » (hoover) frappé en rafale : la sirène de rave.",
   "lead_tip": "En option : un gros synthé épais emprunté à la hard trance, qui reste sur la même note sans sauter d'octave, sous le kick. Éteint au départ : ici, c'est le kick et le grondement qui mènent.",
   "fx": [
@@ -345,7 +354,8 @@
   ],
   "notes": "Modern hard techno runs 145-160 BPM (150 is the common middle). Schranz roots: compressed 909 percussion loops (the 3-step perc loop against the 4/4), a clap roll every 2 bars. The signature low end is the rolling bass (three 16ths between the kicks) pumped by the kick; the kick gets the punch preset (compressor + saturation), harder than techno, cleaner than gabber. The harmonic part is a hoover stab in octaves (3-3-2-ish), not chords. Supersaw lead (hard trance) off by default. References verified on the web (2024); 'Marco Leckbert – Schranz Will Never Die' could not be verified and was dropped. Bench target (L3): the lead in solo at least 6 dB under the kick in the Drop; measured -4.4 dB (red).",
   "drop": [
-   "ride"
+   "ride",
+   "perc2"
   ],
   "riser": true,
   "sweeps": [
@@ -356,7 +366,10 @@
      0.9
     ]
    }
-  ]
+  ],
+  "texture": {
+   "sound": "Vent"
+  }
  },
  {
   "id": "gabber",
@@ -636,8 +649,8 @@
    "sound": "Hurleur",
    "knobs": {
     "cutoff": 0.4,
-    "resonance": 0.8,
-    "env_mod": 0.65,
+    "resonance": 0.72,
+    "env_mod": 0.55,
     "decay": 0.3,
     "accent": 0.85,
     "drive": 0.7
@@ -646,37 +659,37 @@
     "cutoff": {
      "intro": [
       0.08,
-      0.45
+      0.42
      ],
      "groove": [
-      0.4,
-      0.5
+      0.38,
+      0.46
      ],
      "drop": [
-      0.55,
-      0.68
+      0.46,
+      0.54
      ],
      "break": [
       0.2,
-      0.85
+      0.6
      ]
     },
     "env_mod": {
      "intro": [
       0.4,
-      0.6
+      0.55
      ],
      "groove": [
-      0.6,
-      0.65
+      0.55,
+      0.6
      ],
      "drop": [
-      0.7,
-      0.75
+      0.6,
+      0.66
      ],
      "break": [
       0.5,
-      0.9
+      0.7
      ]
     }
    }
@@ -701,7 +714,7 @@
     "insert": "SATURATION",
     "params": [
      0.45,
-     0.75,
+     0.45,
      1.0,
      0.7,
      1.0
@@ -727,9 +740,19 @@
      1.0,
      0.7
     ]
+   },
+   {
+    "on": "acid",
+    "insert": "PARAM_EQ",
+    "params": [
+     0.799,
+     0.333,
+     0.3,
+     0.0
+    ]
    }
   ],
-  "notes": "Acidcore (hardcore with the 303 as the star), modelled on Confusion A - Out of World (1997, Benjamin's reference, measured: ~185 BPM, A minor, a busy two-bar 303 riff jumping A2/A3 with accented high notes, the filter opening and closing over the track, rolling 16th hats, a distorted gabber kick, form 303 alone ~16 s, kick, hats building, Break without kick at ~2:30, a second one at ~4:30, outro; loud compressed master). The key is F# rather than A: the built-in kick rings at 47 Hz (F#1), so the kick plays the root as in gabber (a pack kick is not retuned). Two-bar riff on the root with octave jumps (R/O), the b2 of the phrygian dark mood and the b3, b7, accents on the high notes, slides into the jumps; almost every 16th played. Hurleur 303 with a saturation insert; distortion preset on the kick; gentle OTT and saturation on the master (the limiter follows). Song (form rave): Intro = the 303 alone, its cutoff opening (song automation of the 303 cutoff and envelope, AutoTarget kind 5), Groove = kick + offbeat closed hats (the hat's build pattern), Drop = rolling hats + open hats, Break = the 303 alone with a filter sweep, Drop, a short second Break, Drop, the Intro again as the outro with the filter closing. No clap: the hats and the 303 fill the space. References: only tracks whose existence and year are known; no French acidcore track verified. Bench target (Benjamin, acid too shrill): the 303 alone in the Drop must keep less energy above 4 kHz than between 1 and 4 kHz; measured 4-8 kHz -34.3 dB against 2-4 kHz -40.7 dB (red).",
+  "notes": "Acidcore (hardcore with the 303 as the star), modelled on Confusion A - Out of World (1997, Benjamin's reference, measured: ~185 BPM, A minor, a busy two-bar 303 riff jumping A2/A3 with accented high notes, the filter opening and closing over the track, rolling 16th hats, a distorted gabber kick, form 303 alone ~16 s, kick, hats building, Break without kick at ~2:30, a second one at ~4:30, outro; loud compressed master). The key is F# rather than A: the built-in kick rings at 47 Hz (F#1), so the kick plays the root as in gabber (a pack kick is not retuned). Two-bar riff on the root with octave jumps (R/O), the b2 of the phrygian dark mood and the b3, b7, accents on the high notes, slides into the jumps; almost every 16th played. Hurleur 303 with a saturation insert; distortion preset on the kick; gentle OTT and saturation on the master (the limiter follows). Song (form rave): Intro = the 303 alone, its cutoff opening (song automation of the 303 cutoff and envelope, AutoTarget kind 5), Groove = kick + offbeat closed hats (the hat's build pattern), Drop = rolling hats + open hats, Break = the 303 alone with a filter sweep, Drop, a short second Break, Drop, the Intro again as the outro with the filter closing. No clap: the hats and the 303 fill the space. References: only tracks whose existence and year are known; no French acidcore track verified. Bench target (Benjamin, acid too shrill): the 303 alone in the Drop must keep less energy above 4 kHz than between 1 and 4 kHz; measured 4-8 kHz -34.3 dB against 2-4 kHz -40.7 dB before, -44.7 against -43.8 now (green): softer saturation tone, a wide cut at 5 kHz, resonance and envelope eased; 250 Hz to 2 kHz unchanged, the grain stays.",
   "riser": true
  },
  {

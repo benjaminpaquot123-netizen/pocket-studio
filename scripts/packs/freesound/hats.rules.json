@@ -1,0 +1,218 @@
+{
+ "_comment": "Freesound search rules of the hats family (freesound_pick.py). Durations in seconds; keep = sounds kept per sub-role after measurement; max_seconds = longest processed tail.",
+ "budget_api": 380,
+ "budget_dl": 60,
+ "roles": {
+  "closed_hat": {
+   "queries": [
+    "closed hihat",
+    "closed hi-hat",
+    "hihat closed one shot",
+    "hi hat tight",
+    "trap hihat"
+   ],
+   "duration": [
+    0.03,
+    1.2
+   ],
+   "listen": 40,
+   "keep": 10,
+   "max_seconds": 0.35,
+   "styles": [
+    "techno",
+    "house",
+    "tech_house",
+    "minimal",
+    "trap",
+    "drill",
+    "phonk",
+    "uk_garage",
+    "speed_garage",
+    "dnb",
+    "jungle",
+    "jersey_club",
+    "pop"
+   ],
+   "per_author": 2
+  },
+  "pedal_hat": {
+   "queries": [
+    "pedal hihat",
+    "hihat foot",
+    "hi-hat pedal"
+   ],
+   "duration": [
+    0.03,
+    1.0
+   ],
+   "listen": 15,
+   "keep": 2,
+   "max_seconds": 0.35,
+   "styles": [
+    "boom_bap",
+    "lofi",
+    "disco",
+    "jungle",
+    "liquid_dnb",
+    "afrobeats"
+   ],
+   "per_author": 2
+  },
+  "open_hat": {
+   "queries": [
+    "open hihat",
+    "open hi-hat",
+    "hihat open one shot",
+    "open hat"
+   ],
+   "duration": [
+    0.15,
+    3.0
+   ],
+   "listen": 40,
+   "keep": 7,
+   "max_seconds": 1.0,
+   "styles": [
+    "house",
+    "deep_house",
+    "tech_house",
+    "techno",
+    "hard_techno",
+    "acid_house",
+    "disco",
+    "uk_garage",
+    "speed_garage",
+    "trance",
+    "trap",
+    "jersey_club"
+   ],
+   "per_author": 2
+  },
+  "ride": {
+   "queries": [
+    "ride cymbal",
+    "ride bell",
+    "ride cymbal hit"
+   ],
+   "duration": [
+    0.4,
+    8.0
+   ],
+   "listen": 30,
+   "keep": 6,
+   "max_seconds": 2.0,
+   "styles": [
+    "techno",
+    "detroit",
+    "deep_house",
+    "house",
+    "dnb",
+    "liquid_dnb",
+    "jungle",
+    "neurofunk",
+    "disco",
+    "minimal"
+   ],
+   "per_author": 2
+  },
+  "crash": {
+   "queries": [
+    "crash cymbal",
+    "crash cymbal hit",
+    "china cymbal"
+   ],
+   "duration": [
+    0.8,
+    8.0
+   ],
+   "listen": 30,
+   "keep": 5,
+   "max_seconds": 2.5,
+   "styles": [
+    "dnb",
+    "jump_up",
+    "neurofunk",
+    "jungle",
+    "dubstep",
+    "riddim",
+    "trance",
+    "hard_techno",
+    "gabber",
+    "pop",
+    "synthwave",
+    "grime"
+   ],
+   "per_author": 2
+  },
+  "swell": {
+   "queries": [
+    "reverse cymbal",
+    "cymbal swell",
+    "cymbal rise"
+   ],
+   "duration": [
+    0.8,
+    6.0
+   ],
+   "listen": 15,
+   "keep": 2,
+   "max_seconds": 2.5,
+   "styles": [
+    "trance",
+    "pop",
+    "synthwave",
+    "dubstep",
+    "dnb",
+    "house",
+    "techno"
+   ],
+   "per_author": 2
+  },
+  "shaker": {
+   "queries": [
+    "shaker one shot",
+    "shaker hit",
+    "shaker"
+   ],
+   "duration": [
+    0.04,
+    1.5
+   ],
+   "listen": 30,
+   "keep": 6,
+   "max_seconds": 0.5,
+   "styles": [
+    "amapiano",
+    "afro_house",
+    "afrobeats",
+    "reggaeton",
+    "lofi",
+    "boom_bap",
+    "deep_house",
+    "tech_house",
+    "uk_garage",
+    "disco"
+   ],
+   "per_author": 3
+  }
+ },
+ "exclude_ids": {
+  "_why": "read by a reviewer on 2026-11-24",
+  "801": "fdiskc.com TR-606 sample set (third-party set, retro)",
+  "802": "same set",
+  "811": "same set",
+  "813": "same set",
+  "112489": "pack named after a famous drummer's kit: may be cut from records",
+  "42548": "pack ELEMENTS without provenance",
+  "42549": "pack ELEMENTS without provenance",
+  "2050": "points to a commercial sample company (hollowsun)",
+  "2051": "same",
+  "2052": "same",
+  "399742": "a texture, not a swell",
+  "188806": "sampled synth presets (Sylenth1)",
+  "814": "fdiskc.com TR-606 sample set",
+  "674293": "a closing hat, not an open hat",
+  "203567": "description points to a released track",
+  "12520": "Casio SK-1 toy keyboard factory sound: retro, the opposite of the goal"
+ }
+}

@@ -2,7 +2,7 @@
 
 Relecteur : sous-agent neuf (n'a pas écrit le code), diff b0ac8fe3..eq/gr-banc.
 
-relu : dc87eaa3
+relu : a91152f6b
 
 Rien de grave. ps_measure recompilé, test_ps_measure_body.py et test_report.py verts ; cas limites essayés (sans .pscmd, piste de 0,1 s sous un mix de 6 s, mix muet, section vide) : JSON strict (null, jamais nan), aucun plantage. Guillemets awk dans le sh -c de song-bench justes ; report.py lit un vieux JSON sans les nouvelles clés.
 
@@ -15,3 +15,5 @@ Mineurs :
 6. Tests : pas de cas « montée > 6 LU hors Drop » ; l'exemption Drop repose sur +6,02 LU.
 
 Verdict : 0 bloquant, 0 grave
+
+Complément (chef, 2026-11-24) : depuis dc87eaa3, seul le rapport de zone a été ajouté (doc, aucun code) ; relu, conforme.

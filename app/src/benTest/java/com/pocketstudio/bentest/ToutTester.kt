@@ -332,6 +332,7 @@ class ToutTester(
         val parts = ArrayList<String>()
         val feux = ArrayList<Feu>()
         val why = ArrayList<String>()
+        val empty = ArrayList<String>()
         for ((name, open, mark) in EssaiEclair.SCREENS) {
             if (!j.exists(open)) j.tap("tab_Structure")
             j.tap(open)
@@ -348,6 +349,7 @@ class ToutTester(
             appli.imagesDebut()
             j.idle(IMAGES_MS)
             val (n, slow) = appli.imagesFin() ?: (0 to 0)
+            if (n == 0) empty += name
             val part = if (n == 0) 0.0 else slow.toDouble() / n
             val f = Feux.imagesLentes(part)
             feux += f
@@ -360,6 +362,7 @@ class ToutTester(
         e.arreter()
         val mem = appli.memoireMo()
         carnet.add(Carnet.MESURE, "images", "memoire_mo=${mem ?: ""}")
+        // An empty measure is never green (audit E, K1): no frame counted on a screen says nothing of its smoothness.
         feu("images", Feu.pire(feux) to why.joinToString(", "))
         return "images lentes : ${parts.joinToString(", ")} ; mémoire ${mem?.let { "$it Mo" } ?: "inconnue"}"
     }

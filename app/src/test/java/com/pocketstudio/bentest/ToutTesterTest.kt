@@ -190,6 +190,14 @@ class ToutTesterTest {
     }
 
     @Test
+    fun `vert - more than five percent not measured fails the run`() {
+        val s = Scenarios.LISTE.first()
+        fun r(x: String) = Scenarios.Companion.Resultat(s, null, x, "", null, emptyList())
+        assertTrue(Scenarios.tropDeNonMesures(List(18) { r(Scenarios.PASSE) } + List(2) { r(Scenarios.NON_MESURE) }))
+        assertTrue(!Scenarios.tropDeNonMesures(List(19) { r(Scenarios.PASSE) } + r(Scenarios.NON_MESURE)))
+    }
+
+    @Test
     fun theLatencyIsThreeRoundTripsAndTheirMedian() {
         val c = Carnet(File(tmp.root, "l.tsv"))
         val ms = ArrayDeque(listOf(44.5, null, 61.0))

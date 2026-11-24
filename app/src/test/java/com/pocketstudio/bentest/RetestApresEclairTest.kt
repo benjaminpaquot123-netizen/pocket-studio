@@ -249,6 +249,9 @@ class RetestApresEclairTest {
             assertTrue("$s: « Créer maintenant » touched\n$log", taps.any { it == s to "wizard_create_now" })
         }
         for (s in listOf("images", "ecran_eteint")) assertTrue(log, ends(lines).any { it.step == s && it.kind == Carnet.REUSSI })
+        // No frame counter under Robolectric: the images step is not measured, never green (audit E, K1).
+        assertTrue(log, lines.any { it.step == "images" && it.kind == Carnet.NOTE && it.text.startsWith("${ToutTester.NON_MESURE};") })
+        assertTrue(log, lines.none { it.step == "images" && it.kind == Carnet.FEU && it.text.startsWith("vert") })
     }
 
     /** « Questions à l'oreille » started after another run: its opening brings the studio back, then the first question. */

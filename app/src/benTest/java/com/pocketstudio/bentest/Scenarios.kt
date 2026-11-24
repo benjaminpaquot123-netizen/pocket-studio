@@ -416,9 +416,9 @@ class Scenarios(
         ecoute(EFFETS, b)
         feuEcoute(EFFETS, b)
         val undone = retirer(ch, before[ch].sorted(), 1)
+        check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec l'effet" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec l'effet : ${b.text()}" }
-        check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         return "égaliseur ajouté à la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
     }
 
@@ -674,9 +674,10 @@ class Scenarios(
         ecoute(EFFETS_PLUSIEURS, b)
         feuEcoute(EFFETS_PLUSIEURS, b)
         val undone = retirer(ch, was, TROIS.size)
+        // A strip left dirty first: the next scenarios find it so, whatever was heard.
+        check(undone) { "les effets restent sur la piste ${ch + 1} : « Annuler » ne les a pas retirés (${lu().effets[ch].joinToString(", ")})" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec les trois effets" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec les trois effets : ${b.text()}" }
-        check(undone) { "les effets restent sur la piste ${ch + 1} : « Annuler » ne les a pas retirés (${lu().effets[ch].joinToString(", ")})" }
         return "${TROIS.joinToString(", ")} sur la piste ${ch + 1}, enregistrés ; lecture par $by : ${b.text()} ; retirés par « Annuler »"
     }
 
@@ -941,9 +942,9 @@ class Scenarios(
         ecoute(step, b)
         feuEcoute(step, b)
         val undone = retirer(ch, before, 1)
+        check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec $type" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec $type : ${b.text()}" }
-        check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         return "$type sur la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
     }
 
@@ -1622,6 +1623,10 @@ class Scenarios(
             return if (ms.isEmpty()) emptyList() else listOf("latence_ms" to fmt(ms[ms.size / 2]), "mesures" to ms.size.toString())
         }
 
+        /** More than [NON_MESURES_MAX] of the run not measured: the run says little, it fails (audit E). */
+        fun tropDeNonMesures(r: List<Resultat>): Boolean = false
+        const val NON_MESURES_MAX = 0.05
+
         /** « 7 passés, 1 échoué, 1 pas joué ». */
         fun verdict(lines: List<Carnet.Ligne>): String {
             val r = resultats(lines)
@@ -1632,6 +1637,7 @@ class Scenarios(
                 if (n(NON_CONCLUANT) > 0) add("${n(NON_CONCLUANT)} non concluant" + if (n(NON_CONCLUANT) > 1) "s" else "")
                 if (n(NON_MESURE) > 0) add("${n(NON_MESURE)} non mesuré" + if (n(NON_MESURE) > 1) "s" else "")
                 if (n(PAS_JOUE) > 0) add("${n(PAS_JOUE)} pas joué" + if (n(PAS_JOUE) > 1) "s" else "")
+                if (tropDeNonMesures(r)) add("trop de non mesurés : passage à refaire")
             }.joinToString(", ")
         }
 

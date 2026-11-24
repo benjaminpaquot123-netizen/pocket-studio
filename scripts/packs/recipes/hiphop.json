@@ -25,7 +25,10 @@
     "role": "snare",
     "pattern": "....X.......X.......X......oX..o",
     "source": "sp1200",
-    "tip_fr": "Caisse claire sèche sur les temps 2 et 4 : c'est le « bap ». Deux petites notes fantômes la font rouler."
+    "tip_fr": "Caisse claire sèche doublée d'un clap sur les temps 2 et 4 : c'est le « bap ». Deux petites notes fantômes la font rouler.",
+    "layers": [
+     "kit:clap"
+    ]
    },
    {
     "role": "hat",
@@ -38,6 +41,11 @@
     "pattern": "..............................x.",
     "source": "boom_bap",
     "tip_fr": "Un charley ouvert à la toute fin relance la boucle."
+   },
+   {
+    "role": "snap",
+    "pattern": "....X.......X...",
+    "tip_fr": "Un claquement de doigts avec la caisse claire : le « bap » claque encore plus."
    },
    {
     "role": "perc2",
@@ -89,7 +97,8 @@
    "rhythm": "X------.X---.X-.X--.X---..X---..",
    "voicing": "rootless7",
    "octave": 3,
-   "sound": "Piano électrique"
+   "sound": "Piano électrique",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-----R-..R---..",
@@ -118,12 +127,16 @@
   },
   "signature": "chords",
   "bass_tip": "Une basse courte et ronde qui tape avec le kick, comme une contrebasse : pas de 808 ici.",
-  "pad_tip": "La boucle de piano jazz, comme un vieux disque samplé : elle tourne du début à la fin du morceau.",
+  "pad_tip": "La boucle de piano jazz, comme un vieux disque samplé avec ses craquements ; au refrain elle est doublée à l'octave pour remplir.",
   "lead_tip": "La mélodie de la boucle : une phrase de deux mesures au piano électrique, un vide, une courte réponse. Elle est là dès le début, comme un sample.",
   "fx": [
    {
     "on": "chords",
     "preset": "warm_vinyl"
+   },
+   {
+    "on": "chords",
+    "insert": "VINYL"
    },
    {
     "on": "chords",
@@ -145,7 +158,11 @@
     "delay": 0.15
    }
   ],
-  "notes": "Swing is the genre: MPC 60% on 16ths. The chords stand in for a looped jazz/soul sample (minor 7ths, 'Vinyle chaud' on them) and are the signature: they play in every section. No 808: a short round bass that follows the kick (1, 2-and, 3-and). Two-bar kick with a ghost kick in bar 2, two ghost snares, open hat only at the end of bar 2. Snare from the SP-1200 pack for 12-bit crunch, hats from the MPC60 pack."
+  "notes": "Swing is the genre: MPC 60% on 16ths. The chords stand in for a looped jazz/soul sample (minor 7ths, 'Vinyle chaud' and the VINYL crackle on them, doubled an octave up in the chorus for body in the mids) and are the signature: they play in every section. No 808: a short round bass that follows the kick (1, 2-and, 3-and). Two-bar kick with a ghost kick in bar 2, two ghost snares; the snare (SP-1200 pack, 12-bit crunch) is stacked with a clap and a finger snap on 2 and 4. Hats from the MPC60 pack, a shaker off the beat in the chorus. The drum bus is compressed in parallel (glue_blend 0.6) and driven a little, like a sampler pushed into a desk.",
+  "mix": {
+   "glue_blend": 0.6,
+   "bus_drive": 0.35
+  }
  },
  {
   "id": "trap",

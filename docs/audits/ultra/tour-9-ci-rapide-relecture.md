@@ -8,6 +8,8 @@ Commits relus : 77a4759d, 7dd14931, e7db06ff, cd02945e, c3d8a090, 5b54498a, 36ba
 
 aucun
 
+## Vérifié
+
 Ce qui a été vérifié pour arriver là :
 - Une classe ne peut pas se perdre sans bruit dans le cas normal : les six lots tirent le même partage (même liste de classes, même fichier de durées, ordre stable) ; `check` refuse un lot sans résultat, deux lots qui n'ont pas vu les mêmes classes, une classe dans aucun lot ou dans deux, une classe jouée deux fois ou hors de son lot, une classe à test sans résultat, un test rouge. Une classe neuve, absente des durées, prend 3 s par défaut et entre quand même dans un lot. Les classes imbriquées (`Outer$Inner`) suivent leur classe du dessus, des deux côtés (`shards.py` ligne 47 et `app/build.gradle.kts` ligne 153) de la même façon. Aucun test Java dans `app/src/test` : le dossier des classes Kotlin suffit.
 - Lot coupé par sa limite, annulé ou rouge : son artefact manque ou ses classes attendues n'ont pas de résultat (problème nommé), et l'étape « Every shard green » (`ci.yml` ligne 270, `if: always()`) rend le job qui rassemble rouge dès qu'un lot n'est pas « success ». « Publish APK » attend `tests` et `build` sans `always()` : rien ne se publie sur un lot rouge.
@@ -26,4 +28,6 @@ Ce qui a été vérifié pour arriver là :
 - 16 jobs en même temps par CI : deux CI côte à côte peuvent faire attendre des jobs en file (plus lent, pas faux).
 - Le rapport dit vrai par rapport au code (jobs, étapes, isolation, limites, « Ce qui n'est pas vert ») ; seule nuance : « `policy` refuse un job sans limite » vaut pour l'écriture habituelle de `ci.yml` (voir plus haut).
 
-Verdict : découpage solide, contrôle de complétude sérieux, aucun test perdu ni affaibli ; filets à épaissir (classes héritées, garde-fou `policy`) — fusion possible
+Avis : découpage solide, contrôle de complétude sérieux, aucun test perdu ni affaibli ; filets à épaissir (classes héritées, garde-fou `policy`) — fusion possible
+
+Verdict : 0 bloquant, 0 grave

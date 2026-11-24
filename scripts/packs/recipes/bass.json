@@ -1415,6 +1415,10 @@
     "preset": "wide_alive"
    },
    {
+    "on": "chords",
+    "reverb": 0.3
+   },
+   {
     "on": "bass",
     "insert": "PUMP"
    },

@@ -703,14 +703,22 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         }
         // Lot E: a « returns only » stem keeps every strip out of the mix (its sends still feed the buses).
         const bool toMix = stemMode_ < StemReturn0 || pad || isLayer(ch);
+        // Lot B2: a send at an exact 0 (target and value) adds nothing and its smoother stays put, so
+        // it is skipped; a settled gain (value == target) is that constant, as next() would return.
+        std::array<bool, kBuses> sending{};
+        for (size_t b = 0; b < kBuses; ++b) sending[b] = s.sendGain[b].target() != 0.0f || s.sendGain[b].current() != 0.0f;
+        const bool settled = s.gainL.current() == s.gainL.target() && s.gainR.current() == s.gainR.target() &&
+                             std::isfinite(s.gainL.target()) && std::isfinite(s.gainR.target());
+        const float gl = s.gainL.target(), gr = s.gainR.target();
         for (int i = 0; i < n; ++i) {
-            const float l = chL_[static_cast<size_t>(i)] * s.gainL.next();
-            const float r = chR_[static_cast<size_t>(i)] * s.gainR.next();
+            const float l = chL_[static_cast<size_t>(i)] * (settled ? gl : s.gainL.next());
+            const float r = chR_[static_cast<size_t>(i)] * (settled ? gr : s.gainR.next());
             if (toMix) {
                 toL[i] += l;
                 toR[i] += r;
             }
             for (size_t b = 0; b < kBuses; ++b) {
+                if (!sending[b]) continue;
                 const float g = s.sendGain[b].next();
                 busL_[b][static_cast<size_t>(i)] += l * g;
                 busR_[b][static_cast<size_t>(i)] += r * g;

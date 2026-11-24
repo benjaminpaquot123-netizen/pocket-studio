@@ -29,8 +29,7 @@ Avec les poids de la méthode v4 (relu ×0,1, réécrit ×2, écrit ×5), le com
 
 ## Leviers oubliés
 - **L0, la mémoire du chef elle-même (fort gain, aucun risque de coordination).** Le chef vit entre 100 et 165 k. Compacter plus bas (`/autocompact` vers 120 k) et écrire la fiche de reprise avant chaque longue attente : toutes ses actions et tous ses réveils à froid coûtent un tiers de moins. À mesurer sur un paquet : plus de compactages, donc quelques relectures de fichiers en plus.
-- **Compter les réveils à froid du chef** (écart de plus d'une heure) dans la mesure du §3 : c'est le chiffre qui dira si L1 a payé.
-- **Mesure du §3** : ajouter la part de machinerie dans les actions du chef avant le second, sinon le gain de L1 restera une impression.
+- **Mesure du §3** : compter les réveils à froid du chef (écart de plus d'une heure) et, avant le second, la part de machinerie dans ses actions ; sinon le gain de L1 restera une impression.
 
 ## Ce qui peut ralentir la croisière
 - L1 sans les garde-fous 2 et 6 (relève en plein portail, rouge qui passe par le chef). Le second ne compte pas parmi les « deux discussions au travail ».
@@ -38,5 +37,4 @@ Avec les poids de la méthode v4 (relu ×0,1, réécrit ×2, écrit ×5), le com
 - L4 si la limite de Fable tombe au milieu d'une relecture : travail à refaire en Opus.
 - L5 sur un lot « mécanique » mal jugé : un lot refait coûte plus que l'effort gagné.
 
-## Ordre conseillé
-L0 et L3 tout de suite (sans risque), L1 avec ses neuf garde-fous, L2 corrigé, L6 précisé, L5 en dernier ; L4 seulement après l'accord de Benjamin.
+**Ordre conseillé :** L0 et L3 tout de suite (sans risque), L1 avec ses neuf garde-fous, L2 corrigé, L6 précisé, L5 en dernier ; L4 seulement après l'accord de Benjamin.

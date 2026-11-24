@@ -70,6 +70,27 @@ object StarterWizard {
             "Un grondement grave, saturé et accordé au kick, qui roule entre les coups : la basse de la techno dure.",
             listOf(1, 0), packKind = "kick",
         ),
+        // Format v2 (lot L1): a pad of their own each (9, 11, 14, 15 were free), their kit voice by default.
+        Snap(
+            "snap", 9, "Snap (claquement de doigts)",
+            "Un claquement de doigts sec sur les temps 2 et 4 : plus léger qu'un clap, très pop et R&B.",
+            listOf(4), packKind = "clap",
+        ),
+        Rim(
+            "rim", 11, "Rim (cerclage)",
+            "Le bord de la caisse frappé : un « toc » sec et boisé qui marque le rythme sans l'alourdir.",
+            listOf(10), packKind = "perc",
+        ),
+        Conga(
+            "conga", 14, "Conga",
+            "Un tambour à main chaud et rond : il donne un balancement latin ou africain au groove.",
+            listOf(14), packKind = "perc",
+        ),
+        Shaker(
+            "shaker", 15, "Shaker",
+            "Un « tchik-tchik » de graines secouées en doubles croches : il remplit le haut du spectre et fait avancer.",
+            listOf(13), packKind = "perc",
+        ),
     }
 
     /**
@@ -80,7 +101,31 @@ object StarterWizard {
      * line in the second section (Groove, Couplet), where it builds up ("" = [pattern] there too).
      * [off]: the line is offered switched off (the techno rumble, an alternative to the bass line).
      */
-    data class Line(val role: Role, val pattern: String, val tip: String, val voice: Int? = null, val build: String = "", val off: Boolean = false)
+    data class Line(
+        val role: Role,
+        val pattern: String,
+        val tip: String,
+        val voice: Int? = null,
+        val build: String = "",
+        val off: Boolean = false,
+        /**
+         * Format v2 (b): more sounds played with the line, each on a free pad ([layerLanes]): a pack id (its
+         * sound of this role), "lib:<pack>:<sound>" (that very file) or "kit:<voice>" (a built-in kit voice).
+         */
+        val layers: List<String> = emptyList(),
+    )
+
+    /** Format v2 (d): the chords doubled in the Drop ([DOUBLE_TRACK]): an octave up, their top note held, or both. */
+    enum class ChordDouble { Octave, Top, Both }
+
+    /** Format v2 (f): a loop of a pack ([sound] a file of [pack]) on an audio track, [bars] long, stretched to the tempo. */
+    data class LoopSpec(val pack: String, val sound: String, val bars: Int = 1)
+
+    /**
+     * Format v2 (h): [pump] the parts ducked by the kick ("808", "chords"); [glueBlend] the drum bus's compressor
+     * mixed in parallel (1 = all compressed, null: [WizardMix]'s own); [busDrive] its saturation's drive (null: its own).
+     */
+    data class StyleMix(val pump: Set<String> = emptySet(), val glueBlend: Float? = null, val busDrive: Float? = null)
 
     /**
      * How the song is laid out. [Song]: Intro, Couplet, Refrain (rap, pop). [Club]: Intro, Groove,
@@ -202,10 +247,24 @@ object StarterWizard {
          * an Intro, the Montée and one Drop, under [SongShape.SHORT_SECONDS], instead of the 3 to 6 minutes.
          */
         val short: Boolean = false,
+        /** Format v2 (a): a drum line playing one file of its pack ("pack:sound"); the pack is in [kit] too. */
+        val kitSounds: Map<Role, String> = emptyMap(),
+        /** Format v2 (g): the « Voix » track plays this chop of a pack ("pack:sound") instead of [VOCAL_SOUND]. */
+        val vocalSample: String? = null,
+        /** Format v2 (f): a pack loop on an audio track, from the Groove to the end. */
+        val loop: LoopSpec? = null,
+        /** Format v2 (h): the pump and the drum bus. */
+        val mix: StyleMix? = null,
+        /** The full default body (lot L1): counter, shaker, doubled chords, texture, transition, parallel drum bus. */
+        val body: Boolean = false,
     ) {
         /** Packs that make this style sound right: its machines, its melodic sources, its own pack. */
         val packs: List<String> get() =
-            (kit.values + melody.packSounds.values.filter { !it.startsWith(KIT_SOUND) }.map { it.substringBefore(':') } + id).distinct()
+            (
+                kit.values + melody.packSounds.values.filter { !it.startsWith(KIT_SOUND) }.map { it.substringBefore(':') } +
+                    lines.flatMap { it.layers }.filter { !it.startsWith(KIT_SOUND) }.map { it.removePrefix(LIB_SOUND).substringBefore(':') } +
+                    listOfNotNull(loop?.pack, vocalSample?.substringBefore(':')) + id
+                ).distinct()
     }
 
     /**
@@ -229,6 +288,9 @@ object StarterWizard {
 
     /** A melodic part played by a voice of the built-in kit across the keys: "kit:<voice>" in [Melody.packSounds]. */
     const val KIT_SOUND = "kit:"
+
+    /** Format v2: one file of a pack, "lib:<pack>:<sound>" ([Line.layers]). */
+    const val LIB_SOUND = "lib:"
 
     /**
      * The style's melodic side: its usual key ([root] 0..11, 0 = Do), the mood proposed first,
@@ -313,6 +375,10 @@ object StarterWizard {
         val bassGrid: String = "",
         /** The chords inverted so that each moves as little as possible from the one before ([withChordRhythm]). */
         val chordVoiceLead: Boolean = false,
+        /** Format v2 (d): the chords doubled in the Drop (null: not doubled). */
+        val chordDouble: ChordDouble? = null,
+        /** Format v2 (e): a background track of this library sound, held from start to end ([TEXTURE_TRACK]). */
+        val texture: String? = null,
     ) {
         fun sound(part: Part) = when (part) {
             Part.Bass -> bass
@@ -1632,16 +1698,16 @@ object StarterWizard {
     private val INTRO_LINES = setOf(Role.Kick, Role.Hat)
 
     /** A club intro: the beat a DJ mixes on, kick, hats and percussion. */
-    private val CLUB_INTRO_LINES = setOf(Role.Kick, Role.Hat, Role.Perc, Role.Perc2, Role.Tom)
+    private val CLUB_INTRO_LINES = setOf(Role.Kick, Role.Hat, Role.Perc, Role.Perc2, Role.Tom, Role.Rim, Role.Conga, Role.Shaker)
 
     /** Drum lines kept for the chorus (they lift it). */
-    private val CHORUS_LINES = setOf(Role.OpenHat, Role.Perc, Role.Perc2, Role.Ride)
+    private val CHORUS_LINES = setOf(Role.OpenHat, Role.Perc, Role.Perc2, Role.Ride, Role.Conga, Role.Shaker)
 
     /** What a Break plays without chords nor lead: the hats and the percussion. */
-    private val BREAK_LINES = setOf(Role.Hat, Role.OpenHat, Role.Perc, Role.Perc2)
+    private val BREAK_LINES = setOf(Role.Hat, Role.OpenHat, Role.Perc, Role.Perc2, Role.Rim, Role.Conga, Role.Shaker)
 
     /** What a Break keeps under its chords and lead: the closed hats and the percussion. */
-    private val BREAK_KEEPS = setOf(Role.Hat, Role.Perc, Role.Perc2)
+    private val BREAK_KEEPS = setOf(Role.Hat, Role.Perc, Role.Perc2, Role.Rim, Role.Conga, Role.Shaker)
 
     /** The parts a beginner finds switched on for [style]: the recipe's (the riddim's bass alone, the acid styles' 303 alone). */
     fun defaultParts(style: Style): Set<Part> = style.melody.parts

@@ -1,6 +1,8 @@
 package com.pocketstudio.bentest
 
 import com.pocketstudio.app.journey.Journey
+import com.pocketstudio.bentest.ToutTester.Companion.fmt
+import com.pocketstudio.bentest.ToutTester.Companion.pctD
 import java.io.File
 import java.util.Locale
 
@@ -22,6 +24,12 @@ class Epreuves(
     private val perteMs: Long = 5_000,
     /** A clean song before each trial: the assistant's [STYLE] made anew (the tests on the real screens start from a fresh project). */
     private val nouveauMorceau: ((String) -> Unit)? = null,
+    /** The long listening (« Endurance »), 10 minutes on the phone. */
+    private val enduranceMs: Long = 600_000,
+    /** Round trips Mes projets › the song for « Fuite mémoire ». */
+    private val allers: Int = 20,
+    /** Each screen's frames are counted this long (« Images lentes »). */
+    private val imagesMs: Long = ToutTester.IMAGES_MS,
 ) {
     private val e = EssaiEclair(j, sonde, appli, carnet, captures, ecouteMs, ecran)
     private val t = ToutTester(j, sonde, appli, carnet, captures, ecouteMs, ecran)
@@ -29,6 +37,13 @@ class Epreuves(
     fun etapes(): List<Etape> = listOf(
         etape(PERTE, "Perte du son au profit d'une autre appli", 240_000) { perteSon() },
         etape(KIT, "Changer de kit pendant la lecture", 240_000) { changementKit() },
+        etape(ENDURANCE, "Endurance : 10 minutes de lecture", enduranceMs + 300_000) { endurance() },
+        etape(FUITE, "Fuite mémoire : ouvrir et fermer le projet $allers fois", 600_000) { fuiteMemoire() },
+        etape(FROID, "Démarrage à froid", 240_000) { demarrageFroid() },
+        etape(BRUTAL, "Sauvegarde après un arrêt brutal", 240_000) { arretBrutal() },
+        etape(VIDEO, "Export vidéo avec son", 600_000) { videoSon() },
+        etape(TAMPON, "Tampon large (« Très sûr ») contre normal", 300_000) { tamponLarge() },
+        etape(IMAGES, "Images lentes par écran, avec un écran témoin", 300_000) { imagesTemoin() },
     )
 
     private fun etape(name: String, label: String, maxMs: Long, work: () -> String) = Etape(name, label, maxMs) {
@@ -154,6 +169,245 @@ class Epreuves(
         return "kits ${chosen.joinToString(" puis ")} pendant la lecture ; ${b.text()}"
     }
 
+    /** Ten minutes of the song: it never stops, no hole, no jump, no NaN; the memory at the start and the end (MB). */
+    fun endurance(): String {
+        val step = ENDURANCE
+        propre(step)
+        e.lancerLecture()
+        val avant = appli.memoireMo()
+        val reads = ArrayList<Ecoute.Lu>()
+        val b = t.ecouter(step, enduranceMs) { reads += it }
+        val apres = appli.memoireMo()
+        e.arreter()
+        val trous = trous(reads)
+        bilan(step, "secondes" to enduranceMs / 1000, "en_lecture" to b.playing, "lectures" to b.reads, "xruns" to b.xruns, "trous" to trous,
+            "coupures" to coupures(b).size, "memoire_debut_mo" to avant, "memoire_fin_mo" to apres)
+        val rouge = ArrayList<String>()
+        if (b.playing < b.reads) rouge += "la lecture s'est arrêtée"
+        if (trous > 0) rouge += "$trous quart(s) de seconde muet(s) en lecture"
+        coupures(b).forEach { rouge += it }
+        val orange = listOfNotNull(memoireMonte(avant, apres)?.let { "mémoire $it" })
+        feu(step, (if (rouge.isNotEmpty()) Feu.ROUGE else if (orange.isNotEmpty()) Feu.ORANGE else Feu.VERT) to (rouge + orange).joinToString(", "))
+        check(rouge.isEmpty()) { rouge.joinToString(" ; ") }
+        return "${enduranceMs / 1000} s de lecture : ${b.text()} ; mémoire ${mo(avant)} puis ${mo(apres)}"
+    }
+
+    /** [allers] round trips Mes projets › « Continuer »: the same song each time, the memory at most 20 % over the start's. */
+    fun fuiteMemoire(): String {
+        val step = FUITE
+        propre(step)
+        e.arreter()
+        val id = appli.projet()?.id
+        val avant = appli.memoireMo() ?: return nonMesure(step, "mémoire de l'appli illisible ici")
+        repeat(allers) {
+            if (!j.exists("top_projects")) j.tap("tab_Structure")
+            j.tap("top_projects")
+            j.await("projects")
+            j.tap("projects_back")
+            j.await("launch")
+            j.continueLastProject()
+            j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000)
+        }
+        val apres = appli.memoireMo()
+        val back = appli.projet()?.id
+        bilan(step, "allers" to allers, "memoire_debut_mo" to avant, "memoire_fin_mo" to apres, "meme_projet" to (back == id))
+        val rouge = ArrayList<String>()
+        if (id != null && back != id) rouge += "« Continuer » rouvre un autre projet"
+        memoireMonte(avant, apres)?.let { rouge += "mémoire $it après $allers allers-retours" }
+        feu(step, (if (rouge.isEmpty()) Feu.VERT else Feu.ROUGE) to rouge.joinToString(", "))
+        check(rouge.isEmpty()) { rouge.joinToString(" ; ") }
+        return "$allers allers-retours Mes projets › Continuer : mémoire ${mo(avant)} puis ${mo(apres)}"
+    }
+
+    /** The studio closed then opened again: its time to the song (« Continuer » included), the same song. */
+    fun demarrageFroid(): String {
+        val step = FROID
+        propre(step)
+        e.arreter()
+        val id = appli.projet()?.id
+        val t0 = System.currentTimeMillis()
+        if (!appli.relancerStudio()) return nonMesure(step, "le studio ne se ferme et ne se rouvre pas d'ici")
+        rouvrir()
+        val s = (System.currentTimeMillis() - t0) / 1000.0
+        val back = appli.projet()?.id
+        bilan(step, "secondes" to fmt(s), "meme_projet" to (back == id))
+        val rouge = ArrayList<String>()
+        if (id != null && back != id) rouge += "rouvert sur un autre projet"
+        val f = when {
+            rouge.isNotEmpty() || s > FROID_ROUGE_S -> Feu.ROUGE
+            s > FROID_ORANGE_S -> Feu.ORANGE
+            else -> Feu.VERT
+        }
+        if (s > FROID_ORANGE_S) rouge += "${fmt(s)} s pour revenir au morceau"
+        feu(step, f to rouge.joinToString(", "))
+        check(f != Feu.ROUGE) { rouge.joinToString(" ; ") }
+        return "studio rouvert sur le morceau en ${fmt(s)} s"
+    }
+
+    /** The tempo raised by one, the studio closed at once (no wait for a save): opened again, the tempo is kept. */
+    fun arretBrutal(): String {
+        val step = BRUTAL
+        propre(step)
+        e.arreter()
+        val avant = appli.projet()?.tempo ?: return nonMesure(step, "projet illisible ici")
+        ouvrirTempo()
+        j.tap("tempo_plus")
+        val monte = attendre(5_000) { (appli.projet()?.tempo ?: avant) > avant }
+        val voulu = appli.projet()?.tempo ?: avant
+        fermerTempo()
+        if (!monte) error("le tempo ne monte pas avec « + » : ${fmt(avant)} bpm")
+        if (!appli.relancerStudio()) {
+            ouvrirTempo()
+            j.tap("tempo_minus")
+            fermerTempo()
+            return nonMesure(step, "le studio ne se ferme et ne se rouvre pas d'ici")
+        }
+        rouvrir()
+        val apres = appli.projet()?.tempo
+        bilan(step, "tempo_avant" to fmt(avant), "tempo_voulu" to fmt(voulu), "tempo_rouvert" to apres?.let(::fmt))
+        val ok = apres != null && kotlin.math.abs(apres - voulu) < 0.01
+        feu(step, (if (ok) Feu.VERT else Feu.ROUGE) to if (ok) "" else "tempo rouvert ${apres?.let(::fmt) ?: "?"} bpm au lieu de ${fmt(voulu)}")
+        check(ok) { "le tempo changé juste avant l'arrêt est perdu : ${apres?.let(::fmt) ?: "?"} bpm au lieu de ${fmt(voulu)}" }
+        // Back as it was, for the trials after.
+        ouvrirTempo()
+        j.tap("tempo_minus")
+        fermerTempo()
+        return "tempo ${fmt(avant)} puis ${fmt(voulu)} bpm, studio fermé aussitôt : rouvert à ${fmt(apres!!)} bpm"
+    }
+
+    /** « Vidéo pour les réseaux »: the MP4 read back has sound (its peak over −50 dBFS), not only the picture. */
+    fun videoSon(): String {
+        val step = VIDEO
+        propre(step)
+        e.arreter()
+        val text = t.export("video")
+        val file = appli.video().file ?: error("vidéo : pas de fichier")
+        val r = appli.relire(file) ?: error("vidéo illisible")
+        bilan(step, "crete" to fmt(r.creteDbtp), "duree" to fmt(r.secondes))
+        val muet = !sonVideo(r)
+        feu(step, (if (muet) Feu.ROUGE else Feu.VERT) to if (muet) "vidéo sans son (crête ${fmt(r.creteDbtp)} dBTP)" else "")
+        check(!muet) { "la vidéo n'a pas de son : crête ${fmt(r.creteDbtp)} dBTP" }
+        return "$text ; son présent"
+    }
+
+    /** The same song listened with the normal buffer, then « Très sûr » (the largest): no hole, no jump; then the normal back. */
+    fun tamponLarge(): String {
+        val step = TAMPON
+        propre(step)
+        val normal = ecouteTampon(step)
+        reglerTampon(TAMPON_LARGE)
+        val large = try {
+            ecouteTampon(step)
+        } finally {
+            reglerTampon(TAMPON_NORMAL)
+        }
+        bilan(step, "normal_xruns" to normal.xruns, "normal_coupures" to coupures(normal).size, "large_xruns" to large.xruns,
+            "large_coupures" to coupures(large).size, "large_en_lecture" to large.playing, "large_lectures" to large.reads, "large_bloc_ms" to fmt(large.blocMs.toDouble()))
+        val rouge = ArrayList<String>()
+        if (large.playing < large.reads) rouge += "la lecture s'est arrêtée avec le tampon large"
+        coupures(large).forEach { rouge += "tampon large : $it" }
+        val orange = if (large.xruns > normal.xruns) listOf("plus de décrochages avec le tampon large (${large.xruns} contre ${normal.xruns})") else emptyList()
+        feu(step, (if (rouge.isNotEmpty()) Feu.ROUGE else if (orange.isNotEmpty()) Feu.ORANGE else Feu.VERT) to (rouge + orange).joinToString(", "))
+        check(rouge.isEmpty()) { rouge.joinToString(" ; ") }
+        return "normal : ${normal.text()} ; très sûr : ${large.text()}"
+    }
+
+    private fun ecouteTampon(step: String): Ecoute.Bilan {
+        e.auStudioPro()
+        e.lancerLecture()
+        return try {
+            t.ecouter(step, ecouteMs)
+        } finally {
+            e.arreter()
+        }
+    }
+
+    /** Plus › Réglages › « Mode du son »: [bursts] chosen, then back to the song. */
+    private fun reglerTampon(bursts: Int) {
+        e.auStudioPro()
+        ouvrirReglages()
+        j.tap("buffer_$bursts")
+        j.idle(500)
+        j.tap("tab_Structure")
+        e.auStudioPro()
+    }
+
+    /** Plus › Réglages; the Plus page may come back still on Réglages (its page is remembered), then no tile is touched. */
+    private fun ouvrirReglages() {
+        if (!j.exists("tool_Reglages") && !j.exists("settings")) j.tap(if (j.exists("tab_Plus")) "tab_Plus" else "thumb_more")
+        j.awaitAny("tool_Reglages", "settings")
+        if (!j.exists("settings")) j.tap("tool_Reglages")
+        j.await("settings")
+    }
+
+    /**
+     * Each screen's slow frames with the song playing, next to a still screen's (Réglages, the témoin): a screen is red
+     * only when it is red by itself AND 10 points over the témoin (the phone's own slowness is not the app's).
+     */
+    fun imagesTemoin(): String {
+        val step = IMAGES
+        propre(step)
+        val hz = appli.rafraichissementHz()
+        e.lancerLecture()
+        val parts = LinkedHashMap<String, Double?>()
+        try {
+            ouvrirReglages()
+            parts[TEMOIN] = compter(step, TEMOIN)
+            for ((name, open, mark) in EssaiEclair.SCREENS) {
+                if (!j.exists(open)) j.tap("tab_Structure")
+                j.tap(open)
+                if (mark.endsWith("_")) {
+                    check(attendre(15_000) { j.tagsMatching(Regex(Regex.escape(mark) + ".+")).isNotEmpty() }) { "$name : écran pas reconnu" }
+                } else {
+                    j.await(mark)
+                }
+                parts[name] = compter(step, name)
+            }
+        } finally {
+            if (j.exists("projects") && !j.exists("launch")) runCatching { j.tap("projects_back") }
+            e.auStudioPro()
+            e.arreter()
+        }
+        val temoin = parts[TEMOIN]
+        bilan(step, "hz" to hz?.let { fmt(it.toDouble()) }, *parts.map { (k, v) -> k to v?.let(::pctD) }.toTypedArray())
+        if (parts.values.all { it == null }) return nonMesure(step, "images non comptées ici")
+        val rouge = parts.filterKeys { it != TEMOIN }.filterValues { it != null && imagesRouge(it, temoin) }.map { (k, v) -> "$k ${pctD(v!!)} (témoin ${temoin?.let(::pctD) ?: "?"})" }
+        val orange = parts.filterKeys { it != TEMOIN }.filterValues { it != null && !imagesRouge(it, temoin) && Feux.imagesLentes(it) != Feu.VERT }.keys.map { "$it lent comme le témoin" }
+        feu(step, (if (rouge.isNotEmpty()) Feu.ROUGE else if (orange.isNotEmpty()) Feu.ORANGE else Feu.VERT) to (rouge + orange).joinToString(", "))
+        check(rouge.isEmpty()) { "écrans lents : ${rouge.joinToString(", ")}" }
+        return "écran à ${hz?.let { fmt(it.toDouble()) } ?: "?"} Hz ; " + parts.entries.joinToString(", ") { (k, v) -> "$k ${v?.let(::pctD) ?: "?"}" }
+    }
+
+    /** The slow frames' share on the screen now ([imagesMs]); null: none counted. */
+    private fun compter(step: String, name: String): Double? {
+        j.idle(1_000)
+        appli.imagesDebut()
+        j.idle(imagesMs)
+        val (n, slow) = appli.imagesFin() ?: return null
+        carnet.add(Carnet.MESURE, step, "ecran=$name;images=$n;lentes=$slow")
+        return if (n == 0) null else slow.toDouble() / n
+    }
+
+    private fun ouvrirTempo() {
+        e.auStudioPro()
+        if (!j.exists("top_tempo")) j.tap("tab_Structure")
+        j.tap("top_tempo")
+        j.await("tempo_sheet")
+    }
+
+    private fun fermerTempo() {
+        if (j.exists("tempo_sheet")) runCatching { j.tap("tempo_close"); j.awaitGone("tempo_sheet", 5_000) }
+    }
+
+    /** After [Appli.relancerStudio]: its opening, then « Continuer » or the song, the Pro tabs. */
+    private fun rouvrir() {
+        j.awaitAny("intro", "welcome", "launch", *EssaiEclair.STUDIO, timeoutMs = 60_000)
+        j.awaitGone("intro", 60_000)
+        e.auStudioPro()
+    }
+
+    private fun mo(v: Int?) = v?.let { "$it Mo" } ?: "inconnue"
+
     /** The drums' « Changer le son », then the [index]th kit offered; its tag, null when there are not 2 kits. */
     private fun choisirKit(index: Int): String? {
         if (!j.exists(DRUMS_NAME)) {
@@ -182,6 +436,42 @@ class Epreuves(
     companion object {
         const val PERTE = "perte_son"
         const val KIT = "changement_kit"
+        const val ENDURANCE = "endurance"
+        const val FUITE = "fuite_memoire"
+        const val FROID = "demarrage_froid"
+        const val BRUTAL = "arret_brutal"
+        const val VIDEO = "video_son"
+        const val TAMPON = "tampon_large"
+        const val IMAGES = "images_temoin"
+        const val TEMOIN = "reglages"
+
+        /** « Mode du son »: the largest buffer the app offers (« Très sûr », no 8), and the normal (« Rapide »). */
+        const val TAMPON_LARGE = 6
+        const val TAMPON_NORMAL = 2
+
+        /** The studio back to the song within this (s): green; over the red: red. */
+        const val FROID_ORANGE_S = 8.0
+        const val FROID_ROUGE_S = 20.0
+
+        /** The memory may grow this much (a fifth) before it says « leak ». */
+        const val MEMOIRE_MARGE = 0.20
+
+        /** A screen's slow frames over the témoin's by this many points (and red by itself): red. */
+        const val ECART_TEMOIN = 0.10
+
+        /** « +35 Mo (+25 %) » when [apres] is over [avant] by more than [MEMOIRE_MARGE]; null: fine or unknown. */
+        fun memoireMonte(avant: Int?, apres: Int?): String? {
+            if (avant == null || apres == null || avant <= 0) return null
+            val r = (apres - avant).toDouble() / avant
+            return if (r > MEMOIRE_MARGE) String.format(Locale.ROOT, "+%d Mo (+%.0f %%)", apres - avant, r * 100) else null
+        }
+
+        /** Red: red by itself ([Feux.imagesLentes]) and [ECART_TEMOIN] over the still screen (unknown témoin: by itself). */
+        fun imagesRouge(part: Double, temoin: Double?): Boolean =
+            Feux.imagesLentes(part) == Feu.ROUGE && part > (temoin ?: 0.0) + ECART_TEMOIN
+
+        /** The video has sound: its peak read back over the silence. */
+        fun sonVideo(r: Relecture.Relu): Boolean = r.creteDbtp.isFinite() && r.creteDbtp > Ecoute.SILENCE_DB
 
         /** A light, common style: the trials measure the phone, not the heaviest song. */
         const val STYLE = "house"

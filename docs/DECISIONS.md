@@ -1584,3 +1584,4 @@
 - 2026-11-24 · lot « fable5 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-fable5.md`
 - 2026-11-24 · lot « maven » (tour-9) : 2 décision(s) dans `docs/decisions/tour-9-maven.md`
 - 2026-11-24 · lot « ci-rapide » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-ci-rapide.md`
+- 2026-11-24 · lot « gr-l1b » (tour-9) : un style à corps n'a de contre-chant que si on garde le lead ou les accords (sinon le contre-chant fabrique ses propres stabs et le morceau s'allonge, ex. reggaeton 230 s). Les 6 styles qui ont leur propre contre-chant le perdent donc avec la basse seule. Retour arrière : la condition dans StarterWizard.planFor.

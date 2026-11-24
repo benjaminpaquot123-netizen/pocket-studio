@@ -722,7 +722,7 @@
    "rhythm": "X---------------",
    "voicing": "triad",
    "octave": 3,
-   "sound": "Nappe"
+   "sound": "Orgue"
   },
   "bass": {
    "pattern": "R-----R---R-5/O-",
@@ -778,8 +778,19 @@
     "preset": "wide_alive"
    }
   ],
-  "notes": "Drift phonk (the sound most beginners mean): the hook is a pitched TR-808 cowbell melody (the kit's cowbell played across the keys, 'kit:cowbell'; 'Cloche' stands in), short motif in Phrygian, 3-3-2 rhythm, repeated and crunched; it is the signature. The 808 is distorted and slides into the octave ('/'). Chords off by default (a drone harmony). Tempo: 130 as the phonk pack (sources quote 120-140 with a backbeat, à vérifier on Murder in My Mind). Memphis variant: same grid half-time, swing 0.2, chopped pitched-down vocal (vocal_chops pack). 'Kaito Shoma – Scary Garry (2016)' was dropped: its year could not be checked.",
-  "riser": true
+  "notes": "Drift phonk (the sound most beginners mean): the hook is a pitched TR-808 cowbell melody (the kit's cowbell played across the keys, 'kit:cowbell'; 'Cloche' stands in), short motif in Phrygian, 3-3-2 rhythm, repeated and crunched; it is the signature. The 808 is distorted and slides into the octave ('/'). Chords off by default (a drone harmony). Tempo: 130 as the phonk pack (sources quote 120-140 with a backbeat, à vérifier on Murder in My Mind). Memphis variant: same grid half-time, swing 0.2, chopped pitched-down vocal (vocal_chops pack). 'Kaito Shoma – Scary Garry (2016)' was dropped: its year could not be checked. Modern body (drift phonk: Kordhell, INTERWORLD): the distorted cowbell riff stays the signature, a dark Memphis organ replaces the pad, the 808 is ducked by the kick and the drum bus is driven hard.",
+  "riser": true,
+  "counter": {
+   "sound": "Cloche FM"
+  },
+  "body": true,
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.7,
+   "bus_drive": 0.5
+  }
  },
  {
   "id": "grime",

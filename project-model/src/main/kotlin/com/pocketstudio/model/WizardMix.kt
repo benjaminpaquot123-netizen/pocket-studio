@@ -29,10 +29,13 @@ internal object WizardMix {
     private val ROLE_LUFS = mapOf(
         Role.Kick to -12f, Role.Snare to -16f, Role.Clap to -16f, Role.Hat to -27f, Role.OpenHat to -27f,
         Role.Perc to -22f, Role.Perc2 to -22f, Role.Tom to -18f, Role.Ride to -28f,
+        Role.Snap to -18f, Role.Rim to -22f, Role.Conga to -22f, Role.Shaker to -28f,
     )
 
     /** The stereo place of each line (the kick, the snare, the clap and the low end stay in the centre). */
-    val PANS = mapOf(Role.Hat to -0.2f, Role.OpenHat to 0.2f, Role.Perc to 0.35f, Role.Perc2 to -0.35f, Role.Ride to 0.25f, Role.Tom to 0.3f)
+    val PANS = mapOf(Role.Hat to -0.2f, Role.OpenHat to 0.2f, Role.Perc to 0.35f, Role.Perc2 to -0.35f, Role.Ride to 0.25f, Role.Tom to 0.3f,
+        Role.Rim to -0.15f, Role.Conga to 0.3f, Role.Shaker to -0.3f,
+    )
 
     /** The most a fader adds (1.0 = (1 / 0.8)² ≈ +3.9 dB, engine Mixer). */
     val FADER_MAX_DB = (40 * log10(1 / 0.8)).toFloat()
@@ -271,8 +274,13 @@ internal object WizardMix {
     /** Styles whose basses keep their whole crest (no clipper): the dynamic hip-hop. */
     private val NO_CLIP = setOf("lofi", "boom_bap")
 
+    /** Format v2's roles (lot L1): their pads stay as they are when the style does not play them. */
+    private val V2_ROLES = setOf(Role.Snap, Role.Rim, Role.Conga, Role.Shaker)
+
     /** S5's wider drum image (the hats, percussions, ride and toms further out; the kick, snare and clap in the centre). */
-    val PANS_V2 = mapOf(Role.Hat to -0.3f, Role.OpenHat to 0.3f, Role.Perc to 0.5f, Role.Perc2 to -0.5f, Role.Ride to 0.4f, Role.Tom to 0.45f)
+    val PANS_V2 = mapOf(Role.Hat to -0.3f, Role.OpenHat to 0.3f, Role.Perc to 0.5f, Role.Perc2 to -0.5f, Role.Ride to 0.4f, Role.Tom to 0.45f,
+        Role.Rim to -0.2f, Role.Conga to 0.45f, Role.Shaker to -0.45f,
+    )
 
     /**
      * The « Musique » bus's duck under the kick, by family: (depth, low depth, release). Club
@@ -414,7 +422,7 @@ internal object WizardMix {
         for ((role, pan) in PANS_V2) {
             val lane = role.lane
             // A line the style does not play (the last Drop's extra layer, G0) takes its place too.
-            val extra = lanes.getOrNull(lane)?.pan == 0f && style.lines.none { it.role == role }
+            val extra = lanes.getOrNull(lane)?.pan == 0f && style.lines.none { it.role == role } && role !in V2_ROLES
             if (lane in lanes.indices && (lanes[lane].pan == PANS[role] || extra)) lanes[lane] = lanes[lane].copy(pan = pan)
         }
         p = withRisingMontees(p, drumsPeak = if (style.form == SongForm.Build || style.id in PHONE_FLAT_ROLL) 0.8f else DRUMS_PEAK)

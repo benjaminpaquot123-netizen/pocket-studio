@@ -22,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -172,6 +173,14 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
             }
             etat.running -> {
                 Text("Le robot travaille… Pose le téléphone, il revient ici tout seul.", color = Neon.TextPrimary)
+                if (etat.total > 0) {
+                    Text("Test ${etat.numero} sur ${etat.total}", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_compteur"))
+                    LinearProgressIndicator(
+                        progress = { etat.numero.toFloat() / etat.total },
+                        modifier = Modifier.fillMaxWidth().testTag("bentest_compteur_barre"),
+                        color = Neon.Cyan,
+                    )
+                }
                 etat.step?.let { Text("Étape : $it", color = Neon.Cyan, modifier = Modifier.testTag("bentest_step")) }
             }
             else -> {

@@ -31,4 +31,27 @@ class EpreuvesTest {
         val gap = fine.toMutableList().also { it[2] = lu(0.3f, gap = 40f, bloc = 5.33f) }
         assertTrue(Epreuves.coupures(Ecoute.bilan(gap, 0)).single().contains("ms entre deux blocs"))
     }
+
+    @Test
+    fun theMemoryLeaksOverAFifthMore() {
+        assertEquals(null, Epreuves.memoireMonte(200, 240))
+        assertEquals("+41 Mo (+21 %)", Epreuves.memoireMonte(200, 241))
+        assertEquals(null, Epreuves.memoireMonte(null, 900))
+    }
+
+    @Test
+    fun aScreenIsSlowOnlyTenPointsOverTheStillOne() {
+        assertTrue(Epreuves.imagesRouge(0.30, 0.05))
+        // The phone itself is slow: the still screen at 25 %, the screen at 30 %: not the app's fault.
+        assertTrue(!Epreuves.imagesRouge(0.30, 0.25))
+        assertTrue(!Epreuves.imagesRouge(0.12, 0.0))
+        assertTrue(Epreuves.imagesRouge(0.20, null))
+    }
+
+    @Test
+    fun aSilentVideoHasNoSound() {
+        assertTrue(Epreuves.sonVideo(Relecture.Relu(10.0, -3.0)))
+        assertTrue(!Epreuves.sonVideo(Relecture.Relu(10.0, -90.0)))
+        assertTrue(!Epreuves.sonVideo(Relecture.Relu(10.0, Double.NEGATIVE_INFINITY)))
+    }
 }

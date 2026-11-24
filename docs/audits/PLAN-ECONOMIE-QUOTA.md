@@ -58,3 +58,9 @@ Base : `docs/audits/ultra/METHODE-V4.md` §4 (mesure du 15 novembre : coût ≈ 
 2. Ligne dans CLAUDE.md (rôle du second, L3), ligne dans `docs/DECISIONS.md`.
 3. Ouvrir le second et lui confier les portails en cours (ci-rapide, robot1b, gr-l0).
 4. Fiches suivantes du Grand remplacement : L2, L4, L5.
+
+## 5. Version appliquée après l'audit Fable (`PLAN-ECONOMIE-QUOTA-AUDIT.md`)
+- Tous les correctifs de l'audit sont pris : gains revus (L1 20 à 35 %, L5 2 à 5 %, L7 sans gain de quota), L2 en lecture seule, L3 étendu (> 5 k jetons), L6 à 2 h, neuf garde-fous du second, « relais entre lots » retiré de L1.
+- L0 ajouté : compactage plus tôt (fenêtre 140 k, compactage vers 116 k) et fiche de reprise avant une longue attente.
+- L4 (Fable) : reste au cas par cas, Benjamin décide (règle du 15 novembre inchangée).
+- Mesure : on compte aussi les réveils à froid du chef et la part de machinerie dans ses actions.

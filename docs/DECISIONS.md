@@ -1583,3 +1583,4 @@
 - 2026-11-23 (nuit) : Benjamin dort. Consigne : silence total vers lui (chef et discussions), tous droits entre discussions, toutes demandes et licences acceptées, options recommandées prises d'office. Retour arrière : sa prochaine consigne.
 - 2026-11-24 · lot « fable5 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-fable5.md`
 - 2026-11-24 · lot « maven » (tour-9) : 2 décision(s) dans `docs/decisions/tour-9-maven.md`
+- 2026-11-24 · économie de quota : plan audité par Fable appliqué (second pour la machinerie, pas de journal brut, compactage à 140 k). Raison : le chef coûte le plus. Retour arrière : remettre 200000 dans .claude/settings.json et la ligne « fusionne seule » de CLAUDE.md.

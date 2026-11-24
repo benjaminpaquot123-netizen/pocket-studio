@@ -14,10 +14,11 @@ repo="$(git -C "$root" remote get-url origin | sed -E 's#.*github.com[:/]##; s#\
 # « gh api <path> --jq … » lines, or the same lines from the public API (curl, then python3 for the jq part).
 api_lines() {  # <path> <runs|jobs>
   local json
-  if gh api "$1" --jq "$( [ "$2" = runs ] && echo '.workflow_runs[] | "\(.id)\t\(.name)\t\(.status)\t\(.conclusion)"' || echo '.jobs[] | "\(.name)\t\(.status)\t\(.conclusion)"')" 2>/dev/null; then
+  # Every job, not GitHub's first page of 30: the unit tests are a matrix of shards (lot « ci-rapide »).
+  if gh api "$1" --paginate --jq "$( [ "$2" = runs ] && echo '.workflow_runs[] | "\(.id)\t\(.name)\t\(.status)\t\(.conclusion)"' || echo '.jobs[] | "\(.name)\t\(.status)\t\(.conclusion)"')" 2>/dev/null; then
     return 0
   fi
-  json="$(curl -fsS --max-time 20 -H 'Accept: application/vnd.github+json' "${PS_GITHUB_API:-https://api.github.com}/$1" 2>/dev/null)" || return 1
+  json="$(curl -fsS --max-time 20 -H 'Accept: application/vnd.github+json' "${PS_GITHUB_API:-https://api.github.com}/$1$([ "$2" = jobs ] && echo '?per_page=100')" 2>/dev/null)" || return 1
   python3 -I -c '
 import json, sys
 d = json.loads(sys.stdin.read())
@@ -41,12 +42,14 @@ build="absent"; emu="absent"
 if [ -n "$sha" ] && runs="$(api_lines "repos/$repo/actions/runs?head_sha=$sha&per_page=20" runs)"; then
   while IFS=$'\t' read -r id name status conclusion; do
     [ -n "$name" ] || continue
+    [ "$conclusion" = null ] && conclusion=""  # a run or a job still going has no conclusion: say its status
     printf '%s\t%s\n' "$name" "${conclusion:-$status}"
     case "$name" in
       *mulat*) emu="$(state_of "$status" "$conclusion")" ;;
     esac
     jobs="$(api_lines "repos/$repo/actions/runs/$id/jobs" jobs || true)"
     while IFS=$'\t' read -r jname jstatus jconclusion; do
+      [ "$jconclusion" = null ] && jconclusion=""
       [ -n "$jname" ] && printf '  %s\t%s\n' "$jname" "${jconclusion:-$jstatus}"
       case "$jname" in
         "") ;;

@@ -62,7 +62,7 @@ JNIEXPORT jfloat JNICALL Java_com_pocketstudio_engine_NativeEngine_cpuLoad(JNIEn
     return host().engine().cpuLoad();
 }
 
-JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_setBufferBursts(JNIEnv*, jobject, jint bursts) {
+JNIEXPORT void JNICALL Java_com_pocketstudio_engine_NativeEngine_nativeSetBufferBursts(JNIEnv*, jobject, jint bursts) {
     host().setBufferBursts(bursts);
 }
 

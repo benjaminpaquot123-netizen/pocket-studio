@@ -592,8 +592,21 @@ object NativeEngine {
     /** Click volume 0..1 (0.5 = default). */
     fun setMetronomeLevel(level: Float) = post(CMD_METRONOME_LEVEL, level.coerceIn(0f, 1f))
 
-    /** Output buffer in bursts: 2 = fast (lowest latency), 4 = safe, 6 = very safe. Applies at once. */
-    external fun setBufferBursts(bursts: Int)
+    /**
+     * Output buffer in bursts: 2 = fast (lowest latency), 4 = safe, 6 = very safe. Applies at once,
+     * without restarting the stream. The auto boost ([AutoBuffer]) may ask for more; a new choice
+     * resets it.
+     */
+    fun setBufferBursts(bursts: Int) {
+        synchronized(autoBuffer) {
+            if (bursts != userBursts) autoBuffer.reset()
+            userBursts = bursts
+            if (isNative) nativeSetBufferBursts(maxOf(bursts, autoBuffer.bursts))
+        }
+    }
+    private external fun nativeSetBufferBursts(bursts: Int)
+    private val autoBuffer = AutoBuffer()
+    private var userBursts = 2
 
     /**
      * Piano-roll note [index] (ticks: 24 per sixteenth). Packing matches NoteTrack::pack and, past
@@ -610,7 +623,15 @@ object NativeEngine {
     /** Writes into [out] (size [LANES]) how many times each lane has fired. */
     external fun laneTriggers(out: IntArray)
 
-    fun streamInfo(): StreamInfo = StreamInfo.fromArray(nativeStreamInfo())
+    /** Reads the stream state; repeated underruns raise the buffer one notch ([AutoBuffer]). */
+    fun streamInfo(): StreamInfo {
+        val info = StreamInfo.fromArray(nativeStreamInfo())
+        if (isNative) synchronized(autoBuffer) {
+            autoBuffer.update(userBursts, info.xruns, info.restarts, info.running, System.nanoTime() / 1_000_000)
+                ?.let { nativeSetBufferBursts(it) }
+        }
+        return info
+    }
 
     fun latencyState(): LatencyState = LatencyState.entries[latencyTestState()]
 

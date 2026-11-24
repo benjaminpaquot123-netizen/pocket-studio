@@ -1211,11 +1211,11 @@ class Scenarios(
         j.idle(1_000)
         val relance = !sonde.lire().playing
         if (relance) e.lancerLecture()
-        val b = t.ecouter(FOCUS, 5_000)
-        e.arreter()
+        val b = try { t.ecouter(FOCUS, 5_000) } finally { e.arreter() }
         ecoute(FOCUS, b)
         bilan(FOCUS, "relance" to if (relance) "oui" else "non")
         feuEcoute(FOCUS, b)
+        if (relance) feu(FOCUS, Feu.ORANGE to "la musique ne repart pas seule après la perte du son")
         check(b.reads > 0) { "aucune mesure" }
         check(b.playing * 2 >= b.reads) { "après la perte du son, la musique ne repart pas : ${b.text()}" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son" }
@@ -1227,7 +1227,7 @@ class Scenarios(
     fun tampon(): String {
         auStudio()
         val by = e.lancerLecture()
-        val normal = t.ecouter("${TAMPON}_normal", 5_000)
+        val normal = t.ecouter("${TAMPON}_normal", tamponMs)
         val avant = sonde.lire().buffer
         if (!appli.tampon(TAMPON_GROS)) {
             e.arreter()
@@ -1241,8 +1241,8 @@ class Scenarios(
             gros = t.ecouter(TAMPON, tamponMs)
         } finally {
             appli.tampon(null)
+            e.arreter()
         }
-        e.arreter()
         ecoute(TAMPON, gros)
         bilan(TAMPON, "tampon_avant" to avant, "tampon_pendant" to pendant, "decrochages_normal" to normal.xruns)
         feuEcoute(TAMPON, gros)
@@ -1366,7 +1366,6 @@ class Scenarios(
         }
 
         val SEULS = listOf(
-            Scenario(DEMARRAGE, "Mesure : le démarrage à froid", NIVEAU_MESURE, 180_000, 60, "le temps d'Android du lancement à la première image"),
             Scenario(ENDURANCE, "Mesure : 10 minutes de lecture", NIVEAU_MESURE, 720_000, 640, "l'arrêt et les décrochages sur 10 min ; la mémoire avant et après"),
             Scenario(FUITE, "Mesure : 20 fois « Mes projets » ouvert et fermé", NIVEAU_MESURE, 600_000, 300, "la mémoire après la 20e fois contre la 1re"),
             Scenario(FOCUS, "Moyen : une autre appli prend le son", NIVEAU_MOYEN, 120_000, 40, "la lecture repart après, le studio devant"),
@@ -1374,6 +1373,7 @@ class Scenarios(
             Scenario(VIDEO_SON, "Moyen : la vidéo exportée a du son", NIVEAU_MOYEN, 600_000, 120, "la vidéo relue : image, durée, crête du son"),
             Scenario(ARRET, "Moyen : l'appli tuée d'un coup", NIVEAU_MOYEN, 120_000, 40, "le tempo changé est sur le disque avant l'arrêt"),
             Scenario(ARRET_RELU, "Moyen : le morceau après l'arrêt brutal", NIVEAU_MOYEN, 120_000, 30, "le même morceau et son tempo, projet et disque"),
+            Scenario(DEMARRAGE, "Mesure : le démarrage à froid", NIVEAU_MESURE, 180_000, 20, "le temps d'Android de la relance après l'arrêt brutal à la première image"),
         )
         private const val PAQUET = "paquet"
 

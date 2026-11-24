@@ -1,6 +1,6 @@
 # Tour 9, lot gr-house2 : relecture neuve
 
-relu : 59e96ad5 (diff 042775a8f..59e96ad5, sous-agent neuf, aucun fichier modifié)
+relu : e25240e1 (diff 042775a8f..e25240e1, code relu à 59e96ad5, depuis texte du rapport seul, sous-agent neuf, aucun fichier modifié)
 
 Vérifié : StyleRecipes.kt et les 4 guides régénérés sans écart ; deep_house identique ; bass.json, techno*.json, THIRD_PARTY.md intouchés ; ni audio ni APK ; 14 catalogues à 887 clés, 5 textes neufs partout, les 6 orphelins retirés ne sont plus utilisés nulle part ; conga, bongo et cajon existent dans libraries.json ; la 303 ne touche ni note ni accent sur les pas 0, 4, 8, 12.
 

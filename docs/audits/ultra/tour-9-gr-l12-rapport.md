@@ -41,6 +41,12 @@ En trap, la perte vient du bus batterie (le 808, pad 17, est dans la même tranc
 - `:project-model:test` vert (textes du guide traduits dans les 14 langues, registre coréen poli).
 - App : Tour9EffectAddTest, FxBrowseTest et voisins verts ; captures `effects_picker` et `effects_full` réenregistrées et regardées en entier (pastilles neuves alignées sur leurs voisines).
 
+tests: *Tour9EffectAddTest *FxBrowseTest *ScreenshotTest.effectsPicker *ScreenshotTest.effectsFull *HelpCoverageTest *GuideJourneyTest
+
+chemin: Mixeur → piste → Effets → « + » → liste : Bus batterie, Graves mono, Attaque à leur place | test: ScreenshotTest#effectsPicker
+chemin: Mixeur → piste à 8 effets → liste grisée avec les trois effets neufs | test: ScreenshotTest#effectsFull
+chemin: Mixeur → piste → Effets → dernier effet de la liste ajouté et affiché | test: Tour9EffectAddTest#f029_anEffectAddedFromTheBottomOfTheListIsShown
+
 ## Ce qui n'est pas vert
 - `verifyRoborazziDebug` sur ScreenshotTest : `rhythm`, `rhythm_after_wizard`, `session`, `timeline` diffèrent déjà sans ce lot (« Tous les pads » passe à la ligne) : hors de ma zone, non touchés.
 - Claque du kick en trap en léger recul avec les réglages B : à régler dans les recettes (conseil V4 ci-dessus).

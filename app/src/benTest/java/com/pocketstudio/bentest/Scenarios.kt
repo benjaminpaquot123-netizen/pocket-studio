@@ -373,9 +373,10 @@ class Scenarios(
         e.arreter()
         ecoute(EFFETS, b)
         feuEcoute(EFFETS, b)
+        val undone = retirer(ch, before[ch].sorted(), 1) ?: return nonMesure(EFFETS, LAISSE)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec l'effet" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec l'effet : ${b.text()}" }
-        check(retirer(ch, before[ch].sorted(), 1)) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
+        check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         return "égaliseur ajouté à la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
     }
 
@@ -591,13 +592,14 @@ class Scenarios(
     /**
      * Tidying after an effect scenario: « Annuler » touched up to [fois] times until strip [ch] has its effects
      * [was] again, in the project and on the disk. False when it does not: the strip is left dirty, and the next
-     * scenarios would find no room (C10), so the scenario says it rather than pass in silence.
+     * scenarios would find no room (C10), so the scenario says it rather than pass in silence. Null: no « Annuler » in
+     * the bar (the app's setting), so not measured rather than a false red.
      */
-    private fun retirer(ch: Int, was: List<String>, fois: Int): Boolean {
+    private fun retirer(ch: Int, was: List<String>, fois: Int): Boolean? {
         fun clean(fx: List<List<String>>) = fx.getOrNull(ch).orEmpty().sorted() == was
         repeat(fois) {
             if (clean(lu().effets)) return@repeat
-            if (!j.exists("top_undo")) return false
+            if (!j.exists("top_undo")) return null
             val n = lu().effets.getOrNull(ch).orEmpty().size
             j.tap("top_undo")
             attendre(5_000) { lu().effets.getOrNull(ch).orEmpty().size < n }
@@ -626,9 +628,10 @@ class Scenarios(
         e.arreter()
         ecoute(EFFETS_PLUSIEURS, b)
         feuEcoute(EFFETS_PLUSIEURS, b)
+        val undone = retirer(ch, was, TROIS.size) ?: return nonMesure(EFFETS_PLUSIEURS, LAISSE)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec les trois effets" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec les trois effets : ${b.text()}" }
-        check(retirer(ch, was, TROIS.size)) { "les effets restent sur la piste ${ch + 1} : « Annuler » ne les a pas retirés (${lu().effets[ch].joinToString(", ")})" }
+        check(undone) { "les effets restent sur la piste ${ch + 1} : « Annuler » ne les a pas retirés (${lu().effets[ch].joinToString(", ")})" }
         return "${TROIS.joinToString(", ")} sur la piste ${ch + 1}, enregistrés ; lecture par $by : ${b.text()} ; retirés par « Annuler »"
     }
 
@@ -893,7 +896,7 @@ class Scenarios(
         val b = try { t.ecouter(step, courtMs) } finally { e.arreter() }
         ecoute(step, b)
         feuEcoute(step, b)
-        val undone = retirer(ch, before, 1)
+        val undone = retirer(ch, before, 1) ?: return nonMesure(step, LAISSE)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec $type" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec $type : ${b.text()}" }
         check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
@@ -1117,6 +1120,9 @@ class Scenarios(
         const val REPRISE = "reprise_fermeture"
         const val ARRIERE_PLAN = "arriere_plan"
         const val EFFETS_PLUSIEURS = "effets_plusieurs"
+
+        /** Why an effect scenario is not measured when it cannot take its effect off (no « Annuler » in the bar). */
+        const val LAISSE = "pas de bouton « Annuler » dans la barre (réglage de l'appli) : l'effet reste sur la piste"
         const val ANNULER_EFFET = "annuler_effet"
         const val TEMPO_LECTURE = "tempo_lecture"
         const val ROTATION_LECTURE = "rotation_lecture"

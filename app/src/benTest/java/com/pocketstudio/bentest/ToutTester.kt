@@ -223,7 +223,7 @@ class ToutTester(
         appli.volume()?.takeIf { it.coupe() }?.let { return nonMesure("latence", "$SON_COUPE (${it.text()})") }
         // Tour 9, C5: without RECORD_AUDIO the engine answers MicUnavailable; that is the phone's setting, not a fault.
         if (appli.microAutorise() == false) {
-            return nonMesure("latence", "micro non autorisé : touche « Autoriser le micro » dans les réglages de l'appli pour mesurer la latence")
+            return nonMesure("latence", "micro non autorisé : touche « Autoriser le micro » sur l'écran de BenStudio Test pour mesurer la latence")
         }
         e.auStudioPro()
         val values = ArrayList<Double>()

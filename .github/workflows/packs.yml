@@ -16,6 +16,19 @@ on:
       - scripts/packs/**
       - .github/workflows/packs.yml
   workflow_dispatch:
+    inputs:
+      freesound_query:
+        description: "Freesound witness run: a search word (empty = no witness run)"
+        required: false
+        default: ''
+      oauth_code:
+        description: "Freesound: one-time authorization code (10 minutes), to try an original too"
+        required: false
+        default: ''
+      pkce_verifier:
+        description: "Freesound: the PKCE verifier that goes with the code"
+        required: false
+        default: ''
 
 # Read-only by default; the publish job writes the release.
 permissions:
@@ -54,6 +67,24 @@ jobs:
           echo "ids=$(python3 -c 'import json;print(json.dumps([s["id"] for s in json.load(open("scripts/packs/styles.json"))["styles"]]))')" >> "$GITHUB_OUTPUT"
           echo "libraries=$(python3 -c 'import json;print(json.dumps([p["id"] for p in json.load(open("scripts/packs/libraries.json"))["packs"]]))')" >> "$GITHUB_OUTPUT"
           echo "instruments=$(python3 -c 'import json;print(json.dumps([p["id"] for p in json.load(open("scripts/packs/instruments.json"))["instruments"]]))')" >> "$GITHUB_OUTPUT"
+
+  # Witness run, by hand only: can a GitHub machine search Freesound, fetch a preview and (with a
+  # fresh code) an original? Sizes and formats go to the log; nothing is kept, stored or published.
+  freesound-witness:
+    if: github.event_name == 'workflow_dispatch' && inputs.freesound_query != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Search, preview, original
+        env:
+          FREESOUND_API_KEY: ${{ secrets.FREESOUND_API_KEY }}
+          # Public by design (it is in the authorization link).
+          FREESOUND_CLIENT_ID: qIGbvEOPUhMLeF5GahbU
+          FREESOUND_QUERY: ${{ inputs.freesound_query }}
+          OAUTH_CODE: ${{ inputs.oauth_code }}
+          PKCE_VERIFIER: ${{ inputs.pkce_verifier }}
+        run: python3 scripts/packs/freesound_probe.py
 
   # One download of the model (858 MB), shared through the cache: thirty jobs fetching it at once
   # from the release get HTTP 500s.

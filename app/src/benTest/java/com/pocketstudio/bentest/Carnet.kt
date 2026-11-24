@@ -99,7 +99,15 @@ class Passage(
     private val crashText: () -> String? = { null },
     /** Hears each step the app died in, once noted (the clues of what the screen shows now). */
     private val onCrash: (String) -> Unit = {},
+    /** Notes « Test 3 sur 12 : réussi / raté » after each step (the robot's runs). */
+    private val compteur: Boolean = false,
 ) {
+    /** How many tests this run launches (the list after the retest's cut). */
+    val total: Int get() = etapes.size
+
+    /** « Test [numero] sur [total] »: the place of [e] in the launched list (1 for the first). */
+    fun numero(e: Etape): Int = etapes.indexOfFirst { it.name == e.name } + 1
+
     /** Steps begun and never ended (the app died in them), each noted once as a crash. Returns their names. */
     fun recover(): List<String> {
         val lines = carnet.lines()
@@ -143,6 +151,10 @@ class Passage(
                     if (t is PasseExterne) carnet.add(Carnet.REUSSI, e.name, "${Externe.RAISON} : ${t.tag}")
                     else carnet.add(Carnet.ECHEC, e.name, (if (t is EtapeTropLongue) "trop longue : " else "") + (t.message ?: t.javaClass.simpleName).take(400)) },
             )
+            if (compteur) {
+                val failed = carnet.lines().lastOrNull { it.step == e.name && (it.kind == Carnet.REUSSI || it.kind == Carnet.ECHEC) }?.kind == Carnet.ECHEC
+                carnet.add(Carnet.NOTE, e.name, "Test ${numero(e)} sur $total : ${if (failed) "raté" else "réussi"}")
+            }
         }
         if (!finished()) carnet.add(Carnet.FINI, "")
     }

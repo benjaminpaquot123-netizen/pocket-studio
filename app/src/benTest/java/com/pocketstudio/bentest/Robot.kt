@@ -57,6 +57,9 @@ object Robot {
         val message: String? = null,
         /** « Écoute au micro »: the 2 s extracts of the microphone the report holds (said before it is sent). */
         val extraits: Int = 0,
+        /** « Test [numero] sur [total] » while the robot works (0 when no run is counted). */
+        val numero: Int = 0,
+        val total: Int = 0,
     )
 
     /** The essai éclair (T0) and « Tout tester » (T1, niveau 1). */
@@ -193,14 +196,14 @@ object Robot {
             val steps = subset(all, which, retest(app))
             // A scenario the app died in: its clues (the ones taken as it died, else the screen now).
             val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), enHaut = driver::enHaut) else null
-            val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() }, onCrash = { clues?.apresPlantage(it) })
+            val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() }, onCrash = { clues?.apresPlantage(it) }, compteur = true)
             Garde.installer(app, shots)
             runCatching {
                 passage.run { e ->
                     Garde.etape(e.name, e.maxMs)
                     driver.deadlineMs = System.currentTimeMillis() + e.maxMs
                     sorties.etape = e.name
-                    _etat.update { it.copy(step = e.label) }
+                    _etat.update { it.copy(step = e.label, numero = passage.numero(e), total = passage.total) }
                 }
             }.onFailure { c.add(Carnet.NOTE, "robot", "arrêt : $it") }
             Garde.etape(null)

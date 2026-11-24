@@ -16,3 +16,15 @@ Le lot joue le corps commun du format v2 : les sons de couche sur les pads libre
 8. Mineur (tests) : `project-model/src/test/kotlin/com/pocketstudio/model/BodyHeardTest.kt:98`. theDrummersTomsLeaveTheSnap utilise trap, qui est de forme Rap (chanté), dont le break passe par les charlés, et qui n'a ni ligne Tom ni Snap. Le chemin des toms n'est probablement pas parcouru, et le test passerait sans doute aussi sur l'ancien code. Le test `:90` theChordsPumpIsKept ne vérifie qu'« une PUMP sur une piste d'instrument quelconque », pas sur le canal des accords.
 
 Verdict : 0 bloquant, 1 grave
+
+## Relecture 2 (sous-agent neuf, sur 9e812b78 : ajout 2 et grave de la liste des sons)
+
+1. Grave : `StarterWizard.kt:2522`. La Doublure n'était vidée qu'en dehors des Drops (`spec.base != 2`), sans coupe de scène (`windowed`) ni lien avec les accords : un Post-refrain sans accords, ou le faux drop du riddim, l'auraient gardée. Corrigé dans 5948fdcc : coupée comme les accords, muette dans une scène sans accords. Le test (BodyHeardTest#theBodyKeepsTheSongsShape, tous styles × humeurs × parties) est vert avant et après : aucun style actuel n'atteint ce cas. C'est donc une protection, pas un défaut entendu.
+2. Mineur : les 6 styles qui ont leur propre contre-chant le perdent quand on garde la basse seule. Choix noté dans DECISIONS.md.
+3. Mineur : avec les accords seuls, le contre-chant fait encore deux tours de stabs. Le commentaire de planFor (« with neither ») ne promet que le cas sans lead ni accords. Non traité.
+4. Mineur : SoundCategoriesTest#aNamedSoundOfAnotherKindDoesNotCrashTheList ne vérifie pas l'ordre des catégories. Non traité.
+5. Mineur : `scripts/packs/recipes_to_kotlin.py:315` contrôle les slugs sur un pack qui est déjà dans PACKS. Hors des fichiers du lot (scripts/packs/), noté.
+6. Mineur : la plage `[low, high]` des parties d'instrument n'est lue nulle part. Noté pour le lot de la forme du morceau.
+7. Mineur : BodyHeardTest dure 22 s. Accepté : il couvre tous les styles.
+
+Verdict : 0 bloquant, 1 grave (corrigé, protection).

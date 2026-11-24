@@ -87,7 +87,7 @@ object FxPresets {
         FxPreset("punch", "Punch", "Plus serré et plus fort, pour une batterie qui claque.", "Rythme",
             listOf(fx(EffectType.COMPRESSOR, 0.45f, 0.45f, 0.45f, 0.3f), fx(EffectType.SATURATION, 0.25f, 0.8f, 0.6f, 0.7f))),
         // L12: attack and weight for the whole kit, and the lows in mono.
-        FxPreset("body", "Corps", "Des coups plus francs et une batterie plus dense, au même volume moyen.", "Rythme",
+        FxPreset("body", "Corps", "Des coups plus francs, une batterie plus dense et un peu plus forte.", "Rythme",
             listOf(fx(EffectType.TRANSIENT, 0.65f, 0.5f, 1f, 0.5f), fx(EffectType.DRUM_BUS, 0.5f, 0.6f, 0.5f))),
         FxPreset("mono_lows", "Graves au centre", "Les graves au milieu, solides sur une sono comme sur un téléphone.", "Couleur",
             listOf(fx(EffectType.MID_SIDE_EQ, 0.5f, 0.5f, 0.5f))),

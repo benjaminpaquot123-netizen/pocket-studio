@@ -48,7 +48,7 @@ chemin: Mixeur → piste à 8 effets → liste grisée avec les trois effets neu
 chemin: Mixeur → piste → Effets → dernier effet de la liste ajouté et affiché | test: Tour9EffectAddTest#f029_anEffectAddedFromTheBottomOfTheListIsShown
 
 ## Relecture neuve (0 grave)
-- Moyen corrigé : le texte du préréglage « Corps » promettait « le kick garde son pic » ; l'attaque peut monter un coup d'environ 3 dB sur la piste. Nouveau texte : « au même volume moyen » (14 langues).
+- Moyen corrigé : le texte du préréglage « Corps » promettait « le kick garde son pic » ; l'attaque peut monter un coup d'environ 3 dB sur la piste. Deuxième relecture : « au même volume moyen » était faux aussi (le bus batterie monte le volume moyen de +1,34 dB, test l12_tests.inc). Texte final : « Des coups plus francs, une batterie plus dense et un peu plus forte. » (14 langues).
 - Mineurs laissés (pour un lot suivant) : retombée de l'attaque figée sur les sons de moins de 40 ms (slowR_ = fastR_) ; sous le plancher, le bus batterie relève encore un petit signal jusqu'à +12 dB ; « Graves mono » à 0 garde un passe-haut 10 Hz sur les côtés ; latence du bus batterie non compensée (comme Saturation) ; `DrumBus::p_` de taille 4 ; nom court « Mono » ambigu ; pas de test Kotlin des deux préréglages.
 
 ## Ce qui n'est pas vert

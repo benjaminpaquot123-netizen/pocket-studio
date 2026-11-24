@@ -18,13 +18,14 @@ chemin: Lecture d'un morceau de chaque style, moteur joué comme sur le téléph
 Pour le refaire : `scripts/cpu-bench.sh --bricks --cmds build/live-bench/cmds` (résultat : `build/cpu-bench/bricks.md`).
 
 Ce qu'on en retient :
-- Les **effets** pèsent le plus (44 % du total), devant les **sons** (32 %) et le **mixage** (18 %). La **réverbération** ne pèse presque rien (2 %) : ce n'est pas elle qu'il faut alléger.
-- Quatre briques font plus de la moitié de la charge : le synthé (18 %), la saturation (14 %), les tranches du mixeur (12 %) et l'écrêteur (11 %).
-- Les styles les plus lourds sont la famille drum and bass (jump_up, liquid_dnb, neurofunk, dnb), à cause du synthé et, pour jump_up, de la distorsion. Les plus légers sont les styles acid.
-- La mesure elle-même ne coûte presque rien : charge égale avec et sans, à la précision du banc.
+- Les **effets** pèsent le plus (45 % du total), devant les **sons** (31 %) et le **mixage** (19 %). La **réverbération** ne pèse presque rien (2 %) : ce n'est pas elle qu'il faut alléger.
+- Quatre briques font plus de la moitié de la charge : le synthé (17 %), la saturation (14 %), les tranches du mixeur (12 %) et l'écrêteur (11 %).
+- Les styles les plus lourds sont jump_up, liquid_dnb et neurofunk (famille drum and bass), à cause du synthé et, pour jump_up, de la distorsion. Les plus légers sont les styles acid.
+- La mesure elle-même coûte peu : sur trois morceaux (acid_house, jump_up, lofi, 60 s), la charge avec la mesure va de 0,96 à 1,08 fois la charge sans.
+- Le tableau ne compte que le morceau : la somme des briques retombe sur la charge du moteur (acid_house : 4,1 % par les briques, 4,13 % au compteur du banc). Une première version comptait aussi la scène de référence du budget (environ 1,3 point de trop par style, batterie gonflée) ; la relecture l'a vu, le banc remet le compteur à zéro avant le morceau et le tableau a été refait.
 
 
-Machine : x86_64, 4 cœurs, Intel(R) Xeon(R) Processor @ 2.10GHz. Blocs de 96 échantillons, moteur joué comme sur le téléphone (ps_live).
+Machine : x86_64, 4 cœurs, Intel(R) Xeon(R) Processor @ 2.30GHz. Blocs de 96 échantillons, moteur joué comme sur le téléphone (ps_live).
 **Sur un PC, c'est l'ordre des briques qui compte, pas les chiffres** : seule la tablette dit si un style coupe.
 « Charge » = temps de calcul sur temps de musique. Les parts sont des parts de cette charge.
 
@@ -32,95 +33,95 @@ Machine : x86_64, 4 cœurs, Intel(R) Xeon(R) Processor @ 2.10GHz. Blocs de 96 é
 
 | Style | Charge % | Sons % | Réverbération % | Effets % | Mixage % | Reste du moteur % | Les trois briques les plus chères |
 |---|---:|---:|---:|---:|---:|---:|---|
-| jump_up | 15,6 | 33,3 | 0,7 | 51,9 | 11,3 | 2,8 | synth 27,1, fx-saturation 14,5, fx-distortion 13,7 |
-| liquid_dnb | 12,8 | 45,0 | 0,8 | 38,3 | 12,7 | 3,3 | synth 31,5, fx-saturation 10,4, fx-clipper 9,2 |
-| neurofunk | 12,3 | 37,2 | 0,9 | 46,4 | 12,5 | 3,1 | synth 29,8, fx-saturation 10,9, fx-clipper 9,5 |
-| dnb | 11,3 | 41,5 | 1,0 | 38,8 | 14,9 | 3,8 | synth 32,6, fx-saturation 12,6, fx-clipper 11,4 |
-| dubstep | 10,4 | 32,5 | 1,0 | 47,7 | 15,1 | 3,6 | synth 25,1, fx-saturation 13,0, fx-clipper 11,2 |
-| riddim | 10,4 | 32,6 | 1,0 | 48,9 | 13,5 | 4,0 | synth 26,2, fx-saturation 12,6, fx-distortion 10,9 |
-| reggaeton | 10,3 | 47,5 | 1,0 | 34,8 | 13,3 | 3,4 | synth 31,9, drums 13,9, fx-clipper 10,8 |
-| pop | 10,0 | 41,5 | 1,1 | 38,8 | 14,9 | 3,7 | synth 23,9, fx-clipper 12,7, drums 11,4 |
-| phonk | 9,9 | 32,3 | 2,7 | 36,9 | 24,7 | 3,4 | mixer-strips 18,1, synth 15,2, drums 14,3 |
-| trap | 9,8 | 31,6 | 5,0 | 40,1 | 19,7 | 3,6 | synth 14,7, mixer-strips 14,0, fx-clipper 10,8 |
-| house | 9,7 | 30,1 | 1,2 | 48,2 | 16,3 | 4,3 | fx-saturation 15,0, synth 14,2, fx-clipper 13,5 |
-| jungle | 9,7 | 32,8 | 1,1 | 47,1 | 15,1 | 3,9 | synth 23,4, fx-saturation 19,1, fx-clipper 11,7 |
-| drill | 9,6 | 31,4 | 3,0 | 40,9 | 20,9 | 3,7 | mixer-strips 14,8, synth 13,2, drums 12,8 |
-| lofi | 9,6 | 50,8 | 3,0 | 22,5 | 20,0 | 3,7 | plaits 22,6, synth 17,7, mixer-strips 15,1 |
-| synthwave | 9,4 | 38,4 | 1,1 | 41,2 | 15,7 | 3,6 | synth 22,6, fx-clipper 14,0, drums 11,9 |
-| amapiano | 9,2 | 31,7 | 1,3 | 45,5 | 17,0 | 4,4 | fx-saturation 15,7, synth 13,4, plaits 11,8 |
-| deep_house | 9,0 | 35,5 | 1,3 | 42,8 | 16,2 | 4,3 | synth 14,1, fx-saturation 11,9, plaits 11,6 |
-| grime | 8,9 | 31,6 | 5,8 | 42,2 | 16,3 | 4,2 | synth 20,0, fx-clipper 12,8, fx-saturation 11,5 |
-| afro_house | 8,9 | 24,1 | 1,3 | 52,5 | 17,7 | 4,5 | fx-saturation 15,7, synth 14,4, fx-clipper 13,6 |
-| tech_house | 8,8 | 28,4 | 1,1 | 49,9 | 16,5 | 4,1 | fx-saturation 19,5, synth 18,8, fx-clipper 12,4 |
-| boom_bap | 8,6 | 37,4 | 3,7 | 29,3 | 25,2 | 4,4 | synth 21,1, mixer-strips 18,3, drums 13,0 |
-| disco | 8,6 | 31,9 | 1,4 | 45,9 | 16,6 | 4,3 | synth 13,5, fx-saturation 12,4, fx-clipper 12,3 |
-| uk_garage | 8,3 | 30,7 | 1,2 | 45,7 | 18,2 | 4,2 | synth 14,9, fx-clipper 13,5, mixer-strips 11,6 |
-| hard_techno | 8,2 | 21,7 | 1,4 | 53,2 | 18,8 | 4,9 | fx-saturation 24,3, mixer-strips 12,1, fx-clipper 11,9 |
-| speed_garage | 8,2 | 27,9 | 1,2 | 47,7 | 18,7 | 4,5 | fx-saturation 15,3, synth 13,5, fx-clipper 13,4 |
-| industrial_techno | 8,1 | 16,5 | 1,3 | 53,5 | 24,2 | 4,4 | mixer-strips 17,2, fx-saturation 16,6, fx-clipper 12,9 |
-| gabber | 8,0 | 20,2 | 1,4 | 50,0 | 24,0 | 4,5 | fx-saturation 17,3, mixer-strips 16,9, fx-clipper 14,2 |
-| trance | 7,9 | 23,8 | 1,4 | 51,8 | 18,2 | 4,9 | fx-saturation 17,2, fx-clipper 14,8, synth 14,4 |
-| afrobeats | 7,6 | 30,4 | 1,4 | 44,9 | 18,7 | 4,6 | synth 18,8, fx-clipper 13,0, fx-saturation 12,9 |
-| jersey_club | 7,2 | 28,5 | 6,5 | 40,4 | 19,9 | 4,7 | drums 16,5, fx-saturation 13,5, mixer-strips 12,1 |
-| detroit | 7,0 | 21,6 | 1,6 | 51,2 | 20,3 | 5,2 | fx-saturation 14,7, fx-clipper 14,5, mixer-strips 12,4 |
-| retro_techno | 7,0 | 20,0 | 1,6 | 52,4 | 21,0 | 5,0 | fx-saturation 19,5, fx-clipper 13,8, mixer-strips 13,4 |
-| techno | 6,8 | 20,7 | 1,4 | 53,6 | 19,5 | 4,8 | fx-saturation 18,0, fx-clipper 15,1, mixer-strips 12,8 |
-| minimal | 6,3 | 22,1 | 4,9 | 47,0 | 20,8 | 5,3 | fx-saturation 15,6, mixer-strips 12,9, synth 12,1 |
-| acidcore | 6,2 | 20,8 | 1,8 | 45,0 | 27,4 | 5,1 | fx-saturation 22,6, mixer-strips 19,1, acid-303 15,5 |
-| acid_techno | 6,0 | 12,4 | 1,9 | 43,2 | 36,8 | 5,6 | mixer-strips 27,3, fx-saturation 17,7, fx-clipper 10,4 |
-| acid_house | 5,9 | 21,4 | 1,9 | 42,0 | 29,1 | 5,5 | mixer-strips 19,6, fx-saturation 17,8, drums 10,1 |
+| jump_up | 11,2 | 32,3 | 0,7 | 52,6 | 11,6 | 2,7 | synth 26,2, fx-saturation 14,6, fx-distortion 14,3 |
+| liquid_dnb | 9,8 | 43,9 | 0,9 | 39,0 | 13,1 | 3,2 | synth 30,4, fx-saturation 10,5, fx-clipper 9,5 |
+| neurofunk | 9,3 | 36,1 | 0,9 | 47,1 | 12,9 | 3,0 | synth 28,8, fx-saturation 11,0, fx-clipper 9,7 |
+| phonk | 7,8 | 31,4 | 2,8 | 37,5 | 24,9 | 3,3 | mixer-strips 18,2, synth 14,3, drums 14,2 |
+| pop | 7,6 | 40,4 | 1,1 | 39,7 | 15,4 | 3,5 | synth 22,6, fx-clipper 13,0, drums 11,6 |
+| dnb | 7,6 | 40,1 | 1,1 | 39,6 | 15,6 | 3,6 | synth 31,4, fx-saturation 12,8, fx-clipper 11,7 |
+| reggaeton | 7,6 | 46,0 | 1,1 | 35,8 | 13,8 | 3,3 | synth 30,5, drums 13,8, fx-clipper 11,0 |
+| trap | 7,6 | 30,6 | 5,0 | 40,8 | 20,2 | 3,4 | mixer-strips 14,4, synth 13,8, fx-clipper 11,0 |
+| dubstep | 7,5 | 31,3 | 1,1 | 48,1 | 15,5 | 4,0 | synth 24,1, fx-saturation 13,0, fx-clipper 11,4 |
+| riddim | 7,4 | 32,0 | 1,1 | 49,7 | 14,1 | 3,1 | synth 25,6, fx-saturation 12,7, fx-distortion 11,1 |
+| synthwave | 7,4 | 37,7 | 1,1 | 41,8 | 16,0 | 3,3 | synth 21,8, fx-clipper 14,4, drums 12,0 |
+| jungle | 7,2 | 32,0 | 1,1 | 47,6 | 15,6 | 3,7 | synth 22,7, fx-saturation 19,1, fx-clipper 12,0 |
+| tech_house | 7,1 | 27,7 | 1,2 | 50,4 | 16,8 | 3,9 | fx-saturation 19,5, synth 18,2, fx-clipper 12,5 |
+| lofi | 7,0 | 49,3 | 3,1 | 23,3 | 20,8 | 3,5 | plaits 22,0, synth 16,7, mixer-strips 15,6 |
+| house | 6,7 | 29,0 | 1,2 | 48,9 | 16,9 | 4,0 | fx-saturation 15,0, fx-clipper 13,7, synth 13,6 |
+| uk_garage | 6,5 | 30,0 | 1,2 | 46,2 | 18,6 | 4,0 | synth 14,2, fx-clipper 13,8, mixer-strips 12,0 |
+| drill | 6,5 | 30,5 | 3,0 | 41,5 | 21,6 | 3,4 | mixer-strips 15,2, drums 12,7, synth 12,5 |
+| amapiano | 6,5 | 30,7 | 1,3 | 46,4 | 17,5 | 4,1 | fx-saturation 15,8, synth 13,0, mixer-strips 11,6 |
+| speed_garage | 6,4 | 27,6 | 1,2 | 48,1 | 19,0 | 4,1 | fx-saturation 15,3, fx-clipper 13,5, synth 13,2 |
+| afro_house | 6,4 | 23,3 | 1,3 | 53,3 | 18,0 | 4,1 | fx-saturation 15,8, fx-clipper 13,8, synth 13,7 |
+| grime | 6,3 | 30,3 | 5,9 | 43,2 | 16,8 | 3,8 | synth 18,9, fx-clipper 13,2, fx-saturation 11,8 |
+| deep_house | 6,2 | 34,0 | 1,3 | 43,9 | 16,9 | 3,9 | synth 13,3, fx-saturation 12,1, fx-clipper 11,4 |
+| industrial_techno | 6,1 | 16,2 | 1,4 | 53,7 | 24,5 | 4,3 | mixer-strips 17,5, fx-saturation 16,5, fx-clipper 12,8 |
+| disco | 6,1 | 31,2 | 1,4 | 46,4 | 17,0 | 4,0 | synth 13,0, fx-saturation 12,5, fx-clipper 12,4 |
+| afrobeats | 5,9 | 29,4 | 1,4 | 45,8 | 19,1 | 4,2 | synth 18,0, fx-saturation 13,0, fx-clipper 13,0 |
+| boom_bap | 5,9 | 36,2 | 3,6 | 30,3 | 25,9 | 4,1 | synth 20,0, mixer-strips 18,9, fx-saturation 12,9 |
+| gabber | 5,8 | 20,0 | 1,4 | 50,0 | 24,5 | 4,2 | mixer-strips 17,2, fx-saturation 17,2, fx-clipper 14,2 |
+| techno | 5,7 | 20,2 | 1,5 | 53,9 | 19,8 | 4,7 | fx-saturation 17,9, fx-clipper 15,2, mixer-strips 12,9 |
+| trance | 5,7 | 22,9 | 1,4 | 52,7 | 18,6 | 4,4 | fx-saturation 17,3, fx-clipper 15,0, synth 13,9 |
+| hard_techno | 5,7 | 21,1 | 1,4 | 53,5 | 19,4 | 4,5 | fx-saturation 24,3, mixer-strips 12,5, fx-clipper 12,0 |
+| jersey_club | 5,6 | 27,9 | 7,0 | 40,7 | 20,1 | 4,3 | drums 15,9, fx-saturation 13,5, mixer-strips 12,1 |
+| detroit | 5,0 | 20,9 | 1,6 | 52,1 | 20,5 | 4,8 | fx-saturation 14,9, fx-clipper 14,6, mixer-strips 12,7 |
+| retro_techno | 5,0 | 19,7 | 1,6 | 52,5 | 21,5 | 4,7 | fx-saturation 19,6, fx-clipper 14,0, mixer-strips 13,7 |
+| minimal | 4,7 | 21,1 | 5,2 | 47,7 | 21,1 | 4,8 | fx-saturation 15,8, mixer-strips 13,0, synth 11,5 |
+| acidcore | 4,4 | 20,7 | 1,8 | 45,0 | 27,5 | 4,9 | fx-saturation 22,5, mixer-strips 19,2, acid-303 15,6 |
+| acid_house | 4,1 | 21,1 | 1,9 | 42,5 | 29,5 | 5,0 | mixer-strips 19,9, fx-saturation 17,9, fx-clipper 9,7 |
+| acid_techno | 4,0 | 12,0 | 1,9 | 43,5 | 37,5 | 5,0 | mixer-strips 27,7, fx-saturation 18,1, fx-clipper 10,3 |
 
 ### Les briques classées par coût (tous styles ensemble)
 
 | Rang | Brique | Famille | Part du total % | Charge moyenne % | Pire style | Charge dans ce style % |
 |---:|---|---|---:|---:|---|---:|
-| 1 | synth | Sons | 17,6 | 1,6 | jump_up | 4,2 |
-| 2 | fx-saturation | Effets | 13,8 | 1,2 | jump_up | 2,3 |
-| 3 | mixer-strips | Mixage | 12,1 | 1,1 | phonk | 1,8 |
-| 4 | fx-clipper | Effets | 11,1 | 1,0 | jump_up | 1,4 |
-| 5 | drums | Sons | 8,4 | 0,8 | reggaeton | 1,4 |
-| 6 | master-chain | Mixage | 6,1 | 0,5 | phonk | 0,7 |
-| 7 | engine-rest | Reste du moteur | 4,1 | 0,4 | dnb | 0,4 |
-| 8 | plaits | Sons | 3,4 | 0,3 | lofi | 2,2 |
-| 9 | fx-filter | Effets | 2,5 | 0,2 | afro_house | 0,5 |
-| 10 | fx-compressor | Effets | 2,3 | 0,2 | jump_up | 0,3 |
-| 11 | live-fx | Effets | 1,9 | 0,2 | boom_bap | 0,2 |
-| 12 | fx-bass-exciter | Effets | 1,9 | 0,2 | neurofunk | 0,4 |
-| 13 | fx-ping-pong | Effets | 1,9 | 0,2 | trap | 0,3 |
-| 14 | fx-distortion | Effets | 1,7 | 0,2 | jump_up | 2,1 |
-| 15 | reverb-bus | Réverbération | 1,6 | 0,1 | boom_bap | 0,3 |
+| 1 | synth | Sons | 16,9 | 1,1 | liquid_dnb | 3,0 |
+| 2 | fx-saturation | Effets | 13,9 | 0,9 | jump_up | 1,6 |
+| 3 | mixer-strips | Mixage | 12,4 | 0,8 | phonk | 1,4 |
+| 4 | fx-clipper | Effets | 11,3 | 0,7 | synthwave | 1,1 |
+| 5 | drums | Sons | 8,3 | 0,5 | phonk | 1,1 |
+| 6 | master-chain | Mixage | 6,2 | 0,4 | phonk | 0,5 |
+| 7 | engine-rest | Reste du moteur | 3,8 | 0,3 | liquid_dnb | 0,3 |
+| 8 | plaits | Sons | 3,3 | 0,2 | lofi | 1,5 |
+| 9 | fx-filter | Effets | 2,4 | 0,2 | afro_house | 0,3 |
+| 10 | fx-compressor | Effets | 2,2 | 0,1 | jump_up | 0,2 |
+| 11 | fx-ping-pong | Effets | 2,2 | 0,1 | afrobeats | 0,3 |
+| 12 | fx-bass-exciter | Effets | 1,9 | 0,1 | neurofunk | 0,3 |
+| 13 | live-fx | Effets | 1,7 | 0,1 | phonk | 0,1 |
+| 14 | fx-distortion | Effets | 1,7 | 0,1 | jump_up | 1,6 |
+| 15 | reverb-bus | Réverbération | 1,6 | 0,1 | phonk | 0,2 |
 | 16 | fx-widener | Effets | 1,5 | 0,1 | liquid_dnb | 0,2 |
-| 17 | fx-param-eq | Effets | 1,3 | 0,1 | jump_up | 0,2 |
-| 18 | delay-bus | Effets | 1,0 | 0,1 | amapiano | 0,1 |
-| 19 | fx-chorus | Effets | 0,9 | 0,1 | liquid_dnb | 0,3 |
-| 20 | fx-auto-pan | Effets | 0,9 | 0,1 | liquid_dnb | 0,4 |
+| 17 | fx-param-eq | Effets | 1,3 | 0,1 | liquid_dnb | 0,1 |
+| 18 | delay-bus | Effets | 1,1 | 0,1 | tech_house | 0,1 |
+| 19 | fx-chorus | Effets | 1,0 | 0,1 | liquid_dnb | 0,2 |
+| 20 | fx-auto-pan | Effets | 0,9 | 0,1 | liquid_dnb | 0,3 |
 | 21 | fx-none | Effets | 0,8 | 0,1 | jump_up | 0,1 |
-| 22 | fx-ott | Effets | 0,7 | 0,1 | jump_up | 0,4 |
-| 23 | acid-303 | Sons | 0,7 | 0,1 | acidcore | 1,0 |
+| 22 | fx-ott | Effets | 0,7 | 0,0 | neurofunk | 0,3 |
+| 23 | acid-303 | Sons | 0,7 | 0,0 | acidcore | 0,7 |
 | 24 | audio-clips | Sons | 0,5 | 0,0 | neurofunk | 0,0 |
-| 25 | pad-sampler | Sons | 0,3 | 0,0 | afro_house | 0,2 |
-| 26 | fx-reverb | Réverbération | 0,3 | 0,0 | grime | 0,2 |
+| 25 | pad-sampler | Sons | 0,3 | 0,0 | afro_house | 0,1 |
+| 26 | fx-reverb | Réverbération | 0,3 | 0,0 | jersey_club | 0,2 |
 | 27 | multi-sampler | Sons | 0,2 | 0,0 | liquid_dnb | 0,0 |
 | 28 | bass-808 | Sons | 0,2 | 0,0 | liquid_dnb | 0,0 |
-| 29 | fx-flanger | Effets | 0,2 | 0,0 | riddim | 0,3 |
+| 29 | fx-flanger | Effets | 0,2 | 0,0 | riddim | 0,2 |
 | 30 | sample-instrument | Sons | 0,1 | 0,0 | phonk | 0,1 |
 | 31 | soundfont | Sons | 0,1 | 0,0 | liquid_dnb | 0,0 |
-| 32 | fx-pump | Effets | 0,1 | 0,0 | drill | 0,0 |
-| 33 | fx-vinyl | Effets | 0,1 | 0,0 | lofi | 0,2 |
+| 32 | fx-pump | Effets | 0,1 | 0,0 | jersey_club | 0,0 |
+| 33 | fx-vinyl | Effets | 0,1 | 0,0 | lofi | 0,1 |
 | 34 | fx-echo | Effets | 0,0 | 0,0 | minimal | 0,1 |
-| 35 | fx-eq | Effets | 0,0 | 0,0 | boom_bap | 0,0 |
-| 36 | fx-crusher | Effets | 0,0 | 0,0 | industrial_techno | 0,0 |
+| 35 | fx-eq | Effets | 0,0 | 0,0 | lofi | 0,0 |
+| 36 | fx-crusher | Effets | 0,0 | 0,0 | phonk | 0,0 |
 | 37 | fx-tape-stop | Effets | 0,0 | 0,0 | jungle | 0,0 |
 
 ### Les familles
 
 | Famille | Part du total % |
 |---|---:|
-| Effets | 44,4 |
-| Sons | 31,5 |
-| Mixage | 18,2 |
-| Reste du moteur | 4,1 |
-| Réverbération | 1,8 |
+| Effets | 45,1 |
+| Sons | 30,6 |
+| Mixage | 18,6 |
+| Reste du moteur | 3,8 |
+| Réverbération | 1,9 |
 
 Briques : `fx-*` = un effet d'insert (pistes et master), `mixer-strips` = tranches, envois et sommes,
 `master-chain` = chaîne du master (limiteur compris), `live-fx` = effets du Live, `engine-rest` = séquenceur et notes.
@@ -145,7 +146,7 @@ Le budget n'est pas en millisecondes. Dans le même passage et sur le même fil,
 - Où il est jugé : `scripts/live-bench.sh`, déjà lancé par la CI. Chaque morceau écrit une ligne `BUDGET style=… ratio=… ok`, et un dépassement devient une alerte (le banc échoue). Les morceaux sont trop gros pour les tests du moteur, d'où ce partage.
 - Dans les tests du moteur (`engine/host-tests/stylebudget_tests.inc`) : le verdict lit le rapport et pas la vitesse, il dit quand il ne peut pas juger, la table couvre les 37 styles une fois chacun, la scène de référence est stable dans un même passage (5,82 % puis 5,81 %) et coûte bien plus qu'un moteur au repos (5,75 % contre 1,09 %).
 - Tenue de la mesure : rejoués une seconde fois, quatre morceaux à la fois, les 37 rapports restent entre 0,92 et 1,09 fois la première mesure, loin de la marge de 1,5.
-- Il ne juge pas : un morceau en solo, un style sans budget (« none »), ni une construction qui ne compte pas les allocations ou qui profile (« not-counted »).
+- Il ne juge pas : un morceau en solo, un style sans budget (« none »), une construction qui ne compte pas les allocations ou qui profile, ni un passage différent de celui qui a servi à poser la table, c'est-à-dire autre chose que 150 s jouées une fois, sans boucle (« not-counted »). Raison : le rapport dépend du passage joué (acid_house : 0,58 sur 20 s, 0,80 sur 150 s).
 
 | Style | Rapport mesuré | Limite (× 1,5) | Rapport mesuré / première mesure, second passage |
 |---|---:|---:|---:|
@@ -194,4 +195,5 @@ Limite connue : les rapports ont été posés sur un processeur x86. Sur un ARM,
 - Rien de rouge sur la machine du lot. CI complète non attendue (règle du tour).
 - C1 n'est pas prouvé : aucune mesure sur la tablette dans ce lot. Le classement donne l'ordre des briques à alléger, pas la garantie que le son ne coupe plus.
 - C3 : « tenté ». La limite des blocs égaux coup sur coup (lecture 2,0) reste.
-- Les budgets sont posés sur x86 seulement.
+- Les budgets sont posés sur x86 seulement, sur la machine du lot. Un dépassement fait échouer le banc d'écoute de la CI : à la première CI, si un style dépasse sur le runner de GitHub sans que le moteur ait changé, c'est la table qu'il faut reposer (ou la marge), pas le moteur.
+- Trois morceaux rejoués 150 s après la correction du banc (acid_house, techno, lofi) : « ok ». Les 37 n'ont pas été rejoués après elle (le chemin jugé n'a pas changé pour un passage de 150 s).

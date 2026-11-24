@@ -11,3 +11,6 @@
 - Gradle was run once outside the pre-flight, to record the 37 `.pslive` songs (none existed on the machine and both measures need them). Cost: one recording run. The fiche said « pas de Gradle sauf le pré-vol »; no app test was run with it.
 - The git submodules were fetched (`git submodule update --init --depth 1`) to build the engine; nothing committed from it.
 - Sound unchanged, checked: six songs rendered by `ps_live` before and after the lot are byte-identical.
+- Brick table measures the song alone: ps_live zeroes the profile counters after the first reference scene and prints the BRICK lines before the second one (the fresh review found the reference scene counted in). Why: brick sums must equal the callback load. Undo: revert the three lines in ps_live.cpp.
+- The style budget judges only the run it was calibrated on (150 s, played once, 96 frames); any other length or a looped soak prints "not-counted". Why: the ratio depends on the passage played. Undo: drop the two conditions on `counted`.
+- A solo run no longer plays the reference scene (it was never judged). Undo: one line.

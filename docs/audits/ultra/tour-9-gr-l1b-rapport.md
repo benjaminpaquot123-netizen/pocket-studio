@@ -23,7 +23,7 @@ Choix et limites :
 - Quand la ligne Tom d'un style se tait dans une partie (Break), le fill de toms ne joue que le tom grave (pad 7) : le pad 8 reste à sa ligne.
 - Les couches copient le pattern et le canal de leur ligne (−4 dB), pas l'automation de volume du pad source.
 - La boucle se coupe dans les parties d'Intro du début (avant la première scène pleine), joue ensuite jusqu'au bout.
-- Transitions douces : seulement le crochet `StarterWizard.softTransitions(project, shape)` (rend le projet tel quel), appelé nulle part encore ; le lot transitions le remplira.
+- Transitions douces : seulement le crochet `StarterWizard.softTransitions(project, shape)` (rend le projet tel quel), appelé dans build juste après la forme du morceau ; le lot transitions le remplira.
 - Moteur C++ non touché. StyleRecipes.kt et scripts/packs/ non touchés.
 - Aucun style de StyleRecipes n'a encore `body = true` ni couches / boucle / voix : le live-bench ne fait donc pas encore entendre ces sons ; seuls les tests du modèle les prouvent.
 

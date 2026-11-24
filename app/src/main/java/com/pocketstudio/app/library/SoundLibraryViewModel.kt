@@ -235,9 +235,10 @@ internal fun soundCategoriesOf(role: Role, style: StarterWizard.Style?, installe
     // Format v2 (a): the very file the style names for this line ("pack:sound"), first, when its pack is downloaded.
     val named = style?.kitSounds?.get(role)?.let { com.pocketstudio.model.PackRefs.resolve(it, installed) }
     if (named != null) {
-        val pack = packs.first { it.id == PACK_PREFIX + named.packId }
-        val chosen = pack.options.firstOrNull { (it.ref as SoundRef.Pack).sound == named.sound }
-        if (chosen != null) return listOf(pack.copy(options = listOf(chosen) + (pack.options - chosen))) + listOf(kit) + (packs - pack)
+        // A named file of another kind (a loop named for the hat): its pack offers nothing for this line, the usual order then.
+        val pack = packs.firstOrNull { it.id == PACK_PREFIX + named.packId }
+        val chosen = pack?.options?.firstOrNull { (it.ref as SoundRef.Pack).sound == named.sound }
+        if (pack != null && chosen != null) return listOf(pack.copy(options = listOf(chosen) + (pack.options - chosen))) + listOf(kit) + (packs - pack)
     }
     val first = packs.filter { it.id == PACK_PREFIX + machine }
     val own = packs.filter { it.id == PACK_PREFIX + styleId } - first.toSet()

@@ -52,13 +52,13 @@ class RecipeSources(unittest.TestCase):
         with tempfile.TemporaryDirectory() as t:
             packs = Path(t) / 'packs'
             fake_pack(packs, 'percussions_acoustiques', ['perc_shaker_01.flac', 'perc_shaker_02.flac', 'perc_conga_01.flac',
-                                                         'kick_grosse_caisse_01.flac'], credits=[CC0])
+                                                         'kick_grosse_caisse_01.flac', 'open_hat_ride_01.flac'], credits=[CC0])
             fake_pack(packs, 'bruitages_maison', ['clap_doigts_01.flac', 'perc_pingpong_01.flac'], credits=[CC0])
             fake_pack(packs, 'instrument_bois', ['apercu.flac'], credits=[CC0], instrument={'zones': []})
             fake_pack(packs, 'sons_jeux', ['fx_piece_01.flac'], credits=[CC0])
             build_index.build(packs, Path(t) / 'dist')
             entries = {e['id']: e for e in json.loads((Path(t) / 'dist' / 'index.json').read_text())['packs']}
-        self.assertEqual(['conga', 'grosse_caisse', 'shaker'], entries['percussions_acoustiques']['recipeSounds'])
+        self.assertEqual(['conga', 'grosse_caisse', 'ride', 'shaker'], entries['percussions_acoustiques']['recipeSounds'])
         self.assertEqual(['doigts', 'pingpong'], entries['bruitages_maison']['recipeSounds'])
         self.assertEqual({'flute': [67, 100]}, entries['instrument_bois']['recipeParts'])
         self.assertNotIn('recipeSounds', entries['sons_jeux'])

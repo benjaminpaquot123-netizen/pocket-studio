@@ -16,7 +16,7 @@ def fake_pack(root, pack_id, sounds, credits=None, instrument=None):
     for s in sounds:
         (d / s).write_bytes(b'not audio, placeholder')
     manifest = {'id': pack_id, 'name': pack_id, 'family': 'Test', 'version': 1,
-                'sounds': [{'file': s, 'kind': s.split('_', 1)[0], 'name': s, 'tags': []} for s in sounds]}
+                'sounds': [{'file': s, 'kind': 'open_hat' if s.startswith('open_hat_') else s.split('_', 1)[0], 'name': s, 'tags': []} for s in sounds]}
     if credits is not None:
         manifest['credits'] = credits
     if instrument is not None:

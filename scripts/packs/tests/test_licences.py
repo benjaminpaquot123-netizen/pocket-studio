@@ -61,6 +61,25 @@ class LicenceWhitelist(unittest.TestCase):
                 with self.assertRaises(SystemExit, msg=repr(credits)):
                     build_index.build(Path(t) / 'packs', Path(t) / 'dist')
 
+    def test_an_empty_library_pack_is_left_out_not_fatal(self):
+        # library_pack.py leaves sounds: [] and credits: [] when nothing was kept: set aside, as before.
+        with tempfile.TemporaryDirectory() as t:
+            fake_pack(Path(t) / 'packs', 'ok_pack', ['perc_shaker_01.flac'], credits=[CC0])
+            fake_pack(Path(t) / 'packs', 'vide', [], credits=[])
+            build_index.build(Path(t) / 'packs', Path(t) / 'dist')
+            ids = [e['id'] for e in json.loads((Path(t) / 'dist' / 'index.json').read_text())['packs']]
+            self.assertEqual(['ok_pack'], ids)
+
+    def test_a_catalogue_pack_without_credits_is_refused(self):
+        # Only the model's packs (styles.json) may come without credits.
+        with tempfile.TemporaryDirectory() as t:
+            fake_pack(Path(t) / 'packs', 'percussions_acoustiques', ['perc_shaker_01.flac'])
+            with self.assertRaises(SystemExit):
+                build_index.build(Path(t) / 'packs', Path(t) / 'dist')
+
+    def test_cc_by_2_5_is_accepted(self):
+        self.assertTrue(build_index.licence_ok('CC-BY-2.5'))
+
     def test_build_passes_whitelisted_and_generated_packs(self):
         with tempfile.TemporaryDirectory() as t:
             fake_pack(Path(t) / 'packs', 'lib_pack', ['perc_shaker_01.flac'], credits=[CC0, {**CC0, 'licence': 'CC-BY-4.0'}])

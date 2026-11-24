@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 
@@ -19,6 +20,14 @@ struct SoftClipShape {
     }
 };
 
+// Tour 9 (B2): a drive whose input stayed at exactly zero for kQuietFrames frames is let to rest.
+// Its filters' tail is then far under any float sound (the slowest HIIR pole leaves less than 1e-30
+// of a full-scale input after 2048 frames): the shaper is put back to its rest state (the state a
+// zero input would reach) and, while the input stays at zero, outputs zeros without running its 4x
+// filters and its curve. Only for a curve through 0 (f(0) = 0): a curve with a constant output at
+// rest keeps running. The silent frames of a track (between notes, a muted part) then cost nothing.
+constexpr int kQuietFrames = 2048;
+
 // One channel of a drive's waveshaper with its aliasing cut twice: run at 4x (HIIR), and with
 // first-order antiderivative anti-aliasing (Parker, Zavalishin, Le Bivic, DAFx-16): each output
 // is the shape's mean between two inputs, the integral of the shape over their segment, which
@@ -37,11 +46,26 @@ public:
         prevX_ = 0.0f;
         dry_.fill(0.0f);
         pos_ = 0;
+        quiet_ = 0;
     }
 
     // The curve at u = x * gain + offset, at each of the oversampled points.
     template <class Shape>
     float process(float x, float gain, float offset, const Shape& shape) {
+        const bool zero = x == 0.0f && offset == 0.0f;
+        if (zero && quiet_ >= kQuietFrames) return 0.0f;  // at rest: dry() is 0 too (the ring is all zeros)
+        quiet_ = zero ? quiet_ + 1 : 0;
+        if (quiet_ == kQuietFrames) {
+            const float y = shapeOne(x, gain, offset, shape);
+            rest(shape);
+            return y;
+        }
+        return shapeOne(x, gain, offset, shape);
+    }
+
+private:
+    template <class Shape>
+    float shapeOne(float x, float gain, float offset, const Shape& shape) {
         dry_[static_cast<size_t>(pos_)] = x;
         pos_ = pos_ == kDelay ? 0 : pos_ + 1;
         float up[Oversampler::kFactor];
@@ -63,8 +87,25 @@ public:
         }
         return os_.down(up);
     }
+    // The rest state after kQuietFrames zeros (see kQuietFrames); a curve not through 0 never rests.
+    template <class Shape>
+    void rest(const Shape& shape) {
+        if (shape.f(0.0) != 0.0) {
+            quiet_ = 0;
+            return;
+        }
+        os_.reset();
+        prevU_ = 0.0;
+        prevF_ = shape.F(0.0);
+        prevX_ = 0.0f;
+        dry_.fill(0.0f);
+    }
+
+public:
     // The input kDelay frames back (after process()): the dry signal lined up with the shaped one.
     float dry() const { return dry_[static_cast<size_t>(pos_)]; }
+    // At rest (see kQuietFrames): the next zero input skips the filters and the curve.
+    bool atRest() const { return quiet_ >= kQuietFrames; }
 
     // Audit stage 4: the same maths as process(), frame for frame and bit for bit, for a pair of
     // channels and up to kMaxBlock frames at once, in three passes (all the way up, the curve,
@@ -76,6 +117,44 @@ public:
     template <class Shape>
     static void processPair(DriveShaper& a, DriveShaper& b, const float* xa, const float* xb, float* wetA, float* wetB, float* dryA,
                             float* dryB, int n, const float* gain, const float* offset, const Shape& shape) {
+        // Frame by frame the zero runs of process(): a block is cut after the frame where a
+        // channel's run reaches kQuietFrames, so that channel rests on that very frame whatever
+        // the block size (the same output for blocks of 1 or of 64 frames).
+        for (int from = 0; from < n;) {
+            int qa = a.quiet_, qb = b.quiet_, to = from;
+            const bool resting = qa >= kQuietFrames && qb >= kQuietFrames;
+            bool idle = true, restA = false, restB = false;
+            while (to < n && !restA && !restB) {
+                const bool still = offset == nullptr || offset[to] == 0.0f;
+                const bool za = still && xa[to] == 0.0f, zb = still && xb[to] == 0.0f;
+                restA = za && qa == kQuietFrames - 1;
+                restB = zb && qb == kQuietFrames - 1;
+                qa = za ? std::min(qa + 1, kQuietFrames) : 0;
+                qb = zb ? std::min(qb + 1, kQuietFrames) : 0;
+                idle = idle && za && zb;
+                ++to;
+            }
+            const int m = to - from;
+            if (resting && idle) {
+                // Both at rest on zeros: the rest state is the filters' and the curve's fixed point
+                // for a zero input, so running them would give these very zeros.
+                for (int i = from; i < to; ++i) wetA[i] = wetB[i] = dryA[i] = dryB[i] = 0.0f;
+            } else {
+                runPair(a, b, xa + from, xb + from, wetA + from, wetB + from, dryA + from, dryB + from, m, gain + from,
+                        offset ? offset + from : nullptr, shape);
+            }
+            a.quiet_ = qa;
+            b.quiet_ = qb;
+            if (restA) a.rest(shape);
+            if (restB) b.rest(shape);
+            from = to;
+        }
+    }
+
+private:
+    template <class Shape>
+    static void runPair(DriveShaper& a, DriveShaper& b, const float* xa, const float* xb, float* wetA, float* wetB, float* dryA,
+                        float* dryB, int n, const float* gain, const float* offset, const Shape& shape) {
         constexpr int kF = Oversampler::kFactor;
         float upA[kMaxBlock * kF], upB[kMaxBlock * kF];
         for (int i = 0; i < n; ++i) {
@@ -90,8 +169,6 @@ public:
             wetB[i] = b.os_.down(upB + i * kF);
         }
     }
-
-private:
     float delayDry(float x) {
         dry_[static_cast<size_t>(pos_)] = x;
         pos_ = pos_ == kDelay ? 0 : pos_ + 1;
@@ -136,6 +213,7 @@ private:
     float prevX_ = 0.0f;
     std::array<float, kDelay + 1> dry_{};
     int pos_ = 0;
+    int quiet_ = 0;  // frames of zero input in a row (see kQuietFrames)
 };
 
 // Audit stage 4: two DriveShapers of a stereo pair as one, for the stereo drive effects (saturation,
@@ -153,12 +231,44 @@ public:
         dryA_.fill(0.0f);
         dryB_.fill(0.0f);
         pos_ = 0;
+        quiet_ = 0;
     }
 
-    // As DriveShaper::processPair (a, b: the two channels; offset may be null).
+    // At rest (see kQuietFrames): the next zero block skips the filters and the curve.
+    bool atRest() const { return quiet_ >= kQuietFrames; }
+
+    // As DriveShaper::processPair (a, b: the two channels; offset may be null). The pair rests as
+    // one: after kQuietFrames frames where both channels are zero, cut on that very frame.
     template <class Shape>
     void process(const float* xa, const float* xb, float* wetA, float* wetB, float* dryA, float* dryB, int n, const float* gain,
                  const float* offset, const Shape& shape) {
+        for (int from = 0; from < n;) {
+            int q = quiet_, to = from;
+            const bool resting = q >= kQuietFrames;
+            bool idle = true, restNow = false;
+            while (to < n && !restNow) {
+                const bool z = (offset == nullptr || offset[to] == 0.0f) && xa[to] == 0.0f && xb[to] == 0.0f;
+                restNow = z && q == kQuietFrames - 1;
+                q = z ? std::min(q + 1, kQuietFrames) : 0;
+                idle = idle && z;
+                ++to;
+            }
+            if (resting && idle) {
+                for (int i = from; i < to; ++i) wetA[i] = wetB[i] = dryA[i] = dryB[i] = 0.0f;  // see DriveShaper::processPair
+            } else {
+                run(xa + from, xb + from, wetA + from, wetB + from, dryA + from, dryB + from, to - from, gain + from,
+                    offset ? offset + from : nullptr, shape);
+            }
+            quiet_ = q;
+            if (restNow) rest(shape);
+            from = to;
+        }
+    }
+
+private:
+    template <class Shape>
+    void run(const float* xa, const float* xb, float* wetA, float* wetB, float* dryA, float* dryB, int n, const float* gain,
+             const float* offset, const Shape& shape) {
         constexpr int kF = Oversampler4xPair::kFactor;
         constexpr float kLift = 0.20710678f;
         Float2 up[kMaxBlock * kF];
@@ -204,13 +314,27 @@ public:
             wetB[i] = y.v[1];
         }
     }
+    // The rest state (see kQuietFrames); a curve not through 0 never rests.
+    template <class Shape>
+    void rest(const Shape& shape) {
+        if (shape.f(0.0) != 0.0) {
+            quiet_ = 0;
+            return;
+        }
+        os_.reset();
+        prevU_[0] = prevU_[1] = 0.0;
+        prevF_[0] = prevF_[1] = shape.F(0.0);
+        prevX_[0] = prevX_[1] = 0.0f;
+        dryA_.fill(0.0f);
+        dryB_.fill(0.0f);
+    }
 
-private:
     Oversampler4xPair os_;
     double prevU_[2] = {0.0, 0.0}, prevF_[2] = {0.0, 0.0};
     float prevX_[2] = {0.0f, 0.0f};
     std::array<float, kDelay + 1> dryA_{}, dryB_{};
     int pos_ = 0;
+    int quiet_ = 0;  // frames of zero input in a row (see kQuietFrames)
 };
 
 }  // namespace ps

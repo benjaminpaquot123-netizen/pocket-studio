@@ -819,6 +819,11 @@
     "tip_fr": "Clap sur 2 et 4 : ça file vite, c'est fait pour que les rappeurs foncent."
    },
    {
+    "role": "snare",
+    "pattern": "....X.......X...",
+    "tip_fr": "La caisse claire sous le clap sur les temps 2 et 4 : le coup claque sec, à la londonienne."
+   },
+   {
     "role": "perc",
     "pattern": "..x...x...x...x.",
     "source": "grime",
@@ -827,7 +832,7 @@
    },
    {
     "role": "hat",
-    "pattern": "x.x.x.x.x.x.x.x.",
+    "pattern": "x.x.x.x.x.x.x.x.x.x.x.x.x.x.33x.",
     "build": "x...x...x...x...",
     "tip_fr": "Des charleys à la croche qui tiennent le tempo : plus nus au couplet, complets au refrain."
    }
@@ -905,7 +910,7 @@
   "bass_tip": "Une onde carrée brute, sans arrondi : la basse qui grogne du grime.",
   "pad_tip": "Des petits accords secs et glacés, avec beaucoup de vide autour : c'est la place du MC.",
   "lead_tip": "Un lead chiptune qui reprend le riff de la basse une octave plus haut : il n'arrive qu'au refrain, glacé et carré.",
-  "notes": "Eskibeat template: one raw square wave as bass ('Lead carré' in octave 2), short cold stabs (the signature: the intro is the stabs alone), lots of empty space; the MC carries the melody. No hats: the off-beat click (rim) replaces them. Clap on 2 and 4 at 140; a half-time grime variant puts it on beat 3 only. Bass notes held a little ('R-.R-.R---5---3-'). Minor/modal riffs; marimba lead (Korg Triton era).",
+  "notes": "Eskibeat template: one raw square wave as bass ('Lead carré' in octave 2), short cold stabs (the signature: the intro is the stabs alone), lots of empty space; the MC carries the melody. No hats: the off-beat click (rim) replaces them. Clap on 2 and 4 at 140; a half-time grime variant puts it on beat 3 only. Bass notes held a little ('R-.R-.R---5---3-'). Minor/modal riffs; marimba lead (Korg Triton era). Modern body (Skepta, Stormzy): the square-wave eskibeat stabs stay the signature; a snare under the clap, a hat roll at the end of the loop, icy metallic stabs answering in the Drop, the sub ducked by the kick.",
   "fx": [
    {
     "on": "chords",
@@ -927,7 +932,17 @@
     "on": "lead",
     "preset": "pluck_pingpong"
    }
-  ]
+  ],
+  "counter": {
+   "sound": "Stab métallique"
+  },
+  "body": true,
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "bus_drive": 0.3
+  }
  },
  {
   "id": "jersey_club",

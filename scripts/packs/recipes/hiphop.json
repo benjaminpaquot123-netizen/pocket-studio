@@ -173,13 +173,22 @@
     "role": "clap",
     "pattern": "........X.......",
     "source": "trap",
-    "tip_fr": "Un seul clap par mesure, sur le 3 : c'est ce qui rend le groove lent et lourd."
+    "layers": [
+     "tr808"
+    ],
+    "tip_fr": "Un seul clap par mesure, sur le 3, doublé d'un clap de 808 : c'est ce qui rend le groove lent et lourd."
+   },
+   {
+    "role": "snare",
+    "pattern": "........X.......",
+    "source": "tr808",
+    "tip_fr": "Une caisse claire sèche cachée sous le clap : elle lui donne son claquement."
    },
    {
     "role": "hat",
-    "pattern": "X.x.X.x.X.x.t.t.X.x.X.x.X3x.2222",
+    "pattern": "X.x.X.x.X.x.t.t.X.x.X.xoX3x.2234",
     "source": "trap",
-    "tip_fr": "Charleys réguliers, un temps en triolets (trois coups sur deux cases), puis des rafales très rapides en fin de boucle : le fameux roulement.",
+    "tip_fr": "Charleys réguliers avec des coups plus doux, un temps en triolets, puis des rafales de plus en plus serrées en fin de boucle : le fameux roulement.",
     "build": "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x."
    },
    {
@@ -187,6 +196,17 @@
     "pattern": "......................X.........",
     "source": "trap",
     "tip_fr": "Un charley ouvert de temps en temps pour laisser respirer."
+   },
+   {
+    "role": "snap",
+    "pattern": "........X..............o........",
+    "tip_fr": "Un claquement de doigts avec le clap, et un plus doux en écho : il ajoute du piquant sans prendre de place."
+   },
+   {
+    "role": "perc",
+    "pattern": "...............o.........o......",
+    "source": "trap",
+    "tip_fr": "Une petite percussion rare, juste avant la relance : un détail qu'on remarque à la deuxième écoute."
    }
   ],
   "progressions": {
@@ -229,7 +249,7 @@
   },
   "chords": {
    "type": "pad",
-   "rhythm": "X-------X-------",
+   "rhythm": "X-------........",
    "voicing": "triad",
    "octave": 3,
    "sound": "Cordes"
@@ -242,7 +262,7 @@
   },
   "lead": {
    "type": "riff",
-   "pattern": "O---..5-..3-....R---..3-..5-..7-",
+   "pattern": "O-----5-3-----..R-----3-5---....",
    "arp_rate": 24,
    "octave": 5,
    "sound": "Cloche FM",
@@ -261,8 +281,8 @@
   },
   "signature": "lead",
   "bass_tip": "C'est la 808 : une basse très grave qui tape avec le kick, puis glisse vers l'aigu.",
-  "pad_tip": "Des cordes sombres en fond, discrètes : elles arrivent au refrain.",
-  "lead_tip": "La mélodie de cloche qui tourne en boucle du début à la fin : c'est elle qu'on retient.",
+  "pad_tip": "Des cordes sombres en fond, une demi-mesure sur deux : le trou laisse toute la place à la 808.",
+  "lead_tip": "La mélodie sombre qui tourne en boucle, avec des silences : c'est elle qu'on retient.",
   "fx": [
    {
     "on": "bass",
@@ -289,10 +309,13 @@
     "preset": "pluck_pingpong"
    }
   ],
-  "notes": "Half-time: 140 BPM but one clap per bar on beat 3, so it feels like 70. The 808 is the bass, hits with the kick and slides up an octave into its 3rd note ('/', glide); 'Croustillant' saturates it a little. Hat rolls: a 1/32 triplet on 3-e of bar 2, then the whole 4th beat in 1/32. The bell melody is the signature (it plays from the intro on); the pad stays dark and quiet (strings) and only joins in the chorus. For a darker modern 808 use pack:modern_808:808.",
+  "notes": "Half-time: 140 BPM but one clap per bar on beat 3, so it feels like 70. Modern trap (Mask Off, Metro Boomin): room to breathe, the 808 carries the song. It hits with the kick and slides up an octave into its 3rd note ('/', glide), pumped by the kick (mix pump); 'Croustillant' saturates it a little. Beat 3 stacks the clap (+ an 808 clap layer), a dry 808 snare and a finger snap; a rare perc before the turn. Hat rolls: accents and softer hits, a 1/32 triplet on 3-e of bar 1, then 2, 3 and 4 hits per sixteenth on the 4th beat of bar 2. The strings hold half a bar out of two (holes); no counter-melody. The dark melody leaves rests (2-bar cell). For a darker modern 808 use pack:modern_808:808.",
   "riser": true,
-  "counter": {
-   "sound": "Nappe"
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.8
   }
  },
  {

@@ -169,3 +169,29 @@ Ce que Benjamin testait sur son téléphone, joué par le robot seul (bouton « 
 - **Arrêt brutal** (`arret_brutal` puis `arret_brutal_relu`) : tempo + 1, sauvé sur le disque, l'appli tuée sans fermeture ; la garde la relance, le robot reprend et relit le même morceau avec ce tempo (projet et disque), puis remet le tempo.
 - **Démarrage à froid** (`demarrage_froid`, en dernier) : le temps d'Android de la relance après l'arrêt brutal à la première image ; vert ≤ 2 s, orange ≤ 5 s, rouge au-delà. Android 15 ou plus, sinon « non mesuré ».
 Déjà couverts ailleurs : Live 30 s, délai du son (latence), images lentes par écran.
+
+## Le grand catalogue (tour 9, lot A3, 2026-11-24)
+310 scénarios en tout : les 131 de « Scénarios complet », les 8 « Tests longs » et 171 nouveaux, fabriqués par croisement (chaque style × son tempo ; chaque effet retiré par ✕ ; chaque effet réglé au plus bas et au plus haut ; chaque écran après rotation, arrière-plan et relance ; chaque geste de partie refait par « Rétablir » ; le tempo à 40 et 300 bpm, puis un de plus). On s'est arrêté à 310 plutôt que 400 : au-delà, les croisements ne trouvaient plus de faute nouvelle (audit E). Chaque scénario part du projet propre, le laisse comme il l'a trouvé (projet et disque), et a son oracle lu dans le modèle de l'appli. Plus de 5 % de « non mesuré » rend le passage rouge.
+
+Boutons dans BenStudio Test, chacun 30 minutes au plus (durée prévue, pas encore mesurée sur le téléphone) :
+
+| Paquet | Scénarios | Durée prévue |
+|---|---|---|
+| Rapide | 31 | 19 min |
+| Scénarios complet | 131 | 62 min |
+| Tests longs | 8 | 20 min |
+| Guidés | 2 | 4 min |
+| Son 1 / 2 / 3 | 54 / 25 / 4 | 29 / 29 / 4 min |
+| Effets 1 / 2 | 101 / 14 | 29 / 4 min |
+| Écrans 1 | 18 | 7 min |
+| Structure 1 | 9 | 2 min |
+| Live 1 | 7 | 1 min |
+| Exports 1 / 2 | 24 / 9 | 30 / 11 min |
+| Limites 1 | 2 | 1 min |
+| Endurance 1 | 10 | 22 min |
+
+« Refaire les ratés » rejoue ce que le dernier passage n'a pas réussi (échoué, non mesuré, pas joué), lu dans son carnet : plus de liste écrite à la main.
+
+Hors de portée du robot (à garder pour le banc ou pour Benjamin) : un projet vide, un très gros projet, 16 pistes, des noms très longs (le robot part toujours du projet de démo et ne fabrique pas de tels projets).
+
+**Preuves.** `ScenariosTest` : chaque nouveau genre passe sur le faux studio, puis échoue avec sa faute (✕ sans effet, réglage non pris ou non sauvé, écran perdu à la rotation, relance sur un autre morceau, « Rétablir » sans effet, tempo hors limite accepté) ; ids uniques, chaque paquet ≤ 30 min. `ScenariosVraisEcransTest` : retrait, réglage, onglets, « Rétablir » (celui du pouce sur téléphone étroit) et limites du tempo joués sur les vrais écrans.

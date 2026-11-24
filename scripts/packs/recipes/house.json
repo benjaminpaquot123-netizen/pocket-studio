@@ -284,7 +284,7 @@
    "octave": 3,
    "sound": "Piano FM",
    "voice_lead": true,
-    "double": "both"
+   "double": "both"
   },
   "bass": {
    "pattern": "..R-..R-..R-.rO-..5-..R-..R-.r3-",
@@ -436,7 +436,7 @@
    {
     "role": "rim",
     "pattern": "..............................X.",
-    "tip_fr": "Un claquement de doigts juste avant la boucle suivante : il relance le groove sans toucher au clap.",
+    "tip_fr": "Un petit clap juste avant la boucle suivante : il relance le groove, à côté du vieux clap.",
     "voice": "clap"
    }
   ],
@@ -954,7 +954,7 @@
    {
     "role": "shaker",
     "pattern": "xoxxxoxxxoxxxoxx",
-    "tip_fr": "Un shaker serré en double croches : il fait briller le haut pendant que la 303 tourne."
+    "tip_fr": "Un shaker serré en doubles croches : il fait briller le haut pendant que la 303 tourne."
    }
   ],
   "progressions": {
@@ -1107,7 +1107,7 @@
     "preset": "punch"
    }
   ],
-  "notes": "The TB-303 is the whole track: one looped pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw drum-machine drums (909 since lot L9): continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break. Lot L9: acid techno today (Charlotte de Witte, Amelie Lens): 130 BPM, a 909 kick punched, a two-bar Squelchy riff, high resonance, more accents and glides, cutoff, resonance and envelope moving in every section.",
+  "notes": "The TB-303 is the whole track: one looped pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw drum-machine drums (909 since lot L9): continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break. Lot L9: acid techno today (Charlotte de Witte, Amelie Lens): 130 BPM, a 909 kick punched, a one-bar Squelchy riff, high resonance, more accents and glides, cutoff, resonance and envelope moving in every section.",
   "drop": [
    "open_hat",
    "shaker",
@@ -1579,7 +1579,7 @@
    "octave": 3,
    "sound": "Rhodes FM",
    "voice_lead": true,
-    "double": "octave"
+   "double": "octave"
   },
   "bass": {
    "pattern": "..R-.R-O-.R-.5-...R-.R-..O-..R5-..R-.R-O-.R-.5-......5-..R--.3-.",

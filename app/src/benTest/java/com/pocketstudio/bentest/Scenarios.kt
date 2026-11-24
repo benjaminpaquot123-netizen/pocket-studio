@@ -33,7 +33,8 @@ class Scenarios(
     private val sauvegardeMs: Long = 20_000,
     /** How long the Live's ▶ may take to start the engine, or its second touch to stop it. */
     private val liveMs: Long = 10_000,
-    private val liveEcouteMs: Long = 4_000,
+    /** How long the Live plays untouched (tour 9, C2: 30 s, it must not stop by itself). */
+    private val liveEcouteMs: Long = 30_000,
     /** How long the song is listened to with its new effect. */
     private val effetEcouteMs: Long = 6_000,
     /** How long each style's new song is listened to, then the long playback, then the music with the studio behind another screen. */
@@ -389,7 +390,9 @@ class Scenarios(
         var peak = 0f
         val heard = started && attendre(liveMs) { peak = maxOf(peak, sonde.lire().peak); peak > EssaiEclair.NIVEAU_MIN }
         val b = if (heard) t.ecouter(LIVE, liveEcouteMs) else null
-        if (sonde.lire().playing) runCatching { j.tap("live_play") }
+        // Still playing when the robot comes back: only then is the stop the robot's own.
+        val still = sonde.lire().playing
+        if (still) runCatching { j.tap("live_play") }
         val stopped = attendre(liveMs) { !sonde.lire().playing }
         // Out of the Live whatever happened: the next scenario starts from the song.
         runCatching { j.tap("tab_Structure") }
@@ -398,9 +401,12 @@ class Scenarios(
         checkNotNull(b)
         ecoute(LIVE, b)
         feuEcoute(LIVE, b)
+        check(still && b.playing == b.reads) {
+            "le Live s'arrête tout seul après ${b.playing / Ecoute.READS_PER_SECOND} s sur ${liveEcouteMs / 1000} : le moteur a cessé de jouer avant que le robot touche ▶ (${b.text()})"
+        }
         check(stopped) { "le Live ne s'arrête pas : ▶ touché une seconde fois, le moteur joue encore" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son du Live" }
-        return "le Live joue (${b.text()}), puis s'arrête"
+        return "le Live joue ${liveEcouteMs / 1000} s sans s'arrêter (${b.text()}), puis le robot l'arrête"
     }
 
     /** The song played [decrochagesMs]: no dropout, the worst block and the longest gap inside the thresholds. */
@@ -819,7 +825,7 @@ class Scenarios(
             j.idle(1_500)
             j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000)
             standing = sonde.lire().playing
-            b = t.ecouter(ROTATION_LECTURE, liveEcouteMs)
+            b = t.ecouter(ROTATION_LECTURE, minOf(liveEcouteMs, 4_000))
         } finally {
             appli.orienter(null)
             e.arreter()

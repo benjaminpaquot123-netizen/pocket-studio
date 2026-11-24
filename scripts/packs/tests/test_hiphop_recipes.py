@@ -82,5 +82,65 @@ class BoomBap(unittest.TestCase):
         self.assertGreaterEqual(self.s['swing'], 0.2)
 
 
+class FullHipHop(unittest.TestCase):
+    """Lot L8: every other hip-hop style gets the full body and keeps (or finds) its modern signature."""
+    STYLES = ('drill', 'lofi', 'phonk', 'grime', 'reggaeton', 'afrobeats', 'jersey_club')
+
+    def setUp(self):
+        self.all = styles()
+
+    def test_every_style_has_a_body_and_breathes(self):
+        for sid in self.STYLES:
+            s = self.all[sid]
+            self.assertTrue(s.get('body'), sid)
+            self.assertLessEqual(max(hits_per_step(s)), 5, sid)
+
+    def test_drill_sliding_808_and_triplet_hats(self):
+        s = self.all['drill']
+        self.assertTrue(s['bass']['glide'])
+        self.assertGreaterEqual(s['bass']['pattern'].count('/'), 3)
+        self.assertTrue(set(lines(s)['hat']['pattern']) & set('Tt'))
+        self.assertTrue(any(x == 'kit:clap' for x in lines(s)['snare'].get('layers', [])) or 'clap' in lines(s))
+
+    def test_lofi_dusty_keys_and_rain(self):
+        s = self.all['lofi']
+        self.assertTrue(any(fx.get('insert') == 'VINYL' for fx in s['fx']))
+        self.assertIn(s['chords'].get('double'), ('octave', 'both'))
+        self.assertEqual('Pluie', s.get('texture', {}).get('sound'))
+        self.assertIn('snap', lines(s))
+
+    def test_phonk_cowbell_and_a_driven_808(self):
+        s = self.all['phonk']
+        self.assertEqual('kit:cowbell', s['lead']['sound'])
+        self.assertIn('808', s.get('mix', {}).get('pump', []))
+        self.assertGreater(s.get('mix', {}).get('bus_drive', 0), 0)
+        self.assertNotEqual('Nappe', s['chords']['sound'])
+
+    def test_grime_square_stabs_and_a_hard_backbeat(self):
+        s = self.all['grime']
+        self.assertEqual('Lead carré', s['chords']['sound'])
+        self.assertIn('snare', lines(s))
+        self.assertTrue(set(lines(s)['hat']['pattern']) & set('X234'))
+
+    def test_reggaeton_dembow_with_hand_percussion(self):
+        s = self.all['reggaeton']
+        self.assertEqual('...X..X....X..X.', lines(s)['snare']['pattern'])
+        self.assertTrue({'conga', 'rim'} & set(lines(s)))
+        self.assertIn('808', s.get('mix', {}).get('pump', []))
+
+    def test_afrobeats_shakers_congas_and_air(self):
+        s = self.all['afrobeats']
+        ls = lines(s)
+        self.assertEqual('shaker', ls['hat'].get('voice'))
+        self.assertTrue({'conga', 'perc'} & set(ls))
+        self.assertTrue({'open_hat', 'shaker', 'perc2'} & set(ls), 'air above the shaker')
+
+    def test_jersey_club_bouncing_kick_and_snaps(self):
+        s = self.all['jersey_club']
+        self.assertEqual('X...X...X..X..X.', lines(s)['kick']['pattern'])
+        self.assertIn('snap', lines(s))
+        self.assertIn('808', s.get('mix', {}).get('pump', []))
+
+
 if __name__ == '__main__':
     unittest.main()

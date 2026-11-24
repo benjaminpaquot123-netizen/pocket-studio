@@ -25,6 +25,40 @@ class BodyHeardTest {
     private fun Project.plays(lane: Int) = allDrums().any { it.lanes[lane].hits.isNotEmpty() }
 
     @Test
+    fun theBodyKeepsTheSongsShape() {
+        // The body adds layers, never bars or sections: the same length, the same scenes (Crash and Fill included), and
+        // every beat of silence before a Drop stays silent (gr-hiphop: reggaeton « Dark » with the bass alone went up to
+        // 230 s, its counter-melody playing 2 rounds of chord stabs; drill's Couplet 3 lost its silent beat to the texture).
+        val bad = mutableListOf<String>()
+        // The scenes that lead into a Drop: their last beat is the silence before it.
+        fun beforeDrops(p: Project): Set<Int> = p.song.zipWithNext().filter { (a, b) ->
+            p.allScenes[b.scene].label.let { it == SongShape.FAKE_DROP || Regex("""^(Drop|Refrain)( \d+)?$""").matches(it) } &&
+                p.allScenes[a.scene].label.let { it.startsWith("Montée") || it.startsWith(SongShape.PRE_CHORUS) || it.startsWith("Couplet ") || it == SongShape.FAKE_DROP }
+        }.map { it.first.scene }.toSet()
+        val silent = { p: Project -> p.allScenes.map { sc ->
+            val steps = sc.stepsFor(16)
+            sc.drums.lanes.all { l -> l.hits.keys.none { it >= steps - 4 } } &&
+                sc.trackNotes.values.all { c -> c.notes.none { it.end > (steps - 4) * NoteClip.TICKS_PER_STEP } }
+        } }
+        for (plain in StarterWizard.STYLES.map { PlainStyles.plain(it) }) {
+            val sounds = StarterWizard.Part.entries.associateWith { StarterWizard.soundsFor(it, plain).first() }
+            val all = StarterWizard.withBody(plain.copy(body = true)).lines.associate { it.role to PadSample("${it.role.id}.wav", it.role.id) }
+            for (mood in StarterWizard.Mood.entries) for (mask in 1 until 8) for (acid in listOf(true, false)) {
+                if (!acid && plain.melody.acid == null) continue
+                val parts = sounds.filterKeys { StarterWizard.Part.entries.indexOf(it).let { i -> mask and (1 shl i) != 0 } }
+                val without = StarterWizard.build(plain, all.filterKeys { r -> plain.lines.any { it.role == r } }, mood, parts, acid = acid)
+                val with = StarterWizard.build(plain.copy(body = true), all, mood, parts, acid = acid)
+                val what = "${plain.id} $mood ${parts.keys} acid=$acid"
+                if (without.songBars != with.songBars) bad += "$what bars ${without.songBars} -> ${with.songBars}"
+                if (without.allScenes.map { it.label } != with.allScenes.map { it.label }) bad += "$what scenes ${without.allScenes.map { it.label }} -> ${with.allScenes.map { it.label }}"
+                else silent(without).zip(silent(with)).withIndex().filter { (i, s) -> i in beforeDrops(with) && s.first && !s.second }
+                    .forEach { (i, _) -> bad += "$what ${with.allScenes[i].label} lost its beat of silence" }
+            }
+        }
+        assertTrue(bad.sortedBy { "lost" in it }.take(20).joinToString("\n") + "\n(${bad.size})", bad.isEmpty())
+    }
+
+    @Test
     fun theBodyShakerIsHeard() {
         val p = build(trap().copy(body = true))
         assertTrue("the shaker plays (pad 15)", p.plays(Role.Shaker.lane))

@@ -987,6 +987,11 @@
     "role": "open_hat",
     "pattern": "......x.......x.",
     "tip_fr": "Un charley ouvert qui répond aux kicks en rafale : il arrive au refrain."
+   },
+   {
+    "role": "snap",
+    "pattern": "........X...............X.......",
+    "tip_fr": "Un claquement de doigts avec le clap : le rebond du jersey claque encore plus."
    }
   ],
   "progressions": {
@@ -1062,7 +1067,7 @@
   "bass_tip": "Une 808 qui double les coups de kick : elle donne du poids au rebond.",
   "pad_tip": "Des accords doux, en option : le style s'en passe souvent.",
   "lead_tip": "Des petits bouts de voix répétés entre les coups de kick : c'est le crochet du style, du début à la fin.",
-  "notes": "Kick = 16ths 1, 5, 9, 12, 15 (1-based), spacing 4-4-3-3-2, inherited from Baltimore club. The hook is staccato one-syllable vocal chops between the kicks (vocal_chops pack, signature: from the intro on). The 'bed squeak' (Trillville's 'Some Cut', 2004) has no sound in the packs nor the kit: the perc line is a rim and its tip says so. Light off-beat hats. 808 doubles the kick. Chords off by default.",
+  "notes": "Kick = 16ths 1, 5, 9, 12, 15 (1-based), spacing 4-4-3-3-2, inherited from Baltimore club. The hook is staccato one-syllable vocal chops between the kicks (vocal_chops pack, signature: from the intro on). The 'bed squeak' (Trillville's 'Some Cut', 2004) has no sound in the packs nor the kit: the perc line is a rim and its tip says so. Light off-beat hats. 808 doubles the kick. Chords off by default. Modern body (Bandmanrill, Cookiee Kawaii): the bouncing five-kick pattern stays the signature; a snap on the clap, the 808 ducked by the kick, full body in the Drop.",
   "fx": [
    {
     "on": "chords",
@@ -1077,7 +1082,14 @@
     "preset": "pluck_pingpong"
    }
   ],
-  "riser": true
+  "riser": true,
+  "body": true,
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "bus_drive": 0.25
+  }
  },
  {
   "id": "reggaeton",

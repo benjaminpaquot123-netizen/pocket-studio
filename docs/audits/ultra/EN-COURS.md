@@ -56,3 +56,13 @@ Pas avant : le rangement du tour 8 (branches de sièges, revue, PR vers `main`),
 - 2026-11-20 soir : miettesB (cc99fcfa1) et base-rouges (b55c9209e) fusionnés. textes refusé au portail (conflit dans corrections.tsv seulement) : renvoyé à sa discussion pour fusionner l'intégration. En cours : L13 (rapport final), banc TutoJourneyTest, D10 (renommer depuis « A ▾ », relecture manquante). Ensuite V1 → fiche tuto → V2, puis le tour 10 de contrôle (47 sièges).
 - 2026-11-21 matin (arrêt demandé par Benjamin : « Arrête toi après les tenté ») : entrés D10, banc-journey, base-rouges2 (270aadf35), textes (b7fce6776), L13 (d44d233b3, fusion à la main par le chef : seul rouge T9PanelTargetTest japonais 200 %, message identique à la base CI 403). En attente : « problèmes difficiles » `ccr-69119313-or4u42` (80563220 ; D09, F034, durcissement p5) : il lui manque une relecture neuve en dernier commit et la fusion de l'intégration (sa discussion est fermée : nouvelle discussion à ouvrir) ; ci-rapide `ccr-f384f197-wsy8kx` (4360850a) attend une CI verte sur une tête qui contient l'intégration. Rien lancé : mini-contrôle (plan dans le carnet du chef, 7 sièges + pilote M1), lots tuto V1 → fiche-tuto (D06 = le rouge T9) → V2, tour 10. Compteur : 155 tentés dans l'appli sur 166, 2 en attente, 0 vérifié par un testeur, 8 à corriger.
 - 2026-11-22 nuit : entrés difficiles (e83a4d4bf), rouges3 (8ee635e44 ; CI 408 verte, aperçu APK publié sur `preview`) et flash (bb4b404fc ; clignotement du studio avant « Bienvenue » au premier lancement, retour de Benjamin du 21 ; test de renommage corrigé : il touchait « Plus tard » sans défiler). Compteur : 157 tentés sur 166 + flash, 0 constaté. Suivant : CI sur la tête, puis latence aller-retour 958 ms et décrochages du rapport robot (Xiaomi), mini-contrôle, V1 → fiche-tuto → V2, tour 10.
+
+## Nuit du 23 au 24 (chef, départ 22 h 38 belge)
+- Disque : 16 Go libres. CI de ea301e4f0 : verte (build + émulateur). `eq/bentest-robot-2` poussée (2c0cab99c).
+- E `session_014RxrDJTJsxYa4FwifVpjiV` → `aud/tour-9-audit-E`
+- A1 `session_014RxrDJZuWGMePqYEYv9M2R` → `eq/tour-9-robot1`
+- B1 (Fable) `session_014RxrDKH5zKy69vtaKtvjiC` → `eq/tour-9-moteur1`
+- D `session_014RxrDLaW2Jz5kqVwsYnKER` → `eq/tour-9-audio1`
+- C `session_014RxrDLsNnZqNvpZR7hA2CA` → `eq/tour-9-fluide1`
+- fable5 `session_014RxrDNyMFnVcN1Br4QVUTB` → `eq/tour-9-fable5`
+- F0 : sous-agent du chef, bloc-notes `ecoute-f0` (rien dans git).

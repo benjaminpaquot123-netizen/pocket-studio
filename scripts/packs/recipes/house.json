@@ -1,8 +1,14 @@
 [
  {
   "id": "house",
-  "vocal": "answer",
+  "vocal": {
+   "type": "answer",
+   "sample": "vocal_chops:vocal_03"
+  },
   "references": [
+   "Dom Dolla – Rhyme Dust (2023)",
+   "Fred again.. – Delilah (pull me out of this) (2022)",
+   "Purple Disco Machine – Hypnotized (2020)",
    "Robin S – Show Me Love (1992)",
    "Marshall Jefferson – Move Your Body (1986)",
    "Joe Smooth – Promised Land (1987)",
@@ -161,12 +167,25 @@
    "lead",
    "hat",
    "perc"
-  ]
+  ],
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.35
+  },
+  "body": true
  },
  {
   "id": "deep_house",
-  "vocal": "answer",
+  "vocal": {
+   "type": "answer",
+   "sample": "vocal_chops:vocal_07"
+  },
   "references": [
+   "Ben Böhmer – Beyond Beliefs (2019)",
+   "Lane 8 – Brightest Lights (2020)",
    "Mr. Fingers – Can You Feel It (1986)",
    "Kerri Chandler – Bar A Thym (2005)",
    "Pepe Braddock – Deep Burnt (1999)",
@@ -330,13 +349,29 @@
   "drop": [
    "perc2"
   ],
-  "transition": "light"
+  "transition": "light",
+  "texture": {
+   "sound": "Nappe chaude"
+  },
+  "mix": {
+   "pump": [
+    "808",
+    "chords"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.3
+  },
+  "body": true
  },
  {
   "id": "tech_house",
-  "vocal": "answer",
+  "vocal": {
+   "type": "answer",
+   "sample": "vocal_chops:vocal_12"
+  },
   "references": [
    "Mau P – Drugs From Amsterdam (2022)",
+   "John Summit – Where You Are (2023)",
    "Fisher – Losing It (2018)",
    "Patrick Topping – Forget (2014)",
    "Green Velvet – La La Land (2001)"
@@ -387,6 +422,17 @@
     "role": "ride",
     "pattern": "o...o...o...o...",
     "tip_fr": "Une ride presque inaudible sur les temps : elle arrive au Drop et ajoute de la brillance."
+   },
+   {
+    "role": "conga",
+    "pattern": "......x.x.....o.......x.x..x..o.",
+    "tip_fr": "Une conga qui tourne autour du « toc » : avec le shaker, elle fait le lit d'aigus qui roule."
+   },
+   {
+    "role": "rim",
+    "pattern": "..............................X.",
+    "tip_fr": "Un claquement de doigts juste avant la boucle suivante : il relance le groove sans toucher au clap.",
+    "voice": "clap"
    }
   ],
   "progressions": {
@@ -432,7 +478,8 @@
    "rhythm": "...X......X.....",
    "voicing": "seventh",
    "octave": 4,
-   "sound": "Orgue"
+   "sound": "Orgue",
+   "double": "octave"
   },
   "bass": {
    "pattern": "..Rr..Rr..Rr..RO..Rr..Rr..7r..5/..Rr..Rr..Rr..RO..Rr..3r..5r.O/R",
@@ -502,12 +549,21 @@
      0.85
     ]
    }
-  ]
+  ],
+  "mix": {
+   "glue_blend": 0.6,
+   "bus_drive": 0.35
+  }
  },
  {
   "id": "uk_garage",
-  "vocal": "answer",
+  "vocal": {
+   "type": "answer",
+   "sample": "vocal_chops:vocal_05"
+  },
   "references": [
+   "Interplanetary Criminal & Eliza Rose – B.O.T.A. (Baddest of Them All) (2022)",
+   "Jorja Smith – Little Things (2023)",
    "Artful Dodger feat. Craig David – Re-Rewind (1999)",
    "Sweet Female Attitude – Flowers (Sunship Edit) (2000)",
    "Shanks & Bigfoot – Sweet Like Chocolate (1999)",
@@ -652,12 +708,25 @@
    }
   ],
   "notes": "2-step: kick on beat 1 and the 'and' of beat 3 (never on 2 and 4), snare + clap on 2 and 4, 16th hats pushed late (heavy MPC shuffle, ~65%). The bass answers the kick in its gaps (jungle heritage), played an octave up so its sub stays audible. M1-style organ stabs or jazzy 7th/9th chords; chopped and pitched R&B vocal fragments (Todd Edwards) are the signature top line, on by default. A song form (Intro/Couplet/Refrain): garage is song music.",
-  "riser": true
+  "riser": true,
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.65,
+   "bus_drive": 0.3
+  },
+  "body": true
  },
  {
   "id": "speed_garage",
-  "vocal": "answer",
+  "vocal": {
+   "type": "answer",
+   "sample": "vocal_chops:vocal_09"
+  },
   "references": [
+   "Sammy Virji – If U Need It (2023)",
+   "Interplanetary Criminal – Slow Burner (2022)",
    "Double 99 – RipGroove (1997)",
    "Sneaker Pimps – Spin Spin Sugar (Armand's Dark Garage Mix) (1997)",
    "187 Lockdown – Gunman (1997)",
@@ -816,36 +885,46 @@
      0.7
     ]
    }
-  ]
+  ],
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.4
+  },
+  "body": true
  },
  {
   "id": "acid_house",
   "references": [
+   "Charlotte de Witte – Doppler (2020)",
+   "Amelie Lens – Feel It (2018)",
    "Phuture – Acid Tracks (1987)",
    "A Guy Called Gerald – Voodoo Ray (1988)",
    "Sleezy D – I've Lost Control (1986)"
   ],
   "description_fr": "La house de Chicago de 1987 avec sa petite machine magique, la TB-303, qui fait « couiner » une ligne de basse qui tourne en boucle.",
-  "bpm": 120,
-  "swing": 0.1,
+  "bpm": 130,
+  "swing": 0.05,
   "root": "A",
   "drums": [
    {
     "role": "kick",
     "pattern": "X...X...X...X...",
-    "source": "tr707",
-    "tip_fr": "Une grosse caisse toute simple sur chaque temps, pour laisser toute la place à la 303, la ligne qui couine."
+    "source": "tr909",
+    "tip_fr": "La grosse caisse de la 909 sur chaque temps, courte et qui frappe fort : c'est elle qui tient la 303 qui couine."
    },
    {
     "role": "clap",
     "pattern": "....X.......X...",
-    "source": "tr707",
+    "source": "tr909",
     "tip_fr": "Sur 2 et 4, sec, comme sur les vieilles boîtes à rythmes."
    },
    {
     "role": "hat",
     "pattern": "xoxoxoxoxoxoxoxo",
-    "source": "tr707",
+    "source": "tr909",
     "tip_fr": "Le charley de la 707 en continu, un coup fort, un coup doux."
    },
    {
@@ -860,6 +939,11 @@
     "pattern": "..X...X...X...X.",
     "source": "tr909",
     "tip_fr": "Le charley ouvert de la 909 entre chaque kick : il arrive au Drop et pousse le groove."
+   },
+   {
+    "role": "shaker",
+    "pattern": "xoxxxoxxxoxxxoxx",
+    "tip_fr": "Un shaker serré en double croches : il fait briller le haut pendant que la 303 tourne."
    }
   ],
   "progressions": {
@@ -922,38 +1006,68 @@
   },
   "acid": {
    "use": true,
-   "pattern": "RROR.R7RR.5OR.3R",
-   "accents": "x.x...x....x..x.",
-   "slides": "..x.......xx....",
+   "pattern": "RROR.R7RR.5OR.3RRRO.R.7RO.5RR3OR",
+   "accents": "x.x...x....x..x.x...x.x..x...x.x",
+   "slides": "..x.......xx.....x....x..x..x...",
    "moves": {
     "cutoff": {
+     "intro": [
+      0.3,
+      0.38
+     ],
      "groove": [
-      0.25,
-      0.35
+      0.32,
+      0.45
      ],
      "drop": [
-      0.38,
-      0.5
+      0.45,
+      0.58
      ],
      "break": [
-      0.3,
-      0.6
+      0.28,
+      0.68
      ]
     },
     "resonance": {
+     "intro": [
+      0.75,
+      0.8
+     ],
      "groove": [
-      0.65,
-      0.7
+      0.8,
+      0.85
+     ],
+     "drop": [
+      0.85,
+      0.9
+     ],
+     "break": [
+      0.8,
+      0.92
+     ]
+    },
+    "env_mod": {
+     "groove": [
+      0.6,
+      0.75
      ],
      "drop": [
       0.75,
-      0.8
+      0.9
      ],
      "break": [
       0.7,
       0.85
      ]
     }
+   },
+   "sound": "Squelchy",
+   "knobs": {
+    "resonance": 0.88,
+    "env_mod": 0.8,
+    "accent": 0.85,
+    "decay": 0.3,
+    "drive": 0.45
    }
   },
   "defaults": {
@@ -976,19 +1090,31 @@
      0.35,
      0
     ]
+   },
+   {
+    "on": "kick",
+    "preset": "punch"
    }
   ],
-  "notes": "The TB-303 is the whole track: one 16-step pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw TR-707 drums: continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break.",
+  "notes": "The TB-303 is the whole track: one 16-step pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw TR-707 drums: continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break. Lot L9: acid techno today (Charlotte de Witte, Amelie Lens): 130 BPM, a 909 kick punched, a two-bar Squelchy riff, high resonance, more accents and glides, cutoff, resonance and envelope moving in every section.",
   "drop": [
    "open_hat"
   ],
-  "riser": true
+  "riser": true,
+  "mix": {
+   "glue_blend": 0.6,
+   "bus_drive": 0.4
+  },
+  "texture": {
+   "sound": "Souffle"
+  }
  },
  {
   "id": "afro_house",
   "references": [
-   "Master KG feat. Nomcebo Zikode – Jerusalema (2019)",
    "Adam Port & Stryv feat. Malachiii – Move (2024)",
+   "Black Coffee feat. David Guetta & Delilah Montagu – Drive (2021)",
+   "Master KG feat. Nomcebo Zikode – Jerusalema (2019)",
    "Black Coffee feat. Bucie – Superman (2009)",
    "Zakes Bantwini & Kasango – Osama (2021)",
    "Mafikizolo feat. Uhuru – Khona (2013)"
@@ -1177,11 +1303,21 @@
      1.0
     ]
    }
-  ]
+  ],
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.3
+  },
+  "body": true
  },
  {
   "id": "disco",
   "references": [
+   "Purple Disco Machine & Sophie and the Giants – In the Dark (2022)",
+   "Dua Lipa – Levitating (2020)",
    "Daft Punk feat. Pharrell Williams & Nile Rodgers – Get Lucky (2013)",
    "Chic – Good Times (1979)",
    "Chic – Le Freak (1978)",
@@ -1276,7 +1412,8 @@
    "rhythm": "oXoxoxXoxoXoxoXx",
    "voicing": "rootless7",
    "octave": 3,
-   "sound": "gm:Electric Guitar (muted)"
+   "sound": "gm:Electric Guitar (muted)",
+   "double": "octave"
   },
   "bass": {
    "pattern": "R-..R.O.R.3.5.7O...R.O-R.6.7.O.RR-..R.O.R.3.5.7O..6.7.O-R.7.6.5.",
@@ -1323,7 +1460,17 @@
   "drop": [
    "perc2"
   ],
-  "transition": "light"
+  "transition": "light",
+  "texture": {
+   "sound": "Cordes"
+  },
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.65,
+   "bus_drive": 0.3
+  }
  },
  {
   "id": "amapiano",
@@ -1455,6 +1602,10 @@
     "on": "chords",
     "preset": "wide_alive",
     "reverb": 0.3
+   },
+   {
+    "on": "bass",
+    "preset": "fat_bass"
    }
   ],
   "notes": "The log drum is both bass and hook: a woody pitched drum ('Log drum' = Plaits bass drum played on the notes; it cannot glide), landing BETWEEN the soft kicks, following the roots with octave/fifth jumps, as a two-bar call and response. Constant 16th shaker (built-in shaker voice) with velocity variation and light swing; rim/woodblock 'toc' answering over two bars. Jazzy 9th chords entering after the 1 with gaps (Cm9-F9-Bbmaj9-Gm9, happy first). The log drum leaves in the break and comes back on the drop. 108-115 BPM.",
@@ -1466,6 +1617,17 @@
    "chords",
    "perc",
    "hat"
-  ]
+  ],
+  "texture": {
+   "sound": "Nappe chaude"
+  },
+  "mix": {
+   "pump": [
+    "808"
+   ],
+   "glue_blend": 0.6,
+   "bus_drive": 0.35
+  },
+  "body": true
  }
 ]

@@ -62,8 +62,14 @@ open class ScenariosVraisEcransTest {
             val p = h.vm.project.value
             fun effets(of: Project) = of.mixer.channels.map { ch -> ch.inserts.filter { it.effect != EffectType.NONE }.map { it.effect.name } }
             val disk = runCatching { ProjectOpening.projectStore(h.app).load(h.vm.projectId) }.getOrNull()
+            fun disque(d: Project) = ProjetVu.Disque(
+                d.name, d.song.size, effets(d), d.tempoBpm, d.mixer.channels.map { it.mute }, d.mixer.channels.map { it.solo },
+                d.mixer.channels.map { it.volume }, d.mixer.channels.map { it.pan }, ProjetVu.montee(d),
+            )
             return ProjetVu(
-                h.vm.projectId, p.name, p.song.size, effets(p), disk?.let { ProjetVu.Disque(it.name, it.song.size, effets(it), montee = ProjetVu.montee(it)) },
+                h.vm.projectId, p.name, p.song.size, effets(p), disk?.let(::disque),
+                tempo = p.tempoBpm, muets = p.mixer.channels.map { it.mute }, solos = p.mixer.channels.map { it.solo },
+                volumes = p.mixer.channels.map { it.volume }, pans = p.mixer.channels.map { it.pan },
                 montee = ProjetVu.montee(p), pads = ProjetVu.pads(p),
             )
         }
@@ -83,13 +89,15 @@ open class ScenariosVraisEcransTest {
     }
 
     @Test
-    fun aBreakGoesInTheSongAndOnTheDisk() {
+    fun aBreakGoesInTheSongAndOnTheDiskThenUndoTakesItBack() {
         h.start()
         val v = Vrai()
         val text = scenarios(v).structure()
         assertTrue(text, text.contains("3 parties, puis 4"))
-        assertEquals(4, h.vm.project.value.song.size)
-        assertEquals(4, v.projet().disque?.parties)
+        assertTrue(text, text.contains("puis 3 après « Annuler »"))
+        // The scenario tidies: the next one finds the song as this one did (audit E).
+        assertEquals(3, h.vm.project.value.song.size)
+        assertEquals(3, v.projet().disque?.parties)
     }
 
     @Test

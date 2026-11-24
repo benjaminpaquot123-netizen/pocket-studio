@@ -48,6 +48,8 @@ class ScenariosTest {
         var reopens = "p1"
         var dropouts = false
         var tempoMoves = true
+        /** A stray change: opening the mixer nudges the tempo (saved), and no scenario asked for it. */
+        var mixNudgesTempo = false
         var mutes = true
         var undoShown = true
         var undoWorks = true
@@ -145,7 +147,10 @@ class ScenariosTest {
         override fun click(tag: String) {
             touched += tag
             when {
-                tag.startsWith("tab_") -> { tab = tag.removePrefix("tab_"); sheet = ""; picker = false }
+                tag.startsWith("tab_") -> {
+                    tab = tag.removePrefix("tab_"); sheet = ""; picker = false
+                    if (tab == "Mix" && mixNudgesTempo) { tempo += 1.0; save() }
+                }
                 tag == "top_projects" -> where = "projects"
                 tag == "projects_back" -> where = "launch"
                 tag == "launch_continue" -> { where = "studio"; id = reopens }
@@ -337,7 +342,13 @@ class ScenariosTest {
         val s = Studio()
         val text = scenarios(s).structure()
         assertTrue(text, text.contains("4 parties, puis 5"))
-        assertEquals(listOf("tab_Structure", "part_menu_1", "part_break_4"), s.touched)
+        // Then « Annuler »: the next scenario finds the song as this one did (audit E), on the disk too.
+        assertTrue(text, text.contains("puis 4 après « Annuler »"))
+        assertEquals(listOf("tab_Structure", "part_menu_1", "part_break_4", "top_undo"), s.touched)
+        assertEquals(4, s.parties)
+        assertEquals(4, s.disque!!.parties)
+        fails("« Annuler » ne retire pas le break") { scenarios(Studio().apply { undoWorks = false }).structure() }
+        fails("pas de bouton « Annuler »") { scenarios(Studio().apply { undoShown = false }).structure() }
         fails("le break ne s'ajoute pas") { scenarios(Studio().apply { breakAdds = false }).structure() }
         fails("le break n'est pas enregistré : 4 parties sur le disque") { scenarios(Studio().apply { saves = false }).structure() }
     }
@@ -383,15 +394,11 @@ class ScenariosTest {
         val left = played(Studio().apply { undoWorks = false }, "effet_chorus").only("effet_chorus")
         assertEquals(Scenarios.ECHOUE, left.resultat)
         assertTrue(left.detail, left.detail.contains("l'effet reste sur la piste"))
-        // No « Annuler » in the bar (the app's setting): not measured, never a false red (fresh review, grave).
+        // No « Annuler » in the bar: the effect stays on the strip the next scenario finds, so red (audit E).
         for (id in listOf(Scenarios.EFFETS, Scenarios.EFFETS_PLUSIEURS, "effet_chorus")) {
             val hidden = played(Studio().apply { undoShown = false }, id).only(id)
-            assertEquals(hidden.detail, Scenarios.NON_MESURE, hidden.resultat)
+            assertEquals(hidden.detail, Scenarios.ECHOUE, hidden.resultat)
             assertTrue(hidden.detail, hidden.detail.contains("pas de bouton « Annuler »"))
-            // A bad sound stays a red even when the effect cannot be taken off.
-            val bad = played(Studio().apply { undoShown = false; nan = true }, id).only(id)
-            assertEquals(bad.detail, Scenarios.ECHOUE, bad.resultat)
-            assertTrue(bad.detail, bad.detail.contains("NaN"))
         }
     }
 
@@ -528,13 +535,11 @@ class ScenariosTest {
     @Test
     fun undoTakesTheBreakOffAndRedoPutsItBack() {
         val s = Studio()
-        assertTrue(scenarios(s).annulerRetablir().contains("annulé (4), rétabli (5), enregistré"))
-        assertEquals(5, s.disque!!.parties)
+        assertTrue(scenarios(s).annulerRetablir().contains("annulé (4), rétabli (5), enregistré, puis annulé (4)"))
+        assertEquals(4, s.disque!!.parties)
         fails("« Annuler » ne retire pas le break") { scenarios(Studio().apply { undoWorks = false }).annulerRetablir() }
-        // No « Annuler » in the bar (a setting): not measured, never a false failure.
-        val c = carnet()
-        assertTrue(scenarios(Studio().apply { undoShown = false }, c).annulerRetablir().startsWith("non mesuré"))
-        assertTrue(c.lines().any { it.kind == Carnet.NOTE && it.text.startsWith(ToutTester.NON_MESURE) })
+        // No « Annuler » in the bar: the break would stay in the song the next scenario finds, so red (audit E).
+        fails("pas de bouton « Annuler »") { scenarios(Studio().apply { undoShown = false }).annulerRetablir() }
         val fx = Studio()
         assertTrue(scenarios(fx).annulerEffet().contains("COMPRESSOR ajouté à la piste 2 puis annulé"))
         assertEquals(listOf("PUMP"), fx.disque!!.effets[1])
@@ -657,6 +662,17 @@ class ScenariosTest {
     }
 
     @Test
+    fun aScenarioThatLeavesTheSongChangedIsRedEvenWhenItsOwnOracleIsGreen() {
+        // The mute scenario's own oracle only reads the mutes: the stray tempo is caught by the tidy check (audit E).
+        val left = played(Studio().apply { mixNudgesTempo = true }, "muet").only("muet")
+        assertEquals(left.detail, Scenarios.ECHOUE, left.resultat)
+        assertTrue(left.detail, left.detail.contains("comme il l'a trouvé") && left.detail.contains("tempo"))
+        // A song opened by the scenario itself is not held to it.
+        assertFalse(Scenarios.rangeLeProjet(Scenarios.LISTE.first { it.id == Scenarios.DEBUTANT }))
+        assertTrue(Scenarios.rangeLeProjet(Scenarios.LISTE.first { it.id == "muet" }))
+    }
+
+    @Test
     fun extremeTemposMoveAreSavedPlayAndArePutBack() {
         val s = Studio()
         played(s, "tempo_bas", "tempo_haut", "tempo_haut_lecture").forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
@@ -673,7 +689,7 @@ class ScenariosTest {
         assertEquals(0, s.montee)
         assertEquals(Scenarios.ECHOUE, played(Studio().apply { undoWorks = false }, "partie_montee").only("partie_montee").resultat)
         assertEquals(Scenarios.ECHOUE, played(Studio().apply { undoWorks = false }, "partie_fin").only("partie_fin").resultat)
-        assertEquals(Scenarios.NON_MESURE, played(Studio().apply { undoShown = false }, "partie_inserer").only("partie_inserer").resultat)
+        assertEquals(Scenarios.ECHOUE, played(Studio().apply { undoShown = false }, "partie_inserer").only("partie_inserer").resultat)
     }
 
     @Test

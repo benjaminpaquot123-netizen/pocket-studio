@@ -30,6 +30,8 @@ class ScenariosRemiseTest {
         var tab = "Structure"
         var sheet = ""
         var parties = 4
+        /** Breaks « Annuler » can take back (the scenarios tidy after them). */
+        var undos = 0
         var playing = false
         var opened = 0
         var backs = 0
@@ -66,6 +68,7 @@ class ScenariosRemiseTest {
                     }
                     addAll(listOf(if (landscape) "space_rail" else "space_bar", "tab_Mix", "tab_Live", "tab_Structure"))
                     if (tab != "Live") add("top_projects")
+                    if (undos > 0) add("top_undo")
                     when (tab) {
                         "Live" -> addAll(listOf("live_screen", "live_play"))
                         else -> {
@@ -98,7 +101,8 @@ class ScenariosRemiseTest {
                 tag == "live_play" -> playing = !playing
                 tag.startsWith("part_menu_") -> sheet = "part"
                 tag == "part_sheet_close" -> sheet = ""
-                tag == "part_break_4" -> { sheet = ""; if (breakOpensTimeline) overlay = "timeline" else parties++ }
+                tag == "part_break_4" -> { sheet = ""; if (breakOpensTimeline) overlay = "timeline" else { parties++; undos++ } }
+                tag == "top_undo" -> { parties--; undos-- }
             }
         }
 

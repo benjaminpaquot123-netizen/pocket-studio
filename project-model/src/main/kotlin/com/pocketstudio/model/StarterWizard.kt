@@ -1530,9 +1530,13 @@ object StarterWizard {
             ),
             mix = mix.copy(glueBlend = mix.glueBlend ?: BODY_GLUE_BLEND),
             // The transition into each Drop: the riser that climbs (the hit on the crash is a layer, [Extras.transition]).
-            riser = true,
+            // The dynamic hip-hop has no Drop: its song keeps no riser (and so no riser's clipper).
+            riser = style.riser || style.id !in NO_DROP,
         )
     }
+
+    /** The dynamic hip-hop: no Drop, so its body adds no riser (as WizardMix keeps its crest whole). */
+    private val NO_DROP = setOf("lofi", "boom_bap")
 
     /**
      * What the app found on the phone for a style's format v2 body (it reads packs, the model does

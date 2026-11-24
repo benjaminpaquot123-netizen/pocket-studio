@@ -139,7 +139,9 @@ class ScenariosTest {
         override fun count(tag: String, merged: Boolean) = if (tag in screen()) 1 else 0
         override fun bounds(tag: String) = Rect(0f, 0f, 10f, 10f)
         override fun scrollTo(tag: String) = Unit
-        override fun idle(ms: Long) = Thread.sleep(minOf(ms, 5))
+        /** A wait's real length: 5 ms, or more for a slow machine (the CI's). */
+        var idleMs = 5L
+        override fun idle(ms: Long) = Thread.sleep(minOf(ms, idleMs))
         override fun tags(pattern: Regex) = screen().filter { pattern.matches(it) }
 
         override fun click(tag: String) {
@@ -693,6 +695,13 @@ class ScenariosTest {
         assertEquals(Scenarios.ECHOUE, played(Studio().apply { liveSound = false }, "lecture_live").only("lecture_live").resultat)
         assertEquals(Scenarios.ECHOUE, played(Studio().apply { stopsBehind = true }, "fond_reprise_5").only("fond_reprise_5").resultat)
         assertEquals(Scenarios.NON_MESURE, played(Studio().apply { canLeave = false }, "fond_reprise_5").only("fond_reprise_5").resultat)
+    }
+
+    @Test
+    fun aSlowMachineStillHearsAFullSecondOfMusic() {
+        // A loaded CI machine: each quarter-second wait takes 40 ms, so 60 ms of listening hold under 4 readings.
+        played(Studio().apply { idleMs = 40 }, "lecture_mix", "lecture_va_et_vient")
+            .forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
     }
 
     @Test

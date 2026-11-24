@@ -217,7 +217,9 @@ private const val PACK_PREFIX = "pack:"
 fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>): List<SoundCategory> {
     val label = tr(SoundPacks.KIND_LABELS[role.packKind] ?: role.title)
     // The kit voice the style asks for this line (a shaker, a cowbell) is offered first.
-    val voice = styleId?.let(StarterWizard::style)?.lines?.firstOrNull { it.role == role }?.voice
+    // Its body (lot gr-l1b): the shaker a style with [StarterWizard.Style.body] gets offers its kit voice too.
+    val style = styleId?.let(StarterWizard::style)?.let(StarterWizard::withBody)
+    val voice = style?.lines?.firstOrNull { it.role == role }?.voice
     val voices = (listOfNotNull(voice) + role.builtIn).distinct()
     val kit = SoundCategory(KIT_CATEGORY, tr("Sons intégrés"), voices.map { SoundOption(SoundRef.Kit(it), DrumKitInfo.names[it]) })
     val packs = installed.mapNotNull { m ->
@@ -225,7 +227,14 @@ fun soundCategories(role: Role, styleId: String?, installed: List<PackManifest>)
         if (sounds.isEmpty()) null
         else SoundCategory(PACK_PREFIX + m.id, "$label · ${m.name}", sounds.map { SoundOption(SoundRef.Pack(m.id, it), "${it.name} · ${m.name}") })
     }
-    val machine = styleId?.let(StarterWizard::style)?.kit?.get(role)
+    val machine = style?.kit?.get(role)
+    // Format v2 (a): the very file the style names for this line ("pack:sound"), first, when its pack is downloaded.
+    val named = style?.kitSounds?.get(role)?.let { com.pocketstudio.model.PackRefs.resolve(it, installed) }
+    if (named != null) {
+        val pack = packs.first { it.id == PACK_PREFIX + named.packId }
+        val chosen = pack.options.firstOrNull { (it.ref as SoundRef.Pack).sound == named.sound }
+        if (chosen != null) return listOf(pack.copy(options = listOf(chosen) + (pack.options - chosen))) + listOf(kit) + (packs - pack)
+    }
     val first = packs.filter { it.id == PACK_PREFIX + machine }
     val own = packs.filter { it.id == PACK_PREFIX + styleId } - first.toSet()
     // A line that asks for its own kit voice (the afro house shaker, the congas) keeps it even with
@@ -1174,7 +1183,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val first = soundCategories(role, styleId, installed).first()
         // The built-in kit: the voice the style asks for (a shaker, a cowbell), else the one already
         // on that pad when it can play the line.
-        val wanted = styleId?.let(StarterWizard::style)?.lines?.firstOrNull { it.role == role }?.voice ?: role.lane
+        val wanted = styleId?.let(StarterWizard::style)?.let(StarterWizard::withBody)?.lines?.firstOrNull { it.role == role }?.voice ?: role.lane
         val option = if (first.id == KIT_CATEGORY) first.options.firstOrNull { (it.ref as SoundRef.Kit).voice == wanted } ?: first.options.first()
         else first.options.first()
         return WizardRow(enabled = true, category = first.id, sound = option)
@@ -1269,7 +1278,7 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
 
     /** The assistant on [style] with its advised choices: what "Choisir ce style" sets and the one-touch song uses. */
     private fun withStyle(w: WizardUi, style: StarterWizard.Style, installed: List<PackManifest>): WizardUi = w.copy(
-        styleId = style.id, step = 1, rows = style.lines.associate { it.role to defaultRow(it.role, style.id, installed).copy(enabled = !it.off) },
+        styleId = style.id, step = 1, rows = StarterWizard.withBody(style).lines.associate { it.role to defaultRow(it.role, style.id, installed).copy(enabled = !it.off) },
         mood = style.melody.mood,
         acidNotes = null, acidSound = null, acidSoundName = null, acidDensity = AcidPattern().density,
         // The recipe's parts on (the riddim's bass alone, no bass under the gabber's kick, the
@@ -1312,7 +1321,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         val style = w.style ?: return null
         val sounds = HashMap<Role, PadSample?>()
         val files = HashMap<String, Pcm>()
-        for (line in style.lines) {
+        // With its body (lot gr-l1b): the shaker it adds is a line like the others.
+        for (line in StarterWizard.withBody(style).lines) {
             val row = w.rows[line.role] ?: continue
             var option = row.sound ?: continue
             if (!row.enabled) continue
@@ -1366,7 +1376,8 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
         }
         AppLog.add("Assistant : morceau ${style.name}, ${sounds.size} lignes, ${parts.size} pistes mélodiques")
         // Its live pads are prepared once it is open and its sounds loaded (RhythmViewModel.fillLivePads).
-        val project = StarterWizard.build(style, sounds, w.mood, parts, acid = w.acidPlays, chosenAcid = w.acidPattern).copy(livePadsPending = true)
+        val extras = bodyExtras(style, sounds, files)
+        val project = StarterWizard.build(style, sounds, w.mood, parts, acid = w.acidPlays, chosenAcid = w.acidPattern, extras = extras).copy(livePadsPending = true)
         // The song's 303 cutoff follows a curve (acid styles): the guide says how to take it over.
         val guide = songGuide(
             style.name, w.plan, inKey = w.mood != null, song = songSummary(style, w.plan), acid = w.acidPlays,
@@ -1374,6 +1385,51 @@ class SoundLibraryViewModel(app: Application) : AndroidViewModel(app) {
             sweeps = StarterWizard.hasSweeps(project),
         )
         return Song(project, files, guide)
+    }
+
+    /**
+     * What a format v2 style plays besides its lines, read from the phone (lot gr-l1b): each layer's
+     * sound ([StarterWizard.layerLanes]), the loop, the vocal chop and the transition's hit, their
+     * audio added to [files]. What is not downloaded or cannot be read is left out: the song plays without it.
+     */
+    private suspend fun bodyExtras(style: StarterWizard.Style, sounds: Map<Role, PadSample?>, files: HashMap<String, Pcm>): StarterWizard.Extras {
+        val installed = _packs.value.installed
+        suspend fun read(source: com.pocketstudio.model.PackRefs.Source?): Pcm? = when (source) {
+            is com.pocketstudio.model.PackRefs.Source.Kit -> kitVoice(source.voice)
+            is com.pocketstudio.model.PackRefs.Source.Pack -> load(SoundRef.Pack(source.packId, source.sound))
+            null -> null
+        }
+        fun keep(pcm: Pcm, name: String): PadSample {
+            val file = "${UUID.randomUUID().toString().take(12)}.wav"
+            files[file] = pcm
+            return PadSample(file, name.take(40))
+        }
+        val layers = HashMap<Int, PadSample>()
+        for ((role, spec, lane) in StarterWizard.layerLanes(style)) {
+            if (role !in sounds) continue
+            val pcm = read(com.pocketstudio.model.PackRefs.layer(spec, role, installed)) ?: continue
+            layers[lane] = keep(pcm, "${role.title} +")
+        }
+        val loop = style.loop?.let { spec ->
+            val found = com.pocketstudio.model.PackRefs.resolve("${spec.pack}:${spec.sound}", installed) ?: return@let null
+            val pcm = load(SoundRef.Pack(found.packId, found.sound)) ?: return@let null
+            val file = "${UUID.randomUUID().toString().take(12)}.wav"
+            files[file] = pcm
+            val bpm = installed.firstOrNull { it.id == found.packId }?.bpm ?: 0.0
+            StarterWizard.LoopSound(file, found.sound.name.take(40), pcm.data.size.toDouble() / pcm.channels / pcm.sampleRate, bpm)
+        }
+        val vocal = style.vocalSample?.let { ref ->
+            val found = com.pocketstudio.model.PackRefs.resolve(ref, installed) ?: return@let null
+            val chop = StarterWizard.PartSound(found.sound.name.take(40), sampled = com.pocketstudio.model.SampledPatch(file = StarterWizard.PACK_FILE + found.packId + "/" + found.sound.file))
+            val (pcm, root) = packPartSound(chop) ?: return@let null
+            val file = "${UUID.randomUUID().toString().take(12)}.wav"
+            files[file] = pcm
+            chop.copy(sampled = chop.sampled!!.copy(file = file, name = chop.name, root = root ?: 60f))
+        }
+        val transition = if (!style.body && style.mix == null) null else StarterWizard.transitionLane(style)?.let {
+            read(com.pocketstudio.model.PackRefs.impact(installed)) ?: partySound("impact")
+        }?.let { keep(it, "Impact") }
+        return StarterWizard.Extras(layers, loop, vocal, transition)
     }
 
     override fun onCleared() {

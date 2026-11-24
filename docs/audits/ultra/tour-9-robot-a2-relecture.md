@@ -1,6 +1,8 @@
 # Tour 9 : lot robot-a2 (relecture neuve)
 
-Relu : 5ac529783f86b81561be041a6a400ea3d93ca81f
+Relu : 79c01e0c1f0db1f117672da4bb6bcbb7392fbfeb
+
+Code relu à 5ac529783f86b81561be041a6a400ea3d93ca81f ; depuis, seules deux lignes « chemin » du rapport ont changé (nom de la méthode de test), aucun code.
 
 ## Ce qui a été lu
 

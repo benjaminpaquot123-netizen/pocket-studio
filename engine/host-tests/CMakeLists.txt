@@ -29,6 +29,13 @@ set_source_files_properties(${OPEN303_SOURCES} PROPERTIES COMPILE_OPTIONS "-w;-f
 # Same math flags as the device build (engine/src/main/cpp/CMakeLists.txt).
 target_compile_options(ps_core PRIVATE -Wall -Wextra -Werror -O3 -ffast-math -fno-finite-math-only)
 
+# A measuring build (engine/bench, scripts/cpu-bench.sh --bricks): the callback's time brick by brick
+# (core/Profile.h). Off everywhere else: nothing of it is compiled.
+option(PS_PROFILE "Time the engine's bricks inside the callback (measuring builds only)" OFF)
+if(PS_PROFILE)
+    target_compile_definitions(ps_core PUBLIC PS_PROFILE)
+endif()
+
 add_executable(engine_tests engine_tests.cpp)
 target_link_libraries(engine_tests PRIVATE ps_core)
 target_compile_options(engine_tests PRIVATE -Wall -Wextra -Werror)

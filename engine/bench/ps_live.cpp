@@ -57,9 +57,11 @@
 
 #include <time.h>
 
+#include "Profile.h"
 #include "Engine.h"
 #include "MasterChain.h"
 #include "Sample.h"
+#include "StyleBudgets.h"
 #include "WavWriter.h"
 
 // Heap calls made inside Engine::process (the audio callback) by the thread running it, counted
@@ -117,6 +119,12 @@ void free(void* p) {
 #define PS_LIVE_COUNTS_ALLOCATIONS 1
 #else
 #define PS_LIVE_COUNTS_ALLOCATIONS 0
+#endif
+
+#ifdef PS_PROFILE
+#define PS_LIVE_PROFILES 1
+#else
+#define PS_LIVE_PROFILES 0
 #endif
 
 namespace {
@@ -256,7 +264,10 @@ struct Player {
         block.assign(static_cast<size_t>(burst) * 2, 0.0f);
         g_inCallback = true;
         const double t0 = threadSeconds();
-        engine.process(nullptr, 0, 0, block.data(), burst, 2);
+        {
+            PS_PROFILE_SCOPE(Rest);
+            engine.process(nullptr, 0, 0, block.data(), burst, 2);
+        }
         if (allocProbe && cpu.size() == 100) {
             g_probe = ::operator new(16);  // a direct call: never elided, as a new-expression may be
             ::operator delete(g_probe);
@@ -596,6 +607,9 @@ int main(int argc, char** argv) {
         return 1;
     }
     const std::string base = dirOf(files[0]);
+    // The style's relative budget (StyleBudgets.h): the reference scene before the song and after it.
+    std::string style;
+    const double referenceBefore = ps::stylebudget::referenceLoad(burst);
     auto player = std::make_unique<Player>();
     player->burst = burst;
     player->limit = static_cast<int64_t>(seconds * 48000.0);
@@ -677,7 +691,10 @@ int main(int argc, char** argv) {
             int32_t a = 0;
             ls >> a;
             player->post({ps::CommandType::SetInstrument, 0.0f, a, 0});
-        } else if (op == "PSCMD" || op == "RATE" || op == "META" || op == "SONG" || op == "SECTION") {
+        } else if (op == "META") {
+            std::string key;
+            if ((ls >> key) && key == "style") ls >> style;
+        } else if (op == "PSCMD" || op == "RATE" || op == "SONG" || op == "SECTION") {
             continue;
         } else {
             fail(line, "unknown line: " + op);
@@ -719,6 +736,31 @@ int main(int argc, char** argv) {
     std::printf("CPU burst=%d budget_ms=%.3f blocks=%ld mean=%.2f%% p99=%.2f%% p999=%.2f%% max=%.2f%% max_at=%.1fs scale=%.2f buffer=%d over=%ld glitches=%ld\n",
                 burst, cpu.budget * 1000.0, cpu.blocks, cpu.mean * pct, cpu.p99 * pct, cpu.p999 * pct, cpu.max * pct, cpu.maxAt, cpuScale, bufferBursts,
                 cpu.over, cpu.glitches);
+    // The style's load against the reference scene of the same pass (the slower of its two readings:
+    // a machine that slowed down during the song does not make the style look dearer).
+    if (!style.empty() && !soloing && cpu.blocks > 0) {
+        const double reference = std::max(referenceBefore, ps::stylebudget::referenceLoad(burst));
+        const double load = cpu.mean / cpu.budget;
+        const ps::stylebudget::Budget* b = ps::stylebudget::budgetOf(style.c_str());
+        const auto verdict = ps::stylebudget::judge(style.c_str(), load, reference);
+        const bool counted = PS_LIVE_COUNTS_ALLOCATIONS && burst == 96 && !PS_LIVE_PROFILES;  // not a sanitizer or measuring build
+        std::printf("BUDGET style=%s ratio=%.3f reference=%.2f%% budget=%.3f %s\n", style.c_str(), reference > 0.0 ? load / reference : 0.0,
+                    reference * 100.0, b ? static_cast<double>(b->measured * ps::stylebudget::kMargin) : 0.0,
+                    verdict == ps::stylebudget::Verdict::NoBudget ? "none" : !counted ? "not-counted" : verdict == ps::stylebudget::Verdict::Over ? "over" : "ok");
+        if (counted && verdict == ps::stylebudget::Verdict::Over) {
+            char buf[200];
+            std::snprintf(buf, sizeof buf, "BUDGET: %s costs %.2f times the reference scene, its budget is %.2f (StyleBudgets.h)", style.c_str(),
+                          load / reference, static_cast<double>(b->measured * ps::stylebudget::kMargin));
+            found.emplace_back(buf);
+        }
+    }
+#ifdef PS_PROFILE
+    // A measuring build (-DPS_PROFILE=ON): the callbacks' time brick by brick (core/Profile.h); the
+    // bricks add up to the whole of the callbacks. Read by engine/bench/brick_report.py.
+    for (int b = 0; b < ps::profile::kBricks; ++b) {
+        if (ps::profile::g_state.ns[b] > 0) std::printf("BRICK %s %.6f\n", ps::profile::name(b), static_cast<double>(ps::profile::g_state.ns[b]) * 1e-9);
+    }
+#endif
     if (!cpuPath.empty()) {
         std::FILE* f = std::fopen(cpuPath.c_str(), "wb");
         if (!f || std::fwrite(player->cpu.data(), sizeof(float), player->cpu.size(), f) != player->cpu.size()) status = 3;

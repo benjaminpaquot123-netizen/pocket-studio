@@ -7,10 +7,13 @@
 # two callbacks, a verdict per style. Report: OUT/report.md (and cpu.json).
 #
 #   scripts/cpu-bench.sh [--styles a,b,c] [--seconds S (60)] [--runs R (2)] [--scale X (3)]
-#                        [--cmds DIR (record them)] [--out DIR] [--strict] [--machine "text"]
+#                        [--cmds DIR (record them)] [--out DIR] [--strict] [--machine "text"] [--bricks]
 #
 # --cmds: the .pslive files of an earlier live bench (build/live-bench/cmds, or a CI artifact on
 # another machine, an ARM one); otherwise the live bench records and checks them first.
+# --bricks: instead of the report above, where the callback's time goes, brick by brick (a
+# measuring build of ps_live, core/Profile.h): OUT/bricks.md, the bricks ranked by cost. On a PC
+# the order counts, not the figures. Needs --cmds.
 # --strict: fails when a style is « à risque ». Environment: JOBS (1: runs never share a core),
 # GRADLE_ARGS, CMAKE_EXTRA_ARGS (as scripts/live-bench.sh).
 set -euo pipefail
@@ -22,6 +25,7 @@ RUNS=2
 SCALE=3
 CMDS=""
 STRICT=""
+BRICKS=""
 MACHINE="$(uname -m), $(nproc 2>/dev/null || echo '?') cœurs, $(grep -m1 'model name' /proc/cpuinfo 2>/dev/null | cut -d: -f2 | sed 's/^ *//' || true)"
 JOBS="${JOBS:-1}"
 while [ $# -gt 0 ]; do
@@ -33,11 +37,31 @@ while [ $# -gt 0 ]; do
         --cmds) CMDS="$(cd "$2" && pwd)"; shift 2 ;;
         --out) OUT="$(mkdir -p "$2" && cd "$2" && pwd)"; shift 2 ;;
         --strict) STRICT="--strict"; shift ;;
+        --bricks) BRICKS=1; shift ;;
         --machine) MACHINE="$2"; shift 2 ;;
         *) echo "unknown option $1" >&2; exit 1 ;;
     esac
 done
 mkdir -p "$OUT"
+if [ -n "$BRICKS" ]; then
+    [ -n "$CMDS" ] || { echo "--bricks needs --cmds DIR (the .pslive files of a live bench)" >&2; exit 1; }
+    ls "$CMDS"/*.pslive > /dev/null 2>&1 || { echo "no .pslive in $CMDS" >&2; exit 1; }
+    TOOLS="$OUT/brick-tools"
+    echo "== Building the measuring ps_live (PS_PROFILE)"
+    cmake -S "$ROOT/engine/bench" -B "$TOOLS" -DCMAKE_BUILD_TYPE=Release -DPS_PROFILE=ON ${CMAKE_EXTRA_ARGS:-} > "$OUT/brick-cmake.log"
+    cmake --build "$TOOLS" -j "$(nproc 2>/dev/null || echo 2)" --target ps_live >> "$OUT/brick-cmake.log"
+    echo "== Measuring the bricks ($RUNS runs, 96 frames, $SECONDS_LIVE s each, $JOBS at a time)"
+    rm -rf "$OUT/bricks" && mkdir -p "$OUT/bricks"
+    export OUT TOOLS CMDS SECONDS_LIVE
+    for f in "$CMDS"/*.pslive; do
+        s="$(basename "$f" .pslive)"
+        if [ -z "$STYLES" ] || [[ ",$STYLES," == *",$s,"* ]]; then
+            for r in $(seq 1 "$RUNS"); do echo "$s $r"; done
+        fi
+    done | xargs -P "$JOBS" -L 1 sh -c '"$TOOLS/ps_live" --quiet --seconds "$SECONDS_LIVE" "$CMDS/$0.pslive" > "$OUT/bricks/$0-$1.txt"; st=$?; [ $st = 0 ] || [ $st = 4 ] || { echo "FAILED: $0 ($st)" >&2; exit 255; }'
+    python3 -I "$ROOT/engine/bench/brick_report.py" "$OUT/bricks" --out "$OUT/bricks.md" --machine "$MACHINE"
+    exit 0
+fi
 TOOLS="$OUT/tools"
 LIVE_STATUS=0
 if [ -z "$CMDS" ]; then

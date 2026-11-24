@@ -1,5 +1,6 @@
 #include "Mixer.h"
 #include "Params.h"
+#include "Profile.h"
 
 #include <algorithm>
 
@@ -759,8 +760,13 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             std::fill(retL_.begin(), retL_.begin() + n, 0.0f);
             std::fill(retR_.begin(), retR_.begin() + n, 0.0f);
         }
-        if (b == 0) reverb_.process(busL_[b].data(), busR_[b].data(), outL, outR, n);
-        else delay_.process(busL_[b].data(), busR_[b].data(), outL, outR, n);
+        if (b == 0) {
+            PS_PROFILE_SCOPE(ReverbBus);
+            reverb_.process(busL_[b].data(), busR_[b].data(), outL, outR, n);
+        } else {
+            PS_PROFILE_SCOPE(DelayBus);
+            delay_.process(busL_[b].data(), busR_[b].data(), outL, outR, n);
+        }
         if (!heard) continue;
         if (plain) continue;
         auto& eq = returnEq_[b];
@@ -827,7 +833,10 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
         blewUp_.store(true, std::memory_order_relaxed);
     }
     // Always runs: the repeat and the tape stop need the last seconds already recorded.
-    perf_.process(mL_.data(), mR_.data(), n);
+    {
+        PS_PROFILE_SCOPE(LiveFx);
+        perf_.process(mL_.data(), mR_.data(), n);
+    }
     if (!finiteMix()) {
         std::fill(mL_.begin(), mL_.begin() + n, 0.0f);
         std::fill(mR_.begin(), mR_.begin() + n, 0.0f);
@@ -880,6 +889,7 @@ void Mixer::processChunk(const float* const* channels, const float* const* right
             stats.inPeak = std::max(stats.inPeak, std::max(std::fabs(outL_[static_cast<size_t>(i)]), std::fabs(outR_[static_cast<size_t>(i)])));
         }
     } else {
+        PS_PROFILE_SCOPE(MasterChain);
         stats = chain_->process(outL_.data(), outR_.data(), direct ? click_.data() : nullptr, n);
         if (comparing) compare_->process(abL_.data(), abR_.data(), outL_.data(), outR_.data(), n);
     }

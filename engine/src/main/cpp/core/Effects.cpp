@@ -1,6 +1,7 @@
 #include "Effects.h"
 #include "PlateReverb.h"
 #include "Params.h"
+#include "Profile.h"
 
 #include <algorithm>
 #include <cmath>
@@ -1341,6 +1342,7 @@ void InsertSlot::setParam(int p, float v) {
 }
 
 void InsertSlot::process(float* l, float* r, int n) {
+    PS_PROFILE_SCOPE_AT(::ps::profile::FirstInsert + static_cast<int>(type_));
     switch (type_) {
         case Eq: eq_.process(l, r, n); break;
         case Comp: comp_.process(l, r, n); break;

@@ -2,6 +2,7 @@
 #include "Params.h"
 
 #include "DenormalGuard.h"
+#include "Profile.h"
 
 #include <algorithm>
 #include <cmath>
@@ -1096,7 +1097,11 @@ void Engine::triggerPad(int lane, float velocity, int offset, float pan, float p
 
 void Engine::renderPads(float* const* lefts, float* const* rights, int numFrames) {
     if (deferredCount_ == 0) {
-        drums_.render(lefts, rights, numFrames);
+        {
+            PS_PROFILE_SCOPE(Drums);
+            drums_.render(lefts, rights, numFrames);
+        }
+        PS_PROFILE_SCOPE(PadSampler);
         sampler_.render(lefts, rights, numFrames);
     } else {
         // In time order (insertion sort: a handful at most).
@@ -1114,7 +1119,11 @@ void Engine::renderPads(float* const* lefts, float* const* rights, int numFrames
                     segL[lane] = lefts[lane] + from;
                     segR[lane] = rights[lane] + from;
                 }
-                drums_.render(segL, segR, to - from);
+                {
+                    PS_PROFILE_SCOPE(Drums);
+                    drums_.render(segL, segR, to - from);
+                }
+                PS_PROFILE_SCOPE(PadSampler);
                 sampler_.render(segL, segR, to - from);
                 from = to;
             }
@@ -1577,7 +1586,10 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     } else {
         mixer_.setKeyInput(nullptr, nullptr);
     }
-    acid_.render(acid, numFrames);
+    {
+        PS_PROFILE_SCOPE(Acid);
+        acid_.render(acid, numFrames);
+    }
     // The multizone voices are shared by every track and layer playing one.
     int multiTracks = 0;
     for (int k = 0; k < kTracks; ++k) {
@@ -1603,9 +1615,12 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
         rights[trackChannel(k)] = stereo ? bufR : nullptr;
     }
     renderLayers(channels, rights, numFrames);
-    stems_.render(stemsL, stemsR, numFrames);
-    remixCells_.setStepFrames(sequencer_.samplesPerStep());
-    remixCells_.render(stemsL, stemsR, numFrames);
+    {
+        PS_PROFILE_SCOPE(AudioClips);
+        stems_.render(stemsL, stemsR, numFrames);
+        remixCells_.setStepFrames(sequencer_.samplesPerStep());
+        remixCells_.render(stemsL, stemsR, numFrames);
+    }
     // The stems listened to on the Remix page play apart from the project: added after the mixer,
     // so a strip left in solo (or the remix's strip muted) never silences them.
     float* previewL = previewL_.data();
@@ -1613,9 +1628,12 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
     std::fill(previewL, previewL + numFrames, 0.0f);
     std::fill(previewR, previewR + numFrames, 0.0f);
     const bool previewHeard = preview_.active();
-    preview_.render(previewL, previewR, numFrames);
-    clips_.setBeatFrames(sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat);
-    clips_.render(stemsL, stemsR, numFrames);
+    {
+        PS_PROFILE_SCOPE(AudioClips);
+        preview_.render(previewL, previewR, numFrames);
+        clips_.setBeatFrames(sequencer_.samplesPerStep() * Sequencer::kStepsPerBeat);
+        clips_.render(stemsL, stemsR, numFrames);
+    }
     // « Enregistrer ce que je joue »: the bar line as it will be heard (after the master's delay).
     if (resample_ && clips_.barAt() >= 0 && barCount_ < static_cast<int>(bars_.size())) {
         bars_[static_cast<size_t>(barCount_++)] = {blockOut_ + clips_.barAt() + mixer_.latency(),
@@ -1648,7 +1666,10 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
                 rights[audioChannel(k)] = rs[k];
             }
         }
-        audio_.render(lefts, rs, numFrames);
+        {
+            PS_PROFILE_SCOPE(AudioClips);
+            audio_.render(lefts, rs, numFrames);
+        }
         // The singer hears the microphone on the strip of the track being recorded (its effects).
         if (monitoring()) {
             float* l = lefts[monitorTrack_];
@@ -1663,7 +1684,10 @@ void Engine::renderBlock(float* output, int numFrames, int outputChannels) {
             monitorCount_ -= n;
         }
     }
-    mixer_.process(channels, rights, direct, output, numFrames, outputChannels);
+    {
+        PS_PROFILE_SCOPE(Mixer);
+        mixer_.process(channels, rights, direct, output, numFrames, outputChannels);
+    }
     // Only while it plays: an export without the limiter keeps its peaks over full scale.
     if (previewHeard || preview_.active()) {
         for (int i = 0; i < numFrames; ++i) {

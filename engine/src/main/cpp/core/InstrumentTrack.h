@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstdint>
 
+#include "Profile.h"
 #include "MultiSampler.h"
 #include "NoteTrack.h"
 #include "PlaitsSynth.h"
@@ -303,30 +304,78 @@ struct InstrumentTrack {
     // length, cleared by the caller). Mono: `left` only, exactly as before.
     bool render(float* left, float* right, int numFrames) {
         if (right == nullptr || !stereo()) {
-            synth.render(left, numFrames);
-            instrument.render(left, numFrames);
-            plaits.render(left, numFrames);
-            sampled.render(left, numFrames);
-            multi.render(left, nullptr, numFrames);
-            bass808.render(left, numFrames);
+            {
+                PS_PROFILE_SCOPE(Synth);
+                synth.render(left, numFrames);
+            }
+            {
+                PS_PROFILE_SCOPE(SoundFont);
+                instrument.render(left, numFrames);
+            }
+            {
+                PS_PROFILE_SCOPE(Plaits);
+                plaits.render(left, numFrames);
+            }
+            {
+                PS_PROFILE_SCOPE(SampleInstrument);
+                sampled.render(left, numFrames);
+            }
+            {
+                PS_PROFILE_SCOPE(MultiSampler);
+                multi.render(left, nullptr, numFrames);
+            }
+            {
+                PS_PROFILE_SCOPE(Bass808);
+                bass808.render(left, numFrames);
+            }
             return false;
         }
         // The mono parts first, copied to the right, then the stereo ones into both.
         const bool synthWide = synth.stereo();
         const bool fontWide = stereoSounds && instrument.active();
         const bool sampleWide = stereoSounds && sampled.stereoSample();
-        if (!synthWide) synth.render(left, numFrames);
-        if (!fontWide) instrument.render(left, numFrames);
+        if (!synthWide) {
+            PS_PROFILE_SCOPE(Synth);
+            synth.render(left, numFrames);
+        }
+        if (!fontWide) {
+            PS_PROFILE_SCOPE(SoundFont);
+            instrument.render(left, numFrames);
+        }
         const bool multiWideNow = multiWide();
-        plaits.render(left, numFrames);
-        if (!sampleWide) sampled.render(left, numFrames);
-        if (!multiWideNow) multi.render(left, nullptr, numFrames);
-        bass808.render(left, numFrames);
+        {
+            PS_PROFILE_SCOPE(Plaits);
+            plaits.render(left, numFrames);
+        }
+        if (!sampleWide) {
+            PS_PROFILE_SCOPE(SampleInstrument);
+            sampled.render(left, numFrames);
+        }
+        if (!multiWideNow) {
+            PS_PROFILE_SCOPE(MultiSampler);
+            multi.render(left, nullptr, numFrames);
+        }
+        {
+            PS_PROFILE_SCOPE(Bass808);
+            bass808.render(left, numFrames);
+        }
         std::copy(left, left + numFrames, right);
-        if (synthWide) synth.render(left, right, numFrames);
-        if (fontWide) instrument.render(left, right, numFrames);
-        if (sampleWide) sampled.render(left, right, numFrames);
-        if (multiWideNow) multi.render(left, right, numFrames);
+        if (synthWide) {
+            PS_PROFILE_SCOPE(Synth);
+            synth.render(left, right, numFrames);
+        }
+        if (fontWide) {
+            PS_PROFILE_SCOPE(SoundFont);
+            instrument.render(left, right, numFrames);
+        }
+        if (sampleWide) {
+            PS_PROFILE_SCOPE(SampleInstrument);
+            sampled.render(left, right, numFrames);
+        }
+        if (multiWideNow) {
+            PS_PROFILE_SCOPE(MultiSampler);
+            multi.render(left, right, numFrames);
+        }
         return true;
     }
     void render(float* out, int numFrames) { render(out, nullptr, numFrames); }

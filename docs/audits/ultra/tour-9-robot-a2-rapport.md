@@ -12,6 +12,7 @@ Base : `eq/tour-9-robot1b` à 9d88787a. Branche : `eq/robot-a2` (alias `eq/tour-
 | 4 | paquet guidé « Tests guidés » : changer de sortie (le son revient en moins de 2 s, ▶ relancé si le téléphone a arrêté la lecture) et économie d'énergie (la lecture tient) ; jamais dans la nuit ni dans Tout tester | 5e85cdaf | 1ec18547 |
 | A (chef) | compteur « Test n sur N » et sa barre sur l'écran du robot pendant un passage | 23225130 | c6921e23 |
 | B + C (chef) | écran « Retester les corrections » : les rouges, les non concluants et les tests neufs jamais joués cochés d'office, les verts non ; boutons Tout cocher / Tout décocher ; cochés d'abord (« À refaire »), puis chaque scénario sous son groupe ; un scénario choisi se joue dans le même passage | e9ddb979 | da0a4d22 |
+| Relecture (grave 2) | changement de kit : la sonde est lue toutes les 250 ms pendant les gestes (trou entendu même pendant que la feuille des kits est ouverte) ; test tablette remis (grave 1) | a3cd887a | cfd47687 |
 | D (chef) | scénarios 2b `changer_partie_10` (10 fois une autre partie par son ▶ sur la Structure pendant la lecture : aucun trou > 200 ms, la partie jouée est la choisie, pas de plantage) et 2c `quitter_en_jouant` (Mes projets pendant la lecture, un autre projet ouvert, puis le premier : pas de son après ■, projet intact sur le disque) ; moins de 3 min chacun, proposés dans Retester | dfbc48e4 | 65144179 |
 
 Les épreuves du point 3 sont dans « Tout tester » ; aucune n'est assez courte pour l'Essai éclair (rien n'y est ajouté).
@@ -23,6 +24,7 @@ tests: com.pocketstudio.bentest.*
 chemin: perte du son (robot) | test: ScenariosVraisEcransTest#theSoundTakenByAnotherAppComesBackWithPlay
 chemin: Batterie, changement de kit (robot) | test: ScenariosVraisEcransTest#twoKitsArePutOnTheDrumsWhileTheSongPlays
 chemin: endurance (robot) | test: ScenariosVraisEcransTest#theEnduranceListensThroughAndReadsTheMemory
+chemin: Batterie, trou pendant le changement de kit (robot) | test: ScenariosVraisEcransTest#aHoleWhileTheKitIsChangedIsRed
 chemin: Mes projets, fuite mémoire (robot) | test: ScenariosVraisEcransTest#theProjectIsOpenedAndClosedAgainAndAgain
 chemin: arrêt brutal et démarrage froid (robot) | test: ScenariosVraisEcransTest#theHardStopPutsTheTempoBackWhenItCannotRestart
 chemin: Réglages, tampon large (robot) | test: ScenariosVraisEcransTest#theLargeBufferIsListenedThenTheNormalOneComesBack

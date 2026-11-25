@@ -22,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -83,6 +84,7 @@ class BenTestActivity : ComponentActivity() {
                         startRates = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.RATES) },
                         startRetest = { ids -> Robot.start(application, Robot.TOUT, ids) },
                         startOreille = { Robot.start(application, Robot.OREILLE) },
+                        startGuides = { Robot.start(application, Robot.GUIDES) },
                         startMicro = {
                             EcouteMicro.demarrer(
                                 autorise = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED,
@@ -140,6 +142,8 @@ class BenTestActions(
     val startRetest: (Set<String>) -> Unit = {},
     /** « Questions à l'oreille » (T3). */
     val startOreille: () -> Unit = {},
+    /** « Tests guidés » (lot A2): a headset plugged or unplugged, the battery saver; never in the night's run. */
+    val startGuides: () -> Unit = {},
     /** « Écoute au micro » (T1b), once its sentence is read: the microphone asked for if needed, then the run. */
     val startMicro: () -> Unit = {},
     /** « Reprendre »: the run the logbook holds. */
@@ -172,6 +176,14 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
             }
             etat.running -> {
                 Text("Le robot travaille… Pose le téléphone, il revient ici tout seul.", color = Neon.TextPrimary)
+                if (etat.total > 0) {
+                    Text("Test ${etat.numero} sur ${etat.total}", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_compteur"))
+                    LinearProgressIndicator(
+                        progress = { etat.numero.toFloat() / etat.total },
+                        modifier = Modifier.fillMaxWidth().testTag("bentest_compteur_barre"),
+                        color = Neon.Cyan,
+                    )
+                }
                 etat.step?.let { Text("Étape : $it", color = Neon.Cyan, modifier = Modifier.testTag("bentest_step")) }
             }
             else -> {
@@ -185,7 +197,7 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     Button(onClick = actions.resume, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_reprendre")) { Text("Reprendre") }
                 }
                 etat.verdict?.let {
-                    Text((when (etat.passage) { Robot.TOUT -> "Tout tester terminé : "; Robot.SCENARIOS -> "Scénarios terminés : "; Robot.OREILLE -> "Questions à l'oreille terminées : "; Robot.MICRO -> "Écoute au micro terminée : "; else -> "Essai éclair terminé : " }) + it, style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
+                    Text((when (etat.passage) { Robot.TOUT -> "Tout tester terminé : "; Robot.SCENARIOS -> "Scénarios terminés : "; Robot.OREILLE -> "Questions à l'oreille terminées : "; Robot.MICRO -> "Écoute au micro terminée : "; Robot.GUIDES -> "Tests guidés terminés : "; else -> "Essai éclair terminé : " }) + it, style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_verdict"))
                     if (etat.extraits > 0) Text(
                         "Le rapport contient ${etat.extraits} extrait" + (if (etat.extraits > 1) "s" else "") + " de 2 s enregistré" + (if (etat.extraits > 1) "s" else "") + " par le micro, autour d'un problème entendu. Rien d'autre du micro.",
                         color = Neon.Amber, modifier = Modifier.testTag("bentest_extraits"),
@@ -199,25 +211,40 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     OutlinedButton(onClick = { micro = false }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bentest_micro_retour")) { Text("Retour") }
                 } else if (etat.interrompu == null && etat.verdict == null && liste) {
                     Text("Retester les corrections : coche les étapes à refaire", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
-                    if (candidats.none { it.coche }) {
+                    if (coches.none { it.value }) {
                         Text(
                             (if (candidats.none { it.feu != null }) "Aucun passage enregistré sur ce téléphone. " else "") + "Coche les étapes à revoir.",
                             color = Neon.TextSecondary, modifier = Modifier.testTag("bentest_retest_aide"),
                         )
                     }
-                    candidats.forEach { c ->
-                        // The whole row ticks (a finger on the step's name, not only on the small box).
-                        Row(
-                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
-                                .toggleable(value = coches[c.id] == true, role = androidx.compose.ui.semantics.Role.Checkbox, onValueChange = { coches[c.id] = it })
-                                .testTag("bentest_retest_${c.id}"),
-                        ) {
-                            androidx.compose.material3.Checkbox(checked = coches[c.id] == true, onCheckedChange = null)
-                            Text(c.label + (c.feu?.let { " (dernier passage : ${it.mot})" } ?: ""), color = Neon.TextPrimary)
+                    val n = coches.count { it.value }
+                    Button(
+                        onClick = { actions.startRetest(coches.filterValues { it }.keys.toSet()); liste = false },
+                        enabled = n > 0, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_retest_lancer"),
+                    ) { Text("Lancer les $n cochées") }
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                        OutlinedButton(onClick = { candidats.forEach { coches[it.id] = true } }, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("bentest_retest_tout")) { Text("Tout cocher") }
+                        OutlinedButton(onClick = { candidats.forEach { coches[it.id] = false } }, modifier = Modifier.weight(1f).heightIn(min = 48.dp).testTag("bentest_retest_rien")) { Text("Tout décocher") }
+                    }
+                    // Ticked on opening first (the order is the opening's, so a row never jumps under the finger), then each group.
+                    val (dabord, reste) = candidats.partition { it.coche }
+                    val sections = listOf("À refaire" to dabord) +
+                        reste.groupBy { it.groupe }.toList().sortedBy { (g, _) -> Retest.GROUPES.indexOf(g).let { if (it < 0) Int.MAX_VALUE else it } }
+                    sections.filter { it.second.isNotEmpty() }.forEach { (titre, lignes) ->
+                        Text(titre, style = MaterialTheme.typography.titleSmall, color = Neon.Cyan, modifier = Modifier.padding(top = 8.dp))
+                        lignes.forEach { c ->
+                            // The whole row ticks (a finger on the step's name, not only on the small box).
+                            Row(
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                                    .toggleable(value = coches[c.id] == true, role = androidx.compose.ui.semantics.Role.Checkbox, onValueChange = { coches[c.id] = it })
+                                    .testTag("bentest_retest_${c.id}"),
+                            ) {
+                                androidx.compose.material3.Checkbox(checked = coches[c.id] == true, onCheckedChange = null)
+                                Text(c.label + (c.feu?.let { " (dernier passage : ${it.mot})" } ?: " (jamais joué)"), color = Neon.TextPrimary)
+                            }
                         }
                     }
-                    val n = coches.count { it.value }
                     Button(
                         onClick = { actions.startRetest(coches.filterValues { it }.keys.toSet()); liste = false },
                         enabled = n > 0, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_retest_go"),
@@ -240,6 +267,8 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     OutlinedButton(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_lancer")) { Text("Lancer l'essai éclair") }
                     Text("Questions à l'oreille : environ 10 minutes. Le robot lance les morceaux, une question à la fois s'affiche en haut de l'écran : ✅ ou ❌.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.startOreille, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_oreille")) { Text("Questions à l'oreille") }
+                    Text("Tests guidés : environ 5 minutes, avec toi. Le robot te demande de brancher ou débrancher ton casque, puis d'allumer l'économie d'énergie.", color = Neon.TextSecondary)
+                    OutlinedButton(onClick = actions.startGuides, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_guides")) { Text("Tests guidés") }
                     Text("Écoute au micro : environ 5 minutes, téléphone posé, pièce calme. Le robot écoute le haut-parleur avec le micro.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = { micro = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_micro")) { Text("Écoute au micro") }
                     OutlinedButton(onClick = { liste = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_retest")) { Text("Retester les corrections") }

@@ -1267,6 +1267,8 @@ class Scenarios(
             if (!paquet.startsWith(PREFIXE_PARTIE)) null else paquet.removePrefix(PREFIXE_PARTIE).toIntOrNull()?.takeIf { it in 1..NB_PARTIES }
 
         /** A getter: [LISTE] is set further down this object. */
+        /** Part [n]'s scenarios as Benjamin reads them: « 1. name », numbered in the part. */
+        fun contenuPartie(n: Int): List<String> = liste(partie(n)).mapIndexed { k, s -> "${k + 1}. ${s.label}" }
         val PAQUETS: List<String> get() = listOf(RAPIDE, COMPLET, RATES) + (1..NB_PARTIES).map(::partie)
         const val DUREE_COMPLET_MAX_S = 65 * 60
         private const val PAQUET = "paquet"

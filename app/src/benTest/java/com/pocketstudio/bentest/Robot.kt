@@ -112,6 +112,8 @@ object Robot {
         val c = carnet(context)
         val lines = c.lines()
         val n = Scenarios.numeroPartie(Scenarios.paquet(lines)) ?: return
+        // Only a finished part is kept: a replay stopped halfway never erases the part already played.
+        if (lines.none { it.kind == Carnet.FINI }) return
         val to = partieDir(context, n)
         to.deleteRecursively()
         to.mkdirs()
@@ -378,7 +380,10 @@ object Robot {
                         for (n in 1..Scenarios.NB_PARTIES) {
                             val taille = Scenarios.liste(Scenarios.partie(n)).size
                             val etat = if (n in faites) Scenarios.verdict(Carnet(File(partieDir(context, n), "carnet.tsv")).lines()) else "pas jouée"
-                            appendLine("- Partie $n (scénarios $debut à ${debut + taille - 1}) : $etat")
+                            appendLine("## Partie $n (scénarios $debut à ${debut + taille - 1}) : $etat")
+                            appendLine()
+                            Scenarios.contenuPartie(n).forEach { appendLine(it) }
+                            appendLine()
                             debut += taille
                         }
                     }

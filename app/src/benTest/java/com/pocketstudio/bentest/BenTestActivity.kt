@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
@@ -191,6 +192,17 @@ private fun Parties(faites: Set<Int>, start: (Int) -> Unit) {
         OutlinedButton(onClick = { start(i) }, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_partie_$i")) {
             Text(if (faite) "✓ $label" else label, color = if (faite) Neon.Acid else Neon.TextPrimary)
         }
+        // What the part holds, folded by default: its scenarios' names, numbered in the part.
+        var ouvert by remember(i) { mutableStateOf(false) }
+        Text(
+            if (ouvert) "▾ Masquer le contenu" else "▸ Voir le contenu",
+            color = Neon.Cyan,
+            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable { ouvert = !ouvert }.padding(vertical = 12.dp).testTag("bentest_partie_contenu_$i"),
+        )
+        if (ouvert) Text(
+            Scenarios.contenuPartie(i).joinToString("\n"),
+            color = Neon.TextSecondary, modifier = Modifier.testTag("bentest_partie_liste_$i"),
+        )
     }
 }
 

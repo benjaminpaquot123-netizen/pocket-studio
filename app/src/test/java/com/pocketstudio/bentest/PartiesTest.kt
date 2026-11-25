@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
@@ -80,7 +81,15 @@ class PartiesTest {
             "part 2 not ticked",
             compose.onNodeWithTag("bentest_partie_2").fetchSemanticsNode().config.toString().contains("✓"),
         )
+        // Each part says what it holds, folded by default: its scenarios' names, numbered in the part.
+        assertEquals(0, compose.onAllNodesWithTag("bentest_partie_liste_2").fetchSemanticsNodes().size)
+        compose.onNodeWithTag("bentest_partie_contenu_2").performScrollTo().performClick()
+        val p2 = Scenarios.liste(Scenarios.partie(2))
+        compose.onNodeWithTag("bentest_partie_liste_2").assertTextContains("1. ${p2[0].label}", substring = true)
+        compose.onNodeWithTag("bentest_partie_liste_2").assertTextContains("${p2.size}. ${p2.last().label}", substring = true)
         compose.onRoot().captureRoboImage("screenshots/bentest/accueil_parties.png")
+        compose.onNodeWithTag("bentest_partie_contenu_2").performScrollTo().performClick()
+        assertEquals(0, compose.onAllNodesWithTag("bentest_partie_liste_2").fetchSemanticsNodes().size)
         compose.onNodeWithTag("bentest_partie_2").performScrollTo().performClick()
         assertEquals(listOf(2), started)
         // The report button is the screen's last one, under every run's buttons.
@@ -125,6 +134,15 @@ class PartiesTest {
             Robot.archiverPartie(app)
         }
         assertEquals(setOf(1, 2), Robot.partiesFaites(app))
+        // A replay of part 2 stopped halfway (no « fini ») keeps the part already played, still ticked.
+        Robot.carnet(app).let { c ->
+            c.clear()
+            val s = Scenarios.liste(Scenarios.partie(2))[0]
+            c.add(Carnet.NOTE, s.id, "paquet;${Scenarios.partie(2)}")
+            c.add(Carnet.DEBUT, s.id)
+        }
+        Robot.archiverPartie(app)
+        assertEquals(setOf(1, 2), Robot.partiesFaites(app))
         // « Tout recommencer » forgets the run, never the parts played.
         Robot.reset(app)
         assertEquals(setOf(1, 2), Robot.partiesFaites(app))
@@ -147,6 +165,7 @@ class PartiesTest {
             assertTrue(carnet2.contains("ok partie 2"))
             val sommaire = z.getInputStream(z.getEntry("parties.md")).readBytes().toString(Charsets.UTF_8)
             assertTrue(sommaire, sommaire.contains("Partie 1") && sommaire.contains("Partie 2"))
+            assertTrue(sommaire, sommaire.contains("1. ${Scenarios.liste(Scenarios.partie(2))[0].label}"))
         }
         Robot.oublierParties(app)
         assertEquals(emptySet<Int>(), Robot.partiesFaites(app))

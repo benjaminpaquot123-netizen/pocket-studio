@@ -1,5 +1,5 @@
 # Relecture neuve, lot tour-9 gr-styles
-relu : 4438394f1d2be3ee974747b4b723eb5cd28b506c
+relu : 786153d53c2fa0d2d4497723d94b812efeb6abc8
 
 Portée : `git diff d9910076..4438394f` (14 commits du lot), hors `StyleRecipes.kt` et `separation/`. Aucun fichier du moteur C++ touché (thread audio intact).
 
@@ -19,5 +19,30 @@ Points relevés :
 - mineur — `StarterWizard.kt:1541` : `NO_DROP = setOf("lofi", "boom_bap")` recopie à la main `WizardMix.NO_CLIP` (`WizardMix.kt:318`). Si un style hip-hop sans Drop s'ajoute à l'un des deux et pas à l'autre, le montage et le clipper divergent de nouveau. Il vaudrait mieux une seule liste, ou la déduire de la forme du morceau.
 - mineur — `scripts/guides/make_guides.py:180-181` : le générateur lit `counter` et `riser` dans la recette brute. Il ignore donc `body` (qui ajoute contre-chant et montée) et la nouvelle règle de place. La cohérence carte « contre-chant » ⇔ piste « Contre-chant » ne tient que parce que les recettes house ont été retouchées à la main. Aucun test ne compare les cartes du guide aux pistes du morceau construit (le défaut speed_garage du rouge n'a été vu qu'au nombre de cartes).
 - mineur — `docs/audits/ultra/tour-9-gr-styles-rapport.md:10` : le rapport dit « −4 dB » ; la valeur réelle est -4,5 dB (0,375 → -4,5). Ce n'est qu'un écart de texte.
+
+## Relecture de la fusion avec l'intégration (2026-11-24)
+
+Portée : les 3 commits sur 042775a8 : la fusion fa7554d0 (avec 0ed59078, base 9f0c5eb8), la régénération 00e3904c de `StyleRecipes.kt`, et 64daaf8e (ligne gr-l1b déplacée).
+
+Vérifié sans défaut :
+- Rien ne se perd. Chaque fichier changé par le lot a dans la fusion la version du lot (sauf `docs/DECISIONS.md`, voir plus bas).
+- Côté intégration, 53 fichiers changés depuis la base. 30 sont repris tels quels, dont `engine/bench/ps_measure.cpp`, les tests de `scripts/packs/tests/` et `build_index.py`. Pour `instruments.json`, `libraries.json` et `WizardMix.kt`, le patch de l'intégration se retrouve en entier dans la fusion.
+- Les 19 fichiers en conflit (StarterWizard.kt, les 14 `i18n/*/model.json`, RecipeFormatV2Test.kt, StarterWizardTest.kt, StyleBodyTest.kt, recipes_to_kotlin.py) : la version de l'intégration est octet pour octet celle de b0ac8fe3, un ancêtre du lot. Le lot les a ensuite fait évoluer. Garder le côté lot est donc juste.
+- `docs/DECISIONS.md` : toutes les lignes ajoutées par l'une ou l'autre branche sont dans la fusion ; aucune ligne retirée.
+- `StyleRecipes.kt` : le générateur relancé ne change rien. `make_guides.py` relancé ne change rien. `scripts/packs/tests/run.sh` : OK (code 0).
+- La ligne gr-l1b déplacée vers `docs/decisions/tour-9-gr-styles.md` est intacte, mot pour mot. L'intégration ne l'avait pas : rien ne disparaît d'elle.
+- `engine/src` est identique à l'intégration : thread audio intact.
+
+Points relevés :
+- mineur — `project-model/src/main/kotlin/com/pocketstudio/model/StyleRecipes.kt` : à la tête du lot 042775a8, ce fichier ne suivait pas les recettes, et `StyleRecipesUpToDateTest` y aurait échoué. C'est réglé par 00e3904c. Tant que ce commit n'est pas là, la tête du lot n'est pas verte.
+
+## Relecture de la fusion 5293b39ad et du rejeu t4-26
+
+Portée : 4c556e3e (fusion de origin/ccr-80af1a1b-mn0wec, tête 5293b39a, base 0ed59078) et 786153d5 (rejeu t4-26).
+
+- La fusion n'apporte que les 19 fichiers changés par l'intégration depuis la base (scripts du banc `fusion-equipes.sh`, `porte-paquet.sh`, `test_porte_paquet.py`, `TutoKickSoundTest.kt`, `docs/DECISIONS.md`, traces du portail, rapports et relectures kick-ci et porte-paquet). Chacun est octet pour octet celui de 5293b39a, et le lot n'avait touché aucun d'eux : pas de conflit, rien de perdu.
+- Les fichiers du lot (StarterWizard.kt, recettes, StyleRecipes.kt, i18n) ne changent pas dans la fusion. Le générateur relancé sur `scripts/packs/recipes/*.json` redonne `StyleRecipes.kt` à l'identique.
+- Rejeu t4-26 : le lo-fi passe de 4 à 5 lignes de batterie (`Role.Snap` ajouté dans `hiphop.json` et dans `StyleRecipes.kt`). `StarterWizard.steps()` fait une étape par ligne (`style.lines.map { Step.Drum(it) }`), donc `lastStep` grandit de 1. `wizard_create` n'apparaît que quand `step >= lastStep` (WizardScreen.kt:254) : il faut bien un `wizard_next` de plus avant lui.
+- Le rejeu est cohérent : `cmd-1` à `cmd-34` sans trou, l'ajout (`touche wizard_next` + `attends 1`) est en 21-22, les anciennes 21-32 deviennent 23-34 sans autre changement, `oracle.txt` dit `rejeu.n=34`. Les `cmd-*.txt` n'ont pas de saut de ligne final et `oracle.txt`/`start.txt` en ont un, comme avant.
 
 Verdict : 0 bloquant, 0 grave

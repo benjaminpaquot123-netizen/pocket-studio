@@ -1,1 +1,1 @@
-touche guide_open_melody
+touche top_play

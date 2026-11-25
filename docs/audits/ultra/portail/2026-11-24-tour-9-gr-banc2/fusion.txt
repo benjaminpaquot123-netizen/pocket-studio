@@ -1,0 +1,19 @@
+fusion: 34b4a80ed93189032b0aded4638b54df08d88345
+branche: eq/tour-9-gr-banc2
+tete: 1571509cacaa357e3d8df836df289f265bcb835c
+relecture: docs/audits/ultra/tour-9-gr-banc2-relecture.md
+relu: b390e1280
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

@@ -25,3 +25,5 @@ Limites, dites franchement :
 - Les tests sans la règle (`TutoScreenTest` par exemple) partent toujours sur le vrai réseau : hors de la liste de fichiers de ce lot, signalé au chef.
 
 Statut : tenté (aucune CI complète ne l'a encore constaté).
+
+Self-test du banc (`scripts/bench/selftest.sh`) sur le code de a8477c7f (arbre 7257ebf2c2cc73f20eea2324bbf81867d95e3aca) : 393 verts, 0 rouge, 0 en quarantaine, 163 sautés (les sièges `drive`, comme d'habitude). Le tampon n'a pas été écrit : un commit de texte (`docs/` seul) a déplacé la tête pendant le passage, le code testé est le même. Le portail rejoue le sien.

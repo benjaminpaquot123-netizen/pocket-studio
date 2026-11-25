@@ -1,14 +1,15 @@
 # Tour 9, lot gr-house2 : relecture neuve
 
-relu : e25240e1 (diff 042775a8f..e25240e1, code relu à 59e96ad5, depuis texte du rapport seul, sous-agent neuf, aucun fichier modifié)
+relu : ba0eebd2 (fusion de l'intégration 4f3f19c2, sous-agent neuf)
 
-Vérifié : StyleRecipes.kt et les 4 guides régénérés sans écart ; deep_house identique ; bass.json, techno*.json, THIRD_PARTY.md intouchés ; ni audio ni APK ; 14 catalogues à 887 clés, 5 textes neufs partout, les 6 orphelins retirés ne sont plus utilisés nulle part ; conga, bongo et cajon existent dans libraries.json ; la 303 ne touche ni note ni accent sur les pas 0, 4, 8, 12.
+Vérifié :
+- `git diff origin/eq/ci-int-styles ba0eebd2` : seulement le lot (recette house.json, 4 guides house, 14 model.json, StyleRecipes.kt, HouseRetouchTest, HouseSignatureTest, SongShapeTest, rapport, relecture, décision du lot).
+- Rien de perdu : pour chaque fichier du lot, les changements depuis l'intégration sont ligne pour ligne ceux d'avant la fusion (8b905fe0..78edc112) ; l'intégration ne touchait ni project-model ni scripts.
+- StyleRecipes.kt identique à sa régénération par recipes_to_kotlin.py.
+- JSON valides (guides, recettes, catalogues) ; 14 model.json à 887 clés, les mêmes partout.
+- docs/DECISIONS.md identique à l'intégration ; anciens fichiers gr-styles retirés, tour-9-gr-styles-rouges.md gardé.
+- Aucun marqueur de conflit, aucun fichier audio ni APK.
 
-Mineurs (notés, non corrigés) :
-- HouseRetouchTest.kt:29 : `assertNotNull(...).let { ...!! }` redondant.
-- HouseRetouchTest.kt:43 et :72 : vérifient la recette, pas le morceau construit (le test tech house, lui, lit la scène 0).
-- StyleRecipes.kt embarque la régénération hiphop de 8c6b8545 : conflit possible avec un autre lot qui régénère ce fichier (dit dans le rapport).
-- Tutos afro/tech encore en décalage (toc, tom, écho) : section « à confier » du rapport.
-- Sans la bibliothèque de percussions, les trois voies afro retombent sans doute sur la même conga intégrée (non vérifié).
+rejeu changé : t4-26-prise-clavier : la fusion de l'intégration apporte la page « snap » du lofi de gr-styles2 (deux pas de plus) ; accord de Benjamin (1A)
 
 Verdict : 0 bloquant, 0 grave

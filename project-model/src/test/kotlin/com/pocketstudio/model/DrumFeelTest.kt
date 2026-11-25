@@ -138,15 +138,16 @@ class DrumFeelTest {
         for ((s, p) in songs) {
             assertEquals(s.id, Project.KIT_V3, p.kitVersion)
             val kick = p.padVoices[Role.Kick.lane]
-            when {
-                s.id in StudioDrums.HARD_KICK -> assertEquals(s.id, PadVoice.KICK_HARD, kick?.kind)
-                // Final audit (report 12): the 808 styles' kick in the 808's key too.
-                s.family in setOf("House", "Techno") || s.id in StudioDrums.BASS_808 -> assertEquals(s.id, PadVoice.KICK_STUDIO, kick?.kind)
-                else -> assertNull(s.id, kick)
-            }
-            // Tuned to the key (its root, else its fifth) between 43 and 66 Hz.
+            // Every style has its family's kick since 2026-11-25 (StudioDrums.KICK_FAMILIES: Benjamin's
+            // « le kick tape pas assez », the kick's note, sweep and drive per family).
+            if (s.id in StudioDrums.HARD_KICK) assertEquals(s.id, PadVoice.KICK_HARD, kick?.kind)
+            else assertEquals(s.id, PadVoice.KICK_STUDIO, kick?.kind)
+            // Tuned to the key (its root, else its fifth) within 3.5 semitones of its family's note
+            // (38 Hz in jersey club to 79 Hz in lofi).
             kick?.param(PadVoice.TUNE)?.let { hz ->
-                assertTrue("${s.id} $hz", hz in 43f..66f)
+                val target = StudioDrums.kickFamily(s).hz
+                if (s.id !in StudioDrums.BASS_808) assertTrue("${s.id} $hz", kotlin.math.abs(12 * kotlin.math.ln(hz / target) / kotlin.math.ln(2f)) <= 3.6f)
+                assertTrue("${s.id} $hz", hz in 34f..84f)
                 val pc = Math.floorMod(Math.round(12 * kotlin.math.ln(hz / 440.0) / kotlin.math.ln(2.0) + 69).toInt(), 12)
                 assertTrue("${s.id} $pc", pc == Math.floorMod(p.harmony.root, 12) || pc == Math.floorMod(p.harmony.root + 7, 12))
             }

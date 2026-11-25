@@ -233,3 +233,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - 2026-11-25 18h50 : précision de Benjamin : la vidéo n'est pas filmée, il l'a coupée en deux lui-même sur la ligne du temps de l'éditeur Xiaomi (même source, réencodée).
 - 2026-11-25 20h05 : écoute des MP3 kick avant-après (kick seul, 49d9c0e35) : « La house, ça sonne un peu creux aussi, comme un tambour. La deuxième [tech house], pareil, elle fait rebond, tordu, tambour, ça sonne pas moderne. »
 - 2026-11-25 20h40 : « Mais merde, hein, la fucking liste des promesses. […] tu m'as dit que c'était résolu » : j'avais écrit « la liste des promesses » au lieu de son nom ; règle durcie dans CLAUDE.md. (fait)
+- 2026-11-25 : « pas normal que ça reste dans le chat principal, c'est pas ton job » : les analyses (sons, mesures) se font dans des discussions, pas dans la principale.

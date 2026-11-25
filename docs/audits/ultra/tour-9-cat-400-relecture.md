@@ -10,3 +10,5 @@ Rien de grave.
 - Mineur, accepté : `refaire` laisse une partie qui n'apparaît qu'après 5 s.
 
 Vérifié : suite bentest (232 tests, 0 sauté) verte ; `-PbenTest :app:assembleRelease` réussit. Thread audio : non concerné.
+
+Verdict : 0 bloquant, 0 grave

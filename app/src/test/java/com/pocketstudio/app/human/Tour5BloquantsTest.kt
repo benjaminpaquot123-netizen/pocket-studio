@@ -302,7 +302,13 @@ class Tour5BloquantsTest : HumanTester("bloquants") {
             ?.config?.getOrNull(androidx.compose.ui.semantics.SemanticsProperties.ContentDescription)?.joinToString(" ") }.getOrNull()
         // Review m3: as many notes as the take wrote, not merely « not 0 ».
         val shown = said?.let { Regex("""Grille des notes : (\d+) notes?""").find(it)?.groupValues?.get(1)?.toInt() }
-        assertEquals("the take's notes drawn on the melody's grid: $said ($grid)", taken, shown)
+        // Tour 9 (tests-fragiles): red twice in ~34 loaded runs (0 notes drawn while the melody held the take), never caught
+        // again with traces. What the next red needs to name its cause: the track shown, the notes per track, the grids drawn.
+        val q = project()!!
+        val why = "selected=${rhythm()!!.selectedTrack.value} melody=$melody scene=${q.scene} playing=${rhythm()!!.transport.value.playing} " +
+            "notes=${q.sceneView(q.scene).instrumentTracks.map { it.id to it.notes.notes.size }} " +
+            "grids=${compose.onAllNodesWithTag("piano_roll").fetchSemanticsNodes().size}\n" + lines.joinToString("\n")
+        assertEquals("the take's notes drawn on the melody's grid: $said ($grid)\n$why", taken, shown)
     }
 
     /** The node showing exactly [text], drawn whole above the tutorial's panel (a finger can touch it there, no swipe). */

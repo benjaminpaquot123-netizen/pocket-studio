@@ -134,3 +134,27 @@ Cinq à six sessions, un agent à la fois (mode économie).
 | Autorisations | Passées sous silence : le robot ne peut pas les accepter | Écran de préparation, 2 touchers |
 | « Le bandeau est à moitié écrit » | Faux : un début de modèle, mis de côté et non gardé | Tout est à écrire, compté en T3 |
 | « Pocket Studio Test » | | **BenStudio Test** |
+
+## Le passage « Scénarios » (2026-11-22, demande de Benjamin : « une série de tests, pour gagner en efficacité par rapport au banc »)
+
+Un bouton de plus dans BenStudio Test, **« Scénarios »** : le robot joue neuf scénarios d'utilisateur à la suite, sans rien toucher. Code : `app/src/benTest/java/com/pocketstudio/bentest/Scenarios.kt`.
+
+| Scénario | Niveau | Ce que le robot fait | Ce qu'il lit pour dire « passé » |
+|---|---|---|---|
+| `debutant` | débutant | un morceau house par l'assistant, ▶ | le moteur joue, du son sort, ni silence ni valeur invalide |
+| `ecrans` | débutant | ouvre les cinq écrans | chaque écran est là, avec sa capture |
+| `projet` | moyen | Mes projets, retour, « Continuer » | le fichier relu sur le disque a le même nom et les mêmes parties, le morceau est dans la liste, le même se rouvre |
+| `structure` | moyen | Structure › « ⋯ » d'une partie › Break 4 mesures | une partie de plus dans le morceau, et sur le disque |
+| `effets` | pro | Mix › « ⋯ » d'une piste › Ajouter un effet › Égaliseur, puis ▶ | un égaliseur de plus sur la piste, montré à l'écran, relu sur le disque, et le morceau sonne toujours |
+| `live` | pro | Live › ▶, puis ▶ | le moteur joue et du son sort, puis il s'arrête |
+| `export_m4a` | moyen | exporte en M4A | le fichier existe, se relit, a la bonne durée et un niveau normal |
+| `latence` | mesure | mesure aller-retour haut-parleur › micro | la médiane en millisecondes |
+| `decrochages` | mesure | 30 s de lecture | zéro décrochage, pire bloc et plus long trou sous les seuils |
+
+Dans le rapport (« Envoyer le rapport ») : `scenarios.json` (verdict, compte par niveau, et pour chaque scénario : passé / échoué / pas joué, le feu, les secondes, le détail, les mesures) et `resume.md` (le même en français, un tableau d'une ligne par scénario).
+
+**Temps.** Un passage « Scénarios » : environ 7 minutes prévues sur le téléphone (plafond si tout traîne : 33 minutes, somme des délais de garde). Un tour de banc : 6 à 8 heures, dont 45 à 60 minutes de compilation par lot de sièges (`docs/audits/AUDIT-ULTRA.md`). Le chiffre de 7 minutes est une prévision : il n'a pas encore été mesuré sur un vrai téléphone ni sur émulateur (pas d'émulateur sur la machine de l'agent le 22 novembre).
+
+**Ce que ça remplace, et ce que ça ne remplace pas.** Le robot répond en quelques minutes à « est-ce que les chemins principaux marchent encore sur l'APK, et le son tient-il ? ». Il ne juge ni la lisibilité, ni le tuto, ni ce qu'un débutant comprend : pour ça, les sièges du banc restent.
+
+**Preuves sur la machine de l'agent.** `ScenariosTest` : chaque oracle sur un faux studio, sain puis avec un défaut à la fois (pas de sauvegarde, break sans effet, effet non montré, Live muet, Live qui ne s'arrête pas, décrochages), et le rapport. `ScenariosVraisEcransTest` : les gestes de `projet`, `structure`, `effets` et `live` sur les vrais écrans (Robolectric, sans moteur : « joue » y est simulé d'après le ▶ touché). `scripts/bentest/check-apk.sh` : la classe et les étiquettes des nouveaux gestes sont dans l'APK après R8.

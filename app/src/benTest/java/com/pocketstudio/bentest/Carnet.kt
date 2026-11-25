@@ -97,13 +97,19 @@ class Passage(
     val etapes: List<Etape>,
     private val clock: () -> Long = System::currentTimeMillis,
     private val crashText: () -> String? = { null },
+    /** Hears each step the app died in, once noted (the clues of what the screen shows now). */
+    private val onCrash: (String) -> Unit = {},
 ) {
     /** Steps begun and never ended (the app died in them), each noted once as a crash. Returns their names. */
     fun recover(): List<String> {
         val lines = carnet.lines()
         val ended = lines.filter { it.kind == Carnet.REUSSI || it.kind == Carnet.ECHEC || it.kind == Carnet.PLANTAGE }.map { it.step }.toSet()
         val crashed = lines.filter { it.kind == Carnet.DEBUT && it.step !in ended }.map { it.step }.distinct()
-        crashed.forEach { carnet.add(Carnet.PLANTAGE, it, crashText()?.lineSequence()?.take(12)?.joinToString("\n").orEmpty()) }
+        crashed.forEach { step ->
+            carnet.add(Carnet.PLANTAGE, step, runCatching { crashText() }.getOrNull()?.lineSequence()?.take(12)?.joinToString("\n").orEmpty())
+            // Its clues never stop the run.
+            runCatching { onCrash(step) }
+        }
         return crashed
     }
 

@@ -637,6 +637,7 @@ int main(int argc, char** argv) {
     // --bass-free (the basses alone, not ducked: ps_render --no-duck) the dip read against them.
     if (argc > 1 && !std::strcmp(argv[1], "--punch")) return punchMain(argc, argv);
     std::string leadPath, bassPath, kickPath, prePath, dryPath, bassFreePath;
+    std::vector<std::pair<std::string, std::string>> trackPaths;  // --track <channel>:<wav> (L4)
     std::vector<char*> args{argv[0]};
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--lead") && i + 1 < argc) leadPath = argv[++i];
@@ -645,12 +646,20 @@ int main(int argc, char** argv) {
         else if (!std::strcmp(argv[i], "--pre") && i + 1 < argc) prePath = argv[++i];
         else if (!std::strcmp(argv[i], "--dry") && i + 1 < argc) dryPath = argv[++i];
         else if (!std::strcmp(argv[i], "--bass-free") && i + 1 < argc) bassFreePath = argv[++i];
-        else args.push_back(argv[i]);
+        else if (!std::strcmp(argv[i], "--track") && i + 1 < argc) {
+            const std::string t = argv[++i];
+            const size_t colon = t.find(':');
+            if (colon == std::string::npos) {
+                std::fprintf(stderr, "ps_measure: --track wants <channel>:<file.wav>, got %s\n", t.c_str());
+                return 1;
+            }
+            trackPaths.emplace_back(t.substr(0, colon), t.substr(colon + 1));
+        } else args.push_back(argv[i]);
     }
     argc = static_cast<int>(args.size());
     argv = args.data();
     if (argc < 2 || argc > 3) {
-        std::fprintf(stderr, "usage: ps_measure <song.wav> [<song.pscmd>] [--lead <lead.wav>] [--bass <bass.wav>] [--kick <kick.wav>] [--pre <pre.wav>] [--dry <dry.wav>]\n");
+        std::fprintf(stderr, "usage: ps_measure <song.wav> [<song.pscmd>] [--lead <lead.wav>] [--bass <bass.wav>] [--kick <kick.wav>] [--pre <pre.wav>] [--dry <dry.wav>] [--track <ch>:<track.wav>]...\n");
         return 1;
     }
     Audio a;
@@ -1004,6 +1013,154 @@ int main(int argc, char** argv) {
         const bool ok = std::isfinite(intro) && labelLufs.count(main) && std::isfinite(labelLufs[main]);
         std::printf("  \"intro_lufs\": %s,\n", ok ? num(intro).c_str() : "null");
         std::printf("  \"intro_minus_main\": %s,\n", ok ? num(intro - labelLufs[main]).c_str() : "null");
+    }
+    // L4 (grand remplacement): the « body » of the main section, beside its loudness.
+    {
+        const double beat = bpm > 0 ? 60.0 / bpm * a.rate : 0.0;
+        const auto barLen = static_cast<int64_t>(4 * beat);
+        // The main section cut in whole bars (a section shorter than a bar counts as one).
+        std::vector<std::pair<int64_t, int64_t>> bars;
+        for (auto [s, e] : mainRanges) {
+            if (barLen <= 0 || e - s < barLen) {
+                if (e > s) bars.emplace_back(s, e);
+                continue;
+            }
+            for (int64_t at = s; at + barLen <= e; at += barLen) bars.emplace_back(at, at + barLen);
+        }
+        // Tracks sounding together (--track, each project track rendered alone): per bar, a track sounds
+        // when its K-weighted power reaches the sum of all tracks' minus 24 dB (and -60 dB absolute);
+        // the median count over the bars. A Drop of a kick and a bass alone sounds hollow.
+        if (!trackPaths.empty()) {
+            std::vector<Audio> tracks(trackPaths.size());
+            bool ok = true;
+            for (size_t t = 0; t < trackPaths.size(); ++t) ok = ok && readWav(trackPaths[t].second.c_str(), tracks[t]);
+            if (ok) {
+                std::vector<double> counts;
+                std::vector<int> heard(trackPaths.size(), 0);
+                for (auto bar : bars) {
+                    std::vector<double> p(tracks.size());
+                    double sum = 0;
+                    for (size_t t = 0; t < tracks.size(); ++t) sum += p[t] = phonePower(tracks[t], {bar}, 0);
+                    int n = 0;
+                    for (size_t t = 0; t < tracks.size(); ++t) {
+                        if (p[t] > 1e-6 && p[t] >= sum * std::pow(10.0, -2.4)) {
+                            ++n;
+                            ++heard[t];
+                        }
+                    }
+                    counts.push_back(n);
+                }
+                const double med = median(counts);
+                std::printf("  \"drop_tracks\": %s,\n", std::isfinite(med) ? std::to_string(static_cast<int>(std::lround(med))).c_str() : "null");
+                std::printf("  \"drop_tracks_heard\": [");
+                bool first = true;
+                for (size_t t = 0; t < tracks.size(); ++t) {
+                    if (bars.empty() || 2 * heard[t] < static_cast<int>(bars.size())) continue;
+                    std::printf("%s%s", first ? "" : ", ", quoted(trackPaths[t].first).c_str());
+                    first = false;
+                }
+                std::printf("],\n");
+            } else {
+                std::fprintf(stderr, "ps_measure: cannot read a --track file\n");
+            }
+        }
+        // The treble's busy share: the main section through a 4th-order high-pass at 6 kHz, in 10 ms
+        // windows; a window is busy when its power reaches the section's full-band mean minus 30 dB
+        // (hats, shakers, air: the top a full mix keeps lit; a hollow one leaves it dark between hits).
+        {
+            double full = 0, n = 0;
+            for (auto [s, e] : mainRanges) {
+                for (int64_t i = s; i < e; ++i) {
+                    const double m = 0.5 * (a.l[static_cast<size_t>(i)] + a.r[static_cast<size_t>(i)]);
+                    full += m * m;
+                    n += 1;
+                }
+            }
+            const double mean = n > 0 ? full / n : 0;
+            const int win = a.rate / 100;
+            int busy = 0, windows = 0;
+            for (auto [s, e] : mainRanges) {
+                Biquad2 h1 = Biquad2::highPass(a.rate, 6000, 0.54119610), h2 = Biquad2::highPass(a.rate, 6000, 1.30656296);
+                double acc = 0;
+                int k = 0;
+                for (int64_t i = s; i < e; ++i) {
+                    const double v = h2(h1(0.5 * (a.l[static_cast<size_t>(i)] + a.r[static_cast<size_t>(i)])));
+                    acc += v * v;
+                    if (++k == win) {
+                        if (i - s > win) {  // the filters' first window settles
+                            ++windows;
+                            if (mean > 0 && acc / win >= mean * 1e-3) ++busy;
+                        }
+                        acc = 0;
+                        k = 0;
+                    }
+                }
+            }
+            std::printf("  \"hf_occupancy\": %s,\n", windows > 0 ? num(static_cast<double>(busy) / windows, 3).c_str() : "null");
+        }
+        // The floor between the hits: per beat, the quietest tenth of the 5 ms RMS envelope against the
+        // beat's mean power (dB); the median over the beats. Silence between a kick and a bass reads very
+        // low, a held pad or a reverb tail near 0.
+        {
+            std::vector<double> floors;
+            for (auto [s, e] : mainRanges) {
+                for (int64_t at = s; beat > 0 && at + static_cast<int64_t>(beat) <= e; at += static_cast<int64_t>(beat)) {
+                    auto r = rmsEnvelope(a, at, at + static_cast<int64_t>(beat));
+                    if (r.size() < 10) continue;
+                    double p = 0;
+                    for (double v : r) p += v * v;
+                    p /= static_cast<double>(r.size());
+                    if (p < 1e-10) continue;
+                    std::sort(r.begin(), r.end());
+                    const double low = r[r.size() / 10];
+                    floors.push_back(std::max(-90.0, db(low * low / p)));
+                }
+            }
+            const double f = median(floors);
+            std::printf("  \"floor_between_hits\": %s,\n", std::isfinite(f) ? num(f).c_str() : "null");
+        }
+        // Transitions: at each change of section (a fill or a crash belongs to the section before it),
+        // the loudness of the bar after against the bar before (LU), the same through a phone (300 Hz),
+        // and the band (of the six) that moves most (dB, its share of the total). Brutal (Benjamin: some
+        // changes are too abrupt, and he listens on a phone): a fall of more than 8 LU at once, or of more
+        // than 8 dB through a phone (on the real songs the outros fall 2-4 LU but 8.5-9 dB on a phone),
+        // or a rise of more than 6 LU into anything but a Drop, a Refrain or a fake drop.
+        {
+            std::vector<std::string> owner(sections.size());
+            for (size_t i = 0; i < sections.size(); ++i) {
+                const bool fill = sections[i].label == "Fill" || sections[i].label == "Crash";
+                owner[i] = fill && i > 0 ? owner[i - 1] : sections[i].label;
+            }
+            int brutal = 0;
+            bool first = true;
+            std::printf("  \"transitions\": [");
+            for (size_t i = 1; i < sections.size() && barLen > 0; ++i) {
+                if (owner[i] == owner[i - 1]) continue;
+                const int64_t at = sections[i].start;
+                const int64_t from = std::max<int64_t>(0, at - barLen), to = std::min<int64_t>(songFrames, at + barLen);
+                if (at - from < barLen / 2 || to - at < barLen / 2) continue;
+                const double before = loudness(a, {{from, at}}).lufs, after = loudness(a, {{at, to}}).lufs;
+                if (!std::isfinite(before) || !std::isfinite(after) || before < -70 || after < -70) continue;
+                const double jump = after - before;
+                const double pb = phonePower(a, {{from, at}}, 300), pa = phonePower(a, {{at, to}}, 300);
+                const Bands bb = bands(spectrum(a, {{from, at}}), a.rate), ba = bands(spectrum(a, {{at, to}}), a.rate);
+                const double moves[] = {ba.sub - bb.sub, ba.low - bb.low, ba.lowMid - bb.lowMid, ba.mid - bb.mid, ba.highMid - bb.highMid, ba.air - bb.air};
+                const char* names[] = {"sub", "low", "low_mid", "mid", "high_mid", "air"};
+                size_t most = 0;
+                for (size_t k = 1; k < 6; ++k) if (std::fabs(moves[k]) > std::fabs(moves[most])) most = k;
+                const bool landing = owner[i] == "Drop" || owner[i] == "Refrain" || owner[i] == "Faux drop";
+                const double phone = pb > 1e-12 && pa > 1e-12 ? db(pa / pb) : NAN;
+                const bool hard = jump < -8 || (std::isfinite(phone) && phone < -8) || (jump > 6 && !landing);
+                if (hard) ++brutal;
+                std::printf("%s{\"from\": %s, \"to\": %s, \"at\": %s, \"jump_lu\": %s, \"phone_db\": %s, \"band\": \"%s\", \"band_db\": %s, \"brutal\": %s}",
+                            first ? "" : ", ", quoted(owner[i - 1]).c_str(), quoted(owner[i]).c_str(), num(static_cast<double>(at) / a.rate).c_str(),
+                            num(jump).c_str(), std::isfinite(phone) ? num(phone).c_str() : "null", names[most],
+                            bb.valid && ba.valid ? num(moves[most]).c_str() : "null", hard ? "true" : "false");
+                first = false;
+            }
+            std::printf("],\n");
+            std::printf("  \"brutal_transitions\": %d,\n", brutal);
+        }
     }
     std::printf("  \"sections\": [");
     for (size_t i = 0; i < sections.size(); ++i) {

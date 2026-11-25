@@ -174,7 +174,9 @@ class Style:
         sound = bass.get("sound", "")
         self.bass808 = "808" in sound or "808" in self.drums
         self.acid = bool((r.get("acid") or {}).get("use"))
-        self.vocal = r.get("vocal")
+        vocal = r.get("vocal")
+        # A vocal is its type, or {type, sample} when the style names its own sample.
+        self.vocal = vocal.get("type") if isinstance(vocal, dict) else vocal
         self.riser = bool(r.get("riser"))
         self.counter = bool(r.get("counter"))
         self.signature = r.get("signature")

@@ -1,1 +1,1 @@
-touche record_start
+attends 1

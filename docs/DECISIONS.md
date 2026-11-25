@@ -1583,3 +1583,8 @@
 - 2026-11-23 (nuit) : Benjamin dort. Consigne : silence total vers lui (chef et discussions), tous droits entre discussions, toutes demandes et licences acceptées, options recommandées prises d'office. Retour arrière : sa prochaine consigne.
 - 2026-11-24 · lot « fable5 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-fable5.md`
 - 2026-11-24 · lot « maven » (tour-9) : 2 décision(s) dans `docs/decisions/tour-9-maven.md`
+- 2026-11-24 · lot « ci-rapide » (tour-9) : 6 décision(s) dans `docs/decisions/tour-9-ci-rapide.md`
+- 2026-11-24 · lot « gr-l0 » (tour-9) : 4 décision(s) dans `docs/decisions/tour-9-gr-l0.md`
+- 2026-11-24 · gr-banc republié en gr-banc2 (mêmes arbres) : deux sujets « rouge: » reformulés pour s'apparier à leur « vert: » ; raison : le juge n'apparie un vert neuf que par ses mots ; retour : aucun (contenu identique). gr-l1 entre avec gr-banc2 (3 lignes relues par le chef, conformes).
+- 2026-11-25 · lot « porte-paquet » (tour-9) : 5 décision(s) dans `docs/decisions/tour-9-porte-paquet.md`
+- 2026-11-25 · lot « kick-ci » (tour-9) : 5 décision(s) dans `docs/decisions/tour-9-kick-ci.md`

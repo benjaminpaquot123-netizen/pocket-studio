@@ -30,6 +30,7 @@ import com.pocketstudio.model.tuto.TutoStep
 import com.pocketstudio.model.tuto.TutoTarget
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.After
+import org.junit.Before
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -67,11 +68,31 @@ class TutoKickSoundTest {
         override fun heard(): Long = 0L
     }
 
+    /**
+     * Tour 9, lot « tests-fragiles »: the network is cut for these tests (every URL the app opens goes to a closed port)
+     * and each address it asks for is kept, so a step that leaves the catalogue to the network is seen, whatever the
+     * machine's network does.
+     */
+    private val asked = java.util.concurrent.CopyOnWriteArrayList<java.net.URI>()
+    private val before: java.net.ProxySelector? = java.net.ProxySelector.getDefault()
+
+    @Before
+    fun cutTheNetwork() {
+        java.net.ProxySelector.setDefault(object : java.net.ProxySelector() {
+            override fun select(uri: java.net.URI): List<java.net.Proxy> {
+                asked += uri
+                return listOf(java.net.Proxy(java.net.Proxy.Type.HTTP, java.net.InetSocketAddress("127.0.0.1", 9)))
+            }
+            override fun connectFailed(uri: java.net.URI?, sa: java.net.SocketAddress?, ioe: java.io.IOException?) = Unit
+        })
+    }
+
     @After
     fun end() {
         TutoTestHooks.player = null
         TutoTestHooks.packs = null
         h.finish()
+        java.net.ProxySelector.setDefault(before)
     }
 
     private fun idle(ms: Long = 50) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
@@ -182,6 +203,39 @@ class TutoKickSoundTest {
 
     @Test
     fun theKickStepNowSaysShowsAndTicks() {
+        kickStepSaysShowsAndTicks()
+    }
+
+    /**
+     * Tour 9, lot « tests-fragiles »: the same step with the style's packs in the catalogue from the start, as on a runner
+     * or a phone online (the network answers before the panel is drawn): the kit card takes the panel's place first.
+     */
+    @Test
+    fun theKickStepNowSaysShowsAndTicksWithTheKitCardOffered() {
+        catalogue(withTheStylesPacks = true)
+        kickStepSaysShowsAndTicks()
+    }
+
+    /**
+     * Tour 9, lot « tests-fragiles »: the catalogue answers while the step is under way, as the network did on a laptop
+     * online (the test left the catalogue to the network): [at] says when (« demo », « mark »: right before « J'ai compris »).
+     */
+    @Test
+    fun theKickStepNowSaysShowsAndTicksWhenTheCatalogueComesDuringTheDemo() = catalogueLate("demo")
+
+    @Test
+    fun theKickStepNowSaysShowsAndTicksWhenTheCatalogueComesBeforeTheTick() = catalogueLate("mark")
+
+    private fun catalogueLate(at: String) {
+        val late = MutableStateFlow(PacksUi(IndexState.Loading, emptyList()))
+        TutoTestHooks.packs = late
+        catalogue(withTheStylesPacks = true)
+        val ready = TutoTestHooks.packs!!.value
+        TutoTestHooks.packs = late
+        kickStepSaysShowsAndTicks { moment -> if (moment == at) { late.value = ready; idle(200); compose.waitForIdle() } }
+    }
+
+    private fun kickStepSaysShowsAndTicks(meanwhile: (String) -> Unit = {}) {
         atTheKickStep()
         // The tutorial starts on the drum & bass kit: its short dry kick, said on « Kit ▾ ».
         assertTrue(StudioDrums.isDnbKick(p().padVoices[0]))
@@ -194,14 +248,18 @@ class TutoKickSoundTest {
         assertTrue(has("tuto_show"))
         click("tuto_show")
         await("demo shown") { has("tuto_demo_caption") }
+        meanwhile("demo")
         await("demo over", 60_000) { !has("tuto_demo_caption") }
         idle(400)
         assertEquals(before.padVoices, p().padVoices)
         // Round 1 (n° 34): the style's kit card takes the panel's place (no longer stacked on it): « Plus tard ».
         putTheKitCardAway()
+        meanwhile("mark")
         // « J'ai compris »: ticked, on to the next step.
         click("tuto_mark")
         await("ticked") { "kick_sound" in progress().done }
+        // Offline and the same on every machine: the step never asked the network for the catalogue.
+        assertEquals(emptyList<java.net.URI>(), asked.toList())
     }
 
     /** « Kit ▾ » offers the drum & bass kit built in, in one undo step; « Studio » takes it back. */

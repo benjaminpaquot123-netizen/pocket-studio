@@ -144,7 +144,7 @@ class ScenariosLimitesVraisEcransTest {
     }
 
     private fun scenarios(v: Vrai) = Scenarios(
-        Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecran = { v.tags(Regex(".+")) }, courtMs = 500,
+        Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecran = { v.tags(Regex(".+")) }, courtMs = 1_500,
         ecouteMs = 1_000, decrochagesMs = 1_000, sauvegardeMs = 20_000, liveMs = 5_000, liveEcouteMs = 1_000, effetEcouteMs = 1_000,
         saisir = { tag, text -> runCatching { compose.onNodeWithTag(tag, useUnmergedTree = true).performTextReplacement(text) }.isSuccess },
     )

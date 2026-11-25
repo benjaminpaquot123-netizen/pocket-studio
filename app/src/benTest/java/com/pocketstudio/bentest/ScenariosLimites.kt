@@ -96,7 +96,7 @@ internal class ScenariosLimites(private val o: Outils) {
             undone = 0
             check(attendre(5_000) { compte(lu(), delta) == before }) { "« Annuler » ne défait pas « $tag » : ${compte(lu(), delta)} ${quoi(delta)} (attendu : $before)" }
             disque(step, delta, before, "après « Annuler »")
-            check(runCatching { j.await("top_redo", 5_000) }.isSuccess) { "pas de « Rétablir » après « Annuler »" }
+            check(runCatching { j.await("top_redo", 5_000) }.isSuccess) { "pas de « Rétablir » après « Annuler » (à l'écran : ${vu()})" }
             j.tap("top_redo")
             undone = 1
             check(attendre(5_000) { compte(lu(), delta) == after }) { "« Rétablir » ne refait pas « $tag » : ${compte(lu(), delta)} ${quoi(delta)} (attendu : $after)" }
@@ -134,7 +134,7 @@ internal class ScenariosLimites(private val o: Outils) {
                 } finally {
                     o.fermerFeuilles()
                 }
-                check(attendre(5_000) { lu().parties == before + k + 1 }) { "break ${k + 1} : ${lu().parties} parties (attendu : ${before + k + 1})" }
+                check(attendre(5_000) { lu().parties == before + k + 1 }) { "break ${k + 1} : ${lu().parties} parties (attendu : ${before + k + 1} ; à l'écran : ${vu()})" }
                 extra = k + 1
             }
             disque(step, 1, before + n, "après $n breaks")
@@ -373,6 +373,9 @@ internal class ScenariosLimites(private val o: Outils) {
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence $quand : ${b.text()}" }
     }
 
+    /** The bar's and the parts' buttons on screen, for a failure's words. */
+    private fun vu(): String = runCatching { j.tagsMatching(VU).joinToString(", ") }.getOrDefault("?")
+
     private fun carnet(step: String, text: String) = o.carnet.add(Carnet.NOTE, step, text)
 
     private fun feu(step: String, f: Pair<Feu, String>) = o.carnet.add(Carnet.FEU, step, f.first.mot + ";" + f.second)
@@ -400,6 +403,7 @@ internal class ScenariosLimites(private val o: Outils) {
         const val PREFIXE = "lim_"
         private const val LECTURE = "lecture"
         private val PICK = Regex("pick_scene_\\d+")
+        private val VU = Regex("(top|thumb)_.*|part_(menu|break|sheet|play).*|structure_.*|timeline_screen|.*_sheet")
 
         /** Tempos out of the app's range, typed on the keypad (999: three figures, the most it takes). */
         val HORS_BORNES = listOf(39, 301, 999)
@@ -410,7 +414,8 @@ internal class ScenariosLimites(private val o: Outils) {
 
         /** The styles crossed (the full pack's new ones, then the quick pack's three), and the export formats in turn. */
         val STYLES: List<String> get() = Scenarios.STYLES_NEUFS + listOf("trance", "dubstep", "dnb")
-        private val DEJA_EXPORTES: Set<String> get() = Scenarios.EXPORTS_STYLES.map { it.first }.toSet()
+        /** Styles the full run already exports (its own exports, and the « save » theme's): not exported again here. */
+        val DEJA_EXPORTES: Set<String> get() = (Scenarios.EXPORTS_STYLES + ScenariosSauve.EXPORTS).map { it.first }.toSet()
         private val FORMATS = listOf("m4a", "wav", "flac")
 
         /** Structure's gestures crossed with « Annuler » / « Rétablir »: tag, the parts it adds (0: a build-up curve), its name. */

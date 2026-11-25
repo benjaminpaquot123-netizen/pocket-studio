@@ -42,8 +42,8 @@ class ScenariosLimitesTest {
     fun everyStyleIsCrossedWithATempoChangeAndAnExport() {
         val styles = StarterWizard.STYLES.map { it.id }
         assertTrue(styles.containsAll(ScenariosLimites.STYLES))
-        // Every style is exported: by this catalogue, or already by the full run (Scenarios.EXPORTS_STYLES).
-        val exportes = Scenarios.EXPORTS_STYLES.map { it.first }.toSet()
+        // Every style is exported: by this catalogue, or already by the full run (its own exports or the « save » theme).
+        val exportes = ScenariosLimites.DEJA_EXPORTES
         for (st in ScenariosLimites.STYLES) {
             assertTrue(st, liste.any { it.id == "lim_tempo_$st" && it.geste == "lim:style_tempo:$st" })
             assertTrue(st, st in exportes || liste.any { it.id.startsWith("lim_export_${st}_") && it.geste.orEmpty().startsWith("export:$st:") })

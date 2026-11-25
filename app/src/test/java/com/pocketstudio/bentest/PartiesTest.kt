@@ -92,10 +92,11 @@ class PartiesTest {
         assertEquals(0, compose.onAllNodesWithTag("bentest_partie_liste_2").fetchSemanticsNodes().size)
         compose.onNodeWithTag("bentest_partie_2").performScrollTo().performClick()
         assertEquals(listOf(2), started)
-        // The report button is the screen's last one, under every run's buttons.
-        val bas = compose.onNodeWithTag("bentest_rapport_tout").fetchSemanticsNode().boundsInRoot.top
+        // The report button is the screen's last one, under every run's buttons. Unclipped positions: with many parts
+        // the screen scrolls, and a button out of view has its clipped bounds squashed to the view's edge.
+        val bas = compose.onNodeWithTag("bentest_rapport_tout").fetchSemanticsNode().positionInRoot.y
         listOf("bentest_tout", "bentest_retest", "bentest_partie_${Scenarios.NB_PARTIES}").forEach {
-            assertTrue("$it above the report button", compose.onNodeWithTag(it).fetchSemanticsNode().boundsInRoot.top < bas)
+            assertTrue("$it above the report button", compose.onNodeWithTag(it).fetchSemanticsNode().positionInRoot.y < bas)
         }
         compose.onNodeWithTag("bentest_rapport_tout").assertTextContains("Générer le rapport et l'envoyer")
         compose.onNodeWithTag("bentest_rapport_tout").performScrollTo().performClick()

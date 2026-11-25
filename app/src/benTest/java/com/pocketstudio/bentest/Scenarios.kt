@@ -128,9 +128,22 @@ class Scenarios(
             "guide" -> { { t.guide(a) } }
             // The mix catalogue (ScenariosMix): a slider to one end; already there, the other way.
             "mix" -> g.getOrNull(2)?.toIntOrNull()?.let { ch ->
-                fun vol(to: Float) = { curseur(id, "Volume", "sheet_volume", ch, { it.volumes }, { it.volumes }) { v -> if (abs(v - to) < 2 * PAS_CURSEUR) 0.5f else to } }
-                fun pan(to: Float) = { curseur(id, "Panoramique", "sheet_pan", ch, { it.pans }, { it.pans }) { v -> if (abs(v - to) < 2 * PAS_CURSEUR) 0f else to } }
+                fun vol(to: Float) = { auBout(id, "Volume", "sheet_volume", ch, { it.volumes }, { it.volumes }, to, 0.5f) }
+                fun pan(to: Float) = { auBout(id, "Panoramique", "sheet_pan", ch, { it.pans }, { it.pans }, to, 0f) }
                 when (a) { "vol_max" -> vol(1f); "vol_min" -> vol(0f); "pan_g" -> pan(-1f); "pan_d" -> pan(1f); else -> null }
+            }
+            "ecr" -> when (a) {
+                "fond" -> ScenariosEcrans.ECRANS[g.getOrNull(2)]?.let { (tab, mark) -> { fondEcran(id, tab, mark) } }
+                else -> ScenariosEcrans.parcours(g)?.let { tabs -> { lectureEcrans(id, tabs) } }
+            }
+            "end" -> g.getOrNull(2)?.let { x ->
+                when (a) {
+                    "jouer" -> x.toIntOrNull()?.let { n -> { jouerArreter(id, n) } }
+                    "fond" -> x.toIntOrNull()?.let { n -> { fondReprise(id, n) } }
+                    "partie" -> x.toIntOrNull()?.let { n -> { changerPartie(id, n) } }
+                    "long" -> g.getOrNull(3)?.toIntOrNull()?.let { sec -> { ecouteLongue(id, x, sec) } }
+                    else -> null
+                }
             }
             "lim" -> { { ScenariosLimites(ScenariosLimites.Outils(j, appli, carnet, t, e, sauvegardeMs, courtMs, saisir, ::auStudio, ::fermerFeuilles, ::ouvrirTempo, ::versProjets, ::versStudio, ::menu) { sub -> (travail(s.copy(geste = sub)) ?: error("geste inconnu : $sub"))() }).travail(id, g.drop(1)) } }
             else -> null
@@ -893,6 +906,40 @@ class Scenarios(
         return "« $what » de la piste ${ch + 1} : ${fmt(before)} puis ${fmt(after)}, enregistré, puis remis"
     }
 
+    /**
+     * A slider pushed to one end [bout]. When it already sits there, it first goes to [milieu], so the end is always reached
+     * by a real move. Oracle: the project reads the end itself (within [PAS_CURSEUR]), the disk reads the same value, then
+     * the slider is put back where it was.
+     */
+    private fun auBout(step: String, what: String, tag: String, ch: Int, of: (ProjetVu) -> List<Float>, ofDisk: (ProjetVu.Disque) -> List<Float>, bout: Float, milieu: Float): String {
+        auStudio()
+        val before = of(lu()).getOrNull(ch) ?: return nonMesure(step, "le morceau n'a pas de piste ${ch + 1}")
+        fun la() = of(lu()).getOrNull(ch)
+        var depart = before
+        var after = before
+        var d: ProjetVu.Disque? = null
+        val atteint: Boolean
+        try {
+            bandeau(ch)
+            if (abs(before - bout) < 2 * PAS_CURSEUR) {
+                if (!regler("${tag}_$ch", milieu)) return nonMesure(step, "le curseur « $what » de la piste ${ch + 1} ne se règle pas d'ici")
+                check(attendre(5_000) { la()?.let { abs(it - milieu) < PAS_CURSEUR } == true }) { "« $what » réglé à ${fmt(milieu)}, la piste ${ch + 1} reste à ${fmt(la() ?: before)} dans le projet" }
+                depart = la() ?: milieu
+            }
+            if (!regler("${tag}_$ch", bout)) return nonMesure(step, "le curseur « $what » de la piste ${ch + 1} ne se règle pas d'ici")
+            atteint = attendre(5_000) { la()?.let { abs(it - bout) < PAS_CURSEUR } == true }
+            after = la() ?: depart
+            if (atteint) d = surDisque { ofDisk(it).getOrNull(ch)?.let { v -> abs(v - after) < 0.001f } == true }
+            regler("${tag}_$ch", before)
+        } finally {
+            fermerFeuilles()
+        }
+        check(atteint) { "« $what » poussé au bout (${fmt(bout)}), la piste ${ch + 1} s'arrête à ${fmt(after)} dans le projet" }
+        check(d?.let { ofDisk(it).getOrNull(ch) }?.let { abs(it - after) < 0.001f } == true) { "« $what » au bout (${fmt(after)}) n'est pas enregistré sur le disque (piste ${ch + 1})" }
+        bilan(step, "piste" to ch + 1, "avant" to fmt(before), "depart" to fmt(depart), "bout" to fmt(after))
+        return "« $what » de la piste ${ch + 1} : ${fmt(depart)} puis au bout ${fmt(after)}, enregistré, puis remis"
+    }
+
     /** Pro: one effect of each type on a strip. Oracle: the effect in the project and on the disk; the song still sounds (no NaN). */
     private fun effet(step: String, type: String): String {
         auStudio()
@@ -1038,7 +1085,7 @@ class Scenarios(
         try {
             for ((tab, mark) in tabs) {
                 j.tap(tab)
-                j.await(mark)
+                repere(mark)
                 j.idle(500)
                 if (!sonde.lire().playing) stops += tab.removePrefix("tab_")
             }
@@ -1056,13 +1103,77 @@ class Scenarios(
         return "${tabs.size} écran(s) ouverts en jouant (lecture par $by) : ${b.text()}"
     }
 
+    /** Waits for a screen's mark; one ending in « _ » is a prefix (the Sons screen: its tracks' rows). */
+    private fun repere(mark: String, ms: Long = 15_000) {
+        if (!mark.endsWith("_")) return j.await(mark, ms)
+        check(attendre(ms) { j.tagsMatching(Regex(Regex.escape(mark) + ".+")).isNotEmpty() }) { "écran pas reconnu (repère $mark…)" }
+    }
+
+    private fun estLa(mark: String) = if (mark.endsWith("_")) j.tagsMatching(Regex(Regex.escape(mark) + ".+")).isNotEmpty() else j.exists(mark)
+
+    /**
+     * Medium: on one screen while the song plays, the studio behind another screen, then back. Oracle: the music goes on
+     * behind (sound, no NaN), the studio comes back, on the same screen (its mark), still playing.
+     */
+    private fun fondEcran(step: String, tab: String, mark: String): String {
+        auStudio()
+        j.tap(tab)
+        repere(mark)
+        val by = e.lancerLecture()
+        var b: Ecoute.Bilan? = null
+        var revenu: Boolean
+        var memeEcran: Boolean
+        var joue: Boolean
+        try {
+            if (!appli.arrierePlan { b = t.ecouter(step, courtMs) }) return nonMesure(step, "le studio ne passe pas derrière un autre écran ici")
+            revenu = appli.studioDevant() != false || attendre(15_000) { appli.studioDevant() != false }
+            memeEcran = attendre(5_000) { estLa(mark) }
+            joue = sonde.lire().playing
+        } finally {
+            runCatching { j.tap("tab_Structure") }
+            e.arreter()
+        }
+        val x = b ?: error("rien d'écouté au fond")
+        ecoute(step, x)
+        feuEcoute(step, x)
+        bilan(step, "ecran" to tab.removePrefix("tab_"), "revenu" to revenu, "meme_ecran" to memeEcran, "joue" to joue)
+        check(x.playing * 2 >= x.reads) { "la musique s'arrête au fond (depuis ${tab.removePrefix("tab_")}) : ${x.text()}" }
+        check(!x.nonFinite) { "valeur invalide (NaN) dans le son au fond" }
+        check(x.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence au fond : ${x.text()}" }
+        check(revenu) { "le studio ne revient pas devant" }
+        check(memeEcran) { "revenu devant, l'écran ${tab.removePrefix("tab_")} n'est plus là" }
+        check(joue) { "revenu devant, la musique ne joue plus" }
+        return "au fond depuis ${tab.removePrefix("tab_")} (lecture par $by) : ${x.text()} ; revenu sur le même écran, toujours en lecture"
+    }
+
+    /**
+     * Measure: a song of [style] by the assistant, then [secondes] of it heard in one go. Oracle: it plays every second
+     * (no stop by itself), no NaN, sound in at least half the seconds; the dropouts in the light.
+     */
+    private fun ecouteLongue(step: String, style: String, secondes: Int): String {
+        val made = ts.style(step, style)
+        auStudio()
+        val by = e.lancerLecture()
+        val b = try { t.ecouter(step, secondes * 1_000L) } finally { e.arreter() }
+        ecoute(step, b)
+        feuEcoute(step, b)
+        val arrets = b.secondes.count { !it.playing }
+        val sonores = b.secondes.count { it.peakDb > Ecoute.SILENCE_DB }
+        bilan(step, "duree_s" to secondes, "secondes_sans_lecture" to arrets, "secondes_sonores" to sonores)
+        check(b.secondes.size * 10 >= secondes * 9) { "seulement ${b.secondes.size} s mesurées sur $secondes" }
+        check(arrets <= 1) { "la lecture s'arrête $arrets s sur ${b.secondes.size} : ${b.text()}" }
+        check(!b.nonFinite) { "valeur invalide (NaN) dans le son" }
+        check(sonores * 2 >= b.secondes.size) { "du son dans $sonores s sur ${b.secondes.size} seulement : ${b.text()}" }
+        return "$made ; puis $secondes s d'une traite (lecture par $by) : ${b.text()}"
+    }
+
     /** Measure: ▶ then ■ [REPETITIONS] times. Oracle: each ▶ plays with sound, each ■ stops; then the song still sounds, no NaN. */
-    private fun jouerArreter(step: String): String {
+    private fun jouerArreter(step: String, fois: Int = REPETITIONS): String {
         auStudio()
         e.arreter()
         var departs = 0
         var arrets = 0
-        repeat(REPETITIONS) {
+        repeat(fois) {
             if (runCatching { e.lancerLecture() }.isFailure) departs++
             e.arreter()
             if (!attendre(5_000) { !sonde.lire().playing }) arrets++
@@ -1072,20 +1183,20 @@ class Scenarios(
         ecoute(step, b)
         feuEcoute(step, b)
         bilan(step, "departs_rates" to departs, "arrets_rates" to arrets)
-        check(departs == 0) { "$departs ▶ sur $REPETITIONS ne lancent pas le son" }
-        check(arrets == 0) { "$arrets ■ sur $REPETITIONS n'arrêtent pas la lecture" }
-        check(!b.nonFinite) { "valeur invalide (NaN) dans le son après $REPETITIONS départs" }
-        return "$REPETITIONS fois ▶ puis ■ ; ensuite lecture par $by : ${b.text()}"
+        check(departs == 0) { "$departs ▶ sur $fois ne lancent pas le son" }
+        check(arrets == 0) { "$arrets ■ sur $fois n'arrêtent pas la lecture" }
+        check(!b.nonFinite) { "valeur invalide (NaN) dans le son après $fois départs" }
+        return "$fois fois ▶ puis ■ ; ensuite lecture par $by : ${b.text()}"
     }
 
     /** Measure: the studio behind another screen, then back, [FONDS] times while the song plays. Oracle: the music each time, the studio back each time. */
-    private fun fondReprise(step: String): String {
+    private fun fondReprise(step: String, fois: Int = FONDS): String {
         auStudio()
         val by = e.lancerLecture()
         var muettes = 0
         var absent = 0
         try {
-            repeat(FONDS) {
+            repeat(fois) {
                 var b: Ecoute.Bilan? = null
                 if (!appli.arrierePlan { b = t.ecouter(step, courtMs) }) return nonMesure(step, "le studio ne passe pas derrière un autre écran ici")
                 if (appli.studioDevant() == false && !attendre(15_000) { appli.studioDevant() != false }) absent++
@@ -1097,10 +1208,10 @@ class Scenarios(
             if (appli.studioDevant() == false) attendre(15_000) { appli.studioDevant() != false }
             e.arreter()
         }
-        bilan(step, "fois" to FONDS, "sans_musique" to muettes, "studio_absent" to absent)
-        check(muettes == 0) { "la musique s'arrête au fond $muettes fois sur $FONDS" }
-        check(absent == 0) { "le studio ne revient pas devant $absent fois sur $FONDS" }
-        return "$FONDS fois au fond puis devant (lecture par $by) : la musique joue, le studio revient"
+        bilan(step, "fois" to fois, "sans_musique" to muettes, "studio_absent" to absent)
+        check(muettes == 0) { "la musique s'arrête au fond $muettes fois sur $fois" }
+        check(absent == 0) { "le studio ne revient pas devant $absent fois sur $fois" }
+        return "$fois fois au fond puis devant (lecture par $by) : la musique joue, le studio revient"
     }
 
     /**
@@ -1108,7 +1219,7 @@ class Scenarios(
      * Oracle: no silence over 200 ms nor cut in the sound, the part chosen is the one the app plays (a part queued
      * while the song plays starts at the next part's edge), the song still plays.
      */
-    private fun changerPartie(step: String): String {
+    private fun changerPartie(step: String, fois: Int = REPETITIONS): String {
         auStudio()
         val n = lu().parties
         if (n < 2) return nonMesure(step, "le morceau n'a qu'une partie")
@@ -1123,7 +1234,7 @@ class Scenarios(
         var missed = 0
         var known = false
         try {
-            repeat(REPETITIONS) { k ->
+            repeat(fois) { k ->
                 val target = (k + 1) % n
                 j.tap("part_play_$target")
                 var seen = false
@@ -1137,13 +1248,13 @@ class Scenarios(
             e.arreter()
         }
         val holes = Epreuves.trous(reads)
-        bilan(step, "fois" to REPETITIONS, "parties" to n, "trous" to holes, "coupures" to cuts.size, "partie_absente" to if (known) missed else null)
+        bilan(step, "fois" to fois, "parties" to n, "trous" to holes, "coupures" to cuts.size, "partie_absente" to if (known) missed else null)
         feu(step, (if (holes == 0 && cuts.isEmpty() && missed == 0) Feu.VERT else Feu.ROUGE) to "$holes trou(s), ${cuts.size} coupure(s), $missed partie(s) non jouée(s)")
         if (!known) carnet.add(Carnet.NOTE, step, "la partie jouée ne se lit pas ici : seul le son est jugé")
         check(holes == 0) { "$holes quart(s) de seconde muet(s) en changeant de partie" }
         check(cuts.isEmpty()) { "le son se coupe en changeant de partie : ${cuts.distinct().joinToString(", ")}" }
-        check(missed == 0) { "$missed partie(s) choisie(s) sur $REPETITIONS ne jouent pas" }
-        return "$REPETITIONS fois une autre partie sur $n (lecture par $by) : pas de trou, la partie choisie joue" +
+        check(missed == 0) { "$missed partie(s) choisie(s) sur $fois ne jouent pas" }
+        return "$fois fois une autre partie sur $n (lecture par $by) : pas de trou, la partie choisie joue" +
             if (known) "" else " (partie jouée non lue ici)"
     }
 
@@ -1421,7 +1532,7 @@ class Scenarios(
             Scenario(STYLE_DUBSTEP, "Moyen : un morceau dubstep", NIVEAU_MOYEN, 360_000, 60, "le moteur joue, le son sort, les décrochages"),
             Scenario(STYLE_DNB, "Style lourd : drum and bass, décrochages", NIVEAU_MESURE, 360_000, 60, "les décrochages et le pire bloc d'un style lourd"),
             Scenario(GUIDE, "Débutant : le Guide jusqu'au bout", NIVEAU_DEBUTANT, 480_000, 150, "« Tout est fait » à l'écran du Guide"),
-        ) + tables() + ScenariosSauve.LISTE + ScenariosMix.LISTE + ScenariosEffets.LISTE + ScenariosLimites.LISTE
+        ) + tables() + ScenariosSauve.LISTE + ScenariosMix.LISTE + ScenariosEffets.LISTE + ScenariosLimites.LISTE + ScenariosEcrans.LISTE
 
         /** [LISTE] as steps without work (to read a logbook). */
         /** The screens a scenario starts from: the studio (its bar, or its rail lying down), the welcome, the projects. */

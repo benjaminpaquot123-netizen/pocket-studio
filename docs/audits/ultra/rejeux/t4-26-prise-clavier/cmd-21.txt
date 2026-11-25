@@ -1,1 +1,1 @@
-touche wizard_create
+touche wizard_next

@@ -1593,3 +1593,5 @@
 - 2026-11-25 · Nouvelle discussion de Benjamin : repérée par la liste à chaque réveil (aucune alerte n'existe), prise dans l'équipe ; ouverture d'une Fable signalée en une ligne. Raison : doublon « Lots qui plantent » / Fable ci-fiab. Retour : demande de Benjamin.
 - 2026-11-25 · Fable dès qu'un problème revient au moins 2 fois, une discussion par problème, fermeture des discussions inutiles (consignes de Benjamin). Retour : demande de Benjamin.
 - 2026-11-25 · Avant-après audio : un fichier par style ; gr-styles republié en gr-styles2 ; lots recalés au pré-vol remis à niveau par deux discussions. Retour : rouvrir l'ancienne branche.
+- 2026-11-25 · lot « robot-a3 » (tour-9) : 1 décision(s) dans `docs/decisions/tour-9-robot-a3.md`
+- 2026-11-25 · lot « gr-styles2 » (tour-9) : 3 décision(s) dans `docs/decisions/tour-9-gr-styles2.md`

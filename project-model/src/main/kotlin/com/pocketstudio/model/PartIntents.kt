@@ -44,8 +44,8 @@ object PartIntents {
     private const val CLAP = 4
     private const val HAT = 5
     private const val TOM_LOW = 7
-    private const val TOM_MID = 8
-    private const val TOM_HIGH = 9
+    // Pad 9 is the Snap's (format v2): a fill never writes it, the toms run on pads 8 and 7.
+    private const val TOM_HIGH = 8
 
     /**
      * The last bar of a part's drums ([bar], [stepsPerBar] steps) with [fill] written over its
@@ -79,9 +79,9 @@ object PartIntents {
                 put(SNARE, spb - 1, 1f, 2, 1)
             }
             Fill.Toms -> {
-                listOf(TOM_HIGH, TOM_MID, TOM_LOW, SNARE).forEach(::clear)
+                listOf(TOM_HIGH, TOM_LOW, SNARE).forEach(::clear)
                 // Down the toms in eighths, two doubled snares to end.
-                val order = listOf(TOM_HIGH, TOM_HIGH, TOM_MID, TOM_MID, TOM_LOW, TOM_LOW, SNARE, SNARE)
+                val order = listOf(TOM_HIGH, TOM_HIGH, TOM_HIGH, TOM_LOW, TOM_LOW, TOM_LOW, SNARE, SNARE)
                 for (i in 0 until n) {
                     val lane = order[(i * order.size / n).coerceIn(0, order.size - 1)]
                     if (lane != SNARE && i % 2 != 0) continue

@@ -191,7 +191,17 @@ open class ScenariosVraisEcransTest {
     }
 
     /** Runs the scenario [id] as the robot does (its reset first, its oracle at the end). */
-    private fun jouer(v: Vrai, id: String, courtMs: Long = 3_000): String = scenarios(v, courtMs).etapes().first { it.name == id }.work(Long.MAX_VALUE)
+    private fun jouer(v: Vrai, id: String, courtMs: Long = 3_000): String = try {
+        scenarios(v, courtMs).etapes().first { it.name == id }.work(Long.MAX_VALUE)
+    } catch (t: Throwable) {
+        println("DBGDUMP failure: ${t.message}")
+        println("DBGDUMP applog: " + runCatching { com.pocketstudio.app.report.AppLog.dump(30) }.getOrNull())
+        Thread.getAllStackTraces().forEach { (th, st) ->
+            if (st.isNotEmpty() && st.any { it.className.startsWith("com.pocketstudio") || it.className.startsWith("kotlinx.coroutines") })
+                println("DBGDUMP thread ${th.name} ${th.state}\n" + st.take(28).joinToString("\n") { "DBGDUMP    at $it" })
+        }
+        throw t
+    }
 
     /** Chef 2b: the part changed 10 times by its ▶ on the Structure while the song plays; each chosen part is the one played. */
     @Test

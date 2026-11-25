@@ -176,15 +176,17 @@ class EnduranceTest {
 
                 val after = NativeEngine.streamInfo()
                 watchdog.close()
-                val mainMs = maxOf(watchdog.worstMs, RealUse.mainThreadDelayMs())
+                // The main thread's own delay: what it took beyond the machine's stall (RealUse.MainWatchdog).
+                val mainMs = watchdog.worstAppMs
+                val mainRaw = "raw ${watchdog.worstMs} ms, the machine itself ${watchdog.worstMachineMs} ms"
                 val (java, native) = RealUse.memoryMb()
                 val round = Round(k, java, native, after.callbacks - before.callbacks, after.xruns - before.xruns, mainMs, peak)
                 rounds += round
-                log("round $k: project ${CurrentProject.get(app)}, java %.1f MB, native %.1f MB, callbacks +%d, xruns +%d, main thread %d ms, peak %.3f, running=%s".format(
-                    java, native, round.callbacks, round.xruns, mainMs, peak, after.running))
+                log("round $k: project ${CurrentProject.get(app)}, java %.1f MB, native %.1f MB, callbacks +%d, xruns +%d, main thread %d ms (%s), peak %.3f, running=%s".format(
+                    java, native, round.callbacks, round.xruns, mainMs, mainRaw, peak, after.running))
                 assertTrue("round $k: the audio stream runs", after.running)
                 assertTrue("round $k: the audio callbacks went on (+${round.callbacks})", round.callbacks > 0)
-                assertTrue("round $k: the main thread answered in $mainMs ms (an ANR is 5 s)", mainMs < 5000)
+                assertTrue("round $k: the main thread answered in $mainMs ms beyond the machine's own stall ($mainRaw; an ANR is 5 s)", mainMs < 5000)
                 assertTrue("round $k: no NaN in the output", !after.nonFinite)
                 // A storm of underruns: more than one callback in 20 late in a round. The CI's x86_64
                 // emulator has a host audio of its own (many, irregular): there it is only logged.

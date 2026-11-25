@@ -6,6 +6,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.os.Debug
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
@@ -16,6 +17,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicLongArray
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.log10
@@ -145,21 +147,51 @@ object RealUse {
     /**
      * The main thread watched for a whole round: a task posted every 500 ms, the longest it took
      * to run (an ANR is 5 s of this), so a block between two looks is seen too.
+     *
+     * Each look posts the same empty task, at the same instant, on an idle thread of the test (the
+     * « machine probe »). When the emulator itself freezes (a starved CI runner: CI #446 on
+     * 2026-11-24, 5043 ms in round 0 beside 159 underruns), both wait together, and that is not
+     * the app's main thread being stuck. [worstAppMs] is the longest the main thread took BEYOND
+     * the probe: it is what a test judges. [worstMs] (raw) and [worstMachineMs] are for the log,
+     * so a red run says which of the two was slow. A main thread really stuck (the machine fine)
+     * leaves the probe at 0 ms and is seen in full.
      */
     class MainWatchdog : AutoCloseable {
         @Volatile var worstMs = 0L
             private set
+        @Volatile var worstMachineMs = 0L
+            private set
+        @Volatile var worstAppMs = 0L
+            private set
         @Volatile private var running = true
+        private val probe = HandlerThread("machine-probe").apply { start() }
         private val thread = Thread {
             while (running) {
-                runCatching { worstMs = maxOf(worstMs, mainThreadDelayMs(timeoutSeconds = 30)) }.onFailure { worstMs = maxOf(worstMs, 30_000) }
+                look()
                 Thread.sleep(500)
             }
         }.apply { isDaemon = true; name = "main-watchdog"; start() }
 
+        private fun look() {
+            val start = System.nanoTime()
+            val took = AtomicLongArray(longArrayOf(-1, -1))   // main thread, machine probe (ms); -1 = no answer
+            val done = CountDownLatch(2)
+            Handler(Looper.getMainLooper()).post { took.set(0, (System.nanoTime() - start) / 1_000_000); done.countDown() }
+            Handler(probe.looper).post { took.set(1, (System.nanoTime() - start) / 1_000_000); done.countDown() }
+            done.await(30, TimeUnit.SECONDS)
+            val mainMs = took.get(0).let { if (it >= 0) it else 30_000 }
+            val machineMs = took.get(1).let { if (it >= 0) it else 30_000 }
+            worstMs = maxOf(worstMs, mainMs)
+            worstMachineMs = maxOf(worstMachineMs, machineMs)
+            worstAppMs = maxOf(worstAppMs, (mainMs - machineMs).coerceAtLeast(0))
+        }
+
+        /** Stops the watch after one last look (the end of the round is watched too). */
         override fun close() {
             running = false
             thread.join(35_000)
+            if (!thread.isAlive) look()
+            probe.quitSafely()
         }
     }
 

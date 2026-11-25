@@ -1589,3 +1589,4 @@
 - 2026-11-25 · lot « porte-paquet » (tour-9) : 5 décision(s) dans `docs/decisions/tour-9-porte-paquet.md`
 - 2026-11-25 · lot « kick-ci » (tour-9) : 5 décision(s) dans `docs/decisions/tour-9-kick-ci.md`
 - 2026-11-25 · lot « robot1b » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-robot1b.md`
+- 2026-11-25 · lot « robot-a3 » (tour-9) : 1 décision(s) dans `docs/decisions/tour-9-robot-a3.md`

@@ -1,16 +1,16 @@
-# Tour 9, lot gr-bass2 : relecture neuve
-Relecteur : sous-agent neuf (n'a pas écrit le code), diff ccf50247..746fde43.
+# Tour 9, lot gr-bass : relecture neuve
 
-relu : 746fde4319cd010c1e11449323fd4a4c94da6255
+relu : cb92ae83 (fusion de l'intégration 4f3f19c2, sous-agent neuf)
 
-Vérifié : bass.json valide (9 styles), format identique aux entrées voisines ; StyleRecipes.kt et guides régénérés en local, BassRecipesTest 5/5, HonestMixTest 9/9, RecipeFormatV2Test 6/6, puis remis à l'état commité (rien de généré ne reste modifié). Paramètres lus : cloche basse 0,26 = 120 Hz, Q 0,24 = 0,7 ; cloche kick 0,159 = 60 Hz ; WIDENER 0,25–0,35 = 50–70 % de largeur, graves au centre sous 134 Hz ; EQ jungle 0,42 = −1,9 dB de graves.
+Vérifié :
+- `git diff origin/eq/ci-int-styles cb92ae83` ne contient que le lot gr-bass (12 fichiers : bass.json, guides dnb/dubstep/jungle/neurofunk/riddim/pop/synthwave, StyleRecipes.kt, BassRecipesTest, rapport et relecture) ;
+- ce diff est identique octet pour octet à `git diff 8b905fe0 619d71cc` : tout le travail du lot d'avant la fusion est gardé ;
+- StyleRecipes.kt identique à sa régénération (`recipes_to_kotlin.py`, git diff vide) ;
+- JSON du diff valides ; docs/DECISIONS.md identique à l'intégration ;
+- aucun marqueur de conflit (seules correspondances : des PNG binaires) ; aucun fichier audio ni apk dans le diff ;
+- anciens fichiers tour-9-gr-styles (rapport, relecture, décision) bien retirés ; le diff ne touche aucun fichier de gr-styles2.
+- Points mineurs de la relecture précédente (746fde43) inchangés : gains forts sur neurofunk/dubstep/jump_up, kick dnb pile à +3 dB, test sans plafond de gain, jungle à faire écouter.
 
-1. mineur : gains forts, peu de marge. Basse neurofunk +10,8 dB à 120 Hz (0,8), kick dubstep +9 dB à 60 Hz (0,75), basse jump_up +7,2 dB. Le banc ne signale ni alerte ni saturation, mais le rapport note une sonie plafonnée (limiteur au travail) sur neurofunk, jump_up, riddim : risque de pompage du limiteur et de boue 100–200 Hz si un autre lot remonte encore la basse. À surveiller à l'écoute.
-2. mineur : la montée du kick de dnb est à 3,0 dB, pile sur la cible (≥ +3) ; aucune marge face au bruit de mesure.
-3. mineur : le test vérifie un plancher (fréquence ≤, gain ≥) mais aucun plafond de gain ; il ne protégerait pas contre une cloche à +18 dB. La largeur n'est vérifiée que sur les « pad » (pas le WIDENER du lead de neurofunk) et ni riddim ni pop.
-4. mineur : jungle sort de la liste demandée (son de basse, sub retiré, doublure d'octave retirée, pompe réglée, EQ −1,9 dB de graves) ; c'est justifié et chiffré dans le rapport (Drop repassé au-dessus de la Montée), grave −5,0 toujours ≥ −6, mais c'est un changement de caractère du style à faire écouter.
-5. mineur : le test dépend de StyleRecipes.kt régénéré ; sur la tête commitée (fichier généré non régénéré) il échoue. Conforme à la consigne (régénération par le chef à la fusion), à ne pas oublier avant la CI du paquet.
-
-Rapport cohérent avec le diff et les chiffres (grave ≥ −6 sur les quatre styles visés, kick ≥ +3 sur dnb, dubstep, pop, largeur en baisse partout).
+rejeu changé : t4-26-prise-clavier : la fusion de l'intégration apporte la page « snap » du lofi de gr-styles2 (deux pas de plus) ; accord de Benjamin (1A)
 
 Verdict : 0 bloquant, 0 grave

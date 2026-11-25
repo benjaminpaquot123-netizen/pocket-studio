@@ -1,5 +1,7 @@
 # Tour 9 — lot « bentest-parties » : relecture neuve
 
+
+relu : 10db034f (code de 0d15780f relu par le sous-agent neuf ; le grave trouvé est corrigé et testé dans 10db034f)
 Relecteur : sous-agent neuf (n'a pas écrit le code), sur f0dbb280..0d15780f.
 
 - Pas de plantage, pas de nul à l'initialisation : NB_PARTIES, PAQUETS, numeroPartie et liste lisent LISTE par des getters.
@@ -10,3 +12,5 @@ Relecteur : sous-agent neuf (n'a pas écrit le code), sur f0dbb280..0d15780f.
 - Mineur : quand le dernier passage est une partie, ses captures sont deux fois dans le zip (zip plus gros, rien de perdu).
 - Ajout du pilote : sous chaque partie, « Voir le contenu » (replié) déplie ses scénarios numérotés ; même liste dans `parties.md`.
   « Test en cours : » affiche bien le nom (label) du scénario, pas son id.
+
+Verdict : 0 bloquant, 0 grave

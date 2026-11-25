@@ -8180,6 +8180,7 @@ void testCommandBudgetPerCallback() {
 #include "hardtechno_tests.inc"
 #include "speakerkick_tests.inc"
 #include "kickbody_tests.inc"
+#include "batterie_tests.inc"
 #include "l12_tests.inc"
 
 int main(int argc, char** argv) {
@@ -8196,6 +8197,7 @@ int main(int argc, char** argv) {
         PS_HARDTECHNO_TESTS
         PS_SPEAKERKICK_TESTS
         PS_KICKBODY_TESTS
+        PS_BATTERIE_TESTS
         PS_L12_TESTS
         {"spsc_queue", testSpscQueue},
         {"pad_strips", testPadStrips},

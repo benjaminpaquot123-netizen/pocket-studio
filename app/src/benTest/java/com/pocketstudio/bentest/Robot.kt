@@ -60,6 +60,8 @@ object Robot {
         /** « Test [numero] sur [total] » while the robot works (0 when no run is counted). */
         val numero: Int = 0,
         val total: Int = 0,
+        /** « Partie [partie] » of the full scenarios being played (0 for any other run). */
+        val partie: Int = 0,
     )
 
     /** The essai éclair (T0) and « Tout tester » (T1, niveau 1). */
@@ -95,6 +97,32 @@ object Robot {
     /** « Scénarios »: the pack chosen (rapides: the first 31; complets: all of them). */
     private fun paquetFile(context: Context) = File(dir(context), "paquet.txt")
     fun paquet(context: Context): String = runCatching { paquetFile(context).readText().trim() }.getOrNull()?.takeIf { it in Scenarios.PAQUETS } ?: Scenarios.RAPIDE
+
+    /** « Partie 1, Partie 2… » of the full scenarios: each part's logbook and pictures kept once played ([archiverPartie]). */
+    private fun partiesDir(context: Context) = File(dir(context), "parties")
+    private fun partieDir(context: Context, n: Int) = File(partiesDir(context), "partie-$n")
+
+    /** The parts played to their end (their logbook kept holds « fini »). */
+    fun partiesFaites(context: Context): Set<Int> = (1..Scenarios.NB_PARTIES).filter { n ->
+        runCatching { Carnet(File(partieDir(context, n), "carnet.tsv")).lines().any { it.kind == Carnet.FINI } }.getOrDefault(false)
+    }.toSet()
+
+    /** Keeps the logbook's run when it is a part (its logbook and pictures, replacing that part's last ones). */
+    fun archiverPartie(context: Context) {
+        val c = carnet(context)
+        val lines = c.lines()
+        val n = Scenarios.numeroPartie(Scenarios.paquet(lines)) ?: return
+        val to = partieDir(context, n)
+        to.deleteRecursively()
+        to.mkdirs()
+        c.file.copyTo(File(to, "carnet.tsv"), overwrite = true)
+        captures(context).takeIf { it.isDirectory }?.copyRecursively(File(to, "captures"), overwrite = true)
+    }
+
+    /** Forgets every part played. */
+    fun oublierParties(context: Context) {
+        partiesDir(context).deleteRecursively()
+    }
 
     fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO || it == SCENARIOS || it == GUIDES } ?: ECLAIR
 
@@ -179,7 +207,8 @@ object Robot {
             if (retest != null) Retest.ecrireChoix(retestFile(app), retest) else retestFile(app).delete()
         }
         val which = passage(app)
-        _etat.value = Etat(running = true, passage = which)
+        val partie = if (which == SCENARIOS) Scenarios.numeroPartie(paquet(app)) ?: 0 else 0
+        _etat.value = Etat(running = true, passage = which, partie = partie)
         val tracker = Tracker.install(app)
         tracker.keepScreenOn = true
         val sorties = Sorties(carnet(app), ramener = { bringStudioBack(app, tracker) })
@@ -228,6 +257,7 @@ object Robot {
             tracker.sorties = null
             tracker.keepScreenOn = false
             appli.orienter(null)
+            if (which == SCENARIOS) runCatching { archiverPartie(app) }
             if (which == TOUT || which == SCENARIOS) runCatching {
                 // The last « Tout tester » or scenarios kept for the next retest: a run only replaces the steps it ran.
                 val f = derniereFile(app)
@@ -314,7 +344,13 @@ object Robot {
         return WavExporter.share(context, listOf(zip.zip), "Envoyer le rapport", subject = "BenStudio Test : rapport ${AppInfo.versionName}")
     }
 
-    fun writeReport(context: Context): RapportZip.Ecrit {
+    /** « Générer le rapport et l'envoyer »: every part played and the last run in one zip, then Android's share menu. */
+    fun shareTout(context: Context): Boolean {
+        val zip = writeReport(context, parties = true)
+        return WavExporter.share(context, listOf(zip.zip), "Envoyer le rapport", subject = "BenStudio Test : rapport complet ${AppInfo.versionName}")
+    }
+
+    fun writeReport(context: Context, parties: Boolean = false): RapportZip.Ecrit {
         val c = carnet(context)
         val lines = runCatching { c.lines() }.getOrDefault(emptyList())
         val passage = passage(context)
@@ -332,9 +368,37 @@ object Robot {
             part("carnet.tsv") { if (c.file.isFile) c.file.readText() else "" }
             part("journal.json") { runCatching { JournalJson.current(about) }.getOrDefault("{}") }
             part("plantage.txt") { CrashReporter.pendingCrash() }
+            if (parties) {
+                val faites = partiesFaites(context)
+                part("parties.md") {
+                    buildString {
+                        appendLine("# Scénarios complets en parties")
+                        appendLine()
+                        var debut = 1
+                        for (n in 1..Scenarios.NB_PARTIES) {
+                            val taille = Scenarios.liste(Scenarios.partie(n)).size
+                            val etat = if (n in faites) Scenarios.verdict(Carnet(File(partieDir(context, n), "carnet.tsv")).lines()) else "pas jouée"
+                            appendLine("- Partie $n (scénarios $debut à ${debut + taille - 1}) : $etat")
+                            debut += taille
+                        }
+                    }
+                }
+                (1..Scenarios.NB_PARTIES).filter { File(partieDir(context, it), "carnet.tsv").isFile }.forEach { n ->
+                    val f = File(partieDir(context, n), "carnet.tsv")
+                    val pl = runCatching { Carnet(f).lines() }.getOrDefault(emptyList())
+                    val ps = Scenarios.liste(Scenarios.partie(n)).map { s -> Etape(s.id, s.label, s.maxMs) { "" } }
+                    part("parties/partie-$n/rapport.md") { Rapport.markdown(pl, ps, about, tout = true) }
+                    part("parties/partie-$n/resume.md") { Scenarios.resume(pl, about) }
+                    part("parties/partie-$n/scenarios.json") { Scenarios.json(pl, about) }
+                    part("parties/partie-$n/carnet.tsv") { f.readText() }
+                }
+            }
         }
         val pictures = captures(context).listFiles()?.sortedBy { it.name }?.map { "captures/${it.name}" to it }.orEmpty() +
-            sons(context).listFiles()?.sortedBy { it.name }?.map { "sons/${it.name}" to it }.orEmpty()
+            sons(context).listFiles()?.sortedBy { it.name }?.map { "sons/${it.name}" to it }.orEmpty() +
+            (if (!parties) emptyList() else (1..Scenarios.NB_PARTIES).flatMap { n ->
+                File(partieDir(context, n), "captures").listFiles()?.sortedBy { it.name }?.map { "parties/partie-$n/captures/${it.name}" to it }.orEmpty()
+            })
         val out = File(File(context.cacheDir, "exports"), "rapport-benstudio-test-" + SimpleDateFormat("yyyyMMdd-HHmmss", Locale.ROOT).format(Date()) + ".zip")
         out.parentFile?.listFiles { f -> f.name.startsWith("rapport-benstudio-test-") }?.forEach { it.delete() }
         return RapportZip.write(out, texts, pictures)

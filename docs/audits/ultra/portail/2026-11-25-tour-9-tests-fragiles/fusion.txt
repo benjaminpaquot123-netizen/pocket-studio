@@ -1,0 +1,20 @@
+fusion: 546076679995641fe7e8bb4fc27725b68a233cc2
+branche: eq/tour-9-tests-fragiles
+tete: d5c14a2a661f5613a5ecb57b1f908f249c90345b
+relecture: docs/audits/ultra/tour-9-tests-fragiles-relecture.md
+relu: a7d1fe9b
+filtres: *TutoKickSoundTest *Tour5BloquantsTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

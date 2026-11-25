@@ -125,6 +125,12 @@ class Scenarios(
                 else -> null
             }
             "guide" -> { { t.guide(a) } }
+            // The mix catalogue (ScenariosMix): a slider to one end; already there, the other way.
+            "mix" -> g.getOrNull(2)?.toIntOrNull()?.let { ch ->
+                fun vol(to: Float) = { curseur(id, "Volume", "sheet_volume", ch, { it.volumes }, { it.volumes }) { v -> if (abs(v - to) < 2 * PAS_CURSEUR) 0.5f else to } }
+                fun pan(to: Float) = { curseur(id, "Panoramique", "sheet_pan", ch, { it.pans }, { it.pans }) { v -> if (abs(v - to) < 2 * PAS_CURSEUR) 0f else to } }
+                when (a) { "vol_max" -> vol(1f); "vol_min" -> vol(0f); "pan_g" -> pan(-1f); "pan_d" -> pan(1f); else -> null }
+            }
             else -> null
         }
     }

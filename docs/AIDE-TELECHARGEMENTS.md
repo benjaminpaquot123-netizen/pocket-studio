@@ -99,7 +99,7 @@ Un contrôle « capricieux » est rouge une fois sur dix sans que l'appli ait ch
 7. **Devant un rouge : lire le nom du test avant de relancer.** Un même rouge deux fois n'est pas un caprice. Ne jamais relancer un commit déjà rouge sans rien changer.
 8. **Aucun test sauté ni mis de côté pour avoir du vert.**
 9. **Un robot attend comme un utilisateur, il ne lit jamais une liste une seule fois.** Vu : CI 462, « aucun autre projet visible » parce que « Mes projets » affichait encore « Chargement de la liste… ». Toute lecture d'écran qui dépend du disque ou d'un autre fil s'attend, avec une borne écrite et sa raison ; le message d'échec dit ce que l'écran montrait.
-10. **Avant de corriger un caprice, le mesurer.** Une attente posée au hasard (10 s) a encore raté ; la cause mesurée (la liste attend 2 × 10 s de sauvegardes) a donné la bonne borne.
+10. **Avant de corriger un caprice, le mesurer.** Une attente posée au hasard (10 s, essai local jamais poussé) a encore raté ; la cause mesurée (la liste attend 2 × 10 s de sauvegardes) a donné une borne qui tient 13 fois sur 14. Pour la fois qui reste, le test écrit ce que l'appli faisait (journal, piles des fils) quand il rougit : un caprice trop rare pour être chassé à la main se piège, il ne se devine pas.
 
 ## Ce qui reste fragile (au 2026-11-25)
 
@@ -108,6 +108,6 @@ Un contrôle « capricieux » est rouge une fois sur dix sans que l'appli ait ch
 - La fuite d'état de `Tour5BloquantsTest` (cause non prouvée, lot du chef).
 - `EssaiEclair.mesurer` (`EssaiEclair.kt`, contrôle « silence ») a la même faiblesse que `ScenariosTest` avant réparation : moins de 4 lectures = faux silence. Même parade à poser.
 - `EnduranceTest` : la première manche tient le fil principal 4 à 5 s (appli à froid) pour une limite de 5000 ms ; le rouge peut revenir environ une fois sur six tant que ce défaut d'appli n'est pas réglé (lot du chef).
-- « Mes projets » : sa première lecture passe après l'attente des sauvegardes de fermeture (20 s au pire, `ProjectsViewModel.kt`, lot du chef).
+- « Mes projets » : sa première lecture passe après l'attente des sauvegardes de fermeture (20 s au pire, `ProjectsViewModel.kt`, lot du chef). Vu une fois sur 14 : encore en chargement après 25 s, cause pas trouvée ; le rouge suivant de `ScenariosVraisEcransTest` porte le journal de l'appli et les piles des fils dans sa sortie.
 - `setup-android` sans cache, et les `git clone` / `pip install` des packs avec un seul essai.
 - Les artefacts de CI ne se lisent pas depuis une discussion : seuls les journaux se lisent.

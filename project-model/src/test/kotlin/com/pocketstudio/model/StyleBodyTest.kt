@@ -56,7 +56,7 @@ class StyleBodyTest {
         assertEquals(0.8f, top.velocity, 1e-6f)
         assertEquals(listOf(72, 76, 79, 91), StarterWizard.doubled(clip, StarterWizard.ChordDouble.Both).notes.map { it.pitch })
         val high = NoteClip(steps = 16, notes = listOf(Note(0, 96, 100, 1f)))
-        assertTrue("nothing over 108", StarterWizard.doubled(high, StarterWizard.ChordDouble.Both).notes.all { it.pitch <= 108 })
+        assertTrue("nothing over the melodic top", StarterWizard.doubled(high, StarterWizard.ChordDouble.Both).notes.all { it.pitch <= StarterWizard.DOUBLE_TOP })
     }
 
     @Test

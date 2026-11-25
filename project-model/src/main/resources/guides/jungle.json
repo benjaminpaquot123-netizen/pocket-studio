@@ -491,6 +491,68 @@
    "lexicon": "lead"
   },
   {
+   "id": "sound.counter",
+   "stage": 1,
+   "target": "counter",
+   "kind": "decide",
+   "simple": true,
+   "title": "Le contre-chant : la réponse",
+   "why": "Une deuxième ligne qui répond au lead dans ses silences, au 2e Drop surtout : le morceau grandit.",
+   "simpleTitle": "La réponse",
+   "simpleWhy": "Une petite mélodie qui répond à la première.",
+   "when": "Au début, piste par piste : le kick d'abord.",
+   "applicable": [
+    "has:counter"
+   ],
+   "done": [
+    "has:counter",
+    "by_hand|changed:counter"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce son",
+     "why": "Il tient son rôle : on passe au suivant.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "other",
+     "label": "Autre idée de son",
+     "why": "Un autre son du même rôle, écouté avec le reste.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.track",
+      "target": "counter"
+     }
+    },
+    {
+     "id": "where",
+     "label": "Où il joue",
+     "why": "Les parties où la piste joue : une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "counter"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "counter"
+     }
+    }
+   ],
+   "lexicon": "lead"
+  },
+  {
    "id": "sound.riser",
    "stage": 1,
    "target": "riser",
@@ -551,41 +613,6 @@
     }
    ],
    "lexicon": "buildup"
-  },
-  {
-   "id": "layers.bass",
-   "stage": 2,
-   "target": "bass",
-   "kind": "decide",
-   "title": "La basse en deux couches : le sub et le médium",
-   "why": "Sous 120 Hz une seule source, propre et au centre (le sub) ; au-dessus, la couche qui grogne et bouge.",
-   "applicable": [
-    "has:bass"
-   ],
-   "done": [
-    "layered:bass"
-   ],
-   "proposals": [
-    {
-     "id": "keep",
-     "label": "Garder",
-     "why": "Ce qui est là sonne déjà juste : on n'y touche pas.",
-     "action": {
-      "type": "keep"
-     }
-    },
-    {
-     "id": "layers",
-     "label": "Voir les couches",
-     "why": "Chaque couche s'écoute seule, avec les autres, ou sans.",
-     "action": {
-      "type": "open",
-      "spot": "sounds.layers",
-      "target": "bass"
-     }
-    }
-   ],
-   "lexicon": "bass"
   },
   {
    "id": "fx.review",
@@ -735,52 +762,6 @@
       "type": "open",
       "spot": "sounds.favorite",
       "target": "bass"
-     }
-    }
-   ],
-   "lexicon": "saturation"
-  },
-  {
-   "id": "fx.sub",
-   "stage": 3,
-   "target": "sub",
-   "kind": "decide",
-   "title": "Le sub : propre, au centre, un peu saturé",
-   "why": "Aucun effet ne colore encore le sub : une saturation légère entre 60 et 250 Hz le rend plus présent, sans le salir.",
-   "when": "Une fois le son et le motif posés.",
-   "howMuch": "Saturation 15 à 25 %, mono strict.",
-   "howOften": "Une chaîne pour tout le morceau.",
-   "applicable": [
-    "has:sub"
-   ],
-   "done": [
-    "colour:sub",
-    "by_hand|changed:sub"
-   ],
-   "proposals": [
-    {
-     "id": "light",
-     "label": "Saturation légère",
-     "why": "Juste assez pour qu'un petit haut-parleur le devine.",
-     "value": "Drive 20 %",
-     "action": {
-      "type": "insert",
-      "effect": "SATURATION",
-      "params": [
-       0.2,
-       1.0,
-       1.0,
-       0.7,
-       1.0
-      ]
-     }
-    },
-    {
-     "id": "keep",
-     "label": "Le laisser tel quel",
-     "why": "Un grave rond, senti plus qu'entendu.",
-     "action": {
-      "type": "keep"
      }
     }
    ],
@@ -941,6 +922,16 @@
     }
    ],
    "elsewhere": [
+    {
+     "id": "copy_counter",
+     "label": "La même chaîne pour le contre-chant",
+     "why": "Les deux lignes sonnent dans le même espace.",
+     "action": {
+      "type": "copyChain",
+      "target": "lead",
+      "to": "counter"
+     }
+    },
     {
      "id": "favorite",
      "label": "Garder ce son dans mes favoris",

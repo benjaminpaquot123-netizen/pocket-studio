@@ -13,6 +13,7 @@ Fichiers :
 - Ajout 2 (tests indépendants des styles convertis) : 87ad19c2.
 - Ajout 2 (forme du morceau) : rouge 3a5848d9, vert 5a0a2915. Le diagnostic « withShakerInDrop » ne tenait pas (avec ou sans shaker, même morceau) : la cause est le contre-chant du corps sans lead ni accords (il fabriquait ses propres stabs sur 2 tours : reggaeton 84 → 92 mesures, scènes Crash / Fill perdues) et la texture tenue jusque sur le temps de silence avant le Drop (drill Couplet 3, techno Montée 2). Correctif : contre-chant seulement avec lead ou accords ; texture coupée au temps de silence. Test : BodyHeardTest#theBodyKeepsTheSongsShape (tous styles, humeurs, parties, acid : même durée, mêmes scènes, mêmes silences avec ou sans corps).
 - Grave de la relecture (SoundLibraryViewModel `packs.first`) : rouge f1942838, vert 11c818c7 (un son nommé d'un autre type ne plante plus la liste).
+- Grave de la relecture 2 (Doublure hors des accords) : 5948fdcc, protection (aucun style actuel n'atteint le cas : test vert avant et après, donc pas de commit rouge).
 - Tests : project-model complet vert ; app SoundLibrary* et Wizard* verts ; live-bench trap / techno / house 3/3 sans alerte.
 
 tests: com.pocketstudio.model.BodyHeardTest com.pocketstudio.model.PartIntentsTest com.pocketstudio.model.StarterWizardTest com.pocketstudio.model.StyleBodyTest com.pocketstudio.app.bench.LiveSongRecorder

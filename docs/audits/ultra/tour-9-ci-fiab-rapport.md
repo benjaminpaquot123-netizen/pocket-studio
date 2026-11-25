@@ -17,7 +17,7 @@ chemin: banc, règle d'état propre : le proxy posé par le test lui-même est g
 chemin: banc, règle d'état propre : un vrai siège garde son réseau | test: BenchPristineNetworkTest#aRealSeatKeepsItsNetwork
 chemin: tuto techno en allemand sur tablette, étape Swing (le test tombé sur la CI 449) | test: Tour5BloquantsTest#theTutorialsSwingStepShowsTheSwingSetting
 
-Mesure : voir « Cinq passages » plus bas.
+Mesure : cinq passages de suite avec `--rerun` des quatre classes de la ligne « tests: » sur a8477c7f, par `scripts/bench/gradle-file.sh` : 5 verts sur 5, 21 tests à chaque fois, 0 rouge.
 
 Limites, dites franchement :
 - Le rouge de la CI 449 n'a pas été reproduit tel quel ici (il faut un réseau qui traîne plus de 30 s) ; la cause vient des piles de l'artefact et du code. Le test rouge prouve le mécanisme (un test de banc partait sur le vrai réseau), pas le hasard du runner.

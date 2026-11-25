@@ -1,0 +1,20 @@
+fusion: 5c0a90d0a92e2dcfc4309070a7a4206897c5bb80
+branche: eq/tour-9-gr-styles2
+tete: e4444819926c0ee319b8c57addceb9887e57de20
+relecture: docs/audits/ultra/tour-9-gr-styles2-relecture.md
+relu: a2e8a831b
+filtres: *OneTouchStyleTest *WizardTracksOfferedTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

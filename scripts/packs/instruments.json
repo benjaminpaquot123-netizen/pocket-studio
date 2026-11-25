@@ -131,24 +131,24 @@
   },
   {
    "id": "instrument_bois",
-   "recipes": {"flute": [67, 100]},
+   "recipes": {"flute": [60, 100]},
    "name": "Bois",
    "category": "woodwinds",
    "kind": "lead",
    "fallback": "Lead",
    "tags": ["bois", "flûte", "clarinette", "basson", "orchestre"],
-   "version": 1,
+   "version": 2,
    "source": "vsco2",
    "paths": ["/BassoonSus.sfz", "/ClarinetSus.sfz", "/FluteSusVib.sfz", "/Woodwinds/Bassoon/sus/", "/Woodwinds/Clarinet/susLong/", "/Woodwinds/Flute/susvib/"],
-   "max_ram_mb": 32,
+   "max_ram_mb": 48,
    "veltrack": 0.4,
-   "attack": 0.02,
+   "attack": 0.04,
    "release": 0.2,
    "seconds": [[0, 3.0], [127, 3.0]],
    "parts": [
     {"sfz": "BassoonSus.sfz", "keys": [24, 51], "layers": 2, "loop": true},
-    {"sfz": "ClarinetSus.sfz", "keys": [52, 66], "layers": 2, "loop": true},
-    {"sfz": "FluteSusVib.sfz", "keys": [67, 100], "layers": 2, "loop": true}
+    {"sfz": "ClarinetSus.sfz", "keys": [52, 59], "layers": 2, "loop": true},
+    {"sfz": "FluteSusVib.sfz", "keys": [60, 100], "layers": 2, "loop": true, "seconds": [[60, 6.0], [100, 4.5]]}
    ]
   },
   {

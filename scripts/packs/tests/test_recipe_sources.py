@@ -60,7 +60,7 @@ class RecipeSources(unittest.TestCase):
             entries = {e['id']: e for e in json.loads((Path(t) / 'dist' / 'index.json').read_text())['packs']}
         self.assertEqual(['conga', 'grosse_caisse', 'ride', 'shaker'], entries['percussions_acoustiques']['recipeSounds'])
         self.assertEqual(['doigts', 'pingpong'], entries['bruitages_maison']['recipeSounds'])
-        self.assertEqual({'flute': [67, 100]}, entries['instrument_bois']['recipeParts'])
+        self.assertEqual({'flute': [60, 100]}, entries['instrument_bois']['recipeParts'])
         self.assertNotIn('recipeSounds', entries['sons_jeux'])
 
 

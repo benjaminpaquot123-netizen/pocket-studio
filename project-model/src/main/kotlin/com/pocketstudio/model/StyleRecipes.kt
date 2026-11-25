@@ -71,7 +71,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
             bass = "Basse sub", pad = "Cordes", lead = "Cloche FM",
             progressions = mapOf(Mood.Dark to (Scale.Minor to listOf(0, 0, 5, 6)), Mood.Happy to (Scale.Major to listOf(5, 3, 0, 4)), Mood.Future to (Scale.Minor to listOf(0, 0, 0, 5)), Mood.Dreamy to (Scale.Major to listOf(3, 2, 1, 0))),
             chordRhythm = "X-------........", voicing = Voicing.Triad, chordOctave = 3,
-            bassOctave = 1, leadPattern = "O-----5-3-----..R-----3-5---....", arpRate = 24, leadOctave = 5,
+            bassOctave = 1, leadPattern = "O---7-5-----3-..5-----3-2-R-----", arpRate = 24, leadOctave = 5,
             packSounds = mapOf(Part.Bass to "trap:808", Part.Lead to "instrument_bois:flute"),
             parts = setOf(Part.Bass, Part.Pad, Part.Lead),
             signature = Part.Lead,

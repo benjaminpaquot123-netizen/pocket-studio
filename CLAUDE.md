@@ -49,6 +49,7 @@ Au début de chaque session, le chef d'orchestre (ou une discussion sans fiche) 
 - Prévenir Benjamin seulement aux grands jalons (fusion, fin de tour, APK) ou quand il doit agir, avec les captures « après » pour le design ; pas de point à chaque fin d'agent ni à chaque réveil (Benjamin, 2026-11-17 : « fais des résumés beaucoup moins souvent »).
 - Compilations : un verrou `flock` par groupe d'équipes (au moins deux en parallèle quand la mémoire le permet) ; banc testeur humain : `--max-workers` au moins égal au nombre de sièges.
 
+- Critique à l'aveugle (Benjamin, 2026-11-25 : « chaque grosse analyse […] la faire critiquer par un autre auditeur à l'aveugle ») : toute grosse analyse (mesures, diagnostic, comparaison de sons, plan de correction) passe chez un sous-agent neuf qui ne l'a pas écrite, chargé de la contredire et de remesurer quelques chiffres clés (pas une réanalyse complète), avant d'en tirer des corrections ou d'en parler comme acquis.
 - Chaque erreur signalée par Benjamin : la corriger là où il l'a vue ET vérifier partout où elle peut se reproduire, avec un test qui couvre tous les cas.
 
 ## Méthode de travail (Benjamin, 2026-11-02 : rapide et économe, toujours)

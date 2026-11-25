@@ -56,3 +56,6 @@ Portée : 8e6daff2 (fusion de origin/eq/ci-int-robot1b, tête d87dea73f, sur 816
 rejeu changé : t4-26-prise-clavier : le lot ajoute une page à l'assistant (5e ligne de batterie « snap » du lofi), deux pas de plus ; accord de Benjamin (1A)
 
 Verdict : 0 bloquant, 0 grave
+
+## Republication (chef, 2026-11-25)
+Lot republié en un seul commit (10357b21f, arbre identique à 8b905fe0c) sous le nom gr-styles2 ; fichiers du lot renommés, aucun code changé depuis cette relecture.

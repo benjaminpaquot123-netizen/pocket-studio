@@ -176,8 +176,7 @@ internal class ScenariosLimites(private val o: Outils) {
 
     /** [bpm] typed on the keypad (the figures erased first), then OK. */
     private fun taper(bpm: Int) {
-        // The erase key stays on screen once the figures are gone: at most the keypad's four figures, never a loop.
-        repeat(4) { if (j.exists("tempo_key_erase")) runCatching { j.tap("tempo_key_erase", 500) } }
+        while (j.exists("tempo_key_erase") && runCatching { j.tap("tempo_key_erase", 500) }.isSuccess) j.idle(100)
         bpm.toString().forEach { j.tap("tempo_key_$it") }
         runCatching { j.tap("tempo_key_ok", 2_000) }
     }

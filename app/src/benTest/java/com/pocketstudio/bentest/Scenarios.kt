@@ -307,6 +307,7 @@ class Scenarios(
         if (!j.exists("top_projects")) j.tap("tab_Structure")
         j.tap("top_projects")
         j.await("projects")
+        listeLue()
         val listed = runCatching { j.await("project_${p.id}", 5_000) }.isSuccess
         // The list is lazy: with more projects than the screen shows, a row out of sight has no node,
         // so its absence proves nothing. Red only when the whole list is on screen.
@@ -699,7 +700,15 @@ class Scenarios(
         if (!j.exists("top_projects")) j.tap("tab_Structure")
         j.tap("top_projects")
         j.await("projects")
+        listeLue()
     }
+
+    /**
+     * « Mes projets » is on screen: waits for its rows too. The list's first reading of the disk comes after the last
+     * saves of the screens closed before (« Chargement de la liste… » meanwhile, [LISTE_ATTENTE_MS]). Never red here:
+     * the step that needs a row says which one is missing.
+     */
+    private fun listeLue() = attendre(LISTE_ATTENTE_MS) { !j.exists("projects_loading") }
 
     private fun versStudio() {
         runCatching { j.awaitGone("project_name_field", 2_000) }

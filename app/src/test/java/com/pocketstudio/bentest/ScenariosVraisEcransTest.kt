@@ -190,15 +190,20 @@ open class ScenariosVraisEcransTest {
         assertEquals(1, v.count("tab_Structure", false))
     }
 
-    /** Runs the scenario [id] as the robot does (its reset first, its oracle at the end). */
+    /**
+     * Runs the scenario [id] as the robot does (its reset first, its oracle at the end). A red one also writes what the
+     * app was doing (its journal, the stacks of its threads) in the test's output, kept in the CI's report: « Mes
+     * projets » still loading after 25 s was seen once in some twenty runs, with nothing to read its cause from (CI 462).
+     */
     private fun jouer(v: Vrai, id: String, courtMs: Long = 3_000): String = try {
         scenarios(v, courtMs).etapes().first { it.name == id }.work(Long.MAX_VALUE)
     } catch (t: Throwable) {
-        println("DBGDUMP failure: ${t.message}")
-        println("DBGDUMP applog: " + runCatching { com.pocketstudio.app.report.AppLog.dump(30) }.getOrNull())
-        Thread.getAllStackTraces().forEach { (th, st) ->
-            if (st.isNotEmpty() && st.any { it.className.startsWith("com.pocketstudio") || it.className.startsWith("kotlinx.coroutines") })
-                println("DBGDUMP thread ${th.name} ${th.state}\n" + st.take(28).joinToString("\n") { "DBGDUMP    at $it" })
+        println("scenario $id red: ${t.message}")
+        println("app journal: " + runCatching { com.pocketstudio.app.report.AppLog.dump(30) }.getOrNull())
+        Thread.getAllStackTraces().forEach { (thread, stack) ->
+            if (stack.any { it.className.startsWith("com.pocketstudio") || it.className.startsWith("kotlinx.coroutines") }) {
+                println("thread ${thread.name} ${thread.state}\n" + stack.take(28).joinToString("\n") { "    at $it" })
+            }
         }
         throw t
     }

@@ -1,0 +1,8 @@
+# Décisions du lot « ci-solide » (tour 9)
+
+- 2026-11-25 : le test de nuit prend le même cache et les mêmes miroirs que la CI pour le fichier Android de Robolectric (`.github/workflows/nightly.yml`). Raison : la nuit 13 a perdu ses trois étapes sur ce seul téléchargement. Retour arrière : retirer les deux étapes ajoutées.
+- 2026-11-25 : `EnduranceTest` compare le fil principal à un fil témoin : le temps perdu par la machine entière est retiré, la limite de 5000 ms de l'appli ne bouge pas (`RealUse.kt`, `EnduranceTest.kt`). Raison : CI 446 rouge à 5043 ms sur un émulateur figé. Retour arrière : relire `watchdog.worstMs` au lieu de `worstAppMs`. Non rejoué ici (pas d'émulateur) : preuve = la fumée sur émulateur de la CI du lot.
+- 2026-11-25 : tous les sous-modules ont des réessais, par un seul script (`scripts/ci/submodules.sh`, 12 jobs). Raison : les 7 sous-modules GitHub n'avaient qu'un essai. Retour arrière : remettre le bloc en ligne dans les trois workflows.
+- 2026-11-25 : `python3-pil` passe par `scripts/ci/apt-install.sh` ; la licence du modèle des packs, la bibliothèque de séparation et son modèle ont 5 essais ; la bibliothèque se télécharge en entier avant d'être dépliée. Raison : un téléchargement coupé laissait une moitié de bibliothèque prise pour une entière. Retour arrière : annuler le commit.
+- 2026-11-25 : note permanente `docs/AIDE-TELECHARGEMENTS.md` et une règle dans `CLAUDE.md` (demande de Benjamin). Retour arrière : retirer la ligne de `CLAUDE.md`.
+- 2026-11-25 : non traité ici, à ouvrir par le chef : couper le réseau dans les tests (`PackStore.fetchCatalogue`, `UpdateChecker.check` : fichiers de l'appli, hors de ce lot) ; cache pour `setup-android` ; réessais des `git clone` / `pip install` des packs.

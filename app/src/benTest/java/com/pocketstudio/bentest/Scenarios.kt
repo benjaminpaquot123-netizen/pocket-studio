@@ -125,7 +125,6 @@ class Scenarios(
                 else -> null
             }
             "guide" -> { { t.guide(a) } }
-            "lim" -> { { ScenariosLimites(ScenariosLimites.Outils(j, appli, carnet, t, e, sauvegardeMs, courtMs, saisir, ::auStudio, ::fermerFeuilles, ::ouvrirTempo, ::versProjets, ::versStudio, ::menu) { sub -> (travail(s.copy(geste = sub)) ?: error("geste inconnu : $sub"))() }).travail(id, g.drop(1)) } }
             else -> null
         }
     }
@@ -1414,7 +1413,7 @@ class Scenarios(
             Scenario(STYLE_DUBSTEP, "Moyen : un morceau dubstep", NIVEAU_MOYEN, 360_000, 60, "le moteur joue, le son sort, les décrochages"),
             Scenario(STYLE_DNB, "Style lourd : drum and bass, décrochages", NIVEAU_MESURE, 360_000, 60, "les décrochages et le pire bloc d'un style lourd"),
             Scenario(GUIDE, "Débutant : le Guide jusqu'au bout", NIVEAU_DEBUTANT, 480_000, 150, "« Tout est fait » à l'écran du Guide"),
-        ) + tables() + ScenariosLimites.LISTE + ScenariosSauve.LISTE
+        ) + tables() + ScenariosSauve.LISTE
 
         /** [LISTE] as steps without work (to read a logbook). */
         /** The screens a scenario starts from: the studio (its bar, or its rail lying down), the welcome, the projects. */

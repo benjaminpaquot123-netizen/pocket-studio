@@ -58,7 +58,8 @@ class BenchPristineRule(private val seatJournal: (Description) -> File? = { null
                     )
                 }
             }
-            base.evaluate()
+            // Tour 9 (ci-fiab): no remote host for a bench test, a real seat keeps the network a phone has.
+            if (seatJournal(description) != null) base.evaluate() else BenchPristine.offTheRemoteNetwork { base.evaluate() }
         }
     }
 
@@ -431,6 +432,44 @@ internal object BenchPristine {
         val frames = t.stackTrace.filter { "pocketstudio" in it.className }.take(4).joinToString(" < ") { "${it.className.substringAfterLast('.')}.${it.methodName}:${it.lineNumber}" }
         if (frames.isEmpty()) null else "${t.name} ${t.state}: $frames"
     }
+
+    /**
+     * Tour 9, lot ci-fiab (CI 449: a worker of Tour5BloquantsTest#theTutorialsSwingStepShowsTheSwingSetting still in
+     * `VerifiedDownload.fetch` after the test, the two tests after it red on it): the app asks GitHub for its packs' catalogue
+     * whenever the assistant or a tutorial opens, and on a runner whose network hangs that job outlives the 30 s the bench's
+     * end waits for it. While [block] runs, every connection to a remote host is refused at once (a closed local port: the
+     * app sees « offline », as on a phone without network), so the job ends in milliseconds whatever the network does.
+     *
+     * Spared: loopback hosts (the tests' own local servers) and a test that sets a proxy of its own while it runs
+     * ([BenchNetworkEndTest] holds the catalogue's connection in one): both keep the routes of before.
+     */
+    fun <T> offTheRemoteNetwork(block: () -> T): T {
+        val before = java.net.ProxySelector.getDefault()
+        fun proxyOf(scheme: String) = System.getProperty("$scheme.proxyHost") to System.getProperty("$scheme.proxyPort")
+        val atStart = listOf("http", "https").associateWith(::proxyOf)
+        val refused = listOf(java.net.Proxy(java.net.Proxy.Type.HTTP, java.net.InetSocketAddress("127.0.0.1", CLOSED_PORT)))
+        val cut = object : java.net.ProxySelector() {
+            override fun select(uri: java.net.URI?): List<java.net.Proxy> {
+                val scheme = uri?.scheme?.lowercase()
+                val host = uri?.host?.removeSurrounding("[", "]").orEmpty()
+                val local = host == "localhost" || host == "::1" || host.startsWith("127.")
+                val ownProxy = scheme in atStart && proxyOf(scheme!!) != atStart[scheme]
+                return if (uri == null || scheme !in atStart || local || ownProxy) before?.select(uri) ?: listOf(java.net.Proxy.NO_PROXY) else refused
+            }
+
+            override fun connectFailed(uri: java.net.URI?, sa: java.net.SocketAddress?, ioe: java.io.IOException?) = Unit
+        }
+        java.net.ProxySelector.setDefault(cut)
+        try {
+            return block()
+        } finally {
+            // Only what this call set is taken back: a test that left a selector of its own is the leak of that test.
+            if (java.net.ProxySelector.getDefault() === cut) java.net.ProxySelector.setDefault(before)
+        }
+    }
+
+    /** The « discard » port, closed on every machine the tests run on: a connection there is refused at once. */
+    private const val CLOSED_PORT = 9
 
     /** The uncaught exceptions kept for the next coroutines' test scope (kotlinx-coroutines-test), dropped: tests of the check. */
     fun forgetUncaughtForTests() {

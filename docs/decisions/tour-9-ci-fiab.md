@@ -1,0 +1,7 @@
+# Tour 9, lot ci-fiab (state leak of Tour5BloquantsTest on CI 449)
+
+- The fix lives in the bench's rule (`BenchPristine.offTheRemoteNetwork`, called by `BenchPristineRule`), not in `Tour5BloquantsTest.kt`. Reason: that file belongs to lot tests-fragiles, and every bench test that opens the assistant or a tutorial has the same exposure. Back: remove the call in `BenchPristineRule.apply`.
+- Remote hosts are refused through a closed local port (127.0.0.1:9) set as the JVM's default `ProxySelector` for the test's time. Reason: the app's own code path is unchanged (it sees « offline », as on a phone without network), and the refusal is immediate. Not chosen: setting `TutoTestHooks.packs` for every test (changes what the app shows), raising the 30 s end cap (slower, and still a race at 70 s).
+- Spared: loopback hosts, a proxy the test itself sets after its start (compared with the proxy properties at the start, so the machine's own proxy does not count), and a real seat of the bench (`seatJournal` gives a journal). Reason: `BenchNetworkEndTest` and the separation tests need their local servers; a seat plays the app as a phone has it.
+- The earlier nightly.yml commit (ae484dae) is reverted on this branch (710e885d) on the chief's change of fiche: points 1 to 3 went to lot ci-solide. Net diff of those two commits: none.
+- Not done here: tests without the rule still reach the real network (seen red in the same CI: `TutoScreenTest`). Outside this lot's files; told to the chief.

@@ -257,9 +257,9 @@ class ScenariosTest {
             assertTrue(level, Scenarios.LISTE.count { it.niveau == level } >= 15)
             assertTrue(level, Scenarios.liste(Scenarios.RAPIDE).count { it.niveau == level } >= 4)
         }
-        // The quick pack: the first 31; the full one: 102 more, by tables (2b and 2c last).
+        // The quick pack: the first 31; the full one: at least 102 more (tables, then the catalogue files).
         assertEquals(31, Scenarios.liste(Scenarios.RAPIDE).size)
-        assertEquals(133, Scenarios.LISTE.size)
+        assertTrue(Scenarios.LISTE.size.toString(), Scenarios.LISTE.size >= 133)
         assertEquals(Scenarios.liste(Scenarios.RAPIDE).map { it.id }, scenarios(Studio(), paquet = Scenarios.RAPIDE).etapes().map { it.name })
         // Every style of the assistant has its scenario, and the exports' styles exist.
         val styles = com.pocketstudio.model.StarterWizard.STYLES.map { it.id }
@@ -269,10 +269,14 @@ class ScenariosTest {
         assertEquals(emptyList<String>(), scenarios(Studio()).sansTravail())
         for (s in Scenarios.LISTE) assertTrue(s.id, s.oracle.isNotBlank() && s.estimeS > 0 && s.estimeS * 1000L <= s.maxMs)
         assertTrue(steps.map { it.name }.containsAll(listOf("export_m4a", "export_wav", "export_flac", "latence", "images", "style_dnb", "guide_house")))
-        // The quick run stays under 20 minutes on a phone (its estimate), the full one under its own limit.
+        // The quick run stays under 20 minutes on a phone (its estimate), each part of the full one under its own limit.
         val rapide = Scenarios.liste(Scenarios.RAPIDE).sumOf { it.estimeS }
         assertTrue(rapide.toString(), rapide <= Scenarios.DUREE_MAX_S)
-        assertTrue(Scenarios.LISTE.sumOf { it.estimeS }.toString(), Scenarios.LISTE.sumOf { it.estimeS } <= Scenarios.DUREE_COMPLET_MAX_S)
+        // The full list is played by parts of 50: the limit holds for each part, not for the whole catalogue.
+        for (n in 1..Scenarios.NB_PARTIES) {
+            val partie = Scenarios.liste(Scenarios.partie(n)).sumOf { it.estimeS }
+            assertTrue("partie $n: $partie", partie <= Scenarios.DUREE_COMPLET_MAX_S)
+        }
     }
 
     // --- The project kept ----------------------------------------------------------------------------

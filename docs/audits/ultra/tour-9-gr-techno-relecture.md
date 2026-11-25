@@ -1,22 +1,24 @@
-# Relecture neuve : lot gr-techno (tour 9)
+# Tour 9, lot gr-techno : relecture neuve
 
-Relu : 855f4029e
+relu : d22112e23c438879e0bcf37d4033a333a1423575
 
-Relecteur : sous-agent neuf, n'a pas écrit le code. Diff relu : `git diff 9e1e59fa9 855f4029e -- scripts/packs/recipes/techno.json scripts/packs/recipes/techno_hard.json docs/audits/ultra/tour-9-gr-techno-rapport.md` (les fusions d'autres branches sont ignorées).
+Relecture par un sous-agent neuf qui n'a pas écrit le code (lecture de `git diff 3d9436bb0..d22112e2`, 42 fichiers).
+Rejeu débutant neuf : `scripts/bench/tuto-sweep.sh` sur les 6 cours techno (techno, retro_techno, acid_techno, detroit,
+hard_techno, industrial_techno), code testé d22112e2 : 0 chapitre bloqué, 0 défaut neuf (diff vide avec la base du tour 9).
 
-- JSON valide (`json.load` OK pour les deux fichiers) ; `recipes_to_kotlin.py` passe sans erreur (37 styles écrits, sortie dans un fichier temporaire du relecteur seulement) ; les valeurs `double` (top, octave) et les sons de texture (Vent, Souffle) sont acceptés par les contrôles du convertisseur.
-- Rien d'enlevé : pour les 10 styles, mêmes ids et même ordre ; aucune clé retirée ; batterie (lignes, voix, sons) strictement identique avant et après ; listes `drop` et `break` inchangées. Les seuls changements de données sont des ajouts : `chords.double` et `texture`.
-- Corps, style par style (conforme au rapport) : doublure `top` sur techno, minimal, trance ; `octave` sur detroit et industrial techno ; texture neuve Souffle sur retro techno, detroit, minimal, trance, Vent sur acid techno, gabber, acidcore. Techno, industrial techno et hard techno avaient déjà leur texture Vent (gardée telle quelle). Aucun `body: true`, comme annoncé.
-- Le second kick essayé (commit 9659624c8) est bien retiré par 852d4b007 : il n'apparaît plus dans le diff final.
-- Notes : chaque style porte une phrase « Body (2026-11-24) » qui dit exactement ce que les données font (texture, et le type de doublure quand il y en a une). Les mesures du lead sous le kick dans les notes (hard techno −18,8, gabber −9,6, trance −8,3 dB, « green ») correspondent au rapport ; les anciens « red » périmés sont remplacés.
-- Rapport français cohérent avec les données (styles doublés top/octave, textures, pas de `body:true`, acidcore avant/après) ; « Tout est tenté » est bien écrit.
-- Aucun fichier audio dans le diff (ni dans toute la plage 9e1e59fa9..855f4029e) ; `THIRD_PARTY.md` non touché.
-- Connu, pas un défaut : `StyleRecipes.kt` n'est pas commité (voulu, à régénérer à la fusion).
+## Points relevés
 
-Mineurs (notés, pas bloquants) :
-- Hard techno : aucune donnée ne change (sa texture Vent existait déjà) ; seule la note « Body » est ajoutée. Juste, mais le rapport range hard techno parmi les 10 styles qui « reçoivent » du corps : pour lui, rien de neuf à l'oreille.
-- Minimal : une texture tenue d'un bout à l'autre va un peu contre « silence matters » écrit dans ses propres notes ; à écouter (choix de goût).
-- Le rapport ne dit pas quels styles reçoivent Vent ou Souffle (il dit « Vent ou Souffle ») ; la répartition n'est lisible que dans les JSON.
-- Le chef doit régénérer `StyleRecipes.kt` à la fusion, sinon les tests listés (StyleRecipesUpToDateTest et suivants) tournent sur l'ancien Kotlin.
+1. Tests changés : chacun suit un son voulu (303 sur 32 pas, crash au Drop, lead techno absent du Break, basse de la
+   hard techno cochée par défaut, nouvelles courbes acidcore et pad techno). Aucun ne masque de régression.
+2. Moyen, laissé : le tuto techno fait écrire un « Lead filtré » en riff d'octaves, alors que le style propose
+   maintenant un stab métallique sur une note (lead décoché par défaut). Rien ne casse ; à aligner dans un lot tuto.
+3. Mineur, laissé : AuditSonTest ne couvre plus « lead de hard techno coché → EQ présente ».
+4. Mineur, laissé : exception du Mode simple pour le rumble des styles acides (borne 10..22 cartes gardée).
+5. Mineur, laissé : withFilterAsked remet `level` à celui de la bibliothèque (même convention que FxPresets et GuideSheets).
+6. Mineur, laissé : guides/techno.json, carte lead, simpleWhy « qu'on chante » face à « pas de mélodie au départ ».
+7. Mineur, laissé : commentaire de WideMix.leadTrackId pas mis à jour pour les pistes de corps exclues.
+8. Mineur, laissé : « Charlotte de Witte – Doppler » datée 2020 (house) et 2021 (techno).
+9. Recettes : accents acides tous sur des pas joués ; coupe du bas du lead trance et gabber vers 150 Hz. Traductions :
+   14 fichiers valides, ajouts présents partout.
 
 Verdict : 0 bloquant, 0 grave

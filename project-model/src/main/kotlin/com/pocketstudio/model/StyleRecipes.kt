@@ -764,7 +764,7 @@ internal val STYLE_RECIPES: List<Style> = listOf(
             bassOctave = 1, leadPattern = "....5-......O-......5-....3.O-..", arpRate = 24, leadOctave = 4,
             packSounds = mapOf(Part.Pad to "acid_techno:stab"),
             parts = setOf(),
-            acid = AcidRecipe("RRO.RO.3R.OR7.O5RRO.R3.OR.OR7.5O", "..x....x..x...x...x....x..x..x..", ".x.........x..x..x....x....x..x.", sound = "Squelchy", knobs = mapOf(7 to 0.45f), moves = listOf(AcidMove(0, mapOf(1 to (0.2f to 0.38f), 2 to (0.4f to 0.6f), 3 to (0.15f to 0.5f))), AcidMove(1, mapOf(1 to (0.72f to 0.85f), 2 to (0.85f to 0.93f), 3 to (0.75f to 0.88f))), AcidMove(2, mapOf(1 to (0.45f to 0.65f), 2 to (0.7f to 0.9f), 3 to (0.4f to 0.7f))), AcidMove(3, mapOf(2 to (0.2f to 0.38f), 3 to (0.15f to 0.25f))))),
+            acid = AcidRecipe("RRO.RO.3R.OR7.O5RRO.R3.OR.OR7.5O", "..x....x..x...x...x....x..x...x.", ".x.........x..x..x....x....x..x.", sound = "Squelchy", knobs = mapOf(7 to 0.45f), moves = listOf(AcidMove(0, mapOf(1 to (0.2f to 0.38f), 2 to (0.4f to 0.6f), 3 to (0.15f to 0.5f))), AcidMove(1, mapOf(1 to (0.72f to 0.85f), 2 to (0.85f to 0.93f), 3 to (0.75f to 0.88f))), AcidMove(2, mapOf(1 to (0.45f to 0.65f), 2 to (0.7f to 0.9f), 3 to (0.4f to 0.7f))), AcidMove(3, mapOf(2 to (0.2f to 0.38f), 3 to (0.15f to 0.25f))))),
             tips = mapOf(Part.Bass to "Pas besoin au départ : la vraie basse, c'est la ligne acide (la 303). Celle-ci ajoute un grave rond en dessous, pour qui veut.", Part.Pad to "Un accord frappé de temps en temps pour ponctuer : la ligne acide fait le reste.", Part.Lead to "Une deuxième ligne qui couine, plus aiguë et décalée : à ajouter seulement quand la première tourne bien."),
             leadKind = LeadKind.Riff,
             texture = "Vent",

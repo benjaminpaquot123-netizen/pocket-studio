@@ -527,7 +527,7 @@
   "acid": {
    "use": true,
    "pattern": "RRO.RO.3R.OR7.O5RRO.R3.OR.OR7.5O",
-   "accents": "..x....x..x...x...x....x..x..x..",
+   "accents": "..x....x..x...x...x....x..x...x.",
    "slides": ".x.........x..x..x....x....x..x.",
    "sound": "Squelchy",
    "knobs": {

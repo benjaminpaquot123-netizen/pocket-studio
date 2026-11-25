@@ -1,0 +1,20 @@
+fusion: 4b2c6947982f204e99d8d6a06c443a5e04def23b
+branche: eq/tour-9-kick-ci
+tete: 5935905b29d57d3bbad63e1586c0c39f95e6b71a
+relecture: docs/audits/ultra/tour-9-kick-ci-relecture.md
+relu: eb7c360fa415aad3bb408e8578141f11346740bc
+filtres: com.pocketstudio.app.tuto.*
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

@@ -1,0 +1,5 @@
+{"total_count": 3, "artifacts": [
+  {"id": 5550, "name": "screenshots", "size_in_bytes": 1000, "expired": false, "workflow_run": {"id": 9100}},
+  {"id": 5551, "name": "unit-test-reports", "size_in_bytes": 2000, "expired": true, "workflow_run": {"id": 9100}},
+  {"id": 5552, "name": "unit-test-reports", "size_in_bytes": 2000, "expired": false, "workflow_run": {"id": 9100}}
+]}

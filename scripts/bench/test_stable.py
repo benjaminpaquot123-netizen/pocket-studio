@@ -160,6 +160,51 @@ def toy_github(tmp):
     return toy, env
 
 
+class CiRougeSansGhTest(unittest.TestCase):
+    """Défaut 2: ci-rouge.sh <run id> needed a signed-in gh; our sessions have none. It falls back to curl on the REST
+    API: the run's artifacts listed, the live « unit-test-reports » downloaded as a zip and unzipped in a new folder."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.toy, self.env = toy_github(self.tmp.name)
+        xml = suite("com.x.RedClass", "2026-11-25T10:00:02.000Z", [("r", "1.5", "expected 1 but was 2")])
+        with zipfile.ZipFile(os.path.join(self.toy, "art-5552.zip"), "w") as z:
+            z.writestr("shard-2/test-results/TEST-com.x.RedClass.xml", xml)
+            z.writestr("shard-2/test-results/TEST-com.x.GreenClass.xml", suite("com.x.GreenClass", "2026-11-25T10:00:01.000Z", [("g", "0.1", None)]))
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def call(self, run_id):
+        return subprocess.run(["bash", TOOL, run_id], capture_output=True, text=True, timeout=60, env=self.env)
+
+    def test_without_gh_the_artifact_is_read_through_the_rest_api(self):
+        r = self.call("9100")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("ROUGE com.x.RedClass#r (1.5 s)", r.stdout)
+        self.assertIn("message : expected 1 but was 2", r.stdout)
+        self.assertIn("lot     : 2", r.stdout)
+        self.assertIn("avant   : com.x.GreenClass", r.stdout)
+        urls = open(os.path.join(self.toy, "urls")).read()
+        self.assertIn("/actions/runs/9100/artifacts", urls)
+        self.assertIn("/actions/artifacts/5552/zip", urls, "the live artifact, not the expired one")
+        self.assertNotIn("/actions/artifacts/5551/", urls)
+        self.assertNotIn("/actions/artifacts/5550/", urls, "not another artifact of the run")
+
+    def test_no_live_report_artifact_is_refused(self):
+        shutil.copy(os.path.join(FIXTURES, "artifacts-empty.json"), os.path.join(self.toy, "artifacts-9100.json"))
+        r = self.call("9100")
+        self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+        self.assertIn("unit-test-reports", r.stderr)
+
+    def test_a_zip_reaching_out_of_its_folder_is_refused(self):
+        with zipfile.ZipFile(os.path.join(self.toy, "art-5552.zip"), "w") as z:
+            z.writestr("../../evil-TEST-x.xml", "x")
+        r = self.call("9100")
+        self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+        self.assertFalse(any("evil" in f for f in os.listdir(self.tmp.name)), "nothing written out of the new folder")
+
+
 class CiEtatPlusieursRunsTest(unittest.TestCase):
     """Défaut 1: two runs of one commit (a green « workflow_dispatch », a red « push ») were printed one under the other,
     the first header « CI null »: the chef read « CI success ». Each run now says id, event, branch and state, and one

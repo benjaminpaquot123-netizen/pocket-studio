@@ -136,7 +136,10 @@ class TutoSightHintTest {
             h.vm.addNote(next)
             settle()
         }
-        assertTrue("both cases met (in sight $inSight, hidden $hidden): $log", inSight > 0 && hidden > 0)
+        // Tour 9 (control « fable-tuto », a-V1): the step opening folds the rows, so these basses no longer hide a note; the
+        // arrow's rule above still holds for any step whose notes cannot all fit.
+        assertTrue("no dotted note met in sight (in sight $inSight, hidden $hidden): $log", inSight > 0)
+        assertTrue("these basses fit the rows once folded, none hidden (hidden $hidden): $log", hidden == 0)
     }
 
     @Test

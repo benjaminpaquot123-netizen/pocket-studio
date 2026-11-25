@@ -1,0 +1,51 @@
+Écran 45 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ▶ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+bouton « ? » @ 543,114
+onglet « Acid 303 アシッドループ » @ 105,186
+bouton « ベース Plaits » ⋮ @ 280,186
+icône ♪ « 音 » @ 405,186
+bouton + «  トラック » [coupé] @ 512,186
+image → @ 577,187
+icône « パート：A » ▾ @ 84,264
+bouton « ベース · 小節 4/8 ↑ タップする点線のノートがあと 4 個 ここをタップ » @ 294,336
+texte « 小節 » @ 69,395
+bouton « 4 » @ 321,405
+texte « C3 » [coupé] @ 69,438
+dessin @ 69,454
+dessin @ 69,484
+dessin @ 69,514
+dessin @ 69,544
+dessin @ 69,574
+dessin @ 69,604
+dessin @ 69,634
+dessin @ 69,664
+dessin @ 69,694
+dessin @ 69,724
+dessin @ 69,754
+texte « C2 » @ 69,784
+dessin @ 69,814
+dessin [coupé] @ 69,829
+dessin [coupé] @ 321,634
+icône (liste) « チャプター » @ 444,878
+texte « ベース チャプター 5/15 · ステップ 4/4 · かんたん » @ 207,878
+icône ⌃ @ 531,878
+icône « あなたの番：4小節目のノート（最後は1段上がって、上に跳ぶ）をタップして、もう一度「コピー」。 読む » ⌃ @ 294,977
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » @ 174,1158
+onglet (touches de piano) « 鍵盤 » [sélectionné] @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

@@ -69,7 +69,7 @@ data class TutoCourse(
     private fun stepsFor(steps: List<TutoStep>, level: TutoLevel): List<TutoStep> {
         val kept = ArrayList<TutoStep>(steps.size)
         for (s in steps) {
-            if (level.code in s.levels) { kept += s; continue }
+            if (level.code in s.levels) { kept += if (level == TutoLevel.Pro) s.copy(part = s.partPro ?: s.part, count = if (s.textPro != null) 0 else s.count) else s; continue }
             val last = kept.lastOrNull()
             if (last == null || last.manual || last.check != s.check) continue
             kept[kept.lastIndex] = last.copy(length = if (last.length > 0) s.length else last.length, text = last.textFor(level))
@@ -209,6 +209,10 @@ data class TutoStep(
     val skip: String = "",
     val build: String = "",
     val part: String = "",
+    /** In Pro, the parts when its words ([textPro]) name others than [text] does: a level checks the parts its own words name. */
+    val partPro: String? = null,
+    /** The new hits the words ask a "changed:drums" step for (« touche 4 cases »); 0: one. Words of [textPro] ask for one. */
+    val count: Int = 0,
     /**
      * The cells a "gap" leaves silent at the end of its part (default: a beat, half a beat under 100
      * BPM; 16: a whole bar), and those a "fill" ends before (default: its part's gap step's, else 0).

@@ -1,0 +1,3 @@
+source=docs/audits/ultra/sieges/tour-9/controle/fable-tuto/d
+rejeu.n=12
+rejeu.attendu=« Réussi

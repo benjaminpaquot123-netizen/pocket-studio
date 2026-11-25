@@ -1,0 +1,223 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:house:12
+#0 PREMIER ECRAN reel_s=5.5 simule_s=2.4 jvm_s=13.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:house:12
+#0 AMENEE > touche 294 621 (welcome_learn)
+#0 AMENEE > touche 294 855 (mode_card_simple)
+#0 AMENEE > touche 294 1201 (tuto_style_house)
+#0 AMENEE chapitres 1 à 11 construits dans le projet
+#0 AMENEE > touche 444 537 (tuto_chapters)
+#0 AMENEE > touche 294 1218 (tuto_quit)
+#0 AMENEE > touche 147 990 (tuto_resume)
+#0 AMENEE chapitres 1 à 11 cochés (33 étapes)
+#0 AMENEE > touche 444 528 (tuto_chapters)
+#0 AMENEE > touche 294 954 (tuto_chapter_11)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7ebfde5dbf | project=p-506421e4 tuto=house/Facile active=true step=gap done=33 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#1 > touche 294 813
+#1 DOIGT tuto_need «   Aller dans la partie « Montée » »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b43ea9972d | project=p-506421e4 tuto=house/Facile active=true step=gap done=33 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. » ellipsized (« … »)
+#2 LAYOUT CONTRAST « 4 » 2.84:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « Suivre » 4.09:1 (needs 4.5:1, 14 sp)
+#2 LAYOUT CONTRAST « ⇠ » 4.39:1 (needs 4.5:1, 14 sp)
+#2 > touche 325 486
+#2 DOIGT step_60 « Pas 13 »
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c96995b390 | project=p-506421e4 tuto=house/Facile active=true step=gap done=33 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 389 486
+#3 DOIGT step_61 « Pas 14 »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4f166851b0 | project=p-506421e4 tuto=house/Facile active=true step=gap done=33 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 517 486
+#4 DOIGT step_63 « Pas 16 »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 739e513c71 | project=p-506421e4 tuto=house/Facile active=true step=gap done=33 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 453 486
+#5 DOIGT step_62 « Pas 15 »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d454e0b49b | project=p-506421e4 tuto=house/Facile active=true step=gap done=33 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 453 486
+#6 DOIGT step_62 « Pas 15 »
+#7 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 79b671a42d | project=p-506421e4 tuto=house/Facile active=true step=gap done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 294 978
+#7 DOIGT tuto_next_folded « Réussi »
+#8 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 60ce9882f9 | project=p-506421e4 tuto=house/Facile active=true step=crash done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 70 363
+#8 DOIGT step_48 « Pas 1 »
+#9 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6a2095d226 | project=p-506421e4 tuto=house/Facile active=true step=crash done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 70 363
+#9 DOIGT step_48 « Pas 1 »
+#10 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 60ce9882f9 | project=p-506421e4 tuto=house/Facile active=true step=crash done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 294 813
+#10 DOIGT tuto_need «   Aller dans la partie « Drop » »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4281cb9867 | project=p-506421e4 tuto=house/Facile active=true step=crash done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « 1 » 3.41:1 (needs 4.5:1, 12 sp)
+#11 > touche 133 363
+#11 DOIGT step_1 « Pas 2 »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7b9be62516 | project=p-506421e4 tuto=house/Facile active=true step=crash done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « 1 » 3.60:1 (needs 4.5:1, 12 sp)
+#12 > touche 133 363
+#12 DOIGT step_1 « Pas 2 »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4281cb9867 | project=p-506421e4 tuto=house/Facile active=true step=crash done=34 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 70 363
+#13 DOIGT step_0 « Pas 1 »
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 35b7ec1631 | project=p-506421e4 tuto=house/Facile active=true step=crash done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 294 978
+#14 DOIGT tuto_next_folded « Réussi »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 21344557e8 | project=p-506421e4 tuto=house/Facile active=true step=variation done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 294 813
+#15 DOIGT tuto_need «   Aller dans la partie « Drop 2 » »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE eba8ff7fd7 | project=p-506421e4 tuto=house/Facile active=true step=variation done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 70 363
+#16 DOIGT step_0 « Pas 1 »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6292843600 | project=p-506421e4 tuto=house/Facile active=true step=variation done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 325 364
+#17 DOIGT step_4 « Pas 5 »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 36ceefdee2 | project=p-506421e4 tuto=house/Facile active=true step=variation done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 70 442
+#18 DOIGT step_8 « Pas 9 »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f1d772f96d | project=p-506421e4 tuto=house/Facile active=true step=variation done=35 chapters=1,2,3,4,5,6,7,8,9,10,11 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 325 443
+#19 DOIGT step_12 « Pas 13 »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 598c83eb23 | project=p-506421e4 tuto=house/Facile active=true step=variation done=36 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 115 180
+#20 DOIGT part_header_pick « Partie : F · Drop 2 »
+#21 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE c4bdfd5a01 | project=p-506421e4 tuto=house/Facile active=true step=variation done=36 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#21 SON Son : rien ne joue.
+#21 > appui-long 228 444
+#21 DOIGT part_pick_2 « C · Montée »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 917a5a2b46 | project=p-506421e4 tuto=house/Facile active=true step=variation done=36 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 54 1158
+#22 DOIGT tab_simple_Morceau « Mon morceau »
+#23 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f6e222ca76 | project=p-506421e4 tuto=house/Facile active=true step=variation done=36 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 449 978
+#23 DOIGT tuto_chapter_next_folded « Chapitre suivant »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0e97dc6374 | project=p-506421e4 tuto=house/Facile active=true step=reverb_hear done=36 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 294 894
+#24 DOIGT tuto_listen «  Écouter l'exemple »
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ab6cfb8b6c | project=p-506421e4 tuto=house/Facile active=true step=reverb_hear done=36 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#25 SON Son : l'exemple du tuto joue (encore 7 s).
+#25 > attends 9
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 05afdb2005 | project=p-506421e4 tuto=house/Facile active=true step=reverb_hear done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 448 975
+#26 DOIGT tuto_next_big « Étape suivante  »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2f74705ab3 | project=p-506421e4 tuto=house/Facile active=true step=riser_hear done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 294 894
+#27 DOIGT tuto_listen «  Écouter l'exemple »
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 807b351e80 | project=p-506421e4 tuto=house/Facile active=true step=riser_hear done=37 chapters=1,2,3,4,5,6,7,8,9,10,11,12 playing=false
+#28 SON Son : l'exemple du tuto joue (encore 3 s).
+#28 > attends 12
+#29 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 24ad248e3b | project=p-506421e4 tuto=house/Facile active=true step=riser_hear done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CUT «  Écouter mon morceau » ellipsized (« … »)
+#29 > touche 492 975
+#29 DOIGT tuto_next_big « Chapitre suivant  »
+#30 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE b2911fb597 | project=p-506421e4 tuto=house/Facile active=true step=levels done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 414 1158
+#30 DOIGT tab_simple_Mix « Mix »
+#31 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 4e36635a86 | project=p-506421e4 tuto=house/Facile active=true step=levels done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CUT « À toi : dans « Mix » (volume de chaque son), baisse un peu « Accords » et « Mélodie » (+4 fort, −∞ muet). » ellipsized (« … »)
+#31 > glisse 339 550 339 610
+#31 DOIGT mix_fader_5 « Volume de Accords »
+#32 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 6e9b330fa4 | project=p-506421e4 tuto=house/Facile active=true step=levels done=38 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13 playing=false
+#32 SON Son : rien ne joue.
+#32 > glisse 462 550 462 610
+#32 DOIGT mix_fader_6 « Volume de Mélodie »
+#33 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 27fb1514fb | project=p-506421e4 tuto=house/Facile active=true step=levels done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 449 978
+#33 DOIGT tuto_chapter_next_folded « Chapitre suivant »
+#34 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 135236fa6c | project=p-506421e4 tuto=house/Facile active=true step=share done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CUT « À toi : touche « Partager » : ton morceau devient un fichier son. −14 : aussi fort que le streaming. Pas de saturation : rien ne grésille. Pas de solo : aucune piste ne joue toute seule. » ellipsized (« … »)
+#34 > touche 534 1158
+#34 DOIGT tab_simple_Envoyer « Partager »
+#35 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE d78071e9cc | project=p-506421e4 tuto=house/Facile active=true step=share done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 294 662
+#35 DOIGT share_go «   Partager »
+#36 ROUTE dialogue:share_progress | MODE simple | EMPREINTE c788b7aecb | project=p-506421e4 tuto=house/Facile active=true step=share done=39 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14 playing=false
+#36 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#36 > attends 15
+#36 PARTAGE Mon-morceau-20261125-123854.m4a
+#37 ROUTE dialogue:« Partager mon morceau · Mon-mor » | MODE simple | EMPREINTE d6c95d5a8c | project=p-506421e4 tuto=house/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 294 759
+#37 DOIGT vue « Drive »
+#38 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE a487f9aa14 | project=p-506421e4 tuto=house/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « Pas de saturation. » 1.35:1 (needs 4.5:1, 13 sp)
+#38 > touche 508 789
+#38 DOIGT share_bilan_ok « OK »
+#39 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 9830d4ad40 | project=p-506421e4 tuto=house/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 174 1158
+#39 DOIGT tab_simple_Rythme « Rythme »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 90c5c30596 | project=p-506421e4 tuto=house/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 444 879
+#40 DOIGT tuto_chapters « Chapitres »
+#41 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 9171f7549d | project=p-506421e4 tuto=house/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 6 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 LAYOUT CONTRAST « 11 » 3.63:1 (needs 4.5:1, 16 sp)
+#41 > glisse 294 900 294 500
+#41 DOIGT tuto_chapter_9 « 10 »
+#42 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE d2f7dd9a33 | project=p-506421e4 tuto=house/Facile active=true step=share done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « 12 » 3.63:1 (needs 4.5:1, 16 sp)
+#42 LAYOUT CONTRAST « 13 » 3.63:1 (needs 4.5:1, 16 sp)
+#42 LAYOUT CONTRAST « 14 » 3.63:1 (needs 4.5:1, 16 sp)
+#42 > touche 294 711
+#42 DOIGT tuto_chapter_11 « 12 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c69c98e360 | project=p-506421e4 tuto=house/Facile active=true step=gap done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 531 879
+#43 DOIGT tuto_fold
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 425434b111 | project=p-506421e4 tuto=house/Facile active=true step=gap done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 444 636
+#44 DOIGT tuto_chapters « Chapitres »
+#45 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 9171f7549d | project=p-506421e4 tuto=house/Facile active=true step=gap done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 294 306
+#45 DOIGT tuto_chapter_2 « 3 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5905634c7a | project=p-506421e4 tuto=house/Facile active=true step=clap_do done=40 chapters=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 playing=false
+#46 SON Son : rien ne joue.
+#46 > fin
+#46 BENCH-VERDICT ok where=seat.fin
+#46 FIN : fin

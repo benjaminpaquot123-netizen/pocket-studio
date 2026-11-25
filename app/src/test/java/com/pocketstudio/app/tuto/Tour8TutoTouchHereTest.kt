@@ -59,11 +59,15 @@ abstract class Tour8TutoTouchHere {
         }
     }
 
-    private fun open(level: TutoLevel, simple: Boolean) {
+    private fun open(level: TutoLevel, simple: Boolean, step: String = "bass_do") {
         val target = TutoTarget.of("house")!!
         h.start(simple = simple, build = {
-            session.edit { target.blank() }
-            PrefsTutoStore(h.app).save(projectId, TutoProgress("house", level, current = "bass_do"))
+            // The chapters before the step's, built as playing them does: the roll opens among the other tracks.
+            val chapters = com.pocketstudio.model.tuto.TutoCourse.of("house")!!.chaptersFor(level)
+            val before = chapters.indexOfFirst { c -> c.steps.any { it.id == step } }
+            session.edit { com.pocketstudio.app.human.TutoAnchor.built(target.blank(), "house", level, before + 1)!! }
+            val done = chapters.take(before).flatMap { it.steps }.map { it.id }.toSet()
+            PrefsTutoStore(h.app).save(projectId, TutoProgress("house", level, done = done, current = step))
         })
         await("the panel") { has("tuto_need") }
         compose.onNodeWithTag("tuto_need").performClick()
@@ -114,6 +118,33 @@ abstract class Tour8TutoTouchHere {
         assertTrue("touching again moves the roll: $views", views[1] == views[0] && views[2] == views[1])
     }
 
+    /**
+     * Tour 9, control « fable-tuto » (a-V1, back five times): the step opened, before any touch on the line, the dotted
+     * notes of the bar are all in sight above the panel: one touch a note, none to go and find.
+     */
+    private fun inSightAtOnce(level: TutoLevel, simple: Boolean, step: String = "bass_do") {
+        open(level, simple, step)
+        val s = seen()
+        val hidden = s.rows.keys.filterNot { s.whole(it) }
+        assertTrue("no dotted note of the bar in sight", s.rows.isNotEmpty())
+        assertTrue("dotted notes out of the rows above the panel (${s.top}..${s.bottom}): " + hidden.map { "${it.pitch} ${s.rows[it]}" }, hidden.isEmpty())
+        val said = text("tuto_notes_left_text")
+        assertTrue("the line points out of sight (« $said »)", !said.contains("↓") && !said.contains("↑"))
+    }
+
+    @Test
+    fun simpleTheBarIsInSightBeforeAnyTouch() = inSightAtOnce(TutoLevel.Facile, simple = true)
+
+    @Test
+    fun proTheBarIsInSightBeforeAnyTouch() = inSightAtOnce(TutoLevel.Pro, simple = false)
+
+    /** Control « fable-tuto2 » (seat a, screens 46 and 57): the melody's bar, its notes further apart than the bass's. */
+    @Test
+    fun simpleTheMelodyBarIsInSightBeforeAnyTouch() = inSightAtOnce(TutoLevel.Facile, simple = true, step = "lead_do")
+
+    @Test
+    fun proTheMelodyBarIsInSightBeforeAnyTouch() = inSightAtOnce(TutoLevel.Pro, simple = false, step = "lead_do")
+
     @Test
     fun simpleOneTouchShowsTheBar() = touchHere(TutoLevel.Facile, simple = true)
 
@@ -128,3 +159,8 @@ class Tour8TutoTouchHereTest : Tour8TutoTouchHere()
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = "w360dp-h780dp-port-hdpi", fontScale = 1.3f)
 class Tour8TutoTouchHereLargeTextTest : Tour8TutoTouchHere()
+
+/** The seats' phone (control « fable-tuto2 », seat a: the melody's bar, two notes under the panel at the step's start). */
+@RunWith(RobolectricTestRunner::class)
+@Config(qualifiers = com.pocketstudio.app.human.HumanTester.PHONE)
+class Tour8TutoTouchHereSeatPhoneTest : Tour8TutoTouchHere()

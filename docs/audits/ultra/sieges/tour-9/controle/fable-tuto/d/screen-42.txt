@@ -1,0 +1,12 @@
+Écran 42 (588x1278)
+texte « Insérer après la partie 4 » @ 251,369
+bouton « A · Groove » @ 137,453
+bouton « B · Intro » @ 315,453
+bouton « C · Montée » @ 138,537
+bouton « D · Drop » @ 319,537
+bouton « E · Break » @ 128,621
+bouton « F · Drop 2 » @ 306,621
+bouton « G · Fin » @ 472,621
+bouton « + Nouvelle partie (copie de F · Drop 2) » @ 276,705
+bouton « + Nouvelle partie vide » @ 195,789
+texte « Annuler » @ 482,897

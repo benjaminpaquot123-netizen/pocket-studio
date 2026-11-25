@@ -1,0 +1,22 @@
+Écran 75 (540x1170)
+texte « 히트 1 » @ 234,179
+icône ✕ @ 486,179
+texte « 벨로시티 » @ 71,244
+bouton « 강하게 » @ 82,310
+bouton « 중간 » [sélectionné] @ 203,310
+bouton « 부드럽게 » @ 337,310
+texte « 히트 1 타이밍 » @ 228,375
+texte « +0 ms » @ 480,376
+curseur [état « +0 ms », à 50 %, poignée @ 270,441] @ 270,441
+texte « 롤 » @ 31,506
+bouton « ×1 » [sélectionné] @ 58,572
+bouton « ×2 » @ 148,572
+bouton « ×3 » @ 240,572
+bouton « ×4 » @ 334,572
+bouton « ×6 » @ 427,572
+bouton « ×8 » @ 61,644
+texte « 셋잇단 » @ 58,709
+bouton « 2칸에 3번 » @ 103,775
+bouton « ↗ 올라가기 » [désactivé] @ 109,856
+bouton « 균일 » [désactivé, sélectionné] @ 258,856
+bouton « ↘ 내려가기 » [désactivé] @ 406,856

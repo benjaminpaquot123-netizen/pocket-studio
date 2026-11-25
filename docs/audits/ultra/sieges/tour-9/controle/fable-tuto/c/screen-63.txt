@@ -1,0 +1,35 @@
+Écran 63 (540x1170)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 » @ 120,42
+bouton « 간단 » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+bouton « 132 템포 » @ 46,123
+icône « 인트로 1/128마디 » ▾ @ 183,123
+bouton « ? » @ 495,123
+icône « 파트: D · 드롭 » ▾ @ 115,198
+texte « 심벌 » [coupé] @ 84,243
+texte « 이펙트 13/15장 · 2/2단계 · 쉬움 » @ 198,304
+icône (liste) « 챕터 » @ 411,304
+icône ⌄ @ 483,304
+texte « 드롭을 들어 보세요: 리프가 조금씩 열렸다가 다시 닫혀요. 이불을 걷었다 다시 덮는 것 같아요. 이게 테크노의 몸짓이에요. » @ 270,462
+bouton « Techno 킷 다운로드 (4 MB) » @ 218,611
+texte « 나중에 » @ 461,611
+texte « ▸ 왜요? » @ 270,682
+bouton ▶ «  예시 듣기 » @ 270,778
+icône ← «  이전 » @ 83,862
+icône « 다음  » → @ 457,862
+icône ↶ « 실행 취소 » @ 66,950
+image ↷ @ 172,934
+bouton ▶ « 곡 » @ 274,950
+texte « 132 템포 » @ 377,950
+icône ⋮ « 더보기 » @ 479,950
+onglet (lignes et note) « 내 곡 » @ 49,1050
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 160,1050
+onglet (touches de piano) « 건반 » @ 271,1050
+onglet (curseurs) « 믹스 » @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  메모 » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « 피드백 모드 » @ 138,1140

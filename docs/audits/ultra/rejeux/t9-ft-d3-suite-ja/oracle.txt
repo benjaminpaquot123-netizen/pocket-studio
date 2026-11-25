@@ -1,0 +1,4 @@
+source=docs/audits/ultra/sieges/tour-9/controle/fable-tuto/b
+rejeu.n=1
+rejeu.attendu=そして最後のマス。 » @
+rejeu.absent=そして最後のマス。 » [coupé]

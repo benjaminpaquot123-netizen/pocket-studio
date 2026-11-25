@@ -1,0 +1,33 @@
+Écran 41 (588x1278)
+dessin @ 294,36
+texte « Partie 4 · E · Break » @ 167,96
+texte « Fermer » @ 509,108
+texte « 16 mes. » @ 65,129
+bouton (étincelles) « Variation » @ 156,201
+bouton (barres de son) « Fill à la fin » @ 432,201
+bouton ❚❚ « Break après · 4 mes. » @ 156,300
+bouton ❚❚ « Break après · 8 mes. » @ 432,300
+bouton (courbe qui monte) « Montée avant · 4 mes. » @ 156,399
+bouton (courbe qui monte) « Montée avant · 8 mes. » @ 432,399
+bouton (haut-parleur et ondes) « Fondu d'entrée » @ 156,498
+bouton (haut-parleur et une onde) « Fondu de sortie » @ 432,498
+bouton (drapeau) « Ajouter une fin » @ 156,597
+texte « Énergie : 3 » @ 77,669
+bouton « 1 · nappes » @ 100,735
+bouton « 2 · + basse » @ 265,735
+bouton « 3 · + batterie » [sélectionné] @ 443,735
+bouton « 4 · à fond » @ 96,816
+texte « Longueur » @ 72,882
+champ « mesures » contenu « 16 » @ 268,961
+icône ✕ @ 315,968
+icône − @ 60,961
+icône + @ 141,961
+texte « OK » [désactivé] @ 403,961
+texte « Partie » @ 54,1040
+icône (crayon) « Renommer » @ 114,1106
+icône (curseurs) « Ce qui joue » @ 303,1106
+icône ↑ « Monter » @ 473,1106
+icône ↓ « Descendre » @ 114,1178
+icône (deux feuilles) « Dupliquer » @ 295,1178
+icône + « Insérer après » [coupé] @ 126,1246
+icône (poubelle) « Retirer » [coupé] @ 303,1246

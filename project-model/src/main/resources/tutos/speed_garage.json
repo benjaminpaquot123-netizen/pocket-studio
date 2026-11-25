@@ -419,7 +419,8 @@
           "textPro": "À toi : pose une cymbale sur le 1er temps du Drop et du Drop 2.",
           "check": "crash",
           "spot": "rhythm.pattern",
-          "part": "Drop,Drop 2",
+          "part": "Drop",
+          "partPro": "Drop,Drop 2",
           "listen": "part:Drop"
         },
         {

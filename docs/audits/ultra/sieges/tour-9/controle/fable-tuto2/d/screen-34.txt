@@ -1,0 +1,55 @@
+Écran 34 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Montée mesure 17/96 » ▾ @ 262,114
+bouton « ? » @ 543,114
+bouton « ▶ Partie en boucle » @ 404,192
+texte « Mix » @ 48,193
+texte «  · Mon projet 1 » @ 148,193
+bouton « ? » @ 239,192
+bouton « ? » @ 545,192
+bouton « ↺ Tout à zéro » @ 110,273
+texte « À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule. » @ 297,363
+bouton « Batterie ▸ » [état « fermé »] @ 75,456
+curseur [état « Normal », à 80 %, poignée @ 84,550] @ 84,633
+texte « Normal » @ 84,790
+bouton (haut-parleur et ondes) [coupé, allumé, état « activé »] @ 55,820
+bouton ▶ [coupé] @ 109,820
+texte « Basse » @ 216,456
+curseur [état « Normal », à 80 %, poignée @ 216,550] @ 216,633
+texte « Normal » @ 216,790
+bouton (haut-parleur et ondes) [coupé, allumé, état « activé »] @ 190,820
+bouton ▶ [coupé] @ 241,820
+texte « Accords » @ 339,456
+curseur [état « −6 », à 56 %, poignée @ 339,614] @ 339,633
+texte « −6 » @ 339,790
+bouton (haut-parleur et ondes) [coupé, allumé, état « activé »] @ 313,820
+bouton ▶ [coupé] @ 364,820
+texte « Mélodie » @ 462,456
+curseur [état « −6 », à 56 %, poignée @ 462,614] @ 462,633
+texte « −6 » @ 462,790
+bouton (haut-parleur et ondes) [coupé, allumé, état « activé »] @ 436,820
+bouton ▶ [coupé] @ 487,820
+bouton › @ 546,659
+icône (liste) « Chapitres » @ 444,879
+texte « Partage ton morceau Chapitre 15/15 · Étape 1/1 · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône « À toi : touche « Partager » : ton morceau devient un fichier son. −14 : aussi fort que le streaming. Pas de saturation : rien ne grésille. Pas de solo : aucune piste ne joue toute seule. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » [sélectionné] @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

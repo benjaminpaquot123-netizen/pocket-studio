@@ -856,7 +856,9 @@ private fun Grid(
         com.pocketstudio.model.tuto.TutoRollHint.next(aimed, shown, barSteps) ?: return@LaunchedEffect
         // Tour 8, T0a: the dotted notes of the time in sight too far apart for the rows (house bass, its two « La »): the
         // rows fold so that they all fit, then the notes are framed (below), instead of going from one to the other.
-        val fold = if (touched) com.pocketstudio.model.tuto.TutoRollHint.folded(left, shown, barSteps, with(density) { MIN_ROW.dp.toPx() }) else null
+        // Tour 9 (control « fable-tuto », a-V1): the step asking folds them too, or the notes an octave away stayed out of
+        // sight until a touch on the line went to find them.
+        val fold = com.pocketstudio.model.tuto.TutoRollHint.folded(left, shown, barSteps, with(density) { MIN_ROW.dp.toPx() })
         if (fold != null) {
             folding = com.pocketstudio.model.tuto.TutoRollHint.aside(aimed, shown, barSteps)
             // A whole number of pixels a row ([rowHeight] rounds): a little under, never over the row that fits.

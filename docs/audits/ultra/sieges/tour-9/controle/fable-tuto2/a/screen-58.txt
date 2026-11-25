@@ -1,0 +1,56 @@
+Écran 58 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+onglet « Acid 303 Boucle acide » [coupé] @ 75,186
+bouton « Basse ronde » @ 192,186
+bouton « Accords Piano FM » @ 323,186
+bouton « Mélodie Arpège » ⋮ @ 483,186
+image ← @ 10,187
+image → @ 577,187
+icône « Partie : A » ▾ @ 82,264
+bouton « Mélodie · mesure 2/8 ↓ Encore 6 notes en pointillé à toucher Touche ici » @ 294,336
+texte « mes. » @ 69,393
+bouton « 2 » @ 321,405
+dessin [coupé] @ 69,447
+dessin @ 69,466
+dessin @ 69,487
+dessin @ 69,508
+texte « Do4 » @ 69,529
+dessin @ 69,550
+dessin @ 69,571
+dessin @ 69,592
+dessin @ 69,613
+dessin @ 69,634
+dessin @ 69,655
+dessin @ 69,676
+dessin @ 69,697
+dessin @ 69,718
+dessin @ 69,739
+dessin @ 69,760
+texte « Do3 » @ 69,781
+dessin @ 69,802
+dessin [coupé] @ 69,822
+dessin [coupé] @ 321,634
+icône (liste) « Chapitres » @ 444,879
+texte « La petite boucle Chapitre 7/15 · Étape 2/2 · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône « À toi : écris les 8 notes de la mesure 2. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » [sélectionné] @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

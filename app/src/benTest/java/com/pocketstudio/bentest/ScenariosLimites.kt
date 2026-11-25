@@ -126,6 +126,9 @@ internal class ScenariosLimites(private val o: Outils) {
      * at the foot of the list, and a touch meant for the « ⋯ » would undo the gesture just done.
      */
     private fun sansBandeau() {
+        if (!j.exists("done_bar")) return
+        // A touch on the page lets it go (tour 9, F111): the list's own « Parties » switch, already on.
+        if (j.exists("structure_parts")) runCatching { j.tap("structure_parts") }
         attendre(8_000) { !j.exists("done_bar") }
     }
 

@@ -122,6 +122,55 @@ void testHardKick() {
     CHECK(worst < 1.5);
 }
 
+// Per-voice settings (the styles' kick families, lot kick-fable b): through the kit, PitchDrop is the
+// sweep's start over the note (semitones), DropTime its time constant, Drive the saturation, Decay
+// the length. A slower sweep is higher at 70 ms; a cleaner drive has less 3rd harmonic.
+std::vector<float> kitKick(float drop, float dropTime, float drive, float decay) {
+    ps::DrumKit kit;
+    kit.prepare(kRate);
+    kit.setKind(0, ps::DrumKit::KickStudio);
+    kit.setVoiceParam(0, ps::DrumKit::Tune, 49.0f);
+    if (drop >= 0.0f) kit.setVoiceParam(0, ps::DrumKit::PitchDrop, drop);
+    if (dropTime > 0.0f) kit.setVoiceParam(0, ps::DrumKit::DropTime, dropTime);
+    if (drive >= 0.0f) kit.setVoiceParam(0, ps::DrumKit::Drive, drive);
+    if (decay > 0.0f) kit.setVoiceParam(0, ps::DrumKit::Decay, decay);
+    return studio_tests::renderMonoKit(kit, kRate, {{0, 0, 1.0f, 0.0f, 0}});
+}
+
+double pitchAt(const std::vector<float>& x, size_t at) {
+    size_t a = at, b = at;
+    while (a > 1 && !(x[a - 1] < 0.0f && x[a] >= 0.0f)) --a;
+    while (b + 1 < x.size() && !(x[b] < 0.0f && x[b + 1] >= 0.0f)) ++b;
+    ++b;
+    return static_cast<double>(kRate) / static_cast<double>(b - a);
+}
+
+double third(const std::vector<float>& x) {
+    const size_t from = 150 * kMs, to = 350 * kMs;
+    double f0 = 35.0;
+    for (double hz = 35.0; hz < 90.0; hz += 0.5) if (binMag(x, from, to, hz) > binMag(x, from, to, f0)) f0 = hz;
+    return 20.0 * std::log10(std::max(binMag(x, from, to, 3.0 * f0), 1e-12) / std::max(binMag(x, from, to, f0), 1e-12));
+}
+
+void testVoiceSettings() {
+    // Defaults (no setting sent): as before, 4.5 x over 35 ms.
+    const auto d = kitKick(-1.0f, 0.0f, -1.0f, 0.0f);
+    const auto slow = kitKick(28.0f, 0.045f, -1.0f, 0.0f);
+    const auto fast = kitKick(24.0f, 0.025f, -1.0f, 0.0f);
+    const double pd = pitchAt(d, 70 * kMs), ps = pitchAt(slow, 70 * kMs), pf = pitchAt(fast, 70 * kMs);
+    std::printf("  kick at 70 ms: default %.1f Hz, x5/45 ms %.1f Hz, x4/25 ms %.1f Hz\n", pd, ps, pf);
+    CHECK(ps > pd + 8.0);
+    CHECK(pf < pd - 5.0);
+    CHECK(pf > 49.0);
+    // The saturation: clean (house, trance) against dirty (big room, hard).
+    const double clean = third(kitKick(-1.0f, 0.0f, 0.1f, 0.0f)), dirty = third(kitKick(-1.0f, 0.0f, 1.0f, 0.0f));
+    std::printf("  kick 3rd harmonic: drive 0.1 %+.1f dB, drive 1 %+.1f dB\n", clean, dirty);
+    CHECK(clean < dirty - 6.0);
+    // The length: a long gabber-like decay against a short lofi one.
+    CHECK(studio_tests::lengthTo(kitKick(-1.0f, 0.0f, -1.0f, 0.6f), -40.0) > kRate * 45 / 100);
+    CHECK(studio_tests::lengthTo(kitKick(-1.0f, 0.0f, -1.0f, 0.12f), -40.0) < kRate * 18 / 100);
+}
+
 }  // namespace kickbody_tests
 
 #define PS_KICKBODY_TESTS                                         \
@@ -129,4 +178,5 @@ void testHardKick() {
     {"kb_body_energy", kickbody_tests::testBodyEnergy},          \
     {"kb_no_beating", kickbody_tests::testNoBeating},            \
     {"kb_third_harmonic", kickbody_tests::testThirdHarmonic},    \
-    {"kb_hard_kick", kickbody_tests::testHardKick},
+    {"kb_hard_kick", kickbody_tests::testHardKick},              \
+    {"kb_voice_settings", kickbody_tests::testVoiceSettings},

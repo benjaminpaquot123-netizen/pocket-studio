@@ -212,8 +212,8 @@ jobs:
           python3 -c "import json, sys; sys.exit(0 if json.load(open('dist/index.json'))['packs'] else 'no pack built')"
       - name: Licence of the model the sounds come from
         run: |
-          curl -fsSL -o dist/LICENSE-stable-audio "$MODEL/LICENSE"
-          curl -fsSL -o dist/NOTICE-stable-audio "$MODEL/NOTICE"
+          curl -fsSL --retry 5 --retry-all-errors --max-time 60 -o dist/LICENSE-stable-audio "$MODEL/LICENSE"
+          curl -fsSL --retry 5 --retry-all-errors --max-time 60 -o dist/NOTICE-stable-audio "$MODEL/NOTICE"
       - name: Publish
         env:
           GH_TOKEN: ${{ github.token }}

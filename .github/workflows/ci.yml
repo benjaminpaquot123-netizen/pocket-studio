@@ -37,7 +37,7 @@ jobs:
       - name: Bench tests and pre-flight, as on a brand new runner
         run: |
           # The bench's « regarde » (scripts/human-act.py) draws with Pillow; -I only sees the system packages.
-          python3 -I -c 'import PIL' 2> /dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends python3-pil > /dev/null; }
+          python3 -I -c 'import PIL' 2> /dev/null || scripts/ci/apt-install.sh python3-pil
           scripts/bench/pre-vol.sh --ci --rapide
           # The unit tests' shards (lot « ci-rapide »): the split and its check, on toy classes.
           python3 -I scripts/ci/shards.py selftest
@@ -53,16 +53,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
-      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
-        run: |
-          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
-          # update aborts before checking out the others, so --force and a final check.
-          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
-          for i in 1 2 3 4 5 6 7 8 9 10; do
-            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
-            echo "eigen: attempt $i failed, waiting"; sleep 30
-          done
-          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - name: Fetch submodules with retries (every host; GitLab is sometimes overloaded)
+        run: scripts/ci/submodules.sh
       - uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
           key: engine-host
@@ -93,16 +85,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
-      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
-        run: |
-          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
-          # update aborts before checking out the others, so --force and a final check.
-          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
-          for i in 1 2 3 4 5 6 7 8 9 10; do
-            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
-            echo "eigen: attempt $i failed, waiting"; sleep 30
-          done
-          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - name: Fetch submodules with retries (every host; GitLab is sometimes overloaded)
+        run: scripts/ci/submodules.sh
       - uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
         with:
           key: engine-host-asan
@@ -126,16 +110,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
-      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
-        run: |
-          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
-          # update aborts before checking out the others, so --force and a final check.
-          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
-          for i in 1 2 3 4 5 6 7 8 9 10; do
-            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
-            echo "eigen: attempt $i failed, waiting"; sleep 30
-          done
-          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - name: Fetch submodules with retries (every host; GitLab is sometimes overloaded)
+        run: scripts/ci/submodules.sh
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: build/separation-cache
@@ -172,16 +148,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
-      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
-        run: |
-          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
-          # update aborts before checking out the others, so --force and a final check.
-          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
-          for i in 1 2 3 4 5 6 7 8 9 10; do
-            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
-            echo "eigen: attempt $i failed, waiting"; sleep 30
-          done
-          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - name: Fetch submodules with retries (every host; GitLab is sometimes overloaded)
+        run: scripts/ci/submodules.sh
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
@@ -291,16 +259,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
-      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
-        run: |
-          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
-          # update aborts before checking out the others, so --force and a final check.
-          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
-          for i in 1 2 3 4 5 6 7 8 9 10; do
-            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
-            echo "eigen: attempt $i failed, waiting"; sleep 30
-          done
-          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - name: Fetch submodules with retries (every host; GitLab is sometimes overloaded)
+        run: scripts/ci/submodules.sh
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
@@ -366,16 +326,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
-      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
-        run: |
-          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
-          # update aborts before checking out the others, so --force and a final check.
-          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
-          for i in 1 2 3 4 5 6 7 8 9 10; do
-            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
-            echo "eigen: attempt $i failed, waiting"; sleep 30
-          done
-          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - name: Fetch submodules with retries (every host; GitLab is sometimes overloaded)
+        run: scripts/ci/submodules.sh
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
@@ -425,7 +377,7 @@ jobs:
         run: |
           python3 -I scripts/bench/test_cpu_report.py
           # The bench's « regarde » (scripts/human-act.py) draws with Pillow; -I only sees the system packages.
-          python3 -I -c 'import PIL' 2> /dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends python3-pil > /dev/null; }
+          python3 -I -c 'import PIL' 2> /dev/null || scripts/ci/apt-install.sh python3-pil
           python3 -I scripts/bench/test_ultra_bench.py
           ./scripts/real-projects.sh
       # Endurance on Linux, short: a 2-minute song looped for 10 minutes (parts staged by the app
@@ -462,16 +414,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
-      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
-        run: |
-          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
-          # update aborts before checking out the others, so --force and a final check.
-          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
-          for i in 1 2 3 4 5 6 7 8 9 10; do
-            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
-            echo "eigen: attempt $i failed, waiting"; sleep 30
-          done
-          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - name: Fetch submodules with retries (every host; GitLab is sometimes overloaded)
+        run: scripts/ci/submodules.sh
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
@@ -512,16 +456,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
-      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
-        run: |
-          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
-          # update aborts before checking out the others, so --force and a final check.
-          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
-          for i in 1 2 3 4 5 6 7 8 9 10; do
-            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
-            echo "eigen: attempt $i failed, waiting"; sleep 30
-          done
-          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - name: Fetch submodules with retries (every host; GitLab is sometimes overloaded)
+        run: scripts/ci/submodules.sh
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
@@ -593,16 +529,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: false
-      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
-        run: |
-          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
-          # update aborts before checking out the others, so --force and a final check.
-          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
-          for i in 1 2 3 4 5 6 7 8 9 10; do
-            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
-            echo "eigen: attempt $i failed, waiting"; sleep 30
-          done
-          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - name: Fetch submodules with retries (every host; GitLab is sometimes overloaded)
+        run: scripts/ci/submodules.sh
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: apk

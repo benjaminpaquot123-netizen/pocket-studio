@@ -28,3 +28,4 @@
 - 22h58 : avant-après techno en cours (envoyé). Lot gr-house2 lancé : session_014RxrDLyY7dtKbqYn2DZXD8.
 - 23h26 : gr-house2 autorisé sur i18n/*/model.json. À confier au lot tuto après gr-house2 : tutos afro_house (pad Tom médium, toc de bois) et tech_house (clap et un écho, rim textPro) ne collent plus au son. Avant-après techno envoyé.
 - 23h45 : gr-house2 FINI 8c5248bf (pré-vol PRÊT), à mettre dans un paquet (conflit possible StyleRecipes, régénérer à la fusion). Avant-après house v2 en rendu (envoyé). Session à archiver après fusion.
+- [ ] 2026-11-25 : bibliothèque de sons de batterie synthétisés par famille (kick, 808, clap, caisse claire, charleys…), chaque variante réglée sur les mesures des one-shots achetés (jamais copiés), avec avant-après à écouter.

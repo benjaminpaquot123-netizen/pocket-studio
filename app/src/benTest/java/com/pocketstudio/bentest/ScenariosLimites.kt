@@ -175,6 +175,7 @@ internal class ScenariosLimites(private val o: Outils) {
                 check(attendre(5_000) { lu().parties == want }) { "en remettant le morceau : ${lu().parties} parties (attendu : $want)" }
                 extra--
             }
+            disque(step, 1, before, "une fois remis")
             bilan(step, "parties_avant" to before, "gestes" to n)
             return "$n breaks ($before puis ${before + n} parties), $n « Annuler » un à un, $n « Rétablir », enregistré à chaque bout, puis remis ($before)"
         } finally {
@@ -319,7 +320,8 @@ internal class ScenariosLimites(private val o: Outils) {
             return "copie renommée : ${typed.length} caractères tapés, « $want » (${want.length}) relu sur le disque ; projet ouvert intact"
         } finally {
             copy?.let { id -> runCatching { supprimerCopie(id, p.id) } }
-            o.versStudio()
+            // Never over the step's own failure: a wrong name is what the step tells, not a later screen.
+            runCatching { o.versStudio() }
         }
     }
 

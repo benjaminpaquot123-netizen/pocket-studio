@@ -1,6 +1,13 @@
 package com.pocketstudio.bentest
 
 import androidx.activity.ComponentActivity
+import android.os.Looper
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.text.AnnotatedString
+import org.robolectric.Shadows.shadowOf
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
@@ -44,6 +51,8 @@ class ScenariosLimitesVraisEcransTest {
     @After
     fun back() = h.finish()
 
+    private val RENOMMER = setOf("Renommer")
+
     private inner class Vrai(private val d: JourneyDriver = ComposeRuleDriver(compose)) : JourneyDriver by d, Sonde, Appli {
         var playing = false
         var partie = -1
@@ -69,14 +78,72 @@ class ScenariosLimitesVraisEcransTest {
         var muetKit = false
         @Volatile private var kitOuvert = false
 
+        /**
+         * « Renommer » open: under Robolectric a text field in a Compose dialog never lets Compose rest
+         * (Tour3RenameIdleTest), so while it is open the screen is read and touched without waiting for rest, frame by
+         * frame, as that test does. The phone has no such wait.
+         */
+        @Volatile var fenetre = false
+
+        private fun frames() = repeat(6) {
+            runCatching { compose.mainClock.advanceTimeByFrame() }
+            shadowOf(Looper.getMainLooper()).idle()
+        }
+
+        private fun noeuds(tag: String, merged: Boolean): List<SemanticsNode> = compose.runWithoutImplicitWait {
+            frames()
+            compose.onAllNodesWithTag(tag, useUnmergedTree = !merged).fetchSemanticsNodes(atLeastOneRootRequired = false)
+        }
+
+        /** The name typed in the open window (its SetText action, as Tour3RenameIdleTest). */
+        fun saisirDansFenetre(tag: String, text: String): Boolean = runCatching {
+            val n = noeuds(tag, merged = false).first()
+            compose.runOnUiThread { n.config[SemanticsActions.RequestFocus].action!!() }
+            frames()
+            compose.runOnUiThread { noeuds(tag, merged = false).first().config[SemanticsActions.SetText].action!!(AnnotatedString(text)) }
+            frames()
+        }.isSuccess
+
         /** The project menu's items have no tag: found by their words (« texte:Dupliquer »), as the in-app driver does. */
-        override fun count(tag: String, merged: Boolean): Int =
-            if (tag.startsWith(TEXTE)) compose.onAllNodesWithText(tag.removePrefix(TEXTE), useUnmergedTree = true).fetchSemanticsNodes().size else d.count(tag, merged)
+        override fun count(tag: String, merged: Boolean): Int = when {
+            fenetre -> noeuds(tag, merged).size
+            tag.startsWith(TEXTE) -> compose.onAllNodesWithText(tag.removePrefix(TEXTE), useUnmergedTree = true).fetchSemanticsNodes().size
+            else -> d.count(tag, merged)
+        }
+
+        override fun bounds(tag: String): Rect = if (fenetre) noeuds(tag, merged = true).first().boundsInWindow else d.bounds(tag)
+        override fun scrollTo(tag: String) { if (!fenetre) d.scrollTo(tag) }
+        override fun idle(ms: Long) {
+            if (!fenetre) return d.idle(ms)
+            val end = System.currentTimeMillis() + ms
+            do compose.runWithoutImplicitWait { frames() } while (System.currentTimeMillis() < end)
+        }
 
         override fun click(tag: String) {
             touched += tag
+            if (fenetre) {
+                compose.runWithoutImplicitWait {
+                    val n = noeuds(tag, merged = true).first()
+                    compose.runOnUiThread { n.config[SemanticsActions.OnClick].action!!() }
+                    frames()
+                }
+                // The window's « OK » or « Annuler » closes it: the screen rests again.
+                if (tag.startsWith("project_rename_")) fenetre = false
+                return
+            }
             if (tag.startsWith(TEXTE)) {
-                compose.onAllNodesWithText(tag.removePrefix(TEXTE), useUnmergedTree = true).onFirst().performClick()
+                val texte = tag.removePrefix(TEXTE)
+                if (texte in RENOMMER) {
+                    // The touch opens the window: no wait for rest after it.
+                    compose.runWithoutImplicitWait {
+                        val n = compose.onAllNodesWithText(texte, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false).first()
+                        fenetre = true
+                        compose.runOnUiThread { n.config[SemanticsActions.OnClick].action!!() }
+                        frames()
+                    }
+                    return
+                }
+                compose.onAllNodesWithText(texte, useUnmergedTree = true).onFirst().performClick()
                 runCatching { compose.waitForIdle() }
                 return
             }
@@ -146,7 +213,7 @@ class ScenariosLimitesVraisEcransTest {
     private fun scenarios(v: Vrai) = Scenarios(
         Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecran = { v.tags(Regex(".+")) }, courtMs = 1_500,
         ecouteMs = 1_000, decrochagesMs = 1_000, sauvegardeMs = 20_000, liveMs = 5_000, liveEcouteMs = 1_000, effetEcouteMs = 1_000,
-        saisir = { tag, text -> runCatching { compose.onNodeWithTag(tag, useUnmergedTree = true).performTextReplacement(text) }.isSuccess },
+        saisir = { tag, text -> if (v.fenetre) v.saisirDansFenetre(tag, text) else runCatching { compose.onNodeWithTag(tag, useUnmergedTree = true).performTextReplacement(text) }.isSuccess },
     )
 
     /** Runs the scenario [id] as the robot does (its reset first, its oracle at the end). */

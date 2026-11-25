@@ -1,0 +1,5 @@
+{"total_count": 3, "jobs": [
+  {"id": 1, "run_id": 9101, "name": "Build, unit tests, screenshots", "status": "completed", "conclusion": "success"},
+  {"id": 2, "run_id": 9101, "name": "Emulator smoke test", "status": "completed", "conclusion": "success"},
+  {"id": 3, "run_id": 9101, "name": "Publish APK", "status": "completed", "conclusion": "skipped"}
+]}

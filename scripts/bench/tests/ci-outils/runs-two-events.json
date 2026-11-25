@@ -1,0 +1,7 @@
+{
+  "total_count": 2,
+  "workflow_runs": [
+    {"id": 9101, "name": "CI", "event": "workflow_dispatch", "head_branch": "eq/tour-9-paquet", "head_sha": "d87dea73d87dea73d87dea73d87dea73d87dea73", "status": "completed", "conclusion": "success", "run_number": 1201},
+    {"id": 9100, "name": "CI", "event": "push", "head_branch": "eq/tour-9-paquet", "head_sha": "d87dea73d87dea73d87dea73d87dea73d87dea73", "status": "completed", "conclusion": "failure", "run_number": 1200}
+  ]
+}

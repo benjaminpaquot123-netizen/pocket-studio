@@ -1,14 +1,41 @@
 """Tour 6, lot « stable »: scripts/bench/ci-rouge.sh on toy JUnit reports (no Gradle, no network, seconds).
+Tour 9, lot « ci-outils »: ci-rouge.sh without gh (curl on the REST API) and ci-etat.sh with several runs of one commit,
+both on GitHub answers recorded in scripts/bench/tests/ci-outils/ (no network, no token).
 
     python3 -I scripts/bench/test_stable.py
 """
+import json
 import os
+import shutil
 import subprocess
 import tempfile
 import unittest
+import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOOL = os.path.join(HERE, "ci-rouge.sh")
+STATE = os.path.join(HERE, "ci-etat.sh")
+FIXTURES = os.path.join(HERE, "tests", "ci-outils")
+
+NO_GH = "#!/usr/bin/env bash\n# A gh that is not signed in: every call fails.\nexit 4\n"
+# Stand-in for curl on GitHub's REST API: the recorded answers of FIXTURES (copied into $PS_TOY_CI); every URL is noted.
+FAKE_CURL = r"""#!/usr/bin/env bash
+out=""; url=""
+while [ $# -gt 0 ]; do
+  case "$1" in -o) out="$2"; shift ;; -H|--max-time) shift ;; -*) ;; *) url="$1" ;; esac
+  shift
+done
+echo "$url" >> "$PS_TOY_CI/urls"
+body=""
+case "$url" in
+  *"/actions/runs?head_sha="*) body="$PS_TOY_CI/runs.json" ;;
+  *"/actions/runs/"*"/jobs"*) id="${url#*/actions/runs/}"; body="$PS_TOY_CI/jobs-${id%%/*}.json" ;;
+  *"/actions/runs/"*"/artifacts"*) id="${url#*/actions/runs/}"; body="$PS_TOY_CI/artifacts-${id%%/*}.json" ;;
+  *"/actions/artifacts/"*"/zip") id="${url#*/actions/artifacts/}"; body="$PS_TOY_CI/art-${id%%/*}.zip" ;;
+esac
+[ -n "$body" ] && [ -f "$body" ] || exit 22
+if [ -n "$out" ]; then cp "$body" "$out"; else cat "$body"; fi
+"""
 
 
 def suite(name, stamp, cases):
@@ -116,6 +143,81 @@ class CiRougeTest(unittest.TestCase):
         for script in ("pre-vol.sh", "selftest.sh"):
             with open(os.path.join(HERE, script)) as f:
                 self.assertIn("scripts/bench/test_stable.py", f.read(), f"{script} must run this test")
+
+
+def toy_github(tmp):
+    """A PATH with a gh that is not signed in and a curl that answers from the recorded fixtures."""
+    toy = os.path.join(tmp, "toy-github")
+    os.makedirs(os.path.join(toy, "bin"))
+    for f in os.listdir(FIXTURES):
+        shutil.copy(os.path.join(FIXTURES, f), toy)
+    shutil.copy(os.path.join(FIXTURES, "runs-two-events.json"), os.path.join(toy, "runs.json"))
+    for name, body in (("gh", NO_GH), ("curl", FAKE_CURL)):
+        with open(os.path.join(toy, "bin", name), "w") as f:
+            f.write(body)
+        os.chmod(os.path.join(toy, "bin", name), 0o755)
+    env = dict(os.environ, PATH=os.path.join(toy, "bin") + os.pathsep + os.environ.get("PATH", ""), PS_TOY_CI=toy)
+    return toy, env
+
+
+class CiEtatPlusieursRunsTest(unittest.TestCase):
+    """Défaut 1: two runs of one commit (a green « workflow_dispatch », a red « push ») were printed one under the other,
+    the first header « CI null »: the chef read « CI success ». Each run now says id, event, branch and state, and one
+    verdict says « rouge » when any run of the commit is red."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.toy, self.env = toy_github(self.tmp.name)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def state(self):
+        r = subprocess.run(["bash", STATE, "HEAD"], capture_output=True, text=True, timeout=60, env=self.env)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return r.stdout
+
+    def test_each_run_on_its_own_line_and_a_red_verdict(self):
+        out = self.state()
+        self.assertIn("run 9101\tworkflow_dispatch\teq/tour-9-paquet\tCI\tvert", out)
+        self.assertIn("run 9100\tpush\teq/tour-9-paquet\tCI\trouge", out)
+        self.assertIn("ci_verdict\trouge (1 run rouge sur 2 : 9100 push)", out)
+        self.assertNotIn("null", out)
+        self.assertIn("ci_build\trouge", out)
+        self.assertIn("ci_emulateur\trouge", out)
+
+    def test_a_later_green_run_does_not_hide_an_earlier_red_one(self):
+        with open(os.path.join(self.toy, "runs.json")) as f:
+            d = json.load(f)
+        d["workflow_runs"].reverse()  # the red run read first: its red emulator must not be overwritten by the green
+        with open(os.path.join(self.toy, "runs.json"), "w") as f:
+            json.dump(d, f)
+        out = self.state()
+        self.assertIn("ci_verdict\trouge", out)
+        self.assertIn("ci_build\trouge", out)
+        self.assertIn("ci_emulateur\trouge", out)
+
+    def test_only_green_runs_give_a_green_verdict(self):
+        with open(os.path.join(self.toy, "runs.json")) as f:
+            d = json.load(f)
+        d["workflow_runs"] = d["workflow_runs"][:1]
+        with open(os.path.join(self.toy, "runs.json"), "w") as f:
+            json.dump(d, f)
+        out = self.state()
+        self.assertIn("ci_verdict\tvert (1 run)", out)
+        self.assertIn("ci_build\tvert", out)
+
+    def test_a_running_run_is_neither_green_nor_null(self):
+        with open(os.path.join(self.toy, "runs.json")) as f:
+            d = json.load(f)
+        d["workflow_runs"][1].update(status="in_progress", conclusion=None)
+        d["workflow_runs"] = d["workflow_runs"][1:]
+        with open(os.path.join(self.toy, "runs.json"), "w") as f:
+            json.dump(d, f)
+        out = self.state()
+        self.assertIn("run 9100\tpush\teq/tour-9-paquet\tCI\ten cours", out)
+        self.assertIn("ci_verdict\ten cours", out)
+        self.assertNotIn("null", out)
 
 
 if __name__ == "__main__":

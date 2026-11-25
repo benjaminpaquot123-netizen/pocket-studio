@@ -1094,6 +1094,9 @@ WHYS = {
                           "Adds the low end's harmonics: the bass is heard on a phone too, which plays nothing under 150 Hz.",
                           "Voegt de boventonen van het laag toe: de bas is ook op een telefoon te horen, die niets onder 150 Hz speelt."),
         "CLIPPER": "Arrondit les crêtes qui dépassent le niveau du son : plus dense, sans pomper. Parfait sur une basse, avant l'OTT.",
+        "TRANSIENT": T("Durcit le début de chaque coup : le kick claque plus, sans monter le volume.", "Sharpens the start of each hit: the kick snaps more, without raising the volume.", "Maakt het begin van elke slag harder: de kick klapt meer, zonder het volume op te drijven."),
+        "DRUM_BUS": T("Une saturation douce sur toute la batterie : plus de corps, les coups restent à leur place.", "A soft saturation over the whole kit: more body, the hits stay in place.", "Een zachte saturatie over het hele drumstel: meer body, de slagen blijven op hun plek."),
+        "MID_SIDE_EQ": T("Met le grave au centre et éclaire les côtés : solide sur une enceinte mono.", "Puts the low end in the centre and brightens the sides: solid on a mono speaker.", "Zet het laag in het midden en maakt de zijkanten helderder: stevig op een mono-speaker."),
     },
     "bass": {
         "FILTER": T("Un passe-haut vers 80 Hz : le sub garde le tout grave.", "A high-pass around 80 Hz: the sub keeps the very low end.", "Een high-pass rond 80 Hz: de sub houdt het diepste laag."),

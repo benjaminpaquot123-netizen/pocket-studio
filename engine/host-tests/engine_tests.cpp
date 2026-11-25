@@ -3943,7 +3943,9 @@ void testNewEffects() {
         double diff = 0;
         for (size_t i = n / 2; i < n; ++i) diff += std::fabs(double(l[i]) - dryL[i]) + std::fabs(double(r[i]) - dryL[i]);
         // The bass exciter adds nothing to a 440 Hz sine (no low band): its job is checked on a bass (bass_exciter).
-        if (type != ps::InsertSlot::WidenerFx && type != ps::InsertSlot::GateFx && type != ps::InsertSlot::ParamEqFx && type != ps::InsertSlot::BassExciterFx) {
+        // L12: a steady sine has no attack for the transient shaper, no sides for the mid/side EQ (l12_tests).
+        if (type != ps::InsertSlot::WidenerFx && type != ps::InsertSlot::GateFx && type != ps::InsertSlot::ParamEqFx && type != ps::InsertSlot::BassExciterFx
+            && type != ps::InsertSlot::TransientFx && type != ps::InsertSlot::MidSideEqFx) {
             CHECK(diff / double(n) > 1e-3);  // it changes the sound
         }
     }
@@ -8178,6 +8180,7 @@ void testCommandBudgetPerCallback() {
 #include "hardtechno_tests.inc"
 #include "speakerkick_tests.inc"
 #include "kickbody_tests.inc"
+#include "l12_tests.inc"
 
 int main(int argc, char** argv) {
     const char* only = nullptr;  // a test's name: run that one alone
@@ -8193,6 +8196,7 @@ int main(int argc, char** argv) {
         PS_HARDTECHNO_TESTS
         PS_SPEAKERKICK_TESTS
         PS_KICKBODY_TESTS
+        PS_L12_TESTS
         {"spsc_queue", testSpscQueue},
         {"pad_strips", testPadStrips},
         {"spsc_float_ring", testSpscFloatRing},

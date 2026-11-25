@@ -2515,12 +2515,18 @@ object TutoRollHint {
         return if (y(n, v) < v.top) TutoWay.Higher else TutoWay.Lower
     }
 
+    /** The dotted notes of the bar spoken of that are in the time in sight all fit the rows in sight at once. */
+    private fun fits(left: List<Note>, v: TutoRollView, barSteps: Int): Boolean {
+        val all = pool(left, barSteps).filter { inTime(it, v) }
+        return all.isNotEmpty() && (all.maxOf { it.pitch } - all.minOf { it.pitch } + 1) * v.rowPx <= v.bottom - v.top + 1f
+    }
+
     /**
      * How far a touch on the line scrolls the roll to bring [next] into view: (pixels along the time, pixels along
      * the rows), zero along an axis where the note already is and no other is hidden ([aside]). Along the time, its bar from its first sixteenth
      * when a bar ([barSteps] sixteenths) fits the width (seat H a: the bar's last notes were cut at the edge).
      * [touched]: false when the step itself asks (« Je le fais », « Copier »): the note asked for stays in sight, no
-     * other one is gone to.
+     * other one is gone to unless they all fit the rows together.
      */
     fun brought(left: List<Note>, v: TutoRollView, barSteps: Int, touched: Boolean = true): Pair<Float, Float> {
         val n = next(left, v, barSteps) ?: return 0f to 0f
@@ -2532,7 +2538,9 @@ object TutoRollHint {
         }
         // A dotted note of the time in sight out of the rows ([aside]): all of them when they fit the rows, else as far
         // towards it as the note the line speaks of stays whole in sight, if that shows it (else the roll goes to it, below).
-        val hidden = if (touched) aside(left, v, barSteps) else null
+        // Tour 9 (control « fable-tuto2 », seat a: house melody, two of its eight dotted notes under the panel when the
+        // step opened): the step asking frames them too when they all fit the rows, the note asked for kept in sight.
+        val hidden = aside(left, v, barSteps)?.takeIf { touched || fits(left, v, barSteps) }
         val mid = (v.top + v.bottom) / 2
         val dy = when {
             hidden != null -> {

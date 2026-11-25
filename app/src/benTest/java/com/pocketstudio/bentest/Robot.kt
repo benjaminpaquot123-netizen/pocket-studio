@@ -57,6 +57,9 @@ object Robot {
         val message: String? = null,
         /** « Écoute au micro »: the 2 s extracts of the microphone the report holds (said before it is sent). */
         val extraits: Int = 0,
+        /** « Test [numero] sur [total] » while the robot works (0 when no run is counted). */
+        val numero: Int = 0,
+        val total: Int = 0,
     )
 
     /** The essai éclair (T0) and « Tout tester » (T1, niveau 1). */
@@ -71,6 +74,9 @@ object Robot {
 
     /** « Scénarios »: a few minutes of real use by level, each with its oracle. */
     const val SCENARIOS = "scenarios"
+
+    /** « Tests guidés » (lot A2): an output changed, the battery saver; Benjamin does the gesture, never at night. */
+    const val GUIDES = "guides"
 
     private val _etat = MutableStateFlow(Etat())
     val etat: StateFlow<Etat> = _etat
@@ -90,7 +96,7 @@ object Robot {
     private fun paquetFile(context: Context) = File(dir(context), "paquet.txt")
     fun paquet(context: Context): String = runCatching { paquetFile(context).readText().trim() }.getOrNull()?.takeIf { it in Scenarios.PAQUETS } ?: Scenarios.RAPIDE
 
-    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO || it == SCENARIOS } ?: ECLAIR
+    fun passage(context: Context): String = runCatching { passageFile(context).readText().trim() }.getOrNull()?.takeIf { it == TOUT || it == ECLAIR || it == OREILLE || it == MICRO || it == SCENARIOS || it == GUIDES } ?: ECLAIR
 
     /** « Retester les corrections »: the ids chosen (the file exists only for such a run), and the last « Tout tester » kept (ids and lights). */
     private fun retestFile(context: Context) = File(dir(context), "retest.txt")
@@ -98,13 +104,18 @@ object Robot {
     fun retest(context: Context): Set<String>? = Retest.lireChoix(retestFile(context))
 
     /** The checklist: every « Tout tester » step (id, label), its last light, ticked by default when red or not conclusive. */
-    data class Candidat(val id: String, val label: String, val feu: Feu?, val coche: Boolean)
+    data class Candidat(val id: String, val label: String, val feu: Feu?, val coche: Boolean, val groupe: String = Retest.groupe(id))
 
     fun candidats(context: Context): List<Candidat> {
         val all = Retest.proposees(etapes(context, TOUT, retest = false))
         // No run kept by this version: the last saved logbook (any run, any version), else the last report's.
         val last = Retest.lire(derniereFile(context)).ifEmpty { Retest.repli(carnet(context).lines(), rapports(context), all) }
-        val ticked = Retest.parDefaut(last, all)
+        return candidatsDe(all, last)
+    }
+
+    /** [all] with their [last] lights: red, not conclusive and never played new tests ticked. */
+    internal fun candidatsDe(all: List<Etape>, last: Map<String, Feu?>): List<Candidat> {
+        val ticked = Retest.parDefaut(last, all, Retest.NOUVEAUX)
         return all.map { Candidat(it.name, it.label, last[it.name], it.name in ticked) }
     }
 
@@ -116,10 +127,14 @@ object Robot {
     private fun etapes(context: Context, passage: String = passage(context), retest: Boolean = true): List<Etape> {
         val j = Journey(InAppDriver(LooperMainThread()))
         val all = when (passage) {
-            TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
+            // The checklist and a retest offer every scenario too.
+            TOUT -> ToutTester(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes().let { tout ->
+                if (!retest || retest(context) != null) Retest.avecScenarios(tout, Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context), paquet = Scenarios.COMPLET).etapes()) else tout
+            }
             OREILLE -> QuestionsOreille(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
             MICRO -> EcouteMicro(Pose(EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)), j), MicroReel(context), HautParleurReel(context), carnet(context), sons(context)).etapes()
             SCENARIOS -> Scenarios(j, NativeSonde, NoAppli, carnet(context), captures(context), paquet = paquet(context)).etapes()
+            GUIDES -> Epreuves(j, NativeSonde, NoAppli, carnet(context), captures(context)).guides()
             else -> EssaiEclair(j, NativeSonde, NoAppli, carnet(context), captures(context)).etapes()
         }
         return subset(all, passage, if (retest) retest(context) else null)
@@ -131,7 +146,7 @@ object Robot {
 
     private fun verdict(lines: List<Carnet.Ligne>, steps: List<Etape>, passage: String): String =
         when (passage) {
-            TOUT, MICRO -> Rapport.bilanFeux(lines, steps).verdict()
+            TOUT, MICRO, GUIDES -> Rapport.bilanFeux(lines, steps).verdict()
             OREILLE -> QuestionsOreille.verdict(lines)
             SCENARIOS -> Scenarios.verdict(lines)
             else -> Rapport.bilan(lines, steps).verdict()
@@ -178,7 +193,11 @@ object Robot {
             val appli = AppliReelle(app, main, tracker)
             val shots = captures(app).apply { mkdirs() }
             val all = when (which) {
-                TOUT -> ToutTester(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
+                TOUT -> ToutTester(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes().let { tout ->
+                    // A retest may have chosen scenarios: they run in the same list.
+                    if (retest(app) == null) tout
+                    else Retest.avecScenarios(tout, Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = Scenarios.COMPLET, enHaut = driver::enHaut).etapes())
+                }
                 OREILLE -> {
                     val essai = EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran)
                     QuestionsOreille(Pose(essai, Journey(driver)), NativeSonde, appli, c, shots).etapes()
@@ -188,19 +207,20 @@ object Robot {
                     EcouteMicro(Pose(essai, Journey(driver)), MicroReel(app), HautParleurReel(app), c, sons(app)).etapes()
                 }
                 SCENARIOS -> Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), enHaut = driver::enHaut).etapes()
+                GUIDES -> Epreuves(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).guides()
                 else -> EssaiEclair(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran).etapes()
             }
             val steps = subset(all, which, retest(app))
             // A scenario the app died in: its clues (the ones taken as it died, else the screen now).
             val clues = if (which == SCENARIOS) Scenarios(Journey(driver), NativeSonde, appli, c, shots, ecran = driver::ecran, saisir = driver::saisir, regler = driver::regler, paquet = paquet(app), enHaut = driver::enHaut) else null
-            val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() }, onCrash = { clues?.apresPlantage(it) })
+            val passage = Passage(c, steps, crashText = { CrashReporter.pendingCrash() }, onCrash = { clues?.apresPlantage(it) }, compteur = true)
             Garde.installer(app, shots)
             runCatching {
                 passage.run { e ->
                     Garde.etape(e.name, e.maxMs)
                     driver.deadlineMs = System.currentTimeMillis() + e.maxMs
                     sorties.etape = e.name
-                    _etat.update { it.copy(step = e.label) }
+                    _etat.update { it.copy(step = e.label, numero = passage.numero(e), total = passage.total) }
                 }
             }.onFailure { c.add(Carnet.NOTE, "robot", "arrêt : $it") }
             Garde.etape(null)
@@ -208,8 +228,8 @@ object Robot {
             tracker.sorties = null
             tracker.keepScreenOn = false
             appli.orienter(null)
-            if (which == TOUT) runCatching {
-                // The last « Tout tester » kept for the next retest: a retest only replaces the steps it ran.
+            if (which == TOUT || which == SCENARIOS) runCatching {
+                // The last « Tout tester » or scenarios kept for the next retest: a run only replaces the steps it ran.
                 val f = derniereFile(app)
                 Retest.ecrire(f, Retest.fusion(Retest.lire(f), Rapport.feux(c.lines(), passage.etapes)))
             }
@@ -303,7 +323,7 @@ object Robot {
         val texts = buildList {
             // Always sendable: a part that cannot be written says so, the others go.
             fun part(name: String, text: () -> String?) = runCatching(text).fold({ t -> t?.let { add(name to it) } }, { add(name to "illisible : $it") })
-            part("rapport.md") { Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO || passage == SCENARIOS, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE, micro = passage == MICRO) }
+            part("rapport.md") { Rapport.markdown(lines, steps, about, tout = passage == TOUT || passage == MICRO || passage == SCENARIOS || passage == GUIDES, retest = if (passage == TOUT) retest(context)?.let { Retest.choisies(steps) } else null, oreille = passage == OREILLE, micro = passage == MICRO) }
             part("mesures.json") { Rapport.json(lines, about) }
             if (passage == SCENARIOS) {
                 part("scenarios.json") { Scenarios.json(lines, about) }
@@ -447,6 +467,12 @@ private class AppliReelle(private val app: Application, private val main: MainTh
         }
     }
 
+    // The app's session state, not the engine (no part index in the probe): an engine hook is for an app lot.
+    override fun partieJouee(): Int? = main.run {
+        val a = tracker.studio as? ComponentActivity ?: return@run null
+        ViewModelProvider(a)[RhythmViewModel::class.java].sessionUi.value.shownSongIndex.takeIf { it >= 0 }
+    }
+
     override fun capture(file: File): Boolean = main.run { Captures.windows(WindowInspector.getGlobalWindowViews(), file) }
 
     override fun demander(question: String, maxMs: Long): Boolean? = Robot.ask(app, question, maxMs)
@@ -516,6 +542,27 @@ private class AppliReelle(private val app: Application, private val main: MainTh
             Robot.sortieVoulue(false)
         }
     }
+
+    override fun prendreSon(duck: Boolean, pendant: () -> Unit): Boolean {
+        val audio = app.getSystemService(android.media.AudioManager::class.java) ?: return false
+        val attrs = android.media.AudioAttributes.Builder()
+            .setUsage(if (duck) android.media.AudioAttributes.USAGE_NOTIFICATION else android.media.AudioAttributes.USAGE_VOICE_COMMUNICATION)
+            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build()
+        val gain = if (duck) android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK else android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT
+        val request = android.media.AudioFocusRequest.Builder(gain).setAudioAttributes(attrs).setOnAudioFocusChangeListener { }.build()
+        val granted = audio.requestAudioFocus(request) == android.media.AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+        try {
+            pendant()
+        } finally {
+            audio.abandonAudioFocusRequest(request)
+        }
+        return granted
+    }
+
+    override fun rafraichissementHz(): Float? = runCatching { main.run { tracker.studio?.display?.refreshRate } }.getOrNull()
+
+    override fun economieEnergie(): Boolean? = runCatching { app.getSystemService(android.os.PowerManager::class.java)?.isPowerSaveMode }.getOrNull()
 
     // Niveau 3: the question is a banner over the studio itself (the studio stays in front, the music goes on).
     override fun poser(question: Question, maxMs: Long): Reponse {

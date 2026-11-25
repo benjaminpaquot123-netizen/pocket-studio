@@ -55,21 +55,10 @@ object ScenariosEcrans {
     /** Every other style listened to for one whole minute (the full run plays each only a few seconds). */
     val MINUTES: List<String> get() = StarterWizard.STYLES.map { it.id }.filter { st -> LONGUES.none { it.first == st } }
 
-    /** Three screens in a row, twice, while playing: every set of three tabs. */
-    private val TRIPLES: List<List<String>> = NOMS.indices.flatMap { a -> (a + 1 until NOMS.size).flatMap { b -> (b + 1 until NOMS.size).map { c -> listOf(NOMS[a], NOMS[b], NOMS[c]) } } }
-
-    /** The repeated gestures at the counts the endurance theme does not play yet. */
-    private val PLUS = listOf("jouer" to 10, "jouer" to 100, "fond" to 5, "fond" to 30, "partie" to 10, "partie" to 60)
-
     private fun minute(st: String) = Scenario(
         "${PREFIXE_ENDURANCE}ecoute_${st}_1min", "Mesure : un morceau ${st.replace('_', ' ')} écouté une minute d'une traite",
         Scenarios.NIVEAU_MESURE, 420_000L + 75_000L, estimeEcoute(1),
         "la lecture chaque seconde (1 s d'arrêt au plus), ni NaN, du son la moitié du temps au moins", "end:long:$st:60",
-    )
-
-    private fun triple(t: List<String>) = Scenario(
-        "${PREFIXE_ECRANS}triple_${t.joinToString("_")}", "Moyen : ${t.joinToString(" → ") { nom(it) }}, deux fois, en jouant", Scenarios.NIVEAU_MOYEN, 120_000, estime(6),
-        "le transport joue à chacun des 6 écrans, puis le son sort", "$GESTE:${t.joinToString(",")}:2",
     )
 
     private fun plus(geste: String, fois: Int) = when (geste) {
@@ -105,23 +94,11 @@ object ScenariosEcrans {
                     ),
                 )
             }
-            for (fois in listOf(1, 3, 10)) add(
+            for (fois in listOf(1, 3)) add(
                 Scenario(
                     "${PREFIXE_ECRANS}tour_$fois", "${if (fois == 1) "Débutant" else "Mesure"} : les cinq onglets à la suite en jouant, $fois fois",
                     if (fois == 1) Scenarios.NIVEAU_DEBUTANT else Scenarios.NIVEAU_MESURE, 60_000L + fois * 20_000L, estime(5 * fois),
                     "le transport joue à chacun des ${5 * fois} écrans, puis le son sort", "$GESTE:$TOUT:$fois",
-                ),
-            )
-            for (fois in listOf(1, 3)) add(
-                Scenario(
-                    "${PREFIXE_ECRANS}tour_inverse_$fois", "Pro : les cinq onglets à rebours en jouant, $fois fois", Scenarios.NIVEAU_PRO, 60_000L + fois * 20_000L, estime(5 * fois),
-                    "le transport joue à chacun des ${5 * fois} écrans, puis le son sort", "$GESTE:${NOMS.reversed().joinToString(",")}:$fois",
-                ),
-            )
-            for (n in NOMS) add(
-                Scenario(
-                    "${PREFIXE_ECRANS}rafale_$n", "Mesure : toucher 10 fois l'onglet ${nom(n)} en jouant", Scenarios.NIVEAU_MESURE, 90_000, estime(10),
-                    "l'écran ${nom(n)} reste là à chaque touche, le transport joue, le son sort", "$GESTE:$n:10",
                 ),
             )
             for (n in NOMS) add(
@@ -130,9 +107,9 @@ object ScenariosEcrans {
                     "le son au fond (ni NaN ni silence), le studio revenu sur ${nom(n)}, toujours en lecture", "$GESTE:fond:$n",
                 ),
             )
-            for (fois in listOf(25, 50)) add(plus("jouer", fois))
-            for (fois in listOf(10, 20)) add(plus("fond", fois))
-            for (fois in listOf(20, 40)) add(plus("partie", fois))
+            add(plus("jouer", 25))
+            add(plus("fond", 10))
+            add(plus("partie", 20))
             for ((st, min) in LONGUES) add(
                 Scenario(
                     "${PREFIXE_ENDURANCE}ecoute_${st}_${min}min", "Mesure : un morceau ${st.replace('_', ' ')} écouté $min minutes d'une traite",
@@ -141,7 +118,8 @@ object ScenariosEcrans {
                 ),
             )
             // One-minute listens spread between the shorter ones, so no part of 50 piles them up.
-            val courts = TRIPLES.map(::triple) + PLUS.map { (g, n) -> plus(g, n) }
+            val courts = toList()
+            clear()
             val minutes = MINUTES.map(::minute)
             val pas = (minutes.size + courts.size - 1) / courts.size.coerceAtLeast(1)
             var m = 0

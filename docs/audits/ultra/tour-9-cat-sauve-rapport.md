@@ -10,4 +10,4 @@ tests: *ScenariosSauveTest
 
 ## Chemins
 
-chemin: BenStudio Test > Scénarios complets > export d'un style | test: ScenariosSauveTest#each one exports a real style in a format the export knows, and none repeats another
+chemin: BenStudio Test > Scénarios complets > export d'un style | test: ScenariosSauveTest#eachExportsARealStyleInAKnownFormatNoRepeat

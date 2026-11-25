@@ -9,7 +9,7 @@ class ScenariosSauveTest {
     private val sauve = Scenarios.LISTE.filter { it.id.startsWith("sav_") }
 
     @Test
-    fun `the save theme is in the run with its own ids`() {
+    fun saveThemeIsInTheRunWithItsOwnIds() {
         assertTrue(sauve.size.toString(), sauve.size >= 15)
         assertEquals(ScenariosSauve.LISTE.map { it.id }, sauve.map { it.id })
         val ids = Scenarios.LISTE.map { it.id }
@@ -17,7 +17,7 @@ class ScenariosSauveTest {
     }
 
     @Test
-    fun `each one exports a real style in a format the export knows, and none repeats another`() {
+    fun eachExportsARealStyleInAKnownFormatNoRepeat() {
         val styles = com.pocketstudio.model.StarterWizard.STYLES.map { it.id }.toSet()
         val deja = Scenarios.EXPORTS_STYLES.toSet() + listOf(Scenarios.STYLE to "m4a", Scenarios.STYLE to "wav", Scenarios.STYLE to "flac")
         for (s in sauve) {
@@ -34,7 +34,7 @@ class ScenariosSauveTest {
     }
 
     @Test
-    fun `each one is played in the full pack only`() {
+    fun eachIsPlayedInTheFullPackOnly() {
         val complet = Scenarios.liste(Scenarios.COMPLET).map { it.id }
         val rapide = Scenarios.liste(Scenarios.RAPIDE).map { it.id }
         for (s in sauve) {

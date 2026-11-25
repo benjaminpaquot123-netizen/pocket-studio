@@ -1,0 +1,129 @@
+// Tour 9, lot « kick-fable » (docs/decisions/tour-9-kick-fable.md): Benjamin, « le kick ne tape pas
+// assez » (a hollow kick). The studio kick used to add a swept body and a sub at the tune in free
+// phase: they beat and cancelled. Now one sine, saturated before its envelope, its pitch falling
+// from 4.5 x the tune over 35 ms, a 60 ms full hold, no separate sub.
+// Included by engine_tests.cpp (kept apart to ease merging).
+
+namespace kickbody_tests {
+
+// One studio kick at the techno settings (DrumKit::KickStudio's defaults), tuned to `tune` Hz.
+std::vector<float> renderKick(float tune, bool hard = false) {
+    ps::studio::Settings s;
+    s.tune = tune;
+    s.decay = 0.25f;
+    s.drive = hard ? 0.9f : 0.6f;
+    s.click = hard ? 0.4f : 0.5f;
+    s.sub = hard ? 0.3f : 0.5f;
+    ps::studio::StudioKick k;
+    k.hard = hard;
+    k.prepare(kRate, s);
+    k.hit(kRate, s, 1.0f);
+    std::vector<float> x(static_cast<size_t>(kRate / 2));
+    for (auto& v : x) v = k.process(kRate, s);
+    return x;
+}
+
+// Hann-windowed single-bin DFT magnitude at `hz` over [from, to).
+double binMag(const std::vector<float>& x, size_t from, size_t to, double hz) {
+    double re = 0.0, im = 0.0;
+    const double n = static_cast<double>(to - from);
+    for (size_t i = from; i < to; ++i) {
+        const double k = static_cast<double>(i - from);
+        const double w = 0.5 - 0.5 * std::cos(2.0 * M_PI * k / n);
+        const double ph = 2.0 * M_PI * hz * static_cast<double>(i) / kRate;
+        re += w * x[i] * std::cos(ph);
+        im += w * x[i] * std::sin(ph);
+    }
+    return std::sqrt(re * re + im * im);
+}
+
+double rms(const std::vector<float>& x, size_t from, size_t to) {
+    double e = 0.0;
+    for (size_t i = from; i < to; ++i) e += static_cast<double>(x[i]) * x[i];
+    return std::sqrt(e / static_cast<double>(to - from));
+}
+
+const size_t kMs = static_cast<size_t>(kRate / 1000);
+
+// The pitch at 70 ms: still well above the tune (the « boum » that is heard), 75..110 Hz for 55 Hz.
+void testPitchAt70ms() {
+    const auto x = renderKick(55.0f);
+    // Zero crossings between two upward crossings around 70 ms: one period.
+    size_t a = 70 * kMs, b = 0;
+    while (a < x.size() && !(x[a - 1] < 0.0f && x[a] >= 0.0f)) ++a;
+    for (b = a + 1; b < x.size(); ++b) if (x[b - 1] < 0.0f && x[b] >= 0.0f) break;
+    const double hz = static_cast<double>(kRate) / static_cast<double>(b - a);
+    std::printf("  kick pitch at 70 ms (tune 55): %.1f Hz\n", hz);
+    CHECK(hz > 75.0 && hz < 110.0);
+}
+
+// The body: 40-150 Hz between 20 and 100 ms carries most of the low weight of the whole hit (a
+// full, held body, not a blip that fades at once), and its level stays high (rms of the full mix).
+void testBodyEnergy() {
+    const auto x = renderKick(55.0f);
+    // 40-150 Hz: a 2-pole low-pass at 150 Hz then a 2-pole high-pass at 40 Hz.
+    ps::studio::Svf2 lp, hp;
+    lp.set(150.0f, 0.707f, kRate);
+    hp.set(40.0f, 0.707f, kRate);
+    std::vector<float> y(x.size());
+    for (size_t i = 0; i < x.size(); ++i) y[i] = hp.high(lp.low(x[i]));
+    const double body = studio_tests::energy(y, 20 * kMs, 100 * kMs);
+    const double whole = studio_tests::energy(y, 0, 400 * kMs);
+    const double level = rms(y, 20 * kMs, 100 * kMs);
+    std::printf("  kick body: 40-150 Hz in 20-100 ms = %.0f %% of the hit's, %.2f rms\n", 100.0 * body / whole, level);
+    CHECK(body > 0.6 * whole);
+    CHECK(level > 0.45);
+}
+
+// No hollow: the level in 5 ms frames never comes back up by more than 1.5 dB after 20 ms (a dip
+// then a rise is two layers beating).
+void testNoBeating() {
+    for (float tune : {45.0f, 55.0f, 65.0f}) {
+        const auto x = renderKick(tune);
+        double worst = 0.0;
+        double low = 1e9;
+        for (size_t f = 20 * kMs; f + 5 * kMs <= 250 * kMs; f += 5 * kMs) {
+            const double r = rms(x, f, f + 5 * kMs);
+            if (r < low) low = r;
+            worst = std::max(worst, 20.0 * std::log10(r / std::max(low, 1e-12)));
+        }
+        std::printf("  kick tuned %.0f Hz: worst rise after a dip %.2f dB\n", tune, worst);
+        CHECK(worst < 1.5);
+    }
+}
+
+// The saturation sits before the envelope: the tail keeps its 3rd harmonic 9 to 18 dB under the
+// fundamental (heard on a phone), instead of a pure sine fading out.
+void testThirdHarmonic() {
+    const auto x = renderKick(55.0f);
+    const size_t from = 200 * kMs, to = 300 * kMs;
+    const double f0 = toneHz(x, from, to);
+    const double h1 = binMag(x, from, to, f0), h3 = binMag(x, from, to, 3.0 * f0);
+    const double db = 20.0 * std::log10(std::max(h3, 1e-12) / std::max(h1, 1e-12));
+    std::printf("  kick tail: %.1f Hz, 3rd harmonic %+.1f dB\n", f0, db);
+    CHECK(db > -18.0 && db < -9.0);
+}
+
+// The hard kick: one sine too (no beating), still the deeper « doof », finite and bounded.
+void testHardKick() {
+    const auto x = renderKick(55.0f, true);
+    CHECK(studio_tests::allFinite(x));
+    CHECK(studio_tests::peakOf(x) < 0.95f);
+    double worst = 0.0, low = 1e9;
+    for (size_t f = 20 * kMs; f + 5 * kMs <= 200 * kMs; f += 5 * kMs) {
+        const double r = rms(x, f, f + 5 * kMs);
+        if (r < low) low = r;
+        worst = std::max(worst, 20.0 * std::log10(r / std::max(low, 1e-12)));
+    }
+    std::printf("  hard kick: worst rise after a dip %.2f dB\n", worst);
+    CHECK(worst < 1.5);
+}
+
+}  // namespace kickbody_tests
+
+#define PS_KICKBODY_TESTS                                         \
+    {"kb_pitch_at_70ms", kickbody_tests::testPitchAt70ms},       \
+    {"kb_body_energy", kickbody_tests::testBodyEnergy},          \
+    {"kb_no_beating", kickbody_tests::testNoBeating},            \
+    {"kb_third_harmonic", kickbody_tests::testThirdHarmonic},    \
+    {"kb_hard_kick", kickbody_tests::testHardKick},

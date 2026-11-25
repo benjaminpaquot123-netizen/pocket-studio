@@ -213,3 +213,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - [ ] 2026-11-24 (A/B, boom_bap) : sans avis ; « on dirait de vieilles musiques polyphoniques, des musiques qui paraissaient déjà vieilles quand j'étais petit ; ça m'interloque. »
 - [ ] 2026-11-24 (A/B, trap « après ») : « sympa avec le carillon, franchement c'est top. » → garder.
 - [ ] 2026-11-24 (A/B, lofi) : sans avis (« j'y connais rien »). Benjamin : son avis n'est pas définitif sur tout ça, il faut continuer à travailler.
+- [ ] 2026-11-25 (A/B, dnb) : comparé à « Brown Paper Bag » (Roni Size), drums + basse = vraie DnB classique ; notre DnB n'en a pas du tout le son (tempo peut-être juste, mais kick, basse et rythmique ne sonnent pas DnB). À refaire sur cette référence.

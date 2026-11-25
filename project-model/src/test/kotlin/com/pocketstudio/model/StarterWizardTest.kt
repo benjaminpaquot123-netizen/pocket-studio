@@ -75,7 +75,8 @@ class StarterWizardTest {
         val recipe = style.melody.acid!!
         // Without chords nor lead, the acid line plays in the Couplet and the Refrain (B and C).
         val p = StarterWizard.build(style, mapOf(StarterWizard.Role.Kick to null), StarterWizard.Mood.Dark).switchScene(2)
-        assertEquals(16, p.acid.length)
+        // Two bars of 303 since tour 9: the second answers the first.
+        assertEquals(32, p.acid.length)
         assertEquals(36 + style.melody.root, p.acid.root)
         recipe.pattern.forEachIndexed { i, c -> assertEquals("step $i", c != '.' && c != '-', p.acid.steps[i].gate) }
         recipe.accents.forEachIndexed { i, c -> assertEquals("accent $i", c == 'x', p.acid.steps[i].accent) }
@@ -302,15 +303,16 @@ class StarterWizardTest {
                 // The rumble is the kick's tail: it plays wherever the kick plays.
                 R.Kick, R.Rumble -> listOf(true, true, true, false)
                 R.Hat, R.Perc -> listOf(true, true, true, true)
-                // The open hat and the ride wait for the Drop.
-                R.OpenHat, R.Ride -> listOf(false, false, true, false)
+                // The open hat, the ride and the crash (each phrase's impact) wait for the Drop.
+                R.OpenHat, R.Ride, R.Perc2 -> listOf(false, false, true, false)
                 else -> listOf(false, true, true, false)
             }
             assertEquals(line.role.title, expected, p.drumsIn(line.role))
         }
         assertEquals(listOf(false, true, true, false), p.notesIn(bass.id))
         assertEquals(listOf(false, true, true, true), p.notesIn(pad.id))
-        assertEquals(listOf(false, false, true, true), p.notesIn(lead.id))
+        // Tour 9 gr-techno: the techno lead is a metallic stab held for the Drop; the Break leaves it out.
+        assertEquals(listOf(false, false, true, false), p.notesIn(lead.id))
         // Club music of about 3 minutes (house): Intro 16, Groove 8 and Montée 8, Drop 16, Break 8, Montée 8, Drop 16, Intro 16.
         val house = StarterWizard.sectionsOf(124.0, StarterWizard.SongForm.Club, hasBreak = true)
         assertEquals(listOf(16 to 0, 16 to 1, 16 to 2, 8 to 3, 8 to 1, 16 to 2, 16 to 0), house)

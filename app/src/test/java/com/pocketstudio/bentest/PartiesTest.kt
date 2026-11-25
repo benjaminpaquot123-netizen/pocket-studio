@@ -3,6 +3,9 @@ package com.pocketstudio.bentest
 import android.app.Application
 import android.content.Intent
 import androidx.activity.ComponentActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -65,12 +68,10 @@ class PartiesTest {
     fun eachPartStartsAloneTheDoneOnesAreTickedAndTheReportButtonIsAtTheBottom() {
         val started = ArrayList<Int>()
         var tout = 0
+        var etat by mutableStateOf(Robot.Etat())
+        var faites by mutableStateOf(setOf(1))
         compose.setContent {
-            BenTestScreen(
-                Robot.Etat(), emptyList(),
-                BenTestActions(startPartie = { started += it }, sendTout = { tout++ }),
-                faites = setOf(1),
-            )
+            BenTestScreen(etat, emptyList(), BenTestActions(startPartie = { started += it }, sendTout = { tout++ }), faites = faites)
         }
         compose.onNodeWithTag("bentest_partie_1").assertTextContains("✓", substring = true)
         compose.onNodeWithTag("bentest_partie_1").assertTextContains("Partie 1", substring = true)
@@ -92,16 +93,20 @@ class PartiesTest {
         assertEquals(1, tout)
 
         // After a part, the next one is offered right under its verdict.
-        compose.setContent {
-            BenTestScreen(
-                Robot.Etat(verdict = "50 passés", passage = Robot.SCENARIOS), emptyList(),
-                BenTestActions(startPartie = { started += it }), faites = setOf(1, 2),
-            )
-        }
+        etat = Robot.Etat(verdict = "50 passés", passage = Robot.SCENARIOS)
+        faites = setOf(1, 2)
+        compose.waitForIdle()
         compose.onNodeWithTag("bentest_partie_2").assertTextContains("✓", substring = true)
         compose.onNodeWithTag("bentest_partie_3").performScrollTo().performClick()
         assertEquals(listOf(2, 3), started)
         assertNotNull(compose.onNodeWithTag("bentest_rapport_tout").fetchSemanticsNode())
+
+        // During a part: « Partie 2 · Test 3 sur 50 » (counted in the part) and the test being played.
+        val nom = Scenarios.liste(Scenarios.partie(2))[2].label
+        etat = Robot.Etat(running = true, passage = Robot.SCENARIOS, step = nom, numero = 3, total = 50, partie = 2)
+        compose.waitForIdle()
+        compose.onNodeWithTag("bentest_compteur").assertTextContains("Partie 2 · Test 3 sur 50")
+        compose.onNodeWithTag("bentest_step").assertTextContains(nom, substring = true)
     }
 
     @Test

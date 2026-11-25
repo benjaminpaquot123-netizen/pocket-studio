@@ -71,9 +71,11 @@ class BenTestActivity : ComponentActivity() {
                 val granted = remember(refresh) { PERMISSIONS.associate { (p, _) -> p to (ContextCompat.checkSelfPermission(this, p) == PackageManager.PERMISSION_GRANTED) } }
                 LaunchedEffect(Unit) { Robot.look(this@BenTestActivity) }
                 val candidats = remember(etat.running, etat.verdict) { Robot.candidats(this@BenTestActivity) }
+                val faites = remember(etat.running, etat.verdict) { Robot.partiesFaites(this@BenTestActivity) }
                 BenTestScreen(
                     etat = etat,
                     candidats = candidats,
+                    faites = faites,
                     granted = PERMISSIONS.map { (p, label) -> Triple(p, label, granted[p] == true) },
                     actions = BenTestActions(
                         allow = { p -> ask.launch(p) },
@@ -82,6 +84,8 @@ class BenTestActivity : ComponentActivity() {
                         startScenarios = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.RAPIDE) },
                         startScenariosComplets = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.COMPLET) },
                         startRates = { Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.RATES) },
+                        // A part starts a fresh run (the part before it is already kept, Robot.archiverPartie).
+                        startPartie = { n -> Robot.reset(this); Robot.start(application, Robot.SCENARIOS, paquet = Scenarios.partie(n)) },
                         startRetest = { ids -> Robot.start(application, Robot.TOUT, ids) },
                         startOreille = { Robot.start(application, Robot.OREILLE) },
                         startGuides = { Robot.start(application, Robot.GUIDES) },
@@ -96,6 +100,7 @@ class BenTestActivity : ComponentActivity() {
                         answer = Robot::answer,
                         reset = { Robot.reset(this) },
                         send = ::send,
+                        sendTout = ::sendTout,
                     ),
                 )
             }
@@ -117,6 +122,14 @@ class BenTestActivity : ComponentActivity() {
     private fun send() {
         lifecycleScope.launch {
             val ok = withContext(Dispatchers.IO) { runCatching { Robot.share(this@BenTestActivity) }.getOrDefault(false) }
+            if (!ok) android.widget.Toast.makeText(this@BenTestActivity, "Le rapport n'a pas pu être préparé.", android.widget.Toast.LENGTH_LONG).show()
+        }
+    }
+
+    /** « Générer le rapport et l'envoyer »: every part played and the last run, straight into the share menu. */
+    private fun sendTout() {
+        lifecycleScope.launch {
+            val ok = withContext(Dispatchers.IO) { runCatching { Robot.shareTout(this@BenTestActivity) }.getOrDefault(false) }
             if (!ok) android.widget.Toast.makeText(this@BenTestActivity, "Le rapport n'a pas pu être préparé.", android.widget.Toast.LENGTH_LONG).show()
         }
     }
@@ -151,11 +164,39 @@ class BenTestActions(
     val answer: (Boolean) -> Unit = {},
     val reset: () -> Unit = {},
     val send: () -> Unit = {},
+    /** « Partie n » of the full scenarios (50 at most), alone. */
+    val startPartie: (Int) -> Unit = {},
+    /** « Générer le rapport et l'envoyer »: every part played and the last run in one zip, then the share menu. */
+    val sendTout: () -> Unit = {},
 )
+
+/** « Partie 1, Partie 2… »: the full scenarios by 50, each launched alone; [faites] ticked. */
+@Composable
+private fun Parties(faites: Set<Int>, start: (Int) -> Unit) {
+    val n = Scenarios.NB_PARTIES
+    // The estimates are about twice the real time (Scenarios.estimeS).
+    val minutes = (Scenarios.liste(Scenarios.partie(1)).sumOf { it.estimeS } / 2 / 60).coerceAtLeast(1)
+    Text("Scénarios complets en parties", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.padding(top = 8.dp))
+    Text(
+        "$n parties de ${Scenarios.TAILLE_PARTIE} scénarios au plus, environ $minutes minutes chacune. Lance-les une par une, quand tu veux : " +
+            "les parties faites sont cochées. ${faites.size} sur $n faite" + (if (faites.size > 1) "s" else "") + ".",
+        color = Neon.TextSecondary, modifier = Modifier.testTag("bentest_parties_aide"),
+    )
+    var debut = 1
+    for (i in 1..n) {
+        val taille = Scenarios.liste(Scenarios.partie(i)).size
+        val label = "Partie $i (scénarios $debut à ${debut + taille - 1})"
+        debut += taille
+        val faite = i in faites
+        OutlinedButton(onClick = { start(i) }, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_partie_$i")) {
+            Text(if (faite) "✓ $label" else label, color = if (faite) Neon.Acid else Neon.TextPrimary)
+        }
+    }
+}
 
 /** The screen, from [etat] alone ([granted]: each permission, its button's words, given or not). */
 @Composable
-fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean>>, actions: BenTestActions, candidats: List<Robot.Candidat> = emptyList()) {
+fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean>>, actions: BenTestActions, candidats: List<Robot.Candidat> = emptyList(), faites: Set<Int> = emptySet()) {
     var liste by remember { mutableStateOf(false) }
     var micro by remember { mutableStateOf(false) }
     val coches = remember(candidats) { mutableStateMapOf<String, Boolean>().apply { candidats.forEach { put(it.id, it.coche) } } }
@@ -177,14 +218,14 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
             etat.running -> {
                 Text("Le robot travaille… Pose le téléphone, il revient ici tout seul.", color = Neon.TextPrimary)
                 if (etat.total > 0) {
-                    Text("Test ${etat.numero} sur ${etat.total}", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_compteur"))
+                    Text((if (etat.partie > 0) "Partie ${etat.partie} · " else "") + "Test ${etat.numero} sur ${etat.total}", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary, modifier = Modifier.testTag("bentest_compteur"))
                     LinearProgressIndicator(
                         progress = { etat.numero.toFloat() / etat.total },
                         modifier = Modifier.fillMaxWidth().testTag("bentest_compteur_barre"),
                         color = Neon.Cyan,
                     )
                 }
-                etat.step?.let { Text("Étape : $it", color = Neon.Cyan, modifier = Modifier.testTag("bentest_step")) }
+                etat.step?.let { Text("Test en cours : $it", color = Neon.Cyan, modifier = Modifier.testTag("bentest_step")) }
             }
             else -> {
                 Text("Préparation", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
@@ -203,6 +244,8 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                         color = Neon.Amber, modifier = Modifier.testTag("bentest_extraits"),
                     )
                     Button(onClick = actions.send, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_envoyer")) { Text("Envoyer le rapport") }
+                    // After a part, the next one right under its verdict.
+                    if (etat.passage == Robot.SCENARIOS) Parties(faites, actions.startPartie)
                 }
                 if (etat.interrompu == null && etat.verdict == null && micro) {
                     Text("Écoute au micro", style = MaterialTheme.typography.titleMedium, color = Neon.TextPrimary)
@@ -263,6 +306,7 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     OutlinedButton(onClick = actions.startScenarios, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_scenarios")) { Text("Scénarios rapides") }
                     Text("Scénarios complets : ${Scenarios.LISTE.size} scénarios, de 30 minutes à 1 heure, chargeur branché. En plus : tous les styles, chaque effet, chaque piste, les pads, les tempos extrêmes, les répétitions, le Guide sur 3 styles.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.startScenariosComplets, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_scenarios_complets")) { Text("Scénarios complets") }
+                    Parties(faites, actions.startPartie)
                     Text("Essai éclair : environ 5 minutes. Le robot fait 3 morceaux, 1 export, visite 5 écrans, puis te pose 1 question.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.start, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_lancer")) { Text("Lancer l'essai éclair") }
                     Text("Questions à l'oreille : environ 10 minutes. Le robot lance les morceaux, une question à la fois s'affiche en haut de l'écran : ✅ ou ❌.", color = Neon.TextSecondary)
@@ -277,6 +321,8 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     OutlinedButton(onClick = actions.reset, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("bentest_recommencer")) { Text("Tout recommencer") }
                 }
                 etat.message?.let { Text(it, color = Neon.TextSecondary) }
+                // The screen's last button: every part played and the last run, in one tap.
+                Button(onClick = actions.sendTout, modifier = Modifier.padding(top = 8.dp).fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_rapport_tout")) { Text("Générer le rapport et l'envoyer") }
             }
         }
     }

@@ -624,19 +624,27 @@ internal class DrumsChanged(val label: String) : Changed() {
     // The hits of every pad in the part.
     override fun arm(p: Project) = sceneLabelled(p, label).takeIf { it >= 0 }?.let { i -> sceneAt(p, i).drums.lanes.map { it.hits } }
 
+    // As many new hits on the variation's pads as the words ask for (seat d, tour 9: « touche 4 cases » passed at the first).
     override fun done(step: TutoStep, p: Project, target: TutoTarget, armed: Any?) = (armed as? List<*>)?.let { base ->
-        arm(p)?.withIndex()?.any { (i, now) -> i in variationLanes() && (now.keys - (base.getOrNull(i) as? Map<*, *>)?.keys.orEmpty()).isNotEmpty() }
-    } == true
+        arm(p)?.withIndex()?.sumOf { (i, now) -> if (i in variationLanes()) (now.keys - (base.getOrNull(i) as? Map<*, *>)?.keys.orEmpty()).size else 0 }
+    }?.let { it >= step.count.coerceAtLeast(1) } == true
 
     override fun shown(step: TutoStep, p: Project, target: TutoTarget, level: TutoLevel?) = inScene(p, label) { q ->
-        // A variation: an open hat on an empty cell near the end (the second to last first), else a percussion's.
         val n = q.drums.steps
-        val cells = (n - 2 downTo n / 2) + (n - 1 downTo n / 2)
-        val free = (listOf(OPEN_HAT_LANE) + variationLanes().filter { it != OPEN_HAT_LANE }.sorted()).firstNotNullOfOrNull { l ->
-            cells.firstOrNull { it !in q.drums.lanes[l].hits }?.let { l to it }
+        val free = if (step.count > 1) {
+            // The counted variation: its pad, one hit a beat of the first bar, then any empty cell.
+            val lane = laneOf(step.target.substringBefore(',').trim()).takeIf { it in variationLanes() } ?: OPEN_HAT_LANE
+            val beat = (p.stepsPerBar / 4).coerceAtLeast(1)
+            val cells = ((0 until minOf(n, p.stepsPerBar) step beat) + (0 until n)).distinct()
+            cells.filter { it !in q.drums.lanes[lane].hits }.take(step.count).map { lane to it }
+        } else {
+            // A variation: an open hat on an empty cell near the end (the second to last first), else a percussion's.
+            val cells = (n - 2 downTo n / 2) + (n - 1 downTo n / 2)
+            listOfNotNull((listOf(OPEN_HAT_LANE) + variationLanes().filter { it != OPEN_HAT_LANE }.sorted()).firstNotNullOfOrNull { l ->
+                cells.firstOrNull { it !in q.drums.lanes[l].hits }?.let { l to it }
+            })
         }
-        if (free == null) q
-        else q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> if (i == free.first) l.copy(hits = l.hits + (free.second to Hit(0.8f))) else l }))
+        q.copy(drums = q.drums.copy(lanes = q.drums.lanes.mapIndexed { i, l -> l.copy(hits = l.hits + free.filter { it.first == i }.map { it.second to Hit(0.8f) }) }))
     }
     override fun workPart(step: TutoStep, p: Project) = label
     override fun cited(step: TutoStep) = listOf(label)

@@ -465,6 +465,7 @@
           "text": "À toi : dans le Drop 2, pad « Shaker », touche 4 cases, une par temps de la mesure 1.",
           "textPro": "À toi : dans le Drop 2, ajoute des coups sur le pad « Shaker » (ou un charley ouvert de plus) : une couche de plus tous les 16, la règle house.",
           "check": "changed:drums:Drop 2",
+          "count": 4,
           "target": "perc2",
           "spot": "rhythm.pattern",
           "listen": "vs:Drop:Drop 2"

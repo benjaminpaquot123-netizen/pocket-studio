@@ -174,6 +174,12 @@ class InAppDriver(
 
     /** Each list that holds [tag], from the nearest out, scrolled by what it lacks to show it whole. */
     override fun scrollTo(tag: String) {
+        // A long glide (a 400-row checklist) can outlast one settle: scroll again until it is in view (tour 9, cat-400).
+        repeat(4) { if (!scrollOnce(tag)) return }
+    }
+
+    /** One scroll toward [tag], then its glide; false when it was already in view. */
+    private fun scrollOnce(tag: String): Boolean {
         val moved = main.run {
             val node = one(tag).node
             // Where it is, whole: its bounds are clipped (zero) while the list hides it.
@@ -199,6 +205,7 @@ class InAppDriver(
             any
         }
         if (moved) settle(tag)
+        return moved
     }
 
     /**

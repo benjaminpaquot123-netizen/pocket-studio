@@ -68,6 +68,18 @@ class ToutTesterTest {
     }
 
     @Test
+    fun fewerReadingsThanOneWholeSecondAreNotHeardRatherThanASilence() {
+        // A machine too slow to listen (ToutTester.ecouter's cap reached): not heard, which the scenarios say « non mesuré ».
+        for (n in 0 until Ecoute.READS_PER_SECOND) {
+            val b = Ecoute.bilan(List(n) { steady(it) }, xrunsBefore = 3)
+            assertEquals(false, b.entendu())
+            assertEquals(null, b.sonne())
+        }
+        assertEquals(true, Ecoute.bilan(reads(1) { steady(it) }, xrunsBefore = 3).sonne())
+        assertEquals(false, Ecoute.bilan(reads(1) { steady(it, peak = 0.001f) }, xrunsBefore = 3).sonne())
+    }
+
+    @Test
     fun anIsolatedPopIsAJump() {
         val pop = reads(6) { i -> steady(i, peak = if (i == 10) 0.9f else 0.1f) }
         assertEquals(listOf("SAUT" to 2), Ecoute.alertes(pop).map { it.kind to it.second })

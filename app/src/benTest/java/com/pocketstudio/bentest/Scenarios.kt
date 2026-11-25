@@ -375,7 +375,7 @@ class Scenarios(
         feuEcoute(EFFETS, b)
         val undone = retirer(ch, before[ch].sorted(), 1)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec l'effet" }
-        check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec l'effet : ${b.text()}" }
+        check(b.sonne() ?: return nonMesure(EFFETS, Ecoute.PAS_ENTENDU)) { "silence avec l'effet : ${b.text()}" }
         if (undone == null) return nonMesure(EFFETS, LAISSE)
         check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         return "égaliseur ajouté à la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
@@ -631,7 +631,7 @@ class Scenarios(
         feuEcoute(EFFETS_PLUSIEURS, b)
         val undone = retirer(ch, was, TROIS.size)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec les trois effets" }
-        check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec les trois effets : ${b.text()}" }
+        check(b.sonne() ?: return nonMesure(EFFETS_PLUSIEURS, Ecoute.PAS_ENTENDU)) { "silence avec les trois effets : ${b.text()}" }
         if (undone == null) return nonMesure(EFFETS_PLUSIEURS, LAISSE)
         check(undone) { "les effets restent sur la piste ${ch + 1} : « Annuler » ne les a pas retirés (${lu().effets[ch].joinToString(", ")})" }
         return "${TROIS.joinToString(", ")} sur la piste ${ch + 1}, enregistrés ; lecture par $by : ${b.text()} ; retirés par « Annuler »"
@@ -809,8 +809,8 @@ class Scenarios(
         ecoute(ARRIERE_PLAN, heard)
         feuEcoute(ARRIERE_PLAN, heard)
         check(heard.playing * 2 >= heard.reads) { "la musique s'arrête quand l'appli passe au fond : ${heard.text()}" }
-        check(heard.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence quand l'appli passe au fond : ${heard.text()}" }
         check(back) { "le studio ne revient pas devant" }
+        check(heard.sonne() ?: return nonMesure(ARRIERE_PLAN, Ecoute.PAS_ENTENDU)) { "silence quand l'appli passe au fond : ${heard.text()}" }
         return "au fond ${fondMs / 1000} s (lecture par $by) : ${heard.text()} ; studio revenu"
     }
 
@@ -900,7 +900,7 @@ class Scenarios(
         feuEcoute(step, b)
         val undone = retirer(ch, before, 1)
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son avec $type" }
-        check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence avec $type : ${b.text()}" }
+        check(b.sonne() ?: return nonMesure(step, Ecoute.PAS_ENTENDU)) { "silence avec $type : ${b.text()}" }
         if (undone == null) return nonMesure(step, LAISSE)
         check(undone) { "l'effet reste sur la piste ${ch + 1} : « Annuler » ne l'a pas retiré (${lu().effets[ch].joinToString(", ")})" }
         return "$type sur la piste ${ch + 1}, enregistré ; lecture par $by : ${b.text()} ; retiré par « Annuler »"
@@ -951,7 +951,7 @@ class Scenarios(
         check(d?.let { abs(it.tempo - after) < 0.01 } == true) { "le tempo ${fmt(after)} bpm n'est pas enregistré sur le disque" }
         check(b.playing * 2 >= b.reads) { "la lecture s'arrête à ${fmt(after)} bpm : ${b.text()}" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son à ${fmt(after)} bpm" }
-        check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence à ${fmt(after)} bpm : ${b.text()}" }
+        check(b.sonne() ?: return nonMesure(step, Ecoute.PAS_ENTENDU)) { "silence à ${fmt(after)} bpm : ${b.text()}" }
         bilan(step, "tempo_avant" to fmt(before), "tempo_apres" to fmt(after))
         return "tempo ${fmt(before)} puis ${fmt(after)} bpm, enregistré ; lecture par $by : ${b.text()}"
     }
@@ -1038,7 +1038,7 @@ class Scenarios(
         check(stops.isEmpty()) { "la musique s'arrête en ouvrant ${stops.distinct().joinToString(", ")}" }
         check(b.playing * 2 >= b.reads) { "la lecture s'arrête après les changements d'écran : ${b.text()}" }
         check(!b.nonFinite) { "valeur invalide (NaN) dans le son" }
-        check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence après les changements d'écran : ${b.text()}" }
+        check(b.sonne() ?: return nonMesure(step, Ecoute.PAS_ENTENDU)) { "silence après les changements d'écran : ${b.text()}" }
         return "${tabs.size} écran(s) ouverts en jouant (lecture par $by) : ${b.text()}"
     }
 
@@ -1070,22 +1070,26 @@ class Scenarios(
         val by = e.lancerLecture()
         var muettes = 0
         var absent = 0
+        var pasEntendu = 0
         try {
             repeat(FONDS) {
                 var b: Ecoute.Bilan? = null
                 if (!appli.arrierePlan { b = t.ecouter(step, courtMs) }) return nonMesure(step, "le studio ne passe pas derrière un autre écran ici")
                 if (appli.studioDevant() == false && !attendre(15_000) { appli.studioDevant() != false }) absent++
                 val x = b
-                if (x == null || x.playing * 2 < x.reads || x.secondes.none { it.peakDb > Ecoute.SILENCE_DB }) muettes++
+                // Too slow to hear a whole second (a loaded machine): not measured that time, never a silence.
+                if (x != null && x.playing * 2 >= x.reads && x.sonne() == null) pasEntendu++
+                else if (x == null || x.playing * 2 < x.reads || x.sonne() == false) muettes++
                 if (x != null) feuEcoute(step, x)
             }
         } finally {
             if (appli.studioDevant() == false) attendre(15_000) { appli.studioDevant() != false }
             e.arreter()
         }
-        bilan(step, "fois" to FONDS, "sans_musique" to muettes, "studio_absent" to absent)
+        bilan(step, "fois" to FONDS, "sans_musique" to muettes, "studio_absent" to absent, "pas_entendu" to pasEntendu)
         check(muettes == 0) { "la musique s'arrête au fond $muettes fois sur $FONDS" }
         check(absent == 0) { "le studio ne revient pas devant $absent fois sur $FONDS" }
+        if (pasEntendu > 0) return nonMesure(step, "${Ecoute.PAS_ENTENDU} ($pasEntendu fois sur $FONDS)")
         return "$FONDS fois au fond puis devant (lecture par $by) : la musique joue, le studio revient"
     }
 

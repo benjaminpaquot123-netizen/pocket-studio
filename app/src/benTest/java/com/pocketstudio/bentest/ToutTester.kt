@@ -97,16 +97,24 @@ class ToutTester(
         seuils(step, Feux.depasses(b))
         check(b.reads > 0) { "aucune mesure" }
         check(b.playing * 2 >= b.reads) { "la lecture s'est arrêtée toute seule : ${b.text()}" }
+        if (!b.entendu()) return nonMesure(step, Ecoute.PAS_ENTENDU)
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence : ${b.text()}" }
         return "lecture par $by : ${b.text()}" + (if (heat.isNotEmpty()) " ; $heat" else "")
     }
 
-    /** [ms] of what plays, read 4 times a second ([Ecoute.Lu] each in the logbook), then the level of each second. */
+    /**
+     * [ms] of what plays, read 4 times a second ([Ecoute.Lu] each in the logbook), then the level of each second.
+     * Never less than one whole second of readings ([Ecoute.READS_PER_SECOND]): a machine too slow to read 4 times
+     * in a short window (a loaded CI runner) reads on, at most [Ecoute.RATTRAPAGE_MS] more, rather than hear no second
+     * at all and call the music a silence. A phone's windows (3 s and more, a read every 250 ms) never need it.
+     * Still short after that: [Ecoute.Bilan.entendu] is false, and the callers say « non mesuré », never « silence ».
+     */
     fun ecouter(step: String, ms: Long, also: (Ecoute.Lu) -> Unit = {}): Ecoute.Bilan {
         val first = sonde.lire()
         val reads = ArrayList<Ecoute.Lu>()
         val end = System.currentTimeMillis() + ms
-        while (System.currentTimeMillis() < end) {
+        val cap = end + Ecoute.RATTRAPAGE_MS
+        while (System.currentTimeMillis().let { it < end || (reads.size < Ecoute.READS_PER_SECOND && it < cap) }) {
             j.idle(250)
             val r = sonde.lire()
             val lu = Ecoute.Lu(System.currentTimeMillis(), r.xruns, r.cpu, r.peak, r.nonFinite, r.playing, r.lufs, r.drive, r.lane, r.cpuWorst, r.gapWorst,

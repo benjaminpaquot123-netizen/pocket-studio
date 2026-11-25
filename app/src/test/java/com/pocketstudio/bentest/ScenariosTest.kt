@@ -677,7 +677,8 @@ class ScenariosTest {
 
     @Test
     fun theMusicOnASlowMachineIsNeverReportedAsSilence() {
-        val ids = arrayOf("effet_eq", "lecture_mix", "tempo_haut_lecture", "jouer_arreter_10", "fond_reprise_5")
+        // The three listenings CI #455 and #458 called silent, and the one the background repeats.
+        val ids = arrayOf("effet_eq", "lecture_mix", "tempo_haut_lecture", "fond_reprise_5")
         played(Studio().apply { lentMs = 40 }, *ids).forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
     }
 

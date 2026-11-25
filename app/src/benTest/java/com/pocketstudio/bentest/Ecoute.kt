@@ -81,11 +81,20 @@ object Ecoute {
             (lufsMax()?.let { "niveau ${String.format(Locale.ROOT, "%.1f", it)} LUFS, " } ?: "") +
             "alertes : ${if (alertes.isEmpty()) "aucune" else alertes.joinToString(" ; ") { it.text() }}"
 
+        /** At least one whole second was read: false, the machine was too slow to listen (not measured, never a silence). */
+        fun entendu(): Boolean = secondes.isNotEmpty()
+
+        /** Heard, and some second louder than [SILENCE_DB]; null: not heard ([entendu] false). */
+        fun sonne(): Boolean? = if (!entendu()) null else secondes.any { it.peakDb > SILENCE_DB }
+
         /** The level of each second (dBFS, one decimal), for the report's numbers. */
         fun niveaux(): String = secondes.joinToString(",") { String.format(Locale.ROOT, "%.1f", it.peakDb) }
     }
 
     const val READS_PER_SECOND = 4
+    /** How much longer than its window a listening may read on to get its first whole second (a slow machine). */
+    const val RATTRAPAGE_MS = 30_000L
+    const val PAS_ENTENDU = "la machine n'a pas eu le temps d'écouter une seconde entière : à réécouter"
     const val SILENCE_DB = -50f
     const val FONDU_DB = 6f
     const val FONDU_GAIN_DB = 3f

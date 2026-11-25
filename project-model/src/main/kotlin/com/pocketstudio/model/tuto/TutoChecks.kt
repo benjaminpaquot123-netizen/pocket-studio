@@ -1450,6 +1450,15 @@ object TutoChecks {
         val model = t.plaits.model
         if (knobs.all { com.pocketstudio.model.PlaitsPatch.knobFor(model, it) != null }) return t
         if (knobs.any { com.pocketstudio.model.PlaitsPatch.knobFor(com.pocketstudio.model.PlaitsPatch.VA_VCF, it) == null }) return t
+        // Tour 9 (gr-techno): the library's VA-VCF sound of the same family (the techno lead « Stab métallique » becomes
+        // « Lead filtré »), so the track's bar names a real sound, never the bare « Plaits » of another sound's knobs.
+        // The mix's trim on the sound (its gain over the library's) carries over.
+        val mine = com.pocketstudio.model.SoundLibrary.PLAITS.firstOrNull { it.sound == t.plaits.copy(level = it.sound.level, gain = it.sound.gain) }
+        val named = com.pocketstudio.model.SoundLibrary.PLAITS.firstOrNull { it.category == mine?.category && it.sound.model == com.pocketstudio.model.PlaitsPatch.VA_VCF }
+        if (mine != null && named != null) {
+            val trim = SynthPatch.gainDb(t.plaits.gain) - SynthPatch.gainDb(mine.sound.gain)
+            return t.copy(plaits = named.sound.copy(gain = SynthPatch.gainValue(SynthPatch.gainDb(named.sound.gain) + trim)))
+        }
         return t.copy(plaits = t.plaits.copy(model = com.pocketstudio.model.PlaitsPatch.VA_VCF))
     }
 

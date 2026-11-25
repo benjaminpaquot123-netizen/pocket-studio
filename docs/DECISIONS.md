@@ -1589,3 +1589,7 @@
 - 2026-11-25 · lot « porte-paquet » (tour-9) : 5 décision(s) dans `docs/decisions/tour-9-porte-paquet.md`
 - 2026-11-25 · lot « kick-ci » (tour-9) : 5 décision(s) dans `docs/decisions/tour-9-kick-ci.md`
 - 2026-11-25 · lot « robot1b » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-robot1b.md`
+- 2026-11-25 · Ménage des discussions : `list_sessions(mine:true)` à chaque réveil et début de session, archivage des finies (Benjamin compris). Raison : Benjamin devait le rappeler tous les 1-2 jours. Retour : demande de Benjamin.
+- 2026-11-25 · Nouvelle discussion de Benjamin : repérée par la liste à chaque réveil (aucune alerte n'existe), prise dans l'équipe ; ouverture d'une Fable signalée en une ligne. Raison : doublon « Lots qui plantent » / Fable ci-fiab. Retour : demande de Benjamin.
+- 2026-11-25 · Fable dès qu'un problème revient au moins 2 fois, une discussion par problème, fermeture des discussions inutiles (consignes de Benjamin). Retour : demande de Benjamin.
+- 2026-11-25 · Avant-après audio : un fichier par style ; gr-styles republié en gr-styles2 ; lots recalés au pré-vol remis à niveau par deux discussions. Retour : rouvrir l'ancienne branche.

@@ -65,6 +65,28 @@ class Tour7TutoHiddenNoteTest {
         assertEquals(0f to 0f, TutoRollHint.brought(left, v, 16, touched = false))
     }
 
+    /**
+     * Tour 9, control « fable-tuto2 » (seat a, screens 46 and 57: house melody, « ↓ Encore 6 notes » right after the
+     * step's button, two dotted notes under the panel though the eight fit the rows): the step asking frames the bar's
+     * dotted notes when they all fit the rows in sight, the note asked for still whole in sight.
+     */
+    @Test
+    fun theStepAskingFramesTheNotesThatFit() {
+        val bad = ArrayList<String>()
+        for (rows in 8..10) for (above in rows - 4..rows - 3) {
+            val left = notes(above)
+            val v = view(46, rows)
+            val asked = TutoRollHint.next(left, v, 16)!!
+            assertTrue("the test checks nothing: no dotted note out of the rows in sight", left.any { !TutoRollHint.inRows(it, v) })
+            val now = v.moved(TutoRollHint.brought(left, v, 16, touched = false))
+            val out = left.filter { !TutoRollHint.inRows(it, now) }
+            if (out.isNotEmpty()) bad += "$rows rows: ${out.map { it.pitch }} still out of the rows in sight"
+            assertTrue("the note asked for left the rows in sight", TutoRollHint.inRows(asked, now))
+            assertEquals("the note lit is still the one asked for", asked, TutoRollHint.lit(left, v, 16, touched = false))
+        }
+        assertTrue("${bad.size} steps open on a hidden dotted note:\n" + bad.joinToString("\n"), bad.isEmpty())
+    }
+
     /** The line shows where the hidden note is (the arrow) while the others are in sight, and nothing once all are. */
     @Test
     fun theLineShowsWhereTheHiddenNoteIs() {

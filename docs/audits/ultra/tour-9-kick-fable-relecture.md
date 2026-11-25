@@ -1,5 +1,7 @@
 Relecture neuve : OK
 
+relu : 5a2ac34d
+
 Lot tour-9 kick-fable, commits relus : da95bf25, 8acd7b0c, 69e960ac, 7cddb83b (hors fusions gr-techno / gr-l12 / gr-bass). 0 grave, 6 mineurs.
 
 1. (vérifié, rien à corriger) Thread audio : `StudioKick::configure` (StudioVoices.h:271-283) fait un `exp2` et trois `exp` ; il est appelé par `prepare` (setKind, applyVersion, DrumKit::prepare) et par `hit` (StudioVoices.h:284), donc une fois par coup sur le thread audio, jamais par échantillon. `process` n'a qu'un `tanh` par échantillon, comme avant. Ni allocation, ni verrou, ni log, ni JNI.
@@ -12,3 +14,5 @@ Lot tour-9 kick-fable, commits relus : da95bf25, 8acd7b0c, 69e960ac, 7cddb83b (h
 8. mineur : TutoCourseTest.kt:164 ne compare plus le pad 0 entre l'exemple et le projet vierge. Le test est plus faible, alors qu'en fa les deux kicks devraient être identiques (kickNear(5, 46) = kickHz(5) = 43,65 Hz). Comparer au moins TUNE, DECAY et CLICK.
 9. (vérifié) `kickNear` (StudioDrums.kt:136-138) : il prend la fondamentale ou la quinte, à n'importe quelle octave de 0 à 5 (environ 8 à 490 Hz), la plus proche en écart logarithmique. L'écart maximal est de 3,5 demi-tons ; à égalité, la fondamentale gagne. Le plus grave possible, environ 37,7 Hz (cible 46 Hz), reste au-dessus du plancher de 30 Hz du moteur. C'est correct.
 10. mineur, tests : kb_voice_settings mesure vraiment quelque chose (hauteur à 70 ms par passages à zéro, 3e harmonique, longueur à -40 dB) et le commit rouge échouait pour une raison réelle. En revanche, `theTableReadsAsBenjaminsVersionB` relit surtout les constantes de la table, donc il est en partie tautologique. Les gardes utiles sont « chaque style est dans la table » et la tonalité testée sur les 12 fondamentales.
+
+Verdict : 0 bloquant, 0 grave

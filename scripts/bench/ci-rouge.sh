@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tour 6, lot « stable »: the red unit tests of a CI run, each with its place in the run.
-#   scripts/bench/ci-rouge.sh <run id>            (downloads the run's « unit-test-reports » artifact with gh)
+#   scripts/bench/ci-rouge.sh <run id>            (downloads the run's « unit-test-reports » artifact: gh, else curl)
 #   scripts/bench/ci-rouge.sh --dossier <dir>     (an artifact already downloaded and unzipped: its JUnit XML files)
 # For each red test: its message (first line), the rank of its class in the run (the classes ordered by the timestamps
 # of their JUnit XML, i.e. the order they ran in the one test process), the three classes run just before it (a red
@@ -26,8 +26,49 @@ case "${1:-}" in
     dir="$(mktemp -d)"
     trap 'rm -rf "$dir"' EXIT
     if ! gh run download "$run" -R "$repo" -n unit-test-reports -D "$dir" >/dev/null 2>&1; then
-      echo "ci-rouge: no « unit-test-reports » artifact for run $run (green run, gh not signed in, or expired): try --dossier" >&2
-      exit 2
+      # Tour 9, lot « ci-outils »: our sessions have no signed-in gh, but curl on the REST API goes through the proxy,
+      # which gives the access. The run's artifacts are listed, the live « unit-test-reports » is downloaded as a zip
+      # and unzipped by Python (-I) into the new folder; a member reaching out of it refuses the whole zip.
+      api="${PS_GITHUB_API:-https://api.github.com}"
+      case "$run" in *[!0-9]*) echo "ci-rouge: « $run » is not a run id" >&2; exit 2 ;; esac
+      list="$(curl -fsSL --max-time 30 -H 'Accept: application/vnd.github+json' "$api/repos/$repo/actions/runs/$run/artifacts?per_page=100" 2>/dev/null)" || list=""
+      art="$(python3 -I -c '
+import json, sys
+try:
+    d = json.loads(sys.stdin.read())
+except ValueError:
+    sys.exit(0)
+live = [a for a in d.get("artifacts", []) if a.get("name") == "unit-test-reports" and not a.get("expired")]
+if live:
+    print(int(max(live, key=lambda a: a.get("id", 0))["id"]))
+' <<<"$list")"
+      if [ -z "$art" ]; then
+        echo "ci-rouge: no « unit-test-reports » artifact for run $run (green run, expired, or GitHub not reached by gh nor curl): try --dossier" >&2
+        exit 2
+      fi
+      zip="$(mktemp -d)"
+      trap 'rm -rf "$dir" "$zip"' EXIT
+      if ! curl -fsSL --max-time 300 -o "$zip/a.zip" "$api/repos/$repo/actions/artifacts/$art/zip" 2>/dev/null; then
+        echo "ci-rouge: the artifact $art of run $run could not be downloaded: try --dossier" >&2
+        exit 2
+      fi
+      if ! python3 -I - "$zip/a.zip" "$dir/a" <<'PY_UNZIP'
+import os, sys, zipfile
+src, dest = sys.argv[1:]
+try:
+    z = zipfile.ZipFile(src)
+except zipfile.BadZipFile as e:
+    sys.exit(f"ci-rouge: not a zip ({e})")
+base = os.path.realpath(dest)
+for m in z.infolist():
+    t = os.path.realpath(os.path.join(base, m.filename))
+    if os.path.isabs(m.filename) or not t.startswith(base + os.sep):
+        sys.exit(f"ci-rouge: the zip reaches out of its folder ({m.filename!r}): refused")
+z.extractall(base)
+PY_UNZIP
+      then
+        exit 2
+      fi
     fi
     ;;
 esac

@@ -229,3 +229,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - [ ] 2026-11-25 (techhouse-corps.mp3) : « pas mal, le son est pur, mais ça manque de volume et le kick ne tape pas assez ».
 - [ ] 2026-11-25 (kicks-fable-A-B.mp3) : « le B est mieux, c'est clair » (kick sombre 49 Hz, basse 41 Hz) ; le A reste intéressant pour ce type de basse ; « ça a l'air mieux ». → corriger StudioKick sur la recette Fable, B par défaut.
 - [ ] 2026-11-25 (vidéo « 120 Subgenres of EDM (w examples) », 26 min) : à faire analyser par Fable (image + son, kicks), « j'espère que la conversion n'aura pas abîmé les fréquences ». Reçu : seulement part2.rar (6,6 Mo sur 38) ; part1 demandée.
+- 2026-11-25 18h30 : vidéo VID_20261125_182753.mp4 (capture téléphone, genres 60 à 120 de « 120 Subgenres of EDM ») : « la fin manquante, pour Fable ».

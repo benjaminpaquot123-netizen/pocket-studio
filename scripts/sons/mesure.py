@@ -307,6 +307,8 @@ def measure(sr, x):
     # Waveform used for pitch and harmonics.
     mid = np.mean(x, axis=1)
     out["mono_loss_db"] = _db10(float(np.mean(mid * mid)) / float(np.mean(power)))
+    if out["mono_loss_db"] < -3.0:
+        mid = x[:, int(np.argmax(np.sum(x * x, axis=0)))]
 
     # Transient against body.
     cut = onset + int(round(TRANSIENT_S * sr))

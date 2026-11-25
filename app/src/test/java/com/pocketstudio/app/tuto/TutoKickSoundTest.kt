@@ -203,6 +203,8 @@ class TutoKickSoundTest {
 
     @Test
     fun theKickStepNowSaysShowsAndTicks() {
+        // The catalogue is the test's, never the network's: no style pack in it, so no kit card (the card's cases are below).
+        catalogue(withTheStylesPacks = false)
         kickStepSaysShowsAndTicks()
     }
 

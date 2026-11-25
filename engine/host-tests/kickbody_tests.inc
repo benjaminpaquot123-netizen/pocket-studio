@@ -48,10 +48,11 @@ const size_t kMs = static_cast<size_t>(kRate / 1000);
 // The pitch at 70 ms: still well above the tune (the « boum » that is heard), 75..110 Hz for 55 Hz.
 void testPitchAt70ms() {
     const auto x = renderKick(55.0f);
-    // Zero crossings between two upward crossings around 70 ms: one period.
-    size_t a = 70 * kMs, b = 0;
-    while (a < x.size() && !(x[a - 1] < 0.0f && x[a] >= 0.0f)) ++a;
-    for (b = a + 1; b < x.size(); ++b) if (x[b - 1] < 0.0f && x[b] >= 0.0f) break;
+    // The period that holds 70 ms: the upward crossing just before it to the one just after.
+    size_t a = 70 * kMs, b = 70 * kMs;
+    while (a > 1 && !(x[a - 1] < 0.0f && x[a] >= 0.0f)) --a;
+    while (b + 1 < x.size() && !(x[b] < 0.0f && x[b + 1] >= 0.0f)) ++b;
+    ++b;
     const double hz = static_cast<double>(kRate) / static_cast<double>(b - a);
     std::printf("  kick pitch at 70 ms (tune 55): %.1f Hz\n", hz);
     CHECK(hz > 75.0 && hz < 110.0);
@@ -71,19 +72,19 @@ void testBodyEnergy() {
     const double whole = studio_tests::energy(y, 0, 400 * kMs);
     const double level = rms(y, 20 * kMs, 100 * kMs);
     std::printf("  kick body: 40-150 Hz in 20-100 ms = %.0f %% of the hit's, %.2f rms\n", 100.0 * body / whole, level);
-    CHECK(body > 0.6 * whole);
+    CHECK(body > 0.78 * whole);
     CHECK(level > 0.45);
 }
 
-// No hollow: the level in 5 ms frames never comes back up by more than 1.5 dB after 20 ms (a dip
-// then a rise is two layers beating).
+// No hollow: the level (30 ms frames, every 5 ms: more than a period) never comes back up by more
+// than 1.5 dB after 20 ms (a dip then a rise is two layers beating).
 void testNoBeating() {
     for (float tune : {45.0f, 55.0f, 65.0f}) {
         const auto x = renderKick(tune);
         double worst = 0.0;
         double low = 1e9;
-        for (size_t f = 20 * kMs; f + 5 * kMs <= 250 * kMs; f += 5 * kMs) {
-            const double r = rms(x, f, f + 5 * kMs);
+        for (size_t f = 20 * kMs; f + 30 * kMs <= 250 * kMs; f += 5 * kMs) {
+            const double r = rms(x, f, f + 30 * kMs);
             if (r < low) low = r;
             worst = std::max(worst, 20.0 * std::log10(r / std::max(low, 1e-12)));
         }
@@ -96,8 +97,10 @@ void testNoBeating() {
 // fundamental (heard on a phone), instead of a pure sine fading out.
 void testThirdHarmonic() {
     const auto x = renderKick(55.0f);
-    const size_t from = 200 * kMs, to = 300 * kMs;
-    const double f0 = toneHz(x, from, to);
+    const size_t from = 150 * kMs, to = 350 * kMs;
+    // The fundamental: the strongest 0.5 Hz bin between 35 and 90 Hz.
+    double f0 = 35.0;
+    for (double hz = 35.0; hz < 90.0; hz += 0.5) if (binMag(x, from, to, hz) > binMag(x, from, to, f0)) f0 = hz;
     const double h1 = binMag(x, from, to, f0), h3 = binMag(x, from, to, 3.0 * f0);
     const double db = 20.0 * std::log10(std::max(h3, 1e-12) / std::max(h1, 1e-12));
     std::printf("  kick tail: %.1f Hz, 3rd harmonic %+.1f dB\n", f0, db);
@@ -110,8 +113,8 @@ void testHardKick() {
     CHECK(studio_tests::allFinite(x));
     CHECK(studio_tests::peakOf(x) < 0.95f);
     double worst = 0.0, low = 1e9;
-    for (size_t f = 20 * kMs; f + 5 * kMs <= 200 * kMs; f += 5 * kMs) {
-        const double r = rms(x, f, f + 5 * kMs);
+    for (size_t f = 20 * kMs; f + 30 * kMs <= 200 * kMs; f += 5 * kMs) {
+        const double r = rms(x, f, f + 30 * kMs);
         if (r < low) low = r;
         worst = std::max(worst, 20.0 * std::log10(r / std::max(low, 1e-12)));
     }

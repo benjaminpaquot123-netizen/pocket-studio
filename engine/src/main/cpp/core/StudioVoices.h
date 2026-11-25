@@ -233,73 +233,90 @@ struct Bass808 {
     }
 };
 
-// A short 909-style kick: a sine with a fast two-stage pitch envelope (about 4 x the tune down
-// to it), a separate sub layer at the tune, a click / attack layer (noise through a band-pass
-// around 3 kHz plus the first half-cycle brightened), and a soft clip. -40 dB within 350 ms by
-// default. The hard variant (gabber): more drive into the clip, a longer and deeper sweep, and a
-// low-pass after the clip: the « doof ».
+// A short techno kick (tour 9, « kick-fable »: docs/decisions/tour-9-kick-fable.md). ONE sine, so
+// nothing beats against it (the old swept body plus a sub in free phase cancelled: a hollow kick):
+// its pitch f(t) = tune * (1 + (start - 1) * exp(-t / sweep)), from 4.5 x the tune over 35 ms; a
+// tanh saturation (gain 3 at the default drive, normalised) on the oscillator BEFORE the envelope,
+// so the whole note keeps its 3rd harmonic 12 to 16 dB under the fundamental (what a phone plays);
+// an envelope that rises in 1 ms, holds full (« sub » x 120 ms: 60 ms by default, the weight) and
+// then falls exponentially to -40 dB in « decay »; a discreet 2 ms high-passed noise click on top.
+// The hard variant (gabber) keeps its character: a higher, longer sweep, a hot clip and a low-pass
+// after it (the « doof »), on the same single oscillator.
 struct StudioKick {
     bool hard = false;
-    float phase = 0.0f, subPhase = 0.0f;
-    float fast = 0.0f, slow = 0.0f;  // pitch envelopes
-    float amp = 0.0f, subAmp = 0.0f, clickEnv = 0.0f;
-    float ampCoef = 0.999f, subCoef = 0.999f, fastCoef = 0.99f, slowCoef = 0.999f;
-    Svf2 clickBand;
+    float phase = 0.0f;
+    float sweep = 0.0f;              // exp(-t / sweep time), 1 at the hit
+    float sweepCoef = 0.999f;
+    float env = 0.0f, amp = 0.0f;  // the envelope and the hit's velocity (0: silent)
+    float subAmp = 0.0f;           // no sub layer any more; kept for DrumKit::setKind's stop
+    float tailCoef = 0.999f;
+    int frame = 0, riseFrames = 48, holdEnd = 2928;
+    float clickEnv = 0.0f, clickCoef = 0.99f;
+    Svf2 clickHp;
     OnePole hardLp;
     uint32_t noise = 0x7F4A7C15u;
 
+    static constexpr float kStart = 4.5f, kHardStart = 6.0f;
+    static constexpr float kSweep = 0.035f, kHardSweep = 0.045f;
+
     void prepare(int sampleRate, const Settings& s) {
-        clickBand.set(hard ? 2200.0f : 3200.0f, 1.2f, sampleRate);
+        clickHp.set(hard ? 2500.0f : 3500.0f, 0.707f, sampleRate);
         hardLp.set(2500.0f, sampleRate);
         configure(sampleRate, s);
     }
     void configure(int sampleRate, const Settings& s) {
+        const float rate = static_cast<float>(sampleRate);
         const float decay = std::clamp(s.decay, 0.08f, 1.2f);
-        ampCoef = decayTo40dB(decay, sampleRate);
-        subCoef = decayTo40dB(decay, sampleRate);
-        fastCoef = decayCoef(hard ? 0.030f : 0.014f, sampleRate);
-        slowCoef = decayCoef(hard ? 0.09f : 0.06f, sampleRate);
+        // The hold (« sub » x 120 ms, at most a quarter of « decay »), then « decay » to -40 dB.
+        const float hold = std::min(0.12f * std::clamp(s.sub, 0.0f, 1.0f), 0.25f * decay);
+        riseFrames = std::max(1, static_cast<int>(0.001f * rate));
+        holdEnd = riseFrames + static_cast<int>(hold * rate);
+        tailCoef = decayTo40dB(decay, sampleRate);
+        sweepCoef = decayCoef(hard ? kHardSweep : kSweep, sampleRate);
+        clickCoef = decayCoef(0.002f / 4.605f * 2.0f, sampleRate);  // gone (-40 dB) in ~4 ms, 2 ms of it heard
     }
     void hit(int sampleRate, const Settings& s, float velocity) {
         configure(sampleRate, s);
-        phase = subPhase = 0.0f;
-        fast = slow = 1.0f;
+        phase = 0.0f;
+        sweep = 1.0f;
+        frame = 0;
+        env = 0.0f;
         amp = velocity;
-        subAmp = velocity * std::clamp(s.sub, 0.0f, 1.0f);
-        clickEnv = velocity * std::clamp(s.click, 0.0f, 1.0f);
+        // 0.3 x 0.3 at the default click (0.5).
+        clickEnv = velocity * 0.18f * std::clamp(s.click, 0.0f, 1.0f);
     }
-    bool sounding() const { return amp > 1e-5f || subAmp > 1e-5f || clickEnv > 1e-5f; }
+    bool sounding() const { return amp > 1e-5f && (frame < holdEnd || env > 1e-5f); }
     float process(int sampleRate, const Settings& s) {
-        if (!sounding()) return 0.0f;
+        if (!sounding()) {
+            amp = 0.0f;
+            return 0.0f;
+        }
         const float tune = std::clamp(s.tune, 30.0f, 120.0f);
-        // Two stages: 3 x the tune gone in ~15 ms, a quarter above it gone in ~60 ms.
-        const float f = tune * (1.0f + (hard ? 4.0f : 3.0f) * fast + 0.25f * slow);
-        fast *= fastCoef;
-        slow *= slowCoef;
+        const float f = tune * (1.0f + ((hard ? kHardStart : kStart) - 1.0f) * sweep);
+        sweep *= sweepCoef;
         phase += f / static_cast<float>(sampleRate);
         if (phase >= 1.0f) phase -= 1.0f;
-        subPhase += tune / static_cast<float>(sampleRate);
-        if (subPhase >= 1.0f) subPhase -= 1.0f;
-        const float body = sineOf(phase) * amp;
-        const float sub = sineOf(subPhase) * subAmp;
-        amp *= ampCoef;
-        subAmp *= subCoef;
+        // The envelope: 1 ms rise, full hold, exponential fall.
+        if (frame < riseFrames) env = amp * static_cast<float>(frame + 1) / static_cast<float>(riseFrames);
+        else if (frame < holdEnd) env = amp;
+        else env *= tailCoef;
+        if (frame < holdEnd) ++frame;
         noise ^= noise << 13;
         noise ^= noise >> 17;
         noise ^= noise << 5;
         const float n = static_cast<float>(noise) * (2.0f / 4294967296.0f) - 1.0f;
-        // The attack: 6 ms of band-passed noise (the beater) plus the body's own first half-cycle.
-        const float click = (clickBand.band(n) * 4.0f + (fast > 0.5f ? 0.5f * body : 0.0f)) * clickEnv;
-        clickEnv *= 0.9965f;  // 6 ms
+        const float click = clickHp.high(n) * clickEnv;
+        clickEnv *= clickCoef;
         const float drive = std::clamp(s.drive, 0.0f, 1.0f);
+        const float osc = sineOf(phase);
         if (hard) {
-            // Into the clip hard: a square-ish « doof », then a low-pass takes the fizz off; the
-            // click goes over it.
-            const float x = (body + sub) * (1.5f + 6.0f * drive);
-            return hardLp.low(std::tanh(x)) * 0.9f + click * 0.4f;
+            // Into the clip hard (a square-ish « doof »), then a low-pass takes the fizz off.
+            const float g = 1.5f + 6.0f * drive;
+            return hardLp.low(std::tanh(g * osc) / std::tanh(g) * env) * 0.9f + click;
         }
-        // The click goes into the clip with the body: the peak stays bounded (a dense kick).
-        return softClip((body + sub) * 0.8f + click * 0.5f, drive) * 0.9f;
+        // The saturation before the envelope: the tail keeps its harmonics (gain 3 at drive 0.6).
+        const float g = 1.5f + 2.5f * drive;
+        return std::tanh(g * osc) / std::tanh(g) * env * 0.85f + click;
     }
 };
 

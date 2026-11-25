@@ -1,5 +1,5 @@
 # Relecture neuve, lot tour-9 gr-styles
-relu : 64daaf8efc221b07b088c405b3f314f4f08e24ba
+relu : 786153d53c2fa0d2d4497723d94b812efeb6abc8
 
 Portée : `git diff d9910076..4438394f` (14 commits du lot), hors `StyleRecipes.kt` et `separation/`. Aucun fichier du moteur C++ touché (thread audio intact).
 
@@ -35,5 +35,14 @@ Vérifié sans défaut :
 
 Points relevés :
 - mineur — `project-model/src/main/kotlin/com/pocketstudio/model/StyleRecipes.kt` : à la tête du lot 042775a8, ce fichier ne suivait pas les recettes, et `StyleRecipesUpToDateTest` y aurait échoué. C'est réglé par 00e3904c. Tant que ce commit n'est pas là, la tête du lot n'est pas verte.
+
+## Relecture de la fusion 5293b39ad et du rejeu t4-26
+
+Portée : 4c556e3e (fusion de origin/ccr-80af1a1b-mn0wec, tête 5293b39a, base 0ed59078) et 786153d5 (rejeu t4-26).
+
+- La fusion n'apporte que les 19 fichiers changés par l'intégration depuis la base (scripts du banc `fusion-equipes.sh`, `porte-paquet.sh`, `test_porte_paquet.py`, `TutoKickSoundTest.kt`, `docs/DECISIONS.md`, traces du portail, rapports et relectures kick-ci et porte-paquet). Chacun est octet pour octet celui de 5293b39a, et le lot n'avait touché aucun d'eux : pas de conflit, rien de perdu.
+- Les fichiers du lot (StarterWizard.kt, recettes, StyleRecipes.kt, i18n) ne changent pas dans la fusion. Le générateur relancé sur `scripts/packs/recipes/*.json` redonne `StyleRecipes.kt` à l'identique.
+- Rejeu t4-26 : le lo-fi passe de 4 à 5 lignes de batterie (`Role.Snap` ajouté dans `hiphop.json` et dans `StyleRecipes.kt`). `StarterWizard.steps()` fait une étape par ligne (`style.lines.map { Step.Drum(it) }`), donc `lastStep` grandit de 1. `wizard_create` n'apparaît que quand `step >= lastStep` (WizardScreen.kt:254) : il faut bien un `wizard_next` de plus avant lui.
+- Le rejeu est cohérent : `cmd-1` à `cmd-34` sans trou, l'ajout (`touche wizard_next` + `attends 1`) est en 21-22, les anciennes 21-32 deviennent 23-34 sans autre changement, `oracle.txt` dit `rejeu.n=34`. Les `cmd-*.txt` n'ont pas de saut de ligne final et `oracle.txt`/`start.txt` en ont un, comme avant.
 
 Verdict : 0 bloquant, 0 grave

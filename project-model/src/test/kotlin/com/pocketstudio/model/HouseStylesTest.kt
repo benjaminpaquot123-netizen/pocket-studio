@@ -76,6 +76,23 @@ class HouseStylesTest {
         assertTrue(speed.melody.bassGlide && '/' in speed.melody.bassPattern)
     }
 
+    @Test
+    fun theAcidHouseDoesNotHurtTheEars() {
+        // Benjamin (tour 9): « il fait mal aux oreilles ». Its 303 howls no more in the Break (resonance at
+        // most 0.75, section 3) and its strip takes the treble over 4 kHz down.
+        val s = style("acid_house")
+        val reso = s.melody.acid!!.moves.single { it.param == 1 }
+        val brk = reso.sections.getValue(3)
+        assertTrue("break resonance $brk", maxOf(brk.first, brk.second) <= 0.75f)
+        val p = StarterWizard.build(s, s.lines.associate { it.role to null as PadSample? }, s.melody.mood)
+        val eq = p.mixer.channels[1].inserts.filter { it.effect == EffectType.PARAM_EQ }
+        assertTrue("an EQ on the acid strip", eq.any { ins ->
+            val hz = 20f * 1000f.pow(ins.params[0])
+            val db = (ins.params[1] - 0.5f) * 36f
+            hz >= 4000f && db <= -3f
+        })
+    }
+
     private companion object {
         const val VOICE_COWBELL = 11
         const val VOICE_SHAKER = 13

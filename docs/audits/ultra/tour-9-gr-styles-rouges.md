@@ -1,0 +1,12 @@
+# tour-9 gr-styles: the reds, measured before each fix
+
+Base: eq/tour-9-gr-l1b 04270bd19 + ccr-80af1a1b-mn0wec + eq/tour-9-gr-hiphop b1a7ec9c9 + eq/tour-9-gr-house 3b38648b5,
+StyleRecipes.kt regenerated locally (not committed: the chef regenerates it at the merge).
+`./gradlew :project-model:test`: 1295 tests, 9 failed.
+
+- i18n: ModelTextsTest.everyDataTextHasItsTranslations (6 house texts × 14 languages), I18nCatalogTest.noTranslationIsLeftUnused (old acid text).
+- tracks: SimpleMelodyTest.aMelodyTrackOfItsOwnSoundingAsTheLead and aTakeIsHeardThroughTheSong (NPE: the house fills the 8 instrument tracks, Basse, Piano, Lead, Contre-chant, Doublure, Montée, Voix, Sub drop; « ma mélodie » has no room).
+- guides: GuideParcoursTest.theParcoursAreWhatTheGeneratorWrites (make_guides.py: « vocal » is now an object {type, sample} in hip-hop recipes, cards_for crashes).
+- guides (follow-up): guides out of date with the recipes, 9 guide texts without their 12 translations, house 23 simple cards and speed_garage 41 cards (a counter-melody card for a counter the wizard no longer plays), GuideActionsTest copies to the counter of a trap that no longer has one, 2 old house texts left in model.json.
+- lofi: ClubTransitionsTest.theRiserPlaysIntoEachDrop (withBody forces a riser on the lofi, a song without a Drop) and HonestMixTest.theBassesAreClippedBeforeTheirOtt (the riser's track brings its clipper into the dynamic hip-hop).
+- reggaeton: MusicTheoryTest.everyCombinationOfTheAssistantSoundsRight (« Doublure 67..97 »: the body's ChordDouble.Both lifts the chords' top note two octaves, over the melodic range's 96).

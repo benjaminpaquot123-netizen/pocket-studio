@@ -239,6 +239,94 @@
     "/Idiophones/",
     "/Membranophones/Struck Membranophones/"
    ]
+  },
+  {
+   "id": "fs-155893",
+   "type": "files",
+   "title": "Yeah 5",
+   "author": "unfa",
+   "licence": "CC0-1.0",
+   "page": "https://freesound.org/people/unfa/sounds/155893/",
+   "urls": [
+    "https://cdn.freesound.org/previews/155/155893_1038806-hq.ogg"
+   ]
+  },
+  {
+   "id": "fs-872174",
+   "type": "files",
+   "title": "oh yeah 2 (Deep Male voice)",
+   "author": "riippumattog",
+   "licence": "CC0-1.0",
+   "page": "https://freesound.org/people/riippumattog/sounds/872174/",
+   "urls": [
+    "https://cdn.freesound.org/previews/872/872174_15115102-hq.ogg"
+   ]
+  },
+  {
+   "id": "fs-475444",
+   "type": "files",
+   "title": "~Yeah!",
+   "author": "bogenseeberg",
+   "licence": "CC0-1.0",
+   "page": "https://freesound.org/people/bogenseeberg/sounds/475444/",
+   "urls": [
+    "https://cdn.freesound.org/previews/475/475444_7495013-hq.ogg"
+   ]
+  },
+  {
+   "id": "fs-345424",
+   "type": "files",
+   "title": "Male_Yeah_02",
+   "author": "Artmasterrich",
+   "licence": "CC0-1.0",
+   "page": "https://freesound.org/people/Artmasterrich/sounds/345424/",
+   "urls": [
+    "https://cdn.freesound.org/previews/345/345424_4038846-hq.ogg"
+   ]
+  },
+  {
+   "id": "fs-384981",
+   "type": "files",
+   "title": "Hell yeah! shout",
+   "author": "JapanYoshiTheGamer",
+   "licence": "CC0-1.0",
+   "page": "https://freesound.org/people/JapanYoshiTheGamer/sounds/384981/",
+   "urls": [
+    "https://cdn.freesound.org/previews/384/384981_2901280-hq.ogg"
+   ]
+  },
+  {
+   "id": "fs-685910",
+   "type": "files",
+   "title": "Skrrt.wav",
+   "author": "elliottdj",
+   "licence": "CC0-1.0",
+   "page": "https://freesound.org/people/elliottdj/sounds/685910/",
+   "urls": [
+    "https://cdn.freesound.org/previews/685/685910_6565462-hq.ogg"
+   ]
+  },
+  {
+   "id": "fs-572602",
+   "type": "files",
+   "title": "VOXBrt01.wav",
+   "author": "melisandepope",
+   "licence": "CC0-1.0",
+   "page": "https://freesound.org/people/melisandepope/sounds/572602/",
+   "urls": [
+    "https://cdn.freesound.org/previews/572/572602_11472815-hq.ogg"
+   ]
+  },
+  {
+   "id": "fs-400630",
+   "type": "files",
+   "title": "\"Kick It!\" DJ Vocal Samples (Young Adult Male)",
+   "author": "jackieAZ",
+   "licence": "CC0-1.0",
+   "page": "https://freesound.org/people/jackieAZ/sounds/400630/",
+   "urls": [
+    "https://cdn.freesound.org/previews/400/400630_4385633-hq.ogg"
+   ]
   }
  ],
  "packs": [
@@ -1442,6 +1530,78 @@
      "tags": [
       "verre",
       "cristal"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "voix_adlib",
+   "recipes": true,
+   "name": "Voix : ad-libs rap",
+   "family": "Hip-hop",
+   "version": 1,
+   "max_seconds": 2.0,
+   "sources": [
+    "fs-155893",
+    "fs-872174",
+    "fs-475444",
+    "fs-345424",
+    "fs-384981",
+    "fs-685910",
+    "fs-572602",
+    "fs-400630"
+   ],
+   "rules": [
+    {
+     "match": "fs-155893/|fs-872174/|fs-475444/|fs-345424/|fs-384981/",
+     "kind": "vocal",
+     "slug": "yeah",
+     "label": "Yeah",
+     "tags": [
+      "yeah",
+      "ad-lib",
+      "voix",
+      "rap",
+      "trap"
+     ]
+    },
+    {
+     "match": "fs-685910/",
+     "kind": "vocal",
+     "slug": "skrrt",
+     "label": "Skrrt",
+     "tags": [
+      "skrrt",
+      "ad-lib",
+      "voix",
+      "rap",
+      "trap"
+     ]
+    },
+    {
+     "match": "fs-572602/",
+     "kind": "vocal",
+     "slug": "brrr",
+     "label": "Brrr",
+     "tags": [
+      "brrr",
+      "ad-lib",
+      "voix",
+      "rap",
+      "trap"
+     ]
+    },
+    {
+     "match": "fs-400630/",
+     "kind": "vocal",
+     "slug": "kick_it",
+     "label": "Kick it",
+     "tags": [
+      "kick it",
+      "ad-lib",
+      "voix",
+      "dj",
+      "rap"
      ]
     }
    ]

@@ -30,6 +30,10 @@ object ScenariosEcrans {
     /** Tabs already crossed alone while playing by the base catalogue (« lecture_mix », « lecture_live »). */
     private val DEJA_SEULS = setOf("mix", "live")
 
+    /** Mix ↔ Structure is the base catalogue's « lecture_va_et_vient »; Structure to the background its « arriere_plan ». */
+    private val DEJA_PAIRE = setOf("mix", "structure")
+    private val DEJA_FOND = setOf("structure")
+
     /**
      * The screens of a table line « ecr:<names, comma-separated, or tout>:<times> », in order, [times] over; null when
      * a name is unknown or the count is not a positive number.
@@ -87,6 +91,7 @@ object ScenariosEcrans {
             for (i in NOMS.indices) for (k in i + 1 until NOMS.size) {
                 val a = NOMS[i]
                 val b = NOMS[k]
+                if (setOf(a, b) == DEJA_PAIRE) continue
                 add(
                     Scenario(
                         "${PREFIXE_ECRANS}paire_${a}_$b", "Moyen : 3 allers-retours ${nom(a)} ↔ ${nom(b)} en jouant", Scenarios.NIVEAU_MOYEN, 120_000, estime(6),
@@ -101,7 +106,7 @@ object ScenariosEcrans {
                     "le transport joue à chacun des ${5 * fois} écrans, puis le son sort", "$GESTE:$TOUT:$fois",
                 ),
             )
-            for (n in NOMS) add(
+            for (n in NOMS.filter { it !in DEJA_FOND }) add(
                 Scenario(
                     "${PREFIXE_ECRANS}fond_$n", "Moyen : la musique au fond depuis ${nom(n)}, puis retour", Scenarios.NIVEAU_MOYEN, 120_000, 25,
                     "le son au fond (ni NaN ni silence), le studio revenu sur ${nom(n)}, toujours en lecture", "$GESTE:fond:$n",
@@ -121,10 +126,10 @@ object ScenariosEcrans {
             val courts = toList()
             clear()
             val minutes = MINUTES.map(::minute)
-            val pas = (minutes.size + courts.size - 1) / courts.size.coerceAtLeast(1)
+            // Listen m goes before the short one at m * courts / minutes: evenly spread over the whole theme.
             var m = 0
-            for (c in courts) {
-                repeat(pas) { if (m < minutes.size) add(minutes[m++]) }
+            courts.forEachIndexed { i, c ->
+                while (m < minutes.size && m * courts.size / minutes.size <= i) add(minutes[m++])
                 add(c)
             }
             while (m < minutes.size) add(minutes[m++])

@@ -12,7 +12,7 @@ class ScenariosLimitesTest {
     @Test
     fun theCatalogueHasItsSeventyThreeScenariosWithUniqueIds() {
         // 91 written, less the 18 exports the « save » theme already plays (DEJA_EXPORTES, lot cat-400).
-        assertEquals(73, liste.size)
+        assertEquals(72, liste.size)
         assertEquals(liste.size, liste.map { it.id }.toSet().size)
         assertTrue(liste.all { it.id.startsWith(ScenariosLimites.PREFIXE) })
         // In the robot's full list, once, and no other scenario takes the prefix.

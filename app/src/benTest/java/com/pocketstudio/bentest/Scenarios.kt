@@ -930,8 +930,14 @@ class Scenarios(
             atteint = attendre(5_000) { la()?.let { abs(it - bout) < PAS_CURSEUR } == true }
             after = la() ?: depart
             if (atteint) d = surDisque { ofDisk(it).getOrNull(ch)?.let { v -> abs(v - after) < 0.001f } == true }
-            regler("${tag}_$ch", before)
         } finally {
+            // Put back on every path (a failed check included), and waited for in the project.
+            runCatching {
+                if (la()?.let { abs(it - before) >= PAS_CURSEUR } == true) {
+                    if (!regler("${tag}_$ch", before)) { bandeau(ch); regler("${tag}_$ch", before) }
+                    attendre(5_000) { la()?.let { abs(it - before) < PAS_CURSEUR } == true }
+                }
+            }
             fermerFeuilles()
         }
         check(atteint) { "« $what » poussé au bout (${fmt(bout)}), la piste ${ch + 1} s'arrête à ${fmt(after)} dans le projet" }

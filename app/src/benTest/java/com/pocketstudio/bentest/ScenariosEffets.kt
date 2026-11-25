@@ -44,8 +44,8 @@ class ScenariosEffets(
     // --- The scenarios -------------------------------------------------------------------------------
 
     /**
-     * Pro: one effect, every knob at 0 then at 1, the song played at each end. Oracle: each knob takes the value, the
-     * effect stays on the strip (project and disk), the song keeps playing with sound and no NaN at both ends. Then
+     * Pro: one effect, every knob at 0 then at 1, the song played at each end. Oracle: each knob's slider accepts both
+     * ends (the value itself is not read back), the effect stays on the strip (project and disk), the song keeps playing with sound and no NaN at both ends. Then
      * « Retirer l'effet »: the strip as it was, in its order, on the disk too.
      */
     private fun bouts(step: String, type: String): String {
@@ -55,6 +55,8 @@ class ScenariosEffets(
         val ch = place(1) ?: return nonMesure(step, "aucune des ${Scenarios.PISTES_MAX} premières pistes n'a de place libre")
         val before = lu().effets[ch]
         val slot = ajouterOuvert(step, ch, type)
+        var range = false
+        try {
         val withIt = lu().effets[ch]
         val sons = ArrayList<Ecoute.Bilan>()
         var nonRegles = 0
@@ -91,11 +93,23 @@ class ScenariosEffets(
         }
         sons.maxByOrNull { it.xruns }?.let { feuEcoute(step, it) }
         val gone = retirerParCroix(ch, slot, before)
+        range = true
         check(gone) { "« Retirer l'effet » touché, la piste ${ch + 1} a ${lu().effets.getOrNull(ch)} (attendu : $before)" }
         check(surDisque { it.effets.getOrNull(ch) == before }?.effets?.getOrNull(ch) == before) { "$type retiré, la piste ${ch + 1} n'est pas enregistrée sans lui sur le disque" }
         if (nonRegles > 0) return nonMesure(step, "aucun réglage de $type ne se règle par le robot (pas de curseur accessible)")
         bilan(step, "piste" to ch + 1, "reglages" to et.params.size)
-        return "$type sur la piste ${ch + 1} : ${et.params.size} réglages à 0 puis à 1, joué aux deux bouts (${sons.joinToString(" ; ") { it.text() }}), retiré"
+        return "$type sur la piste ${ch + 1} : ${et.params.size} curseurs poussés à 0 puis à 1 et acceptés, joué aux deux bouts (${sons.joinToString(" ; ") { it.text() }}), retiré"
+        } finally {
+            if (!range) remettre(ch, slot, before)
+        }
+    }
+
+    /** After a failure: the effect in [slot] taken off when strip [ch] is not [before], so the next scenario starts clean. */
+    private fun remettre(ch: Int, slot: Int, before: List<String>) {
+        runCatching {
+            fermerFeuilles()
+            if (lu().effets.getOrNull(ch) != before) retirerParCroix(ch, slot, before)
+        }
     }
 
     /**
@@ -110,6 +124,7 @@ class ScenariosEffets(
         val ch = place(1) ?: return nonMesure(step, "aucune des ${Scenarios.PISTES_MAX} premières pistes n'a de place libre")
         val before = lu().effets[ch]
         val slot = ajouterOuvert(step, ch, type)
+        try {
         fermerFeuilles()
         val withIt = lu().effets[ch]
         val d = surDisque { it.effets.getOrNull(ch) == withIt }
@@ -144,6 +159,9 @@ class ScenariosEffets(
         check(surDisque { it.effets.getOrNull(ch) == before }?.effets?.getOrNull(ch) == before) { "après « Rétablir », la piste ${ch + 1} n'est pas enregistrée sans $type sur le disque" }
         bilan(step, "piste" to ch + 1)
         return "$type retiré en jouant (lecture par $by : ${b.text()}), remis par « Annuler », retiré par « Rétablir », enregistré à chaque fois"
+        } finally {
+            remettre(ch, slot, before)
+        }
     }
 
     /**

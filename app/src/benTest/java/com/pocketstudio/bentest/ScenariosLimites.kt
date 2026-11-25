@@ -87,8 +87,8 @@ internal class ScenariosLimites(private val o: Outils) {
         var undone = 0
         try {
             if (!geste(tag)) return nonMesure(step, "pas de « $tag » dans la feuille de la partie ${Scenarios.PARTIE + 1}")
-            undone = 1
             check(attendre(5_000) { compte(lu(), delta) != before }) { "rien ne change après « $tag » : ${compte(lu(), delta)} ${quoi(delta)}" }
+            undone = 1
             val after = compte(lu(), delta)
             if (delta != 0) check(after == before + delta) { "$after parties après « $tag » (avant : $before, attendu : ${before + delta})" }
             disque(step, delta, after, "après « $tag »")
@@ -179,7 +179,11 @@ internal class ScenariosLimites(private val o: Outils) {
             bilan(step, "parties_avant" to before, "gestes" to n)
             return "$n breaks ($before puis ${before + n} parties), $n « Annuler » un à un, $n « Rétablir », enregistré à chaque bout, puis remis ($before)"
         } finally {
-            repeat(extra) { runCatching { j.tap("top_undo"); j.idle(300) } }
+            // Put back by the parts actually there, not the count: a failed check may come before or after its gesture.
+            repeat(maxOf(extra, n)) {
+                val p = runCatching { lu().parties }.getOrNull() ?: return@repeat
+                if (p > before) runCatching { j.tap("top_undo"); attendre(3_000) { lu().parties < p } }
+            }
         }
     }
 
@@ -471,7 +475,8 @@ internal class ScenariosLimites(private val o: Outils) {
                 for (st in STYLES) {
                     add(Scenario("${PREFIXE}tempo_$st", "Pro : un morceau ${nomStyle(st)}, puis son tempo doublé en jouant", niveau(st, Scenarios.NIVEAU_PRO), 480_000, 55, "le son du style ; le tempo monté, sur le disque, la lecture sans arrêt", "lim:style_tempo:$st"))
                 }
-                for ((tag, delta, name) in GESTES) {
+                // The break alone is the base catalogue's « annuler_retablir »: only played here while the song plays.
+                for ((tag, delta, name) in GESTES.filter { it.first != "part_break_4" }) {
                     add(Scenario("${PREFIXE}refaire_${court(tag)}", "Moyen : $name, annuler, rétablir", Scenarios.NIVEAU_MOYEN, 120_000, 20, "les ${if (delta == 0) "points de montée" else "parties"} après chaque geste, dans le projet et sur le disque", "lim:refaire:$tag:$delta"))
                 }
                 for ((tag, delta, name) in GESTES.filter { it.first in GESTES_LECTURE }) {

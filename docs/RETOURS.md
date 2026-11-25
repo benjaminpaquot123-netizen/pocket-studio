@@ -218,3 +218,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - [ ] 2026-11-25 (A/B, trap) : sympa mais pas encore la voix de rap dessus pour juger. Le carillon tape beaucoup trop aux oreilles : le baisser et lui ajouter un effet (adoucir).
 - [ ] 2026-11-25 (A/B, house) : pas mal, mais le kick ne tape pas fort du tout (pénible, aux écouteurs on veut que ça tape). Mélodie bien travaillée ; ajouter un effet qui donne du piquant, qui fait tourner la tête (légère distorsion ou équivalent).
 - [ ] 2026-11-25 (A/B, général) : kick trop faible et creux sur plusieurs styles (dubstep, house) : vérifier le kick partout.
+- [ ] 2026-11-25 (20 kicks, fichiers $S/kicks) : fichier 1 (kicks 1-5 : kit1, kit1-kick2, kit2, studio par défaut, hard par défaut) : aucun bon. Fichier 2 : le 4e (n° 9, studio 65 Hz court, decay 0,15, click 0,5) pas mal mais « un truc dérangeant, assez bizarre ». Suite à venir.

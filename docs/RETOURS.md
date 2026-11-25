@@ -215,3 +215,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - [ ] 2026-11-24 (A/B, lofi) : sans avis (« j'y connais rien »). Benjamin : son avis n'est pas définitif sur tout ça, il faut continuer à travailler.
 - [ ] 2026-11-25 (A/B, dnb) : comparé à « Brown Paper Bag » (Roni Size), drums + basse = vraie DnB classique ; notre DnB n'en a pas du tout le son (tempo peut-être juste, mais kick, basse et rythmique ne sonnent pas DnB). À refaire sur cette référence.
 - [ ] 2026-11-25 (A/B, dubstep) : ne ressemble pas du tout à de la dubstep. Kick creux et faible (même volume poussé à fond, presque rien aux écouteurs Bluetooth qui rendent bien les basses). Mélodie « puante », son de synthé à côté. Aucun wobble, rien de gras.
+- [ ] 2026-11-25 (A/B, trap) : sympa mais pas encore de quadrillage (grille) pour juger. Le carillon tape beaucoup trop aux oreilles : le baisser et lui ajouter un effet (adoucir).

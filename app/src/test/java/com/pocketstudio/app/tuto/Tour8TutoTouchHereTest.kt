@@ -114,6 +114,26 @@ abstract class Tour8TutoTouchHere {
         assertTrue("touching again moves the roll: $views", views[1] == views[0] && views[2] == views[1])
     }
 
+    /**
+     * Tour 9, control « fable-tuto » (a-V1, back five times): the step opened, before any touch on the line, the dotted
+     * notes of the bar are all in sight above the panel: one touch a note, none to go and find.
+     */
+    private fun inSightAtOnce(level: TutoLevel, simple: Boolean) {
+        open(level, simple)
+        val s = seen()
+        val hidden = s.rows.keys.filterNot { s.whole(it) }
+        assertTrue("no dotted note of the bar in sight", s.rows.isNotEmpty())
+        assertTrue("dotted notes out of the rows above the panel (${s.top}..${s.bottom}): " + hidden.map { "${it.pitch} ${s.rows[it]}" }, hidden.isEmpty())
+        val said = text("tuto_notes_left_text")
+        assertTrue("the line points out of sight (« $said »)", !said.contains("↓") && !said.contains("↑"))
+    }
+
+    @Test
+    fun simpleTheBarIsInSightBeforeAnyTouch() = inSightAtOnce(TutoLevel.Facile, simple = true)
+
+    @Test
+    fun proTheBarIsInSightBeforeAnyTouch() = inSightAtOnce(TutoLevel.Pro, simple = false)
+
     @Test
     fun simpleOneTouchShowsTheBar() = touchHere(TutoLevel.Facile, simple = true)
 

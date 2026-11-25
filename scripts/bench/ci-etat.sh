@@ -54,6 +54,7 @@ if [ -n "$sha" ] && runs="$(api_lines "repos/$repo/actions/runs?head_sha=$sha&pe
   while IFS=$'\t' read -r id name status conclusion event branch; do
     [ -n "$name" ] || continue
     [ "$conclusion" = null ] && conclusion=""  # a run or a job still going has no conclusion: say its status
+    [ "$branch" = null ] && branch=""; [ "$event" = null ] && event=""
     case "$status/$conclusion" in
       completed/cancelled|completed/skipped) rstate="annulé" ;;
       *) rstate="$(state_of "$status" "$conclusion")" ;;
@@ -100,6 +101,7 @@ fi
 case "$verdict" in
   rouge) echo "verdict	rouge ($nred run$([ "$nred" -gt 1 ] && echo s) rouge$([ "$nred" -gt 1 ] && echo s) sur $nruns : ${reds#, })" ;;
   "?") echo "verdict	?" ;;
+  absent) [ "$nruns" -gt 0 ] && echo "verdict	annulé ($nruns runs, tous annulés)" || echo "verdict	absent (aucun run)" ;;
   *) echo "verdict	$verdict ($nruns run$([ "$nruns" -gt 1 ] && echo s))" ;;
 esac
 echo "ci_build	$build"

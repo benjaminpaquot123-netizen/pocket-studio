@@ -202,6 +202,7 @@ class CiRougeSansGhTest(unittest.TestCase):
             z.writestr("../../evil-TEST-x.xml", "x")
         r = self.call("9100")
         self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+        self.assertIn("reaches out of its folder", r.stderr, "refused by the guard, not by a missing report")
         self.assertFalse(any("evil" in f for f in os.listdir(self.tmp.name)), "nothing written out of the new folder")
 
 
@@ -262,6 +263,18 @@ class CiEtatPlusieursRunsTest(unittest.TestCase):
         out = self.state()
         self.assertIn("run 9100\tpush\teq/tour-9-paquet\tCI\ten cours", out)
         self.assertIn("verdict\ten cours", out)
+        self.assertNotIn("null", out)
+
+    def test_a_null_branch_and_only_cancelled_runs_are_said_plainly(self):
+        with open(os.path.join(self.toy, "runs.json")) as f:
+            d = json.load(f)
+        for r in d["workflow_runs"]:
+            r.update(conclusion="cancelled", head_branch=None)
+        with open(os.path.join(self.toy, "runs.json"), "w") as f:
+            json.dump(d, f)
+        out = self.state()
+        self.assertIn("run 9100\tpush\t?\tCI\tannulé", out)
+        self.assertIn("verdict\tannulé (2 runs, tous annulés)", out)
         self.assertNotIn("null", out)
 
 

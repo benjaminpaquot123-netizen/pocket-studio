@@ -309,7 +309,6 @@
    "stage": 1,
    "target": "rumble",
    "kind": "decide",
-   "simple": true,
    "title": "Le grondement sous le kick",
    "why": "Un grondement grave rejoué derrière chaque kick : il donne le poids des clubs d'aujourd'hui sous la ligne acide.",
    "simpleTitle": "Le grondement",

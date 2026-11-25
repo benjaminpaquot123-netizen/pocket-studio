@@ -312,9 +312,9 @@ WHERE = T("Où il joue", "Where it plays", "Waar hij speelt")
 WHERE_WHY = T("Les parties où la piste joue : une case par partie.", "The parts the track plays in: one box per part.", "De delen waarin het spoor speelt: één vakje per deel.")
 
 
-def sound_card(cid, target, title, why, simple_title, simple_why, lexicon, spot="sounds.track"):
+def sound_card(cid, target, title, why, simple_title, simple_why, lexicon, spot="sounds.track", simple=True):
     return card(
-        cid, 1, title, why, target=target, simple=True, simple_title=simple_title, simple_why=simple_why,
+        cid, 1, title, why, target=target, simple=simple, simple_title=simple_title, simple_why=simple_why,
         # Audit final: on an assistant's song the lesson is shown (decided, or the track changed by hand), not ticked by itself.
         applicable=[f"has:{target}"], done=[f"has:{target}", f"by_hand|changed:{target}"], lexicon=lexicon,
         proposals=[keep(SOUND_KEEP, SOUND_KEEP_WHY), open_spot("other", OTHER_SOUND, OTHER_SOUND_WHY, spot, target),
@@ -362,7 +362,8 @@ def stage1(s):
             tip(s, "rumble", T("Un grondement grave qui roule entre les coups.", "A low rumble rolling between the hits.", "Een laag gedreun dat tussen de slagen rolt.")),
             T("Le grondement", "The rumble", "Het gedreun"),
             T("Un grave qui roule entre les kicks : la techno qui gronde.", "A low end rolling between the kicks: rumbling techno.", "Een laag dat tussen de kicks rolt: techno die gromt."),
-            "kick", "rhythm.kit"))
+            # An acid style's star is its 303 line: the rumble stays out of the Mode simple, which keeps it at 22 cards.
+            "kick", "rhythm.kit", simple=not s.acid))
     if s.bass:
         bass_title = T("La 808 : la basse qui suit le kick", "The 808: the bass that follows the kick", "De 808: de bas die de kick volgt") if s.bass808 else \
             T("La basse : son et motif", "The bass: sound and pattern", "De bas: klank en patroon")

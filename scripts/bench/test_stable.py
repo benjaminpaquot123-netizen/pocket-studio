@@ -226,7 +226,7 @@ class CiEtatPlusieursRunsTest(unittest.TestCase):
         out = self.state()
         self.assertIn("run 9101\tworkflow_dispatch\teq/tour-9-paquet\tCI\tvert", out)
         self.assertIn("run 9100\tpush\teq/tour-9-paquet\tCI\trouge", out)
-        self.assertIn("ci_verdict\trouge (1 run rouge sur 2 : 9100 push)", out)
+        self.assertIn("verdict\trouge (1 run rouge sur 2 : 9100 push)", out)
         self.assertNotIn("null", out)
         self.assertIn("ci_build\trouge", out)
         self.assertIn("ci_emulateur\trouge", out)
@@ -238,7 +238,7 @@ class CiEtatPlusieursRunsTest(unittest.TestCase):
         with open(os.path.join(self.toy, "runs.json"), "w") as f:
             json.dump(d, f)
         out = self.state()
-        self.assertIn("ci_verdict\trouge", out)
+        self.assertIn("verdict\trouge", out)
         self.assertIn("ci_build\trouge", out)
         self.assertIn("ci_emulateur\trouge", out)
 
@@ -249,7 +249,7 @@ class CiEtatPlusieursRunsTest(unittest.TestCase):
         with open(os.path.join(self.toy, "runs.json"), "w") as f:
             json.dump(d, f)
         out = self.state()
-        self.assertIn("ci_verdict\tvert (1 run)", out)
+        self.assertIn("verdict\tvert (1 run)", out)
         self.assertIn("ci_build\tvert", out)
 
     def test_a_running_run_is_neither_green_nor_null(self):
@@ -261,7 +261,7 @@ class CiEtatPlusieursRunsTest(unittest.TestCase):
             json.dump(d, f)
         out = self.state()
         self.assertIn("run 9100\tpush\teq/tour-9-paquet\tCI\ten cours", out)
-        self.assertIn("ci_verdict\ten cours", out)
+        self.assertIn("verdict\ten cours", out)
         self.assertNotIn("null", out)
 
 

@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 # PLAN-RESTE 6.5 (H1 of the dashboard): the CI's state for one commit, read from GitHub by program.
 #   scripts/bench/ci-etat.sh [<commit>] [--ecris <hors-banc.tsv>]
-# Prints one line per workflow run of that commit (« <workflow>\t<conclusion> »), then « ci_build <état> » and
-# « ci_emulateur <état> » where <état> is vert | rouge | en cours | absent. With --ecris, rewrites those two lines in
+# Prints one line per workflow run of that commit (« run <id>\t<event>\t<branch>\t<workflow>\t<état> », its jobs
+# indented below), then « verdict <état> (…) », « ci_build <état> » and « ci_emulateur <état> » where <état> is
+# vert | rouge | en cours | absent. A commit can have several runs (a push and a workflow_dispatch, a re-run): the
+# verdict and both lines are red as soon as ONE run is red (tour 9, lot « ci-outils »: a green run read first hid a red
+# one, its header « CI null »); a cancelled or skipped run says « annulé » and counts for nothing. With --ecris, rewrites those two lines in
 # the given hors-banc.tsv (the dashboard reads them). Reads GitHub with the gh CLI when it is signed in, else with curl
 # on GitHub's public API, no token (tour 9, L9: a lot's machine has no gh); prints « ? » lines when neither answers.
 set -euo pipefail
@@ -15,7 +18,7 @@ repo="$(git -C "$root" remote get-url origin | sed -E 's#.*github.com[:/]##; s#\
 api_lines() {  # <path> <runs|jobs>
   local json
   # Every job, not GitHub's first page of 30: the unit tests are a matrix of shards (lot « ci-rapide »).
-  if gh api "$1" --paginate --jq "$( [ "$2" = runs ] && echo '.workflow_runs[] | "\(.id)\t\(.name)\t\(.status)\t\(.conclusion)"' || echo '.jobs[] | "\(.name)\t\(.status)\t\(.conclusion)"')" 2>/dev/null; then
+  if gh api "$1" --paginate --jq "$( [ "$2" = runs ] && echo '.workflow_runs[] | "\(.id)\t\(.name)\t\(.status)\t\(.conclusion)\t\(.event)\t\(.head_branch)"' || echo '.jobs[] | "\(.name)\t\(.status)\t\(.conclusion)"')" 2>/dev/null; then
     return 0
   fi
   json="$(curl -fsS --max-time 20 -H 'Accept: application/vnd.github+json' "${PS_GITHUB_API:-https://api.github.com}/$1$([ "$2" = jobs ] && echo '?per_page=100')" 2>/dev/null)" || return 1
@@ -24,7 +27,7 @@ import json, sys
 d = json.loads(sys.stdin.read())
 s = lambda v: "null" if v is None else str(v)
 if sys.argv[1] == "runs":
-    for r in d["workflow_runs"]: print("\t".join(s(r.get(k)) for k in ("id", "name", "status", "conclusion")))
+    for r in d["workflow_runs"]: print("\t".join(s(r.get(k)) for k in ("id", "name", "status", "conclusion", "event", "head_branch")))
 else:
     for j in d["jobs"]: print("\t".join(s(j.get(k)) for k in ("name", "status", "conclusion")))
 ' "$2" <<<"$json"
@@ -37,15 +40,31 @@ state_of() {  # <status> <conclusion>
     *) echo "en cours" ;;
   esac
 }
-build="absent"; emu="absent"
+worst() {  # <current> <new>: red wins, then « en cours », then green, then absent
+  case "$1/$2" in
+    rouge/*|*/rouge) echo rouge ;;
+    "en cours"/*|*/"en cours") echo "en cours" ;;
+    vert/*|*/vert) echo vert ;;
+    *) echo "$1" ;;
+  esac
+}
+build="absent"; emu="absent"; verdict="absent"; nruns=0; nred=0; reds=""
 # The CI workflow holds the emulator smoke test and every other check as jobs; audit-emulator.yml is a workflow of its own.
 if [ -n "$sha" ] && runs="$(api_lines "repos/$repo/actions/runs?head_sha=$sha&per_page=20" runs)"; then
-  while IFS=$'\t' read -r id name status conclusion; do
+  while IFS=$'\t' read -r id name status conclusion event branch; do
     [ -n "$name" ] || continue
     [ "$conclusion" = null ] && conclusion=""  # a run or a job still going has no conclusion: say its status
-    printf '%s\t%s\n' "$name" "${conclusion:-$status}"
+    case "$status/$conclusion" in
+      completed/cancelled|completed/skipped) rstate="annulé" ;;
+      *) rstate="$(state_of "$status" "$conclusion")" ;;
+    esac
+    nruns=$((nruns + 1))
+    if [ "$rstate" = rouge ]; then nred=$((nred + 1)); reds="$reds, $id ${event:-?}"; fi
+    [ "$rstate" = annulé ] || verdict="$(worst "$verdict" "$rstate")"
+    printf 'run %s\t%s\t%s\t%s\t%s\n' "$id" "${event:-?}" "${branch:-?}" "$name" "$rstate"
+    rbuild="absent"; remu="absent"
     case "$name" in
-      *mulat*) emu="$(state_of "$status" "$conclusion")" ;;
+      *mulat*) remu="$rstate" ;;
     esac
     jobs="$(api_lines "repos/$repo/actions/runs/$id/jobs" jobs || true)"
     while IFS=$'\t' read -r jname jstatus jconclusion; do
@@ -53,31 +72,36 @@ if [ -n "$sha" ] && runs="$(api_lines "repos/$repo/actions/runs?head_sha=$sha&pe
       [ -n "$jname" ] && printf '  %s\t%s\n' "$jname" "${jconclusion:-$jstatus}"
       case "$jname" in
         "") ;;
-        *mulat*) emu="$(state_of "$jstatus" "$jconclusion")" ;;
+        *mulat*) remu="$(worst "$remu" "$(state_of "$jstatus" "$jconclusion")")" ;;
         Publish*) ;;
         *)
           # Lot « ci3 » (review, G1): the CI's long job is three jobs side by side and none waits for the engine, so
           # « ci_build » is every job of the CI workflow but the emulator's and the publication (which only follows
           # the others): red wins, then « en cours », then green. Another workflow keeps the old reading (« *uild* »).
           if [ "$name" = "CI" ]; then
-            one="$(state_of "$jstatus" "$jconclusion")"
-            case "$build/$one" in
-              rouge/*) ;;
-              */rouge) build="rouge" ;;
-              "en cours"/*) ;;
-              *) build="$one" ;;
-            esac
+            rbuild="$(worst "$rbuild" "$(state_of "$jstatus" "$jconclusion")")"
           else
-            case "$jname" in *uild*) build="$(state_of "$jstatus" "$jconclusion")" ;; esac
+            case "$jname" in *uild*) rbuild="$(worst "$rbuild" "$(state_of "$jstatus" "$jconclusion")")" ;; esac
           fi ;;
       esac
     done <<<"$jobs"
     # A run that exists but has not created a job yet: that job is on its way, not absent.
-    [ "$status" = "completed" ] || { [ "$build" = absent ] && build="en cours"; [ "$emu" = absent ] && emu="en cours"; }
+    if [ "$status" != "completed" ]; then
+      [ "$rbuild" = absent ] && rbuild="en cours"; [ "$remu" = absent ] && remu="en cours"
+    fi
+    # A cancelled run (superseded, or stopped by hand) says nothing of the commit's build or emulator.
+    if [ "$rstate" != annulé ]; then
+      build="$(worst "$build" "$rbuild")"; emu="$(worst "$emu" "$remu")"
+    fi
   done <<<"$runs"
 else
-  build="?"; emu="?"
+  build="?"; emu="?"; verdict="?"
 fi
+case "$verdict" in
+  rouge) echo "verdict	rouge ($nred run$([ "$nred" -gt 1 ] && echo s) rouge$([ "$nred" -gt 1 ] && echo s) sur $nruns : ${reds#, })" ;;
+  "?") echo "verdict	?" ;;
+  *) echo "verdict	$verdict ($nruns run$([ "$nruns" -gt 1 ] && echo s))" ;;
+esac
 echo "ci_build	$build"
 echo "ci_emulateur	$emu"
 if [ -n "$out" ]; then

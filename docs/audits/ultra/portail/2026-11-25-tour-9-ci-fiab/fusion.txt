@@ -1,0 +1,20 @@
+fusion: ae866a1c71447560b9ddc46972ffdbabda47b0d7
+branche: eq/tour-9-ci-fiab
+tete: 371d9a3601d779fcc1b4f6c7e40c3cd86790cc73
+relecture: docs/audits/ultra/tour-9-ci-fiab-relecture.md
+relu: 55b5261c
+filtres: com.pocketstudio.app.human.BenchPristineNetworkTest com.pocketstudio.app.human.BenchNetworkEndTest com.pocketstudio.app.human.BenchPristineRuleTest com.pocketstudio.app.human.Tour5BloquantsTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

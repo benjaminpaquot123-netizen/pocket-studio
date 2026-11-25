@@ -596,6 +596,9 @@ object WideMix {
     }
 }
 
+// The body's layers (the chords' double, the texture, the pad layer) are never the lead, even with the lead off.
+private val BODY_TRACKS = setOf(StarterWizard.DOUBLE_TRACK, StarterWizard.TEXTURE_TRACK, StarterWizard.PAD_LAYER_TRACK)
+
 /**
  * The lead's track: the first instrument track that is neither a bass (the sub and the second bass
  * included), nor the chords, the riser or the counter-melody. Null when there is none (the song
@@ -608,6 +611,6 @@ fun Project.leadTrackId(): Int? {
     return instrumentTracks.firstOrNull { t ->
         val name = DefaultNames.french(t.name) ?: t.name
         t.id !in basses && t.id !in pads && t.id != riser && name != StarterWizard.COUNTER_TRACK && name != StarterWizard.SUB_TRACK &&
-            name != StarterWizard.BASS_SWITCH_TRACK && (t.notes.notes.isNotEmpty() || allScenes.any { s -> s.trackNotes[t.id]?.notes?.isNotEmpty() == true })
+            name != StarterWizard.BASS_SWITCH_TRACK && name !in BODY_TRACKS && (t.notes.notes.isNotEmpty() || allScenes.any { s -> s.trackNotes[t.id]?.notes?.isNotEmpty() == true })
     }?.id
 }

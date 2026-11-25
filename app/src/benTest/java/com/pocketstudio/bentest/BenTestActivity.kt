@@ -316,7 +316,7 @@ fun BenTestScreen(etat: Robot.Etat, granted: List<Triple<String, String, Boolean
                     Button(onClick = actions.startRates, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_rates")) { Text("Refaire les ratés") }
                     Text("Scénarios rapides : ${Scenarios.liste(Scenarios.RAPIDE).size} scénarios, environ 7 minutes, sans rien toucher. Le robot joue comme un débutant, un moyen et un pro : morceau, projet enregistré, break, effet, Live, export, latence, décrochages.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.startScenarios, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_scenarios")) { Text("Scénarios rapides") }
-                    Text("Scénarios complets : ${Scenarios.LISTE.size} scénarios, de 30 minutes à 1 heure, chargeur branché. En plus : tous les styles, chaque effet, chaque piste, les pads, les tempos extrêmes, les répétitions, le Guide sur 3 styles.", color = Neon.TextSecondary)
+                    Text("Scénarios complets : ${Scenarios.LISTE.size} scénarios, en parties de 50, chargeur branché. En plus : tous les styles, chaque effet, chaque piste, les pads, les tempos extrêmes, les répétitions, le Guide sur 3 styles.", color = Neon.TextSecondary)
                     OutlinedButton(onClick = actions.startScenariosComplets, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).testTag("bentest_scenarios_complets")) { Text("Scénarios complets") }
                     Parties(faites, actions.startPartie)
                     Text("Essai éclair : environ 5 minutes. Le robot fait 3 morceaux, 1 export, visite 5 écrans, puis te pose 1 question.", color = Neon.TextSecondary)

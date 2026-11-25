@@ -92,12 +92,14 @@ Un contrôle « capricieux » est rouge une fois sur dix sans que l'appli ait ch
 
 1. **Un test n'appelle jamais le vrai réseau.** Vu : `TutoKickSoundTest` (catalogue des packs), réparé en injectant le catalogue par le crochet de test, un test par issue du réseau (`docs/decisions/tour-9-kick-ci.md`). Encore ouverts : `PackStore.fetchCatalogue` et `UpdateChecker.check` peuvent partir sur Internet dans les tests de la CI.
 2. **« La machine était trop lente pour mesurer » n'est pas « l'appli a échoué ».** Vu : `ScenariosTest` écoutait par fenêtres de 60 ms et criait au silence quand la machine dormait. Réparé : l'écoute continue jusqu'à une seconde entière (30 s de plus au maximum), et sinon le verdict est « non mesuré », jamais « silence ». Un test qui mesure dit d'abord s'il a pu mesurer.
-3. **Un chronomètre se compare à un témoin.** Vu : `EnduranceTest` (5043 ms pour une limite de 5000 sur un émulateur figé). Le test pose la même question à un fil témoin : ce que la machine a perdu est retiré, la limite de l'appli ne bouge pas.
+3. **Un chronomètre se compare à un témoin.** Vu : `EnduranceTest` (5043 ms pour une limite de 5000). Le test pose la même question à un fil témoin : ce que la machine a perdu est retiré, la limite de l'appli ne bouge pas. Le témoin sert aussi à trancher : à la CI 460, il a dit 4457 ms d'appli pour 53 ms de machine, donc le défaut est dans l'appli à froid, pas dans l'émulateur (encore ouvert).
 4. **Aucun seuil n'est élargi pour faire passer** (`docs/DECISIONS.md`). On répare la mesure, pas la limite.
 5. **Un test ne laisse rien au suivant.** Vu : `Tour5BloquantsTest` et `TutoScreenTest` rouges selon l'ordre. Chaque test range son état ; le garde `BenchPristine` le dit quand ce n'est pas fait.
 6. **« Réparé » se prouve par plusieurs passages forcés** (`--rerun`), dont au moins deux avec la machine chargée, jamais par un seul vert.
 7. **Devant un rouge : lire le nom du test avant de relancer.** Un même rouge deux fois n'est pas un caprice. Ne jamais relancer un commit déjà rouge sans rien changer.
 8. **Aucun test sauté ni mis de côté pour avoir du vert.**
+9. **Un robot attend comme un utilisateur, il ne lit jamais une liste une seule fois.** Vu : CI 462, « aucun autre projet visible » parce que « Mes projets » affichait encore « Chargement de la liste… ». Toute lecture d'écran qui dépend du disque ou d'un autre fil s'attend, avec une borne écrite et sa raison ; le message d'échec dit ce que l'écran montrait.
+10. **Avant de corriger un caprice, le mesurer.** Une attente posée au hasard (10 s) a encore raté ; la cause mesurée (la liste attend 2 × 10 s de sauvegardes) a donné la bonne borne.
 
 ## Ce qui reste fragile (au 2026-11-25)
 
@@ -105,5 +107,7 @@ Un contrôle « capricieux » est rouge une fois sur dix sans que l'appli ait ch
 - `PackStore.fetchCatalogue` et `UpdateChecker.check` : réseau possible dans les tests (fichiers de l'appli, lot à ouvrir par le chef).
 - La fuite d'état de `Tour5BloquantsTest` (cause non prouvée, lot du chef).
 - `EssaiEclair.mesurer` (`EssaiEclair.kt`, contrôle « silence ») a la même faiblesse que `ScenariosTest` avant réparation : moins de 4 lectures = faux silence. Même parade à poser.
+- `EnduranceTest` : la première manche tient le fil principal 4 à 5 s (appli à froid) pour une limite de 5000 ms ; le rouge peut revenir environ une fois sur six tant que ce défaut d'appli n'est pas réglé (lot du chef).
+- « Mes projets » : sa première lecture passe après l'attente des sauvegardes de fermeture (20 s au pire, `ProjectsViewModel.kt`, lot du chef).
 - `setup-android` sans cache, et les `git clone` / `pip install` des packs avec un seul essai.
 - Les artefacts de CI ne se lisent pas depuis une discussion : seuls les journaux se lisent.

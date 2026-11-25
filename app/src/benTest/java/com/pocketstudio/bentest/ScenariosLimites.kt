@@ -64,6 +64,7 @@ internal class ScenariosLimites(private val o: Outils) {
     private fun geste(tag: String): Boolean {
         j.tap("tab_Structure")
         try {
+            sansBandeau()
             j.openPartSheet(Scenarios.PARTIE)
             if (!attendre(2_000) { j.exists(tag) }) return false
             j.tap(tag)
@@ -96,8 +97,8 @@ internal class ScenariosLimites(private val o: Outils) {
             undone = 0
             check(attendre(5_000) { compte(lu(), delta) == before }) { "« Annuler » ne défait pas « $tag » : ${compte(lu(), delta)} ${quoi(delta)} (attendu : $before)" }
             disque(step, delta, before, "après « Annuler »")
-            check(runCatching { j.await("top_redo", 5_000) }.isSuccess) { "pas de « Rétablir » après « Annuler » (à l'écran : ${vu()})" }
-            j.tap("top_redo")
+            val redo = retablir() ?: error("pas de « Rétablir » après « Annuler » (à l'écran : ${vu()})")
+            j.tap(redo)
             undone = 1
             check(attendre(5_000) { compte(lu(), delta) == after }) { "« Rétablir » ne refait pas « $tag » : ${compte(lu(), delta)} ${quoi(delta)} (attendu : $after)" }
             disque(step, delta, after, "après « Rétablir »")
@@ -120,6 +121,18 @@ internal class ScenariosLimites(private val o: Outils) {
         }
     }
 
+    /**
+     * Waits (up to 8 s) for « Fait : … Annuler » to go: on a narrow phone its « Annuler » lies over the « ⋯ » of a part
+     * at the foot of the list, and a touch meant for the « ⋯ » would undo the gesture just done.
+     */
+    private fun sansBandeau() {
+        attendre(8_000) { !j.exists("done_bar") }
+    }
+
+    /** The « Rétablir » button on screen (the top bar's, or the thumb bar's on a narrow phone), waited for up to 5 s. */
+    private fun retablir(): String? =
+        RETABLIR.takeIf { attendre(5_000) { RETABLIR.any { j.exists(it) } } }?.firstOrNull { j.exists(it) }
+
     /** [n] breaks in a row, [n] « Annuler » one by one, [n] « Rétablir », then all undone: each step's parts, and the disk at both ends. */
     private fun pile(step: String, n: Int): String {
         o.auStudio()
@@ -130,6 +143,7 @@ internal class ScenariosLimites(private val o: Outils) {
             j.tap("tab_Structure")
             repeat(n) { k ->
                 try {
+                    sansBandeau()
                     j.partIntent(Scenarios.PARTIE, "part_break_4")
                 } finally {
                     o.fermerFeuilles()
@@ -146,8 +160,8 @@ internal class ScenariosLimites(private val o: Outils) {
             }
             disque(step, 1, before, "après $n « Annuler »")
             for (k in 1..n) {
-                check(runCatching { j.await("top_redo", 5_000) }.isSuccess) { "plus de « Rétablir » après $k-1 rétablis sur $n" }
-                j.tap("top_redo")
+                val redo = retablir() ?: error("plus de « Rétablir » après ${k - 1} rétablis sur $n (à l'écran : ${vu()})")
+                j.tap(redo)
                 check(attendre(5_000) { lu().parties == before + k }) { "« Rétablir » n° $k : ${lu().parties} parties (attendu : ${before + k})" }
                 extra = k
             }
@@ -185,14 +199,19 @@ internal class ScenariosLimites(private val o: Outils) {
     /** The tempo put back to [before]: « Annuler » (the whole sheet is one step), else typed again. */
     private fun remettre(before: Double) {
         o.fermerFeuilles()
-        if (abs(lu().tempo - before) < 0.01) return
-        if (j.exists("top_undo")) {
-            j.tap("top_undo")
-            if (attendre(3_000) { abs(lu().tempo - before) < 0.01 }) return
+        if (abs(lu().tempo - before) >= 0.01) {
+            val undone = j.exists("top_undo") && run {
+                j.tap("top_undo")
+                attendre(3_000) { abs(lu().tempo - before) < 0.01 }
+            }
+            if (!undone) {
+                o.ouvrirTempo()
+                taper(before.roundToInt())
+                o.fermerFeuilles()
+            }
         }
-        o.ouvrirTempo()
-        taper(before.roundToInt())
-        o.fermerFeuilles()
+        // Put back on the disk too, so the next scenario opens the song as it was.
+        surDisque { abs(it.tempo - before) < 0.01 }
     }
 
     /**
@@ -402,6 +421,7 @@ internal class ScenariosLimites(private val o: Outils) {
     companion object {
         const val PREFIXE = "lim_"
         private const val LECTURE = "lecture"
+        private val RETABLIR = listOf("top_redo", "thumb_redo")
         private val PICK = Regex("pick_scene_\\d+")
         private val VU = Regex("(top|thumb)_.*|part_(menu|break|sheet|play).*|structure_.*|timeline_screen|.*_sheet")
 

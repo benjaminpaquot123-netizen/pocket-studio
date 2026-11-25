@@ -166,7 +166,7 @@ class ScenariosLimitesVraisEcransTest {
         }
         assertEquals(parts, disque().song.size)
         assertEquals(0, ProjetVu.montee(h.vm.project.value))
-        assertTrue(v.touched.count { it == "top_redo" } >= 6)
+        assertTrue(v.touched.count { it == "top_redo" || it == "thumb_redo" } >= 6)
     }
 
     @Test
@@ -189,7 +189,7 @@ class ScenariosLimitesVraisEcransTest {
         val parts = h.vm.project.value.song.size
         val text = jouer(v, "lim_annuler_pile_3")
         assertTrue(text, text.startsWith("3 breaks ($parts puis ${parts + 3} parties)"))
-        assertEquals(3, v.touched.count { it == "top_redo" })
+        assertEquals(3, v.touched.count { it == "top_redo" || it == "thumb_redo" })
         assertEquals(6, v.touched.count { it == "top_undo" })
         assertEquals(parts, h.vm.project.value.song.size)
         assertEquals(parts, disque().song.size)

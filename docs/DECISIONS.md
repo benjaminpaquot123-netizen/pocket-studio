@@ -1588,3 +1588,4 @@
 - 2026-11-24 · gr-banc republié en gr-banc2 (mêmes arbres) : deux sujets « rouge: » reformulés pour s'apparier à leur « vert: » ; raison : le juge n'apparie un vert neuf que par ses mots ; retour : aucun (contenu identique). gr-l1 entre avec gr-banc2 (3 lignes relues par le chef, conformes).
 - 2026-11-25 · lot « porte-paquet » (tour-9) : 5 décision(s) dans `docs/decisions/tour-9-porte-paquet.md`
 - 2026-11-25 · lot « kick-ci » (tour-9) : 5 décision(s) dans `docs/decisions/tour-9-kick-ci.md`
+- 2026-11-25 · lot « robot1b » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-robot1b.md`

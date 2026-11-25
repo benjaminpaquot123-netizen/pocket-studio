@@ -14,6 +14,8 @@ interface Sonde {
         val lufs: Float = Float.NaN, val drive: Float = Float.NaN, val lane: Float? = null,
         /** The slowest callback (render time over its sound's duration, not smoothed) and the longest wait between two callbacks (in callbacks) since the reading before; 0: unknown. */
         val cpuWorst: Float = 0f, val gapWorst: Float = 0f,
+        /** Tour 9, C3: the stream's block (frames), output buffer (frames) and rate (Hz), to read a gap in ms; 0: unknown. */
+        val burst: Int = 0, val buffer: Int = 0, val rate: Int = 0,
     )
 
     fun lire(): Lecture
@@ -32,6 +34,40 @@ interface Appli {
 
     /** BenStudio Test's screen in front with [question]; waits (at most [maxMs]) for the answer, null without one. */
     fun demander(question: String, maxMs: Long): Boolean?
+
+    /** The open project, in memory and read back from its file (« Scénarios »); null when it cannot be read. */
+    fun projet(): ProjetVu? = null
+
+    /** Android's « retour » on the studio (a full-screen view, the Live's pads, a dialog close by it). Default: nothing. */
+    fun retour() = Unit
+
+    /** Whether the studio's activity is the one in front (Tracker's resumed state); null when unknown. */
+    fun studioDevant(): Boolean? = null
+
+    /** Every project on the disk (« Mes projets »): its id to what its file holds; null when it cannot be read here. */
+    fun projets(): Map<String, ProjetVu.Disque>? = null
+
+    /**
+     * The studio behind another screen (BenStudio Test's own, as when the user leaves for another app) while
+     * [pendant] runs, then in front again. False: not possible here (nothing run).
+     */
+    fun arrierePlan(pendant: () -> Unit): Boolean = false
+
+    /** The studio closed (its screen finished, the process kept), then opened again as from the phone's icon. False: not possible here. */
+    fun relancerStudio(): Boolean = false
+
+    /** The media volume ([niveau] out of [max]), the music stream muted ([muet]), the phone silent ([silencieux]). */
+    data class Volume(val niveau: Int, val max: Int, val silencieux: Boolean = false, val muet: Boolean = false) {
+        /** No sound out of the speaker to measure with: the volume at 0 or under [MIN] of its course, the stream muted, the phone silent. */
+        fun coupe(): Boolean = muet || silencieux || niveau <= 0 || (max > 0 && niveau.toDouble() / max < MIN)
+
+        companion object {
+            /** Under a fifth of the course, the sweep or the latency's click is lost in the room. */
+            const val MIN = 0.2
+        }
+
+        fun text() = "volume média $niveau sur $max" + (if (muet) ", coupé" else "") + (if (silencieux) ", mode silencieux" else "")
+    }
 
     /** [seconds]: the length the app measured on its file (null: none). */
     data class ExportVu(val running: Boolean, val files: List<File>, val error: String?, val seconds: Double? = null)
@@ -52,6 +88,12 @@ interface Appli {
 
     /** What the last failed [latence] said. */
     fun latenceEchec(): String = ""
+
+    /** Whether the app may record from the microphone (RECORD_AUDIO); null: unknown. */
+    fun microAutorise(): Boolean? = null
+
+    /** The phone's media volume (STREAM_MUSIC) and its silent mode, read before a measure through the speaker; null: unknown. */
+    fun volume(): Volume? = null
 
     /** The app's memory (PSS, MB). */
     fun memoireMo(): Int? = null

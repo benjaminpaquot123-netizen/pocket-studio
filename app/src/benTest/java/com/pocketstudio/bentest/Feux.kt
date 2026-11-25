@@ -29,7 +29,7 @@ object Feux {
 
     fun latence(ms: Double): Feu = when {
         ms <= 50.0 -> Feu.VERT
-        ms <= 70.0 -> Feu.ORANGE
+        ms <= LATENCE_MAX -> Feu.ORANGE
         else -> Feu.ROUGE
     }
 
@@ -53,33 +53,51 @@ object Feux {
         return (if (why.isEmpty()) Feu.VERT else Feu.ORANGE) to why.joinToString(", ")
     }
 
-    /** The true worst block (render time over the callback's sound): red over 100 %, orange from 70 %. */
+    /** The true worst block (render time over the callback's sound): red over 150 %, orange from 70 % (2026-11-22: the phone's run read 100-130 % blocks with no dropout heard). */
     fun blocVrai(w: Float): Feu = when {
-        w > 1f -> Feu.ROUGE
+        w > 1.5f -> Feu.ROUGE
         w >= 0.7f -> Feu.ORANGE
         else -> Feu.VERT
     }
 
-    /** The longest wait between two callbacks, in callbacks: red over 2, orange over 1. */
-    fun ecart(g: Float): Feu = when {
-        g > 2f -> Feu.ROUGE
-        g > 1f -> Feu.ORANGE
+    /**
+     * The longest wait between two callbacks, in callbacks: orange over 2 (2026-11-22: 2.3 blocks on nearly every song, even
+     * at low load); over 4 it is red only with a dropout counted (tour 9, C3: the gap is divided by the block before it, so a
+     * long wait the buffer absorbed is not a sound heard).
+     */
+    fun ecart(g: Float, xruns: Int = 0): Feu = when {
+        g > 4f && xruns > 0 -> Feu.ROUGE
+        g > 2f -> Feu.ORANGE
         else -> Feu.VERT
     }
 
     /**
-     * A song played live: red for any dropout, a true worst block over 100 % or a gap over 2 blocks, a NaN; orange for a true
-     * worst block from 70 % or a gap over 1 block, an alert. The smoothed load is information only. The reason says what is not green.
+     * A song played live: red for any dropout, a true worst block over 150 %, a gap over 4 blocks with a dropout, a NaN; orange
+     * for a true worst block from 70 % or a gap over 2 blocks (over 4 without a dropout), an alert. The smoothed load is information only. The reason says what is not green.
      */
     fun style(b: Ecoute.Bilan): Pair<Feu, String> {
         val parts = ArrayList<Pair<Feu, String>>()
         if (b.xruns > 0) parts += Feu.ROUGE to "${b.xruns} décrochage(s)"
         blocVrai(b.cpuWorst).takeIf { it != Feu.VERT }?.let { parts += it to "pire bloc vrai ${Ecoute.pct(b.cpuWorst)}" }
-        ecart(b.gapWorst).takeIf { it != Feu.VERT }?.let { parts += it to "plus long écart ${fmt(b.gapWorst.toDouble()).replace('.', ',')} blocs" }
+        ecart(b.gapWorst, b.xruns).takeIf { it != Feu.VERT }?.let { parts += it to b.ecartTexte() }
         if (b.nonFinite) parts += Feu.ROUGE to "valeur invalide (NaN)"
         if (b.alertes.isNotEmpty()) parts += Feu.ORANGE to b.alertes.joinToString(", ") { it.kind.lowercase(Locale.ROOT) + " à ${it.second} s" }
         return Feu.pire(parts.map { it.first }) to parts.joinToString(", ") { it.second }
     }
+
+    /** The red thresholds a listening passed, each as the value read against its threshold (resume.md's « Indices »). */
+    fun depasses(b: Ecoute.Bilan): List<String> = listOfNotNull(
+        b.xruns.takeIf { it > 0 }?.let { "$it décrochage(s) lu(s) contre 0 permis" },
+        b.cpuWorst.takeIf { blocVrai(it) == Feu.ROUGE }?.let { "pire bloc vrai ${Ecoute.pct(it)} lu contre 150 % au plus" },
+        b.takeIf { ecart(it.gapWorst, it.xruns) == Feu.ROUGE }?.let { "${it.ecartTexte()} lu contre 4 blocs au plus" },
+        "valeur invalide (NaN) lue contre aucune permise".takeIf { b.nonFinite },
+    )
+
+    /** The latency's red threshold passed, null when it is not. */
+    fun depasseLatence(ms: Double): String? =
+        if (latence(ms) == Feu.ROUGE) "latence ${String.format(Locale.ROOT, "%.2f", ms)} ms lue contre ${LATENCE_MAX.toInt()} ms au plus" else null
+
+    private const val LATENCE_MAX = 70.0
 
     fun fmt(v: Double) = String.format(Locale.ROOT, "%.1f", v)
 }

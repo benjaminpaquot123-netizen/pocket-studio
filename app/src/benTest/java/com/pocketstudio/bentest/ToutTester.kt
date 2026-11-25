@@ -67,6 +67,16 @@ class ToutTester(
 
     private fun feu(step: String, f: Pair<Feu, String>) = carnet.add(Carnet.FEU, step, f.first.mot + ";" + f.second)
 
+    /** The red thresholds [step] passed (« seuil;<value read against threshold> »), for the scenarios' clues. */
+    private fun seuils(step: String, what: List<String>) = what.forEach { carnet.add(Carnet.NOTE, step, "$SEUIL;$it") }
+
+    /** Neither passed nor failed: nothing could be measured ([why]); a grey light, and the note « Scénarios » reads. */
+    private fun nonMesure(step: String, why: String): String {
+        feu(step, Feu.GRIS to why)
+        carnet.add(Carnet.NOTE, step, "$NON_MESURE;$why")
+        return "non mesuré : $why"
+    }
+
     private fun chaleur(step: String): String {
         val c = appli.chaleur() ?: return ""
         carnet.add(Carnet.MESURE, step, "chaleur;" + c.mesure())
@@ -84,6 +94,7 @@ class ToutTester(
         e.arreter()
         if (j.exists("guide_panel")) runCatching { j.tap("guide_bar") }
         feu(step, Feux.style(b))
+        seuils(step, Feux.depasses(b))
         check(b.reads > 0) { "aucune mesure" }
         check(b.playing * 2 >= b.reads) { "la lecture s'est arrêtée toute seule : ${b.text()}" }
         check(b.secondes.any { it.peakDb > Ecoute.SILENCE_DB }) { "silence : ${b.text()}" }
@@ -98,7 +109,10 @@ class ToutTester(
         while (System.currentTimeMillis() < end) {
             j.idle(250)
             val r = sonde.lire()
-            val lu = Ecoute.Lu(System.currentTimeMillis(), r.xruns, r.cpu, r.peak, r.nonFinite, r.playing, r.lufs, r.drive, r.lane, r.cpuWorst, r.gapWorst)
+            val lu = Ecoute.Lu(System.currentTimeMillis(), r.xruns, r.cpu, r.peak, r.nonFinite, r.playing, r.lufs, r.drive, r.lane, r.cpuWorst, r.gapWorst,
+                blocMs = if (r.burst > 0 && r.rate > 0) r.burst * 1000f / r.rate else 0f,
+                tamponBlocs = if (r.burst > 0 && r.buffer > 0) r.buffer.toFloat() / r.burst else 0f,
+            )
             reads += lu
             also(lu)
             carnet.add(
@@ -117,7 +131,7 @@ class ToutTester(
      * Mix › Exporter › « La scène » in [format] (m4a, wav, flac), or the 9:16 video: the file read
      * back, its length against the app's, its true peak, the time it took against the time planned.
      */
-    fun export(format: String): String {
+    fun export(format: String, step: String = "export_$format"): String {
         val started = System.currentTimeMillis()
         e.auStudioPro()
         if (format == "video") return video(started)
@@ -151,7 +165,7 @@ class ToutTester(
         }
         val took = (System.currentTimeMillis() - started) / 1000.0
         val file = mine(v).maxBy { it.lastModified() }
-        return relu("export_$format", format.uppercase(Locale.ROOT), file, took, v.seconds, PREVU.getValue(format))
+        return relu(step, format.uppercase(Locale.ROOT), file, took, v.seconds, PREVU.getValue(format))
     }
 
     /** Partager › « Vidéo pour les réseaux » › Créer: the MP4 read back (9:16 standing), then the share menu it opens left. */
@@ -205,6 +219,12 @@ class ToutTester(
 
     /** Three round trips (the speaker heard by the microphone), their median for the light. */
     fun latence(): String {
+        // Through the speaker and the microphone: with the sound cut, a « measure » is the room's noise (the Xiaomi's 501.71 ms).
+        appli.volume()?.takeIf { it.coupe() }?.let { return nonMesure("latence", "$SON_COUPE (${it.text()})") }
+        // Tour 9, C5: without RECORD_AUDIO the engine answers MicUnavailable; that is the phone's setting, not a fault.
+        if (appli.microAutorise() == false) {
+            return nonMesure("latence", "micro non autorisé : touche « Autoriser le micro » sur l'écran de BenStudio Test pour mesurer la latence")
+        }
         e.auStudioPro()
         val values = ArrayList<Double>()
         val fails = ArrayList<String>()
@@ -214,12 +234,22 @@ class ToutTester(
             carnet.add(Carnet.MESURE, "latence", "ms=${ms?.let(::fmt) ?: ""}")
             j.idle(500)
         }
+        if (values.isEmpty() && fails.all { "MicUnavailable" in it }) {
+            return nonMesure("latence", "micro occupé ou indisponible : le moteur n'a pas pu l'ouvrir (${fails.distinct().joinToString(" ; ")})")
+        }
         if (values.isEmpty()) {
             feu("latence", Feu.ROUGE to "aucune mesure")
             error("aucune mesure : ${fails.distinct().joinToString(" ; ")}")
         }
+        if (fails.size * 2 > values.size + fails.size) {
+            return nonMesure(
+                "latence",
+                "${fails.size} mesures ratées sur ${values.size + fails.size}, ce n'est pas une mesure (lu : ${values.joinToString(", ") { fmt(it) }} ms ; ${fails.distinct().joinToString(" ; ")})",
+            )
+        }
         val median = values.sorted()[values.size / 2]
         feu("latence", Feux.latence(median).let { it to if (it == Feu.VERT) "" else "${fmt(median)} ms" })
+        seuils("latence", listOfNotNull(Feux.depasseLatence(median)))
         return "${fmt(median)} ms (mesures : ${values.joinToString(", ") { fmt(it) }}" + (if (fails.isEmpty()) ")" else ", ${fails.size} ratée(s))")
     }
 
@@ -391,6 +421,13 @@ class ToutTester(
     }
 
     companion object {
+        /** A step that could not measure leaves « non_mesure;<why> » in the logbook. */
+        const val NON_MESURE = "non_mesure"
+
+        /** A red threshold passed: « seuil;<value read against threshold> ». */
+        const val SEUIL = "seuil"
+        const val SON_COUPE = "son coupé : remonte le volume pour mesurer la latence"
+
         /** The two heaviest styles, played cold at the start and hot at the end. */
         val LOURDS = listOf("jump_up", "dnb")
 

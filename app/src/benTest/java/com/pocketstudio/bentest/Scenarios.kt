@@ -111,6 +111,7 @@ class Scenarios(
             "volume" -> a.toIntOrNull()?.let { ch -> { curseur(id, "Volume", "sheet_volume", ch, { it.volumes }, { it.volumes }) { v -> if (v > 0.6f) 0.4f else 0.9f } } }
             "pan" -> a.toIntOrNull()?.let { ch -> { curseur(id, "Panoramique", "sheet_pan", ch, { it.pans }, { it.pans }) { v -> if (v > 0f) -0.5f else 0.5f } } }
             "effet" -> { { effet(id, a) } }
+            "fx" -> if (ScenariosEffets.connu(g)) { { ScenariosEffets(j, sonde, appli, carnet, captures, ecran, ecouteMs, sauvegardeMs, courtMs, effetEcouteMs, regler, enHaut).jouer(id, g) } } else null
             "tempo" -> { { tempoExtreme(id, haut = a != "bas", enJouant = a == "haut_lecture") } }
             "export" -> g.getOrNull(2)?.let { format -> { ts.style(id, a) + " ; " + t.export(format, id) } }
             "montee" -> { { montee(id, a) } }
@@ -1419,7 +1420,7 @@ class Scenarios(
             Scenario(STYLE_DUBSTEP, "Moyen : un morceau dubstep", NIVEAU_MOYEN, 360_000, 60, "le moteur joue, le son sort, les décrochages"),
             Scenario(STYLE_DNB, "Style lourd : drum and bass, décrochages", NIVEAU_MESURE, 360_000, 60, "les décrochages et le pire bloc d'un style lourd"),
             Scenario(GUIDE, "Débutant : le Guide jusqu'au bout", NIVEAU_DEBUTANT, 480_000, 150, "« Tout est fait » à l'écran du Guide"),
-        ) + tables() + ScenariosSauve.LISTE + ScenariosMix.LISTE
+        ) + tables() + ScenariosSauve.LISTE + ScenariosMix.LISTE + ScenariosEffets.LISTE
 
         /** [LISTE] as steps without work (to read a logbook). */
         /** The screens a scenario starts from: the studio (its bar, or its rail lying down), the welcome, the projects. */

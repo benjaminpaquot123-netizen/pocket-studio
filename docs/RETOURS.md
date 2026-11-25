@@ -231,3 +231,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - [ ] 2026-11-25 (vidéo « 120 Subgenres of EDM (w examples) », 26 min) : à faire analyser par Fable (image + son, kicks), « j'espère que la conversion n'aura pas abîmé les fréquences ». Reçu : seulement part2.rar (6,6 Mo sur 38) ; part1 demandée.
 - 2026-11-25 18h30 : vidéo VID_20261125_182753.mp4 (fin de la vidéo d'origine, rognée par Benjamin dans l'éditeur Xiaomi, genres 60 à 120 de « 120 Subgenres of EDM ») : « la fin manquante, pour Fable ».
 - 2026-11-25 18h50 : précision de Benjamin : la vidéo n'est pas filmée, il l'a coupée en deux lui-même sur la ligne du temps de l'éditeur Xiaomi (même source, réencodée).
+- 2026-11-25 20h05 : écoute des MP3 kick avant-après (kick seul, 49d9c0e35) : « La house, ça sonne un peu creux aussi, comme un tambour. La deuxième [tech house], pareil, elle fait rebond, tordu, tambour, ça sonne pas moderne. »

@@ -236,7 +236,7 @@ class GuideActionsTest {
     /** Review M5: a chain copied past the engine's long effects is refused, said, and changes nothing. */
     @Test
     fun aCopyPastTheLongEffectsLimitIsRefused() {
-        val style = StarterWizard.style("trap")!!
+        val style = StarterWizard.style("grime")!!
         var p = GuideActions.withBaseline(StarterWizard.build(style, style.lines.associate { it.role to null as PadSample? }, style.melody.mood,
             StarterWizard.defaultParts(style).associateWith { StarterWizard.soundsFor(it, style).first() }))
         var pad = 0

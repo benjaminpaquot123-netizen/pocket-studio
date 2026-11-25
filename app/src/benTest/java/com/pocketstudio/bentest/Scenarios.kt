@@ -117,7 +117,13 @@ class Scenarios(
             "partie" -> g.getOrNull(2)?.toIntOrNull()?.let { delta -> { partie(id, a, delta) } }
             "pad" -> a.toIntOrNull()?.let { i -> { toucherPad(id, i) } }
             "ecrans" -> ECRANS_LECTURE[a]?.let { tabs -> { lectureEcrans(id, tabs) } }
-            "repetition" -> when (a) { "jouer" -> { { jouerArreter(id) } }; "fond" -> { { fondReprise(id) } }; else -> null }
+            "repetition" -> when (a) {
+                "jouer" -> { { jouerArreter(id) } }
+                "fond" -> { { fondReprise(id) } }
+                "partie" -> { { changerPartie(id) } }
+                "quitter" -> { { quitterEnJouant(id) } }
+                else -> null
+            }
             "guide" -> { { t.guide(a) } }
             else -> null
         }
@@ -1093,6 +1099,90 @@ class Scenarios(
         return "$FONDS fois au fond puis devant (lecture par $by) : la musique joue, le studio revient"
     }
 
+    /**
+     * Measure (chef 2b): while the song plays, another part chosen [REPETITIONS] times by its ▶ on the Structure.
+     * Oracle: no silence over 200 ms nor cut in the sound, the part chosen is the one the app plays (a part queued
+     * while the song plays starts at the next part's edge), the song still plays.
+     */
+    private fun changerPartie(step: String): String {
+        auStudio()
+        val n = lu().parties
+        if (n < 2) return nonMesure(step, "le morceau n'a qu'une partie")
+        if (!j.exists("part_play_0")) {
+            if (!j.exists("structure_parts")) j.tap("tab_Structure")
+            // The parts' list, not the timeline: each part has its ▶ there.
+            if (!j.exists("part_play_0")) { j.tap("structure_parts"); j.awaitGone("timeline_screen") }
+        }
+        val by = e.lancerLecture()
+        val reads = ArrayList<Ecoute.Lu>()
+        val cuts = ArrayList<String>()
+        var missed = 0
+        var known = false
+        try {
+            repeat(REPETITIONS) { k ->
+                val target = (k + 1) % n
+                j.tap("part_play_$target")
+                var seen = false
+                val b = t.ecouter(step, courtMs) { reads += it; if (appli.partieJouee() == target) seen = true }
+                cuts += Epreuves.coupures(b)
+                val now = appli.partieJouee()
+                if (now != null || seen) known = true
+                if (!seen && now != null && !attendre(PARTIE_ATTENTE_MS) { appli.partieJouee() == target }) missed++
+            }
+        } finally {
+            e.arreter()
+        }
+        val holes = Epreuves.trous(reads)
+        bilan(step, "fois" to REPETITIONS, "parties" to n, "trous" to holes, "coupures" to cuts.size, "partie_absente" to if (known) missed else null)
+        feu(step, (if (holes == 0 && cuts.isEmpty() && missed == 0) Feu.VERT else Feu.ROUGE) to "$holes trou(s), ${cuts.size} coupure(s), $missed partie(s) non jouée(s)")
+        if (!known) carnet.add(Carnet.NOTE, step, "la partie jouée ne se lit pas ici : seul le son est jugé")
+        check(holes == 0) { "$holes quart(s) de seconde muet(s) en changeant de partie" }
+        check(cuts.isEmpty()) { "le son se coupe en changeant de partie : ${cuts.distinct().joinToString(", ")}" }
+        check(missed == 0) { "$missed partie(s) choisie(s) sur $REPETITIONS ne jouent pas" }
+        return "$REPETITIONS fois une autre partie sur $n (lecture par $by) : pas de trou, la partie choisie joue" +
+            if (known) "" else " (partie jouée non lue ici)"
+    }
+
+    /**
+     * Measure (chef 2c): « Mes projets » while the song plays, another project opened, then the first one again.
+     * Oracle: no crash, the first song back, no sound after ■ (no ghost voice), its file as it was on the disk.
+     */
+    private fun quitterEnJouant(step: String): String {
+        auStudio()
+        val p = lu()
+        val before = surDisque { it.nom == p.nom && it.parties == p.parties } ?: return nonMesure(step, "le projet ouvert n'est pas sur le disque")
+        val known = listOfNotNull(copie) + appli.projets().orEmpty().keys
+        if (known.none { it != p.id }) return nonMesure(step, "un seul projet sur le téléphone")
+        var other = ""
+        val by = e.lancerLecture()
+        try {
+            versProjets()
+            // The list is lazy: only a row on screen has a node, so the other project is one the list shows.
+            val shown = j.tagsMatching(Regex("project_.+")).toSet()
+            other = known.firstOrNull { it != p.id && "project_$it" in shown } ?: error("aucun autre projet visible dans « Mes projets »")
+            j.tap("project_$other")
+            j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000)
+            check(attendre(10_000) { appli.projet()?.id == other }) { "« Mes projets » › $other n'ouvre pas ce projet" }
+            versProjets()
+            j.tap("project_${p.id}")
+            j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000)
+            check(attendre(10_000) { appli.projet()?.id == p.id }) { "le premier projet ne revient pas (ouvert : ${appli.projet()?.id})" }
+        } finally {
+            e.arreter()
+        }
+        var ghost = false
+        // The voices' release after ■ is not a ghost: listened from one second on.
+        j.idle(1_000)
+        attendre(FANTOME_MS) { val r = sonde.lire(); if (r.playing || Ecoute.db(if (r.peak.isFinite()) r.peak else 0f) > Ecoute.SILENCE_DB) ghost = true; false }
+        val d = surDisque { it.nom == before.nom && it.parties == before.parties && it.effets == before.effets }
+        val intact = d != null && d.nom == before.nom && d.parties == before.parties && d.effets == before.effets
+        bilan(step, "autre" to other, "fantome" to ghost, "intact" to intact)
+        feu(step, (if (!ghost && intact) Feu.VERT else Feu.ROUGE) to if (ghost) "du son après ■" else if (!intact) "le projet a changé sur le disque" else "revenu, silencieux, intact")
+        check(!ghost) { "du son (ou la lecture) après ■, revenu de l'autre projet" }
+        check(intact) { "« ${p.nom} » a changé sur le disque : ${d?.parties ?: "aucun fichier"} parties (avant : ${before.parties})" }
+        return "lecture par $by, quitté pour un autre projet puis rouvert « ${p.nom} » : intact (${before.parties} parties), rien après ■"
+    }
+
     /** One scenario of the run: its step's name, what the report calls it, whose use it is. */
     data class Scenario(
         val id: String, val label: String, val niveau: String, val maxMs: Long,
@@ -1189,6 +1279,12 @@ class Scenarios(
         const val REPETITIONS = 10
         const val FONDS = 5
 
+        /** A part queued while the song plays starts at the next part's edge: this long at most (a long part at a slow tempo). */
+        const val PARTIE_ATTENTE_MS = 12_000L
+
+        /** After ■: this long listened for a ghost voice (sound or playing state). */
+        const val FANTOME_MS = 2_000L
+
         /** The styles the quick pack has no scenario of (the assistant's, by its order), and its favourites among them. */
         val STYLES_NEUFS = listOf(
             "techno", "detroit", "acid_techno", "hard_techno", "industrial_techno", "retro_techno", "acidcore",
@@ -1250,6 +1346,8 @@ class Scenarios(
             add(Scenario("lecture_va_et_vient", "Moyen : passer 5 fois du Mix à la Structure en jouant", NIVEAU_MOYEN, 90_000, 20, "le transport joue à chaque écran, le son sort", "ecrans:va_et_vient"))
             add(Scenario("jouer_arreter_10", "Mesure : 10 fois jouer puis arrêter", NIVEAU_MESURE, 180_000, 40, "chaque départ avec du son, chaque arrêt ; ni NaN", "repetition:jouer"))
             add(Scenario("fond_reprise_5", "Mesure : 5 fois au fond puis devant, en jouant", NIVEAU_MESURE, 180_000, 45, "la musique au fond et le studio revenu, chaque fois", "repetition:fond"))
+            add(Scenario("changer_partie_10", "Mesure : 10 fois changer de partie en jouant", NIVEAU_MESURE, 180_000, 50, "aucun silence de plus de 200 ms, la partie choisie jouée, pas de plantage", "repetition:partie"))
+            add(Scenario("quitter_en_jouant", "Mesure : quitter en jouant, ouvrir un autre projet, revenir", NIVEAU_MESURE, 180_000, 60, "pas de plantage, pas de son fantôme après l'arrêt, projet intact sur le disque", "repetition:quitter"))
             for (st in ToutTester.GUIDE.drop(1)) add(Scenario("guide_$st", "Débutant : le Guide sur un morceau $st", NIVEAU_DEBUTANT, 480_000, 120, "« Tout est fait » à l'écran du Guide", "guide:$st"))
         }
 

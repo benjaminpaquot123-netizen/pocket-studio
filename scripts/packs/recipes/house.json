@@ -1,10 +1,6 @@
 [
  {
   "id": "house",
-  "vocal": {
-   "type": "answer",
-   "sample": "vocal_chops:vocal_03"
-  },
   "references": [
    "MK & Dom Dolla – Rhyme Dust (2023)",
    "Fred again.. – Delilah (pull me out of this) (2022)",
@@ -48,8 +44,8 @@
    {
     "role": "perc",
     "pattern": "..x...x...x...x.",
-    "source": "tr707",
-    "tip_fr": "Un tambourin de vieille boîte à rythmes (la 707) entre chaque temps : il fait danser les épaules.",
+    "source": "deep_house",
+    "tip_fr": "Un shaker doux entre chaque temps : il fait danser les épaules sans voler la place du piano.",
     "voice": "shaker"
    },
    {
@@ -119,10 +115,10 @@
   },
   "lead": {
    "type": "riff",
-   "pattern": "R.O.5.O.R.O.3.O.R-O.5.O.7-O.5.3.",
+   "pattern": "..O..5..O..7.5....O..5..3..R-...",
    "arp_rate": 24,
    "octave": 4,
-   "sound": "Arpège"
+   "sound": "Pluck future"
   },
   "acid": {
    "use": false,
@@ -137,7 +133,7 @@
   },
   "bass_tip": "Elle saute entre la note grave et la même note plus haut, dans le même rythme que le piano.",
   "pad_tip": "Des accords de piano joués en petits coups : c'est le refrain qu'on retient en house.",
-  "lead_tip": "Une petite boucle de notes rapides (un arpège), comme dans « Your Love » de Frankie Knuckles.",
+  "lead_tip": "Une petite mélodie pincée qui tombe à côté des temps : elle répond au piano au lieu de tourner en boucle.",
   "fx": [
    {
     "on": "clap",
@@ -157,7 +153,7 @@
     ]
    }
   ],
-  "notes": "Roland TR-909 drums (707 percussion) with a light shuffle (MPC ~57%). The piano riff (Korg M1 / real piano, played in the middle register) is the hook of piano/anthem house (Move Your Body, Promised Land), in rhythmic unison with a bouncy root-octave bass. Optional 16th-note Juno arpeggio as in Frankie Knuckles/Jamie Principle 'Your Love'. A soft ghost kick on the last 16th adds 'jack' (left out: the beginner's rule is one kick per beat). Happy major I-IV-vi-V first.",
+  "notes": "Roland TR-909 drums with a light shuffle (MPC ~57%). The piano riff (Korg M1 / real piano, played in the middle register) is the hook of piano/anthem house (Move Your Body, Promised Land), in rhythmic unison with a bouncy root-octave bass. Round 9 (gr-house2): no recurring vocal chop, no 707 tambourine and no old arpeggio synth (Benjamin: « ringard »); a syncopated modern pluck answers the piano instead. A soft ghost kick on the last 16th adds 'jack' (left out: the beginner's rule is one kick per beat). Happy major I-IV-vi-V first.",
   "drop": [
    "ride",
    "perc2"
@@ -391,9 +387,9 @@
    },
    {
     "role": "clap",
-    "pattern": "....X.......X.......X.......Xo..",
+    "pattern": "....X.......X.......X.......X...",
     "source": "tech_house",
-    "tip_fr": "Sur 2 et 4, sec et claquant. À la fin de la deuxième mesure, un petit écho plus doux juste après : il relance la boucle."
+    "tip_fr": "Sur 2 et 4, sec et claquant, sans écho : il laisse toute la place à la basse."
    },
    {
     "role": "hat",
@@ -429,12 +425,6 @@
     "role": "conga",
     "pattern": "......x.x.....o.......x.x..x..o.",
     "tip_fr": "Une conga qui tourne autour du « toc » : avec le shaker, elle fait le lit d'aigus qui roule."
-   },
-   {
-    "role": "rim",
-    "pattern": "..............................X.",
-    "tip_fr": "Un petit clap juste avant la boucle suivante : il relance le groove, à côté du vieux clap.",
-    "voice": "clap"
    }
   ],
   "progressions": {
@@ -530,10 +520,12 @@
     "preset": "punch"
    }
   ],
-  "notes": "The bassline is the hook: short gritty notes rolling on the offbeats between the kicks, hard sidechain. Hats on the offbeat 16ths (pushed by the swing) with a short offbeat open hat; a rim/cowbell riff over two bars. Harmony is minimal (one organ stab or none, off by default); spoken or chopped vocal shouts carry the top line (on by default). Keys like F, F# or G minor; 124-128 BPM.",
+  "notes": "The bassline is the hook: short gritty notes rolling on the offbeats between the kicks, hard sidechain. Hats on the offbeat 16ths (pushed by the swing) with a short offbeat open hat; a rim/cowbell riff over two bars. Harmony is minimal (one organ stab or none, off by default); spoken or chopped vocal shouts carry the top line (on by default). Keys like F, F# or G minor; 124-128 BPM. Round 9 (gr-house2): the clap hits on 2 and 4 only, over its two bars (no echo, no snap on the turnaround); the rim motif and the conga wait for the Drop so the intro is kick, hats and the rolling bass.",
   "drop": [
    "open_hat",
-   "ride"
+   "ride",
+   "perc",
+   "conga"
   ],
   "break": [
    "bass",
@@ -1008,9 +1000,9 @@
   },
   "acid": {
    "use": true,
-   "pattern": "RROR.R7RR.5OR.3R",
-   "accents": "x.x...x....x..x.",
-   "slides": "..x.......xx...x",
+   "pattern": ".ROR.R7O.R5O.R3O",
+   "accents": "..x...x...xx..x.",
+   "slides": "..x...x..x.x..x.",
    "moves": {
     "cutoff": {
      "intro": [
@@ -1018,16 +1010,16 @@
       0.38
      ],
      "groove": [
-      0.3,
-      0.36
+      0.2,
+      0.42
      ],
      "drop": [
-      0.55,
+      0.5,
       0.62
      ],
      "break": [
       0.28,
-      0.68
+      0.6
      ]
     },
     "resonance": {
@@ -1067,8 +1059,8 @@
    "knobs": {
     "resonance": 0.88,
     "env_mod": 0.8,
-    "accent": 0.85,
-    "decay": 0.3,
+    "accent": 0.7,
+    "decay": 0.5,
     "drive": 0.45
    }
   },
@@ -1108,13 +1100,14 @@
     "preset": "punch"
    }
   ],
-  "notes": "The TB-303 is the whole track: one looped pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw drum-machine drums (909 since lot L9): continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break. Lot L9: acid techno today (Charlotte de Witte, Amelie Lens): 130 BPM, a 909 kick punched, a one-bar Squelchy riff, high resonance, more accents and glides, cutoff, resonance and envelope moving in every section.",
+  "notes": "The TB-303 is the whole track: one looped pattern with octave jumps, accents and slides, looped while cutoff and resonance are slowly turned. A little grit and echo on it. Raw drum-machine drums (909 since lot L9): continuous hats, cowbell on the offbeats. No chords in Acid Tracks; a held string-machine pad (Voodoo Ray) is optional, as are the bass and the lead. Cutoff and resonance now move slowly along the song (song automation of the 303 knobs): opening a little through each section, a slow sweep in the Break. Lot L9: acid techno today (Charlotte de Witte, Amelie Lens): 130 BPM, a 909 kick punched, a one-bar Squelchy riff, high resonance, more accents and glides, cutoff, resonance and envelope moving in every section. Round 9 (gr-house2): the 303 plays between the kicks (never on them) with a longer decay so it sings instead of thumping; the song builds: the 303 opens from a closed filter in the Groove, the clap waits for the Drop, a light build instead of the noise riser.",
   "drop": [
    "open_hat",
    "shaker",
-   "perc"
+   "perc",
+   "clap"
   ],
-  "riser": true,
+  "transition": "light",
   "mix": {
    "glue_blend": 0.6,
    "bus_drive": 0.15
@@ -1147,7 +1140,7 @@
    {
     "role": "perc",
     "pattern": "o..x..x.o..x..x.o..x..x.o.x.x.x.",
-    "source": "afro_house",
+    "source": "lib:percussions_acoustiques:conga",
     "voice": "conga",
     "tip_fr": "Les congas en « un-deux-trois, un-deux-trois, un-deux » : c'est ce qui fait chalouper."
    },
@@ -1172,15 +1165,17 @@
    },
    {
     "role": "perc2",
-    "voice": "rim",
+    "voice": "conga",
     "pattern": "o..o..o.o..o..o.",
-    "tip_fr": "Un petit « toc » de bois en 3-3-2 : il croise les congas et fait danser les hanches."
+    "tip_fr": "Des bongos qui tournent en 3-3-2 : la petite voix aiguë des mains, en réponse à la conga.",
+    "source": "lib:percussions_acoustiques:bongo"
    },
    {
     "role": "tom",
-    "voice": "tom_high",
+    "voice": "conga",
     "pattern": "..............x.......x.......x.",
-    "tip_fr": "Un tom aigu, comme un bongo, qui répond en fin de mesure."
+    "source": "lib:percussions_acoustiques:cajon",
+    "tip_fr": "Un cajon, une caisse frappée à la main, qui répond en fin de mesure."
    }
   ],
   "progressions": {
@@ -1274,7 +1269,7 @@
     "reverb": 0.35
    }
   ],
-  "notes": "Built from the percussion: a continuous shaker (built-in shaker voice), congas in 3-3-2 over two bars (built-in conga), soft clap; no open hat (that is house). Warm four-on-the-floor kick. Minor 9th pads that move slowly; a subby bass between the kicks, sidechained. The marimba motif every three 16ths (3 against 4) is the signature and plays throughout. 120-124 BPM.",
+  "notes": "Built from the percussion: a continuous shaker (built-in shaker voice), congas in 3-3-2 over two bars (built-in conga), soft clap; no open hat (that is house). Warm four-on-the-floor kick. Minor 9th pads that move slowly; a subby bass between the kicks, sidechained. The marimba motif every three 16ths (3 against 4) is the signature and plays throughout. 120-124 BPM. Round 9 (gr-house2): real hand drums (conga and bongos from the acoustic percussion library) instead of the wood « toc », a cajon instead of the high tom; the warm chords play from the start and a light build replaces tech house's riser.",
   "break": [
    "bass",
    "chords",
@@ -1287,10 +1282,9 @@
    "tom"
   ],
   "drop": [
-   "chords",
    "lead"
   ],
-  "riser": true,
+  "transition": "light",
   "sweeps": [
    {
     "on": "lead",

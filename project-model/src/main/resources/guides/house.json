@@ -435,7 +435,7 @@
    "kind": "decide",
    "simple": true,
    "title": "Le lead : le motif qu'on retient",
-   "why": "Une petite boucle de notes rapides (un arpège), comme dans « Your Love » de Frankie Knuckles.",
+   "why": "Une petite mélodie pincée qui tombe à côté des temps : elle répond au piano au lieu de tourner en boucle.",
    "simpleTitle": "La mélodie",
    "simpleWhy": "Le bout qu'on retient et qu'on chante.",
    "when": "Au début, piste par piste : le kick d'abord.",
@@ -489,67 +489,6 @@
     }
    ],
    "lexicon": "lead"
-  },
-  {
-   "id": "sound.vocal",
-   "stage": 1,
-   "target": "vocal",
-   "kind": "decide",
-   "simple": true,
-   "title": "La voix",
-   "why": "Des bouts de voix qui répondent à la mélodie dans ses silences. Tu peux y poser ta voix (Sons › Voix).",
-   "simpleTitle": "La voix",
-   "simpleWhy": "Une voix robot en attendant la tienne.",
-   "when": "Au début, piste par piste : le kick d'abord.",
-   "applicable": [
-    "has:vocal"
-   ],
-   "done": [
-    "has:vocal",
-    "by_hand|changed:vocal"
-   ],
-   "proposals": [
-    {
-     "id": "keep",
-     "label": "Garder ce son",
-     "why": "Il tient son rôle : on passe au suivant.",
-     "action": {
-      "type": "keep"
-     }
-    },
-    {
-     "id": "other",
-     "label": "Autre idée de son",
-     "why": "Un autre son du même rôle, écouté avec le reste.",
-     "action": {
-      "type": "open",
-      "spot": "sounds.track",
-      "target": "vocal"
-     }
-    },
-    {
-     "id": "mine",
-     "label": "Poser ma voix",
-     "why": "Enregistre ta voix, puis coupe la piste du robot là où tu chantes.",
-     "action": {
-      "type": "open",
-      "spot": "record.voice",
-      "target": "vocal"
-     }
-    }
-   ],
-   "elsewhere": [
-    {
-     "id": "favorite",
-     "label": "Garder ce son dans mes favoris",
-     "why": "Pour le retrouver dans un autre morceau.",
-     "action": {
-      "type": "open",
-      "spot": "sounds.favorite",
-      "target": "vocal"
-     }
-    }
-   ]
   },
   {
    "id": "sound.riser",
@@ -933,81 +872,6 @@
     }
    ],
    "lexicon": "echo"
-  },
-  {
-   "id": "fx.vocal",
-   "stage": 3,
-   "target": "vocal",
-   "kind": "decide",
-   "title": "La voix : coupe-bas, compresseur, réverbe",
-   "why": "La voix n'a aucun effet : un coupe-bas et un compresseur la gardent claire, un petit pré-délai de réverbe garde chaque mot net.",
-   "when": "Une fois le son et le motif posés.",
-   "howMuch": "Coupe-bas 100 à 150 Hz ; pré-délai 20 à 40 ms.",
-   "howOften": "Une chaîne pour tout le morceau.",
-   "applicable": [
-    "has:vocal"
-   ],
-   "done": [
-    "colour:vocal",
-    "by_hand|changed:vocal"
-   ],
-   "proposals": [
-    {
-     "id": "clear",
-     "label": "Voix claire",
-     "why": "Coupe-bas à 120 Hz puis un compresseur doux.",
-     "value": "120 Hz · 3:1",
-     "action": {
-      "type": "chain",
-      "inserts": [
-       {
-        "type": "insert",
-        "effect": "PARAM_EQ",
-        "params": [
-         0.5,
-         0.5,
-         0.4,
-         0.5566
-        ]
-       },
-       {
-        "type": "insert",
-        "effect": "COMPRESSOR",
-        "params": [
-         0.55,
-         0.3,
-         0.35,
-         0.35,
-         0.0,
-         1.0,
-         1.0,
-         0.3,
-         1.0
-        ]
-       }
-      ]
-     }
-    },
-    {
-     "id": "echo",
-     "label": "Voix d'écho",
-     "why": "Elle se répète dans l'espace, comme un cri dans une salle.",
-     "action": {
-      "type": "send",
-      "bus": 1,
-      "value": 0.35
-     }
-    },
-    {
-     "id": "keep",
-     "label": "La laisser brute",
-     "why": "Brute, elle reste en avant.",
-     "action": {
-      "type": "keep"
-     }
-    }
-   ],
-   "lexicon": "reverb"
   },
   {
    "id": "fx.sends",

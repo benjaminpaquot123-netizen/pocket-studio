@@ -1,0 +1,4 @@
+source=docs/audits/ultra/sieges/tour-9/controle/fable-tuto/a
+rejeu.n=1
+rejeu.attendu=« À toi : sur le pad « Claquement de mains », touche les cases en pointillé des 2 mesures, sur les temps 2 et 4. » @
+rejeu.absent=temps 2 et 4. » [coupé]

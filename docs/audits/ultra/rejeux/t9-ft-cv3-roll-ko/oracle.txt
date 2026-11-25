@@ -1,0 +1,4 @@
+source=docs/audits/ultra/sieges/tour-9/controle/fable-tuto/c
+rejeu.n=78
+rejeu.attendu=« ×1 » [sélectionné]
+rejeu.absent=« ×2 » [sélectionné]

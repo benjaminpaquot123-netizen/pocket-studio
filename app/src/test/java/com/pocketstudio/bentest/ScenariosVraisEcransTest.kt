@@ -60,6 +60,18 @@ open class ScenariosVraisEcransTest {
             return Reponse(Verdict.OUI)
         }
         val touched = ArrayList<String>()
+        /**
+         * The rows of « Mes projets » come after their screen (the list is read from the disk on another thread):
+         * missing from this many readings of the rows. CI 462 lost that race once.
+         */
+        var lignesEnRetard = 0
+        override fun tags(pattern: Regex): List<String> {
+            val all = d.tags(pattern)
+            val rows = pattern.matches("project_x") && !pattern.matches("projects")
+            if (!rows || lignesEnRetard <= 0) return all
+            lignesEnRetard--
+            return all.filterNot { it.startsWith("project_") }
+        }
         /** A hole while the kit sheet is open (the gestures of « Changement de kit »): silence although it plays. */
         var muetKit = false
         @Volatile private var kitOuvert = false
@@ -210,6 +222,20 @@ open class ScenariosVraisEcransTest {
         assertEquals(first.parties, store.load(first.id)?.song?.size)
         assertTrue(text, !v.playing)
         assertTrue(Scenarios.liste(Scenarios.COMPLET).first { it.id == "quitter_en_jouant" }.maxMs <= 180_000)
+    }
+
+    /** The rows of « Mes projets » may come after their screen: the robot waits for them as a user does, it does not say « none ». */
+    @Test
+    fun theOtherProjectIsWaitedForWhenTheRowsComeAfterTheirScreen() {
+        h.start()
+        val v = Vrai()
+        val first = v.projet()
+        ProjectOpening.projectStore(h.app).save("autre_robot", h.vm.project.value.copy(name = "Autre"))
+        v.lignesEnRetard = 3
+        val text = jouer(v, "quitter_en_jouant", courtMs = 500)
+        assertTrue(text, text.contains("rouvert") && !text.startsWith("non mesuré"))
+        assertEquals(0, v.lignesEnRetard)
+        assertTrue(v.touched.toString(), "project_autre_robot" in v.touched && "project_${first.id}" in v.touched)
     }
 
     @Test

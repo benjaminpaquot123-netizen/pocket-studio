@@ -14,6 +14,8 @@ std::vector<float> renderKick(float tune, bool hard = false) {
     s.drive = hard ? 0.9f : 0.6f;
     s.click = hard ? 0.4f : 0.5f;
     s.sub = hard ? 0.3f : 0.5f;
+    s.drop = hard ? ps::studio::StudioKick::kHardDropSt : ps::studio::StudioKick::kDropSt;
+    s.dropTime = hard ? ps::studio::StudioKick::kHardSweep : ps::studio::StudioKick::kSweep;
     ps::studio::StudioKick k;
     k.hard = hard;
     k.prepare(kRate, s);

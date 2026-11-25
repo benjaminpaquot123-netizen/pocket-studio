@@ -388,7 +388,11 @@ void testStudioKicks() {
         const int length = lengthTo(x, -40.0);
         // 40-80 Hz carries the body (against 80-160 and 20-40), 2-5 kHz the attack in the first 20 ms.
         const double body = bandEnergy(x, 0, 24000, 40.0, 80.0);
-        const double above = bandEnergy(x, 0, 24000, 80.0, 160.0);
+        // 80-160 Hz on the tail only (from 100 ms): the Fable kick's 70-145 ms sweep starts at 4.5 x
+        // the note, so its first 100 ms sit above 80 Hz by design (Benjamin, 2026-11-25: « le kick
+        // tape pas assez »); what must stay low is the held note.
+        const double above = bandEnergy(x, 4800, 24000, 80.0, 160.0);
+        const double tailBody = bandEnergy(x, 4800, 24000, 40.0, 80.0);
         const double below = bandEnergy(x, 0, 24000, 20.0, 40.0);
         const double clickDb = 10.0 * std::log10(bandEnergy(x, 0, 960, 2000.0, 5000.0, 1) / std::max(bandEnergy(x, 0, 960, 20.0, 5000.0, 1), 1e-20));
         std::printf("  %s kick: peak %.2f, -40 dB at %d ms, 80-160 Hz %+.1f dB, 20-40 Hz %+.1f dB, 2-5 kHz in the first 20 ms %+.1f dB\n",
@@ -397,8 +401,10 @@ void testStudioKicks() {
         CHECK(peak > 0.5f && peak < 0.95f);
         CHECK(length <= kRate * 350 / 1000);
         CHECK(below < body);
-        if (kind == ps::DrumKit::KickStudio) CHECK(above < body);  // the hard kick's « doof » sits higher
-        CHECK(clickDb > -25.0);
+        if (kind == ps::DrumKit::KickStudio) CHECK(above < tailBody);  // the hard kick's « doof » sits higher
+        // -35 dB (was -25): the sweep's low body now carries more of the first 20 ms, the 2 ms click
+        // itself is unchanged (velocity x 0.18 x click, see the no-click check below).
+        CHECK(clickDb > -35.0);
     }
     // Tune: the tail's fundamental follows it.
     for (float tune : {45.0f, 65.0f}) {
@@ -418,7 +424,14 @@ void testStudioKicks() {
         kit.setVoiceParam(0, ps::DrumKit::Click, 0.0f);
         const auto noClick = renderMonoKit(kit, kRate, {{0, 0, 1.0f, 0.0f, 0}});
         const auto withClick = one(ps::DrumKit::KickStudio, 0.0f, 0.0f);
-        CHECK(bandEnergy(noClick, 0, 960, 2000.0, 5000.0) < 0.25 * bandEnergy(withClick, 0, 960, 2000.0, 5000.0));
+        // The click layer, measured as what it adds (with minus without): the saturated 1 ms rise of
+        // the 4.5 x sweep is broadband now, so a band ratio no longer isolates it. It is a real
+        // layer in the first 4 ms and gone after 10 ms.
+        std::vector<float> diff(withClick.size());
+        for (size_t i = 0; i < diff.size(); ++i) diff[i] = withClick[i] - (i < noClick.size() ? noClick[i] : 0.0f);
+        std::printf("  click layer: first 4 ms %.2e, after 10 ms %.2e\n", energy(diff, 0, 192), energy(diff, 480, 9600));
+        CHECK(energy(diff, 0, 192) > 1e-4);
+        CHECK(energy(diff, 480, 9600) < 1e-3 * energy(diff, 0, 192));
         kit.setVoiceParam(0, ps::DrumKit::Sub, 0.0f);
         const auto noSub = renderMonoKit(kit, kRate, {{0, 0, 1.0f, 0.0f, 0}});
         CHECK(energy(noSub, 9600, 24000) < 0.5 * energy(noClick, 9600, 24000));

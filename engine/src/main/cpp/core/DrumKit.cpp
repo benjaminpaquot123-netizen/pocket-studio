@@ -60,8 +60,14 @@ studio::Settings defaultsFor(int kind) {
     studio::Settings s;
     switch (kind) {
         case DrumKit::Bass808: s.tune = 36.0f; s.decay = 0.8f; s.drive = 0.4f; s.click = 0.4f; s.glide = 0.08f; s.tone = 0.5f; break;
-        case DrumKit::KickStudio: s.tune = 52.0f; s.decay = 0.25f; s.drive = 0.6f; s.click = 0.5f; s.sub = 0.5f; break;
-        case DrumKit::KickHard: s.tune = 55.0f; s.decay = 0.2f; s.drive = 0.9f; s.click = 0.4f; s.sub = 0.3f; break;
+        case DrumKit::KickStudio:
+            s.tune = 52.0f; s.decay = 0.25f; s.drive = 0.6f; s.click = 0.5f; s.sub = 0.5f;
+            s.drop = studio::StudioKick::kDropSt; s.dropTime = studio::StudioKick::kSweep;
+            break;
+        case DrumKit::KickHard:
+            s.tune = 55.0f; s.decay = 0.2f; s.drive = 0.9f; s.click = 0.4f; s.sub = 0.3f;
+            s.drop = studio::StudioKick::kHardDropSt; s.dropTime = studio::StudioKick::kHardSweep;
+            break;
         case DrumKit::RumbleVoice: s.tune = 48.0f; s.decay = 0.6f; s.drive = 0.5f; s.tone = 0.4f; break;
         default: break;
     }

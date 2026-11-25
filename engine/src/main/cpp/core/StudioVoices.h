@@ -235,8 +235,10 @@ struct Bass808 {
 
 // A short techno kick (tour 9, « kick-fable »: docs/decisions/tour-9-kick-fable.md). ONE sine, so
 // nothing beats against it (the old swept body plus a sub in free phase cancelled: a hollow kick):
-// its pitch f(t) = tune * (1 + (start - 1) * exp(-t / sweep)), from 4.5 x the tune over 35 ms; a
-// tanh saturation (gain 3 at the default drive, normalised) on the oscillator BEFORE the envelope,
+// its pitch f(t) = tune * (1 + (start - 1) * exp(-t / sweep)), by default from 4.5 x the tune over
+// 35 ms (Settings::drop is the start in semitones over the note, Settings::dropTime the sweep: each
+// style family has its own, StudioDrums.kt); a tanh saturation (gain 0.8 + 3.7 x drive: 3 at the
+// default drive, nearly clean at 0.1, normalised) on the oscillator BEFORE the envelope,
 // so the whole note keeps its 3rd harmonic 12 to 16 dB under the fundamental (what a phone plays);
 // an envelope that rises in 1 ms, holds full (« sub » x 120 ms: 60 ms by default, the weight) and
 // then falls exponentially to -40 dB in « decay »; a discreet 2 ms high-passed noise click on top.
@@ -247,6 +249,7 @@ struct StudioKick {
     float phase = 0.0f;
     float sweep = 0.0f;              // exp(-t / sweep time), 1 at the hit
     float sweepCoef = 0.999f;
+    float startRatio = 4.5f;         // the sweep's start over the tune (from Settings::drop)
     float env = 0.0f, amp = 0.0f;  // the envelope and the hit's velocity (0: silent)
     float subAmp = 0.0f;           // no sub layer any more; kept for DrumKit::setKind's stop
     float tailCoef = 0.999f;
@@ -256,7 +259,8 @@ struct StudioKick {
     OnePole hardLp;
     uint32_t noise = 0x7F4A7C15u;
 
-    static constexpr float kStart = 4.5f, kHardStart = 6.0f;
+    // The defaults (DrumKit's defaultsFor): 4.5 x (26 st) over 35 ms, the hard one 6 x (31 st) over 45 ms.
+    static constexpr float kDropSt = 26.0f, kHardDropSt = 31.0f;
     static constexpr float kSweep = 0.035f, kHardSweep = 0.045f;
 
     void prepare(int sampleRate, const Settings& s) {
@@ -272,7 +276,9 @@ struct StudioKick {
         riseFrames = std::max(1, static_cast<int>(0.001f * rate));
         holdEnd = riseFrames + static_cast<int>(hold * rate);
         tailCoef = decayTo40dB(decay, sampleRate);
-        sweepCoef = decayCoef(hard ? kHardSweep : kSweep, sampleRate);
+        // A setting, not per sample: exp2 here only.
+        startRatio = std::exp2(std::clamp(s.drop, 0.0f, 36.0f) / 12.0f);
+        sweepCoef = decayCoef(std::clamp(s.dropTime, 0.005f, 0.15f), sampleRate);
         clickCoef = decayCoef(0.002f / 4.605f * 2.0f, sampleRate);  // gone (-40 dB) in ~4 ms, 2 ms of it heard
     }
     void hit(int sampleRate, const Settings& s, float velocity) {
@@ -292,7 +298,7 @@ struct StudioKick {
             return 0.0f;
         }
         const float tune = std::clamp(s.tune, 30.0f, 120.0f);
-        const float f = tune * (1.0f + ((hard ? kHardStart : kStart) - 1.0f) * sweep);
+        const float f = tune * (1.0f + (startRatio - 1.0f) * sweep);
         sweep *= sweepCoef;
         phase += f / static_cast<float>(sampleRate);
         if (phase >= 1.0f) phase -= 1.0f;
@@ -314,8 +320,9 @@ struct StudioKick {
             const float g = 1.5f + 6.0f * drive;
             return hardLp.low(std::tanh(g * osc) / std::tanh(g) * env) * 0.9f + click;
         }
-        // The saturation before the envelope: the tail keeps its harmonics (gain 3 at drive 0.6).
-        const float g = 1.5f + 2.5f * drive;
+        // The saturation before the envelope: the tail keeps its harmonics (gain 3 at drive 0.6,
+        // 1.2 at 0.1: clean house and trance, 4.5 at 1: big room, disco).
+        const float g = 0.8f + 3.7f * drive;
         return std::tanh(g * osc) / std::tanh(g) * env * 0.85f + click;
     }
 };

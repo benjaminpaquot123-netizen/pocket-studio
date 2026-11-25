@@ -116,7 +116,7 @@ class ScenariosTest {
                     when (tab) {
                         "Mix" -> {
                             add("mixer")
-                            repeat(4) { add("strip_more_$it") }
+                            muets.indices.forEach { add("strip_more_$it") }
                             if (sheet.startsWith("strip")) {
                                 val ch = sheet.removePrefix("strip").toInt()
                                 addAll(listOf("strip_sheet", "strip_sheet_close", "fx_add_$ch", "sheet_mute_$ch", "sheet_solo_$ch", "sheet_volume_$ch", "sheet_pan_$ch"))
@@ -611,6 +611,33 @@ class ScenariosTest {
         // A slider that cannot be set from here: not measured; one not saved: failed.
         assertEquals(Scenarios.NON_MESURE, played(Studio().apply { sliders = false }, "piste1_volume").only("piste1_volume").resultat)
         assertEquals(Scenarios.ECHOUE, played(Studio().apply { saves = false }, "piste2_pan").only("piste2_pan").resultat)
+    }
+
+    @Test
+    fun theMixCatalogueSetsEachSliderToBothEndsSavesItThenPutsItBack() {
+        val ids = ScenariosMix.LISTE.map { it.id }
+        assertEquals(40, ids.size)
+        assertTrue(ids.all { it.startsWith("mix_") })
+        assertEquals(ids.size, ids.toSet().size)
+        assertTrue(Scenarios.LISTE.map { it.id }.containsAll(ids))
+        assertEquals(Scenarios.LISTE.size, Scenarios.LISTE.map { it.id }.toSet().size)
+        val s = Studio().apply {
+            effets = effets + List(4) { emptyList() }; muets = List(8) { false }; solos = List(8) { false }; volumes = List(8) { 0.8f }; pans = List(8) { 0f }
+        }
+        val r = played(s, *ids.toTypedArray())
+        assertEquals(40, r.size)
+        r.forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
+        assertEquals(List(8) { 0.8f }, s.volumes)
+        assertEquals(List(8) { 0f }, s.pans)
+        assertEquals(List(8) { false }, s.muets)
+        assertEquals(List(8) { false }, s.solos)
+        // Already at the end: the other way, still measured.
+        val top = Studio().apply { volumes = List(4) { 1f } }
+        assertEquals(Scenarios.PASSE, played(top, "mix_piste1_vol_max").only("mix_piste1_vol_max").resultat)
+        // A four-strip song has no strip 5: not measured; not saved: failed.
+        assertEquals(Scenarios.NON_MESURE, played(Studio(), "mix_piste5_pan_g").only("mix_piste5_pan_g").resultat)
+        assertEquals(Scenarios.NON_MESURE, played(Studio(), "mix_piste6_muet").only("mix_piste6_muet").resultat)
+        assertEquals(Scenarios.ECHOUE, played(Studio().apply { saves = false }, "mix_piste2_pan_d").only("mix_piste2_pan_d").resultat)
     }
 
     @Test

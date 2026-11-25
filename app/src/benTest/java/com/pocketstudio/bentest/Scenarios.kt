@@ -125,6 +125,12 @@ class Scenarios(
                 else -> null
             }
             "guide" -> { { t.guide(a) } }
+            // The mix catalogue (ScenariosMix): a slider to one end; already there, the other way.
+            "mix" -> g.getOrNull(2)?.toIntOrNull()?.let { ch ->
+                fun vol(to: Float) = { curseur(id, "Volume", "sheet_volume", ch, { it.volumes }, { it.volumes }) { v -> if (abs(v - to) < 2 * PAS_CURSEUR) 0.5f else to } }
+                fun pan(to: Float) = { curseur(id, "Panoramique", "sheet_pan", ch, { it.pans }, { it.pans }) { v -> if (abs(v - to) < 2 * PAS_CURSEUR) 0f else to } }
+                when (a) { "vol_max" -> vol(1f); "vol_min" -> vol(0f); "pan_g" -> pan(-1f); "pan_d" -> pan(1f); else -> null }
+            }
             else -> null
         }
     }
@@ -1413,7 +1419,7 @@ class Scenarios(
             Scenario(STYLE_DUBSTEP, "Moyen : un morceau dubstep", NIVEAU_MOYEN, 360_000, 60, "le moteur joue, le son sort, les décrochages"),
             Scenario(STYLE_DNB, "Style lourd : drum and bass, décrochages", NIVEAU_MESURE, 360_000, 60, "les décrochages et le pire bloc d'un style lourd"),
             Scenario(GUIDE, "Débutant : le Guide jusqu'au bout", NIVEAU_DEBUTANT, 480_000, 150, "« Tout est fait » à l'écran du Guide"),
-        ) + tables() + ScenariosSauve.LISTE
+        ) + tables() + ScenariosSauve.LISTE + ScenariosMix.LISTE
 
         /** [LISTE] as steps without work (to read a logbook). */
         /** The screens a scenario starts from: the studio (its bar, or its rail lying down), the welcome, the projects. */

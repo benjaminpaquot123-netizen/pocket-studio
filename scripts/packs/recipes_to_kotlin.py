@@ -86,6 +86,10 @@ Recipe syntax (one JSON object per style; one character per sixteenth, 16 = a ba
 Frozen format v2 (grand remplacement v2, lot L1; every field optional, a recipe without them makes the same style):
   (a) drums[].source "lib:<pack>:<sound>": the line plays that very sound of the library (a file name of the
       pack, letters, digits, '_', '-', '.'); the pack is the line's source as before (Style.kitSounds).
+      Open packs: every pack marked "recipes" in libraries.json (its rules' slugs, or their files
+      <kind>_<slug>_<n>.flac) and every instrument with "recipes" {part: [low, high]} in instruments.json;
+      a melodic sound "lib:<instrument>:<part>[|preset]" plays that part (Melody.packSounds "<instrument>:<part>"),
+      the preset when it is not installed. PS_PACK_CATALOGUES names another folder for both files (tests).
   (b) drums[].layers: up to 3 more sounds played with the line, on free pads, each a pack id, "lib:<pack>:<sound>"
       or "kit:<voice>" (VOICES); 4 layers at most in a style (Line.layers, StarterWizard.layerLanes).
   (c) roles snap (lane 9), rim (lane 11), conga (lane 14), shaker (lane 15): their own lines, the kit voice of
@@ -180,6 +184,29 @@ ROOTS = {"C": 0, "C#": 1, "Db": 1, "D": 2, "D#": 3, "Eb": 3, "E": 4, "F": 5, "F#
 PRESETS = SOUNDS_IN_CODE
 PACKS = set(NAMES) | {"tr808", "tr909", "tr707", "tr606", "cr78", "linndrum", "sp1200", "mpc60", "juno", "jupiter", "dx7",
                       "minimoog", "tb303", "modern_808", "hyperpop", "future_bass", "vocal_chops", "fx"}
+
+
+def open_catalogues(folder=os.environ.get("PS_PACK_CATALOGUES") or os.path.dirname(os.path.abspath(__file__))):
+    """The packs marked "recipes" in libraries.json (pack -> its rules' slugs, the <slug> of
+    <kind>_<slug>_<n>.flac) and instruments.json (instrument -> {part: keys}, its fallback and kind):
+    any such pack, a new one too, may be named by a recipe as lib:<pack>:<sound>."""
+    libs, insts = {}, {}
+    for name, key in (("libraries.json", "packs"), ("instruments.json", "instruments")):
+        path = os.path.join(folder, name)
+        if not os.path.isfile(path):
+            continue
+        with open(path, encoding="utf-8") as f:
+            items = json.load(f).get(key, [])
+        for item in items:
+            if not item.get("recipes"):
+                continue
+            if key == "packs":
+                libs[item["id"]] = [r["slug"] for r in item.get("rules", []) if r.get("slug")]
+            else:
+                parts = item["recipes"]
+                check(isinstance(parts, dict) and parts, f"{name}: {item['id']}: \"recipes\" = {{part: [low, high] keys}}")
+                insts[item["id"]] = {"parts": set(parts), "fallback": item.get("fallback"), "kind": item.get("kind", "lead")}
+    return libs, insts
 KINDS = {"kick", "snare", "clap", "hat", "open_hat", "perc", "808", "bass", "stab", "tom", "pad", "lead", "pluck", "keys", "vocal", "fx"}
 # Synth fallback when the pack sound is not on the phone.
 FALLBACK = {
@@ -223,6 +250,10 @@ def check(cond, msg):
         raise SystemExit("recipe error: " + msg)
 
 
+OPEN_LIBRARIES, OPEN_INSTRUMENTS = open_catalogues()
+PACKS |= set(OPEN_LIBRARIES) | set(OPEN_INSTRUMENTS)
+
+
 def num(v):
     """[v] as a number, or None (a typo such as "0.5x" gets a recipe error, not a raw ValueError)."""
     if isinstance(v, bool):
@@ -255,6 +286,16 @@ def sound_of(gid, part, spec):
         # borrow from another family (a hoover as stabs).
         check(not preset or part != "bass" or SOUND_FAMILY.get(preset) == "Basses", f"{gid} bass: fallback {preset} is not a bass")
         return preset or FALLBACK[part].get(kind, DEFAULT_PRESET[part]), f"{pack}:{kind}"
+    if spec.startswith("lib:"):
+        spec, _, preset = spec.partition("|")
+        pack, _, name = spec[4:].partition(":")
+        inst = OPEN_INSTRUMENTS.get(pack)
+        check(inst is not None, f"{gid} {part}: {pack} is not an instrument open to recipes ({sorted(OPEN_INSTRUMENTS)})")
+        check(name in inst["parts"], f"{gid} {part}: {pack} has no part {name} ({sorted(inst['parts'])})")
+        check(not preset or preset in PRESETS, f"{gid} {part}: unknown fallback sound {preset}")
+        check(not preset or part != "bass" or SOUND_FAMILY.get(preset) == "Basses", f"{gid} bass: fallback {preset} is not a bass")
+        fallback = preset or (inst["fallback"] if inst["fallback"] in PRESETS else FALLBACK[part].get(inst["kind"], DEFAULT_PRESET[part]))
+        return fallback, f"{pack}:{name}"
     if spec.startswith("gm:"):
         check(spec[3:] in GM_FALLBACK, f"{gid} {part}: no stand-in for {spec}")
         return GM_FALLBACK[spec[3:]], None
@@ -265,11 +306,15 @@ def sound_of(gid, part, spec):
 
 
 def lib_sound(spec, gid, what, prefix):
-    """"<prefix><pack>:<sound>" checked, as (pack, sound)."""
+    """"<prefix><pack>:<sound>" checked, as (pack, sound). A library pack open to recipes takes one of
+    its slugs (or a file of that slug); an instrument is no sample: it plays a melodic part (sound_of)."""
     check(isinstance(spec, str) and spec.startswith(prefix), f"{gid} {what}: \"{prefix}<pack>:<sound>\" expected, got {spec}")
     pack, _, snd = spec[len(prefix):].partition(":")
-    check(pack in PACKS, f"{gid} {what}: unknown pack {pack}")
+    check(pack in PACKS and pack not in OPEN_INSTRUMENTS, f"{gid} {what}: unknown pack {pack}")
     check(bool(SOUND_NAME.match(snd)) and snd.strip(".") != "", f"{gid} {what}: bad sound name {snd!r}")
+    slugs = OPEN_LIBRARIES.get(pack)
+    check(slugs is None or any(snd == s or re.match(r"^[a-z0-9_]+_" + re.escape(s) + r"_\d+\.flac$", snd) for s in slugs),
+          f"{gid} {what}: {pack} has no sound {snd} ({sorted(slugs or [])})")
     return pack, snd
 
 

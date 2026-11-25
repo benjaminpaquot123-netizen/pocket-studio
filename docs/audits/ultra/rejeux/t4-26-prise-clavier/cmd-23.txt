@@ -1,1 +1,1 @@
-attends 1
+touche wizard_create

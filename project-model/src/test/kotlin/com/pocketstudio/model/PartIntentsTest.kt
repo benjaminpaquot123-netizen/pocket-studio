@@ -102,8 +102,10 @@ class PartIntentsTest {
         assertEquals(PartIntents.Fill.Toms, PartIntents.fillOf(null))
         val bar = DrumPattern().toggle(kick, 0)
         val toms = PartIntents.withFill(bar, 16, PartIntents.Fill.Toms)
-        assertTrue(toms.lanes[9].hits.isNotEmpty() && toms.lanes[7].hits.isNotEmpty())
-        assertTrue((toms.lanes[9].hits.keys.max()) < (toms.lanes[7].hits.keys.min()))
+        // The high tom (pad 8) then the low one (pad 7); pad 9 is the Snap's, never a tom (lot gr-l1b).
+        assertTrue(toms.lanes[8].hits.isNotEmpty() && toms.lanes[7].hits.isNotEmpty())
+        assertTrue((toms.lanes[8].hits.keys.max()) < (toms.lanes[7].hits.keys.min()))
+        assertTrue("no tom on the Snap's pad", toms.lanes[9].hits.isEmpty())
         val hats = PartIntents.withFill(bar, 16, PartIntents.Fill.Hats)
         assertEquals((8..15).toSet(), hats.lanes[hat].hits.keys)
         assertEquals(2, hats.lanes[hat].hits.getValue(15).repeats)

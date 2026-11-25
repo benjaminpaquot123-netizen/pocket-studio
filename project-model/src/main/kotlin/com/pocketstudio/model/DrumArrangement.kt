@@ -77,6 +77,7 @@ object DrumArrangement {
         val starts = project.song.runningFold(0) { acc, p -> acc + project.partSteps(p) / project.stepsPerBar }
         fun partAt(b: Int): Int = starts.indexOfLast { it <= b }.coerceIn(0, project.song.size - 1)
         val sung = style.form.sung
+        val tomLine = style.lines.any { it.role == StarterWizard.Role.Tom }
 
         /**
          * The drum scenes of [order]'s crashes and fills (song bar -> scene), and how many found none.
@@ -112,8 +113,8 @@ object DrumArrangement {
                         val c = crashLane ?: return@also
                         l[c] = l[c].copy(hits = l[c].hits + (0 to Hit(StarterWizard.CRASH_VELOCITY)))
                     }
-                    Kind.Fill16 -> DrumHumanizer.ending(lanes, spb, if (sung) DrumHumanizer.Ending.Hats else DrumHumanizer.Ending.Toms, beats = 2, sung = sung)
-                    Kind.Fill8 -> DrumHumanizer.ending(lanes, spb, DrumHumanizer.endingOf(feel, seed, m.bar / 8), beats = 2, sung = sung)
+                    Kind.Fill16 -> DrumHumanizer.ending(lanes, spb, if (sung) DrumHumanizer.Ending.Hats else DrumHumanizer.Ending.Toms, beats = 2, sung = sung, tomLine = tomLine)
+                    Kind.Fill8 -> DrumHumanizer.ending(lanes, spb, DrumHumanizer.endingOf(feel, seed, m.bar / 8), beats = 2, sung = sung, tomLine = tomLine)
                 }
                 val key = DrumPattern(steps = spb, lanes = written)
                 val drums = if (m.kind == Kind.Crash) key else DrumPattern(steps = spb, lanes = timed(written, spb - 8, feel, dice))

@@ -216,3 +216,5 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - [ ] 2026-11-25 (A/B, dnb) : comparé à « Brown Paper Bag » (Roni Size), drums + basse = vraie DnB classique ; notre DnB n'en a pas du tout le son (tempo peut-être juste, mais kick, basse et rythmique ne sonnent pas DnB). À refaire sur cette référence.
 - [ ] 2026-11-25 (A/B, dubstep) : ne ressemble pas du tout à de la dubstep. Kick creux et faible (même volume poussé à fond, presque rien aux écouteurs Bluetooth qui rendent bien les basses). Mélodie « puante », son de synthé à côté. Aucun wobble, rien de gras.
 - [ ] 2026-11-25 (A/B, trap) : sympa mais pas encore la voix de rap dessus pour juger. Le carillon tape beaucoup trop aux oreilles : le baisser et lui ajouter un effet (adoucir).
+- [ ] 2026-11-25 (A/B, house) : pas mal, mais le kick ne tape pas fort du tout (pénible, aux écouteurs on veut que ça tape). Mélodie bien travaillée ; ajouter un effet qui donne du piquant, qui fait tourner la tête (légère distorsion ou équivalent).
+- [ ] 2026-11-25 (A/B, général) : kick trop faible et creux sur plusieurs styles (dubstep, house) : vérifier le kick partout.

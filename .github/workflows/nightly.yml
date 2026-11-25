@@ -56,6 +56,14 @@ jobs:
         with:
           key: nightly-host
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      # Robolectric's Android jar (213 MB): cached, then fetched from a Maven Central mirror if missing
+      # (repo1.maven.org rate-limits it, 429, 2026-11-24; scripts/ci/robolectric-jar.sh), as ci.yml does.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-android-all-${{ hashFiles('gradle/libs.versions.toml', 'app/src/test/resources/robolectric.properties') }}
+      - name: Robolectric's Android jar (mirrors)
+        run: scripts/ci/robolectric-jar.sh
       # A 6-minute song looped for 30 minutes each night (soak_minutes by hand: whole minutes, at
       # least 20, so that 3 whole loops are compared).
       - name: Soak (a 6-minute song looped)

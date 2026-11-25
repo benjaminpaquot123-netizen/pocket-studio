@@ -66,3 +66,7 @@ Pas avant : le rangement du tour 8 (branches de sièges, revue, PR vers `main`),
 - C `session_014RxrDLsNnZqNvpZR7hA2CA` → `eq/tour-9-fluide1`
 - fable5 `session_014RxrDNyMFnVcN1Br4QVUTB` → `eq/tour-9-fable5`
 - F0 : sous-agent du chef, bloc-notes `ecoute-f0` (rien dans git).
+
+## 25 novembre (chef)
+- File du portail : gr-styles (en cours), puis gr-house2, gr-bass, gr-l12, ci-outils (36269fb9, PRÊT). gr-techno rouvert en lot plein (traductions, tuto, 13 tests). ecoute-effet en pause.
+- À confier : pre-vol.sh ligne 113 cherche « ci_build » + espace au lieu d'une tabulation (le pré-vol ne voit jamais la CI) ; trap : réglage V4 du Bus batterie (drive 0.2, attaque 0.85, mix 0.5) dans hiphop.json après l'entrée de gr-l12 (rapport kick-trap).

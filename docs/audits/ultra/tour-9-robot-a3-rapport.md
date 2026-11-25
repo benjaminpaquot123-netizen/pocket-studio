@@ -1,4 +1,6 @@
-# Tour 9 : lot robot-a2 (rapport)
+# Tour 9 : lot robot-a3 (rapport)
+
+Republication (2026-11-25) : le lot robot-a2 est republié en robot-a3 (branche `eq/tour-9-robot-a3`, même base 3d0bb823, mêmes commits dans le même ordre, mêmes arbres de code) ; seuls les sujets de la paire du changement de kit (a3cd887a « rouge: » et cfd47687 « vert: ») sont reformulés à l'identique (« kit change hole heard during its gestures (ScenariosVraisEcransTest#aHoleWhileTheKitIsChangedIsRed) ») pour que le juge les apparie.
 
 Base : `eq/tour-9-robot1b` à 9d88787a. Branche : `eq/robot-a2` (alias `eq/tour-9-robot-a2`). Fiche : lot A2 de `PLAN-APRES-ROBOT.md` §3. Banc seul (BenStudio Test) : ni l'appli, ni le moteur, ni project-model. Tout est « tenté » (aucun testeur neuf ne l'a encore constaté).
 

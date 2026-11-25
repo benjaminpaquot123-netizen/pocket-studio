@@ -82,7 +82,7 @@ Règle pour tout nouveau job : un téléchargement a **un cache, des réessais, 
 ## Sur la machine d'une discussion
 
 - L'environnement cloud s'appelle `pocket-studio-android` ; réseau limité, gestionnaires de paquets autorisés, `dl.google.com` autorisé.
-- Le SDK Android est dans `/opt/android-sdk` (`local.properties` : `sdk.dir=/opt/android-sdk`). S'il manque dans une discussion neuve, on l'installe par `sdkmanager` depuis `dl.google.com`, un paquet à la fois.
+- Le SDK Android est dans `/opt/android-sdk` (`local.properties` : `sdk.dir=/opt/android-sdk`). S'il manque dans une discussion neuve : `cd .. && bash pocket-studio/scripts/session-android.sh` (33 secondes mesurées le 25 nov. : outils, plateforme 37, NDK, CMake, fichier Robolectric ; aucun refus). Le même texte est proposé comme script d'installation de l'environnement, pour que ce soit fait avant même l'arrivée de la discussion.
 - Un seul Gradle à la fois quand ça télécharge : deux Gradle qui remplissent leur cache ensemble, c'est le chemin le plus court vers un 429.
 - Le fichier Robolectric : `scripts/ci/robolectric-jar.sh` marche aussi ici, avant le premier test.
 
@@ -91,7 +91,7 @@ Règle pour tout nouveau job : un téléchargement a **un cache, des réessais, 
 Un contrôle « capricieux » est rouge une fois sur dix sans que l'appli ait changé. Chacun coûte une CI entière (une heure). Les causes vues, et la parade à appliquer partout :
 
 1. **Un test n'appelle jamais le vrai réseau.** Vu : `TutoKickSoundTest` (catalogue des packs), réparé en injectant le catalogue par le crochet de test, un test par issue du réseau (`docs/decisions/tour-9-kick-ci.md`). Encore ouverts : `PackStore.fetchCatalogue` et `UpdateChecker.check` peuvent partir sur Internet dans les tests de la CI.
-2. **« La machine était trop lente pour mesurer » n'est pas « l'appli a échoué ».** Vu : `ScenariosTest` écoutait par fenêtres de 60 ms et criait au silence quand la machine dormait. Un test qui mesure dit d'abord s'il a pu mesurer.
+2. **« La machine était trop lente pour mesurer » n'est pas « l'appli a échoué ».** Vu : `ScenariosTest` écoutait par fenêtres de 60 ms et criait au silence quand la machine dormait. Réparé : l'écoute continue jusqu'à une seconde entière (30 s de plus au maximum), et sinon le verdict est « non mesuré », jamais « silence ». Un test qui mesure dit d'abord s'il a pu mesurer.
 3. **Un chronomètre se compare à un témoin.** Vu : `EnduranceTest` (5043 ms pour une limite de 5000 sur un émulateur figé). Le test pose la même question à un fil témoin : ce que la machine a perdu est retiré, la limite de l'appli ne bouge pas.
 4. **Aucun seuil n'est élargi pour faire passer** (`docs/DECISIONS.md`). On répare la mesure, pas la limite.
 5. **Un test ne laisse rien au suivant.** Vu : `Tour5BloquantsTest` et `TutoScreenTest` rouges selon l'ordre. Chaque test range son état ; le garde `BenchPristine` le dit quand ce n'est pas fait.
@@ -103,6 +103,7 @@ Un contrôle « capricieux » est rouge une fois sur dix sans que l'appli ait ch
 
 - Le correctif du test de nuit n'est sur `main` qu'à la fusion du tour 9 : d'ici là, le test de nuit sur `main` peut rester rouge pour la même raison.
 - `PackStore.fetchCatalogue` et `UpdateChecker.check` : réseau possible dans les tests (fichiers de l'appli, lot à ouvrir par le chef).
-- La fuite d'état de `Tour5BloquantsTest` (cause non prouvée, lot `tests-fragiles`).
+- La fuite d'état de `Tour5BloquantsTest` (cause non prouvée, lot du chef).
+- `EssaiEclair.mesurer` (`EssaiEclair.kt`, contrôle « silence ») a la même faiblesse que `ScenariosTest` avant réparation : moins de 4 lectures = faux silence. Même parade à poser.
 - `setup-android` sans cache, et les `git clone` / `pip install` des packs avec un seul essai.
 - Les artefacts de CI ne se lisent pas depuis une discussion : seuls les journaux se lisent.

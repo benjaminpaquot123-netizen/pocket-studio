@@ -38,6 +38,8 @@ class ToutTester(
         add(etape("ouverture", "Ouverture du studio", 120_000) { e.ouverture() })
         for (s in LOURDS) add(etapeStyle(s, "froid"))
         for (s in styles.filter { it !in LOURDS }) add(etapeStyle(s, null))
+        // Lot A2: what the phone does to the app besides its screens (each from a clean song), before the heavy ones hot.
+        addAll(Epreuves(j, sonde, appli, carnet, captures, ecouteMs, ecran).etapes())
         // dnb then jump up: jump up is the song open for the exports.
         for (s in LOURDS.reversed()) add(etapeStyle(s, "chaud"))
         for ((f, label) in FORMATS) add(etape("export_$f", "Export $label", 600_000) { export(f) })

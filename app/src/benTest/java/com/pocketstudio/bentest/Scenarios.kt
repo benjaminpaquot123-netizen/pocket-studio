@@ -1158,8 +1158,18 @@ class Scenarios(
         try {
             versProjets()
             // The list is lazy: only a row on screen has a node, so the other project is one the list shows.
-            val shown = j.tagsMatching(Regex("project_.+")).toSet()
-            other = known.firstOrNull { it != p.id && "project_$it" in shown } ?: error("aucun autre projet visible dans « Mes projets »")
+            // Its rows come after its screen: the list is read from the disk, and its first reading waits for the
+            // last saves of the screens closed before (« Chargement de la liste… » meanwhile). Waited for as a
+            // user waits, never read once (CI 462).
+            fun visible(): String? {
+                val shown = j.tagsMatching(Regex("project_.+")).toSet()
+                return known.firstOrNull { it != p.id && "project_$it" in shown }
+            }
+            attendre(LISTE_ATTENTE_MS) { visible() != null }
+            other = visible() ?: error(
+                "aucun autre projet visible dans « Mes projets »" +
+                    if (j.tagsMatching(Regex("projects_loading")).isNotEmpty()) " (liste encore en chargement après ${LISTE_ATTENTE_MS / 1000} s)" else "",
+            )
             j.tap("project_$other")
             j.awaitAny(*EssaiEclair.STUDIO, timeoutMs = 30_000)
             check(attendre(10_000) { appli.projet()?.id == other }) { "« Mes projets » › $other n'ouvre pas ce projet" }
@@ -1368,6 +1378,13 @@ class Scenarios(
 
         /** Rows of « Mes projets » from which the list may run past the screen. */
         const val LISTE_PLEINE = 5
+
+        /**
+         * How long the rows of « Mes projets » are waited for once its screen is there. The app lets the last saves
+         * of a closed screen and the takes being written 10 s each before it reads the list (ProjectsViewModel):
+         * 20 s at worst (measured: a save held 8 s, rows 8.5 s later), so a little more.
+         */
+        const val LISTE_ATTENTE_MS = 25_000L
 
         val LISTE = listOf(
             Scenario(DEBUTANT, "Débutant : un morceau par l'assistant, et il joue", NIVEAU_DEBUTANT, 420_000, 90, "le moteur joue et le son sort (ni silence ni NaN)"),

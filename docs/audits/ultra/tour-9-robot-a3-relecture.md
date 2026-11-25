@@ -1,6 +1,6 @@
 # Tour 9 : lot robot-a3 (relecture neuve)
 
-Relu : 96f158e9e (79c01e0c1 relu à l'origine dans robot-a2 ; 96f158e9e = même code, lot republié en robot-a3 : seuls les sujets de la paire du changement de kit reformulés, rapport et relecture renommés, plus : décisions de robot1b déplacées dans le fichier du lot)
+Relu : 8924d2b0f (fusion de l'intégration origin/eq/ci-int-robot1b)
 
 Code relu à 5ac529783f86b81561be041a6a400ea3d93ca81f ; depuis, seules deux lignes « chemin » du rapport ont changé (nom de la méthode de test), aucun code.
 
@@ -33,5 +33,7 @@ Aucun.
 Republication (relecture neuve, 2026-11-25) : `git diff origin/eq/tour-9-robot-a2 e5d59a392 -- app engine project-model scripts` est vide ; la différence totale ne porte que sur le renommage des deux fichiers `tour-9-robot-a2-{rapport,relecture}.md` en `-a3-` (titre changé, ligne « Republication » ajoutée au rapport). Base commune 3d0bb823e ; 57 commits republiés dans le même ordre, chacun au diff identique à son original (comparé pour les 57, `index` mis à part), plus le commit de renommage e5d59a392 ; les arbres de 0e170ce0b et 6ef32b03a sont identiques à ceux de a3cd887a5 et cfd47687f. Seuls les sujets de la paire changent : 0e170ce0b « rouge: » et 6ef32b03a « vert: » portent le même sujet « kit change hole heard during its gestures (ScenariosVraisEcransTest#aHoleWhileTheKitIsChangedIsRed) », le test nommé est bien ajouté par le rouge (`ScenariosVraisEcransTest.kt`), et le rouge précède immédiatement le vert. La ligne « Republication » du rapport est exacte.
 
 Complément (96f158e9e) : `git diff 8aba54ca7 96f158e9e -M` ne porte que sur le renommage de `docs/decisions/tour-9-robot1b.md` en `docs/decisions/tour-9-robot-a3.md` : titre changé, une ligne « Republication » et l'intertitre « Reprises de robot1b » ajoutés, lignes de robot1b inchangées, aucun code.
+
+Complément (fusion) : `git diff origin/eq/ci-int-robot1b 8924d2b0f -- ':!docs'` est identique, octet pour octet, à `git diff 34a87fdef f83d537f1 -- ':!docs'` (14 fichiers du banc, +1352/−38) : aucun changement de l'intégration perdu, aucune retouche en plus. Aucun marqueur de conflit dans l'arbre (seules quatre captures PNG binaires répondent à la recherche, faux positifs). Aucun test retiré ni `@Ignore` (0 `@Test` enlevé, 25 ajoutés ; les deux seules signatures retirées, `parDefaut` et `passage`, reviennent élargies), aucun fichier du moteur ni du thread audio touché. `docs/decisions/tour-9-robot1b.md` est identique à celui de l'intégration.
 
 Verdict : 0 bloquant, 0 grave

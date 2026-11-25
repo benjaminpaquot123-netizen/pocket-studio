@@ -57,6 +57,8 @@ class ScenariosTest {
         var deletes = true
         var stopsBehind = false
         var canLeave = true
+        /** A slow machine (a loaded CI runner): each reading of the engine takes this long. */
+        var lentMs = 0L
 
         var tempo = 120.0
         var muets = List(4) { false }
@@ -186,6 +188,7 @@ class ScenariosTest {
         }
 
         override fun lire(): Sonde.Lecture {
+            if (lentMs > 0) Thread.sleep(lentMs)
             if (playing && dropouts) xruns++
             if (behind && stopsBehind) playing = false
             if (playing && tab == "Live" && liveStopsAfter != null && ++liveReads > liveStopsAfter!!) playing = false
@@ -660,6 +663,22 @@ class ScenariosTest {
         assertEquals(Scenarios.ECHOUE, played(Studio().apply { liveSound = false }, "lecture_live").only("lecture_live").resultat)
         assertEquals(Scenarios.ECHOUE, played(Studio().apply { stopsBehind = true }, "fond_reprise_5").only("fond_reprise_5").resultat)
         assertEquals(Scenarios.NON_MESURE, played(Studio().apply { canLeave = false }, "fond_reprise_5").only("fond_reprise_5").resultat)
+    }
+
+    @Test
+    fun aMachineTooSlowToReadFourTimesInTheWindowStillHearsWholeSeconds() {
+        // CI #455 and #458: on a loaded runner a 60 ms window ended with fewer than 4 readings, so no whole second,
+        // and the music playing was reported as « silence ». Here each reading takes 40 ms: 2 at most in 60 ms.
+        val s = Studio().apply { lentMs = 40; playing = true }
+        val b = ToutTester(Journey(s), s, s, carnet(), tmp.newFolder()).ecouter("lent", 60)
+        assertTrue(b.text(), b.secondes.isNotEmpty() && b.secondes.all { it.peakDb > Ecoute.SILENCE_DB })
+        assertTrue(b.text(), b.alertes.isEmpty())
+    }
+
+    @Test
+    fun theMusicOnASlowMachineIsNeverReportedAsSilence() {
+        val ids = arrayOf("effet_eq", "lecture_mix", "tempo_haut_lecture", "jouer_arreter_10", "fond_reprise_5")
+        played(Studio().apply { lentMs = 40 }, *ids).forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
     }
 
     @Test

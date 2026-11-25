@@ -53,6 +53,41 @@ class T9FableLevelPartsTest {
         assertEquals("steps that check a part their words do not name", emptyList<String>(), bad)
     }
 
+    /**
+     * Seat d, same chapter: « touche 4 cases, une par temps de la mesure 1 » passed at the first cell (then « Déjà
+     * fait ! »). The rule: a variation is done at the number of hits its words of that level ask for (no number:
+     * one), not before, and « Je le fais » makes that many.
+     */
+    @Test
+    fun aVariationIsDoneAtTheNumberOfHitsItsWordsAskFor() {
+        val count = Regex("(\\d+) (cases|coups)")
+        val bad = ArrayList<String>()
+        var counted = 0
+        for (style in styles) for (level in TutoLevel.entries) {
+            val target = TutoTarget.of(style)!!
+            for (s in TutoCourse.of(style)!!.chaptersFor(level).flatMap { it.steps }) {
+                if (!s.check.startsWith("changed:drums:")) continue
+                val part = s.check.removePrefix("changed:drums:")
+                val n = count.find(s.textFor(level))?.groupValues?.get(1)?.toInt() ?: 1
+                if (n > 1) counted++
+                val p = upTo(style, level, s.id)
+                val armed = TutoKind.of(s.check).arm(p)
+                val lane = TutoChecks.laneOf(s.target.substringBefore(',').trim()).takeIf { it in TutoChecks.variationLanes() } ?: TutoChecks.OPEN_HAT_LANE
+                fun with(hits: Int): Project = TutoChecks.inScene(p, part) { q ->
+                    val free = (0 until q.drums.steps).filter { it !in q.drums.lanes[lane].hits }.take(hits)
+                    q.copy(drums = free.fold(q.drums) { d, c -> d.setHit(lane, c, true) })
+                }!!
+                val id = "$style ${level.name} ${s.id} ($n asked)"
+                if (n > 1 && TutoChecks.done(s, with(n - 1), target, armed)) bad += "$id: done at ${n - 1}: ${s.textFor(level)}"
+                if (!TutoChecks.done(s, with(n), target, armed)) bad += "$id: not done at $n"
+                val shown = TutoChecks.show(s, p, target, level)
+                if (shown == null || !TutoChecks.done(s, shown, target, armed)) bad += "$id: « Je le fais » does not make it"
+            }
+        }
+        assertTrue("a variation that counts its hits is read (house, Facile)", counted > 0)
+        assertEquals("variation steps done before, or not at, what their words ask", emptyList<String>(), bad)
+    }
+
     @Test
     fun facileCymbalOnTheDropAloneIsDone() {
         for (style in listOf("house", "speed_garage")) {

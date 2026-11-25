@@ -12,11 +12,15 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.lifecycle.ViewModelProvider
 import com.pocketstudio.app.audio.Pcm
+import com.pocketstudio.app.library.IndexState
+import com.pocketstudio.app.library.PacksUi
 import com.pocketstudio.app.guide.GuideListenPlayer
 import com.pocketstudio.app.library.SoundLibraryViewModel
 import com.pocketstudio.app.nav.AppHarness
 import com.pocketstudio.app.rhythm.kitName
 import com.pocketstudio.engine.OfflineExport
+import com.pocketstudio.model.PackEntry
+import com.pocketstudio.model.PackIndex
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.StudioDrums
 import com.pocketstudio.model.tuto.TutoChecks
@@ -24,6 +28,7 @@ import com.pocketstudio.model.tuto.TutoLevel
 import com.pocketstudio.model.tuto.TutoProgress
 import com.pocketstudio.model.tuto.TutoStep
 import com.pocketstudio.model.tuto.TutoTarget
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -65,6 +70,7 @@ class TutoKickSoundTest {
     @After
     fun end() {
         TutoTestHooks.player = null
+        TutoTestHooks.packs = null
         h.finish()
     }
 
@@ -117,9 +123,43 @@ class TutoKickSoundTest {
         click(tile)
     }
 
+    /**
+     * Tour 9, lot « kick-ci »: the packs' catalogue the tutorial reads. Left to the network, Karim's test went red on
+     * GitHub's runners only (CI 45508694147, twice): there the real catalogue loads, the style's kit card takes the panel's
+     * place and the pad card's « Réglages du pad » has no room left on the 360 dp phone (bounds 0 × 0), so its tap
+     * opened nothing; without the network (a laptop's run) no card came and the test was green. Both are played here.
+     */
+    private fun catalogue(withTheStylesPacks: Boolean) {
+        val s = target.style
+        val ids = (s.lines.filter { it.voice == null }.mapNotNull { s.kit[it.role] } + s.id).distinct()
+        val index = if (withTheStylesPacks) IndexState.Ready(PackIndex(ids.map { PackEntry(it, "Pack $it", "$it.zip", "a".repeat(64), 1_500_000, 12) })) else IndexState.Unavailable
+        TutoTestHooks.packs = MutableStateFlow(PacksUi(index, emptyList()))
+    }
+
     @Test
     fun karimsGesturesOnTheOldStep() {
+        catalogue(withTheStylesPacks = false)
+        karimsGestures(kitCard = false)
+    }
+
+    /** The same gestures with the style's packs in the catalogue (GitHub's runners, a phone online): its kit card comes first. */
+    @Test
+    fun karimsGesturesWithTheKitCardOffered() {
+        catalogue(withTheStylesPacks = true)
+        karimsGestures(kitCard = true)
+    }
+
+    private fun karimsGestures(kitCard: Boolean) {
         atTheKickStep(oldKit = true)
+        // The kit card asks first (« Télécharger » / « Plus tard »): put away, as a person does before the pads.
+        assertEquals("the kit card offered", kitCard, putTheKitCardAway())
+        if (kitCard) {
+            // The open panel keeps the height it took with the card while its step stays (lot « tuto 3 »: it never changes
+            // height by itself): on the 360 × 780 phone the pad card has no room left under it (« Réglages du pad » 0 × 0).
+            // Karim folds the panel (« Replier »), as a person does to reach the pads.
+            click("tuto_fold")
+            await("the panel folded") { !has("tuto_mark") }
+        }
         val old = TutoStep("kick_sound", "", check = "changed:kit")
         val base = TutoChecks.signature("kit", p())
         val lib = ViewModelProvider(compose.activity)[SoundLibraryViewModel::class.java]
@@ -158,12 +198,7 @@ class TutoKickSoundTest {
         idle(400)
         assertEquals(before.padVoices, p().padVoices)
         // Round 1 (n° 34): the style's kit card takes the panel's place (no longer stacked on it): « Plus tard ».
-        if (has("tuto_kit")) {
-            // Round 2 (n° 22): a card that came by itself takes no touch for a moment.
-            compose.mainClock.advanceTimeBy(1_100L)
-            click("tuto_kit_later")
-            await("the panel back") { has("tuto_mark") }
-        }
+        putTheKitCardAway()
         // « J'ai compris »: ticked, on to the next step.
         click("tuto_mark")
         await("ticked") { "kick_sound" in progress().done }
@@ -185,6 +220,16 @@ class TutoKickSoundTest {
         assertEquals("Drum & bass", kitName(p()))
         h.vm.undo()
         assertFalse(StudioDrums.isDnbKick(p().padVoices[0]))
+    }
+
+    /** The style's kit card, when it shows, put away by its « Plus tard »: true when it showed. */
+    private fun putTheKitCardAway(): Boolean {
+        if (!has("tuto_kit")) return false
+        // Round 2 (n° 22): a card that came by itself takes no touch for a moment.
+        compose.mainClock.advanceTimeBy(1_100L)
+        click("tuto_kit_later")
+        await("the panel back") { has("tuto_mark") }
+        return true
     }
 
     /** « Lire la suite » until the step's words are read to their end. */

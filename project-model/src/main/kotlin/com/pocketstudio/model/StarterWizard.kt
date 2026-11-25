@@ -813,12 +813,20 @@ object StarterWizard {
         val plan = planFor(style, style.lines.map { it.role }.filter { it in sounds }.toSet(), partOfTrack.values.toSet() + listOfNotNull(Part.Bass.takeIf { bass808 != null }), withAcid)
             .let { if (recipe.body && style.lines.any { it.role == Role.Shaker } && recipe.lines.none { it.role == Role.Shaker } && Role.Shaker in sounds) withShakerInDrop(style, it) else it }
         // The counter-melody: the lead's motif answered in its rests (or the chords in short hits), in the Drop (or the Refrain).
-        val counterTrack = if (!plan.counter || mood == null) null
-        else withCounterTrack(project, style, mood, leadVersions[Version.Chorus])?.let { (p, id) -> project = p; id }
         // Format v2 (d, e): the chords doubled in the Drop, a texture held under the whole song; after the
         // counter-melody, and only while tracks are left for the riser, the vocal and the sub drop (they are heard more).
         val later = listOf(plan.riser, mood != null && partOfTrack.isNotEmpty() && style.vocal != null, partOfTrack.isNotEmpty() && !plan.form.sung).count { it }
-        fun room() = InstrumentTrack.MAX - project.tracks.size > later
+        // Tour 9 (gr-styles): a style with a body (doubled chords or a texture) keeps one track free for the user's
+        // own melody (« ma mélodie »). The body gives way in this order: the texture first, then the counter-melody;
+        // never the sub, the bass, the vocal nor the doubled chords (Benjamin: « du corps ; kick et basse devant »).
+        val mine = if (style.melody.chordDouble != null || style.melody.texture != null) 1 else 0
+        val doubles = style.melody.chordDouble != null && chordsTrack != null
+        // Added tracks take the ids 1 until MAX: [free] is what is left once [adding] more are in.
+        fun free(adding: Int) = InstrumentTrack.MAX - 1 - project.tracks.size - adding
+        val withCounter = plan.counter && mood != null && (mine == 0 || free(1 + (if (doubles) 1 else 0)) >= later + mine)
+        val counterTrack = if (!withCounter) null
+        else withCounterTrack(project, style, mood!!, leadVersions[Version.Chorus])?.let { (p, id) -> project = p; id }
+        fun room() = if (mine == 0) InstrumentTrack.MAX - project.tracks.size > later else free(1) >= later + mine
         val doubleTrack = style.melody.chordDouble?.takeIf { room() }?.let { kind -> chordsTrack?.let { withDoubleTrack(project, it, kind) } }?.let { (p, id) -> project = p; id }
         val textureTrack = style.melody.texture?.takeIf { partOfTrack.isNotEmpty() && room() }?.let { withTextureTrack(project, it) }?.let { (p, id) -> project = p; id }
         project = withEffects(project, style, sounds.keys, partOfTrack, withAcid, bass808 = bass808 != null)
@@ -1480,6 +1488,8 @@ object StarterWizard {
 
     /** Format v2 (d): the chords' double (saved in French, a default name). */
     const val DOUBLE_TRACK = "Doublure"
+    /** The doubling's highest note (the melodic tracks' top, C7). */
+    const val DOUBLE_TOP = 96
 
     /** The double under the chords (dB, over a held pad's level): it brightens the Drop, it is not a second part. */
     const val DOUBLE_DB = -6f
@@ -1522,9 +1532,13 @@ object StarterWizard {
             ),
             mix = mix.copy(glueBlend = mix.glueBlend ?: BODY_GLUE_BLEND),
             // The transition into each Drop: the riser that climbs (the hit on the crash is a layer, [Extras.transition]).
-            riser = true,
+            // The dynamic hip-hop has no Drop: its song keeps no riser (and so no riser's clipper).
+            riser = style.riser || style.id !in NO_DROP,
         )
     }
+
+    /** The dynamic hip-hop: no Drop, so its body adds no riser (as WizardMix keeps its crest whole). */
+    private val NO_DROP = setOf("lofi", "boom_bap")
 
     /**
      * What the app found on the phone for a style's format v2 body (it reads packs, the model does
@@ -1665,7 +1679,8 @@ object StarterWizard {
             val high = chord.maxBy { it.pitch }
             high.copy(pitch = high.pitch + 24, length = chord.maxOf { it.length }, velocity = high.velocity * 0.8f)
         }
-        val notes = (octave + top).filter { it.pitch <= 108 }.distinctBy { it.start to it.pitch }.sortedWith(compareBy({ it.start }, { it.pitch }))
+        // Over the melodic range's top, an octave down (a held top note two octaves up hurts in the treble).
+        val notes = (octave + top).map { n -> n.copy(pitch = n.pitch - 12 * Math.floorDiv(maxOf(0, n.pitch - DOUBLE_TOP + 11), 12)) }.distinctBy { it.start to it.pitch }.sortedWith(compareBy({ it.start }, { it.pitch }))
         return clip.copy(notes = notes, hidden = emptyList())
     }
 
@@ -2519,7 +2534,12 @@ object StarterWizard {
                 p = p.withTrack(p.track(id).copy(notes = if (spec.vocal) clip else clip.copy(notes = emptyList())))
             }
             tracks.riser?.let { id -> p = p.withTrack(p.track(id).copy(notes = riserNotes(spec, sceneSteps))) }
-            tracks.double?.let { id -> if (spec.base != 2) p = p.withTrack(p.track(id).copy(notes = p.track(id).notes.copy(notes = emptyList()))) }
+            // The doubling follows the chords: only in a Drop, cut like them, silent where they are out.
+            tracks.double?.let { id ->
+                val chordsOut = partOfTrack.filterValues { it == Part.Pad }.keys.all { p.track(it).notes.notes.isEmpty() }
+                val clip = p.track(id).notes.let { if (spec.base != 2 || chordsOut) it.copy(notes = emptyList()) else windowed(it, spec, false, chords = true) }
+                p = p.withTrack(p.track(id).copy(notes = clip))
+            }
             // Held under the whole song, but quiet on the beat of silence before a Drop.
             tracks.texture?.let { id -> p = p.withTrack(p.track(id).copy(notes = textureNotes(sceneSteps, full.harmony).let { c -> if (spec.silence) windowed(c, spec.copy(half = -1), false, false) else c })) }
             tracks.subDrop?.let { id -> p = p.withTrack(p.track(id).copy(notes = subDropNotes(spec, sceneSteps, full.harmony))) }

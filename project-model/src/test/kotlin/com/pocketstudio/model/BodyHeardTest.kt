@@ -35,6 +35,8 @@ class BodyHeardTest {
             p.allScenes[b.scene].label.let { it == SongShape.FAKE_DROP || Regex("""^(Drop|Refrain)( \d+)?$""").matches(it) } &&
                 p.allScenes[a.scene].label.let { it.startsWith("Montée") || it.startsWith(SongShape.PRE_CHORUS) || it.startsWith("Couplet ") || it == SongShape.FAKE_DROP }
         }.map { it.first.scene }.toSet()
+        // The first track keeps its notes in the scene's own field.
+        val notesOf = { sc: Scene, id: Int -> (if (id == 0) sc.synthNotes else sc.trackNotes[id])?.notes.orEmpty() }
         val silent = { p: Project -> p.allScenes.map { sc ->
             val steps = sc.stepsFor(16)
             sc.drums.lanes.all { l -> l.hits.keys.none { it >= steps - 4 } } &&
@@ -51,7 +53,13 @@ class BodyHeardTest {
                 val what = "${plain.id} $mood ${parts.keys} acid=$acid"
                 if (without.songBars != with.songBars) bad += "$what bars ${without.songBars} -> ${with.songBars}"
                 if (without.allScenes.map { it.label } != with.allScenes.map { it.label }) bad += "$what scenes ${without.allScenes.map { it.label }} -> ${with.allScenes.map { it.label }}"
-                else silent(without).zip(silent(with)).withIndex().filter { (i, s) -> i in beforeDrops(with) && s.first && !s.second }
+                // The chords' doubling follows the chords: none in a scene where they are out (a Post-refrain without its chords).
+                val chords = with.instrumentTracks.filter { it.name in StarterWizard.CHORD_TRACK_NAMES }.map { it.id }
+                val double = with.instrumentTracks.firstOrNull { it.name == StarterWizard.DOUBLE_TRACK }?.id
+                if (double != null) with.allScenes.forEach { sc ->
+                    if (chords.all { notesOf(sc, it).isEmpty() } && notesOf(sc, double).isNotEmpty()) bad += "$what ${sc.label} doubles chords it does not play"
+                }
+                if (without.allScenes.map { it.label } == with.allScenes.map { it.label }) silent(without).zip(silent(with)).withIndex().filter { (i, s) -> i in beforeDrops(with) && s.first && !s.second }
                     .forEach { (i, _) -> bad += "$what ${with.allScenes[i].label} lost its beat of silence" }
             }
         }

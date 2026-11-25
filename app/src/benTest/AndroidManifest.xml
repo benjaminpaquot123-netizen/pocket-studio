@@ -6,6 +6,9 @@
 
     <!-- Normal permission (no prompt): brings the robot's task back to the front when another app opened over it. -->
     <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <!-- The run's relaunch after the app died in a scenario (Garde.kt): an exact alarm, granted without a prompt. -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
 
     <application
         android:icon="@mipmap/ic_launcher_bentest"

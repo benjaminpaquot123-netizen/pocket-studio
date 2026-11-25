@@ -4,6 +4,7 @@ import com.pocketstudio.model.StarterWizard.PartSound
 import com.pocketstudio.model.StarterWizard.Role
 import com.pocketstudio.model.StarterWizard.Style
 import kotlin.math.abs
+import kotlin.math.ln
 import kotlin.math.pow
 
 /**
@@ -22,9 +23,6 @@ object StudioDrums {
 
     /** Styles whose kick is the hard (gabber) one: soft-clipped, a deeper sweep. */
     val HARD_KICK = setOf("hard_techno", "gabber", "acidcore", "industrial_techno")
-
-    /** Families whose kick is the studio kick tuned to the key. */
-    private val TUNED_FAMILIES = setOf("House", "Techno")
 
     /** Soft kicks without a click (docs/hits/house.md: amapiano, deep, afro). */
     private val SOFT_KICK = setOf("deep_house", "afro_house", "amapiano")
@@ -85,23 +83,76 @@ object StudioDrums {
         ).sanitized()
     }
 
-    /** [style]'s kick voice in [harmony]'s key, or null: the kit's own (kit v3: the studio kick at its own tuning). */
+    /**
+     * A style family's kick (Benjamin, 2026-11-25, « le kick tape pas assez », version B): the note it
+     * aims at ([hz], then tuned to the key's root or fifth nearest to it), the sweep's start over the
+     * note ([ratio]: 4 to 6, acidcore 2.8, lofi 3) and its time constant ([sweepMs], 25 to 45 ms: the
+     * kick lands on its note 70 to 145 ms after the hit), the saturation ([drive]: clean house,
+     * trance and drum & bass, dirty disco, big room and hard), the length ([decay], s, -40 dB) and
+     * the click. The engine reads them as PITCH_DROP (semitones) and DROP_TIME (s).
+     */
+    data class KickFamily(
+        val hz: Float, val ratio: Float, val sweepMs: Float, val drive: Float, val decay: Float,
+        val click: Float = 0.5f, val hard: Boolean = false,
+    ) {
+        val dropSt: Float get() = (12.0 * ln(ratio.toDouble()) / ln(2.0)).toFloat()
+    }
+
+    /** The table, by style id (Benjamin's « table style → kick », 2026-11-25); [KICK_DEFAULT] elsewhere. */
+    val KICK_FAMILIES: Map<String, KickFamily> = buildMap {
+        // House: round, a little saturation, a fast sweep.
+        for (id in listOf("house", "deep_house", "afro_house", "amapiano")) {
+            put(id, KickFamily(48f, 4f, 27f, 0.25f, 0.3f, click = if (id in SOFT_KICK) 0.25f else 0.5f))
+        }
+        put("tech_house", KickFamily(47f, 5f, 35f, 0.4f, 0.3f))
+        put("acid_house", KickFamily(50f, 4f, 30f, 0.1f, 0.25f))
+        put("disco", KickFamily(56f, 4f, 25f, 0.9f, 0.18f))
+        put("jersey_club", KickFamily(38f, 5f, 25f, 0.6f, 0.12f))
+        for (id in listOf("uk_garage", "speed_garage")) put(id, KickFamily(51f, 4f, 30f, 0.3f, 0.25f, click = 0.35f))
+        // Techno: version B, 49 Hz over a bass on another note.
+        for (id in listOf("techno", "detroit", "retro_techno", "acid_techno")) put(id, KickFamily(49f, 4.5f, 35f, 0.6f, 0.25f))
+        put("minimal", KickFamily(49f, 4f, 25f, 0.3f, 0.16f))
+        for (id in listOf("hard_techno", "industrial_techno")) put(id, KickFamily(49f, 5f, 40f, 0.95f, 0.3f, click = 0.4f, hard = true))
+        put("gabber", KickFamily(48f, 6f, 45f, 1f, 0.29f, click = 0.4f, hard = true))
+        put("acidcore", KickFamily(69f, 2.8f, 35f, 0.9f, 0.22f, click = 0.4f, hard = true))
+        put("trance", KickFamily(50f, 5f, 45f, 0.15f, 0.28f))
+        // Drum & bass: short and clean ([dnbKick]'s length and click).
+        for (id in listOf("dnb", "jump_up", "jungle", "neurofunk")) {
+            put(id, KickFamily(46f, 4.5f, 28f, if (id == "neurofunk") 0.3f else 0.2f, DNB_KICK_DECAY, DNB_KICK_CLICK))
+        }
+        put("liquid_dnb", KickFamily(50f, 4f, 30f, 0.15f, 0.2f))
+        for (id in listOf("dubstep", "riddim", "grime")) put(id, KickFamily(46f, 4.5f, 32f, 0.4f, 0.25f))
+        // The 808 styles: a short kick, the 808 holds the low end.
+        for (id in listOf("trap", "drill", "phonk")) put(id, KickFamily(50f, 4.5f, 25f, 0.5f, KICK_808_DECAY))
+        for (id in listOf("reggaeton", "afrobeats")) put(id, KickFamily(49f, 4.5f, 35f, 0.5f, 0.35f))
+        for (id in listOf("lofi", "boom_bap")) put(id, KickFamily(79f, 3f, 25f, 0.7f, 0.15f, click = 0.4f))
+        for (id in listOf("synthwave", "pop")) put(id, KickFamily(60f, 4f, 25f, 0.4f, 0.22f))
+    }
+
+    /** A style missing from [KICK_FAMILIES]: the engine's own studio kick (x4.5 over 35 ms). */
+    val KICK_DEFAULT = KickFamily(52f, 4.5f, 35f, 0.6f, 0.25f)
+
+    fun kickFamily(style: Style): KickFamily = KICK_FAMILIES[style.id] ?: KICK_DEFAULT
+
+    /** The key's root or fifth nearest to [target] Hz (any octave): the kick in the key, near its family's note. */
+    fun kickNear(root: Int, target: Float): Float =
+        listOf(root, root + 7).flatMap { pc -> (0..5).map { hz(12 * it + Math.floorMod(pc, 12)) } }
+            .minBy { abs(ln(it / target)) }.toFloat()
+
+    /**
+     * [style]'s kick voice in [harmony]'s key: its family's ([KICK_FAMILIES]). The 808 styles keep
+     * the 808's key (final audit, report 12: [kickHz], the root else the fifth, 43 to 66 Hz).
+     */
     fun kickVoice(style: Style, harmony: Harmony): PadVoice? {
-        val tune = kickHz(harmony.root)
-        return when {
-            style.id in HARD_KICK -> PadVoice(
-                PadVoice.KICK_HARD,
-                mapOf(PadVoice.TUNE to tune, PadVoice.DRIVE to if (style.id == "gabber" || style.id == "acidcore") 0.9f else 0.7f),
-            )
-            style.family in TUNED_FAMILIES -> PadVoice(
-                PadVoice.KICK_STUDIO,
-                if (style.id in SOFT_KICK) mapOf(PadVoice.TUNE to tune, PadVoice.CLICK to 0.25f) else mapOf(PadVoice.TUNE to tune),
-            )
-            // Final audit (report 12): the kick of an 808 style in the 808's key (it played the kit's 52 Hz over an
-            // 808 in F, 43.7 Hz: two low notes beating in each hit), shorter so the 808 carries the low end.
-            style.id in BASS_808 -> PadVoice(PadVoice.KICK_STUDIO, mapOf(PadVoice.TUNE to tune, PadVoice.DECAY to KICK_808_DECAY))
-            else -> null
-        }?.sanitized()
+        val f = kickFamily(style)
+        val tune = if (style.id in BASS_808) kickHz(harmony.root) else kickNear(harmony.root, f.hz)
+        return PadVoice(
+            if (f.hard || style.id in HARD_KICK) PadVoice.KICK_HARD else PadVoice.KICK_STUDIO,
+            mapOf(
+                PadVoice.TUNE to tune, PadVoice.DECAY to f.decay, PadVoice.DRIVE to f.drive, PadVoice.CLICK to f.click,
+                PadVoice.PITCH_DROP to f.dropSt, PadVoice.DROP_TIME to f.sweepMs / 1000f,
+            ),
+        ).sanitized()
     }
 
     /** The studio kick's decay over an 808 (s; its own 0.25 a little shorter: the 808 is the low end that rings). */
@@ -207,7 +258,10 @@ object StudioDrums {
 
     fun dnbKick(root: Int): PadVoice = PadVoice(
         PadVoice.KICK_STUDIO,
-        mapOf(PadVoice.TUNE to kickHz(root), PadVoice.DECAY to DNB_KICK_DECAY, PadVoice.CLICK to DNB_KICK_CLICK),
+        mapOf(
+            PadVoice.TUNE to kickHz(root), PadVoice.DECAY to DNB_KICK_DECAY, PadVoice.CLICK to DNB_KICK_CLICK,
+            PadVoice.DRIVE to 0.2f, PadVoice.PITCH_DROP to KickFamily(46f, 4.5f, 28f, 0.2f, DNB_KICK_DECAY).dropSt, PadVoice.DROP_TIME to 0.028f,
+        ),
     ).sanitized()
 
     /** [voice] is the drum & bass kick ([dnbKick], in any key): « Kit ▾ » then says « Drum & bass ». */

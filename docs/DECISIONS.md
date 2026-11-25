@@ -1593,3 +1593,4 @@
 - 2026-11-25 · lot « gr-styles2 » (tour-9) : 3 décision(s) dans `docs/decisions/tour-9-gr-styles2.md`
 - 2026-11-25 · lot « tests-fragiles » (tour-9) : 2 décision(s) dans `docs/decisions/tour-9-tests-fragiles.md`
 - 2026-11-25 · lot « ci-fiab » (tour-9) : 5 décision(s) dans `docs/decisions/tour-9-ci-fiab.md`
+- 2026-11-25 · lot « kick-fable » (tour-9) : 8 décision(s) dans `docs/decisions/tour-9-kick-fable.md`

@@ -143,11 +143,11 @@ class DrumFeelTest {
             if (s.id in StudioDrums.HARD_KICK) assertEquals(s.id, PadVoice.KICK_HARD, kick?.kind)
             else assertEquals(s.id, PadVoice.KICK_STUDIO, kick?.kind)
             // Tuned to the key (its root, else its fifth) within 3.5 semitones of its family's note
-            // (38 Hz in jersey club to 79 Hz in lofi).
+            // (38 Hz in jersey club to 79 Hz in lofi, so 34 to 96 Hz).
             kick?.param(PadVoice.TUNE)?.let { hz ->
                 val target = StudioDrums.kickFamily(s).hz
                 if (s.id !in StudioDrums.BASS_808) assertTrue("${s.id} $hz", kotlin.math.abs(12 * kotlin.math.ln(hz / target) / kotlin.math.ln(2f)) <= 3.6f)
-                assertTrue("${s.id} $hz", hz in 34f..84f)
+                assertTrue("${s.id} $hz", hz in 34f..96f) // lofi 79 Hz + 3.5 st
                 val pc = Math.floorMod(Math.round(12 * kotlin.math.ln(hz / 440.0) / kotlin.math.ln(2.0) + 69).toInt(), 12)
                 assertTrue("${s.id} $pc", pc == Math.floorMod(p.harmony.root, 12) || pc == Math.floorMod(p.harmony.root + 7, 12))
             }

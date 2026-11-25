@@ -160,7 +160,8 @@ class TutoCourseTest {
         // Jump up: the drum & bass kit built in, its short kick tuned to F on the kick's pad (« Kit : Drum & bass »).
         assertTrue(com.pocketstudio.model.StudioDrums.isDnbKick(p.padVoices[0]))
         assertEquals(com.pocketstudio.model.StudioDrums.kickHz(5), p.padVoices[0]!!.param(com.pocketstudio.model.PadVoice.TUNE)!!, 0.01f)
-        assertEquals(target.song.padVoices, p.padVoices - 0)
+        // The example carries its family's kick on pad 0 too since 2026-11-25 (KICK_FAMILIES): the rest equal.
+        assertEquals(target.song.padVoices - 0, p.padVoices - 0)
         // The example's drum effects (the punch on the kick and the snare), not the snare's reverb (a step's).
         val kick = com.pocketstudio.model.Mixer.padChannel(0)
         val snare = com.pocketstudio.model.Mixer.padChannel(2)

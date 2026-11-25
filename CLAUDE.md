@@ -26,7 +26,7 @@ Au début de chaque session, le chef d'orchestre (ou une discussion sans fiche) 
   Le compactage automatique vers 200 k est posé dans `.claude/settings.json` (vérifié : compactage à 144 k).
 - Fable (2026-11-15) : seulement sur une discussion neuve ou un sous-agent, avec une fiche courte (le problème, les fichiers, la preuve attendue). Jamais en passant une longue discussion sur Fable : elle a sa propre limite, vidée le 15 novembre par la discussion principale. Benjamin décide quand.
 - Discussions (2026-11-15) : l'agent ouvre, pilote et ferme lui-même les discussions et sous-agents, toujours en Opus 5.5. Fable 5.2 seulement quand il est nécessaire, et en demandant d'abord à Benjamin.
-- Retours de Benjamin donnés un par un (2026-11-24) : répondre seulement « Noté », sans commenter ; les ranger dans `docs/RETOURS.md`.
+- Retours de Benjamin donnés un par un (2026-11-24, complété le 2026-11-25) : les ranger dans `docs/RETOURS.md`, puis répondre « Noté » suivi d'une petite blague sur ce qu'il vient de dire, sans autre commentaire.
 - Avant-après audio (2026-11-24) : un MP3 par style (40 s avant, 1 s de pause, 40 s après), jamais un seul long fichier ; rendu par `scripts/live-bench.sh` puis `ps_live`.
 - Versions « BenStudio Test » (2026-11-24) : compilées en local, envoyées par fichier, jamais depuis une tête intermédiaire de paquet.
 - « 🤘 La fucking liste des promesses 🤘 » (c'est son nom, Benjamin 2026-11-24 ; fichier `docs/PROMESSES.md`, cases à cocher « - [ ] date promesse ») : tout ce qui est promis à Benjamin s'y écrit (date, promesse, état) et se coche quand c'est tenu.

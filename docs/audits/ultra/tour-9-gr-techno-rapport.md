@@ -11,6 +11,7 @@ Branche : `eq/tour-9-gr-techno` (= `eq/gr-techno`). Fichiers du lot : `scripts/p
 - Pas vert, déjà là avant : trance Drop − Break +2,7 ; retro techno Drop − Groove +2,0 ; kick « ≥ 3 dB » listé (techno 2,1, trance 2,9, hard techno 2,7).
 
 tests: *TechnoStylesTest *StyleRecipesUpToDateTest *BodyHeardTest *StyleBodyTest *SongBodyTest *RecipeFormatV2Test *StyleMusicTest *StyleSoundsTest
+controle: t9-77 | code testé: 7dc046ecdb971da9cd81c66c46f0cdf0db86c35e | bloqués: 0 | graves neufs: 0
 
 ## Chemins
 

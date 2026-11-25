@@ -1,0 +1,22 @@
+Écran 36 (540x1170)
+icône ✕ @ 486,454
+texte « Coup 16 » @ 241,454
+texte « Force » @ 62,514
+bouton « Fort » [sélectionné] @ 78,574
+bouton « Moyen » @ 188,574
+bouton « Doux » @ 304,574
+texte « Décalage du coup 16 » @ 245,634
+texte « +0 ms » @ 489,634
+curseur [état « +0 ms », à 50 %, poignée @ 277,694] @ 277,694
+texte « Roulement » @ 88,754
+bouton « ×1 » [sélectionné] @ 69,814
+bouton « ×2 » @ 150,814
+bouton « ×3 » @ 233,814
+bouton « ×4 » @ 317,814
+bouton « ×6 » @ 400,814
+bouton « ×8 » @ 483,814
+texte « Triolet » @ 66,874
+bouton « 3 sur 2 cases » [désactivé] @ 126,934
+bouton « ↗ Montant » [désactivé] @ 111,1015
+bouton « Égal » [désactivé, sélectionné] @ 242,1015
+bouton « ↘ Descendant » [désactivé] @ 391,1015

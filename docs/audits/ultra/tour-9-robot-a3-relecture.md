@@ -1,6 +1,6 @@
 # Tour 9 : lot robot-a3 (relecture neuve)
 
-Relu : 79c01e0c1f0db1f117672da4bb6bcbb7392fbfeb
+Relu : e5d59a392 (79c01e0c1 relu à l'origine dans robot-a2 ; e5d59a392 = même code, lot republié en robot-a3 : seuls les sujets de la paire du changement de kit reformulés, rapport et relecture renommés)
 
 Code relu à 5ac529783f86b81561be041a6a400ea3d93ca81f ; depuis, seules deux lignes « chemin » du rapport ont changé (nom de la méthode de test), aucun code.
 
@@ -29,5 +29,7 @@ Aucun.
 - `quitterEnJouant` peut ouvrir un vrai projet de l'utilisateur (aucune modification, mais l'appli peut le réenregistrer au changement) (`Scenarios.kt` vers 1150).
 - `ToutTester` crée environ 9 morceaux de plus par passage et dure 15 minutes de plus (endurance de 10 min).
 - Test : `Vrai.playing` lu depuis le fil de fond sans `@Volatile` (sans effet en pratique).
+
+Republication (relecture neuve, 2026-11-25) : `git diff origin/eq/tour-9-robot-a2 e5d59a392 -- app engine project-model scripts` est vide ; la différence totale ne porte que sur le renommage des deux fichiers `tour-9-robot-a2-{rapport,relecture}.md` en `-a3-` (titre changé, ligne « Republication » ajoutée au rapport). Base commune 3d0bb823e ; 57 commits republiés dans le même ordre, chacun au diff identique à son original (comparé pour les 57, `index` mis à part), plus le commit de renommage e5d59a392 ; les arbres de 0e170ce0b et 6ef32b03a sont identiques à ceux de a3cd887a5 et cfd47687f. Seuls les sujets de la paire changent : 0e170ce0b « rouge: » et 6ef32b03a « vert: » portent le même sujet « kit change hole heard during its gestures (ScenariosVraisEcransTest#aHoleWhileTheKitIsChangedIsRed) », le test nommé est bien ajouté par le rouge (`ScenariosVraisEcransTest.kt`), et le rouge précède immédiatement le vert. La ligne « Republication » du rapport est exacte.
 
 Verdict : 0 bloquant, 0 grave

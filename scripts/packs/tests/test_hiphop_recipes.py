@@ -12,6 +12,33 @@ def styles():
     return {s['id']: s for s in json.loads(RECIPES.read_text())}
 
 
+def wood():
+    inst = json.loads((PACKS_DIR / 'instruments.json').read_text())
+    return next(i for i in inst['instruments'] if i['id'] == 'instrument_bois')
+
+
+NAMES = {'C': 0, 'C#': 1, 'D': 2, 'D#': 3, 'E': 4, 'F': 5, 'F#': 6, 'G': 7, 'G#': 8, 'A': 9, 'A#': 10, 'B': 11}
+SCALES = {'minor': [0, 2, 3, 5, 7, 8, 10], 'major': [0, 2, 4, 5, 7, 9, 11]}
+
+
+def lead_notes(style):
+    """The MIDI notes of a riff lead in every mood's scale: 'R' root, '2'..'7' degrees, 'O' octave."""
+    lead = style['lead']
+    base = NAMES[style['root']] + 12 * lead['octave']
+    out = []
+    for prog in style['progressions'].values():
+        ints = SCALES[prog['scale']]
+        for c in lead['pattern'] + lead.get('answer', ''):
+            low = c.lower()
+            if low == 'r':
+                out.append(base)
+            elif low == 'o':
+                out.append(base + 12)
+            elif c in '234567':
+                out.append(base + ints[int(c) - 1])
+    return out
+
+
 def lines(style):
     return {d['role']: d for d in style['drums']}
 
@@ -162,6 +189,36 @@ class TrapFlute(unittest.TestCase):
         self.assertTrue(6000 <= 40 * 450 ** lp['params'][0] <= 8000, lp)
         self.assertLess(lp['params'][2], 1 / 3)
         self.assertTrue(any(f.get('insert') == 'REVERB' or f.get('reverb', 0) >= 0.25 for f in fx), 'a plate')
+
+    def test_every_note_of_the_trap_phrase_is_played_by_the_flute(self):
+        # Before: the flute began at G4 (67), so the phrase's F4 fell on the clarinet.
+        bois = wood()
+        flute = next(p for p in bois['parts'] if p['sfz'] == 'FluteSusVib.sfz')
+        lo, hi = flute['keys']
+        t = styles()['trap']
+        notes = lead_notes(t)
+        self.assertTrue(notes)
+        self.assertTrue(all(lo <= n <= hi for n in notes), (lo, hi, sorted(set(notes))))
+        self.assertEqual([lo, hi], bois['recipes']['flute'])
+        clar = next(p for p in bois['parts'] if p['sfz'] == 'ClarinetSus.sfz')
+        self.assertEqual(lo - 1, clar['keys'][1], 'no gap and no overlap between clarinet and flute')
+
+    def test_the_held_flute_does_not_loop_its_vibrato_every_three_seconds(self):
+        bois = wood()
+        flute = next(p for p in bois['parts'] if p['sfz'] == 'FluteSusVib.sfz')
+        curve = flute.get('seconds', bois['seconds'])
+        self.assertTrue(all(sec >= 4.0 for _, sec in curve), curve)
+        self.assertGreaterEqual(bois['version'], 2, 'the phone offers the new flute as an update')
+
+    def test_the_trap_phrase_is_a_new_legato_one(self):
+        pat = styles()['trap']['lead']['pattern']
+        self.assertNotEqual('O-----5-3-----..R-----3-5---....', pat)
+        self.assertEqual(32, len(pat))
+        # Legato: every note is held at least one more step; and it breathes (rests).
+        for i, c in enumerate(pat):
+            if c not in '-./':
+                self.assertEqual('-', pat[(i + 1) % len(pat)], (i, pat))
+        self.assertGreaterEqual(pat.count('.'), 2, pat)
 
 
 class TrapVoices(unittest.TestCase):

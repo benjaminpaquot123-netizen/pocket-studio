@@ -1,0 +1,57 @@
+Écran 134 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+titre « LE MORCEAU » [coupé, état « Déplié »] @ 154,151
+bouton « ? » [coupé] @ 245,151
+texte « La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures. Ajoute-les dans l'ordre. » [coupé] @ 294,186
+icône (liste) « Chapitres » @ 444,249
+texte « Comprendre les parties Chapitre 9/15 · Étape 1/5 · Facile » @ 207,249
+icône ⌄ @ 531,249
+texte « Écoute l'Intro : la batterie seule, sans basse ni piano. Sur la carte, le Break, c'est la pause du morceau. » @ 294,366
+texte « Énergie » @ 58,441
+texte « Intro » @ 65,534
+texte « 16 » @ 65,558
+texte « Montée » @ 155,534
+texte « 8 » @ 155,558
+texte « Drop » @ 246,534
+texte « 16 » @ 246,558
+texte « Break » @ 337,534
+texte « 16 » @ 337,558
+texte « Montée » @ 427,534
+texte « 8 » @ 427,558
+texte « Drop 2 » @ 518,534
+texte « 16 » @ 518,558
+texte « Fin » @ 65,603
+texte « 16 » @ 65,627
+texte «  Intro » @ 61,664
+texte «  Montée » @ 154,664
+texte «  Drop » @ 247,664
+texte «  Break » @ 332,664
+texte «  Drop 2 » @ 426,664
+texte «  Fin » @ 508,664
+texte « Chaque nombre : la durée de la partie en mesures. » @ 251,694
+bouton « Télécharger le kit House (4 Mo) » @ 236,765
+texte « Plus tard » @ 503,765
+texte « ▸ Pourquoi ? » @ 294,831
+bouton ▶ «  Écouter l'exemple » @ 294,894
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

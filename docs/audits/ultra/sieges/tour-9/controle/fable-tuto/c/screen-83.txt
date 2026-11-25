@@ -1,0 +1,43 @@
+Écran 83 (540x1170)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 » @ 120,42
+bouton « 간단 » @ 273,42
+bouton ● @ 351,42
+bouton ▶ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+bouton « 132 템포 » @ 46,123
+icône « 빌드업 77/128마디 » ▾ @ 192,123
+bouton « ? » @ 495,123
+texte « 믹스 » @ 52,202
+texte «  · 내 프로젝트 1 » @ 176,202
+bouton « ? » @ 288,202
+bouton « ▶ 파트 반복 » @ 113,275
+bouton « ↺ 모두 처음대로 » @ 386,275
+bouton « ? » @ 230,275
+texte « 직접 해 보세요: 들려야 할 소리는 올리고, 방해되는 소리는 내리세요. ▶를 누르면 트랙 하나만 들을 수 있어요. » @ 273,396
+bouton « 드럼 ▸ » [état « 닫힘 »] @ 75,521
+curseur [coupé, état « 보통 », à 80 %, poignée @ 84,585] @ 84,623
+texte « 베이스 » @ 216,521
+curseur [coupé, état « 보통 », à 80 %, poignée @ 216,585] @ 216,623
+texte « 코드 » @ 339,521
+curseur [coupé, état « −2 », à 70 %, poignée @ 339,597] @ 339,623
+texte « 멜로디 » [coupé] @ 450,521
+curseur [coupé, état « −2 », à 70 %, poignée @ 444,597] @ 444,623
+texte « 믹스: 볼륨 14/15장 · 완료 · 쉬움 » @ 198,738
+icône (liste) « 챕터 » @ 411,738
+icône ⌃ @ 483,738
+icône (coupe) « 잘했어요, 챕터 완료! » @ 183,851
+icône « 다음 챕터 » → @ 432,851
+icône ↶ « 실행 취소 » @ 66,950
+image ↷ @ 172,934
+bouton ▶ « 곡 » @ 274,950
+texte « 132 템포 » @ 377,950
+icône ⋮ « 더보기 » @ 479,950
+onglet (lignes et note) « 내 곡 » @ 49,1050
+onglet (quatre carrés) « 리듬 » @ 160,1050
+onglet (touches de piano) « 건반 » @ 271,1050
+onglet (curseurs) « 믹스 » [sélectionné] @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  메모 » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « 피드백 모드 » @ 138,1140

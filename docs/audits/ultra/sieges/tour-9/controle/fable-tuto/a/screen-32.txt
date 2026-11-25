@@ -1,0 +1,56 @@
+Écran 32 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône « Partie : A » ▾ @ 82,180
+bouton « 1 » [coupé, état « coup, force 100 % »] @ 70,244
+bouton [coupé, état « coup, force 100 % »] @ 133,244
+bouton [coupé, état « vide »] @ 197,245
+bouton [coupé, état « coup, force 100 % »] @ 261,245
+bouton « 2 » [coupé, état « coup, force 100 % »] @ 325,245
+bouton [coupé, état « coup, force 100 % »] @ 389,245
+bouton [coupé, état « vide »] @ 453,245
+bouton [coupé, état « coup, force 100 % »] @ 517,245
+bouton « 3 » [état « coup, force 100 % »] @ 70,316
+bouton [état « coup, force 100 % »] @ 133,316
+bouton [état « vide »] @ 197,317
+bouton [état « coup, force 100 % »] @ 261,317
+bouton « 4 » [état « coup, force 100 % »] @ 325,317
+bouton [état « coup, force 100 % »] @ 389,317
+bouton [état « vide »] @ 453,317
+bouton [état « coup, force 100 % »] @ 517,317
+texte « tout » [coupé] @ 152,397
+texte « 1/2 » [coupé] @ 227,397
+texte « 1/4 » [coupé] @ 302,397
+texte « Remplir » @ 77,402
+icône (liste) « Chapitres » @ 444,471
+icône ⌄ @ 531,471
+texte « Les charleys et le bord de caisse » @ 207,471
+texte « À toi : sur le pad « Charley », touche les cases en pointillé : un petit tapis rapide. » [coupé] @ 294,534
+bouton « Télécharger le kit House (4 Mo) » @ 236,609
+texte « Plus tard » @ 503,609
+texte « ▸ Pourquoi ? » @ 294,675
+icône « Lire la suite » ⌄ @ 294,723
+bouton (doigt qui touche) «   Je le fais » @ 294,813
+bouton ▶ «  Écouter l'exemple » @ 154,897
+bouton (œil) «  Montre-moi » @ 433,897
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

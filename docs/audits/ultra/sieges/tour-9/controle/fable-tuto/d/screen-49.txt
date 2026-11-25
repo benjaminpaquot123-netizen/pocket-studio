@@ -1,0 +1,35 @@
+Écran 49 (588x1278)
+dessin @ 294,36
+texte « Partie 2 · C · Montée » @ 184,96
+texte « Fermer » @ 509,108
+texte « 8 mes.  ·  jouée 2 fois » @ 134,129
+texte « Jouée 2 fois dans le morceau. Modifier : » @ 224,174
+bouton (étincelles) « Celle-ci seulement » @ 156,246
+bouton (crayon) « Toutes les 2 » @ 432,246
+bouton (barres de son) « Fill à la fin » @ 156,345
+bouton ❚❚ « Break après · 4 mes. » @ 432,345
+bouton ❚❚ « Break après · 8 mes. » @ 156,444
+bouton (courbe qui monte) « Montée avant · 4 mes. » @ 432,444
+bouton (courbe qui monte) « Montée avant · 8 mes. » @ 156,543
+bouton (haut-parleur et ondes) « Fondu d'entrée » @ 432,543
+bouton (haut-parleur et une onde) « Fondu de sortie » @ 156,642
+bouton (drapeau) « Ajouter une fin » @ 432,642
+texte « Énergie : 3 » @ 77,714
+bouton « 1 · nappes » @ 100,780
+bouton « 2 · + basse » @ 265,780
+bouton « 3 · + batterie » [sélectionné] @ 443,780
+bouton « 4 · à fond » @ 96,861
+texte « Longueur » @ 72,927
+champ « mesures » contenu « 8 » @ 268,1006
+icône ✕ @ 315,1013
+icône − @ 60,1006
+icône + @ 141,1006
+texte « OK » [désactivé] @ 403,1006
+texte « Partie » @ 54,1085
+icône (crayon) « Renommer » @ 114,1151
+icône (curseurs) « Ce qui joue » @ 303,1151
+icône ↑ « Monter » @ 473,1151
+icône ↓ « Descendre » @ 114,1223
+icône (deux feuilles) « Dupliquer » @ 295,1223
+icône + « Insérer après » [coupé] @ 126,1268
+icône (poubelle) « Retirer » [coupé] @ 303,1268

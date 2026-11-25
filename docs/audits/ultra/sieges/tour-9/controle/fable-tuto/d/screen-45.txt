@@ -1,0 +1,19 @@
+Écran 45 (588x1278)
+texte « Nommer la partie H » @ 203,336
+texte « Quel moment du morceau est-ce ? » @ 207,399
+bouton « Intro » @ 84,462
+bouton « Couplet » @ 206,462
+bouton « Pré-refrain » @ 360,462
+bouton « Refrain » @ 97,534
+bouton « Post-refrain » @ 254,534
+bouton « Pont » @ 398,534
+bouton « Groove » @ 97,606
+bouton « Montée » @ 231,606
+bouton « Faux drop » @ 378,606
+bouton « Break » @ 90,678
+bouton « Drop » @ 202,678
+bouton « Fin » @ 300,678
+bouton « Fill » @ 390,678
+champ « Ou un autre nom 0/20 » contenu «  » @ 294,791
+texte « Annuler » @ 372,929
+texte « Valider » @ 497,929

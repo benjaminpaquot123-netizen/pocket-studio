@@ -116,7 +116,7 @@ class ScenariosTest {
                     when (tab) {
                         "Mix" -> {
                             add("mixer")
-                            repeat(4) { add("strip_more_$it") }
+                            muets.indices.forEach { add("strip_more_$it") }
                             if (sheet.startsWith("strip")) {
                                 val ch = sheet.removePrefix("strip").toInt()
                                 addAll(listOf("strip_sheet", "strip_sheet_close", "fx_add_$ch", "sheet_mute_$ch", "sheet_solo_$ch", "sheet_volume_$ch", "sheet_pan_$ch"))
@@ -618,7 +618,7 @@ class ScenariosTest {
         assertTrue(Scenarios.LISTE.map { it.id }.containsAll(ids))
         assertEquals(Scenarios.LISTE.size, Scenarios.LISTE.map { it.id }.toSet().size)
         val s = Studio().apply {
-            muets = List(8) { false }; solos = List(8) { false }; volumes = List(8) { 0.8f }; pans = List(8) { 0f }
+            effets = effets + List(4) { emptyList() }; muets = List(8) { false }; solos = List(8) { false }; volumes = List(8) { 0.8f }; pans = List(8) { 0f }
         }
         val r = played(s, *ids.toTypedArray())
         assertEquals(40, r.size)

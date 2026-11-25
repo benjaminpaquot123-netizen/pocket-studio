@@ -136,9 +136,12 @@ class ScenariosLimitesVraisEcransTest {
                 if (texte in RENOMMER) {
                     // The touch opens the window: no wait for rest after it.
                     compose.runWithoutImplicitWait {
-                        val n = compose.onAllNodesWithText(texte, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false).first()
+                        // The item's own node (merged), the one that holds the touch, not its inner text.
+                        var n: SemanticsNode? = compose.onAllNodesWithText(texte).fetchSemanticsNodes(atLeastOneRootRequired = false).first()
+                        while (n != null && SemanticsActions.OnClick !in n.config) n = n.parent
+                        val item = n!!
                         fenetre = true
-                        compose.runOnUiThread { n.config[SemanticsActions.OnClick].action!!() }
+                        compose.runOnUiThread { item.config[SemanticsActions.OnClick].action!!() }
                         frames()
                     }
                     return

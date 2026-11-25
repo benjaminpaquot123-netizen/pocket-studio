@@ -1595,3 +1595,4 @@
 - 2026-11-25 · Avant-après audio : un fichier par style ; gr-styles republié en gr-styles2 ; lots recalés au pré-vol remis à niveau par deux discussions. Retour : rouvrir l'ancienne branche.
 - 2026-11-25 · lot « robot-a3 » (tour-9) : 1 décision(s) dans `docs/decisions/tour-9-robot-a3.md`
 - 2026-11-25 · lot « gr-styles2 » (tour-9) : 3 décision(s) dans `docs/decisions/tour-9-gr-styles2.md`
+- 2026-11-25 : catalogue BenStudio Test vers ~400 scénarios, en 3 lots parallèles (cat-ecrans, cat-effets, cat-limites), chacun dans son propre fichier ScenariosX.kt branché par une ligne sur LISTE ; raison : Benjamin veut « 3 discussions en plus pour accélérer » ; conflit d'une ligne dans Scenarios.kt réglé à la fusion. Retour : un seul lot catalogue.

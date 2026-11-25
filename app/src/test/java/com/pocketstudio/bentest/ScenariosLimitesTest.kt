@@ -58,7 +58,8 @@ class ScenariosLimitesTest {
     fun eachStructureGestureIsUndoneAndRedoneAndTheLimitsAreAllThere() {
         for ((tag) in ScenariosLimites.GESTES) {
             val court = tag.removePrefix("part_").substringBefore('_')
-            assertTrue(tag, liste.any { it.id == "lim_refaire_$court" })
+            // The break alone is the base catalogue's « annuler_retablir »: here only while playing.
+            assertTrue(tag, liste.any { it.id == "lim_refaire_$court" || (court == "break" && it.id == "lim_refaire_lecture_$court") })
         }
         val ids = liste.map { it.id }
         assertTrue(ids.containsAll(listOf(

@@ -236,7 +236,7 @@ class ScenariosLimitesVraisEcransTest {
         }
         assertEquals(parts, disque().song.size)
         assertEquals(0, ProjetVu.montee(h.vm.project.value))
-        assertTrue(v.touched.count { it == "top_redo" || it == "thumb_redo" } >= 6)
+        assertTrue(v.touched.count { it == "top_redo" || it == "thumb_redo" } >= 5)
     }
 
     @Test

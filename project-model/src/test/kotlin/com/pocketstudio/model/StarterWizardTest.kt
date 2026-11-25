@@ -509,9 +509,10 @@ class StarterWizardTest {
                 val spec = plan.variants[i - plan.count]
                 assertEquals("${style.name} $mood ${sc.label}", sc.label, spec.label)
                 val roles = sc.drums.lanes.indices.filter { sc.drums.lanes[it].hits.isNotEmpty() }.mapNotNull { lane -> R.entries.firstOrNull { it.lane == lane } }
-                // G0: the last Drop's scene adds a layer of its own (an open hat, a percussion, claps).
+                // G0: the last Drop's scene adds a layer of its own (an open hat, a percussion, claps). Pad 9
+                // (the snap's since format v2) is also the toms fill's high tom when the style has no snap (DrumHumanizer).
                 val layer = if (spec.extra) setOf(R.OpenHat, R.Perc2, R.Hat, R.Clap) else emptySet()
-                assertTrue("${style.name} $mood ${sc.label} $roles", roles.all { it in lines.keys || it == R.Ride || it in layer || (on808 && it == R.Bass808) })
+                assertTrue("${style.name} $mood ${sc.label} $roles", roles.all { it in lines.keys || it == R.Ride || it in layer || (on808 && it == R.Bass808) || (it == R.Snap && R.Snap !in lines.keys) })
             }
             // Cumulative over the first three (a line in a section is in every section after it); with a
             // Montée, what the Intro and the Montée play is in the Drop, and the Montée has no kick; a rap

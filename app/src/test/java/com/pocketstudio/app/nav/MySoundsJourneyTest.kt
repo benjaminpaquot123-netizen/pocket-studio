@@ -95,6 +95,8 @@ class MySoundsJourneyTest {
     @Test
     fun keepRenameFindOnAPadAndOnTheKeysThenDelete() {
         libraryDir.deleteRecursively()
+        kotlinx.coroutines.runBlocking { MySoundLibrary.refresh(h.app) }
+        assertEquals("another test left its sounds in the library", emptyList<Any>(), MySoundLibrary.sounds.value)
         h.appViewModelsOfThisTest()
         h.start(simple = true)
         h.vm.selectPad(1)

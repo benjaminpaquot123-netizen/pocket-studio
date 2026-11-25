@@ -87,6 +87,15 @@ DROP_OVER_MONTEE_PHONE_MIN = 1.5
 DROP_PHONE_STYLES = {"dnb", "liquid_dnb", "neurofunk", "jungle", "jump_up", "dubstep", "riddim"}
 # S5b: an Intro may be sparse, not far under the Drop (or the Refrain): listed, not blocking.
 INTRO_UNDER_MAIN_MAX = 8.0
+# L4 (the song's « body », listed, not blocking): calibrated 2026-11-24 on the four songs of tour 9
+# (eq/gr-l1) and two free reference songs kept out of git (a public-domain tech house mix, a CC0
+# hip-hop instrumental). Tracks heard together at the Drop: 4 in every current song (a stem count
+# needs the tracks, so no reference reads it); 5 is the target. Floor between the hits: boom bap
+# -9.7 and house -10.1 dB against -7.5 for the hip-hop reference (the tech house mix reads -10 to
+# -21: a dry, pumping club mix), so -8.5 is a song-style target only. The treble's busy share does
+# not separate them (current 0.39 to 0.77, references 0.11 to 0.49): shown, no target.
+DROP_TRACKS_MIN = 5
+FLOOR_BETWEEN_HITS_MIN = -8.5
 # S5b: a Montée rises at least this much over its last 4 bars (+3 in S2/S5): listed, not blocking (the
 # measure needs 4 bars longer than its two 3 s windows: none at 170 BPM and more, and a Montée's rise
 # swings 2 to 3 LU between styles of one family).
@@ -155,6 +164,11 @@ METRICS = [
     ("drop_minus_montee_end_phone", "Drop − fin de Montée au téléphone (passe-haut 300 Hz, pondéré K ; dB, le plus petit)", lambda m: lowest(m.get("drop_minus_montee_end_phone")), "≥ +1,5 (bloquant en bass music)", 1),
     ("pre_drop_minus_montee_end", "Drop − fin de Montée avant master (LU)", lambda m: lowest(m.get("pre_drop_minus_montee_end")), "–", 1),
     ("intro_minus_main", "Intro − Drop / Refrain (LU)", lambda m: m.get("intro_minus_main"), "≥ −8", 1),
+    # L4: the « body » of the Drop / Refrain, and how brutal its changes of section are.
+    ("drop_tracks", "Pistes qui sonnent ensemble au Drop / Refrain (médiane des mesures)", lambda m: m.get("drop_tracks"), "≥ 5", 0),
+    ("hf_occupancy", "Part du temps où l'aigu (> 6 kHz) est occupé au Drop", lambda m: m.get("hf_occupancy"), "– (indicatif)", 2),
+    ("floor_between_hits", "Fond entre deux coups (dB sous la moyenne du temps)", lambda m: m.get("floor_between_hits"), "≥ −8,5 (chanson)", 1),
+    ("brutal_transitions", "Changements de section brutaux", lambda m: m.get("brutal_transitions"), "0", 0),
     # G0: how much the Drops (Refrains) differ, read from the model (META drop_variation of the .pscmd).
     ("drop_variation", "Variation entre Drops (part des mesures qui diffèrent, paire la plus proche)", lambda m: m.get("drop_variation"), "≥ 0,25", 2),
     ("dc", "Continu (moyenne absolue)", lambda m: m["dc"], "≤ 0,001", 4),
@@ -286,6 +300,16 @@ def criteria(styles):
         lambda s, m: all(d >= DROP_OVER_MONTEE_PHONE_MIN for d in (m.get("drop_minus_montee_end_phone") or [])))
     add(f"Intro à moins de {fr(INTRO_UNDER_MAIN_MAX, 0)} LU sous le Drop ou le Refrain (exporté)",
         lambda s, m: m.get("intro_minus_main") is None or m["intro_minus_main"] >= -INTRO_UNDER_MAIN_MAX)
+    # L4: the « body » (listed, not blocking; a style the bench did not measure: –).
+    if any(m.get("drop_tracks") is not None for m in styles.values()):
+        add(f"Au moins {DROP_TRACKS_MIN} pistes sonnent ensemble au Drop / Refrain",
+            lambda s, m: m.get("drop_tracks") is None or m["drop_tracks"] >= DROP_TRACKS_MIN)
+    if any(m.get("floor_between_hits") is not None for m in styles.values()):
+        add(f"Fond entre deux coups ≥ {fr(FLOOR_BETWEEN_HITS_MIN, 1, True)} dB (styles chanson, au Refrain)",
+            lambda s, m: m.get("main") != "Refrain" or m.get("floor_between_hits") is None or m["floor_between_hits"] >= FLOOR_BETWEEN_HITS_MIN)
+    if any(m.get("transitions") is not None for m in styles.values()):
+        add("Aucun changement de section brutal (chute > 8 LU, ou > 8 dB au téléphone, montée > 6 LU hors Drop)",
+            lambda s, m: not m.get("brutal_transitions"))
     # G0: no two Drops alike (listed, not blocking; measured on the song's model, not on its sound).
     if any(m.get("drop_variation") is not None for m in styles.values()):
         add(f"Variation entre Drops ≥ {fr(DROP_VARIATION_MIN, 2)} (modèle : aucune paire de Drops identique)",
@@ -460,6 +484,12 @@ def main():
                 detail = ", ".join(f"{s} ({' / '.join(fr(r, 1, True) for r in styles[s].get('drop_minus_montee_end_phone') or [])})" for s in failed)
             elif label.startswith("Variation entre Drops"):
                 detail = ", ".join(f"{s} ({fr(styles[s].get('drop_variation'), 2)})" for s in failed)
+            elif label.startswith("Au moins") and "pistes" in label:
+                detail = ", ".join(f"{s} ({styles[s].get('drop_tracks')})" for s in failed)
+            elif label.startswith("Fond entre"):
+                detail = ", ".join(f"{s} ({fr(styles[s].get('floor_between_hits'), 1, True)})" for s in failed)
+            elif label.startswith("Aucun changement"):
+                detail = ", ".join(f"{s} ({', '.join(t['from'] + ' → ' + t['to'] + ' ' + fr(t.get('phone_db'), 1, True) + ' dB tél.' for t in styles[s].get('transitions') or [] if t.get('brutal'))})" for s in failed)
             elif label.startswith("Intro"):
                 detail = ", ".join(f"{s} ({fr(styles[s].get('intro_minus_main'), 1, True)})" for s in failed)
             elif label.startswith("True peak du M4A"):
@@ -527,6 +557,18 @@ def main():
             delta = intro - before[s]["intro_minus_main"]
             was = f" ({fr(delta, 1, True)})" if abs(delta) >= 0.05 else ""
         lines.append(f"| {s} | {seq('montee_end_lufs')} | {seq('drop_start_lufs')} | {landing} | {seq('drop_minus_montee_end_phone', 1, True)} | {fr(intro, 1, True)}{was} |")
+
+    # L4: each change of section, the bar after against the bar before.
+    if any(m.get("transitions") for m in styles.values()):
+        lines += ["", "## Changements de section (L4)", "",
+                  "Une mesure après contre une mesure avant (un fill ou un crash compte avec la section d'avant) : sonie (LU), "
+                  "la même au téléphone (passe-haut 300 Hz, dB) et la bande qui bouge le plus. Brutal : une chute de plus de 8 LU "
+                  "ou de plus de 8 dB au téléphone, ou une montée de plus de 6 LU vers autre chose qu'un Drop, un Refrain ou un faux drop.", "",
+                  "| Style | Temps (s) | Changement | Sonie (LU) | Téléphone (dB) | Bande qui bouge | Brutal |", "|---|---|---|---|---|---|---|"]
+        for s, m in sorted(styles.items()):
+            for t in m.get("transitions") or []:
+                lines.append(f"| {s} | {fr(t.get('at'), 1)} | {t['from']} → {t['to']} | {fr(t.get('jump_lu'), 1, True)} | "
+                             f"{fr(t.get('phone_db'), 1, True)} | {t.get('band')} ({fr(t.get('band_db'), 1, True)}) | {'oui' if t.get('brutal') else ''} |")
 
     lines += ["", "## Bandes du Drop (dB relatifs à l'énergie totale)", "",
               "| Style | " + " | ".join(label for _, label in BANDS) + " |", "|---|" + "---|" * len(BANDS)]

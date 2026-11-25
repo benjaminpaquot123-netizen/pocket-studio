@@ -1,0 +1,10 @@
+lang=fr
+device=phone360
+font=100
+mode=simple
+amenee=tuto:techno:1
+gestes.max=200
+mission=tuto-facile
+profil=débutant
+niveau=1
+timeout.minutes=40

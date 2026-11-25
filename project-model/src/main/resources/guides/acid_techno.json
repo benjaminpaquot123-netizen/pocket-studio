@@ -305,6 +305,67 @@
    "lexicon": "hat"
   },
   {
+   "id": "sound.rumble",
+   "stage": 1,
+   "target": "rumble",
+   "kind": "decide",
+   "title": "Le grondement sous le kick",
+   "why": "Un grondement grave rejoué derrière chaque kick : il donne le poids des clubs d'aujourd'hui sous la ligne acide.",
+   "simpleTitle": "Le grondement",
+   "simpleWhy": "Un grave qui roule entre les kicks : la techno qui gronde.",
+   "when": "Au début, piste par piste : le kick d'abord.",
+   "applicable": [
+    "has:rumble"
+   ],
+   "done": [
+    "has:rumble",
+    "by_hand|changed:rumble"
+   ],
+   "proposals": [
+    {
+     "id": "keep",
+     "label": "Garder ce son",
+     "why": "Il tient son rôle : on passe au suivant.",
+     "action": {
+      "type": "keep"
+     }
+    },
+    {
+     "id": "other",
+     "label": "Autre idée de son",
+     "why": "Un autre son du même rôle, écouté avec le reste.",
+     "action": {
+      "type": "open",
+      "spot": "rhythm.kit",
+      "target": "rumble"
+     }
+    },
+    {
+     "id": "where",
+     "label": "Où il joue",
+     "why": "Les parties où la piste joue : une case par partie.",
+     "action": {
+      "type": "open",
+      "spot": "song.parts",
+      "target": "rumble"
+     }
+    }
+   ],
+   "elsewhere": [
+    {
+     "id": "favorite",
+     "label": "Garder ce son dans mes favoris",
+     "why": "Pour le retrouver dans un autre morceau.",
+     "action": {
+      "type": "open",
+      "spot": "sounds.favorite",
+      "target": "rumble"
+     }
+    }
+   ],
+   "lexicon": "kick"
+  },
+  {
    "id": "sound.bass",
    "stage": 1,
    "target": "bass",

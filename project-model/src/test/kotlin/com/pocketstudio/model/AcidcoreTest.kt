@@ -188,12 +188,14 @@ class AcidcoreTest {
         }))
         fun satOf(p: Project) = p.mixer.channels[AutoTarget.ACID_CHANNEL].inserts.single { it.effect == EffectType.SATURATION }.params
         val off: (List<Float>) -> List<Float> = { it.toMutableList().also { v -> v[EffectType.SAT_COMPENSATION] = 0f } }
+        // The 303's saturation as APK 233 gave it (drive 0.45, tone 0.75; the tone is 0.45 since gr-techno, tour 9).
+        val old: (List<Float>) -> List<Float> = { it.toMutableList().also { v -> v[0] = 0.45f; v[1] = 0.75f; v[2] = 1f; v[3] = 0.7f } }
         // As APK 233 saved it (Benjamin's song): read back at a constant level, MIX_V5, nothing else changed.
-        val saved = withSat(fresh, off).copy(mixVersion = Project.MIX_V4)
+        val saved = withSat(withSat(fresh, old), off).copy(mixVersion = Project.MIX_V4)
         val back = ProjectJson.decode(ProjectJson.encode(saved))
         assertEquals(1f, satOf(back)[EffectType.SAT_COMPENSATION])
         assertEquals(Project.MIX_V5, back.mixVersion)
-        assertEquals(ProjectJson.decode(ProjectJson.encode(fresh)), back)
+        assertEquals(ProjectJson.decode(ProjectJson.encode(withSat(withSat(fresh, old)) { it.toMutableList().also { v -> v[EffectType.SAT_COMPENSATION] = 1f } })), back)
         // Once: set back by hand since, it stays so.
         val byHand = withSat(back, off)
         assertEquals(0f, satOf(ProjectJson.decode(ProjectJson.encode(byHand)))[EffectType.SAT_COMPENSATION])
@@ -216,16 +218,16 @@ class AcidcoreTest {
         // Intro (32 bars): closed, opening.
         val intro = sections.first()
         assertEquals(0.08f, curve[0], 1e-4f)
-        assertEquals(0.45f, curve[intro.bars - 1], 1e-4f)
+        assertEquals(0.42f, curve[intro.bars - 1], 1e-4f)
         assertTrue((1 until intro.bars).all { curve[it] > curve[it - 1] })
         // First Break: from dark to wide open.
         val brk = sections.first { it.scene == 3 }
         assertEquals(0.2f, curve[brk.start], 1e-4f)
-        assertEquals(0.85f, curve[brk.start + brk.bars - 1], 1e-4f)
+        assertEquals(0.6f, curve[brk.start + brk.bars - 1], 1e-4f)
         // The outro closes it again, the last bar the darkest of the song's end.
         val outro = sections.last()
         assertEquals(0.08f, curve.last(), 1e-4f)
-        assertEquals(0.45f, curve[outro.start], 1e-4f)
+        assertEquals(0.42f, curve[outro.start], 1e-4f)
         // Played alone, a scene holds the curve where it first plays in the song.
         assertEquals(0.2f, p.songCurvesAt(3)[p.automation.indexOf(cutoff)]!!, 1e-4f)
     }

@@ -1,0 +1,63 @@
+Écran 178 (540x1170)
+bouton (dossier ouvert) ✓ « Mon projet 1 » @ 103,42
+bouton « Simple » @ 248,42
+bouton ● @ 336,42
+bouton ▶ « cette partie » @ 415,42
+icône ⋮ @ 495,42
+bouton « 132  Tempo » @ 83,114
+icône « Intro mesure 1/128 » ▾ @ 262,114
+bouton « ? » @ 495,114
+icône « Partie : F · Montée » ▾ @ 129,180
+texte « Mesure » [coupé] @ 79,226
+bouton « ? » [coupé] @ 137,229
+texte « ◀ » [coupé] @ 204,233
+bouton « 1 » [coupé] @ 285,230
+bouton « 2 » [coupé] @ 366,230
+bouton « 3 » [coupé] @ 447,230
+bouton « 4 » [sélectionné] @ 78,302
+texte « ▶ » [désactivé] @ 159,302
+bouton « Suivre » @ 261,302
+texte « Mesure 4/4 » @ 113,369
+texte « Claquement de mains · 4 coups en trop ici (barrés) » @ 274,413
+bouton « 1 » [état « coup, force 90 % »] @ 67,493
+bouton [état « coup, force 91 % »] @ 124,493
+bouton [état « coup, force 92 % »] @ 182,493
+bouton [état « coup, force 93 % »] @ 240,493
+bouton « 2 » [état « coup, force 93 % »] @ 298,493
+bouton [état « coup, force 94 % »] @ 356,493
+bouton [état « coup, force 95 % »] @ 414,493
+bouton [état « coup, force 96 % »] @ 472,493
+bouton « 3 » [état « coup, force 97 % »] @ 67,564
+bouton [état « coup, force 98 % »] @ 124,564
+bouton [état « coup, force 98 % »] @ 182,564
+bouton [état « coup, force 99 % »] @ 240,564
+bouton « 4 » [état « coup, force 87 %, barré : à enlever »] @ 298,564
+bouton [état « coup, force 88 %, barré : à enlever »] @ 356,564
+bouton [état « coup, force 88 %, barré : à enlever »] @ 414,564
+bouton [état « coup, force 89 %, barré : à enlever »] @ 472,564
+texte « tout » @ 152,645
+texte « 1/2 » @ 227,645
+texte « 1/4 » @ 302,645
+texte « Remplir » @ 77,645
+texte « ⇠ » [coupé] @ 179,697
+texte « ⇢ » [coupé] @ 254,697
+texte « Effacer » [coupé] @ 342,697
+texte « Décalage » [coupé] @ 95,706
+texte « Les transitions : les passages entre les parties Chapitre 12/15 · Étape 1/2 · Facile » @ 183,763
+icône (liste) « Chapitres » @ 396,764
+icône ⌃ @ 483,764
+icône « À toi : à la fin de la Montée, efface les 4 coups du pad « Claquement de mains » du dernier temps. Lire » ⌃ @ 270,870
+icône ↶ « Annuler » @ 61,954
+image ↷ @ 159,944
+bouton ▶ « le morceau » @ 264,954
+texte « 132 Tempo » @ 375,954
+icône ⋮ « Plus » @ 479,954
+onglet (lignes et note) « Mon morceau » @ 49,1050
+onglet (quatre carrés) « Rythme » [sélectionné] @ 160,1050
+onglet (touches de piano) « Clavier » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Partager » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noter » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Mode retours » @ 138,1140

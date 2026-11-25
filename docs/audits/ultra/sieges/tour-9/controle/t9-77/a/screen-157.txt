@@ -1,0 +1,43 @@
+Écran 157 (540x1170)
+bouton (dossier ouvert) ✓ « Mon projet 1 » @ 103,42
+bouton « Simple » @ 248,42
+bouton ● @ 336,42
+bouton ▶ « cette partie » @ 415,42
+icône ⋮ @ 495,42
+bouton « 132  Tempo » @ 83,114
+icône « Intro mesure 1/40 » ▾ @ 255,114
+bouton « ? » @ 495,114
+icône ▶ @ 78,186
+texte « D · Drop × 1  ·  8 mes. » @ 198,186
+icône − [désactivé] @ 318,186
+icône + @ 390,186
+icône ⋮ @ 462,186
+texte « − / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois. » @ 270,267
+texte « Ajouter : » @ 83,321
+bouton « + A · Groove » @ 141,384
+bouton « + B · Intro » @ 336,384
+bouton « + C · Intro 2 » @ 137,465
+bouton « + D · Drop » @ 329,465
+bouton « + E · Break » @ 133,546
+bouton « + F · Montée » @ 332,546
+bouton « + G · Drop 2 » @ 139,627
+bouton « + H · Fin » @ 324,627
+bouton « + Nouvelle partie (copie de H · Fin) » [coupé] @ 255,697
+icône (liste) « Chapitres » @ 396,771
+texte « Range tes parties Chapitre 11/15 · Étape 1/2 · Facile » @ 183,771
+icône ⌃ @ 483,771
+icône « À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin. Lire » ⌃ @ 270,870
+icône ↶ « Annuler » @ 61,954
+image ↷ @ 159,944
+bouton ▶ « le morceau » @ 264,954
+texte « 132 Tempo » @ 375,954
+icône ⋮ « Plus » @ 479,954
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 49,1050
+onglet (quatre carrés) « Rythme » @ 160,1050
+onglet (touches de piano) « Clavier » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Partager » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noter » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Mode retours » @ 138,1140

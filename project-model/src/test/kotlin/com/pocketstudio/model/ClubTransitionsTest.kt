@@ -123,10 +123,11 @@ class ClubTransitionsTest {
             val kickIn = scenes.mapIndexed { i, sc -> sc.drums.lanes[StarterWizard.Role.Kick.lane].hits.isNotEmpty() || (id == "industrial_techno" && i == 3) }
             assertEquals(id, kickIn, scenes.map { it.drums.lanes[StarterWizard.Role.Rumble.lane].hits.isNotEmpty() })
         }
-        // Hard and industrial techno: the rumble is their low end, the bass waits to be ticked; techno keeps its
-        // rolling bass with the rumble under it (docs/hits/techno.md: « rumble coché par défaut en plus de la basse »).
-        for (id in listOf("industrial_techno", "hard_techno")) assertFalse(id, StarterWizard.Part.Bass in StarterWizard.defaultParts(style(id)))
-        assertTrue(StarterWizard.Part.Bass in StarterWizard.defaultParts(style("techno")))
+        // Industrial techno: the rumble is its low end, the bass waits to be ticked; techno and hard techno keep their
+        // rolling bass with the rumble under it (docs/hits/techno.md: « rumble coché par défaut en plus de la basse »;
+        // tour 9 gr-techno: hard techno's rolling bass is its signature low end, on by default).
+        assertFalse(StarterWizard.Part.Bass in StarterWizard.defaultParts(style("industrial_techno")))
+        for (id in listOf("techno", "hard_techno")) assertTrue(id, StarterWizard.Part.Bass in StarterWizard.defaultParts(style(id)))
         assertFalse(style("techno").lines.single { it.role == StarterWizard.Role.Rumble }.off)
         assertTrue(style("hard_techno").lines.none { it.off })
     }
@@ -163,17 +164,18 @@ class ClubTransitionsTest {
         val inserts = techno.mixer.channels[ch].inserts
         val slot = inserts.indexOfLast { it.effect == EffectType.FILTER }
         val filter = inserts[slot]
+        // Tour 9 (gr-techno): a little darker all along, the stab stays under the kick and the rumble.
         // Heard as in the Drop when a section plays in a loop.
-        assertEquals(0.55f, filter.params[0], 1e-6f)
+        assertEquals(0.5f, filter.params[0], 1e-6f)
         val lane = techno.automation.single { it.target == AutoTarget(AutoTarget.INSERT_PARAM, ch, slot, 0) }
         val curve = lane.songCurve(techno.songBars)
         val sections = techno.sections()
         val drop = sections.first { it.first == 2 }
-        assertEquals(0.55f, curve[drop.second], 1e-6f)
-        assertEquals(0.9f, curve[drop.second + drop.third - 1], 1e-6f)
+        assertEquals(0.5f, curve[drop.second], 1e-6f)
+        assertEquals(0.85f, curve[drop.second + drop.third - 1], 1e-6f)
         val brk = sections.first { it.first == 3 }
-        assertEquals(0.3f, curve[brk.second], 1e-6f)
-        assertEquals(0.75f, curve[brk.second + brk.third - 1], 1e-6f)
+        assertEquals(0.25f, curve[brk.second], 1e-6f)
+        assertEquals(0.7f, curve[brk.second + brk.third - 1], 1e-6f)
         assertTrue(StarterWizard.hasSweeps(techno))
         // Bass music: the pad opens all along the Montée (it is shut at its start, open at the Drop).
         val dnb = full(style("dnb"))

@@ -1,0 +1,39 @@
+Écran 144 (540x1170)
+bouton (dossier ouvert) ✓ « Mon projet 1 » @ 103,42
+bouton « Simple » @ 248,42
+bouton ● @ 336,42
+bouton ▶ « cette partie » @ 415,42
+icône ⋮ @ 495,42
+bouton « 132  Tempo » @ 83,114
+bouton « ? » @ 495,114
+texte « Ajouter : » @ 83,165
+bouton « + A · Groove » @ 141,228
+bouton « + B · Intro » @ 336,228
+bouton « + C · Intro 2 » @ 137,309
+bouton « + D · Drop » @ 329,309
+bouton « + E · Break » [coupé] @ 133,366
+bouton « + F · Montée » [coupé] @ 332,366
+texte « Construis tes parties Chapitre 10/15 · Fait · Facile » @ 183,420
+icône (liste) « Chapitres » @ 396,420
+icône ⌄ @ 483,420
+image (coupe) @ 57,551
+texte « Bravo, chapitre fini ! » @ 194,510
+texte « Partie « Fin » créée (copie du Groove) : sans Grondement grave, Claquement de mains, Basse, Accords, Mélodie. » @ 295,565
+bouton ▶ «  Écouter mon morceau » @ 142,786
+bouton ▶ «  Écouter l'exemple » @ 397,786
+icône ← «  Précédent » @ 107,870
+bouton « Chapitre suivant  » → @ 400,870
+icône ↶ « Annuler » @ 61,954
+image ↷ @ 159,944
+bouton ▶ « le morceau » @ 264,954
+texte « 132 Tempo » @ 375,954
+icône ⋮ « Plus » @ 479,954
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 49,1050
+onglet (quatre carrés) « Rythme » @ 160,1050
+onglet (touches de piano) « Clavier » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Partager » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noter » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Mode retours » @ 138,1140

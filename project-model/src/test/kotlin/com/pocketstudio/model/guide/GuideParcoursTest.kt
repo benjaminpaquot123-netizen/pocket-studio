@@ -29,8 +29,10 @@ class GuideParcoursTest {
             assertEquals(p.style, p.cards.map { it.stage }.sorted(), p.cards.map { it.stage })
             assertEquals(p.style, p.cards.size, p.cards.map { it.id }.toSet().size)
             assertTrue(p.style, (0 until GuideStages.COUNT).all { st -> p.cards.any { it.stage == st } || st == 2 })
-            // The Mode simple: stages 1, 4, 6 and 7, and those only.
-            assertEquals(p.style, p.cards.filter { it.stage in GuideStages.SIMPLE }.map { it.id }, p.cards.filter { it.simple }.map { it.id })
+            // The Mode simple: stages 1, 4, 6 and 7, and those only; an acid style's rumble stays out of it (its 303
+            // line is the star, and the Mode simple keeps its 22 cards; tour 9 gr-techno).
+            val acidRumble = { c: GuideCard -> c.id == "sound.rumble" && p.cards.any { it.id == "sound.acid" } }
+            assertEquals(p.style, p.cards.filter { it.stage in GuideStages.SIMPLE && !acidRumble(it) }.map { it.id }, p.cards.filter { it.simple }.map { it.id })
             assertTrue(p.style, p.cardsFor(true).size in 10..22)
             // The first card of stage 3 is « voilà ce que j'ai mis ».
             assertEquals("fx.review", p.cards.first { it.stage == 3 }.id)

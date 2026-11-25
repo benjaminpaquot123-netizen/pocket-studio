@@ -1,0 +1,50 @@
+Écran 195 (540x1170)
+bouton (dossier ouvert) ✓ « Mon projet 1 » @ 103,42
+bouton « Simple » @ 248,42
+bouton ● @ 336,42
+bouton ▶ « cette partie » @ 415,42
+icône ⋮ @ 495,42
+bouton « 132  Tempo » @ 83,114
+icône « Intro mesure 1/128 » ▾ @ 262,114
+bouton « ? » @ 495,114
+texte « À toi : monte ce qui doit s'entendre, baisse ce qui gêne. Touche ▶ pour écouter une piste seule. » [coupé] @ 273,151
+bouton « Batterie ▸ » [état « fermé »] @ 75,222
+curseur [état « Normal », à 80 %, poignée @ 84,316] @ 84,399
+texte « Normal » @ 84,556
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 55,616
+bouton ▶ @ 109,606
+texte « Basse » @ 216,222
+curseur [état « Normal », à 80 %, poignée @ 216,316] @ 216,399
+texte « Normal » @ 216,556
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 190,616
+bouton ▶ @ 241,606
+texte « Accords » @ 339,222
+curseur [état « Normal », à 80 %, poignée @ 339,316] @ 339,399
+texte « Normal » @ 339,556
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 313,616
+bouton ▶ @ 364,606
+texte « Mélodie » [coupé] @ 449,222
+curseur [coupé, état « Normal », à 80 %, poignée @ 444,316] @ 444,399
+texte « Normal » [coupé] @ 452,556
+bouton (haut-parleur et ondes) [allumé, état « activé »] @ 436,616
+bouton ▶ [coupé] @ 469,606
+bouton › @ 498,425
+texte « ⚠️ « Bord de caisse » couvre les autres. » @ 232,709
+icône (liste) « Chapitres » @ 396,771
+texte « Le mix : les volumes Chapitre 14/15 · Étape 1/1 · Facile » @ 183,771
+icône ⌃ @ 483,771
+icône « À toi : dans l'onglet « Mix », baisse un peu les curseurs des pistes « Accords » et « Mélodie ». Lire » ⌃ @ 270,870
+icône ↶ « Annuler » @ 61,954
+image ↷ @ 159,944
+bouton ▶ « le morceau » @ 264,954
+texte « 132 Tempo » @ 375,954
+icône ⋮ « Plus » @ 479,954
+onglet (lignes et note) « Mon morceau » @ 49,1050
+onglet (quatre carrés) « Rythme » @ 160,1050
+onglet (touches de piano) « Clavier » @ 271,1050
+onglet (curseurs) « Mix » [sélectionné] @ 381,1050
+onglet (trois points reliés) « Partager » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noter » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Mode retours » @ 138,1140

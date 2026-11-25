@@ -78,7 +78,6 @@
   "Colle la batterie : un seul instrument plutôt que des coups séparés.": "ドラムをまとめる：バラバラのヒットではなく1つの楽器に。",
   "Comme sur une seule enceinte : tout doit rester là.": "スピーカー1台で聞くように：全部がそこに残っていないとダメ。",
   "Compare avec Adam Port & Stryv feat. Malachiii – Move (2024), ou un autre morceau du style, au même volume : plus fort paraît toujours mieux, alors on égalise d'abord.": "Adam Port & Stryv feat. Malachiii – Move (2024)（または同じスタイルのほかの曲）と同じ音量で比べよう。大きいほうが良く聞こえてしまうので、まず音量をそろえます。",
-  "Compare avec Amelie Lens – Hypnotized (2019), ou un autre morceau du style, au même volume : plus fort paraît toujours mieux, alors on égalise d'abord.": "Amelie Lens – Hypnotized (2019)（または同じスタイルのほかの曲）と同じ音量で比べよう。大きいほうが良く聞こえてしまうので、まず音量をそろえます。",
   "Compare avec Bad Bunny – Tití Me Preguntó (2022), ou un autre morceau du style, au même volume : plus fort paraît toujours mieux, alors on égalise d'abord.": "Bad Bunny – Tití Me Preguntó (2022)（または同じスタイルのほかの曲）と同じ音量で比べよう。大きいほうが良く聞こえてしまうので、まず音量をそろえます。",
   "Compare avec Ben Böhmer – Beyond Beliefs (2019), ou un autre morceau du style, au même volume : plus fort paraît toujours mieux, alors on égalise d'abord.": "Ben Böhmer – Beyond Beliefs (2019)（または同じスタイルのほかの曲）と同じ音量で比べよう。大きいほうが良く聞こえてしまうので、まず音量をそろえます。",
   "Compare avec Central Cee – Doja (2022), ou un autre morceau du style, au même volume : plus fort paraît toujours mieux, alors on égalise d'abord.": "Central Cee – Doja (2022)（または同じスタイルのほかの曲）と同じ音量で比べよう。大きいほうが良く聞こえてしまうので、まず音量をそろえます。",
@@ -667,5 +666,6 @@
   "−14 LUFS": "−14 LUFS",
   "−14 LUFS : là où les plateformes ramènent tout.": "−14 LUFS：配信サービスがそろえる音量。",
   "−8 LUFS": "−8 LUFS",
-  "−8 LUFS : fort, pour les grosses enceintes.": "−8 LUFS：大きく、大型スピーカー向け。"
+  "−8 LUFS : fort, pour les grosses enceintes.": "−8 LUFS：大きく、大型スピーカー向け。",
+  "Compare avec Charlotte de Witte – Doppler (2021), ou un autre morceau du style, au même volume : plus fort paraît toujours mieux, alors on égalise d'abord.": "Charlotte de Witte – Doppler (2021)（または同じスタイルのほかの曲）と同じ音量で比べよう。大きいほうが良く聞こえてしまうので、まず音量をそろえます。"
 }

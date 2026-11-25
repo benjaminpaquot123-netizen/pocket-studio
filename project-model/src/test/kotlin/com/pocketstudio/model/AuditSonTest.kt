@@ -105,13 +105,13 @@ class AuditSonTest {
         val chords = InstrumentTrack.mixerChannel(techno.instrumentTracks.first { it.name == StarterWizard.trackName(Part.Pad, StarterWizard.soundsFor(Part.Pad, style("techno")).first(), style("techno")) }.id)
         assertTrue((RoleMix.lowCutHz(techno.mixer.channels[chords]) ?: 0f) >= 240f)
         val hard = style("hard_techno")
-        // Its Hoover and its Supersaw dip 3 dB around 300 Hz.
+        // Its Hoover dips 3 dB around 300 Hz; the Supersaw lead is off by default since tour 9 (the kick and the rumble lead).
         val p = song("hard_techno")
-        for (part in listOf(Part.Pad, Part.Lead)) {
-            val name = StarterWizard.trackName(part, StarterWizard.soundsFor(part, hard).first(), hard)
-            val ch = InstrumentTrack.mixerChannel(p.instrumentTracks.first { it.name == name }.id)
-            assertTrue(part.name, p.mixer.channels[ch].inserts.any { it.effect == EffectType.PARAM_EQ && it.params[1] < 0.45f && it.params[0] in 0.35f..0.45f })
-        }
+        val name = StarterWizard.trackName(Part.Pad, StarterWizard.soundsFor(Part.Pad, hard).first(), hard)
+        val ch = InstrumentTrack.mixerChannel(p.instrumentTracks.first { it.name == name }.id)
+        assertTrue(p.mixer.channels[ch].inserts.any { it.effect == EffectType.PARAM_EQ && it.params[1] < 0.45f && it.params[0] in 0.35f..0.45f })
+        val lead = StarterWizard.trackName(Part.Lead, StarterWizard.soundsFor(Part.Lead, hard).first(), hard)
+        assertTrue(p.instrumentTracks.none { it.name == lead })
     }
 
     @Test

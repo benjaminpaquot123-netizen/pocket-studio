@@ -1,0 +1,43 @@
+Écran 179 (540x1170)
+bouton (dossier ouvert) ✓ « Mon projet 1 » @ 103,42
+bouton « Simple » @ 248,42
+bouton ● @ 336,42
+bouton ▶ « cette partie » @ 415,42
+icône ⋮ @ 495,42
+bouton « 132  Tempo » @ 83,114
+icône « Intro mesure 1/128 » ▾ @ 262,114
+bouton « ? » @ 495,114
+icône « Partie : F · Montée » ▾ @ 129,180
+texte « Mesure » [coupé] @ 79,226
+bouton « ? » [coupé] @ 137,229
+texte « ◀ » [coupé] @ 204,233
+bouton « 1 » [coupé] @ 285,230
+bouton « 2 » [coupé] @ 366,230
+bouton « 3 » [coupé] @ 447,230
+bouton « 4 » [sélectionné] @ 78,302
+texte « ▶ » [désactivé] @ 159,302
+bouton « Suivre » @ 261,302
+texte « Les transitions : les passages entre les parties Chapitre 12/15 · Étape 1/2 · Facile » @ 183,400
+icône (liste) « Chapitres » @ 396,401
+icône ⌄ @ 483,401
+texte « À toi : à la fin de la Montée, efface les 4 coups du pad « Claquement de mains » du dernier temps. » @ 270,525
+texte « ▸ Pourquoi ? » @ 270,603
+bouton (doigt qui touche) «   Je le fais » @ 270,699
+bouton ▶ «  Écouter l'exemple » @ 142,786
+bouton (œil) «  Montre-moi » @ 397,786
+icône ← «  Précédent » @ 107,870
+icône « Suivant  » → @ 445,870
+icône ↶ « Annuler » @ 61,954
+image ↷ @ 159,944
+bouton ▶ « le morceau » @ 264,954
+texte « 132 Tempo » @ 375,954
+icône ⋮ « Plus » @ 479,954
+onglet (lignes et note) « Mon morceau » @ 49,1050
+onglet (quatre carrés) « Rythme » [sélectionné] @ 160,1050
+onglet (touches de piano) « Clavier » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Partager » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Noter » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Mode retours » @ 138,1140

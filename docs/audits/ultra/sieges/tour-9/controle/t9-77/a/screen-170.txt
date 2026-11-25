@@ -1,0 +1,28 @@
+Écran 170 (540x1170)
+dessin @ 270,36
+bouton ❚❚ « Break après · 4 mes. » [coupé] @ 144,84
+bouton ❚❚ « Break après · 8 mes. » [coupé] @ 396,84
+bouton (courbe qui monte) « Montée avant · 4 mes. » @ 144,154
+bouton (courbe qui monte) « Montée avant · 8 mes. » @ 396,154
+bouton (haut-parleur et ondes) « Fondu d'entrée » @ 144,253
+bouton (haut-parleur et une onde) « Fondu de sortie » @ 396,253
+bouton (drapeau) « Ajouter une fin » @ 144,352
+texte « Énergie : 3 » @ 77,424
+bouton « 1 · nappes » @ 100,490
+bouton « 2 · + basse » @ 265,490
+bouton « 3 · + batterie » [sélectionné] @ 112,571
+bouton « 4 · à fond » @ 282,571
+texte « Longueur » @ 72,637
+champ « mesures » contenu « 8 » @ 268,716
+icône ✕ @ 315,723
+icône − [désactivé] @ 60,716
+icône + @ 141,716
+texte « OK » [désactivé] @ 403,716
+texte « Partie » @ 54,795
+icône (crayon) « Renommer » @ 114,861
+icône (curseurs) « Ce qui joue » @ 303,861
+icône ↑ « Monter » @ 95,933
+icône ↓ « Descendre » @ 263,933
+icône (deux feuilles) « Dupliquer » @ 109,1005
+icône + « Insérer après » @ 303,1005
+icône (poubelle) « Retirer » @ 93,1077

@@ -935,7 +935,9 @@ class Scenarios(
             runCatching {
                 if (la()?.let { abs(it - before) >= PAS_CURSEUR } == true) {
                     if (!regler("${tag}_$ch", before)) { bandeau(ch); regler("${tag}_$ch", before) }
-                    attendre(5_000) { la()?.let { abs(it - before) < PAS_CURSEUR } == true }
+                    if (!attendre(5_000) { la()?.let { abs(it - before) < PAS_CURSEUR } == true }) {
+                        carnet.add(Carnet.NOTE, step, "« $what » de la piste ${ch + 1} pas remis à ${fmt(before)} (reste à ${la()?.let(::fmt)})")
+                    }
                 }
             }
             fermerFeuilles()

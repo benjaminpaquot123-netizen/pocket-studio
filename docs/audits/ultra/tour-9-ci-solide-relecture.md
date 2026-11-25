@@ -1,7 +1,7 @@
 # Tour 9, lot ci-solide : relecture
-Relu : b03ccc31
+Relu : 83853d6e
 
-Relecteurs neufs (sous-agents qui n'ont pas écrit ce code). Première lecture : `git diff f4301337..62681cbd` (8 commits ; rouge 14fecb43, vert ffcf98cb). Deuxième lecture : les trois commits d71f7827 (rouge), 1236e700 (vert) et b03ccc31 (docs), fichiers du lot seulement (la fusion f0f7d41b n'est pas relue).
+Relecteurs neufs (sous-agents qui n'ont pas écrit ce code). Première lecture : `git diff f4301337..62681cbd` (8 commits ; rouge 14fecb43, vert ffcf98cb). Deuxième lecture : les trois commits d71f7827 (rouge), 1236e700 (vert) et b03ccc31 (docs), fichiers du lot seulement (la fusion f0f7d41b n'est pas relue). Troisième lecture : `git diff b03ccc31..83853d6e` (5a58374c wip, 1e338399 docs, 456a269d code, 83853d6e docs), fichiers du lot seulement ; tests cités d'après le chef, non rejoués ici.
 
 ## Contrôles
 
@@ -38,5 +38,27 @@ Relecteurs neufs (sous-agents qui n'ont pas écrit ce code). Première lecture :
 | `Scenarios.kt:1177` (et `:713`, `:773`) | mineur | Même faiblesse, bornée : au retour dans « Mes projets », `j.tap("project_${p.id}")` n'attend la ligne que 15 s (attente par défaut de `tap`), alors que la liste peut mettre 20 s (le modèle de la liste est probablement recréé après l'ouverture de l'autre projet, et son `init` attend de nouveau les sauvegardes). Idem pour `project_menu_<id>` de « Dupliquer » et « Supprimer ». | Attendre la ligne avec `LISTE_ATTENTE_MS` avant de taper, avec le même message « liste encore en chargement ». |
 | `Scenarios.kt:310` | mineur | `projet()` n'attend la ligne que 5 s, puis dit « n'est pas dans Mes projets ». Le compte `rows` prend aussi `project_wizard`, `project_new`, `project_import` : avec la liste en chargement, `hidden` est faux et le verdict est un faux rouge. | Même attente de `LISTE_ATTENTE_MS` ; compter les seules lignes de projet. |
 | `docs/AIDE-TELECHARGEMENTS.md:102` | mineur | « Une attente posée au hasard (10 s) a encore raté » : aucun commit du lot ne porte cette attente de 10 s ; l'affirmation ne se vérifie pas dans l'historique. | Dire où elle a raté (essai local, passage) ou retirer la phrase. |
+
+## Troisième lecture
+
+Contrôles :
+- Aucun fichier sous `app/src/main` touché (`git diff --stat`).
+- `listeLue()` (`Scenarios.kt:711`) : `ui.loading` vaut `true` dès la création du modèle (`ProjectsViewModel.kt:29`), donc `projects_loading` est là dès la première image : pas de course où le robot passerait avant l'apparition du « Chargement ». Elle rend `false` sans lever : jamais rouge par elle-même. L'étape suivante (`j.await` 5 s, `tap` 15 s, `attendre(LISTE_ATTENTE_MS)`) dit toujours ce qui manque.
+- Faux pilotes : tous dérivent `exists` de `count`, et aucun `count` ne répond vrai à tout (`ScenariosTest`, `ScenariosRemiseTest`, `ToutTesterTest`, `SortieDeLAppliTest`, `ChoixDeStyleTest`, `EssaiEclairTest`). Aucun faux ne montre `projects_loading` : `listeLue()` rend la main au premier tour, sans attente. Cohérent avec ScenariosTest à 135 s, comme avant.
+- Plafonds : le « trop longue » de `Carnet.kt:147` se juge après l'étape, il ne la coupe pas ; le message précis reste. `quitter_en_jouant` (180 s) : 25 s de plus au pire par visite, deux visites ; seulement quand la liste traîne, cas déjà rouge.
+- `jouer()` (`ScenariosVraisEcransTest.kt:198`) : `catch` puis `throw t`, la même exception : le résultat ne change pas. `AppLog.dump` est sous `runCatching` ; `println` et `getAllStackTraces` ne lèvent pas en pratique. Aucun test de la classe (ni de la sous-classe tablette) n'attend un rouge exprès : rien de bruyant en vert.
+- Papiers : shas d71f7827, 1236e700, « 25 s » (`LISTE_ATTENTE_MS = 25_000L`), `listeLue()`, `versProjets`, `projet`, `ScenariosVraisEcransTest.jouer` : conformes. « 13 sur 14 », « 10 passages de chasse » : d'après l'auteur, non vérifiables ici.
+
+Mineurs de la deuxième lecture :
+- `Scenarios.kt:1177` (retour vers le premier projet, `:1186`) : traité. Le second `versProjets()` attend la fin du chargement (25 s) avant `j.tap("project_${p.id}")`.
+- `:713` et `:773` (`project_menu_<id>` de « Dupliquer », « Supprimer ») : traités, par `listeLue()` dans `versProjets()`.
+- `:310` : à moitié. L'attente est posée ; le compte `rows` reste faux (voir plus bas).
+- `AIDE-TELECHARGEMENTS.md:102` : traité (« essai local, jamais poussé »).
+
+| Point | Gravité | Constat |
+|---|---|---|
+| `Scenarios.kt:314` | mineur, d'avant le lot | `Regex("project_.+")` compte aussi `project_menu_<id>`, `project_new`, `project_import`, `project_wizard`, `project_list`… Avec un ou deux projets, `rows >= LISTE_PLEINE` (5) est probablement vrai : un projet absent de la liste passe « non vérifié » au lieu de rouge. Le faux rouge est parti, un faux vert reste possible. Compter les seules lignes `project_<id>` des projets connus. |
+| `Scenarios.kt:711` | mineur | L'attente n'est notée nulle part : une liste lente de 15 à 25 s (vrai défaut vu de l'utilisateur, rendu au chef) ne laisse plus de trace dans le carnet. Mettre la durée attendue dans le `bilan`. |
+| `ScenariosVraisEcransTest.kt:196` | mineur | Le commentaire dit « some twenty runs » et « (CI 462) » ; les papiers disent 1 sur 14, vu en essai forcé local (la CI 462 est le rouge d'avant, lecture unique). Le message de 5a58374c dit « one run out of four ». Aligner sur « 1 sur 14, essai local ». |
 
 Verdict : 0 bloquant, 0 grave

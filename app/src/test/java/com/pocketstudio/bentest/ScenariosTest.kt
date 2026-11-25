@@ -259,7 +259,8 @@ class ScenariosTest {
         }
         // The quick pack: the first 31; the full one: 102 more, by tables (2b and 2c last).
         assertEquals(31, Scenarios.liste(Scenarios.RAPIDE).size)
-        assertEquals(133, Scenarios.LISTE.size)
+        assertEquals(133, Scenarios.LISTE.count { !it.id.startsWith(ScenariosEffets.PREFIXE) })
+        assertEquals(133 + ScenariosEffets.LISTE.size, Scenarios.LISTE.size)
         assertEquals(Scenarios.liste(Scenarios.RAPIDE).map { it.id }, scenarios(Studio(), paquet = Scenarios.RAPIDE).etapes().map { it.name })
         // Every style of the assistant has its scenario, and the exports' styles exist.
         val styles = com.pocketstudio.model.StarterWizard.STYLES.map { it.id }
@@ -272,7 +273,9 @@ class ScenariosTest {
         // The quick run stays under 20 minutes on a phone (its estimate), the full one under its own limit.
         val rapide = Scenarios.liste(Scenarios.RAPIDE).sumOf { it.estimeS }
         assertTrue(rapide.toString(), rapide <= Scenarios.DUREE_MAX_S)
-        assertTrue(Scenarios.LISTE.sumOf { it.estimeS }.toString(), Scenarios.LISTE.sumOf { it.estimeS } <= Scenarios.DUREE_COMPLET_MAX_S)
+        // The effects' catalogue has its own limit (ScenariosEffetsTest).
+        val complet = Scenarios.LISTE.filterNot { it.id.startsWith(ScenariosEffets.PREFIXE) }.sumOf { it.estimeS }
+        assertTrue(complet.toString(), complet <= Scenarios.DUREE_COMPLET_MAX_S)
     }
 
     // --- The project kept ----------------------------------------------------------------------------

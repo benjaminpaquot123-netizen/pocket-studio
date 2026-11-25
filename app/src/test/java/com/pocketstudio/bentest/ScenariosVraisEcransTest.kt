@@ -1,7 +1,10 @@
 package com.pocketstudio.bentest
 
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performSemanticsAction
 import com.pocketstudio.app.journey.ComposeRuleDriver
 import com.pocketstudio.app.journey.Journey
 import com.pocketstudio.app.journey.JourneyDriver
@@ -129,9 +132,16 @@ open class ScenariosVraisEcransTest {
         }
     }
 
-    private fun scenarios(v: Vrai, courtMs: Long = 3_000) = Scenarios(
-        Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecran = { v.tags(Regex(".+")) }, courtMs = courtMs,
-        ecouteMs = 1_000, decrochagesMs = 1_000, sauvegardeMs = 20_000, liveMs = 5_000, liveEcouteMs = 1_000, effetEcouteMs = 1_000,
+    /** A slider of the screen set as the robot does ([InAppDriver.regler]): its progress action; false: no such slider. */
+    private fun regler(tag: String, value: Float): Boolean = runCatching {
+        compose.onNodeWithTag(tag).performSemanticsAction(SemanticsActions.SetProgress) { it(value) }
+    }.isSuccess
+
+    private fun scenarios(v: Vrai, courtMs: Long = 3_000, regler: (String, Float) -> Boolean = { _, _ -> false }) = Scenarios(
+        Journey(v), v, v, Carnet(tmp.newFile()), tmp.newFolder(), ecran = { v.tags(Regex(".+")) }, courtMs = courtMs, regler = regler,
+        ecouteMs = 1_000, decrochagesMs = 1_000, sauvegardeMs = 20_000, liveMs = 5_000, liveEcouteMs = 1_000,
+        // 1.5 s, not 1: a second of reads every 250 ms sometimes holds 3, and the scenario then hears « 0 s ».
+        effetEcouteMs = 1_500,
     )
 
     @Test
@@ -247,6 +257,23 @@ open class ScenariosVraisEcransTest {
             assertEquals(id, before, v.projet().effets)
             assertEquals(id, before, v.projet().disque?.effets)
         }
+    }
+
+    /** Tour 9, catalogue « Effets »: each kind of its scenarios played on the real strip sheet (chips, sliders, « × », undo, redo). */
+    @Test
+    fun theEffectsCatalogueSetsKnobsRemovesUndoesAndLeavesTheStrips() {
+        h.start()
+        val v = Vrai()
+        val before = v.projet().effets
+        for (id in listOf("fx_bouts_chorus", "fx_retrait_echo", "fx_paire_reverb_ott", "fx_chaine_2")) {
+            val text = scenarios(v, courtMs = 1_500, regler = ::regler).etapes().first { it.name == id }.work(Long.MAX_VALUE)
+            assertTrue("$id : $text", !text.startsWith("non mesuré"))
+            assertEquals(id, before, v.projet().effets)
+            assertEquals(id, before, v.projet().disque?.effets)
+        }
+        // The knobs, the « × » and the bar's undo and redo were touched on the real screens.
+        assertTrue(v.touched.toString(), v.touched.any { it.startsWith("fx_chip_") } && v.touched.any { it.startsWith("fx_remove_") })
+        assertTrue(v.touched.toString(), v.touched.any { it.endsWith("_undo") } && v.touched.any { it.endsWith("_redo") })
     }
 
     private fun epreuves(v: Vrai, ecouteMs: Long = 1_000) = Epreuves(

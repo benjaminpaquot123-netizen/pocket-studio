@@ -1,5 +1,5 @@
 # Relecture neuve, lot tour-9 gr-styles
-relu : 8e6daff2511bffbc2a8625dd4a30670c55fead33
+relu : a2e8a831b (republication ; la relecture neuve a porté sur 8e6daff2511bffbc2a8625dd4a30670c55fead33)
 
 Portée : `git diff d9910076..4438394f` (14 commits du lot), hors `StyleRecipes.kt` et `separation/`. Aucun fichier du moteur C++ touché (thread audio intact).
 
@@ -55,7 +55,6 @@ Portée : 8e6daff2 (fusion de origin/eq/ci-int-robot1b, tête d87dea73f, sur 816
 
 rejeu changé : t4-26-prise-clavier : le lot ajoute une page à l'assistant (5e ligne de batterie « snap » du lofi), deux pas de plus ; accord de Benjamin (1A)
 
-Verdict : 0 bloquant, 0 grave
+Republication (chef, 2026-11-25) : lot republié en un seul commit (10357b21f, arbre identique à 8b905fe0c) sous le nom gr-styles2 ; depuis 8e6daff25, seuls les fichiers du lot dans docs/ ont changé de nom, aucun code.
 
-## Republication (chef, 2026-11-25)
-Lot republié en un seul commit (10357b21f, arbre identique à 8b905fe0c) sous le nom gr-styles2 ; fichiers du lot renommés, aucun code changé depuis cette relecture.
+Verdict : 0 bloquant, 0 grave

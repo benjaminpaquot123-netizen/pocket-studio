@@ -29,7 +29,7 @@ Au début de chaque session, le chef d'orchestre (ou une discussion sans fiche) 
 - Retours de Benjamin donnés un par un (2026-11-24, complété le 2026-11-25) : les ranger dans `docs/RETOURS.md`, puis répondre « Noté » suivi d'une petite blague sur ce qu'il vient de dire, sans autre commentaire.
 - Avant-après audio (2026-11-24) : un MP3 par style (40 s avant, 1 s de pause, 40 s après), jamais un seul long fichier ; rendu par `scripts/live-bench.sh` puis `ps_live`.
 - Versions « BenStudio Test » (2026-11-24) : compilées en local, envoyées par fichier, jamais depuis une tête intermédiaire de paquet.
-- « 🤘 La fucking liste des promesses 🤘 » (c'est son nom, Benjamin 2026-11-24 ; fichier `docs/PROMESSES.md`, cases à cocher « - [ ] date promesse ») : tout ce qui est promis à Benjamin s'y écrit (date, promesse, état) et se coche quand c'est tenu.
+- « 🤘 La fucking liste des promesses 🤘 » (c'est son nom, Benjamin 2026-11-24 ; dans chaque message à Benjamin, toujours l'appeler ainsi en entier, jamais « la liste des promesses », rappel du 2026-11-25 ; fichier `docs/PROMESSES.md`, cases à cocher « - [ ] date promesse ») : tout ce qui est promis à Benjamin s'y écrit (date, promesse, état) et se coche quand c'est tenu.
 - Confiance totale (Benjamin, 2026-11-24) : « C'est oui pour tout. Tu as tous les droits pour tout. C'est recommandé pour tout. J'accepte les licences. » Dans les limites des interdits de ce fichier.
 - Toujours parler français avec Benjamin (conversation, messages, rappels).
 - Messages pour lui : français, courts, sans jargon, écoutables en audio. Humour Kaamelott bienvenu dans les changelogs.

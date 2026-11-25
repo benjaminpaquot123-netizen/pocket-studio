@@ -1,5 +1,5 @@
 # Relecture neuve, lot tour-9 gr-styles
-relu : 786153d53c2fa0d2d4497723d94b812efeb6abc8
+relu : 8e6daff2511bffbc2a8625dd4a30670c55fead33
 
 Portée : `git diff d9910076..4438394f` (14 commits du lot), hors `StyleRecipes.kt` et `separation/`. Aucun fichier du moteur C++ touché (thread audio intact).
 
@@ -44,5 +44,15 @@ Portée : 4c556e3e (fusion de origin/ccr-80af1a1b-mn0wec, tête 5293b39a, base 0
 - Les fichiers du lot (StarterWizard.kt, recettes, StyleRecipes.kt, i18n) ne changent pas dans la fusion. Le générateur relancé sur `scripts/packs/recipes/*.json` redonne `StyleRecipes.kt` à l'identique.
 - Rejeu t4-26 : le lo-fi passe de 4 à 5 lignes de batterie (`Role.Snap` ajouté dans `hiphop.json` et dans `StyleRecipes.kt`). `StarterWizard.steps()` fait une étape par ligne (`style.lines.map { Step.Drum(it) }`), donc `lastStep` grandit de 1. `wizard_create` n'apparaît que quand `step >= lastStep` (WizardScreen.kt:254) : il faut bien un `wizard_next` de plus avant lui.
 - Le rejeu est cohérent : `cmd-1` à `cmd-34` sans trou, l'ajout (`touche wizard_next` + `attends 1`) est en 21-22, les anciennes 21-32 deviennent 23-34 sans autre changement, `oracle.txt` dit `rejeu.n=34`. Les `cmd-*.txt` n'ont pas de saut de ligne final et `oracle.txt`/`start.txt` en ont un, comme avant.
+
+## Relecture de la fusion d87dea73f (robot1b)
+
+Portée : 8e6daff2 (fusion de origin/eq/ci-int-robot1b, tête d87dea73f, sur 8167ff96).
+
+- La fusion n'apporte que 28 fichiers : le banc BenTest (`app/src/benTest/`, ses tests), `scripts/bentest/check-apk.sh`, `docs/PLAN-TEST-APK.md`, `docs/DECISIONS.md`, traces du portail, rapports et relectures robot1 et robot1b. Chacun est octet pour octet celui de d87dea73f (`git diff origin/eq/ci-int-robot1b 8e6daff2` vide sur ces fichiers).
+- Aucun fichier du lot ne change dans la fusion (ni `project-model/`, ni `scripts/packs/`, ni i18n, ni le rejeu t4-26). Le générateur relancé sur `scripts/packs/recipes/*.json` redonne `StyleRecipes.kt` à l'identique.
+- `engine/src` n'est pas touché : thread audio intact.
+
+rejeu changé : t4-26-prise-clavier : le lot ajoute une page à l'assistant (5e ligne de batterie « snap » du lofi), deux pas de plus ; accord de Benjamin (1A)
 
 Verdict : 0 bloquant, 0 grave

@@ -1,4 +1,8 @@
-# Tour 9, zone robot1b (lot A1, rejoué) : décisions
+# Tour 9, lot robot-a3 : décisions
+
+- Republication (2026-11-25) : robot-a2 republié en robot-a3 (sujets de la paire du changement de kit reformulés pour s'apparier) ; les décisions de robot1b, inclus dans ce lot et pas encore dans l'intégration, sont reprises ici sans changement (le portail veut un seul fichier de décisions par lot). Retour : rien à défaire, texte seul.
+
+## Reprises de robot1b (lot A1, rejoué)
 
 - Lot rejoué sur `eq/tour-9-robot1b` (option B du chef) : chaque rouge et son vert ont le même sujet, le vert nomme son test, pour que le juge les apparie (refus du portail sur `eq/tour-9-robot1` : 166 → 172 écarts). Retour arrière : reprendre `eq/tour-9-robot1` avec des preuves nommées.
 

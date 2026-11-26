@@ -80,8 +80,45 @@ def test_tempo():
     check_eq("10 one-shot numbers stay out", tags("Synth/Bass 120 C.wav", "oneshot_melodic")["bpm"], None)
 
 
+def test_key():
+    """Defects 8, 11 and 38: no false key, a lone key letter checked by the sound, flats kept."""
+    # 8: a variation letter, a drum loop letter, an instrument name are not keys
+    for rel, typ in (("Loops/Synth Loop 120 A.wav", "melodic_loop"), ("Loops/Synth Loop 120 B.wav", "melodic_loop"),
+                     ("Drum Loops/Top Loop 128 A.wav", "drum_loop"), ("Drum Loops/Drum Loop 120 B.wav", "drum_loop"),
+                     ("Drum Loops/Hat Loop 140 C.wav", "drum_loop"), ("Loops/Fm Synth Loop 120.wav", "melodic_loop"),
+                     ("Loops/Bb Trumpet Loop 120.wav", "melodic_loop"), ("Loops/Eb Clarinet Loop 120.wav", "melodic_loop")):
+        check_eq("8 no sure key: %s" % rel, tags(rel, typ)["key"], None)
+    for rel in ("Drum Loops/Top Loop 128 A.wav", "Drum Loops/Hat Loop 140 C.wav"):
+        check_eq("8 drum loop letter stays empty after the sound: %s" % rel,
+                 confirmed(rel, "drum_loop", key="A major" if " A" in rel else "C major")["key_tag"], None)
+    check_eq("8 'C# m' is C# minor", tags("Loops/Loop 120 C# m.wav")["key"], (1, "minor"))
+    check_eq("8 'C#-m' is C# minor", tags("Loops/Loop 120 C#-m.wav")["key"], (1, "minor"))
+    check_eq("8 a tuned kick loop keeps its key", tags("Drum Loops/Kick Loop 125 Gm.wav", "drum_loop")["key"],
+             (7, "minor"))
+    check_eq("8 'Am Synth' is still A minor", tags("Loops/Am Synth Loop 120.wav")["key"], (9, "minor"))
+    # 11: a lone key letter is read once the measured key has the same root
+    for rel, meas in (("Loops/Pad Loop F.wav", "F major"), ("Loops/Pad Loop - F.wav", "F major"),
+                      ("Loops/Pad Loop [F].wav", "F major"), ("Loops/Pad Loop Key F.wav", "F major"),
+                      ("Loops/Pad Loop in F.wav", "F minor"), ("Loops/Piano Loop C 120.wav", "C major"),
+                      ("Loops/Blues in A 120.wav", "A minor"), ("Loops/Synth Loop 120 A.wav", "A minor")):
+        check_eq("11 lone key confirmed: %s" % rel, confirmed(rel, key=meas)["key_tag"], meas)
+    for rel in ("Loops/Pad Loop F.wav", "Loops/Pad Loop Key F.wav", "Loops/Blues in A 120.wav"):
+        check_eq("11 lone key not heard stays empty: %s" % rel, confirmed(rel, key="D major")["key_tag"], None)
+    check_eq("11 a sure key is never replaced", confirmed("Loops/Loop 120 Am.wav", key="C major")["key_tag"],
+             "A minor")
+    # 38: a flat in the name is shown as a flat
+    for rel, want in (("Loops/Bass Loop 120 Bb.wav", "Bb major"), ("Loops/Bass Loop 120 Bbm.wav", "Bb minor"),
+                      ("Loops/Bass Loop 120 B\u266dm.wav", "Bb minor"), ("Loops/Bass Loop 120 Db.wav", "Db major"),
+                      ("Loops/Loop 120 Dbmaj7.wav", "Db major"), ("Loops/Bass Loop 120 A#m.wav", "A# minor"),
+                      ("Loops/Bass Loop 120 Eb minor.wav", "Eb minor")):
+        check_eq("38 spelled as written: %s" % rel, confirmed(rel)["key_tag"], want)
+    t = tags("Synth/Pluck Gb2.wav", "oneshot_melodic")
+    row = {"note_tag": tout.NOTE_NAMES[t["note"]]}
+    check_eq("38 one-shot flat note", tout.confirm_tags(row, t)["note_tag"], "Gb")
+
+
 def main():
-    for t in (test_tempo,):
+    for t in (test_tempo, test_key):
         t()
     print("%d checks, %d failed" % (COUNT[0], len(FAILS)))
     for f in FAILS:

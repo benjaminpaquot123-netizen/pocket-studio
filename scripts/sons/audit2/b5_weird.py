@@ -97,6 +97,6 @@ raw("white noise 1 s (centroid near 10 kHz: 1e+04 ?)", "Drums/Hats/Hat 01.wav", 
 raw("tone at 9998 Hz", "Synth/Lead C3.wav", wavbytes(sine(9998.0, 1.0, 0.5)))
 raw("very quiet file (-80 dBFS)", K, wavbytes(k * 1e-4, bits=24))
 raw("11.5 MB file -> size_kb", "Synth/Pad C3.wav", wavbytes(tone(130.81, 5.0, 0.3), sr=96000, bits=32))
-chk = Check("b5")
+chk = Check("b5_weird")
 chk.clean_repo()
 chk.done()

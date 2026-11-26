@@ -731,6 +731,42 @@ def test_recheck_short_noise():
     check_eq("noise stopped loud is still cut", tout.end_cut(SR, x[:, None])["end_cut"], 1)
 
 
+def test_recheck_fences():
+    """Blind re-check 6: no cell shows a number the tool cannot stand behind."""
+    fence = getattr(tout, "fence_row", lambda r, usable=(): r)
+    for typ in ("melodic_loop", "kit_stem"):
+        r = fence({"type": typ, "role": "keys", "bpm_tag": None, "key_tag": None,
+                   "bpm_est": 120.0, "key_est": "A minor"})
+        check_eq("%s untagged: bpm_est empty while not usable" % typ, r["bpm_est"], None)
+        check_eq("%s untagged: key_est empty while not usable" % typ, r["key_est"], None)
+        r = fence({"type": typ, "role": "keys", "bpm_tag": None, "key_tag": None,
+                   "bpm_est": 120.0, "key_est": "A minor"},
+                  {(typ, "bpm"), (typ, "key")})
+        check_eq("%s untagged: bpm_est kept when usable" % typ, r["bpm_est"], 120.0)
+        check_eq("%s untagged: key_est kept when usable" % typ, r["key_est"], "A minor")
+        r = fence({"type": typ, "role": "keys", "bpm_tag": 124.0, "key_tag": "A minor",
+                   "bpm_est": 124.0, "key_est": "A minor"})
+        check_eq("%s tagged: bpm_est kept" % typ, r["bpm_est"], 124.0)
+        check_eq("%s tagged: key_est kept" % typ, r["key_est"], "A minor")
+    r = fence({"type": "vocal", "wet": "dry", "tail_db": -50.0})
+    check_eq("vocal wet verdict empty", r["wet"], None)
+    r = fence({"type": "midi", "key_tag": None, "key_measured": "A minor", "key_est": "A minor",
+               "key_match": "exact", "scale_fit": 0.9, "chords": "i-VI-iv-V",
+               "chord_changes_per_bar": 1.0, "chord_len_beats": 4.0})
+    for k in ("key_measured", "key_est", "key_match", "chords", "chord_changes_per_bar",
+              "chord_len_beats", "scale_fit"):
+        check_eq("midi %s empty" % k, r[k], None)
+    r = fence({"type": "midi", "key_tag": "A minor", "scale_fit": 0.9})
+    check_eq("midi scale_fit kept against a tagged key", r["scale_fit"], 0.9)
+    r = fence({"type": "drum_oneshot", "role": "kick", "bpm_tag": None, "end_cut": 0,
+               "end_fade_ms": 37.3})
+    check_eq("end_fade_ms rounded to 10 ms", r["end_fade_ms"], 40)
+    doc = tout.__doc__
+    check_true("doc: end_fade_ms is a yes/no grade", "yes/no" in doc)
+    check_true("doc: kick note within one semitone", "1 semitone" in doc)
+    check_true("doc: drop_start_hz is a lower bound", "lower bound" in doc)
+
+
 def test_recheck_end_scope():
     """Re-check 1 (docs/sons/REVERIF-TOUT.md): end_cut on loops is a coin toss; one-shots only."""
     fence = _fence()
@@ -846,7 +882,7 @@ def test_cli():
         check_true("cli stem levels relative to the kit sum are below 0 dB", all(v < 1.0 for v in lv))
         dl = [r for r in rows("drum_loop") if not r["error"]]
         check_eq("cli drum loop style from folder", dl[0]["style"], "techno")
-        check_eq("cli midi chords against kit key", mids[0]["chords"], "i-VI-iv-V")
+        check_eq("cli midi chords left empty (re-check 6)", mids[0]["chords"], "")
         check_true("cli end_cut filled on one-shot rows",
                    all(r.get("end_cut") in ("0", "1") for r in mel + rows("drum_oneshot")))
         check_true("cli end_cut and end_fade_ms empty on loops, stems, fx and vocals (re-check 1)",
@@ -868,7 +904,7 @@ def main(argv=None):
         return 0
     with np.errstate(all="ignore"):
         for fn in (test_tags, test_classify, test_common, test_notes, test_adsr, test_drum_loop, test_key,
-                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_end_cut_audit, test_measure_values, test_blocking, test_tags_types, test_accuracy_rms, test_recheck_end_scope, test_recheck_tags_cells, test_recheck_short_noise, test_cli):
+                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_end_cut_audit, test_measure_values, test_blocking, test_tags_types, test_accuracy_rms, test_recheck_end_scope, test_recheck_tags_cells, test_recheck_short_noise, test_recheck_fences, test_cli):
             try:
                 fn()
             except Exception as e:  # a crash is a failed check, the rest still runs

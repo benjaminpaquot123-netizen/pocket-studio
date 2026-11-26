@@ -33,3 +33,4 @@
 - [ ] 2026-11-26 : ne rien jeter de la mine d'or 2 (les 11 RAR) : en plus des coups de batterie, faire l'inventaire des mélodies, boucles, voix, kits de construction et MIDI de chaque RAR (par style et par type), sans rien supprimer de son Drive.
 - [ ] 2026-11-26 : faire auditer l'outil commun de mesure des sons (scripts/sons/tout.py, branche eq/outil-tout) par une discussion Fable neuve dès qu'il est fini, avant le second passage sur les RAR.
 - [ ] 2026-11-26 Outil des sons : audit Fable en réflexion extra avant chaque usage sur les sons achetés, et la deuxième passe des 12 RAR seulement avec l'outil réparé et revérifié.
+- [ ] 2026-11-26 Audit Fable 5.2 (réflexion maximum) sur l'outil des sons réuni (lots A à E), avant la deuxième passe des 12 RAR ; vérifier le niveau reçu et le dire à Benjamin.

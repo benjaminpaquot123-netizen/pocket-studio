@@ -70,16 +70,19 @@ def ts_ev(num, den_pow):
     return b"\xFF\x58\x04" + bytes([num, den_pow, 24, 8])
 
 
-def smf(notes, tpq=480, tempos=((0, 120.0),), ts=(4, 2), eot=True):
-    """notes: (start_beat, len_beats, pitch, vel, ch). tempos: (beat, bpm). ts None = no event."""
+def smf(notes, tpq=480, tempos=((0, 120.0),), ts=(4, 2), eot=True, off90=False, program=False):
+    """notes: (start_beat, len_beats, pitch, vel, ch). tempos: (beat, bpm). ts None = no event.
+    off90: note-offs written as note-on velocity 0. program: a program change first."""
     ev = []
+    if program:
+        ev.append((0, 0, bytes([0xC0, 5])))
     for beat, bpm in tempos:
         ev.append((int(round(beat * tpq)), 0, tempo_ev(bpm)))
     if ts is not None:
         ev.append((0, 0, ts_ev(*ts)))
     for s, ln, p, v, ch in notes:
         ev.append((int(round(s * tpq)), 2, bytes([0x90 | ch, p, v])))
-        ev.append((int(round((s + ln) * tpq)), 1, bytes([0x80 | ch, p, 0])))
+        ev.append((int(round((s + ln) * tpq)), 1, bytes([(0x90 if off90 else 0x80) | ch, p, 0])))
     ev.sort(key=lambda e: (e[0], e[1]))
     trk, last = b"", 0
     for tick, _, msg in ev:
@@ -191,6 +194,54 @@ def test_21_37a_midi_tempo(tmp=None):
         check_eq("21 cli: midi table bpm_est", rows[0]["bpm_est"], "140")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+def test_22_37b_midi_bars():
+    """22: bars counted from the first note, legato is not a new bar or more voices;
+    37b: 3/4 without a time signature leaves the bar cells empty."""
+    am = {"bpm": None, "key": (9, "minor")}
+    m = tout.measure_midi_bytes(smf(chords()), am)
+    check_eq("22 reference 4 bars: bars", m["bars"], 4)
+    check_eq("22 reference: swing 50 when nothing is off the 8ths", m["swing_pct"], 50.0)
+    m = tout.measure_midi_bytes(smf(chords(start=32.0)), am)
+    check_eq("22 Chords 05 exported from bar 9: bars", m["bars"], 4)
+    check_eq("22 Chords 05: notes per bar", m["notes_per_bar"], 3.0)
+    check_eq("22 Chords 05: chords from its first bar", m["chords"], "i-VI-III-VII")
+    check_eq("22 Chords 05: chord length 4 beats", m["chord_len_beats"], 4.0)
+    m = tout.measure_midi_bytes(smf(chords(start=1.0)), am)
+    check_eq("22 Chords 06 starting on beat 2: bars", m["bars"], 4)
+    check_eq("22 Chords 06: chords", m["chords"], "i-VI-III-VII")
+    legato = [(s, ln + 0.25, p, v, c) for s, ln, p, v, c in chords()]
+    m = tout.measure_midi_bytes(smf(legato), am)
+    check_eq("22 Chords 07 legato a 16th: bars", m["bars"], 4)
+    check_eq("22 Chords 07 legato a 16th: poly_max", m["poly_max"], 3)
+    rel = [(s, ln + 0.05, p, v, c) for s, ln, p, v, c in chords()]
+    m = tout.measure_midi_bytes(smf(rel), am)
+    check_eq("22 release a 64th past the bar line: bars", m["bars"], 4)
+    beat = []
+    for k in (0, 2):
+        beat.append((k, 0.25, 36, 110, 9))
+    for k in (1, 3):
+        beat.append((k, 0.25, 38, 100, 9))
+    beat += [(h * 0.5, 0.2, 42, 80, 9) for h in range(8)] + [(4, 0.25, 36, 110, 9)]
+    m = tout.measure_midi_bytes(smf(beat), {})
+    check_eq("22 Beat 02: 2nd bar holds only a kick on beat 1: bars", m["bars"], 2)
+    check_eq("22 Beat 02: drum track", m["drum_track"], 1)
+    mixed = beat + [(0, 2, 33, 100, 0)]
+    m = tout.measure_midi_bytes(smf(mixed), {})
+    check_eq("drums plus a bass line is not a drum track", m["drum_track"], 0)
+    waltz = [(3 * b, 3, p, 90, 0) for b in range(4) for p in (57, 60, 64)]
+    m = tout.measure_midi_bytes(smf(waltz, ts=(3, 2)), {})
+    check_eq("37b Waltz 01 with 3/4 signature: bars", m["bars"], 4)
+    m = tout.measure_midi_bytes(smf(waltz, ts=None), {})
+    check_eq("37b Waltz 02 no signature: bars left empty", m["bars"], None)
+    check_eq("37b Waltz 02 no signature: notes per bar left empty", m["notes_per_bar"], None)
+    m = tout.measure_midi_bytes(smf(chords(), ts=None), am)
+    check_eq("37b 4/4 chords without a signature: bars", m["bars"], 4)
+    m = tout.measure_midi_bytes(smf(chords(), program=True, off90=True), am)
+    check_eq("program change and note-on 0 offs: notes", m["notes"], 12)
+    check_eq("program change and note-on 0 offs: poly_max", m["poly_max"], 3)
+    check_eq("program change and note-on 0 offs: bars", m["bars"], 4)
 
 
 def main():

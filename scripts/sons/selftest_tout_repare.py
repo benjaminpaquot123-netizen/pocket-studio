@@ -8,9 +8,12 @@ packs written to a temporary folder outside the repository. Exit code 1 when a
 single check fails. No sample is needed.
 """
 import contextlib
+import csv
+import glob
 import io
 import os
 import sys
+import tempfile
 
 import numpy as np
 
@@ -177,7 +180,48 @@ def test_single_root_folder_is_the_pack():
     check_eq("4 a lone 'Hats' folder is a role, not a pack", (rows["Hats/Closed 01.wav"] or {}).get("role"), "hats")
 
 
-TESTS = [test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def _ids(pack, files):
+    """file_ids written for a pack, and the trace of each from the pack itself and from a twin pack."""
+    tmp = tempfile.mkdtemp(prefix="tout_repare_")
+    root = os.path.join(tmp, pack)
+    for rel, x in files.items():
+        p = os.path.join(root, *rel.split("/"))
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        with open(p, "wb") as fh:
+            fh.write(st.wav_bytes(st.mono(np.asarray(x, dtype=float))))
+    out = os.path.join(tmp, "t")
+    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+        tout.main([root, "--rar", "1", "--out", out])
+    ids = []
+    for f in sorted(glob.glob(out + "_*.csv")):
+        if not f.endswith("_accuracy.csv"):
+            with open(f, newline="", encoding="utf-8") as fh:
+                ids += [r["file_id"] for r in csv.DictReader(fh)]
+    return root, ids
+
+
+def _trace(root, fid):
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+        try:
+            code = tout.main([root, "--rar", "1", "--trace", fid])
+        except SystemExit as e:
+            code = e.code
+    return code, buf.getvalue().strip()
+
+
+def test_file_id_has_the_pack():
+    """Defect 11: two packs holding the same path give two ids; --trace finds each in its own pack only."""
+    files = {"Loops/Loop 01 120 bpm.wav": ru.plucks(120.0, AM, 1)}
+    ra, ia = _ids("Pack A", files)
+    rb, ib = _ids("Pack B", files)
+    check_true("11 same path in two packs: two ids", len(ia) == 1 and len(ib) == 1 and ia != ib, (ia, ib))
+    if ia and ib:
+        check_eq("11 --trace finds the file in its own pack", _trace(ra, ia[0]), (0, "Loops/Loop 01 120 bpm.wav"))
+        check_eq("11 --trace does not find it in the twin pack", _trace(rb, ia[0])[0], 1)
+
+
+TESTS = [test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

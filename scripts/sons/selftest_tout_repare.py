@@ -353,7 +353,18 @@ def test_midi_waltz_by_accents():
     check_eq("A3 4/4 accented part keeps 4 bars", (rows["MIDI/Piano Four C major.mid"] or {}).get("bars"), "4")
 
 
-TESTS = [test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_short_file_absolute_gate():
+    """A4: a 0.3 s file at -90 dBFS is under the -70 LUFS absolute gate: no loudness, as for a long file."""
+    x = 10 ** (-90 / 20) * np.sin(2 * np.pi * 1000 * np.arange(int(0.3 * SR)) / SR)
+    check_eq("A4 short and under the gate", tout.lufs(x[:, None], SR), None)
+    x = 10 ** (-90 / 20) * np.sin(2 * np.pi * 1000 * np.arange(int(2.0 * SR)) / SR)
+    check_eq("A4 long and under the gate", tout.lufs(x[:, None], SR), None)
+    y = 0.5 * np.sin(2 * np.pi * 1000 * np.arange(int(0.3 * SR)) / SR)
+    v = tout.lufs(y[:, None], SR)
+    check_true("A4 a loud short file keeps its loudness", v is not None and -12 < v < -3, v)
+
+
+TESTS = [test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

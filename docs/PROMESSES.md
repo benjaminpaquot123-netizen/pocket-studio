@@ -30,3 +30,4 @@
 - 23h45 : gr-house2 FINI 8c5248bf (pré-vol PRÊT), à mettre dans un paquet (conflit possible StyleRecipes, régénérer à la fusion). Avant-après house v2 en rendu (envoyé). Session à archiver après fusion.
 - [ ] 2026-11-25 : bibliothèque de sons de batterie synthétisés par famille (kick, 808, clap, caisse claire, charleys…), chaque variante réglée sur les mesures des one-shots achetés (jamais copiés), avec avant-après à écouter.
 - [x] 2026-11-25 : analyse impeccable de la mine d'or (zip 16 Go), faite à neuf, avec critique à l'aveugle. Tenu le 2026-11-26 : branche eq/analyse-mine-or (f1747f2a), 1649 sons mesurés ; 731 sons de batterie perdus dans le fichier source abîmé (dubstep, afro-house).
+- [ ] 2026-11-26 : ne rien jeter de la mine d'or 2 (les 11 RAR) : en plus des coups de batterie, faire l'inventaire des mélodies, boucles, voix, kits de construction et MIDI de chaque RAR (par style et par type), sans rien supprimer de son Drive.

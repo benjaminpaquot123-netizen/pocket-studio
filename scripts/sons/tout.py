@@ -39,6 +39,10 @@ end_cut    1 = the file really ends cut: a click (last sample above -60 dBFS
            abrupt stop (above -30 dBFS 5 ms before the end, no final fade of
            20 dB or more). 0 otherwise, a trimmed tail with a fade included.
 end_fade_ms length of the final fade, empty when there is none.
+Both are filled for one-shots only (oneshot_melodic, drum_oneshot) and left
+empty for loops, stems, fx, vocals, full mixes and any one-shot with a bpm
+tag or a wav loop: there the last hit rings at the bar line and the verdict
+is a coin toss (blind re-check, docs/sons/REVERIF-TOUT.md).
 "Not yet at -60 dB when the file ends" (empty t60, end_level_db above -60)
 only means a long sound trimmed short; it is information, never a cut.
 
@@ -1682,6 +1686,26 @@ def _key_class(match):
     return "relative" if match == "relative" else _key_agree(match)
 
 
+# ================================================================ fences
+
+END_TYPES = ("oneshot_melodic", "drum_oneshot")
+
+
+def fence_row(row, usable=()):
+    """Empty the cells that would show a number that looks true but is not
+    (blind re-check, docs/sons/REVERIF-TOUT.md). Applied to every row before
+    it is written; the measuring functions stay untouched.
+    usable: set of (type, measure) pairs the accuracy table marks usable."""
+    typ = row.get("type")
+    # end_cut is reliable on one-shots only: on anything with a loop or tempo
+    # nature the last hit still rings at the bar line (re-check 1)
+    if typ not in END_TYPES or row.get("role") == "full" or row.get("bpm_tag") is not None \
+            or row.get("_loop"):
+        row["end_cut"] = None
+        row["end_fade_ms"] = None
+    return row
+
+
 # ================================================================ cli
 
 def _fmt(v):
@@ -1728,6 +1752,7 @@ def _measure_file(p, rel, parts, acc, rar):
     try:
         with np.errstate(all="ignore"):
             sr, x, loop = read_audio(p)
+            row["_loop"] = loop
             cl = classify(rel, x.shape[0] / sr)
             row.update(cl)
             row.update(common(sr, x))
@@ -1919,6 +1944,7 @@ def main(argv=None):
     rows["kit_stem"] += sr_
     rows["midi"] += mr
     total = 0
+    usable = {(r["type"], r["measure"]) for r in acc.rows() if r["usable"] == "yes"}
     for typ in TYPES:
         if not rows[typ]:
             continue
@@ -1932,6 +1958,7 @@ def main(argv=None):
                     r["bpm_est"] = r.get("bpm_measured", r.get("bpm_file"))
                 if r.get("key_est") is None:
                     r["key_est"] = r.get("key_measured")
+                fence_row(r, usable)
                 wr.writerow({k: _fmt(r.get(k)) for k in cols})
                 total += 1
     with open("%s_accuracy.csv" % args.out, "w", newline="", encoding="utf-8") as fh:

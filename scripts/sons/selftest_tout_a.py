@@ -245,6 +245,22 @@ expect("Vocals/Phrases/Phrase 01.wav", 2.0, type="vocal")
 expect("Chants/Chant 01.wav", 2.0, type="vocal")
 expect("Synth/Vocoder Chord Am.wav", 3.0, type="oneshot_melodic")
 
+# ================================================================ 23: roles and kick_808
+for rel, role in [("Drums/Snares/808 Snare 01.wav", "snare"), ("Drums/Claps/808 Clap.wav", "snare"),
+                  ("Drums/Hats/TR-808 Hat Closed.wav", "hats"), ("Drums/Perc/Cowbell 01.wav", "perc"),
+                  ("Drums/Kicks/Kickdrum 01.wav", "kick"), ("Drums/Kicks/Kick Bassy 01.wav", "kick"),
+                  ("Drums/Kicks/Kick 808 Style.wav", "kick"), ("Drums/808s/808 C.wav", "808"),
+                  ("Bass/808 Bass C.wav", "808"), ("Bass/Bass C2.wav", "bass")]:
+    expect(rel, 0.4 if "808" not in rel or "Kick" in rel else 2.0, role=role)
+expect("Loops/Drum & Bass Loop 174.wav", 8.0, role="drums")
+expect("Loops/Drum n Bass Loop 174.wav", 8.0, role="drums")
+for rel in ["Drums/TR-808/Kick 01.wav", "Kits/Kit 808/Kick 01.wav", "Drums/Kicks/Kick 808 Style.wav",
+            "Drums/909/Kick 01.wav", "Drums/Kicks/TR-808 Kick 01.wav"]:
+    expect(rel, 0.4, type="drum_oneshot", subtype="kick")
+for rel in ["Drums/808s/Kick 01.wav", "Drums/808s/808 C.wav", "Drums/808 Kicks/Kick 01.wav", "808/808 Sub C.wav",
+            "Drums/Kicks/808 Kick 01.wav"]:
+    expect(rel, 0.8, type="drum_oneshot", subtype="kick_808")
+
 
 print("%d checks, %d failed" % (COUNT, FAILS))
 sys.exit(1 if FAILS else 0)

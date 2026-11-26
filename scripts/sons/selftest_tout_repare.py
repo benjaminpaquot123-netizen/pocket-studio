@@ -163,6 +163,9 @@ def test_pack_style_named():
     check_eq("3 --pack-style trap: the inner folder still wins",
              (rows["House Loops/Loop 02 120 bpm.wav"] or {}).get("style"), "house")
     check_true("3 --pack-style: said on the console", "style du pack : trap, posé sur 1 lignes" in con, con)
+    rows, _, con, _, _ = run(loop, pack="archive_03", extra=["--pack-style", "drift-phonk"])
+    check_eq("3 --pack-style drift-phonk: a known style keeps its hyphen",
+             (rows["Loops/Loop 01 120 bpm.wav"] or {}).get("style"), "drift-phonk")
 
 
 def test_single_root_folder_is_the_pack():

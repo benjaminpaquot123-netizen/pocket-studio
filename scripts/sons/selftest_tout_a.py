@@ -218,6 +218,33 @@ with tempfile.TemporaryDirectory() as tmp:
 expect("Drum Loops/Techno/Loop 01.wav", 4.0, type="drum_loop", subtype="-")
 expect("Piano Loops/Deep/Loop 01.wav", 4.0, type="melodic_loop", subtype="-")
 
+# ================================================================ 9: fx and vocal words do not steal instruments
+for rel, d in [("Loops/Reversed Piano Loop 120 Am.wav", 8.0), ("Loops/Noisey Bass Loop 140 F.wav", 6.9),
+               ("Loops/Texture Pad Loop 01.wav", 8.0), ("Bass/Bass Sweep C2.wav", 2.0),
+               ("Synth/Atmosphere Pad C3.wav", 3.0), ("Bass/Reese Drop 01.wav", 2.0),
+               ("Loops/Guitar Phrase 120 Am.wav", 8.0), ("Synth/Vox Lead C3.wav", 3.0),
+               ("Synth/Voice Pad C3.wav", 3.0), ("Loops/Chanting Monks Loop 90.wav", 8.0)]:
+    r = cl(rel, d)
+    check_true("not fx / vocal: %s (%s)" % (rel, r["type"]), r["type"] not in ("fx", "vocal"))
+expect("Bass/Reese Drop 01.wav", 2.0, role="bass")
+expect("Synth/Vox Lead C3.wav", 3.0, role="lead")
+expect("FX/Reverse Crash 01.wav", 2.0, type="fx")
+expect("FX/Reversed Cymbal 01.wav", 2.0, type="fx")
+expect("Drums/Perc/Vocal Perc 01.wav", 0.3, type="drum_oneshot")
+# real fx and real voices stay
+expect("FX/Risers/Riser 01.wav", 4.0, type="fx")
+expect("FX/Piano Riser 01.wav", 4.0, type="fx")
+expect("FX/White Noise Sweep 01.wav", 4.0, type="fx")
+expect("Drums/Kicks/Kick Impact 01.wav", 0.5, type="drum_oneshot")
+expect("Drums/Snares/Snare Noise 01.wav", 0.3, type="drum_oneshot")
+expect("Vocals/Dry/Take 01.wav", 3.0, type="vocal")
+expect("Vocals/Lead Vocal 01.wav", 3.0, type="vocal")
+expect("Loops/Vocal Phrase 120 Am.wav", 8.0, type="vocal")
+expect("Loops/Vox Loop 01 120.wav", 8.0, type="vocal")
+expect("Vocals/Phrases/Phrase 01.wav", 2.0, type="vocal")
+expect("Chants/Chant 01.wav", 2.0, type="vocal")
+expect("Synth/Vocoder Chord Am.wav", 3.0, type="oneshot_melodic")
+
 
 print("%d checks, %d failed" % (COUNT, FAILS))
 sys.exit(1 if FAILS else 0)

@@ -153,6 +153,28 @@ with tempfile.TemporaryDirectory() as tmp:
     r = measured(tmp, "Drums/Hats/Hat Closed 03.wav", hat(0.6, 0.15))
     check_eq("the name wins over the measure", r.get("subtype"), "hat_closed")
 
+# ================================================================ 2 + 3: melodic substrings, far loop folders
+
+for rel, d in [("Drums/Kicks/Synth Kick 01.wav", 0.4), ("Drums/Kicks/Synth Hard/Kick 01.wav", 0.4),
+               ("Drums/Snares/Synth Snare 01.wav", 0.3), ("Drums/Kicks/Bass Drum 01.wav", 0.4),
+               ("Drums/Kicks/Kick Punchy Keyed.wav", 0.4), ("Drums/Kicks/Kick Bassy 01.wav", 0.4),
+               ("Drums/Snares/Snare Padded 01.wav", 0.3), ("Drums/Claps/Clap Leader.wav", 0.3),
+               ("Drums/Hats/Hat Plucky 01.wav", 0.08), ("Drums/Kicks/Kickdrum 01.wav", 0.4)]:
+    expect(rel, d, type="drum_oneshot")
+expect("Drums/Kicks/Bass Drum 01.wav", 0.4, subtype="kick", role="kick")
+expect("Drums/Kicks/Kickdrum 01.wav", 0.4, subtype="kick", role="kick")
+# a melodic name in a drum folder stays melodic
+expect("Drums/Snares/Piano Stab 01.wav", 0.5, type="oneshot_melodic")
+expect("Drums/Kicks/Synth/Lead C3.wav", 0.5, type="oneshot_melodic")
+for rel, d in [("Loops & One Shots/Kicks/Kick 01.wav", 0.4), ("Trap Beats/One Shots/Snare 01.wav", 0.3),
+               ("Drum Fills & Hits/Hits/Clap 01.wav", 0.3), ("Beat Makers Pack/Hats/Hat 01.wav", 0.08),
+               ("Stems & Shots/Shots/Kick 01.wav", 0.4), ("Drums/Fills/Solo Fill 01.wav", 0.4)]:
+    expect(rel, d, type="drum_oneshot")
+expect("Drums/Fills/Fill 01 120.wav", 4.0, type="drum_loop")
+expect("Drum Loops/128/Full 01.wav", 7.5, type="drum_loop")
+expect("Kick Loops/Kick 01.wav", 3.84, type="drum_loop")
+expect("Loops & One Shots/Loops/Drum Loop 01.wav", 4.0, type="drum_loop")
+
 
 print("%d checks, %d failed" % (COUNT, FAILS))
 sys.exit(1 if FAILS else 0)

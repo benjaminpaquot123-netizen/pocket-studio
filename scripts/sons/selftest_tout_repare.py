@@ -118,7 +118,25 @@ def test_lone_letter_root():
     check_true("8 the module text names the match 'root'", "root" in tout.__doc__.split("key_match (")[1].split(")")[0])
 
 
-TESTS = [test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_oneshot_with_tempo():
+    """Defect 2: a melodic one-shot with a tempo in its name stays a one-shot, its note kept."""
+    held = ru.tone(130.81, 1.5)
+    files = {"One Shots/Bass C2 120bpm.wav": held, "Bass One Shots/Bass C2 120bpm.wav": held,
+             "Oneshots/Bass C2 120 bpm.wav": held, "Bass/Bass C2 120bpm.wav": held,
+             "One Shots/Pluck C3 140bpm.wav": ru.tone(261.63, 1.5), "Stabs/Stab Am 128bpm.wav": ru.tone(220.0, 1.5),
+             "Synth/Bass 120 C.wav": ru.tone(65.41, 2.0), "808/808 Long 140bpm C.wav": ru.b808(1.6)}
+    rows, _, _, code, _ = run(files)
+    check_eq("2 run ends well", code, 0)
+    for rel in ("One Shots/Bass C2 120bpm.wav", "Bass One Shots/Bass C2 120bpm.wav", "Oneshots/Bass C2 120 bpm.wav",
+                "Bass/Bass C2 120bpm.wav", "One Shots/Pluck C3 140bpm.wav", "Stabs/Stab Am 128bpm.wav",
+                "Synth/Bass 120 C.wav"):
+        r = rows[rel] or {}
+        check_eq("2 '%s': a melodic one-shot, no tempo" % rel, (r.get("type"), r.get("bpm_tag")), ("oneshot_melodic", ""))
+    check_eq("2 'Bass C2 120bpm': note C2 kept", (rows["One Shots/Bass C2 120bpm.wav"] or {}).get("note_tag"), "C2")
+    check_eq("2 '808 Long 140bpm C': still a drum hit", (rows["808/808 Long 140bpm C.wav"] or {}).get("type"), "drum_oneshot")
+
+
+TESTS = [test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

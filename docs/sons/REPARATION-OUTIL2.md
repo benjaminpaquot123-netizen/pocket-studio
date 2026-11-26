@@ -52,16 +52,19 @@ retrouvée par `--trace`), `a3-16` (justesse d'une note de one-shot : 120 cents 
 
 ## Self-tests
 
-MUT_SELFTESTS
+Tous verts, 0 échec : selftest 140, tout 346, a 255, b 168, c 46, d 205, e 82, repare 126, reuni 104.
 
 ## Mutations
 
-MUT_RESULT
+125 mutations (22 d'audit3 + mutate.M), copie à `d91eff7a` : 118 tuées, 4 survivantes, 3 non jouées.
+`a3-00`, `a3-08`, `a3-21` survivaient sur cette copie ; tuées ensuite par `test_mutation_survivors_2` (`3928de0e`, `65f40985`), vérifié à la main. Bilan : 121 tuées sur 122 jouées.
+Survivante (laissée au chef, `tout.py` n'est plus à ce lot) : « type: bpm word makes a loop from 1.5 s -> 0.2 s » (`tout.py` l. 877), presque équivalente à cause de la règle « plus court qu'une mesure » ; test qui la tuerait : un son nommé « 300bpm » ou « 30bpm » d'environ 1 s.
+Non jouées : « midi: drum track if ANY note on channel 10 » (texte présent 2 fois depuis R6), « fence: accuracy usable from 1 tagged file » et « fence: accuracy usable under 50 % error » (texte absent depuis A7, mutations à réécrire dans `mutate.py`).
 
 ## Rejeux
 
-REPLAYS
+`audit4/probes.py` : 16 cas, FAIL=0.
 
 ## Relecture neuve
 
-REVIEW
+Deux relectures neuves (`7eb9f773`, `d91eff7a`, `3928de0e`) : rien de grave. Restent : MOYEN, un MIDI de batterie sur le canal 1 passe encore par la lecture des accents ; MINEURS, `_one_pitch` ne lit que les 4 premières s, `own[:-1]` ignore un dossier racine seul (« Hits Vol 2 »), débord de caisse claire sur des charlestons en contretemps seuls (ancien), moins de 10 trames voisées = une seule hauteur, piste de kit silencieuse = ligne d'erreur, défaut 10 (rôle lu dans le nom).

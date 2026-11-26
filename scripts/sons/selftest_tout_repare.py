@@ -299,7 +299,19 @@ def test_oneshot_note_accuracy_50_cents():
     check_eq("a3-16 120 cents off is no agreement", acc, [("oneshot_melodic", "note", "1", "0")])
 
 
-TESTS = [test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_audit2_replays_fail_on_faults, test_audit2_packs_in_work_folder, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_flat_key_est_spelled_like_tag():
+    """Defect 12: a key written with a flat ('Bbm') is shown as a flat in key_est too, not 'A# minor'."""
+    bbm = [[n + 1 for n in c] for c in AM]
+    rows, _, _, code, _ = ru.run({"Loops/Pad Loop 120 Bbm.wav": ru.plucks(120.0, bbm, 2),
+                                  "Loops/Pad Loop 120 Am.wav": ru.plucks(120.0, AM, 2)})
+    check_eq("12 run ends well", code, 0)
+    r = rows["Loops/Pad Loop 120 Bbm.wav"] or {}
+    check_eq("12 key_tag and key_est both written Bb", (r.get("key_tag"), r.get("key_est")), ("Bb minor", "Bb minor"))
+    r = rows["Loops/Pad Loop 120 Am.wav"] or {}
+    check_eq("12 a key without a flat is left as heard", (r.get("key_tag"), r.get("key_est")), ("A minor", "A minor"))
+
+
+TESTS = [test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_audit2_replays_fail_on_faults, test_audit2_packs_in_work_folder, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

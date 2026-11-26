@@ -1,0 +1,9 @@
+rar,pack,kit_id,type,subtype,role,style,dur_s,sr,ch,size_kb,peak_dbfs,rms_dbfs,lufs_i,bpm_tag,key_tag,bpm_est,key_est,error,n_stems,n_midi,roles,bpm_gap_pct,key_match,bars,file_id,cle
+7,p2,r7k001,kit,-,-,unlabelled,,,,195983.7,,,,128,C minor,128,C minor,,36,8,bass+chords+drums+full+fx+hats+keys+kick+lead+pluck+snare+vocal,0,exact,30,6653859144,r7-p2-6653859144
+7,p2,r7k002,kit,-,-,unlabelled,,,,138916.8,,,,150,C minor,150,C minor,,22,2,drums+full+hats+kick+lead+snare+vocal,0,exact,24,cf5f506358,r7-p2-cf5f506358
+7,p2,r7k003,kit,-,-,unlabelled,,,,287127.5,,,,140,F minor,140,G# major,,29,4,bass+chords+drums+full+fx+hats+keys+kick+lead+perc+snare+synth+vocal,0,relative,35,7da5c26d1e,r7-p2-7da5c26d1e
+7,p2,r7k004,kit,-,-,unlabelled,,,,292273.5,,,,174,G# minor,87,E major,,53,16,bass+chords+drums+full+fx+hats+kick+lead+pad+snare+vocal,-50,other,43.5,b2d017244c,r7-p2-b2d017244c
+7,p2,r7k005,kit,-,-,unlabelled,,,,382597.7,,,,127,F# minor,128,F# minor,,52,12,bass+chords+drums+full+hats+kick+lead+snare+vocal,0.7874,exact,31.75,2693856929,r7-p2-2693856929
+7,p3,r7k001,kit,-,-,edm,,,,93125.7,,,,,,,,,27,22,bass+chords+full+lead+pad,,,,8c109942d7,r7-p3-8c109942d7
+7,p3,r7k002,kit,-,-,lofi,,,,151992.8,,,,,,,,,25,15,bass+full+fx+keys,,,,4878e4861f,r7-p3-4878e4861f
+7,p3,r7k003,kit,-,-,trap,,,,87117.3,,,,,,,,,25,15,bass+full+keys+lead+pad+synth,,,,d8522d3b96,r7-p3-d8522d3b96

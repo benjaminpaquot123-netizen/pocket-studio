@@ -1,0 +1,4 @@
+rar,pack,files_audio,files_midi,rows,kit_rows,errors,count_ok,tout_rc,style_posed,rows_pack_styled,pack_line_ok,style_forced,rows_forced,unresolved,nested_archives,skipped
+7,p1,0,383,383,0,0,yes,0,unlabelled,0,yes,,0,0,0,
+7,p2,1413,48,1461,5,0,yes,0,unlabelled,0,yes,,0,0,0,.ini:2 .txt:11
+7,p3,130,52,182,3,0,yes,0,unlabelled,0,yes,,0,0,0,

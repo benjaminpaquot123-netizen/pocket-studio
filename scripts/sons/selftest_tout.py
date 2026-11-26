@@ -578,7 +578,7 @@ def test_tags_types():
     for parts, typ, field, want in [
             (["Loops", "A Bass 125 Em.wav"], "melodic_loop", "key", (4, "minor")),
             (["Loops", "D Bass Loop 125.wav"], "melodic_loop", "key", None),
-            (["Loops 125 BPM", "Bass G.wav"], "melodic_loop", "key", (7, "major")),
+            (["Loops 125 BPM", "Bass G.wav"], "melodic_loop", "key", (7, None)),  # no mode written: the tonic only (RAR 3 case 2)
             (["Loops", "Bass 125 Eb minor.wav"], "melodic_loop", "key", (3, "minor")),
             (["One Shots", "E Piano C3.wav"], "oneshot_melodic", "note", 0),
             (["One Shots", "B3 Organ C2.wav"], "oneshot_melodic", "note", 0),

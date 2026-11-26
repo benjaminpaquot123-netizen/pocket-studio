@@ -68,7 +68,7 @@ def test_kit_midi_key():
     files = kit_files("Kits/Kit 01 - 128 F/", midi="Kit 01.mid")
     rows, _, _, code, _ = run(files)
     r = rows["Kits/Kit 01 - 128 F/Kit 01.mid"] or {}
-    check_eq("1 kit midi with a key written on the kit: key_tag kept", r.get("key_tag"), "F major")
+    check_eq("1 kit midi with a key written on the kit: key_tag kept", r.get("key_tag"), "F")  # no mode written: the tonic only (RAR 3 case 2)
 
 
 def test_drum_stem_no_key():

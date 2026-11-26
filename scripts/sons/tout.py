@@ -282,7 +282,9 @@ def hz_to_midi(f):
 
 
 def key_name(k):
-    return None if k is None else "%s %s" % (NOTE_NAMES[k[0]], k[1])
+    if k is None:
+        return None
+    return NOTE_NAMES[k[0]] if k[1] is None else "%s %s" % (NOTE_NAMES[k[0]], k[1])  # root only (RAR 3 case 2)
 
 
 def key_match(measured, tag):
@@ -290,6 +292,8 @@ def key_match(measured, tag):
         return None
     if measured == tag:
         return "exact"
+    if tag[1] is None:  # the name gave only the root (RAR 3 case 2)
+        return "root" if measured[0] == tag[0] else "other"
     rel = ((tag[0] + 3) % 12, "major") if tag[1] == "minor" else ((tag[0] - 3) % 12, "minor")
     return "relative" if measured == rel else "other"
 
@@ -359,7 +363,7 @@ def _key_candidates(text):
         if not word_mode and _NOT_KEY_AFTER.match(text, m.end()) and (
                 (m.group(5) and letter == "F" and not acc) or (acc in ("b", "♭", "flat") and not mode)):
             continue
-        key = (_pc(letter, acc), mode or "major")
+        key = (_pc(letter, acc), mode)  # no mode written: the tonic only (RAR 3 case 2)
         (strong if (acc or mode) else lone).append((m, key))
     return strong, lone
 
@@ -406,13 +410,17 @@ def parse_tags(parts, typ):
         if out["bpm"] is not None:
             break
     any_bpm = any(_BPM_RX.search(t) or _BPM_PRE_RX.search(t) for t in texts)
+    stem = re.sub(r"(?i)\.(wav|wave|aiff?|aifc|midi?)$", "", parts[-1]) if parts else ""
     if out["bpm"] is None and loopish:
         key_folder = any(_key_only(t) for t in texts[1:])
         for i, text in enumerate(texts):
             bare = [float(m.group(1)) for m in _bare_numbers(text)]
             only = _ONLY_NUMBER.fullmatch(text) if i else None
             keyed = bool(_key_candidates(text)[0]) or (i == 0 and key_folder)
-            if (keyed or only) and len(bare) == 1:
+            # 'Bass Synth Loop_125_Lantern_F': one number between underscores in a loop or MIDI name (RAR 3 case 1)
+            framed = i == 0 and len(bare) == 1 and (typ == "midi" or LOOP_RX.search(text)) and re.search(
+                r"_%d_" % bare[0], stem) is not None
+            if (keyed or only or framed) and len(bare) == 1:
                 v = bare[0]
                 if 60 <= v <= 200:
                     out["bpm"] = v
@@ -433,8 +441,9 @@ def parse_tags(parts, typ):
                 head, tail = text[:m.start()], text[m.end():].strip(" -")
                 if _VERSION_WORDS.search(head):
                     continue
-                if tail == "" and (any_bpm or _BARE_RX.search(head)) and m.group(1) not in "AB":
-                    out["key"] = key
+                framed = re.search(r"_\d{2,3}_", stem) is not None and out["bpm"] is not None
+                if tail == "" and (any_bpm or _BARE_RX.search(head)) and (m.group(1) not in "AB" or framed):
+                    out["key"] = (key[0], None)  # the tonic only: a lone letter names no mode (RAR 3 case 2)
                     out["flat"] = _is_flat(m)
                     break
                 # 'Synth Loop 120 A' (A/B are variations), 'Pad Loop F', 'Key F', 'Piano Loop C 120':
@@ -515,8 +524,10 @@ def confirm_tags(row, tags):
         row["key_tag"] = spell(row.get("key_tag"), True)
     nmeas = re.match(r"[A-G]#?", row.get("note_measured") or "")
     # both spelled as flats: a tag already shown as 'Bb' is the measured 'A#' (reunion review)
+    gap = row.get("cents_gap")
     if (tags.get("note_lone") and row.get("note_tag") and nmeas
-            and spell(row["note_tag"], True) != spell(nmeas.group(0), True)):
+            and spell(row["note_tag"], True) != spell(nmeas.group(0), True)
+            and not (gap is not None and abs(gap) <= 150.0)):  # a semitone off is a detuned C, not B (RAR 3 case 3)
         row["note_tag"] = None  # 'Pad Soft F' that sounds A3 (audit 2 #12)
         if "cents_gap" in row:
             row["cents_gap"] = None  # no gap to a note the name does not give
@@ -813,6 +824,7 @@ def _loop_named(name, folders, dur):
     return False
 
 
+_PACK_STYLE = [None]  # the style the pack itself names, set by main before any file is read
 _PACK_TOP = [None]  # the single folder at the root of the folder given: the pack itself (set by main)
 
 
@@ -841,6 +853,8 @@ def classify(rel, dur):
     text = (inner + "/" + name)
     own = parts[1:] if _PACK_TOP[0] and len(parts) > 1 and parts[0] == _PACK_TOP[0] else parts
     style = style_of("/".join(own))  # the pack's own folder names no role and comes last for style (audit 3 #4)
+    if _PACK_STYLE[0] not in (None, "unlabelled"):
+        style = style_of("/".join(own[:-1]))  # a title word ('Drum Fill_125_Soul') is no genre then (RAR 3 case 4)
     role = role_of(name)
     if role == "-":
         for f in reversed(own[:-1]):
@@ -870,8 +884,13 @@ def classify(rel, dur):
     reversed_cymbal = drum_named and REVERSE_RX.search(name) and drum_family(name, []) in ("crash", "cymbal", "ride")
     if reversed_cymbal:
         drum_named = False  # a reversed cymbal is a riser (defect 9)
-    if FX_RX.search(text) and not drum_named:  # 'Kick Impact', 'Noise Hat Loop' stay drums (I7)
+    atmos_loop = looped_any and not STRONG_FX_RX.search(text)  # 'Atmospheric Loop_125_D' is a pad (RAR 3 case 5)
+    if atmos_loop and FX_RX.search(text) and out["role"] == "fx":
+        out["role"] = "pad"
+    if FX_RX.search(text) and not drum_named and not atmos_loop:  # 'Kick Impact', 'Noise Hat Loop' stay drums (I7)
         if _fx_named(name, folders):
+            if STRONG_FX_RX.search(text):
+                out["role"] = "fx"  # 'FX/Sub Hits/Sub Boom', 'Impact FX_Break': the fx word beats a title word (RAR 3 case 6)
             out["type"] = "fx"
             if reversed_cymbal:
                 out["role"] = "fx"  # a riser, not a hat (b1 replay)
@@ -2098,6 +2117,8 @@ def measure_midi_bytes(b, tags):
     out["key_measured"] = key_name(k)
     out["key_match"] = key_match(k, tags.get("key"))
     ref = tags.get("key") or k
+    if ref is not None and ref[1] is None:  # a root-only tag: the heard mode on the written root
+        ref = (ref[0], k[1] if k is not None else "major")
     if ref is not None:
         scale = MINOR_SCALE if ref[1] == "minor" else MAJOR_SCALE
         inscale = sum(pcw[(ref[0] + i) % 12] for i in scale)
@@ -2228,7 +2249,7 @@ def measure_drum_oneshot(sr, x, family):
     if fam.startswith("kick") or fam in ("808", "bass", "tom"):
         out.update(_kick_drop(_mono(x), sr))
     st = out.get("pitch_steady_hz")
-    if st and math.isfinite(st) and (out.get("tonal_db") is None or out["tonal_db"] > -10):
+    if st and math.isfinite(st) and fam not in ("snare", "clap") and (out.get("tonal_db") is None or out["tonal_db"] > -10):
         out["note_measured"] = midi_name(hz_to_midi(st))
     return out
 
@@ -2737,6 +2758,13 @@ def main(argv=None):
     if not os.path.isdir(args.folder):
         ap.error("not a folder: %s" % args.folder)
     _PACK_TOP[0] = _pack_top(args.folder)
+    # a style written only in the pack folder's own name comes last (audit 2, defect 14)
+    pack_style = style_of(_PACK_TOP[0] or "", pack=os.path.basename(os.path.abspath(args.folder)))
+    if args.no_pack_style:
+        pack_style = "unlabelled"
+    elif args.pack_style:
+        pack_style = re.sub(r"[^a-z0-9-]", "", args.pack_style.lower()).strip("-")[:20] or "unlabelled"
+    _PACK_STYLE[0] = pack_style
     _PACK_NAME[0] = os.path.basename(os.path.normpath(os.path.abspath(args.folder)))
     if args.trace:
         # the tables stay anonymous; the id leads back to the file only with the pack at hand (defect 28)
@@ -2790,12 +2818,6 @@ def main(argv=None):
     rows["midi"] += mr
     total = 0
     usable = {(r["type"], r["measure"]) for r in acc.rows() if r["usable"] == "yes"}
-    # a style written only in the pack folder's own name comes last (audit 2, defect 14)
-    pack_style = style_of(_PACK_TOP[0] or "", pack=os.path.basename(os.path.abspath(args.folder)))
-    if args.no_pack_style:
-        pack_style = "unlabelled"
-    elif args.pack_style:
-        pack_style = re.sub(r"[^a-z0-9-]", "", args.pack_style.lower()).strip("-")[:20] or "unlabelled"
     pack_styled = 0
     for typ in TYPES:
         if not rows[typ]:

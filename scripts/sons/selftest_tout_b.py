@@ -112,8 +112,8 @@ def test_key():
     check_eq("11 a sure key is never replaced", confirmed("Loops/Loop 120 Am.wav", key="C major")["key_tag"],
              "A minor")
     # 38: a flat in the name is shown as a flat
-    for rel, want in (("Loops/Bass Loop 120 Bb.wav", "Bb major"), ("Loops/Bass Loop 120 Bbm.wav", "Bb minor"),
-                      ("Loops/Bass Loop 120 B\u266dm.wav", "Bb minor"), ("Loops/Bass Loop 120 Db.wav", "Db major"),
+    for rel, want in (("Loops/Bass Loop 120 Bb.wav", "Bb"), ("Loops/Bass Loop 120 Bbm.wav", "Bb minor"),
+                      ("Loops/Bass Loop 120 B\u266dm.wav", "Bb minor"), ("Loops/Bass Loop 120 Db.wav", "Db"),
                       ("Loops/Loop 120 Dbmaj7.wav", "Db major"), ("Loops/Bass Loop 120 A#m.wav", "A# minor"),
                       ("Loops/Bass Loop 120 Eb minor.wav", "Eb minor")):
         check_eq("38 spelled as written: %s" % rel, confirmed(rel)["key_tag"], want)

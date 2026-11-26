@@ -54,7 +54,8 @@ verdict is a coin toss (blind re-check, docs/sons/REVERIF-TOUT.md).
 A drum hit named "Full", "Mix", "Mastered" or "Song" is still one hit and is
 read like any other. A one-shot with a tempo in its name ("808 Long 140bpm")
 shows end_cut 1 when it really ends cut and stays empty otherwise (it may be
-meant to run on to the bar line); its end_fade_ms stays empty. The tempo of
+meant to run on to the bar line): an empty end_cut there does not mean a
+clean end, it is no verdict at all; its end_fade_ms stays empty. The tempo of
 such a name is not a tag of the sound: a one-shot row has no bpm_tag.
 "Not yet at -60 dB when the file ends" (empty t60, end_level_db above -60)
 only means a long sound trimmed short; it is information, never a cut.

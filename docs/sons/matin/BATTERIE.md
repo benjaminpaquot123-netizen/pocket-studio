@@ -86,11 +86,15 @@ Le dossier doit être hors du dépôt. Le script fabrique tout seul ce qu'il lui
 
 Pour chaque famille et style, le test joue un coup de la nouvelle version et vérifie qu'il tombe dans la fourchette des mesures (du 10e au 90e centile), avec une marge : 10 % sur la longueur, 8 % sur la note, 25 % sur le départ de la chute et sur la clarté. Il vérifie aussi : attaque en moins de 5 ms, ni NaN ni saturation, aucune allocation de mémoire pendant le rendu, et qu'un coup qui en relance un autre ne casse rien.
 
+**Resserrage (point 3, 26 novembre)** : les voix qui ne passaient que grâce à la marge (charleys fermés et ouverts, crash, claps, kick techhouse, caisse claire dubstep) passent maintenant un test plus dur, sans marge : la longueur à −20 dB, la longueur à −60 dB et la clarté doivent tomber entre le 25e et le 75e centile des coups de référence du style (pas « médiane ± 10 % »). Pour ces voix, l'ancien test ne garde que ses contrôles de sûreté (attaque, saturation, NaN, allocation). Les charleys sont classés fermés ou ouverts d'après leur longueur mesurée, plus d'après leur nom. Les chiffres du tableau plus haut, pour ces voix-là, sont ceux de la première version.
+
+**Ce qui sert de cible, et ce qui n'en sert pas** (après une relecture à l'aveugle des mesures) : la longueur, la crête et le volume sont fiables ; la note n'est vérifiée que pour le kick (≈ 48 Hz, à un demi-ton près), le 808 et les toms. La note des claps, charleys, crash et caisses claires n'est pas une cible. La clarté sert d'indication, pas de vérité. **Le 808** : 21 des 23 coups mesurés viennent d'un seul pack, donc ses chiffres disent « ce pack-là », pas « le 808 » en général.
+
 ## Ce qui n'est pas fait (à dire franchement)
 
 - **Les boucles ne passent pas par `ps_live`** (le moteur temps réel de l'appli) : elles sont jouées par un petit séquenceur du script, sans la chaîne de mixage de l'appli ni le mixage par piste. Les niveaux des familles dans la boucle « après » sont posés à la main. Les coups seuls « avant », eux, sortent de la vraie batterie de l'appli (kit v3, mêmes réglages de kick et de 808 que les styles), sans sa table de mixage.
 - **Le 808 « avant »** de house, techhouse, techno, dnb et dubstep est le 808 de la trap posé sur la tonique du style : l'appli n'a un 808 que pour la trap.
-- **Quelques mesures ne passent que grâce à la marge** (toutes en clarté) : les charleys fermés (jusqu'à 12 % trop brillants), le charley ouvert house (13 %), le crash (10 %, et 24 % en dubstep), le clap trap (17 %) et dubstep (4 %), le charley ouvert dubstep (1 %), la caisse claire dnb (3 %), le kick trap (3 %) ; le kick techhouse est 6 % trop sombre.
+- **Les voix qui ne passaient que grâce à la marge** ont été resserrées (voir plus haut) ; la caisse claire dnb et le kick trap, à 3 % de leur fourchette large, n'ont pas été retouchés.
 - **Quand un style avait trop peu de coups mesurés** (808, rim, la plupart des toms, crash dans quatre styles, charley ouvert dans trois), la cible est celle de la famille entière : la nouvelle version est alors la même dans ces styles (seule la note du 808 suit la tonique).
 - **Pas encore dans l'appli** : aucun pad, style ni projet ne joue ces versions. Les y mettre sera un autre lot, après écoute de Benjamin.
 - Pas de cowbell, shaker, conga ni zap dans ce lot.

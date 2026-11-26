@@ -5,7 +5,7 @@ Remplacer `N` par le numéro du RAR et `LIEN` par le lien Google Drive donné pa
 
 ## Étapes
 1. Disque : `df -h /tmp` ; il faut plus de 5 Go libres (archive + extraction). Sinon « bloqué : disque ».
-2. Outil : `apt-get install -y unrar` (unrar de RARLAB ; jamais unar, qui donne de fausses erreurs).
+2. Outil : `apt-get update && apt-get install -y unrar` (unrar de RARLAB ; jamais unar, qui donne de fausses erreurs).
 3. Banc : `python3 -I scripts/sons/passe2/test_lance.py` doit finir par « 0 failure(s) ».
 4. Dossier de sortie hors dépôt : `OUT=/tmp/passe2-out-rarN; mkdir -p "$OUT"`.
 5. Plan d'abord : `scripts/sons/passe2/lance.sh --rar N --url 'LIEN' --out "$OUT" --plan`.

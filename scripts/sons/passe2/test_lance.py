@@ -3,7 +3,7 @@
 
   python3 -I scripts/sons/passe2/test_lance.py
 
-Needs RARLAB unrar (apt-get install -y unrar). The archive is written by
+Needs RARLAB unrar (apt-get update && apt-get install -y unrar). The archive is written by
 fakerar.py (stored entries) and checked by `unrar t`, so the real unrar path
 is exercised: download (file:// URL through curl), test, extract, packs,
 tout.py per pack, merged CSVs, forced style, control, cleanup, repository guard.
@@ -134,7 +134,7 @@ def run(args, env=None):
 
 def main():
     if not shutil.which("unrar"):
-        print("FAIL unrar missing (apt-get install -y unrar)")
+        print("FAIL unrar missing (apt-get update && apt-get install -y unrar)")
         return 1
     base = tempfile.mkdtemp(prefix="passe2-test-")
     try:

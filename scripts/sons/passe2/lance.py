@@ -91,9 +91,12 @@ def check_rar(path):
                       % head[:8])
 
 
+NO_UNRAR = "RARLAB unrar not installed (apt-get update && apt-get install -y unrar); never unar"
+
+
 def unrar(args):
     if not shutil.which("unrar"):
-        raise Refused("RARLAB unrar not installed (apt-get install -y unrar); never unar")
+        raise Refused(NO_UNRAR)
     return subprocess.run(["unrar"] + args, capture_output=True, text=True)
 
 
@@ -355,6 +358,8 @@ def main(argv=None):
     try:
         if not 1 <= a.rar <= 99:
             raise Refused("--rar must be 1..99")
+        if not shutil.which("unrar"):  # before any download: refuse up front
+            raise Refused(NO_UNRAR)
         for label, p in (("--out", a.out), ("--work", a.work)):
             if not os.path.isdir(p):
                 raise Refused("%s: no such folder: %s" % (label, p))

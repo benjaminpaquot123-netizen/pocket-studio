@@ -565,6 +565,52 @@ def test_blocking():
     check("70 bpm with 16th hats: bars", m["bars"], 2, 0)
 
 
+def test_tags_types():
+    """Blind audit I4-I7: tags and types taken by a stray word."""
+    for parts, typ, want in [
+            (["Loops", "Bass Loop 100.wav"], "melodic_loop", None),
+            (["Loops", "24Bit 96k", "Bass Loop Am.wav"], "melodic_loop", None),
+            (["Melody Loops 140 BPM", "Melody 74 Cm.wav"], "melodic_loop", 140.0),
+            (["Drum Loops", "Loop 66.wav"], "drum_loop", None),
+            (["Loops", "Bass 87.5 BPM Em.wav"], "melodic_loop", 87.5),
+            (["Loops", "Bass 124 Am.wav"], "melodic_loop", 124.0)]:
+        check_eq("bpm tag %s" % "/".join(parts), tout.parse_tags(parts, typ)["bpm"], want)
+    for parts, typ, field, want in [
+            (["Loops", "A Bass 125 Em.wav"], "melodic_loop", "key", (4, "minor")),
+            (["Loops", "D Bass Loop 125.wav"], "melodic_loop", "key", None),
+            (["Loops 125 BPM", "Bass G.wav"], "melodic_loop", "key", (7, "major")),
+            (["Loops", "Bass 125 Eb minor.wav"], "melodic_loop", "key", (3, "minor")),
+            (["One Shots", "E Piano C3.wav"], "oneshot_melodic", "note", 0),
+            (["One Shots", "B3 Organ C2.wav"], "oneshot_melodic", "note", 0),
+            (["One Shots", "Synth A 01.wav"], "oneshot_melodic", "note", None),
+            (["Kicks", "Kick A 01.wav"], "drum_oneshot", "note", None),
+            (["Snares", "Snare D 03.wav"], "drum_oneshot", "note", None),
+            (["One Shots", "Pluck C#3.wav"], "oneshot_melodic", "note", 1)]:
+        check_eq("%s tag %s" % (field, "/".join(parts)), tout.parse_tags(parts, typ)[field], want)
+    for rel, dur, field, want in [
+            ("Drum One Shots/Hats/HH Closed 01.wav", 0.1, "subtype", "hat_closed"),
+            ("Drum One Shots/Hats/Hat Closed 01.wav", 0.1, "subtype", "hat_closed"),
+            ("Drum One Shots/Hats/HiHat Open 02.wav", 0.5, "subtype", "hat_open"),
+            ("Drum One Shots/Hats/OHH 01.wav", 0.5, "subtype", "hat_open"),
+            ("Drum One Shots/Hats/CHH_01.wav", 0.1, "subtype", "hat_closed"),
+            ("Drum One Shots/Perc/Perc High 01.wav", 0.2, "subtype", "perc_high"),
+            ("Drum One Shots/Perc/Perc Low 01.wav", 0.2, "subtype", "perc_low"),
+            ("One Shots/Kicks/Kick Impact 01.wav", 0.4, "type", "drum_oneshot"),
+            ("One Shots/Snares/Snare Reverse.wav", 0.5, "type", "drum_oneshot"),
+            ("Loops/Drums/Noise Hat Loop 128.wav", 4.0, "type", "drum_loop"),
+            ("Drum Loops/Drop Beat 140.wav", 8.0, "type", "drum_loop"),
+            ("FX/Risers/Riser 01.wav", 4.0, "type", "fx"),
+            ("Kits/Kit 1/Kick 01.wav", 0.3, "type", "drum_oneshot"),
+            ("Construction Kits/Kit 01/One Shots/Kick.wav", 0.3, "type", "drum_oneshot"),
+            ("Vendor Construction Pack/Drum Loops/Loop 120.wav", 8.0, "type", "drum_loop"),
+            ("Kit 01 120 Am/Stems/Bass.wav", 16.0, "type", "kit_stem"),
+            ("One Shots/Synth/Atom Pluck C3.wav", 1.0, "role", "pluck"),
+            ("One Shots/Synth/Chat Lead.wav", 1.0, "role", "lead"),
+            ("Drum One Shots/808/808 Long F.wav", 6.5, "type", "drum_oneshot"),
+            ("Drum One Shots/Cymbals/Crash 01.wav", 7.0, "type", "drum_oneshot")]:
+        check_eq("%s of %s" % (field, rel), tout.classify(rel, dur)[field], want)
+
+
 def test_cli():
     with tempfile.TemporaryDirectory() as tmp:
         pack = os.path.join(tmp, "Secret Vendor Pack")
@@ -671,7 +717,7 @@ def main(argv=None):
         return 0
     with np.errstate(all="ignore"):
         for fn in (test_tags, test_classify, test_common, test_notes, test_adsr, test_drum_loop, test_key,
-                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_blocking, test_cli):
+                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_blocking, test_tags_types, test_cli):
             try:
                 fn()
             except Exception as e:  # a crash is a failed check, the rest still runs

@@ -1,0 +1,4 @@
+rar,pack,files_audio,files_midi,rows,kit_rows,errors,count_ok,tout_rc,style_posed,rows_pack_styled,pack_line_ok,style_forced,rows_forced,unresolved,nested_archives,skipped
+12,p1,256,0,256,0,0,yes,0,edm,255,yes,,0,0,0,
+12,p2,424,70,494,0,0,yes,0,house,494,yes,,0,0,0,
+12,p3,36,0,36,0,0,yes,0,rave,33,yes,,0,0,1,.pdf:1 .serumpack:1

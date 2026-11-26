@@ -228,7 +228,7 @@ def test_mutations_run_every_selftest():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)  # importing must not start a run
     got = mod.tests_for("tout.py", HERE)
-    want = ["selftest_tout.py"] + ["selftest_tout_%s.py" % s for s in ("a", "b", "c", "d", "e", "reuni")]
+    want = ["selftest_tout.py"] + ["selftest_tout_%s.py" % s for s in ("a", "b", "c", "d", "e", "repare", "reuni")]
     check_eq("4 every self-test of tout.py is played", sorted(got), sorted(want))
     check_eq("4 the base self-test first (fast kill)", got[0], "selftest_tout.py")
     check_eq("4 mesure.py also plays its own self-test", sorted(mod.tests_for("mesure.py", HERE)),

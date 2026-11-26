@@ -271,13 +271,30 @@ _NOTE_RX = r"([A-Ga-g])(#|♯|♭|[ _-]?(?i:sharp|flat)|b(?![A-LN-Za-ln-z]))?"
 _BPM_RX = re.compile(r"(?i)(?<![\d.])(\d{2,3}(?:\.\d+)?)\s*-?\s*bpm\b")
 # bare numbers: no leading zero (Loop_073 is an index) and not '90s'
 # a number followed by k / kHz / Hz / bit(s) is a sample rate or a bit depth
-_BARE_RX = re.compile(r"(?<![\d.])([1-9]\d{1,2})(?![\d.]|s\b|\s*(?i:bars?|x|k|khz|hz|bits?)\b)")
-_MODE_RX = r"(?:[ _-]?(?i:(maj)(?:or)?|(min)(?:or)?)|(m))(?:\d{1,2})?"
+# '100%', "90's" and '96kHz24bit' are not tempos (audit 2 #6)
+_BARE_RX = re.compile(r"(?<![\d.])([1-9]\d{1,2})"
+                      r"(?![\d.%]|s\b|['’]s\b|\s*-?\s*(?i:bars?|x|k|khz|hz|bits?)(?![a-z]))")
+# 'Loop BPM 140', 'bpm140' (audit 2 #10)
+_BPM_PRE_RX = re.compile(r"(?i)(?<![a-z])bpm\s*[-:_]?\s*(\d{2,3}(?:\.\d+)?)(?![\d.])")
+# a number right after a gear or model word is a model number, not a tempo (Juno 106, Route 66)
+_GEAR_WORDS = re.compile(r"(?i)(?<![a-z])(?:juno|rhodes|mpc|route|tr|sh|cs|jx|sp|dx|tb|mc|op|mk|ob|"
+                         r"prophet|jupiter|model|vol|volume|track|pack|take|part|no|nr|room|studio|"
+                         r"series|type|version|ver|v)[ _-]*$")
+# 'SH-101', 'TB-303': a short capital prefix and a dash name a model ('Bass-Loop-120' keeps its tempo)
+_MODEL_PREFIX = re.compile(r"(?<![A-Za-z])[A-Z]{1,3}-$")
+_ONLY_NUMBER = re.compile(r"\s*([1-9]\d{1,2})\s*")
+BPM_CONFIRM_TOL = 0.03  # a bare number is trusted when the sound is within 3 % of it, its half or its double
+_MODE_RX = r"(?:[ _-]?(?i:(maj)(?:or)?|(min)(?:or)?)|[ _-]?(m))(?:\d{1,2})?"  # 'C# m' (audit 2 #8)
 _KEY_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(?:" + _MODE_RX + r")?(?![A-Za-z0-9#])")
 _ONE_NOTE_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(-?\d)?(?![A-Za-z0-9#])")
 # a lone letter after these words is a version or a folder letter, not a key
 _VERSION_WORDS = re.compile(r"(?i)(?:kit|take|version|ver|v|part|pt|var|variation|alt|scene|"
                             r"section|group|set|bank|vol|side|mix|layer|sample|type|option)[ _-]*$")
+# 'Fm Synth' is FM synthesis, 'Bb Trumpet' names a transposing instrument (audit 2 #8)
+_NOT_KEY_AFTER = re.compile(r"(?i)[ _-]*(?:synth|trumpet|clarinet|sax\w*|tuba|horns?|cornet|flugel\w*)\b")
+# a lone letter after these words is a key: 'Key F', 'in F', 'Blues in A' (audit 2 #11)
+_KEY_WORDS = re.compile(r"(?i)(?<![a-z])(?:key|in)[ _-]*$")
+FLAT_NAMES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
 
 def _acc(acc):
@@ -306,55 +323,94 @@ def _key_candidates(text):
         letter, acc = m.group(1), _acc(m.group(2))
         mode = "major" if m.group(3) else ("minor" if (m.group(4) or m.group(5)) else None)
         word_mode = bool(m.group(3) or m.group(4))
-        if letter.islower() and not word_mode:
-            continue  # 'ab', 'e', 'am' are words or noise
+        if letter.islower() and not word_mode and not (
+                (acc == "#" or m.group(5)) and re.search(r"\d\s*$", text[:m.start()])):
+            continue  # 'ab', 'e', 'am' are words or noise, but '120 am', '120 f#m' are keys
+        if not word_mode and _NOT_KEY_AFTER.match(text, m.end()) and (
+                (m.group(5) and letter == "F" and not acc) or (acc in ("b", "♭", "flat") and not mode)):
+            continue
         key = (_pc(letter, acc), mode or "major")
         (strong if (acc or mode) else lone).append((m, key))
     return strong, lone
 
 
+def _prep(text):
+    """Separators a name uses instead of spaces: dots between words, dashes, brackets,
+    glued digits ('BassLoop120Am', 'Loop.120.Am', '[140] [Am]')."""
+    text = re.sub(r"(?<!\d)\.|\.(?!\d)", " ", text)
+    text = re.sub(r"[\[\](){}–—]", " ", text)
+    text = re.sub(r"(?<=[A-Za-z]{3})(?=\d{2,3}(?!\d))", " ", text)
+    text = re.sub(r"(?<=\d)(?=[A-G](?:#|b|♯|♭)?m?(?![a-z]))", " ", text)
+    if re.search(r"[a-z]", text) is None:  # 'BASS LOOP 120 AM': all capitals, so 'AM' is A minor
+        text = re.sub(r"(?<![A-Za-z0-9])([A-G](?:#|♯|♭)?)M(?![A-Za-z0-9#])", r"\1m", text)
+    return text
+
+
+def _bare_numbers(text):
+    """Bare numbers that may be a tempo: not a model number, a rate or a bit depth."""
+    return [m for m in _BARE_RX.finditer(text) if not _GEAR_WORDS.search(text[:m.start()])
+            and not _MODEL_PREFIX.search(text[:m.start()])]
+
+
+def _bare_ok(v):
+    return 50 <= v <= 250
+
+
 def parse_tags(parts, typ):
     """Tags from the file name, then the folders (innermost first).
     parts: path components below the pack folder, file name last.
-    A 'BPM' tag anywhere beats a bare number; a bare number counts only beside a real key;
-    a key with an accidental or a mode beats a lone letter, which counts only as the last
+    A 'BPM' tag anywhere beats a bare number; a bare number counts only beside a real key
+    and when it is the only one there (or alone in a folder name); any other bare number
+    goes to bpm_bare, to be confirmed by the measured tempo (confirm_tags, audit 2 #6/#10).
+    A key with an accidental or a mode beats a lone letter, which counts only as the last
     word of a name that also carries a tempo (blind audit I4/I5)."""
-    out = {"bpm": None, "key": None, "note": None}
+    out = {"bpm": None, "key": None, "note": None, "bpm_bare": [], "key_lone": [], "flat": False}
     loopish = typ not in ("oneshot_melodic", "drum_oneshot")
-    texts = [_clean(raw) for raw in reversed(parts)]
+    texts = [_prep(_clean(raw)) for raw in reversed(parts)]
     for text in texts:
-        for m in _BPM_RX.finditer(text):
+        for m in list(_BPM_RX.finditer(text)) + list(_BPM_PRE_RX.finditer(text)):
             v = float(m.group(1))
             if 40 <= v <= 250:
                 out["bpm"] = v
                 break
         if out["bpm"] is not None:
             break
-    any_bpm = any(_BPM_RX.search(t) for t in texts)
+    any_bpm = any(_BPM_RX.search(t) or _BPM_PRE_RX.search(t) for t in texts)
     if out["bpm"] is None and loopish:
-        for text in texts:
-            if not _key_candidates(text)[0]:
-                continue
-            for m in _BARE_RX.finditer(text):
-                v = float(m.group(1))
+        key_folder = any(_key_only(t) for t in texts[1:])
+        for i, text in enumerate(texts):
+            bare = [float(m.group(1)) for m in _bare_numbers(text)]
+            only = _ONLY_NUMBER.fullmatch(text) if i else None
+            keyed = bool(_key_candidates(text)[0]) or (i == 0 and key_folder)
+            if (keyed or only) and len(bare) == 1:
+                v = bare[0]
                 if 60 <= v <= 200:
                     out["bpm"] = v
                     break
-            if out["bpm"] is not None:
-                break
+            out["bpm_bare"] += [v for v in bare if _bare_ok(v) and v not in out["bpm_bare"]]
+    if out["bpm"] is not None:
+        out["bpm_bare"] = []
     if loopish:
+        drums = "drum" in typ
         for text in texts:
             strong, lone = _key_candidates(text)
             if strong:
                 out["key"] = strong[0][1]
+                out["flat"] = _is_flat(strong[0][0])
                 break
-            if lone:
+            if lone and not drums:  # a lone letter on a drum loop is a variation (audit 2 #8)
                 m, key = lone[-1]
-                tail = text[m.end():].strip(" -")
-                if tail == "" and (any_bpm or _BARE_RX.search(text[:m.start()])) \
-                        and not _VERSION_WORDS.search(text[:m.start()]):
+                head, tail = text[:m.start()], text[m.end():].strip(" -")
+                if _VERSION_WORDS.search(head):
+                    continue
+                if tail == "" and (any_bpm or _BARE_RX.search(head)) and m.group(1) not in "AB":
                     out["key"] = key
+                    out["flat"] = _is_flat(m)
                     break
+                # 'Synth Loop 120 A' (A/B are variations), 'Pad Loop F', 'Key F', 'Piano Loop C 120':
+                # only a guess, kept when the measured key has the same root (confirm_tags, #11)
+                if tail == "" or _KEY_WORDS.search(head) or _ONLY_NUMBER.fullmatch(tail):
+                    out["key_lone"].append((key, _is_flat(m)))
     if not loopish and parts:
         text = texts[0]
         octaved, lone = [], []
@@ -363,16 +419,74 @@ def parse_tags(parts, typ):
             if letter.islower() and not octave:
                 continue
             if octave:
-                octaved.append(_pc(letter, acc))
+                octaved.append((_pc(letter, acc), _is_flat(m)))
                 continue
             if re.match(r"\s*[-_]?\s*\d", text[m.end():]) or _VERSION_WORDS.search(text[:m.start()]):
                 continue  # 'Synth A 01', 'Kit B': an index or a version, not a note
-            lone.append(_pc(letter, acc))
+            if not acc and text[m.end():].strip(" -"):
+                continue  # 'E Piano', 'G Funk Lead', 'Plan B Lead': a word, not a note (audit 2 #12)
+            lone.append((_pc(letter, acc), _is_flat(m)))
         if octaved:
-            out["note"] = octaved[-1]
+            out["note"] = octaved[-1][0]
+            out["flat"] = octaved[-1][1]
         elif lone:
-            out["note"] = lone[-1]
+            out["note"] = lone[-1][0]
+            out["flat"] = lone[-1][1]
+            out["note_lone"] = True  # no octave: checked against the measured note (confirm_tags)
     return out
+
+
+def _is_flat(m):
+    return _acc(m.group(2)) in ("b", "♭", "flat")
+
+
+def spell(name, flat):
+    """'A# minor' -> 'Bb minor' when the name wrote a flat (audit 2 #38)."""
+    if not name or not flat:
+        return name
+    head = re.match(r"[A-G]#?", name)
+    return FLAT_NAMES[NOTE_NAMES.index(head.group(0))] + name[head.end():] if head else name
+
+
+def _key_only(text):
+    """A folder named only by a key ('Am', 'F# minor')."""
+    strong = _key_candidates(text)[0]
+    return len(strong) == 1 and text.strip(" -_") == strong[0][0].group(0).strip(" -_")
+
+
+def _bpm_near(tag, measured):
+    return any(abs(measured * f - tag) <= BPM_CONFIRM_TOL * tag for f in (1.0, 0.5, 2.0))
+
+
+def confirm_tags(row, tags):
+    """Fill the tag cells a name only suggests once the measured sound agrees (audit 2 #6/#10):
+    a bare number is the tempo when the measured tempo is equal, half or double (3 %);
+    a lone key letter is the key when the measured key has the same root (#11);
+    a note without an octave is dropped when the measured note differs (#12);
+    a flat written in the name is shown as a flat (#38).
+    row: the measure_* output (bpm_tag, bpm_measured...), changed in place; a sure tag stays."""
+    meas = row.get("bpm_measured")
+    if row.get("bpm_tag") is None and meas:
+        near = [v for v in tags.get("bpm_bare") or [] if _bpm_near(v, meas)]
+        if len(near) == 1:
+            row["bpm_tag"] = near[0]
+    kmeas = row.get("key_measured")
+    if row.get("key_tag") is None and kmeas and tags.get("key_lone"):
+        root = re.match(r"[A-G]#?", kmeas)
+        hits = [flat for key, flat in tags["key_lone"]
+                if root and NOTE_NAMES[key[0]] == root.group(0)]
+        if hits:
+            row["key_tag"] = spell(kmeas, hits[-1])
+            if "key_match" in row:
+                row["key_match"] = "exact"
+    elif tags.get("flat"):
+        row["key_tag"] = spell(row.get("key_tag"), True)
+    nmeas = re.match(r"[A-G]#?", row.get("note_measured") or "")
+    if tags.get("note_lone") and row.get("note_tag") and nmeas and row["note_tag"] != nmeas.group(0):
+        row["note_tag"] = None  # 'Pad Soft F' that sounds A3 (audit 2 #12)
+    if tags.get("flat") and row.get("note_tag"):
+        row["note_tag"] = spell(row["note_tag"], True)
+    return row
 
 
 # ================================================================ classify
@@ -423,8 +537,14 @@ GENRES = [("techno", r"techno"), ("house", r"house"), ("dnb", r"dnb|drum ?(and|&
           ("lofi", r"lo.?fi|chillhop"), ("phonk", r"phonk"), ("trance", r"trance"), ("rave", r"rave|keta"),
           ("amapiano", r"amapiano"), ("afro", r"afro"), ("garage", r"garage|ukg|2.?step"),
           ("edm", r"edm|big ?room|future ?bass|electro"), ("pop", r"\bpop\b"), ("rnb", r"r ?n ?b|r&b|soul"),
-          ("ambient", r"ambient|cinematic")]
-GENRES = [(g, re.compile(rx, re.I)) for g, rx in GENRES]
+          ("ambient", r"ambient|cinematic"), ("rock", r"rock"), ("reggaeton", r"reggaeton|dembow"),
+          ("drill", r"drill"), ("disco", r"disco"), ("funk", r"funk"), ("hardstyle", r"hardstyle|hardcore|gabber")]
+GENRES = [(g, rx.replace("afro", "afro(?:beats?|house)?") if g == "afro" else rx) for g, rx in GENRES]
+# A style is a whole word ('Warehouse', 'Strap', 'Soulful', 'Entrance' name no style), plural allowed.
+GENRES = [(g, re.compile(r"(?<![a-z])(?:%s)s?(?![a-z])" % rx, re.I)) for g, rx in GENRES]
+_PACK_STYLES = [(re.compile(r"(?<![a-z])%s(?![a-z])" % re.escape(k), re.I), st) for k, st in mine_or.STYLES]
+_STYLE_NOISE = re.compile(r"(?i)jungle ?perc\w*|garage ?doors?")
+_CAMEL = re.compile(r"(?<=[a-z])(?=[A-Z])")
 
 
 def role_of(text):
@@ -434,13 +554,33 @@ def role_of(text):
     return "-"
 
 
-def style_of(rel):
-    st = mine_or.style_of(rel)
-    if st:
-        return st
-    for g, rx in GENRES:
-        if rx.search(rel):
-            return g
+def _style_in(part):
+    """Style named by one path component: a known pack name first, else the genre word that ends last
+    ('Hip-Hop & Trap' -> trap, 'Lo-Fi House' -> house)."""
+    part = _STYLE_NOISE.sub(" ", part)
+    for text in (part, _CAMEL.sub(" ", part)):
+        for rx, st in _PACK_STYLES:
+            if rx.search(text):
+                return st
+        best = None
+        for g, rx in GENRES:
+            for m in rx.finditer(text):
+                if best is None or m.end() > best[0]:
+                    best = (m.end(), g)
+        if best:
+            return best[1]
+    return None
+
+
+def style_of(rel, pack=None):
+    """Innermost component first ('Techno/House Kicks' -> house); the pack folder's own name last."""
+    parts = [p for p in re.split(r"[\\/]", rel) if p]
+    if pack:
+        parts = [os.path.basename(os.path.normpath(pack))] + parts
+    for part in reversed(parts):
+        st = _style_in(part)
+        if st:
+            return st
     return "unlabelled"
 
 

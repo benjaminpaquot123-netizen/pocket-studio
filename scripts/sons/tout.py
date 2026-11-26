@@ -33,6 +33,15 @@ lufs_i     integrated loudness, ITU-R BS.1770-4 (K-weighting, 400 ms blocks,
            75 % overlap, -70 LUFS and -10 LU gates; under 400 ms: ungated)
 error      why a file could not be measured (row kept, numbers empty)
 
+End of file (last in every audio table, not kit or midi; see end_cut())
+end_cut    1 = the file really ends cut: a click (last sample above -60 dBFS
+           and over 4x the sample-to-sample motion of its last 5 ms) or an
+           abrupt stop (above -30 dBFS 5 ms before the end, no final fade of
+           20 dB or more). 0 otherwise, a trimmed tail with a fade included.
+end_fade_ms length of the final fade, empty when there is none.
+"Not yet at -60 dB when the file ends" (empty t60, end_level_db above -60)
+only means a long sound trimmed short; it is information, never a cut.
+
 Per type (TYPE_COLUMNS below holds the exact list)
 --------------------------------------------------
 oneshot_melodic  note_tag, note_measured, f0_hz, cents_gap (measured minus
@@ -139,6 +148,10 @@ TYPE_COLUMNS = {
                     + ["hat_measured", "drop_start_hz", "drop_end_hz", "drop_t50_ms", "drop_t90_ms",
                        "drop_shape", "note_measured"],
 }
+END_COLS = ["end_cut", "end_fade_ms"]
+for _t in TYPE_COLUMNS:
+    if _t not in ("midi", "kit"):
+        TYPE_COLUMNS[_t] = TYPE_COLUMNS[_t] + END_COLS
 TYPES = list(TYPE_COLUMNS)
 
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
@@ -509,7 +522,72 @@ def common(sr, x):
     return {"dur_s": x.shape[0] / sr, "sr": sr, "ch": x.shape[1],
             "peak_dbfs": 20 * math.log10(pk) if pk > 0 else None,
             "rms_dbfs": _db(float(np.mean(p))),
-            "lufs_i": lufs(x, sr)}
+            "lufs_i": lufs(x, sr), **end_cut(sr, x)}
+
+
+
+def _end_one(s, sr):
+    """(cut, fade_ms or None) for one channel."""
+    n = s.shape[0]
+    n1 = max(1, int(round(0.001 * sr)))
+    n5 = max(2, int(round(0.005 * sr)))
+    a = np.abs(s)
+    if n < 2 * n5 or float(np.max(a[-min(n, int(0.1 * sr)):])) < 10 ** (-90 / 20):
+        return 0, None
+    # final fade: forward-window peak envelope (10 ms) every 0.5 ms over the last 200 ms
+    w = max(1, int(round(0.010 * sr)))
+    h = max(1, int(round(0.0005 * sr)))
+    span = min(n, int(round(0.2 * sr)))
+    starts = np.arange(n - span, n - n1 + 1, h)
+    env = np.array([float(np.max(a[i:min(i + w, n)])) for i in starts]) + 1e-12
+    edb = 20 * np.log10(env)
+    tms = (n - starts) * 1000.0 / sr  # ms before the end
+    end_db = 20 * math.log10(float(np.max(a[-n1:])) + 1e-12)
+    trend = tms >= 60.0
+    if np.count_nonzero(trend) >= 4 and tms[0] - 60.0 >= 15.0:
+        slope, icpt = np.polyfit(tms[trend], edb[trend], 1)
+        ref = slope * tms + icpt
+    else:
+        ref = np.full_like(edb, float(np.max(edb)))
+    fade_ms = None
+    near = np.nonzero(edb >= ref - 1.5)[0]
+    if near.size:
+        i0 = int(near[-1])
+        seg = edb[i0:]
+        drop = float(edb[i0]) - end_db
+        rises = float(np.max(np.diff(seg))) if seg.size > 1 else 0.0
+        if drop >= 20.0 and rises <= 3.0:
+            fade_ms = float(tms[i0])
+    # (a) step to silence bigger than the waveform's own motion
+    last = float(a[-1])
+    motion = float(np.median(np.abs(np.diff(s[-n5:]))))
+    step = last > 10 ** (-60 / 20) and last > 4.0 * motion
+    # (b) still loud 5 ms before the end with no fade of 5 ms or more
+    c = n - n5
+    lo, hi = max(0, c - n1 // 2), min(n, c + (n1 + 1) // 2)
+    lvl = math.sqrt(float(np.mean(s[lo:hi] ** 2)))
+    loud = lvl > 10 ** (-30 / 20) and (fade_ms is None or fade_ms < 5.0)
+    return (1 if step or loud else 0), fade_ms
+
+
+def end_cut(sr, x):
+    """Is the file cut (click or abrupt stop) at its end?
+
+    end_cut = 1 when a channel either ends on a step: |last sample| above
+    -60 dBFS and over 4 times the median sample-to-sample motion of its last
+    5 ms; or is still above -30 dBFS (1 ms RMS) 5 ms before the end without a
+    final fade. Fade: the 10 ms peak envelope leaves the natural decay trend
+    (fitted 200-60 ms before the end, within 1.5 dB) and drops 20 dB or more
+    to the last 1 ms, never rising by more than 3 dB; end_fade_ms is its
+    length (loudest channel), empty when there is none. A sound not yet at
+    -60 dB at the end is not a cut (empty t60, end_level_db: information).
+    """
+    if x.ndim == 1:
+        x = x[:, None]
+    res = [_end_one(x[:, c].astype(np.float64), sr) for c in range(x.shape[1])]
+    tail = max(1, int(round(0.05 * sr)))
+    loud = int(np.argmax(np.mean(x[-tail:] ** 2, axis=0)))
+    return {"end_cut": max(r[0] for r in res), "end_fade_ms": res[loud][1]}
 
 
 # ================================================================ pitch

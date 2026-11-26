@@ -30,8 +30,10 @@ t20/t40/t60_ms Schroeder decay: time after the onset at which the energy
                dip between two clap bursts, no ripple on a 50 Hz sine. For
                an amplitude decay exp(-t/tau), t20 = tau*ln(10).
 end_level_db   mean power of the last 10 ms under the peak power. Above
-               about -60 the file is cut short or noisy: t60 (and maybe t40)
-               is then not to be trusted.
+               about -60 the sound still plays (or is noisy) when the file
+               ends, usually trimmed with a fade: t60 (and maybe t40) is then
+               empty or not to be trusted. Information only, not a cut
+               (tout.py end_cut tells a real cut).
 pitch_steady_hz mean frequency of the fundamental over the steady window:
                phase advance of the band-passed analytic signal (0.5 to 1.8
                times the strongest spectral peak of the tail, searched from

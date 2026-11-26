@@ -10,6 +10,8 @@
 
 #include "MeasuredDrums.h"
 
+extern "C" uint32_t ps_rand_exchange(uint32_t state);  // ps_rand.c
+
 namespace matin_tests {
 
 struct Range {
@@ -272,9 +274,93 @@ void testMeasuredDrumsStop() {
     }
 }
 
+
+// « Batterie du matin » in songs: the measured kit is a bench-only extra (CommandType 211,
+// SetMeasuredDrums; ps_live --measured-drums). A song with every pad, played through the engine.
+// `measured`: the style to post (none when < -1; -1 posts "off"). `onlyLane`: that lane alone (-1: all
+// but Snare2, the DaisySP synthetic snare, which already differed between two engines before the
+// measured kit: state it does not initialise).
+std::vector<float> kitSong(int kitVersion, float measured, int onlyLane = -1, bool countAllocations = false) {
+    ps_rand_exchange(0);  // the shared noise state (the voices outside the kit) as on a fresh start
+    ps::Engine engine(kRate);
+    engine.post({ps::CommandType::SetKitVersion, static_cast<float>(kitVersion)});
+    if (measured >= -1.0f) engine.post({static_cast<ps::CommandType>(211), measured});
+    engine.post({ps::CommandType::SetTempo, 126.0f});
+    engine.post({ps::CommandType::SetPadVoice, float(ps::DrumKit::KickHard), ps::DrumKit::Kick, 0});  // a studio kick kind: measured
+    engine.post({ps::CommandType::SetPadVoice, float(ps::DrumKit::Bass808), ps::DrumKit::Kick2, 0});  // the 808 kind: never measured
+    for (int lane = 0; lane < ps::DrumKit::kVoices; ++lane) {
+        if (onlyLane >= 0 ? lane != onlyLane : lane == ps::DrumKit::Snare2) continue;
+        for (int step = lane % 4; step < 16; step += 4) engine.post({ps::CommandType::SetDrumHit, step % 8 == 0 ? 0.9f : 0.6f, lane, step});
+    }
+    engine.post({ps::CommandType::SetTransport, 1.0f, 0});
+    std::vector<float> warm = render(engine, kRate * 2, 256);  // a first pass of the pattern (warm-up: a first loop may allocate)
+    std::vector<float> out(static_cast<size_t>(kRate) * 2 * kChannels, 0.0f);
+    if (countAllocations) {
+        g_allocations.store(0);
+        g_countAllocations.store(true);
+    }
+    for (int pos = 0; pos < kRate * 2; pos += 256)
+        engine.process(nullptr, 0, 0, out.data() + static_cast<size_t>(pos) * kChannels, std::min(256, kRate * 2 - pos), kChannels);
+    g_countAllocations.store(false);
+    out.insert(out.begin(), warm.begin(), warm.end());
+    return out;
+}
+
+uint64_t fnv(const std::vector<float>& x) {
+    uint64_t h = 1469598103934665603ull;
+    for (float v : x) {
+        uint32_t b;
+        std::memcpy(&b, &v, 4);
+        for (int k = 0; k < 4; ++k) h = (h ^ ((b >> (8 * k)) & 0xFF)) * 1099511628211ull;
+    }
+    return h;
+}
+
+// By default nothing changes: the same samples, bit for bit, as before the measured kit existed
+// (checksums recorded at d898d275, kit v1 and v3), and "off" (-1) is the default.
+void testMeasuredKitDefaultIdentical() {
+    const uint64_t v1 = fnv(kitSong(1, -2.0f)), v3 = fnv(kitSong(3, -2.0f));
+    std::printf("  default song checksums: v1 %016llx v3 %016llx\n", (unsigned long long)v1, (unsigned long long)v3);
+    CHECK(v1 == 0x13771f7c1240426bull);
+    CHECK(v3 == 0xa6b2386ef329bd87ull);
+    CHECK(fnv(kitSong(3, -1.0f)) == v3);
+    CHECK(fnv(kitSong(3, 0.0f)) != v3);
+}
+
+// The bench's command swaps the kit's voices for the measured ones (kick, snares, clap, hats, rim,
+// toms, crash; a studio kick kind too) and leaves the others (808 kind on pad 1, shaker, cowbell, conga, zap) as they were; finite,
+// below full scale, no allocation while playing.
+void testMeasuredKitCommand() {
+    using K = ps::DrumKit;
+    const int swapped[] = {K::Kick, K::Snare, K::Snare2, K::Clap, K::ClosedHat, K::OpenHat, K::LowTom, K::MidTom, K::HighTom, K::Rim, K::Cymbal};
+    const int kept[] = {K::Kick2, K::Cowbell, K::Shaker, K::Conga, K::Zap};
+    for (int style = 0; style < ps::measured::kStyles; ++style) {
+        int changed = 0;
+        for (int lane : swapped) changed += fnv(kitSong(3, float(style), lane)) != fnv(kitSong(3, -2.0f, lane));
+        int same = 0;
+        for (int lane : kept) same += fnv(kitSong(3, float(style), lane)) == fnv(kitSong(3, -2.0f, lane));
+        const auto all = kitSong(3, float(style), -1, true);
+        const int allocations = g_allocations.load();
+        float peak = 0.0f;
+        bool finite = true;
+        double sum = 0.0;
+        for (float v : all) {
+            finite = finite && std::isfinite(v);
+            peak = std::max(peak, std::fabs(v));
+            sum += double(v) * v;
+        }
+        std::printf("  measured kit %-9s swapped %d/11 kept %d/5 peak %.2f rms %.1f dB alloc %d\n", kStyleNames[style], changed, same,
+                    double(peak), 10.0 * std::log10(sum / double(all.size()) + 1e-20), allocations);
+        CHECK(changed == 11 && same == 5);
+        CHECK(finite && peak > 0.05f && peak <= 1.0f && allocations == 0);
+    }
+}
+
 }  // namespace matin_tests
 
 #define PS_MATIN_TESTS                                                      \
     {"matin_measured_drums_in_range", matin_tests::testMeasuredDrumsInRange}, \
     {"matin_measured_drums_retrigger", matin_tests::testMeasuredDrumsRetrigger}, \
-    {"matin_measured_drums_stop", matin_tests::testMeasuredDrumsStop},
+    {"matin_measured_drums_stop", matin_tests::testMeasuredDrumsStop},      \
+    {"matin_measured_kit_default_identical", matin_tests::testMeasuredKitDefaultIdentical}, \
+    {"matin_measured_kit_command", matin_tests::testMeasuredKitCommand},

@@ -8,6 +8,7 @@
 #include "Drums/synthbassdrum.h"
 #include "Drums/synthsnaredrum.h"
 #include "Filters/svf.h"
+#include "MeasuredDrums.h"
 #include "StudioVoices.h"
 #include "Synthesis/oscillator.h"
 
@@ -62,6 +63,12 @@ public:
         applyVersion();
     }
     int version() const { return version_; }
+    // Bench only (« batterie du matin », listening material; no project, pad or UI sends it): the
+    // kit's voices played by the measured voices of `style` (measured::Style), from their next
+    // hits on; -1: the kit as always (bit-identical). The 808, the rumble, shaker, cowbell, conga
+    // and zap keep their own voices. Real-time safe: copies plain recipes.
+    void setMeasured(int style);
+    int measured() const { return measuredStyle_; }
     // Real-time safe: the pad plays `kind` from its next hit on (its settings kept).
     void setKind(int voice, int kind);
     int kind(int voice) const { return voice >= 0 && voice < kVoices ? kind_[static_cast<size_t>(voice)] : 0; }
@@ -155,6 +162,10 @@ private:
     std::array<int, kVoices> activeFrames_{};
     std::array<float, kVoices> hitGain_{};  // the sounding hit's level (its velocity's)
     float openHatChoke_ = 1.0f;
+    // The measured kit (setMeasured): -1 off. A voice's family, -1 for those it leaves alone.
+    int measuredFamily(int voice, int kind) const;
+    int measuredStyle_ = -1;
+    std::array<measured::Voice, kVoices> measured_{};
     float chokeDecay_ = 0.99f;
 
     PitchedDrum kick_, lowTom_, midTom_, highTom_, conga_;

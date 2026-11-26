@@ -239,6 +239,9 @@ enum class CommandType : uint8_t {
     // Tour 5 (kick), numbered apart (210 on): value 1, the music goes to the phone's own speaker (the
     // app reads Android's AudioManager): the kick's harmonics and click (Mixer::setSpeakerOutput); 0 off.
     SetSpeakerOutput = 210,
+    // « Batterie du matin », bench only (ps_live --measured-drums; the app never sends it): value,
+    // the measured kit's style (measured::Style, 0..5) for the kit's voices; -1 the kit as always.
+    SetMeasuredDrums = 211,
 };
 // SetMasterPro's settings.
 enum MasterProParam : int {

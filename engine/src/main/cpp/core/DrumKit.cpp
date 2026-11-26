@@ -111,6 +111,8 @@ void DrumKit::prepare(int sampleRate) {
     pending_.fill(-1);
     activeFrames_.fill(0);
     resetNoise();
+    for (auto& m : measured_) m.prepare(sampleRate);
+    setMeasured(measuredStyle_);
 
     // Kicks: low, long and punchy (Benjamin: "pas assez puissants"); see kKickDrive below.
     kick_.configure(sampleRate, 47.0f, 3.2f, 0.035f, 0.42f, 0.35f);
@@ -344,7 +346,67 @@ float DrumKit::renderStudio(int voice, int kind, bool trig, float v) {
     }
 }
 
+int DrumKit::measuredFamily(int voice, int kind) const {
+    if (measuredStyle_ < 0) return -1;
+    using namespace measured;
+    switch (voice) {
+        case Kick:
+        case Kick2: return kind == KitVoice || kind == KickStudio || kind == KickHard ? measured::Kick : -1;
+        default: break;
+    }
+    if (kind != KitVoice) return -1;  // a pad playing a studio voice (the 808, the rumble) keeps it
+    switch (voice) {
+        case Snare:
+        case Snare2: return measured::Snare;
+        case Clap: return measured::Clap;
+        case ClosedHat: return measured::ClosedHat;
+        case OpenHat: return measured::OpenHat;
+        case Rim: return measured::Rim;
+        case LowTom:
+        case MidTom:
+        case HighTom: return measured::Tom;
+        case Cymbal: return measured::Crash;
+        default: return -1;
+    }
+}
+
+namespace {
+// The measured voices near the kit v3 voice each replaces (peak for peak, at full velocity), so a
+// song's balance holds when the bench swaps the kit (measured once on the host renders).
+// Kick, 808 (unused), clap, snare, closed hat, open hat, rim, tom, crash: a level between the
+// peak's and the loudness's gap.
+constexpr float kMeasuredTrim[measured::kFamilies] = {0.89f, 1.0f, 3.16f, 0.84f, 0.67f, 0.35f, 0.25f, 0.25f, 0.25f};
+}  // namespace
+
+void DrumKit::setMeasured(int style) {
+    measuredStyle_ = style < 0 ? -1 : std::min(style, static_cast<int>(measured::kStyles) - 1);
+    if (measuredStyle_ < 0) return;
+    for (int voice = 0; voice < kVoices; ++voice) {
+        const int family = measuredFamily(voice, KitVoice);
+        if (family < 0) continue;
+        measured::Recipe r = measured::recipe(family, measuredStyle_);
+        // The toms a fourth apart around the measured one.
+        const float ratio = voice == LowTom ? 0.75f : voice == HighTom ? 1.335f : 1.0f;
+        r.startHz *= ratio;
+        r.endHz *= ratio;
+        r.gain *= kMeasuredTrim[family];
+        measured_[static_cast<size_t>(voice)].setRecipe(r);
+    }
+}
+
 float DrumKit::renderVoice(int voice, bool trig, float v) {
+    if (measuredStyle_ >= 0 && measuredFamily(voice, kind_[static_cast<size_t>(voice)]) >= 0) {
+        auto& m = measured_[static_cast<size_t>(voice)];
+        if (trig) m.trigger(1.0f);  // the hit's gain carries its velocity
+        float out = 0.0f;
+        m.render(&out, 1);
+        if (voice == OpenHat) {
+            if (trig) openHatChoke_ = 1.0f;
+            else if (openHatChoke_ < 1.0f) openHatChoke_ *= chokeDecay_;
+            out *= openHatChoke_;
+        }
+        return out;
+    }
     if (const int kind = kind_[static_cast<size_t>(voice)]; kind != KitVoice) return renderStudio(voice, kind, trig, v);
     if (version_ >= 3) {
         // Kit v3: the two kicks are the studio voices (their settings those of the kinds).
@@ -460,9 +522,10 @@ void DrumKit::renderTo(int numFrames, Sink&& sink) {
         const int padKind = kind_[idx];
         int kind = padKind;
         if (kind == KitVoice && version_ >= 3 && (voice == Kick || voice == Kick2)) kind = voice == Kick ? KickStudio : KickHard;
-        const int maxLength = static_cast<int>((kind != KitVoice ? kKindMaxSeconds[kind] : kMaxSeconds[voice]) * sampleRate_);
+        const bool measuredVoice = measuredFamily(voice, padKind) >= 0;
+        const int maxLength = static_cast<int>((measuredVoice ? 2.5f : kind != KitVoice ? kKindMaxSeconds[kind] : kMaxSeconds[voice]) * sampleRate_);
         // The kit's own voices (kit v3's kicks included) at the kit's levels, a pad's studio voice at its own.
-        const float level = padKind != KitVoice ? kKindLevels[padKind] : (version_ >= 3 ? kLevelsV3 : version_ >= 2 ? kLevelsV2 : kLevels)[voice];
+        const float level = measuredVoice ? 1.0f : padKind != KitVoice ? kKindLevels[padKind] : (version_ >= 3 ? kLevelsV3 : version_ >= 2 ? kLevelsV2 : kLevels)[voice];
         const float velocity = velocity_[idx];
         // The ringing hit keeps its own loudness up to the new hit's frame.
         float gain = hitGain_[idx];

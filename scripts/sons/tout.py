@@ -581,7 +581,7 @@ GENRES = [(g, re.compile(r"(?<![a-z])(?:%s)s?(?![a-z])" % rx, re.I)) for g, rx i
 _PACK_STYLES = [(re.compile(r"(?<![a-z])%s(?![a-z])" % re.escape(k), re.I), st) for k, st in mine_or.STYLES]
 # phrases whose genre word names no style: 'Rock Solid Kicks', 'Pop Up Drums', 'House of Loops' (audit 3 #3)
 _STYLE_NOISE = re.compile(r"(?i)jungle ?perc\w*|garage ?doors?|rock ?solid|pop ?ups?\b|jungle ?animals?|house ?of\b"
-                          r"|soul ?food|garage ?band")
+                          r"|soul ?food|garage ?band|\bsouls\b")  # plural souls: people, not soul music
 _CAMEL = re.compile(r"(?<=[a-z])(?=[A-Z])")
 
 

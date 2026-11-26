@@ -1,0 +1,7 @@
+rar,pack,type,measure,tagged,agree,half_double,relative,error_pct,usable,cle
+2,p1,drum_loop,bpm,150,128,21,0,14.67,no,
+2,p1,drum_oneshot,note,40,3,0,0,92.5,no,
+2,p1,melodic_loop,bpm,109,77,10,0,29.36,no,
+2,p1,melodic_loop,key,140,32,0,9,77.14,no,
+2,p1,midi,key,140,64,0,9,54.29,no,
+2,p1,oneshot_melodic,note,97,96,0,0,1.031,yes,

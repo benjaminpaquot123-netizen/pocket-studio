@@ -372,6 +372,30 @@ def test_39_guard_without_git():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def test_28_rows_traceable():
+    tmp = tempfile.mkdtemp(prefix="tout_e_id_")
+    try:
+        pack = os.path.join(tmp, "pack")
+        write(os.path.join(pack, "Kicks", "Kick 01.wav"), wav_bytes(kick()))
+        write(os.path.join(pack, "Kicks", "Kick 02.wav"), wav_bytes(0.5 * kick()))
+        write(os.path.join(pack, "MIDI", "Chords 01.mid"), smf(chords()))
+        out = os.path.join(tmp, "o", "t")
+        os.makedirs(os.path.dirname(out))
+        code, _ = run_main([pack, "--rar", "1", "--out", out])
+        check_eq("28 run ok", code, 0)
+        rows = read_table(out + "_drum_oneshot.csv") + read_table(out + "_midi.csv")
+        ids = [r.get("file_id", "") for r in rows]
+        check_true("28 every row has a file_id", len(ids) == 3 and all(ids))
+        check_eq("28 ids differ", len(set(ids)), 3)
+        check_true("28 no file name in the id", all("Kick" not in i for i in ids))
+        code, txt = run_main([pack, "--rar", "1", "--trace", ids[1]])
+        check_eq("28 trace ok", code, 0)
+        check_eq("28 trace names the file", txt.strip(), "Kicks/Kick 02.wav")
+        check_true("28 trace wrote no table", len(glob.glob(os.path.join(tmp, "o", "*"))) == len(glob.glob(out + "_*.csv")))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     with np.errstate(all="ignore"):

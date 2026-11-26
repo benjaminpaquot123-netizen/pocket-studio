@@ -81,6 +81,41 @@ def build(src):
     return 8  # wav + midi files in the two packs (p1: 6 wav + 1 mid, p2: 1 wav)
 
 
+def pack_forms(base):
+    """Point a: one pack alone at the archive root is one pack, named after its folder;
+    a wrapper folder holding packs gives each pack; mixed layouts too."""
+    names = lambda ps: [os.path.basename(p) for p in ps]
+    one = os.path.join(base, "form-one")
+    pk = os.path.join(one, "Ghosthack - Blood Rave")
+    wav(os.path.join(pk, "Loops", "BR Loop 01 120 BPM.wav"), "loop", 1.0)
+    midi(os.path.join(pk, "MIDI", "BR Melody 01.mid"))
+    wav(os.path.join(pk, "One-Shots", "Kicks", "BR Kick 01.wav"), "kick", 0.2)
+    check(names(lance.find_packs(one)) == ["Ghosthack - Blood Rave"], "single pack at the root = 1 pack, its own name")
+    gen = os.path.join(base, "form-samples")
+    pk = os.path.join(gen, "Ghosthack - Riddim Riot", "Samples")
+    wav(os.path.join(pk, "Drum Loops", "RR Loop 01.wav"), "loop", 1.0)
+    midi(os.path.join(pk, "MIDI", "RR Melody 01.mid"))
+    check(names(lance.find_packs(gen)) == ["Ghosthack - Riddim Riot"], "pack/Samples/<categories> = 1 pack, pack name kept")
+    wrap = os.path.join(base, "form-wrap", "Bundle")
+    for n in ("Pack A", "Pack B"):
+        wav(os.path.join(wrap, n, "Loops", "L 01.wav"), "loop", 1.0)
+        wav(os.path.join(wrap, n, "One Shots", "K 01.wav"), "kick", 0.2)
+    os.makedirs(os.path.join(wrap, "Docs"))
+    check(names(lance.find_packs(os.path.dirname(wrap))) == ["Pack A", "Pack B"], "wrapper of two packs = 2 packs")
+    mix = os.path.join(base, "form-mix")
+    pk = os.path.join(mix, "Ghosthack - Riddim Riot")
+    wav(os.path.join(pk, "Loops", "RR Loop 01.wav"), "loop", 1.0)
+    midi(os.path.join(pk, "02. MIDI", "RR Melody 01.mid"))
+    wav(os.path.join(pk, "Bonus Content", "RR Extra 01.wav"), "tone", 0.3)
+    wav(os.path.join(pk, "RR Kit 01 140 BPM", "RR Kit 01 Drums.wav"), "loop", 1.0)
+    check(names(lance.find_packs(mix)) == ["Ghosthack - Riddim Riot"], "pack with category and other folders = 1 pack")
+    mix2 = os.path.join(base, "form-mix2")
+    wav(os.path.join(mix2, "Pack A", "Loops", "L 01.wav"), "loop", 1.0)
+    wav(os.path.join(mix2, "Pack B", "B 01.wav"), "tone", 0.3)
+    check(names(lance.find_packs(mix2)) == ["Pack A", "Pack B"], "two folders at the root, one without categories = 2 packs")
+    return one
+
+
 def rows(path):
     with open(path, newline="", encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
@@ -159,6 +194,14 @@ def main():
         r = run(["--rar", "7", "--archive", rar, "--out", out], dict(os.environ, PASSE2_WORK=os.path.join(REPO, "docs")))
         check(r.returncode == 2 and "inside the repository" in r.stderr, "work folder inside the repository refused")
         check(not [p for p in os.listdir(os.path.join(REPO, "docs")) if p.startswith("passe2.")], "no work folder left in docs/")
+
+        # point a, end to end: an archive of one pack folder plans one pack under its own name
+        one = pack_forms(base)
+        rar1 = os.path.join(base, "one.rar")
+        fakerar.main(["fakerar", rar1, one])
+        r = run(["--rar", "7", "--archive", rar1, "--out", out, "--plan"], env)
+        check(r.returncode == 0 and "1 pack(s)" in r.stdout and "Ghosthack - Blood Rave" in r.stdout
+              and "rave" in r.stdout, "--plan on a one-pack RAR: 1 pack, named, style read (%s)" % r.stdout.strip()[-200:])
 
         # Drive links become a direct download; a loose sound at the archive top is refused
         u = lance.drive_url("https://drive.google.com/file/d/1AbCdEfGhIjKlMnOp/view?usp=sharing")

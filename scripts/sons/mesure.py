@@ -190,6 +190,8 @@ def _read_wav(buf):
             if tag not in (1, 3):
                 raise BadAudio("compressed wav (format %d)" % tag)
             width = align // channels if align else (bits + 7) // 8
+            if size == 0 and struct.unpack("<I", buf[off - 4:off])[0] == 0:
+                size = len(buf) - off  # streamed writer never filled the size in
             x = _pcm(buf[off:off + size], width, channels, big=False,
                      floating=(tag == 3), unsigned8=True)
             return sr, x

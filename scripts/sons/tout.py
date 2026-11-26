@@ -1002,10 +1002,45 @@ def _band_factor(c, kick_s, snare_s):
 
 def tempo(sig, sr, dur):
     """bpm or None, on the first 40 s."""
+    return tempo_detail(sig, sr, dur)[0]
+
+
+def tempo_detail(sig, sr, dur):
+    """(bpm or None, info) on the first 40 s. info: "scores" {candidate:
+    score}, "sure" (False when the octave or the triplet feel is a guess:
+    audit 2, defect 7), "kick_beats" (beats between regular kicks, or None)."""
+    bpm, scores, kick_s = _tempo_core(sig, sr, dur)
+    info = {"scores": scores, "sure": False, "kick_beats": None}
+    if bpm is None or not scores:
+        return bpm, info  # sparse hits: the octave is a guess
+    kb = kick_s * bpm / 60.0 if kick_s else None
+    info["kick_beats"] = kb
+    near = [c for c in scores if abs(c - bpm) / bpm < 0.03]
+    top = max(scores[c] for c in near) if near else max(scores.values())
+    # a metric relative (double, half, triplet feel) scoring close: a guess
+    # (a kick on every beat, four on the floor, settles the double)
+    four = kb is not None and abs(kb - 1.0) < 0.08
+    ratios = (0.5, 1.5, 2.0 / 3, 4.0 / 3, 0.75) if four else (2.0, 0.5, 1.5, 2.0 / 3, 4.0 / 3, 0.75)
+    rival = any(sc >= 0.6 * top for c, sc in scores.items()
+                for r in ratios if abs(c / bpm / r - 1.0) < 0.03)
+    # regular kicks must land on whole beats (every 1, 2, 3 or 4 beats);
+    # every half beat or 1.5 / 0.75 beat means the tempo is off by an octave
+    # or a triplet ratio
+    kick_ok = kb is None or any(abs(kb / t - 1.0) < 0.08 for t in (1.0, 2.0, 3.0, 4.0))
+    if kb is not None and abs(kb / 2.0 - 1.0) < 0.08 and bpm / 2.0 < 60.0:
+        kick_ok = False  # a kick on every beat of bpm/2, below the range: octave unknown
+    info["sure"] = not rival and kick_ok
+    return bpm, info
+
+
+def _tempo_core(sig, sr, dur):
+    """(bpm or None, scores {candidate: score}, regular kick spacing in s)."""
     sig = sig[: int(40 * sr)]
+    scores = {}
+    kick_s = None
     nov, dt, off = _novelty(sig, sr)
     if len(nov) < 50 or np.max(nov) <= 0:
-        return None
+        return None, scores, kick_s
     nv = nov - np.convolve(nov, np.ones(25) / 25, mode="same")
     nv = np.maximum(nv, 0)
     nf = 1 << int(math.ceil(math.log2(2 * len(nv))))
@@ -1026,7 +1061,7 @@ def tempo(sig, sr, dur):
         lag = 60.0 / bpm / dt
         raw[j] = sum(wk * acf_at(lag * k) for k, wk in ((1, 1.0), (2, 0.6), (4, 0.5), (0.5, 0.3)))
     if np.max(raw) <= 0:
-        return None
+        return None, scores, kick_s
     # onsets (with strength) to test which tempo puts them on a 16th grid
     pk = _peaks(nov, dt, 0.0, 0.1)
 
@@ -1046,7 +1081,7 @@ def tempo(sig, sr, dur):
         return min(fits, key=lambda c: abs(math.log2(c / 95.0))) if fits else None
 
     if len(pk) < 4:
-        return fallback()
+        return fallback(), {}, kick_s
     w = np.array([nov[int(round(tt / dt))] for tt in pk])
     pk = np.array(pk)
     # candidates: local maxima of the ACF score and their metric relatives
@@ -1075,18 +1110,19 @@ def tempo(sig, sr, dur):
         sc *= fit ** 8 * (1.0 if whole else (0.8 if half else 0.6))
         sc *= math.exp(-0.5 * (math.log2(c / 95.0) / 1.0) ** 2)
         sc *= _band_factor(c, kick_s, snare_s)
+        scores[c] = sc
         if sc > best_s:
             best, best_s = c, sc
     if best is None or _grid_fit(pk, w, best) < 0.6:
-        return fallback()
+        return fallback(), {}, kick_s
     # snap to a whole number of bars over the file
     bars = dur * best / 240.0
     nb = round(bars)
     if nb >= 1 and abs(bars - nb) / nb < 0.01:
         cand = 240.0 * nb / dur
         if 60 <= cand <= 200:
-            return cand
-    return best
+            return cand, scores, kick_s
+    return best, scores, kick_s
 
 
 def _grid_fit(pk, w, bpm):
@@ -1122,7 +1158,8 @@ def measure_drum_loop(sr, x, tags):
     sig = _mono(x)
     dur = len(sig) / sr
     out = {"bpm_tag": tags.get("bpm")}
-    bpm = tempo(sig, sr, dur)
+    bpm, tinfo = tempo_detail(sig, sr, dur)
+    out["_bpm_sure"] = tinfo["sure"]  # read by fence_row (audit 2, defect 7)
     out["bpm_measured"] = bpm
     out["bpm_gap_pct"] = bpm_gap(bpm, tags.get("bpm"))
     use = tags.get("bpm") or bpm
@@ -1169,6 +1206,26 @@ def measure_drum_loop(sr, x, tags):
             seg = nov[max(0, lo):max(0, min(len(nov), hi))]
             steps[s] = np.max(seg) if len(seg) else 0.0
         out["grid_" + k] = _grid_string(steps, nsteps)
+    # 3 beats per bar (waltz): the kick lands on every third beat only, so the
+    # bars are counted in 3/4, not 4/4 (audit 2, defect 7)
+    nov, dt, off = novs["kick"]
+    nb = int(round(dur * use / 60.0))
+    if nb >= 6:
+        beat = np.zeros(nb)
+        for b in range(nb):
+            c = b * 60.0 / use / dt
+            seg = nov[max(0, int(c - 0.015 / dt)):max(0, min(len(nov), int(c + 0.02 / dt) + 1))]
+            beat[b] = np.max(seg) if len(seg) else 0.0
+        idx = np.arange(nb)
+
+        def accent(m):
+            return float(np.mean(beat[idx % m == 0])) / max(float(np.mean(beat[idx % m != 0])), 1e-12)
+
+        if accent(3) >= 3.0 and accent(4) < 1.5:
+            out["bars"] = bars_of(dur, use * 4.0 / 3.0)
+    b = out.get("bars")
+    if b is not None and not tags.get("bpm") and b != int(b) and b - int(b) < 0.5 and b >= 1:
+        out["bars"] = float(int(b))  # a ringing tail after the last bar (audit 2, defect 7)
     return out
 
 
@@ -1269,7 +1326,8 @@ def measure_melodic_loop(sr, x, tags):
     sig = _mono(x)
     dur = len(sig) / sr
     out = {"bpm_tag": tags.get("bpm"), "key_tag": key_name(tags.get("key"))}
-    bpm = tempo(sig, sr, dur)
+    bpm, tinfo = tempo_detail(sig, sr, dur)
+    out["_bpm_sure"] = tinfo["sure"]
     out["bpm_measured"] = bpm
     out["bpm_gap_pct"] = bpm_gap(bpm, tags.get("bpm"))
     out["bars"] = bars_of(dur, tags.get("bpm") or bpm)
@@ -1715,6 +1773,11 @@ def fence_row(row, usable=()):
     it is written; the measuring functions stay untouched.
     usable: set of (type, measure) pairs the accuracy table marks usable."""
     typ = row.get("type")
+    # a drum hit named "Mastered", "Full", "Mix" or "Song" is still one hit:
+    # its end is measured like any one-shot (audit 2, defect 18)
+    hit_full = typ == "drum_oneshot" and row.get("role") == "full" \
+        and row.get("bpm_tag") is None and not row.get("_loop")
+    hit_end = (row.get("end_cut"), row.get("end_fade_ms"))
     # end_cut is reliable on one-shots only: on anything with a loop or tempo
     # nature the last hit still rings at the bar line (re-check 1)
     if typ not in END_TYPES or row.get("role") == "full" or row.get("bpm_tag") is not None \
@@ -1724,6 +1787,10 @@ def fence_row(row, usable=()):
     elif row.get("end_fade_ms") is not None:
         # a presence / order-of-size grade, not a length to the millisecond
         row["end_fade_ms"] = max(10, int(round(float(row["end_fade_ms"]) / 10.0)) * 10)
+    if hit_full:
+        row["end_cut"] = hit_end[0]
+        if hit_end[1] is not None:
+            row["end_fade_ms"] = max(10, int(round(float(hit_end[1]) / 10.0)) * 10)
     # untagged loops: bpm and key are wrong too often on pads and basslines
     # (re-check 6, I8); shown only when the accuracy table says usable
     if typ in ("melodic_loop", "kit_stem"):
@@ -1734,6 +1801,27 @@ def fence_row(row, usable=()):
             row["bpm_est"] = None
         if row.get("key_tag") is None and not ({(typ, "key"), ("melodic_loop", "key")} & ok):
             row["key_est"] = None
+        if row.get("bpm_est") is None and row.get("bpm_tag") is None:
+            row["bars"] = None  # counted from the hidden guess (audit 2, defect 19)
+    elif typ == "drum_loop":
+        # untagged loop whose tempo octave or feel is a guess (audit 2, defect 7):
+        # the tempo and everything counted from it stay empty
+        if row.get("bpm_tag") is None and row.get("_bpm_sure") is False:
+            for k in ("bpm_est", "bpm_measured", "bars", "swing_pct", "density_per_beat",
+                      "grid_kick", "grid_snare", "grid_hats"):
+                row[k] = None
+    elif typ == "kit":
+        # untagged kits: same fence as untagged loops (audit 2, defect 20)
+        ok = set(usable)
+        roles = set(str(row.get("roles") or "").split("+"))
+        drums = row.get("_bpm_sure") is True and bool(roles & {"drums", "kick", "snare", "hats", "perc"})
+        if row.get("bpm_tag") is None and not drums \
+                and not ({("kit", "bpm"), ("melodic_loop", "bpm")} & ok):
+            for k in ("bpm_est", "bpm_measured", "bars"):
+                row[k] = None
+        if row.get("key_tag") is None and not ({("kit", "key"), ("melodic_loop", "key")} & ok):
+            for k in ("key_est", "key_measured", "key_match"):
+                row[k] = None
     elif typ == "vocal":
         row["wet"] = None  # the dry / wet verdict is not reliable yet (I11)
     elif typ == "midi":
@@ -1908,7 +1996,8 @@ def _run_kits(kits, acc, rar):
                         if lm is not None and ltot is not None:
                             r["lufs_rel_kit_db"] = lm - ltot
                     dur = ln / sr
-                    bpm = tempo(tot, sr, dur)
+                    bpm, tinfo = tempo_detail(tot, sr, dur)
+                    kr["_bpm_sure"] = tinfo["sure"]
                     kr["bpm_measured"] = bpm
                     kr["bpm_gap_pct"] = bpm_gap(bpm, kit_tags.get("bpm"))
                     kr["bars"] = bars_of(dur, kit_tags.get("bpm") or bpm)

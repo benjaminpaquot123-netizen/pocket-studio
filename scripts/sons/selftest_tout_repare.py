@@ -144,7 +144,8 @@ def test_pack_style_named():
     """Defect 3: the pack folder's name gives a style only when it really names one; said on the console; options."""
     loop = {"Loops/Loop 01 120 bpm.wav": ru.plucks(120.0, AM, 1)}
     for pack in ("Rock Solid Kicks", "Pop Up Drums", "Jungle Animals FX", "House of Loops Vol 3", "Soul Food Keys",
-                 "Garage Band Loops", "Metal Percussion", "Acid Jazz", "Drum Hits 2", "archive_03"):
+                 "Garage Band Loops", "Metal Percussion", "Acid Jazz", "Drum Hits 2", "archive_03",
+                 "Trapped Souls Vol 1"):  # souls are not soul music (audit 2, b6 root4)
         rows, _, con, _, _ = run(loop, pack=pack)
         check_eq("3 pack '%s': no style" % pack, (rows["Loops/Loop 01 120 bpm.wav"] or {}).get("style"), "unlabelled")
         check_true("3 pack '%s': nothing said about a pack style" % pack, "style du pack" not in con, con)

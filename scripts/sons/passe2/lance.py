@@ -122,26 +122,53 @@ def has_media(folder):
     return False
 
 
+# A sub-folder named only with sound-category words ('Loops', '02. MIDI', 'Drum Loops',
+# 'One-Shots') is a part of a pack, not a pack.
+_CAT_WORD = (r"(?:one[\s_-]*shots?|oneshots?|loops?|midi|drums?|kicks?|snares?|claps?|hi[\s_-]*hats?|hats?|"
+             r"cymbals?|crash(?:es)?|rides?|toms?|shakers?|percs?|percussions?|fx|sfx|effects?|vocals?|vox|"
+             r"bass(?:es)?|808s?|synths?|leads?|pads?|keys|chords?|plucks?|arps?|stabs?|bells?|guitars?|"
+             r"strings?|brass|melod(?:y|ies)|melodic|stems?|construction|kits?|presets?|samples?|sounds?|"
+             r"textures?|atmos(?:pheres?)?|risers?|impacts?|fills?|tops?|grooves?|wav|audio|full|dry|wet|"
+             r"and|&|\+)")
+CATEGORY = re.compile(r"(?i)^[\s\d._()\[\]-]*%s(?:[\s_.,()\[\]-]+%s)*[\s\d._()\[\]-]*$" % (_CAT_WORD, _CAT_WORD))
+# a folder that only wraps the pack's content: the pack's name is the folder above it
+GENERIC = re.compile(r"(?i)^(?:samples?|sounds?|content|files|audio|wav|data|sample\s*pack|pack)$")
+
+
+def _subdirs(folder):
+    return [n for n in _visible(sorted(os.listdir(folder))) if os.path.isdir(os.path.join(folder, n))]
+
+
 def find_packs(root):
-    """Skip wrapper folders (one sub-folder, no sound of their own); then each sub-folder
-    holding a sound is a pack, unless the folder itself holds loose sounds: then it is the pack."""
-    top = root
+    """Skip wrapper folders (one sub-folder, no sound of their own), then decide whether the
+    folder reached is ONE pack or a wrapper of packs.
+    A pack: sounds directly inside, or sub-folders named with category words (Loops, MIDI ...),
+    or the one folder of the archive with no sub-folder that looks like a pack.
+    A wrapper: its sub-folders each look like a pack (they hold category folders of their own)."""
+    chain = [root]
     while True:
+        top = chain[-1]
         names = _visible(sorted(os.listdir(top)))
         subs = [n for n in names if os.path.isdir(os.path.join(top, n))]
         loose = [n for n in names if os.path.isfile(os.path.join(top, n)) and n.lower().endswith(MEDIA)]
         if len(subs) == 1 and not loose:
-            top = os.path.join(top, subs[0])
+            chain.append(os.path.join(top, subs[0]))
             continue
         break
-    if loose:
-        if top == root:
-            raise Refused("sounds at the top of the archive, no pack folder: name it with --pack")
-        return [top]
-    packs = [os.path.join(top, s) for s in subs if has_media(os.path.join(top, s))]
-    if not packs:
+    media = [s for s in subs if has_media(os.path.join(top, s))]
+    if not loose and not media:
         raise Refused("no wav / aiff / midi file in the archive")
-    return packs
+    cats = [s for s in media if CATEGORY.match(s)]
+    packish = [s for s in media if s not in cats and any(CATEGORY.match(c) for c in _subdirs(os.path.join(top, s)))]
+    one_pack = bool(loose) or (cats and len(cats) >= len(packish)) or (top != root and not packish)
+    if not one_pack:
+        return [os.path.join(top, s) for s in media]
+    if top == root:
+        raise Refused("sounds at the top of the archive, no pack folder: name it with --pack")
+    # the pack is the deepest folder of the chain whose name is not a plain 'Samples' or a category
+    below = chain[1:]
+    named = [p for p in below if not GENERIC.match(os.path.basename(p)) and not CATEGORY.match(os.path.basename(p))]
+    return [named[-1] if named else below[0]]
 
 
 def forced_style(name, cli):

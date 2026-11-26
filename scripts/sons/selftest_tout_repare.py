@@ -273,7 +273,46 @@ def test_flat_key_est_spelled_like_tag():
     check_eq("12 a key without a flat is left as heard", (r.get("key_tag"), r.get("key_est")), ("A minor", "A minor"))
 
 
-TESTS = [test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def _drum_hits(snare_on, hamp=0.5):
+    """2 bars at 120: kick 4/4, white-noise snare on 2 and 4 (optional), 8th hats hamp under it."""
+    t = np.arange(int(0.3 * SR)) / SR
+    kick = 0.9 * np.sin(2 * np.pi * np.cumsum(50 + 110 * np.exp(-t / 0.03)) / SR) * np.exp(-t / 0.1)
+    rng = np.random.default_rng(2)
+    sn = 0.8 * (0.7 * rng.uniform(-1, 1, len(t)) * np.exp(-t / 0.05) + 0.3 * np.sin(2 * np.pi * 190 * t) * np.exp(-t / 0.04))
+    h = np.diff(np.random.default_rng(3).uniform(-1, 1, int(0.05 * SR)), n=2, prepend=[0.0, 0.0])
+    h = 0.6 * h / np.max(np.abs(h)) * np.exp(-np.arange(len(h)) / SR / 0.012)
+    buf = np.zeros(4 * SR)
+
+    def put(x, at):
+        i = int(round(at * SR))
+        n = min(len(x), len(buf) - i)
+        buf[i:i + n] += x[:n]
+    for b in range(2):
+        for k in range(4):
+            put(kick, 2.0 * b + 0.5 * k)
+        for k in ((1, 3) if snare_on else ()):
+            put(sn, 2.0 * b + 0.5 * k)
+        for i in range(8):
+            put(h * hamp, 2.0 * b + 0.25 * i)
+    return np.clip(buf * 0.8, -1, 1)
+
+
+def test_drum_grid_band_bleed():
+    """A1/A2: a white snare spills into the hat band and hats spill into the snare band; each grid
+    keeps its own drum (8th hats 6 dB under the snare stay on the hat grid, no snare means no snare grid)."""
+    rows, _, _, code, _ = ru.run({"Loops/Drums/Drum Loop 120 BPM.wav": _drum_hits(True),
+                                  "Loops/Drums/Hats Loop 120 BPM.wav": _drum_hits(False)})
+    check_eq("A1 run ends well", code, 0)
+    r = rows["Loops/Drums/Drum Loop 120 BPM.wav"] or {}
+    check_eq("A1 8th hats under a snare", r.get("grid_hats"), "x.x.x.x.x.x.x.x.")
+    check_eq("A1 snare on 2 and 4", r.get("grid_snare"), "....x.......x...")
+    check_eq("A1 kick 4/4", r.get("grid_kick"), "x...x...x...x...")
+    r = rows["Loops/Drums/Hats Loop 120 BPM.wav"] or {}
+    check_true("A2 no snare, no snare hit", "x" not in (r.get("grid_snare") or ""), r.get("grid_snare"))
+    check_eq("A2 hats still there", r.get("grid_hats"), "x.x.x.x.x.x.x.x.")
+
+
+TESTS = [test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

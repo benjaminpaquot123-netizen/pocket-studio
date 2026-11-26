@@ -392,11 +392,13 @@ MELODIC_WORDS = re.compile(r"(?i)bass|synth|lead|pad|key|piano|chord|pluck|arp|m
 ROLES = [
     ("full", r"\bfull\b|\bmix\b|\bdemo\b|master|full ?track|\bsong\b"),
     ("kick", r"kick\s*drums?|\bbass\s*drums?\b"),
-    ("808", r"808"),
-    ("bass", r"bass|\bsub\b|reese"),
     ("kick", r"\bkicks?\b|\bbd\b"),
     ("snare", r"snare|clap|\bsd\b"),
     ("hats", r"\bhats?\b|hi.?hat|cymbal|\bride\b|shaker|\b[co]?hh\b|\bcrash"),
+    ("perc", r"cow\s*bells?"),  # drum words before 808 and bass (defect 23)
+    ("drums", r"drums?\s*(?:&|and|n|'n'|\+)\s*bass"),
+    ("808", r"808"),
+    ("bass", r"bass|\bsub\b|reese"),
     ("perc", r"perc|conga|bongo|\btoms?\b|\brims?\b|shaker|tamb"),
     ("drums", r"drum|\btop\b|\btops\b|\bgrooves?\b|\bbeats?\b|\bbreaks?\b|breakbeat|\bfills?\b"),
     ("vocal", r"vocal|acapella"),
@@ -457,6 +459,7 @@ def kit_split(parts):
 
 # finer drum families the shared rules miss (blind audit I6)
 EXTRA_RULES = [(f, re.compile(r, re.I)) for f, r in [
+    ("kick", r"\bkicks?\b.*\b808\b|\btr\W?808\b.*\bkicks?\b"),  # 'Kick 808 Style', 'TR-808 Kick' (defect 23)
     ("kick", r"\bbass\s*drums?\b|\bkick\s*drums?\b"),
     ("hat_open", r"\bo ?hh\b|(?:hi.?hats?|\bhats?|\bhh)\s*open|open\s*(?:hi.?hats?|hats?|hh)\b"),
     ("hat_closed", r"\bc ?hh\b|(?:hi.?hats?|\bhats?|\bhh)\s*closed|closed\s*(?:hi.?hats?|hats?|hh)\b"),
@@ -656,7 +659,8 @@ def classify(rel, dur):
                                               (folders[-1] if folders else "")):
             sub = fam
             if fam == "kick" and re.search(r"808", inner):
-                sub = "kick_808"
+                if any(re.fullmatch(r"(?i)808s?(?: ?(?:kicks?|bass(?:es)?|subs?))?", f.strip()) for f in folders):
+                    sub = "kick_808"  # 'TR-808/Kick 01', 'Kit 808/Kick 01' are kicks (defect 23)
             layer = re.search(r"(?i)\b(attack|tail|click|body|sub)\b", name)
             if layer and layer.group(1).lower() in ("attack", "tail"):
                 sub += ":" + layer.group(1).lower()

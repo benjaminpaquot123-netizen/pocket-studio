@@ -1,0 +1,182 @@
+rar,pack,kit_id,type,subtype,role,style,dur_s,sr,ch,size_kb,peak_dbfs,rms_dbfs,lufs_i,bpm_tag,key_tag,bpm_est,key_est,error,length_beats,level_shape,bright_shape,peak_pos,end_cut,end_fade_ms,file_id,cle
+8,p1,,fx,-,fx,dubstep,0.8571,44100,2,221.53,-0.1049,-8.072,-6.981,,,,,,,flat,rising,0.86,,,d9deb8a5c6,r8-p1-d9deb8a5c6
+8,p1,,fx,-,fx,dubstep,0.8571,44100,2,221.53,-0.1049,-6.447,-5.347,,,,,,,flat,flat,0.3498,,,977fb13a78,r8-p1-977fb13a78
+8,p1,,fx,-,fx,dubstep,0.8571,44100,2,221.53,-0.1049,-7.761,-6.203,,,,,,,flat,rising,0.6997,,,aa2e64b94a,r8-p1-aa2e64b94a
+8,p1,,fx,-,fx,dubstep,0.8571,44100,2,221.53,-0.1049,-6.804,-2.865,,,,,,,rising,flat,0.3936,,,340c121bbe,r8-p1-340c121bbe
+8,p1,,fx,-,fx,dubstep,0.8571,44100,2,221.53,-0.1049,-7.314,-3.944,,,,,,,flat,rising,0.6997,,,52fbedfc97,r8-p1-52fbedfc97
+8,p1,,fx,-,fx,dubstep,0.8571,44100,2,221.53,-0.1049,-7.827,-3.886,,,,,,,flat,flat,0.6851,,,d39f65a33f,r8-p1-d39f65a33f
+8,p1,,fx,-,fx,dubstep,0.8571,44100,2,221.53,-0.1049,-8.014,-3.766,,,,,,,flat,flat,0.5685,,,e054c92b3b,r8-p1-e054c92b3b
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,890.9,-0.1049,-14.51,-8.165,,,,,,,falling,flat,0.0328,,,05697c04a4,r8-p1-05697c04a4
+8,p1,,fx,-,fx,dubstep,2.571,44100,2,664.5,-0.1049,-13.47,-9.538,,,,,,,falling,rising,0.1992,,,27e0e2216a,r8-p1-27e0e2216a
+8,p1,,fx,-,fx,dubstep,2.571,44100,2,669.42,-0.1049,-14.29,-9.865,,,,,,,falling,flat,0.02915,,,7d60e16865,r8-p1-7d60e16865
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,890.9,-0.1049,-13.28,-8.191,,,,,,,falling,flat,0.01458,,,d5863d73d6,r8-p1-d5863d73d6
+8,p1,,fx,-,fx,dubstep,3,44100,2,780.16,-0.1049,-11.33,-6.512,,,,,,,flat,flat,0.02082,,,a0da808968,r8-p1-a0da808968
+8,p1,,fx,-,fx,dubstep,2.571,44100,2,664.5,-0.1049,-12.52,-7.582,,,,,,,falling,flat,0.02429,,,55666efcc7,r8-p1-55666efcc7
+8,p1,,fx,-,fx,dubstep,2.143,44100,2,553.75,-0.1049,-13.18,-8.496,,,,,,,flat,flat,0.02915,,,00da2399fe,r8-p1-00da2399fe
+8,p1,,fx,-,fx,dubstep,2.143,44100,2,553.75,-0.1049,-14.62,-9.828,,,,,,,falling,flat,0.02332,,,6e517ce06f,r8-p1-6e517ce06f
+8,p1,,fx,-,fx,dubstep,2.571,44100,2,664.5,-0.1049,-15.95,-11.24,,,,,,,falling,flat,0.04859,,,2566215295,r8-p1-2566215295
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-16.11,-9.883,,,,,,,falling,flat,0.03644,,,7c50e8da2c,r8-p1-7c50e8da2c
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-11.39,-9.038,,,,,,,rising,flat,0.8199,,,646bf64455,r8-p1-646bf64455
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-13.31,-8.468,,,,,,,flat,flat,0.9621,,,68388a0b52,r8-p1-68388a0b52
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-12.52,-9.053,,,,,,,rising,flat,0.6268,,,02a4fd7836,r8-p1-02a4fd7836
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-15.47,-12.08,,,,,,,flat,flat,0.007288,,,716792d1e2,r8-p1-716792d1e2
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-12.17,-7.554,,,,,,,flat,falling,0.277,,,156dbe28fd,r8-p1-156dbe28fd
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-12.57,-8.696,,,,,,,rising,falling,0.7653,,,e9ef5dae12,r8-p1-e9ef5dae12
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-13.32,-7.072,,,,,,,rising,flat,0.4519,,,ccaef1c93b,r8-p1-ccaef1c93b
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-13.69,-7.707,,,,,,,flat,rising,0.007288,,,a5a37a9978,r8-p1-a5a37a9978
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-13.64,-8.887,,,,,,,flat,flat,0.01093,,,df8915123a,r8-p1-df8915123a
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-15.36,-10.12,,,,,,,flat,flat,0.007288,,,7b76d0bb69,r8-p1-7b76d0bb69
+8,p1,,fx,-,fx,dubstep,2.571,44100,2,664.5,-0.1049,-23.08,-17.33,,,,,,,falling,falling,0.004859,,,cea3d3878d,r8-p1-cea3d3878d
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-18.8,-14.21,,,,,,,falling,falling,0.003644,,,a1ef2375af,r8-p1-a1ef2375af
+8,p1,,fx,-,fx,dubstep,2.143,44100,2,553.75,-0.1049,-24.15,-19.49,,,,,,,falling,falling,0.01166,,,a35b2c9e85,r8-p1-a35b2c9e85
+8,p1,,fx,-,fx,dubstep,2.143,44100,2,553.75,-0.1049,-19.25,-14.73,,,,,,,falling,flat,0.01749,,,e1b920acfb,r8-p1-e1b920acfb
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-19.23,-13.62,,,,,,,falling,flat,0.003644,,,2212a37937,r8-p1-2212a37937
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-18.7,-16.95,,,,,,,falling,flat,0.003644,,,f4bd19d366,r8-p1-f4bd19d366
+8,p1,,fx,-,fx,dubstep,1.714,44100,2,443.01,-0.1049,-18.88,-15.4,,,,,,,falling,falling,0.007288,,,e131121b0e,r8-p1-e131121b0e
+8,p1,,fx,-,fx,dubstep,2.357,44100,2,609.12,-0.1049,-18.47,-14.94,,,,,,,falling,falling,0.005301,,,cb08b91c8c,r8-p1-cb08b91c8c
+8,p1,,fx,-,fx,dubstep,2.357,44100,2,609.12,-0.1049,-17.47,-15.18,,,,,,,falling,flat,0.0106,,,01f24736bf,r8-p1-01f24736bf
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-19.31,-15.2,,,,,,,falling,falling,0.003644,,,1c1e47d4bb,r8-p1-1c1e47d4bb
+8,p1,,fx,-,fx,dubstep,2.571,44100,2,664.5,-0.1049,-18.15,-14.33,,,,,,,falling,flat,0.01944,,,7081fb98ec,r8-p1-7081fb98ec
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-15.84,-8.926,,,,,,,falling,flat,0.1749,,,7acb2e300b,r8-p1-7acb2e300b
+8,p1,,fx,-,fx,dubstep,1.929,44100,2,498.38,-0.1049,-17.89,-14.76,,,,,,,falling,flat,0.01296,,,7832077e1f,r8-p1-7832077e1f
+8,p1,,fx,-,fx,dubstep,2.571,44100,2,664.5,-0.1049,-19.04,-15.76,,,,,,,falling,flat,0.01458,,,a2457ce571,r8-p1-a2457ce571
+8,p1,,fx,-,fx,dubstep,3,44100,2,775.24,-0.1049,-17.82,-12.88,,,,,,,falling,flat,0.02082,,,fc707eb145,r8-p1-fc707eb145
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-14.65,-8.586,,,,,,,falling,flat,0.1385,,,5623dc8956,r8-p1-5623dc8956
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-14.34,-8.306,,,,,,,falling,flat,0.04373,,,593bfd3ca6,r8-p1-593bfd3ca6
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-15.04,-9.17,,,,,,,falling,flat,0.01822,,,d3fcf25aa9,r8-p1-d3fcf25aa9
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-13.67,-9.475,,,,,,,falling,flat,0.01458,,,0a5b2bb56e,r8-p1-0a5b2bb56e
+8,p1,,fx,-,fx,dubstep,3,44100,2,775.24,-0.1049,-11.34,-6.981,,,,,,,flat,falling,0.4831,,,d5f51db440,r8-p1-d5f51db440
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-19.48,-13.71,,,,,,,falling,falling,0.01093,,,655766ceb3,r8-p1-655766ceb3
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,890.9,-0.1049,-18.89,-13.19,,,,,,,flat,flat,0.4592,,,c4202a1073,r8-p1-c4202a1073
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-17.64,-11.17,,,,,,,falling,falling,0.04373,,,95786467f5,r8-p1-95786467f5
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-18.62,-13.13,,,,,,,falling,falling,0.007288,,,044610ccd0,r8-p1-044610ccd0
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-16.25,-11.03,,,,,,,falling,flat,0.007288,,,1e024c9a95,r8-p1-1e024c9a95
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-18.83,-11.98,,,,,,,falling,falling,0.007288,,,f3f7c062ec,r8-p1-f3f7c062ec
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-17.99,-12.19,,,,,,,falling,falling,0.007288,,,cbcbcb5ff4,r8-p1-cbcbcb5ff4
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-18.49,-13,,,,,,,falling,flat,0.003644,,,e1b078e4bf,r8-p1-e1b078e4bf
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-18.9,-13.25,,,,,,,falling,falling,0.007288,,,e7c5e5e137,r8-p1-e7c5e5e137
+8,p1,,fx,-,fx,dubstep,3.429,44100,2,885.98,-0.1049,-18.44,-13.58,,,,,,,flat,flat,0.007288,,,b923bd006b,r8-p1-b923bd006b
+8,p2,,fx,-,fx,afro-house,7.869,44100,2,2038.26,-0.1049,-15.79,-8.434,122,,,,,16,falling,falling,0.154,,,eb3796f311,r8-p2-eb3796f311
+8,p2,,fx,-,fx,afro-house,3.934,44100,2,1016.7,-0.1049,-17.46,-9.51,122,,,,,8,falling,falling,0.09844,,,50d1001827,r8-p2-50d1001827
+8,p2,,fx,-,fx,afro-house,7.869,44100,2,2038.26,-0.1049,-17.52,-19.94,122,,,,,16,flat,falling,0.02382,,,f647f4e578,r8-p2-f647f4e578
+8,p2,,fx,-,fx,afro-house,7.869,44100,2,2033.34,-0.1049,-18.62,-9.463,122,,,,,16,falling,falling,0.1096,,,615d043237,r8-p2-615d043237
+8,p2,,fx,-,fx,afro-house,7.869,44100,2,2038.26,-0.1049,-19.82,-10.83,122,,,,,16,falling,falling,0.03176,,,b1199bef52,r8-p2-b1199bef52
+8,p2,,fx,-,fx,afro-house,8,44100,2,2067.23,-0.1049,-25.5,-13.08,,,,,,,falling,flat,0.03748,,,5b8b920626,r8-p2-5b8b920626
+8,p2,,fx,-,fx,afro-house,5.714,44100,2,1476.61,-0.1049,-25.46,-18.42,,,,,,,falling,flat,0.008746,,,549c3baeaf,r8-p2-549c3baeaf
+8,p2,,fx,-,fx,afro-house,3.934,44100,2,1016.7,-0.1049,-22.95,-12.27,,,,,,,falling,falling,0.03811,,,b5abfee7a7,r8-p2-b5abfee7a7
+8,p2,,fx,-,fx,afro-house,3.934,44100,2,1016.7,-0.1049,-22.26,-11.48,,,,,,,falling,flat,0.02223,,,cde12fd9f0,r8-p2-cde12fd9f0
+8,p2,,fx,-,fx,afro-house,3.934,44100,2,1016.7,-0.1049,-20.93,-11.24,,,,,,,falling,flat,0.01588,,,ce56327f25,r8-p2-ce56327f25
+8,p2,,fx,-,fx,afro-house,31.48,44100,2,8133.24,-0.1049,-15.77,-11.84,122,G minor,,,,64,flat,rising,0.3088,,,a06a6505ee,r8-p2-a06a6505ee
+8,p2,,fx,-,fx,afro-house,15.74,44100,2,4071.57,-0.1049,-12.74,-9.366,122,C minor,,,,32,flat,flat,0.9273,,,1b5b7fcf6d,r8-p2-1b5b7fcf6d
+8,p2,,fx,-,fx,afro-house,15.74,44100,2,4071.57,-0.1049,-16.12,-13.81,122,C minor,,,,32,flat,rising,0.01032,,,f7092f4fbd,r8-p2-f7092f4fbd
+8,p2,,fx,-,fx,afro-house,17.7,44100,2,4574.97,-0.1049,-20.75,-16.53,122,C minor,,,,36,falling,rising,0.001411,,,c33043398f,r8-p2-c33043398f
+8,p2,,fx,-,fx,afro-house,15.74,44100,2,4071.57,-0.1049,-13.15,-9.311,122,C minor,,,,32,flat,rising,0.01191,,,7e3744dfcd,r8-p2-7e3744dfcd
+8,p2,,fx,-,fx,afro-house,7.869,44100,2,2033.34,-0.1049,-13.65,-6.985,122,,,,,16,flat,rising,0.6621,,,fe2b527ad7,r8-p2-fe2b527ad7
+8,p2,,fx,-,fx,afro-house,7.869,44100,2,2038.26,-0.1049,-19.91,-15.19,122,,,,,16,falling,flat,0.4954,,,2c550f5ee4,r8-p2-2c550f5ee4
+8,p2,,fx,-,fx,afro-house,8,44100,2,2072.15,-0.1049,-21.1,-15.47,120,,,,,16,falling,flat,0.4951,,,fa51ecc23e,r8-p2-fa51ecc23e
+8,p2,,fx,-,fx,afro-house,8,44100,2,2072.15,-0.1049,-21.38,-16.15,120,,,,,16,falling,flat,0.4951,,,bc7e669eaf,r8-p2-bc7e669eaf
+8,p2,,fx,-,fx,afro-house,12,44100,2,3100.82,-0.1049,-22.2,-12,120,,,,,24,flat,flat,0.6622,,,7ab987cd89,r8-p2-7ab987cd89
+8,p2,,fx,-,fx,afro-house,7.619,44100,2,1973.72,-0.1049,-16.39,-12.06,126,,,,,16,falling,flat,0.4821,,,38495158fd,r8-p2-38495158fd
+8,p2,,fx,-,fx,afro-house,15.74,44100,2,4066.64,-0.1049,-21.51,-10.96,122,,,,,32,falling,flat,0.4676,,,31ed7c6960,r8-p2-31ed7c6960
+8,p2,,fx,-,fx,afro-house,7.869,44100,2,2033.34,-0.1049,-16.24,-8.921,122,,,,,16,rising,rising,0.9098,,,da66641557,r8-p2-da66641557
+8,p2,,fx,-,fx,afro-house,7.869,44100,2,2033.34,-0.1049,-17.45,-9.619,122,,,,,16,rising,rising,0.9035,,,501ba709c6,r8-p2-501ba709c6
+8,p2,,fx,-,fx,afro-house,7.869,44100,2,2033.34,-0.1049,-12.93,-6.294,122,,,,,16,rising,rising,0.7145,,,e6b1631832,r8-p2-e6b1631832
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.39,-11.38,,D# minor,,,,,flat,flat,0.777,,,0ce7f7f0f0,r8-p3-0ce7f7f0f0
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4134.45,0,-14.91,-11.76,,F minor,,,,,flat,flat,0.6825,,,713c5ac3a4,r8-p3-713c5ac3a4
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.08,-10.06,,D# minor,,,,,flat,flat,0.004685,,,aff0e1824e,r8-p3-aff0e1824e
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4134.45,-1.035e-06,-15.35,-12.23,,A minor,,,,,flat,flat,0.6216,,,e0222a59b1,r8-p3-e0222a59b1
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.19,-10.55,,F# minor,,,,,flat,flat,0.1624,,,07481ef464,r8-p3-07481ef464
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-12.39,-9.663,,F minor,,,,,flat,flat,0.01484,,,9b42d34e2c,r8-p3-9b42d34e2c
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.49,-11.11,,A major,,,,,flat,flat,0.6396,,,e5cabe9d28,r8-p3-e5cabe9d28
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.33,-9.423,,C minor,,,,,flat,flat,0.7114,,,77c3f3a04f,r8-p3-77c3f3a04f
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.76,-10.53,,F minor,,,,,flat,flat,0.3147,,,7d81229613,r8-p3-7d81229613
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.35,-11.57,,A# minor,,,,,flat,flat,0.6825,,,68bade9871,r8-p3-68bade9871
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.7,-11.26,,D# minor,,,,,flat,flat,0.7598,,,cf957d3e36,r8-p3-cf957d3e36
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.51,-10.96,,A# minor,,,,,flat,flat,0.9215,,,fad3eaad1d,r8-p3-fad3eaad1d
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.9,-10.64,,F minor,,,,,flat,flat,0.003904,,,fa3ce5fe8c,r8-p3-fa3ce5fe8c
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.78,-11.14,,D minor,,,,,flat,flat,0.1164,,,e820eb937d,r8-p3-e820eb937d
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-12.99,-9.536,,E minor,,,,,flat,flat,0.002343,,,119b15cda7,r8-p3-119b15cda7
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4134.45,0,-14.91,-10.33,,A minor,,,,,flat,flat,0.6669,,,d3154fb015,r8-p3-d3154fb015
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.74,-10.8,,D# minor,,,,,flat,flat,0.6591,,,349c6a6eda,r8-p3-349c6a6eda
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.45,-12.12,,B minor,,,,,flat,falling,0.8332,,,9cdafa7fef,r8-p3-9cdafa7fef
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-15.18,-11.43,,G minor,,,,,flat,falling,0.2069,,,c78b027976,r8-p3-c78b027976
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.82,-10.72,,B minor,,,,,flat,flat,0.003124,,,ba5d5ebcc2,r8-p3-ba5d5ebcc2
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.52,-10.72,,D minor,,,,,flat,flat,0.009371,,,5280aae0b0,r8-p3-5280aae0b0
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.36,-11.42,,E minor,,,,,flat,flat,0.002343,,,56e65b96cf,r8-p3-56e65b96cf
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.59,-11.37,,A minor,,,,,flat,flat,0.5341,,,b67b81b87c,r8-p3-b67b81b87c
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.01,-11.31,,G minor,,,,,flat,flat,0.3795,,,e916640b99,r8-p3-e916640b99
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.66,-11.74,,F# minor,,,,,flat,flat,0.9589,,,632e94bab2,r8-p3-632e94bab2
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4134.45,-1.035e-06,-15.07,-11.85,,G minor,,,,,flat,flat,0.06013,,,fb75effc54,r8-p3-fb75effc54
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.35,-11.12,,A minor,,,,,flat,flat,0.4318,,,6dd393255f,r8-p3-6dd393255f
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-15.19,-11.96,,F# minor,,,,,flat,flat,0.677,,,4c18c035b7,r8-p3-4c18c035b7
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.39,-10.57,,G minor,,,,,flat,flat,0.3717,,,b99cc45608,r8-p3-b99cc45608
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.76,-11.51,,G# minor,,,,,flat,flat,0.3725,,,049680be2a,r8-p3-049680be2a
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-12.86,-11.46,,E minor,,,,,flat,flat,0.8613,,,34bec27335,r8-p3-34bec27335
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.84,-10.45,,E minor,,,,,flat,flat,0.6107,,,c90b802ba3,r8-p3-c90b802ba3
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-15.01,-11.86,,E minor,,,,,flat,flat,0.6107,,,acd271af35,r8-p3-acd271af35
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-12.97,-9.983,,E minor,,,,,flat,flat,0.4763,,,911e730126,r8-p3-911e730126
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4134.45,-1.035e-06,-14.94,-11.78,,B minor,,,,,flat,flat,0.3444,,,47196a34ad,r8-p3-47196a34ad
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4134.45,-1.035e-06,-13.65,-10.44,,C# minor,,,,,flat,flat,0.7106,,,9a50a5a44a,r8-p3-9a50a5a44a
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.82,-11.43,,A minor,,,,,flat,flat,0.01093,,,3a3e3d3fe4,r8-p3-3a3e3d3fe4
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.88,-11.9,,A major,,,,,flat,flat,0.9488,,,7c61ccb535,r8-p3-7c61ccb535
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.54,-11.09,,F# minor,,,,,flat,flat,0.8972,,,f12437581b,r8-p3-f12437581b
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.72,-11.39,,B minor,,,,,flat,flat,0.4818,,,4933e9ab3c,r8-p3-4933e9ab3c
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-15.12,-10.6,,F# minor,,,,,flat,flat,0.3147,,,da278e087a,r8-p3-da278e087a
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.37,-11.26,,G minor,,,,,flat,flat,0.9129,,,e6f686fe50,r8-p3-e6f686fe50
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.44,-10.01,,A# minor,,,,,flat,flat,0.3561,,,4b83b48607,r8-p3-4b83b48607
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4134.45,-1.035e-06,-14.25,-9.87,,F minor,,,,,flat,flat,0.7817,,,43b70fe35d,r8-p3-43b70fe35d
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-12.97,-10.88,,A major,,,,,flat,flat,0.9293,,,7fc2013191,r8-p3-7fc2013191
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.75,-10.52,,E minor,,,,,flat,flat,0.1765,,,5b3c93ad01,r8-p3-5b3c93ad01
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-15.49,-12.78,,F# minor,,,,,flat,flat,0.3272,,,71d6224631,r8-p3-71d6224631
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-11.76,-11.83,,D# major,,,,,flat,rising,0.0328,,,4331555ea4,r8-p3-4331555ea4
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.63,-12.13,,E minor,,,,,flat,flat,0.677,,,0cf830eb88,r8-p3-0cf830eb88
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.19,-11.75,,A minor,,,,,flat,flat,0.9769,,,ae46cfdbed,r8-p3-ae46cfdbed
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-12.98,-10.84,,A minor,,,,,flat,flat,0.6848,,,698b99fb6e,r8-p3-698b99fb6e
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.59,-12.06,,D minor,,,,,flat,flat,0.5021,,,3ca1be05f6,r8-p3-3ca1be05f6
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-15.19,-13.45,,G minor,,,,,flat,flat,0.8153,,,93acc3c313,r8-p3-93acc3c313
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.21,-11.3,,D minor,,,,,flat,flat,0.2163,,,0bb53f06ad,r8-p3-0bb53f06ad
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.35,-11.04,,D minor,,,,,flat,flat,0.3522,,,b79f40962d,r8-p3-b79f40962d
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.09,-12.78,,D minor,,,,,flat,falling,0.8535,,,c98cd1187b,r8-p3-c98cd1187b
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-15.36,-13.71,,A# minor,,,,,flat,flat,0.3701,,,84891d7629,r8-p3-84891d7629
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.25,-12.48,,A# minor,,,,,flat,flat,0.02265,,,6a08525ebc,r8-p3-6a08525ebc
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.21,-10.11,,D minor,,,,,flat,flat,0.2147,,,ef298c39df,r8-p3-ef298c39df
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.31,-11.24,,A minor,,,,,flat,flat,0.5763,,,4e81755d30,r8-p3-4e81755d30
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.4,-10.79,,A minor,,,,,flat,flat,0.7356,,,fd239d0273,r8-p3-fd239d0273
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4134.45,0,-13.72,-10.9,,G minor,,,,,flat,flat,0.6638,,,ca09675099,r8-p3-ca09675099
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-15.97,-12.46,,G# minor,,,,,flat,rising,0.4576,,,af7fd939cc,r8-p3-af7fd939cc
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.69,-10.04,,D minor,,,,,flat,flat,0.6036,,,138c5e9846,r8-p3-138c5e9846
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.76,-11.27,,A# minor,,,,,flat,flat,0.9441,,,371b3fc009,r8-p3-371b3fc009
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.44,-11.26,,D# minor,,,,,flat,falling,0.7996,,,2051ab9122,r8-p3-2051ab9122
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.75,-11.67,,A minor,,,,,flat,flat,0.6622,,,5fa8cd33ee,r8-p3-5fa8cd33ee
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.33,-10.09,,B minor,,,,,flat,flat,0.7091,,,21a69f1a50,r8-p3-21a69f1a50
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-16.36,-13.47,,G# minor,,,,,flat,flat,0.107,,,1a892791e4,r8-p3-1a892791e4
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.83,-11.24,,G minor,,,,,flat,flat,0.9558,,,f4f24edf6b,r8-p3-f4f24edf6b
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.26,-11.88,,F# minor,,,,,flat,flat,0.7348,,,f8e0d99741,r8-p3-f8e0d99741
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.7,-12.37,,A# minor,,,,,flat,flat,0.9628,,,9019c21cdc,r8-p3-9019c21cdc
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.22,-12.22,,G# minor,,,,,flat,falling,0.8801,,,ec3ec3d7f0,r8-p3-ec3ec3d7f0
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4134.45,0,-14.45,-10.26,,G minor,,,,,flat,flat,0.7848,,,4d811ba248,r8-p3-4d811ba248
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.33,-12.22,,F minor,,,,,flat,flat,0.6466,,,9e17a5c234,r8-p3-9e17a5c234
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.27,-10.78,,G# minor,,,,,flat,flat,0.7005,,,3a8e3a9948,r8-p3-3a8e3a9948
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.98,-11.3,,D# minor,,,,,flat,flat,0.8972,,,a9e4fb2303,r8-p3-a9e4fb2303
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.67,-11.86,,F minor,,,,,flat,falling,0.7715,,,5fed7ec120,r8-p3-5fed7ec120
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.68,-10.6,,B minor,,,,,flat,flat,0.2218,,,6c07d1f9a9,r8-p3-6c07d1f9a9
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.22,-11.08,,G# minor,,,,,flat,flat,0.8168,,,7cc38bf7d6,r8-p3-7cc38bf7d6
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14,-13.71,,D# minor,,,,,flat,rising,0.7497,,,592d2f82c6,r8-p3-592d2f82c6
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.76,-11.99,,G minor,,,,,flat,flat,0.4357,,,bf53bb8243,r8-p3-bf53bb8243
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.88,-12.37,,D minor,,,,,flat,flat,0.6997,,,515f226b52,r8-p3-515f226b52
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.46,-11.58,,A# minor,,,,,flat,flat,0.656,,,4bab6679fd,r8-p3-4bab6679fd
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-15.89,-12.49,,G# minor,,,,,flat,flat,0.7215,,,76372f9929,r8-p3-76372f9929
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.18,-9.418,,A minor,,,,,flat,flat,0.06872,,,b2d1e715d9,r8-p3-b2d1e715d9
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-14.1,-11.31,,E minor,,,,,flat,rising,0.7239,,,c6867ab178,r8-p3-c6867ab178
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4134.45,-1.035e-06,-14.2,-11.34,,A minor,,,,,flat,flat,0.5373,,,8f99ac7256,r8-p3-8f99ac7256
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.6,-11.49,,G# minor,,,,,flat,flat,0.2554,,,93a51005b3,r8-p3-93a51005b3
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.33,-10.39,,B minor,,,,,flat,flat,0.2647,,,20a756662f,r8-p3-20a756662f
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-15.56,-12.4,,D minor,,,,,flat,flat,0.7309,,,988e8a04c3,r8-p3-988e8a04c3
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-13.45,-11.32,,A# minor,,,,,flat,flat,0.3397,,,feb8144db5,r8-p3-feb8144db5
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.48,-9.852,,A minor,,,,,flat,flat,0.3366,,,4bf5c0f014,r8-p3-4bf5c0f014
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.51,-10.98,,F minor,,,,,flat,flat,0.9105,,,ecd78a4e52,r8-p3-ecd78a4e52
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-12.48,-10.84,,F minor,,,,,flat,flat,0.6739,,,dea09add3d,r8-p3-dea09add3d
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,0,-14.47,-10.34,,E minor,,,,,flat,flat,0.01718,,,83de709ea3,r8-p3-83de709ea3
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.64,-11.32,,C minor,,,,,flat,flat,0.03592,,,f639ae0c62,r8-p3-f639ae0c62
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-13.68,-11.18,,F minor,,,,,flat,flat,0.3514,,,47e2f57733,r8-p3-47e2f57733
+8,p3,,fx,-,fx,unlabelled,16,44100,2,4139.34,-1.035e-06,-15.18,-11.4,,F# minor,,,,,flat,rising,0.72,,,39d9f6e23f,r8-p3-39d9f6e23f

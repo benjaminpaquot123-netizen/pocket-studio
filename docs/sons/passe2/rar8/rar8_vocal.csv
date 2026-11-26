@@ -1,0 +1,11 @@
+rar,pack,kit_id,type,subtype,role,style,dur_s,sr,ch,size_kb,peak_dbfs,rms_dbfs,lufs_i,bpm_tag,key_tag,bpm_est,key_est,error,wet,tail_db,pitch_median_hz,range_st,voiced_pct,end_cut,end_fade_ms,file_id,cle
+8,p2,,vocal,-,vocal,afro-house,16.72,44100,2,4325.73,-0.1049,-16,-12.39,122,A# minor,,,,,-4.456,523.5,6.918,75.88,,,a7d10da6a8,r8-p2-a7d10da6a8
+8,p2,,vocal,-,vocal,afro-house,17.7,44100,2,4579.9,-0.1049,-17.18,-13.47,122,A# minor,,,,,-4.55,261.92,7.024,67.03,,,14d00866da,r8-p2-14d00866da
+8,p2,,vocal,-,vocal,afro-house,47.21,44100,2,12204.8,-0.1049,-18.02,-13.99,122,A# minor,,,,,-8.776,311.54,7.175,67.64,,,077e261557,r8-p2-077e261557
+8,p2,,vocal,-,vocal,afro-house,15.74,44100,2,4071.57,-0.1049,-18.61,-12.69,122,A# minor,,,,,,311.34,7.058,51.69,,,3182e39c2c,r8-p2-3182e39c2c
+8,p2,,vocal,-,vocal,afro-house,16.23,44100,2,4198.65,-0.1049,-15.42,-11.87,122,A# minor,,,,,-18.86,312.02,7.239,74.66,,,be2a7cf54b,r8-p2-be2a7cf54b
+8,p2,,vocal,-,vocal,afro-house,18.69,44100,2,4834.06,-0.1049,-16.27,-12.26,122,A# minor,,,,,,521.6,6.232,82.46,,,78943998bf,r8-p2-78943998bf
+8,p2,,vocal,-,vocal,afro-house,17.7,44100,2,4574.97,-0.1049,-17.23,-13.54,122,A# minor,,,,,,261.72,6.799,72.97,,,18c9e0725b,r8-p2-18c9e0725b
+8,p2,,vocal,-,vocal,afro-house,49.18,44100,2,12713.1,-0.1049,-16.76,-12.81,122,A# minor,,,,,,311.54,7.361,71.48,,,5c170a8b8b,r8-p2-5c170a8b8b
+8,p2,,vocal,-,vocal,afro-house,17.7,44100,2,4579.9,-0.1049,-18.29,-12.92,122,A# minor,,,,,,310.75,19.26,51.95,,,b542f12b41,r8-p2-b542f12b41
+8,p2,,vocal,-,vocal,afro-house,17.7,44100,2,4579.9,-0.1049,-16.17,-12.28,122,A# minor,,,,,,311.97,8.735,70.37,,,238391c14b,r8-p2-238391c14b

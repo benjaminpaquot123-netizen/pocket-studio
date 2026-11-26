@@ -1,0 +1,7 @@
+rar,pack,kit_id,type,subtype,role,style,dur_s,sr,ch,size_kb,peak_dbfs,rms_dbfs,lufs_i,bpm_tag,key_tag,bpm_est,key_est,error,n_stems,n_midi,roles,bpm_gap_pct,key_match,bars,file_id,cle
+8,p2,r8k001,kit,-,-,afro-house,,,,36629.3,,,,122,,122,,,9,0,bass+hats+kick+perc+snare,-3.071e-05,,8,6336b22dc3,r8-p2-6336b22dc3
+8,p2,r8k002,kit,-,-,afro-house,,,,37219.6,,,,120,,120,,,9,0,bass+drums+hats+kick+snare,0,,8,47e56972c3,r8-p2-47e56972c3
+8,p2,r8k003,kit,-,-,afro-house,,,,32273.6,,,,123,,123,,,8,0,bass+hats+kick+perc,-0.0001098,,8,b7a494cf0b,r8-p2-b7a494cf0b
+8,p2,r8k004,kit,-,-,afro-house,,,,43337.6,,,,126,,126,,,11,0,bass+hats+kick+perc+snare,0,,8,16a58d08cf,r8-p2-16a58d08cf
+8,p2,r8k005,kit,-,-,afro-house,,,,28471.4,,,,122,,122,,,7,0,bass+hats+kick+perc,-3.071e-05,,8,765c589abd,r8-p2-765c589abd
+8,p2,r8k006,kit,-,-,afro-house,,,,16281.3,,,,122,,122,,,4,0,bass+hats+kick,-3.071e-05,,8,e6e73a6766,r8-p2-e6e73a6766

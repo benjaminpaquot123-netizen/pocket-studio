@@ -1,0 +1,11 @@
+rar,pack,type,measure,tagged,agree,half_double,relative,error_pct,usable,cle
+8,p1,drum_loop,bpm,60,15,43,0,75,no,
+8,p1,melodic_loop,bpm,67,38,22,0,43.28,no,
+8,p1,melodic_loop,key,20,7,0,0,65,no,
+8,p1,midi,key,20,10,0,0,50,no,
+8,p2,drum_loop,bpm,77,42,2,0,45.45,no,
+8,p2,kit,bpm,6,6,0,0,0,no,
+8,p2,melodic_loop,bpm,76,56,14,0,26.32,no,
+8,p2,melodic_loop,key,64,15,0,0,76.56,no,
+8,p2,midi,key,49,11,0,0,77.55,no,
+8,p3,melodic_loop,key,1,1,0,0,0,no,

@@ -136,7 +136,32 @@ def test_oneshot_with_tempo():
     check_eq("2 '808 Long 140bpm C': still a drum hit", (rows["808/808 Long 140bpm C.wav"] or {}).get("type"), "drum_oneshot")
 
 
-TESTS = [test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_pack_style_named():
+    """Defect 3: the pack folder's name gives a style only when it really names one; said on the console; options."""
+    loop = {"Loops/Loop 01 120 bpm.wav": ru.plucks(120.0, AM, 1)}
+    for pack in ("Rock Solid Kicks", "Pop Up Drums", "Jungle Animals FX", "House of Loops Vol 3", "Soul Food Keys",
+                 "Garage Band Loops", "Metal Percussion", "Acid Jazz", "Drum Hits 2", "archive_03"):
+        rows, _, con, _, _ = run(loop, pack=pack)
+        check_eq("3 pack '%s': no style" % pack, (rows["Loops/Loop 01 120 bpm.wav"] or {}).get("style"), "unlabelled")
+        check_true("3 pack '%s': nothing said about a pack style" % pack, "style du pack" not in con, con)
+    rows, _, con, _, _ = run(dict(loop, **{"House Loops/Loop 02 120 bpm.wav": ru.plucks(120.0, AM, 1)}),
+                             pack="Drill Essentials Vol 1")
+    check_eq("3 'Drill Essentials Vol 1': drill", (rows["Loops/Loop 01 120 bpm.wav"] or {}).get("style"), "drill")
+    check_eq("3 'Drill Essentials Vol 1/House Loops': the inner folder wins",
+             (rows["House Loops/Loop 02 120 bpm.wav"] or {}).get("style"), "house")
+    check_true("3 console says the pack style and its row count", "style du pack : drill, posé sur 1 lignes" in con, con)
+    rows, _, con, _, _ = run(loop, pack="Drill Essentials Vol 1", extra=["--no-pack-style"])
+    check_eq("3 --no-pack-style: no style", (rows["Loops/Loop 01 120 bpm.wav"] or {}).get("style"), "unlabelled")
+    check_true("3 --no-pack-style: nothing said", "style du pack" not in con, con)
+    rows, _, con, _, _ = run(dict(loop, **{"House Loops/Loop 02 120 bpm.wav": ru.plucks(120.0, AM, 1)}),
+                             pack="archive_03", extra=["--pack-style", "trap"])
+    check_eq("3 --pack-style trap: given style", (rows["Loops/Loop 01 120 bpm.wav"] or {}).get("style"), "trap")
+    check_eq("3 --pack-style trap: the inner folder still wins",
+             (rows["House Loops/Loop 02 120 bpm.wav"] or {}).get("style"), "house")
+    check_true("3 --pack-style: said on the console", "style du pack : trap, posé sur 1 lignes" in con, con)
+
+
+TESTS = [test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

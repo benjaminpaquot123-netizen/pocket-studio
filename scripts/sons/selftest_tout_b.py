@@ -77,6 +77,9 @@ def test_tempo():
         check_eq("10 bare bpm far from the sound stays empty: %s" % rel,
                  confirmed(rel, "drum_loop" if "Drum" in rel else "melodic_loop")["bpm_tag"], None)
     check_eq("10 a sure tag is never replaced", confirmed("Loops/Loop 140 BPM Am.wav")["bpm_tag"], 140.0)
+    check_eq("10 a BPM word up to 250", tags("Loops/Loop 190 BPM Am.wav")["bpm"], 190.0)
+    check_eq("10 '140-bpm' is read", tags("Loops/Loop 140-bpm Am.wav")["bpm"], 140.0)
+    check_eq("10 a slow tempo beside a key", tags("Loops/Loop 85 Am.wav")["bpm"], 85.0)
     check_eq("10 one-shot numbers stay out", tags("Synth/Bass 120 C.wav", "oneshot_melodic")["bpm"], None)
 
 
@@ -140,8 +143,45 @@ def test_note():
              None)
 
 
+def test_style():
+    """Defects 13 and 14: a style is a whole word; new styles; the pack folder's own name."""
+    for rel in ("Drums/Snares/Gravel Snare 01.wav", "Synth/Brave Lead C3.wav", "Synth/Horn Blast C3.wav",
+                "Synth/Modern Bass C2.wav", "Drums/Fills/Solo Fill 01.wav", "FX/Entrance FX 01.wav",
+                "Drums/Kicks/Warehouse Kick 01.wav", "Drums/Kicks/Strap Kick 01.wav", "Synth/Technology Lead C3.wav",
+                "Drums/Kicks/Popcorn Kick 01.wav", "Electronic Drums/Kick 01.wav", "Jungle Percussion/Conga 01.wav",
+                "Drums/Kicks/Garage Door Kick 01.wav", "Drums/Snares/Soulful Snare 01.wav",
+                "Drums/Kicks/Trapdoor Kick 01.wav", "Drums/Kicks/Contrapunto Kick 01.wav",
+                "Drums/Kicks/Extra Punch Kick 01.wav", "Drums/Kicks/Travel Kick 01.wav",
+                "Drums/Kicks/Ultra Phat Kick 01.wav", "Neo Raver Tools/Kick 01.wav", "Ketamine Kicks/Kick 01.wav"):
+        check_eq("13 no style: %s" % rel, tout.style_of(rel), "unlabelled")
+    for rel, want in (("Drums/Kicks/Pop Kick 01.wav", "pop"), ("Deep House/Kicks/Kick 01.wav", "house"),
+                      ("Techno/House Kicks/Kick 01.wav", "house"), ("Hip-Hop & Trap/Kicks/Kick 01.wav", "trap"),
+                      ("Lo-Fi House/Kicks/Kick 01.wav", "house"), ("Lo-Fi/Kicks/Kick 01.wav", "lofi"),
+                      ("UK Garage/Kicks/Kick 01.wav", "garage"), ("Drum & Bass/Kicks/Kick 01.wav", "dnb"),
+                      ("DnB/Kicks/Kick 01.wav", "dnb"), ("Jungle/Breaks/Break 01.wav", "dnb"),
+                      ("RnB/Kicks/Kick 01.wav", "rnb"), ("Soul/Keys/Keys 01.wav", "rnb"),
+                      ("Boom Bap/Kicks/Kick 01.wav", "hiphop"), ("HipHop/Kicks/Kick 01.wav", "hiphop"),
+                      ("TrapKicks/Kick 01.wav", "trap"), ("Trap Beats/Snare 01.wav", "trap"),
+                      ("Techno Kicks/Kick 01.wav", "techno"), ("Houses/Kick 01.wav", "house"),
+                      ("Afrobeats/Kicks/Kick 01.wav", "afro"), ("Electro/Kicks/Kick 01.wav", "edm"),
+                      ("Rock/Kicks/Kick 01.wav", "rock"), ("Reggaeton/Kicks/Kick 01.wav", "reggaeton"),
+                      ("Dembow/Kicks/Kick 01.wav", "reggaeton"), ("Drill/Kicks/Kick 01.wav", "drill"),
+                      ("Disco/Kicks/Kick 01.wav", "disco"), ("Funk/Kicks/Kick 01.wav", "funk"),
+                      ("Hardstyle/Kicks/Kick 01.wav", "hardstyle"), ("Neo Rave/Kicks/Kick 01.wav", "rave"),
+                      ("Liquid DnB/Kicks/Kick 01.wav", "dnb"), ("Afro House/Kicks/Kick 01.wav", "afro-house")):
+        check_eq("13 style: %s" % rel, tout.style_of(rel), want)
+    check_eq("13 classify uses the whole word", tout.classify("Drums/Kicks/Warehouse Kick 01.wav", 0.4)["style"],
+             "unlabelled")
+    # 14: the pack folder given directly still names the style
+    check_eq("14 style from the pack folder", tout.style_of("Kicks/Kick 01.wav", "Techno Essentials Vol 2"),
+             "techno")
+    check_eq("14 the inner folders win over the pack", tout.style_of("House/Kick 01.wav", "Techno Essentials"),
+             "house")
+    check_eq("14 no style anywhere", tout.style_of("Kicks/Kick 01.wav", "Essentials Vol 2"), "unlabelled")
+
+
 def main():
-    for t in (test_tempo, test_key, test_note):
+    for t in (test_tempo, test_key, test_note, test_style):
         t()
     print("%d checks, %d failed" % (COUNT[0], len(FAILS)))
     for f in FAILS:

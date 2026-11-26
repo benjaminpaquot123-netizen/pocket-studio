@@ -142,7 +142,7 @@ def test_confirm_wired():
     check_eq("1 gear number 106 heard at 120 stays out", r.get("bpm_tag"), "")
     r = rows["Loops/Pad Loop F.wav"] or {}
     check_eq("1 lone key F heard in F is the key", r.get("key_tag"), "F major")
-    check_eq("1 lone key F: the match is written", r.get("key_match"), "exact")
+    check_eq("1 lone key F: only the root was written", r.get("key_match"), "root")
     r = rows["Loops/Pad Loop D.wav"] or {}
     check_eq("1 lone key D heard in F stays out", r.get("key_tag"), "")
     r = rows["Loops/Bass Loop 120 Bbm.wav"] or {}

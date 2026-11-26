@@ -107,7 +107,18 @@ def test_bars_when_tempo_contradicted():
     check_eq("5 'Pad Loop 120bpm Am' played at 120: 4 bars", num((rows["Loops/Pad Loop 120bpm Am.wav"] or {}).get("bars")), 4.0)
 
 
-TESTS = [test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_lone_letter_root():
+    """Defect 8: a lone letter confirmed by the sound only wrote the root: key_match 'root', not 'exact'."""
+    rows, _, _, code, _ = run({"Loops/Pad Loop F.wav": ru.plucks(120.0, FMAJ, 1),
+                               "Loops/Pad Loop F major.wav": ru.plucks(120.0, FMAJ, 1)})
+    r = rows["Loops/Pad Loop F.wav"] or {}
+    check_eq("8 lone F heard in F major: key_tag", r.get("key_tag"), "F major")
+    check_eq("8 lone F heard in F major: key_match root", r.get("key_match"), "root")
+    check_eq("8 'F major' written in full: key_match exact", (rows["Loops/Pad Loop F major.wav"] or {}).get("key_match"), "exact")
+    check_true("8 the module text names the match 'root'", "root" in tout.__doc__.split("key_match (")[1].split(")")[0])
+
+
+TESTS = [test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

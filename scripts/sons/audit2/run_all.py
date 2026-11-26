@@ -28,6 +28,8 @@ EXPECTED_RED = {
                  "Drums/808s/808 Long 140bpm C.wav end_cut"],  # defects 18, 25: one-shot with a bpm
     "b2_tags": ["Synth/Bass 120 C.wav type",  # defect 25: 2 s one-shot with a tempo, filed as a loop
                 "Drum Loops/Kick Loop 125 Gm.wav key_tag"],  # defect 8: a drum loop gets a key
+    "b6_misc": ["kit2 kit bars", "kit2 kit_stem 1 bars", "kit2 kit_stem 2 bars"],  # absurd bars: a
+                # written 100 bpm kept while the sound says 80 -> 5 bars instead of 4
 }
 
 

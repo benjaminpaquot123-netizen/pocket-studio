@@ -396,6 +396,22 @@ def test_28_rows_traceable():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def test_34b_streamed_wav_size_zero():
+    good = wav_bytes(kick())
+    i = good.index(b"data")
+    z = good[:i + 4] + b"\0\0\0\0" + good[i + 8:]
+    tmp = tempfile.mkdtemp(prefix="tout_e_z_")
+    try:
+        p = os.path.join(tmp, "k.wav")
+        write(p, z)
+        check_eq("34 streamed wav (data size 0) is read", _raises(lambda: tout.read_audio(p)), None)
+        check_eq("34 streamed wav keeps its length", tout.read_audio(p)[1].shape[0], SR // 2)
+        write(p, good[:44])
+        check_eq("34 header only still has no frames", _raises(lambda: tout.read_audio(p)), "no audio frames")
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     with np.errstate(all="ignore"):

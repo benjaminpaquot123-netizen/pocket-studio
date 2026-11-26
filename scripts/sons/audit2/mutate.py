@@ -114,8 +114,8 @@ m("fence", "vocal wet/dry shown again", 'row["wet"] = None  # the dry', 'pass  #
 m("fence", "untagged loop tempo shown again", '            row["bpm_est"] = None', '            pass')
 m("fence", "untagged loop key shown again", '            row["key_est"] = None', '            pass')
 m("fence", "midi chords shown again", 'for k in ("key_measured", "key_est", "key_match", "chords", "chord_changes_per_bar",', 'for k in ("key_measured", "key_est", "key_match",')
-m("fence", "accuracy usable from 1 tagged file", '"yes" if n >= 10 and err is not None and err < 5 else "no"', '"yes" if n >= 1 and err is not None and err < 5 else "no"')
-m("fence", "accuracy usable under 50 % error", '"yes" if n >= 10 and err is not None and err < 5 else "no"', '"yes" if n >= 10 and err is not None and err < 50 else "no"')
+m("fence", "accuracy usable on the raw error rate (no Wilson bound)", '"yes" if n and _wilson_upper(n - a, n) < 0.05', '"yes" if n and (n - a) / n < 0.05')
+m("fence", "Wilson bound under 50 % error", '"yes" if n and _wilson_upper(n - a, n) < 0.05', '"yes" if n and _wilson_upper(n - a, n) < 0.5')
 m("fence", "tempo agreement tolerance 2 % -> 20 %", "return abs(m - t) / t <= 0.02", "return abs(m - t) / t <= 0.2")
 # ---- tempo / bars
 m("tempo", "tempo search 60-200 -> 80-160", "bpms = np.arange(60.0, 200.01, 0.25)", "bpms = np.arange(80.0, 160.01, 0.25)")

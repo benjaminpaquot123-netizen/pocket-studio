@@ -170,3 +170,41 @@ What changed after the critique:
 - One pack only (a few producers' taste): use these numbers as ranges, not as exact targets.
 - Small groups (rim n 5, snap n 9, 808 n 21, cymbal n 19) are indicative only.
 - t60 is meaningless for cut or padded files: always read end_level_db first.
+
+## Deuxième passe (12 RAR)
+
+État : 9 RAR sur 12 réunis (1, 2, 3, 4, 5, 6, 8, 10, 12) ; 7, 9 et 11 à venir. Source : `docs/sons/passe2/tout/drum_oneshot.csv`
+(1 931 coups), tableau complet dans `docs/sons/passe2/tout/chiffres.md`, inventaire dans `docs/sons/passe2/INVENTAIRE.md`.
+Mêmes règles de confiance qu'au §1 ; **pas** de retrait des valeurs aberrantes (le §2 en retirait 35). Médiane [q25–q75].
+
+| famille | n | t20 ms | t60 ms | hauteur attaque → stable Hz | tonal dB | centroïde Hz | hf dB | transitoire/corps dB |
+|---|---|---|---|---|---|---|---|---|
+| kick | 427 | 187 [126–238] | 295 [221–374] | 221 → 49.0 [44.0–55.2] | −0.1 | 110 [85–176] | −38 | −12.2 [−14.8…−9.0] |
+| kick_808 | 23 | 1430 [1084–1802] | 1788 [1499–2267] | 223 → 41.3 [36.6–63.8] | 0.0 | 46 [39–67] | −88 | −23.7 [−30.0…−20.3] |
+| snare | 324 | 112 [78–150] | 308 [181–648] | 607 → 257 [202–415] | −7.5 | 1840 [1093–2752] | −16 | −4.4 [−7.8…−2.0] |
+| clap | 228 | 106 [78–173] | 224 [170–422] | (bruit) | −10.1 | 3143 [2432–4875] | −14 | −7.5 [−10.3…−5.0] |
+| hat_closed | 194 | 54 [42–67] | 140 [88–393] | (bruit) | −26.6 | 8164 [7106–9809] | −5.7 | −2.5 |
+| hat_open | 132 | 129 [86–265] | 675 [193–908] | (bruit) | −22.5 | 7800 [6598–9845] | −5.8 | −6.9 |
+| ride | 75 | 291 [245–375] | 628 [465–777] | (bruit) | −23.4 | 9597 [8173–10901] | −3.6 | −8.0 |
+| crash | 40 | 1151 [797–1515] | 2095 [1457–2807] | (bruit) | −17.3 | 6303 [4985–7103] | −10.6 | −21.2 |
+| cymbal | 20 | 550 [446–716] | 981 [891–1066] | (bruit) | −15.4 | 5723 [5163–6362] | −10.2 | −12.2 |
+| tom | 54 | 262 [157–470] | 704 [407–1086] | 215 → 97 [67–122] | −1.4 | 566 [166–1037] | −36 | −6.9 |
+| perc | 254 | 108 [63–178] | 290 [181–427] | 728 → 399 [218–623] | −4.2 | 1034 [563–1834] | −35 | −3.5 |
+| shaker | 76 | 53 [35–77] | 540 [359–650] | (bruit) | −19.8 | 8633 [6211–10018] | −6.0 | −1.3 |
+| cowbell | 67 | 345 [63–591] | 1481 [848–1839] | 798 → 625 [402–767] | −2.4 | 837 [727–1120] | −43 | −9.5 |
+| snap | 12 | 220 [199–289] | 768 [617–1611] | (bruit) | −4.9 | 3041 [1013–4203] | −15.6 | −8.1 |
+| rim | 5 | 56 [31–64] | 323 | 1501 → 1018 | −8.0 | 1479 [999–2354] | −34 | +3.7 |
+
+Familles : préfixe du sous-type avant « : » (les couches « kick:attack », « kick:tail »… vont dans leur famille) ; perc_high,
+perc_mid et perc_low vont dans perc.
+
+### Ce qui change nettement par rapport à la première passe
+- **Plus de « hat » sans étiquette** : tout est hat_closed (69 → 194) ou hat_open (79 → 132). Les cibles hat_closed
+  (t20 54 ms, centroïde 8,2 kHz) et hat_open (t20 129 ms) tiennent ; la queue des hat_open est plus courte (t60 675 contre 1151 ms).
+- **Tom** : t20 262 ms contre 377, centroïde 566 Hz contre 697, hauteur stable 97 Hz contre 78 (54 toms au lieu de 44).
+- **Clap** : centroïde 3,1 kHz contre 4,3, t20 106 ms contre 91 ; le tonal médian passe à −10,1 dB, à la limite de la règle.
+- **Perc** : 254 au lieu de 219, t60 290 ms contre 215, centroïde 1,0 kHz contre 1,3.
+- **Snare** : centroïde 1,8 kHz contre 2,0 ; t20 inchangé (112 contre 118).
+- **Kick** : t20 187 ms contre 168 (une partie de l'écart vient de l'absence de retrait des valeurs aberrantes) ; hauteur
+  stable inchangée (49 Hz).
+- **Crash** : t20 1151 ms contre 1002. **Kick_808, ride, cymbal, cowbell, shaker, snap, rim** : pas d'écart net.

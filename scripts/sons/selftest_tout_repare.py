@@ -392,7 +392,23 @@ def test_rf64_rifx_named():
     check_eq("A6 other junk unchanged", (rows["Synth/Junk C3.wav"] or {}).get("error"), "not a wav or aiff file")
 
 
-TESTS = [test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_accuracy_wilson_gate():
+    """A7: usable only when the one-sided 95 % Wilson upper bound of the error is under 5 %."""
+    def usable(n, bad):
+        acc = tout.Accuracy()
+        for i in range(n):
+            acc.add("drum_loop", "bpm", i >= bad)
+        return acc.rows()[0]["usable"]
+    check_eq("A7 10 of 10 right: too few to trust", usable(10, 0), "no")
+    check_eq("A7 51 of 51 right: bound 5.04 %, still closed", usable(51, 0), "no")
+    check_eq("A7 52 of 52 right: bound 4.95 %, open", usable(52, 0), "yes")
+    check_eq("A7 60 of 60 right: open", usable(60, 0), "yes")
+    check_eq("A7 59 of 60 right: closed", usable(60, 1), "no")
+    check_eq("A7 200 with 2 wrong: open", usable(200, 2), "yes")
+    check_eq("A7 rule written in the header", "Wilson" in open(tout.__file__, encoding="utf-8").read(4000 * 3), True)
+
+
+TESTS = [test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

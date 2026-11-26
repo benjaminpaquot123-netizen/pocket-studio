@@ -355,17 +355,17 @@ def test_mutation_survivors():
              tout.end_cut(sr, _decay(1620, -48, math.asin(0.4) / (2 * math.pi), 0.080))["end_cut"], 0)
     check_eq("8 stop on a zero crossing, still at -35 dB 5 ms before: cut",
              tout.end_cut(sr, _decay(1000, -34, 0.0, 0.085))["end_cut"], 1)
-    # accuracy: usable needs 10 tagged files and under 5 % of error
+    # accuracy: usable needs the Wilson upper bound of the error under 5 % (audit 4, A7)
     def usable(n, bad):
         acc = tout.Accuracy()
         for i in range(n):
             acc.add("drum_loop", "bpm", i >= bad)
         return acc.rows()[0]["usable"]
     check_eq("8 accuracy: 9 files that all agree are not enough", usable(9, 0), "no")
-    check_eq("8 accuracy: 10 files that all agree are usable", usable(10, 0), "yes")
+    check_eq("8 accuracy: 10 files that all agree are still too few", usable(10, 0), "no")
     check_eq("8 accuracy: 1 wrong in 10 (10 %) is not usable", usable(10, 1), "no")
     check_eq("8 accuracy: 1 wrong in 20 (5 %) is not usable", usable(20, 1), "no")
-    check_eq("8 accuracy: 1 wrong in 21 (4.8 %) is usable", usable(21, 1), "yes")
+    check_eq("8 accuracy: 1 wrong in 21 (4.8 %) is still too few", usable(21, 1), "no")
     # bars and tempo gap
     check_eq("8 bars: 7 s at 120 is 3.5 bars, not 4", tout.bars_of(7.0, 120), 3.5)
     check_eq("8 bars: 4.5 s at 120 is 2.25 bars", tout.bars_of(4.5, 120), 2.25)

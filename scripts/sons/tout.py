@@ -712,6 +712,46 @@ def _seamless(s, sr, x0):
     return err < 0.1 * lvl
 
 
+def _past_floor(s, sr):
+    """The channel up to where its sound ends, when it ends in a steady floor.
+
+    Floor: the two 20 ms halves of the last 40 ms within 3 dB of each other
+    and 30 dB or more under the peak (hiss, hum, dither, a slow natural tail).
+    The sound ends at the last sample 20 dB over the floor; if the 5 ms before
+    it are 30 dB or more over the floor the sound was stopped there (a cut
+    hidden under the floor, second audit defect 16) and the channel is cut
+    there; otherwise it decayed into the floor and None is returned (not cut,
+    defect 30). Without a floor the channel is returned unchanged. Guessed
+    limits: 3, 20 and 30 dB.
+    """
+    n20 = int(round(0.020 * sr))
+    n5 = max(1, int(round(0.005 * sr)))
+    if s.shape[0] < 4 * n20:
+        return s
+    r1 = math.sqrt(float(np.mean(s[-2 * n20:-n20] ** 2)))
+    r2 = math.sqrt(float(np.mean(s[-n20:] ** 2)))
+    peak = float(np.max(np.abs(s)))
+    fl = math.sqrt(0.5 * (r1 * r1 + r2 * r2))
+    if min(r1, r2) <= 0.0 or abs(20 * math.log10(r1 / r2)) > 3.0 or fl > peak * 10 ** (-30 / 20):
+        return s
+    over = np.nonzero(np.abs(s) > 10.0 * fl)[0]
+    if over.size == 0:
+        return None
+    k = int(over[-1])
+    if float(np.max(np.abs(s[max(0, k - n5):k + 1]))) >= fl * 10 ** (30 / 20):
+        return s[:k + 1]
+    return None
+
+
+def _quant_step(x):
+    """The step of a coarse integer quantization (8 to 16 bit), or None."""
+    for bits in range(8, 17):
+        v = x * float(1 << (bits - 1))
+        if float(np.max(np.abs(v - np.round(v)))) < 1e-6:
+            return 1.0 / float(1 << (bits - 1))
+    return None
+
+
 def _end_one(s, sr):
     """(cut, fade_ms or None) for one channel."""
     x0 = s
@@ -727,6 +767,12 @@ def _end_one(s, sr):
     dc_end = float(np.mean(s[-max(1, int(0.001 * sr)):]))
     if abs(dc_end - dc) <= 0.5 * abs(dc):
         s = s - dc
+    s = _past_floor(s, sr)
+    if s is None:
+        return 0, None
+    qs = _quant_step(x0)
+    if qs is not None and float(np.max(np.abs(s[-max(1, int(round(0.005 * sr))):]))) <= 2.0 * qs:
+        return 0, None  # the sound faded into its last quantization steps (second audit, defect 30)
     n = s.shape[0]
     n1 = max(1, int(round(0.001 * sr)))
     n5 = max(2, int(round(0.005 * sr)))
@@ -793,7 +839,12 @@ def end_cut(sr, x):
     """
     if x.ndim == 1:
         x = x[:, None]
-    res = [_end_one(x[:, c].astype(np.float64), sr) for c in range(x.shape[1])]
+    # a channel that went silent 10 ms or more before the others ended early on
+    # purpose: the file ends where its last channel ends (second audit, defect 30)
+    ends = [np.nonzero(np.abs(x[:, c]) > 10 ** (-90 / 20))[0] for c in range(x.shape[1])]
+    last = max((int(e[-1]) for e in ends if e.size), default=0)
+    early = [e.size == 0 or int(e[-1]) < last - int(round(0.01 * sr)) for e in ends]
+    res = [(0, None) if early[c] else _end_one(x[:, c].astype(np.float64), sr) for c in range(x.shape[1])]
     tail = max(1, int(round(0.05 * sr)))
     loud = int(np.argmax(np.mean(x[-tail:] ** 2, axis=0)))
     return {"end_cut": max(r[0] for r in res), "end_fade_ms": res[loud][1]}

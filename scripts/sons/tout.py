@@ -21,7 +21,8 @@ kit_id     r<rar>k<nnn> shared by the stems and MIDI of one construction kit
 type       oneshot_melodic | drum_loop | melodic_loop | kit | kit_stem |
            vocal | fx | midi | drum_oneshot
 subtype    finer label: drum family, "<family>:attack"/":tail" for layer
-           files, "untagged" for long unnamed audio
+           files, "untagged" for long unnamed audio, "by_sound" for a loop
+           whose name does not say drums or notes (the sound decided)
 role       full, 808, bass, kick, snare, hats, perc, drums, vocal, fx, lead,
            pad, keys, chords, pluck, arp, guitar, strings, brass, bell,
            synth, or "-" (from the words of the name and folders)
@@ -390,15 +391,18 @@ MELODIC_WORDS = re.compile(r"(?i)bass|synth|lead|pad|key|piano|chord|pluck|arp|m
                            r"bell|organ|rhodes|stab")
 ROLES = [
     ("full", r"\bfull\b|\bmix\b|\bdemo\b|master|full ?track|\bsong\b"),
-    ("808", r"808"),
-    ("bass", r"bass|\bsub\b|reese"),
+    ("kick", r"kick\s*drums?|\bbass\s*drums?\b"),
     ("kick", r"\bkicks?\b|\bbd\b"),
     ("snare", r"snare|clap|\bsd\b"),
     ("hats", r"\bhats?\b|hi.?hat|cymbal|\bride\b|shaker|\b[co]?hh\b|\bcrash"),
+    ("perc", r"cow\s*bells?"),  # drum words before 808 and bass (defect 23)
+    ("drums", r"drums?\s*(?:&|and|n|'n'|\+)\s*bass"),
+    ("808", r"808"),
+    ("bass", r"bass|\bsub\b|reese"),
     ("perc", r"perc|conga|bongo|\btoms?\b|\brims?\b|shaker|tamb"),
-    ("drums", r"drum|\btop\b|\btops\b|groove|beat|break|fill"),
-    ("vocal", r"vo(x|cal)|voice|acapella|chant"),
-    ("fx", r"\bfx\b|sfx|riser|sweep|impact|noise|atmos|texture"),
+    ("drums", r"drum|\btop\b|\btops\b|\bbeats?\b|\bgrooves?\b|\bbreaks?\b|breakbeat|\bfills?\b"),
+    ("vocal", r"vocal|acapella"),
+    ("fx", r"\bfx\b|sfx|riser|impact"),
     ("lead", r"lead|melody|hook|\bline\b"),
     ("pad", r"\bpads?\b|drone|ambien"),
     ("keys", r"\bkeys\b|piano|rhodes|organ|wurli|\bep\b|\bkey\b"),
@@ -410,6 +414,8 @@ ROLES = [
     ("brass", r"brass|horn|trumpet|sax"),
     ("bell", r"bell|mallet|marimba|kalimba|glock"),
     ("synth", r"synth|saw|\bsquare|\bsupersaw"),
+    ("vocal", r"\bvox\b|voice|chant"),  # after the instruments: 'Vox Lead' is a lead (defect 9)
+    ("fx", r"sweep|noise|atmos|texture"),  # 'Atmosphere Pad' is a pad
 ]
 ROLES = [(r, re.compile(rx, re.I)) for r, rx in ROLES]
 GENRES = [("techno", r"techno"), ("house", r"house"), ("dnb", r"dnb|drum ?(and|&|n) ?bass|jungle"),
@@ -453,6 +459,8 @@ def kit_split(parts):
 
 # finer drum families the shared rules miss (blind audit I6)
 EXTRA_RULES = [(f, re.compile(r, re.I)) for f, r in [
+    ("kick", r"\bkicks?\b.*\b808\b|\btr\W?808\b.*\bkicks?\b"),  # 'Kick 808 Style', 'TR-808 Kick' (defect 23)
+    ("kick", r"\bbass\s*drums?\b|\bkick\s*drums?\b"),
     ("hat_open", r"\bo ?hh\b|(?:hi.?hats?|\bhats?|\bhh)\s*open|open\s*(?:hi.?hats?|hats?|hh)\b"),
     ("hat_closed", r"\bc ?hh\b|(?:hi.?hats?|\bhats?|\bhh)\s*closed|closed\s*(?:hi.?hats?|hats?|hh)\b"),
     ("perc_high", r"\bperc(?:ussion)?s?\s*(?:high|hi)\b|\b(?:high|hi)\s*percs?\b"),
@@ -466,15 +474,136 @@ def drum_family(name, folders):
     """Drum family from the name, else from the folders, innermost first (blind audit B1)."""
     if isinstance(folders, str):
         folders = [folders]
-    for text in [name] + list(reversed(folders)):
-        nm = re.sub(r"[_\-]", " ", text)
+    texts = [re.sub(r"[_\-]", " ", t) for t in [name] + list(reversed(folders))]
+    for nm in texts:
         for f, rx in EXTRA_RULES + mine_or.RULES:
             if rx.search(nm):
-                return f
+                return _refine(f, texts)
     return None
 
 
+# a bare 'hat' or 'perc' takes its kind from a short word in the name or a folder (audit 2, defects 1, 24)
+REFINE = {"hat": [("hat_open", re.compile(r"(?i)\bopen(?:ed)?\b|\bop\b|\bouverte?s?\b")),
+                  ("hat_closed", re.compile(r"(?i)\bclosed?\b|\bcl\b|\bpedal\b|\bferm[ée]e?s?\b"))],
+          "perc": [("perc_high", re.compile(r"(?i)\bhigh\b|\bhi\b")),
+                   ("perc_mid", re.compile(r"(?i)\bmid(?:dle)?\b")),
+                   ("perc_low", re.compile(r"(?i)\blow\b"))]}
+
+
+def _refine(fam, texts):
+    for nm in texts:  # name first, then the folders, innermost first
+        for f, rx in REFINE.get(fam, ()):
+            if rx.search(nm):
+                return f
+    return fam
+
+
+# a single note with its octave ('C2', 'F#3') and long held sounds (defects 25, 26)
+NOTE_OCT_RX = re.compile(r"(?<![A-Za-z0-9])[A-G](?:#|b|s)?-?[0-8](?![0-9])")
+SUSTAIN_RX = re.compile(r"(?i)\bpads?\b|\bdrones?\b|\bambien\w*|\bsustain\w*|\blong\b|"
+                        r"(?<![A-Za-z0-9])[A-G](?:#|b)?(?:m|min|maj)?(?![A-Za-z0-9])")
 ONESHOT_DIR = re.compile(r"(?i)one.?shots?|\bhits?\b|\bshots\b")
+WEAK_LOOP_RX = re.compile(r"(?i)\bbeats?\b|\bfills?\b")  # also one-shot words: a 'fill' hit, a 'beat' pack
+
+
+def _loop_word(t, dur):
+    if not LOOP_RX.search(t):
+        return False
+    strong = LOOP_RX.search(WEAK_LOOP_RX.sub(" ", t)) is not None
+    return strong or dur is None or dur >= 1.5
+
+
+# loops whose name has no 'loop': a tempo or a loop-only word (audit 2, defect 4)
+LOOP_NAME_RX = re.compile(r"(?i)\bmelod(?:y|ies)\b|\bbasslines?\b|\bbreaks?\b|\bbreakbeats?\b|\btops?\b|\bgrooves?\b")
+# whole words only: 'Organic', 'Sharp', 'Monkey', 'What', 'Custom', 'Upbeat' say nothing (defect 5)
+DRUM_W = re.compile(r"(?i)\b(?:hi.?|super)?(?:hats?|hihats?|drums?|kicks?|kickdrums?|snares?|claps?|percs?|percussions?|"
+                    r"grooves?|beats?|breaks?|breakbeats?|shakers?|rides?|cymbals?|toms?|fills?|hh)\b")
+MELODIC_W = re.compile(r"(?i)\b(?:bass(?:es|lines?)?|synths?|leads?|pads?|keys|piano|pianos|chords?|plucks?|arps?|"
+                       r"arpeggi\w*|melod\w*|guitars?|strings?|brass|bells?|organs?|rhodes|stabs?|reese)\b")
+_DNB_RX = re.compile(r"(?i)\bdrums?\s*(?:&|and|n|'n'|\+)\s*bass\b")
+
+
+def _loop_by_name(name, dur):
+    if dur is None or dur < 1.5:
+        return False
+    if LOOP_NAME_RX.search(name):
+        return True
+    if NOTE_OCT_RX.search(name) and dur < 4.0:  # 'Lead C3 127': a velocity next to a played note
+        return False
+    return any(60 <= int(m.group(1)) <= 200 for m in _BARE_RX.finditer(name)) and not re.search(r"808|909", name)
+
+
+def _loop_kind(name, folders):
+    """drum_loop / melodic_loop from whole words of the name, else of the nearest folder or of a folder that names
+    its loops ('Drum Loops/Techno'); None: the sound decides (a pack name like 'Hat Tricks' says nothing)."""
+    near = folders[-1:]
+    for t in [name] + near + [f for f in reversed(folders[:-1]) if LOOP_RX.search(f)]:
+        t = _DNB_RX.sub(" drum ", t)
+        d, m = DRUM_W.search(t), MELODIC_W.search(t)
+        if d or m:
+            return "drum_loop" if d and not m else "melodic_loop"
+    return None
+
+
+def _drumminess(x):
+    """Energy-weighted spectral flatness: drum loops are noisy (about 0.04), notes are peaky (below 1e-6)."""
+    sig = _mono(x)
+    if len(sig) < 4096:
+        return 0.0
+    m = _stft_mag(sig, 2048, 1024) ** 2 + 1e-12
+    e = m.sum(axis=1)
+    keep = e > e.max() * 1e-3
+    m, e = m[keep], e[keep]
+    fl = np.exp(np.mean(np.log(m), axis=1)) / np.mean(m, axis=1)
+    return float(np.sum(fl * e) / np.sum(e))
+
+
+DRUMMY_FLATNESS = 0.02
+
+
+# Defect 9: fx and vocal words only describe a sound when no instrument word says otherwise.
+STRONG_FX_RX = re.compile(r"(?i)\bfx\b|sfx|riser|uplifter|downlifter|whoosh|impact|transition|downer|braam|zap")
+REVERSE_RX = re.compile(r"(?i)\breverse|\brev\b")
+
+
+def _fx_named(name, folders):
+    """An fx word was found: False when an instrument word in the name says otherwise."""
+    if MELODIC_W.search(name):  # 'Bass Sweep', 'Texture Pad', but 'Piano Riser' is still fx
+        return STRONG_FX_RX.search(name) is not None
+    return True
+
+
+def _vocal_named(name, folders):
+    """True for a voice: 'vocal' anywhere, or 'vox' / 'voice' / 'chant' / 'phrase' without an instrument word."""
+    if re.search(r"(?i)\bvocoder\b|vox ?synth", name) or drum_family(name, []) is not None:
+        return False  # 'Vocal Perc' is a percussion hit
+    if any(VOCAL_RX.search(f) for f in folders):
+        return True
+    strong = re.search(r"(?i)vocal|acapella|a capella|\bspoken", name)
+    if strong:
+        return True
+    if not VOCAL_RX.search(name) or MELODIC_W.search(name):
+        return False  # 'Vox Lead', 'Voice Pad', 'Guitar Phrase'
+    if re.search(r"(?i)\bvo(x|ice)\b", name):
+        return True
+    return not LOOP_RX.search(name)  # 'Chanting Monks Loop' is a melodic loop, 'Chant 01' a voice
+
+
+def _loop_named(name, folders, dur):
+    """A loop word in the name, or in a folder that no deeper folder contradicts (audit 2, defect 3):
+    'Loops & One Shots/Kicks', 'Trap Beats/One Shots', 'Beat Makers Pack/Hats' hold one-shots."""
+    if _loop_word(name, dur):
+        return True
+    for i, f in enumerate(folders):
+        if not _loop_word(f, dur) or ONESHOT_DIR.search(f):
+            continue
+        deeper = folders[i + 1:]
+        if any(ONESHOT_DIR.search(g) for g in deeper):
+            continue
+        if (dur is None or dur < 1.5) and any(drum_family(g, []) is not None for g in deeper):
+            continue
+        return True
+    return False
 
 
 def classify(rel, dur):
@@ -496,43 +625,65 @@ def classify(rel, dur):
     if parts[-1].lower().endswith(MIDI_EXTS):
         out["type"] = "midi"
         return out
+    looped_any = LOOP_RX.search(name) is not None
     ki, _ = kit_split(parts)
     if ki is not None:
         below = folders[ki + 1:]
         short_drum = drum_family(name, []) is not None and dur is not None and dur < 6.0
-        if not short_drum and not any(ONESHOT_DIR.search(f) for f in below):
+        one_note = NOTE_OCT_RX.search(name) and not looped_any and not _BPM_RX.search(name) \
+            and not _loop_by_name(name, dur)  # 'Bass C2' is one note, 'Bass 120 C2' a stem (defect 26)
+        if not short_drum and not one_note and not any(ONESHOT_DIR.search(f) for f in below):
             out["type"] = "kit_stem"
             return out
-    if VOCAL_RX.search(text) and not re.search(r"(?i)\bvocoder\b|vox ?synth", name):
+    if VOCAL_RX.search(text) and _vocal_named(name, folders):
         out["type"] = "vocal"
         out["role"] = "vocal"
         return out
-    drum_named = drum_family(name, []) is not None or (DRUM_WORDS.search(name) and LOOP_RX.search(text))
+    looped = _loop_named(name, folders, dur)
+    drum_named = drum_family(name, []) is not None or (DRUM_WORDS.search(name) and looped)
+    if drum_named and REVERSE_RX.search(name) and drum_family(name, []) in ("crash", "cymbal", "ride"):
+        drum_named = False  # a reversed cymbal is a riser (defect 9)
     if FX_RX.search(text) and not drum_named:  # 'Kick Impact', 'Noise Hat Loop' stay drums (I7)
-        out["type"] = "fx"
-        return out
+        if _fx_named(name, folders):
+            out["type"] = "fx"
+            return out
     has_bpm = _BPM_RX.search(name) is not None
-    is_loop = LOOP_RX.search(text) is not None or (has_bpm and dur is not None and dur >= 1.5)
+    is_loop = looped or (has_bpm and dur is not None and dur >= 1.5) or _loop_by_name(name, dur)
+    if is_loop and not looped and re.search(r"808", name):  # '808 Long 140bpm C' is a one-shot
+        is_loop = False
     melodic = MELODIC_WORDS.search(name) or (not DRUM_WORDS.search(name) and MELODIC_WORDS.search(inner))
     if is_loop:
         drummy = DRUM_WORDS.search(name) or (not MELODIC_WORDS.search(name) and DRUM_WORDS.search(inner))
         out["type"] = "drum_loop" if drummy and not melodic else "melodic_loop"
+        kind = _loop_kind(name, folders)
+        if kind is not None:
+            out["type"] = kind
+        else:
+            out["subtype"] = "by_sound"  # a guess until _measure_file hears it
         return out
     fam = drum_family(name, folders)
-    if fam is not None and (dur is None or dur < (10.0 if fam in LONG_FAMILIES else 6.0)):
-        if fam == "kick_808" or not re.search(r"(?i)bass|synth|lead|pad|key|piano|chord|pluck", name + "/" +
+    if fam is not None and (dur is None or dur < (15.0 if fam in LONG_FAMILIES else 6.0)):  # an 11 s 808 or crash (defect 25)
+        if fam == "kick_808" or drum_family(name, []) is not None or not re.search(r"(?i)bass|synth|lead|pad|key|piano|chord|pluck", name + "/" +
                                               (folders[-1] if folders else "")):
             sub = fam
             if fam == "kick" and re.search(r"808", inner):
-                sub = "kick_808"
+                if any(re.fullmatch(r"(?i)808s?(?: ?(?:kicks?|bass(?:es)?|subs?))?", f.strip()) for f in folders):
+                    sub = "kick_808"  # 'TR-808/Kick 01', 'Kit 808/Kick 01' are kicks (defect 23)
             layer = re.search(r"(?i)\b(attack|tail|click|body|sub)\b", name)
             if layer and layer.group(1).lower() in ("attack", "tail"):
                 sub += ":" + layer.group(1).lower()
             out["type"] = "drum_oneshot"
             out["subtype"] = sub
             return out
+    if fam is None and WEAK_LOOP_RX.search(name) and DRUM_WORDS.search(inner) and not MELODIC_WORDS.search(name) \
+            and dur is not None and dur < 1.5:  # a short 'Solo Fill' hit: a drum without a family (defect 3)
+        out["type"] = "drum_oneshot"
+        return out
     if (dur is not None and dur < 8.0) or ONESHOT_DIR.search(inner):
         out["type"] = "oneshot_melodic"
+        return out
+    if not LOOP_RX.search(name) and not has_bpm and (SUSTAIN_RX.search(name) or NOTE_OCT_RX.search(name)):
+        out["type"] = "oneshot_melodic"  # a 9 s 'Long Pad Cm', a 12 s 'Drone Dark' (defect 25)
         return out
     out["type"] = "melodic_loop"
     out["subtype"] = "untagged"
@@ -1799,6 +1950,8 @@ def _measure_file(p, rel, parts, acc, rar):
             sr, x, loop = read_audio(p)
             row["_loop"] = loop
             cl = classify(rel, x.shape[0] / sr)
+            if cl["subtype"] == "by_sound":  # the name is silent: the sound decides
+                cl["type"] = "drum_loop" if _drumminess(x) > DRUMMY_FLATNESS else "melodic_loop"
             row.update(cl)
             row.update(common(sr, x))
             tags = parse_tags(parts, cl["type"])
@@ -1820,6 +1973,8 @@ def _measure_file(p, rel, parts, acc, rar):
                 m = measure_fx(sr, x, tags)
             elif typ == "drum_oneshot":
                 m = measure_drum_oneshot(sr, x, cl["subtype"])
+                if cl["subtype"] == "hat" and m.get("hat_measured"):  # the name is silent: the sound decides
+                    row["subtype"] = "hat_" + m["hat_measured"]
                 if tags.get("note") is not None and m.get("note_measured"):
                     pc = NOTE_NAMES.index(re.match(r"[A-G]#?", m["note_measured"]).group(0))
                     acc.add(typ, "note", pc == tags["note"])

@@ -312,7 +312,7 @@ def test_drum_grid_band_bleed():
     check_eq("A2 hats still there", r.get("grid_hats"), "x.x.x.x.x.x.x.x.")
 
 
-def _midi_no_ts(notes, tpq=480, bpm=120.0):
+def _midi_no_ts(notes, tpq=480, bpm=120.0, ch=0):
     """Format 0, a tempo but no time signature; notes: (beat, beats, pitch, velocity)."""
     import struct
 
@@ -325,8 +325,8 @@ def _midi_no_ts(notes, tpq=480, bpm=120.0):
         return bytes(reversed(out))
     ev = []
     for b, d, p, v in notes:
-        ev.append((int(b * tpq), 1, bytes([0x90, p, v])))
-        ev.append((int((b + d) * tpq), 0, bytes([0x80, p, 0])))
+        ev.append((int(b * tpq), 1, bytes([0x90 | ch, p, v])))
+        ev.append((int((b + d) * tpq), 0, bytes([0x80 | ch, p, 0])))
     ev.sort(key=lambda e: (e[0], e[1]))
     trk = b"\x00\xff\x51\x03" + struct.pack(">I", int(round(60e6 / bpm)))[1:]
     last = 0
@@ -387,8 +387,8 @@ def test_rf64_rifx_named():
     rows, _, _, code, _ = ru.run({"Synth/Big C3.wav": b"RF64" + w[4:], "Synth/Motorola C3.wav": b"RIFX" + w[4:],
                                   "Synth/Junk C3.wav": b"JUNK" + w[4:]})
     check_eq("A6 run ends well", code, 0)
-    check_eq("A6 RF64", (rows["Synth/Big C3.wav"] or {}).get("error"), "RF64/RIFX non pris en charge")
-    check_eq("A6 RIFX", (rows["Synth/Motorola C3.wav"] or {}).get("error"), "RF64/RIFX non pris en charge")
+    check_eq("A6 RF64", (rows["Synth/Big C3.wav"] or {}).get("error"), "RF64/RIFX/BW64 non pris en charge")
+    check_eq("A6 RIFX", (rows["Synth/Motorola C3.wav"] or {}).get("error"), "RF64/RIFX/BW64 non pris en charge")
     check_eq("A6 other junk unchanged", (rows["Synth/Junk C3.wav"] or {}).get("error"), "not a wav or aiff file")
 
 
@@ -405,7 +405,7 @@ def test_accuracy_wilson_gate():
     check_eq("A7 60 of 60 right: open", usable(60, 0), "yes")
     check_eq("A7 59 of 60 right: closed", usable(60, 1), "no")
     check_eq("A7 200 with 2 wrong: open", usable(200, 2), "yes")
-    check_eq("A7 rule written in the header", "Wilson" in open(tout.__file__, encoding="utf-8").read(4000 * 3), True)
+    check_eq("A7 rule written in the header", "52 right out of 52" in (tout.__doc__ or ""), True)
 
 
 def _legato(bpm, midis, amp=0.5):
@@ -432,7 +432,20 @@ def test_review_oneshot_limits():
     check_eq("R3 one held note named with a tempo: still a one-shot", (rows["Synth/Pad 120bpm C.wav"] or {}).get("type"), "oneshot_melodic")
 
 
-TESTS = [test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_review2_limits():
+    """Second fresh review: a lone 'One Shots' folder, BW64, a drum MIDI accented every 3 beats."""
+    rel = "One Shots/Bass C2 120bpm.wav"
+    rows, _, _, code, _ = run({rel: _legato(120.0, [36] * 6)}, pack="Downloads")
+    check_eq("R4 lone 'One Shots' folder still a one-shot folder", (rows[rel] or {}).get("type"), "oneshot_melodic")
+    w = st.wav_bytes(st.mono(ru.tone(261.63)[:SR]))
+    rows, _, _, _, _ = run({"Synth/Broadcast C3.wav": b"BW64" + w[4:]})
+    check_eq("R5 BW64 named", (rows["Synth/Broadcast C3.wav"] or {}).get("error"), "RF64/RIFX/BW64 non pris en charge")
+    drums = [(b, 0.2, 42, 120 if b % 3 == 0 else 70) for b in range(16)]
+    rows, _, _, _, _ = run({"MIDI/Drums/Groove 120 BPM.mid": _midi_no_ts(drums, ch=9)})
+    check_eq("R6 4/4 drum MIDI with a 3-beat accent keeps 4 bars", (rows["MIDI/Drums/Groove 120 BPM.mid"] or {}).get("bars"), "4")
+
+
+TESTS = [test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

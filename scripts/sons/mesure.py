@@ -146,6 +146,27 @@ def _chunks(buf, start, big):
         pos += 8 + size + (size & 1)
 
 
+def check_whole(buf):
+    """Raise BadAudio when the sound chunk (WAV data / AIFF SSND) declares more
+    bytes than the file holds: a cut download measured as a short sound
+    (audit 2, defect 34). Streamed files (size 0 or 0xFFFFFFFF) and a few
+    missing bytes (odd padding, sloppy writers) pass."""
+    big = buf[:4] == b"FORM"
+    want = b"SSND" if big else b"data"
+    pos = 12
+    while pos + 8 <= len(buf):
+        size = struct.unpack(">I" if big else "<I", buf[pos + 4:pos + 8])[0]
+        if buf[pos:pos + 4] == want:
+            if size in (0, 0xFFFFFFFF):
+                return
+            missing = size - (len(buf) - pos - 8)
+            if missing > max(256, size // 100):
+                raise BadAudio("truncated %s (%d of %d bytes)" % ("aiff" if big else "wav",
+                                                                   size - missing, size))
+            return
+        pos += 8 + size + (size & 1)
+
+
 def _check(sr, channels):
     if not 1 <= channels <= 8:
         raise BadAudio("unsupported channel count")
@@ -229,6 +250,7 @@ def read_audio(path):
         sr, x = _read_aiff(buf)
     else:
         raise BadAudio("not a wav or aiff file")
+    check_whole(buf)
     if x.shape[0] > MAX_SECONDS * sr:
         raise BadAudio("longer than %d s, not a one-shot" % MAX_SECONDS)
     return sr, x

@@ -202,10 +202,15 @@ def read_audio(path):
         sr, x = mesure._read_aiff(buf)
     else:
         raise BadAudio("not a wav or aiff file")
+    mesure.check_whole(buf)
     if x.shape[0] > MAX_SECONDS * sr:
         raise BadAudio("longer than %d s" % MAX_SECONDS)
     if x.shape[0] < 16:
         raise BadAudio("too short")
+    # a constant offset with nothing on top is no sound (audit 2, defect 35)
+    mean = np.mean(x, axis=0)
+    if np.max(np.abs(mean)) > 1e-3 and np.max(np.abs(x - mean)) < 1e-4:
+        raise BadAudio("constant dc offset, no sound")
     return sr, x, loop
 
 
@@ -1309,14 +1314,17 @@ def parse_midi(b):
         raise BadAudio("smpte midi not supported")
     pos = 8 + hl
     notes, tempos, ts = [], [], None
+    cut = False
     open_ = {}
     for _ in range(min(ntrk, 256)):
         if pos + 8 > len(b) or b[pos:pos + 4] != b"MTrk":
             raise BadAudio("bad midi track")
         size = struct.unpack(">I", b[pos + 4:pos + 8])[0]
         i, end = pos + 8, min(len(b), pos + 8 + size)
+        short = pos + 8 + size > len(b)
         pos += 8 + size
         tick, status = 0, None
+        eot = False
         while i < end:
             d, i = _read_vlq(b, i)
             tick += d
@@ -1335,6 +1343,7 @@ def parse_midi(b):
                 elif typ == 0x58 and ln >= 2 and ts is None:
                     ts = (data[0], 2 ** data[1])
                 elif typ == 0x2F:
+                    eot = True
                     break
                 continue
             if c in (0xF0, 0xF7):
@@ -1362,6 +1371,11 @@ def parse_midi(b):
                     notes.append((s, max(tick, s + 1), data[0], v, ch))
         if len(notes) > 200000:
             raise BadAudio("too many midi notes")
+        # a track declared longer than the file and never ended: a cut file
+        # whose open notes would be invented (audit 2, defect 34)
+        cut = cut or (short and not eot)
+    if cut:
+        raise BadAudio("truncated midi")
     for (ch, p), st in open_.items():
         for s, v in st:
             notes.append((s, s + div // 4, p, v, ch))

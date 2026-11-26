@@ -166,19 +166,6 @@ def plan_of(packs, cli):
     return plan
 
 
-def id_map(folder):
-    """file_id -> relative path, for every file and every folder above a file (kit rows)."""
-    out = {}
-    audio, midi, _ = tout._walk(folder)
-    for p in audio + midi:
-        rel = os.path.relpath(p, folder).replace(os.sep, "/")
-        parts = rel.split("/")
-        for k in range(1, len(parts) + 1):
-            r = "/".join(parts[:k])
-            out.setdefault(tout._file_id(r), r)
-    return out
-
-
 def read_csv(path):
     with open(path, newline="", encoding="utf-8") as fh:
         rd = csv.DictReader(fh)
@@ -187,8 +174,13 @@ def read_csv(path):
 
 def run_pack(pk, rar, tmp):
     prefix = os.path.join(tmp, pk["pack"])
-    r = subprocess.run([sys.executable, "-I", TOUT, pk["path"], "--rar", str(rar), "--out", prefix],
-                       capture_output=True, text=True, cwd=tmp)
+    cmd = [sys.executable, "-I", TOUT, pk["path"], "--rar", str(rar), "--out", prefix]
+    if pk["force"]:
+        # tout.py itself puts this style on the rows no inner folder or file name labels
+        cmd += ["--pack-style", pk["force"]]
+    r = subprocess.run(cmd, capture_output=True, text=True, cwd=tmp)
+    m = re.search(r"style du pack : \S+, posé sur (\d+) lignes", r.stdout)
+    pk["forced_rows"] = int(m.group(1)) if (m and pk["force"]) else 0
     pk["tout_rc"] = r.returncode
     pk["tout_msg"] = (r.stdout + r.stderr).strip().splitlines()[-3:]
     tables = {}
@@ -201,8 +193,7 @@ def run_pack(pk, rar, tmp):
 def merge(plan, per_pack, rar):
     merged = {}
     for pk in plan:
-        ids = id_map(pk["path"]) if pk["force"] else {}
-        pk["rows"] = pk["kits"] = pk["errors"] = pk["forced_rows"] = pk["unresolved"] = 0
+        pk["rows"] = pk["kits"] = pk["errors"] = 0
         pk["error_list"] = []
         for typ, (cols, rows) in per_pack[pk["pack"]].items():
             m = merged.setdefault(typ, {"cols": [], "rows": []})
@@ -221,13 +212,6 @@ def merge(plan, per_pack, rar):
                     if row.get("error"):
                         pk["errors"] += 1
                         pk["error_list"].append("%s %s: %s" % (row["cle"], typ, row["error"]))
-                    if pk["force"] and row.get("style") in (pk["posed"], "unlabelled", ""):
-                        rel = ids.get(row.get("file_id", ""))
-                        if rel is None:
-                            pk["unresolved"] += 1
-                        elif tout.style_of(rel) == "unlabelled":
-                            row["style"] = pk["force"]
-                            pk["forced_rows"] += 1
                 m["rows"].append(row)
     return merged
 
@@ -243,7 +227,7 @@ def write_out(out, rar, merged, plan):
                 wr.writerow(r)
         written.append(path)
     cols = ["rar", "pack", "files_audio", "files_midi", "rows", "kit_rows", "errors", "count_ok", "tout_rc",
-            "style_posed", "style_forced", "rows_forced", "unresolved", "nested_archives", "skipped"]
+            "style_posed", "style_forced", "rows_forced", "nested_archives", "skipped"]
     path = os.path.join(out, "rar%d_controle.csv" % rar)
     with open(path, "w", newline="", encoding="utf-8") as fh:
         wr = csv.writer(fh)
@@ -251,7 +235,7 @@ def write_out(out, rar, merged, plan):
         for pk in plan:
             wr.writerow([rar, pk["pack"], pk["audio"], pk["midi"], pk["rows"], pk["kits"], pk["errors"],
                          "yes" if pk["count_ok"] else "NO", pk["tout_rc"], pk["posed"], pk["force"] or "",
-                         pk["forced_rows"], pk["unresolved"], pk["nested"],
+                         pk["forced_rows"], pk["nested"],
                          " ".join("%s:%d" % kv for kv in sorted(pk["skipped"].items()))])
     written.append(path)
     # pack names stay out of the tables; this list ties p1, p2 ... to the folders

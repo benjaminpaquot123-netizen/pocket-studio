@@ -542,6 +542,29 @@ def test_end_cut():
                "cut short" not in tout.mesure.__doc__ and "cut tail" not in (tout.__doc__ or ""))
 
 
+def test_blocking():
+    """Blind audit B1-B4 and I3 (docs/sons/AUDIT-TOUT.md)."""
+    for rel, dur, want in [
+            ("Vocals/Dry/Take 01.wav", 4.0, "vocal"),
+            ("Vocals/Adlibs/Hey 01.wav", 1.0, "vocal"),
+            ("Vocal Loops/Dry/Hook 120 Am.wav", 8.0, "vocal"),
+            ("Drum Loops/Tops/Top 128 01.wav", 7.5, "drum_loop"),
+            ("Drum Loops/128/Full 01.wav", 7.5, "drum_loop"),
+            ("Hi-Hats/Closed/HH 01.wav", 0.1, "drum_oneshot")]:
+        check_eq("two folder levels: %s" % rel, tout.classify(rel, dur)["type"], want)
+    check_eq("empty cell stays empty", tout.mesure._safe_cell(""), "")
+    check_eq("formula cell is quoted", tout.mesure._safe_cell("=1+1"), "'=1+1")
+    four, sn, h8, h16 = (0, 4, 8, 12), (4, 12), tuple(range(0, 16, 2)), tuple(range(16))
+    for bpm in (150.0, 160.0, 174.0):
+        for name, k in (("four-on-floor", four), ("boom-bap", (0, 10))):
+            m = tout.measure_drum_loop(SR, mono(drum_loop(bpm, 4, 0.5, k, sn, h8)), {"bpm": None})
+            check("fast %s %g bpm: bpm" % (name, bpm), m["bpm_measured"], bpm, 0.01, relative=True)
+            check("fast %s %g bpm: bars" % (name, bpm), m["bars"], 4, 0)
+    m = tout.measure_drum_loop(SR, mono(drum_loop(70.0, 2, 0.5, four, sn, h16)), {"bpm": None})
+    check("70 bpm with 16th hats: bpm", m["bpm_measured"], 70.0, 0.01, relative=True)
+    check("70 bpm with 16th hats: bars", m["bars"], 2, 0)
+
+
 def test_cli():
     with tempfile.TemporaryDirectory() as tmp:
         pack = os.path.join(tmp, "Secret Vendor Pack")
@@ -562,12 +585,14 @@ def test_cli():
         files[kit + "/Zorglub Keys.wav"] = mono(keys)
         files[kit + "/Zorglub Drums.wav"] = mono(drums[:len(keys)])
         files["Vocals/Zorglub Vox.wav"] = mono(0.3 * harmonic(220.0, t_axis(2.0)) * (t_axis(2.0) < 1.0))
+        files["Drum Loops/Techno/Zorglub broken 124.wav"] = b"RIFF garbage"
+        files["One Shots/Synth/Zorglub Broken C3.wav"] = b""
         files["FX/Zorglub Riser.wav"] = mono(np.random.default_rng(1).standard_normal(SR * 2) * np.linspace(0, 0.3, SR * 2))
         for rel, x in files.items():
             p = os.path.join(pack, rel)
             os.makedirs(os.path.dirname(p), exist_ok=True)
             with open(p, "wb") as fh:
-                fh.write(wav_bytes(x))
+                fh.write(x if isinstance(x, bytes) else wav_bytes(x))
         notes = [(b * 1920, 1920, p, 90, 0) for b, ch in enumerate(am) for p in ch]
         with open(os.path.join(pack, kit, "Zorglub Chords.mid"), "wb") as fh:
             fh.write(midi_bytes(notes, 480, 124.0))
@@ -587,13 +612,28 @@ def test_cli():
                 blob += fh.read()
         check_true("cli tables hold no file or folder name", "Zorglub" not in blob and "Secret" not in blob
                    and "Vendor" not in blob)
-        check_true("cli accuracy lines in the header", "# accuracy type=oneshot_melodic measure=note" in blob)
+        fixed = ("rar,kit_id,type,subtype,role,style,dur_s,sr,ch,size_kb,peak_dbfs,rms_dbfs,lufs_i,"
+                 "bpm_tag,key_tag,bpm_est,key_est,error").split(",")
+        check_eq("cli fixed column list", tout.COMMON, fixed)
+        for name in made:
+            with open(os.path.join(out_dir, name), encoding="utf-8") as fh:
+                first = fh.readline().rstrip("\r\n").split(",")
+            if not name.endswith("_accuracy.csv"):
+                check_eq("cli %s starts with the fixed columns on line 1" % name, first[:len(fixed)], fixed)
+        check_true("cli accuracy only in its own table", "# accuracy" not in blob)
 
         def rows(typ):
             with open(os.path.join(out_dir, "rar7_%s.csv" % typ), encoding="utf-8") as fh:
                 return list(csv.DictReader(line for line in fh if not line.startswith("#")))
 
         mel = rows("oneshot_melodic")
+        check_true("cli empty cells stay empty", all(r["kit_id"] == "" for r in mel)
+                   and sum(r["error"] == "" for r in mel) == 3)
+        check_true("cli size_kb filled", all(float(r["size_kb"]) > 0 for r in mel if not r["error"]))
+        check_true("cli unreadable files keep their type",
+                   any(r["error"] for r in mel) and any(r["error"] for r in rows("drum_loop"))
+                   and "rar7_melodic_loop.csv" not in made)
+        mel = [r for r in mel if not r["error"]]
         check_eq("cli three melodic one-shots", len(mel), 3)
         check_true("cli melodic notes all agree with tags", all(abs(float(r["cents_gap"])) < 10 for r in mel))
         check_true("cli common columns first", list(mel[0].keys())[:len(tout.COMMON)] == tout.COMMON)
@@ -606,11 +646,11 @@ def test_cli():
         check_true("cli kit id shared by stems and midi",
                    len(stems) == 3 and all(r["kit_id"] == kid for r in stems) and mids and mids[0]["kit_id"] == kid)
         check_eq("cli kit roles", kits[0]["roles"], "bass+drums+keys")
-        check_eq("cli kit key measured", kits[0]["key_measured"], "A minor")
-        check("cli kit bpm measured", float(kits[0]["bpm_measured"]), 124.0, 0.01, relative=True)
+        check_eq("cli kit key measured", kits[0]["key_est"], "A minor")
+        check("cli kit bpm measured", float(kits[0]["bpm_est"]), 124.0, 0.01, relative=True)
         lv = [10 ** (float(r["level_rel_kit_db"]) / 10) for r in stems]
         check_true("cli stem levels relative to the kit sum are below 0 dB", all(v < 1.0 for v in lv))
-        dl = rows("drum_loop")
+        dl = [r for r in rows("drum_loop") if not r["error"]]
         check_eq("cli drum loop style from folder", dl[0]["style"], "techno")
         check_eq("cli midi chords against kit key", mids[0]["chords"], "i-VI-iv-V")
         check_true("cli end_cut filled on audio rows",
@@ -631,7 +671,7 @@ def main(argv=None):
         return 0
     with np.errstate(all="ignore"):
         for fn in (test_tags, test_classify, test_common, test_notes, test_adsr, test_drum_loop, test_key,
-                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_cli):
+                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_blocking, test_cli):
             try:
                 fn()
             except Exception as e:  # a crash is a failed check, the rest still runs

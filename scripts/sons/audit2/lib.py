@@ -246,6 +246,30 @@ def write_midi(path, notes, bpm=None, ppq=480, extra_meta=b""):
         fh.write(b"MThd" + struct.pack(">IHHH", 6, 0, 1, ppq) + b"MTrk" + struct.pack(">I", len(trk)) + trk)
 
 
+FAULTS = []
+
+
+def fault(msg):
+    """A real fault seen by a batch: the replay ends with exit code 1 (audit 3, defect 14)."""
+    FAULTS.append(msg)
+
+
+def off(cell, true, tol):
+    """True only for a value written in the table and off by more than tol (relative);
+    an empty cell is a fenced guess, not a wrong value."""
+    if cell in (None, ""):
+        return False
+    return abs(float(cell) - true) > tol * abs(true)
+
+
+def done():
+    """End of a batch: say the faults and exit 1 if there is any."""
+    print("FAULTS: %d" % len(FAULTS))
+    for f in FAULTS[:20]:
+        print("  fault: " + f)
+    sys.exit(1 if FAULTS else 0)
+
+
 def run_pack(root, tag="t"):
     """Run the real CLI on a pack folder; return rows (all tables, in order) + console text."""
     out = os.path.join(S, "out", "run_" + tag)
@@ -260,6 +284,7 @@ def run_pack(root, tag="t"):
             code = "exit %s" % e.code
         except Exception as e:
             code = "CRASH %s: %s" % (type(e).__name__, e)
+            fault("%s: %s" % (root, code))
     rows = []
     for f in sorted(glob.glob(out + "_*.csv")):
         if f.endswith("_accuracy.csv"):

@@ -33,3 +33,4 @@ for kind in ("hat", "snare", "white", "kick"):
                 cuts += tout.end_cut(sr, q24(x))["end_cut"]
             line.append("%5d%%" % (cuts * 5))
         print("%-6s %-6d " % (kind, sr) + " ".join(line))
+done()

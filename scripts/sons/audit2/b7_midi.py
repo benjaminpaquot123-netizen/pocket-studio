@@ -138,3 +138,4 @@ run("'Am' in the name, notes in A minor", "MIDI/Piano Chords Am.mid", notes=chor
 run("'C' alone in the name", "MIDI/Piano Chords C.mid", notes=chords(), bpm=120)
 run("melody folder, bass line", "Melodies MIDI/Bassline 01 Gm 124.mid", notes=[(b, 0.5, 43, 100, 0) for b in range(16)], bpm=124)
 run("'Trap Hi-Hat Roll 140bpm' on ch 10", "Trap MIDI/Hi-Hat Roll 140bpm.mid", notes=[(h * 0.25, 0.1, 42, 80, 9) for h in range(32)])
+done()

@@ -78,3 +78,4 @@ sel = sys.argv[1:]
 for i, (rel, x) in enumerate(cases):
     rows, con, code = one("b1", i, rel, x)
     show(rel, rows, ["type", "subtype", "role", "style", "bpm_tag", "key_tag", "note_tag", "end_cut"], con, code)
+done()

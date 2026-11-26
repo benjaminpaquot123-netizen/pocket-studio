@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import *
 B = os.path.join(S, "pack", "b8"); shutil.rmtree(B, ignore_errors=True)
 prog = [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]]
-print("== untagged melodic loop: bpm_est is fenced (blank) but 'bars' still comes from the guess; expected bars = 4")
+print("== untagged melodic loop: bpm_est is fenced (blank) and bars is not counted from that hidden guess; expected bars = 4 or empty")
 n = 0
 for pl in (False, True):
     for bpm in (70, 80, 90, 100, 110, 125, 140, 150, 160, 174):
@@ -11,7 +11,9 @@ for pl in (False, True):
         rows, con, code = one("b8", n, "Loops/%s Loop 01.wav" % ("Pluck" if pl else "Pad"), chord_loop(bpm, 4, prog, pluck=pl), bits=24)
         r = rows[0]
         print("  %s true %3d bpm 4 bars -> type=%s bpm_est=%r key_est=%r bars=%s %s" % (
-            "pluck" if pl else "pad  ", bpm, r["type"], r["bpm_est"], r["key_est"], r["bars"], "" if r["bars"] == "4" else "<-- WRONG"))
+            "pluck" if pl else "pad  ", bpm, r["type"], r["bpm_est"], r["key_est"], r["bars"], "" if not off(r["bars"], 4, 0.0) else "<-- WRONG"))
+        if off(r["bars"], 4, 0.0):  # empty = bars not counted from a fenced guess (audit 3, defect 14)
+            fault("%s %d bpm: bars=%s" % ("pluck" if pl else "pad", bpm, r["bars"]))
 print("== untagged kit made of pads only: kit row bpm_est / key_est (not fenced)")
 for bpm in (80, 100, 140, 174):
     n += 1
@@ -26,3 +28,4 @@ print("== untagged drum loop that is in fact melodic content in a 'Drum Loops' f
 n += 1
 rows, con, code = one("b8", n, "Loops/Top Loop 01.wav", chord_loop(80, 4, prog, pluck=False), bits=24)
 r = rows[0]; print("  pad 80 bpm named 'Top Loop 01' -> type=%s bpm_est=%r bars=%s" % (r["type"], r["bpm_est"], r["bars"]))
+done()

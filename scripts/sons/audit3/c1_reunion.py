@@ -30,7 +30,7 @@ def pack(files, name=None, trace=False):
             buf = io.StringIO()
             with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
                 try:
-                    lib.tout.main([root, "--trace", r["file_id"]])
+                    lib.tout.main([root, "--rar", "x", "--trace", r["file_id"]])
                 except SystemExit:
                     pass
             print("        trace %s -> %s" % (r["file_id"], buf.getvalue().strip()[:110]))

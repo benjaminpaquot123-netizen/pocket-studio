@@ -26,7 +26,7 @@ GENRES = ["drum_oneshot", "drum_loop", "melodic_loop", "oneshot_melodic", "vocal
 # Heads handed by the conductor (deep pass, one branch per RAR).
 TETES = {
     1: "f08dac9d6", 2: "e902e0c70", 3: "f1b112281", 4: "3e25cea17", 5: "dcc0ebf24",
-    6: "6f588cac8", 8: "9a804e452", 10: "d9f22701b", 12: "d05cf617a",
+    6: "6f588cac8", 8: "9a804e452", 9: "6d4803c8b", 10: "d9f22701b", 12: "d05cf617a",
 }
 PASSE1_SKIP_TYPES = {"doc", "junk", "preset"}
 
@@ -165,6 +165,11 @@ def write_table(path, header, rows):
             w.writerow(r)
 
 
+def pack_style(c):
+    forced = c.get("style_forced") or ""
+    return "%s (forcé)" % forced if forced else (c.get("style_posed") or "")
+
+
 def chiffres(tables, ctrl, p1):
     L = ["# Chiffres de la deuxième passe (écrit par reunit.py, ne pas modifier à la main)", ""]
     rars = sorted({int(c["rar"]) for c in ctrl})
@@ -173,7 +178,7 @@ def chiffres(tables, ctrl, p1):
           "|---|---|---|---|---|---|---|---|---|"]
     for c in sorted(ctrl, key=lambda c: (int(c["rar"]), c["pack"])):
         L.append("| %s | %s | %s | %s | %s | %s | %s | %s | %s |" % (
-            c["rar"], c["pack"], c.get("style_posed", ""), c["files_audio"], c["files_midi"], c["rows"],
+            c["rar"], c["pack"], pack_style(c), c["files_audio"], c["files_midi"], c["rows"],
             c["kit_rows"], c.get("skipped", "") or "-", c.get("nested_archives", "") or "0"))
     tot = {k: sum(int(c[k] or 0) for c in ctrl) for k in ("files_audio", "files_midi", "rows", "kit_rows")}
     L.append("| total | | | %d | %d | %d | %d | | |" % (tot["files_audio"], tot["files_midi"], tot["rows"],
@@ -212,7 +217,7 @@ def chiffres(tables, ctrl, p1):
           "|---|" + "---|" * len(rars),
           "| coups | " + " | ".join(str(sum(1 for r in drums if int(r["rar"]) == n)) for n in rars) + " |"]
     L += ["", "## Packs sans étiquette de style", ""]
-    unl = [c for c in ctrl if (c.get("style_posed") or "") in ("", "unlabelled")]
+    unl = [c for c in ctrl if pack_style(c) in ("", "unlabelled")]
     L += ["- RAR %s %s : %s lignes" % (c["rar"], c["pack"], c["rows"]) for c in unl] or ["- aucun"]
     if p1:
         p2tot = {n: sum(int(c["rows"] or 0) for c in ctrl if int(c["rar"]) == n) for n in rars}

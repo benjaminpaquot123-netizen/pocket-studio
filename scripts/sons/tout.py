@@ -260,7 +260,8 @@ def key_match(measured, tag):
 _NOTE_RX = r"([A-Ga-g])(#|♯|♭|[ _-]?(?i:sharp|flat)|b(?![A-LN-Za-ln-z]))?"
 _BPM_RX = re.compile(r"(?i)(?<![\d.])(\d{2,3}(?:\.\d+)?)\s*-?\s*bpm\b")
 # bare numbers: no leading zero (Loop_073 is an index) and not '90s'
-_BARE_RX = re.compile(r"(?<![\d.])([1-9]\d{1,2})(?![\d.]|s\b|\s*(?i:bars?|x)\b)")
+# a number followed by k / kHz / Hz / bit(s) is a sample rate or a bit depth
+_BARE_RX = re.compile(r"(?<![\d.])([1-9]\d{1,2})(?![\d.]|s\b|\s*(?i:bars?|x|k|khz|hz|bits?)\b)")
 _MODE_RX = r"(?:[ _-]?(?i:(maj)(?:or)?|(min)(?:or)?)|(m))(?:\d{1,2})?"
 _KEY_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(?:" + _MODE_RX + r")?(?![A-Za-z0-9#])")
 _ONE_NOTE_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(-?\d)?(?![A-Za-z0-9#])")

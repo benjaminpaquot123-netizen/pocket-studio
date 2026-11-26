@@ -621,7 +621,52 @@ def _predict(hist, a, n):
 
 def _short_fade(s, sr):
     """Length in ms of a fade of 4-15 ms at the end, or None (blind audit I1).
-    The last 15 ms are compared, 1 ms at a time, to their prediction from the 65 ms before."""
+    Tonal sounds: the last 15 ms are compared, 1 ms at a time, to their
+    prediction from the 65 ms before. Noise, which cannot be predicted, falls
+    back on the energy of its last 3 ms (second audit, defect 15)."""
+    lpc = _short_fade_lpc(s, sr)
+    return lpc if lpc is not None else _short_fade_noise(s, sr)
+
+
+def _short_fade_noise(s, sr):
+    """Fade length in ms on noise-like sounds, or None when the method does not apply.
+
+    A linear fade of L ms on noise of power p leaves E = p * t^3 / (3 L^2) in
+    the last t = 3 ms (L >= t), p * (t - 2L/3) otherwise; an abrupt stop leaves
+    p * t. p is the trend of 3 ms windows 45-15 ms before the end, extrapolated.
+    The method only applies when no 3 ms window of that reference region falls
+    under 0.4 of the trend: low tones (a kick) dip at every zero crossing."""
+    n3 = max(2, int(round(0.003 * sr)))
+    h = max(1, n3 // 6)
+    n = s.shape[0]
+    a, b = n - int(round(0.045 * sr)), n - int(round(0.015 * sr))
+    if a < 0:
+        return None
+    e = s * s
+    c = np.concatenate([[0.0], np.cumsum(e)])
+    st = np.arange(a, b - n3 + 1, h)
+    win = (c[st + n3] - c[st]) / n3
+    if win.size < 8 or float(np.min(win)) <= 0.0:
+        return None
+    tc = (n - (st + n3 / 2.0)) * 1000.0 / sr  # ms before the end
+    slope, icpt = np.polyfit(tc, np.log(win), 1)
+    trend = np.exp(slope * tc + icpt)
+    if float(np.min(win / trend)) < 0.4:
+        return None
+    p = math.exp(slope * (n3 / 2.0 * 1000.0 / sr) + icpt)
+    r = float(c[n] - c[n - n3]) / n3 / p
+    t = n3 * 1000.0 / sr
+    if r >= 1.0 / 3.0:
+        est = max(0.0, 1.5 * t * (1.0 - r))
+    else:
+        est = t / math.sqrt(3.0 * max(r, 1e-9))
+    # Guessed margin: on the audit fuzz a 5 ms fade reads 3.9-6.7 ms and a
+    # 2 ms fade at most 3.2 ms, so 0.5 ms moves the 4 ms limit between them.
+    return est + 0.5 if est > 0.0 else est
+
+
+def _short_fade_lpc(s, sr):
+    """_short_fade on tonal sounds (LPC prediction), or None."""
     n15, n80, n1 = int(0.015 * sr), int(0.080 * sr), max(1, int(round(0.001 * sr)))
     if s.shape[0] < n80 + n15:
         return None

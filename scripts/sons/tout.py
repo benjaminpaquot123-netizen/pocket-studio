@@ -767,17 +767,32 @@ def _end_one(s, sr):
     dc_end = float(np.mean(s[-max(1, int(0.001 * sr)):]))
     if abs(dc_end - dc) <= 0.5 * abs(dc):
         s = s - dc
+    # The levels below are relative to the channel's peak, so a quiet file cut
+    # hard reads as cut (second audit, defect 17). Gain capped at +50 dB; a
+    # channel whose peak is under -70 dBFS is noise, not a sound (both guessed).
+    peak = float(np.max(np.abs(s)))
+    if peak * 10 ** (70 / 20) < 1.0:
+        return 0, None
+    g = min(1.0 / peak, 10 ** (50 / 20))
+    qs = _quant_step(x0)
+    s, x0 = s * g, x0 * g
     s = _past_floor(s, sr)
     if s is None:
         return 0, None
-    qs = _quant_step(x0)
-    if qs is not None and float(np.max(np.abs(s[-max(1, int(round(0.005 * sr))):]))) <= 2.0 * qs:
+    if qs is not None and float(np.max(np.abs(s[-max(1, int(round(0.005 * sr))):]))) <= 2.0 * qs * g:
         return 0, None  # the sound faded into its last quantization steps (second audit, defect 30)
     n = s.shape[0]
     n1 = max(1, int(round(0.001 * sr)))
     n5 = max(2, int(round(0.005 * sr)))
     a = np.abs(s)
-    if n < 2 * n5 or float(np.max(a[-min(n, int(0.1 * sr)):])) < 10 ** (-90 / 20):
+    if n < 2 * n5:
+        # under 10 ms there is no fade to measure: cut when the last 1 ms is
+        # still within 20 dB of the peak (second audit, defect 29; guessed)
+        if n < 2 * n1:
+            return 0, None
+        r1 = math.sqrt(float(np.mean(s[-n1:] ** 2)))
+        return (1 if r1 >= float(np.max(a)) * 10 ** (-20 / 20) else 0), None
+    if float(np.max(a[-min(n, int(0.1 * sr)):])) < 10 ** (-90 / 20):
         return 0, None
     # final fade: forward-window peak envelope (10 ms) every 0.5 ms over the last 200 ms
     w = max(1, int(round(0.010 * sr)))

@@ -390,6 +390,7 @@ MELODIC_WORDS = re.compile(r"(?i)bass|synth|lead|pad|key|piano|chord|pluck|arp|m
                            r"bell|organ|rhodes|stab")
 ROLES = [
     ("full", r"\bfull\b|\bmix\b|\bdemo\b|master|full ?track|\bsong\b"),
+    ("kick", r"kick\s*drums?|\bbass\s*drums?\b"),
     ("808", r"808"),
     ("bass", r"bass|\bsub\b|reese"),
     ("kick", r"\bkicks?\b|\bbd\b"),
@@ -453,6 +454,7 @@ def kit_split(parts):
 
 # finer drum families the shared rules miss (blind audit I6)
 EXTRA_RULES = [(f, re.compile(r, re.I)) for f, r in [
+    ("kick", r"\bbass\s*drums?\b|\bkick\s*drums?\b"),
     ("hat_open", r"\bo ?hh\b|(?:hi.?hats?|\bhats?|\bhh)\s*open|open\s*(?:hi.?hats?|hats?|hh)\b"),
     ("hat_closed", r"\bc ?hh\b|(?:hi.?hats?|\bhats?|\bhh)\s*closed|closed\s*(?:hi.?hats?|hats?|hh)\b"),
     ("perc_high", r"\bperc(?:ussion)?s?\s*(?:high|hi)\b|\b(?:high|hi)\s*percs?\b"),
@@ -491,6 +493,31 @@ def _refine(fam, texts):
 
 
 ONESHOT_DIR = re.compile(r"(?i)one.?shots?|\bhits?\b|\bshots\b")
+WEAK_LOOP_RX = re.compile(r"(?i)\bbeats?\b|\bfills?\b")  # also one-shot words: a 'fill' hit, a 'beat' pack
+
+
+def _loop_word(t, dur):
+    if not LOOP_RX.search(t):
+        return False
+    strong = LOOP_RX.search(WEAK_LOOP_RX.sub(" ", t)) is not None
+    return strong or dur is None or dur >= 1.5
+
+
+def _loop_named(name, folders, dur):
+    """A loop word in the name, or in a folder that no deeper folder contradicts (audit 2, defect 3):
+    'Loops & One Shots/Kicks', 'Trap Beats/One Shots', 'Beat Makers Pack/Hats' hold one-shots."""
+    if _loop_word(name, dur):
+        return True
+    for i, f in enumerate(folders):
+        if not _loop_word(f, dur) or ONESHOT_DIR.search(f):
+            continue
+        deeper = folders[i + 1:]
+        if any(ONESHOT_DIR.search(g) for g in deeper):
+            continue
+        if (dur is None or dur < 1.5) and any(drum_family(g, []) is not None for g in deeper):
+            continue
+        return True
+    return False
 
 
 def classify(rel, dur):
@@ -523,12 +550,13 @@ def classify(rel, dur):
         out["type"] = "vocal"
         out["role"] = "vocal"
         return out
-    drum_named = drum_family(name, []) is not None or (DRUM_WORDS.search(name) and LOOP_RX.search(text))
+    looped = _loop_named(name, folders, dur)
+    drum_named = drum_family(name, []) is not None or (DRUM_WORDS.search(name) and looped)
     if FX_RX.search(text) and not drum_named:  # 'Kick Impact', 'Noise Hat Loop' stay drums (I7)
         out["type"] = "fx"
         return out
     has_bpm = _BPM_RX.search(name) is not None
-    is_loop = LOOP_RX.search(text) is not None or (has_bpm and dur is not None and dur >= 1.5)
+    is_loop = looped or (has_bpm and dur is not None and dur >= 1.5)
     melodic = MELODIC_WORDS.search(name) or (not DRUM_WORDS.search(name) and MELODIC_WORDS.search(inner))
     if is_loop:
         drummy = DRUM_WORDS.search(name) or (not MELODIC_WORDS.search(name) and DRUM_WORDS.search(inner))
@@ -536,7 +564,7 @@ def classify(rel, dur):
         return out
     fam = drum_family(name, folders)
     if fam is not None and (dur is None or dur < (10.0 if fam in LONG_FAMILIES else 6.0)):
-        if fam == "kick_808" or not re.search(r"(?i)bass|synth|lead|pad|key|piano|chord|pluck", name + "/" +
+        if fam == "kick_808" or drum_family(name, []) is not None or not re.search(r"(?i)bass|synth|lead|pad|key|piano|chord|pluck", name + "/" +
                                               (folders[-1] if folders else "")):
             sub = fam
             if fam == "kick" and re.search(r"808", inner):
@@ -547,6 +575,10 @@ def classify(rel, dur):
             out["type"] = "drum_oneshot"
             out["subtype"] = sub
             return out
+    if fam is None and WEAK_LOOP_RX.search(name) and DRUM_WORDS.search(inner) and not MELODIC_WORDS.search(name) \
+            and dur is not None and dur < 1.5:  # a short 'Solo Fill' hit: a drum without a family (defect 3)
+        out["type"] = "drum_oneshot"
+        return out
     if (dur is not None and dur < 8.0) or ONESHOT_DIR.search(inner):
         out["type"] = "oneshot_melodic"
         return out

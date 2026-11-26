@@ -17,8 +17,8 @@ Au plus fort : 11 discussions ouvertes à la fois, sous le plafond de 31. Chacun
 - [x] 2. Dernier contrôle Fable à l'aveugle : levé par Benjamin le 2026-11-26 (« je ne vise pas la perfection »). Remplacé par : sondes à 0 échec, relecture neuve du lot de réparation, et la répétition générale de l'étape 4 comme vrai test. Raison : une passe refaite coûte une demi-heure, un audit de plus aussi. Retour : « contrôle Fable ».
 - [x] 3. Branche de départ unique `eq/passe2-base` : outil réparé + lanceur (`eq/passe2-prep`) + rejeux. Tous les self-tests et `test_lance.py` verts dessus. Toutes les discussions de passe partent de cette même tête, notée ici : `d7047cedc` (2026-11-26 ; self-tests, `test_lance.py`, sondes et 10 rejeux verts, vérifiés par le chef).
 - [x] 4. Répétition générale : le RAR 3 (le plus petit), avec `docs/sons/FICHE-PASSE2.md`. On regarde le temps, le disque, le tableau de contrôle. Changement du 2026-11-26 (« Termine maintenant ») : elle part en même temps que les 11 autres, de la même tête ; si elle montre une faute de l'outil, on ne relance que les paquets touchés.
-- [ ] 5. Les 11 autres RAR en même temps. Chaque discussion : plan d'abord (noms des packs et styles, comparés à `docs/sons/STYLES-PACKS.md`), puis la passe complète, puis ses CSV sur sa branche `eq/passe2-rarN`.
-- [ ] 6. Contrôle du chef, RAR par RAR (tableau ci-dessous) : message « fini » reçu, comptes justes partout, 0 erreur ou erreurs listées, nombre de fichiers cohérent avec la première passe.
+- [x] 5. Les 11 autres RAR en même temps. Chaque discussion : plan d'abord (noms des packs et styles, comparés à `docs/sons/STYLES-PACKS.md`), puis la passe complète, puis ses CSV sur sa branche `eq/passe2-rarN`.
+- [x] 6. Contrôle du chef, RAR par RAR (tableau ci-dessous) : message « fini » reçu, comptes justes partout, 0 erreur ou erreurs listées, nombre de fichiers cohérent avec la première passe (comparaison faite par la réunion sur 9 RAR : aucun écart, sauf le RAR 12 avec 22 fichiers de moins, une archive imbriquée non lue ; les RAR 7, 9 et 11 restent à comparer par elle).
 - [ ] 7. Réunion (1 discussion) : un seul grand tableau, `ANALYSE-MINE-OR.md` mis à jour, inventaire par style et par type (batterie, mélodies, boucles, voix, kits, MIDI).
 - [ ] 8. Critique à l'aveugle (1 discussion neuve qui n'a rien écrit) : elle contredit et remesure quelques chiffres clés.
 - [ ] 9. Résumé à Benjamin, cases cochées dans `docs/PROMESSES.md`, discussions archivées.
@@ -32,14 +32,14 @@ Au plus fort : 11 discussions ouvertes à la fois, sous le plafond de 31. Chacun
 | 4 | Lofi Cherry Blossom | 26-11 22 h 17 | `3e25cea17` | oui (250 = 250) | 0 |
 | 5 | Blood Rave | 26-11 22 h 17 | `dcc0ebf24` | oui (535 = 535) | 0 |
 | 6 | Amapiano | 26-11 22 h 17 | `6f588cac8` | oui (623 = 623) | 0 |
-| 7 | UPB 2026 (le gros : voix, MIDI) | 26-11 22 h 17 | | | |
+| 7 | UPB 2026 (le gros : voix, MIDI) | 26-11 22 h 17 | `0fa06f672` | oui (2026 fichiers, 2034 lignes dont 8 de kit) | 0 |
 | 8 | Dubstep + afro-house | 26-11 22 h 17 | `9a804e452` | oui (1218 fichiers, 1224 lignes dont 6 de kit) | 0 |
 | 9 | Deathstep | 26-11 22 h 17 | `6d4803c8b` | oui (1325 fichiers, 1376 lignes dont 51 de kit) ; pack 1 forcé en synthwave comme prévu | 0 |
 | 10 | DnB, deep house, hardstyle | 26-11 22 h 17 | `d9f22701b` | oui (1025 fichiers, 1077 lignes dont 52 de kit) ; fausse alerte du lanceur pour 2 lignes de style (p1) | 0 |
-| 11 | Ghosthack 4-5-6 | 26-11 22 h 17 | | | |
+| 11 | Ghosthack 4-5-6 | 26-11 22 h 17 | `fc23b0808` | oui (1903 fichiers, 1977 lignes dont 74 de kit) ; le pack DnB est ici et non au RAR 10 comme l'écrit `STYLES-PACKS.md` | 0 |
 | 12 | Ghosthack 1-2-3 | 26-11 22 h 17 | `d05cf617a` | oui (786 = 786) | 0 |
 
-Contrôle du chef du 2026-11-26, 22 h 30 (RAR 10 : 22 h 35), sur les tables poussées (un seul commit par branche, que des CSV dans `docs/sons/passe2/rarN/`, 0 lien symbolique, 0 identifiant en double, somme des lignes égale au tableau de contrôle). Pas encore fait : la comparaison du nombre de fichiers avec la première passe (confiée à la discussion de réunion).
+Contrôle du chef du 2026-11-26, 22 h 30 (RAR 10 : 22 h 35), sur les tables poussées (un seul commit par branche, que des CSV dans `docs/sons/passe2/rarN/`, 0 lien symbolique, 0 identifiant en double, somme des lignes égale au tableau de contrôle). RAR 7 et 11 contrôlés de la même façon à 22 h 40. La comparaison du nombre de fichiers avec la première passe est faite par la discussion de réunion.
 
 ## Ce qui arrête tout
 - Les sondes ne sont pas à 0 échec après la réparation.

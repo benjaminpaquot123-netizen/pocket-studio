@@ -381,7 +381,18 @@ def test_digital_silence_is_an_error():
             check_eq("A5 error row has no measure (%s)" % f, filled, [])
 
 
-TESTS = [test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_rf64_rifx_named():
+    """A6: an RF64 or RIFX file is refused with its own reason, not as 'not a wav or aiff file'."""
+    w = st.wav_bytes(st.mono(ru.tone(261.63)[:SR]))
+    rows, _, _, code, _ = ru.run({"Synth/Big C3.wav": b"RF64" + w[4:], "Synth/Motorola C3.wav": b"RIFX" + w[4:],
+                                  "Synth/Junk C3.wav": b"JUNK" + w[4:]})
+    check_eq("A6 run ends well", code, 0)
+    check_eq("A6 RF64", (rows["Synth/Big C3.wav"] or {}).get("error"), "RF64/RIFX non pris en charge")
+    check_eq("A6 RIFX", (rows["Synth/Motorola C3.wav"] or {}).get("error"), "RF64/RIFX non pris en charge")
+    check_eq("A6 other junk unchanged", (rows["Synth/Junk C3.wav"] or {}).get("error"), "not a wav or aiff file")
+
+
+TESTS = [test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

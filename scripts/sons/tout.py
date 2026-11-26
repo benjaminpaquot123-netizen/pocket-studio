@@ -788,6 +788,24 @@ def _loop_named(name, folders, dur):
     return False
 
 
+_PACK_TOP = [None]  # the single folder at the root of the folder given: the pack itself (set by main)
+
+
+def _pack_top(folder):
+    """Name of the one folder alone at the root (no sound beside it), unless it is a plain role folder ('Hats')."""
+    try:
+        names = [n for n in os.listdir(folder) if not n.startswith(".")]
+    except OSError:
+        return None
+    dirs = [n for n in names if os.path.isdir(os.path.join(folder, n)) and not os.path.islink(os.path.join(folder, n))]
+    if len(dirs) != 1 or any(n.lower().endswith(AUDIO_EXTS + MIDI_EXTS) for n in names):
+        return None
+    top = dirs[0]
+    if len(re.findall(r"[A-Za-z]+", top)) <= 2 and not re.search(r"\d", top) and role_of(top) != "-":
+        return None
+    return top
+
+
 def classify(rel, dur):
     """rel: path inside the pack (with or without the pack folder).
     dur: length in seconds (None for MIDI). Returns type/subtype/role/style."""
@@ -796,10 +814,11 @@ def classify(rel, dur):
     folders = parts[:-1]
     inner = "/".join(folders)  # every folder counts: "Vocals/Dry" is still a vocal (blind audit B1)
     text = (inner + "/" + name)
-    style = style_of("/".join(parts))
+    own = parts[1:] if _PACK_TOP[0] and len(parts) > 1 and parts[0] == _PACK_TOP[0] else parts
+    style = style_of("/".join(own))  # the pack's own folder names no role and comes last for style (audit 3 #4)
     role = role_of(name)
     if role == "-":
-        for f in reversed(folders):
+        for f in reversed(own[:-1]):
             role = role_of(f)
             if role != "-":
                 break
@@ -2628,6 +2647,7 @@ def main(argv=None):
     args = ap.parse_args(argv)
     if not os.path.isdir(args.folder):
         ap.error("not a folder: %s" % args.folder)
+    _PACK_TOP[0] = _pack_top(args.folder)
     if args.trace:
         # the tables stay anonymous; the id leads back to the file only with the pack at hand (defect 28)
         audio, midi, _ = _walk(args.folder)
@@ -2681,7 +2701,7 @@ def main(argv=None):
     total = 0
     usable = {(r["type"], r["measure"]) for r in acc.rows() if r["usable"] == "yes"}
     # a style written only in the pack folder's own name comes last (audit 2, defect 14)
-    pack_style = style_of("", pack=os.path.basename(os.path.abspath(args.folder)))
+    pack_style = style_of(_PACK_TOP[0] or "", pack=os.path.basename(os.path.abspath(args.folder)))
     if args.no_pack_style:
         pack_style = "unlabelled"
     elif args.pack_style:

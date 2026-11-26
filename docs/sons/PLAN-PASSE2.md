@@ -12,11 +12,11 @@ Les liens Drive ne s'écrivent jamais dans le dépôt (ils sont dans les notes d
 Au plus fort : 11 discussions ouvertes à la fois, sous le plafond de 31. Chacune est muette et s'archive seule.
 
 ## Les étapes, dans l'ordre
-- [x] 0. Réparation finie (`eq/outil2-repare`, puis le raccord `eq/passe2-raccord`). Vérifié par le chef le 2026-11-26 : sondes à 0 échec, rejeux 10 sur 10, relecture neuve faite. Pas encore vérifié : le passage complet des mutations sur la tête finale (chiffres attendus du raccord). Cas de noms 7, 8 et 10 laissés ouverts exprès (« Termine maintenant », voir `docs/DECISIONS.md`).
+- [x] 0. Réparation finie (`eq/outil2-repare`, puis le raccord `eq/passe2-raccord`). Vérifié par le chef le 2026-11-26 : sondes à 0 échec, rejeux 10 sur 10, relecture neuve faite. Passage complet des mutations sur `d7047ced` (raccord `8e10dfcaa`, docs seulement) : 106 jouées, 103 tuées, 1 survivante devenue sans effet, 2 sautées (leur texte a changé) ; les trois sont à réécrire dans un prochain lot. À faire aussi dans ce lot : `audit4/accuracy.py` ne compte que « exact », il doit compter « root ». Cas de noms 7, 8 et 10 laissés ouverts exprès (« Termine maintenant », voir `docs/DECISIONS.md`).
 - [ ] 1. Petit ménage du banc : étiquette « 11.5 MB » fausse dans `audit2/b5_weird.py`, ligne d'erreur `end_cut` retirée des rouges attendus.
 - [x] 2. Dernier contrôle Fable à l'aveugle : levé par Benjamin le 2026-11-26 (« je ne vise pas la perfection »). Remplacé par : sondes à 0 échec, relecture neuve du lot de réparation, et la répétition générale de l'étape 4 comme vrai test. Raison : une passe refaite coûte une demi-heure, un audit de plus aussi. Retour : « contrôle Fable ».
 - [x] 3. Branche de départ unique `eq/passe2-base` : outil réparé + lanceur (`eq/passe2-prep`) + rejeux. Tous les self-tests et `test_lance.py` verts dessus. Toutes les discussions de passe partent de cette même tête, notée ici : `d7047cedc` (2026-11-26 ; self-tests, `test_lance.py`, sondes et 10 rejeux verts, vérifiés par le chef).
-- [ ] 4. Répétition générale : le RAR 3 (le plus petit), avec `docs/sons/FICHE-PASSE2.md`. On regarde le temps, le disque, le tableau de contrôle. Changement du 2026-11-26 (« Termine maintenant ») : elle part en même temps que les 11 autres, de la même tête ; si elle montre une faute de l'outil, on ne relance que les paquets touchés.
+- [x] 4. Répétition générale : le RAR 3 (le plus petit), avec `docs/sons/FICHE-PASSE2.md`. On regarde le temps, le disque, le tableau de contrôle. Changement du 2026-11-26 (« Termine maintenant ») : elle part en même temps que les 11 autres, de la même tête ; si elle montre une faute de l'outil, on ne relance que les paquets touchés.
 - [ ] 5. Les 11 autres RAR en même temps. Chaque discussion : plan d'abord (noms des packs et styles, comparés à `docs/sons/STYLES-PACKS.md`), puis la passe complète, puis ses CSV sur sa branche `eq/passe2-rarN`.
 - [ ] 6. Contrôle du chef, RAR par RAR (tableau ci-dessous) : message « fini » reçu, comptes justes partout, 0 erreur ou erreurs listées, nombre de fichiers cohérent avec la première passe.
 - [ ] 7. Réunion (1 discussion) : un seul grand tableau, `ANALYSE-MINE-OR.md` mis à jour, inventaire par style et par type (batterie, mélodies, boucles, voix, kits, MIDI).
@@ -34,7 +34,7 @@ Au plus fort : 11 discussions ouvertes à la fois, sous le plafond de 31. Chacun
 | 6 | Amapiano | 26-11 22 h 17 | `6f588cac8` | oui (623 = 623) | 0 |
 | 7 | UPB 2026 (le gros : voix, MIDI) | 26-11 22 h 17 | | | |
 | 8 | Dubstep + afro-house | 26-11 22 h 17 | `9a804e452` | oui (1218 fichiers, 1224 lignes dont 6 de kit) | 0 |
-| 9 | Deathstep | 26-11 22 h 17 | | | |
+| 9 | Deathstep | 26-11 22 h 17 | `6d4803c8b` | oui (1325 fichiers, 1376 lignes dont 51 de kit) ; pack 1 forcé en synthwave comme prévu | 0 |
 | 10 | DnB, deep house, hardstyle | 26-11 22 h 17 | `d9f22701b` | oui (1025 fichiers, 1077 lignes dont 52 de kit) ; fausse alerte du lanceur pour 2 lignes de style (p1) | 0 |
 | 11 | Ghosthack 4-5-6 | 26-11 22 h 17 | | | |
 | 12 | Ghosthack 1-2-3 | 26-11 22 h 17 | `d05cf617a` | oui (786 = 786) | 0 |

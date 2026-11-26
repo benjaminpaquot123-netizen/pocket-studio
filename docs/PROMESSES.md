@@ -34,3 +34,4 @@
 - [ ] 2026-11-26 : faire auditer l'outil commun de mesure des sons (scripts/sons/tout.py, branche eq/outil-tout) par une discussion Fable neuve dès qu'il est fini, avant le second passage sur les RAR.
 - [ ] 2026-11-26 Outil des sons : audit Fable en réflexion extra avant chaque usage sur les sons achetés, et la deuxième passe des 12 RAR seulement avec l'outil réparé et revérifié. (2026-11-26 : Benjamin lève le dernier contrôle Fable après réparation ; restent les sondes à 0, la relecture neuve et la répétition générale.)
 - [ ] 2026-11-26 Audit Fable 5.2 (réflexion maximum) sur l'outil des sons réuni (lots A à E), avant la deuxième passe des 12 RAR ; vérifier le niveau reçu et le dire à Benjamin.
+- [ ] 2026-11-26 (soir) : pour demain matin, plein de sons avant-après à écouter (morceaux ou coups seuls, peu importe le format) qui montrent ce qui a avancé ; Benjamin dort, tout se fait sans lui (« sois autonome, continue jusqu'au bout, je te fais confiance »).

@@ -494,7 +494,9 @@ def confirm_tags(row, tags):
     elif tags.get("flat"):
         row["key_tag"] = spell(row.get("key_tag"), True)
     nmeas = re.match(r"[A-G]#?", row.get("note_measured") or "")
-    if tags.get("note_lone") and row.get("note_tag") and nmeas and row["note_tag"] != nmeas.group(0):
+    # both spelled as flats: a tag already shown as 'Bb' is the measured 'A#' (reunion review)
+    if (tags.get("note_lone") and row.get("note_tag") and nmeas
+            and spell(row["note_tag"], True) != spell(nmeas.group(0), True)):
         row["note_tag"] = None  # 'Pad Soft F' that sounds A3 (audit 2 #12)
         if "cents_gap" in row:
             row["cents_gap"] = None  # no gap to a note the name does not give

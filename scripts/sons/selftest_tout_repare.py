@@ -267,7 +267,39 @@ def test_doc_empty_end_cut_not_clean():
                "an empty end_cut there does not mean a clean end" in doc, None)
 
 
-TESTS = [test_doc_empty_end_cut_not_clean, test_audit2_replays_fail_on_faults, test_audit2_packs_in_work_folder, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_kit_confirmed_tempo_reaches_all():
+    """Holes a3-06, a3-13, a3-17: a kit's bare '128' heard at 125 (inside 3 %) becomes the tempo; the
+    kit and a held pad stem (no tempo of its own) count their bars from 128; the kit's MIDI row is traceable."""
+    kit = "Construction Kits/Kit 01 - 128/"
+    d = ru.drums(125.0, 8)
+    t = st.t_axis(len(d) / 48000.0)
+    pad = sum(0.1 * st.harmonic(440.0 * 2 ** ((p - 69) / 12.0), t, 4, 0.5) for p in (57, 60, 64))
+    mid = st.midi_bytes([(b * 1920, 1920, p, 90, 0) for b, ch in enumerate(AM) for p in ch], 480, 128.0)
+    files = {kit + "Drums.wav": d, kit + "Pad.wav": pad, kit + "Chords.mid": mid}
+    rows, kits, _, code, root = ru.run(files)
+    check_eq("a3 kit run ends well", code, 0)
+    check_eq("a3-17 kit: bars from the confirmed 128, not the heard 125",
+             [(k.get("bpm_tag"), k.get("bars")) for k in kits], [("128", "8.25")])
+    r = rows[kit + "Pad.wav"] or {}
+    check_eq("a3-06 held pad stem re-measured with the kit's tempo", (r.get("bpm_tag"), r.get("bars")), ("128", "8.25"))
+    r = rows[kit + "Chords.mid"] or {}
+    check_eq("a3-13 kit MIDI row carries its file_id", r.get("type"), "midi")
+    if r:
+        check_eq("a3-13 --trace finds the kit MIDI file", _trace(root, r["file_id"]), (0, kit + "Chords.mid"))
+
+
+def test_oneshot_note_accuracy_50_cents():
+    """Hole a3-16: a one-shot named C3 that sounds 120 cents sharp is a miss in the accuracy table."""
+    rows, _, _, code, root = ru.run({"Synth/Lead C3.wav": ru.tone(130.81 * 2 ** (1.2 / 12))})
+    check_eq("a3-16 run ends well", code, 0)
+    acc = []
+    for f in glob.glob(os.path.join(os.path.dirname(root), "t_accuracy.csv")):
+        with open(f, newline="", encoding="utf-8") as fh:
+            acc = [(r["type"], r["measure"], r["tagged"], r["agree"]) for r in csv.DictReader(fh)]
+    check_eq("a3-16 120 cents off is no agreement", acc, [("oneshot_melodic", "note", "1", "0")])
+
+
+TESTS = [test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_audit2_replays_fail_on_faults, test_audit2_packs_in_work_folder, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

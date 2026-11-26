@@ -1,4 +1,4 @@
-import os, sys, struct, shutil
+import os, re, sys, struct, shutil
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import *
 from lib import _vlq
@@ -6,6 +6,7 @@ from lib import _vlq
 B = os.path.join(S, "pack", "b7")
 shutil.rmtree(B, ignore_errors=True)
 N = [0]
+SEEN = []
 COLS = ["type", "role", "style", "bpm_tag", "key_tag", "bpm_est", "bpm_file", "bars", "notes", "notes_per_bar",
         "pitch_min", "pitch_max", "poly_max", "swing_pct", "scale_fit", "drum_track", "error"]
 
@@ -19,6 +20,7 @@ def run(label, rel, data=None, notes=None, cols=COLS, **kw):
     else:
         write_midi(p, notes, **kw)
     rows, con, code = run_pack(root, "b7")
+    SEEN.append((label, rows, code))
     print("%-52s %s" % (label, rel))
     if not rows:
         print("      NO ROW | console:", con.replace("\n", " | "), "| code", code)
@@ -138,3 +140,67 @@ run("'Am' in the name, notes in A minor", "MIDI/Piano Chords Am.mid", notes=chor
 run("'C' alone in the name", "MIDI/Piano Chords C.mid", notes=chords(), bpm=120)
 run("melody folder, bass line", "Melodies MIDI/Bassline 01 Gm 124.mid", notes=[(b, 0.5, 43, 100, 0) for b in range(16)], bpm=124)
 run("'Trap Hi-Hat Roll 140bpm' on ch 10", "Trap MIDI/Hi-Hat Roll 140bpm.mid", notes=[(h * 0.25, 0.1, 42, 80, 9) for h in range(32)])
+
+# Expected cells per case (checked against AUDIT-TOUT-2 defects 21, 22, 34, 37: all repaired).
+# "" = the tool must leave the cell blank (it cannot know), which is honest.
+CH = "role=chords bars=4 notes=12 poly_max=3"
+WANT = {
+    "no tempo in file, '140 bpm' in the name": CH + " bpm_tag=140 key_tag=A minor bpm_est=140 bpm_file=",
+    "file tempo 120 (DAW default), name says 140 bpm": CH + " bpm_tag=140 bpm_est=140 bpm_file=120",
+    "file tempo 140, no tag in the name": CH + " bpm_tag= bpm_est=140 bpm_file=140",
+    "name 'Chords Am 120' (bare number + key)": CH + " bpm_tag=120 key_tag=A minor bpm_est=120",
+    "name 'Chords 120' (bare number only)": CH + " bpm_tag= bpm_est=",
+    "tempo 93.5 in file": CH + " bpm_est=93.5 bpm_file=93.5",
+    "tempo change at bar 3 (90 then 180)": CH + " bpm_est= bpm_file=",
+    "4 bars, start at bar 1 (reference)": CH + " bpm_est=120",
+    "4 bars exported from bar 9 of the song": CH + " notes_per_bar=3",
+    "4 bars, pattern starts on beat 2 (pickup 1 beat late)": CH,
+    "drums 2 bars (last hit before the bar line)": "role=drums bars=2 notes=24 drum_track=1",
+    "drums 2 bars, last bar only has a kick on beat 1": "role=drums bars=2 notes=13",
+    "3/4: 4 bars of 3 beats (12 beats)": "bars=4 notes=12",
+    "same 12 beats, no time signature in the file": "bars= notes=12",
+    "6/8: 4 bars (12 beats)": "bars=4 notes=12",
+    "legato: each chord overlaps the next by a 16th": CH,
+    "fmt 1: tempo track + chords track": CH + " bpm_est=128 bpm_file=128",
+    "fmt 1: drums (ch 10) + bass (ch 1) in one file": "role=full bars=4 notes=52 bpm_est=128",
+    "drums written on channel 1 (very common)": "role=drums bars=2 notes=24",
+    "drums ch 1, folder 'Drum MIDI', file 'Kick Pattern'": "role=kick bars=2 notes=8",
+    "hat pattern in swing 58 % on ch 10": "role=hats bars=2 notes=32 swing_pct=57.92 drum_track=1",
+    "straight 8ths only (no 16th) -> swing?": "role=hats bars=2 notes=16 swing_pct=50",
+    "ppq 96": CH + " bpm_est=120",
+    "ppq 960": CH + " bpm_est=120",
+    "ppq 24 (old drum machine)": "role=drums bars=2 notes=24 bpm_est=120",
+    "garbage text named .mid": "error=not a midi file",
+    "empty file": "error=not a midi file",
+    "header only, no track": "error=bad midi track",
+    "truncated in the middle of the track": "error=truncated midi",
+    "no notes (only tempo)": "error=midi without notes",
+    "SMPTE time division": "error=smpte midi not supported",
+    "RIFF-wrapped midi (.mid holding RMID)": "error=not a midi file",
+    "uppercase extension .MID": CH + " bpm_est=120",
+    ".midi extension": CH + " bpm_est=120",
+    "notes never released (stuck notes)": "bars=4 notes=4 error=",
+    "tempo 0 microseconds": "bars=4 notes=12 bpm_est=",
+    "one single note of 1 tick": "bars=1 notes=1 error=",
+    "pitch bend + CC + program change + sysex mixed in": "bars=4 notes=12 bpm_est=120",
+    "running status, note-on velocity 0 as note-off": "bars=1 notes=4 pitch_min=60 pitch_max=65",
+    "'Am' in the name, notes in A minor": "role=keys key_tag=A minor bars=4 scale_fit=1",
+    "'C' alone in the name": "role=keys key_tag= bars=4",
+    "melody folder, bass line": "role=bass key_tag=G minor bpm_tag=124 bpm_est=124 bars=4",
+    "'Trap Hi-Hat Roll 140bpm' on ch 10": "role=hats style=trap bpm_tag=140 bpm_est=140 bars=2 key_tag=",
+}
+chk = Check("b7_midi")
+chk.eq("cases", sorted(l for l, _, _ in SEEN), sorted(WANT))
+for label, rows, code in SEEN:
+    if not chk.run(label, rows, code):
+        continue
+    chk.eq(label + " rows", len(rows), 1)
+    r = rows[0]
+    chk.eq(label + " type", r.get("type"), "midi")
+    for kv in re.split(r" (?=\w+=)", WANT.get(label, "")):
+        k, v = kv.split("=", 1)
+        chk.eq("%s %s" % (label, k), r.get(k, "?"), v)
+    if "error=" not in WANT.get(label, "") or WANT[label].endswith("error="):
+        chk.eq(label + " error", r.get("error"), "")
+chk.clean_repo()
+chk.done()

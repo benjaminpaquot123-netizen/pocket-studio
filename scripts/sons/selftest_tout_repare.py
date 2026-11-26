@@ -487,7 +487,55 @@ def test_short_bpm_name_not_a_loop():
         check_eq("bpm-short '%s' %.1f s" % (name, dur), tout.classify(name, dur).get("type"), want)
 
 
-TESTS = [test_short_bpm_name_not_a_loop, test_reversed_crash_role_fx, test_mutation_survivors_2, test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_rar3_name_cases():
+    """docs/sons/passe2/CAS-A-REJOUER.md, cases 1-6 and 9 (invented names, same shape as the real ones)."""
+    pt = tout.parse_tags
+    # case 1: a lone number between separators in a loop or MIDI name is its tempo
+    for parts, typ in ((["MIDI", "Bass Loops", "Bass Synth Loop_125_Lantern_F.mid"], "midi"),
+                       (["Loops", "Atmospheric Loops", "Atmospheric Loop_125_Meadow_D.wav"], "melodic_loop"),
+                       (["Loops", "Drum Fills", "Drum Fill_125_Pebble.wav"], "drum_loop")):
+        check_eq("c1 bpm from '%s'" % parts[-1], pt(parts, typ)["bpm"], 125.0)
+    # the fence stays for names without that structure
+    for name in ("Pad 120 Dark.wav", "Loop120Lantern.wav", "Synth Loop_250_Hot.wav", "Synth Loop 120 140 A.wav"):
+        check_eq("c1 fence: no tempo from '%s'" % name, pt(["Loops", name], "melodic_loop")["bpm"], None)
+    # case 2: a lone last letter beside a tempo is the tonic, mode left empty, A and B included
+    for name, want in (("Synth Melody Loop_125_Orchid_A.mid", "A"), ("Bass Synth Loop_125_Copper_B.mid", "B"),
+                       ("Synth Melody Loop_125_Willow_E.mid", "E"), ("Synth Melody Loop_125_Harbor_Gb.mid", "F#")):
+        check_eq("c2 key from '%s'" % name, tout.key_name(pt(["MIDI", name], "midi")["key"]), want)
+    check_eq("c2 strong key keeps its mode", tout.key_name(pt(["MIDI", "Synth Loop_125_Tundra_Am.mid"], "midi")["key"]),
+             "A minor")
+    check_eq("c2 drum loop letter is no key", pt(["Loops", "Drum Loop_125_Lantern_A.wav"], "drum_loop")["key"], None)
+    check_eq("c2 root-only tag matches its root", tout.key_match((9, "minor"), (9, None)), "root")
+    check_eq("c2 root-only tag, other root", tout.key_match((4, "minor"), (9, None)), "other")
+    # case 3: a lone note a semitone off is still the note the name gives
+    row = tout.confirm_tags({"note_tag": "C", "note_measured": "B1", "cents_gap": -100.0}, {"note": 0, "note_lone": True})
+    check_eq("c3 'Shot_C' heard 100 cents flat keeps C", (row["note_tag"], row["cents_gap"]), ("C", -100.0))
+    row = tout.confirm_tags({"note_tag": "F", "note_measured": "A3", "cents_gap": 400.0}, {"note": 5, "note_lone": True})
+    check_eq("c3 'Pad Soft F' heard A3 still drops F", row["note_tag"], None)
+    # case 4: a title word is no genre when the pack names one
+    loop = ru.drums(125.0)
+    rows, _, _, _, _ = run({"Loops/Drum Fills/Drum Fill_125_Soul.wav": loop}, extra=["--pack-style", "techno"])
+    check_eq("c4 'Soul' title in a techno pack", (rows["Loops/Drum Fills/Drum Fill_125_Soul.wav"] or {}).get("style"), "techno")
+    rows, _, _, _, _ = run({"Loops/Drum Fills/Drum Fill_125_Soul.wav": loop})
+    check_eq("c4 witness: no pack style, the title still counts", (rows["Loops/Drum Fills/Drum Fill_125_Soul.wav"] or {}).get("style"), "rnb")
+    # case 5: an atmospheric loop with tempo and key is a melodic loop (pad), a riser loop stays fx
+    c = tout.classify("Loops/Atmospheric Loops/Atmospheric Loop_125_Meadow_D.wav", 7.68)
+    check_eq("c5 atmospheric loop", (c["type"], c["role"]), ("melodic_loop", "pad"))
+    check_eq("c5 witness: riser loop stays fx", tout.classify("Loops/Riser Loop_125_D.wav", 7.68)["type"], "fx")
+    # case 6: an FX folder or an fx word beats a title word for the role
+    for rel in ("One-Shots/FX/Sub Hits/Sub Boom_Gravelly.wav", "One-Shots/FX/Impacts/Impact FX_Break.wav"):
+        c = tout.classify(rel, 2.0)
+        check_eq("c6 role of '%s'" % rel, (c["type"], c["role"]), ("fx", "fx"))
+    # case 9: no note on a clap or a snare, a kick keeps its note
+    t = st.t_axis(0.25)
+    rng = np.random.default_rng(3)
+    snare = 0.5 * (rng.standard_normal(t.size) + np.sin(2 * np.pi * 190.0 * t)) * np.exp(-t / 0.08)
+    for fam in ("snare", "clap"):
+        check_eq("c9 %s has no note" % fam, tout.measure_drum_oneshot(SR, st.mono(snare), fam).get("note_measured"), None)
+    check_true("c9 witness: a kick keeps its note", tout.measure_drum_oneshot(SR, st.mono(ru.b808()), "kick").get("note_measured"))
+
+
+TESTS = [test_rar3_name_cases, test_short_bpm_name_not_a_loop, test_reversed_crash_role_fx, test_mutation_survivors_2, test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

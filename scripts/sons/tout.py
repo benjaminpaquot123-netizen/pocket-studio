@@ -235,16 +235,25 @@ def key_match(measured, tag):
 
 # ================================================================ tags
 
-_NOTE_RX = r"([A-Ga-g])(#|b|♯|♭|sharp|flat)?"
+_NOTE_RX = r"([A-Ga-g])(#|♯|♭|[ _-]?(?i:sharp|flat)|b(?![A-LN-Za-ln-z]))?"
 _BPM_RX = re.compile(r"(?i)(?<![\d.])(\d{2,3}(?:\.\d+)?)\s*-?\s*bpm\b")
-_BARE_RX = re.compile(r"(?<![\d.])(\d{2,3})(?![\d.])")
-_KEY_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX +
-                     r"\s*(maj(?:or)?|min(?:or)?|m(?![a-z])|M(?![a-z]))?(?![A-Za-z0-9#])")
+# bare numbers: no leading zero (Loop_073 is an index) and not '90s'
+_BARE_RX = re.compile(r"(?<![\d.])([1-9]\d{1,2})(?![\d.]|s\b|\s*(?i:bars?|x)\b)")
+_MODE_RX = r"(?:[ _-]?(?i:(maj)(?:or)?|(min)(?:or)?)|(m))(?:\d{1,2})?"
+_KEY_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(?:" + _MODE_RX + r")?(?![A-Za-z0-9#])")
 _ONE_NOTE_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(-?\d)?(?![A-Za-z0-9#])")
+# a lone letter after these words is a version or a folder letter, not a key
+_VERSION_WORDS = re.compile(r"(?i)(?:kit|take|version|ver|v|part|pt|var|variation|alt|scene|"
+                            r"section|group|set|bank|vol|side|mix|layer|sample|type|option)[ _-]*$")
+
+
+def _acc(acc):
+    return (acc or "").strip(" _-").lower() or None
 
 
 def _pc(letter, acc):
     pc = {"c": 0, "d": 2, "e": 4, "f": 5, "g": 7, "a": 9, "b": 11}[letter.lower()]
+    acc = _acc(acc)
     if acc in ("#", "♯", "sharp"):
         pc += 1
     elif acc in ("b", "♭", "flat"):
@@ -275,24 +284,17 @@ def parse_tags(parts, typ):
         else:
             has_bpm = bool(_BPM_RX.search(text))
         if out["key"] is None and typ not in ("oneshot_melodic", "drum_oneshot"):
+            bare_num = _BARE_RX.search(text) is not None
             for m in _KEY_RX.finditer(text):
-                letter, acc, mode = m.group(1), m.group(2), m.group(3)
-                if letter.islower() and not acc and not mode:
-                    continue
-                if acc == "b" and letter.lower() == "b" and not mode:
-                    pass
-                bare_num = _BARE_RX.search(text) is not None
-                if not acc and not mode and not (has_bpm or bare_num):
-                    continue  # a lone capital letter is a version, not a key
-                if not mode and not acc and not (has_bpm or bare_num):
-                    continue
-                if mode is None:
-                    md = "major"
-                elif mode.lower().startswith("maj") or mode == "M":
-                    md = "major"
-                else:
-                    md = "minor"
-                out["key"] = (_pc(letter, acc), md)
+                letter, acc = m.group(1), _acc(m.group(2))
+                mode = "major" if m.group(3) else ("minor" if (m.group(4) or m.group(5)) else None)
+                word_mode = bool(m.group(3) or m.group(4))
+                if letter.islower() and not word_mode:
+                    continue  # 'ab', 'e', 'am' are words or noise
+                if not acc and not mode:
+                    if not (has_bpm or bare_num) or _VERSION_WORDS.search(text[:m.start()]):
+                        continue  # a lone capital letter is a version, not a key
+                out["key"] = (_pc(letter, acc), mode or "major")
                 break
         if out["bpm"] is None and loopish:
             for m in _BARE_RX.finditer(text):
@@ -302,11 +304,11 @@ def parse_tags(parts, typ):
                     break
         if out["note"] is None and typ in ("oneshot_melodic", "drum_oneshot") and raw is parts[-1]:
             for m in _ONE_NOTE_RX.finditer(text):
-                letter, acc, octave = m.group(1), m.group(2), m.group(3)
-                if letter.islower() and not acc:
+                letter, acc, octave = m.group(1), _acc(m.group(2)), m.group(3)
+                if letter.islower() and not octave:
                     continue
-                if acc in ("sharp", "flat") and not octave:
-                    pass
+                if not acc and not octave and _VERSION_WORDS.search(text[:m.start()]):
+                    continue
                 out["note"] = _pc(letter, acc)
                 break
     return out
@@ -917,31 +919,50 @@ def _grid_string(steps, nsteps):
 
 # ================================================================ key
 
-def chroma(sig, sr, seconds=60.0):
+def chroma(sig, sr, seconds=60.0, bass=False):
+    """12-bin chroma (50 Hz - 5 kHz); with bass=True also the 40-260 Hz chroma
+    of the opening."""
     sig = sig[: int(seconds * sr)]
     n = 16384 if sr >= 32000 else 8192
     hop = n // 4
     mag = _stft_mag(sig, n, hop)
     f = np.fft.rfftfreq(n, 1.0 / sr)
-    m = (f >= 50) & (f <= 5000)
-    pc = np.mod(np.round(12 * np.log2(f[m] / 440.0)) + 9, 12).astype(int)
-    ener = np.sum(mag[:, m] ** 2, axis=0)
-    # whiten slightly: log compression per bin avoids one loud bass owning the key
-    ch = np.zeros(12)
-    np.add.at(ch, pc, np.sqrt(ener))
-    return ch
+    ener = np.sum(mag ** 2, axis=0)
+    # loops start on their tonic chord far more often than not: the bass
+    # chroma looks at the opening only (2 s, at most a quarter of the file)
+    first = max(1, min(int(2.0 * sr / hop), mag.shape[0] // 4))
+    ener_first = np.sum(mag[:first] ** 2, axis=0)
+
+    def fold(lo, hi, e=ener):
+        m = (f >= lo) & (f <= hi)
+        pc = np.mod(np.round(12 * np.log2(f[m] / 440.0)) + 9, 12).astype(int)
+        ch = np.zeros(12)
+        # sqrt compression avoids one loud bass owning the key
+        np.add.at(ch, pc, np.sqrt(e[m]))
+        return ch
+
+    ch = fold(50, 5000)
+    return (ch, fold(40, 260, ener_first)) if bass else ch
 
 
-def key_of_chroma(ch):
+def key_of_chroma(ch, bass=None):
+    """Krumhansl key. Major and its relative minor share their notes, so when
+    both fit almost as well the bass decides: the tonic sits in the bass."""
+    if isinstance(ch, tuple):
+        ch, bass = ch
     if not np.any(ch > 0):
         return None, None
-    best, best_r = None, -2.0
+    rs = {}
     for mode, prof in (("major", KK_MAJOR), ("minor", KK_MINOR)):
         for k in range(12):
-            r = np.corrcoef(ch, np.roll(prof, k))[0, 1]
-            if r > best_r:
-                best, best_r = (k, mode), r
-    return best, float(best_r)
+            rs[(k, mode)] = float(np.corrcoef(ch, np.roll(prof, k))[0, 1])
+    best = max(rs, key=rs.get)
+    if bass is not None and np.any(bass > 0):
+        k, mode = best
+        rel = ((k + 9) % 12, "minor") if mode == "major" else ((k + 3) % 12, "major")
+        if rs[rel] > rs[best] - 0.12 and bass[rel[0]] > 1.2 * bass[k]:
+            best = rel
+    return best, rs[best]
 
 
 def band_shares(x, sr):
@@ -965,7 +986,7 @@ def measure_melodic_loop(sr, x, tags):
     out["bpm_measured"] = bpm
     out["bpm_gap_pct"] = bpm_gap(bpm, tags.get("bpm"))
     out["bars"] = bars_of(dur, tags.get("bpm") or bpm)
-    k, r = key_of_chroma(chroma(sig, sr))
+    k, r = key_of_chroma(chroma(sig, sr, bass=True))
     out["key_measured"] = key_name(k)
     out["key_strength"] = r
     out["key_match"] = key_match(k, tags.get("key"))
@@ -1126,7 +1147,13 @@ def measure_midi_bytes(b, tags):
     for s, e, p, vel, ch in notes:
         if ch != 9:
             pcw[p % 12] += e - s
-    k, _ = key_of_chroma(pcw)
+    # tonic cue: the lowest note sounding at the first onset
+    mel = [n for n in notes if n[4] != 9]
+    t0 = min(n[0] for n in mel)
+    low = min(n[2] for n in mel if n[0] <= t0 + tpq // 8)
+    bass = np.zeros(12)
+    bass[low % 12] = 1.0
+    k, _ = key_of_chroma(pcw, bass)
     out["key_measured"] = key_name(k)
     out["key_match"] = key_match(k, tags.get("key"))
     ref = tags.get("key") or k
@@ -1525,7 +1552,7 @@ def _run_kits(kits, acc, rar):
                     kr["bars"] = bars_of(dur, kit_tags.get("bpm") or bpm)
                     acc.add("kit", "bpm", _bpm_agree(bpm, kit_tags.get("bpm")))
                     if np.any(melo != 0):
-                        k, _ = key_of_chroma(chroma(melo, sr))
+                        k, _ = key_of_chroma(chroma(melo, sr, bass=True))
                         kr["key_measured"] = key_name(k)
                         kr["key_match"] = key_match(k, kit_tags.get("key"))
                         acc.add("kit", "key", _key_agree(kr["key_match"]))

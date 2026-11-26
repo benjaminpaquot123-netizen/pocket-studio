@@ -170,6 +170,23 @@ def test_tags():
     check_eq("tag note Bb", tg["note"], 10)
     tg = tout.parse_tags(["Snare 64.wav"], "drum_oneshot")
     check_eq("tag no bpm on a one-shot number", tg["bpm"], None)
+    # blind review cases
+    for name, typ, field, want in [
+            ("Loop_A_Minor_90.wav", "melodic_loop", "key", (9, "minor")),
+            ("Lead_128_AMIN.wav", "melodic_loop", "key", (9, "minor")),
+            ("C sharp minor 120.wav", "melodic_loop", "key", (1, "minor")),
+            ("Cm7 Chord Loop 90.wav", "melodic_loop", "key", (0, "minor")),
+            ("Gmaj7 Keys 100.wav", "melodic_loop", "key", (7, "major")),
+            ("Strings 128 Dbmin.wav", "melodic_loop", "key", (1, "minor")),
+            ("FM_Bass_120.wav", "melodic_loop", "key", None),
+            ("Kit B 120.wav", "drum_loop", "key", None),
+            ("Loop 120 ab.wav", "melodic_loop", "key", None),
+            ("Loop_073.wav", "drum_loop", "bpm", None),
+            ("90s Keys Loop.wav", "melodic_loop", "bpm", None),
+            ("808 D Sharp.wav", "drum_oneshot", "note", 3),
+            ("Kit B Kick.wav", "drum_oneshot", "note", None),
+            ("Bass_ab_C3.wav", "oneshot_melodic", "note", 0)]:
+        check_eq("tag %s %s" % (field, name), tout.parse_tags([name], typ)[field], want)
 
 
 def test_classify():
@@ -363,7 +380,7 @@ def test_midi():
     vels = [n[3] for n in notes]
     check("midi velocity mean", m["vel_mean"], float(np.mean(vels)), 0.01)
     check("midi velocity sd", m["vel_sd"], float(np.std(vels)), 0.01)
-    check_eq("midi key (Am F C G, tagged Am)", m["key_measured"] in ("A minor", "C major"), True)
+    check_eq("midi key (Am F C G, tagged Am)", m["key_measured"], "A minor")
     check_eq("midi chords per bar vs tagged A minor", m["chords"], "i-VI-III-VII-i-VI-III-VII")
     check("midi chord changes per bar", m["chord_changes_per_bar"], 7 / 8.0, 0.01)
     check("midi chord length in beats", m["chord_len_beats"], 4.0, 0.01)

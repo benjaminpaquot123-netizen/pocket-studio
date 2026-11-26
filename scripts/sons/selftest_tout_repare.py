@@ -161,7 +161,23 @@ def test_pack_style_named():
     check_true("3 --pack-style: said on the console", "style du pack : trap, posé sur 1 lignes" in con, con)
 
 
-TESTS = [test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_single_root_folder_is_the_pack():
+    """Defect 4: one folder alone at the root is the pack itself: its name gives no role, its style is the pack's."""
+    kick = st.kick(st.t_axis(0.4))
+    rows, _, con, code, _ = run({"Hat Tricks Vol 1/Loops/Loop 01 120 bpm.wav": ru.plucks(120.0, AM, 1),
+                                 "Hat Tricks Vol 1/Kicks/Kick 01.wav": kick}, pack="Downloads")
+    check_eq("4 run ends well", code, 0)
+    r = rows["Hat Tricks Vol 1/Loops/Loop 01 120 bpm.wav"] or {}
+    check_true("4 'Hat Tricks Vol 1/Loops/Loop 01': no hats role", r.get("role") != "hats", r.get("role"))
+    check_eq("4 'Hat Tricks Vol 1/Kicks/Kick 01': a kick", (rows["Hat Tricks Vol 1/Kicks/Kick 01.wav"] or {}).get("role"), "kick")
+    rows, _, con, _, _ = run({"Drill Essentials Vol 1/Loops/Loop 01 120 bpm.wav": ru.plucks(120.0, AM, 1)}, pack="Downloads")
+    check_eq("4 single 'Drill Essentials Vol 1' folder: its style", (rows["Drill Essentials Vol 1/Loops/Loop 01 120 bpm.wav"] or {}).get("style"), "drill")
+    check_true("4 single pack folder: its style said on the console", "style du pack : drill, posé sur 1 lignes" in con, con)
+    rows, _, _, _, _ = run({"Hats/Closed 01.wav": st.band_noise(int(0.2 * SR), 6000, 16000, 3)}, pack="Downloads")
+    check_eq("4 a lone 'Hats' folder is a role, not a pack", (rows["Hats/Closed 01.wav"] or {}).get("role"), "hats")
+
+
+TESTS = [test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

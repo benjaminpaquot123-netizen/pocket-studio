@@ -1676,6 +1676,7 @@ def measure_drum_loop(sr, x, tags):
     swing = float(np.median(us)) - bias if len(us) >= 4 else 0.5
     out["swing_pct"] = 100 * swing
     out["density_per_beat"] = len(on_t) / (dur / (4 * step))
+    grid = {}
     for k in ("kick", "snare", "hats"):
         nov, dt, off = novs[k]
         steps = np.zeros(nsteps)
@@ -1686,7 +1687,30 @@ def measure_drum_loop(sr, x, tags):
             lo, hi = int(c - 0.015 / dt), int(c + 0.02 / dt) + 1
             seg = nov[max(0, lo):max(0, min(len(nov), hi))]
             steps[s] = np.max(seg) if len(seg) else 0.0
-        out["grid_" + k] = _grid_string(steps, nsteps)
+        grid[k] = steps
+    # Snare and hats share noise: a snare spills into the hat band and hats into the
+    # snare band. Compare the flux per FFT bin (the hat band is twice as wide): a hat
+    # attack is hats >= 2 x snare, a snare attack is snare >= hats / 2. The snare grid
+    # keeps snare attacks only; the hat grid takes its level from hat attacks, and a
+    # step shared with a snare still counts when it is loud in its own band (audit 4, A1/A2).
+    dens = {}
+    for k in ("snare", "hats"):
+        lo, hi = bands[k]
+        f = np.fft.rfftfreq(512, 1.0 / sr)
+        dens[k] = grid[k] / max(1, int(np.sum((f >= lo) & (f <= min(hi, sr / 2 - 100)))))
+    # floor: a snare attack carries at least a tenth of the loudest noise flux of the loop
+    floor = 0.1 * max(float(np.max(grid["snare"])), float(np.max(grid["hats"])))
+    snare_att = (dens["snare"] >= 0.5 * dens["hats"]) & (grid["snare"] > floor)
+    hat_att = dens["hats"] >= 2.0 * dens["snare"]
+    out["grid_kick"] = _grid_string(grid["kick"], nsteps)
+    out["grid_snare"] = _grid_string(np.where(snare_att, grid["snare"], 0.0), nsteps)
+    h = grid["hats"]
+    if np.any(hat_att) and np.max(h[hat_att]) > 0:
+        ref = float(np.max(h[hat_att]))
+        keep = np.where(hat_att, h >= 0.3 * ref, h >= 0.3 * float(np.max(h)))
+        out["grid_hats"] = _grid_string(np.where(keep, 1.0, 0.0), nsteps)
+    else:
+        out["grid_hats"] = _grid_string(h, nsteps)
     # 3 beats per bar (waltz): the kick lands on every third beat only, so the
     # bars are counted in 3/4, not 4/4 (audit 2, defect 7)
     nov, dt, off = novs["kick"]

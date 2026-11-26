@@ -281,12 +281,17 @@ _GEAR_WORDS = re.compile(r"(?i)(?<![a-z])(?:juno|rhodes|mpc|route|tr|sh|cs|jx|sp
                          r"series|type|version|ver|v)[ _-]*$")
 _ONLY_NUMBER = re.compile(r"\s*([1-9]\d{1,2})\s*")
 BPM_CONFIRM_TOL = 0.03  # a bare number is trusted when the sound is within 3 % of it, its half or its double
-_MODE_RX = r"(?:[ _-]?(?i:(maj)(?:or)?|(min)(?:or)?)|(m))(?:\d{1,2})?"
+_MODE_RX = r"(?:[ _-]?(?i:(maj)(?:or)?|(min)(?:or)?)|[ _-]?(m))(?:\d{1,2})?"  # 'C# m' (audit 2 #8)
 _KEY_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(?:" + _MODE_RX + r")?(?![A-Za-z0-9#])")
 _ONE_NOTE_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(-?\d)?(?![A-Za-z0-9#])")
 # a lone letter after these words is a version or a folder letter, not a key
 _VERSION_WORDS = re.compile(r"(?i)(?:kit|take|version|ver|v|part|pt|var|variation|alt|scene|"
                             r"section|group|set|bank|vol|side|mix|layer|sample|type|option)[ _-]*$")
+# 'Fm Synth' is FM synthesis, 'Bb Trumpet' names a transposing instrument (audit 2 #8)
+_NOT_KEY_AFTER = re.compile(r"(?i)[ _-]*(?:synth|trumpet|clarinet|sax\w*|tuba|horns?|cornet|flugel\w*)\b")
+# a lone letter after these words is a key: 'Key F', 'in F', 'Blues in A' (audit 2 #11)
+_KEY_WORDS = re.compile(r"(?i)(?<![a-z])(?:key|in)[ _-]*$")
+FLAT_NAMES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
 
 def _acc(acc):
@@ -318,6 +323,9 @@ def _key_candidates(text):
         if letter.islower() and not word_mode and not (
                 (acc == "#" or m.group(5)) and re.search(r"\d\s*$", text[:m.start()])):
             continue  # 'ab', 'e', 'am' are words or noise, but '120 am', '120 f#m' are keys
+        if not word_mode and _NOT_KEY_AFTER.match(text, m.end()) and (
+                (m.group(5) and letter == "F" and not acc) or (acc in ("b", "♭", "flat") and not mode)):
+            continue
         key = (_pc(letter, acc), mode or "major")
         (strong if (acc or mode) else lone).append((m, key))
     return strong, lone
@@ -352,7 +360,7 @@ def parse_tags(parts, typ):
     goes to bpm_bare, to be confirmed by the measured tempo (confirm_tags, audit 2 #6/#10).
     A key with an accidental or a mode beats a lone letter, which counts only as the last
     word of a name that also carries a tempo (blind audit I4/I5)."""
-    out = {"bpm": None, "key": None, "note": None, "bpm_bare": []}
+    out = {"bpm": None, "key": None, "note": None, "bpm_bare": [], "key_lone": [], "flat": False}
     loopish = typ not in ("oneshot_melodic", "drum_oneshot")
     texts = [_prep(_clean(raw)) for raw in reversed(parts)]
     for text in texts:
@@ -379,18 +387,26 @@ def parse_tags(parts, typ):
     if out["bpm"] is not None:
         out["bpm_bare"] = []
     if loopish:
+        drums = "drum" in typ
         for text in texts:
             strong, lone = _key_candidates(text)
             if strong:
                 out["key"] = strong[0][1]
+                out["flat"] = _is_flat(strong[0][0])
                 break
-            if lone:
+            if lone and not drums:  # a lone letter on a drum loop is a variation (audit 2 #8)
                 m, key = lone[-1]
-                tail = text[m.end():].strip(" -")
-                if tail == "" and (any_bpm or _BARE_RX.search(text[:m.start()])) \
-                        and not _VERSION_WORDS.search(text[:m.start()]):
+                head, tail = text[:m.start()], text[m.end():].strip(" -")
+                if _VERSION_WORDS.search(head):
+                    continue
+                if tail == "" and (any_bpm or _BARE_RX.search(head)) and m.group(1) not in "AB":
                     out["key"] = key
+                    out["flat"] = _is_flat(m)
                     break
+                # 'Synth Loop 120 A' (A/B are variations), 'Pad Loop F', 'Key F', 'Piano Loop C 120':
+                # only a guess, kept when the measured key has the same root (confirm_tags, #11)
+                if tail == "" or _KEY_WORDS.search(head) or _ONLY_NUMBER.fullmatch(tail):
+                    out["key_lone"].append((key, _is_flat(m)))
     if not loopish and parts:
         text = texts[0]
         octaved, lone = [], []
@@ -399,16 +415,30 @@ def parse_tags(parts, typ):
             if letter.islower() and not octave:
                 continue
             if octave:
-                octaved.append(_pc(letter, acc))
+                octaved.append((_pc(letter, acc), _is_flat(m)))
                 continue
             if re.match(r"\s*[-_]?\s*\d", text[m.end():]) or _VERSION_WORDS.search(text[:m.start()]):
                 continue  # 'Synth A 01', 'Kit B': an index or a version, not a note
-            lone.append(_pc(letter, acc))
+            lone.append((_pc(letter, acc), _is_flat(m)))
         if octaved:
-            out["note"] = octaved[-1]
+            out["note"] = octaved[-1][0]
+            out["flat"] = octaved[-1][1]
         elif lone:
-            out["note"] = lone[-1]
+            out["note"] = lone[-1][0]
+            out["flat"] = lone[-1][1]
     return out
+
+
+def _is_flat(m):
+    return _acc(m.group(2)) in ("b", "♭", "flat")
+
+
+def spell(name, flat):
+    """'A# minor' -> 'Bb minor' when the name wrote a flat (audit 2 #38)."""
+    if not name or not flat:
+        return name
+    head = re.match(r"[A-G]#?", name)
+    return FLAT_NAMES[NOTE_NAMES.index(head.group(0))] + name[head.end():] if head else name
 
 
 def _key_only(text):
@@ -423,13 +453,28 @@ def _bpm_near(tag, measured):
 
 def confirm_tags(row, tags):
     """Fill the tag cells a name only suggests once the measured sound agrees (audit 2 #6/#10):
-    a bare number is the tempo when the measured tempo is equal, half or double (3 %).
+    a bare number is the tempo when the measured tempo is equal, half or double (3 %);
+    a lone key letter is the key when the measured key has the same root (#11);
+    a flat written in the name is shown as a flat (#38).
     row: the measure_* output (bpm_tag, bpm_measured...), changed in place; a sure tag stays."""
     meas = row.get("bpm_measured")
     if row.get("bpm_tag") is None and meas:
         near = [v for v in tags.get("bpm_bare") or [] if _bpm_near(v, meas)]
         if len(near) == 1:
             row["bpm_tag"] = near[0]
+    kmeas = row.get("key_measured")
+    if row.get("key_tag") is None and kmeas and tags.get("key_lone"):
+        root = re.match(r"[A-G]#?", kmeas)
+        hits = [flat for key, flat in tags["key_lone"]
+                if root and NOTE_NAMES[key[0]] == root.group(0)]
+        if hits:
+            row["key_tag"] = spell(kmeas, hits[-1])
+            if "key_match" in row:
+                row["key_match"] = "exact"
+    elif tags.get("flat"):
+        row["key_tag"] = spell(row.get("key_tag"), True)
+    if tags.get("flat") and row.get("note_tag"):
+        row["note_tag"] = spell(row["note_tag"], True)
     return row
 
 

@@ -26,18 +26,20 @@ Au plus fort : 11 discussions ouvertes à la fois, sous le plafond de 31. Chacun
 ## Suivi des 12 RAR
 | RAR | Contenu connu | Lancé | Fini (sha) | Comptes justes | Erreurs |
 |---|---|---|---|---|---|
-| 1 | Drum Hero 6 | 26-11 22 h 17 | | | |
-| 2 | Drift phonk | 26-11 22 h 17 | | | |
-| 3 | Melodic techno (répétition) | 26-11 22 h 17 | | | |
-| 4 | Lofi Cherry Blossom | 26-11 22 h 17 | | | |
-| 5 | Blood Rave | 26-11 22 h 17 | | | |
-| 6 | Amapiano | 26-11 22 h 17 | | | |
+| 1 | Drum Hero 6 | 26-11 22 h 17 | `f08dac9d6` | oui (1388 = 1388) | 0 |
+| 2 | Drift phonk | 26-11 22 h 17 | `e902e0c70` | oui (785 = 785) | 0 |
+| 3 | Melodic techno (répétition) | 26-11 22 h 17 | `f1b112281` | oui (370 = 370) ; fausse alerte du lanceur pour 1 ligne de style | 0 |
+| 4 | Lofi Cherry Blossom | 26-11 22 h 17 | `3e25cea17` | oui (250 = 250) | 0 |
+| 5 | Blood Rave | 26-11 22 h 17 | `dcc0ebf24` | oui (535 = 535) | 0 |
+| 6 | Amapiano | 26-11 22 h 17 | `6f588cac8` | oui (623 = 623) | 0 |
 | 7 | UPB 2026 (le gros : voix, MIDI) | 26-11 22 h 17 | | | |
-| 8 | Dubstep + afro-house | 26-11 22 h 17 | | | |
+| 8 | Dubstep + afro-house | 26-11 22 h 17 | `9a804e452` | oui (1218 fichiers, 1224 lignes dont 6 de kit) | 0 |
 | 9 | Deathstep | 26-11 22 h 17 | | | |
 | 10 | DnB, deep house, hardstyle | 26-11 22 h 17 | | | |
 | 11 | Ghosthack 4-5-6 | 26-11 22 h 17 | | | |
-| 12 | Ghosthack 1-2-3 | 26-11 22 h 17 | | | |
+| 12 | Ghosthack 1-2-3 | 26-11 22 h 17 | `d05cf617a` | oui (786 = 786) | 0 |
+
+Contrôle du chef du 2026-11-26, 22 h 30, sur les tables poussées (un seul commit par branche, que des CSV dans `docs/sons/passe2/rarN/`, 0 lien symbolique, 0 identifiant en double, somme des lignes égale au tableau de contrôle). Pas encore fait : la comparaison du nombre de fichiers avec la première passe (confiée à la discussion de réunion).
 
 ## Ce qui arrête tout
 - Les sondes ne sont pas à 0 échec après la réparation.

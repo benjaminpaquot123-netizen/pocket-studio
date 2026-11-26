@@ -199,6 +199,7 @@ for rel in ["Loops/What Loop 120 Am.wav", "Loops/Custom Loop 01 120 Am.wav", "Lo
 expect("Drum Loops/Loop 01.wav", 4.0, type="drum_loop", subtype="-")
 expect("Loops/Upbeat Piano Loop 120 C.wav", 4.0, role="keys", type="melodic_loop")
 expect("Loops/Breakdown Synth Loop 128 Am.wav", 4.0, role="synth", type="melodic_loop")
+expect("Loops/Superclap Loop 120.wav", 4.0, type="drum_loop", subtype="-")
 expect("Loops/Breakbeat Loop 170.wav", 4.0, role="drums", type="drum_loop")
 
 with tempfile.TemporaryDirectory() as tmp:
@@ -210,9 +211,12 @@ with tempfile.TemporaryDirectory() as tmp:
                          ("Tops/Top 128 01.wav", drum_loop(128, 4), "drum_loop")]:
         r = measured(tmp, rel, x)
         check_eq("sound decides %s" % rel, (r.get("type"), r.get("subtype")), (want, "by_sound"))
-        check_true("measured as a loop %s" % rel, r.get("bars_measured") is not None or r.get("bpm_measured"))
+        check_true("measured as a loop %s" % rel, "bpm_measured" in r and not r.get("error"))
     r = measured(tmp, "Percussion/Perc 124 01.wav", drum_loop(124, 1))
-    check_eq("Perc 124 01 tempo", (r.get("type"), r.get("bpm_tag")), ("drum_loop", 124.0))
+    check_eq("Perc 124 01 is a drum loop", r.get("type"), "drum_loop")
+    check_true("Perc 124 01 tempo heard", abs((r.get("bpm_measured") or 0) - 124) < 1)
+expect("Drum Loops/Techno/Loop 01.wav", 4.0, type="drum_loop", subtype="-")
+expect("Piano Loops/Deep/Loop 01.wav", 4.0, type="melodic_loop", subtype="-")
 
 
 print("%d checks, %d failed" % (COUNT, FAILS))

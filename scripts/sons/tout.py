@@ -21,7 +21,8 @@ kit_id     r<rar>k<nnn> shared by the stems and MIDI of one construction kit
 type       oneshot_melodic | drum_loop | melodic_loop | kit | kit_stem |
            vocal | fx | midi | drum_oneshot
 subtype    finer label: drum family, "<family>:attack"/":tail" for layer
-           files, "untagged" for long unnamed audio
+           files, "untagged" for long unnamed audio, "by_sound" for a loop
+           whose name does not say drums or notes (the sound decided)
 role       full, 808, bass, kick, snare, hats, perc, drums, vocal, fx, lead,
            pad, keys, chords, pluck, arp, guitar, strings, brass, bell,
            synth, or "-" (from the words of the name and folders)
@@ -397,7 +398,7 @@ ROLES = [
     ("snare", r"snare|clap|\bsd\b"),
     ("hats", r"\bhats?\b|hi.?hat|cymbal|\bride\b|shaker|\b[co]?hh\b|\bcrash"),
     ("perc", r"perc|conga|bongo|\btoms?\b|\brims?\b|shaker|tamb"),
-    ("drums", r"drum|\btop\b|\btops\b|groove|beat|break|fill"),
+    ("drums", r"drum|\btop\b|\btops\b|\bgrooves?\b|\bbeats?\b|\bbreaks?\b|breakbeat|\bfills?\b"),
     ("vocal", r"vo(x|cal)|voice|acapella|chant"),
     ("fx", r"\bfx\b|sfx|riser|sweep|impact|noise|atmos|texture"),
     ("lead", r"lead|melody|hook|\bline\b"),
@@ -503,6 +504,52 @@ def _loop_word(t, dur):
     return strong or dur is None or dur >= 1.5
 
 
+# loops whose name has no 'loop': a tempo or a loop-only word (audit 2, defect 4)
+LOOP_NAME_RX = re.compile(r"(?i)\bmelod(?:y|ies)\b|\bbasslines?\b|\bbreaks?\b|\bbreakbeats?\b|\btops?\b|\bgrooves?\b")
+# whole words only: 'Organic', 'Sharp', 'Monkey', 'What', 'Custom', 'Upbeat' say nothing (defect 5)
+DRUM_W = re.compile(r"(?i)\b(?:hi.?|super)?(?:hats?|hihats?|drums?|kicks?|kickdrums?|snares?|claps?|percs?|percussions?|"
+                    r"grooves?|beats?|breaks?|breakbeats?|shakers?|rides?|cymbals?|toms?|fills?|hh)\b")
+MELODIC_W = re.compile(r"(?i)\b(?:bass(?:es|lines?)?|synths?|leads?|pads?|keys|piano|pianos|chords?|plucks?|arps?|"
+                       r"arpeggi\w*|melod\w*|guitars?|strings?|brass|bells?|organs?|rhodes|stabs?)\b")
+_DNB_RX = re.compile(r"(?i)\bdrums?\s*(?:&|and|n|'n'|\+)\s*bass\b")
+
+
+def _loop_by_name(name, dur):
+    if dur is None or dur < 1.5:
+        return False
+    if LOOP_NAME_RX.search(name):
+        return True
+    return any(60 <= int(m.group(1)) <= 200 for m in _BARE_RX.finditer(name)) and not re.search(r"808|909", name)
+
+
+def _loop_kind(name, folders):
+    """drum_loop / melodic_loop from whole words of the name, else of the nearest folder or of a folder that names
+    its loops ('Drum Loops/Techno'); None: the sound decides (a pack name like 'Hat Tricks' says nothing)."""
+    near = folders[-1:]
+    for t in [name] + near + [f for f in reversed(folders[:-1]) if LOOP_RX.search(f)]:
+        t = _DNB_RX.sub(" drum ", t)
+        d, m = DRUM_W.search(t), MELODIC_W.search(t)
+        if d or m:
+            return "drum_loop" if d and not m else "melodic_loop"
+    return None
+
+
+def _drumminess(x):
+    """Energy-weighted spectral flatness: drum loops are noisy (about 0.04), notes are peaky (below 1e-6)."""
+    sig = _mono(x)
+    if len(sig) < 4096:
+        return 0.0
+    m = _stft_mag(sig, 2048, 1024) ** 2 + 1e-12
+    e = m.sum(axis=1)
+    keep = e > e.max() * 1e-3
+    m, e = m[keep], e[keep]
+    fl = np.exp(np.mean(np.log(m), axis=1)) / np.mean(m, axis=1)
+    return float(np.sum(fl * e) / np.sum(e))
+
+
+DRUMMY_FLATNESS = 0.02
+
+
 def _loop_named(name, folders, dur):
     """A loop word in the name, or in a folder that no deeper folder contradicts (audit 2, defect 3):
     'Loops & One Shots/Kicks', 'Trap Beats/One Shots', 'Beat Makers Pack/Hats' hold one-shots."""
@@ -556,11 +603,18 @@ def classify(rel, dur):
         out["type"] = "fx"
         return out
     has_bpm = _BPM_RX.search(name) is not None
-    is_loop = looped or (has_bpm and dur is not None and dur >= 1.5)
+    is_loop = looped or (has_bpm and dur is not None and dur >= 1.5) or _loop_by_name(name, dur)
+    if is_loop and not looped and re.search(r"808", name):  # '808 Long 140bpm C' is a one-shot
+        is_loop = False
     melodic = MELODIC_WORDS.search(name) or (not DRUM_WORDS.search(name) and MELODIC_WORDS.search(inner))
     if is_loop:
         drummy = DRUM_WORDS.search(name) or (not MELODIC_WORDS.search(name) and DRUM_WORDS.search(inner))
         out["type"] = "drum_loop" if drummy and not melodic else "melodic_loop"
+        kind = _loop_kind(name, folders)
+        if kind is not None:
+            out["type"] = kind
+        else:
+            out["subtype"] = "by_sound"  # a guess until _measure_file hears it
         return out
     fam = drum_family(name, folders)
     if fam is not None and (dur is None or dur < (10.0 if fam in LONG_FAMILIES else 6.0)):
@@ -1847,6 +1901,8 @@ def _measure_file(p, rel, parts, acc, rar):
             sr, x, loop = read_audio(p)
             row["_loop"] = loop
             cl = classify(rel, x.shape[0] / sr)
+            if cl["subtype"] == "by_sound":  # the name is silent: the sound decides
+                cl["type"] = "drum_loop" if _drumminess(x) > DRUMMY_FLATNESS else "melodic_loop"
             row.update(cl)
             row.update(common(sr, x))
             tags = parse_tags(parts, cl["type"])

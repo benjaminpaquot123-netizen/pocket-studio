@@ -270,7 +270,17 @@ _NOTE_RX = r"([A-Ga-g])(#|♯|♭|[ _-]?(?i:sharp|flat)|b(?![A-LN-Za-ln-z]))?"
 _BPM_RX = re.compile(r"(?i)(?<![\d.])(\d{2,3}(?:\.\d+)?)\s*-?\s*bpm\b")
 # bare numbers: no leading zero (Loop_073 is an index) and not '90s'
 # a number followed by k / kHz / Hz / bit(s) is a sample rate or a bit depth
-_BARE_RX = re.compile(r"(?<![\d.])([1-9]\d{1,2})(?![\d.]|s\b|\s*(?i:bars?|x|k|khz|hz|bits?)\b)")
+# 'SH-101', 'CS-80' (a letter, a dash), '100%', "90's" and '96kHz24bit' are not tempos (audit 2 #6)
+_BARE_RX = re.compile(r"(?<![\d.])(?<![A-Za-z]-)([1-9]\d{1,2})"
+                      r"(?![\d.%]|s\b|['’]s\b|\s*-?\s*(?i:bars?|x|k|khz|hz|bits?)(?![a-z]))")
+# 'Loop BPM 140', 'bpm140' (audit 2 #10)
+_BPM_PRE_RX = re.compile(r"(?i)(?<![a-z])bpm\s*[-:_]?\s*(\d{2,3}(?:\.\d+)?)(?![\d.])")
+# a number right after a gear or model word is a model number, not a tempo (Juno 106, Route 66)
+_GEAR_WORDS = re.compile(r"(?i)(?<![a-z])(?:juno|rhodes|mpc|route|tr|sh|cs|jx|sp|dx|tb|mc|op|mk|ob|"
+                         r"prophet|jupiter|model|vol|volume|track|pack|take|part|no|nr|room|studio|"
+                         r"series|type|version|ver|v)[ _-]*$")
+_ONLY_NUMBER = re.compile(r"\s*([1-9]\d{1,2})\s*")
+BPM_CONFIRM_TOL = 0.03  # a bare number is trusted when the sound is within 3 % of it, its half or its double
 _MODE_RX = r"(?:[ _-]?(?i:(maj)(?:or)?|(min)(?:or)?)|(m))(?:\d{1,2})?"
 _KEY_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(?:" + _MODE_RX + r")?(?![A-Za-z0-9#])")
 _ONE_NOTE_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(-?\d)?(?![A-Za-z0-9#])")
@@ -305,42 +315,69 @@ def _key_candidates(text):
         letter, acc = m.group(1), _acc(m.group(2))
         mode = "major" if m.group(3) else ("minor" if (m.group(4) or m.group(5)) else None)
         word_mode = bool(m.group(3) or m.group(4))
-        if letter.islower() and not word_mode:
-            continue  # 'ab', 'e', 'am' are words or noise
+        if letter.islower() and not word_mode and not (
+                (acc == "#" or m.group(5)) and re.search(r"\d\s*$", text[:m.start()])):
+            continue  # 'ab', 'e', 'am' are words or noise, but '120 am', '120 f#m' are keys
         key = (_pc(letter, acc), mode or "major")
         (strong if (acc or mode) else lone).append((m, key))
     return strong, lone
 
 
+def _prep(text):
+    """Separators a name uses instead of spaces: dots between words, dashes, brackets,
+    glued digits ('BassLoop120Am', 'Loop.120.Am', '[140] [Am]')."""
+    text = re.sub(r"(?<!\d)\.|\.(?!\d)", " ", text)
+    text = re.sub(r"[\[\](){}–—]", " ", text)
+    text = re.sub(r"(?<=[A-Za-z]{3})(?=\d{2,3}(?!\d))", " ", text)
+    text = re.sub(r"(?<=\d)(?=[A-G](?:#|b|♯|♭)?m?(?![a-z]))", " ", text)
+    if re.search(r"[a-z]", text) is None:  # 'BASS LOOP 120 AM': all capitals, so 'AM' is A minor
+        text = re.sub(r"(?<![A-Za-z0-9])([A-G](?:#|♯|♭)?)M(?![A-Za-z0-9#])", r"\1m", text)
+    return text
+
+
+def _bare_numbers(text):
+    """Bare numbers that may be a tempo: not a model number, a rate or a bit depth."""
+    return [m for m in _BARE_RX.finditer(text) if not _GEAR_WORDS.search(text[:m.start()])]
+
+
+def _bare_ok(v):
+    return 50 <= v <= 250
+
+
 def parse_tags(parts, typ):
     """Tags from the file name, then the folders (innermost first).
     parts: path components below the pack folder, file name last.
-    A 'BPM' tag anywhere beats a bare number; a bare number counts only beside a real key;
-    a key with an accidental or a mode beats a lone letter, which counts only as the last
+    A 'BPM' tag anywhere beats a bare number; a bare number counts only beside a real key
+    and when it is the only one there (or alone in a folder name); any other bare number
+    goes to bpm_bare, to be confirmed by the measured tempo (confirm_tags, audit 2 #6/#10).
+    A key with an accidental or a mode beats a lone letter, which counts only as the last
     word of a name that also carries a tempo (blind audit I4/I5)."""
-    out = {"bpm": None, "key": None, "note": None}
+    out = {"bpm": None, "key": None, "note": None, "bpm_bare": []}
     loopish = typ not in ("oneshot_melodic", "drum_oneshot")
-    texts = [_clean(raw) for raw in reversed(parts)]
+    texts = [_prep(_clean(raw)) for raw in reversed(parts)]
     for text in texts:
-        for m in _BPM_RX.finditer(text):
+        for m in list(_BPM_RX.finditer(text)) + list(_BPM_PRE_RX.finditer(text)):
             v = float(m.group(1))
             if 40 <= v <= 250:
                 out["bpm"] = v
                 break
         if out["bpm"] is not None:
             break
-    any_bpm = any(_BPM_RX.search(t) for t in texts)
+    any_bpm = any(_BPM_RX.search(t) or _BPM_PRE_RX.search(t) for t in texts)
     if out["bpm"] is None and loopish:
-        for text in texts:
-            if not _key_candidates(text)[0]:
-                continue
-            for m in _BARE_RX.finditer(text):
-                v = float(m.group(1))
+        key_folder = any(_key_only(t) for t in texts[1:])
+        for i, text in enumerate(texts):
+            bare = [float(m.group(1)) for m in _bare_numbers(text)]
+            only = _ONLY_NUMBER.fullmatch(text) if i else None
+            keyed = bool(_key_candidates(text)[0]) or (i == 0 and key_folder)
+            if (keyed or only) and len(bare) == 1:
+                v = bare[0]
                 if 60 <= v <= 200:
                     out["bpm"] = v
                     break
-            if out["bpm"] is not None:
-                break
+            out["bpm_bare"] += [v for v in bare if _bare_ok(v) and v not in out["bpm_bare"]]
+    if out["bpm"] is not None:
+        out["bpm_bare"] = []
     if loopish:
         for text in texts:
             strong, lone = _key_candidates(text)
@@ -372,6 +409,28 @@ def parse_tags(parts, typ):
         elif lone:
             out["note"] = lone[-1]
     return out
+
+
+def _key_only(text):
+    """A folder named only by a key ('Am', 'F# minor')."""
+    strong = _key_candidates(text)[0]
+    return len(strong) == 1 and text.strip(" -_") == strong[0][0].group(0).strip(" -_")
+
+
+def _bpm_near(tag, measured):
+    return any(abs(measured * f - tag) <= BPM_CONFIRM_TOL * tag for f in (1.0, 0.5, 2.0))
+
+
+def confirm_tags(row, tags):
+    """Fill the tag cells a name only suggests once the measured sound agrees (audit 2 #6/#10):
+    a bare number is the tempo when the measured tempo is equal, half or double (3 %).
+    row: the measure_* output (bpm_tag, bpm_measured...), changed in place; a sure tag stays."""
+    meas = row.get("bpm_measured")
+    if row.get("bpm_tag") is None and meas:
+        near = [v for v in tags.get("bpm_bare") or [] if _bpm_near(v, meas)]
+        if len(near) == 1:
+            row["bpm_tag"] = near[0]
+    return row
 
 
 # ================================================================ classify

@@ -480,6 +480,8 @@ def confirm_tags(row, tags):
     meas = row.get("bpm_measured")
     if row.get("bpm_tag") is None and meas:
         near = [v for v in tags.get("bpm_bare") or [] if _bpm_near(v, meas)]
+        if len(near) > 1:  # 'Loop 70 Am 140' heard at 140: the equal one before half or double (audit 3 #6)
+            near = [v for v in near if abs(meas - v) <= BPM_CONFIRM_TOL * v]
         if len(near) == 1:
             row["bpm_tag"] = near[0]
     kmeas = row.get("key_measured")

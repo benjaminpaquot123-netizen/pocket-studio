@@ -221,7 +221,18 @@ def test_file_id_has_the_pack():
         check_eq("11 --trace does not find it in the twin pack", _trace(rb, ia[0])[0], 1)
 
 
-TESTS = [test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_audit2_packs_in_work_folder():
+    """Defect 13: every audit2 batch builds its packs under lib.S (AUDIT2_WORK), never beside the scripts."""
+    import ast
+    for f in sorted(glob.glob(os.path.join(HERE, "audit2", "b*.py"))):
+        tree = ast.parse(open(f, encoding="utf-8").read())
+        bad = [n.lineno for n in ast.walk(tree) if isinstance(n, ast.Call)
+               and getattr(n.func, "attr", "") == "join" and any(isinstance(a, ast.Constant) and a.value == "pack" for a in n.args)
+               and not (isinstance(n.args[0], ast.Name) and n.args[0].id == "S")]
+        check_eq("13 %s: packs under the work folder" % os.path.basename(f), bad, [])
+
+
+TESTS = [test_audit2_packs_in_work_folder, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

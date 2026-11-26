@@ -90,7 +90,24 @@ def test_bare_equal_first():
              num((rows["Loops/Loop 70 Am 140 B.wav"] or {}).get("bpm_tag")), 70.0)
 
 
-TESTS = [test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first]
+def test_bars_when_tempo_contradicted():
+    """Defect 5: a written tempo the sound contradicts (neither equal, half nor double) gives no bars."""
+    files = {"Drum Loops/Drum Loop 128 bpm.wav": ru.drums(100.0, 4),
+             "Loops/Pad Loop 140bpm Am.wav": ru.plucks(100.0, AM, 1),
+             "Drum Loops/Drum Loop 120 bpm.wav": ru.drums(120.0, 4),
+             "Drum Loops/Half Loop 140 bpm.wav": ru.drums(70.0, 2),
+             "Loops/Pad Loop 120bpm Am.wav": ru.plucks(120.0, AM, 1)}
+    rows, _, _, code, _ = run(files)
+    check_eq("5 run ends well", code, 0)
+    check_eq("5 'Drum Loop 128 bpm' played at 100: no bars", (rows["Drum Loops/Drum Loop 128 bpm.wav"] or {}).get("bars"), "")
+    check_eq("5 'Pad Loop 140bpm Am' played at 100: no bars", (rows["Loops/Pad Loop 140bpm Am.wav"] or {}).get("bars"), "")
+    check_eq("5 'Drum Loop 120 bpm' played at 120: 4 bars", num((rows["Drum Loops/Drum Loop 120 bpm.wav"] or {}).get("bars")), 4.0)
+    check_true("5 'Half Loop 140 bpm' heard at half: bars kept",
+               (rows["Drum Loops/Half Loop 140 bpm.wav"] or {}).get("bars") not in ("", None))
+    check_eq("5 'Pad Loop 120bpm Am' played at 120: 4 bars", num((rows["Loops/Pad Loop 120bpm Am.wav"] or {}).get("bars")), 4.0)
+
+
+TESTS = [test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

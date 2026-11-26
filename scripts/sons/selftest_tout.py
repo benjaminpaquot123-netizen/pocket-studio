@@ -688,6 +688,38 @@ def test_accuracy_rms():
         check_true("rms %s <= mono" % label, tout.common(48000, x)["rms_dbfs"] <= mono + 0.01)
 
 
+def _fence():
+    return getattr(tout, "fence_row", lambda row, usable=(): row)
+
+
+def test_recheck_end_scope():
+    """Re-check 1 (docs/sons/REVERIF-TOUT.md): end_cut on loops is a coin toss; one-shots only."""
+    fence = _fence()
+    four, sn = (0, 4, 8, 12), (4, 12)
+    for bpm in (90.0, 120.0, 140.0, 174.0):
+        for hats in (tuple(range(16)), (2, 6, 10, 14)):
+            x = mono(drum_loop(bpm, 2, 0.5, four, sn, hats))
+            row = {"type": "drum_loop", "role": "drums"}
+            row.update(tout.common(SR, x))
+            row = fence(dict(row))
+            check_true("drum loop %g bpm: end_cut and end_fade_ms empty" % bpm,
+                       row.get("end_cut") is None and row.get("end_fade_ms") is None)
+    for typ in ("melodic_loop", "kit_stem", "fx", "vocal"):
+        row = fence({"type": typ, "role": "bass", "end_cut": 1, "end_fade_ms": 61.0})
+        check_true("%s: end columns empty" % typ, row.get("end_cut") is None and row.get("end_fade_ms") is None)
+    for typ, extra in (("oneshot_melodic", {"role": "full"}), ("oneshot_melodic", {"bpm_tag": 120.0}),
+                       ("oneshot_melodic", {"_loop": 1}), ("drum_oneshot", {"bpm_tag": 140.0})):
+        row = {"type": typ, "role": "kick", "end_cut": 1, "end_fade_ms": 10.0}
+        row.update(extra)
+        row = fence(row)
+        check_true("%s with %s: end columns empty" % (typ, list(extra)[0]),
+                   row.get("end_cut") is None and row.get("end_fade_ms") is None)
+    row = fence({"type": "drum_oneshot", "role": "kick", "end_cut": 1, "end_fade_ms": None})
+    check_eq("drum one-shot keeps end_cut", row.get("end_cut"), 1)
+    row = fence({"type": "oneshot_melodic", "role": "bass", "end_cut": 0, "end_fade_ms": None})
+    check_eq("melodic one-shot keeps end_cut", row.get("end_cut"), 0)
+
+
 def test_cli():
     with tempfile.TemporaryDirectory() as tmp:
         pack = os.path.join(tmp, "Secret Vendor Pack")
@@ -776,8 +808,11 @@ def test_cli():
         dl = [r for r in rows("drum_loop") if not r["error"]]
         check_eq("cli drum loop style from folder", dl[0]["style"], "techno")
         check_eq("cli midi chords against kit key", mids[0]["chords"], "i-VI-iv-V")
-        check_true("cli end_cut filled on audio rows",
-                   all(r.get("end_cut") in ("0", "1") for r in mel + stems + dl + rows("drum_oneshot") + rows("fx")))
+        check_true("cli end_cut filled on one-shot rows",
+                   all(r.get("end_cut") in ("0", "1") for r in mel + rows("drum_oneshot")))
+        check_true("cli end_cut and end_fade_ms empty on loops, stems, fx and vocals (re-check 1)",
+                   all(r.get("end_cut") == "" and r.get("end_fade_ms") == ""
+                       for r in stems + dl + rows("fx") + rows("vocal")))
         inside = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leak")
         try:
             tout.main([pack, "--rar", "7", "--out", inside])
@@ -794,7 +829,7 @@ def main(argv=None):
         return 0
     with np.errstate(all="ignore"):
         for fn in (test_tags, test_classify, test_common, test_notes, test_adsr, test_drum_loop, test_key,
-                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_end_cut_audit, test_measure_values, test_blocking, test_tags_types, test_accuracy_rms, test_cli):
+                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_end_cut_audit, test_measure_values, test_blocking, test_tags_types, test_accuracy_rms, test_recheck_end_scope, test_cli):
             try:
                 fn()
             except Exception as e:  # a crash is a failed check, the rest still runs

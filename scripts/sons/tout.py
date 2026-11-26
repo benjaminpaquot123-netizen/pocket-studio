@@ -1406,6 +1406,10 @@ def measure_midi_bytes(b, tags):
     if not notes:
         raise BadAudio("midi without notes")
     out["bpm_file"] = 60e6 / tempos[0][1] if tempos and tempos[0][1] > 0 else None
+    # a tempo change inside the notes: no single file tempo (audit 2, defect 37)
+    end_tick = max(n[1] for n in notes)
+    if len({round(60e6 / us, 2) for tk, us in tempos if tk < end_tick and us > 0}) > 1:
+        out["bpm_file"] = None
     bar = int(tpq * 4 * ts[0] / ts[1])
     last = max(n[1] for n in notes)
     first_bar = 0
@@ -1935,7 +1939,9 @@ def _run_kits(kits, acc, rar):
 def _midi_row(p, rel, tags, rar, acc):
     cl = classify(rel, None)
     row = {"rar": rar, "kit_id": "", "type": "midi", "subtype": "-", "role": cl["role"], "style": cl["style"],
-           "error": "", "size_kb": _size_kb(p)}
+           "error": "", "size_kb": _size_kb(p), "bpm_tag": tags.get("bpm")}
+    if row["bpm_tag"] is not None:
+        row["bpm_est"] = row["bpm_tag"]  # the name's tempo wins over the file's (audit 2, defect 21)
     try:
         if os.path.islink(p) or os.path.getsize(p) > 16 * 1024 * 1024:
             raise BadAudio("midi file too large or a link")

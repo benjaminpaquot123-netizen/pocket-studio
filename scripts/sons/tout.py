@@ -2006,6 +2006,9 @@ def main(argv=None):
         ap.error("not a folder: %s" % args.folder)
     if mesure._inside_repo(args.out) or mesure._inside_repo(os.path.dirname(os.path.abspath(args.out))):
         ap.error("refusing to write measurements of samples inside the repository")
+    if not os.path.isdir(os.path.dirname(os.path.abspath(args.out))):
+        # said before measuring, not after (audit 2, defect 27)
+        ap.error("--out: no such folder: %s" % os.path.dirname(os.path.abspath(args.out)))
     rar = re.sub(r"[^A-Za-z0-9]", "", args.rar)[:12] or "0"
     audio, midi, skipped = _walk(args.folder)
     acc = Accuracy()
@@ -2038,6 +2041,9 @@ def main(argv=None):
     usable = {(r["type"], r["measure"]) for r in acc.rows() if r["usable"] == "yes"}
     for typ in TYPES:
         if not rows[typ]:
+            # a table left by an earlier run would read as this run's (defect 33)
+            if os.path.isfile("%s_%s.csv" % (args.out, typ)):
+                os.remove("%s_%s.csv" % (args.out, typ))
             continue
         cols = COMMON + TYPE_COLUMNS[typ]
         with open("%s_%s.csv" % (args.out, typ), "w", newline="", encoding="utf-8") as fh:
@@ -2062,6 +2068,11 @@ def main(argv=None):
     print("%d rows (%s)" % (total, counts))
     if skipped:
         print("skipped: " + ", ".join("%s %d" % kv for kv in sorted(skipped.items())))
+    if not total:
+        # nothing measured is a failure the caller must see (defect 36)
+        print("no wav/aiff/midi file measured%s" % (
+            ": skipped " + ", ".join("%s %d" % kv for kv in sorted(skipped.items())) if skipped else ""),
+            file=sys.stderr)
     return 0 if total else 1
 
 

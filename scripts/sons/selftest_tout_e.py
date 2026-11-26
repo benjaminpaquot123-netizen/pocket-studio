@@ -343,6 +343,35 @@ def test_32_write_cells():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def test_39_guard_without_git():
+    tmp = tempfile.mkdtemp(prefix="tout_e_g_")
+    try:
+        repo = os.path.join(tmp, "repo")
+        os.makedirs(os.path.join(repo, "scripts", "sons"))
+        os.makedirs(os.path.join(repo, "docs", "sons"))
+        open(os.path.join(repo, "CLAUDE.md"), "w").write("x")
+        for f in ("tout.py", "mesure.py", "mine_or.py"):
+            shutil.copy(os.path.join(HERE, f), os.path.join(repo, "scripts", "sons", f))
+        pack = os.path.join(tmp, "pack")
+        write(os.path.join(pack, "Kicks", "Kick 01.wav"), wav_bytes(kick()))
+        for name, out in (("tout", os.path.join(repo, "docs", "sons", "t")),):
+            r = subprocess.run([sys.executable, "-I", os.path.join(repo, "scripts", "sons", name + ".py"),
+                                pack, "--rar", "1", "--out", out], capture_output=True, text=True, timeout=120)
+            check_eq("39 %s refuses inside a copy without .git" % name, r.returncode, 2)
+            check_true("39 %s wrote nothing" % name, not glob.glob(out + "_*.csv"))
+        r = subprocess.run([sys.executable, "-I", os.path.join(repo, "scripts", "sons", "mesure.py"),
+                            pack, "--out", os.path.join(repo, "docs", "sons", "m.csv")],
+                           capture_output=True, text=True, timeout=120)
+        check_eq("39 mesure refuses inside a copy without .git", r.returncode, 2)
+        out = os.path.join(tmp, "elsewhere", "t")
+        os.makedirs(os.path.dirname(out))
+        r = subprocess.run([sys.executable, "-I", os.path.join(repo, "scripts", "sons", "tout.py"),
+                            pack, "--rar", "1", "--out", out], capture_output=True, text=True, timeout=120)
+        check_eq("39 outside the copy still works", r.returncode, 0)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     with np.errstate(all="ignore"):

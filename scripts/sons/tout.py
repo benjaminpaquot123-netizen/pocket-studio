@@ -665,7 +665,14 @@ def _end_one(s, sr):
     if nz.size == 0:
         return 0, None
     s = s[:int(nz[-1]) + 1]  # trailing digital silence hides nothing (blind audit I2)
-    s = s - float(np.mean(s[-int(0.1 * sr):]))  # DC offset is not a step (I2)
+    # DC offset is not a step (I2). Only a steady offset is removed: the mean of
+    # the last 100 ms of a short burst that fades out is the burst's own
+    # leftover, and subtracting it left a constant step at the end (re-check 5).
+    # Steady = the last 1 ms sits on the same offset as the last 100 ms.
+    dc = float(np.mean(s[-int(0.1 * sr):]))
+    dc_end = float(np.mean(s[-max(1, int(0.001 * sr)):]))
+    if abs(dc_end - dc) <= 0.5 * abs(dc):
+        s = s - dc
     n = s.shape[0]
     n1 = max(1, int(round(0.001 * sr)))
     n5 = max(2, int(round(0.005 * sr)))

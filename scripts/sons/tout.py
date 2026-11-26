@@ -38,7 +38,9 @@ end_cut    1 = the file really ends cut: a click (last sample above -60 dBFS
            and over 4x the sample-to-sample motion of its last 5 ms) or an
            abrupt stop (above -30 dBFS 5 ms before the end, no final fade of
            20 dB or more). 0 otherwise, a trimmed tail with a fade included.
-end_fade_ms length of the final fade, empty when there is none.
+end_fade_ms length of the final fade, empty when there is none, rounded to
+           10 ms. Read it as a yes/no grade with an order of size: a real
+           fade can be read at half or twice its length.
 Both are filled for one-shots only (oneshot_melodic, drum_oneshot) and left
 empty for loops, stems, fx, vocals, full mixes and any one-shot with a bpm
 tag or a wav loop: there the last hit rings at the bar line and the verdict
@@ -63,30 +65,37 @@ drum_loop  bpm_tag, bpm_measured, bpm_gap_pct, bars, grid_kick, grid_snare,
 melodic_loop  bpm_tag, bpm_measured, bpm_gap_pct, bars, key_tag,
     key_measured, key_match (exact | relative | other), key_strength
     (correlation of the best key), low_db/mid_db/high_db (share of energy
-    under 250 Hz, 250 Hz-4 kHz, above 4 kHz, dB).
+    under 250 Hz, 250 Hz-4 kHz, above 4 kHz, dB). On an untagged loop or
+    non-drum stem, bpm_est and key_est stay empty unless the accuracy table
+    marks that measure usable.
 kit        kit row: n_stems, n_midi, roles ("+"-joined), bpm_tag,
     bpm_measured (on the sum of the stems), key_tag, key_measured (on the
     sum of the non-drum stems), key_match, bars.
 kit_stem   one row per stem: the melodic_loop columns + level_rel_kit_db
     (stem power / kit sum power), lufs_rel_kit_db. A "full" mix is left out
     of the sum.
-vocal      wet (dry | some | wet, from the level 150-300 ms after each steep
-    phrase end: above -28 dB re phrase = wet, under -45 = dry), tail_db,
+vocal      wet (left empty for now: the dry / wet verdict is not reliable;
+    the column stays), tail_db (level 150-300 ms after each steep phrase
+    end, dB re phrase),
     pitch_median_hz (median inside the fullest semitone), range_st (5th-95th percentile, semitones), voiced_pct.
 fx         bpm_tag, length_beats (dur * bpm / 60, empty without bpm),
     level_shape and bright_shape (rising | falling | flat: slope of the 8
     segment level, +-6 dB, and of the centroid, x1.5), peak_pos (0..1).
 midi       bpm_file (first tempo), bars, notes, notes_per_bar, pitch_min,
     pitch_max, poly_max, vel_mean, vel_sd, swing_pct, key_tag, key_measured,
-    key_match, scale_fit (share of note time in the key's scale), chords
-    (roman numeral per bar against the tagged key, else the measured one;
-    lowercase minor, "o" diminished, "." no chord), chord_changes_per_bar,
-    chord_len_beats (mean run of one chord, beats), drum_track (channel 10).
+    key_match, scale_fit (share of note time in the tagged key's scale),
+    chords, chord_changes_per_bar, chord_len_beats, drum_track (channel 10).
+    key_measured, key_est, key_match and the three chord columns are left
+    empty for now (the measured key is wrong too often and the chords hang
+    on it); scale_fit is filled only against a tagged key.
 drum_oneshot  mesure.py columns (onset, t20/t40/t60, pitch, harmonics,
     centroid...) + hat_measured (closed if t40 < 200 ms else open, hats
     only), drop_start_hz, drop_end_hz, drop_t50_ms, drop_t90_ms (time for
     the kick pitch to fall 50 / 90 % of its drop), drop_shape (exp | lin |
     step from t90/t50), note_measured. 808 and bass one-shots are kept.
+    On kicks note_measured is approximate (within 1 semitone) and
+    drop_start_hz is a lower bound: the first milliseconds of the sweep are
+    higher than the pitch tracker can follow.
 
 Estimates and accuracy
 ----------------------
@@ -1712,6 +1721,28 @@ def fence_row(row, usable=()):
             or row.get("_loop"):
         row["end_cut"] = None
         row["end_fade_ms"] = None
+    elif row.get("end_fade_ms") is not None:
+        # a presence / order-of-size grade, not a length to the millisecond
+        row["end_fade_ms"] = max(10, int(round(float(row["end_fade_ms"]) / 10.0)) * 10)
+    # untagged loops: bpm and key are wrong too often on pads and basslines
+    # (re-check 6, I8); shown only when the accuracy table says usable
+    if typ in ("melodic_loop", "kit_stem"):
+        ok = set(usable)
+        drums = typ == "kit_stem" and row.get("role") == "drums"
+        if row.get("bpm_tag") is None and not drums \
+                and not ({(typ, "bpm"), ("melodic_loop", "bpm")} & ok):
+            row["bpm_est"] = None
+        if row.get("key_tag") is None and not ({(typ, "key"), ("melodic_loop", "key")} & ok):
+            row["key_est"] = None
+    elif typ == "vocal":
+        row["wet"] = None  # the dry / wet verdict is not reliable yet (I11)
+    elif typ == "midi":
+        # the measured key is wrong too often and the chords hang on it (I8)
+        for k in ("key_measured", "key_est", "key_match", "chords", "chord_changes_per_bar",
+                  "chord_len_beats"):
+            row[k] = None
+        if row.get("key_tag") is None:
+            row["scale_fit"] = None
     return row
 
 

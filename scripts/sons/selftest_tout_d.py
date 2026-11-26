@@ -195,7 +195,18 @@ def test_quiet_and_short_files():
     check_eq("one sample: not cut", cut(SR, np.array([0.5])), 0)
 
 
-TOPICS = [test_noisy_short_fades, test_floor_after_the_end, test_quiet_and_short_files]
+def test_end_cut_doc():
+    """Defects 31 and 40: the end_cut docstring says what the code does."""
+    d = " ".join((tout.end_cut.__doc__ or "").split())
+    check_eq("doc gives -45 dB for the loud rule", "-45 dB" in d, True)
+    check_eq("doc no longer gives -30 dB", "-30 dB" in d, False)
+    check_eq("doc says levels are relative to the peak", "relative to the channel's peak" in d, True)
+    check_eq("doc describes the noise floor rule", "noise floor" in d, True)
+    check_eq("doc says reversed sounds read as cut by design", "reversed" in d and "by design" in d, True)
+    check_eq("doc gives the under 10 ms rule", "under 10 ms" in d, True)
+
+
+TOPICS = [test_noisy_short_fades, test_floor_after_the_end, test_quiet_and_short_files, test_end_cut_doc]
 
 
 def main():

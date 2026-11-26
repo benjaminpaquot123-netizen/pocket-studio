@@ -213,6 +213,8 @@ def read_audio(path):
                     loop = 1
     elif buf[:4] == b"FORM" and buf[8:12] in (b"AIFF", b"AIFC"):
         sr, x = mesure._read_aiff(buf)
+    elif buf[:4] in (b"RF64", b"RIFX") and buf[8:12] == b"WAVE":
+        raise BadAudio("RF64/RIFX non pris en charge")  # named, not "not a wav" (audit 4, A6)
     else:
         raise BadAudio("not a wav or aiff file")
     mesure.check_whole(buf)

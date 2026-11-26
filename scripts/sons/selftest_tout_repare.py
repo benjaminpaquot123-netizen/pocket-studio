@@ -479,7 +479,15 @@ def test_reversed_crash_role_fx():
     check_eq("b1 plain crash keeps the role hats", (rows["Drums/Crash 01.wav"] or {}).get("role"), "hats")
 
 
-TESTS = [test_reversed_crash_role_fx, test_mutation_survivors_2, test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_short_bpm_name_not_a_loop():
+    """Mutation 'bpm word makes a loop from 1.5 s -> 0.2 s': a tempo in the name alone makes no loop under 1.5 s,
+    even when the sound lasts a full bar of that tempo (250 bpm: 0.96 s)."""
+    for name, dur, want in (("Synth/Lead 250bpm.wav", 1.2, "oneshot_melodic"), ("Synth/Hat 174bpm.wav", 1.4, "drum_oneshot"),
+                            ("Synth/Lead 250bpm.wav", 1.6, "melodic_loop")):
+        check_eq("bpm-short '%s' %.1f s" % (name, dur), tout.classify(name, dur).get("type"), want)
+
+
+TESTS = [test_short_bpm_name_not_a_loop, test_reversed_crash_role_fx, test_mutation_survivors_2, test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

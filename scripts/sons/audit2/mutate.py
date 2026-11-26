@@ -135,7 +135,7 @@ m("oneshot", "peak position halved", 'out["peak_pos"] = float(tt[int(np.argmax(e
 # ---- midi
 m("midi", "time signature ignored (always 4/4)", "bar = int(tpq * 4 * ts[0] / ts[1])", "bar = int(tpq * 4)")
 m("midi", "swing default 50 -> 0", "if len(us) >= 4 else 50.0", "if len(us) >= 4 else 0.0")
-m("midi", "drum track if ANY note on channel 10", "all(n[4] == 9 for n in notes)", "any(n[4] == 9 for n in notes)")
+m("midi", "drum track if ANY note on channel 10", "1 if all(n[4] == 9 for n in notes)", "1 if any(n[4] == 9 for n in notes)")
 m("midi", "tempo = last tempo event", "60e6 / tempos[0][1] if tempos and tempos[0][1] > 0", "60e6 / tempos[-1][1] if tempos and tempos[0][1] > 0")
 m("midi", "program change read with 2 data bytes", "nd = 1 if hi in (0xC0, 0xD0) else 2", "nd = 2")
 m("midi", "note-on velocity 0 no longer a note-off", "elif hi == 0x80 or (hi == 0x90 and data[1] == 0):", "elif hi == 0x80:")

@@ -287,6 +287,36 @@ def test_34_35_truncated_and_dc():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def test_27_33_36_main_output():
+    tmp = tempfile.mkdtemp(prefix="tout_e_main_")
+    try:
+        pack = os.path.join(tmp, "pack")
+        write(os.path.join(pack, "Kicks", "Kick 01.wav"), wav_bytes(kick()))
+        # 27: --out in a folder that does not exist is refused before measuring
+        code, out = run_main([pack, "--rar", "1", "--out", os.path.join(tmp, "nope", "t")])
+        check_eq("27 missing out folder refused", code, ("exit", 2))
+        check_true("27 message names the folder", "folder" in out and "nope" in out)
+        # 33: a table of a previous run is removed when the type has no row any more
+        outp = os.path.join(tmp, "out", "t")
+        os.makedirs(os.path.dirname(outp))
+        stale = outp + "_midi.csv"
+        open(stale, "w").write("type\nmidi\n")
+        code, out = run_main([pack, "--rar", "1", "--out", outp])
+        check_eq("33 run ok", code, 0)
+        check_true("33 stale midi table removed", not os.path.exists(stale))
+        check_true("33 drum table written", os.path.exists(outp + "_drum_oneshot.csv"))
+        # 36: a pack of formats it cannot read says so and fails
+        only = os.path.join(tmp, "flac")
+        write(os.path.join(only, "Loops", "Loop 01.flac"), b"fLaC" + b"\0" * 100)
+        write(os.path.join(only, "Loops", "Loop 02.mp3"), b"ID3" + b"\0" * 100)
+        code, out = run_main([only, "--rar", "1", "--out", os.path.join(tmp, "out", "f")])
+        check_eq("36 no measurable file -> code 1", code, 1)
+        check_true("36 says no wav/aiff/midi", "no wav" in out.lower())
+        check_true("36 names the skipped formats", ".flac 1" in out and ".mp3 1" in out)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     with np.errstate(all="ignore"):

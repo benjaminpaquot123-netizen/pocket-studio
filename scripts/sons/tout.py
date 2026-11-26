@@ -133,8 +133,9 @@ bars. Key: chroma (50-5000 Hz) against Krumhansl-Kessler profiles. Grid:
 per step peak of three band fluxes (kick 30-150 Hz, snare 1-5 kHz, hats
 7-16 kHz); each band keeps the steps above a threshold relative to its own
 maximum, so a loud snare does not hide quiet hats. A sound named as a loop by
-its tempo only, shorter than one bar at that tempo or under 8 s with one attack
-and one held pitch, is a one-shot (a folder named one shot/hits says so too).
+its tempo only is a one-shot when it is shorter than one bar at a written
+"NNN bpm" (40-250), or under 8 s with one attack and one held pitch over its
+first 4 s (a folder named one shot/hits says so too).
 See the functions for details.
 """
 import argparse

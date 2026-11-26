@@ -34,8 +34,9 @@ dur_s sr ch    length in seconds, sample rate, channels
 peak_dbfs  sample peak
 rms_dbfs   RMS of the channel-summed power (a 0.1 sine reads -23.01)
 lufs_i     integrated loudness, ITU-R BS.1770-4 (K-weighting, 400 ms blocks,
-           75 % overlap, -70 LUFS and -10 LU gates; under 400 ms: ungated)
-error      why a file could not be measured (row kept, numbers empty)
+           75 % overlap, -70 LUFS and -10 LU gates; under 400 ms: one block, -70 LUFS gate only)
+error      why a file could not be measured (row kept, numbers empty): digital
+           silence, RF64/RIFX/BW64 (named, not read), not a wav or aiff, ...
 
 End of file (last in every audio table, not kit or midi; see end_cut())
 end_cut    1 = the file really ends cut: a click (last sample above -60 dB
@@ -130,7 +131,11 @@ novelty, autocorrelation scored on beat multiples 60-200 bpm with a prior
 around 120, refined to the bar grid when the length is a whole number of
 bars. Key: chroma (50-5000 Hz) against Krumhansl-Kessler profiles. Grid:
 per step peak of three band fluxes (kick 30-150 Hz, snare 1-5 kHz, hats
-7-16 kHz). See the functions for details.
+7-16 kHz); each band keeps the steps above a threshold relative to its own
+maximum, so a loud snare does not hide quiet hats. A sound named as a loop by
+its tempo only, shorter than one bar at that tempo or under 8 s with one attack
+and one held pitch, is a one-shot (a folder named one shot/hits says so too).
+See the functions for details.
 """
 import argparse
 import csv
@@ -215,8 +220,8 @@ def read_audio(path):
                     loop = 1
     elif buf[:4] == b"FORM" and buf[8:12] in (b"AIFF", b"AIFC"):
         sr, x = mesure._read_aiff(buf)
-    elif buf[:4] in (b"RF64", b"RIFX") and buf[8:12] == b"WAVE":
-        raise BadAudio("RF64/RIFX non pris en charge")  # named, not "not a wav" (audit 4, A6)
+    elif buf[:4] in (b"RF64", b"RIFX", b"BW64") and buf[8:12] == b"WAVE":
+        raise BadAudio("RF64/RIFX/BW64 non pris en charge")  # named, not "not a wav" (audit 4, A6)
     else:
         raise BadAudio("not a wav or aiff file")
     mesure.check_whole(buf)
@@ -1994,7 +1999,9 @@ def roman(chord, key):
 
 
 def _looks_triple(notes, origin, tpq):
-    """True when the distinct onsets sit on a 3-beat grid and not on a 4-beat one."""
+    """True when the distinct onsets sit on a 3-beat grid and not on a 4-beat one, or, with
+    one note per beat, when the accents (louder or lower beat) fall every third beat.
+    Drum MIDI (all on channel 10) keeps the 4-beat default: its accents are not a meter."""
     on = {int(round((n[0] - origin) / (tpq / 8.0))) for n in notes}
     if len(on) < 3:
         return False
@@ -2002,6 +2009,8 @@ def _looks_triple(notes, origin, tpq):
     s4 = sum(1 for o in on if o % 32 == 0) / len(on)
     if s3 >= 0.75 and s4 <= 0.5:
         return True
+    if all(n[4] == 9 for n in notes):
+        return False  # drum accents are a groove, not a meter (review 2)
     # one note per beat: the bar is in the accents, a louder or lower beat
     # every third beat (audit 4, A3)
     beats = {}

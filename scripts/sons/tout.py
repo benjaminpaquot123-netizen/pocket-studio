@@ -87,10 +87,11 @@ drum_oneshot  mesure.py columns (onset, t20/t40/t60, pitch, harmonics,
 Estimates and accuracy
 ----------------------
 Measured columns that have a tag (note, bpm, key) are compared on every
-tagged file. The CSV starts with one line per pair:
-  # accuracy type=<t> measure=<m> tagged=<n> agree=<k> error_pct=<e> usable=yes|no
-agree: note within 50 cents (pitch class), bpm within 2 %, key exact or
-relative. usable=yes only with 10 tagged files or more and error_pct < 5:
+tagged file, one row per pair in <csv_prefix>_accuracy.csv:
+  rar, type, measure, tagged, agree, half_double, relative, error_pct, usable
+agree: note within 50 cents (pitch class), bpm within 2 %, key exact. A bpm at
+half or double the tag and a relative key are near misses, counted in their
+own column and never as agreement. usable=yes only with 10 tagged files or more and error_pct < 5:
 only then may the measured column of untagged files enter means.
 
 Methods
@@ -575,7 +576,7 @@ def lufs(x, sr):
 
 
 def common(sr, x):
-    p = np.sum(x ** 2, axis=1)
+    p = np.mean(x ** 2, axis=1)  # mean power per channel: two channels are not twice as loud (I12)
     pk = float(np.max(np.abs(x)))
     return {"dur_s": x.shape[0] / sr, "sr": sr, "ch": x.shape[1],
             "peak_dbfs": 20 * math.log10(pk) if pk > 0 else None,
@@ -1553,14 +1554,15 @@ class Accuracy:
         if agree is None:
             return
         k = (typ, measure)
-        n, a = self.d.get(k, (0, 0))
-        self.d[k] = (n + 1, a + (1 if agree else 0))
+        n, a, hd, rel = self.d.get(k, (0, 0, 0, 0))
+        self.d[k] = (n + 1, a + (1 if agree is True else 0), hd + (agree == "half_double"),
+                     rel + (agree == "relative"))
 
     def rows(self):
         out = []
-        for (typ, m), (n, a) in sorted(self.d.items()):
+        for (typ, m), (n, a, hd, rel) in sorted(self.d.items()):
             err = 100.0 * (n - a) / n if n else None
-            out.append({"type": typ, "measure": m, "tagged": n, "agree": a,
+            out.append({"type": typ, "measure": m, "tagged": n, "agree": a, "half_double": hd, "relative": rel,
                         "error_pct": err, "usable": "yes" if n >= 10 and err is not None and err < 5 else "no"})
         return out
 
@@ -1576,10 +1578,25 @@ def _bpm_agree(m, t):
     return abs(m - t) / t <= 0.02
 
 
+def _bpm_class(m, t):
+    """True, False, or "half_double": a near miss counted apart, never as agreement (I9)."""
+    agree = _bpm_agree(m, t)
+    if agree is None or agree:
+        return agree
+    for f in (2.0, 0.5):
+        if abs(m - t * f) / (t * f) <= 0.02:
+            return "half_double"
+    return False
+
+
 def _key_agree(match):
     if match is None:
         return None
-    return match in ("exact", "relative")
+    return match == "exact"
+
+
+def _key_class(match):
+    return "relative" if match == "relative" else _key_agree(match)
 
 
 # ================================================================ cli
@@ -1639,11 +1656,11 @@ def _measure_file(p, rel, parts, acc, rar):
                     acc.add(typ, "note", abs(m["cents_gap"]) <= 50)
             elif typ == "drum_loop":
                 m = measure_drum_loop(sr, x, tags)
-                acc.add(typ, "bpm", _bpm_agree(m.get("bpm_measured"), tags.get("bpm")))
+                acc.add(typ, "bpm", _bpm_class(m.get("bpm_measured"), tags.get("bpm")))
             elif typ == "melodic_loop":
                 m = measure_melodic_loop(sr, x, tags)
-                acc.add(typ, "bpm", _bpm_agree(m.get("bpm_measured"), tags.get("bpm")))
-                acc.add(typ, "key", _key_agree(m.get("key_match")))
+                acc.add(typ, "bpm", _bpm_class(m.get("bpm_measured"), tags.get("bpm")))
+                acc.add(typ, "key", _key_class(m.get("key_match")))
             elif typ == "vocal":
                 m = measure_vocal(sr, x, tags)
             elif typ == "fx":
@@ -1742,12 +1759,12 @@ def _run_kits(kits, acc, rar):
                     kr["bpm_measured"] = bpm
                     kr["bpm_gap_pct"] = bpm_gap(bpm, kit_tags.get("bpm"))
                     kr["bars"] = bars_of(dur, kit_tags.get("bpm") or bpm)
-                    acc.add("kit", "bpm", _bpm_agree(bpm, kit_tags.get("bpm")))
+                    acc.add("kit", "bpm", _bpm_class(bpm, kit_tags.get("bpm")))
                     if np.any(melo != 0):
                         k, _ = key_of_chroma(chroma(melo, sr, bass=True))
                         kr["key_measured"] = key_name(k)
                         kr["key_match"] = key_match(k, kit_tags.get("key"))
-                        acc.add("kit", "key", _key_agree(kr["key_match"]))
+                        acc.add("kit", "key", _key_class(kr["key_match"]))
                         kr["_key"] = k
             except Exception as e:
                 kr["error"] = "internal: %s" % type(e).__name__
@@ -1772,7 +1789,7 @@ def _midi_row(p, rel, tags, rar, acc):
         with open(p, "rb") as fh:
             b = fh.read()
         row.update(measure_midi_bytes(b, tags))
-        acc.add("midi", "key", _key_agree(row.get("key_match")))
+        acc.add("midi", "key", _key_class(row.get("key_match")))
     except BadAudio as e:
         row["error"] = str(e)[:80]
     except Exception as e:
@@ -1835,7 +1852,7 @@ def main(argv=None):
                 wr.writerow({k: _fmt(r.get(k)) for k in cols})
                 total += 1
     with open("%s_accuracy.csv" % args.out, "w", newline="", encoding="utf-8") as fh:
-        wr = csv.DictWriter(fh, fieldnames=["rar", "type", "measure", "tagged", "agree", "error_pct", "usable"])
+        wr = csv.DictWriter(fh, fieldnames=["rar", "type", "measure", "tagged", "agree", "half_double", "relative", "error_pct", "usable"])
         wr.writeheader()
         for r in acc.rows():
             r["rar"] = rar

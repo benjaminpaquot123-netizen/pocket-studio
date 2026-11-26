@@ -1980,7 +1980,27 @@ def _looks_triple(notes, origin, tpq):
         return False
     s3 = sum(1 for o in on if o % 24 == 0) / len(on)
     s4 = sum(1 for o in on if o % 32 == 0) / len(on)
-    return s3 >= 0.75 and s4 <= 0.5
+    if s3 >= 0.75 and s4 <= 0.5:
+        return True
+    # one note per beat: the bar is in the accents, a louder or lower beat
+    # every third beat (audit 4, A3)
+    beats = {}
+    for n in notes:
+        q = (n[0] - origin) / float(tpq)
+        if abs(q - round(q)) <= 1 / 16.0:
+            b = beats.setdefault(int(round(q)), [0, 128])
+            b[0], b[1] = max(b[0], n[3]), min(b[1], n[2])
+    if len(beats) < 6:
+        return False
+    vmed = float(np.median([v for v, _ in beats.values()]))
+    pmed = float(np.median([p for _, p in beats.values()]))
+    acc = sorted(b for b, (v, p) in beats.items() if v >= vmed + 10 or p <= pmed - 5)
+    if len(acc) < 2:
+        return False
+    a0 = acc[0]
+    on3 = all((b - a0) % 3 == 0 for b in acc)
+    full3 = len(acc) >= 0.75 * len([b for b in beats if (b - a0) % 3 == 0])
+    return on3 and full3 and any((b - a0) % 4 for b in acc)
 
 
 def measure_midi_bytes(b, tags):

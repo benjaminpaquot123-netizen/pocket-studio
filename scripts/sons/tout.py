@@ -1297,7 +1297,8 @@ def _read_vlq(b, i):
 
 
 def parse_midi(b):
-    """(tpq, notes [(start, end, pitch, vel, ch)], tempos [(tick, us)], timesig (num, den))."""
+    """(tpq, notes [(start, end, pitch, vel, ch)], tempos [(tick, us)], timesig (num, den) or None
+    when the file has no time signature event)."""
     if len(b) < 14 or b[:4] != b"MThd":
         raise BadAudio("not a midi file")
     hl = struct.unpack(">I", b[4:8])[0]
@@ -1365,7 +1366,7 @@ def parse_midi(b):
         for s, v in st:
             notes.append((s, s + div // 4, p, v, ch))
     notes.sort()
-    return div, notes, tempos, ts or (4, 4)
+    return div, notes, tempos, ts
 
 
 def _chord_of(weights):
@@ -1400,8 +1401,20 @@ def roman(chord, key):
     return r
 
 
+def _looks_triple(notes, origin, tpq):
+    """True when the distinct onsets sit on a 3-beat grid and not on a 4-beat one."""
+    on = {int(round((n[0] - origin) / (tpq / 8.0))) for n in notes}
+    if len(on) < 3:
+        return False
+    s3 = sum(1 for o in on if o % 24 == 0) / len(on)
+    s4 = sum(1 for o in on if o % 32 == 0) / len(on)
+    return s3 >= 0.75 and s4 <= 0.5
+
+
 def measure_midi_bytes(b, tags):
     tpq, notes, tempos, ts = parse_midi(b)
+    ts_known = ts is not None
+    ts = ts or (4, 4)
     out = {"key_tag": key_name(tags.get("key"))}
     if not notes:
         raise BadAudio("midi without notes")
@@ -1412,14 +1425,22 @@ def measure_midi_bytes(b, tags):
         out["bpm_file"] = None
     bar = int(tpq * 4 * ts[0] / ts[1])
     last = max(n[1] for n in notes)
-    first_bar = 0
-    nbars = max(1, int(math.ceil((last - first_bar * bar - tpq // 8) / bar)))
+    # bars start at the first note: a part exported from bar 9 or starting on
+    # beat 2 is not padded with empty bars (audit 2, defect 22)
+    origin = min(n[0] for n in notes)
+    # the last note may ring past the bar line by a 32nd of release plus a
+    # 32nd of legato overlap without making a new bar
+    legato = tpq // 8
+    nbars = max(1, int(math.ceil((last - origin - legato - tpq // 8) / bar)))
+    nbars = max(nbars, (max(n[0] for n in notes) - origin) // bar + 1)
     out["bars"] = nbars
     out["notes"] = len(notes)
     out["notes_per_bar"] = len(notes) / nbars
     pitches = [n[2] for n in notes]
     out["pitch_min"], out["pitch_max"] = min(pitches), max(pitches)
-    ev = sorted([(n[0], 1) for n in notes] + [(n[1], -1) for n in notes], key=lambda e: (e[0], e[1]))
+    # a 16th of legato overlap is not one more voice (audit 2, defect 22)
+    ends = [max(n[0] + 1, n[1] - tpq // 4) for n in notes]
+    ev = sorted([(n[0], 1) for n in notes] + [(e, -1) for e in ends], key=lambda e: (e[0], e[1]))
     cur = mx = 0
     for _, d in ev:
         cur += d
@@ -1432,6 +1453,10 @@ def measure_midi_bytes(b, tags):
     us = [((n[0] / e8) % 1.0) for n in notes if 0.35 <= (n[0] / e8) % 1.0 <= 0.8]
     out["swing_pct"] = 100 * float(np.median(us)) if len(us) >= 4 else 50.0
     out["drum_track"] = 1 if all(n[4] == 9 for n in notes) else 0
+    if not ts_known and _looks_triple(notes, origin, tpq):
+        # no time signature and onsets on a 3-beat grid: the bar length is a
+        # guess, so the bar cells stay empty (audit 2, defect 37)
+        out["bars"] = out["notes_per_bar"] = None
     if out["drum_track"]:
         return out
     pcw = np.zeros(12)
@@ -1454,11 +1479,12 @@ def measure_midi_bytes(b, tags):
         out["scale_fit"] = float(inscale / np.sum(pcw)) if np.sum(pcw) > 0 else None
         chords = []
         for bi in range(nbars):
-            chords.append(_chord_window(notes, bi * bar, (bi + 1) * bar))
+            chords.append(_chord_window(notes, origin + bi * bar, origin + (bi + 1) * bar))
         out["chords"] = "-".join(roman(c, ref) for c in chords)
         changes = sum(1 for a, c in zip(chords, chords[1:]) if a != c)
         out["chord_changes_per_bar"] = changes / nbars
-        beats = [_chord_window(notes, i * tpq, (i + 1) * tpq) for i in range(int(math.ceil(nbars * bar / tpq)))]
+        beats = [_chord_window(notes, origin + i * tpq, origin + (i + 1) * tpq)
+                 for i in range(int(math.ceil(nbars * bar / tpq)))]
         runs, cur_run = [], 1
         for a, c in zip(beats, beats[1:]):
             if a == c:

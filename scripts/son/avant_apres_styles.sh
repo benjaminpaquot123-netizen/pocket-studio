@@ -14,7 +14,7 @@
 # Writes OUT_DIR/<lot>_<style>.mp3, OUT_DIR/rapport.tsv (one line per style: status, levels before → after,
 # ps_live alerts in the passage) and OUT_DIR/logs/. A style whose after is the same samples as its before
 # is « identique » and gets no MP3. A lot that fails is reported at the end and the next one goes on.
-# Work: git worktrees in a temporary folder outside the repository, removed as it goes (about 2 GB at most).
+# Work: git worktrees in a temporary folder outside the repository, removed as it goes (about 2 GB; the run stops a lot past 3 GB).
 # Environment: JOBS (default 4), GRADLE_ARGS (default --max-workers=2), SECONDS_LIVE (default 90).
 set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || { echo "ERREUR : lance le script depuis le dépôt pocket-studio" >&2; exit 1; }
@@ -43,7 +43,7 @@ echo "== Branches"
 refs=("${AVANT#origin/}")
 for lot in "${LOTS[@]}"; do refs+=("$(lot_rev "$lot" | sed 's#^origin/##')"); done
 for r in "${refs[@]}"; do
-    case "$r" in *[!0-9a-f]*) git -C "$ROOT" fetch -q origin "$r:refs/remotes/origin/$r" 2> /dev/null || git -C "$ROOT" fetch -q origin "$r" 2> /dev/null || true ;; esac
+    case "$r" in *[!0-9a-f]*) git -C "$ROOT" fetch -q origin "+$r:refs/remotes/origin/$r" 2> /dev/null || git -C "$ROOT" fetch -q origin "$r" 2> /dev/null || true ;; esac
 done
 git -C "$ROOT" rev-parse -q --verify "$AVANT^{commit}" > /dev/null || { echo "ERREUR : l'avant $AVANT est introuvable" >&2; exit 1; }
 
@@ -70,10 +70,11 @@ FAILED=()
 # checkout's when the commit pins the same ones, local.properties copied (the Android SDK's place).
 checkout() {
     local rev="$1" sub pin have
+    drop_worktree  # a lot that broke half-way leaves its worktree: never let it break the next one
     git -C "$ROOT" worktree add -q --detach "$WT" "$rev" || return 1
     while read -r sub; do
         pin="$(git -C "$ROOT" ls-tree "$rev" "$sub" | awk '{print $3}')"
-        have="$(git -C "$ROOT" ls-tree HEAD "$sub" | awk '{print $3}')"
+        have="$(git -C "$ROOT/$sub" rev-parse -q --verify HEAD 2> /dev/null || true)"
         if [ -n "$pin" ] && [ "$pin" = "$have" ] && [ -n "$(ls -A "$ROOT/$sub" 2> /dev/null)" ]; then
             rmdir "$WT/$sub" 2> /dev/null; ln -sfn "$ROOT/$sub" "$WT/$sub"
         else
@@ -84,19 +85,28 @@ checkout() {
     return 0
 }
 
+# The 3 GB cap: the work folder (worktree, tools, WAVs) never grows past it; a lot that would is stopped.
+MAX_KB=$((3 * 1024 * 1024))
+disk_ok() {
+    local used
+    used="$(du -sk "$WORK" 2> /dev/null | awk '{print $1}')"
+    [ "${used:-0}" -le "$MAX_KB" ]
+}
+
 # Renders STYLES (comma list) at REV into $WORK/<name>/<style>.wav, .csv, .txt as the phone plays them.
 render() {
     local rev="$1" name="$2" styles="$3" dir="$WORK/$2" tools
     mkdir -p "$dir"
+    disk_ok || { echo "dossier de travail au-delà de 3 Go" > "$OUT/logs/$name.err"; return 1; }
     checkout "$rev" || { echo "checkout de $rev raté" > "$OUT/logs/$name.err"; return 1; }
     # One build of the tools per engine tree (the recipe lots share the integration's engine).
     tools="$WORK/tools-$(git -C "$ROOT" rev-parse "$rev:engine" | cut -c1-12)"
     if [ ! -x "$tools/ps_live" ]; then
         { cmake -S "$WT/engine/bench" -B "$tools" -DCMAKE_BUILD_TYPE=Release \
             && cmake --build "$tools" -j "$JOBS" --target ps_render ps_live; } > "$OUT/logs/$name.cmake.log" 2>&1 \
-            || { echo "compilation de ps_live ratée (logs/$name.cmake.log)" > "$OUT/logs/$name.err"; return 1; }
+            || { rm -rf "$tools"; echo "compilation de ps_live ratée (logs/$name.cmake.log)" > "$OUT/logs/$name.err"; return 1; }
         python3 -I "$WT/scripts/bench/live_selftest.py" "$tools/ps_live" "$WORK/selftest-$name" > "$OUT/logs/$name.selftest.log" 2>&1 \
-            || { echo "self-test de ps_live rouge (logs/$name.selftest.log)" > "$OUT/logs/$name.err"; return 1; }
+            || { rm -rf "$tools"; echo "self-test de ps_live rouge (logs/$name.selftest.log)" > "$OUT/logs/$name.err"; return 1; }
         rm -rf "$WORK/selftest-$name"
     fi
     (cd "$WT" && ./gradlew ${GRADLE_ARGS:---max-workers=2} -q :app:testDebugUnitTest \
@@ -104,6 +114,7 @@ render() {
         -Pbench.live="$dir/cmds" -Pbench.render="$tools/ps_render" -Pbench.seconds="$SECONDS_LIVE" \
         -Pbench.listen=drop -Pbench.styles="$styles") > "$OUT/logs/$name.gradle.log" 2>&1 \
         || { echo "enregistrement Gradle raté (logs/$name.gradle.log)" > "$OUT/logs/$name.err"; return 1; }
+    disk_ok || { echo "dossier de travail au-delà de 3 Go après Gradle" > "$OUT/logs/$name.err"; return 1; }
     export dir tools SECONDS_LIVE
     tr ',' '\n' <<< "$styles" | xargs -P "$JOBS" -I{} sh -c '
         [ -f "$dir/cmds/{}.pslive" ] || { echo "pas de .pslive pour {}" >&2; exit 0; }
@@ -152,7 +163,7 @@ for lot in "${LOTS[@]}"; do
         if [ ! -f "$b.wav" ] || [ ! -f "$a.wav" ]; then
             printf '%s\t%s\t%s\téchec (pas de rendu)\n' "$lot" "$s" "${WHY_OF[$lot/$s]}" >> "$OUT/rapport.tsv"; echo "  $s : échec (pas de rendu)"; continue
         fi
-        res="$(python3 -I "$HELPER" assemble "$b.wav" "$b.csv" "$a.wav" "$a.csv" "$mp3" --log-before "$b.txt" --log-after "$a.txt" 2>&1)"
+        res="$(python3 -I "$HELPER" assemble "$b.wav" "$b.csv" "$a.wav" "$a.csv" "$mp3" --log-before "$b.txt" --log-after "$a.txt" 2> "$OUT/logs/${lot}_$s.assemble.err" | tail -1)"
         status="$(python3 -c 'import json,sys; print(json.loads(sys.argv[1].splitlines()[-1])["status"])' "$res" 2> /dev/null || echo "échec")"
         meas="-"
         if [ "$status" = ok ]; then

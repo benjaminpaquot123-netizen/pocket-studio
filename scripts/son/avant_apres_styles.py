@@ -85,31 +85,37 @@ def read_csv(path):
 
 
 def boundaries(rows):
-    """Seconds (float) where the playback is at a part start: ▶ itself, then each scene swap."""
+    """Seconds (float) where a part starts: ▶ itself, then each scene swap. ps_live's row S is the state
+    at the end of the second [S-1, S), so an event first seen on row S happened in that second: S-1."""
     out = []
     prev_running, prev_swaps = 0, 0
     for r in rows:
         t, running, swaps = int(r["second"]), int(r["running"]), int(r["swaps"])
         if running and not prev_running:
-            out.append(float(t))
+            out.append(float(t - 1))
         elif running and swaps > prev_swaps:
-            out.append(float(t))
+            out.append(float(t - 1))
         prev_running, prev_swaps = running, swaps
     return out
 
 
 def window_level(rows, start, seconds):
-    vals = [float(r["rms_db"]) for r in rows if start <= int(r["second"]) < start + seconds]
+    # Rows (start, start + seconds] cover the audio [start, start + seconds).
+    vals = [float(r["rms_db"]) for r in rows if start < int(r["second"]) <= start + seconds]
     return sum(vals) / len(vals) if vals else -200.0
 
 
+PREROLL = 0.25
+
+
 def choose_start(rows, frames, seconds):
-    """The part boundary (seconds) whose next SECONDS are the loudest, half a second early so the
-    downbeat is in; the first boundary when the song is too short for any later one."""
+    """The part boundary (seconds) whose next SECONDS are the loudest, a quarter second early: the swap
+    happened within the second after the boundary, so its downbeat is always in; the start of the song
+    when it is too short for any later one."""
     last = frames / RATE - seconds
-    cands = [b for b in boundaries(rows) if b - 0.5 <= last] or [0.5]
+    cands = [b for b in boundaries(rows) if b - PREROLL <= last] or [PREROLL]
     best = max(cands, key=lambda b: window_level(rows, int(b), seconds))
-    return max(0.0, best - 0.5)
+    return max(0.0, best - PREROLL)
 
 
 def db(x):
@@ -163,7 +169,7 @@ def assemble(argv):
     sa = choose_start(ra, len(a), o.seconds)
     # The same passage after: the before's start when the after has a part boundary there too
     # (same arrangement), else the after's own loudest part.
-    near = [x for x in boundaries(rb) if abs((x - 0.5) - sa) <= 1.0]
+    near = [x for x in boundaries(rb) if abs((x - PREROLL) - sa) <= 1.0]
     sb = sa if near and sa * RATE + n <= len(b) else choose_start(rb, len(b), o.seconds)
     wa = a[int(sa * RATE):int(sa * RATE) + n]
     wb = b[int(sb * RATE):int(sb * RATE) + n]
@@ -174,7 +180,9 @@ def assemble(argv):
         print(json.dumps(res))
         return 2
     if sa == sb and np.array_equal(wa, wb):
+        # « identique » is the passage heard; whole_song says whether the rest is the same too.
         res["status"] = "identique"
+        res["whole_song_identical"] = bool(a.shape == b.shape and np.array_equal(a, b))
         print(json.dumps(res))
         return 0
     res.update(rms_before_db=round(db(rms(wa)), 2), rms_after_db=round(db(rms(wb)), 2),

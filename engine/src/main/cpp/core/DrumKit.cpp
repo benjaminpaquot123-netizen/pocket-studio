@@ -376,6 +376,10 @@ namespace {
 // Kick, 808 (unused), clap, snare, closed hat, open hat, rim, tom, crash: a level between the
 // peak's and the loudness's gap.
 constexpr float kMeasuredTrim[measured::kFamilies] = {0.89f, 1.0f, 3.16f, 0.84f, 0.67f, 0.35f, 0.25f, 0.25f, 0.25f};
+// And per style (house, tech house, techno, trap, dnb, dubstep), in dB: the drums' strip of the
+// assistant's songs at the app kit's loudness (scripts/son/matin_morceaux.sh, the average gap of
+// the styles that use it; techno, minimal and hard techno share one, so within 2 dB).
+constexpr float kMeasuredStyleTrimDb[measured::kStyles] = {-3.5f, -8.0f, -8.2f, 0.0f, 0.65f, -7.0f};
 }  // namespace
 
 void DrumKit::setMeasured(int style) {
@@ -389,7 +393,7 @@ void DrumKit::setMeasured(int style) {
         const float ratio = voice == LowTom ? 0.75f : voice == HighTom ? 1.335f : 1.0f;
         r.startHz *= ratio;
         r.endHz *= ratio;
-        r.gain *= kMeasuredTrim[family];
+        r.gain *= kMeasuredTrim[family] * std::pow(10.0f, kMeasuredStyleTrimDb[measuredStyle_] / 20.0f);
         measured_[static_cast<size_t>(voice)].setRecipe(r);
     }
 }

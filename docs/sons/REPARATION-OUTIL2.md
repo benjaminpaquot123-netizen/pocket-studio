@@ -100,3 +100,10 @@ Laissé, avec la raison :
 - Une boucle avec un mot fx faible (noise, sweep, drop) devient une boucle mélodique pad. C'est la lettre du cas 5 ; à trancher avec les sons réels.
 - La voie « lettre seule confirmée par la mesure » écrit encore le mode entendu (audit 3 n° 8, déjà là avant ce lot).
 - `audit4/accuracy.py` (hors de mes fichiers) ne compte que "exact" : il faudra y ajouter "root" de la même façon.
+
+### Mutations sur d7047ced (`audit2/mutate.py` en entier)
+
+106 mutants joués : 103 tués, 1 survivant, 2 sautés.
+- Survivant : « reversed crash filed as fx keeps the role hats ». Le cas 6 donne déjà le rôle fx à tout ce qui porte un mot fx fort, donc ce mutant ne change plus rien de visible. Il faut le réécrire ou le retirer.
+- Sautés (leur ancien texte n'existe plus depuis RAR 3) : « fx word wins even on a drum name » et « key without mode = minor » (une tonique seule a maintenant un mode vide, plus "major"). Les deux sont à réécrire sur le nouveau texte.
+Le chef a dit « Termine maintenant » : le code n'a plus bougé. Ces trois mutants restent pour un prochain lot.

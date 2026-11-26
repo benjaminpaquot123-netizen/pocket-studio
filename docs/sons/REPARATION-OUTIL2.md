@@ -84,3 +84,19 @@ Les cas 1 à 6 et 9 sont corrigés par 013555d9. Les cas 7 (grilles identiques e
 boucle d'un seul instrument), 8 (MIDI compté 3 ou 1 mesure pour 4) et 10 (boucle mélodique à tempo
 moitié) viennent de la mesure, pas de la lecture du nom : aucune correction simple et sûre ; laissés
 pour un lot de mesure, sans rien deviner en attendant.
+
+## RAR 3, relecture neuve (2026-11-26)
+
+Un sous-agent neuf, qui n'a rien écrit, a relu 1895d18f..43c9660e (`tout.py`, tests, rejeux) et comparé l'ancien et le nouveau code sur 755 noms.
+
+Corrigé (a75455f2 rouge, ad033233 vert) :
+- Une étiquette qui ne donne que la tonique, entendue sur cette tonique (`key_match` = "root"), compte maintenant juste dans la table de justesse (`_key_agree`). Avant, « Piano Loop 120 C » entendu en C majeur comptait faux, ce qui pouvait faire tomber la porte de justesse.
+- Dans un pack qui nomme un style, seul le titre placé après le tempo (`_125_Soul`) perd son genre. Un vrai genre dans le nom (« Trap Loop », « G Funk Lead ») reste.
+
+Laissé, avec la raison :
+- `_PACK_STYLE` est un état du module posé par `main`, comme `_PACK_TOP` avant lui. C'est sans danger en usage normal (un appel = un pack). À revoir si un jour on appelle `classify` pour plusieurs packs dans un même processus.
+- L'exception A/B tombe dès qu'il y a un tempo encadré de `_`, même si une lettre de version suit (« Loop_120_V2_B »). La fiche demande A et B pour ses propres exemples. C'est une forme rare, et un lot qui mesure pourra trancher.
+- Un tempo écrit avec un zéro devant (« _090_ ») n'est pas pris. Le zéro devant reste un numéro d'index, comme avant (choix voulu).
+- Une boucle avec un mot fx faible (noise, sweep, drop) devient une boucle mélodique pad. C'est la lettre du cas 5 ; à trancher avec les sons réels.
+- La voie « lettre seule confirmée par la mesure » écrit encore le mode entendu (audit 3 n° 8, déjà là avant ce lot).
+- `audit4/accuracy.py` (hors de mes fichiers) ne compte que "exact" : il faudra y ajouter "root" de la même façon.

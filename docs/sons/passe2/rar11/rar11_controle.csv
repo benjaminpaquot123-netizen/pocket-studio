@@ -1,0 +1,4 @@
+rar,pack,files_audio,files_midi,rows,kit_rows,errors,count_ok,tout_rc,style_posed,rows_pack_styled,pack_line_ok,style_forced,rows_forced,unresolved,nested_archives,skipped
+11,p1,421,0,421,30,0,yes,0,unlabelled,0,yes,,0,0,0,
+11,p2,598,149,747,22,0,yes,0,dnb,769,yes,,0,0,1,.pdf:1 .serumpack:1 .serumpreset:30
+11,p3,609,126,735,22,0,yes,0,rave,745,yes,,0,0,1,.pdf:1 .serumpack:1

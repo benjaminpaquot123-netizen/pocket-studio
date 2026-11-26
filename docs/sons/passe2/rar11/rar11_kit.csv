@@ -1,0 +1,75 @@
+rar,pack,kit_id,type,subtype,role,style,dur_s,sr,ch,size_kb,peak_dbfs,rms_dbfs,lufs_i,bpm_tag,key_tag,bpm_est,key_est,error,n_stems,n_midi,roles,bpm_gap_pct,key_match,bars,file_id,cle
+11,p1,r11k001,kit,-,-,ambient,,,,31571.9,,,,110,C,89.25,C major,,7,0,full+pad,-18.86,root,,76bafce1aa,r11-p1-76bafce1aa
+11,p1,r11k002,kit,-,-,unlabelled,,,,31571.9,,,,110,A#,82.5,D minor,,7,0,full+keys+strings,-25,other,,0dc9939ccf,r11-p1-0dc9939ccf
+11,p1,r11k003,kit,-,-,unlabelled,,,,38602.6,,,,90,D minor,131,D minor,,7,0,full+keys+lead+strings,45.56,exact,,e5ea088d73,r11-p1-e5ea088d73
+11,p1,r11k004,kit,-,-,unlabelled,,,,38592.7,,,,90,G,90,D major,,7,0,full+keys+strings+vocal,0,other,8,20092bfb9a,r11-p1-20092bfb9a
+11,p1,r11k005,kit,-,-,unlabelled,,,,40592.4,,,,110,D#,110,D# major,,9,0,full+keys+strings,5.905e-05,root,8,2eee2f9464,r11-p1-2eee2f9464
+11,p1,r11k006,kit,-,-,unlabelled,,,,28940.9,,,,120,C#,120,A# minor,,7,0,full+keys+strings,0,other,8,985bd9042a,r11-p1-985bd9042a
+11,p1,r11k007,kit,-,-,unlabelled,,,,38592.7,,,,90,D minor,90,A minor,,7,0,full+keys+lead+strings,0,other,8,2c2399257a,r11-p1-2c2399257a
+11,p1,r11k008,kit,-,-,unlabelled,,,,28950.8,,,,120,D# minor,60,F# major,,7,0,full+keys+strings,-50,relative,8,b5ad00a9f1,r11-p1-b5ad00a9f1
+11,p1,r11k009,kit,-,-,unlabelled,,,,38597.6,,,,90,A# minor,67.5,G# major,,7,0,full+keys+strings,-25,other,,e1dac6ec9e,r11-p1-e1dac6ec9e
+11,p1,r11k010,kit,-,-,unlabelled,,,,31576.8,,,,110,F minor,82.5,G# major,,7,0,full+keys+lead+strings,-25,relative,,8cd655ca01,r11-p1-8cd655ca01
+11,p1,r11k011,kit,-,-,unlabelled,,,,28940.9,,,,120,G minor,60,G minor,,7,0,full+keys+strings,-50,exact,8,4d1865af63,r11-p1-4d1865af63
+11,p1,r11k012,kit,-,-,unlabelled,,,,38597.6,,,,90,A#,146.25,D minor,,7,0,full+keys+strings,62.5,other,,790aae01dd,r11-p1-790aae01dd
+11,p1,r11k013,kit,-,-,unlabelled,,,,28945.8,,,,120,D minor,90,D minor,,7,0,full+keys+strings,-25,exact,,8ebe40fc9e,r11-p1-8ebe40fc9e
+11,p1,r11k014,kit,-,-,unlabelled,,,,28940.9,,,,120,A#,105,A# major,,7,0,full+keys+strings,-12.5,root,,f3c212f5b0,r11-p1-f3c212f5b0
+11,p1,r11k015,kit,-,-,unlabelled,,,,38587.8,,,,90,D minor,90,D minor,,7,0,full+keys+strings,0,exact,8,35d67c19dc,r11-p1-35d67c19dc
+11,p1,r11k016,kit,-,-,unlabelled,,,,31571.9,,,,110,A minor,96.25,A minor,,7,0,full+keys+lead+strings,-12.5,exact,,0ff883784d,r11-p1-0ff883784d
+11,p1,r11k017,kit,-,-,unlabelled,,,,31571.9,,,,110,D minor,110,A minor,,7,0,full+keys+strings,5.905e-05,other,8,d2aa178556,r11-p1-d2aa178556
+11,p1,r11k018,kit,-,-,unlabelled,,,,28940.9,,,,120,D minor,60,D minor,,7,0,full+keys+strings,-50,exact,8,25ef56cee6,r11-p1-25ef56cee6
+11,p1,r11k019,kit,-,-,unlabelled,,,,31576.8,,,,110,C minor,82.5,C minor,,7,0,full+keys+lead+strings,-25,exact,,90490a1dd8,r11-p1-90490a1dd8
+11,p1,r11k020,kit,-,-,unlabelled,,,,38587.8,,,,90,G minor,121.5,G minor,,7,0,full+keys+strings,35,exact,,c6be15aff4,r11-p1-c6be15aff4
+11,p1,r11k021,kit,-,-,unlabelled,,,,44100.3,,,,90,G minor,90,G minor,,8,0,full+keys+strings,0,exact,8,e919db375c,r11-p1-e919db375c
+11,p1,r11k022,kit,-,-,unlabelled,,,,28940.9,,,,120,G minor,195,A# major,,7,0,full+keys+strings,62.5,relative,,1ffc88d0b0,r11-p1-1ffc88d0b0
+11,p1,r11k023,kit,-,-,unlabelled,,,,38587.8,,,,90,G# minor,90,G# minor,,7,0,full+keys+strings,0,exact,8,7720924da9,r11-p1-7720924da9
+11,p1,r11k024,kit,-,-,unlabelled,,,,28955.7,,,,120,B major,120,B major,,7,0,full+keys+strings,0,root,8,9782105145,r11-p1-9782105145
+11,p1,r11k025,kit,-,-,unlabelled,,,,40607.2,,,,110,D# minor,110,F# major,,9,0,full+keys+strings,-7.086e-05,relative,8,c47a24f079,r11-p1-c47a24f079
+11,p1,r11k026,kit,-,-,unlabelled,,,,31571.9,,,,110,A#,192.5,A# major,,7,0,full+keys+lead+strings,75,root,,cc98b353bf,r11-p1-cc98b353bf
+11,p1,r11k027,kit,-,-,unlabelled,,,,28945.8,,,,120,D minor,120,D minor,,7,0,full+keys+strings,0,exact,8,5f5ffc5966,r11-p1-5f5ffc5966
+11,p1,r11k028,kit,-,-,unlabelled,,,,38587.8,,,,90,C minor,90,C minor,,7,0,full+keys+strings,0,exact,8,5222afde80,r11-p1-5222afde80
+11,p1,r11k029,kit,-,-,unlabelled,,,,31576.8,,,,110,D minor,,A minor,,7,0,full+keys+strings,,other,8,f7c8fde2e6,r11-p1-f7c8fde2e6
+11,p1,r11k030,kit,-,-,unlabelled,,,,28940.9,,,,120,F# minor,,C# minor,,7,0,full+keys+strings,,other,8,7566000496,r11-p1-7566000496
+11,p2,r11k001,kit,-,-,dnb,,,,76276.3,,,,174,E minor,87,E minor,,28,9,arp+bass+chords+drums+full+fx+hats+kick+lead+pad+snare,-50,exact,8,eb5a83796a,r11-p2-eb5a83796a
+11,p2,r11k002,kit,-,-,dnb,,,,58459.0,,,,174,E minor,87,B minor,,21,6,bass+chords+drums+full+fx+hats+kick+lead+pluck+snare,-50,other,8,213591f8ea,r11-p2-213591f8ea
+11,p2,r11k003,kit,-,-,dnb,,,,14261.0,,,,174,G# minor,174,G# minor,,5,4,bass+chords+full+lead,-6.378e-05,exact,8,932924348f,r11-p2-932924348f
+11,p2,r11k004,kit,-,-,dnb,,,,19963.0,,,,174,G minor,87,D minor,,7,6,bass+chords+full+lead+pad,-50,other,8,ab4529a43c,r11-p2-ab4529a43c
+11,p2,r11k005,kit,-,-,dnb,,,,11406.4,,,,174,G# minor,87,G# minor,,4,3,bass+full+lead,-50,exact,8,03019a8d7a,r11-p2-03019a8d7a
+11,p2,r11k006,kit,-,-,dnb,,,,11407.6,,,,174,G# minor,174,G# minor,,4,3,bass+chords+full+lead,-6.378e-05,exact,8,38f8c4ef0b,r11-p2-38f8c4ef0b
+11,p2,r11k007,kit,-,-,dnb,,,,11406.5,,,,174,F# minor,87,A major,,4,3,bass+full+lead+pad,-50,relative,8,5a2bcfec7f,r11-p2-5a2bcfec7f
+11,p2,r11k008,kit,-,-,dnb,,,,11406.6,,,,174,E minor,174,E major,,4,3,arp+bass+full+lead,-6.378e-05,other,8,608e4c27b3,r11-p2-608e4c27b3
+11,p2,r11k009,kit,-,-,dnb,,,,22813.2,,,,174,F minor,174,F minor,,8,7,arp+bass+chords+full+lead+pad,-6.378e-05,exact,8,5d02d38d43,r11-p2-5d02d38d43
+11,p2,r11k010,kit,-,-,dnb,,,,14257.9,,,,174,F minor,87,E major,,5,4,bass+full+perc,-50,other,8,b45bcc215d,r11-p2-b45bcc215d
+11,p2,r11k011,kit,-,-,dnb,,,,25664.7,,,,174,F# minor,87,F# minor,,9,8,arp+bass+brass+chords+full+lead+pad,-50,exact,8,1e2457c40c,r11-p2-1e2457c40c
+11,p2,r11k012,kit,-,-,dnb,,,,11407.4,,,,174,F minor,174,C minor,,4,3,arp+bass+full+lead,-6.378e-05,other,8,f2623fe421,r11-p2-f2623fe421
+11,p2,r11k013,kit,-,-,dnb,,,,11406.3,,,,174,A# minor,87,G# major,,4,3,bass+full+lead,-50,other,8,f75aa4149a,r11-p2-f75aa4149a
+11,p2,r11k014,kit,-,-,dnb,,,,11406.5,,,,174,G minor,87,G minor,,4,3,bass+chords+full+lead,-50,exact,8,bb4224dd48,r11-p2-bb4224dd48
+11,p2,r11k015,kit,-,-,dnb,,,,19961.6,,,,174,F minor,174,F major,,7,6,bass+chords+full+lead,-6.378e-05,other,8,91329eff67,r11-p2-91329eff67
+11,p2,r11k016,kit,-,-,dnb,,,,14258.2,,,,174,A# minor,87,A# minor,,5,4,bass+full+lead,-50,exact,8,a1c30bf9d8,r11-p2-a1c30bf9d8
+11,p2,r11k017,kit,-,-,dnb,,,,11406.4,,,,174,G minor,87,G minor,,4,3,bass+full+lead,-50,exact,8,da975d01ac,r11-p2-da975d01ac
+11,p2,r11k018,kit,-,-,dnb,,,,14257.9,,,,174,F# minor,174,A major,,5,4,bass+full+lead+synth,-6.378e-05,relative,8,c325579f16,r11-p2-c325579f16
+11,p2,r11k019,kit,-,-,dnb,,,,11406.4,,,,174,E minor,87,A major,,4,3,bass+full+lead,-50,other,8,08dfeb2bea,r11-p2-08dfeb2bea
+11,p2,r11k020,kit,-,-,dnb,,,,11406.3,,,,174,A minor,87,A minor,,4,3,bass+chords+full+lead,-50,exact,8,901c0673c7,r11-p2-901c0673c7
+11,p2,r11k021,kit,-,-,dnb,,,,11406.4,,,,174,D# minor,87,D# minor,,4,3,bass+full+lead,-50,exact,8,87b963a87c,r11-p2-87b963a87c
+11,p2,r11k022,kit,-,-,dnb,,,,11406.4,,,,174,F minor,174,F major,,4,3,bass+full+lead,-6.378e-05,other,8,855f6e125a,r11-p2-855f6e125a
+11,p3,r11k001,kit,-,-,rave,,,,127286.6,,,,155,E minor,155,E major,,42,13,bass+drums+full+fx+hats+kick+lead+snare+vocal,-5.905e-06,other,8,f1c7790392,r11-p3-f1c7790392
+11,p3,r11k002,kit,-,-,rave,,,,60833.0,,,,155,F# minor,155,F# minor,,21,7,bass+full+fx+hats+kick+lead+pluck+snare+vocal,-5.905e-06,exact,8,61584de5ad,r11-p3-61584de5ad
+11,p3,r11k003,kit,-,-,rave,,,,12805.6,,,,155,F minor,155,E major,,4,3,bass+full+lead,-5.905e-06,other,8,0f7d52c45b,r11-p3-0f7d52c45b
+11,p3,r11k004,kit,-,-,rave,,,,12804.0,,,,155,,155,,,4,3,full+lead,-5.905e-06,,8,8232273996,r11-p3-8232273996
+11,p3,r11k005,kit,-,-,rave,,,,12805.2,,,,155,E minor,155,E major,,4,3,bass+chords+full+lead,-5.905e-06,other,8,12a720ef9b,r11-p3-12a720ef9b
+11,p3,r11k006,kit,-,-,rave,,,,12809.1,,,,155,F minor,155,D minor,,4,3,full+lead,-5.905e-06,other,8,b7071b2edf,r11-p3-b7071b2edf
+11,p3,r11k007,kit,-,-,rave,,,,12809.2,,,,155,D minor,155,D major,,4,3,bass+full+lead,-5.905e-06,other,8,d4a13cc1ad,r11-p3-d4a13cc1ad
+11,p3,r11k008,kit,-,-,rave,,,,12808.9,,,,155,,116.25,,,4,3,full+lead,-25,,,cb75097ee6,r11-p3-cb75097ee6
+11,p3,r11k009,kit,-,-,rave,,,,12805.3,,,,155,G minor,155,D major,,4,3,bass+full+lead,-5.905e-06,other,8,9c6695ac72,r11-p3-9c6695ac72
+11,p3,r11k010,kit,-,-,rave,,,,12804.0,,,,155,E minor,155,D minor,,4,3,full+lead,-5.905e-06,other,8,d032ba5afd,r11-p3-d032ba5afd
+11,p3,r11k011,kit,-,-,rave,,,,12808.8,,,,155,D# minor,155,D minor,,4,3,full+lead,-5.905e-06,other,8,fd56b2713e,r11-p3-fd56b2713e
+11,p3,r11k012,kit,-,-,rave,,,,12804.9,,,,155,F# minor,155,F# minor,,4,3,bass+chords+full+lead,-5.905e-06,exact,8,e983e193d2,r11-p3-e983e193d2
+11,p3,r11k013,kit,-,-,rave,,,,12808.9,,,,155,D# minor,155,D minor,,4,3,full+lead,-5.905e-06,other,8,cb18fc1af2,r11-p3-cb18fc1af2
+11,p3,r11k014,kit,-,-,rave,,,,19206.6,,,,155,G minor,155,G major,,5,4,bass+chords+full+lead,-5.905e-06,other,16,95ad2a99b7,r11-p3-95ad2a99b7
+11,p3,r11k015,kit,-,-,rave,,,,12809.2,,,,155,F# minor,155,F# minor,,4,3,bass+full+lead,-5.905e-06,exact,8,f0cc9f1018,r11-p3-f0cc9f1018
+11,p3,r11k016,kit,-,-,rave,,,,32014.8,,,,155,D# minor,155,D minor,,5,4,bass+full+lead,-5.905e-06,other,16,fc5e9d56d8,r11-p3-fc5e9d56d8
+11,p3,r11k017,kit,-,-,rave,,,,16005.0,,,,155,,155,,,5,4,bass+full+lead,-5.905e-06,,8,9c9298f30b,r11-p3-9c9298f30b
+11,p3,r11k018,kit,-,-,rave,,,,16006.3,,,,155,D# minor,155,D# minor,,5,4,bass+full+lead+pad,-5.905e-06,exact,8,920b2c6ddf,r11-p3-920b2c6ddf
+11,p3,r11k019,kit,-,-,rave,,,,16006.1,,,,155,E minor,155,B minor,,5,4,bass+full+lead,-5.905e-06,other,8,b1e4c21f2b,r11-p3-b1e4c21f2b
+11,p3,r11k020,kit,-,-,rave,,,,12804.2,,,,155,D# minor,155,C minor,,4,3,full+lead,-5.905e-06,other,8,e8c7a04c3b,r11-p3-e8c7a04c3b
+11,p3,r11k021,kit,-,-,rave,,,,16005.4,,,,155,E minor,155,E minor,,5,4,bass+chords+full+lead,-5.905e-06,exact,8,7ee1f9d4b1,r11-p3-7ee1f9d4b1
+11,p3,r11k022,kit,-,-,rave,,,,12804.0,,,,155,F minor,155,F major,,4,3,bass+full+lead,-5.905e-06,other,8,bb10b4d983,r11-p3-bb10b4d983

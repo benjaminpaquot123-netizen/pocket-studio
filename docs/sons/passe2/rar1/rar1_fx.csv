@@ -1,0 +1,9 @@
+rar,pack,kit_id,type,subtype,role,style,dur_s,sr,ch,size_kb,peak_dbfs,rms_dbfs,lufs_i,bpm_tag,key_tag,bpm_est,key_est,error,length_beats,level_shape,bright_shape,peak_pos,end_cut,end_fade_ms,file_id,cle
+1,p1,,fx,-,fx,dubstep,6.858,48000,2,1935.71,-0.2673,-29.61,-17.93,,,,,,,rising,,0.9934,,,f1d3d5b8e2,r1-p1-f1d3d5b8e2
+1,p1,,fx,-,fx,dubstep,6.858,48000,2,1935.71,-0.2756,-32.01,-21.02,,,,,,,rising,,0.9952,,,68fae74bce,r1-p1-68fae74bce
+1,p1,,fx,-,fx,hiphop,10.67,48000,2,3001.02,-0.1,-32.03,-19.28,,,,,,,rising,,0.996,,,8ba00d060a,r1-p1-8ba00d060a
+1,p1,,fx,-,fx,house,8.001,48000,2,2257.2,-0.1,-23.98,-12.32,,,,,,,rising,flat,0.9937,,,bb6a6faba7,r1-p1-bb6a6faba7
+1,p1,,fx,-,drums,house,8.001,48000,2,2250.87,-0.1,-24.14,-14.08,,,,,,,flat,flat,0.8093,,,80c79eaf21,r1-p1-80c79eaf21
+1,p1,,fx,-,fx,house,7.5,48000,2,2116.38,-0.1277,-27.21,-13.05,,,,,,,rising,,0.9933,,,16c3b7d4a1,r1-p1-16c3b7d4a1
+1,p1,,fx,-,drums,trap,10.67,48000,2,3001.02,-0.1,-29.39,-16.77,,,,,,,rising,flat,0.7476,,,5744339195,r1-p1-5744339195
+1,p1,,fx,-,drums,trap,8.728,48000,2,2455.45,-0.1,-36.02,-23.02,,,,,,,rising,,0.9982,,,383c4cddff,r1-p1-383c4cddff

@@ -1796,7 +1796,10 @@ def _fmt(v):
     if v is None:
         return ""
     if isinstance(v, (float, np.floating)):
-        v = float(v)
+        v = float(v) + 0.0  # -0.0 -> 0.0
+        if math.isfinite(v) and 100 <= abs(v) < 1e4:
+            # 4 significant digits turn 123.45 into 123.5 and 9999.7 into 1e+04 (defect 32)
+            return ("%.2f" % v).rstrip("0").rstrip(".")
         return "" if not math.isfinite(v) else "%.4g" % v if abs(v) < 1e4 else "%.1f" % v
     if isinstance(v, (int, np.integer)):
         return str(int(v))

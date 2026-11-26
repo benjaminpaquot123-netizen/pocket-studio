@@ -244,6 +244,49 @@ def test_22_37b_midi_bars():
     check_eq("program change and note-on 0 offs: bars", m["bars"], 4)
 
 
+def test_34_35_truncated_and_dc():
+    """34: truncated WAV / AIFF / MIDI flagged; 35: a constant DC offset is no sound."""
+    tmp = tempfile.mkdtemp()
+    try:
+        def path(name, data):
+            p = os.path.join(tmp, name)
+            write(p, data)
+            return p
+        k = kick()
+        good = wav_bytes(k)
+        check_eq("34 whole wav reads", _raises(lambda: tout.read_audio(path("ok.wav", good))), None)
+        e = _raises(lambda: tout.read_audio(path("t.wav", good[:44 + 9600])))
+        check_true("34 wav cut in the data (0.1 s of 0.5 s) flagged truncated: %r" % e, bool(e) and "truncated" in e)
+        e = _raises(lambda: tout.read_audio(path("t2.wav", good[:-100])))
+        check_eq("34 wav missing 100 bytes of 48000 still reads", e, None)
+        streamed = good[:40] + struct.pack("<I", 0xFFFFFFFF) + good[44:]
+        check_eq("34 streamed wav (data size 0xFFFFFFFF) still reads",
+                 _raises(lambda: tout.read_audio(path("s.wav", streamed))), None)
+        a = aiff_bytes(k)
+        check_eq("34 whole aiff reads", _raises(lambda: tout.read_audio(path("ok.aif", a))), None)
+        e = _raises(lambda: tout.read_audio(path("t.aif", a[:300])))
+        check_true("34 aiff cut at 300 bytes flagged truncated: %r" % e, bool(e) and "truncated" in e)
+        e = None
+        try:
+            mesure.read_audio(path("t3.wav", good[:44 + 9600]))
+        except mesure.BadAudio as ex:
+            e = str(ex)
+        check_true("34 mesure.py flags the truncated wav too: %r" % e, bool(e) and "truncated" in e)
+        mid = smf(chords())
+        e = _raises(lambda: tout.measure_midi_bytes(mid[:len(mid) // 2], {}))
+        check_true("34 Trunc.mid cut in the middle of the track flagged: %r" % e, bool(e) and "truncated" in e)
+        check_eq("34 whole midi reads", _raises(lambda: tout.measure_midi_bytes(mid, {})), None)
+        no_eot = smf(chords(), eot=False)
+        check_eq("34 midi without end-of-track but whole track still reads",
+                 _raises(lambda: tout.measure_midi_bytes(no_eot, {})), None)
+        e = _raises(lambda: tout.read_audio(path("dc.wav", wav_bytes(np.full(SR, 0.5)))))
+        check_true("35 constant DC 0.5 for 1 s flagged: %r" % e, bool(e) and "dc" in e.lower())
+        e = _raises(lambda: tout.read_audio(path("kdc.wav", wav_bytes(k + 0.05))))
+        check_eq("35 kick with a small DC offset still reads", e, None)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     with np.errstate(all="ignore"):

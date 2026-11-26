@@ -448,6 +448,7 @@ EXTRA_RULES = [(f, re.compile(r, re.I)) for f, r in [
     ("hat_closed", r"\bc ?hh\b|(?:hi.?hats?|\bhats?|\bhh)\s*closed|closed\s*(?:hi.?hats?|hats?|hh)\b"),
     ("perc_high", r"\bperc(?:ussion)?s?\s*(?:high|hi)\b|\b(?:high|hi)\s*percs?\b"),
     ("perc_low", r"\bperc(?:ussion)?s?\s*low\b|\blow\s*percs?\b"),
+    ("perc_mid", r"\bperc(?:ussion)?s?\s*(?:mid|middle)\b|\b(?:mid|middle)\s*percs?\b"),
     ("hat", r"\bhh\b")]]
 LONG_FAMILIES = ("kick_808", "crash", "cymbal", "ride")
 

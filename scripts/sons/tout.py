@@ -295,7 +295,8 @@ _GEAR_WORDS = re.compile(r"(?i)(?<![a-z])(?:juno|rhodes|mpc|route|tr|sh|cs|jx|sp
 # 'SH-101', 'TB-303': a short capital prefix and a dash name a model ('Bass-Loop-120' keeps its tempo)
 _MODEL_PREFIX = re.compile(r"(?<![A-Za-z])[A-Z]{1,3}-$")
 _ONLY_NUMBER = re.compile(r"\s*([1-9]\d{1,2})\s*")
-BPM_CONFIRM_TOL = 0.03  # a bare number is trusted when the sound is within 3 % of it, its half or its double
+BPM_CONFIRM_TOL = 0.03
+BARS_GAP_TOL = 0.04  # tempo heard this close to the written one (or half, double): bars kept  # a bare number is trusted when the sound is within 3 % of it, its half or its double
 _MODE_RX = r"(?:[ _-]?(?i:(maj)(?:or)?|(min)(?:or)?)|[ _-]?(m))(?:\d{1,2})?"  # 'C# m' (audit 2 #8)
 _KEY_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(?:" + _MODE_RX + r")?(?![A-Za-z0-9#])")
 _ONE_NOTE_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(-?\d)?(?![A-Za-z0-9#])")
@@ -2267,6 +2268,12 @@ def fence_row(row, usable=()):
         row["end_cut"] = hit_end[0]
         if hit_end[1] is not None:
             row["end_fade_ms"] = max(10, int(round(float(hit_end[1]) / 10.0)) * 10)
+    # a written tempo the sound contradicts (heard neither equal, half nor double):
+    # bars counted from it are absurd, 'Drum Loop 128 bpm' played at 100 (audit 3 #5)
+    gap = row.get("bpm_gap_pct")
+    if typ in ("drum_loop", "melodic_loop", "kit_stem", "kit") and row.get("bpm_tag") is not None \
+            and gap is not None and not any(abs((1 + gap / 100.0) / f - 1) <= BARS_GAP_TOL for f in (1.0, 0.5, 2.0)):
+        row["bars"] = None
     # untagged loops: bpm and key are wrong too often on pads and basslines
     # (re-check 6, I8); shown only when the accuracy table says usable
     if typ in ("melodic_loop", "kit_stem"):

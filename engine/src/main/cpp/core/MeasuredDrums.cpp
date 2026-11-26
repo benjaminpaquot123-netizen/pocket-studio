@@ -102,6 +102,7 @@ Recipe snare(int style) {
     r.clickLevel = 0.2f;
     r.clickMs = 1.5f;
     r.clickHpHz = 3000.0f;
+    r.gain = 0.85f;  // the strong bodies peak near full scale otherwise
     return r;
 }
 

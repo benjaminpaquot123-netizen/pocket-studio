@@ -58,7 +58,8 @@ public:
         bodyMul_ = fallMul(r_.bodyFallMs * ms);
         noiseMul_ = fallMul(r_.noiseFallMs * ms);
         clickMul_ = fallMul(r_.clickMs * ms * 4.0f);  // -40 dB over 4 x clickMs (about -10 dB at clickMs)
-        bodyEnv_ = clickEnv_ = 1.0f;
+        bodyEnv_ = 1.0f;
+        clickEnv_ = r_.clickLevel > 0.0f ? 1.0f : 0.0f;  // no click: nothing to wait for
         noiseEnv_ = r_.bursts > 0 ? 0.5f : 1.0f;  // a clap's tail starts under its hands
         dropMul_ = r_.dropHalfMs > 0.0f ? std::exp(-0.69314718f / (r_.dropHalfMs * ms)) : 0.0f;
         dropGap_ = r_.startHz - r_.endHz;
@@ -82,6 +83,7 @@ public:
             if (r_.bodyLevel > 0.0f) {
                 const float hz = r_.endHz + dropGap_;
                 dropGap_ *= dropMul_;
+                if (std::fabs(dropGap_) < 1e-3f) dropGap_ = 0.0f;  // no subnormals once the drop is done
                 phase_ += hz / rate_;
                 phase_ -= std::floor(phase_);
                 float b = std::sin(twoPi * phase_);

@@ -10,11 +10,12 @@ die() { echo "matin_batterie: ERREUR: $*" >&2; exit 1; }
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 OUT=${1:-}
 [ -n "$OUT" ] || die "give an output directory outside the repo (e.g. /tmp/matin)"
-mkdir -p "$OUT" || die "cannot create $OUT"
-OUT=$(cd "$OUT" && pwd)
+OUT=$(realpath -m "$OUT")
 case "$OUT/" in "$ROOT"/*) die "the output directory must be outside the repo ($ROOT)";; esac
+mkdir -p "$OUT" || die "cannot create $OUT"
 command -v g++ >/dev/null || die "g++ is missing"
 command -v ffmpeg >/dev/null || die "ffmpeg is missing"
+command -v ffprobe >/dev/null || die "ffprobe is missing"
 grep -q libmp3lame <<<"$(ffmpeg -hide_banner -encoders 2>/dev/null)" || die "ffmpeg has no libmp3lame"
 
 START=$(date +%s)

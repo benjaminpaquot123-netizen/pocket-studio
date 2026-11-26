@@ -3,7 +3,7 @@
 Les mesures faites sur des coups de référence, par famille et par style : la valeur du milieu (médiane), puis entre parenthèses la fourchette où tombent 8 coups sur 10 (du 10e au 90e centile). Ce sont seulement des chiffres : aucun son n'est dans le dépôt.
 
 - **Durée à −20 / −40 dB** : le temps que met le coup pour tomber 20 ou 40 dB sous son maximum.
-- **Note tenue** : la note grave une fois la chute finie (kick, 808, tom).
+- **Note tenue** : la note grave une fois la chute finie (kick, 808, tom) ; pour les autres familles, la fréquence la plus forte du coup (le test ne la vérifie pas).
 - **Départ de la chute** et **mi-chute** : d'où part la note au tout début du coup, et en combien de temps elle a fait la moitié du chemin.
 - **Brillance** : le centre de gravité du spectre ; plus c'est haut, plus c'est clair.
 - **Coups** : le nombre de coups mesurés. « tous styles » = trop peu de coups dans ce style, la cible prend la famille entière.

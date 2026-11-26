@@ -445,7 +445,23 @@ def test_review2_limits():
     check_eq("R6 4/4 drum MIDI with a 3-beat accent keeps 4 bars", (rows["MIDI/Drums/Groove 120 BPM.mid"] or {}).get("bars"), "4")
 
 
-TESTS = [test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_mutation_survivors_2():
+    """Mutations a3-00 and a3-08: two bare numbers both equal to the heard tempo stay a doubt;
+    a tonal drum stem in a kit with a lone key letter does not take that letter."""
+    files = {"Loops/Keys Loop 118 Am 122.wav": ru.plucks(120.0, AM, 4)}
+    files.update({"Kits/Kit 07 - 128 A/Drums.wav": ru.plucks(128.0, AM, 4),
+                  "Kits/Kit 07 - 128 A/Pad.wav": ru.plucks(128.0, AM, 4)})
+    rows, _, _, code, _ = run(files)
+    check_eq("a3-00 run ends well", code, 0)
+    check_eq("a3-00 118 and 122 both heard as 120: no tempo chosen",
+             (rows["Loops/Keys Loop 118 Am 122.wav"] or {}).get("bpm_tag"), "")
+    check_eq("a3-08 tonal drum stem of a kit 'A': no key", (rows["Kits/Kit 07 - 128 A/Drums.wav"] or {}).get("key_tag"), "")
+    check_true("a3-08 the pad of the same kit takes the confirmed letter",
+               (rows["Kits/Kit 07 - 128 A/Pad.wav"] or {}).get("key_tag") not in ("", None),
+               (rows["Kits/Kit 07 - 128 A/Pad.wav"] or {}).get("key_tag"))
+
+
+TESTS = [test_mutation_survivors_2, test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

@@ -867,11 +867,14 @@ def classify(rel, dur):
         return out
     looped = _loop_named(name, folders, dur)
     drum_named = drum_family(name, []) is not None or (DRUM_WORDS.search(name) and looped)
-    if drum_named and REVERSE_RX.search(name) and drum_family(name, []) in ("crash", "cymbal", "ride"):
+    reversed_cymbal = drum_named and REVERSE_RX.search(name) and drum_family(name, []) in ("crash", "cymbal", "ride")
+    if reversed_cymbal:
         drum_named = False  # a reversed cymbal is a riser (defect 9)
     if FX_RX.search(text) and not drum_named:  # 'Kick Impact', 'Noise Hat Loop' stay drums (I7)
         if _fx_named(name, folders):
             out["type"] = "fx"
+            if reversed_cymbal:
+                out["role"] = "fx"  # a riser, not a hat (b1 replay)
             return out
     has_bpm = _BPM_RX.search(name) is not None
     is_loop = looped or (has_bpm and dur is not None and dur >= 1.5) or _loop_by_name(name, dur)

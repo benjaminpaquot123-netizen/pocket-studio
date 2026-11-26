@@ -277,6 +277,9 @@ expect("Kits/Kit A/Lead F#3.wav", 1.5, type="oneshot_melodic")
 expect("Kits/Kit A/Bass.wav", 8.0, type="kit_stem")
 expect("Kits/Kit A/Bass Loop C2.wav", 8.0, type="kit_stem")
 expect("Kits/Kit A/Bass 120 C2.wav", 8.0, type="kit_stem")
+expect("Synth/Lead C3 127.wav", 2.0, type="oneshot_melodic")  # 127 is a velocity, not a tempo
+expect("Synth/Bass C2 120.wav", 2.5, type="oneshot_melodic")
+expect("Tops/Top 128 01.wav", 7.5, type="drum_loop")
 
 
 print("%d checks, %d failed" % (COUNT, FAILS))

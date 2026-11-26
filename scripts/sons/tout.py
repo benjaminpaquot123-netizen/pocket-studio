@@ -528,6 +528,8 @@ def _loop_by_name(name, dur):
         return False
     if LOOP_NAME_RX.search(name):
         return True
+    if NOTE_OCT_RX.search(name) and dur < 4.0:  # 'Lead C3 127': a velocity next to a played note
+        return False
     return any(60 <= int(m.group(1)) <= 200 for m in _BARE_RX.finditer(name)) and not re.search(r"808|909", name)
 
 

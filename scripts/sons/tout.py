@@ -45,9 +45,14 @@ end_fade_ms length of the final fade, empty when there is none, rounded to
            10 ms. Read it as a yes/no grade with an order of size: a real
            fade can be read at half or twice its length.
 Both are filled for one-shots only (oneshot_melodic, drum_oneshot) and left
-empty for loops, stems, fx, vocals, full mixes and any one-shot with a bpm
-tag or a wav loop: there the last hit rings at the bar line and the verdict
-is a coin toss (blind re-check, docs/sons/REVERIF-TOUT.md).
+empty for loops, stems, fx, vocals, melodic one-shots of role full and any
+one-shot with a wav loop: there the last hit rings at the bar line and the
+verdict is a coin toss (blind re-check, docs/sons/REVERIF-TOUT.md).
+A drum hit named "Full", "Mix", "Mastered" or "Song" is still one hit and is
+read like any other. A one-shot with a tempo in its name ("808 Long 140bpm")
+shows end_cut 1 when it really ends cut and stays empty otherwise (it may be
+meant to run on to the bar line); its end_fade_ms stays empty. The tempo of
+such a name is not a tag of the sound: a one-shot row has no bpm_tag.
 "Not yet at -60 dB when the file ends" (empty t60, end_level_db above -60)
 only means a long sound trimmed short; it is information, never a cut.
 
@@ -491,6 +496,8 @@ def confirm_tags(row, tags):
     nmeas = re.match(r"[A-G]#?", row.get("note_measured") or "")
     if tags.get("note_lone") and row.get("note_tag") and nmeas and row["note_tag"] != nmeas.group(0):
         row["note_tag"] = None  # 'Pad Soft F' that sounds A3 (audit 2 #12)
+        if "cents_gap" in row:
+            row["cents_gap"] = None  # no gap to a note the name does not give
     if tags.get("flat") and row.get("note_tag"):
         row["note_tag"] = spell(row["note_tag"], True)
     return row
@@ -2234,18 +2241,24 @@ def fence_row(row, usable=()):
     typ = row.get("type")
     # a drum hit named "Mastered", "Full", "Mix" or "Song" is still one hit:
     # its end is measured like any one-shot (audit 2, defect 18)
+    # a one-shot whose name carries a tempo ('808 Long 140bpm'): a measured cut
+    # is true, "no cut" is not known (reunion, defect 18)
+    named = typ in END_TYPES and (row.get("bpm_tag") is not None or row.get("_name_bpm") is not None)
     hit_full = typ == "drum_oneshot" and row.get("role") == "full" \
-        and row.get("bpm_tag") is None and not row.get("_loop")
+        and not named and not row.get("_loop")
     hit_end = (row.get("end_cut"), row.get("end_fade_ms"))
+    hit_cut = named and not row.get("_loop") and row.get("end_cut") == 1 \
+        and (typ == "drum_oneshot" or row.get("role") != "full")
     # end_cut is reliable on one-shots only: on anything with a loop or tempo
     # nature the last hit still rings at the bar line (re-check 1)
-    if typ not in END_TYPES or row.get("role") == "full" or row.get("bpm_tag") is not None \
-            or row.get("_loop"):
+    if typ not in END_TYPES or row.get("role") == "full" or named or row.get("_loop"):
         row["end_cut"] = None
         row["end_fade_ms"] = None
     elif row.get("end_fade_ms") is not None:
         # a presence / order-of-size grade, not a length to the millisecond
         row["end_fade_ms"] = max(10, int(round(float(row["end_fade_ms"]) / 10.0)) * 10)
+    if hit_cut:
+        row["end_cut"] = 1
     if hit_full:
         row["end_cut"] = hit_end[0]
         if hit_end[1] is not None:
@@ -2341,6 +2354,21 @@ def _size_kb(p):
         return None
 
 
+def _heard(measure, sr, x, tags):
+    """measure(sr, x, tags) with the name's suggestions confirmed by the sound (confirm_tags).
+    A bare number the measured tempo confirms becomes the tag and the loop is measured
+    again with it, so the gap, the bars and the grid follow the confirmed tempo.
+    Returns (first measure for the accuracy table, final row cells, tags used)."""
+    first = measure(sr, x, tags)
+    m = first
+    if first.get("bpm_tag") is None:
+        bpm = confirm_tags(dict(first), tags).get("bpm_tag")
+        if bpm is not None:
+            tags = dict(tags, bpm=bpm)
+            m = measure(sr, x, tags)
+    return first, confirm_tags(dict(m), tags), tags
+
+
 def _measure_file(p, rel, parts, acc, rar):
     row = {"rar": rar, "kit_id": "", "error": "", "size_kb": _size_kb(p)}
     row.update(classify(rel, None))  # an unreadable file keeps the type its path gives (blind audit I3)
@@ -2356,16 +2384,16 @@ def _measure_file(p, rel, parts, acc, rar):
             tags = parse_tags(parts, cl["type"])
             typ = cl["type"]
             if typ == "oneshot_melodic":
-                m = measure_oneshot(sr, x, tags, loop)
-                if m.get("cents_gap") is not None:
+                m = confirm_tags(measure_oneshot(sr, x, tags, loop), tags)
+                if m.get("cents_gap") is not None:  # a lone letter the sound denies is no tag
                     acc.add(typ, "note", abs(m["cents_gap"]) <= 50)
             elif typ == "drum_loop":
-                m = measure_drum_loop(sr, x, tags)
-                acc.add(typ, "bpm", _bpm_class(m.get("bpm_measured"), tags.get("bpm")))
+                first, m, _ = _heard(measure_drum_loop, sr, x, tags)
+                acc.add(typ, "bpm", _bpm_class(first.get("bpm_measured"), tags.get("bpm")))
             elif typ == "melodic_loop":
-                m = measure_melodic_loop(sr, x, tags)
-                acc.add(typ, "bpm", _bpm_class(m.get("bpm_measured"), tags.get("bpm")))
-                acc.add(typ, "key", _key_class(m.get("key_match")))
+                first, m, _ = _heard(measure_melodic_loop, sr, x, tags)
+                acc.add(typ, "bpm", _bpm_class(first.get("bpm_measured"), tags.get("bpm")))
+                acc.add(typ, "key", _key_class(first.get("key_match")))
             elif typ == "vocal":
                 m = measure_vocal(sr, x, tags)
             elif typ == "fx":
@@ -2382,6 +2410,12 @@ def _measure_file(p, rel, parts, acc, rar):
             row.update(m)
             row.setdefault("bpm_tag", tags.get("bpm"))
             row.setdefault("key_tag", key_name(tags.get("key")))
+            confirm_tags(row, tags)  # flats as written, lone notes and keys checked by ear
+            if typ in END_TYPES and row.get("bpm_tag") is not None:
+                # one hit has no tempo; the name's number only tells the fence
+                # that the hit may run on to the bar line (reunion, defect 18)
+                row["_name_bpm"] = row["bpm_tag"]
+                row["bpm_tag"] = None
     except BadAudio as e:
         row["error"] = str(e)[:80]
     except Exception as e:  # a hostile file must not stop the batch
@@ -2403,8 +2437,10 @@ def _run_kits(kits, acc, rar):
                 stems.append((p, rel, parts))
         kit_tags = parse_tags(list(key), "kit")
         loaded = []
+        stem_tags = {}
         for p, rel, parts in stems:
-            row = {"rar": rar, "kit_id": kid, "type": "kit_stem", "error": "", "size_kb": _size_kb(p)}
+            row = {"rar": rar, "kit_id": kid, "type": "kit_stem", "error": "", "size_kb": _size_kb(p),
+                   "file_id": _file_id(rel)}
             cl = classify(rel, None)
             row.update({"subtype": "-", "role": cl["role"], "style": cl["style"]})
             try:
@@ -2412,14 +2448,23 @@ def _run_kits(kits, acc, rar):
                     sr, x, _ = read_audio(p)
                     row.update(common(sr, x))
                     tags = parse_tags(parts, "kit_stem")
-                    for k in ("bpm", "key"):
-                        if tags.get(k) is None:
+                    if tags.get("key") is None:
+                        tags["key"] = kit_tags.get("key")
+                        tags["flat"] = kit_tags.get("flat")
+                    if tags.get("bpm") is None:
+                        tags["bpm"] = kit_tags.get("bpm")
+                    for k in ("bpm_bare", "key_lone"):  # the kit folder's suggestions too
+                        if not tags.get(k):
                             tags[k] = kit_tags.get(k)
-                    m = measure_melodic_loop(sr, x, tags)
-                    if row["role"] in ("drums", "kick", "snare", "hats", "perc"):
+                    drummy = row["role"] in ("drums", "kick", "snare", "hats", "perc")
+                    if drummy:
+                        tags["key_lone"] = None  # no key is heard in drums: nothing to confirm
+                    _, m, tags = _heard(measure_melodic_loop, sr, x, tags)
+                    if drummy:
                         m["key_measured"] = m["key_match"] = m["key_strength"] = None
                     row.update(m)
                     loaded.append((row, sr, x))
+                    stem_tags[id(row)] = tags
             except BadAudio as e:
                 row["error"] = str(e)[:80]
             except Exception as e:
@@ -2428,7 +2473,7 @@ def _run_kits(kits, acc, rar):
         kr = {"rar": rar, "kit_id": kid, "type": "kit", "subtype": "-", "role": "-", "error": "",
               "n_stems": len(stems), "n_midi": len(mids),
               "size_kb": sum(_size_kb(i[0]) or 0.0 for i in items), "bpm_tag": kit_tags.get("bpm"),
-              "key_tag": key_name(kit_tags.get("key"))}
+              "key_tag": key_name(kit_tags.get("key")), "file_id": _file_id("/".join(key))}
         roles = sorted({r["role"] for r in stem_rows if r["kit_id"] == kid and r["role"] not in ("-",)})
         kr["roles"] = "+".join(roles)
         kr["style"] = stem_rows[-1]["style"] if stems else (classify(mids[0][1], None)["style"] if mids else "")
@@ -2474,6 +2519,17 @@ def _run_kits(kits, acc, rar):
                         kr["key_match"] = key_match(k, kit_tags.get("key"))
                         acc.add("kit", "key", _key_class(kr["key_match"]))
                         kr["_key"] = k
+                    was = kr["bpm_tag"]
+                    confirm_tags(kr, kit_tags)  # 'Kit 01 - 128' heard at 128 (audit 2 #6/#10)
+                    if kr["bpm_tag"] is not None and was is None:
+                        kr["bpm_gap_pct"] = bpm_gap(bpm, kr["bpm_tag"])
+                        kr["bars"] = bars_of(dur, kr["bpm_tag"])
+                        for r, s, x in loaded:  # the stems the tempo could not be heard in
+                            if r.get("bpm_tag") is None:
+                                m = measure_melodic_loop(s, x, dict(stem_tags[id(r)], bpm=kr["bpm_tag"]))
+                                keep = {c: r.get(c) for c in ("key_tag", "key_measured", "key_match", "key_strength")}
+                                r.update(m)
+                                r.update(keep)
             except Exception as e:
                 kr["error"] = "internal: %s" % type(e).__name__
         kit_rows.append(kr)
@@ -2483,6 +2539,7 @@ def _run_kits(kits, acc, rar):
                 tags["key"] = kit_tags.get("key") or kr.get("_key")
             row = _midi_row(p, rel, tags, rar, acc)
             row["kit_id"] = kid
+            row["file_id"] = _file_id(rel)
             midi_rows.append(row)
     return kit_rows, stem_rows, midi_rows
 
@@ -2526,8 +2583,12 @@ def main(argv=None):
     if args.trace:
         # the tables stay anonymous; the id leads back to the file only with the pack at hand (defect 28)
         audio, midi, _ = _walk(args.folder)
-        hits = [r for r in (os.path.relpath(p, args.folder).replace(os.sep, "/") for p in audio + midi)
-                if _file_id(r) == args.trace]
+        rels = [os.path.relpath(p, args.folder).replace(os.sep, "/") for p in audio + midi]
+        for r in list(rels):  # a kit row stands for its folder
+            ki, _ = kit_split(r.split("/"))
+            if ki is not None and "/".join(r.split("/")[:ki + 1]) not in rels:
+                rels.append("/".join(r.split("/")[:ki + 1]))
+        hits = [r for r in rels if _file_id(r) == args.trace]
         for r in hits:
             print(r)
         return 0 if hits else 1
@@ -2571,6 +2632,8 @@ def main(argv=None):
     rows["midi"] += mr
     total = 0
     usable = {(r["type"], r["measure"]) for r in acc.rows() if r["usable"] == "yes"}
+    # a style written only in the pack folder's own name comes last (audit 2, defect 14)
+    pack_style = style_of("", pack=os.path.basename(os.path.abspath(args.folder)))
     for typ in TYPES:
         if not rows[typ]:
             # a table left by an earlier run would read as this run's (defect 33)
@@ -2583,6 +2646,8 @@ def main(argv=None):
             wr.writeheader()
             for r in rows[typ]:
                 r.setdefault("type", typ)
+                if r.get("style") in (None, "", "unlabelled"):
+                    r["style"] = pack_style
                 if r.get("bpm_est") is None:
                     r["bpm_est"] = r.get("bpm_measured", r.get("bpm_file"))
                 if r.get("key_est") is None:

@@ -782,13 +782,25 @@ def test_recheck_end_scope():
     for typ in ("melodic_loop", "kit_stem", "fx", "vocal"):
         row = fence({"type": typ, "role": "bass", "end_cut": 1, "end_fade_ms": 61.0})
         check_true("%s: end columns empty" % typ, row.get("end_cut") is None and row.get("end_fade_ms") is None)
-    for typ, extra in (("oneshot_melodic", {"role": "full"}), ("oneshot_melodic", {"bpm_tag": 120.0}),
-                       ("oneshot_melodic", {"_loop": 1}), ("drum_oneshot", {"bpm_tag": 140.0})):
+    for typ, extra in (("oneshot_melodic", {"role": "full"}), ("oneshot_melodic", {"_loop": 1}),
+                       ("oneshot_melodic", {"_loop": 1, "bpm_tag": 120.0}),
+                       ("oneshot_melodic", {"role": "full", "_name_bpm": 120.0})):
         row = {"type": typ, "role": "kick", "end_cut": 1, "end_fade_ms": 10.0}
         row.update(extra)
         row = fence(row)
-        check_true("%s with %s: end columns empty" % (typ, list(extra)[0]),
+        check_true("%s with %s: end columns empty" % (typ, "+".join(extra)),
                    row.get("end_cut") is None and row.get("end_fade_ms") is None)
+    # a one-shot with a tempo in its name ('808 Long 140bpm'): a measured cut is
+    # written, "no cut" stays empty, the fade stays empty (reunion of the audit 2
+    # lots, defect 18; before, both cells were always empty)
+    for typ, extra in (("oneshot_melodic", {"bpm_tag": 120.0}), ("drum_oneshot", {"bpm_tag": 140.0}),
+                       ("drum_oneshot", {"_name_bpm": 140.0}), ("drum_oneshot", {"_name_bpm": 140.0, "role": "full"})):
+        for cut in (1, 0):
+            row = {"type": typ, "role": "kick", "end_cut": cut, "end_fade_ms": 10.0}
+            row.update(extra)
+            row = fence(row)
+            check_eq("%s with %s, end_cut %d measured" % (typ, "+".join(extra), cut),
+                     (row.get("end_cut"), row.get("end_fade_ms")), (1 if cut else None, None))
     row = fence({"type": "drum_oneshot", "role": "kick", "end_cut": 1, "end_fade_ms": None})
     check_eq("drum one-shot keeps end_cut", row.get("end_cut"), 1)
     row = fence({"type": "oneshot_melodic", "role": "bass", "end_cut": 0, "end_fade_ms": None})

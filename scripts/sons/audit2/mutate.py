@@ -1,8 +1,10 @@
 """Mutation testing of scripts/sons self-tests, on scratch copies only.
 
 usage: python3 -I mutate.py <pristine_repo_copy> <work_dir> <out_file> <budget_seconds>
-One fault at a time is put in a copy of tout.py (or mesure.py), both self-tests
-run, and the mutant is 'killed' when a test fails.
+One fault at a time is put in a copy of tout.py (or mesure.py), every self-test
+of the tool runs (selftest_tout.py, then each selftest_tout_*.py, plus selftest.py
+for mesure.py), and the mutant is 'killed' when a test fails.
+Importing this file starts nothing: the run is behind __main__.
 """
 import os
 import re
@@ -12,11 +14,18 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-REPO, WORK, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
+REPO = WORK = OUT = None
 SONS = os.path.join("scripts", "sons")
 
 M = []  # (family, name, file, old, new)
-DEADLINE = time.time() + float(sys.argv[4])
+DEADLINE = float("inf")
+
+
+def tests_for(f, sons_dir):
+    """The self-tests a mutant of file f must survive: the main one first, then every lot's."""
+    lots = sorted(n for n in os.listdir(sons_dir)
+                  if n.startswith("selftest_tout_") and n.endswith(".py"))
+    return ["selftest_tout.py"] + lots + (["selftest.py"] if f == "mesure.py" else [])
 
 
 def m(fam, name, old, new, f="tout.py"):
@@ -91,8 +100,10 @@ m("cut", "step rule removed", "cut = (step and not faded) or loud", "cut = loud"
 m("cut", "loud rule removed", "cut = (step and not faded) or loud", "cut = (step and not faded)")
 m("cut", "seamless-loop pardon removed", "if cut and _seamless(s, sr, x0):", "if False and _seamless(s, sr, x0):")
 # ---- fences
-m("fence", "end_cut shown on 'full' role", 'if typ not in END_TYPES or row.get("role") == "full" or row.get("bpm_tag") is not None \\', 'if typ not in END_TYPES or row.get("bpm_tag") is not None \\')
-m("fence", "end_cut shown on one-shots with a bpm in the name", 'row.get("role") == "full" or row.get("bpm_tag") is not None \\', 'row.get("role") == "full" \\')
+m("fence", "end_cut shown on 'full' role", 'if typ not in END_TYPES or row.get("role") == "full" or named or row.get("_loop"):', 'if typ not in END_TYPES or named or row.get("_loop"):')
+m("fence", "end_cut shown on one-shots with a bpm in the name", 'or named or row.get("_loop"):', 'or row.get("_loop"):')
+m("fence", "tempo-named one-shot that ends cut loses its end_cut", "if hit_cut:", "if False:")
+m("fence", "name tempo forgotten once bpm_tag is emptied", 'row.get("bpm_tag") is not None or row.get("_name_bpm") is not None)', 'row.get("bpm_tag") is not None)')
 m("fence", "end_cut shown on fx and vocals", 'END_TYPES = ("oneshot_melodic", "drum_oneshot")', 'END_TYPES = ("oneshot_melodic", "drum_oneshot", "fx", "vocal")')
 m("fence", "end_cut shown on drum loops", 'END_TYPES = ("oneshot_melodic", "drum_oneshot")', 'END_TYPES = ("oneshot_melodic", "drum_oneshot", "drum_loop")')
 m("fence", "fade length no longer rounded to tens", 'row["end_fade_ms"] = max(10, int(round(float(row["end_fade_ms"]) / 10.0)) * 10)', 'pass')
@@ -150,7 +161,7 @@ def run_one(args):
     with open(os.path.join(w, SONS, f), "w", encoding="utf-8") as fh:
         fh.write(src.replace(old, new))
     verdict, why = "survived", ""
-    for test in (("selftest_tout.py", "selftest.py") if f == "mesure.py" else ("selftest_tout.py",)):
+    for test in tests_for(f, os.path.join(w, SONS)):
         try:
             p = subprocess.run([sys.executable, "-I", test], cwd=os.path.join(w, SONS),
                                capture_output=True, text=True, timeout=300)
@@ -170,6 +181,9 @@ def run_one(args):
 
 
 def main():
+    global REPO, WORK, OUT, DEADLINE
+    REPO, WORK, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
+    DEADLINE = time.time() + float(sys.argv[4])
     os.makedirs(WORK, exist_ok=True)
     # round robin over the families, so every family is sampled early
     byfam = {}
@@ -187,4 +201,5 @@ def main():
                 fh.write("%-8s|%-9s|%-55s|%s\n" % (verdict.split()[0], fam, name, why if verdict == "killed" else verdict if verdict.startswith("SKIP") else ""))
 
 
-main()
+if __name__ == "__main__":
+    main()

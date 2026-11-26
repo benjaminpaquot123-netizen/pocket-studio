@@ -585,8 +585,81 @@ def common(sr, x):
 
 
 
+def _lpc(seg, order):
+    """Least-squares linear predictor of seg (coefficients for x[t-1..t-order])."""
+    rows = np.lib.stride_tricks.sliding_window_view(seg, order + 1)
+    a, *_ = np.linalg.lstsq(rows[:, :-1][:, ::-1], rows[:, -1], rcond=None)
+    return a
+
+
+def _predict(hist, a, n):
+    order = a.shape[0]
+    buf = list(hist[-order:])
+    out = np.empty(n)
+    for i in range(n):
+        v = float(np.dot(a, buf[::-1][:order]))
+        out[i] = v
+        buf.append(v)
+        buf.pop(0)
+    return out
+
+
+def _short_fade(s, sr):
+    """Length in ms of a fade of 4-15 ms at the end, or None (blind audit I1).
+    The last 15 ms are compared, 1 ms at a time, to their prediction from the 65 ms before."""
+    n15, n80, n1 = int(0.015 * sr), int(0.080 * sr), max(1, int(round(0.001 * sr)))
+    if s.shape[0] < n80 + n15:
+        return None
+    seg = s[-n80:-n15]
+    if float(np.sqrt(np.mean(seg ** 2))) < 10 ** (-60 / 20):
+        return None
+    try:
+        a = _lpc(seg, 24)
+    except np.linalg.LinAlgError:
+        return None
+    pred = _predict(seg, a, n15)
+    act = s[-n15:]
+    blocks = n15 // n1
+    ratio = []
+    for b in range(blocks):
+        pe = float(np.sqrt(np.mean(pred[b * n1:(b + 1) * n1] ** 2)))
+        ae = float(np.sqrt(np.mean(act[b * n1:(b + 1) * n1] ** 2)))
+        if pe < 10 ** (-60 / 20):
+            return None  # nothing tonal to predict (noise, silence)
+        ratio.append(20 * math.log10(ae / pe + 1e-9))
+    ratio = np.array(ratio)
+    if abs(float(np.median(ratio[:3]))) > 3.0 or ratio[-1] > -12.0:
+        return None  # the prediction does not hold, or the end is not faded out
+    start = int(np.nonzero(ratio > -1.5)[0][-1]) + 1 if np.any(ratio > -1.5) else 0
+    seg_r = ratio[start:]
+    if seg_r.size >= 2 and float(np.max(np.diff(seg_r))) > 3.0:
+        return None
+    return float(blocks - start)
+
+
+def _seamless(s, sr, x0):
+    """True when a sustained file of 1 s or more continues into its own start (a loop)."""
+    n80, n5 = int(0.080 * sr), int(0.005 * sr)
+    if s.shape[0] < sr or float(np.sqrt(np.mean(s[-n80:] ** 2))) < 10 ** (-40 / 20):
+        return False
+    try:
+        a = _lpc(s[-n80:], 24)
+    except np.linalg.LinAlgError:
+        return False
+    pred = _predict(s[-n80:], a, n5)
+    err = float(np.sqrt(np.mean((pred - x0[:n5]) ** 2)))
+    lvl = float(np.sqrt(np.mean(x0[:n5] ** 2))) + 1e-12
+    return err < 0.1 * lvl
+
+
 def _end_one(s, sr):
     """(cut, fade_ms or None) for one channel."""
+    x0 = s
+    nz = np.nonzero(np.abs(s) > 10 ** (-90 / 20))[0]
+    if nz.size == 0:
+        return 0, None
+    s = s[:int(nz[-1]) + 1]  # trailing digital silence hides nothing (blind audit I2)
+    s = s - float(np.mean(s[-int(0.1 * sr):]))  # DC offset is not a step (I2)
     n = s.shape[0]
     n1 = max(1, int(round(0.001 * sr)))
     n5 = max(2, int(round(0.005 * sr)))
@@ -620,13 +693,23 @@ def _end_one(s, sr):
     # (a) step to silence bigger than the waveform's own motion
     last = float(a[-1])
     motion = float(np.median(np.abs(np.diff(s[-n5:]))))
-    step = last > 10 ** (-60 / 20) and last > 4.0 * motion
+    rms5 = float(np.sqrt(np.mean(s[-n5:] ** 2)))
+    # noise moves as much as its own level: a random last sample is no step (blind audit I2)
+    step = last > 10 ** (-60 / 20) and last > 4.0 * motion and motion < 0.3 * rms5
     # (b) still loud 5 ms before the end with no fade of 5 ms or more
     c = n - n5
     lo, hi = max(0, c - n1 // 2), min(n, c + (n1 + 1) // 2)
     lvl = math.sqrt(float(np.mean(s[lo:hi] ** 2)))
-    loud = lvl > 10 ** (-30 / 20) and (fade_ms is None or fade_ms < 5.0)
-    return (1 if step or loud else 0), fade_ms
+    if fade_ms is None or fade_ms < 4.0:
+        sf = _short_fade(s, sr)
+        if sf is not None and sf >= 4.0:
+            fade_ms = sf
+    faded = fade_ms is not None and fade_ms >= 4.0
+    loud = lvl > 10 ** (-45 / 20) and not faded
+    cut = (step and not faded) or loud
+    if cut and _seamless(s, sr, x0):
+        cut = False
+    return (1 if cut else 0), fade_ms
 
 
 def end_cut(sr, x):

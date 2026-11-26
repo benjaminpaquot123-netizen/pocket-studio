@@ -467,7 +467,18 @@ def test_mutation_survivors_2():
                (rows["Kits/Kit 07 - 128 A/Pad.wav"] or {}).get("key_tag"))
 
 
-TESTS = [test_mutation_survivors_2, test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_reversed_crash_role_fx():
+    """b1 replay: a reversed crash is filed as fx, so its role is fx too, never hats."""
+    n = int(SR * 2.0)
+    x = (np.random.default_rng(9).standard_normal(n) * np.linspace(0.01, 0.4, n)).astype(np.float32)
+    rows, _, _, code, _ = run({"FX/Reverse Crash 01.wav": x, "Drums/Crash 01.wav": x[::-1].copy()})
+    r = rows["FX/Reverse Crash 01.wav"] or {}
+    check_eq("b1 reversed crash: type fx", r.get("type"), "fx")
+    check_eq("b1 reversed crash: role fx", r.get("role"), "fx")
+    check_eq("b1 plain crash keeps the role hats", (rows["Drums/Crash 01.wav"] or {}).get("role"), "hats")
+
+
+TESTS = [test_reversed_crash_role_fx, test_mutation_survivors_2, test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

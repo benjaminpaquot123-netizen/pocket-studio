@@ -533,6 +533,18 @@ def test_rar3_name_cases():
     for fam in ("snare", "clap"):
         check_eq("c9 %s has no note" % fam, tout.measure_drum_oneshot(SR, st.mono(snare), fam).get("note_measured"), None)
     check_true("c9 witness: a kick keeps its note", tout.measure_drum_oneshot(SR, st.mono(ru.b808()), "kick").get("note_measured"))
+    # review: a root-only tag heard on its root counts as right in the accuracy table
+    check_eq("c2 root-only tag agrees", tout._key_class(tout.key_match((0, "major"), (0, None))), True)
+    check_eq("c2 root-only tag, other root disagrees", tout._key_class(tout.key_match((2, "major"), (0, None))), False)
+    # review: in a styled pack only the title after the tempo loses its genre, a real genre word stays
+    old = tout._PACK_STYLE[0]
+    try:
+        tout._PACK_STYLE[0] = "house"
+        for rel, want in (("Loops/Trap Loop 01 [140] [Am].wav", "trap"), ("Synth/G Funk Lead 01.wav", "funk"),
+                          ("Loops/Drum Fills/Drum Fill_125_Soul.wav", "unlabelled")):
+            check_eq("c4 style of '%s' in a house pack" % rel, tout.classify(rel, 4.0)["style"], want)
+    finally:
+        tout._PACK_STYLE[0] = old
 
 
 TESTS = [test_rar3_name_cases, test_short_bpm_name_not_a_loop, test_reversed_crash_role_fx, test_mutation_survivors_2, test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]

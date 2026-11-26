@@ -453,7 +453,9 @@ def _fmt(v):
 
 def _inside_repo(path):
     repo = os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-    if not os.path.exists(os.path.join(repo, ".git")):
+    # a zip export or a copy has no .git: the project files still mark the
+    # repository (audit 2, defect 39)
+    if not any(os.path.exists(os.path.join(repo, m)) for m in (".git", "CLAUDE.md", os.path.join("docs", "sons"))):
         return False
     path = os.path.realpath(path)
     return path == repo or path.startswith(repo + os.sep)

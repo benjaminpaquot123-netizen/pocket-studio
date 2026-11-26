@@ -71,7 +71,8 @@ drum_loop  bpm_tag, bpm_measured, bpm_gap_pct, bars, grid_kick, grid_snare,
     'o' in some, '.' never), swing_pct (position of the off 16ths inside
     their 8th, 50 = straight), density_per_beat (onsets per beat).
 melodic_loop  bpm_tag, bpm_measured, bpm_gap_pct, bars, key_tag,
-    key_measured, key_match (exact | relative | other), key_strength
+    key_measured, key_match (exact | root: a lone letter
+    whose root the sound confirms | relative | other), key_strength
     (correlation of the best key), low_db/mid_db/high_db (share of energy
     under 250 Hz, 250 Hz-4 kHz, above 4 kHz, dB). On an untagged loop or
     non-drum stem, bpm_est and key_est stay empty unless the accuracy table
@@ -295,8 +296,8 @@ _GEAR_WORDS = re.compile(r"(?i)(?<![a-z])(?:juno|rhodes|mpc|route|tr|sh|cs|jx|sp
 # 'SH-101', 'TB-303': a short capital prefix and a dash name a model ('Bass-Loop-120' keeps its tempo)
 _MODEL_PREFIX = re.compile(r"(?<![A-Za-z])[A-Z]{1,3}-$")
 _ONLY_NUMBER = re.compile(r"\s*([1-9]\d{1,2})\s*")
-BPM_CONFIRM_TOL = 0.03
-BARS_GAP_TOL = 0.04  # tempo heard this close to the written one (or half, double): bars kept  # a bare number is trusted when the sound is within 3 % of it, its half or its double
+BPM_CONFIRM_TOL = 0.03  # a bare number is trusted when the sound is within 3 % of it, its half or its double
+BARS_GAP_TOL = 0.04  # tempo heard this close to the written one (or half, double): bars kept
 _MODE_RX = r"(?:[ _-]?(?i:(maj)(?:or)?|(min)(?:or)?)|[ _-]?(m))(?:\d{1,2})?"  # 'C# m' (audit 2 #8)
 _KEY_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(?:" + _MODE_RX + r")?(?![A-Za-z0-9#])")
 _ONE_NOTE_RX = re.compile(r"(?<![A-Za-z0-9])" + _NOTE_RX + r"(-?\d)?(?![A-Za-z0-9#])")
@@ -493,7 +494,7 @@ def confirm_tags(row, tags):
         if hits:
             row["key_tag"] = spell(kmeas, hits[-1])
             if "key_match" in row:
-                row["key_match"] = "exact"
+                row["key_match"] = "root"  # only the root was written, the mode is heard (audit 3 #8)
     elif tags.get("flat"):
         row["key_tag"] = spell(row.get("key_tag"), True)
     nmeas = re.match(r"[A-G]#?", row.get("note_measured") or "")

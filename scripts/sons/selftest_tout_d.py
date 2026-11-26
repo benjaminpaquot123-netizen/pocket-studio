@@ -173,7 +173,29 @@ def test_floor_after_the_end():
     check_eq("stereo: both channels cut together: cut", cut(SR, st), 1)
 
 
-TOPICS = [test_noisy_short_fades, test_floor_after_the_end]
+def test_quiet_and_short_files():
+    """Defects 17 and 29: a quiet file cut hard is cut; a file under 10 ms cut hard is cut."""
+    for sr in (44100, 48000):
+        src = {"kick": kick(1.2, 0.12, sr)[:int(0.15 * sr)],
+               "808": b808(40.0, 2.0, 0.8, sr)[:int(0.5 * sr)],
+               "lead": tone(440.0, 1.0, 0.4, sr)[:int(0.5 * sr)],
+               "hat": (0.5 * hp(noise(0.5, 1.0, 5, sr)) * np.exp(-T(0.5, sr) / 0.3))[:int(0.2 * sr)],
+               "snare": snare(0.6, sr)[:int(0.08 * sr)]}
+        for name, c in src.items():
+            for lvl in (-30, -40, -50):
+                check_eq("%s %d Hz at %d dB, hard cut: cut" % (name, sr, lvl), cut(sr, c * db(lvl)), 1)
+                check_eq("%s %d Hz at %d dB, 20 ms fade: not cut" % (name, sr, lvl), cut(sr, fade(c, 20, sr) * db(lvl)), 0)
+    check_eq("file at -80 dB: not cut", cut(SR, kick(1.2, 0.12)[:7200] * db(-80)), 0)
+    check_eq("click 3 ms cut hard: cut", cut(SR, hp(noise(0.003, 0.8, 4))), 1)
+    check_eq("hat 8 ms cut hard: cut", cut(SR, 0.6 * hp(noise(0.008, 1.0, 4)) / 3), 1)
+    check_eq("hat 12 ms cut hard: cut", cut(SR, 0.6 * hp(noise(0.012, 1.0, 4)) / 3), 1)
+    blip = hp(noise(0.008, 1.0, 4)) * np.exp(-T(0.008) / 0.001)
+    check_eq("8 ms blip that decays 35 dB: not cut", cut(SR, blip), 0)
+    check_eq("8 ms hat with a 6 ms fade: not cut", cut(SR, fade(0.6 * hp(noise(0.008, 1.0, 4)) / 3, 6)), 0)
+    check_eq("one sample: not cut", cut(SR, np.array([0.5])), 0)
+
+
+TOPICS = [test_noisy_short_fades, test_floor_after_the_end, test_quiet_and_short_files]
 
 
 def main():

@@ -8,10 +8,15 @@ Pour chaque famille de batterie et chaque style, une nouvelle version synthétis
 scripts/son/matin_batterie.sh /tmp/matin
 ```
 
-Le dossier doit être hors du dépôt. Le script fabrique tout seul ce qu'il lui faut (il faut g++ et ffmpeg), dure une trentaine de secondes et écrit **60 MP3** :
+Le dossier doit être hors du dépôt. Le script fabrique tout seul ce qu'il lui faut (il faut g++ et ffmpeg), dure moins d'une minute et écrit **109 MP3** :
 
 - `famille_style.mp3` (54 fichiers) : le son actuel de l'appli 4 fois, 1 seconde de silence, puis la nouvelle version 4 fois. Les deux moitiés ont le même volume ressenti (même loudness), pour juger le son et pas le niveau.
 - `boucle_style.mp3` (6 fichiers) : 8 mesures du style avec la batterie actuelle, 1 seconde, les mêmes 8 mesures avec les nouvelles versions.
+
+- **Les variantes** (48 fichiers) : la nouvelle version 4 fois, 1 seconde, la variante 4 fois.
+  - `kick_style_grave.mp3` : un kick plus grave et plus long ; `kick_style_sec.mp3` : plus haut et plus court. La nouvelle version du style est le kick « médian » entre les deux.
+  - `clap_style_long.mp3` / `clap_style_court.mp3`, pareil pour `caisse_claire_` et `charley_ferme_` : « long » est plus long et plus sombre, « court » plus sec et plus brillant.
+- `kick_deep_techno.mp3` (1 fichier) : le kick techno actuel de l'appli, 1 seconde, puis un kick « deep techno » pur (grave, rond, presque sans saturation).
 
 À la fin, le script vérifie chaque fichier (longueur, pas de silence, pas de saturation) et dit combien il en a écrit.
 
@@ -82,6 +87,12 @@ Le dossier doit être hors du dépôt. Le script fabrique tout seul ce qu'il lui
 | `boucle_dnb.mp3` | Boucle | dnb | kick sur 1 et le « et » de 3, caisse claire sur 2 et 4, toms | toutes les familles dnb |
 | `boucle_dubstep.mp3` | Boucle | dubstep | demi-temps : kick + 808 sur 1, caisse claire + clap sur 3 | toutes les familles dubstep |
 
+## Les variantes de kick, en chiffres
+
+Les trois kicks d'un style se rangent sur les mesures : « grave » vers le 25e centile de la note et le haut de la longueur, « sec » vers le haut de la note et le 25e centile de la longueur. Les kicks house et techhouse sonnaient « tambour » (creux) : leurs variantes ont une chute de note plus rapide (8 ms), plus de clic et un peu plus de saturation du corps, pour un coup plus serré. **Le kick sec de la dnb descend sous le 25e centile** de la longueur, exprès : la version du style est déjà courte et il fallait qu'il s'entende différent. Le kick deep techno : note 49 Hz, longueur à −40 dB 367 ms, crête 0,81.
+
+Les tests : chaque variante est sûre (attaque, ni NaN ni saturation, pas d'allocation), la variante « 0 » est la recette elle-même, « grave » dure au moins 5 % de plus que la médiane et « sec » au moins 5 % de moins, la note des kicks reste entre 35 et 65 Hz.
+
 ## Comment le test décide
 
 Pour chaque famille et style, le test joue un coup de la nouvelle version et vérifie qu'il tombe dans la fourchette des mesures (du 10e au 90e centile), avec une marge : 10 % sur la longueur, 8 % sur la note, 25 % sur le départ de la chute et sur la clarté. Il vérifie aussi : attaque en moins de 5 ms, ni NaN ni saturation, aucune allocation de mémoire pendant le rendu, et qu'un coup qui en relance un autre ne casse rien.
@@ -97,4 +108,5 @@ Pour chaque famille et style, le test joue un coup de la nouvelle version et vé
 - **Les voix qui ne passaient que grâce à la marge** ont été resserrées (voir plus haut) ; la caisse claire dnb et le kick trap, à 3 % de leur fourchette large, n'ont pas été retouchés.
 - **Quand un style avait trop peu de coups mesurés** (808, rim, la plupart des toms, crash dans quatre styles, charley ouvert dans trois), la cible est celle de la famille entière : la nouvelle version est alors la même dans ces styles (seule la note du 808 suit la tonique).
 - **Pas encore dans l'appli** : aucun pad, style ni projet ne joue ces versions. Les y mettre sera un autre lot, après écoute de Benjamin.
-- Pas de cowbell, shaker, conga ni zap dans ce lot.
+- Pas de cowbell, shaker, conga, zap ni « vrai 808 par style » dans ce lot : les mesures n'ont pas ces familles à part (elles sont mêlées dans « perc »).
+- **Les variantes ne sont pas dans les boucles** : on les entend en coups seuls seulement.

@@ -3,7 +3,7 @@
 # Usage: scripts/son/matin_batterie.sh <output dir outside the repo>
 # Writes famille_style.mp3 (the app's sound x4, 1 s, the measured variant x4, same loudness) and
 # boucle_style.mp3 (8 bars before, 1 s, 8 bars after).
-# Variants: kick_style_grave / _sec, clap|snare|hh_closed_style_long / _court (the measured recipe x4,
+# Variants: kick_style_grave / _sec, clap|caisse_claire|charley_ferme_style_long / _court (the measured recipe x4,
 # 1 s, the variant x4) and kick_deep_techno.mp3 (the app's techno kick, then the pure deep kick). Needs g++ and ffmpeg (libmp3lame).
 set -euo pipefail
 

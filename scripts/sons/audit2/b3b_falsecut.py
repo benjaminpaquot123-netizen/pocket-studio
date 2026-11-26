@@ -4,13 +4,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import *
 
 def db(a): return 10 ** (a / 20.0)
+chk = Check("b3b_falsecut")
 i = 0
 def case(label, rel, x, want, sr=SR, bits=24):
     global i
     i += 1
     rows, con, code = one("b3b", i, rel, x, sr=sr, bits=bits)
+    if not chk.run(label, rows, code):
+        return
     r = rows[0]
     got = r.get("end_cut")
+    if want is not None:
+        chk.eq(label + " end_cut", got, want)
     flag = "" if want is None or str(want) == got else "  <<< expected %s" % want
     print("%-58s %-14s cut=%-2s fade=%-5s%s" % (label, r.get("type")[:14], got, r.get("end_fade_ms"), flag))
 
@@ -89,3 +94,5 @@ case("lead cut + 20 ms exp fade (-60 dB)", L, org[:24000] * np.concatenate([np.o
 # 10. bass one-shot ending right at a zero crossing, full level
 z = sine(100.0, 0.5, 0.8)
 case("bass 100 Hz stopped on a zero crossing, full level", "Bass/Bass C2.wav", z, 1)
+chk.clean_repo()
+chk.done()

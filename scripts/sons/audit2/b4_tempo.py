@@ -2,22 +2,26 @@
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import *
+chk = Check("b4_tempo")
 i = 0
-bad = tot = 0
 def case(label, bpm, x, beats_per_bar=4, rel="Drum Loops/Loop 01.wav"):
-    global i, bad, tot
+    global i
     i += 1
     rows, con, code = one("b4", i, rel, x)
+    tag = "%s %g" % (label, bpm)
+    if not chk.run(tag, rows, code):
+        return
     r = rows[0]
     est = r.get("bpm_est") or ""
     bars_true = len(x) / SR * bpm / 60.0 / beats_per_bar
-    ok = est != "" and abs(float(est) - bpm) / bpm <= 0.02
-    okb = (r.get("bars") or "") != "" and abs(float(r.get("bars")) - bars_true) < 0.26
-    tot += 1; bad += (not ok)
+    # A blank tempo or bar count is honest (vide); a written one must be right.
+    chk.eq(tag + " type", r.get("type"), "drum_loop")
+    ok = chk.near(tag + " bpm_est", est, bpm, 0.02, may_be_empty=True)
+    okb = chk.near(tag + " bars", r.get("bars") or "", bars_true, 0.26 / bars_true, may_be_empty=True)
     print("%-44s true %-5g bars %-4.3g | %-9s est=%-7s bars=%-5s swing=%-5s k=%s s=%s h=%s%s%s" % (
         label, bpm, bars_true, r.get("type")[:9], est, r.get("bars"), r.get("swing_pct"),
         r.get("grid_kick"), r.get("grid_snare"), r.get("grid_hats"),
-        "" if ok else "  <<< TEMPO", "" if okb else "  <<< BARS"))
+        "" if est else "  (tempo vide)", "" if ok and okb else "  <<< FAUX"))
 
 for bpm in (60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 128, 130, 135, 140, 145, 150, 155, 160, 165, 170, 174, 180, 190, 200):
     case("four on the floor, 8th hats, 2 bars", bpm, drum_loop(bpm, 2, "four", "8th"))
@@ -45,4 +49,5 @@ for bpm in (55, 58, 205, 210, 220):
     case("outside 60-200: four, 8th hats", bpm, drum_loop(bpm, 2, "four", "8th"))
 for bpm in (87.5, 92.3, 123.45, 133.33):
     case("fractional tempo: four, 8th hats, 4 bars", bpm, drum_loop(bpm, 4, "four", "8th"))
-print("TEMPO wrong: %d of %d" % (bad, tot))
+chk.clean_repo()
+chk.done()

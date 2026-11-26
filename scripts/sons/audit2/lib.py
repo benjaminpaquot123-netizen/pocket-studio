@@ -1,5 +1,5 @@
 """Own generators + runner for the independent audit (nothing from the tool's self-tests)."""
-import contextlib, csv, glob, io, os, shutil, struct, sys, tempfile
+import contextlib, csv, glob, io, os, shutil, struct, subprocess, sys, tempfile
 import numpy as np
 
 # work folder for the synthetic packs and the tables: always outside the repository
@@ -285,3 +285,76 @@ def show(rel, rows, cols, con="", code=0):
         return
     for r in rows:
         print("%-52s -> %s" % (rel, " | ".join("%s=%s" % (c, r.get(c, "?")) for c in cols if r.get(c, "") != "" or c in ("type", "subtype", "role"))))
+
+
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+
+class Check:
+    """Assertions of one replay. Each cell ends as ok, faux (wrong value), vide (honest
+    empty cell, allowed) or erreur (crash, missing row). One line per problem:
+    'FAUX <replay> | <label> | ...' ; run_all.py parses these lines."""
+
+    def __init__(self, name):
+        self.name = name
+        self.n = {"ok": 0, "faux": 0, "vide": 0, "erreur": 0}
+
+    def _bad(self, kind, label, msg):
+        self.n[kind] += 1
+        print("%s %s | %s | %s" % (kind.upper(), self.name, label, msg))
+        return False
+
+    def ok(self, label, cond, detail=""):
+        if cond:
+            self.n["ok"] += 1
+            return True
+        return self._bad("faux", label, detail or "condition false")
+
+    def err(self, label, msg):
+        return self._bad("erreur", label, msg)
+
+    def eq(self, label, got, want, may_be_empty=False):
+        got = "" if got is None else str(got)
+        want = "" if want is None else str(want)
+        if got == want:
+            self.n["ok"] += 1
+            return True
+        if got == "" and may_be_empty:
+            self.n["vide"] += 1
+            return True
+        return self._bad("faux", label, "got %r want %r" % (got, want))
+
+    def near(self, label, got, want, rel=0.02, may_be_empty=False):
+        if got in (None, ""):
+            if may_be_empty:
+                self.n["vide"] += 1
+                return True
+            return self._bad("faux", label, "got '' want ~%s" % want)
+        try:
+            v = float(got)
+        except ValueError:
+            return self._bad("faux", label, "got %r want ~%s" % (got, want))
+        return self.ok(label, abs(v - want) <= rel * abs(want), "got %s want %s +-%d%%" % (got, want, rel * 100))
+
+    def run(self, label, rows, code, want_rows=True):
+        """A crash or a missing row is an erreur; returns the rows when usable."""
+        if isinstance(code, str) and code.startswith("CRASH"):
+            self.err(label, code[:200])
+            return None
+        if want_rows and not rows:
+            self.err(label, "no row (code %s)" % code)
+            return None
+        return rows
+
+    def clean_repo(self):
+        """The replays write only under S: nothing may appear under scripts/sons/pack."""
+        self.ok("repo untouched", not os.path.exists(os.path.join(REPO, "scripts", "sons", "pack")),
+                "scripts/sons/pack exists")
+        st = subprocess.run(["git", "status", "--porcelain", "--untracked-files=all", "--", "scripts/sons"],
+                            cwd=REPO, stdout=subprocess.PIPE, text=True).stdout.strip()
+        self.ok("repo clean under scripts/sons", not st, st.replace("\n", ", "))
+
+    def done(self):
+        n = self.n
+        print("%s: ok %d faux %d vide %d erreur %d" % (self.name, n["ok"], n["faux"], n["vide"], n["erreur"]))
+        sys.exit(1 if n["faux"] or n["erreur"] else 0)

@@ -31,6 +31,7 @@ def endings(x, sr, name):
     out.append(("hard cut + clipped", np.clip(c * 3, -0.99, 0.99), 1))
     return out
 
+chk = Check("b3_cut")
 rows_out = []
 i = 0
 for sr in (48000, 44100, 96000):
@@ -41,7 +42,14 @@ for sr in (48000, 44100, 96000):
             i += 1
             rel = "Drums/Kicks/Kick 01.wav" if name in ("kick", "hat_noise", "snare") else "Synth/Lead C3.wav"
             rows, con, code = one("b3", i, rel, y, sr=sr, bits=24)
+            tag = "%s sr=%d %s" % (name, sr, label)
+            if not chk.run(tag, rows, code):
+                continue
             r = rows[0]
             got = r.get("end_cut")
+            if want is not None:
+                chk.eq(tag + " end_cut", got, want)
             flag = "" if want is None or str(want) == got else "  <<< expected %s" % want
             print("%-9s sr=%-5d %-32s end_cut=%s fade=%s%s" % (name, sr, label, got, r.get("end_fade_ms"), flag))
+chk.clean_repo()
+chk.done()

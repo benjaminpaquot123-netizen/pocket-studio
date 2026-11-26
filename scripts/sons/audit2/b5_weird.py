@@ -2,8 +2,9 @@
 import os, sys, struct, shutil, subprocess
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import *
-ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "pack", "b5")
+ROOT = os.path.join(S, "pack", "b5")  # under the work folder, never in the repository
 shutil.rmtree(ROOT, ignore_errors=True)
+SEEN = []
 i = 0
 COLS = ["type", "subtype", "dur_s", "sr", "ch", "size_kb", "peak_dbfs", "rms_dbfs", "lufs_i", "end_cut", "error"]
 def raw(label, rel, data):
@@ -15,6 +16,7 @@ def raw(label, rel, data):
     with open(p, "wb") as f:
         f.write(data)
     rows, con, code = run_pack(root, "b5_%03d" % i)
+    SEEN.append((label, rows, con, code))
     print("--- " + label + "   [" + rel + "]")
     if not rows:
         print("    NO ROW. code=%s console=%s" % (code, con.strip().replace("\n", " | ")[:300]))
@@ -97,3 +99,47 @@ raw("white noise 1 s (centroid near 10 kHz: 1e+04 ?)", "Drums/Hats/Hat 01.wav", 
 raw("tone at 9998 Hz", "Synth/Lead C3.wav", wavbytes(sine(9998.0, 1.0, 0.5)))
 raw("very quiet file (-80 dBFS)", K, wavbytes(k * 1e-4, bits=24))
 raw("11.5 MB file -> size_kb", "Synth/Pad C3.wav", wavbytes(tone(130.81, 5.0, 0.3), sr=96000, bits=32))
+# Expected outcome per case: an error text (substring of the error cell), "ok" (measured,
+# no error, 0.5 s unless a duration is given), or "norow" (nothing measured, said on the console).
+ERR = {
+    "float file containing NaN samples": "non-finite samples",
+    "float file containing +inf": "non-finite samples",
+    "channels = 0": "channel count",
+    "sample rate = 0": "sample rate",
+    "empty file (0 byte)": "too short",
+    "44-byte header only, 0 frame": "no audio frames",
+    "one single sample": "too short",
+    "10 samples": "too short",
+    "pure digital silence 1 s": "silent",
+    "constant DC 0.5 for 1 s": "dc",
+    "text file named .wav": "not a wav",
+    "MP3 data named .wav (ID3 header)": "not a wav",
+    "RF64 header": "not a wav",
+    "RIFX (big endian)": "not a wav",
+    "ADPCM (format 2)": "compressed",
+    "mu-law (format 7)": "compressed",
+    "truncated in the middle of the data (declared 0.5 s, holds 0.1 s)": "truncated wav",
+    "truncated inside the header (20 bytes)": "no data chunk",
+    "AIFF truncated": "truncated aiff",
+}
+NOROW = ("macOS resource fork ._Kick 01.wav", "hidden .DS_Store + flac + mp3 + ogg only")
+DUR = {"white noise 1 s (centroid near 10 kHz: 1e+04 ?)": 1.0, "tone at 9998 Hz": 1.0,
+       "11.5 MB file -> size_kb": 2.5}
+chk = Check("b5_weird")
+for label, rows, con, code in SEEN:
+    if label in NOROW:
+        chk.eq(label + " rows", len(rows), 0)
+        chk.eq(label + " exit", code, 1)
+        chk.ok(label + " console", "no wav/aiff/midi file measured" in con, "console: " + con[-120:])
+        continue
+    if not chk.run(label, rows, code):
+        continue
+    chk.eq(label + " rows", len(rows), 1)
+    r = rows[0]
+    if label in ERR:
+        chk.ok(label + " error", ERR[label] in (r.get("error") or ""), "error %r, want %r" % (r.get("error"), ERR[label]))
+    else:
+        chk.eq(label + " error", r.get("error"), "")
+        chk.near(label + " dur_s", r.get("dur_s"), DUR.get(label, 0.5), 0.01)
+chk.clean_repo()
+chk.done()

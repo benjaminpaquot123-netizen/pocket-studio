@@ -19,6 +19,7 @@ def mk(kind, sr, seed, cutpos):
         x = np.sin(ph) * np.exp(-t / 0.2) * 0.9
     return x[:int(cutpos * sr)]
 
+chk = Check("b3c_fuzz")
 print("share of files read as CUT (20 seeds each). Linear fade applied at the cut point.")
 print("%-6s %-6s " % ("sound", "sr") + " ".join("%6s" % ("%gms" % m) for m in (0, 2, 4, 5, 6, 8, 10, 12, 15, 20, 30, 50)))
 for kind in ("hat", "snare", "white", "kick"):
@@ -32,4 +33,11 @@ for kind in ("hat", "snare", "white", "kick"):
                     x = fade(x, ms, sr)
                 cuts += tout.end_cut(sr, q24(x))["end_cut"]
             line.append("%5d%%" % (cuts * 5))
+            tag = "%s sr=%d fade %d ms" % (kind, sr, ms)
+            if ms == 0:  # a hard cut is always seen
+                chk.eq(tag, cuts * 5, 100)
+            elif ms >= 12:  # a 12 ms fade or longer is never a cut (defect 15)
+                chk.eq(tag, cuts * 5, 0)
         print("%-6s %-6d " % (kind, sr) + " ".join(line))
+chk.clean_repo()
+chk.done()

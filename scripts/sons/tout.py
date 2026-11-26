@@ -26,7 +26,10 @@ subtype    finer label: drum family, "<family>:attack"/":tail" for layer
 role       full, 808, bass, kick, snare, hats, perc, drums, vocal, fx, lead,
            pad, keys, chords, pluck, arp, guitar, strings, brass, bell,
            synth, or "-" (from the words of the name and folders)
-style      genre label from the folders, "unlabelled" when none says it
+style      genre label from the folders, "unlabelled" when none says it;
+           the pack folder's own name comes last, said on the console
+           ("style du pack : X, posé sur N lignes"); --no-pack-style drops it,
+           --pack-style STYLE gives it
 dur_s sr ch    length in seconds, sample rate, channels
 peak_dbfs  sample peak
 rms_dbfs   RMS of the channel-summed power (a 0.1 sine reads -23.01)
@@ -563,7 +566,9 @@ GENRES = [(g, rx.replace("afro", "afro(?:beats?|house)?") if g == "afro" else rx
 # A style is a whole word ('Warehouse', 'Strap', 'Soulful', 'Entrance' name no style), plural allowed.
 GENRES = [(g, re.compile(r"(?<![a-z])(?:%s)s?(?![a-z])" % rx, re.I)) for g, rx in GENRES]
 _PACK_STYLES = [(re.compile(r"(?<![a-z])%s(?![a-z])" % re.escape(k), re.I), st) for k, st in mine_or.STYLES]
-_STYLE_NOISE = re.compile(r"(?i)jungle ?perc\w*|garage ?doors?")
+# phrases whose genre word names no style: 'Rock Solid Kicks', 'Pop Up Drums', 'House of Loops' (audit 3 #3)
+_STYLE_NOISE = re.compile(r"(?i)jungle ?perc\w*|garage ?doors?|rock ?solid|pop ?ups?\b|jungle ?animals?|house ?of\b"
+                          r"|soul ?food|garage ?band")
 _CAMEL = re.compile(r"(?<=[a-z])(?=[A-Z])")
 
 
@@ -2617,6 +2622,9 @@ def main(argv=None):
     ap.add_argument("--rar", required=True, help="pack number (or 'app')")
     ap.add_argument("--out", help="CSV prefix, outside the git repository")
     ap.add_argument("--trace", metavar="FILE_ID", help="print the file a table row's file_id stands for, write nothing")
+    ps = ap.add_mutually_exclusive_group()
+    ps.add_argument("--no-pack-style", action="store_true", help="no style taken from the pack folder's name")
+    ps.add_argument("--pack-style", metavar="STYLE", help="style for the rows no folder or name labels")
     args = ap.parse_args(argv)
     if not os.path.isdir(args.folder):
         ap.error("not a folder: %s" % args.folder)
@@ -2674,6 +2682,11 @@ def main(argv=None):
     usable = {(r["type"], r["measure"]) for r in acc.rows() if r["usable"] == "yes"}
     # a style written only in the pack folder's own name comes last (audit 2, defect 14)
     pack_style = style_of("", pack=os.path.basename(os.path.abspath(args.folder)))
+    if args.no_pack_style:
+        pack_style = "unlabelled"
+    elif args.pack_style:
+        pack_style = re.sub(r"[^a-z0-9]", "", args.pack_style.lower())[:20] or "unlabelled"
+    pack_styled = 0
     for typ in TYPES:
         if not rows[typ]:
             # a table left by an earlier run would read as this run's (defect 33)
@@ -2688,6 +2701,7 @@ def main(argv=None):
                 r.setdefault("type", typ)
                 if r.get("style") in (None, "", "unlabelled"):
                     r["style"] = pack_style
+                    pack_styled += pack_style != "unlabelled"
                 if r.get("bpm_est") is None:
                     r["bpm_est"] = r.get("bpm_measured", r.get("bpm_file"))
                 if r.get("key_est") is None:
@@ -2703,6 +2717,8 @@ def main(argv=None):
             wr.writerow({k: _fmt(v) for k, v in r.items()})
     counts = ", ".join("%s %d" % (t, len(rows[t])) for t in TYPES if rows[t])
     print("%d rows (%s)" % (total, counts))
+    if pack_styled:  # a style read from the pack's own name is a guess the user must see (audit 3 #3)
+        print("style du pack : %s, posé sur %d lignes" % (pack_style, pack_styled))
     if skipped:
         print("skipped: " + ", ".join("%s %d" % kv for kv in sorted(skipped.items())))
     if not total:

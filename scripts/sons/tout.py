@@ -1999,14 +1999,32 @@ def _midi_row(p, rel, tags, rar, acc):
     return row
 
 
+def _file_id(rel):
+    """Short stable id of a file inside its pack: no name in the table, but
+    `--trace ID` finds the file again (audit 2, defect 28)."""
+    import hashlib
+    return hashlib.sha1(rel.encode("utf-8", "surrogateescape")).hexdigest()[:10]
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Measure every sound of a sample pack into anonymous CSV tables.")
     ap.add_argument("folder", help="pack folder (searched recursively)")
     ap.add_argument("--rar", required=True, help="pack number (or 'app')")
-    ap.add_argument("--out", required=True, help="CSV prefix, outside the git repository")
+    ap.add_argument("--out", help="CSV prefix, outside the git repository")
+    ap.add_argument("--trace", metavar="FILE_ID", help="print the file a table row's file_id stands for, write nothing")
     args = ap.parse_args(argv)
     if not os.path.isdir(args.folder):
         ap.error("not a folder: %s" % args.folder)
+    if args.trace:
+        # the tables stay anonymous; the id leads back to the file only with the pack at hand (defect 28)
+        audio, midi, _ = _walk(args.folder)
+        hits = [r for r in (os.path.relpath(p, args.folder).replace(os.sep, "/") for p in audio + midi)
+                if _file_id(r) == args.trace]
+        for r in hits:
+            print(r)
+        return 0 if hits else 1
+    if not args.out:
+        ap.error("the following arguments are required: --out")
     if mesure._inside_repo(args.out) or mesure._inside_repo(os.path.dirname(os.path.abspath(args.out))):
         ap.error("refusing to write measurements of samples inside the repository")
     if not os.path.isdir(os.path.dirname(os.path.abspath(args.out))):
@@ -2026,6 +2044,7 @@ def main(argv=None):
             if cl["type"] != "kit_stem" or drum_family(_clean(parts[-1]), []) is not None:
                 row = _measure_file(p, rel, parts, acc, rar)  # one-shots inside a kit (I7)
                 if row["type"] != "kit_stem" or row["error"]:
+                    row["file_id"] = _file_id(rel)
                     rows[row["type"]].append(row)
                     continue
         if ki is not None:
@@ -2033,8 +2052,10 @@ def main(argv=None):
             continue
         if p in midi:
             rows["midi"].append(_midi_row(p, rel, parse_tags(parts, "midi"), rar, acc))
+            rows["midi"][-1]["file_id"] = _file_id(rel)
             continue
         row = _measure_file(p, rel, parts, acc, rar)
+        row["file_id"] = _file_id(rel)
         rows[row["type"]].append(row)
     kr, sr_, mr = _run_kits(kits, acc, rar)
     rows["kit"] += kr
@@ -2048,7 +2069,7 @@ def main(argv=None):
             if os.path.isfile("%s_%s.csv" % (args.out, typ)):
                 os.remove("%s_%s.csv" % (args.out, typ))
             continue
-        cols = COMMON + TYPE_COLUMNS[typ]
+        cols = COMMON + TYPE_COLUMNS[typ] + ["file_id"]
         with open("%s_%s.csv" % (args.out, typ), "w", newline="", encoding="utf-8") as fh:
             wr = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore")
             wr.writeheader()

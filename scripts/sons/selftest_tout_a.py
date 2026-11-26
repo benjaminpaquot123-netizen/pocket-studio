@@ -261,6 +261,23 @@ for rel in ["Drums/808s/Kick 01.wav", "Drums/808s/808 C.wav", "Drums/808 Kicks/K
             "Drums/Kicks/808 Kick 01.wav"]:
     expect(rel, 0.8, type="drum_oneshot", subtype="kick_808")
 
+# ================================================================ 25 + 26: long one-shots, a note in a kit
+expect("Drums/808s/808 Very Long C.wav", 11.0, type="drum_oneshot", subtype="kick_808")
+expect("Drums/Cymbals/Crash Long.wav", 11.0, type="drum_oneshot", subtype="crash")
+expect("Synth/Long Pad Cm.wav", 9.0, type="oneshot_melodic")
+expect("Drone Dark.wav", 12.0, type="oneshot_melodic")
+expect("Synth/Strings C3.wav", 10.0, type="oneshot_melodic")
+expect("Drums/808s/808 Long 140bpm C.wav", 2.0, type="drum_oneshot")
+expect("Synth/Pad Loop 120 Cm.wav", 9.0, type="melodic_loop")
+expect("Synth/Pad 120 Cm.wav", 9.0, type="melodic_loop")
+expect("Music/Untitled 01.wav", 30.0, type="melodic_loop", subtype="untagged")
+expect("Drums/Kicks/Kick Long.wav", 11.0, type="melodic_loop")
+expect("Kits/Kit A/Bass C2.wav", 1.5, type="oneshot_melodic")
+expect("Kits/Kit A/Lead F#3.wav", 1.5, type="oneshot_melodic")
+expect("Kits/Kit A/Bass.wav", 8.0, type="kit_stem")
+expect("Kits/Kit A/Bass Loop C2.wav", 8.0, type="kit_stem")
+expect("Kits/Kit A/Bass 120 C2.wav", 8.0, type="kit_stem")
+
 
 print("%d checks, %d failed" % (COUNT, FAILS))
 sys.exit(1 if FAILS else 0)

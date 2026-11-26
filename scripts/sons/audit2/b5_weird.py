@@ -2,7 +2,7 @@
 import os, sys, struct, shutil, subprocess
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import *
-ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "pack", "b5")
+ROOT = os.path.join(S, "pack", "b5")
 shutil.rmtree(ROOT, ignore_errors=True)
 i = 0
 COLS = ["type", "subtype", "dur_s", "sr", "ch", "size_kb", "peak_dbfs", "rms_dbfs", "lufs_i", "end_cut", "error"]

@@ -1718,7 +1718,12 @@ def _fmt(v):
         return "" if not math.isfinite(v) else "%.4g" % v if abs(v) < 1e4 else "%.1f" % v
     if isinstance(v, (int, np.integer)):
         return str(int(v))
-    return mesure._safe_cell(str(v))
+    text = str(v)
+    # a lone "-" is not a formula in any spreadsheet; "-A1" or "-1+1" is, so
+    # anything longer that starts with "-" keeps the quote
+    if text == "-":
+        return text
+    return mesure._safe_cell(text)
 
 
 def _walk(folder):

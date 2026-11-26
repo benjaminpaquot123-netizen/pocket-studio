@@ -115,6 +115,7 @@ write_wav(os.path.join(root, "Loops", "Pad Loop 02.wav"),
           chord_loop(140, 4, [[57, 60, 64], [53, 57, 60], [55, 59, 62], [52, 55, 59]], pluck=False), SR, bits=24)
 r = table(root, "acc1", ["type", "role", "dur_s", "bpm_tag", "key_tag", "bpm_est", "key_est", "bpm_gap_pct", "bars", "key_match"])
 KEYN = {"Am": "A minor", "Cm": "C minor"}
+chk.eq("acc1 rows", len(r), 14)
 for x in r:
     tag = "acc1 %s %s" % (x["bpm_tag"] or "untagged", x["key_tag"] or x["dur_s"])
     chk.eq(tag + " type", x["type"], "melodic_loop")
@@ -168,6 +169,7 @@ kd = os.path.join(root, "Construction Kits", "Kit 02 - 100 bpm Am")
 write_wav(os.path.join(kd, "Pad.wav"), chord_loop(80, 4, None, pluck=False), SR, bits=24)
 write_wav(os.path.join(kd, "Pad 2.wav"), chord_loop(80, 4, None, pluck=False), SR, bits=24)
 r = table(root, "kit2", ["type", "role", "bpm_tag", "key_tag", "bpm_est", "key_est", "bpm_gap_pct", "bars", "n_stems"])
+chk.eq("kit2 types", sorted(x["type"] for x in r), ["kit", "kit_stem", "kit_stem"])
 for k, x in enumerate(r):
     tag = "kit2 %s%s" % (x["type"], "" if x["type"] == "kit" else " %d" % k)
     chk.near(tag + " bpm_est", x["bpm_est"], 80, may_be_empty=True)

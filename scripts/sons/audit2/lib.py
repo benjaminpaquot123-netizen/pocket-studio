@@ -1,5 +1,5 @@
 """Own generators + runner for the independent audit (nothing from the tool's self-tests)."""
-import contextlib, csv, glob, io, os, shutil, struct, sys, tempfile
+import contextlib, csv, glob, io, os, shutil, struct, subprocess, sys, tempfile
 import numpy as np
 
 # work folder for the synthetic packs and the tables: always outside the repository
@@ -350,6 +350,9 @@ class Check:
         """The replays write only under S: nothing may appear under scripts/sons/pack."""
         self.ok("repo untouched", not os.path.exists(os.path.join(REPO, "scripts", "sons", "pack")),
                 "scripts/sons/pack exists")
+        st = subprocess.run(["git", "status", "--porcelain", "--untracked-files=all", "--", "scripts/sons"],
+                            cwd=REPO, stdout=subprocess.PIPE, text=True).stdout.strip()
+        self.ok("repo clean under scripts/sons", not st, st.replace("\n", ", "))
 
     def done(self):
         n = self.n

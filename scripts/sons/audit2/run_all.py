@@ -33,6 +33,10 @@ EXPECTED_RED = {
                 "root4 style not from 'Souls'"],  # style too greedy on the pack folder name
 }
 
+# Most blanks allowed today (honest "don't know"). A replay above its ceiling fails: a tool that
+# stops estimating must not pass green by leaving every cell blank. Lower it when the tool improves.
+VIDE_MAX = {"b4_tempo": 92, "b6_misc": 17, "b8_bars": 98}
+
 
 def play(name, work):
     env = dict(os.environ, AUDIT2_WORK=os.path.join(work, name))
@@ -46,15 +50,21 @@ def play(name, work):
 
 def judge(name, code, out):
     """-> (failed, text)."""
-    fails = {}
+    fails, n_lines = {}, 0
     for line in out.splitlines():
         m = re.match(r"(FAUX|ERREUR) %s \| (.*?) \| (.*)$" % re.escape(name), line)
         if m:
-            fails.setdefault(m.group(2), (m.group(1), m.group(3)))
-    m = re.search(r"^%s: (ok \d+ faux \d+ vide \d+ erreur \d+)$" % re.escape(name), out, re.M)
+            n_lines += 1
+            if m.group(2) not in fails or m.group(1) == "ERREUR":   # an erreur is never hidden
+                fails[m.group(2)] = (m.group(1), m.group(3))
+    m = re.search(r"^%s: (ok \d+ faux (\d+) vide (\d+) erreur (\d+))$" % re.escape(name), out, re.M)
     if not m:
         return True, "pas de verdict (code %s) : %s" % (code, out.strip().splitlines()[-1:] or "")
     counts = m.group(1)
+    if int(m.group(2)) + int(m.group(4)) != n_lines:
+        return True, "%s ; %d lignes FAUX/ERREUR lues" % (counts, n_lines)
+    if int(m.group(3)) > VIDE_MAX.get(name, 0):
+        return True, "%s ; trop de vides (plafond %d)" % (counts, VIDE_MAX.get(name, 0))
     want = set(EXPECTED_RED.get(name, []))
     new = sorted(k for k in fails if k not in want or fails[k][0] == "ERREUR")
     fixed = sorted(want - set(fails))

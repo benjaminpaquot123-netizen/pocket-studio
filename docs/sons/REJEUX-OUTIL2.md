@@ -11,7 +11,8 @@ python3 -I scripts/sons/audit2/run_all.py [dossier_de_travail]
 
 Une ligne par rejeu (`ok` ou `ÉCHEC`), puis le total. Packs fabriqués et tables vont dans le
 dossier de travail (par défaut `AUDIT2_WORK`, sinon un dossier temporaire), jamais dans le dépôt :
-`run_all.py` vérifie à la fin que `git status` est propre et que `scripts/sons/pack/` n'existe pas.
+`run_all.py` vérifie à la fin que `git status` est propre (chaque rejeu le vérifie aussi sous
+`scripts/sons/`) et que `scripts/sons/pack/` n'existe pas.
 Un rejeu se lance aussi seul : `python3 -I scripts/sons/audit2/b6_misc.py`.
 
 ## Lire un verdict
@@ -27,7 +28,9 @@ Un faux ou une erreur donne un code de sortie 1. b8 n'imprime plus « WRONG » e
 « TEMPO wrong » : ce qui était laissé vide à raison compte en « vide ».
 
 `run_all.py` est en échec si : une faute n'est pas dans la liste ci-dessous, une erreur apparaît,
-un rejeu n'a pas de verdict, une faute de la liste ne se montre plus (réparée : la retirer de
+un rejeu n'a pas de verdict, le verdict ne compte pas autant de faux et d'erreurs que de lignes
+imprimées, un rejeu dépasse son plafond de vides (`VIDE_MAX` : b4 92, b6 17, b8 98 ; un outil qui
+cesserait d'estimer ne passe donc pas en vert), une faute de la liste ne se montre plus (réparée : la retirer de
 `EXPECTED_RED`), ou le dépôt a changé.
 
 ## Rouges attendus (`EXPECTED_RED`)

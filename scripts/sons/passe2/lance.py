@@ -183,7 +183,7 @@ def plan_of(packs, cli):
     for i, p in enumerate(packs, 1):
         audio, midi, skipped = tout._walk(p)
         name = os.path.basename(p)
-        posed = tout.style_of("", pack=name)
+        posed = tout.style_of(tout._pack_top(p) or "", pack=name)  # as tout.main reads it
         force = forced_style(name, cli)
         if force == posed:
             force = None
@@ -194,16 +194,31 @@ def plan_of(packs, cli):
 
 
 def id_map(folder):
-    """file_id -> relative path, for every file and every folder above a file (kit rows)."""
+    """file_id -> relative path, for every file and every folder above a file (kit rows).
+    tout._file_id hashes the pack folder's name with the path: pose it as tout.main does,
+    and put the old value back after."""
     out = {}
     audio, midi, _ = tout._walk(folder)
-    for p in audio + midi:
-        rel = os.path.relpath(p, folder).replace(os.sep, "/")
-        parts = rel.split("/")
-        for k in range(1, len(parts) + 1):
-            r = "/".join(parts[:k])
-            out.setdefault(tout._file_id(r), r)
+    saved = tout._PACK_NAME[0]
+    tout._PACK_NAME[0] = os.path.basename(os.path.normpath(os.path.abspath(folder)))
+    try:
+        for p in audio + midi:
+            rel = os.path.relpath(p, folder).replace(os.sep, "/")
+            parts = rel.split("/")
+            for k in range(1, len(parts) + 1):
+                r = "/".join(parts[:k])
+                out.setdefault(tout._file_id(r), r)
+    finally:
+        tout._PACK_NAME[0] = saved
     return out
+
+
+def own_style(rel, top):
+    """Style named inside the pack (tout.classify: the pack's own wrapping folder does not count)."""
+    parts = rel.split("/")
+    if top and len(parts) > 1 and parts[0] == top:
+        parts = parts[1:]
+    return tout.style_of("/".join(parts))
 
 
 def read_csv(path):
@@ -229,6 +244,7 @@ def merge(plan, per_pack, rar):
     merged = {}
     for pk in plan:
         ids = id_map(pk["path"]) if pk["force"] else {}
+        top = tout._pack_top(pk["path"])
         pk["rows"] = pk["kits"] = pk["errors"] = pk["forced_rows"] = pk["unresolved"] = 0
         pk["error_list"] = []
         for typ, (cols, rows) in per_pack[pk["pack"]].items():
@@ -252,7 +268,7 @@ def merge(plan, per_pack, rar):
                         rel = ids.get(row.get("file_id", ""))
                         if rel is None:
                             pk["unresolved"] += 1
-                        elif tout.style_of(rel) == "unlabelled":
+                        elif own_style(rel, top) == "unlabelled":
                             row["style"] = pk["force"]
                             pk["forced_rows"] += 1
                 m["rows"].append(row)

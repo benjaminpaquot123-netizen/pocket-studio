@@ -6,4 +6,4 @@
 #   their 52 drum wavs are BPM-tagged loops/stems (kick/clap/hats/crash/fills), excluded as loops.
 #   Exclusive MIDI Kits: MIDI only. Melody Kits (EDM/Lo-Fi/Trap): melodic loops only.
 # Nothing measured: no rows below.
-family,style,subtype,folder,file,sr,channels,dur_ms,peak_dbfs,onset_ms,t20_ms,t40_ms,t60_ms,end_level_db,mono_loss_db,pitch_attack_hz,pitch_steady_hz,tonal_db,h2_db,h3_db,centroid_hz,hf_db,transient_body_db,error
+family,style,subtype,sr,channels,dur_ms,peak_dbfs,onset_ms,t20_ms,t40_ms,t60_ms,end_level_db,mono_loss_db,pitch_attack_hz,pitch_steady_hz,tonal_db,h2_db,h3_db,centroid_hz,hf_db,transient_body_db,error

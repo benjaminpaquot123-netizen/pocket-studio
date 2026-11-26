@@ -256,8 +256,25 @@ void testMeasuredDrumsRetrigger() {
     }
 }
 
+// Every voice falls silent and goes inactive once its tails are done (no endless work), in every style.
+void testMeasuredDrumsStop() {
+    for (int st = 0; st < ps::measured::kStyles; ++st) {
+        for (int f = 0; f < ps::measured::kFamilies; ++f) {
+            ps::measured::Voice v;
+            v.prepare(kRate);
+            v.setRecipe(ps::measured::recipe(f, st));
+            v.trigger(1.0f);
+            std::vector<float> out(256, 0.0f);
+            for (int i = 0; i < kRate * 8 / 256 && v.active(); ++i) v.render(out.data(), 256);
+            if (v.active()) std::printf("  still active after 8 s: family %d style %d\n", f, st);
+            CHECK(!v.active());
+        }
+    }
+}
+
 }  // namespace matin_tests
 
 #define PS_MATIN_TESTS                                                      \
     {"matin_measured_drums_in_range", matin_tests::testMeasuredDrumsInRange}, \
-    {"matin_measured_drums_retrigger", matin_tests::testMeasuredDrumsRetrigger},
+    {"matin_measured_drums_retrigger", matin_tests::testMeasuredDrumsRetrigger}, \
+    {"matin_measured_drums_stop", matin_tests::testMeasuredDrumsStop},

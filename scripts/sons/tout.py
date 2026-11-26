@@ -399,8 +399,8 @@ ROLES = [
     ("hats", r"\bhats?\b|hi.?hat|cymbal|\bride\b|shaker|\b[co]?hh\b|\bcrash"),
     ("perc", r"perc|conga|bongo|\btoms?\b|\brims?\b|shaker|tamb"),
     ("drums", r"drum|\btop\b|\btops\b|\bgrooves?\b|\bbeats?\b|\bbreaks?\b|breakbeat|\bfills?\b"),
-    ("vocal", r"vo(x|cal)|voice|acapella|chant"),
-    ("fx", r"\bfx\b|sfx|riser|sweep|impact|noise|atmos|texture"),
+    ("vocal", r"vocal|acapella"),
+    ("fx", r"\bfx\b|sfx|riser|impact"),
     ("lead", r"lead|melody|hook|\bline\b"),
     ("pad", r"\bpads?\b|drone|ambien"),
     ("keys", r"\bkeys\b|piano|rhodes|organ|wurli|\bep\b|\bkey\b"),
@@ -412,6 +412,8 @@ ROLES = [
     ("brass", r"brass|horn|trumpet|sax"),
     ("bell", r"bell|mallet|marimba|kalimba|glock"),
     ("synth", r"synth|saw|\bsquare|\bsupersaw"),
+    ("vocal", r"\bvox\b|voice|chant"),  # after the instruments: 'Vox Lead' is a lead (defect 9)
+    ("fx", r"sweep|noise|atmos|texture"),  # 'Atmosphere Pad' is a pad
 ]
 ROLES = [(r, re.compile(rx, re.I)) for r, rx in ROLES]
 GENRES = [("techno", r"techno"), ("house", r"house"), ("dnb", r"dnb|drum ?(and|&|n) ?bass|jungle"),
@@ -510,7 +512,7 @@ LOOP_NAME_RX = re.compile(r"(?i)\bmelod(?:y|ies)\b|\bbasslines?\b|\bbreaks?\b|\b
 DRUM_W = re.compile(r"(?i)\b(?:hi.?|super)?(?:hats?|hihats?|drums?|kicks?|kickdrums?|snares?|claps?|percs?|percussions?|"
                     r"grooves?|beats?|breaks?|breakbeats?|shakers?|rides?|cymbals?|toms?|fills?|hh)\b")
 MELODIC_W = re.compile(r"(?i)\b(?:bass(?:es|lines?)?|synths?|leads?|pads?|keys|piano|pianos|chords?|plucks?|arps?|"
-                       r"arpeggi\w*|melod\w*|guitars?|strings?|brass|bells?|organs?|rhodes|stabs?)\b")
+                       r"arpeggi\w*|melod\w*|guitars?|strings?|brass|bells?|organs?|rhodes|stabs?|reese)\b")
 _DNB_RX = re.compile(r"(?i)\bdrums?\s*(?:&|and|n|'n'|\+)\s*bass\b")
 
 
@@ -548,6 +550,35 @@ def _drumminess(x):
 
 
 DRUMMY_FLATNESS = 0.02
+
+
+# Defect 9: fx and vocal words only describe a sound when no instrument word says otherwise.
+WEAK_FX_RX = re.compile(r"(?i)sweep|noise|reverse|\bdrop\b|atmos|texture|swell")
+STRONG_FX_RX = re.compile(r"(?i)\bfx\b|sfx|riser|uplifter|downlifter|whoosh|impact|transition|downer|braam|zap")
+REVERSE_RX = re.compile(r"(?i)\breverse|\brev\b")
+
+
+def _fx_named(name, folders):
+    """An fx word was found: False when an instrument word in the name says otherwise."""
+    if MELODIC_W.search(name):  # 'Bass Sweep', 'Texture Pad', but 'Piano Riser' is still fx
+        return STRONG_FX_RX.search(name) is not None
+    return True
+
+
+def _vocal_named(name, folders):
+    """True for a voice: 'vocal' anywhere, or 'vox' / 'voice' / 'chant' / 'phrase' without an instrument word."""
+    if re.search(r"(?i)\bvocoder\b|vox ?synth", name) or drum_family(name, []) is not None:
+        return False  # 'Vocal Perc' is a percussion hit
+    if any(VOCAL_RX.search(f) for f in folders):
+        return True
+    strong = re.search(r"(?i)vocal|acapella|a capella|\bspoken", name)
+    if strong:
+        return True
+    if not VOCAL_RX.search(name) or MELODIC_W.search(name):
+        return False  # 'Vox Lead', 'Voice Pad', 'Guitar Phrase'
+    if re.search(r"(?i)\bvo(x|ice)\b", name):
+        return True
+    return not LOOP_RX.search(name)  # 'Chanting Monks Loop' is a melodic loop, 'Chant 01' a voice
 
 
 def _loop_named(name, folders, dur):
@@ -593,15 +624,18 @@ def classify(rel, dur):
         if not short_drum and not any(ONESHOT_DIR.search(f) for f in below):
             out["type"] = "kit_stem"
             return out
-    if VOCAL_RX.search(text) and not re.search(r"(?i)\bvocoder\b|vox ?synth", name):
+    if VOCAL_RX.search(text) and _vocal_named(name, folders):
         out["type"] = "vocal"
         out["role"] = "vocal"
         return out
     looped = _loop_named(name, folders, dur)
     drum_named = drum_family(name, []) is not None or (DRUM_WORDS.search(name) and looped)
+    if drum_named and REVERSE_RX.search(name) and drum_family(name, []) in ("crash", "cymbal", "ride"):
+        drum_named = False  # a reversed cymbal is a riser (defect 9)
     if FX_RX.search(text) and not drum_named:  # 'Kick Impact', 'Noise Hat Loop' stay drums (I7)
-        out["type"] = "fx"
-        return out
+        if _fx_named(name, folders):
+            out["type"] = "fx"
+            return out
     has_bpm = _BPM_RX.search(name) is not None
     is_loop = looped or (has_bpm and dur is not None and dur >= 1.5) or _loop_by_name(name, dur)
     if is_loop and not looped and re.search(r"808", name):  # '808 Long 140bpm C' is a one-shot

@@ -2538,7 +2538,8 @@ def _run_kits(kits, acc, rar):
         for p, rel, parts in mids:
             tags = parse_tags(parts, "midi")
             if tags.get("key") is None:
-                tags["key"] = kit_tags.get("key") or kr.get("_key")
+                # only a key written on the kit or confirmed by the sound, never a guess (audit 3 #1)
+                tags["key"] = kit_tags.get("key") or (kr.get("_key") if kr.get("key_tag") else None)
             row = _midi_row(p, rel, tags, rar, acc)
             row["kit_id"] = kid
             row["file_id"] = _file_id(rel)

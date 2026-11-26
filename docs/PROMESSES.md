@@ -32,3 +32,4 @@
 - [x] 2026-11-25 : analyse impeccable de la mine d'or (zip 16 Go), faite à neuf, avec critique à l'aveugle. Tenu le 2026-11-26 : branche eq/analyse-mine-or (f1747f2a), 1649 sons mesurés ; 731 sons de batterie perdus dans le fichier source abîmé (dubstep, afro-house).
 - [ ] 2026-11-26 : ne rien jeter de la mine d'or 2 (les 11 RAR) : en plus des coups de batterie, faire l'inventaire des mélodies, boucles, voix, kits de construction et MIDI de chaque RAR (par style et par type), sans rien supprimer de son Drive.
 - [ ] 2026-11-26 : faire auditer l'outil commun de mesure des sons (scripts/sons/tout.py, branche eq/outil-tout) par une discussion Fable neuve dès qu'il est fini, avant le second passage sur les RAR.
+- [ ] 2026-11-26 Outil des sons : audit Fable en réflexion extra avant chaque usage sur les sons achetés, et la deuxième passe des 12 RAR seulement avec l'outil réparé et revérifié.

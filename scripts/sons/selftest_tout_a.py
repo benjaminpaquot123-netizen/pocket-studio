@@ -175,6 +175,45 @@ expect("Drum Loops/128/Full 01.wav", 7.5, type="drum_loop")
 expect("Kick Loops/Kick 01.wav", 3.84, type="drum_loop")
 expect("Loops & One Shots/Loops/Drum Loop 01.wav", 4.0, type="drum_loop")
 
+# ================================================================ 4 + 5: loops without 'loop', drum or melodic by words then sound
+
+for rel, d, want in [("Tops/Top 128 01.wav", 7.5, "drum_loop"), ("Hi Hats/Hats 128 01.wav", 3.75, "drum_loop"),
+                     ("Percussion/Perc 124 01.wav", 1.94, "drum_loop"), ("Breaks/Break 170 01.wav", 2.8, "drum_loop"),
+                     ("Melodies/Melody 01 Cm.wav", 6.0, "melodic_loop"),
+                     ("Bass/Bassline 01 124 Gm.wav", 3.87, "melodic_loop"),
+                     ("Drums/Full Drums 01 120.wav", 8.0, "drum_loop")]:
+    expect(rel, d, type=want)
+expect("Drums/Kicks/Kick 150.wav", 0.4, type="drum_oneshot")
+expect("Drums/Snares/Snare 128 01.wav", 0.3, type="drum_oneshot")
+expect("808s/808 Long 140bpm C.wav", 3.0, type="drum_oneshot")
+expect("808s/808 Long 140 C.wav", 3.0, type="drum_oneshot")
+for rel in ["Loops/Organic Drum Loop 120.wav", "Loops/Sharp Hat Loop 140.wav", "Loops/Monkey Drum Loop 100.wav",
+            "Loops/Padded Kick Loop 125.wav", "Loops/Drum & Bass Loop 174.wav", "Loops/Drum n Bass Loop 174.wav"]:
+    expect(rel, 4.0, type="drum_loop")
+for rel in ["Loops/Piano Loop 120 C.wav", "Loops/Bass Loop 140 F.wav", "Loops/Arp Loop 128 Am.wav",
+            "Loops/Basslines Loop 124.wav"]:
+    expect(rel, 4.0, type="melodic_loop")
+for rel in ["Loops/What Loop 120 Am.wav", "Loops/Custom Loop 01 120 Am.wav", "Loops/Loop 01 120.wav",
+            "Loops/Top Loop 01.wav"]:
+    expect(rel, 4.0, subtype="by_sound")
+expect("Drum Loops/Loop 01.wav", 4.0, type="drum_loop", subtype="-")
+expect("Loops/Upbeat Piano Loop 120 C.wav", 4.0, role="keys", type="melodic_loop")
+expect("Loops/Breakdown Synth Loop 128 Am.wav", 4.0, role="synth", type="melodic_loop")
+expect("Loops/Breakbeat Loop 170.wav", 4.0, role="drums", type="drum_loop")
+
+with tempfile.TemporaryDirectory() as tmp:
+    for rel, x, want in [("Loops/Loop 01 120.wav", drum_loop(120, 2), "drum_loop"),
+                         ("Hat Tricks Vol 1/Loops/Loop 01 120 bpm.wav", drum_loop(120, 2), "drum_loop"),
+                         ("Loops/What Loop 120 Am.wav", chord_loop(120, 2), "melodic_loop"),
+                         ("Loops/Custom Loop 01 120 Am.wav", chord_loop(120, 2), "melodic_loop"),
+                         ("Loops/Top Loop 01.wav", chord_loop(120, 2), "melodic_loop"),
+                         ("Tops/Top 128 01.wav", drum_loop(128, 4), "drum_loop")]:
+        r = measured(tmp, rel, x)
+        check_eq("sound decides %s" % rel, (r.get("type"), r.get("subtype")), (want, "by_sound"))
+        check_true("measured as a loop %s" % rel, r.get("bars_measured") is not None or r.get("bpm_measured"))
+    r = measured(tmp, "Percussion/Perc 124 01.wav", drum_loop(124, 1))
+    check_eq("Perc 124 01 tempo", (r.get("type"), r.get("bpm_tag")), ("drum_loop", 124.0))
+
 
 print("%d checks, %d failed" % (COUNT, FAILS))
 sys.exit(1 if FAILS else 0)

@@ -611,6 +611,30 @@ def test_tags_types():
         check_eq("%s of %s" % (field, rel), tout.classify(rel, dur)[field], want)
 
 
+def test_end_cut_audit():
+    """Blind audit I1/I2: short fades, quiet stops, digital silence, DC, noise tails, loops."""
+    def lin(x, ms):
+        n = int(ms * SR / 1000)
+        x = x.copy()
+        x[-n:] *= np.linspace(1, 0, n)
+        return x
+    k = kick(t_axis(0.25), 150.0, 50.0, 0.25)
+    for ms in (5, 10):
+        check_eq("audit: loud kick, linear fade %d ms: not cut" % ms, tout.end_cut(SR, mono(lin(k, ms)))["end_cut"], 0)
+    check_eq("audit: loud kick, 2 ms fade: cut", tout.end_cut(SR, mono(lin(k, 2)))["end_cut"], 1)
+    q = 0.02 * np.sin(2 * math.pi * 50 * t_axis(0.6))
+    check_eq("audit: quiet 808 stopped at a zero crossing: cut", tout.end_cut(SR, mono(q))["end_cut"], 1)
+    ds = np.concatenate([k, np.zeros(SR // 10)])
+    check_eq("audit: abrupt stop + digital silence: cut", tout.end_cut(SR, mono(ds))["end_cut"], 1)
+    tail = band_noise(SR, SR, 200, 8000, 2) * np.exp(-t_axis(1.0) / 0.17)
+    check_eq("audit: noise reverb tail to -51 dB: not cut", tout.end_cut(SR, mono(tail))["end_cut"], 0)
+    check_eq("audit: faded kick with DC offset: not cut", tout.end_cut(SR, mono(lin(k, 20) + 0.01))["end_cut"], 0)
+    pad = 0.3 * harmonic(220, t_axis(2.0), 4, 0.5)
+    check_eq("audit: seamless 2 s pad loop: not cut", tout.end_cut(SR, mono(pad))["end_cut"], 0)
+    s808 = 0.8 * np.sin(2 * math.pi * 50 * t_axis(0.6))
+    check_eq("audit: 808 at a zero crossing: still cut", tout.end_cut(SR, mono(s808))["end_cut"], 1)
+
+
 def test_accuracy_rms():
     """Blind audit I9 (near misses have their own class) and I12 (rms per channel)."""
     check_true("relative key is not an agreement", not tout._key_agree("relative"))
@@ -738,7 +762,7 @@ def main(argv=None):
         return 0
     with np.errstate(all="ignore"):
         for fn in (test_tags, test_classify, test_common, test_notes, test_adsr, test_drum_loop, test_key,
-                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_blocking, test_tags_types, test_accuracy_rms, test_cli):
+                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_end_cut_audit, test_blocking, test_tags_types, test_accuracy_rms, test_cli):
             try:
                 fn()
             except Exception as e:  # a crash is a failed check, the rest still runs

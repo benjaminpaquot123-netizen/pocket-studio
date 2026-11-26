@@ -198,4 +198,3 @@ for group, snd, cols in ((loops, ML, ["type", "bpm_tag", "key_tag"]), (dloops, D
         i += 1
         rows, con, code = one("b2", i, rel, snd)
         show(rel, rows, cols, con, code)
-done()

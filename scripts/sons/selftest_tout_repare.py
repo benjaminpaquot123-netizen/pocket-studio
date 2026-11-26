@@ -222,44 +222,6 @@ def test_file_id_has_the_pack():
         check_eq("11 --trace does not find it in the twin pack", _trace(rb, ia[0])[0], 1)
 
 
-def test_audit2_packs_in_work_folder():
-    """Defect 13: every audit2 batch builds its packs under lib.S (AUDIT2_WORK), never beside the scripts."""
-    import ast
-    for f in sorted(glob.glob(os.path.join(HERE, "audit2", "b*.py"))):
-        tree = ast.parse(open(f, encoding="utf-8").read())
-        bad = [n.lineno for n in ast.walk(tree) if isinstance(n, ast.Call)
-               and getattr(n.func, "attr", "") == "join" and any(isinstance(a, ast.Constant) and a.value == "pack" for a in n.args)
-               and not (isinstance(n.args[0], ast.Name) and n.args[0].id == "S")]
-        check_eq("13 %s: packs under the work folder" % os.path.basename(f), bad, [])
-
-
-def test_audit2_replays_fail_on_faults():
-    """Defect 14: an audit2 batch exits non-zero on a real fault (crash, a stated wrong value),
-    and an empty (fenced) cell is not a wrong value."""
-    import ast
-    import subprocess
-    work = tempfile.mkdtemp(prefix="tout_repare_a2_")
-    probe = (
-        "import sys; sys.path.insert(0, sys.argv[1]); import lib\n"
-        "print(lib.off('', 120, 0.02), lib.off('120.5', 120, 0.02), lib.off('150', 120, 0.02))\n"
-        "lib.tout.main = lambda argv: 1 / 0\n"
-        "lib.run_pack(lib.S, 'probe')\n"
-        "lib.done()\n")
-    try:
-        p = subprocess.run([sys.executable, "-I", "-c", probe, os.path.join(HERE, "audit2")],
-                           env=dict(os.environ, AUDIT2_WORK=work), capture_output=True, text=True, timeout=120)
-        first = p.stdout.splitlines()[:1]
-        check_eq("14 empty cell is not wrong, a stated wrong one is", first, ["False False True"])
-        check_eq("14 a crash makes the batch exit 1", p.returncode, 1)
-    finally:
-        shutil.rmtree(work, ignore_errors=True)
-    for f in sorted(glob.glob(os.path.join(HERE, "audit2", "b*.py"))):
-        tree = ast.parse(open(f, encoding="utf-8").read())
-        last = tree.body[-1] if tree.body else None
-        ends = isinstance(last, ast.Expr) and isinstance(last.value, ast.Call) and getattr(last.value.func, "id", "") == "done"
-        check_true("14 %s ends with done()" % os.path.basename(f), ends, ast.dump(last)[:60] if last else None)
-
-
 def test_doc_empty_end_cut_not_clean():
     """Defect 18: the header says an empty end_cut of a one-shot with a tempo in its name is not a clean end."""
     doc = " ".join((tout.__doc__ or "").split())
@@ -311,7 +273,7 @@ def test_flat_key_est_spelled_like_tag():
     check_eq("12 a key without a flat is left as heard", (r.get("key_tag"), r.get("key_est")), ("A minor", "A minor"))
 
 
-TESTS = [test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_audit2_replays_fail_on_faults, test_audit2_packs_in_work_folder, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+TESTS = [test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

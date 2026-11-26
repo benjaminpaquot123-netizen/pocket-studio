@@ -235,6 +235,50 @@ void testMeasuredDrumsInRange() {
     CHECK(failed == 0);
 }
 
+// Point 3 of the morning list: the voices that passed only thanks to the margin (hats, crash, clap,
+// the techhouse kick, the dubstep snare) pulled toward the style's median. Hard limit, no margin: the
+// 25th..75th percentiles of the same reference hits (hats sorted closed / open by their measured length,
+// not their label). Length at -20 and -60 dB, and brightness (an indication only, but the one the ear flagged).
+struct Tight {
+    int family, style;
+    Range t20, t60, centroid;
+};
+const Tight kTight[] = {
+    {4, 0, {44, 76}, {80, 124}, {6581, 8076}},   {4, 1, {51, 75}, {94, 119}, {7275, 8644}},
+    {4, 2, {66, 77}, {96, 147}, {7223, 8511}},   {4, 3, {41, 53}, {85, 103}, {6410, 9546}},
+    {4, 4, {39, 69}, {87, 193}, {7111, 10162}},  {4, 5, {50, 96}, {103, 149}, {7907, 10076}},
+    {5, 0, {86, 453}, {298, 845}, {6589, 9381}}, {5, 1, {86, 453}, {298, 845}, {6589, 9381}},
+    {5, 2, {86, 453}, {298, 845}, {6589, 9381}}, {5, 3, {637, 1279}, {724, 1783}, {9626, 13847}},
+    {5, 4, {86, 453}, {298, 845}, {6589, 9381}}, {5, 5, {86, 453}, {298, 845}, {6589, 9381}},
+    {8, 0, {610, 1277}, {985, 2228}, {5055, 6805}}, {8, 1, {610, 1277}, {985, 2228}, {5055, 6805}},
+    {8, 2, {610, 1277}, {985, 2228}, {5055, 6805}}, {8, 3, {489, 701}, {889, 1038}, {5184, 6313}},
+    {8, 4, {519, 1113}, {1269, 2180}, {6424, 7628}}, {8, 5, {1075, 1355}, {1796, 2351}, {4377, 5554}},
+    {2, 0, {69, 91}, {129, 230}, {2213, 3194}},  {2, 1, {78, 125}, {192, 236}, {2732, 4275}},
+    {2, 2, {81, 148}, {196, 236}, {2979, 4318}}, {2, 3, {69, 123}, {103, 211}, {2610, 3171}},
+    {2, 4, {71, 121}, {170, 254}, {2896, 3845}}, {2, 5, {110, 213}, {226, 486}, {2189, 3041}},
+    {3, 5, {136, 356}, {447, 938}, {696, 2419}}, {0, 1, {218, 375}, {287, 398}, {93, 140}},
+};
+
+void testMeasuredDrumsTight() {
+    int failed = 0;
+    for (const Tight& t : kTight) {
+        const std::vector<float> x = renderHit(t.family, t.style);
+        const std::vector<double> e = envelopeDb(x);
+        const double t20 = lastAbove(e, 20.0), t40 = lastAbove(e, 40.0), t60 = lastAbove(e, 60.0), c = centroidHz(x, t40);
+        char why[48] = "";
+        auto bad = [&why](bool cond, const char* what) {
+            if (!cond) std::snprintf(why + std::strlen(why), sizeof(why) - std::strlen(why), " %s", what);
+            return cond;
+        };
+        const bool ok = bad(within(t20, t.t20, 0.0), "t20") & bad(within(t60, t.t60, 0.0), "t60") & bad(within(c, t.centroid, 0.0), "centroid");
+        std::printf("  %-9s %-9s %s t20 %5.0f [%4.0f-%4.0f] t60 %5.0f [%4.0f-%4.0f] centroid %5.0f [%5.0f-%5.0f]%s\n", kFamilyNames[t.family],
+                    kStyleNames[t.style], ok ? "ok  " : "FAIL", t20, double(t.t20.lo), double(t.t20.hi), t60, double(t.t60.lo), double(t.t60.hi), c,
+                    double(t.centroid.lo), double(t.centroid.hi), why);
+        if (!ok) ++failed;
+    }
+    CHECK(failed == 0);
+}
+
 // A hit restarted while it rings stays finite and bounded, and a silent voice adds nothing.
 void testMeasuredDrumsRetrigger() {
     for (int f = 0; f < ps::measured::kFamilies; ++f) {
@@ -360,6 +404,7 @@ void testMeasuredKitCommand() {
 
 #define PS_MATIN_TESTS                                                      \
     {"matin_measured_drums_in_range", matin_tests::testMeasuredDrumsInRange}, \
+    {"matin_measured_drums_tight", matin_tests::testMeasuredDrumsTight},      \
     {"matin_measured_drums_retrigger", matin_tests::testMeasuredDrumsRetrigger}, \
     {"matin_measured_drums_stop", matin_tests::testMeasuredDrumsStop},      \
     {"matin_measured_kit_default_identical", matin_tests::testMeasuredKitDefaultIdentical}, \

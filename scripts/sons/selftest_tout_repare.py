@@ -312,7 +312,48 @@ def test_drum_grid_band_bleed():
     check_eq("A2 hats still there", r.get("grid_hats"), "x.x.x.x.x.x.x.x.")
 
 
-TESTS = [test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def _midi_no_ts(notes, tpq=480, bpm=120.0):
+    """Format 0, a tempo but no time signature; notes: (beat, beats, pitch, velocity)."""
+    import struct
+
+    def vlq(n):
+        out = [n & 0x7F]
+        n >>= 7
+        while n:
+            out.append(0x80 | (n & 0x7F))
+            n >>= 7
+        return bytes(reversed(out))
+    ev = []
+    for b, d, p, v in notes:
+        ev.append((int(b * tpq), 1, bytes([0x90, p, v])))
+        ev.append((int((b + d) * tpq), 0, bytes([0x80, p, 0])))
+    ev.sort(key=lambda e: (e[0], e[1]))
+    trk = b"\x00\xff\x51\x03" + struct.pack(">I", int(round(60e6 / bpm)))[1:]
+    last = 0
+    for tk, _, m in ev:
+        trk += vlq(tk - last) + m
+        last = tk
+    trk += b"\x00\xff\x2f\x00"
+    return b"MThd" + struct.pack(">IHHH", 6, 0, 1, tpq) + b"MTrk" + struct.pack(">I", len(trk)) + trk
+
+
+def test_midi_waltz_by_accents():
+    """A3: a MIDI waltz without a time signature, one note per beat, beat 1 louder and lower: the
+    3-beat bar is heard, so bars is not counted in 4/4 (empty). A 4/4 part accented every 4 beats keeps 4 bars."""
+    waltz = [(b * 3 + q, 0.9, 48 if q == 0 else 64, 110 if q == 0 else 70) for b in range(4) for q in range(3)]
+    vel_only = [(b * 3 + q, 0.9, 60, 110 if q == 0 else 70) for b in range(4) for q in range(3)]
+    four = [(b * 4 + q, 0.9, 48 if q == 0 else 64, 110 if q == 0 else 70) for b in range(4) for q in range(4)]
+    rows, _, _, code, _ = ru.run({"MIDI/Waltz Piano C major.mid": _midi_no_ts(waltz),
+                                  "MIDI/Waltz Lead C major.mid": _midi_no_ts(vel_only),
+                                  "MIDI/Piano Four C major.mid": _midi_no_ts(four)})
+    check_eq("A3 run ends well", code, 0)
+    for f in ("MIDI/Waltz Piano C major.mid", "MIDI/Waltz Lead C major.mid"):
+        r = rows[f] or {}
+        check_true("A3 waltz bars not 3 (%s)" % f, r.get("bars") in ("", None, "4"), r.get("bars"))
+    check_eq("A3 4/4 accented part keeps 4 bars", (rows["MIDI/Piano Four C major.mid"] or {}).get("bars"), "4")
+
+
+TESTS = [test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

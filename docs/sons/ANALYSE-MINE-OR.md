@@ -45,8 +45,14 @@ synth, foley, lofi, distorted sub-folders).
   read ~340 Hz "pitch").
 - Fixed lengths (120, 387, 429, 480, 500, 531 ms…) are sample padding with digital silence (end ≈ −140 dB): `dur_ms` is
   **not** a target, decays are.
+- `t20_ms` is the time at which the Schroeder curve crosses −20 dB (it includes the 0…−5 dB body plateau). It is **not** an ISO T20
+  slope: a −5…−25 dB slope fit gives ~35 % shorter values on kicks (82 vs 126 ms on a sample). Synth targets must use the same
+  definition (`mesure.py`).
+- `t60_ms` tracks the file length (log-correlation 0.81 kicks, 0.92 snares, 0.98–1.00 hats; t60 ≈ 0.76–0.97 × length): it mostly
+  measures where the pack trimmed or faded the file. **Use t20 as the decay target; t60 only as a loose upper bound.**
 - `centroid_hz` is the **power-weighted** centroid of `mesure.py`. Never compare it with a magnitude-weighted centroid.
-- Steady pitch of gliding kicks is ±10–15 %, attack pitch ±5–15 %; h2/h3 were not cross-checked on real files.
+- Steady pitch of gliding kicks: the median is right (re-measured 48 vs 51 Hz) but single files are noisy (58 % differ by > 10 %;
+  the lowest kicks read too high, e.g. 43 instead of 29 Hz, the window keeps the end of the glide). Attack pitch ±5–15 %, attack pitch ±5–15 %; h2/h3 were not cross-checked on real files.
 
 ### Excluded outliers: 35 of 1 649 (2.1 %)
 | reason | n |
@@ -123,11 +129,13 @@ House 2.9 kHz, techno 3.8 kHz, dnb 3.3 kHz, drift-phonk 2.7 kHz centroid; the mu
 Decay is consistent everywhere: t20 70–120 ms, t60 150–215 ms.
 
 ### Hats and cymbals
-- Closed hat: t20 40–55 ms is the perceptual decay. In the multi set the t60 reads ~410 ms because of a long very low tail
-  (dnb closed hats: t60 92 ms). **Use t20, not t60, as the closed-hat target.**
+- Closed hat: t20 40–55 ms is the perceptual decay. In the multi set only, the t60 reads ~410 ms because of a long low-level
+  **high-frequency** tail (level vs peak −25/−45/−55/−61 dB at 50/100/200/300 ms; unchanged by a 2 kHz high-pass): a fade or
+  ambience, not part of the hit (dnb closed hats: t60 92 ms). **Use t20, not t60, as the closed-hat target.**
 - Unlabelled hats behave like closed hats in house/techno/drift-phonk (t60 74–175 ms) but the multi acoustic hats are long
   (t60 ~700 ms): treat them as a mixed bag.
-- Open hat is bimodal: drift-phonk open hats are long (t60 ~1.8 s, centroid 10.5 kHz); the multi set ones are short
+- Open hat is bimodal: drift-phonk open hats are long (t60 ~1.8 s on the 17/30 files with a clean tail, ~1.1 s over all files,
+  P10–P90 0.6–2.2 s; centroid 10.5 kHz); the multi set ones are short
   (t60 ~200 ms) and often cut (end ≈ −52 dB).
 - Ride: t20 300–340 ms, t60 630–950 ms; rave rides are cut at 387 ms (no decay value). Crash: t60 1.3 s (dnb) to 2.0 s (multi).
 
@@ -136,8 +144,26 @@ Decay is consistent everywhere: t20 70–120 ms, t60 150–215 ms.
 - Perc: very heterogeneous (centroid 400 Hz amapiano to 2.4 kHz techno); use per-instrument references, not the family median.
 - Cowbell is bimodal: drift-phonk (long 808-style, t60 1.5 s, pitch ~420 Hz) vs multi (short, t60 ~200 ms, pitch ~700 Hz).
 
-## 4. Blind critique
-(pending)
+## 4. Blind critique (fresh sub-agent, own numpy code, 25 random files per family)
+| check | its value | tool value | verdict |
+|---|---|---|---|
+| kick −20 dB crossing | 126 ms | 126 ms | identical; but a slope fit gives 82 ms → definition clarified (§1) |
+| kick steady pitch (FFT peak 100–300 ms) | 48 Hz | 51 Hz | median OK, per-file noisy → caveat added |
+| clap power centroid | 3383 Hz | 3383 Hz | identical |
+| closed hat t20 / t60 | 59 / 409 ms | 59 / 409 ms | identical; tail is HF, not low → wording fixed |
+| misclassified (spectral) | 1–3 % per family | 35 flags | mostly caught |
+| its own 3-IQR outliers | 48 files | 35 | same order; 1.5 IQR → 178 (too many) |
+
+What changed after the critique:
+1. t60 demoted to an upper bound (it follows the file length); t20 is the decay target, with its exact definition.
+2. Closed-hat tail described as a high-frequency fade, not a low tail.
+3. Drift-phonk open hat: 1.8 s only on clean tails, 1.1 s over all files.
+4. Kicks are not one target: by style t20 ranges 97 ms (drift-phonk) to 235 ms (house); 217 of 352 kicks come from the multi set.
+5. 808 "37 Hz" is the low edge of a 37–55 Hz range (21 files, one set).
+6. Acoustic snares' long t60 partly follows their ~1 s file length; compare t20 (168 vs 118 ms) instead.
+7. Outlier rule kept, but 17 family × style groups have < 8 files: there, the outlier test is skipped (no fallback yet), so small
+   groups may still hold a stray file.
+
 
 ## 5. Limits
 - Corruption removed 31 % of the drum one-shots and whole styles (dubstep, afro-house); no trap/hip-hop kit.

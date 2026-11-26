@@ -8,7 +8,9 @@ fakerar.py (stored entries) and checked by `unrar t`, so the real unrar path
 is exercised: download (file:// URL through curl), test, extract, packs,
 tout.py per pack, merged CSVs, forced style, control, cleanup, repository guard.
 """
+import contextlib
 import csv
+import io
 import math
 import os
 import shutil
@@ -187,6 +189,29 @@ def main():
         text = "".join(open(os.path.join(out, f), encoding="utf-8").read() for f in os.listdir(out) if f.endswith(".csv"))
         check("Kick" not in text and "Blood" not in text and "Cherry" not in text and "BPM" not in text, "CSVs carry no file or pack name")
         check(open(os.path.join(out, "rar7_packs.txt")).read().startswith("p1\tGhosthack - Blood Rave"), "packs.txt maps p1")
+
+        # point c: tout.py's pack-style line is shown for every pack
+        check("p1: style du pack : rave, posé sur" in r.stdout, "pack-style line shown for p1")
+        check("p3: style du pack : dubstep, posé sur" in r.stdout, "pack-style line shown for p3")
+        check("p2: style du pack : aucun" in r.stdout, "p2 (no style in its name) said too")
+        # ... and a changed tout.py phrase fails the run instead of counting 0 forced rows
+        fake = os.path.join(base, "tout_other_words.py")
+        with open(fake, "w") as fh:
+            fh.write("import contextlib, io, sys\nsys.path.insert(0, %r)\nimport tout\nb = io.StringIO()\n"
+                     "with contextlib.redirect_stdout(b):\n    rc = tout.main()\n"
+                     "print(b.getvalue().replace('style du pack', 'pack style'), end='')\nsys.exit(rc)\n"
+                     % os.path.dirname(HERE))
+        w2 = tempfile.mkdtemp(dir=work)
+        old, lance.TOUT = lance.TOUT, fake
+        err = io.StringIO()
+        try:
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                rc = lance.main(["--rar", "7", "--archive", rar, "--out", out, "--work", w2])
+        finally:
+            lance.TOUT = old
+            shutil.rmtree(w2, ignore_errors=True)
+        check(rc == 4 and "style du pack" in err.getvalue(),
+              "missing pack-style line fails the run (rc %d, %s)" % (rc, err.getvalue().strip()[-200:]))
 
         # --archive keeps the given file, a damaged archive is refused, outputs in the repo are refused
         r = run(["--rar", "7", "--archive", rar, "--out", out, "--plan"], env)

@@ -243,6 +243,21 @@ def main():
         check(r.returncode == 0 and "1 pack(s)" in r.stdout and "Ghosthack - Blood Rave" in r.stdout
               and "rave" in r.stdout, "--plan on a one-pack RAR: 1 pack, named, style read (%s)" % r.stdout.strip()[-200:])
 
+        # point d: without RARLAB unrar the launcher refuses before anything else (no download, no skipped test)
+        nobin = os.path.join(base, "bin-without-unrar")
+        os.mkdir(nobin)
+        for tool in ("python3", "curl", "git", "mktemp", "rm", "dirname", "bash"):
+            with open(os.path.join(nobin, tool), "w") as fh:
+                # the system binaries, not a shell's own wrapper of the same name
+                fh.write('#!/bin/sh\nexec %s "$@"\n' % (shutil.which(tool, path="/usr/bin:/bin") or shutil.which(tool)))
+            os.chmod(os.path.join(nobin, tool), 0o755)
+        r = subprocess.run([shutil.which("bash"), os.path.join(HERE, "lance.sh"), "--rar", "7", "--url",
+                            "file://" + os.path.join(base, "nowhere.rar"), "--out", out],
+                           capture_output=True, text=True, env=dict(env, PATH=nobin))
+        check(r.returncode == 2 and "unrar not installed" in r.stderr and "download" not in r.stderr,
+              "no unrar: refused first, clear message (rc %d, %s)" % (r.returncode, r.stderr.strip()[-200:]))
+        check(os.listdir(work) == [], "no unrar: work folder deleted")
+
         # Drive links become a direct download; a loose sound at the archive top is refused
         u = lance.drive_url("https://drive.google.com/file/d/1AbCdEfGhIjKlMnOp/view?usp=sharing")
         check(u.endswith("id=1AbCdEfGhIjKlMnOp&export=download&confirm=t"), "Drive share link -> direct URL")

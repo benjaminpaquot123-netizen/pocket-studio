@@ -146,6 +146,27 @@ def _chunks(buf, start, big):
         pos += 8 + size + (size & 1)
 
 
+def check_whole(buf):
+    """Raise BadAudio when the sound chunk (WAV data / AIFF SSND) declares more
+    bytes than the file holds: a cut download measured as a short sound
+    (audit 2, defect 34). Streamed files (size 0 or 0xFFFFFFFF) and a few
+    missing bytes (odd padding, sloppy writers) pass."""
+    big = buf[:4] == b"FORM"
+    want = b"SSND" if big else b"data"
+    pos = 12
+    while pos + 8 <= len(buf):
+        size = struct.unpack(">I" if big else "<I", buf[pos + 4:pos + 8])[0]
+        if buf[pos:pos + 4] == want:
+            if size in (0, 0xFFFFFFFF):
+                return
+            missing = size - (len(buf) - pos - 8)
+            if missing > max(256, size // 100):
+                raise BadAudio("truncated %s (%d of %d bytes)" % ("aiff" if big else "wav",
+                                                                   size - missing, size))
+            return
+        pos += 8 + size + (size & 1)
+
+
 def _check(sr, channels):
     if not 1 <= channels <= 8:
         raise BadAudio("unsupported channel count")
@@ -169,6 +190,8 @@ def _read_wav(buf):
             if tag not in (1, 3):
                 raise BadAudio("compressed wav (format %d)" % tag)
             width = align // channels if align else (bits + 7) // 8
+            if size == 0 and struct.unpack("<I", buf[off - 4:off])[0] == 0:
+                size = len(buf) - off  # streamed writer never filled the size in
             x = _pcm(buf[off:off + size], width, channels, big=False,
                      floating=(tag == 3), unsigned8=True)
             return sr, x
@@ -229,6 +252,7 @@ def read_audio(path):
         sr, x = _read_aiff(buf)
     else:
         raise BadAudio("not a wav or aiff file")
+    check_whole(buf)
     if x.shape[0] > MAX_SECONDS * sr:
         raise BadAudio("longer than %d s, not a one-shot" % MAX_SECONDS)
     return sr, x
@@ -431,7 +455,9 @@ def _fmt(v):
 
 def _inside_repo(path):
     repo = os.path.realpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-    if not os.path.exists(os.path.join(repo, ".git")):
+    # a zip export or a copy has no .git: the project files still mark the
+    # repository (audit 2, defect 39)
+    if not any(os.path.exists(os.path.join(repo, m)) for m in (".git", "CLAUDE.md", os.path.join("docs", "sons"))):
         return False
     path = os.path.realpath(path)
     return path == repo or path.startswith(repo + os.sep)

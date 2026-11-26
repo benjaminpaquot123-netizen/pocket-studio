@@ -205,10 +205,15 @@ def read_audio(path):
         sr, x = mesure._read_aiff(buf)
     else:
         raise BadAudio("not a wav or aiff file")
+    mesure.check_whole(buf)
     if x.shape[0] > MAX_SECONDS * sr:
         raise BadAudio("longer than %d s" % MAX_SECONDS)
     if x.shape[0] < 16:
         raise BadAudio("too short")
+    # a constant offset with nothing on top is no sound (audit 2, defect 35)
+    mean = np.mean(x, axis=0)
+    if np.max(np.abs(mean)) > 1e-3 and np.max(np.abs(x - mean)) < 1e-4:
+        raise BadAudio("constant dc offset, no sound")
     return sr, x, loop
 
 
@@ -1770,7 +1775,8 @@ def _read_vlq(b, i):
 
 
 def parse_midi(b):
-    """(tpq, notes [(start, end, pitch, vel, ch)], tempos [(tick, us)], timesig (num, den))."""
+    """(tpq, notes [(start, end, pitch, vel, ch)], tempos [(tick, us)], timesig (num, den) or None
+    when the file has no time signature event)."""
     if len(b) < 14 or b[:4] != b"MThd":
         raise BadAudio("not a midi file")
     hl = struct.unpack(">I", b[4:8])[0]
@@ -1781,14 +1787,17 @@ def parse_midi(b):
         raise BadAudio("smpte midi not supported")
     pos = 8 + hl
     notes, tempos, ts = [], [], None
+    cut = False
     open_ = {}
     for _ in range(min(ntrk, 256)):
         if pos + 8 > len(b) or b[pos:pos + 4] != b"MTrk":
             raise BadAudio("bad midi track")
         size = struct.unpack(">I", b[pos + 4:pos + 8])[0]
         i, end = pos + 8, min(len(b), pos + 8 + size)
+        short = pos + 8 + size > len(b)
         pos += 8 + size
         tick, status = 0, None
+        eot = False
         while i < end:
             d, i = _read_vlq(b, i)
             tick += d
@@ -1807,6 +1816,7 @@ def parse_midi(b):
                 elif typ == 0x58 and ln >= 2 and ts is None:
                     ts = (data[0], 2 ** data[1])
                 elif typ == 0x2F:
+                    eot = True
                     break
                 continue
             if c in (0xF0, 0xF7):
@@ -1834,11 +1844,16 @@ def parse_midi(b):
                     notes.append((s, max(tick, s + 1), data[0], v, ch))
         if len(notes) > 200000:
             raise BadAudio("too many midi notes")
+        # a track declared longer than the file and never ended: a cut file
+        # whose open notes would be invented (audit 2, defect 34)
+        cut = cut or (short and not eot)
+    if cut:
+        raise BadAudio("truncated midi")
     for (ch, p), st in open_.items():
         for s, v in st:
             notes.append((s, s + div // 4, p, v, ch))
     notes.sort()
-    return div, notes, tempos, ts or (4, 4)
+    return div, notes, tempos, ts
 
 
 def _chord_of(weights):
@@ -1873,22 +1888,46 @@ def roman(chord, key):
     return r
 
 
+def _looks_triple(notes, origin, tpq):
+    """True when the distinct onsets sit on a 3-beat grid and not on a 4-beat one."""
+    on = {int(round((n[0] - origin) / (tpq / 8.0))) for n in notes}
+    if len(on) < 3:
+        return False
+    s3 = sum(1 for o in on if o % 24 == 0) / len(on)
+    s4 = sum(1 for o in on if o % 32 == 0) / len(on)
+    return s3 >= 0.75 and s4 <= 0.5
+
+
 def measure_midi_bytes(b, tags):
     tpq, notes, tempos, ts = parse_midi(b)
+    ts_known = ts is not None
+    ts = ts or (4, 4)
     out = {"key_tag": key_name(tags.get("key"))}
     if not notes:
         raise BadAudio("midi without notes")
     out["bpm_file"] = 60e6 / tempos[0][1] if tempos and tempos[0][1] > 0 else None
+    # a tempo change inside the notes: no single file tempo (audit 2, defect 37)
+    end_tick = max(n[1] for n in notes)
+    if len({round(60e6 / us, 2) for tk, us in tempos if tk < end_tick and us > 0}) > 1:
+        out["bpm_file"] = None
     bar = int(tpq * 4 * ts[0] / ts[1])
     last = max(n[1] for n in notes)
-    first_bar = 0
-    nbars = max(1, int(math.ceil((last - first_bar * bar - tpq // 8) / bar)))
+    # bars start at the first note: a part exported from bar 9 or starting on
+    # beat 2 is not padded with empty bars (audit 2, defect 22)
+    origin = min(n[0] for n in notes)
+    # the last note may ring past the bar line by a 32nd of release plus a
+    # 32nd of legato overlap without making a new bar
+    legato = tpq // 8
+    nbars = max(1, int(math.ceil((last - origin - legato - tpq // 8) / bar)))
+    nbars = max(nbars, (max(n[0] for n in notes) - origin) // bar + 1)
     out["bars"] = nbars
     out["notes"] = len(notes)
     out["notes_per_bar"] = len(notes) / nbars
     pitches = [n[2] for n in notes]
     out["pitch_min"], out["pitch_max"] = min(pitches), max(pitches)
-    ev = sorted([(n[0], 1) for n in notes] + [(n[1], -1) for n in notes], key=lambda e: (e[0], e[1]))
+    # a 16th of legato overlap is not one more voice (audit 2, defect 22)
+    ends = [max(n[0] + 1, n[1] - tpq // 4) for n in notes]
+    ev = sorted([(n[0], 1) for n in notes] + [(e, -1) for e in ends], key=lambda e: (e[0], e[1]))
     cur = mx = 0
     for _, d in ev:
         cur += d
@@ -1901,6 +1940,10 @@ def measure_midi_bytes(b, tags):
     us = [((n[0] / e8) % 1.0) for n in notes if 0.35 <= (n[0] / e8) % 1.0 <= 0.8]
     out["swing_pct"] = 100 * float(np.median(us)) if len(us) >= 4 else 50.0
     out["drum_track"] = 1 if all(n[4] == 9 for n in notes) else 0
+    if not ts_known and _looks_triple(notes, origin, tpq):
+        # no time signature and onsets on a 3-beat grid: the bar length is a
+        # guess, so the bar cells stay empty (audit 2, defect 37)
+        out["bars"] = out["notes_per_bar"] = None
     if out["drum_track"]:
         return out
     pcw = np.zeros(12)
@@ -1923,11 +1966,12 @@ def measure_midi_bytes(b, tags):
         out["scale_fit"] = float(inscale / np.sum(pcw)) if np.sum(pcw) > 0 else None
         chords = []
         for bi in range(nbars):
-            chords.append(_chord_window(notes, bi * bar, (bi + 1) * bar))
+            chords.append(_chord_window(notes, origin + bi * bar, origin + (bi + 1) * bar))
         out["chords"] = "-".join(roman(c, ref) for c in chords)
         changes = sum(1 for a, c in zip(chords, chords[1:]) if a != c)
         out["chord_changes_per_bar"] = changes / nbars
-        beats = [_chord_window(notes, i * tpq, (i + 1) * tpq) for i in range(int(math.ceil(nbars * bar / tpq)))]
+        beats = [_chord_window(notes, origin + i * tpq, origin + (i + 1) * tpq)
+                 for i in range(int(math.ceil(nbars * bar / tpq)))]
         runs, cur_run = [], 1
         for a, c in zip(beats, beats[1:]):
             if a == c:
@@ -2255,7 +2299,10 @@ def _fmt(v):
     if v is None:
         return ""
     if isinstance(v, (float, np.floating)):
-        v = float(v)
+        v = float(v) + 0.0  # -0.0 -> 0.0
+        if math.isfinite(v) and 100 <= abs(v) < 1e4:
+            # 4 significant digits turn 123.45 into 123.5 and 9999.7 into 1e+04 (defect 32)
+            return ("%.2f" % v).rstrip("0").rstrip(".")
         return "" if not math.isfinite(v) else "%.4g" % v if abs(v) < 1e4 else "%.1f" % v
     if isinstance(v, (int, np.integer)):
         return str(int(v))
@@ -2443,7 +2490,9 @@ def _run_kits(kits, acc, rar):
 def _midi_row(p, rel, tags, rar, acc):
     cl = classify(rel, None)
     row = {"rar": rar, "kit_id": "", "type": "midi", "subtype": "-", "role": cl["role"], "style": cl["style"],
-           "error": "", "size_kb": _size_kb(p)}
+           "error": "", "size_kb": _size_kb(p), "bpm_tag": tags.get("bpm")}
+    if row["bpm_tag"] is not None:
+        row["bpm_est"] = row["bpm_tag"]  # the name's tempo wins over the file's (audit 2, defect 21)
     try:
         if os.path.islink(p) or os.path.getsize(p) > 16 * 1024 * 1024:
             raise BadAudio("midi file too large or a link")
@@ -2458,16 +2507,37 @@ def _midi_row(p, rel, tags, rar, acc):
     return row
 
 
+def _file_id(rel):
+    """Short stable id of a file inside its pack: no name in the table, but
+    `--trace ID` finds the file again (audit 2, defect 28)."""
+    import hashlib
+    return hashlib.sha1(rel.encode("utf-8", "surrogateescape")).hexdigest()[:10]
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Measure every sound of a sample pack into anonymous CSV tables.")
     ap.add_argument("folder", help="pack folder (searched recursively)")
     ap.add_argument("--rar", required=True, help="pack number (or 'app')")
-    ap.add_argument("--out", required=True, help="CSV prefix, outside the git repository")
+    ap.add_argument("--out", help="CSV prefix, outside the git repository")
+    ap.add_argument("--trace", metavar="FILE_ID", help="print the file a table row's file_id stands for, write nothing")
     args = ap.parse_args(argv)
     if not os.path.isdir(args.folder):
         ap.error("not a folder: %s" % args.folder)
+    if args.trace:
+        # the tables stay anonymous; the id leads back to the file only with the pack at hand (defect 28)
+        audio, midi, _ = _walk(args.folder)
+        hits = [r for r in (os.path.relpath(p, args.folder).replace(os.sep, "/") for p in audio + midi)
+                if _file_id(r) == args.trace]
+        for r in hits:
+            print(r)
+        return 0 if hits else 1
+    if not args.out:
+        ap.error("the following arguments are required: --out")
     if mesure._inside_repo(args.out) or mesure._inside_repo(os.path.dirname(os.path.abspath(args.out))):
         ap.error("refusing to write measurements of samples inside the repository")
+    if not os.path.isdir(os.path.dirname(os.path.abspath(args.out))):
+        # said before measuring, not after (audit 2, defect 27)
+        ap.error("--out: no such folder: %s" % os.path.dirname(os.path.abspath(args.out)))
     rar = re.sub(r"[^A-Za-z0-9]", "", args.rar)[:12] or "0"
     audio, midi, skipped = _walk(args.folder)
     acc = Accuracy()
@@ -2482,6 +2552,7 @@ def main(argv=None):
             if cl["type"] != "kit_stem" or drum_family(_clean(parts[-1]), []) is not None:
                 row = _measure_file(p, rel, parts, acc, rar)  # one-shots inside a kit (I7)
                 if row["type"] != "kit_stem" or row["error"]:
+                    row["file_id"] = _file_id(rel)
                     rows[row["type"]].append(row)
                     continue
         if ki is not None:
@@ -2489,8 +2560,10 @@ def main(argv=None):
             continue
         if p in midi:
             rows["midi"].append(_midi_row(p, rel, parse_tags(parts, "midi"), rar, acc))
+            rows["midi"][-1]["file_id"] = _file_id(rel)
             continue
         row = _measure_file(p, rel, parts, acc, rar)
+        row["file_id"] = _file_id(rel)
         rows[row["type"]].append(row)
     kr, sr_, mr = _run_kits(kits, acc, rar)
     rows["kit"] += kr
@@ -2500,8 +2573,11 @@ def main(argv=None):
     usable = {(r["type"], r["measure"]) for r in acc.rows() if r["usable"] == "yes"}
     for typ in TYPES:
         if not rows[typ]:
+            # a table left by an earlier run would read as this run's (defect 33)
+            if os.path.isfile("%s_%s.csv" % (args.out, typ)):
+                os.remove("%s_%s.csv" % (args.out, typ))
             continue
-        cols = COMMON + TYPE_COLUMNS[typ]
+        cols = COMMON + TYPE_COLUMNS[typ] + ["file_id"]
         with open("%s_%s.csv" % (args.out, typ), "w", newline="", encoding="utf-8") as fh:
             wr = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore")
             wr.writeheader()
@@ -2524,6 +2600,11 @@ def main(argv=None):
     print("%d rows (%s)" % (total, counts))
     if skipped:
         print("skipped: " + ", ".join("%s %d" % kv for kv in sorted(skipped.items())))
+    if not total:
+        # nothing measured is a failure the caller must see (defect 36)
+        print("no wav/aiff/midi file measured%s" % (
+            ": skipped " + ", ".join("%s %d" % kv for kv in sorted(skipped.items())) if skipped else ""),
+            file=sys.stderr)
     return 0 if total else 1
 
 

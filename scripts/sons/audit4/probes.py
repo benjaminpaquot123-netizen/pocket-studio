@@ -116,10 +116,33 @@ check("D37: tempo 100 then 140 at beat 8 -> no single bpm", rows, code, "bpm_est
       lambda g: g in ("", None), "empty (two tempos)")
 check("D37: tempo change, bars still 4", rows, code, "bars", lambda g: g == "4", "4")
 
+# ---- drum grid: band bleed with a threshold relative to the band maximum ---
+def hatloop(hamp, snare_on):
+    beat = 0.5
+    buf = np.zeros(int(8 * beat * SR))
+    for b in range(2):
+        o = b * 4 * beat
+        for k in range(4):
+            place(buf, kick(0.3), o + k * beat)
+        if snare_on:
+            for s in (1, 3):
+                place(buf, snare(0.2), o + s * beat)
+        for i in range(8):
+            place(buf, hat(0.05) * hamp, o + i * 0.5 * beat)
+    return np.clip(buf * 0.8, -1, 1)
+
+
+rows, con, code = wav("grid_hats_snare", "Loops/Drums/Drum Loop 120 BPM.wav", hatloop(0.5, True))
+check("8th hats 6 dB under the snare: hats grid", rows, code, "grid_hats",
+      lambda g: g == "x.x.x.x.x.x.x.x.", "x.x.x.x.x.x.x.x.")
+rows, con, code = wav("grid_no_snare", "Loops/Drums/Drum Loop 120 BPM.wav", hatloop(0.5, False))
+check("kick + hats, no snare at all: snare grid", rows, code, "grid_snare",
+      lambda g: "x" not in g, "no x")
+
+# ---- MIDI waltz with a note on every beat, no time signature ---------------
 waltz = [(b * 3 + q, 0.9, 48 if q == 0 else 64, 110 if q == 0 else 70, 0) for b in range(4) for q in range(3)]
 rows, con, code = midi("d37_waltz", "MIDI/Waltz Piano C major.mid", waltz, 120)
-check("D37: 3/4 without time signature -> bars not guessed", rows, code, "bars", lambda g: g in ("", None, "4"),
-      "empty or 4")
+check("D37: 3/4 without time signature -> bars not guessed", rows, code, "bars", lambda g: g in ("", None, "4"), "empty or 4")
 
 ts34 = b"\x00\xff\x58\x04\x03\x02\x18\x08"
 rows, con, code = midi("d37_waltz_ts", "MIDI/Waltz Piano C major.mid", waltz, 120, extra=ts34)

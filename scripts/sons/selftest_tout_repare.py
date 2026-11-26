@@ -78,7 +78,19 @@ def test_drum_stem_no_key():
     check_true("7 the pad of a kit keeps the written key", r.get("key_tag") not in ("", None), r.get("key_tag"))
 
 
-TESTS = [test_kit_midi_key, test_drum_stem_no_key]
+def test_bare_equal_first():
+    """Defect 6: two bare numbers both near the heard tempo: the equal one wins over half or double."""
+    files = {"Loops/Loop 70 Am 140.wav": ru.plucks(140.0, AM, 4), "Loops/Loop 85 Am 140.wav": ru.plucks(140.0, AM, 4),
+             "Loops/Loop 70 Am 140 B.wav": ru.plucks(70.0, AM, 2)}
+    rows, _, _, code, _ = run(files)
+    check_eq("6 run ends well", code, 0)
+    check_eq("6 'Loop 70 Am 140' heard at 140: tempo 140", num((rows["Loops/Loop 70 Am 140.wav"] or {}).get("bpm_tag")), 140.0)
+    check_eq("6 'Loop 85 Am 140' heard at 140: tempo 140", num((rows["Loops/Loop 85 Am 140.wav"] or {}).get("bpm_tag")), 140.0)
+    check_eq("6 'Loop 70 Am 140' heard at 70: tempo 70",
+             num((rows["Loops/Loop 70 Am 140 B.wav"] or {}).get("bpm_tag")), 70.0)
+
+
+TESTS = [test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first]
 
 
 def main():

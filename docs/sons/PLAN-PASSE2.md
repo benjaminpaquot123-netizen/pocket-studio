@@ -35,11 +35,11 @@ Au plus fort : 11 discussions ouvertes à la fois, sous le plafond de 31. Chacun
 | 7 | UPB 2026 (le gros : voix, MIDI) | 26-11 22 h 17 | | | |
 | 8 | Dubstep + afro-house | 26-11 22 h 17 | `9a804e452` | oui (1218 fichiers, 1224 lignes dont 6 de kit) | 0 |
 | 9 | Deathstep | 26-11 22 h 17 | | | |
-| 10 | DnB, deep house, hardstyle | 26-11 22 h 17 | | | |
+| 10 | DnB, deep house, hardstyle | 26-11 22 h 17 | `d9f22701b` | oui (1025 fichiers, 1077 lignes dont 52 de kit) ; fausse alerte du lanceur pour 2 lignes de style (p1) | 0 |
 | 11 | Ghosthack 4-5-6 | 26-11 22 h 17 | | | |
 | 12 | Ghosthack 1-2-3 | 26-11 22 h 17 | `d05cf617a` | oui (786 = 786) | 0 |
 
-Contrôle du chef du 2026-11-26, 22 h 30, sur les tables poussées (un seul commit par branche, que des CSV dans `docs/sons/passe2/rarN/`, 0 lien symbolique, 0 identifiant en double, somme des lignes égale au tableau de contrôle). Pas encore fait : la comparaison du nombre de fichiers avec la première passe (confiée à la discussion de réunion).
+Contrôle du chef du 2026-11-26, 22 h 30 (RAR 10 : 22 h 35), sur les tables poussées (un seul commit par branche, que des CSV dans `docs/sons/passe2/rarN/`, 0 lien symbolique, 0 identifiant en double, somme des lignes égale au tableau de contrôle). Pas encore fait : la comparaison du nombre de fichiers avec la première passe (confiée à la discussion de réunion).
 
 ## Ce qui arrête tout
 - Les sondes ne sont pas à 0 échec après la réparation.

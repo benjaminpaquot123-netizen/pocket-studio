@@ -2792,7 +2792,7 @@ def main(argv=None):
     if args.no_pack_style:
         pack_style = "unlabelled"
     elif args.pack_style:
-        pack_style = re.sub(r"[^a-z0-9]", "", args.pack_style.lower())[:20] or "unlabelled"
+        pack_style = re.sub(r"[^a-z0-9-]", "", args.pack_style.lower()).strip("-")[:20] or "unlabelled"
     pack_styled = 0
     for typ in TYPES:
         if not rows[typ]:

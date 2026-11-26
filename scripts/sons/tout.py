@@ -721,6 +721,23 @@ def _drumminess(x):
 DRUMMY_FLATNESS = 0.02
 
 
+def _attacks(x, sr):
+    """Number of attacks: 50 ms frames (longer than a bass period) rising 9 dB above the lowest level since the last one."""
+    sig = _mono(x)
+    hop = max(1, int(0.05 * sr))
+    n = len(sig) // hop
+    if n < 2:
+        return 1
+    db = 10 * np.log10(np.mean(sig[:n * hop].reshape(n, hop) ** 2, axis=1) + 1e-12)
+    floor = db.max() - 40.0
+    count, low = 0, floor
+    for v in np.maximum(db, floor):
+        if v - low >= 9.0:
+            count, low = count + 1, np.inf
+        low = min(low, v)
+    return count
+
+
 # Defect 9: fx and vocal words only describe a sound when no instrument word says otherwise.
 STRONG_FX_RX = re.compile(r"(?i)\bfx\b|sfx|riser|uplifter|downlifter|whoosh|impact|transition|downer|braam|zap")
 REVERSE_RX = re.compile(r"(?i)\breverse|\brev\b")
@@ -811,6 +828,10 @@ def classify(rel, dur):
     is_loop = looped or (has_bpm and dur is not None and dur >= 1.5) or _loop_by_name(name, dur)
     if is_loop and not looped and re.search(r"808", name):  # '808 Long 140bpm C' is a one-shot
         is_loop = False
+    bpm_m = _BPM_RX.search(name)
+    if is_loop and not looped and (any(ONESHOT_DIR.search(f) for f in folders)
+                                   or (bpm_m and dur is not None and dur < 240.0 / float(bpm_m.group(1)))):
+        is_loop = False  # 'One Shots/Bass C2 120bpm', a 1.5 s 'Stab Am 128bpm': shorter than a bar (audit 3 #2)
     melodic = MELODIC_WORDS.search(name) or (not DRUM_WORDS.search(name) and MELODIC_WORDS.search(inner))
     if is_loop:
         drummy = DRUM_WORDS.search(name) or (not MELODIC_WORDS.search(name) and DRUM_WORDS.search(inner))
@@ -820,6 +841,8 @@ def classify(rel, dur):
             out["type"] = kind
         else:
             out["subtype"] = "by_sound"  # a guess until _measure_file hears it
+        if not looped:
+            out["_name_loop"] = True  # only a number made it a loop: one held note is still a one-shot
         return out
     fam = drum_family(name, folders)
     if fam is not None and (dur is None or dur < (15.0 if fam in LONG_FAMILIES else 6.0)):  # an 11 s 808 or crash (defect 25)
@@ -2391,6 +2414,9 @@ def _measure_file(p, rel, parts, acc, rar):
             cl = classify(rel, x.shape[0] / sr)
             if cl["subtype"] == "by_sound":  # the name is silent: the sound decides
                 cl["type"] = "drum_loop" if _drumminess(x) > DRUMMY_FLATNESS else "melodic_loop"
+            if cl.pop("_name_loop", False) and cl["type"] == "melodic_loop" and x.shape[0] < 8.0 * sr \
+                    and _attacks(x, sr) <= 1:
+                cl["type"], cl["subtype"] = "oneshot_melodic", "-"  # 'Synth/Bass 120 C' held: one note (audit 3 #2)
             row.update(cl)
             row.update(common(sr, x))
             tags = parse_tags(parts, cl["type"])

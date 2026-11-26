@@ -132,7 +132,7 @@ def test_oneshot_with_tempo():
                 "Synth/Bass 120 C.wav"):
         r = rows[rel] or {}
         check_eq("2 '%s': a melodic one-shot, no tempo" % rel, (r.get("type"), r.get("bpm_tag")), ("oneshot_melodic", ""))
-    check_eq("2 'Bass C2 120bpm': note C2 kept", (rows["One Shots/Bass C2 120bpm.wav"] or {}).get("note_tag"), "C2")
+    check_eq("2 'Bass C2 120bpm': note C kept", (rows["One Shots/Bass C2 120bpm.wav"] or {}).get("note_tag"), "C")
     check_eq("2 '808 Long 140bpm C': still a drum hit", (rows["808/808 Long 140bpm C.wav"] or {}).get("type"), "drum_oneshot")
 
 

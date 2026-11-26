@@ -92,6 +92,11 @@ if r:
     chk.eq("root3 type", r[0]["type"], "drum_loop")
     chk.eq("root3 style (no drum word leak)", r[0]["style"], "unlabelled")
     chk.eq("root3 bpm_tag", r[0]["bpm_tag"], "120")
+root = os.path.join(B, "Trapped Souls Vol 1")   # "Souls" is not soul/rnb: style too greedy
+write_wav(os.path.join(root, "Kicks", "Kick 01.wav"), kick(), SR, bits=24)
+r = table(root, "root4", ["type", "subtype", "role", "style"])
+if r:
+    chk.ok("root4 style not from 'Souls'", r[0]["style"] != "rnb", r[0]["style"])
 
 print("== 6. whole pack: the accuracy fence on melodic loops")
 root = os.path.join(B, "acc1")

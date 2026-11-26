@@ -65,3 +65,14 @@ une erreur imprimée sous un contrôle déjà rouge attendu était masquée ; le
 recompté ; un rejeu seul ne regardait pas `git status` ; acc1 et kit2 ne comptaient pas leurs lignes.
 Restes mineurs, non corrigés : b3 et b3b ont des cas `want=None` qui ne vérifient rien ; b1 attend
 désormais le rôle `fx` pour le crash inversé.
+
+## RAR 3, cas de nom (2026-11-26)
+- b1 `Noisey Bass Loop 140 F`, `Upbeat Piano Loop 120 C` ; b2 `Piano Loop 120 C`, `Pad Loop F#`,
+  `Bass Loop 120 Bb`, `Bass Loop 120 Db`, `Loop 120 C#`, `Loop 120 G` : `key_tag` = la tonique seule
+  (« C », plus « C major ») : une lettre seule ne dit pas le mode, vide vaut mieux que deviné (cas 2).
+- b2 `Synth/Bass A#` entendu A3 : `note_tag` A# gardé : un demi-ton d'écart est un A# désaccordé,
+  pas une autre note (cas 3, seuil 150 cents).
+- b2 `Snares/Snare D`, `Snares/Snare B 2` : plus de `note_measured` : une caisse claire ou un clap
+  n'a pas de note fiable (cas 9).
+- selftest_tout `Bass G`, selftest_tout_b `Bass Loop 120 Bb/Db`, selftest_tout_repare kit « 128 F » :
+  même règle que le cas 2.

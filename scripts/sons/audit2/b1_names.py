@@ -143,7 +143,7 @@ WANT = {
     'Drums/Kicks/Kick Song 01.wav': 'type=drum_oneshot, subtype=kick, role=full, style=unlabelled, end_cut=0',
     'FX/Reverse Crash 01.wav': 'type=fx, subtype=-, role=fx, style=unlabelled',  # defect 9: a riser, not a hat
     'Loops/Reversed Piano Loop 120 Am.wav': 'type=melodic_loop, subtype=-, role=keys, style=unlabelled, bpm_tag=120, key_tag=A minor',
-    'Loops/Noisey Bass Loop 140 F.wav': 'type=melodic_loop, subtype=-, role=bass, style=unlabelled, bpm_tag=140, key_tag=F major',
+    'Loops/Noisey Bass Loop 140 F.wav': 'type=melodic_loop, subtype=-, role=bass, style=unlabelled, bpm_tag=140, key_tag=F',
     'Loops/Texture Pad Loop 01.wav': 'type=melodic_loop, subtype=-, role=pad, style=unlabelled',
     'Drums/Kicks/Kick Impact 01.wav': 'type=drum_oneshot, subtype=kick, role=kick, style=unlabelled, end_cut=0',
     'Drums/Snares/Snare Noise 01.wav': 'type=drum_oneshot, subtype=snare, role=snare, style=unlabelled, end_cut=0',
@@ -172,7 +172,7 @@ WANT = {
     'Loops/Padded Kick Loop 125.wav': 'type=drum_loop, subtype=-, role=kick, style=unlabelled, bpm_tag=125',
     'Loops/What Loop 120 Am.wav': 'type=melodic_loop, subtype=by_sound, role=-, style=unlabelled, bpm_tag=120, key_tag=A minor',
     'Loops/Custom Loop 01 120 Am.wav': 'type=melodic_loop, subtype=by_sound, role=-, style=unlabelled, bpm_tag=120, key_tag=A minor',
-    'Loops/Upbeat Piano Loop 120 C.wav': 'type=melodic_loop, subtype=-, role=keys, style=unlabelled, bpm_tag=120, key_tag=C major',
+    'Loops/Upbeat Piano Loop 120 C.wav': 'type=melodic_loop, subtype=-, role=keys, style=unlabelled, bpm_tag=120, key_tag=C',
     'Loops/Breakdown Synth Loop 128 Am.wav': 'type=melodic_loop, subtype=-, role=synth, style=unlabelled, bpm_tag=128, key_tag=A minor',
     'Loops/Chat Lead Loop 120 Am.wav': 'type=melodic_loop, subtype=-, role=lead, style=unlabelled, bpm_tag=120, key_tag=A minor',
     'Loops/Atomic Bass Loop 120 Am.wav': 'type=melodic_loop, subtype=-, role=bass, style=unlabelled, bpm_tag=120, key_tag=A minor',

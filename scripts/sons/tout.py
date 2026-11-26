@@ -35,10 +35,12 @@ lufs_i     integrated loudness, ITU-R BS.1770-4 (K-weighting, 400 ms blocks,
 error      why a file could not be measured (row kept, numbers empty)
 
 End of file (last in every audio table, not kit or midi; see end_cut())
-end_cut    1 = the file really ends cut: a click (last sample above -60 dBFS
+end_cut    1 = the file really ends cut: a click (last sample above -60 dB
            and over 4x the sample-to-sample motion of its last 5 ms) or an
-           abrupt stop (above -30 dBFS 5 ms before the end, no final fade of
-           20 dB or more). 0 otherwise, a trimmed tail with a fade included.
+           abrupt stop (above -45 dB 5 ms before the end, no final fade of
+           20 dB or more), levels relative to the peak, a steady noise floor
+           at the end ignored. 0 otherwise, a trimmed tail with a fade
+           included. A reversed sound ends loud: 1 by design (abrupt end).
 end_fade_ms length of the final fade, empty when there is none, rounded to
            10 ms. Read it as a yes/no grade with an order of size: a real
            fade can be read at half or twice its length.
@@ -912,7 +914,52 @@ def _predict(hist, a, n):
 
 def _short_fade(s, sr):
     """Length in ms of a fade of 4-15 ms at the end, or None (blind audit I1).
-    The last 15 ms are compared, 1 ms at a time, to their prediction from the 65 ms before."""
+    Tonal sounds: the last 15 ms are compared, 1 ms at a time, to their
+    prediction from the 65 ms before. Noise, which cannot be predicted, falls
+    back on the energy of its last 3 ms (second audit, defect 15)."""
+    lpc = _short_fade_lpc(s, sr)
+    return lpc if lpc is not None else _short_fade_noise(s, sr)
+
+
+def _short_fade_noise(s, sr):
+    """Fade length in ms on noise-like sounds, or None when the method does not apply.
+
+    A linear fade of L ms on noise of power p leaves E = p * t^3 / (3 L^2) in
+    the last t = 3 ms (L >= t), p * (t - 2L/3) otherwise; an abrupt stop leaves
+    p * t. p is the trend of 3 ms windows 45-15 ms before the end, extrapolated.
+    The method only applies when no 3 ms window of that reference region falls
+    under 0.4 of the trend: low tones (a kick) dip at every zero crossing."""
+    n3 = max(2, int(round(0.003 * sr)))
+    h = max(1, n3 // 6)
+    n = s.shape[0]
+    a, b = n - int(round(0.045 * sr)), n - int(round(0.015 * sr))
+    if a < 0:
+        return None
+    e = s * s
+    c = np.concatenate([[0.0], np.cumsum(e)])
+    st = np.arange(a, b - n3 + 1, h)
+    win = (c[st + n3] - c[st]) / n3
+    if win.size < 8 or float(np.min(win)) <= 0.0:
+        return None
+    tc = (n - (st + n3 / 2.0)) * 1000.0 / sr  # ms before the end
+    slope, icpt = np.polyfit(tc, np.log(win), 1)
+    trend = np.exp(slope * tc + icpt)
+    if float(np.min(win / trend)) < 0.4:
+        return None
+    p = math.exp(slope * (n3 / 2.0 * 1000.0 / sr) + icpt)
+    r = float(c[n] - c[n - n3]) / n3 / p
+    t = n3 * 1000.0 / sr
+    if r >= 1.0 / 3.0:
+        est = max(0.0, 1.5 * t * (1.0 - r))
+    else:
+        est = t / math.sqrt(3.0 * max(r, 1e-9))
+    # Guessed margin: on the audit fuzz a 5 ms fade reads 3.9-6.7 ms and a
+    # 2 ms fade at most 3.2 ms, so 0.5 ms moves the 4 ms limit between them.
+    return est + 0.5 if est > 0.0 else est
+
+
+def _short_fade_lpc(s, sr):
+    """_short_fade on tonal sounds (LPC prediction), or None."""
     n15, n80, n1 = int(0.015 * sr), int(0.080 * sr), max(1, int(round(0.001 * sr)))
     if s.shape[0] < n80 + n15:
         return None
@@ -958,6 +1005,46 @@ def _seamless(s, sr, x0):
     return err < 0.1 * lvl
 
 
+def _past_floor(s, sr):
+    """The channel up to where its sound ends, when it ends in a steady floor.
+
+    Floor: the two 20 ms halves of the last 40 ms within 3 dB of each other
+    and 30 dB or more under the peak (hiss, hum, dither, a slow natural tail).
+    The sound ends at the last sample 20 dB over the floor; if the 5 ms before
+    it are 30 dB or more over the floor the sound was stopped there (a cut
+    hidden under the floor, second audit defect 16) and the channel is cut
+    there; otherwise it decayed into the floor and None is returned (not cut,
+    defect 30). Without a floor the channel is returned unchanged. Guessed
+    limits: 3, 20 and 30 dB.
+    """
+    n20 = int(round(0.020 * sr))
+    n5 = max(1, int(round(0.005 * sr)))
+    if s.shape[0] < 4 * n20:
+        return s
+    r1 = math.sqrt(float(np.mean(s[-2 * n20:-n20] ** 2)))
+    r2 = math.sqrt(float(np.mean(s[-n20:] ** 2)))
+    peak = float(np.max(np.abs(s)))
+    fl = math.sqrt(0.5 * (r1 * r1 + r2 * r2))
+    if min(r1, r2) <= 0.0 or abs(20 * math.log10(r1 / r2)) > 3.0 or fl > peak * 10 ** (-30 / 20):
+        return s
+    over = np.nonzero(np.abs(s) > 10.0 * fl)[0]
+    if over.size == 0:
+        return None
+    k = int(over[-1])
+    if float(np.max(np.abs(s[max(0, k - n5):k + 1]))) >= fl * 10 ** (30 / 20):
+        return s[:k + 1]
+    return None
+
+
+def _quant_step(x):
+    """The step of a coarse integer quantization (8 to 16 bit), or None."""
+    for bits in range(8, 17):
+        v = x * float(1 << (bits - 1))
+        if float(np.max(np.abs(v - np.round(v)))) < 1e-6:
+            return 1.0 / float(1 << (bits - 1))
+    return None
+
+
 def _end_one(s, sr):
     """(cut, fade_ms or None) for one channel."""
     x0 = s
@@ -973,11 +1060,32 @@ def _end_one(s, sr):
     dc_end = float(np.mean(s[-max(1, int(0.001 * sr)):]))
     if abs(dc_end - dc) <= 0.5 * abs(dc):
         s = s - dc
+    # The levels below are relative to the channel's peak, so a quiet file cut
+    # hard reads as cut (second audit, defect 17). Gain capped at +50 dB; a
+    # channel whose peak is under -70 dBFS is noise, not a sound (both guessed).
+    peak = float(np.max(np.abs(s)))
+    if peak * 10 ** (70 / 20) < 1.0:
+        return 0, None
+    g = min(1.0 / peak, 10 ** (50 / 20))
+    qs = _quant_step(x0)
+    s, x0 = s * g, x0 * g
+    s = _past_floor(s, sr)
+    if s is None:
+        return 0, None
+    if qs is not None and float(np.max(np.abs(s[-max(1, int(round(0.005 * sr))):]))) <= 2.0 * qs * g:
+        return 0, None  # the sound faded into its last quantization steps (second audit, defect 30)
     n = s.shape[0]
     n1 = max(1, int(round(0.001 * sr)))
     n5 = max(2, int(round(0.005 * sr)))
     a = np.abs(s)
-    if n < 2 * n5 or float(np.max(a[-min(n, int(0.1 * sr)):])) < 10 ** (-90 / 20):
+    if n < 2 * n5:
+        # under 10 ms there is no fade to measure: cut when the last 1 ms is
+        # still within 20 dB of the peak (second audit, defect 29; guessed)
+        if n < 2 * n1:
+            return 0, None
+        r1 = math.sqrt(float(np.mean(s[-n1:] ** 2)))
+        return (1 if r1 >= float(np.max(a)) * 10 ** (-20 / 20) else 0), None
+    if float(np.max(a[-min(n, int(0.1 * sr)):])) < 10 ** (-90 / 20):
         return 0, None
     # final fade: forward-window peak envelope (10 ms) every 0.5 ms over the last 200 ms
     w = max(1, int(round(0.010 * sr)))
@@ -1028,18 +1136,34 @@ def _end_one(s, sr):
 def end_cut(sr, x):
     """Is the file cut (click or abrupt stop) at its end?
 
+    Each channel is read alone, with its levels relative to the channel's
+    peak (gain capped at +50 dB; a peak under -70 dBFS is not a sound).
     end_cut = 1 when a channel either ends on a step: |last sample| above
-    -60 dBFS and over 4 times the median sample-to-sample motion of its last
-    5 ms; or is still above -30 dBFS (1 ms RMS) 5 ms before the end without a
-    final fade. Fade: the 10 ms peak envelope leaves the natural decay trend
-    (fitted 200-60 ms before the end, within 1.5 dB) and drops 20 dB or more
-    to the last 1 ms, never rising by more than 3 dB; end_fade_ms is its
-    length (loudest channel), empty when there is none. A sound not yet at
-    -60 dB at the end is not a cut (empty t60, end_level_db: information).
+    -60 dB and over 4 times the median sample-to-sample motion of its last
+    5 ms; or is still above -45 dB (1 ms RMS) 5 ms before the end without a
+    final fade of 4 ms or more. Fade: the 10 ms peak envelope leaves the
+    natural decay trend (fitted 200-60 ms before the end, within 1.5 dB) and
+    drops 20 dB or more to the last 1 ms, never rising by more than 3 dB; on
+    noise, the energy of the last 3 ms falling below its 45-15 ms trend also
+    counts. end_fade_ms is its length (loudest channel), empty when there is
+    none. Trailing digital silence and a steady DC offset are ignored. A
+    steady noise floor (hiss, hum, dither) at the end is ignored too: the
+    sound ends where it last rose 20 dB above that floor, and it is cut only
+    if that point is 30 dB above the floor; a sound that faded into the floor
+    or into its last quantization steps is not cut. A file under 10 ms is cut
+    when its last 1 ms is within 20 dB of its peak. A channel that went silent
+    10 ms or more before the others is not cut. A seamless loop is not cut.
+    A reversed sound (reverse cymbal, riser) ends loud: it reads as cut by
+    design, the column says "abrupt end", not "mistake".
     """
     if x.ndim == 1:
         x = x[:, None]
-    res = [_end_one(x[:, c].astype(np.float64), sr) for c in range(x.shape[1])]
+    # a channel that went silent 10 ms or more before the others ended early on
+    # purpose: the file ends where its last channel ends (second audit, defect 30)
+    ends = [np.nonzero(np.abs(x[:, c]) > 10 ** (-90 / 20))[0] for c in range(x.shape[1])]
+    last = max((int(e[-1]) for e in ends if e.size), default=0)
+    early = [e.size == 0 or int(e[-1]) < last - int(round(0.01 * sr)) for e in ends]
+    res = [(0, None) if early[c] else _end_one(x[:, c].astype(np.float64), sr) for c in range(x.shape[1])]
     tail = max(1, int(round(0.05 * sr)))
     loud = int(np.argmax(np.mean(x[-tail:] ** 2, axis=0)))
     return {"end_cut": max(r[0] for r in res), "end_fade_ms": res[loud][1]}

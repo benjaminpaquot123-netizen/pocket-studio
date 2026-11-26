@@ -28,8 +28,8 @@ Le lanceur `scripts/sons/passe2/lance.py` ajoute un style forcé par pack (table
 | 10 | Palmtrees - Liquid DnB | dnb | oui | — |
 | 10 | Melody Kits - Deep House | house | oui | — |
 | 10 | Melody Kits - Hardstyle | hardstyle | oui | — |
-| 10 | Mainstage DnB | dnb | oui | — |
 | 11 | Keys & Strings Vol. 3 | unlabelled | acceptable | — |
+| 11 | Mainstage DnB | dnb | oui | — |
 | 11 | Neo Rave 2026 | rave | oui | — |
 | 12 | EDM Sound Effects Volume 2 | edm | oui | — |
 | 12 | Essence Deep House | house | oui | — |

@@ -5,6 +5,9 @@ rar,pack,files_audio,files_midi,rows,kit_rows,errors,count_ok,tout_rc,style_pose
 4,p1,226,24,250,0,0,yes,0,lofi,250,yes,,0,0,0,
 5,p1,465,70,535,0,0,yes,0,techno,535,yes,,0,0,0,
 6,p1,487,136,623,0,0,yes,0,amapiano,613,yes,,0,0,0,
+7,p1,0,383,383,0,0,yes,0,unlabelled,0,yes,,0,0,0,
+7,p2,1413,48,1461,5,0,yes,0,unlabelled,0,yes,,0,0,0,.ini:2 .txt:11
+7,p3,130,52,182,3,0,yes,0,unlabelled,0,yes,,0,0,0,
 8,p1,700,20,720,0,0,yes,0,dubstep,686,yes,,0,0,0,.fxp:35 .pdf:1
 8,p2,338,60,398,6,0,yes,0,afro-house,404,yes,,0,0,0,
 8,p3,100,0,100,0,0,yes,0,unlabelled,0,yes,,0,0,0,
@@ -14,6 +17,9 @@ rar,pack,files_audio,files_midi,rows,kit_rows,errors,count_ok,tout_rc,style_pose
 10,p1,341,35,376,0,0,yes,0,dnb,364,NO,,0,0,0,.txt:1
 10,p2,254,104,358,26,0,yes,0,house,37,yes,,0,0,0,
 10,p3,206,85,291,26,0,yes,0,hardstyle,27,yes,,0,0,0,
+11,p1,421,0,421,30,0,yes,0,unlabelled,0,yes,,0,0,0,
+11,p2,598,149,747,22,0,yes,0,dnb,769,yes,,0,0,1,.pdf:1 .serumpack:1 .serumpreset:30
+11,p3,609,126,735,22,0,yes,0,rave,745,yes,,0,0,1,.pdf:1 .serumpack:1
 12,p1,256,0,256,0,0,yes,0,edm,255,yes,,0,0,0,
 12,p2,424,70,494,0,0,yes,0,house,494,yes,,0,0,0,
 12,p3,36,0,36,0,0,yes,0,rave,33,yes,,0,0,1,.pdf:1 .serumpack:1

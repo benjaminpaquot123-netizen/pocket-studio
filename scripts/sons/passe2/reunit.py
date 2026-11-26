@@ -25,8 +25,8 @@ GENRES = ["drum_oneshot", "drum_loop", "melodic_loop", "oneshot_melodic", "vocal
           "kit_stem", "midi"]
 # Heads handed by the conductor (deep pass, one branch per RAR).
 TETES = {
-    1: "f08dac9d6", 2: "e902e0c70", 3: "f1b112281", 4: "3e25cea17", 5: "dcc0ebf24",
-    6: "6f588cac8", 8: "9a804e452", 9: "6d4803c8b", 10: "d9f22701b", 12: "d05cf617a",
+    1: "f08dac9d6", 2: "e902e0c70", 3: "f1b112281", 4: "3e25cea17", 5: "dcc0ebf24", 7: "0fa06f672",
+    6: "6f588cac8", 8: "9a804e452", 9: "6d4803c8b", 10: "d9f22701b", 11: "fc23b0808", 12: "d05cf617a",
 }
 PASSE1_SKIP_TYPES = {"doc", "junk", "preset"}
 

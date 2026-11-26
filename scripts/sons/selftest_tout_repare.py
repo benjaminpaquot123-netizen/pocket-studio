@@ -408,7 +408,31 @@ def test_accuracy_wilson_gate():
     check_eq("A7 rule written in the header", "Wilson" in open(tout.__file__, encoding="utf-8").read(4000 * 3), True)
 
 
-TESTS = [test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def _legato(bpm, midis, amp=0.5):
+    """Notes played back to back with no dip in level: one phase-continuous tone that changes pitch."""
+    beat = int(round(60.0 / bpm * SR))
+    f = np.repeat([440.0 * 2 ** ((m - 69) / 12.0) for m in midis], beat)
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    return amp * (np.sin(ph) + 0.3 * np.sin(2 * ph))
+
+
+def test_review_oneshot_limits():
+    """Fresh review: a zero tempo, a pack folder named 'One Shots', a legato bass line."""
+    rows, _, _, code, _ = run({"Synth/Pad 00bpm.wav": _legato(120.0, [57] * 6)})
+    check_eq("R1 run ends well", code, 0)
+    check_true("R1 'Pad 00bpm': no division error", "Division" not in str((rows["Synth/Pad 00bpm.wav"] or {}).get("error")),
+               (rows["Synth/Pad 00bpm.wav"] or {}).get("error"))
+    rel = "Loops & One Shots Vol 1/Synths/Pad 120bpm Am.wav"
+    rows, _, _, code, _ = run({rel: ru.plucks(120.0, AM, 4)}, pack="Downloads")
+    check_eq("R2 pack folder 'Loops & One Shots Vol 1' is no one-shot folder", (rows[rel] or {}).get("type"), "melodic_loop")
+    rel = "Synth/Bass 120bpm Am.wav"
+    rows, _, _, code, _ = run({rel: _legato(120.0, [45, 48, 52, 55, 57, 55, 52, 48])})
+    check_eq("R3 legato bass line, 8 notes, no dip: a loop", (rows[rel] or {}).get("type"), "melodic_loop")
+    rows, _, _, code, _ = run({"Synth/Pad 120bpm C.wav": _legato(120.0, [48] * 8)})
+    check_eq("R3 one held note named with a tempo: still a one-shot", (rows["Synth/Pad 120bpm C.wav"] or {}).get("type"), "oneshot_melodic")
+
+
+TESTS = [test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

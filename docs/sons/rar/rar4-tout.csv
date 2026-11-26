@@ -7,7 +7,7 @@
 #   loop_songstarter   8   3.3 min   51 MB  full mixes, 8 bars, BPM + key tagged (same 8 song ideas as the melodic loops and MIDI)
 #   loop_texture       8   3.3 min   51 MB  ambience beds, 8 bars, BPM tagged, no key
 #   oneshot_melodic   24   5.7 min   86 MB  bass 8, piano 8, synth_keys 8; long sustains 12 to 19 s, all tagged root C
-#   fx_oneshot        19   1.1 min   17 MB  riser, sweep, rewind, tape, radio, sci-fi...; 1.7 to 6.9 s (whole beats at the pack tempo)
+#   fx_oneshot        19   1.1 min   17 MB  transitions and sound effects; 1.7 to 6.9 s (whole beats at the pack tempo)
 #   midi              24       -     0 MB  bass 8, piano 8, synth_keys 8; 904 notes, 7 to 8 bars, notes 32 to 94, max polyphony 1 to 14
 # Columns: lufs_i = BS.1770 integrated (pyloudnorm); rms/crest over the whole file; mono_loss_db = (L+R)/2 power vs stereo power;
 #   lead/tail_ms = time before/after the first/last sample above -60 dB under peak; end_level_db = peak of the last 10 ms under file peak
@@ -17,7 +17,7 @@
 #   oneshot_melodic: bass, piano and keys instrument samples (root C, long sustain, loop-free release) for the sampler / preset instruments; bass LUFS spread 16 dB, normalise first.
 #   loop_melodic + midi + songstarter: 8 complete song ideas in 3 forms (audio wet/dry, MIDI, full mix) = ready demo projects and tutorial content; MIDI drives our own synths.
 #   loop_drum: clean 4-bar grooves per element at 73-82 BPM, demo content and slicing source for lofi kits; percussion and top loops are quiet (-24 to -12 LUFS).
-#   loop_texture: vinyl/ambience beds for a lofi "atmosphere" layer. fx_oneshot: transitions (riser, sweep, rewind, tape stop) for the FX browser.
+#   loop_texture: vinyl/ambience beds for a lofi "atmosphere" layer. fx_oneshot: transitions and ear candy for the FX browser.
 type,subtype,style,variant,sr,channels,bits,dur_s,size_kb,peak_dbfs,rms_dbfs,lufs_i,crest_db,mono_loss_db,lead_ms,tail_ms,end_level_db,bpm,bpm_source,key,key_source,bars,pitch_est_hz,note_est,midi_notes,midi_bars,midi_low,midi_high,midi_max_poly
 fx_oneshot,fx,lofi_chillhop,-,44100,2,PCM_24,1.714,443,-0.1,-20.72,-14.81,20.62,-2.85,0.3,0.6,-53.5,,,,,,,,,,,,
 fx_oneshot,fx,lofi_chillhop,-,44100,2,PCM_24,1.714,443,-0.1,-26.06,-20.06,25.95,-0.12,0.0,235.4,-65.9,,,,,,,,,,,,

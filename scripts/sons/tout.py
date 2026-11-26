@@ -933,7 +933,8 @@ def lufs(x, sr):
     blk = int(round(0.4 * sr))
     if len(p) < blk:
         z = float(np.mean(p))
-        return -0.691 + 10 * math.log10(z) if z > 0 else None
+        lk = -0.691 + 10 * math.log10(z) if z > 0 else None
+        return lk if lk is not None and lk > -70 else None  # same -70 gate as a long file (audit 4, A4)
     hop = blk // 4
     c = np.concatenate([[0.0], np.cumsum(p)])
     starts = np.arange(0, len(p) - blk + 1, hop)

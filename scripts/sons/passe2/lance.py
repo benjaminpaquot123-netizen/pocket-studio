@@ -44,7 +44,7 @@ FORCES = [
     (r"blood\W*rave", "techno"),        # acid techno; 'Rave' in the name reads rave
     (r"consciousness", "techno"),      # melodic techno; no genre word unless the folder says so
     (r"cherry\W*blossom", "lofi"),     # chillhop; no genre word unless the folder says so
-    (r"drift", "drift-phonk"),         # 'Drift Phonk' reads phonk, only 'Downtown Drift' reads drift-phonk
+    (r"\bdrift\b", "drift-phonk"),         # 'Drift Phonk' reads phonk, only 'Downtown Drift' reads drift-phonk
     (r"synthwave", "synthwave"),       # no synthwave style in tout.py: would stay unlabelled
 ]
 
@@ -94,10 +94,10 @@ def unrar(args):
 
 
 def extract(archive, dest):
-    t = unrar(["t", "-idq", archive])
+    t = unrar(["t", "-idq", "--", archive])
     if t.returncode != 0:
         raise Refused("unrar t failed (rc %d): %s" % (t.returncode, (t.stdout + t.stderr).strip()[-300:]))
-    x = unrar(["x", "-idq", "-o-", "-y", archive, dest + os.sep])
+    x = unrar(["x", "-idq", "-o-", "-y", "--", archive, dest + os.sep])
     if x.returncode != 0:
         raise Refused("unrar x failed (rc %d): %s" % (x.returncode, (x.stdout + x.stderr).strip()[-300:]))
     links = 0
@@ -335,7 +335,8 @@ def main(argv=None):
                 p = os.path.realpath(os.path.join(x, rel))
                 if not p.startswith(os.path.realpath(x) + os.sep) or not os.path.isdir(p):
                     raise Refused("--pack %s: no such folder in the archive" % rel)
-                packs.append(p)
+                if p not in packs:
+                    packs.append(p)
         else:
             packs = find_packs(x)
         plan = plan_of(packs, cli)

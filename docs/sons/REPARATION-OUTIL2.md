@@ -50,6 +50,16 @@ retrouvée par `--trace`), `a3-16` (justesse d'une note de one-shot : 120 cents 
 `test_doc_matches_fence` lit dans l'en-tête les types et les noms cités et vérifie chacun contre
 `fence_row` et `classify`.
 
+## Raccord passe 2 (2026-11-26)
+
+Trois fautes de l'outil trouvées en rebranchant les rejeux et le lanceur, chacune en rouge puis vert
+dans `selftest_tout_repare.py`, chacune avec son mutant dans `audit2/mutate.py` :
+- `--pack-style` gardait seulement lettres et chiffres : « drift-phonk » devenait « driftphonk ».
+- un crash inversé rangé en `fx` gardait le rôle `hats` ; il prend le rôle `fx`.
+- « Souls » au pluriel (« Trapped Souls Vol 1 ») donnait le style `rnb`.
+Le lanceur `passe2/lance.py` passe le style forcé par `--pack-style` (le `file_id` dépend
+maintenant du nom du pack, l'ancienne table de correspondance ne retrouvait plus les lignes).
+
 ## Self-tests
 
 MUT_SELFTESTS

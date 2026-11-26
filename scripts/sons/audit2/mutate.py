@@ -71,6 +71,9 @@ m("style", "boom bap no longer hiphop", r'("hiphop", r"hip.?hop|boom.?bap")', r'
 m("style", "'rnb' no longer rnb", r'("rnb", r"r ?n ?b|r&b|soul")', r'("rnb", r"r&b|soul")')
 m("style", "lofi never found", r'("lofi", r"lo.?fi|chillhop")', r'("lofi", r"chillhop")')
 m("style", "dnb never found", r'("dnb", r"dnb|drum ?(and|&|n) ?bass|jungle")', r'("dnb", r"jungle")')
+m("style", "plural 'souls' names soul music again", r'|garage ?band|\bsouls\b")', r'|garage ?band")')
+m("style", "--pack-style drops the hyphen of drift-phonk", 'r"[^a-z0-9-]", "", args.pack_style', 'r"[^a-z0-9]", "", args.pack_style')
+m("type", "reversed crash filed as fx keeps the role hats", '                out["role"] = "fx"  # a riser', '                pass  # a riser')
 # ---- names -> tempo / key
 m("tags", "bpm word accepted up to 180 only", "if 40 <= v <= 250:", "if 40 <= v <= 180:")
 m("tags", "bare number accepted from 100 only", "if 60 <= v <= 200:", "if 100 <= v <= 200:")

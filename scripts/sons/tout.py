@@ -2461,6 +2461,7 @@ def _run_kits(kits, acc, rar):
                     drummy = row["role"] in ("drums", "kick", "snare", "hats", "perc")
                     if drummy:
                         tags["key_lone"] = None  # no key is heard in drums: nothing to confirm
+                        tags["key"] = None  # nor the kit's written key (audit 3 #7)
                     _, m, tags = _heard(measure_melodic_loop, sr, x, tags)
                     if drummy:
                         m["key_measured"] = m["key_match"] = m["key_strength"] = None

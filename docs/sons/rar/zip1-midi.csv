@@ -1,0 +1,32 @@
+# zip1 MIDI: 27 parts from the 9 bonus construction kits (kit_id as in zip1-tout.csv). Parsed with mido.
+# bars = ceil(last note end / 4 beats); swing_pct = mean delay of off-beat 8ths in % of an 8th (>=4 such notes);
+# scale = (empty for drum parts) best of natural/harmonic minor/major on the tagged root, (% of notes in scale) when < 98 %;
+# chord_degrees = lowest note of each >=3-note onset group, relative to the tagged root (i = root).
+rar,kit_id,role,style,bpm_tag,key_tag,bars,notes,notes_per_bar,pitch_lo,pitch_hi,poly_max,vel_mean,vel_sd,swing_pct,scale,chord_degrees,chord_rhythm_beats,error
+zip1,k1,melody,techno,140,Dm,4,64,16.00,72,86,1,100.0,0.0,0.0,natural_minor(94%in),,,
+zip1,k1,bass,techno,140,Dm,4,48,12.00,62,74,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k1,melody,techno,140,Dm,8,50,6.25,74,86,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k2,bass,deathstep,150,Em,4,18,4.50,40,52,1,100.0,0.0,,natural_minor,,,
+zip1,k2,bass,deathstep,150,Em,4,25,6.25,40,52,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k2,chords,deathstep,150,Em,1,8,8.00,62,77,2,100.0,0.0,,natural_minor(75%in),,,
+zip1,k3,bass,tech-house,124,Dm,4,26,6.50,60,65,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k3,melody,tech-house,124,Dm,8,8,1.00,38,50,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k4,bass,trap,140,Gm,8,24,3.00,60,72,1,90.0,0.0,0.0,natural_minor,,,
+zip1,k4,chords,trap,140,Gm,7,8,1.14,48,67,2,100.0,0.0,,natural_minor,,,
+zip1,k4,drums,trap,140,Gm,8,116,14.50,59,64,2,99.7,4.3,2.7,,,,
+zip1,k4,chords,trap,140,Gm,4,24,6.00,48,74,3,79.8,0.8,0.0,natural_minor,,,
+zip1,k5,bass,synthwave,88,C#m,8,128,16.00,47,57,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k5,chords,synthwave,88,C#m,8,80,10.00,42,71,5,100.0,0.0,,natural_minor,i-VII-VI-v-iv-v-VI-VII-i-VII-VI-v-iv-v-VI-VII,2.00,
+zip1,k5,melody,synthwave,88,C#m,8,72,9.00,47,83,2,100.0,0.0,0.0,natural_minor,,,
+zip1,k6,melody,bigroom,128,Dm,7,8,1.14,50,50,1,100.0,0.0,,natural_minor,,,
+zip1,k6,melody,bigroom,128,Dm,8,48,6.00,62,86,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k7,bass,future-rave,128,D#m,8,128,16.00,51,73,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k7,melody,future-rave,128,D#m,8,128,16.00,63,75,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k7,melody,future-rave,128,D#m,8,4,0.50,51,61,1,100.0,0.0,,natural_minor,,,
+zip1,k8,melody,hardstyle,150,Dm,4,19,4.75,74,74,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k8,melody,hardstyle,150,Dm,4,19,4.75,62,62,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k8,melody,hardstyle,150,Dm,4,40,10.00,62,74,1,100.0,0.0,0.0,natural_minor,,,
+zip1,k9,bass,hybrid-trap,140,Fm,4,8,2.00,65,77,1,100.0,0.0,,natural_minor,,,
+zip1,k9,melody,hybrid-trap,140,Fm,8,12,1.50,48,61,1,100.0,0.0,,natural_minor,,,
+zip1,k9,melody,hybrid-trap,140,Fm,4,4,1.00,65,77,1,100.0,0.0,,natural_minor,,,
+zip1,k9,melody,hybrid-trap,140,Fm,4,3,0.75,53,65,1,100.0,0.0,,natural_minor,,,

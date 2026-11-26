@@ -121,6 +121,9 @@ class LiveSongRecorder {
                 // hears the Intro too; « Écouter » itself starts 8 bars before the first Drop).
                 sink.mark("WAIT ms 1000")
                 val first = if (fromDrop) com.pocketstudio.model.FirstListen.startPart(p).coerceAtLeast(0) else 0
+                // Where the first Drop starts after ▶, in steps (scripts/son/matin_morceaux.sh cuts the drop there).
+                val main = com.pocketstudio.model.FirstListen.firstMain(p)
+                if (main >= first) sink.mark("META drop_steps ${p.song.subList(first, main).sumOf { p.partSteps(it) }}")
                 if (fromDrop) vm.listenFromDrop() else vm.toggleSong()
                 // The app's own pause before it stages the second part.
                 sink.mark("WAIT ms 150")

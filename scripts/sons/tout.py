@@ -34,10 +34,12 @@ lufs_i     integrated loudness, ITU-R BS.1770-4 (K-weighting, 400 ms blocks,
 error      why a file could not be measured (row kept, numbers empty)
 
 End of file (last in every audio table, not kit or midi; see end_cut())
-end_cut    1 = the file really ends cut: a click (last sample above -60 dBFS
+end_cut    1 = the file really ends cut: a click (last sample above -60 dB
            and over 4x the sample-to-sample motion of its last 5 ms) or an
-           abrupt stop (above -30 dBFS 5 ms before the end, no final fade of
-           20 dB or more). 0 otherwise, a trimmed tail with a fade included.
+           abrupt stop (above -45 dB 5 ms before the end, no final fade of
+           20 dB or more), levels relative to the peak, a steady noise floor
+           at the end ignored. 0 otherwise, a trimmed tail with a fade
+           included. A reversed sound ends loud: 1 by design (abrupt end).
 end_fade_ms length of the final fade, empty when there is none, rounded to
            10 ms. Read it as a yes/no grade with an order of size: a real
            fade can be read at half or twice its length.
@@ -843,14 +845,25 @@ def _end_one(s, sr):
 def end_cut(sr, x):
     """Is the file cut (click or abrupt stop) at its end?
 
+    Each channel is read alone, with its levels relative to the channel's
+    peak (gain capped at +50 dB; a peak under -70 dBFS is not a sound).
     end_cut = 1 when a channel either ends on a step: |last sample| above
-    -60 dBFS and over 4 times the median sample-to-sample motion of its last
-    5 ms; or is still above -30 dBFS (1 ms RMS) 5 ms before the end without a
-    final fade. Fade: the 10 ms peak envelope leaves the natural decay trend
-    (fitted 200-60 ms before the end, within 1.5 dB) and drops 20 dB or more
-    to the last 1 ms, never rising by more than 3 dB; end_fade_ms is its
-    length (loudest channel), empty when there is none. A sound not yet at
-    -60 dB at the end is not a cut (empty t60, end_level_db: information).
+    -60 dB and over 4 times the median sample-to-sample motion of its last
+    5 ms; or is still above -45 dB (1 ms RMS) 5 ms before the end without a
+    final fade of 4 ms or more. Fade: the 10 ms peak envelope leaves the
+    natural decay trend (fitted 200-60 ms before the end, within 1.5 dB) and
+    drops 20 dB or more to the last 1 ms, never rising by more than 3 dB; on
+    noise, the energy of the last 3 ms falling below its 45-15 ms trend also
+    counts. end_fade_ms is its length (loudest channel), empty when there is
+    none. Trailing digital silence and a steady DC offset are ignored. A
+    steady noise floor (hiss, hum, dither) at the end is ignored too: the
+    sound ends where it last rose 20 dB above that floor, and it is cut only
+    if that point is 30 dB above the floor; a sound that faded into the floor
+    or into its last quantization steps is not cut. A file under 10 ms is cut
+    when its last 1 ms is within 20 dB of its peak. A channel that went silent
+    10 ms or more before the others is not cut. A seamless loop is not cut.
+    A reversed sound (reverse cymbal, riser) ends loud: it reads as cut by
+    design, the column says "abrupt end", not "mistake".
     """
     if x.ndim == 1:
         x = x[:, None]

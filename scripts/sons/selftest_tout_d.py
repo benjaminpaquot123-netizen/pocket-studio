@@ -204,6 +204,10 @@ def test_end_cut_doc():
     check_eq("doc describes the noise floor rule", "noise floor" in d, True)
     check_eq("doc says reversed sounds read as cut by design", "reversed" in d and "by design" in d, True)
     check_eq("doc gives the under 10 ms rule", "under 10 ms" in d, True)
+    m = " ".join((tout.__doc__ or "").split())
+    col = m[m.index("end_cut 1 ="):m.index("end_fade_ms length")]
+    check_eq("column doc gives -45 dB, not -30", ("-45 dB" in col, "-30 dB" in col), (True, False))
+    check_eq("column doc says reversed sounds are cut by design", "reversed" in col and "by design" in col, True)
 
 
 TOPICS = [test_noisy_short_fades, test_floor_after_the_end, test_quiet_and_short_files, test_end_cut_doc]

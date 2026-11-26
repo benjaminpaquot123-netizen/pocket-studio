@@ -12,11 +12,11 @@ Les liens Drive ne s'écrivent jamais dans le dépôt (ils sont dans les notes d
 Au plus fort : 11 discussions ouvertes à la fois, sous le plafond de 31. Chacune est muette et s'archive seule.
 
 ## Les étapes, dans l'ordre
-- [ ] 0. Réparation finie (`eq/outil2-repare`, message « fini <sha> »). Le chef vérifie : sondes à 0 échec, rejeux 10 sur 10 sans rouge attendu, toutes les mutations tuées, relecture neuve faite.
+- [x] 0. Réparation finie (`eq/outil2-repare`, puis le raccord `eq/passe2-raccord`). Vérifié par le chef le 2026-11-26 : sondes à 0 échec, rejeux 10 sur 10, relecture neuve faite. Pas encore vérifié : le passage complet des mutations sur la tête finale (chiffres attendus du raccord). Cas de noms 7, 8 et 10 laissés ouverts exprès (« Termine maintenant », voir `docs/DECISIONS.md`).
 - [ ] 1. Petit ménage du banc : étiquette « 11.5 MB » fausse dans `audit2/b5_weird.py`, ligne d'erreur `end_cut` retirée des rouges attendus.
 - [x] 2. Dernier contrôle Fable à l'aveugle : levé par Benjamin le 2026-11-26 (« je ne vise pas la perfection »). Remplacé par : sondes à 0 échec, relecture neuve du lot de réparation, et la répétition générale de l'étape 4 comme vrai test. Raison : une passe refaite coûte une demi-heure, un audit de plus aussi. Retour : « contrôle Fable ».
-- [ ] 3. Branche de départ unique `eq/passe2-base` : outil réparé + lanceur (`eq/passe2-prep`) + rejeux. Tous les self-tests et `test_lance.py` verts dessus. Toutes les discussions de passe partent de cette même tête, notée ici : ________.
-- [ ] 4. Répétition générale : le RAR 3 (le plus petit) seul, avec `docs/sons/FICHE-PASSE2.md`. On regarde le temps, le disque, le tableau de contrôle. Un souci ici se corrige avant de lancer les autres.
+- [x] 3. Branche de départ unique `eq/passe2-base` : outil réparé + lanceur (`eq/passe2-prep`) + rejeux. Tous les self-tests et `test_lance.py` verts dessus. Toutes les discussions de passe partent de cette même tête, notée ici : `d7047cedc` (2026-11-26 ; self-tests, `test_lance.py`, sondes et 10 rejeux verts, vérifiés par le chef).
+- [ ] 4. Répétition générale : le RAR 3 (le plus petit), avec `docs/sons/FICHE-PASSE2.md`. On regarde le temps, le disque, le tableau de contrôle. Changement du 2026-11-26 (« Termine maintenant ») : elle part en même temps que les 11 autres, de la même tête ; si elle montre une faute de l'outil, on ne relance que les paquets touchés.
 - [ ] 5. Les 11 autres RAR en même temps. Chaque discussion : plan d'abord (noms des packs et styles, comparés à `docs/sons/STYLES-PACKS.md`), puis la passe complète, puis ses CSV sur sa branche `eq/passe2-rarN`.
 - [ ] 6. Contrôle du chef, RAR par RAR (tableau ci-dessous) : message « fini » reçu, comptes justes partout, 0 erreur ou erreurs listées, nombre de fichiers cohérent avec la première passe.
 - [ ] 7. Réunion (1 discussion) : un seul grand tableau, `ANALYSE-MINE-OR.md` mis à jour, inventaire par style et par type (batterie, mélodies, boucles, voix, kits, MIDI).
@@ -26,18 +26,18 @@ Au plus fort : 11 discussions ouvertes à la fois, sous le plafond de 31. Chacun
 ## Suivi des 12 RAR
 | RAR | Contenu connu | Lancé | Fini (sha) | Comptes justes | Erreurs |
 |---|---|---|---|---|---|
-| 1 | Drum Hero 6 | | | | |
-| 2 | Drift phonk | | | | |
-| 3 | Melodic techno (répétition) | | | | |
-| 4 | Lofi Cherry Blossom | | | | |
-| 5 | Blood Rave | | | | |
-| 6 | Amapiano | | | | |
-| 7 | UPB 2026 (le gros : voix, MIDI) | | | | |
-| 8 | Dubstep + afro-house | | | | |
-| 9 | Deathstep | | | | |
-| 10 | DnB, deep house, hardstyle | | | | |
-| 11 | Ghosthack 4-5-6 | | | | |
-| 12 | Ghosthack 1-2-3 | | | | |
+| 1 | Drum Hero 6 | 26-11 22 h 17 | | | |
+| 2 | Drift phonk | 26-11 22 h 17 | | | |
+| 3 | Melodic techno (répétition) | 26-11 22 h 17 | | | |
+| 4 | Lofi Cherry Blossom | 26-11 22 h 17 | | | |
+| 5 | Blood Rave | 26-11 22 h 17 | | | |
+| 6 | Amapiano | 26-11 22 h 17 | | | |
+| 7 | UPB 2026 (le gros : voix, MIDI) | 26-11 22 h 17 | | | |
+| 8 | Dubstep + afro-house | 26-11 22 h 17 | | | |
+| 9 | Deathstep | 26-11 22 h 17 | | | |
+| 10 | DnB, deep house, hardstyle | 26-11 22 h 17 | | | |
+| 11 | Ghosthack 4-5-6 | 26-11 22 h 17 | | | |
+| 12 | Ghosthack 1-2-3 | 26-11 22 h 17 | | | |
 
 ## Ce qui arrête tout
 - Les sondes ne sont pas à 0 échec après la réparation.

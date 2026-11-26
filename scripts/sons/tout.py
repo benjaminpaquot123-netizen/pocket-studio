@@ -854,7 +854,9 @@ def classify(rel, dur):
     own = parts[1:] if _PACK_TOP[0] and len(parts) > 1 and parts[0] == _PACK_TOP[0] else parts
     style = style_of("/".join(own))  # the pack's own folder names no role and comes last for style (audit 3 #4)
     if _PACK_STYLE[0] not in (None, "unlabelled"):
-        style = style_of("/".join(own[:-1]))  # a title word ('Drum Fill_125_Soul') is no genre then (RAR 3 case 4)
+        stem = os.path.splitext(own[-1])[0]
+        cut = re.search(r"_\d{2,3}_", stem)  # only the title after the tempo loses its genre (RAR 3 case 4)
+        style = style_of("/".join(own[:-1] + ([stem[:cut.start()]] if cut else [own[-1]])))
     role = role_of(name)
     if role == "-":
         for f in reversed(own[:-1]):
@@ -2379,7 +2381,7 @@ def _bpm_class(m, t):
 def _key_agree(match):
     if match is None:
         return None
-    return match == "exact"
+    return match in ("exact", "root")  # a root-only tag heard on its root is right (RAR 3 review)
 
 
 def _key_class(match):

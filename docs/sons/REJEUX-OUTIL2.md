@@ -29,22 +29,29 @@ Un faux ou une erreur donne un code de sortie 1. b8 n'imprime plus « WRONG » e
 
 `run_all.py` est en échec si : une faute n'est pas dans la liste ci-dessous, une erreur apparaît,
 un rejeu n'a pas de verdict, le verdict ne compte pas autant de faux et d'erreurs que de lignes
-imprimées, un rejeu dépasse son plafond de vides (`VIDE_MAX` : b4 92, b6 17, b8 98 ; un outil qui
+imprimées, un rejeu dépasse son plafond de vides (`VIDE_MAX` : b4 92, b6 21, b8 98 ; un outil qui
 cesserait d'estimer ne passe donc pas en vert), une faute de la liste ne se montre plus (réparée : la retirer de
 `EXPECTED_RED`), ou le dépôt a changé.
 
 ## Rouges attendus (`EXPECTED_RED`)
 
-Défauts connus de l'outil, attrapés par les rejeux, gardés rouges jusqu'à leur réparation :
+Aucun depuis le raccord à l'outil réparé (passe 2, 2026-11-26). Ce que chaque ancien rouge est devenu :
 
-| Rejeu | Contrôle | Défaut |
-|---|---|---|
-| b1 | `FX/Reverse Crash 01.wav role` | 9 : un son `fx` garde le rôle `hats` |
-| b1 | `Drums/808s/808 Long 140bpm C.wav end_cut` | 18, 25 : un coup seul nommé avec un tempo |
-| b2 | `Synth/Bass 120 C.wav type` | 25 : un coup seul de 2 s avec « 120 » rangé en boucle |
-| b2 | `Drum Loops/Kick Loop 125 Gm.wav key_tag` | 8 : une boucle de batterie reçoit une tonalité |
-| b6 | `kit2 kit bars`, `kit2 kit_stem 1/2 bars` | mesures absurdes : kit écrit « 100 bpm », son à 80, le tempo écrit est gardé et donne 5 mesures au lieu de 4 |
-| b6 | `root4 style not from 'Souls'` | style trop gourmand sur le nom du pack : « Trapped Souls Vol 1 » donne `rnb` |
+| Rejeu | Contrôle | Qui avait tort | Raison |
+|---|---|---|---|
+| b1 | `FX/Reverse Crash 01.wav role` | outil | un crash inversé rangé en `fx` prend le rôle `fx` (rouge/vert dans `selftest_tout_repare.py`) ; le rejeu attend `role=fx` |
+| b1 | `Drums/808s/808 Long 140bpm C.wav end_cut` | rejeu | réparation 18 : sans verdict sûr, `end_cut` reste vide ; vide vaut mieux que deviné |
+| b1 | `Trap Kit` stem de batterie, `key_tag` | rejeu | réparation 7 : une piste de batterie ne porte pas de tonalité |
+| b2 | `Synth/Bass 120 C.wav` | rejeu | coup seul avec tempo : `oneshot_melodic`, note mesurée A3, ni tonalité ni `note_tag` (une lettre seule peut être une lettre de variante) |
+| b2 | `Drum Loops/Kick Loop 125 Gm.wav key_tag` | rejeu | une tonalité complète écrite dans le nom est gardée ; le défaut 8 visait la lettre seule de variante |
+| b5 | silence, RF64, RIFX | rejeu | textes d'erreur nouveaux : « digital silence, no sound », « RF64/RIFX/BW64 non pris en charge » ; le cas « 11.5 MB » pèse en vrai 0,96 Mo, renommé |
+| b6 | `kit2 kit bars`, `kit2 kit_stem 1/2 bars` | outil (réparé avant) | tempo écrit 100 contre 80 entendu : la case reste vide au lieu de 5 mesures ; compte dans les vides |
+| b6 | `root4 style not from 'Souls'` | outil | « Souls » au pluriel ne nomme pas la soul (rouge/vert dans `selftest_tout_repare.py`) |
+| b6 | `acc2 0 key_est`, `acc2 accuracy key 12/12` | rejeu | porte de Wilson à 95 % (audit 4, A7) : 12/12 ne suffit pas, la tonalité estimée d'une boucle sans tag reste vide ; le rejeu vérifie 60/60 ouvert, 59/60 et 12/12 fermés |
+
+Vides voulus de b6 (21) : 4 pads sans tag de acc1 (tempo et mesures barrés), 1 tonalité estimée de la
+boucle sans tag de acc2, 13 mesures de acc2 (aucun tempo écrit : « 106 » est un modèle de synthé),
+3 mesures de kit2 (tempo écrit et entendu en désaccord).
 
 Non reproduit : « un kit MIDI reçoit une tonalité devinée ». Essayé sur un kit MIDI avec tonalité
 écrite, un dossier `MIDI Kits` sans nom, et une batterie MIDI : `key_est` reste toujours vide,
@@ -56,5 +63,5 @@ Une faute grave trouvée et corrigée : `may_be_empty` n'avait pas de plancher, 
 cesserait d'estimer passait en vert en laissant tout vide (d'où `VIDE_MAX`). Mineurs corrigés :
 une erreur imprimée sous un contrôle déjà rouge attendu était masquée ; le verdict n'était pas
 recompté ; un rejeu seul ne regardait pas `git status` ; acc1 et kit2 ne comptaient pas leurs lignes.
-Restes mineurs, non corrigés : b3 et b3b ont des cas `want=None` qui ne vérifient rien ; b1 vérifie
-seulement que le crash n'est pas `hats` (le rôle juste reste à trancher avec la réparation du défaut 9).
+Restes mineurs, non corrigés : b3 et b3b ont des cas `want=None` qui ne vérifient rien ; b1 attend
+désormais le rôle `fx` pour le crash inversé.

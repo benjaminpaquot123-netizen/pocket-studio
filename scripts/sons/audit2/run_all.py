@@ -23,19 +23,14 @@ REPLAYS = ["b1_names", "b2_tags", "b3_cut", "b3b_falsecut", "b3c_fuzz",
 
 # Known tool defects a replay catches: expected red until the repair (no false green).
 # Labels exactly as the replay prints them; docs/sons/REJEUX-OUTIL2.md explains each one.
-EXPECTED_RED = {
-    "b1_names": ["FX/Reverse Crash 01.wav role",  # defect 9: an fx keeps the role hats
-                 "Drums/808s/808 Long 140bpm C.wav end_cut"],  # defects 18, 25: one-shot with a bpm
-    "b2_tags": ["Synth/Bass 120 C.wav type",  # defect 25: 2 s one-shot with a tempo, filed as a loop
-                "Drum Loops/Kick Loop 125 Gm.wav key_tag"],  # defect 8: a drum loop gets a key
-    "b6_misc": ["kit2 kit bars", "kit2 kit_stem 1 bars", "kit2 kit_stem 2 bars",  # absurd bars: a
-                # written 100 bpm kept while the sound says 80 -> 5 bars instead of 4
-                "root4 style not from 'Souls'"],  # style too greedy on the pack folder name
-}
+EXPECTED_RED = {}
 
 # Most blanks allowed today (honest "don't know"). A replay above its ceiling fails: a tool that
 # stops estimating must not pass green by leaving every cell blank. Lower it when the tool improves.
-VIDE_MAX = {"b4_tempo": 92, "b6_misc": 17, "b8_bars": 98}
+# b6 21 = 4 untagged acc1 pads (bpm and bars fenced) + 1 untagged acc2 key_est (key not usable at
+# 12/12) + 13 acc2 bars (no written tempo: "106" is a
+# synth model) + 3 kit2 bars (written 100 bpm against a heard 80: blank, no longer 5 bars).
+VIDE_MAX = {"b4_tempo": 92, "b6_misc": 21, "b8_bars": 98}
 
 
 def play(name, work):

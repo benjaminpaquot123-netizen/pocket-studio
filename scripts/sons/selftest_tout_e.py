@@ -242,6 +242,12 @@ def test_22_37b_midi_bars():
     check_eq("program change and note-on 0 offs: notes", m["notes"], 12)
     check_eq("program change and note-on 0 offs: poly_max", m["poly_max"], 3)
     check_eq("program change and note-on 0 offs: bars", m["bars"], 4)
+    # one data byte after a program change: the tempo event right behind it still reads
+    m = tout.measure_midi_bytes(smf(chords(), program=True), am)
+    check_eq("program change then tempo: bpm_file", m["bpm_file"], 120.0)
+    # a note-on velocity 0 ends a long note: two overlapping 2-beat notes sound together
+    m = tout.measure_midi_bytes(smf([(0, 2, 60, 100, 0), (1, 2, 64, 100, 0)], off90=True), am)
+    check_eq("note-on 0 ends a long note: poly_max", m["poly_max"], 2)
 
 
 def test_34_35_truncated_and_dc():

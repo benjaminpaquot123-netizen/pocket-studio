@@ -13,6 +13,7 @@ import csv
 import glob
 import importlib.util
 import io
+import math
 import os
 import sys
 import tempfile
@@ -121,6 +122,8 @@ def test_confirm_wired():
         "Synth/Pad Soft F.wav": tone(220.0),
         "Synth/Pad Soft A.wav": tone(220.0),
         "Synth/Pluck Bb2.wav": tone(116.54),
+        "Synth/Pad Soft Bb.wav": tone(233.08),
+        "Synth/Pad Soft Eb.wav": tone(220.0),
     }
     rows, _, con, code, _ = run(files)
     check_eq("1 run ends well", code, 0)
@@ -151,6 +154,11 @@ def test_confirm_wired():
     check_eq("1 lone note A that sounds A is kept", r.get("note_tag"), "A")
     r = rows["Synth/Pluck Bb2.wav"] or {}
     check_eq("1 one-shot: a flat note is shown as a flat", r.get("note_tag"), "Bb")
+    r = rows["Synth/Pad Soft Bb.wav"] or {}
+    check_eq("1 lone flat Bb that sounds Bb is kept, as a flat", r.get("note_tag"), "Bb")
+    check_true("1 lone flat kept: its gap is written", num(r.get("cents_gap")) is not None, r.get("cents_gap"))
+    r = rows["Synth/Pad Soft Eb.wav"] or {}
+    check_eq("1 lone flat Eb that sounds A is dropped", r.get("note_tag"), "")
 
 
 def test_confirm_wired_kits():
@@ -283,11 +291,65 @@ def test_leftovers():
              (r.get("type"), r.get("role")), ("melodic_loop", "vocal"))
 
 
+def _decay(f, end_db, phase_end, dur, sr=48000):
+    """A sine that decays steadily from 0 dB and stops at end_db, at the phase phase_end (turns)."""
+    n = int(dur * sr)
+    t = (np.arange(n) - (n - 1)) / sr
+    env = 10 ** (end_db / 20) * np.exp(t * (end_db / 8.686) / dur)
+    return (env * np.sin(2 * np.pi * (f * t + phase_end)))[:, None]
+
+
+def test_mutation_survivors():
+    """One check per limit the first full mutation run left unguarded."""
+    sr = 48000
+    # end cut: the four limits of the two rules
+    check_eq("8 stop on a crest at -50 dB of the peak: a step, cut",
+             tout.end_cut(sr, _decay(200, -50, 0.25, 0.083))["end_cut"], 1)
+    check_eq("8 stop at 2.7 times the wave's own motion: no step, not cut",
+             tout.end_cut(sr, _decay(1620, -48, math.asin(0.4) / (2 * math.pi), 0.080))["end_cut"], 0)
+    check_eq("8 stop on a zero crossing, still at -35 dB 5 ms before: cut",
+             tout.end_cut(sr, _decay(1000, -34, 0.0, 0.085))["end_cut"], 1)
+    # accuracy: usable needs 10 tagged files and under 5 % of error
+    def usable(n, bad):
+        acc = tout.Accuracy()
+        for i in range(n):
+            acc.add("drum_loop", "bpm", i >= bad)
+        return acc.rows()[0]["usable"]
+    check_eq("8 accuracy: 9 files that all agree are not enough", usable(9, 0), "no")
+    check_eq("8 accuracy: 10 files that all agree are usable", usable(10, 0), "yes")
+    check_eq("8 accuracy: 1 wrong in 10 (10 %) is not usable", usable(10, 1), "no")
+    check_eq("8 accuracy: 1 wrong in 20 (5 %) is not usable", usable(20, 1), "no")
+    check_eq("8 accuracy: 1 wrong in 21 (4.8 %) is usable", usable(21, 1), "yes")
+    # bars and tempo gap
+    check_eq("8 bars: 7 s at 120 is 3.5 bars, not 4", tout.bars_of(7.0, 120), 3.5)
+    check_eq("8 bars: 4.5 s at 120 is 2.25 bars", tout.bars_of(4.5, 120), 2.25)
+    check_eq("8 bars: 8.1 s at 120 is 4 bars", tout.bars_of(8.1, 120), 4.0)
+    check_eq("8 tempo gap: 126 heard for 120 written is +5 %", tout.bpm_gap(126.0, 120.0), 5.0)
+    check_eq("8 tempo gap: 114 heard for 120 written is -5 %", tout.bpm_gap(114.0, 120.0), -5.0)
+    # channels and stereo width
+    tone = 0.5 * np.sin(2 * np.pi * 220 * np.arange(sr) / sr) * np.exp(-np.arange(sr) / (0.2 * sr))
+    check_eq("8 a mono file has 1 channel", tout.common(sr, tone[:, None])["ch"], 1)
+    check_eq("8 a stereo file has 2 channels", tout.common(sr, np.stack([tone, tone], 1))["ch"], 2)
+    w = tout.measure_oneshot(sr, np.stack([tone, tone], 1), {}).get("stereo_width")
+    check_true("8 same sound left and right: width 0", w is not None and w < 0.01, w)
+    w = tout.measure_oneshot(sr, np.stack([tone, -tone], 1), {}).get("stereo_width")
+    check_true("8 left and right opposed: width 1", w is not None and w > 0.99, w)
+    # swing: straight kicks on the beats have no off-beat hit to measure
+    n = 4 * sr
+    kick = np.zeros(n)
+    k = np.arange(int(0.2 * sr)) / sr
+    hit = np.sin(2 * np.pi * 60 * k) * np.exp(-k / 0.04)
+    for b in range(8):
+        kick[b * sr // 2:b * sr // 2 + hit.size] += 0.8 * hit
+    r = tout.measure_drum_loop(sr, kick[:, None], {"bpm": 120.0})
+    check_eq("8 four kicks to the bar: swing reads 50 (straight)", r.get("swing_pct"), 50.0)
+
+
 def main():
     with np.errstate(all="ignore"):
         for fn in (test_confirm_wired, test_confirm_wired_kits, test_pack_style, test_kit_rows_traceable,
                    test_mutations_run_every_selftest, test_end_of_tempo_named_hits, test_doc_matches_fence,
-                   test_leftovers):
+                   test_leftovers, test_mutation_survivors):
             try:
                 fn()
             except Exception as e:  # a crash is a failed check, the rest still runs

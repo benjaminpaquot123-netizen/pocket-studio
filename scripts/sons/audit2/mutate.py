@@ -185,6 +185,14 @@ def main():
     REPO, WORK, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
     DEADLINE = time.time() + float(sys.argv[4])
     os.makedirs(WORK, exist_ok=True)
+    # a self-test that is red before any fault would "kill" every mutant
+    for test in tests_for("mesure.py", os.path.join(REPO, SONS)):  # the widest list
+        p = subprocess.run([sys.executable, "-I", test], cwd=os.path.join(REPO, SONS),
+                           capture_output=True, text=True, timeout=300)  # the mutants' own limit
+        mm = re.search(r"(\d+) checks, (\d+) failed", p.stdout + p.stderr)
+        if p.returncode != 0 or not mm or int(mm.group(2)) > 0:
+            sys.exit("baseline red, nothing measured: %s on the pristine copy (%s)"
+                     % (test, mm.group(0) if mm else "crash"))
     # round robin over the families, so every family is sampled early
     byfam = {}
     for i, mm in enumerate(M):

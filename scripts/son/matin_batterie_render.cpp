@@ -101,11 +101,12 @@ std::vector<float> renderKit(int style, const std::vector<Hit>& hits, int frames
 }
 
 // The measured voices play the same hits (sample-accurate: a block is cut at each hit).
-std::vector<float> renderMeasured(int style, const std::vector<Hit>& hits, int frames) {
+// (over: that family's recipe replaced, for the variants.)
+std::vector<float> renderMeasured(int style, const std::vector<Hit>& hits, int frames, int overFamily = -1, const m::Recipe* over = nullptr) {
     m::Voice voices[m::kFamilies];
     for (int f = 0; f < m::kFamilies; ++f) {
         voices[f].prepare(kRate);
-        voices[f].setRecipe(m::recipe(f, style));
+        voices[f].setRecipe(f == overFamily && over ? *over : m::recipe(f, style));
     }
     std::vector<float> out(static_cast<size_t>(frames), 0.0f);
     size_t next = 0;
@@ -288,6 +289,34 @@ int main(int argc, char** argv) {
             }
             ++written;
         }
+    }
+    // The variants: the measured recipe x4, 1 s, the variant x4 (kick_house_grave.wav, clap_dnb_court.wav...).
+    struct Var { int family; const char* low; const char* dry; };
+    const Var vars[] = {{m::Kick, "grave", "sec"}, {m::Clap, "long", "court"}, {m::Snare, "long", "court"}, {m::ClosedHat, "long", "court"}};
+    for (const Var& v : vars)
+        for (int s = 0; s < m::kStyles; ++s)
+            for (int w = -1; w <= 1; w += 2) {
+                int frames = 0;
+                const auto hits = fourHits(v.family, s, frames);
+                const m::Recipe r = m::variant(v.family, s, w);
+                const std::string path = dir + "/" + kFamilies[v.family] + "_" + kStyles[s] + "_" + (w < 0 ? v.low : v.dry) + ".wav";
+                if (!writePair(path, renderMeasured(s, hits, frames), renderMeasured(s, hits, frames, v.family, &r))) {
+                    std::fprintf(stderr, "cannot write %s\n", path.c_str());
+                    return 1;
+                }
+                ++written;
+            }
+    {
+        // The pure deep techno kick, after the app's techno kick.
+        int frames = 0;
+        const auto hits = fourHits(m::Kick, m::Techno, frames);
+        const m::Recipe r = m::deepTechnoKick();
+        const std::string path = dir + "/kick_deep_techno.wav";
+        if (!writePair(path, renderKit(m::Techno, hits, frames), renderMeasured(m::Techno, hits, frames, m::Kick, &r))) {
+            std::fprintf(stderr, "cannot write %s\n", path.c_str());
+            return 1;
+        }
+        ++written;
     }
     for (int s = 0; s < m::kStyles; ++s) {
         int frames = 0;

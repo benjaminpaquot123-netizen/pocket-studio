@@ -83,10 +83,10 @@ const Target kTargets[] = {
 const char* const kFamilyNames[] = {"kick", "808", "clap", "snare", "hh_closed", "hh_open", "rim", "tom", "crash"};
 const char* const kStyleNames[] = {"house", "techhouse", "techno", "trap", "dnb", "dubstep"};
 
-std::vector<float> renderHit(int family, int style, double seconds = 3.0) {
+std::vector<float> renderRecipe(const ps::measured::Recipe& r, double seconds = 3.0) {
     ps::measured::Voice v;
     v.prepare(kRate);
-    v.setRecipe(ps::measured::recipe(family, style));
+    v.setRecipe(r);
     std::vector<float> out(static_cast<size_t>(seconds * kRate), 0.0f);
     g_allocations.store(0);
     g_countAllocations.store(true);
@@ -94,6 +94,10 @@ std::vector<float> renderHit(int family, int style, double seconds = 3.0) {
     for (size_t i = 0; i < out.size(); i += 256) v.render(out.data() + i, static_cast<int>(std::min<size_t>(256, out.size() - i)));
     g_countAllocations.store(false);
     return out;
+}
+
+std::vector<float> renderHit(int family, int style, double seconds = 3.0) {
+    return renderRecipe(ps::measured::recipe(family, style), seconds);
 }
 
 // 5 ms RMS every millisecond, in dB.
@@ -289,6 +293,52 @@ void testMeasuredDrumsTight() {
     CHECK(failed == 0);
 }
 
+// Point 4: the listening variants. Each one safe (attack, no NaN, no clipping, no allocation); the
+// low / long one longer than the recipe and the dry / short one shorter (kick: inside the style's
+// measured range, its note too); variant 0 is the recipe itself; the deep techno kick round and low.
+void testMeasuredDrumsVariants() {
+    namespace m = ps::measured;
+    int failed = 0;
+    auto check = [&failed](const char* name, int style, int which, const m::Recipe& r, double& t40out, double& noteOut) {
+        const std::vector<float> x = renderRecipe(r);
+        const int allocations = g_allocations.load();
+        float peak = 0.0f;
+        bool finite = true;
+        for (float v : x) {
+            finite = finite && std::isfinite(v);
+            peak = std::max(peak, std::fabs(v));
+        }
+        const std::vector<double> e = envelopeDb(x);
+        t40out = lastAbove(e, 40.0);
+        noteOut = r.bodyLevel > 0.0f && r.startHz > 0.0f ? pitchHz(x, 60.0, std::max(120.0, std::min(lastAbove(e, 20.0), 300.0)), 250.0) : 0.0;
+        const bool ok = finite && peak > 0.1f && peak < 1.0f && allocations == 0 && firstAbove(e, 6.0) <= 5.0;
+        std::printf("  %-9s %-9s %+d %s t40 %5.0f note %5.1f peak %.2f\n", name, style >= 0 ? kStyleNames[style] : "-", which,
+                    ok ? "ok  " : "FAIL", t40out, noteOut, double(peak));
+        if (!ok) ++failed;
+    };
+    const int families[] = {m::Kick, m::Clap, m::Snare, m::ClosedHat};
+    for (int f : families)
+        for (int s = 0; s < m::kStyles; ++s) {
+            double t40[3], note[3];
+            for (int w = -1; w <= 1; ++w) check(kFamilyNames[f], s, w, m::variant(f, s, w), t40[w + 1], note[w + 1]);
+            const m::Recipe a = m::variant(f, s, 0), b = m::recipe(f, s);
+            const bool same = a.noiseLpHz == b.noiseLpHz && a.noiseFallMs == b.noiseFallMs && a.bodyFallMs == b.bodyFallMs && a.endHz == b.endHz;
+            const bool order = t40[0] > t40[1] * 1.05 && t40[2] < t40[1] * 0.95;
+            const bool pitch = f != m::Kick || (note[0] < note[2] && note[0] > 35.0 && note[2] < 65.0);
+            if (!same || !order || !pitch) {
+                std::printf("  %-9s %-9s FAIL variants: same %d longer/shorter %d note low<high %d\n", kFamilyNames[f], kStyleNames[s], same, order, pitch);
+                ++failed;
+            }
+        }
+    double t40 = 0.0, note = 0.0;
+    check("deep kick", -1, 0, m::deepTechnoKick(), t40, note);
+    if (!(note > 44.0 && note < 56.0 && t40 > 250.0 && t40 < 500.0 && m::deepTechnoKick().bodyDrive <= 0.25f)) {
+        std::printf("  deep kick FAIL: note %.1f (44-56), t40 %.0f (250-500), drive %.2f (<= 0.25)\n", note, t40, double(m::deepTechnoKick().bodyDrive));
+        ++failed;
+    }
+    CHECK(failed == 0);
+}
+
 // A hit restarted while it rings stays finite and bounded, and a silent voice adds nothing.
 void testMeasuredDrumsRetrigger() {
     for (int f = 0; f < ps::measured::kFamilies; ++f) {
@@ -414,7 +464,8 @@ void testMeasuredKitCommand() {
 
 #define PS_MATIN_TESTS                                                      \
     {"matin_measured_drums_in_range", matin_tests::testMeasuredDrumsInRange}, \
-    {"matin_measured_drums_tight", matin_tests::testMeasuredDrumsTight},      \
+    {"matin_measured_drums_tight", matin_tests::testMeasuredDrumsTight}, \
+    {"matin_measured_drums_variants", matin_tests::testMeasuredDrumsVariants},      \
     {"matin_measured_drums_retrigger", matin_tests::testMeasuredDrumsRetrigger}, \
     {"matin_measured_drums_stop", matin_tests::testMeasuredDrumsStop},      \
     {"matin_measured_kit_default_identical", matin_tests::testMeasuredKitDefaultIdentical}, \

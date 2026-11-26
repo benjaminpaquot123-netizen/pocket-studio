@@ -37,6 +37,14 @@ struct Recipe {
 // The recipe of a family in a style (the numbers come from CIBLES-BATTERIE.md; the reasons from BATTERIE.md).
 Recipe recipe(int family, int style);
 
+// Listening variants (bench only, scripts/son/matin_batterie.sh; nothing in the app plays them yet).
+// which: -1 low and long, 0 the recipe above, +1 dry and short. Kick: the style's 25th / 75th
+// percentiles of length and note; clap, snare, closed hat: the same voice longer and darker / shorter
+// and brighter. Any other family: the recipe itself.
+Recipe variant(int family, int style, int which);
+// A pure kick for deep / techno (not industrial): a clean round body that hits hard.
+Recipe deepTechnoKick();
+
 // One voice (monophonic: a new hit restarts it).
 class Voice {
 public:

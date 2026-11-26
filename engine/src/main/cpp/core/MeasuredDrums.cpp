@@ -203,4 +203,11 @@ Recipe recipe(int family, int style) {
     }
 }
 
+Recipe variant(int family, int style, int which) {
+    (void)which;
+    return recipe(family, style);
+}
+
+Recipe deepTechnoKick() { return kick(Techno); }
+
 }  // namespace ps::measured

@@ -750,6 +750,18 @@ def _attacks(x, sr):
     return count
 
 
+def _one_pitch(x, sr):
+    """True when the voiced frames keep one pitch class (within 100 cents, octave slips forgiven):
+    a held note, not a legato line whose notes run into each other with no dip (fresh review)."""
+    f0, _ = yin(_mono(x)[:int(4.0 * sr)], sr)
+    f0 = f0[np.isfinite(f0)]
+    if len(f0) < 10:
+        return True  # nothing pitched to deny it: the attack count decides
+    c = 1200.0 * np.log2(f0 / np.median(f0))
+    d = np.abs((c + 600.0) % 1200.0 - 600.0)
+    return float(np.mean(d <= 100.0)) >= 0.8
+
+
 # Defect 9: fx and vocal words only describe a sound when no instrument word says otherwise.
 STRONG_FX_RX = re.compile(r"(?i)\bfx\b|sfx|riser|uplifter|downlifter|whoosh|impact|transition|downer|braam|zap")
 REVERSE_RX = re.compile(r"(?i)\breverse|\brev\b")
@@ -860,8 +872,9 @@ def classify(rel, dur):
     if is_loop and not looped and re.search(r"808", name):  # '808 Long 140bpm C' is a one-shot
         is_loop = False
     bpm_m = _BPM_RX.search(name)
-    if is_loop and not looped and (any(ONESHOT_DIR.search(f) for f in folders)
-                                   or (bpm_m and dur is not None and dur < 240.0 / float(bpm_m.group(1)))):
+    bpm_v = float(bpm_m.group(1)) if bpm_m else 0.0
+    if is_loop and not looped and (any(ONESHOT_DIR.search(f) for f in own[:-1])  # not the pack's own name (review)
+                                   or (40 <= bpm_v <= 250 and dur is not None and dur < 240.0 / bpm_v)):
         is_loop = False  # 'One Shots/Bass C2 120bpm', a 1.5 s 'Stab Am 128bpm': shorter than a bar (audit 3 #2)
     melodic = MELODIC_WORDS.search(name) or (not DRUM_WORDS.search(name) and MELODIC_WORDS.search(inner))
     if is_loop:
@@ -2497,7 +2510,7 @@ def _measure_file(p, rel, parts, acc, rar):
             if cl["subtype"] == "by_sound":  # the name is silent: the sound decides
                 cl["type"] = "drum_loop" if _drumminess(x) > DRUMMY_FLATNESS else "melodic_loop"
             if cl.pop("_name_loop", False) and cl["type"] == "melodic_loop" and x.shape[0] < 8.0 * sr \
-                    and _attacks(x, sr) <= 1:
+                    and _attacks(x, sr) <= 1 and _one_pitch(x, sr):
                 cl["type"], cl["subtype"] = "oneshot_melodic", "-"  # 'Synth/Bass 120 C' held: one note (audit 3 #2)
             row.update(cl)
             row.update(common(sr, x))

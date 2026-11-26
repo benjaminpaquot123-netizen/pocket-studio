@@ -123,8 +123,9 @@ MAX_SECONDS = 600.0
 AUDIO_EXTS = (".wav", ".wave", ".aif", ".aiff", ".aifc")
 MIDI_EXTS = (".mid", ".midi")
 
-COMMON = ["rar", "kit_id", "type", "subtype", "role", "style", "dur_s", "sr", "ch",
-          "peak_dbfs", "rms_dbfs", "lufs_i", "error"]
+# Fixed columns, same order in every table (blind audit B2): a reader can stack all tables.
+COMMON = ["rar", "kit_id", "type", "subtype", "role", "style", "dur_s", "sr", "ch", "size_kb",
+          "peak_dbfs", "rms_dbfs", "lufs_i", "bpm_tag", "key_tag", "bpm_est", "key_est", "error"]
 
 LOOP_COLS = ["bpm_tag", "bpm_measured", "bpm_gap_pct", "bars", "key_tag", "key_measured", "key_match",
              "key_strength", "low_db", "mid_db", "high_db"]
@@ -149,6 +150,9 @@ TYPE_COLUMNS = {
                        "drop_shape", "note_measured"],
 }
 END_COLS = ["end_cut", "end_fade_ms"]
+for _t in TYPE_COLUMNS:  # tag and estimate live in the fixed columns (bpm_est, key_est)
+    TYPE_COLUMNS[_t] = [c for c in TYPE_COLUMNS[_t] if c not in ("bpm_tag", "key_tag", "bpm_measured",
+                                                                 "key_measured")]
 for _t in TYPE_COLUMNS:
     if _t not in ("midi", "kit"):
         TYPE_COLUMNS[_t] = TYPE_COLUMNS[_t] + END_COLS
@@ -396,15 +400,19 @@ def kit_split(parts):
     return None, None
 
 
-def drum_family(name, folder):
-    nm = re.sub(r"[_\-]", " ", name)
-    for f, rx in mine_or.RULES:
-        if rx.search(nm):
-            return f
-    for f, rx in mine_or.RULES:
-        if rx.search(folder):
-            return f
+def drum_family(name, folders):
+    """Drum family from the name, else from the folders, innermost first (blind audit B1)."""
+    if isinstance(folders, str):
+        folders = [folders]
+    for text in [name] + list(reversed(folders)):
+        nm = re.sub(r"[_\-]", " ", text)
+        for f, rx in mine_or.RULES:
+            if rx.search(nm):
+                return f
     return None
+
+
+ONESHOT_DIR = re.compile(r"(?i)one.?shots?|\bhits?\b|\bshots\b")
 
 
 def classify(rel, dur):
@@ -413,7 +421,7 @@ def classify(rel, dur):
     parts = [p for p in re.split(r"[\\/]+", rel) if p]
     name = _clean(parts[-1])
     folders = parts[:-1]
-    inner = "/".join(folders[1:]) if len(folders) > 1 else "/".join(folders)
+    inner = "/".join(folders)  # every folder counts: "Vocals/Dry" is still a vocal (blind audit B1)
     text = (inner + "/" + name)
     style = style_of("/".join(parts))
     role = role_of(name)
@@ -444,12 +452,12 @@ def classify(rel, dur):
         drummy = DRUM_WORDS.search(name) or (not MELODIC_WORDS.search(name) and DRUM_WORDS.search(inner))
         out["type"] = "drum_loop" if drummy and not melodic else "melodic_loop"
         return out
-    fam = drum_family(name, folders[-1] if folders else "")
+    fam = drum_family(name, folders)
     if fam is not None and (dur is None or dur < 6.0):
         if fam == "kick_808" or not re.search(r"(?i)bass|synth|lead|pad|key|piano|chord|pluck", name + "/" +
                                               (folders[-1] if folders else "")):
             sub = fam
-            if fam == "kick" and re.search(r"808", folders[-1] if folders else ""):
+            if fam == "kick" and re.search(r"808", inner):
                 sub = "kick_808"
             layer = re.search(r"(?i)\b(attack|tail|click|body|sub)\b", name)
             if layer and layer.group(1).lower() in ("attack", "tail"):
@@ -457,7 +465,7 @@ def classify(rel, dur):
             out["type"] = "drum_oneshot"
             out["subtype"] = sub
             return out
-    if dur is not None and dur < 8.0:
+    if (dur is not None and dur < 8.0) or ONESHOT_DIR.search(inner):
         out["type"] = "oneshot_melodic"
         return out
     out["type"] = "melodic_loop"
@@ -797,6 +805,45 @@ def _novelty(sig, sr, lo=None, hi=None, hop_s=0.004, n=1024, log=True):
     return nov, hop / sr, 0.0
 
 
+def _band_hits(sig, sr, lo, hi):
+    nov, dt, _ = _novelty(sig, sr, lo, hi)
+    return _peaks(nov, dt, 0.0, 0.3) if len(nov) >= 50 else []
+
+
+def _regular_spacing(pk):
+    """Median spacing (s) of hits when they are regular, else None.
+    Regular: at least 3 hits and 75 % of the gaps within 8 % of the median."""
+    if len(pk) < 3:
+        return None
+    gaps = np.diff(pk)
+    med = float(np.median(gaps))
+    if med <= 0.05:
+        return None
+    return med if np.mean(np.abs(gaps - med) <= 0.08 * med) >= 0.75 else None
+
+
+def _band_factor(c, kick_s, snare_s):
+    """Tempo-octave hint from regular kick and snare hits (blind audit B4):
+    a snare on every beat means the tempo is too slow, a kick on every beat
+    (four on the floor) means it is right, a kick every half beat that it is too slow."""
+    f = 1.0
+
+    def near(r, t):
+        return abs(r / t - 1.0) < 0.08
+
+    if snare_s:
+        r = snare_s * c / 60.0
+        if near(r, 1.0) or near(r, 0.5):
+            f *= 0.5
+    if kick_s:
+        r = kick_s * c / 60.0
+        if near(r, 1.0):
+            f *= 1.3
+        elif near(r, 0.5):
+            f *= 0.5
+    return f
+
+
 def tempo(sig, sr, dur):
     """bpm or None, on the first 40 s."""
     sig = sig[: int(40 * sr)]
@@ -855,6 +902,11 @@ def tempo(sig, sr, dur):
             c = bpms[j] * r
             if 60 <= c <= 200:
                 cands.add(round(c * 4) / 4.0)
+    kicks = _band_hits(sig, sr, 30.0, 120.0)
+    kick_s = _regular_spacing(kicks)
+    # snare hits: mid-band onsets that are not a kick's click
+    snare_s = _regular_spacing([t for t in _band_hits(sig, sr, 1000.0, 5000.0)
+                                if not any(abs(t - k) < 0.03 for k in kicks)])
     best, best_s = None, -1.0
     for c in sorted(cands):
         j = int(round((c - 60.0) * 4))
@@ -866,6 +918,7 @@ def tempo(sig, sr, dur):
         half = (not whole) and abs(bars * 2 - round(bars * 2)) < 0.04
         sc *= fit ** 8 * (1.0 if whole else (0.8 if half else 0.6))
         sc *= math.exp(-0.5 * (math.log2(c / 95.0) / 1.0) ** 2)
+        sc *= _band_factor(c, kick_s, snare_s)
         if sc > best_s:
             best, best_s = c, sc
     if best is None or _grid_fit(pk, w, best) < 0.6:
@@ -1512,8 +1565,16 @@ def _walk(folder):
     return audio, midi, skipped
 
 
+def _size_kb(p):
+    try:
+        return os.path.getsize(p) / 1024.0
+    except OSError:
+        return None
+
+
 def _measure_file(p, rel, parts, acc, rar):
-    row = {"rar": rar, "kit_id": "", "error": ""}
+    row = {"rar": rar, "kit_id": "", "error": "", "size_kb": _size_kb(p)}
+    row.update(classify(rel, None))  # an unreadable file keeps the type its path gives (blind audit I3)
     try:
         with np.errstate(all="ignore"):
             sr, x, loop = read_audio(p)
@@ -1545,6 +1606,8 @@ def _measure_file(p, rel, parts, acc, rar):
             else:
                 m = {}
             row.update(m)
+            row.setdefault("bpm_tag", tags.get("bpm"))
+            row.setdefault("key_tag", key_name(tags.get("key")))
     except BadAudio as e:
         row["error"] = str(e)[:80]
     except Exception as e:  # a hostile file must not stop the batch
@@ -1567,7 +1630,7 @@ def _run_kits(kits, acc, rar):
         kit_tags = parse_tags(list(key), "kit")
         loaded = []
         for p, rel, parts in stems:
-            row = {"rar": rar, "kit_id": kid, "type": "kit_stem", "error": ""}
+            row = {"rar": rar, "kit_id": kid, "type": "kit_stem", "error": "", "size_kb": _size_kb(p)}
             cl = classify(rel, None)
             row.update({"subtype": "-", "role": cl["role"], "style": cl["style"]})
             try:
@@ -1589,7 +1652,8 @@ def _run_kits(kits, acc, rar):
                 row["error"] = "internal: %s" % type(e).__name__
             stem_rows.append(row)
         kr = {"rar": rar, "kit_id": kid, "type": "kit", "subtype": "-", "role": "-", "error": "",
-              "n_stems": len(stems), "n_midi": len(mids), "bpm_tag": kit_tags.get("bpm"),
+              "n_stems": len(stems), "n_midi": len(mids),
+              "size_kb": sum(_size_kb(i[0]) or 0.0 for i in items), "bpm_tag": kit_tags.get("bpm"),
               "key_tag": key_name(kit_tags.get("key"))}
         roles = sorted({r["role"] for r in stem_rows if r["kit_id"] == kid and r["role"] not in ("-",)})
         kr["roles"] = "+".join(roles)
@@ -1651,7 +1715,7 @@ def _run_kits(kits, acc, rar):
 def _midi_row(p, rel, tags, rar, acc):
     cl = classify(rel, None)
     row = {"rar": rar, "kit_id": "", "type": "midi", "subtype": "-", "role": cl["role"], "style": cl["style"],
-           "error": ""}
+           "error": "", "size_kb": _size_kb(p)}
     try:
         if os.path.islink(p) or os.path.getsize(p) > 16 * 1024 * 1024:
             raise BadAudio("midi file too large or a link")
@@ -1692,7 +1756,7 @@ def main(argv=None):
             rows["midi"].append(_midi_row(p, rel, parse_tags(parts, "midi"), rar, acc))
             continue
         row = _measure_file(p, rel, parts, acc, rar)
-        rows[row.get("type") or "melodic_loop"].append(row)
+        rows[row["type"]].append(row)
     kr, sr_, mr = _run_kits(kits, acc, rar)
     rows["kit"] += kr
     rows["kit_stem"] += sr_
@@ -1703,12 +1767,14 @@ def main(argv=None):
             continue
         cols = COMMON + TYPE_COLUMNS[typ]
         with open("%s_%s.csv" % (args.out, typ), "w", newline="", encoding="utf-8") as fh:
-            for line in acc.lines(typ):
-                fh.write(line + "\n")
             wr = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore")
             wr.writeheader()
             for r in rows[typ]:
                 r.setdefault("type", typ)
+                if r.get("bpm_est") is None:
+                    r["bpm_est"] = r.get("bpm_measured", r.get("bpm_file"))
+                if r.get("key_est") is None:
+                    r["key_est"] = r.get("key_measured")
                 wr.writerow({k: _fmt(r.get(k)) for k in cols})
                 total += 1
     with open("%s_accuracy.csv" % args.out, "w", newline="", encoding="utf-8") as fh:

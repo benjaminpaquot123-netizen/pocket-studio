@@ -420,7 +420,7 @@ def measure_file(path):
 def _safe_cell(text):
     """Printable text that a spreadsheet will not run as a formula."""
     text = "".join(c if c.isprintable() else "?" for c in text)
-    return "'" + text if text[:1] in "=+-@" else text
+    return "'" + text if text[:1] and text[:1] in "=+-@" else text
 
 
 def _fmt(v):

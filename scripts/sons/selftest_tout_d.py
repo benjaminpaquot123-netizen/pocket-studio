@@ -126,7 +126,54 @@ def test_noisy_short_fades():
             check_eq("audit snare %d Hz + %d ms fade: not cut" % (sr, ms), cut(sr, fade(s, ms, sr)), 0)
 
 
-TOPICS = [test_noisy_short_fades]
+def test_floor_after_the_end():
+    """Defects 16 and 30: a cut hidden under hiss or dither is still a cut; a sound
+    that ends in its own floor (hiss, hum, coarse quantization, a natural tail) is not."""
+    for sr in (44100, 48000, 96000):
+        rng = np.random.default_rng(7)
+        src = {"kick": kick(1.2, 0.12, sr)[:int(0.15 * sr)],
+               "hat": (0.5 * hp(noise(0.5, 1.0, 5, sr)) * np.exp(-T(0.5, sr) / 0.3))[:int(0.2 * sr)],
+               "snare": snare(0.6, sr)[:int(0.08 * sr)],
+               "lead": tone(440.0, 1.0, 0.4, sr)[:int(0.5 * sr)]}
+        for name, c in src.items():
+            for label, d, lvl in (("50 ms dither -80 dB", 0.05, -80), ("50 ms hiss -66 dB", 0.05, -66),
+                                  ("200 ms hiss -60 dB", 0.2, -60)):
+                y = np.concatenate([c, db(lvl) * rng.uniform(-1, 1, int(d * sr))])
+                check_eq("%s %d Hz, hard cut + %s: cut" % (name, sr, label), cut(sr, y), 1)
+    full = kick(0.8, 0.06)
+    for h in (-70, -60, -50, -40, -34):
+        check_eq("finished kick + hiss %d dB: not cut" % h, cut(SR, full + noise(0.8, db(h), 11)), 0)
+    for h in (-60, -50, -40):
+        check_eq("finished kick + 50 Hz hum %d dB: not cut" % h,
+                 cut(SR, full + db(h) * np.sin(2 * np.pi * 50 * T(0.8))), 0)
+    for end in (-50, -55, -61):
+        d = -end / 8.686 * 0.3
+        t = T(d)
+        check_eq("808 natural tail to %d dB: not cut" % end, cut(SR, np.sin(2 * np.pi * 40 * t) * np.exp(-t / 0.3) * 0.999), 0)
+        d = -end / 8.686 * 0.25
+        t = T(d)
+        check_eq("lead natural tail to %d dB: not cut" % end, cut(SR, np.sin(2 * np.pi * 440 * t) * np.exp(-t / 0.25) * 0.999), 0)
+    for bits in (8, 10, 12):
+        check_eq("finished kick quantized to %d bit: not cut" % bits, cut(SR, q(kick(0.5, 0.06), bits)), 0)
+    check_eq("cut kick quantized to 8 bit: cut", cut(SR, q(kick(1.2, 0.12)[:7200], 8)), 1)
+    rng = np.random.default_rng(3)
+    c = kick(1.2, 0.12)[:7200]
+    for lsb in (1, 2, 4):
+        y = np.concatenate([c, np.zeros(4800)]) + (rng.random(12000) - rng.random(12000)) * lsb / 32768.0
+        check_eq("cut kick + 100 ms dither %d LSB (16 bit): cut" % lsb, cut(SR, q(y, 16)), 1)
+    y = np.concatenate([full, np.zeros(4800)]) + (rng.random(len(full) + 4800) - rng.random(len(full) + 4800)) / 32768.0
+    check_eq("finished kick + 1 LSB dither (16 bit): not cut", cut(SR, q(y, 16)), 0)
+    st = np.stack([np.concatenate([c, np.zeros(len(full) - 7200)]), full * 0.9], axis=1)
+    check_eq("stereo: left cut early then silent, right finishes: not cut", cut(SR, st), 0)
+    st = np.stack([full * 0.9, np.concatenate([c, np.zeros(len(full) - 7200)])], axis=1)
+    check_eq("stereo: right cut early then silent, left finishes: not cut", cut(SR, st), 0)
+    st = np.stack([fade(c, 30), c * 0.05], axis=1)
+    check_eq("stereo: left faded, right quiet but cut: cut", cut(SR, st), 1)
+    st = np.stack([c, c * 0.5], axis=1)
+    check_eq("stereo: both channels cut together: cut", cut(SR, st), 1)
+
+
+TOPICS = [test_noisy_short_fades, test_floor_after_the_end]
 
 
 def main():

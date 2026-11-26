@@ -317,6 +317,32 @@ def test_27_33_36_main_output():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def test_32_write_cells():
+    f = tout._fmt
+    check_eq("32 9999.7 kept", f(9999.7), "9999.7")
+    check_eq("32 123.45 kept", f(123.45), "123.45")
+    check_eq("32 -0.0 -> 0", f(-0.0), "0")
+    check_eq("32 1.234 four digits", f(1.234), "1.234")
+    check_eq("32 0.5", f(0.5), "0.5")
+    check_eq("32 120.0", f(120.0), "120")
+    check_eq("32 12345.67", f(12345.67), "12345.7")
+    check_eq("32 nan empty", f(float("nan")), "")
+    check_eq("32 inf empty", f(float("inf")), "")
+    check_eq("write '+1' quoted", f("+1"), "'+1")
+    check_eq("write '-A1' quoted", f("-A1"), "'-A1")
+    tmp = tempfile.mkdtemp(prefix="tout_e_w_")
+    try:
+        write(os.path.join(tmp, "Kicks", "._Kick 01.wav"), wav_bytes(kick()))
+        write(os.path.join(tmp, "Kicks", "Kick 01.wav"), wav_bytes(kick()))
+        audio, midi, skipped = tout._walk(tmp)
+        check_eq("write hidden '._' file skipped", [os.path.basename(a) for a in audio], ["Kick 01.wav"])
+        p = os.path.join(tmp, "Loops", "Pad 61s.wav")
+        write(p, wav_bytes(0.1 * np.sin(np.arange(61 * 8000) * 0.05), sr=8000))
+        check_eq("write a 61 s file is read", _raises(lambda: tout.read_audio(p)), None)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main():
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     with np.errstate(all="ignore"):

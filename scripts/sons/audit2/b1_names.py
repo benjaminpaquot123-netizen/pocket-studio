@@ -141,7 +141,7 @@ WANT = {
     'Drums/Kicks/Kick Full 01.wav': 'type=drum_oneshot, subtype=kick, role=full, style=unlabelled, end_cut=0',
     'Drums/Snares/Snare Mix 01.wav': 'type=drum_oneshot, subtype=snare, role=full, style=unlabelled, end_cut=0',
     'Drums/Kicks/Kick Song 01.wav': 'type=drum_oneshot, subtype=kick, role=full, style=unlabelled, end_cut=0',
-    'FX/Reverse Crash 01.wav': 'type=fx, subtype=-, role=hats, style=unlabelled',
+    'FX/Reverse Crash 01.wav': 'type=fx, subtype=-, role=fx, style=unlabelled',  # defect 9: a riser, not a hat
     'Loops/Reversed Piano Loop 120 Am.wav': 'type=melodic_loop, subtype=-, role=keys, style=unlabelled, bpm_tag=120, key_tag=A minor',
     'Loops/Noisey Bass Loop 140 F.wav': 'type=melodic_loop, subtype=-, role=bass, style=unlabelled, bpm_tag=140, key_tag=F major',
     'Loops/Texture Pad Loop 01.wav': 'type=melodic_loop, subtype=-, role=pad, style=unlabelled',
@@ -185,8 +185,8 @@ WANT = {
     'Kits/Kit A/Kick.wav': 'type=drum_oneshot, subtype=kick, role=kick, style=unlabelled, end_cut=0',
     'Drum Kits/Kit 01/Snare 01.wav': 'type=drum_oneshot, subtype=snare, role=snare, style=unlabelled, end_cut=0',
     'Kit 808/Kick 01.wav': 'type=drum_oneshot, subtype=kick, role=kick, style=unlabelled, end_cut=0',
-    'Kits/Trap Kit 140 Am/Drums.wav': ['type=kit, subtype=-, role=-, style=trap, bpm_tag=140, key_tag=A minor', 'type=kit_stem, subtype=-, role=drums, style=trap, bpm_tag=140, key_tag=A minor'],
-    'Drums/808s/808 Long 140bpm C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled, end_cut=0',
+    'Kits/Trap Kit 140 Am/Drums.wav': ['type=kit, subtype=-, role=-, style=trap, bpm_tag=140, key_tag=A minor', 'type=kit_stem, subtype=-, role=drums, style=trap, bpm_tag=140'],  # a drum stem carries no key (repair 7)
+    'Drums/808s/808 Long 140bpm C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled',  # end_cut blank = no verdict (repair 18)
     'Drums/808s/808 Long C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled, end_cut=0',
     'Drums/808s/808 Very Long C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled, end_cut=0',
     'Drums/Cymbals/Crash Long.wav': 'type=drum_oneshot, subtype=crash, role=hats, style=unlabelled, end_cut=0',
@@ -210,9 +210,6 @@ for i, (rel, x) in enumerate(cases):
     for r, w in zip(rows, want):
         w = dict(kv.split("=", 1) for kv in w.split(", "))
         for c in COLS:
-            if rel == "FX/Reverse Crash 01.wav" and c == "role":  # defect 9: an fx, not a hat
-                chk.ok(rel + " role", r.get(c) != "hats", "got 'hats', an fx is not a hat")
-                continue
             chk.eq("%s %s" % (rel, c), r.get(c, ""), w.get(c, ""))
 chk.clean_repo()
 chk.done()

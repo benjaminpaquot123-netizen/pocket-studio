@@ -316,7 +316,7 @@ WANT = [
     ('Synth/Pad Soft F.wav', 'type=oneshot_melodic | note_measured=A3'),
     ('Synth/Bass C.wav', 'type=oneshot_melodic | note_measured=A3'),
     ('Synth/Bass A#.wav', 'type=oneshot_melodic | note_measured=A3'),
-    ('Synth/Bass 120 C.wav', 'type=melodic_loop | key_tag=C major'),
+    ('Synth/Bass 120 C.wav', 'type=oneshot_melodic | note_measured=A3'),  # one-shot with a tempo (repair 2): a note, no key; a lone letter may be a variation, so no note_tag
     ('Synth/Bass 01 A.wav', 'type=oneshot_melodic | note_tag=A | note_measured=A3'),
     ('Synth/Plan B Lead.wav', 'type=oneshot_melodic | note_measured=A3'),
     ('Synth/Synth 1 C.wav', 'type=oneshot_melodic | note_measured=A3'),
@@ -372,11 +372,10 @@ WANT = [
     ('Funk/Kicks/Kick 01.wav', 'type=drum_oneshot | style=funk'),
     ('Hardstyle/Kicks/Kick 01.wav', 'type=drum_oneshot | style=hardstyle'),
 ]
-# Defects still in the tool (expected red, see docs/sons/REJEUX-OUTIL2.md): the true value.
-TRUE = {
-    "Synth/Bass 120 C.wav": {"type": "oneshot_melodic"},  # 2 s one-shot with a tempo in its name (defect 25)
-    "Drum Loops/Kick Loop 125 Gm.wav": {"key_tag": ""},  # drums have no key (defect 8)
-}
+# Defects still in the tool (expected red, see docs/sons/REJEUX-OUTIL2.md): the true value. None left:
+# 'Kick Loop 125 Gm' keeps the key written in full on its own name (a tuned kick loop; defect 8 was the
+# lone variation letter, 'Hat Loop 140 C', which stays blank).
+TRUE = {}
 chk = Check("b2_tags")
 i = 0
 for group, snd, cols in ((loops, ML, ["type", "bpm_tag", "key_tag"]), (dloops, DL, ["type", "bpm_tag", "key_tag", "bpm_est"]),

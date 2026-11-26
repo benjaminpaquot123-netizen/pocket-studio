@@ -98,7 +98,7 @@ big = np.clip(noise(1.0, 0.9, 3), -1, 1)
 raw("white noise 1 s (centroid near 10 kHz: 1e+04 ?)", "Drums/Hats/Hat 01.wav", wavbytes(big))
 raw("tone at 9998 Hz", "Synth/Lead C3.wav", wavbytes(sine(9998.0, 1.0, 0.5)))
 raw("very quiet file (-80 dBFS)", K, wavbytes(k * 1e-4, bits=24))
-raw("11.5 MB file -> size_kb", "Synth/Pad C3.wav", wavbytes(tone(130.81, 5.0, 0.3), sr=96000, bits=32))
+raw("96 kHz 32-bit 2.5 s file (about 0.96 MB) -> size_kb", "Synth/Pad C3.wav", wavbytes(tone(130.81, 5.0, 0.3), sr=96000, bits=32))
 # Expected outcome per case: an error text (substring of the error cell), "ok" (measured,
 # no error, 0.5 s unless a duration is given), or "norow" (nothing measured, said on the console).
 ERR = {
@@ -110,12 +110,12 @@ ERR = {
     "44-byte header only, 0 frame": "no audio frames",
     "one single sample": "too short",
     "10 samples": "too short",
-    "pure digital silence 1 s": "silent",
+    "pure digital silence 1 s": "digital silence",
     "constant DC 0.5 for 1 s": "dc",
     "text file named .wav": "not a wav",
     "MP3 data named .wav (ID3 header)": "not a wav",
-    "RF64 header": "not a wav",
-    "RIFX (big endian)": "not a wav",
+    "RF64 header": "RF64/RIFX/BW64 non pris en charge",
+    "RIFX (big endian)": "RF64/RIFX/BW64 non pris en charge",
     "ADPCM (format 2)": "compressed",
     "mu-law (format 7)": "compressed",
     "truncated in the middle of the data (declared 0.5 s, holds 0.1 s)": "truncated wav",
@@ -124,7 +124,7 @@ ERR = {
 }
 NOROW = ("macOS resource fork ._Kick 01.wav", "hidden .DS_Store + flac + mp3 + ogg only")
 DUR = {"white noise 1 s (centroid near 10 kHz: 1e+04 ?)": 1.0, "tone at 9998 Hz": 1.0,
-       "11.5 MB file -> size_kb": 2.5}
+       "96 kHz 32-bit 2.5 s file (about 0.96 MB) -> size_kb": 2.5}
 chk = Check("b5_weird")
 for label, rows, con, code in SEEN:
     if label in NOROW:

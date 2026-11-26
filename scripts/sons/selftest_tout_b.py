@@ -80,6 +80,8 @@ def test_tempo():
     check_eq("10 a BPM word up to 250", tags("Loops/Loop 190 BPM Am.wav")["bpm"], 190.0)
     check_eq("10 '140-bpm' is read", tags("Loops/Loop 140-bpm Am.wav")["bpm"], 140.0)
     check_eq("10 a slow tempo beside a key", tags("Loops/Loop 85 Am.wav")["bpm"], 85.0)
+    check_eq("6 'Bass-Loop-120-Am' keeps its tempo", tags("Loops/Bass-Loop-120-Am.wav")["bpm"], 120.0)
+    check_eq("6 'TB-303 Loop Am' is a model", tags("Loops/TB-303 Loop Am.wav")["bpm"], None)
     check_eq("10 one-shot numbers stay out", tags("Synth/Bass 120 C.wav", "oneshot_melodic")["bpm"], None)
 
 

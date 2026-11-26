@@ -12,6 +12,7 @@ import csv
 import glob
 import io
 import os
+import shutil
 import sys
 import tempfile
 
@@ -232,7 +233,34 @@ def test_audit2_packs_in_work_folder():
         check_eq("13 %s: packs under the work folder" % os.path.basename(f), bad, [])
 
 
-TESTS = [test_audit2_packs_in_work_folder, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_audit2_replays_fail_on_faults():
+    """Defect 14: an audit2 batch exits non-zero on a real fault (crash, a stated wrong value),
+    and an empty (fenced) cell is not a wrong value."""
+    import ast
+    import subprocess
+    work = tempfile.mkdtemp(prefix="tout_repare_a2_")
+    probe = (
+        "import sys; sys.path.insert(0, sys.argv[1]); import lib\n"
+        "print(lib.off('', 120, 0.02), lib.off('120.5', 120, 0.02), lib.off('150', 120, 0.02))\n"
+        "lib.tout.main = lambda argv: 1 / 0\n"
+        "lib.run_pack(lib.S, 'probe')\n"
+        "lib.done()\n")
+    try:
+        p = subprocess.run([sys.executable, "-I", "-c", probe, os.path.join(HERE, "audit2")],
+                           env=dict(os.environ, AUDIT2_WORK=work), capture_output=True, text=True, timeout=120)
+        first = p.stdout.splitlines()[:1]
+        check_eq("14 empty cell is not wrong, a stated wrong one is", first, ["False False True"])
+        check_eq("14 a crash makes the batch exit 1", p.returncode, 1)
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    for f in sorted(glob.glob(os.path.join(HERE, "audit2", "b*.py"))):
+        tree = ast.parse(open(f, encoding="utf-8").read())
+        last = tree.body[-1] if tree.body else None
+        ends = isinstance(last, ast.Expr) and isinstance(last.value, ast.Call) and getattr(last.value.func, "id", "") == "done"
+        check_true("14 %s ends with done()" % os.path.basename(f), ends, ast.dump(last)[:60] if last else None)
+
+
+TESTS = [test_audit2_replays_fail_on_faults, test_audit2_packs_in_work_folder, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

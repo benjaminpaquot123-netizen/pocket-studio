@@ -34,14 +34,15 @@ def fake_song(seconds, loud_from, loud_to, freq, quiet=0.03, loud=0.4):
 
 
 def write_csv(path, seconds, swaps_at, loud_from, loud_to):
-    """ps_live's CSV, the columns the helper reads: playback from second 1, a part swap at each SWAPS_AT."""
+    """ps_live's CSV, the columns the helper reads. As ps_live writes it, row S (from 1) is the state at the
+    END of the second [S-1, S): a swap at 20.0 s shows first on row 21, the loud [20, 62) on rows 21..62."""
     with open(path, "w", encoding="utf-8") as f:
         f.write("second,song_step,swaps,running,rms_db\n")
         swaps = 0
-        for s in range(seconds):
-            swaps += s in swaps_at
-            running = int(s >= 1)
-            level = -11.0 if loud_from <= s < loud_to else -33.0
+        for s in range(1, seconds + 1):
+            swaps += (s - 1) in swaps_at
+            running = 1
+            level = -11.0 if loud_from < s <= loud_to else -33.0
             f.write(f"{s},0,{swaps},{running},{level}\n")
 
 
@@ -71,9 +72,10 @@ class AvantApres(unittest.TestCase):
         self.assertEqual(code, 0, err)
         res = json.loads(stdout)
         self.assertEqual(res["status"], "ok")
-        # The Drop, not the intro: half a second before the swap at 20 s, the same passage after.
-        self.assertAlmostEqual(res["start_before"], 19.5, places=2)
-        self.assertAlmostEqual(res["start_after"], 19.5, places=2)
+        # The Drop, not the intro: a quarter second before the swap at 20 s (never after it, so its
+        # first beat is in), the same passage after.
+        self.assertAlmostEqual(res["start_before"], 19.75, places=2)
+        self.assertAlmostEqual(res["start_after"], 19.75, places=2)
         self.assertTrue(os.path.exists(out))
         code, stdout, err = run("measure", out)
         m = json.loads(stdout)

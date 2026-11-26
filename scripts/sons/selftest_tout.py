@@ -626,13 +626,45 @@ def test_end_cut_audit():
     check_eq("audit: quiet 808 stopped at a zero crossing: cut", tout.end_cut(SR, mono(q))["end_cut"], 1)
     ds = np.concatenate([k, np.zeros(SR // 10)])
     check_eq("audit: abrupt stop + digital silence: cut", tout.end_cut(SR, mono(ds))["end_cut"], 1)
-    tail = band_noise(SR, SR, 200, 8000, 2) * np.exp(-t_axis(1.0) / 0.17)
+    tail = band_noise(SR, 200, 8000, 2) * np.exp(-t_axis(1.0) / 0.17)
     check_eq("audit: noise reverb tail to -51 dB: not cut", tout.end_cut(SR, mono(tail))["end_cut"], 0)
     check_eq("audit: faded kick with DC offset: not cut", tout.end_cut(SR, mono(lin(k, 20) + 0.01))["end_cut"], 0)
     pad = 0.3 * harmonic(220, t_axis(2.0), 4, 0.5)
     check_eq("audit: seamless 2 s pad loop: not cut", tout.end_cut(SR, mono(pad))["end_cut"], 0)
     s808 = 0.8 * np.sin(2 * math.pi * 50 * t_axis(0.6))
     check_eq("audit: 808 at a zero crossing: still cut", tout.end_cut(SR, mono(s808))["end_cut"], 1)
+
+
+def test_measure_values():
+    """Blind audit I14: each column the audit mutated is pinned to a known value."""
+    c = tout.common(SR, mono(0.1 * np.sin(2 * np.pi * 1000 * t_axis(2.0))))
+    check("common dur_s of a 2 s file", c["dur_s"], 2.0, 0.001)
+    k = kick(t_axis(0.25), 150.0, 50.0, 0.25)
+    check_eq("common end_cut of an abrupt kick", tout.common(SR, mono(k))["end_cut"], 1)
+    sus = 0.7 * np.sin(2 * math.pi * 49.0 * t_axis(1.0))
+    c = tout.common(SR, mono(_fade_out(sus, 20.0)))
+    check_eq("common end_cut of a faded 808", c["end_cut"], 0)
+    check_true("common end_fade_ms of a 20 ms fade (10-25)",
+               c["end_fade_ms"] is not None and 10 <= c["end_fade_ms"] <= 25)
+    t = t_axis(4.0)
+    m = tout.measure_drum_oneshot(SR, mono(0.9 * kick(t, 200.0, 50.0, 0.03)), "kick")
+    check("kick drop_start_hz (first window of a 200 Hz start)", m["drop_start_hz"], 163.6, 0.1, relative=True)
+    check("kick t40_ms (0.12 s decay: 552.6)", m["t40_ms"], 552.6, 0.05, relative=True)
+    check("kick t60_ms (0.12 s decay: 828.9)", m["t60_ms"], 828.9, 0.05, relative=True)
+    check_true("kick onset_ms of an instant attack under 0.5", m["onset_ms"] is not None and m["onset_ms"] < 0.5)
+    parts = []
+    for f in (220.0, 330.0, 220.0, 247.0):
+        tt = t_axis(0.4)
+        ph = 2 * np.pi * np.cumsum(f * (1 + 0.01 * np.sin(2 * np.pi * 5 * tt))) / SR
+        env = np.minimum(tt / 0.01, 1) * np.minimum((0.4 - tt) / 0.01, 1)
+        parts.append(0.3 * sum(0.6 ** (h - 1) * np.sin(h * ph) for h in range(1, 6)) * env)
+        parts.append(np.zeros(int(0.5 * SR)))
+    dry = np.concatenate(parts)
+    n = int(1.5 * SR)
+    ir = band_noise(n, 100, 8000, 9) * np.exp(-np.arange(n) / SR * 6.9 / 1.5)
+    tail = np.fft.irfft(np.fft.rfft(dry, len(dry) + n) * np.fft.rfft(ir, len(dry) + n), len(dry) + n)
+    wet = np.concatenate([dry, np.zeros(n)]) + 0.5 * tail / np.max(np.abs(tail)) * np.max(np.abs(dry))
+    check("vocal wet tail_db (1.5 s reverb: about -21)", tout.measure_vocal(SR, mono(wet), {})["tail_db"], -21.2, 4.0)
 
 
 def test_accuracy_rms():
@@ -762,7 +794,7 @@ def main(argv=None):
         return 0
     with np.errstate(all="ignore"):
         for fn in (test_tags, test_classify, test_common, test_notes, test_adsr, test_drum_loop, test_key,
-                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_end_cut_audit, test_blocking, test_tags_types, test_accuracy_rms, test_cli):
+                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_end_cut_audit, test_measure_values, test_blocking, test_tags_types, test_accuracy_rms, test_cli):
             try:
                 fn()
             except Exception as e:  # a crash is a failed check, the rest still runs

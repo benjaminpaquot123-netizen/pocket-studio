@@ -58,7 +58,8 @@ public:
         bodyMul_ = fallMul(r_.bodyFallMs * ms);
         noiseMul_ = fallMul(r_.noiseFallMs * ms);
         clickMul_ = fallMul(r_.clickMs * ms * 4.0f);  // -40 dB over 4 x clickMs (about -10 dB at clickMs)
-        bodyEnv_ = noiseEnv_ = clickEnv_ = 1.0f;
+        bodyEnv_ = clickEnv_ = 1.0f;
+        noiseEnv_ = r_.bursts > 0 ? 0.5f : 1.0f;  // a clap's tail starts under its hands
         dropMul_ = r_.dropHalfMs > 0.0f ? std::exp(-0.69314718f / (r_.dropHalfMs * ms)) : 0.0f;
         dropGap_ = r_.startHz - r_.endHz;
         burstLen_ = static_cast<int>(r_.burstGapMs * ms);

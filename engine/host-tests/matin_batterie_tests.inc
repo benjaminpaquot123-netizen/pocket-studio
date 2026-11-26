@@ -6,6 +6,7 @@
 // Included by engine_tests.cpp (kept apart to ease merging).
 
 #include <complex>
+#include <cstring>
 
 #include "MeasuredDrums.h"
 
@@ -178,6 +179,23 @@ double centroidHz(const std::vector<float>& x, double t40Ms) {
     return den > 0.0 ? num / den : 0.0;
 }
 
+// The drop's start: the first half period of the low-passed hit (two zero crossings, either way,
+// after 0.3 ms; two one-poles at 1.5 kHz keep the click's noise out).
+double startHz(const std::vector<float>& x) {
+    const double a = std::exp(-2.0 * M_PI * 1500.0 / kRate);
+    double y1 = 0.0, y2 = 0.0, prev = 0.0;
+    double c[2] = {-1.0, -1.0};
+    int found = 0;
+    const size_t from = size_t(0.3 * kRate / 1000), to = std::min(x.size(), size_t(kRate / 50));
+    for (size_t i = 0; i < to && found < 2; ++i) {
+        y1 = (1.0 - a) * x[i] + a * y1;
+        y2 = (1.0 - a) * y1 + a * y2;
+        if (i > from && ((prev < 0.0) != (y2 < 0.0))) c[found++] = double(i - 1) + prev / (prev - y2);
+        prev = y2;
+    }
+    return found == 2 && c[1] > c[0] ? kRate / (2.0 * (c[1] - c[0])) : 0.0;
+}
+
 bool within(double v, Range r, double margin) { return v >= r.lo * (1.0 - margin) && v <= r.hi * (1.0 + margin); }
 
 void testMeasuredDrumsInRange() {
@@ -194,17 +212,22 @@ void testMeasuredDrumsInRange() {
         const std::vector<double> e = envelopeDb(x);
         const double t20 = lastAbove(e, 20.0), t40 = lastAbove(e, 40.0), onset = firstAbove(e, 6.0);
         const bool pitched = t.steady.set();
-        // The note once the drop is over (from 60 ms, or 25 ms for a short tom), before -20 dB.
-        const double steady = pitched ? pitchHz(x, t.family == 7 ? 40.0 : 60.0, std::max(100.0, std::min(t20, 300.0)), 4.0 * t.steady.hi) : 0.0;
-        const double start = pitched ? pitchHz(x, 0.0, 3.0, 4000.0) : 0.0;
+        // The note once the drop is over (from 60 ms, or 40 ms for a tom), until -20 dB (at least 120 ms: two periods of 40 Hz).
+        const double steady = pitched ? pitchHz(x, t.family == 7 ? 40.0 : 60.0, std::max(120.0, std::min(t20, 300.0)), 4.0 * t.steady.hi) : 0.0;
+        const double start = pitched ? startHz(x) : 0.0;
         const double centroid = centroidHz(x, t40);
-        bool ok = finite && peak > 0.1f && peak < 1.0f && allocations == 0 && onset <= 5.0;
-        ok = ok && (!t.t20.set() || within(t20, t.t20, 0.1)) && within(t40, t.t40, 0.1);
-        ok = ok && (!pitched || (within(steady, t.steady, 0.08) && within(start, t.start, 0.25)));
-        ok = ok && within(centroid, t.centroid, 0.25);
-        std::printf("  %-9s %-9s %s t20 %4.0f t40 %4.0f [%4.0f-%4.0f] note %5.1f [%3.0f-%3.0f] start %4.0f centroid %5.0f [%5.0f-%5.0f] peak %.2f\n",
+        char why[64] = "";
+        auto bad = [&why](bool cond, const char* what) {
+            if (!cond) std::snprintf(why + std::strlen(why), sizeof(why) - std::strlen(why), " %s", what);
+            return cond;
+        };
+        bool ok = bad(finite, "nan") & bad(peak > 0.1f && peak < 1.0f, "peak") & bad(allocations == 0, "alloc") & bad(onset <= 5.0, "onset");
+        ok = ok & bad(!t.t20.set() || within(t20, t.t20, 0.1), "t20") & bad(within(t40, t.t40, 0.1), "t40");
+        ok = ok & bad(!pitched || within(steady, t.steady, 0.08), "note") & bad(!pitched || within(start, t.start, 0.25), "start");
+        ok = ok & bad(within(centroid, t.centroid, 0.25), "centroid");
+        std::printf("  %-9s %-9s %s t20 %4.0f t40 %4.0f [%4.0f-%4.0f] note %5.1f [%3.0f-%3.0f] start %4.0f centroid %5.0f [%5.0f-%5.0f] peak %.2f%s\n",
                     kFamilyNames[t.family], kStyleNames[t.style], ok ? "ok  " : "FAIL", t20, t40, double(t.t40.lo), double(t.t40.hi), steady,
-                    double(t.steady.lo), double(t.steady.hi), start, centroid, double(t.centroid.lo), double(t.centroid.hi), double(peak));
+                    double(t.steady.lo), double(t.steady.hi), start, centroid, double(t.centroid.lo), double(t.centroid.hi), double(peak), why);
         if (!ok) ++failed;
     }
     CHECK(failed == 0);

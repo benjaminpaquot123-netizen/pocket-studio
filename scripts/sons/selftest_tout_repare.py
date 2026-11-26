@@ -260,7 +260,14 @@ def test_audit2_replays_fail_on_faults():
         check_true("14 %s ends with done()" % os.path.basename(f), ends, ast.dump(last)[:60] if last else None)
 
 
-TESTS = [test_audit2_replays_fail_on_faults, test_audit2_packs_in_work_folder, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_doc_empty_end_cut_not_clean():
+    """Defect 18: the header says an empty end_cut of a one-shot with a tempo in its name is not a clean end."""
+    doc = " ".join((tout.__doc__ or "").split())
+    check_true("18 header: empty end_cut of a tempo-named one-shot is no verdict",
+               "an empty end_cut there does not mean a clean end" in doc, None)
+
+
+TESTS = [test_doc_empty_end_cut_not_clean, test_audit2_replays_fail_on_faults, test_audit2_packs_in_work_folder, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

@@ -1,0 +1,5 @@
+rar,pack,type,measure,tagged,agree,half_double,relative,error_pct,usable,cle
+3,p1,melodic_loop,bpm,37,35,0,0,5.405,no,
+3,p1,melodic_loop,key,69,45,0,1,34.78,no,
+3,p1,midi,key,69,59,0,1,14.49,no,
+3,p1,oneshot_melodic,note,16,16,0,0,0,no,

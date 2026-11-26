@@ -66,11 +66,15 @@ def build(src):
     wav(os.path.join(a, "One Shots", "Kicks", "BR Kick 01.wav"), "kick", 0.4)
     wav(os.path.join(a, "One Shots", "Kicks", "BR Kick 02.wav"), "kick", 0.5)
     wav(os.path.join(a, "Loops", "Bass Loops", "BR Bass Loop 01 120 BPM Am.wav"), "loop", 4.0)
-    wav(os.path.join(a, "Techno Stabs", "BR Stab 01 C.wav"), "tone", 0.6)  # inner folder names a style
+    wav(os.path.join(a, "House Stabs", "BR Stab 01 C.wav"), "tone", 0.6)  # inner folder names a style: it wins
     midi(os.path.join(a, "MIDI", "BR Melody 01 120 BPM Am.mid"))
     k = os.path.join(a, "Construction Kits", "Kit 01 120 BPM Am")
     wav(os.path.join(k, "BR Kit 01 Drums 120 BPM Am.wav"), "loop", 4.0)
     wav(os.path.join(k, "BR Kit 01 Bass 120 BPM Am.wav"), "loop", 4.0)
+    c = os.path.join(src, "Bundle", "Ghosthack - Cherry Blossom")  # forced lofi, no inner style folder
+    wav(os.path.join(c, "One Shots", "CB Kick 01.wav"), "kick", 0.3)
+    wav(os.path.join(c, "Loops", "CB Keys Loop 01 90 BPM C.wav"), "loop", 2.0)
+    midi(os.path.join(c, "MIDI", "CB Chords 01 90 BPM C.mid"))
     b = os.path.join(src, "Bundle", "Ghosthack - Riddim Riot")
     wav(os.path.join(b, "Loops", "RR Drum Loop 01 120 BPM.wav"), "loop", 4.0)
     with open(os.path.join(b, "Preset 01.fxp"), "wb") as fh:
@@ -78,7 +82,7 @@ def build(src):
     os.makedirs(os.path.join(src, "Bundle", "Docs"))
     with open(os.path.join(src, "Bundle", "Docs", "readme.pdf"), "wb") as fh:
         fh.write(b"%PDF-1.4\n")
-    return 8  # wav + midi files in the two packs (p1: 6 wav + 1 mid, p2: 1 wav)
+    return 11  # wav + midi files in the three packs (p1: 6 wav + 1 mid, p2: 2 wav + 1 mid, p3: 1 wav)
 
 
 def pack_forms(base):
@@ -144,7 +148,8 @@ def main():
         r = run(["--rar", "7", "--url", "file://" + rar, "--out", out, "--plan"], env)
         check(r.returncode == 0, "--plan exits 0 (%s)" % r.stderr.strip()[-200:])
         check("p1" in r.stdout and "Blood Rave" in r.stdout and "forced techno" in r.stdout, "--plan lists p1 forced techno")
-        check("Riddim Riot" in r.stdout and "dubstep" in r.stdout, "--plan lists p2 dubstep")
+        check("Riddim Riot" in r.stdout and "dubstep" in r.stdout, "--plan lists p3 dubstep")
+        check("Cherry Blossom" in r.stdout and "forced lofi" in r.stdout, "--plan lists p2 forced lofi")
         check("Docs" not in r.stdout, "a folder without sounds is no pack")
         check(os.listdir(out) == [], "--plan writes nothing")
         check(os.listdir(work) == [], "--plan leaves no work folder")
@@ -154,10 +159,15 @@ def main():
         check(r.returncode == 0, "full run exits 0 (rc %d, %s)" % (r.returncode, r.stderr.strip()[-300:]))
         check(os.listdir(work) == [], "download and extraction deleted")
         ctl = rows(os.path.join(out, "rar7_controle.csv"))
-        check([c["pack"] for c in ctl] == ["p1", "p2"], "control lists both packs")
+        check([c["pack"] for c in ctl] == ["p1", "p2", "p3"], "control lists the three packs")
         check(all(c["count_ok"] == "yes" and c["errors"] == "0" for c in ctl), "control: rows = files, 0 error")
         check(sum(int(c["files_audio"]) + int(c["files_midi"]) for c in ctl) == nfiles, "files read = %d" % nfiles)
-        check(ctl[1]["skipped"] == ".fxp:1", "preset counted as skipped")
+        check(ctl[2]["skipped"] == ".fxp:1", "preset counted as skipped")
+        check(all(c["unresolved"] == "0" for c in ctl), "forced packs: every row found again (unresolved 0)")
+        check(ctl[1]["style_forced"] == "lofi" and ctl[1]["rows_forced"] == ctl[1]["rows"] != "0",
+              "Cherry Blossom: rows forced = rows of the pack (%s / %s)" % (ctl[1]["rows_forced"], ctl[1]["rows"]))
+        check(int(ctl[0]["rows_forced"]) == int(ctl[0]["rows"]) - 1 + int(ctl[0]["kit_rows"]),
+              "Blood Rave: every row forced but the House Stabs one (%s)" % ctl[0]["rows_forced"])
         data = []
         for f in sorted(os.listdir(out)):
             if f.endswith(".csv") and f not in ("rar7_controle.csv", "rar7_accuracy.csv"):
@@ -169,10 +179,13 @@ def main():
         check(len(keys) == len(set(keys)) and all(k.startswith("r7-p") for k in keys), "cle unique, r7-pN-file_id")
         p1 = [r_ for f, r_ in data if r_["pack"] == "p1"]
         p2 = [r_ for f, r_ in data if r_["pack"] == "p2"]
-        check(p1 and all(r_["style"] == "techno" for r_ in p1), "Blood Rave rows forced to techno, inner Techno kept")
-        check(p2 and all(r_["style"] == "dubstep" for r_ in p2), "Riddim Riot rows dubstep")
+        p3 = [r_ for f, r_ in data if r_["pack"] == "p3"]
+        check(sorted(r_["style"] for r_ in p1) == ["house"] + ["techno"] * (len(p1) - 1),
+              "Blood Rave rows forced to techno, inner House Stabs folder wins")
+        check(p2 and all(r_["style"] == "lofi" for r_ in p2), "Cherry Blossom rows forced to lofi")
+        check(p3 and all(r_["style"] == "dubstep" for r_ in p3), "Riddim Riot rows dubstep")
         text = "".join(open(os.path.join(out, f), encoding="utf-8").read() for f in os.listdir(out) if f.endswith(".csv"))
-        check("Kick" not in text and "Blood" not in text and "BPM" not in text, "CSVs carry no file or pack name")
+        check("Kick" not in text and "Blood" not in text and "Cherry" not in text and "BPM" not in text, "CSVs carry no file or pack name")
         check(open(os.path.join(out, "rar7_packs.txt")).read().startswith("p1\tGhosthack - Blood Rave"), "packs.txt maps p1")
 
         # --archive keeps the given file, a damaged archive is refused, outputs in the repo are refused

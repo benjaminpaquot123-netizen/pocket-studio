@@ -466,12 +466,28 @@ def drum_family(name, folders):
     """Drum family from the name, else from the folders, innermost first (blind audit B1)."""
     if isinstance(folders, str):
         folders = [folders]
-    for text in [name] + list(reversed(folders)):
-        nm = re.sub(r"[_\-]", " ", text)
+    texts = [re.sub(r"[_\-]", " ", t) for t in [name] + list(reversed(folders))]
+    for nm in texts:
         for f, rx in EXTRA_RULES + mine_or.RULES:
             if rx.search(nm):
-                return f
+                return _refine(f, texts)
     return None
+
+
+# a bare 'hat' or 'perc' takes its kind from a short word in the name or a folder (audit 2, defects 1, 24)
+REFINE = {"hat": [("hat_open", re.compile(r"(?i)\bopen(?:ed)?\b|\bop\b|\bouverte?s?\b")),
+                  ("hat_closed", re.compile(r"(?i)\bclosed?\b|\bcl\b|\bpedal\b|\bferm[ée]e?s?\b"))],
+          "perc": [("perc_high", re.compile(r"(?i)\bhigh\b|\bhi\b")),
+                   ("perc_mid", re.compile(r"(?i)\bmid(?:dle)?\b")),
+                   ("perc_low", re.compile(r"(?i)\blow\b"))]}
+
+
+def _refine(fam, texts):
+    for nm in texts:  # name first, then the folders, innermost first
+        for f, rx in REFINE.get(fam, ()):
+            if rx.search(nm):
+                return f
+    return fam
 
 
 ONESHOT_DIR = re.compile(r"(?i)one.?shots?|\bhits?\b|\bshots\b")
@@ -1820,6 +1836,8 @@ def _measure_file(p, rel, parts, acc, rar):
                 m = measure_fx(sr, x, tags)
             elif typ == "drum_oneshot":
                 m = measure_drum_oneshot(sr, x, cl["subtype"])
+                if cl["subtype"] == "hat" and m.get("hat_measured"):  # the name is silent: the sound decides
+                    row["subtype"] = "hat_" + m["hat_measured"]
                 if tags.get("note") is not None and m.get("note_measured"):
                     pc = NOTE_NAMES.index(re.match(r"[A-G]#?", m["note_measured"]).group(0))
                     acc.add(typ, "note", pc == tags["note"])

@@ -484,6 +484,63 @@ def test_drum_oneshots():
     check("kick linear drop t90 (0.9 x 60 ms)", m["drop_t90_ms"], 54.0, 0.25, relative=True)
 
 
+def _fade_out(x, ms, sr=SR):
+    """Linear fade over the last ms milliseconds."""
+    n = int(round(ms * sr / 1000.0))
+    y = x.copy()
+    y[-n:] *= np.linspace(1.0, 0.0, n)
+    return y
+
+
+def test_end_cut():
+    """end_cut flags a click or an abrupt stop, never a trimmed-and-faded tail."""
+    fn = getattr(tout, "end_cut", None)
+    check_true("end_cut function exists", callable(fn))
+    if not callable(fn):
+        return
+    t = t_axis(0.25)
+    k = _fade_out(0.9 * kick(t, 120.0, 50.0, 0.15), 20.0)
+    m = fn(SR, mono(k))
+    check_eq("short kick with a 20 ms fade: not cut", m["end_cut"], 0)
+    check_true("short kick fade length 8-25 ms", m["end_fade_ms"] is not None and 8 <= m["end_fade_ms"] <= 25)
+    rng = np.random.default_rng(3)
+    nz = rng.standard_normal(SR // 2)
+    nz *= 10 ** (-10 / 20) / np.sqrt(np.mean(nz ** 2))
+    m = fn(SR, mono(nz))
+    check_eq("abrupt stop at -10 dBFS: cut", m["end_cut"], 1)
+    check_true("abrupt stop: no fade", m["end_fade_ms"] is None)
+    t = t_axis(3.43)
+    sus = 0.7 * np.sin(2 * math.pi * 49.0 * t)
+    m = fn(SR, mono(_fade_out(sus, 20.0)))
+    check_eq("sustained 808 sine with a 20 ms fade: not cut", m["end_cut"], 0)
+    check_true("808 fade length 10-25 ms", m["end_fade_ms"] is not None and 10 <= m["end_fade_ms"] <= 25)
+    n_mid = int(round((3.0 + 0.3 / 49.0) * SR))  # stops at 0.3 of a cycle, near the crest
+    m = fn(SR, mono(sus[:n_mid]))
+    check_eq("sustained 808 cut mid-cycle: cut", m["end_cut"], 1)
+    t = t_axis(1.0)
+    ring = 0.01 * np.sin(2 * math.pi * 440.0 * t)
+    m = fn(SR, mono(_fade_out(ring, 30.0)))
+    check_eq("rings to the end at -40 dB, 30 ms fade: not cut", m["end_cut"], 0)
+    check_true("ring fade length 15-35 ms", m["end_fade_ms"] is not None and 15 <= m["end_fade_ms"] <= 35)
+    m = fn(SR, np.zeros((SR // 2, 2)))
+    check_eq("pure silence: not cut", m["end_cut"], 0)
+    check_true("pure silence: no fade", m["end_fade_ms"] is None)
+    st = np.stack([_fade_out(sus, 20.0), sus], axis=1)
+    m = fn(SR, st[:n_mid])
+    check_eq("stereo: one channel cut is a cut", m["end_cut"], 1)
+    decayed = 0.9 * kick(t_axis(0.5), 120.0, 50.0, 0.03)
+    m = fn(SR, mono(decayed))
+    check_eq("kick fully decayed before the end: not cut", m["end_cut"], 0)
+    m = tout.measure_drum_oneshot(SR, mono(k), "kick")
+    check_true("drum one-shot keeps end_level_db as information", "end_level_db" in m)
+    for typ, cols in tout.TYPE_COLUMNS.items():
+        if typ in ("midi", "kit"):
+            continue
+        check_true("%s table has end_cut and end_fade_ms" % typ, "end_cut" in cols and "end_fade_ms" in cols)
+    check_true("no column doc calls an unfaded tail 'cut'",
+               "cut short" not in tout.mesure.__doc__ and "cut tail" not in (tout.__doc__ or ""))
+
+
 def test_cli():
     with tempfile.TemporaryDirectory() as tmp:
         pack = os.path.join(tmp, "Secret Vendor Pack")
@@ -555,6 +612,8 @@ def test_cli():
         dl = rows("drum_loop")
         check_eq("cli drum loop style from folder", dl[0]["style"], "techno")
         check_eq("cli midi chords against kit key", mids[0]["chords"], "i-VI-iv-V")
+        check_true("cli end_cut filled on audio rows",
+                   all(r.get("end_cut") in ("0", "1") for r in mel + stems + dl + rows("drum_oneshot") + rows("fx")))
         inside = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leak")
         try:
             tout.main([pack, "--rar", "7", "--out", inside])
@@ -571,7 +630,7 @@ def main(argv=None):
         return 0
     with np.errstate(all="ignore"):
         for fn in (test_tags, test_classify, test_common, test_notes, test_adsr, test_drum_loop, test_key,
-                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_cli):
+                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_cli):
             try:
                 fn()
             except Exception as e:  # a crash is a failed check, the rest still runs

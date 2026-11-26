@@ -200,6 +200,8 @@ double startHz(const std::vector<float>& x) {
 
 bool within(double v, Range r, double margin) { return v >= r.lo * (1.0 - margin) && v <= r.hi * (1.0 + margin); }
 
+bool tightened(int family, int style);  // below: the voices point 3 holds to p25..p75 instead
+
 void testMeasuredDrumsInRange() {
     int failed = 0;
     for (const Target& t : kTargets) {
@@ -224,9 +226,11 @@ void testMeasuredDrumsInRange() {
             return cond;
         };
         bool ok = bad(finite, "nan") & bad(peak > 0.1f && peak < 1.0f, "peak") & bad(allocations == 0, "alloc") & bad(onset <= 5.0, "onset");
-        ok = ok & bad(!t.t20.set() || within(t20, t.t20, 0.1), "t20") & bad(within(t40, t.t40, 0.1), "t40");
+        // A voice the tight test holds keeps only the checks above here (its lengths and brightness: there).
+        const bool loose = !tightened(t.family, t.style);
+        ok = ok & bad(!loose || !t.t20.set() || within(t20, t.t20, 0.1), "t20") & bad(!loose || within(t40, t.t40, 0.1), "t40");
         ok = ok & bad(!pitched || within(steady, t.steady, 0.08), "note") & bad(!pitched || within(start, t.start, 0.25), "start");
-        ok = ok & bad(within(centroid, t.centroid, 0.25), "centroid");
+        ok = ok & bad(!loose || within(centroid, t.centroid, 0.25), "centroid");
         std::printf("  %-9s %-9s %s t20 %4.0f t40 %4.0f [%4.0f-%4.0f] note %5.1f [%3.0f-%3.0f] start %4.0f centroid %5.0f [%5.0f-%5.0f] peak %.2f%s\n",
                     kFamilyNames[t.family], kStyleNames[t.style], ok ? "ok  " : "FAIL", t20, t40, double(t.t40.lo), double(t.t40.hi), steady,
                     double(t.steady.lo), double(t.steady.hi), start, centroid, double(t.centroid.lo), double(t.centroid.hi), double(peak), why);
@@ -258,6 +262,12 @@ const Tight kTight[] = {
     {2, 4, {71, 121}, {170, 254}, {2896, 3845}}, {2, 5, {110, 213}, {226, 486}, {2189, 3041}},
     {3, 5, {136, 356}, {447, 938}, {696, 2419}}, {0, 1, {218, 375}, {287, 398}, {93, 140}},
 };
+
+bool tightened(int family, int style) {
+    for (const Tight& t : kTight)
+        if (t.family == family && t.style == style) return true;
+    return false;
+}
 
 void testMeasuredDrumsTight() {
     int failed = 0;

@@ -13,7 +13,7 @@ Recipe kick(int style) {
     struct K { float hz, start, hold, fall, click, drive; };
     static constexpr K k[kStyles] = {
         {41.2f, 322.0f, 170.0f, 98.0f, 0.15f, 0.10f},   // house: E1, long round body
-        {49.0f, 335.0f, 188.0f, 126.0f, 0.30f, 0.15f},  // tech house: G1
+        {49.0f, 335.0f, 188.0f, 126.0f, 0.55f, 0.30f},  // tech house: G1, a firmer click (was too dark)
         {49.0f, 327.0f, 200.0f, 120.0f, 0.45f, 0.30f},  // techno: G1, harder
         {43.65f, 190.0f, 65.0f, 64.0f, 0.05f, 0.05f},   // trap: F1, short (the 808 holds the low end)
         {49.0f, 208.0f, 79.0f, 99.0f, 0.45f, 0.30f},    // dnb: G1, short and punchy
@@ -55,12 +55,12 @@ Recipe clap(int style) {
     // {hp, lp, hold, fall}
     struct C { float hp, lp, hold, fall; };
     static constexpr C c[kStyles] = {
-        {800.0f, 2500.0f, 30.0f, 110.0f},   // house
-        {900.0f, 3200.0f, 50.0f, 130.0f},   // tech house
-        {1000.0f, 3800.0f, 70.0f, 130.0f},  // techno
-        {1200.0f, 2000.0f, 40.0f, 120.0f},  // trap
-        {1300.0f, 3000.0f, 25.0f, 100.0f},  // dnb
-        {800.0f, 2500.0f, 90.0f, 230.0f},   // dubstep: long
+        {600.0f, 1400.0f, 10.0f, 104.0f},   // house
+        {800.0f, 2200.0f, 30.0f, 113.0f},   // tech house
+        {900.0f, 2600.0f, 56.0f, 94.0f},    // techno
+        {900.0f, 1300.0f, 48.0f, 58.0f},    // trap
+        {900.0f, 1800.0f, 10.0f, 133.0f},   // dnb
+        {600.0f, 1300.0f, 10.0f, 266.0f},   // dubstep: long
     };
     const C& x = c[style];
     Recipe r;
@@ -84,7 +84,7 @@ Recipe snare(int style) {
         {187.0f, 0.9f, 400.0f, 1100.0f, 20.0f, 115.0f},   // techno
         {200.0f, 0.6f, 900.0f, 2800.0f, 49.0f, 147.0f},   // trap: brighter
         {210.0f, 0.35f, 1500.0f, 5000.0f, 14.0f, 86.0f},  // dnb: small body, bright
-        {230.0f, 0.8f, 500.0f, 2500.0f, 0.0f, 500.0f},    // dubstep: long tail
+        {230.0f, 0.8f, 400.0f, 1500.0f, 0.0f, 500.0f},    // dubstep: long tail, darker
     };
     const S& x = s[style];
     Recipe r;
@@ -109,12 +109,12 @@ Recipe snare(int style) {
 Recipe hat(int style, bool open) {
     struct H { float hold, fall, hp, lp; };
     static constexpr H closed[kStyles] = {
-        {23.0f, 62.0f, 6000.0f, 16000.0f}, {44.0f, 48.0f, 6500.0f, 16000.0f}, {48.0f, 47.0f, 6500.0f, 16000.0f},
-        {21.0f, 50.0f, 5000.0f, 16000.0f}, {3.0f, 74.0f, 6000.0f, 18000.0f},  {18.0f, 64.0f, 7000.0f, 18000.0f},
+        {23.0f, 62.0f, 4500.0f, 8000.0f},  {44.0f, 48.0f, 5000.0f, 8500.0f},  {48.0f, 47.0f, 5000.0f, 8500.0f},
+        {21.0f, 50.0f, 5000.0f, 10500.0f}, {15.0f, 74.0f, 5500.0f, 11500.0f}, {26.0f, 64.0f, 6000.0f, 12000.0f},
     };
     static constexpr H opened[kStyles] = {
-        {52.0f, 102.0f, 4000.0f, 8000.0f},  {52.0f, 158.0f, 6000.0f, 16000.0f}, {52.0f, 158.0f, 6000.0f, 16000.0f},
-        {778.0f, 172.0f, 8000.0f, 20000.0f}, {52.0f, 158.0f, 6000.0f, 16000.0f}, {87.0f, 51.0f, 6500.0f, 16000.0f},
+        {37.0f, 275.0f, 4000.0f, 8000.0f},   {37.0f, 275.0f, 4500.0f, 9000.0f}, {37.0f, 275.0f, 4500.0f, 9000.0f},
+        {778.0f, 172.0f, 8000.0f, 20000.0f}, {37.0f, 275.0f, 4500.0f, 9000.0f}, {60.0f, 260.0f, 4500.0f, 9000.0f},
     };
     const H& x = open ? opened[style] : closed[style];
     Recipe r;
@@ -170,8 +170,8 @@ Recipe tom(int style) {
 Recipe crash(int style) {
     struct X { float hold, fall, hp, lp; };
     static constexpr X x[kStyles] = {
-        {608.0f, 1084.0f, 3000.0f, 10000.0f}, {608.0f, 1084.0f, 3000.0f, 10000.0f}, {608.0f, 1084.0f, 3000.0f, 10000.0f},
-        {608.0f, 1084.0f, 3000.0f, 10000.0f}, {0.0f, 1075.0f, 6000.0f, 16000.0f},   {733.0f, 960.0f, 2500.0f, 8500.0f},
+        {637.0f, 728.0f, 2000.0f, 7000.0f}, {637.0f, 728.0f, 2000.0f, 7000.0f}, {637.0f, 728.0f, 2000.0f, 7000.0f},
+        {352.0f, 415.0f, 1800.0f, 5500.0f}, {500.0f, 600.0f, 3000.0f, 7700.0f}, {733.0f, 960.0f, 1400.0f, 4500.0f},
     };
     const X& c = x[style];
     Recipe r;

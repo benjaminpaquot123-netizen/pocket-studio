@@ -2733,6 +2733,10 @@ def main(argv=None):
                     r["bpm_est"] = r.get("bpm_measured", r.get("bpm_file"))
                 if r.get("key_est") is None:
                     r["key_est"] = r.get("key_measured")
+                if re.match(r"[A-G]b", r.get("key_tag") or ""):
+                    # one spelling per row: 'Bb minor' written, not 'A# minor' heard (audit 3, defect 12)
+                    for c in ("key_est", "key_measured"):
+                        r[c] = spell(r.get(c), True)
                 fence_row(r, usable)
                 wr.writerow({k: _fmt(r.get(k)) for k in cols})
                 total += 1

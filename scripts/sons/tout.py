@@ -283,57 +283,88 @@ def _clean(name):
     return re.sub(r"[_]+", " ", name)
 
 
+def _key_candidates(text):
+    """(strong, lone) key matches: strong has an accidental or a mode."""
+    strong, lone = [], []
+    for m in _KEY_RX.finditer(text):
+        letter, acc = m.group(1), _acc(m.group(2))
+        mode = "major" if m.group(3) else ("minor" if (m.group(4) or m.group(5)) else None)
+        word_mode = bool(m.group(3) or m.group(4))
+        if letter.islower() and not word_mode:
+            continue  # 'ab', 'e', 'am' are words or noise
+        key = (_pc(letter, acc), mode or "major")
+        (strong if (acc or mode) else lone).append((m, key))
+    return strong, lone
+
+
 def parse_tags(parts, typ):
     """Tags from the file name, then the folders (innermost first).
-    parts: path components below the pack folder, file name last."""
+    parts: path components below the pack folder, file name last.
+    A 'BPM' tag anywhere beats a bare number; a bare number counts only beside a real key;
+    a key with an accidental or a mode beats a lone letter, which counts only as the last
+    word of a name that also carries a tempo (blind audit I4/I5)."""
     out = {"bpm": None, "key": None, "note": None}
     loopish = typ not in ("oneshot_melodic", "drum_oneshot")
-    for raw in reversed(parts):
-        text = _clean(raw)
-        has_bpm = False
-        if out["bpm"] is None:
-            m = _BPM_RX.search(text)
-            if m:
-                v = float(m.group(1))
-                if 40 <= v <= 250:
-                    out["bpm"] = v
-                    has_bpm = True
-        else:
-            has_bpm = bool(_BPM_RX.search(text))
-        if out["key"] is None and typ not in ("oneshot_melodic", "drum_oneshot"):
-            bare_num = _BARE_RX.search(text) is not None
-            for m in _KEY_RX.finditer(text):
-                letter, acc = m.group(1), _acc(m.group(2))
-                mode = "major" if m.group(3) else ("minor" if (m.group(4) or m.group(5)) else None)
-                word_mode = bool(m.group(3) or m.group(4))
-                if letter.islower() and not word_mode:
-                    continue  # 'ab', 'e', 'am' are words or noise
-                if not acc and not mode:
-                    if not (has_bpm or bare_num) or _VERSION_WORDS.search(text[:m.start()]):
-                        continue  # a lone capital letter is a version, not a key
-                out["key"] = (_pc(letter, acc), mode or "major")
+    texts = [_clean(raw) for raw in reversed(parts)]
+    for text in texts:
+        for m in _BPM_RX.finditer(text):
+            v = float(m.group(1))
+            if 40 <= v <= 250:
+                out["bpm"] = v
                 break
-        if out["bpm"] is None and loopish:
+        if out["bpm"] is not None:
+            break
+    any_bpm = any(_BPM_RX.search(t) for t in texts)
+    if out["bpm"] is None and loopish:
+        for text in texts:
+            if not _key_candidates(text)[0]:
+                continue
             for m in _BARE_RX.finditer(text):
                 v = float(m.group(1))
-                if 60 <= v <= 200 and (_KEY_RX.search(text) or typ not in ("fx", "vocal")):
+                if 60 <= v <= 200:
                     out["bpm"] = v
                     break
-        if out["note"] is None and typ in ("oneshot_melodic", "drum_oneshot") and raw is parts[-1]:
-            for m in _ONE_NOTE_RX.finditer(text):
-                letter, acc, octave = m.group(1), _acc(m.group(2)), m.group(3)
-                if letter.islower() and not octave:
-                    continue
-                if not acc and not octave and _VERSION_WORDS.search(text[:m.start()]):
-                    continue
-                out["note"] = _pc(letter, acc)
+            if out["bpm"] is not None:
                 break
+    if loopish:
+        for text in texts:
+            strong, lone = _key_candidates(text)
+            if strong:
+                out["key"] = strong[0][1]
+                break
+            if lone:
+                m, key = lone[-1]
+                tail = text[m.end():].strip(" -")
+                if tail == "" and (any_bpm or _BARE_RX.search(text[:m.start()])) \
+                        and not _VERSION_WORDS.search(text[:m.start()]):
+                    out["key"] = key
+                    break
+    if not loopish and parts:
+        text = texts[0]
+        octaved, lone = [], []
+        for m in _ONE_NOTE_RX.finditer(text):
+            letter, acc, octave = m.group(1), _acc(m.group(2)), m.group(3)
+            if letter.islower() and not octave:
+                continue
+            if octave:
+                octaved.append(_pc(letter, acc))
+                continue
+            if re.match(r"\s*[-_]?\s*\d", text[m.end():]) or _VERSION_WORDS.search(text[:m.start()]):
+                continue  # 'Synth A 01', 'Kit B': an index or a version, not a note
+            lone.append(_pc(letter, acc))
+        if octaved:
+            out["note"] = octaved[-1]
+        elif lone:
+            out["note"] = lone[-1]
     return out
 
 
 # ================================================================ classify
 
-KIT_ROOT = re.compile(r"(?i)construction|song.?kits?|melody.?kits?|^kits?$|stems")
+# whole folder names only: "Vendor Construction Pack" is not a kit root (blind audit I7)
+KIT_ROOT = re.compile(r"(?i)^(?:(?:construction|song|melody)[ _-]?kits?|kits?)$")
+KIT_SELF = re.compile(r"(?i)^(?:construction|song|melody)[ _-]?kit\b.+")
+STEMS_DIR = re.compile(r"(?i)^stems?$")
 VOCAL_RX = re.compile(r"(?i)\bvo(x|cals?|ice)\b|vocal|acapella|a capella|\bchant|\bspoken|\bphrase")
 FX_RX = re.compile(r"(?i)\bfx\b|sfx|riser|uplifter|downlifter|sweep|whoosh|impact|noise|reverse|\bdrop\b"
                    r"|transition|atmos|texture|foley fx|downer|\bhit fx|swell|crash fx|braam|zap")
@@ -348,8 +379,8 @@ ROLES = [
     ("bass", r"bass|\bsub\b|reese"),
     ("kick", r"\bkicks?\b|\bbd\b"),
     ("snare", r"snare|clap|\bsd\b"),
-    ("hats", r"hats?\b|hi.?hat|cymbal|ride|shaker|\bhh\b|\bcrash"),
-    ("perc", r"perc|conga|bongo|tom\b|rim|shaker|tamb"),
+    ("hats", r"\bhats?\b|hi.?hat|cymbal|\bride\b|shaker|\b[co]?hh\b|\bcrash"),
+    ("perc", r"perc|conga|bongo|\btoms?\b|\brims?\b|shaker|tamb"),
     ("drums", r"drum|\btop\b|\btops\b|groove|beat|break|fill"),
     ("vocal", r"vo(x|cal)|voice|acapella|chant"),
     ("fx", r"\bfx\b|sfx|riser|sweep|impact|noise|atmos|texture"),
@@ -393,11 +424,26 @@ def style_of(rel):
 
 
 def kit_split(parts):
-    """(kit root index, kit folder name) or (None, None)."""
-    for i, p in enumerate(parts[:-1]):
-        if KIT_ROOT.search(p) and i + 1 < len(parts) - 1:
-            return i, parts[i + 1]
+    """(index of the kit folder in parts, kit folder name) or (None, None)."""
+    folders = parts[:-1]
+    for i, p in enumerate(folders):
+        if KIT_ROOT.search(p) and i + 1 < len(folders):
+            return i + 1, folders[i + 1]
+        if KIT_SELF.search(p):
+            return i, p
+        if STEMS_DIR.search(p) and i >= 1:
+            return i - 1, folders[i - 1]
     return None, None
+
+
+# finer drum families the shared rules miss (blind audit I6)
+EXTRA_RULES = [(f, re.compile(r, re.I)) for f, r in [
+    ("hat_open", r"\bo ?hh\b|(?:hi.?hats?|\bhats?|\bhh)\s*open|open\s*(?:hi.?hats?|hats?|hh)\b"),
+    ("hat_closed", r"\bc ?hh\b|(?:hi.?hats?|\bhats?|\bhh)\s*closed|closed\s*(?:hi.?hats?|hats?|hh)\b"),
+    ("perc_high", r"\bperc(?:ussion)?s?\s*(?:high|hi)\b|\b(?:high|hi)\s*percs?\b"),
+    ("perc_low", r"\bperc(?:ussion)?s?\s*low\b|\blow\s*percs?\b"),
+    ("hat", r"\bhh\b")]]
+LONG_FAMILIES = ("kick_808", "crash", "cymbal", "ride")
 
 
 def drum_family(name, folders):
@@ -406,7 +452,7 @@ def drum_family(name, folders):
         folders = [folders]
     for text in [name] + list(reversed(folders)):
         nm = re.sub(r"[_\-]", " ", text)
-        for f, rx in mine_or.RULES:
+        for f, rx in EXTRA_RULES + mine_or.RULES:
             if rx.search(nm):
                 return f
     return None
@@ -436,13 +482,17 @@ def classify(rel, dur):
         return out
     ki, _ = kit_split(parts)
     if ki is not None:
-        out["type"] = "kit_stem"
-        return out
+        below = folders[ki + 1:]
+        short_drum = drum_family(name, []) is not None and dur is not None and dur < 6.0
+        if not short_drum and not any(ONESHOT_DIR.search(f) for f in below):
+            out["type"] = "kit_stem"
+            return out
     if VOCAL_RX.search(text) and not re.search(r"(?i)\bvocoder\b|vox ?synth", name):
         out["type"] = "vocal"
         out["role"] = "vocal"
         return out
-    if FX_RX.search(text):
+    drum_named = drum_family(name, []) is not None or (DRUM_WORDS.search(name) and LOOP_RX.search(text))
+    if FX_RX.search(text) and not drum_named:  # 'Kick Impact', 'Noise Hat Loop' stay drums (I7)
         out["type"] = "fx"
         return out
     has_bpm = _BPM_RX.search(name) is not None
@@ -453,7 +503,7 @@ def classify(rel, dur):
         out["type"] = "drum_loop" if drummy and not melodic else "melodic_loop"
         return out
     fam = drum_family(name, folders)
-    if fam is not None and (dur is None or dur < 6.0):
+    if fam is not None and (dur is None or dur < (10.0 if fam in LONG_FAMILIES else 6.0)):
         if fam == "kick_808" or not re.search(r"(?i)bass|synth|lead|pad|key|piano|chord|pluck", name + "/" +
                                               (folders[-1] if folders else "")):
             sub = fam
@@ -1749,8 +1799,15 @@ def main(argv=None):
         rel = os.path.relpath(p, args.folder).replace(os.sep, "/")
         parts = rel.split("/")
         ki, kname = kit_split(parts)
+        if ki is not None and p not in midi:
+            cl = classify(rel, None)
+            if cl["type"] != "kit_stem" or drum_family(_clean(parts[-1]), []) is not None:
+                row = _measure_file(p, rel, parts, acc, rar)  # one-shots inside a kit (I7)
+                if row["type"] != "kit_stem" or row["error"]:
+                    rows[row["type"]].append(row)
+                    continue
         if ki is not None:
-            kits.setdefault(tuple(parts[:ki + 2]), []).append((p, rel, parts))
+            kits.setdefault(tuple(parts[:ki + 1]), []).append((p, rel, parts))
             continue
         if p in midi:
             rows["midi"].append(_midi_row(p, rel, parse_tags(parts, "midi"), rar, acc))

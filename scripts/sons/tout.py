@@ -270,8 +270,8 @@ _NOTE_RX = r"([A-Ga-g])(#|♯|♭|[ _-]?(?i:sharp|flat)|b(?![A-LN-Za-ln-z]))?"
 _BPM_RX = re.compile(r"(?i)(?<![\d.])(\d{2,3}(?:\.\d+)?)\s*-?\s*bpm\b")
 # bare numbers: no leading zero (Loop_073 is an index) and not '90s'
 # a number followed by k / kHz / Hz / bit(s) is a sample rate or a bit depth
-# 'SH-101', 'CS-80' (a letter, a dash), '100%', "90's" and '96kHz24bit' are not tempos (audit 2 #6)
-_BARE_RX = re.compile(r"(?<![\d.])(?<![A-Za-z]-)([1-9]\d{1,2})"
+# '100%', "90's" and '96kHz24bit' are not tempos (audit 2 #6)
+_BARE_RX = re.compile(r"(?<![\d.])([1-9]\d{1,2})"
                       r"(?![\d.%]|s\b|['’]s\b|\s*-?\s*(?i:bars?|x|k|khz|hz|bits?)(?![a-z]))")
 # 'Loop BPM 140', 'bpm140' (audit 2 #10)
 _BPM_PRE_RX = re.compile(r"(?i)(?<![a-z])bpm\s*[-:_]?\s*(\d{2,3}(?:\.\d+)?)(?![\d.])")
@@ -279,6 +279,8 @@ _BPM_PRE_RX = re.compile(r"(?i)(?<![a-z])bpm\s*[-:_]?\s*(\d{2,3}(?:\.\d+)?)(?![\
 _GEAR_WORDS = re.compile(r"(?i)(?<![a-z])(?:juno|rhodes|mpc|route|tr|sh|cs|jx|sp|dx|tb|mc|op|mk|ob|"
                          r"prophet|jupiter|model|vol|volume|track|pack|take|part|no|nr|room|studio|"
                          r"series|type|version|ver|v)[ _-]*$")
+# 'SH-101', 'TB-303': a short capital prefix and a dash name a model ('Bass-Loop-120' keeps its tempo)
+_MODEL_PREFIX = re.compile(r"(?<![A-Za-z])[A-Z]{1,3}-$")
 _ONLY_NUMBER = re.compile(r"\s*([1-9]\d{1,2})\s*")
 BPM_CONFIRM_TOL = 0.03  # a bare number is trusted when the sound is within 3 % of it, its half or its double
 _MODE_RX = r"(?:[ _-]?(?i:(maj)(?:or)?|(min)(?:or)?)|[ _-]?(m))(?:\d{1,2})?"  # 'C# m' (audit 2 #8)
@@ -345,7 +347,8 @@ def _prep(text):
 
 def _bare_numbers(text):
     """Bare numbers that may be a tempo: not a model number, a rate or a bit depth."""
-    return [m for m in _BARE_RX.finditer(text) if not _GEAR_WORDS.search(text[:m.start()])]
+    return [m for m in _BARE_RX.finditer(text) if not _GEAR_WORDS.search(text[:m.start()])
+            and not _MODEL_PREFIX.search(text[:m.start()])]
 
 
 def _bare_ok(v):

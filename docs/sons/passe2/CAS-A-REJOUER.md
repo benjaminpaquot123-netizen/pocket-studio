@@ -28,6 +28,8 @@ Préfixe de tous les noms ci-dessous : `Nebulon-R_` (omis pour la lecture).
 
 ## Cas 1 — `bpm_tag` vide alors que le nom porte `_125_`
 
+**Corrigé par 013555d9** (rejoué le 2026-11-26) : `bpm_tag=125` sur les 6 lignes (forme sûre : un nombre 60-200 entre deux `_` dans un nom de boucle ou de MIDI).
+
 Vraies lignes : **55** (47 MIDI à lettre seule, 2 boucles mélodiques à note
 tenue, 2 boucles d'ambiance à lettre seule, 4 breaks de batterie).
 Cause : un nombre nu ne vaut tempo qu'à côté d'une tonalité forte (dièse/bémol
@@ -50,6 +52,8 @@ Non reproduit : les 4 breaks réels (`Loops/Drum Fills/Drum Fill_125_<Titre>.wav
 `bpm_est` vide) ; mes breaks synthétiques ont un tempo mesuré, donc 125 sort.
 
 ## Cas 2 — lettre seule en fin de nom
+
+**Corrigé par 013555d9** (rejoué le 2026-11-26) : `key_tag` = la tonique seule (A, B, E, G, F), sans mode inventé ; une tonalité forte (`Am`, `Dm`) garde son mode.
 
 Vraies lignes : **20** avec `key_tag` vide (14 MIDI en `_A`, 2 MIDI en `_B`,
 4 boucles mélodiques en `_A`) ; **64** lettres C–G forcées en « major »
@@ -74,6 +78,8 @@ lettre seule devrait être traitée pareil quelle que soit la lettre.
 
 ## Cas 3 — `note_tag` vide alors que le nom finit par la note
 
+**Corrigé par 013555d9** (rejoué le 2026-11-26) : `note_tag=C` gardé (écart jusqu'à 150 cents) ; l'écart reste dans `cents_gap`. La justesse de `note_measured` (B1 à −60 cents) n'est pas reprise ici.
+
 Vraies lignes : **4** one-shots mélodiques en `_C` sur 20 (notes mesurées
 2 × B1, 1 × C2, 1 × C3). Règle en cause : `tout.py` l. 518–520 (note seule
 sans octave effacée si la note mesurée diffère).
@@ -91,6 +97,8 @@ note mesurée **avant** l'arrondi de la colonne).
 
 ## Cas 4 — « Soul » donne `rnb` dans un pack techno
 
+**Corrigé par 013555d9** (rejoué le 2026-11-26) : `style=techno` (le style du pack l'emporte sur un mot du titre).
+
 Vraie ligne : **1** (un break `Drum Fill_125_Soul.wav`).
 
 | chemin inventé | aujourd'hui | attendu |
@@ -102,6 +110,8 @@ Témoin : `Drum Fill_125_Lantern.wav`, même son → techno. Un mot de titre ne
 doit pas battre le style du pack.
 
 ## Cas 5 — boucle d'ambiance rangée en `fx`
+
+**Corrigé par 013555d9** (rejoué le 2026-11-26) : `melodic_loop`, rôle `pad`, `bpm_tag=125` sur les 3 lignes.
 
 Vraies lignes : **15** (tout le dossier `Loops/Atmospheric Loops`, tempo +
 note + 4 mesures dans le nom), type `fx`, rôle `fx`.
@@ -116,6 +126,8 @@ Son : accord tenu 7,68 s (4 mesures à 125), montée lente, un peu de bruit,
 aucune attaque.
 
 ## Cas 6 — rôle pris dans un mot du titre
+
+**Corrigé par 013555d9** (rejoué le 2026-11-26) : `role=fx` sur les 3 lignes.
 
 Vraies lignes : **5** `Sub Boom_<Titre>` (dossier FX des sub)
 en rôle `bass` ; **1** `Impact FX_Break` (dossier `One-Shots/FX/Impacts`)
@@ -132,6 +144,8 @@ Témoins (corrects aujourd'hui, à garder) : `Impact FX_Breaker.wav`,
 → `fx`. Le dossier FX devrait primer sur le titre.
 
 ## Cas 7 — boucle d'un seul instrument : trois grilles identiques, tempo moitié
+
+**Non corrigé** : défaut de mesure (séparation des grilles, tempo moitié), pas de lecture du nom ; ni simple ni sûr (voir `docs/sons/REPARATION-OUTIL2.md`).
 
 Vraies lignes : grilles kick = snare = hats sur **33** boucles `..._Clap`
 (17) et `..._Kick` (16), plus 1 break et 2 roulements ; `bpm_est` = 62,5
@@ -151,6 +165,8 @@ grille snare `x.x.x.x.x.x.x.x.` sans caisse claire (`Drum Loop_125_Lantern_Kick.
 
 ## Cas 8 — MIDI : 3 ou 1 mesure pour une boucle de 4
 
+**Non corrigé** : comptage des mesures MIDI, pas de lecture du nom ; ni simple ni sûr (voir `docs/sons/REPARATION-OUTIL2.md`).
+
 Vraies lignes : 58 × 4 mesures, **25** × 3, **2** × 1 (une seule note
 0→384, alors que l'audio jumeau dure 7,68 s = 4 mesures).
 Cause : nombre de mesures = fin de la dernière note arrondie, au lieu de la
@@ -166,6 +182,8 @@ Témoin : 16 noires (i·96, i·96+72) → dernière fin 1512 → `bars=4`.
 
 ## Cas 9 — one-shot de batterie clap / snare avec `note_measured`
 
+**Corrigé par 013555d9** (rejoué le 2026-11-26) : plus de `note_measured` sur un clap ou une caisse claire ; le kick garde sa note.
+
 Vraies lignes : **12** (2 claps : E6, F#6 ; 10 snares : A#2 à A3). Pour info,
 10 kicks et 9 percussions ont aussi une note (sans doute légitime pour un kick).
 
@@ -178,6 +196,8 @@ Vraies lignes : **12** (2 claps : E6, F#6 ; 10 snares : A#2 à A3). Pour info,
 Témoin : `One-Shots/Drum Shots/Kicks/Kick_Lantern.wav` → G#1 (à garder).
 
 ## Cas 10 — boucle mélodique à tempo moitié
+
+**Non corrigé** : choix du tempo moitié/double à la mesure, pas de lecture du nom ; ni simple ni sûr (voir `docs/sons/REPARATION-OUTIL2.md`).
 
 Vraies lignes : **2** boucles mélodiques à `bpm_est=62.5` pour `_125_`
 (et 1 à 83,25, 1 à 93,75). Sur le synthétique, une ligne en croches

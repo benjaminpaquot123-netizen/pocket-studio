@@ -78,3 +78,9 @@ Non jouées : « midi: drum track if ANY note on channel 10 » (texte présent 2
 ## Relecture neuve
 
 Deux relectures neuves (`7eb9f773`, `d91eff7a`, `3928de0e`) : rien de grave. Restent : MOYEN, un MIDI de batterie sur le canal 1 passe encore par la lecture des accents ; MINEURS, `_one_pitch` ne lit que les 4 premières s, `own[:-1]` ignore un dossier racine seul (« Hits Vol 2 »), débord de caisse claire sur des charlestons en contretemps seuls (ancien), moins de 10 trames voisées = une seule hauteur, piste de kit silencieuse = ligne d'erreur, défaut 10 (rôle lu dans le nom).
+
+## RAR 3, cas 7, 8 et 10 (2026-11-26) : non corrigés
+Les cas 1 à 6 et 9 sont corrigés par 013555d9. Les cas 7 (grilles identiques et tempo moitié sur une
+boucle d'un seul instrument), 8 (MIDI compté 3 ou 1 mesure pour 4) et 10 (boucle mélodique à tempo
+moitié) viennent de la mesure, pas de la lecture du nom : aucune correction simple et sûre ; laissés
+pour un lot de mesure, sans rien deviner en attendant.

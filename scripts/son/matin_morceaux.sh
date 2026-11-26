@@ -11,12 +11,15 @@
 #   OUT_DIR/morceau_<style>.mp3   the whole mix, before | silence | after
 #   OUT_DIR/batterie_<style>.mp3  the drums' strip alone (mixer channel 0 soloed), same passage
 # Each file is checked (halves of 40 s, silence between, no muted half, no clipping, the halves
-# different, no ps_live flag in the passage); exit 1 with the reason when one fails.
+# different, the drums' strip within 1.5 dB of « avant », no ps_live flag in the passage); exit 1 with the reason when one fails.
 # Builds what it needs (submodules, ps_live, the app's unit tests); 4 CPUs at most.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 [ $# -ge 1 ] || { echo "usage: $0 OUT_DIR [--styles a,b,...]" >&2; exit 2; }
-OUT="$(mkdir -p "$1" && cd "$1" && pwd)"; shift
+OUT="$(realpath -m "$1")"; shift
+case "$OUT/" in "$ROOT"/*) echo "ÉCHEC : le dossier de sortie doit être hors du dépôt ($ROOT)" >&2; exit 2 ;; esac
+mkdir -p "$OUT"
+rm -f "$OUT"/morceau_*.mp3 "$OUT"/batterie_*.mp3  # (the count at the end: this run's only)
 # Style id -> measured drum style (0 house, 1 tech house, 2 techno, 3 trap, 4 dnb, 5 dubstep).
 STYLES="house,tech_house,techno,trap,dnb,dubstep,deep_house,minimal,hard_techno,drill,liquid_dnb,riddim"
 while [ $# -gt 0 ]; do
@@ -145,6 +148,8 @@ for row in open(plan):
                 errors.append(f"{name}_{style} : la moitié « {v} » est muette ({l:.1f} dBFS)")
         if peak >= 0.999:
             errors.append(f"{name}_{style} : saturation (crête {peak:.3f})")
+        if kind == 'drums' and abs(lv[1] - lv[0]) > 1.5:  # the drums judged by their sound, not their level
+            errors.append(f"{name}_{style} : la batterie « après » n'a pas le niveau de « avant » ({lv[1] - lv[0]:+.1f} dB)")
         if diff < -40:  # (uncorrelated halves read about +3 dB: only too alike fails)
             errors.append(f"{name}_{style} : les deux moitiés ne diffèrent pas assez ({diff:.1f} dB)")
         mp3 = f"{out}/{name}_{style}.mp3"

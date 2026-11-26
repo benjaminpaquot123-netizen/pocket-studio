@@ -400,7 +400,7 @@ ROLES = [
     ("808", r"808"),
     ("bass", r"bass|\bsub\b|reese"),
     ("perc", r"perc|conga|bongo|\btoms?\b|\brims?\b|shaker|tamb"),
-    ("drums", r"drum|\btop\b|\btops\b|\bgrooves?\b|\bbeats?\b|\bbreaks?\b|breakbeat|\bfills?\b"),
+    ("drums", r"drum|\btop\b|\btops\b|\bbeats?\b|\bgrooves?\b|\bbreaks?\b|breakbeat|\bfills?\b"),
     ("vocal", r"vocal|acapella"),
     ("fx", r"\bfx\b|sfx|riser|impact"),
     ("lead", r"lead|melody|hook|\bline\b"),
@@ -562,7 +562,6 @@ DRUMMY_FLATNESS = 0.02
 
 
 # Defect 9: fx and vocal words only describe a sound when no instrument word says otherwise.
-WEAK_FX_RX = re.compile(r"(?i)sweep|noise|reverse|\bdrop\b|atmos|texture|swell")
 STRONG_FX_RX = re.compile(r"(?i)\bfx\b|sfx|riser|uplifter|downlifter|whoosh|impact|transition|downer|braam|zap")
 REVERSE_RX = re.compile(r"(?i)\breverse|\brev\b")
 

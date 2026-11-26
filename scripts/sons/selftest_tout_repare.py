@@ -364,7 +364,24 @@ def test_short_file_absolute_gate():
     check_true("A4 a loud short file keeps its loudness", v is not None and -12 < v < -3, v)
 
 
-TESTS = [test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+def test_digital_silence_is_an_error():
+    """A5: a file of pure digital silence is an error row ('digital silence'), never a clean
+    end_cut 0; an error row carries no measure at all."""
+    rows, _, _, code, _ = ru.run({"Synth/Silent C3.wav": np.zeros(SR), "Loops/Silent Loop 120.wav": np.zeros(4 * SR),
+                                  "Synth/DC C3.wav": np.full(SR, 0.3)})
+    check_eq("A5 run ends well", code, 0)
+    for f in ("Synth/Silent C3.wav", "Loops/Silent Loop 120.wav"):
+        r = rows[f] or {}
+        check_true("A5 silence is an error (%s)" % f, "silence" in (r.get("error") or ""), r.get("error"))
+    for f, r in rows.items():
+        r = r or {}
+        if r.get("error"):
+            filled = [c for c in ("end_cut", "end_fade_ms", "attack_ms", "loopable", "lufs_i", "peak_dbfs")
+                      if r.get(c) not in ("", None)]
+            check_eq("A5 error row has no measure (%s)" % f, filled, [])
+
+
+TESTS = [test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

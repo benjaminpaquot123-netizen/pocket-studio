@@ -221,6 +221,8 @@ def read_audio(path):
     if x.shape[0] < 16:
         raise BadAudio("too short")
     # a constant offset with nothing on top is no sound (audit 2, defect 35)
+    if not np.any(x):
+        raise BadAudio("digital silence, no sound")  # not a clean end_cut 0 (audit 4, A5)
     mean = np.mean(x, axis=0)
     if np.max(np.abs(mean)) > 1e-3 and np.max(np.abs(x - mean)) < 1e-4:
         raise BadAudio("constant dc offset, no sound")

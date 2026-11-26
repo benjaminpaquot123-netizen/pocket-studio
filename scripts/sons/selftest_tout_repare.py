@@ -446,7 +446,7 @@ def test_review2_limits():
 
 
 def test_mutation_survivors_2():
-    """Mutations a3-00 and a3-08: two bare numbers both equal to the heard tempo stay a doubt;
+    """Mutations a3-00, a3-08 and a3-21: two bare numbers both equal to the heard tempo stay a doubt;
     a tonal drum stem in a kit with a lone key letter does not take that letter."""
     files = {"Loops/Keys Loop 118 Am 122.wav": ru.plucks(120.0, AM, 4)}
     files.update({"Kits/Kit 07 - 128 A/Drums.wav": ru.plucks(128.0, AM, 4),
@@ -456,6 +456,9 @@ def test_mutation_survivors_2():
     check_eq("a3-00 118 and 122 both heard as 120: no tempo chosen",
              (rows["Loops/Keys Loop 118 Am 122.wav"] or {}).get("bpm_tag"), "")
     check_eq("a3-08 tonal drum stem of a kit 'A': no key", (rows["Kits/Kit 07 - 128 A/Drums.wav"] or {}).get("key_tag"), "")
+    d = rows["Kits/Kit 07 - 128 A/Drums.wav"] or {}
+    check_eq("a3-21 tonal drum stem: no key cells",
+             tuple(d.get(c) or "" for c in ("key_est", "key_measured", "key_match", "key_strength")), ("",) * 4)
     check_true("a3-08 the pad of the same kit takes the confirmed letter",
                (rows["Kits/Kit 07 - 128 A/Pad.wav"] or {}).get("key_tag") not in ("", None),
                (rows["Kits/Kit 07 - 128 A/Pad.wav"] or {}).get("key_tag"))

@@ -611,6 +611,27 @@ def test_tags_types():
         check_eq("%s of %s" % (field, rel), tout.classify(rel, dur)[field], want)
 
 
+def test_accuracy_rms():
+    """Blind audit I9 (near misses have their own class) and I12 (rms per channel)."""
+    check_true("relative key is not an agreement", not tout._key_agree("relative"))
+    check_eq("bpm 140 vs tag 70 class", tout._bpm_class(140.0, 70.0), "half_double")
+    check_eq("bpm 69 vs tag 140 class", tout._bpm_class(69.0, 140.0), "half_double")
+    check_eq("bpm 120.5 vs tag 120 class", tout._bpm_class(120.5, 120.0), True)
+    check_eq("bpm 100 vs tag 120 class", tout._bpm_class(100.0, 120.0), False)
+    acc = tout.Accuracy()
+    for a in (True, "half_double", False, "relative", None):
+        acc.add("drum_loop", "bpm", a)
+    r = acc.rows()[0]
+    check_eq("accuracy counts", (r["tagged"], r["agree"], r["half_double"], r["relative"]), (4, 1, 1, 1))
+    t = np.arange(48000) / 48000.0
+    s = 0.5 * np.sin(2 * np.pi * 440 * t)
+    mono = tout.common(48000, s[:, None])["rms_dbfs"]
+    check_true("rms mono -9.03", abs(mono + 9.03) < 0.05)
+    for label, x in [("L=s R=s/2", np.stack([s, s / 2], 1)), ("antiphase", np.stack([s, -s], 1)),
+                     ("6 channels", np.stack([s] * 6, 1))]:
+        check_true("rms %s <= mono" % label, tout.common(48000, x)["rms_dbfs"] <= mono + 0.01)
+
+
 def test_cli():
     with tempfile.TemporaryDirectory() as tmp:
         pack = os.path.join(tmp, "Secret Vendor Pack")
@@ -717,7 +738,7 @@ def main(argv=None):
         return 0
     with np.errstate(all="ignore"):
         for fn in (test_tags, test_classify, test_common, test_notes, test_adsr, test_drum_loop, test_key,
-                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_blocking, test_tags_types, test_cli):
+                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_blocking, test_tags_types, test_accuracy_rms, test_cli):
             try:
                 fn()
             except Exception as e:  # a crash is a failed check, the rest still runs

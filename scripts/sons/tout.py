@@ -737,26 +737,79 @@ def tempo(sig, sr, dur):
         fr = lag - i
         return acf[i] * (1 - fr) + acf[i + 1] * fr
 
-    best, best_s = None, -1.0
-    for bpm in np.arange(60.0, 200.01, 0.25):
+    bpms = np.arange(60.0, 200.01, 0.25)
+    raw = np.zeros(len(bpms))
+    for j, bpm in enumerate(bpms):
         lag = 60.0 / bpm / dt
-        sc = 0.0
-        for k, wk in ((1, 1.0), (2, 0.6), (4, 0.5), (0.5, 0.3)):
-            sc += wk * acf_at(lag * k)
-        sc *= math.exp(-0.5 * (math.log2(bpm / 120.0) / 0.9) ** 2)
-        if sc > best_s:
-            best, best_s = bpm, sc
-    if best is None:
+        raw[j] = sum(wk * acf_at(lag * k) for k, wk in ((1, 1.0), (2, 0.6), (4, 0.5), (0.5, 0.3)))
+    if np.max(raw) <= 0:
         return None
-    # refine: whole number of bars over the file
-    for b in (best, best * 2, best / 2):
-        bars = dur * b / 240.0
+    # onsets (with strength) to test which tempo puts them on a 16th grid
+    pk = _peaks(nov, dt, 0.0, 0.1)
+
+    def fallback():
+        # sparse hits (one chord per bar): trust the ACF only when the file
+        # holds a whole number of bars at that tempo
+        if len(pk) < 2:
+            return None
+        rb = float(bpms[int(np.argmax(raw))])
+        fits = []
+        for r in (1.0, 0.5, 2.0):
+            c = rb * r
+            nb = round(dur * c / 240.0)
+            if nb >= 1 and 60 <= 240.0 * nb / dur <= 200 and abs(dur * c / 240.0 - nb) / nb < 0.02:
+                fits.append(240.0 * nb / dur)
+        # octave unknown from sparse hits: the one nearest a common tempo
+        return min(fits, key=lambda c: abs(math.log2(c / 95.0))) if fits else None
+
+    if len(pk) < 4:
+        return fallback()
+    w = np.array([nov[int(round(tt / dt))] for tt in pk])
+    pk = np.array(pk)
+    # candidates: local maxima of the ACF score and their metric relatives
+    loc = [j for j in range(1, len(raw) - 1) if raw[j] >= raw[j - 1] and raw[j] >= raw[j + 1]]
+    loc = sorted(loc, key=lambda j: -raw[j])[:6]
+    cands = set()
+    for j in loc:
+        for r in (1.0, 2.0, 0.5, 1.5, 2.0 / 3, 0.75, 4.0 / 3):
+            c = bpms[j] * r
+            if 60 <= c <= 200:
+                cands.add(round(c * 4) / 4.0)
+    best, best_s = None, -1.0
+    for c in sorted(cands):
+        j = int(round((c - 60.0) * 4))
+        sc = max(raw[j], 1e-6) ** 0.5
+        fit = _grid_fit(pk, w, c)
+        bars = dur * c / 240.0
         nb = round(bars)
-        if nb >= 1 and abs(bars - nb) / nb < 0.02 and abs(bars - nb) < 0.25:
-            cand = 240.0 * nb / dur
-            if 60 <= cand <= 200:
-                return cand
-            return b
+        whole = nb >= 1 and bars <= 64 and abs(bars - nb) < max(0.04, 0.01 * nb)
+        half = (not whole) and abs(bars * 2 - round(bars * 2)) < 0.04
+        sc *= fit ** 8 * (1.0 if whole else (0.8 if half else 0.6))
+        sc *= math.exp(-0.5 * (math.log2(c / 95.0) / 1.0) ** 2)
+        if sc > best_s:
+            best, best_s = c, sc
+    if best is None or _grid_fit(pk, w, best) < 0.6:
+        return fallback()
+    # snap to a whole number of bars over the file
+    bars = dur * best / 240.0
+    nb = round(bars)
+    if nb >= 1 and abs(bars - nb) / nb < 0.01:
+        cand = 240.0 * nb / dur
+        if 60 <= cand <= 200:
+            return cand
+    return best
+
+
+def _grid_fit(pk, w, bpm):
+    """Share of onset strength on a 16th grid (off 16ths may swing to 70 %),
+    with the best grid offset."""
+    e8 = 30.0 / bpm
+    u0 = (pk / e8) % 1.0
+    best = 0.0
+    for off in np.linspace(0, 1, 48, endpoint=False):
+        u = (u0 - off) % 1.0
+        on = (u < 0.07) | (u > 0.93) | ((u > 0.45) & (u < 0.72))
+        best = max(best, float(np.sum(w[on]) / np.sum(w)))
     return best
 
 

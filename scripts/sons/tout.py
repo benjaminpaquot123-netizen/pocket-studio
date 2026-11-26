@@ -498,6 +498,10 @@ def _refine(fam, texts):
     return fam
 
 
+# a single note with its octave ('C2', 'F#3') and long held sounds (defects 25, 26)
+NOTE_OCT_RX = re.compile(r"(?<![A-Za-z0-9])[A-G](?:#|b|s)?-?[0-8](?![0-9])")
+SUSTAIN_RX = re.compile(r"(?i)\bpads?\b|\bdrones?\b|\bambien\w*|\bsustain\w*|\blong\b|"
+                        r"(?<![A-Za-z0-9])[A-G](?:#|b)?(?:m|min|maj)?(?![A-Za-z0-9])")
 ONESHOT_DIR = re.compile(r"(?i)one.?shots?|\bhits?\b|\bshots\b")
 WEAK_LOOP_RX = re.compile(r"(?i)\bbeats?\b|\bfills?\b")  # also one-shot words: a 'fill' hit, a 'beat' pack
 
@@ -620,11 +624,14 @@ def classify(rel, dur):
     if parts[-1].lower().endswith(MIDI_EXTS):
         out["type"] = "midi"
         return out
+    looped_any = LOOP_RX.search(name) is not None
     ki, _ = kit_split(parts)
     if ki is not None:
         below = folders[ki + 1:]
         short_drum = drum_family(name, []) is not None and dur is not None and dur < 6.0
-        if not short_drum and not any(ONESHOT_DIR.search(f) for f in below):
+        one_note = NOTE_OCT_RX.search(name) and not looped_any and not _BPM_RX.search(name) \
+            and not _loop_by_name(name, dur)  # 'Bass C2' is one note, 'Bass 120 C2' a stem (defect 26)
+        if not short_drum and not one_note and not any(ONESHOT_DIR.search(f) for f in below):
             out["type"] = "kit_stem"
             return out
     if VOCAL_RX.search(text) and _vocal_named(name, folders):
@@ -654,7 +661,7 @@ def classify(rel, dur):
             out["subtype"] = "by_sound"  # a guess until _measure_file hears it
         return out
     fam = drum_family(name, folders)
-    if fam is not None and (dur is None or dur < (10.0 if fam in LONG_FAMILIES else 6.0)):
+    if fam is not None and (dur is None or dur < (15.0 if fam in LONG_FAMILIES else 6.0)):  # an 11 s 808 or crash (defect 25)
         if fam == "kick_808" or drum_family(name, []) is not None or not re.search(r"(?i)bass|synth|lead|pad|key|piano|chord|pluck", name + "/" +
                                               (folders[-1] if folders else "")):
             sub = fam
@@ -673,6 +680,9 @@ def classify(rel, dur):
         return out
     if (dur is not None and dur < 8.0) or ONESHOT_DIR.search(inner):
         out["type"] = "oneshot_melodic"
+        return out
+    if not LOOP_RX.search(name) and not has_bpm and (SUSTAIN_RX.search(name) or NOTE_OCT_RX.search(name)):
+        out["type"] = "oneshot_melodic"  # a 9 s 'Long Pad Cm', a 12 s 'Drone Dark' (defect 25)
         return out
     out["type"] = "melodic_loop"
     out["subtype"] = "untagged"

@@ -2628,11 +2628,16 @@ def _midi_row(p, rel, tags, rar, acc):
     return row
 
 
+_PACK_NAME = [""]  # the measured pack folder's own name, set by main (audit 3, defect 11)
+
+
 def _file_id(rel):
     """Short stable id of a file inside its pack: no name in the table, but
-    `--trace ID` finds the file again (audit 2, defect 28)."""
+    `--trace ID` finds the file again (audit 2, defect 28). The pack folder's
+    name is hashed too, so the same path in two packs gives two ids (audit 3, defect 11)."""
     import hashlib
-    return hashlib.sha1(rel.encode("utf-8", "surrogateescape")).hexdigest()[:10]
+    key = _PACK_NAME[0] + "/" + rel
+    return hashlib.sha1(key.encode("utf-8", "surrogateescape")).hexdigest()[:10]
 
 
 def main(argv=None):
@@ -2648,6 +2653,7 @@ def main(argv=None):
     if not os.path.isdir(args.folder):
         ap.error("not a folder: %s" % args.folder)
     _PACK_TOP[0] = _pack_top(args.folder)
+    _PACK_NAME[0] = os.path.basename(os.path.normpath(os.path.abspath(args.folder)))
     if args.trace:
         # the tables stay anonymous; the id leads back to the file only with the pack at hand (defect 28)
         audio, midi, _ = _walk(args.folder)

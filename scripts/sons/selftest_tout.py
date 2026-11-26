@@ -692,6 +692,45 @@ def _fence():
     return getattr(tout, "fence_row", lambda row, usable=(): row)
 
 
+def test_recheck_tags_cells():
+    """Blind re-check 2-4 (docs/sons/REVERIF-TOUT.md)."""
+    for parts in (["Loops", "Bass Loop Am 24Bit 96k.wav"], ["Loops", "Bass Loop 96kHz Am.wav"],
+                  ["Loops", "Bass 96 kHz Am.wav"], ["Loops", "Pad 44 khz.wav"],
+                  ["Loops", "Keys 192k Em.wav"], ["Loops", "Lead 24 bit Am.wav"],
+                  ["Loops", "Lead 24bits.wav"], ["Loops", "Pad 48 Hz Hum.wav"],
+                  ["Loops 24Bit", "Bass Em.wav"]):
+        check_eq("bpm tag not a sample rate or bit depth: %s" % "/".join(parts),
+                 tout.parse_tags(parts, "melodic_loop")["bpm"], None)
+    check_eq("bpm tag kept next to a key: Bass 124 Am",
+             tout.parse_tags(["Loops", "Bass 124 Am.wav"], "melodic_loop")["bpm"], 124.0)
+    for rel in ("Drum One Shots/Perc/Perc Mid 01.wav", "Drum One Shots/Perc/Perc Middle 02.wav",
+                "Drum One Shots/Perc/Mid Perc 03.wav"):
+        check_eq("subtype perc_mid: %s" % rel, tout.classify(rel, 0.2)["subtype"], "perc_mid")
+    check_eq("lone dash cell written as dash", tout._fmt("-"), "-")
+    check_eq("dash formula start still quoted", tout._fmt("-A1"), "'-A1")
+    check_eq("equals formula still quoted", tout._fmt("=1+1"), "'=1+1")
+
+
+def test_recheck_short_noise():
+    """Blind re-check 5: a very short noise burst that fades out is not cut."""
+    cuts = 0
+    for length in (0.1, 0.15, 0.2, 0.3):
+        for tau in (0.01, 0.02):
+            for seed in range(20):
+                r = np.random.default_rng(seed)
+                n = int(length * SR)
+                t = np.arange(n) / SR
+                x = 0.5 * r.standard_normal(n) * np.exp(-t / tau)
+                cuts += tout.end_cut(SR, x[:, None])["end_cut"]
+    check_eq("short fading noise bursts flagged cut (of 160)", cuts, 0)
+    n = int(0.3 * SR)
+    t = np.arange(n) / SR
+    x = 0.5 * np.random.default_rng(1).standard_normal(n) * np.exp(-t / 0.02) + 0.05
+    check_eq("fading noise on a DC offset is not cut", tout.end_cut(SR, x[:, None])["end_cut"], 0)
+    x = 0.5 * np.random.default_rng(2).standard_normal(n) * np.exp(-t / 0.2)
+    check_eq("noise stopped loud is still cut", tout.end_cut(SR, x[:, None])["end_cut"], 1)
+
+
 def test_recheck_end_scope():
     """Re-check 1 (docs/sons/REVERIF-TOUT.md): end_cut on loops is a coin toss; one-shots only."""
     fence = _fence()
@@ -829,7 +868,7 @@ def main(argv=None):
         return 0
     with np.errstate(all="ignore"):
         for fn in (test_tags, test_classify, test_common, test_notes, test_adsr, test_drum_loop, test_key,
-                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_end_cut_audit, test_measure_values, test_blocking, test_tags_types, test_accuracy_rms, test_recheck_end_scope, test_cli):
+                   test_midi, test_vocal, test_fx, test_drum_oneshots, test_end_cut, test_end_cut_audit, test_measure_values, test_blocking, test_tags_types, test_accuracy_rms, test_recheck_end_scope, test_recheck_tags_cells, test_recheck_short_noise, test_cli):
             try:
                 fn()
             except Exception as e:  # a crash is a failed check, the rest still runs

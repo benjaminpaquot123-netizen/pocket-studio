@@ -165,6 +165,8 @@ def main():
         check(all(c["count_ok"] == "yes" and c["errors"] == "0" for c in ctl), "control: rows = files, 0 error")
         check(sum(int(c["files_audio"]) + int(c["files_midi"]) for c in ctl) == nfiles, "files read = %d" % nfiles)
         check(ctl[2]["skipped"] == ".fxp:1", "preset counted as skipped")
+        check(all(c["pack_line_ok"] == "yes" for c in ctl) and ctl[0]["rows_pack_styled"] == ctl[0]["rows_forced"],
+              "control: tout.py's pack-style count matches the tables")
         check(all(c["unresolved"] == "0" for c in ctl), "forced packs: every row found again (unresolved 0)")
         check(ctl[1]["style_forced"] == "lofi" and ctl[1]["rows_forced"] == ctl[1]["rows"] != "0",
               "Cherry Blossom: rows forced = rows of the pack (%s / %s)" % (ctl[1]["rows_forced"], ctl[1]["rows"]))

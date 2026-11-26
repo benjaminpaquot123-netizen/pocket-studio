@@ -21,7 +21,8 @@ Control (rar<N>_controle.csv and the exit code): for each pack, the rows that
 stand for a file (every row except the `kit` summary rows) must equal the wav /
 aiff / midi files tout.py found, and every row error is listed.
 Exit 0 = all equal and 0 error; 3 = rows with an error (listed); 4 = count
-mismatch or a pack tout.py could not measure; 2 = refused before measuring.
+mismatch, a pack tout.py could not measure, a row whose file_id matches no
+file, or tout.py's 'style du pack' line missing or off; 2 = refused before measuring.
 """
 import argparse
 import csv
@@ -51,6 +52,9 @@ FORCES = [
 MEDIA = tout.AUDIO_EXTS + tout.MIDI_EXTS
 AUDIO_OR_ARCHIVE = re.compile(r"(?i)\.(wav|wave|aif|aiff|aifc|flac|mp3|ogg|m4a|mid|midi|rar|zip|7z|serumpack)$")
 NESTED = re.compile(r"(?i)\.(zip|rar|7z|serumpack)$")
+# tout.py's console line for the rows that took the pack folder's style (tout.main);
+# its count is checked against the rows, so a reworded line fails the run loudly.
+PACK_LINE = re.compile(r"^style du pack : (\S+), posé sur (\d+) lignes$", re.M)
 RAR_MAGIC = (b"Rar!\x1a\x07\x00", b"Rar!\x1a\x07\x01\x00")
 
 
@@ -233,6 +237,9 @@ def run_pack(pk, rar, tmp):
                        capture_output=True, text=True, cwd=tmp)
     pk["tout_rc"] = r.returncode
     pk["tout_msg"] = (r.stdout + r.stderr).strip().splitlines()[-3:]
+    m = PACK_LINE.search(r.stdout)
+    pk["pack_line"] = m.group(0) if m else None
+    pk["pack_line_n"] = int(m.group(2)) if m else 0
     tables = {}
     for f in sorted(os.listdir(tmp)):
         if f.startswith(pk["pack"] + "_") and f.endswith(".csv"):
@@ -243,9 +250,9 @@ def run_pack(pk, rar, tmp):
 def merge(plan, per_pack, rar):
     merged = {}
     for pk in plan:
-        ids = id_map(pk["path"]) if pk["force"] else {}
+        ids = id_map(pk["path"])
         top = tout._pack_top(pk["path"])
-        pk["rows"] = pk["kits"] = pk["errors"] = pk["forced_rows"] = pk["unresolved"] = 0
+        pk["rows"] = pk["kits"] = pk["errors"] = pk["forced_rows"] = pk["unresolved"] = pk["pack_styled"] = 0
         pk["error_list"] = []
         for typ, (cols, rows) in per_pack[pk["pack"]].items():
             m = merged.setdefault(typ, {"cols": [], "rows": []})
@@ -264,13 +271,16 @@ def merge(plan, per_pack, rar):
                     if row.get("error"):
                         pk["errors"] += 1
                         pk["error_list"].append("%s %s: %s" % (row["cle"], typ, row["error"]))
-                    if pk["force"] and row.get("style") in (pk["posed"], "unlabelled", ""):
+                    if row.get("style") in (pk["posed"], "unlabelled", ""):
                         rel = ids.get(row.get("file_id", ""))
                         if rel is None:
                             pk["unresolved"] += 1
                         elif own_style(rel, top) == "unlabelled":
-                            row["style"] = pk["force"]
-                            pk["forced_rows"] += 1
+                            # the style came from the pack folder's name (tout.py's 'style du pack' rows)
+                            pk["pack_styled"] += pk["posed"] != "unlabelled"
+                            if pk["force"]:
+                                row["style"] = pk["force"]
+                                pk["forced_rows"] += 1
                 m["rows"].append(row)
     return merged
 
@@ -286,14 +296,15 @@ def write_out(out, rar, merged, plan):
                 wr.writerow(r)
         written.append(path)
     cols = ["rar", "pack", "files_audio", "files_midi", "rows", "kit_rows", "errors", "count_ok", "tout_rc",
-            "style_posed", "style_forced", "rows_forced", "unresolved", "nested_archives", "skipped"]
+            "style_posed", "rows_pack_styled", "pack_line_ok", "style_forced", "rows_forced", "unresolved", "nested_archives", "skipped"]
     path = os.path.join(out, "rar%d_controle.csv" % rar)
     with open(path, "w", newline="", encoding="utf-8") as fh:
         wr = csv.writer(fh)
         wr.writerow(cols)
         for pk in plan:
             wr.writerow([rar, pk["pack"], pk["audio"], pk["midi"], pk["rows"], pk["kits"], pk["errors"],
-                         "yes" if pk["count_ok"] else "NO", pk["tout_rc"], pk["posed"], pk["force"] or "",
+                         "yes" if pk["count_ok"] else "NO", pk["tout_rc"], pk["posed"], pk["pack_styled"],
+                         "yes" if pk["line_ok"] else "NO", pk["force"] or "",
                          pk["forced_rows"], pk["unresolved"], pk["nested"],
                          " ".join("%s:%d" % kv for kv in sorted(pk["skipped"].items()))])
     written.append(path)
@@ -392,6 +403,9 @@ def main(argv=None):
         for pk in plan:
             empty = pk["audio"] + pk["midi"] == 0
             pk["count_ok"] = pk["rows"] == pk["audio"] + pk["midi"] and (pk["tout_rc"] == 0 or (empty and pk["tout_rc"] == 1))
+            # tout.py prints 'style du pack : X, posé sur N lignes' exactly when N > 0
+            pk["line_ok"] = pk["pack_line_n"] == pk["pack_styled"] and (pk["pack_line"] is not None) == (pk["pack_styled"] > 0)
+            print("%s: %s" % (pk["pack"], pk["pack_line"] or "style du pack : aucun (tout.py n'a rien posé)"))
         written = write_out(a.out, a.rar, merged, plan)
     except Refused as e:
         print("refused: %s" % e, file=sys.stderr)
@@ -406,8 +420,15 @@ def main(argv=None):
     files = sum(pk["audio"] + pk["midi"] for pk in plan)
     rows = sum(pk["rows"] for pk in plan)
     errors = sum(pk["errors"] for pk in plan)
-    ok = all(pk["count_ok"] for pk in plan)
+    ok = all(pk["count_ok"] and pk["line_ok"] and not pk["unresolved"] for pk in plan)
     for pk in plan:
+        if not pk["line_ok"]:
+            print("%s: tout.py's 'style du pack : X, posé sur N lignes' line says %d row(s), the tables %d "
+                  "(line %s; tout.py output changed?)" % (pk["pack"], pk["pack_line_n"], pk["pack_styled"],
+                                                         "present" if pk["pack_line"] else "missing"), file=sys.stderr)
+        if pk["unresolved"]:
+            print("%s: %d row(s) whose file_id matches no file: style not checked" % (pk["pack"], pk["unresolved"]),
+                  file=sys.stderr)
         if not pk["count_ok"]:
             print("%s: files %d, rows %d, tout.py rc %d: %s" % (pk["pack"], pk["audio"] + pk["midi"], pk["rows"],
                                                                pk["tout_rc"], " / ".join(pk["tout_msg"])), file=sys.stderr)

@@ -117,8 +117,10 @@ tagged file, one row per pair in <csv_prefix>_accuracy.csv:
   rar, type, measure, tagged, agree, half_double, relative, error_pct, usable
 agree: note within 50 cents (pitch class), bpm within 2 %, key exact. A bpm at
 half or double the tag and a relative key are near misses, counted in their
-own column and never as agreement. usable=yes only with 10 tagged files or more and error_pct < 5:
-only then may the measured column of untagged files enter means.
+own column and never as agreement. usable=yes only when the one-sided 95 % Wilson
+upper bound of the error rate is under 5 % (z = 1.645): 52 right out of 52 at the
+least, 1 wrong needs 87 files. Only then may the measured column of untagged
+files enter means.
 
 Methods
 -------
@@ -2278,6 +2280,12 @@ def _lead(fr, tm, span, f_end):
 
 # ================================================================ accuracy
 
+def _wilson_upper(bad, n, z=1.645):
+    """One-sided 95 % Wilson upper bound of the error rate bad/n (audit 4, A7)."""
+    p = bad / n
+    return (p + z * z / (2 * n) + z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))) / (1 + z * z / n)
+
+
 class Accuracy:
     def __init__(self):
         self.d = {}
@@ -2295,7 +2303,7 @@ class Accuracy:
         for (typ, m), (n, a, hd, rel) in sorted(self.d.items()):
             err = 100.0 * (n - a) / n if n else None
             out.append({"type": typ, "measure": m, "tagged": n, "agree": a, "half_double": hd, "relative": rel,
-                        "error_pct": err, "usable": "yes" if n >= 10 and err is not None and err < 5 else "no"})
+                        "error_pct": err, "usable": "yes" if n and _wilson_upper(n - a, n) < 0.05 else "no"})
         return out
 
     def lines(self, typ):

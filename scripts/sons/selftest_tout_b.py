@@ -117,8 +117,31 @@ def test_key():
     check_eq("38 one-shot flat note", tout.confirm_tags(row, t)["note_tag"], "Gb")
 
 
+def note_row(rel, measured, typ="oneshot_melodic"):
+    """One-shot row as measure_oneshot writes it, then checked against the measured note."""
+    t = tags(rel, typ)
+    row = {"note_tag": tout.NOTE_NAMES[t["note"]] if t["note"] is not None else None,
+           "note_measured": measured}
+    return tout.confirm_tags(row, t)["note_tag"]
+
+
+def test_note():
+    """Defect 12: a letter that starts an instrument name is not a note; a lone letter is checked."""
+    for rel in ("Keys/Keys E Piano.wav", "Keys/E Piano 01.wav", "Bass/E Bass 01.wav", "Bass/A Bass 01.wav",
+                "Synth/G Funk Lead 01.wav", "Synth/Plan B Lead.wav"):
+        check_eq("12 no note: %s" % rel, tags(rel, "oneshot_melodic")["note"], None)
+    for rel, want in (("Synth/Bb Bass.wav", 10), ("Synth/Bass A#.wav", 10), ("Synth/Pluck F#3.wav", 6),
+                      ("Synth/Lead c3.wav", 0), ("Synth/E Piano C3.wav", 0), ("Synth/Bass C.wav", 0)):
+        check_eq("12 note kept: %s" % rel, tags(rel, "oneshot_melodic")["note"], want)
+    check_eq("12 lone note far from the sound is dropped", note_row("Synth/Pad Soft F.wav", "A3"), None)
+    check_eq("12 lone note heard is kept", note_row("Synth/Pad Soft F.wav", "F3"), "F")
+    check_eq("12 a note with an octave is never dropped", note_row("Synth/Pad C3 Wet.wav", "A3"), "C")
+    check_eq("12 a drum letter far from the sound is dropped", note_row("Kicks/Kick F#.wav", "A3", "drum_oneshot"),
+             None)
+
+
 def main():
-    for t in (test_tempo, test_key):
+    for t in (test_tempo, test_key, test_note):
         t()
     print("%d checks, %d failed" % (COUNT[0], len(FAILS)))
     for f in FAILS:

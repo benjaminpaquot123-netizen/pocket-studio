@@ -33,7 +33,7 @@
 #   ALL = 575, 59.7 min, 904.7 MB
 # Tags: BPM tagged on every loop, MIDI, riser and downlifter (100/120/130/140/160). Key tagged on every melodic loop and MIDI (minor keys mostly; 9 major);
 #   vocal loops carry BPM only (no key, not estimated). Every melodic one-shot is tagged root C (key=C, source tag).
-# Checks: all 290 audio loops are exact bar lengths (bars = dur*bpm/240 = 2, 4 or 8, no rounding) -> loop seamlessly at the tagged BPM.
+# Checks: all 300 audio loops are exact bar lengths (bars = dur*bpm/240 = 2, 4 or 8, no rounding) -> loop seamlessly at the tagged BPM.
 #   All 140 MIDI files pair 1:1 with a same-named audio loop (bass/synth/pad/cowbell); MIDI bars < 4 or 8 = last note-off before the bar line.
 #   One-shot pitch (scripts/sons/mesure.py pitch_steady_hz, bass and synth only; pads are chords, not estimated): bass 26/30 pitch class C (25 at C2),
 #   4 'off' = estimator locked on the fifth/2nd harmonic; synth 11/30 'ok' (chord/detuned stacks, so 'off' is expected, not mistuned).

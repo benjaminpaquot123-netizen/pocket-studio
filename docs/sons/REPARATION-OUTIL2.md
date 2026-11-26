@@ -17,9 +17,26 @@ Branche `eq/outil2-repare`, base `eq/outil2-reuni` `0112c240`. Chaque défaut : 
 | 8 | lettre seule confirmée : `key_match` exact | non reproduit tel que décrit (la lettre seule sortait déjà juste) ; posé quand même : `key_match = root`, car seule la fondamentale est écrite |
 | 11 | même `file_id` d'un pack à l'autre | le nom du dossier du pack entre dans le hachage (`_PACK_NAME`) ; `--trace` suit la même clé |
 | 12 | Bb écrit, A# mesuré | `key_est` et `key_measured` écrits en bémols quand `key_tag` l'est |
-| 13 | `b5_weird.py` écrivait 54 sons dans le dépôt | sous le dossier de travail (`AUDIT2_WORK`) |
-| 14 | rejeux b1 à b8 toujours « réussis » | `lib.fault()` / `lib.done()` : sortie 1 dès qu'une vraie faute est vue ; une case vide n'est plus comptée fausse (b4) ; b8 attend `bars` = 4 ou vide |
+| 13 | `b5_weird.py` écrivait 54 sons dans le dépôt | passé à un autre lot (consigne du chef : `audit2/` hors de ce lot sauf `mutate.py`) |
+| 14 | rejeux b1 à b8 toujours « réussis » | passé à un autre lot (même consigne) |
 | 18 | « end_cut vide » d'un one-shot à tempo | l'en-tête de `tout.py` dit que ce n'est pas un verdict |
+
+### Ajouts de l'audit 4 (même fichier, donc ce lot)
+
+| N° | Défaut | Ce qui change |
+|---|---|---|
+| A1 | boucle 120 : charlestons 6 dB sous la caisse claire, grille des charlestons = la caisse claire | chaque bande garde ses pas au-dessus d'un seuil relatif à son propre maximum |
+| A2 | kick + charlestons sans caisse claire : coups de caisse claire inventés | même règle par bande : une bande presque vide ne prend pas le débord des autres |
+| A3 | MIDI à 3 temps sans signature : `bars` faux | accents (temps plus fort ou plus grave tous les 3 temps) lus ; sinon 4/4 |
+| A4 | fichier de moins de 400 ms : pas de porte -70 LUFS | un bloc, porte -70 LUFS appliquée |
+| A5 | silence numérique : ligne « propre » | ligne d'erreur « digital silence, no sound » |
+| A6 | RF64 / RIFX : « not a wav » | erreur nommée « RF64/RIFX/BW64 non pris en charge » |
+| A7 | mesure « utilisable » sur trop peu de fichiers | borne haute de Wilson à 95 % unilatérale < 5 % : 52 sur 52 au moins |
+| R1 | « 00bpm » dans le nom : ZeroDivisionError | tempo nul ignoré |
+| R2 | dossier « Loops & One Shots » pris pour un dossier de one-shots | le nom du pack n'entre pas dans la règle |
+| R3 | ligne legato à une attaque prise pour un one-shot | il faut aussi une seule hauteur tenue (`_one_pitch`, 80 % des trames à ±100 cents) |
+| R5 | BW64 non nommé | dans la même erreur nommée que RF64/RIFX |
+| R6 | MIDI de batterie accentué tous les 3 temps : `bars` en 3/4 | canal 10 seul : pas de lecture des accents |
 
 Non fait (facultatif) : 10, le rôle lu dans le nom quand le son dément le type.
 

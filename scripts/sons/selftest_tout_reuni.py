@@ -15,6 +15,8 @@ import importlib.util
 import io
 import math
 import os
+import re
+import shutil
 import sys
 import tempfile
 
@@ -223,16 +225,37 @@ def test_kit_rows_traceable():
 
 
 def test_mutations_run_every_selftest():
-    """Wiring 4: audit2/mutate.py plays every selftest_tout*.py, or the lots' mutants pass unseen."""
+    """Wiring 4: audit2/mutate.py plays every selftest_tout*.py, or the lots' mutants pass unseen;
+    and its runner really calls a mutant killed when any of them fails, survived when all pass."""
     spec = importlib.util.spec_from_file_location("audit2_mutate", os.path.join(HERE, "audit2", "mutate.py"))
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)  # importing must not start a run
     got = mod.tests_for("tout.py", HERE)
-    want = ["selftest_tout.py"] + ["selftest_tout_%s.py" % s for s in ("a", "b", "c", "d", "e", "repare", "reuni")]
-    check_eq("4 every self-test of tout.py is played", sorted(got), sorted(want))
-    check_eq("4 the base self-test first (fast kill)", got[0], "selftest_tout.py")
-    check_eq("4 mesure.py also plays its own self-test", sorted(mod.tests_for("mesure.py", HERE)),
-             sorted(want + ["selftest.py"]))
+    want = ["selftest_tout.py"] + sorted(n for n in os.listdir(HERE)
+                                         if n.startswith("selftest_tout_") and n.endswith(".py"))
+    check_eq("4 every self-test of tout.py is played", got, want)
+    check_true("4 the merged lots' self-tests are among them",
+               {"selftest_tout_reuni.py", "selftest_tout_repare.py"} <= set(got))
+    check_eq("4 mesure.py also plays its own self-test", mod.tests_for("mesure.py", HERE), want + ["selftest.py"])
+    # the runner itself, on a tiny fake repo: a lot's self-test that fails must kill the mutant
+    tmp = tempfile.mkdtemp(prefix="mut4_")
+    try:
+        sons = os.path.join(tmp, "repo", mod.SONS)
+        os.makedirs(sons)
+        with open(os.path.join(sons, "tout.py"), "w") as fh:
+            fh.write("X = 1\nY = 1\n")
+        probe = "import os, sys\nsys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))\nimport tout\nprint('1 checks, %d failed' % (tout.{} != 1))\n"
+        for name, var in (("selftest_tout.py", "X"), ("selftest_tout_zz.py", "Y")):
+            with open(os.path.join(sons, name), "w") as fh:
+                fh.write(probe.format(var))
+        mod.REPO, mod.WORK, mod.DEADLINE = os.path.join(tmp, "repo"), os.path.join(tmp, "w"), float("inf")
+        verdicts = [mod.run_one((k, ("t", n, "tout.py", old, new)))[3]
+                    for k, (n, old, new) in enumerate((("main", "X = 1", "X = 2"), ("lot", "Y = 1", "Y = 2"),
+                                                       ("none", "X = 1\n", "X = 1  # same\n")))]
+        check_eq("4 a fault seen by the main test, by a lot's test only, by none", verdicts,
+                 ["killed", "killed", "survived"])
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def test_end_of_tempo_named_hits():
@@ -262,11 +285,34 @@ def test_end_of_tempo_named_hits():
 
 
 def test_doc_matches_fence():
-    """Wiring 6: the module's text on end_cut says what fence_row does."""
+    """Wiring 6: the module's text on end_cut says what fence_row does, case by case."""
     doc = " ".join(tout.__doc__.split())
-    check_true("6 the text no longer says full mixes are always empty", "full mixes and any one-shot with a bpm" not in doc)
-    check_true("6 the text names the drum hit called full", "drum hit named" in doc)
+    m = re.search(r"Both are filled for one-shots only \(([^)]*)\)", doc)
+    check_true("6 the text names the types whose end is read", bool(m))
+    named_types = tuple(t.strip() for t in m.group(1).split(",")) if m else ()
+    check_eq("6 those types are the ones fence_row keeps", sorted(named_types), sorted(tout.END_TYPES))
+
+    def fence(typ, role="", **kw):
+        row = dict({"type": typ, "role": role, "end_cut": 0, "end_fade_ms": 123.0}, **kw)
+        tout.fence_row(row)
+        return row["end_cut"], row["end_fade_ms"]
+    for typ in tout.TYPES:
+        want = (0, 120) if typ in named_types else (None, None)
+        check_eq("6 %s: end cells %s as the text says" % (typ, "kept" if want[0] == 0 else "empty"),
+                 fence(typ), want)
+    check_eq("6 melodic one-shot of role full: empty", fence("oneshot_melodic", "full"), (None, None))
+    check_eq("6 one-shot with a wav loop: empty", fence("drum_oneshot", _loop=1), (None, None))
+    m = re.search(r"A drum hit named ([^.]*?) is still one hit", doc)
+    check_true("6 the text names the drum hits called full", bool(m))
+    check_eq("6 a drum hit of role full is read like any other", fence("drum_oneshot", "full"), (0, 120))
+    for word in re.findall(r'"([A-Za-z]+)"', m.group(1) if m else ""):
+        cl = tout.classify("Drums/Kicks/Kick %s 01.wav" % word, 0.5)
+        check_eq("6 'Kick %s' is a drum hit of role full, as the text says" % word,
+                 (cl.get("type"), cl.get("role")), ("drum_oneshot", "full"))
     check_true("6 the text names the tempo in a one-shot's name", "tempo in its name" in doc)
+    check_eq("6 tempo-named one-shot, clean end: no verdict", fence("drum_oneshot", _name_bpm=140.0), (None, None))
+    check_eq("6 tempo-named one-shot, cut end: 1, no fade", fence("drum_oneshot", _name_bpm=140.0, end_cut=1), (1, None))
+    check_true("6 the text says an empty cut there is no verdict", "is no verdict at all" in doc)
 
 
 def test_leftovers():

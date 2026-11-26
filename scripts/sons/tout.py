@@ -419,6 +419,8 @@ def parse_tags(parts, typ):
                 continue
             if re.match(r"\s*[-_]?\s*\d", text[m.end():]) or _VERSION_WORDS.search(text[:m.start()]):
                 continue  # 'Synth A 01', 'Kit B': an index or a version, not a note
+            if not acc and text[m.end():].strip(" -"):
+                continue  # 'E Piano', 'G Funk Lead', 'Plan B Lead': a word, not a note (audit 2 #12)
             lone.append((_pc(letter, acc), _is_flat(m)))
         if octaved:
             out["note"] = octaved[-1][0]
@@ -426,6 +428,7 @@ def parse_tags(parts, typ):
         elif lone:
             out["note"] = lone[-1][0]
             out["flat"] = lone[-1][1]
+            out["note_lone"] = True  # no octave: checked against the measured note (confirm_tags)
     return out
 
 
@@ -455,6 +458,7 @@ def confirm_tags(row, tags):
     """Fill the tag cells a name only suggests once the measured sound agrees (audit 2 #6/#10):
     a bare number is the tempo when the measured tempo is equal, half or double (3 %);
     a lone key letter is the key when the measured key has the same root (#11);
+    a note without an octave is dropped when the measured note differs (#12);
     a flat written in the name is shown as a flat (#38).
     row: the measure_* output (bpm_tag, bpm_measured...), changed in place; a sure tag stays."""
     meas = row.get("bpm_measured")
@@ -473,6 +477,9 @@ def confirm_tags(row, tags):
                 row["key_match"] = "exact"
     elif tags.get("flat"):
         row["key_tag"] = spell(row.get("key_tag"), True)
+    nmeas = re.match(r"[A-G]#?", row.get("note_measured") or "")
+    if tags.get("note_lone") and row.get("note_tag") and nmeas and row["note_tag"] != nmeas.group(0):
+        row["note_tag"] = None  # 'Pad Soft F' that sounds A3 (audit 2 #12)
     if tags.get("flat") and row.get("note_tag"):
         row["note_tag"] = spell(row["note_tag"], True)
     return row

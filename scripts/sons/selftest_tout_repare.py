@@ -67,7 +67,18 @@ def test_kit_midi_key():
     check_eq("1 kit midi with a key written on the kit: key_tag kept", r.get("key_tag"), "F major")
 
 
-TESTS = [test_kit_midi_key]
+def test_drum_stem_no_key():
+    """Defect 7: the drum stem of a kit written in a key carries no key; the pad keeps it."""
+    for folder in ("Kits/Kit 01 - 128 F/", "Kits/Kit 04 - 128 bpm Fm/", "Kits/Kit 05 - 64 Am/"):
+        rows, _, _, code, _ = run(kit_files(folder))
+        r = rows[folder + "Drums.wav"] or {}
+        check_eq("7 %s drums: no key_tag" % folder, r.get("key_tag"), "")
+        check_eq("7 %s drums: no key cells" % folder, (r.get("key_est"), r.get("key_match")), ("", ""))
+    r = rows["Kits/Kit 05 - 64 Am/Pad.wav"] or {}
+    check_true("7 the pad of a kit keeps the written key", r.get("key_tag") not in ("", None), r.get("key_tag"))
+
+
+TESTS = [test_kit_midi_key, test_drum_stem_no_key]
 
 
 def main():

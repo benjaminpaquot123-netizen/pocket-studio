@@ -1,5 +1,7 @@
 #include "MeasuredDrums.h"
 
+#include <algorithm>
+
 namespace ps::measured {
 
 namespace {
@@ -204,10 +206,59 @@ Recipe recipe(int family, int style) {
 }
 
 Recipe variant(int family, int style, int which) {
-    (void)which;
-    return recipe(family, style);
+    Recipe r = recipe(family, style);
+    if (which == 0) return r;
+    const bool low = which < 0;
+    if (family == Kick) {
+        // {note Hz, hold, fall} at the style's 25th / 75th percentiles: low = the long, low hits
+        // (t20, t40 at p75, note at p25), dry = the short, high ones (t20, t40 at p25, note at p75).
+        // A modern attack on both (quicker drop, a click, a little drive: no « tambour »).
+        struct V { float hz, hold, fall; };
+        static constexpr V v[kStyles][2] = {
+            {{38.9f, 202.0f, 92.0f}, {46.25f, 140.0f, 104.0f}},   // house
+            {{43.65f, 300.0f, 120.0f}, {51.9f, 179.0f, 78.0f}},   // tech house
+            {{46.25f, 320.0f, 120.0f}, {55.0f, 175.0f, 88.0f}},   // techno
+            {{41.2f, 83.0f, 60.0f}, {49.0f, 56.0f, 58.0f}},       // trap
+            {{41.2f, 129.0f, 106.0f}, {51.9f, 70.0f, 80.0f}},     // dnb (the recipe is already short: dry goes under p25)
+            {{43.65f, 158.0f, 160.0f}, {51.9f, 120.0f, 96.0f}},   // dubstep
+        };
+        const V& c = v[style][low ? 0 : 1];
+        r.endHz = c.hz;
+        r.bodyHoldMs = c.hold;
+        r.bodyFallMs = c.fall;
+        r.dropHalfMs = 8.0f;
+        r.clickLevel = std::max(r.clickLevel, 0.35f);
+        r.bodyDrive = std::max(r.bodyDrive, 0.25f);
+        return r;
+    }
+    if (family == Clap || family == Snare || family == ClosedHat) {
+        // Longer and darker, or shorter and brighter.
+        const float len = low ? 1.4f : 0.65f, tone = low ? 0.8f : 1.25f;
+        r.noiseHoldMs *= len;
+        r.noiseFallMs *= len;
+        r.bodyHoldMs *= len;
+        r.bodyFallMs *= len;
+        r.noiseLpHz = std::min(r.noiseLpHz * tone, 18000.0f);
+        r.noiseHpHz *= low ? 0.85f : 1.15f;
+    }
+    return r;
 }
 
-Recipe deepTechnoKick() { return kick(Techno); }
+Recipe deepTechnoKick() {
+    // A clean, round body that hits hard: G1, a quick drop from a firm start, a short click, a touch of warmth.
+    Recipe r;
+    r.bodyLevel = 0.9f;
+    r.startHz = 260.0f;
+    r.endHz = 49.0f;
+    r.dropHalfMs = 7.0f;
+    r.bodyHoldMs = 230.0f;
+    r.bodyFallMs = 140.0f;
+    r.bodyDrive = 0.15f;
+    r.clickLevel = 0.3f;
+    r.clickMs = 1.5f;
+    r.clickHpHz = 3000.0f;
+    r.gain = 0.8f;
+    return r;
+}
 
 }  // namespace ps::measured

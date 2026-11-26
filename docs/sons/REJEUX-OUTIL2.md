@@ -49,3 +49,12 @@ Défauts connus de l'outil, attrapés par les rejeux, gardés rouges jusqu'à le
 Non reproduit : « un kit MIDI reçoit une tonalité devinée ». Essayé sur un kit MIDI avec tonalité
 écrite, un dossier `MIDI Kits` sans nom, et une batterie MIDI : `key_est` reste toujours vide,
 seule la tonalité écrite (`key_tag`) est reprise. Pas de contrôle rouge pour ce point.
+
+## Relecture neuve
+
+Une faute grave trouvée et corrigée : `may_be_empty` n'avait pas de plancher, un outil qui
+cesserait d'estimer passait en vert en laissant tout vide (d'où `VIDE_MAX`). Mineurs corrigés :
+une erreur imprimée sous un contrôle déjà rouge attendu était masquée ; le verdict n'était pas
+recompté ; un rejeu seul ne regardait pas `git status` ; acc1 et kit2 ne comptaient pas leurs lignes.
+Restes mineurs, non corrigés : b3 et b3b ont des cas `want=None` qui ne vérifient rien ; b1 vérifie
+seulement que le crash n'est pas `hats` (le rôle juste reste à trancher avec la réparation du défaut 9).

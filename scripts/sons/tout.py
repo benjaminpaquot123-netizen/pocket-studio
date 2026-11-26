@@ -528,8 +528,14 @@ GENRES = [("techno", r"techno"), ("house", r"house"), ("dnb", r"dnb|drum ?(and|&
           ("lofi", r"lo.?fi|chillhop"), ("phonk", r"phonk"), ("trance", r"trance"), ("rave", r"rave|keta"),
           ("amapiano", r"amapiano"), ("afro", r"afro"), ("garage", r"garage|ukg|2.?step"),
           ("edm", r"edm|big ?room|future ?bass|electro"), ("pop", r"\bpop\b"), ("rnb", r"r ?n ?b|r&b|soul"),
-          ("ambient", r"ambient|cinematic")]
-GENRES = [(g, re.compile(rx, re.I)) for g, rx in GENRES]
+          ("ambient", r"ambient|cinematic"), ("rock", r"rock"), ("reggaeton", r"reggaeton|dembow"),
+          ("drill", r"drill"), ("disco", r"disco"), ("funk", r"funk"), ("hardstyle", r"hardstyle|hardcore|gabber")]
+GENRES = [(g, rx.replace("afro", "afro(?:beats?|house)?") if g == "afro" else rx) for g, rx in GENRES]
+# A style is a whole word ('Warehouse', 'Strap', 'Soulful', 'Entrance' name no style), plural allowed.
+GENRES = [(g, re.compile(r"(?<![a-z])(?:%s)s?(?![a-z])" % rx, re.I)) for g, rx in GENRES]
+_PACK_STYLES = [(re.compile(r"(?<![a-z])%s(?![a-z])" % re.escape(k), re.I), st) for k, st in mine_or.STYLES]
+_STYLE_NOISE = re.compile(r"(?i)jungle ?perc\w*|garage ?doors?")
+_CAMEL = re.compile(r"(?<=[a-z])(?=[A-Z])")
 
 
 def role_of(text):
@@ -539,13 +545,33 @@ def role_of(text):
     return "-"
 
 
-def style_of(rel):
-    st = mine_or.style_of(rel)
-    if st:
-        return st
-    for g, rx in GENRES:
-        if rx.search(rel):
-            return g
+def _style_in(part):
+    """Style named by one path component: a known pack name first, else the genre word that ends last
+    ('Hip-Hop & Trap' -> trap, 'Lo-Fi House' -> house)."""
+    part = _STYLE_NOISE.sub(" ", part)
+    for text in (part, _CAMEL.sub(" ", part)):
+        for rx, st in _PACK_STYLES:
+            if rx.search(text):
+                return st
+        best = None
+        for g, rx in GENRES:
+            for m in rx.finditer(text):
+                if best is None or m.end() > best[0]:
+                    best = (m.end(), g)
+        if best:
+            return best[1]
+    return None
+
+
+def style_of(rel, pack=None):
+    """Innermost component first ('Techno/House Kicks' -> house); the pack folder's own name last."""
+    parts = [p for p in re.split(r"[\\/]", rel) if p]
+    if pack:
+        parts = [os.path.basename(os.path.normpath(pack))] + parts
+    for part in reversed(parts):
+        st = _style_in(part)
+        if st:
+            return st
     return "unlabelled"
 
 

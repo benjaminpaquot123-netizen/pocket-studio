@@ -11,7 +11,7 @@ Contrôles passés : 0 clé en double, 0 cellule d'erreur, lignes des tables = l
 
 ## Fichiers et lignes par RAR et par pack
 
-| RAR | pack | style du pack | audio | MIDI | lignes | lignes de kit | archives imbriquées non lues |
+| RAR | pack | style du pack | audio | MIDI | lignes | lignes de kit | archives imbriquées (lues le 2026-11-27) |
 |---|---|---|---|---|---|---|---|
 | 1 | p1 | plusieurs (multi) | 1388 | 0 | 1388 | 0 | 0 |
 | 2 | p1 | drift-phonk | 645 | 140 | 785 | 0 | 0 |
@@ -33,16 +33,16 @@ Contrôles passés : 0 clé en double, 0 cellule d'erreur, lignes des tables = l
 | 10 | p3 | hardstyle | 206 | 85 | 291 | 26 | 0 |
 | 11 | p1 | sans étiquette | 421 | 0 | 421 | 30 | 0 |
 | 11 | p2 | dnb | 598 | 149 | 747 | 22 | 1 |
-| 11 | p3 | rave | 609 | 126 | 735 | 22 | 1 |
+| 11 | p3 | rave | 611 | 126 | 737 | 22 | 1 (+2 lignes) |
 | 12 | p1 | edm | 256 | 0 | 256 | 0 | 0 |
 | 12 | p2 | house | 424 | 70 | 494 | 0 | 0 |
-| 12 | p3 | rave | 36 | 0 | 36 | 0 | 1 |
-| **total** | | | **10417** | **1817** | **12234** | **191** | **3** |
+| 12 | p3 | rave | 58 | 0 | 58 | 0 | 1 (+22 lignes) |
+| **total** | | | **10441** | **1817** | **12258** | **191** | **3** |
 
 Une ligne par fichier ; les « lignes de kit » sont en plus : une ligne par kit de construction (pas un fichier).
-Total des tables : 12425 lignes.
+Total des tables : 12425 lignes avant les archives imbriquées, **12449** après (voir plus bas).
 
-Archives imbriquées non lues, par RAR : RAR 11 → 2, RAR 12 → 1, tous les autres → 0.
+Archives imbriquées, par RAR : RAR 11 → 2, RAR 12 → 1, tous les autres → 0. Elles sont maintenant lues (section dédiée) : +24 lignes.
 
 ## Par type
 
@@ -111,24 +111,36 @@ par famille dans `tout/chiffres.md`.
 - RAR 11 p3 : 1 .pdf et 1 pack de presets (.serumpack, l'archive imbriquée).
 - RAR 12 p3 : 1 .pdf et 1 pack de presets (.serumpack, l'archive imbriquée).
 
-## Archives imbriquées (non lues)
+## Archives imbriquées (lues le 2026-11-27)
 
-- RAR 11 p2 et p3 : 1 chacun, non ouverte. La première passe ne les avait pas lues non plus (écart 0 sur le RAR 11).
-- RAR 12 p3 : 1, non ouverte. Elle contient les 22 fichiers audio que la première passe avait lus : **non lus** en deuxième passe.
+Ouvertes hors dépôt, mesurées par `scripts/sons/tout.py` sans modification, sons effacés ensuite. Lignes ajoutées par
+`scripts/sons/passe2/fin/tables.py` depuis `docs/sons/passe2/fin/imbriquees/` (pack p3, clé `rN-p3-<id>`).
+- RAR 12 p3 : 22 fichiers audio (13 coups, 8 sons mélodiques, 1 voix). Écart avec la première passe : 0.
+- RAR 11 p3 : 2 sons mélodiques. La première passe ne les avait pas lus non plus : la 2e passe a donc 2 lignes de plus.
+- RAR 11 p2 : 30 presets, aucun son (rien à ajouter).
 
-## Packs sans étiquette de style
+## Packs sans étiquette de style (aucun style proposé, faute de preuve)
 
-- RAR 7 p1, p2 et p3 (2026 fichiers), RAR 8 p3 (100), RAR 11 p1 (421) : aucun style posé. Seules les lignes
-  qui ont un style par leur propre dossier en ont un.
+| pack | lignes | pourquoi pas de style |
+|---|---|---|
+| RAR 7 p1 | 383 | uniquement du MIDI : pas de tempo ni de son à mesurer |
+| RAR 7 p2 | 1461 | tempos mélangés d'un dossier à l'autre (pack multi-genre) |
+| RAR 7 p3 | 182 | les sous-dossiers portent déjà leur style ; rien à poser au pack |
+| RAR 8 p3 | 100 | effets sans tempo |
+| RAR 11 p1 | 421 | aucun mot de genre, tempos sans signature d'un style |
 
-## À savoir (déjà connu du chef, pas une erreur)
+Seules les lignes qui ont un style par leur propre dossier en ont un. Au total, 2 040 lignes sur 12 449 n'ont aucun style.
+
+## À savoir
 
 - `pack_line_ok` = NO sur le RAR 3 (1 ligne) et le RAR 10 p1 (2 lignes) : fausse alerte du lanceur ; les tables
   donnent le même nombre de lignes au style du pack que `tout.py`.
-- « posé sur N lignes » ne compte que les lignes qui reçoivent le style du pack, pas celles qui ont déjà un style par leur dossier.
+- « posé sur N lignes » = nombre de lignes qui **reçoivent** le style du pack parce qu'elles n'en avaient pas.
+  Les lignes qui avaient déjà un style par leur dossier gardent le leur et ne sont pas comptées.
 - RAR 9 p1 : style synthwave forcé par le chef (le pack n'en avait pas).
-- Les tables `rarN_accuracy.csv` (donc `tout/accuracy.csv`) ne comptent comme accord de tonalité que « exact » ;
-  `audit4/accuracy.py` devrait aussi compter « root » (même tonique). L'accord de tonalité y est donc peut-être sous-compté.
+- Tonalité : même en comptant « même tonique » (root) avec l'accord exact, l'estimation ne rattrape pas l'étiquette :
+  exact 18 %, même tonique 5 %, relative 7 %, autre 70 % (1 431 boucles étiquetées ; RAR 5 et 12 : 0 % exact).
+  La tonalité estimée est **inutilisable** ; seule l'étiquette compte. Détail par RAR : `tout/chiffres.md` (G1).
 
 ## Comparaison avec la première passe
 
@@ -148,18 +160,25 @@ Compte : lignes de `rarN.csv` + `rarN-tout.csv` sans les types doc, junk et pres
 | 8 | 1218 | 1218 | 0 | les 35 presets et le .pdf sont exclus des deux côtés |
 | 9 | 1325 | 1325 | 0 | les 30 presets et le .pdf sont exclus des deux côtés |
 | 10 | 1025 | 1025 | 0 | le .txt est exclu des deux côtés |
-| 11 | 1903 | 1903 | 0 | les 2 archives imbriquées ne sont lues ni d'un côté ni de l'autre |
-| 12 | 808 | 786 | −22 | les 22 fichiers audio de l'archive imbriquée du pack 3, lus en première passe, **non lus** en deuxième |
-| **total** | **12256** | **12234** | **−22** | |
+| 11 | 1903 | 1905 | +2 | les 2 sons de l'archive imbriquée du pack 3, lus maintenant ; la 1re passe ne les avait pas |
+| 12 | 808 | 808 | 0 | les 22 fichiers de l'archive imbriquée du pack 3, lus des deux côtés depuis le 2026-11-27 |
+| **total** | **12256** | **12258** | **+2** | |
 
 Coups de batterie par RAR (le total de fichiers ne bouge pas, seul le type change) :
 
 | RAR | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1re passe | 921 | 210 | 50 | 67 | 80 | 53 | 0 | 300 | 190 | 141 | 305 | 116 |
-| 2e passe | 919 | 213 | 50 | 67 | 80 | 58 | 0 | 300 | 190 | 142 | 305 | 102 |
+| 2e passe | 919 | 213 | 50 | 67 | 80 | 58 | 0 | 300 | 190 | 142 | 305 | 115 |
 
 - RAR 1 (−2), 2 (+3), 6 (+5), 10 (+1) : fichiers reclassés entre coup de batterie et autre type (même total de fichiers).
-- RAR 12 (−14) : une partie des 22 fichiers de l'archive imbriquée étaient des coups ; le reste de l'écart n'est pas
-  expliqué fichier par fichier (les clés des deux passes ne se correspondent pas).
+- RAR 12 (−1) : avec les 13 coups de l'archive imbriquée, il reste 1 fichier classé autrement (même total de fichiers).
 - RAR 7 : aucun coup de batterie seul, dans les deux passes (voix, boucles mélodiques, pistes de kit, MIDI).
+
+Par type, RAR 7, 9 et 11 (les lignes de kit ne comptent dans aucune des deux colonnes) :
+- RAR 7 : 1re passe voix 1221, pistes de kit 192, boucles mélodiques 109, sons mélodiques 21 (+ MIDI 483) ;
+  2e passe boucles mélodiques 605, voix 599, pistes de kit 269, sons mélodiques 70. Même total, classement différent
+  (la 2e passe lit le dossier, la 1re le nom de fichier) : ne pas comparer les types du RAR 7 d'une passe à l'autre.
+- RAR 9 : même total (1325) ; la 2e passe range les stems en pistes de kit (280) et ajoute 51 lignes de kit, hors compte.
+- RAR 11 : type pour type identique (stems 512 = pistes de kit, coups 305, boucles de batterie 255) ; 74 lignes de kit, hors compte.
+

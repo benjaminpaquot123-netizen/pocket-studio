@@ -41,7 +41,26 @@ def test_key_breakdown():
     check_eq("3 kit kept apart", d.get(("kit", "3")), {"exact": 0, "same_tonic": 0, "relative": 1, "other": 0})
 
 
-TESTS = [test_key_breakdown]
+def test_drum_note_label():
+    """Point 4 (m2): a trailing variant letter on a drum hit is not a note; a real note label is kept in the table."""
+    for name in ("Snare A", "Kick 01 B", "Clap C", "Perc_D", "Kick Hard E"):
+        check_eq("4 variant letter, no note: " + name, tout.parse_tags([name + ".wav"], "drum_oneshot")["note"], None)
+    for name, pc in (("808 C", 0), ("Kick C1", 0), ("Tom F#", 6), ("808 Bass G", 7)):
+        check_eq("4 note kept: " + name, tout.parse_tags([name + ".wav"], "drum_oneshot")["note"], pc)
+    check_eq("4 melodic one-shot lone letter still a note", tout.parse_tags(["Pluck C.wav"], "oneshot_melodic")["note"], 0)
+    check_eq("4 note_tag column in the drum table", "note_tag" in tout.TYPE_COLUMNS["drum_oneshot"], True)
+    import numpy as np
+    import selftest_tout as st
+    import selftest_tout_reuni as ru
+    t = np.arange(int(0.5 * st.SR)) / st.SR
+    rows, _, _, _, _ = ru.run({"Drums/Kick C1.wav": st.kick(t), "Drums/Kick Hard E.wav": st.kick(t)})
+    r1, r2 = rows["Drums/Kick C1.wav"] or {}, rows["Drums/Kick Hard E.wav"] or {}
+    check_eq("4 table type of a kick", r1.get("type"), "drum_oneshot")
+    check_eq("4 table keeps the label C of 'Kick C1'", r1.get("note_tag"), "C")
+    check_eq("4 table: no label for 'Kick Hard E'", r2.get("note_tag") or None, None)
+
+
+TESTS = [test_key_breakdown, test_drum_note_label]
 
 
 def main():

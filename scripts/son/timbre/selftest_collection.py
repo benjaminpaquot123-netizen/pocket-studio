@@ -81,6 +81,19 @@ def main():
     for name in ("fingerprint(", "onset_of(", "decay_index(", "_spectrum(", "band_signal(", "_centroid("):
         truth("independence: the counter never calls T.%s)" % name, "T." + name not in src)
 
+    # Band lengths: the counter cuts its bands with its own shape and its own code. It may not
+    # borrow the measure's band mask nor its filter, or the agreement only checks arithmetic.
+    band_src = inspect.getsource(C.counter) + inspect.getsource(getattr(C, "counter_band", C.fir_band))
+    truth("independence: the band-length counter never uses the measure's band mask", "_group_mask" not in band_src)
+    truth("independence: the band-length counter never uses the measure's filter", "_fir(" not in band_src
+          and "soft_mask" not in band_src)
+    # Two decaying sines, 80 Hz (tau 60 ms) and 6 kHz (tau 15 ms): each band has its own length.
+    two = np.sin(2 * math.pi * 80.0 * t) * np.exp(-t / 0.060) + np.sin(2 * math.pi * 6000.0 * t) * np.exp(-t / 0.015)
+    m2, c2 = C.measure(two), C.counter(two)
+    for k, tau2 in (("t20_low_ms", 0.060), ("t20_high_ms", 0.015)):
+        check("measure: %s of two sines" % k, m2[k], 1000.0 * tau2 * math.log(10.0), 3.0)
+        check("counter: %s of two sines" % k, c2[k], 1000.0 * tau2 * math.log(10.0), 3.0)
+
     # Agreement rule.
     truth("agree: t20 within 5 ms", C.agree("t20_ms", 30.0, 34.0))
     truth("agree: t20 10 % but more than 5 ms is not", not C.agree("t20_ms", 100.0, 112.0))

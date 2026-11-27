@@ -48,12 +48,12 @@ GATE_DB = -60.0  # active frame: frame RMS within 60 dB of the loudest frame
 # FRAME, so every spectral instrument keeps its 2048-point grid) and a gate
 # 20 dB under the loudest frame.
 COUP_FRAME, COUP_HOP, COUP_GATE_DB, COUP_MAX_S = 512, 128, -20.0, 0.5
-ONESHOTS = {"drum_oneshot", "oneshot_melodic", "kick_808"}
+ONESHOTS = {"drum_oneshot", "oneshot_melodic"}
 # One-shot rolloff: one spectrum of the body (gated span, Hann, at most
 # BODY_MAX_S), zero-padded to at least BODY_NFFT points (2.7 Hz per bin).
 BODY_MAX_S, BODY_NFFT = 2.0, 16384
 AUDIO = (".wav", ".wave", ".aif", ".aiff", ".aifc", ".flac", ".mp3", ".ogg")
-PITCHED = {"oneshot_melodic", "kick_808"}  # types/subtypes whose f0 is measured
+PITCHED = {"oneshot_melodic"}  # types/subtypes whose f0 is measured
 LOOPS = {"drum_loop", "melodic_loop", "kit_stem"}
 
 
@@ -82,6 +82,67 @@ def family_of(typ, subtype, role):
     if typ == "drum_oneshot":
         return "drum_oneshot/" + (subtype if subtype not in ("", "-") else "autre")
     return "%s/%s" % (typ or "inconnu", role if role not in ("", "-", None) else "autre")
+
+
+# Family refinement: generic keywords of the file name only (never a pack or
+# vendor name). Order: 808, merged/absurd families, then words for "autre".
+_808_FROM = {"drum_oneshot/kick_808", "oneshot_melodic/bass", "oneshot_melodic/autre",
+             "oneshot_melodic/synth", "melodic_loop/bass", "melodic_loop/autre", "kit_stem/bass"}
+MERGE = {
+    "drum_loop/pad": "melodic_loop/pad",          # texture loops
+    "drum_loop/synth": "drum_loop/full",
+    "fx/drums": "fx/fx",
+    "fx/chords": "melodic_loop/chords",
+    "melodic_loop/drums": "drum_loop/drums",      # top loops
+    "melodic_loop/perc": "drum_loop/perc",        # cowbell loops
+    "oneshot_melodic/drums": "oneshot_melodic/bell",
+    "drum_oneshot/perc_high": "drum_oneshot/perc",
+    "drum_oneshot/perc_mid": "drum_oneshot/perc",
+    "drum_oneshot/perc_low": "drum_oneshot/perc",
+    "drum_oneshot/snap": "drum_oneshot/clap",
+    "drum_oneshot/kick_808": "oneshot_melodic/808",  # an 808 is a tuned bass, not a drum hit
+    "melodic_loop/vocal": "vocal/vocal",
+}
+WORDS = (  # role for a */autre family, first match wins
+    ("vocal", r"ad ?lib|sung|vocal|vox|choir|chant"),
+    ("strings", r"viola|violin|cello|pizz"),
+    ("brass", r"flute|sax|horn|trombone|trumpet|oboe"),
+    ("bell", r"kalimba|khalimba|chime|steel ?drum|vibraphone|dulcimer|bell"),
+    ("keys", r"piano|keys|organ|wurl|rhodes"),
+    ("guitar", r"guitar|mandolin|koto|oud"),
+    ("pad", r"pad|atmo|texture"),
+    ("perc", r"claves|darbouka"),
+)
+_FXWORD = re.compile(r"fx|riser|sweep|impact|noise|screech", re.I)
+
+
+def _has(word_re, text):
+    return re.search(r"(?<![a-z])(?:%s)" % word_re, text) is not None
+
+
+def refine(fam, member):
+    """Family after the generic rules written in ESSENTIA-BASE.md."""
+    name = member.rsplit("/", 1)[-1].lower()
+    path = member.lower()
+    typ, _, sub = fam.partition("/")
+    if typ == "drum_oneshot" and ":" in sub:  # "kick:attack", "kick:tail": the same family
+        fam, sub = "drum_oneshot/" + sub.split(":")[0], sub.split(":")[0]
+    if fam in _808_FROM and re.search(r"(?<!\d)808(?!\d)", path):
+        return ("oneshot_melodic/808" if typ in ("drum_oneshot", "oneshot_melodic")
+                else "%s/808" % typ)
+    if fam in MERGE:
+        return MERGE[fam]
+    if fam == "oneshot_melodic/perc":
+        return "fx/fx" if _FXWORD.search(name) else "oneshot_melodic/bell"
+    if fam == "oneshot_melodic/full" and _has("bass", name):
+        return "oneshot_melodic/bass"
+    if fam == "fx/fx" and re.search(r"bass ?(hit|shot)", name):
+        return "oneshot_melodic/bass"
+    if sub == "autre":
+        for role, w in WORDS:
+            if _has(w, name):
+                return "vocal/vocal" if role == "vocal" else "%s/%s" % (typ, role)
+    return fam
 
 
 def _tout():
@@ -114,7 +175,7 @@ def index(stock):
             r = fid_match(n, by_fid)
             if r is not None:
                 c["table"] += 1
-                fam = family_of(r["type"], r["subtype"], r["role"])
+                fam = refine(family_of(r["type"], r["subtype"], r["role"]), n)
                 jobs.append((sid, n, fam, r["style"], "r%s%s" % (r["rar"], r["pack"]), r["cle"]))
             else:
                 tout = tout or _tout()
@@ -127,7 +188,7 @@ def index(stock):
                     dur = None
                 cl = tout.classify(rel, dur)
                 c["classify"] += 1
-                fam = family_of(cl["type"], cl["subtype"], cl["role"])
+                fam = refine(family_of(cl["type"], cl["subtype"], cl["role"]), n)
                 jobs.append((sid, n, fam, cl["style"], sid, ""))
     return jobs, counts
 
@@ -396,9 +457,7 @@ def measure_bytes(data, typ, fam):
 
 def one(job):
     sid, member, fam, style, pack, cle, stock = job
-    typ = fam.split("/")[0]
-    if fam == "drum_oneshot/kick_808":
-        typ = "kick_808"
+    typ = fam.split("/")[0]  # 808 one-shots are oneshot_melodic/808: pitched
     rec = {"sid": sid, "fam": fam, "style": style, "pack": pack,
            "id": hashlib.sha1((sid + "/" + member).encode("utf-8", "surrogateescape")).hexdigest()[:12]}
     try:

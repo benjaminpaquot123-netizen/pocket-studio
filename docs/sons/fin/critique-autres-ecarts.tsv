@@ -1,0 +1,18 @@
+ligne	famille	style	mesure	statut_tsv	statut_moi	n	packs	part_pack_max	accord	accord_sur	ecarts
+230	coup mélodique : strings	tous	dur_s	def	def	106	3	0.934	100.00	106/106	
+231	coup mélodique : strings	tous	rms_dbfs	def	def	106	3	0.934	100.00	106/106	
+232	coup mélodique : strings	tous	peak_dbfs	def	def	106	3	0.934	100.00	106/106	
+284	boucle mélodique	house	dur_s	def	def	78	2	0.987	100.00	78/78	
+285	boucle mélodique	house	rms_dbfs	def	def	78	2	0.987	100.00	78/78	
+286	boucle mélodique	house	peak_dbfs	def	def	78	2	0.987	100.00	78/78	
+287	boucle mélodique	lofi	dur_s	def	def	66	2	0.955	100.00	66/66	
+288	boucle mélodique	lofi	rms_dbfs	def	def	66	2	0.955	100.00	66/66	
+289	boucle mélodique	lofi	peak_dbfs	def	def	66	2	0.955	100.00	66/66	
+296	boucle de batterie	tous	tempo étiqueté (accord replié 97 %)	non	non	1845	13	0.244	97.34	1791/1840	sons 1791 vs 1845
+300	boucle de batterie	afro-house	tempo étiqueté (accord replié 57 %)	non	non	77	1	1.000	57.14	44/77	sons 44 vs 77; p75 122 vs 120
+308	boucle de batterie	dnb	tempo étiqueté (accord replié 98 %)	def	def	221	3	0.520	98.19	217/221	sons 217 vs 221
+312	boucle de batterie	drift-phonk	tempo étiqueté (accord replié 99 %)	non	non	150	1	1.000	99.33	149/150	sons 149 vs 150; mediane 120 vs 125
+316	boucle de batterie	dubstep	tempo étiqueté (accord replié 98 %)	def	def	164	3	0.488	98.17	161/164	sons 161 vs 164
+324	boucle de batterie	house	tempo étiqueté (accord replié 98 %)	def	def	213	2	0.887	100.00	209/209	sons 209 vs 213
+332	boucle de batterie	multi	tempo étiqueté (accord replié 98 %)	non	non	307	1	1.000	98.37	302/307	sons 302 vs 307
+340	boucle de batterie	techno	tempo étiqueté (accord replié 99 %)	def	def	345	3	0.652	99.13	341/344	sons 341 vs 345

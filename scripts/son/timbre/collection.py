@@ -326,8 +326,7 @@ def scope_rows(rar):
 
 def _one(job):
     cle, path = job
-    sys.path.insert(0, VERIF)
-    import mesure as M
+    from ident import M  # passe2/verif/mesure.py, never its namesake in scripts/sons
     try:
         sr, x = M.read_audio(path)
         y = to_48k(M.mono(x), sr)
@@ -356,9 +355,18 @@ def flat_jobs(root, rows):
 def cmd_mesure(root, rar, out):
     import json
     import multiprocessing
-    sys.path.insert(0, VERIF)
-    import compare as CMP
-    if rar == "plat":
+    from ident import CMP
+    how = {}
+    if rar == "auto":
+        import ident
+        rows = scope_rows(None)
+        keep = {r["cle"] for r in rows}
+        found = {d["cle"]: d for d in ident.identify(root) if d["cle"] in keep}
+        how = {k: (d["methode"], d["confiance"]) for k, d in found.items()}
+        jobs = [(k, d["path"]) for k, d in sorted(found.items())]
+        rows = [r for r in rows if r["cle"] in found]
+        missing = []
+    elif rar == "plat":
         rows = scope_rows(None)
         jobs, missing = flat_jobs(root, rows)
     else:
@@ -380,6 +388,8 @@ def cmd_mesure(root, rar, out):
         for d in res:
             r = meta[d["cle"]]
             d.update(famille=FAMILY[r["subtype"]], style=r["style"], pack="r%s/%s" % (r["rar"], r["pack"]))
+            if d["cle"] in how:
+                d["methode"], d["confiance"] = how[d["cle"]]
             f.write(json.dumps(d) + "\n")
         for cle in missing:
             r = meta[cle]
@@ -605,7 +615,7 @@ def main(argv):
     sub = ap.add_subparsers(dest="cmd", required=True)
     a = sub.add_parser("mesure")
     a.add_argument("root")
-    a.add_argument("--rar", required=True, help="archive number, or 'plat' for <root>/<cle>.wav")
+    a.add_argument("--rar", required=True, help="archive number, 'plat' for <root>/<cle>.wav, 'auto' to find each sound (ident.py)")
     a.add_argument("--out", required=True)
     b = sub.add_parser("table")
     b.add_argument("lines", nargs="+")

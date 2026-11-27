@@ -141,8 +141,70 @@ def main():
           by["22 x 24"]["voisin 25x9"] and not any(v for k, v in by["22 x 24"].items() if k != "voisin 25x9"))
     truth("copie: nothing catches the coarse 9 x 6 redraw (it is no copy)", not any(by["9 x 6"].values()))
 
+    ident_test()
+
     print("\n%s" % ("selftest: all green" if not FAILED else "selftest: %d FAILED" % len(FAILED)))
     return 1 if FAILED else 0
+
+
+def ident_test():
+    """ident.py on invented drums in three layouts: named by key, archive tree, renamed."""
+    import tempfile
+    import wave
+    import ident as I
+    rng = np.random.default_rng(41)
+    base = tempfile.mkdtemp(prefix="ident-")
+    src = os.path.join(base, "src")
+    os.mkdir(src)
+
+    def wav(path, x):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with wave.open(path, "wb") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(48000)
+            w.writeframes((np.clip(x, -1, 1) * 32767).astype("<i2").tobytes())
+
+    sounds = []
+    for k in range(12):
+        n = int(48000 * (0.15 + 0.05 * k))
+        t = np.arange(n) / 48000
+        tone = np.sin(2 * np.pi * (50 + 15 * k) * t) if k % 2 else rng.standard_normal(n) * 0.5
+        sounds.append(0.9 * tone * np.exp(-t / (0.02 + 0.015 * k)))
+    rows = []
+    for k, x in enumerate(sounds):
+        p = os.path.join(src, "s%d.wav" % k)
+        wav(p, x)
+        m = M_measure(p)
+        r = {c: "%.6g" % m[c] if m.get(c) is not None else "" for c in I.COLS}
+        r.update(cle="K%02d" % k, file_id="")
+        rows.append(r)
+    link = os.path.join(base, "link")
+    wav(os.path.join(link, "K00.wav"), sounds[0])                     # named by key
+    wav(os.path.join(link, "K01.wav"), sounds[5])                     # wrong name: the measures say K05
+    tree = os.path.join(link, "x", "Pack A")
+    wav(os.path.join(tree, "Kicks", "a.wav"), sounds[2])              # archive tree
+    rows[2]["file_id"] = I.CMP.fid(tree, "Kicks/a.wav")
+    wav(os.path.join(link, "y", "random name.wav"), sounds[3])        # renamed
+    wav(os.path.join(link, "y", "copy.wav"), sounds[3])               # the same sound twice
+    wav(os.path.join(link, "y", "z.wav"), rng.standard_normal(4800) * 0.01)  # no row at all
+    got = {os.path.relpath(r["path"], link): r for r in I.identify(link, rows)}
+    want = {"K00.wav": ("K00", "cle", "haute"), "K01.wav": ("K05", "mesures", "haute"),
+            "x/Pack A/Kicks/a.wav": ("K02", "hachage", "haute")}
+    for rel, w in want.items():
+        g = got[rel]
+        truth("ident: %s -> %s by %s (%s)" % (rel, w[0], w[1], w[2]), (g["cle"], g["methode"], g["confiance"]) == w)
+    pair = [got["y/random name.wav"], got["y/copy.wav"]]
+    truth("ident: the renamed sound is found by its measures, its double is left out",
+          sorted(str(r["cle"]) for r in pair) == ["K03", "None"] and all(r["methode"] == "mesures" for r in pair))
+    truth("ident: a sound with no row is left out", got["y/z.wav"]["cle"] is None)
+    import shutil
+    shutil.rmtree(base)
+
+
+def M_measure(p):
+    import ident as I
+    return I.M.measure(p, "drum_oneshot")
 
 
 if __name__ == "__main__":

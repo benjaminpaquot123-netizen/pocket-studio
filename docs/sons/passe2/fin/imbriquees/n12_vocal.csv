@@ -1,0 +1,2 @@
+rar,kit_id,type,subtype,role,style,dur_s,sr,ch,size_kb,peak_dbfs,rms_dbfs,lufs_i,bpm_tag,key_tag,bpm_est,key_est,error,wet,tail_db,pitch_median_hz,range_st,voiced_pct,end_cut,end_fade_ms,file_id
+12,,vocal,-,vocal,rave,0.4125,44100,2,106.7,-1.035e-06,-10.85,-8.372,,,,,,,,261.4,0.9644,97.22,,,6331e029eb

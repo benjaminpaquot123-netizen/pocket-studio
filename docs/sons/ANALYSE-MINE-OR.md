@@ -171,49 +171,40 @@ What changed after the critique:
 - Small groups (rim n 5, snap n 9, 808 n 21, cymbal n 19) are indicative only.
 - t60 is meaningless for cut or padded files: always read end_level_db first.
 
-## Deuxième passe (12 RAR)
+## Deuxième passe (12 RAR, corrigée le 2026-11-27 après critique)
 
-État : 12 RAR sur 12 réunis. Source : `docs/sons/passe2/tout/drum_oneshot.csv` (2 426 coups), tableau complet dans
-`docs/sons/passe2/tout/chiffres.md`, inventaire dans `docs/sons/passe2/INVENTAIRE.md`.
-Mêmes règles de confiance qu'au §1 ; **pas** de retrait des valeurs aberrantes (le §2 en retirait 35). Médiane [q25–q75].
+Source : `docs/sons/passe2/tout/` (12 449 lignes, dont 2 439 coups), tous les chiffres et leur n dans
+`docs/sons/passe2/tout/chiffres.md` (rejouable : `python3 -I scripts/sons/passe2/fin/tables.py`), inventaire dans
+`docs/sons/passe2/INVENTAIRE.md`, liste des fautes corrigées dans `docs/sons/passe2/CORRECTIONS-CRITIQUE.md`.
+Règle de cible : un chiffre n'est une cible que s'il porte au moins 20 sons **et** 2 packs distincts ; sinon « pas de cible ».
+Mêmes règles de confiance qu'au §1 ; aberrants retirés par une règle écrite (hauteur hors 20–5 000 Hz, durée de
+décroissance plus longue que le fichier, centroïde hors 20 Hz–20 kHz) : seule la grosse caisse en perd (3 et 8 valeurs).
 
-**Non lu** : le RAR 12 a 22 fichiers de moins qu'en première passe (786 contre 808) : ils sont dans une archive
-imbriquée du pack 3 que la deuxième passe n'ouvre pas. Archives imbriquées non lues, par RAR : RAR 11 → 2 (non lues
-non plus en première passe, écart 0), RAR 12 → 1, tous les autres → 0. Tous les autres RAR ont le même nombre de
-fichiers dans les deux passes.
+**Archives imbriquées** : lues. RAR 12 : 808 fichiers dans les deux passes (écart 0) ; RAR 11 : +2 sons que la première
+passe n'avait pas lus. Le « −22 » de la première version venait de l'archive non ouverte.
 
-| famille | n | t20 ms | t60 ms | hauteur attaque → stable Hz | tonal dB | centroïde Hz | hf dB | transitoire/corps dB |
-|---|---|---|---|---|---|---|---|---|
-| kick | 512 | 194 [134–238] | 290 [223–369] | 222 → 48.2 [42.7–54.5] | 0.0 | 108 [83–177] | −38 | −12.5 [−15.5…−9.8] |
-| kick_808 | 23 | 1430 [1084–1802] | 1788 [1499–2267] | 223 → 41.3 [36.6–63.8] | 0.0 | 46 [39–67] | −88 | −23.7 [−30.0…−20.3] |
-| snare | 409 | 124 [85–167] | 283 [199–605] | 633 → 259 [201–446] | −7.7 | 1986 [1259–2797] | −15 | −5.7 [−8.7…−2.7] |
-| clap | 298 | 112 [84–166] | 229 [174–333] | (bruit) | −9.9 | 3185 [2514–4392] | −14 | −7.7 [−10.4…−5.3] |
-| hat_closed | 246 | 55 [44–68] | 140 [92–277] | (bruit) | −26.5 | 8090 [7106–9668] | −6.0 | −2.6 |
-| hat_open | 160 | 137 [93–224] | 288 [197–825] | (bruit) | −22.5 | 7620 [6446–9541] | −6.1 | −7.0 |
-| ride | 105 | 291 [240–377] | 614 [459–768] | (bruit) | −23.6 | 9029 [7521–10321] | −4.4 | −8.6 |
-| crash | 65 | 1087 [772–1379] | 1884 [1280–2308] | (bruit) | −17.6 | 6169 [5012–6848] | −11.0 | −20.1 |
-| cymbal | 20 | 550 [446–716] | 981 [891–1066] | (bruit) | −15.4 | 5723 [5163–6362] | −10.2 | −12.2 |
-| tom | 54 | 262 [157–470] | 704 [407–1086] | 215 → 97 [67–122] | −1.4 | 566 [166–1037] | −36 | −6.9 |
-| perc | 344 | 108 [66–182] | 263 [177–416] | 714 → 351 [181–594] | −4.0 | 1073 [572–1918] | −30 | −4.1 |
-| shaker | 106 | 63 [42–95] | 463 [412–584] | (bruit) | −20.7 | 8465 [6280–9629] | −6.2 | −4.8 |
-| cowbell | 67 | 345 [63–591] | 1481 [848–1839] | 798 → 625 [402–767] | −2.4 | 837 [727–1120] | −43 | −9.5 |
-| snap | 12 | 220 [199–289] | 768 [617–1611] | (bruit) | −4.9 | 3041 [1013–4203] | −15.6 | −8.1 |
-| rim | 5 | 56 [31–64] | 323 | 1501 → 1018 | −8.0 | 1479 [999–2354] | −34 | +3.7 |
+| famille | n (packs) | t20 ms | t60 ms | hauteur stable Hz | centroïde Hz | transitoire/corps dB |
+|---|---|---|---|---|---|---|
+| kick | 515 (14) | 194 [134–238] | 290 [223–369] | 48.5 [43.0–54.7] | 108 [83–177] | −12.5 |
+| snare | 412 (12) | 124 [86–167] | 281 [200–603] | 259 [201–446] (fourchette) | 1 988 | −5.7 |
+| clap | 299 (13) | 113 [84–167] | 229 [175–332] | sans objet (bruit) | 3 183 | −7.7 |
+| perc | 348 (14) | 107 [66–182] | 261 [175–416] | 347 [180–594] (fourchette) | 1 073 | −4.1 |
+| hat fermé (mesure) | 290 (14) | — | 134 [92–208] | sans objet | — | — |
+| hat ouvert (mesure) | 118 (7) | — | 440 [295–848] | sans objet | — | — |
 
-Familles : préfixe du sous-type avant « : » (les couches « kick:attack », « kick:tail »… vont dans leur famille) ; perc_high,
-perc_mid et perc_low vont dans perc. Coups par style et par famille : `docs/sons/passe2/tout/chiffres.md`.
-
-### Ce qui change nettement par rapport à la première passe
-- **Plus de « hat » sans étiquette** : tout est hat_closed (69 → 246) ou hat_open (79 → 160). Les cibles hat_closed
-  (t20 55 ms, centroïde 8,1 kHz) et hat_open (t20 137 ms) tiennent ; la queue des hat_open est bien plus courte
-  (t60 288 contre 1151 ms).
-- **Tom** : t20 262 ms contre 377, centroïde 566 Hz contre 697, hauteur stable 97 Hz contre 78 (54 toms au lieu de 44).
-- **Clap** : centroïde 3,2 kHz contre 4,3, t20 112 ms contre 91 ; le tonal médian est à −9,9 dB, à la limite de la règle.
-- **Perc** : 344 au lieu de 219, t60 263 ms contre 215, centroïde 1,1 kHz contre 1,3, hauteur stable 351 Hz.
-- **Snare** : centroïde 2,0 kHz, inchangé ; t20 124 ms contre 118.
-- **Kick** : t20 194 ms contre 168 (une partie de l'écart vient de l'absence de retrait des valeurs aberrantes) ; hauteur
-  stable presque inchangée (48 Hz contre 49).
-- **Shaker** : t20 63 ms, t60 463 ms, 106 coups.
-- **Crash** : t20 1087 ms contre 1002. **Kick_808, ride, cymbal, cowbell, snap, rim** : pas d'écart net.
-- Nouveaux styles par rapport à la première lecture par style : synthwave (RAR 9, forcé), trance (33 MIDI, par dossier),
-  et rave bien plus fourni (157 coups au lieu de 22).
+Ce qui change par rapport à la première version de cette section :
+- **Grosse caisse par style**, plus de chiffre global unique : dubstep t20 226 / t60 319 / 47.7 Hz (2 packs), dnb t20 159,
+  rave t20 208, lofi t20 140 (2 packs chacun). house, drift-phonk, multi, afro-house, amapiano : un seul pack, pas de cible ;
+  techno : t20 et t60 d'un seul pack, pas de cible.
+- **kick_808** : 21 lignes sur 23 viennent d'un seul pack : aucune valeur n'est une cible.
+- **Charlestons** : 23 % des étiquettes « fermé/ouvert » sont contredites par la mesure ; on lit la mesure (fermé 134 ms,
+  ouvert 440 ms de t60), pas l'étiquette (140 et 288 ms).
+- **Hauteur** retirée pour clap, hats, shaker, ride, crash, cymbal, snap (bruit). Le remesurage à l'aveugle ne retrouve
+  la hauteur que sur la grosse caisse : snare, perc et tom donnent une fourchette, pas une cible.
+- **Tonalité estimée inutilisable** : 18 % d'accord exact avec l'étiquette, 5 % de plus avec la même tonique, 0 % sur
+  les RAR 5 et 12. Seule l'étiquette compte.
+- **Tempo** : il faut le replier (moitié/double). Boucles de batterie : 69 % d'accord brut, **97 %** replié ;
+  boucles mélodiques : 55 % → 72 % (RAR 7 : 24 % seulement). Tempo cible par style, pris de l'étiquette :
+  dnb 174, dubstep 140, techno 150, house 125, lofi 77 (au moins 2 packs) ; rave 155, amapiano 113, drift-phonk 130 :
+  un seul pack, pas de cible.
+- 2 040 lignes n'ont aucun style ; les 5 packs sans étiquette restent sans style (aucune preuve suffisante).

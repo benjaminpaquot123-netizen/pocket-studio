@@ -19,7 +19,7 @@ rar,pack,files_audio,files_midi,rows,kit_rows,errors,count_ok,tout_rc,style_pose
 10,p3,206,85,291,26,0,yes,0,hardstyle,27,yes,,0,0,0,
 11,p1,421,0,421,30,0,yes,0,unlabelled,0,yes,,0,0,0,
 11,p2,598,149,747,22,0,yes,0,dnb,769,yes,,0,0,1,.pdf:1 .serumpack:1 .serumpreset:30
-11,p3,609,126,735,22,0,yes,0,rave,745,yes,,0,0,1,.pdf:1 .serumpack:1
+11,p3,611,126,737,22,0,yes,0,rave,747,yes,,0,0,1 (lue : 2 lignes),.pdf:1 .serumpack:1
 12,p1,256,0,256,0,0,yes,0,edm,255,yes,,0,0,0,
 12,p2,424,70,494,0,0,yes,0,house,494,yes,,0,0,0,
-12,p3,36,0,36,0,0,yes,0,rave,33,yes,,0,0,1,.pdf:1 .serumpack:1
+12,p3,58,0,58,0,0,yes,0,rave,55,yes,,0,0,1 (lue : 22 lignes),.pdf:1 .serumpack:1

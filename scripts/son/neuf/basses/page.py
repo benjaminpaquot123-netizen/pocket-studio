@@ -74,7 +74,7 @@ def main():
                 continue
             out.append(f'<h3>{FAM_NAMES[f]}</h3><div class="list">')
             for r in fr:
-                src = html.escape(r.get("asset_url") or "", quote=True)
+                src = html.escape(r.get("asset_url") or ("audio/" + r["file"]), quote=True)
                 out.append(f'<div class="snd"><div class="top"><span class="name">{html.escape(r["file"])}</span>'
                            f'{chip(r["essentia_sd"])}</div><audio controls preload="none" src="{src}"></audio></div>')
             out.append('</div>')

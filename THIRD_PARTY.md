@@ -61,3 +61,6 @@
 | --- | --- | --- | --- |
 | [FDK AAC](https://github.com/nu774/fdkaac) (`fdkaac`) | paquet système Ubuntu 24.04 | Licence FDK AAC (Fraunhofer) | Matrice des exports (`scripts/export-matrix.sh`) : encodage M4A de contrôle |
 | [FFmpeg](https://ffmpeg.org) | 6.1.1 (paquet système) | LGPL-2.1+/GPL-2+ | Relecture des fichiers exportés, décodage MP3 du contrôle sur vraie chanson |
+| [Surge XT](https://github.com/surge-synthesizer/surge) (`surgepy`, compilé depuis les sources) | branche main, 2026-11 | GPL-3.0 | Sons neufs « Basses » : basses synthé, sub et reese rendues hors appli (`scripts/son/neuf/basses/render.py`), aucun code dans l'APK |
+| [VSCO-2-CE](https://github.com/sgossner/VSCO-2-CE) Solo Contrabass Pizz (Versilian Studios) | dépôt public, 2019 | CC0-1.0 | Sons neufs « Basses » : contrebasse pizz retravaillée (basse acoustique pop et lo-fi) |
+| [pycma](https://github.com/CMA-ES/pycma) / [pedalboard](https://github.com/spotify/pedalboard) / [Essentia](https://essentia.upf.edu) / [librosa](https://librosa.org) | 4.6.0 / 0.9.26 / 2.1-beta6 / 1.0.1 (PyPI) | BSD-3 / GPL-3.0 / AGPL-3.0 / ISC | Sons neufs « Basses » : recherche CMA-ES vers l'ADN mesuré, chaîne d'effets, mesure et contre-mesure (outils hors appli) |

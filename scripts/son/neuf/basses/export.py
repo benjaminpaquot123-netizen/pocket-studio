@@ -60,8 +60,9 @@ def main():
                          "source": src, "licence": lic, "essentia_sd": it["essentia_sd"],
                          "librosa_agree": it["librosa_agree"], "dna_family": {
                              "808": "drum_oneshot/kick_808", "phrase": "melodic_loop/bass"}.get(fam, "oneshot_melodic/bass"),
-                         "asset_url": assets.get(fn)})
-    json.dump({"zone": "basses", "score": "Essentia distance to family DNA, RMS of robust z (0 = family median)",
+                         "asset_url": assets.get(fn, "audio/" + fn)})
+    json.dump({"zone": "basses", "artifact": "https://claude.ai/artifact/VrKirWrSn6i1YRCdJKVkio",
+               "asset_url_note": "path of the MP3 published next to the artifact page", "score": "Essentia distance to family DNA, RMS of robust z (0 = family median)",
                "sounds": rows}, open(man, "w"), indent=1, ensure_ascii=False)
     print(len(rows), "sounds")
 

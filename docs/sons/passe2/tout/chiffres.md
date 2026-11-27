@@ -36,9 +36,9 @@
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | drum_oneshot | 919 | 213 | 50 | 67 | 80 | 58 | 0 | 300 | 190 | 142 | 305 | 115 | 2439 |
 | drum_loop | 461 | 150 | 95 | 53 | 226 | 131 | 0 | 137 | 80 | 81 | 255 | 189 | 1858 |
-| melodic_loop | 0 | 140 | 100 | 63 | 79 | 147 | 605 | 159 | 70 | 43 | 104 | 77 | 1587 |
-| oneshot_melodic | 0 | 98 | 20 | 24 | 40 | 25 | 70 | 303 | 421 | 199 | 293 | 49 | 1542 |
-| vocal | 0 | 10 | 0 | 0 | 20 | 99 | 599 | 10 | 0 | 9 | 70 | 28 | 845 |
+| melodic_loop | 0 | 140 | 100 | 63 | 79 | 147 | 0 | 159 | 70 | 43 | 104 | 77 | 982 |
+| oneshot_melodic | 0 | 98 | 20 | 24 | 40 | 25 | 53 | 303 | 421 | 199 | 293 | 49 | 1525 |
+| vocal | 0 | 10 | 0 | 0 | 20 | 99 | 1221 | 10 | 0 | 9 | 70 | 28 | 1467 |
 | fx | 8 | 34 | 20 | 19 | 20 | 27 | 0 | 181 | 54 | 38 | 91 | 280 | 772 |
 | kit | 0 | 0 | 0 | 0 | 0 | 0 | 8 | 6 | 51 | 52 | 74 | 0 | 191 |
 | kit_stem | 0 | 0 | 0 | 0 | 0 | 0 | 269 | 48 | 280 | 289 | 512 | 0 | 1398 |
@@ -68,7 +68,7 @@
 | techno | 130 | 346 | 179 | 60 | 20 | 40 | 0 | 0 | 192 |
 | trance | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 33 |
 | trap | 1 | 22 | 0 | 124 | 0 | 6 | 26 | 163 | 172 |
-| unlabelled | 0 | 0 | 606 | 223 | 597 | 99 | 34 | 400 | 81 |
+| unlabelled | 0 | 0 | 1 | 206 | 1219 | 99 | 34 | 400 | 81 |
 
 ## Coups de batterie : famille × style
 
@@ -366,13 +366,12 @@ La tonalité estimée n'est pas utilisable : moins d'une boucle sur quatre tombe
 | 4 | 48 | 15 (31 %) | 0 (0 %) | 3 (6 %) | 30 (62 %) |
 | 5 | 70 | 0 (0 %) | 17 (24 %) | 0 (0 %) | 53 (76 %) |
 | 6 | 137 | 25 (18 %) | 0 (0 %) | 4 (3 %) | 108 (79 %) |
-| 7 | 605 | 88 (15 %) | 0 (0 %) | 66 (11 %) | 451 (75 %) |
 | 8 | 85 | 23 (27 %) | 0 (0 %) | 0 (0 %) | 62 (73 %) |
 | 9 | 45 | 5 (11 %) | 1 (2 %) | 3 (7 %) | 36 (80 %) |
 | 10 | 43 | 10 (23 %) | 0 (0 %) | 4 (9 %) | 29 (67 %) |
 | 11 | 89 | 33 (37 %) | 3 (3 %) | 8 (9 %) | 45 (51 %) |
 | 12 | 69 | 0 (0 %) | 15 (22 %) | 0 (0 %) | 54 (78 %) |
-| total | 1431 | 259 (18 %) | 72 (5 %) | 99 (7 %) | 1001 (70 %) |
+| total | 826 | 171 (21 %) | 72 (9 %) | 33 (4 %) | 550 (67 %) |
 
 ## Tempo replié (M6)
 
@@ -397,19 +396,17 @@ Colonne bpm_gap_folded_pct : l'estimation ramenée au double ou à la moitié la
 | melodic_loop | 4 | 58 | 38 (66 %) | 45 (78 %) |
 | melodic_loop | 5 | 71 | 41 (58 %) | 69 (97 %) |
 | melodic_loop | 6 | 127 | 126 (99 %) | 126 (99 %) |
-| melodic_loop | 7 | 288 | 56 (19 %) | 69 (24 %) |
 | melodic_loop | 8 | 143 | 94 (66 %) | 130 (91 %) |
 | melodic_loop | 9 | 64 | 18 (28 %) | 49 (77 %) |
 | melodic_loop | 10 | 38 | 14 (37 %) | 25 (66 %) |
 | melodic_loop | 11 | 101 | 30 (30 %) | 89 (88 %) |
 | melodic_loop | 12 | 72 | 60 (83 %) | 65 (90 %) |
-| melodic_loop | total | 1167 | 639 (55 %) | 841 (72 %) |
+| melodic_loop | total | 879 | 583 (66 %) | 772 (88 %) |
 
 Tempo cible par style : lu sur l'étiquette (bpm_tag), jamais sur l'estimation.
 
 | style | boucles étiquetées | tempo étiqueté |
 |---|---|---|
-| unlabelled | 605 | 128 [127–140] (n 605, 1 packs, pas de cible) |
 | techno | 516 | 150 [125–150] (n 516, 3 packs, définitif) |
 | dnb | 319 | 174 [174–174] (n 319, 4 packs, définitif) |
 | multi | 307 | 128 [120–140] (n 307, 1 packs, pas de cible) |
@@ -436,7 +433,7 @@ Table de précision, mesure « note » : 1051 sons étiquetés, 973 d'accord. Le
 Les lignes de kit ne sont comptées ni dans la première passe ni dans les « lignes 2e (rows) ».
 
 - RAR 7, 1re passe : vocal 1221, midi 483, ck_stem 192, melodic_loop 109, melodic_oneshot 21, doc 11, junk 2.
-- RAR 7, 2e passe : melodic_loop 605, vocal 599, midi 483, kit_stem 269, oneshot_melodic 70, kit 8 (dont kit 8 lignes hors comptes).
+- RAR 7, 2e passe : vocal 1221, midi 483, kit_stem 269, oneshot_melodic 53, kit 8 (dont kit 8 lignes hors comptes).
 - RAR 9, 1re passe : oneshot_melodic 424, midi 230, coup 190, loop_melodic 162, stem 122, loop_drum 80, fx 52, loop_full 50, preset 30, stem_drum 8, loop_vocal 7, doc 1.
 - RAR 9, 2e passe : oneshot_melodic 421, kit_stem 280, midi 230, drum_oneshot 190, drum_loop 80, melodic_loop 70, fx 54, kit 51 (dont kit 51 lignes hors comptes).
 - RAR 11, 1re passe : stem 512, midi 275, drum_loop 255, strings_oneshot 171, fx 100, vocal 70, melodic_loop 65, perc 60, kick 55, snare 55, synth_oneshot 50, clap 40, keys_oneshot 35, bass_oneshot 35, bass_loop 30, hat 30, ride 20, crash 15, hat_closed 15, hat_open 15.

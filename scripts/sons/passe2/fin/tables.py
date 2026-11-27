@@ -6,6 +6,7 @@
 Base: the merged tables of docs/sons/passe2/tout/ as committed at BASE (git show).
 Adds: the rows of the nested archives measured with scripts/sons/tout.py (unmodified),
 stored anonymously in docs/sons/passe2/fin/imbriquees/ (nRAR_<type>.csv, pack p3 of RAR 11 and 12).
+Moves the rows of docs/sons/passe2/fin/reetiquetage/ (ids only) from a melodic family to their proven family.
 Adds the column bpm_gap_folded_pct (half/double tempo brought back) to drum_loop and melodic_loop.
 Writes docs/sons/passe2/tout/*.csv, controle.csv, accuracy.csv and chiffres.md (this script is now
 the only writer of chiffres.md; reunit.py stays as the first merge).
@@ -33,6 +34,12 @@ BASE = "eefa5745d"
 TOUT = "docs/sons/passe2/tout"
 NESTED = os.path.join(ROOT, "docs/sons/passe2/fin/imbriquees")
 NESTED_PACK = {11: "p3", 12: "p3"}
+# Rows filed under the wrong family by the name rules, proven from the archive's file list
+# (DESACCORDS-B: RAR 7 p2 "adlib", "Sung Words", "Phrases" folders are voices). Ids only, no name.
+RELABEL = os.path.join(ROOT, "docs/sons/passe2/fin/reetiquetage")
+RELABEL_FROM = ("melodic_loop", "oneshot_melodic")
+RELABEL_SET = ("type", "subtype", "role", "bpm_est", "key_est", "wet", "tail_db",
+               "pitch_median_hz", "range_st", "voiced_pct")
 NO_PITCH = {"clap", "hat_closed", "hat_open", "shaker", "ride", "crash", "cymbal", "snap"}
 FOLD_TOL = 2.0  # % tempo agreement after folding
 f = reunit.to_float
@@ -48,6 +55,28 @@ def folded_gap(tag, est):
         return None
     k = round(math.log2(t / e))
     return 100 * abs(e * 2 ** k - t) / t
+
+
+def apply_relabel(tables, rows):
+    """Move each relabelled row (rar, pack, file_id, type + the RELABEL_SET columns) from a
+    melodic family to its new family. Columns not in RELABEL_SET keep the table's value.
+    Refuses a row found in no melodic table (unknown id or a drum row)."""
+    moved = collections.Counter()
+    for rr in rows:
+        cle = "r%s-%s-%s" % (rr["rar"], rr["pack"], rr["file_id"])
+        src = [g for g in RELABEL_FROM if any(r["cle"] == cle for r in tables[g])]
+        if len(src) != 1:
+            raise ValueError("relabel: %s found in %d melodic tables" % (cle, len(src)))
+        g = src[0]
+        old = next(r for r in tables[g] if r["cle"] == cle)
+        tables[g] = [r for r in tables[g] if r["cle"] != cle]
+        new = dict(old)
+        for k in RELABEL_SET:
+            if k in rr:
+                new[k] = rr[k]
+        tables[rr["type"]].append(new)
+        moved[g] += 1
+    return dict(moved)
 
 
 def status(n, packs):
@@ -240,6 +269,10 @@ def main():
             for k in ("files_audio", "rows", "rows_pack_styled"):
                 c[k] = str(int(c[k] or 0) + added[n])
             c["nested_archives"] = "1 (lue : %d lignes)" % added[n]
+    relabelled = {}
+    for name in sorted(os.listdir(RELABEL)) if os.path.isdir(RELABEL) else []:
+        with open(os.path.join(RELABEL, name), newline="") as fh:
+            relabelled[name] = apply_relabel(tables, list(csv.DictReader(fh)))
     keys = [r["cle"] for g in reunit.GENRES for r in tables[g]]
     dup = [k for k, v in collections.Counter(keys).items() if v > 1]
     if dup:
@@ -267,7 +300,7 @@ def main():
     text = text[:a] + text[b:] + extra(tables, ctrl, acc)
     with open(os.path.join(out, "chiffres.md"), "w") as fh:
         fh.write(text)
-    print("ok: %d rows, nested added %s" % (len(keys), dict(added)))
+    print("ok: %d rows, nested added %s, relabelled %s" % (len(keys), dict(added), relabelled))
     return 0
 
 

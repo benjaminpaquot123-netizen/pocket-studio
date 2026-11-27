@@ -122,6 +122,23 @@ def pack_forms(base):
     return one
 
 
+def pack_line_title(base):
+    """M7: a file whose title after the tempo names a genre ('_125_Soul_') takes the pack's style in
+    tout.py (RAR 3 case 4); the launcher's own count must agree, or every such pack exits 4."""
+    pk = os.path.join(base, "m7", "Nebulon - Reverie - Melodic Techno")
+    wav(os.path.join(pk, "Drum Loops", "Nebulon-R_Drum_Loop_125_Soul_A.wav"), "loop", 2.0)
+    wav(os.path.join(pk, "One Shots", "Nebulon-R_Kick_01.wav"), "kick", 0.3)
+    tmp = os.path.join(base, "m7-csv")
+    os.mkdir(tmp)
+    plan = lance.plan_of([pk], [])
+    per = {p["pack"]: lance.run_pack(p, 3, tmp) for p in plan}
+    lance.merge(plan, per, 3)
+    p = plan[0]
+    check(p["pack_line_n"] == 2 and p["pack_styled"] == 2,
+          "M7: title after the tempo naming a genre counted like tout.py (line %d, tables %d)"
+          % (p["pack_line_n"], p["pack_styled"]))
+
+
 def rows(path):
     with open(path, newline="", encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
@@ -138,6 +155,7 @@ def main():
         return 1
     base = tempfile.mkdtemp(prefix="passe2-test-")
     try:
+        pack_line_title(base)
         src, out, work = (os.path.join(base, d) for d in ("src", "out", "work"))
         for d in (src, out, work):
             os.mkdir(d)

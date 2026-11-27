@@ -1,10 +1,9 @@
 # Empreinte des instruments à note : l'outil
 
 Outil de banc, pas dans l'appli : `scripts/son/timbre_instr/` (lancement : `run.sh`, environ 1 min 30).
-Il donne la carte d'identité d'une note tenue (basse, 808 longue, lead, nappe, clavier, pluck).
-Chaque chiffre est mesuré deux fois, par deux chemins différents. Si les deux ne tombent pas
-d'accord, le chiffre est marqué « DÉCROCHE » : on ne s'en sert pas.
-Ce lot n'a utilisé aucun son acheté : seulement des sons factices et nos propres instruments.
+Carte d'identité d'une note tenue (basse, 808, lead, nappe, clavier, pluck), chaque chiffre mesuré
+deux fois par deux chemins ; s'ils ne s'accordent pas : « DÉCROCHE », on ne s'en sert pas.
+Aucun son acheté : sons factices et nos propres instruments seulement.
 
 ## Les mesures
 
@@ -42,8 +41,7 @@ Accord mesure / contre-mesure (sons où il y avait quelque chose à mesurer) :
 |---|---|---|
 | richesse 11/11, pairs/impairs 11/11, attaque 13/13, inharmonicité 2/2, évolution 2/2, vibrato 1/1 | note 11/13, largeur 11/13, brillance 11/13 et 10/13, désaccord 10/11, relâchement 10/12, chute du filtre 9/10 | chute 5/9, souffle 4/11 |
 
-- Lead et Lead carré : « pas de note sûre » (les deux chemins ne trouvent pas la même note).
-- Souffle : sur les sons désaccordés, le contre-chemin compte le désaccord comme du souffle.
+- Lead et Lead carré : pas de note sûre ; souffle : le contre-chemin compte le désaccord comme souffle.
 - Chute : décroche sur Basse ronde, Reese, Supersaw et Pluck (chute lente ou noyée dans les battements).
 
 ## La recherche CMA vise bien l'empreinte
@@ -57,21 +55,36 @@ dont l'empreinte colle à la cible. Distance en « tolérances » (1 = une tolé
 | 11,13 | **0,41** | 1,33 |
 
 Réglages retrouvés : richesse 1,32 (caché 1,3), pairs 0,345 (0,35), attaque 27 ms (25),
-relâchement 0,109 s (0,12), désaccord 6,55 c (7). L'optimum passe sous le plancher : la
-recherche a fait tout ce que la mesure permet.
+relâchement 0,109 s (0,12), désaccord 6,55 c (7). Attention : la critique montre que
+cet optimum sous le plancher est un sur-ajustement aux phases d'un seul tirage (voir Critique).
 
 ## Verdict
 
-**Prêt** pour : richesse, pairs/impairs, attaque, inharmonicité, note des basses, nappes, claviers
-et plucks, et pour viser une empreinte avec CMA.
-**Pas prêt** pour : la note des leads, le souffle et la chute des sons désaccordés.
-
+**Prêt** pour : richesse et pairs/impairs (estimation des amplitudes), inharmonicité, note des
+basses, nappes, claviers et plucks.
+**Pas prêt** pour : viser une empreinte avec CMA (sur-ajustement, critère trop large), l'attaque
+des sons graves (tolérance gonflée par la période), la note des leads, le souffle, la chute, la
+brillance comme preuve (ses deux chemins ne sont pas indépendants).
 ### Ce qui n'est pas vert
 
-- Lead et Lead carré : aucune note sûre.
-- Souffle : 4 sons sur 11 seulement.
-- Chute : 5 sur 9.
+- Lead et Lead carré : aucune note sûre. Souffle : 4 sons sur 11. Chute : 5 sur 9.
 - Relâchement et chute d'un son désaccordé : ils changent d'un tirage de phases à l'autre (le
   plancher CMA de 1,33 vient de là) ; il faut comparer plusieurs rendus, pas un seul.
-- Limites de l'essai : patches V2 sans les retouches ProVoices, GAIN et SUB_FLOOR ignorés,
-  vélocité 0,8 ; la note entendue est souvent l'octave du dessous (le SUB du moteur), c'est normal.
+- Limites de l'essai : patches V2 sans retouches ProVoices, GAIN et SUB_FLOOR ignorés, vélocité 0,8.
+- Self-test vert avec un seul tirage de phases (graine 7) : rouge avec les graines 1 et 3.
+- CMA sur-ajusté à un tirage ; attaque des graves trop tolérante ; brillance non indépendante.
+
+## Critique (sous-agent neuf, à l'aveugle, chiffres remesurés)
+
+- Self-test : **contredit**. Rouge avec d'autres graines (attaque de la scie 20 ms pour 16) ;
+  la vérité de la richesse passe par les fonctions de l'outil.
+- Accords de l'essai : **confirmés** (attaque 13/13, souffle 4/11, chute 5/9). Mais l'attaque ne
+  tient que grâce au plancher d'une période (Basse ronde 24 contre 14 ms) : 4/13 à 10 % stricts ;
+  le chemin A est toujours plus long que B (même lissage, biais commun).
+- CMA : chiffres **confirmés** (11,13 / 0,41 / 1,33), lecture **contredite** : la recherche rend
+  toujours avec la même graine, les vrais réglages y sont à 0,85, donc 0,41 = collé aux phases ;
+  rendus avec d'autres graines, les réglages trouvés vont de 0,28 à 1,8. Critère vert trop large
+  (2,66), cible et coût par le même chemin, relâchement de la cible déjà faux de 17 %.
+- Brillance : contre-mesure **non indépendante** (même grandeur, Parseval, 0,2 % d'écart).
+- Suite à faire (autre lot) : self-test sur plusieurs graines, coût CMA moyenné sur plusieurs
+  rendus avec contre-mesure, plancher d'attaque plus strict, vraie contre-mesure de brillance.

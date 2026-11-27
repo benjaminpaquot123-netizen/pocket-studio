@@ -4,6 +4,7 @@
   python -I scripts/son/essentia/test_base.py NAME...  # some tests
 Exit 0 = all green. Needs the venv that holds essentia + librosa.
 """
+import io
 import math
 import os
 import sys
@@ -73,6 +74,61 @@ def test_short_hit_describes_its_body_not_its_tail():
     assert out["centroid_hz"] > 4000, "centroid %.0f Hz, want > 4000" % out["centroid_hz"]
 
 
+# ---------------------------------------------------------------- 4. independent counter-measure
+def wav_bytes(y, sr):
+    import soundfile as sf
+    b = io.BytesIO()
+    sf.write(b, np.asarray(y, dtype=np.float32), sr, format="WAV", subtype="FLOAT")
+    return b.getvalue()
+
+
+def test_counter_measure_loads_on_its_own():
+    """If Essentia's resampling went wrong (here: halves the level), librosa,
+    which loads and resamples the file itself, must still read the true level."""
+    t = np.arange(int(2.0 * 48000)) / 48000
+    data = wav_bytes(0.5 * np.sin(2 * np.pi * 1000 * t), 48000)  # RMS -9.03 dBFS
+    orig = base.resample
+    base.resample = lambda x, sr: orig(x, sr) * 0.5
+    try:
+        rec = base.measure_bytes(data, "melodic_loop", "melodic_loop/lead")
+    finally:
+        base.resample = orig
+    got = rec["lib"]["rms_db"]
+    assert abs(got - (-9.03)) < 0.3, "librosa rms %.2f dB, want -9.03 (it reused Essentia's array)" % got
+
+
+def test_counter_measure_tempo_is_fine():
+    """A 145 BPM click track: librosa's own tempo must be within 0.5 %."""
+    n = int(20 * SR)
+    y = np.zeros(n)
+    click = np.exp(-np.arange(400) / 60.0) * RNG.standard_normal(400)
+    for k in range(int(20 * 145 / 60)):
+        i = int(k * 60 / 145 * SR)
+        y[i:i + 400] += 0.8 * click[:max(0, min(400, n - i))]
+    rec = base.measure_bytes(wav_bytes(y, SR), "drum_loop", "drum_loop/full")
+    b = rec["lib"].get("bpm")
+    assert b is not None and abs(b - 145) / 145 < 0.005, "librosa bpm %s, want 145 +- 0.5 %%" % b
+
+
+def test_agree_folds_octaves_and_tempo_ratios():
+    assert base.agree("f0_hz_octave", 110.0, 220.5)
+    assert not base.agree("f0_hz", 110.0, 220.5)
+    assert base.agree("bpm_replie", 90.0, 135.0)
+    assert not base.agree("bpm", 90.0, 135.0)
+    assert base.agree("bpm", 140.0, 141.0)
+    assert not base.agree("bpm", 140.0, 70.0)
+
+
+def test_ground_truth_from_the_file_name():
+    tr = base.truth
+    assert tr("Dark Loop 145 BPM Am.wav", "drum_loop").get("bpm") == 145
+    assert tr("loop_07_128.wav", "drum_loop").get("bpm") == 128
+    assert tr("loop_90_128.wav", "drum_loop").get("bpm") is None  # two candidates: no truth
+    assert tr("bass_hit_C#1.wav", "oneshot_melodic").get("note") == 1
+    assert tr("pluck Bb.wav", "oneshot_melodic").get("note") == 10
+    assert tr("Kick_A.wav", "drum_oneshot").get("note") is None  # a variant letter, not a note
+
+
 TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
 
 
@@ -84,9 +140,9 @@ def main(names):
         try:
             t()
             print("ok   " + t.__name__)
-        except AssertionError as e:
+        except Exception as e:  # an assertion, or a missing function before the fix
             bad += 1
-            print("FAIL %s: %s" % (t.__name__, e))
+            print("FAIL %s: %s: %s" % (t.__name__, type(e).__name__, e))
     print("%d failure(s)" % bad)
     return 1 if bad else 0
 

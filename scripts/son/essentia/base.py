@@ -53,7 +53,7 @@ FLAT_TOP_HZ = 19000.0
 FLAT_BINS = int(FLAT_TOP_HZ / SR * FRAME) + 1
 COUP_FRAME, COUP_HOP, COUP_GATE_DB, COUP_MAX_S = 512, 128, -20.0, 0.5
 ONESHOTS = {"drum_oneshot", "oneshot_melodic"}
-# One-shot rolloff: one spectrum of the body (gated span, Hann, at most
+# One-shot rolloff: one spectrum of the body (gated span, tail taper, at most
 # BODY_MAX_S), zero-padded to at least BODY_NFFT points (2.7 Hz per bin).
 BODY_MAX_S, BODY_NFFT = 2.0, 16384
 AUDIO = (".wav", ".wave", ".aif", ".aiff", ".aifc", ".flac", ".mp3", ".ogg")
@@ -212,6 +212,15 @@ def resample(x, sr):
     return np.stack([rs(np.ascontiguousarray(x[:, c], dtype=np.float32)) for c in range(x.shape[1])], 1)
 
 
+def hilbert_env(y, win_s=0.010):
+    """Amplitude envelope for EffectiveDuration: magnitude of the analytic
+    signal (flat on a sine, whatever its period, so a 30 Hz 808 does not
+    ripple below the 40 % threshold), then a centred 10 ms moving RMS that
+    only tames the noise of noisy sounds."""
+    import scipy.signal
+    return rms_env(np.abs(scipy.signal.hilbert(np.asarray(y, dtype=np.float64))), win_s)
+
+
 def rms_env(y, win_s=0.010):
     """Centred moving RMS over win_s, one value per sample (float32)."""
     n = max(1, int(win_s * SR))
@@ -230,14 +239,24 @@ def body_span(y, on, hop):
     return y[a:min(b, a + int(BODY_MAX_S * SR))]
 
 
+def tail_taper(n):
+    """Window for a one-shot body: flat on the first half (the attack is
+    kept whole), falling half of a Hann on the second half (no edge at the
+    gate cut)."""
+    w = np.ones(n)
+    h = n // 2
+    w[h:] = np.hanning(2 * (n - h))[n - h:]
+    return w
+
+
 def body_rolloff(y, on, hop, cutoff=0.85):
-    """85 % energy rolloff of one zero-padded Hann spectrum of the body;
+    """85 % energy rolloff of one zero-padded spectrum of the body (tail taper);
     returns (Hz, bin width in Hz)."""
     seg = np.asarray(body_span(y, on, hop), dtype=np.float64)
     if len(seg) < 16:
         return None, None
     n = max(BODY_NFFT, 1 << int(math.ceil(math.log2(len(seg)))))
-    p = np.abs(np.fft.rfft(seg * np.hanning(len(seg)), n)) ** 2
+    p = np.abs(np.fft.rfft(seg * tail_taper(len(seg)), n)) ** 2
     c = np.cumsum(p)
     if c[-1] <= 0:
         return None, None
@@ -319,8 +338,9 @@ def ess_measure(stereo, typ, fam):
         env = es.Envelope(sampleRate=SR)(y)
         out["log_attack"] = float(es.LogAttackTime(sampleRate=SR)(env)[0])
         # EffectiveDuration wants an envelope, not the raw signal; Envelope's
-        # default 1.5 s release would hold it up, so a 10 ms RMS envelope.
-        out["effective_dur_s"] = float(es.EffectiveDuration(sampleRate=SR)(rms_env(y)))
+        # default 1.5 s release would hold it up, and a plain 10 ms RMS ripples
+        # on low sines (-23 % at 30 Hz), so the analytic-signal envelope.
+        out["effective_dur_s"] = float(es.EffectiveDuration(sampleRate=SR)(hilbert_env(y)))
     except Exception:
         pass
     if pitched(typ, fam):
@@ -383,7 +403,9 @@ def lib_measure(data, typ, fam):
         seg = y[a:min(b, a + int(BODY_MAX_S * SR))].astype(np.float64)
         if len(seg) >= 16:
             nf = max(BODY_NFFT, 1 << int(math.ceil(math.log2(len(seg)))))
-            p = np.abs(scipy.fft.rfft(seg * scipy.signal.get_window("hann", len(seg)), nf)) ** 2
+            m = len(seg) // 2  # same window as tail_taper, built with scipy
+            w = np.concatenate([np.ones(m), scipy.signal.get_window("hann", 2 * (len(seg) - m), fftbins=False)[len(seg) - m:]])
+            p = np.abs(scipy.fft.rfft(seg * w, nf)) ** 2
             c = np.cumsum(p)
             if c[-1] > 0:
                 out["rolloff_hz"] = float(np.argmax(c >= 0.85 * c[-1])) * SR / nf
@@ -605,7 +627,10 @@ def cmd_stats(src, outdir):
                 f.write("TOUT\t%s\t%d\t%d\t%.1f\n" % (k, tot[(k, 0)], tot[(k, 1)], 100.0 * tot[(k, 1)] / tot[(k, 0)]))
     # Ground truth written in file names, in aggregate per type only.
     with open(os.path.join(outdir, "essentia-verite.tsv"), "w") as f:
-        f.write("type\tmesure\tsons_avec_verite\tessentia_pct\tlibrosa_pct\n")
+        # A sound a tool did not measure (a loop under 4 s has no tempo) is not
+        # a wrong answer: it leaves that tool's denominator, counted apart.
+        f.write("type\tmesure\tsons_avec_verite\tessentia_non_mesures\tessentia_pct"
+                "\tlibrosa_non_mesures\tlibrosa_pct\n")
         by_typ = collections.defaultdict(list)
         for r in ok:
             if r.get("truth"):
@@ -618,11 +643,11 @@ def cmd_stats(src, outdir):
                 rs = [r for r in by_typ[typ] if tk in r["truth"]]
                 if len(rs) < MIN_FAMILY:
                     continue
-                pct = []
+                cols = []
                 for tool in ("ess", "lib"):
-                    v = [test(r[tool][src], r["truth"][tk]) if r[tool].get(src) else False for r in rs]
-                    pct.append(100.0 * sum(bool(x) for x in v) / len(rs))
-                f.write("%s\t%s\t%d\t%.1f\t%.1f\n" % (typ, k, len(rs), pct[0], pct[1]))
+                    v = [bool(test(r[tool][src], r["truth"][tk])) for r in rs if r[tool].get(src)]
+                    cols += [str(len(rs) - len(v)), "%.1f" % (100.0 * sum(v) / len(v)) if v else "-"]
+                f.write("%s\t%s\t%d\t%s\n" % (typ, k, len(rs), "\t".join(cols)))
     errs = collections.Counter(r["error"] for r in recs if "error" in r)
     print("records %d, measured %d, errors %s, families %d" % (len(recs), len(ok), dict(errs), len(by_fam)))
 

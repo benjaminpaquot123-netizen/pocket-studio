@@ -112,8 +112,9 @@ def _env_analytic(x, f0):
 # ---------------------------------------------------------------- note (two paths)
 
 def note_time(x):
-    """f0 by the cumulative-mean-normalised difference (YIN) on the waveform."""
-    seg = x[: min(len(x), int(0.25 * SR))]
+    """f0 by the cumulative-mean-normalised difference (YIN) on the waveform. One second: longer
+    than the beat of detuned voices, so the period found is their average, not one of them."""
+    seg = x[: min(len(x), int(1.0 * SR))]
     max_lag = int(SR / 25)
     min_lag = int(SR / 2000)
     n = len(seg) - max_lag
@@ -169,11 +170,12 @@ def note_freq(x):
             best, best_f = s, f
     # Octave check (same rule as note_time): odd harmonics under a quarter of the even ones
     # = a weak sub-oscillator, the heard note is one octave up.
-    # Peak power within +-f0/4 of each multiple: a detuned main oscillator does not sit
-    # exactly on twice the sub's harmonics, a fixed +-2 bin band misses it.
+    # Energy within +-f0/4 of each multiple, as the time path's correlation sees it: a detuned
+    # main oscillator does not sit exactly on twice the sub's harmonics and two close voices
+    # share their power between peaks, so a fixed band or a single peak misses part of it.
     def band(fr):
         lo, hi = max(1, int((fr - 0.25 * best_f) / hz)), int((fr + 0.25 * best_f) / hz) + 1
-        return float(mag[lo:hi].max() ** 2) if hi < len(mag) else 0.0
+        return float((mag[lo:hi] ** 2).sum()) if hi < len(mag) else 0.0
     p_odd = sum(band(k * best_f) for k in (1, 3, 5, 7))
     p_even = sum(band(k * best_f) for k in (2, 4, 6, 8))
     if p_odd < 0.25 * p_even:
@@ -185,11 +187,14 @@ def note_freq(x):
         if hi >= len(mag) - 1:
             break
         p = lo + int(np.argmax(mag[lo:hi]))
-        a, b, cc = np.log(mag[p - 1] + 1e-30), np.log(mag[p] + 1e-30), np.log(mag[p + 1] + 1e-30)
-        d = a - 2 * b + cc
-        off = 0.5 * (a - cc) / d if d < 0 else 0.0
-        w = mag[p] ** 2
-        num += w * k * (p + off) * hz
+        # Power centroid over +-f0/8 around the peak: the exact peak for one voice (symmetric
+        # window), the power-weighted centre for detuned voices, which is the pitch heard.
+        w8 = max(2, int(0.125 * best_f / hz))
+        q0, q1 = max(1, p - w8), min(len(mag) - 1, p + w8 + 1)
+        pw = mag[q0:q1] ** 2
+        w = float(pw.sum())
+        centre = float((np.arange(q0, q1) * pw).sum()) / max(w, 1e-30)
+        num += w * k * centre * hz
         den += w * k * k
     return num / den if den > 0 else None
 

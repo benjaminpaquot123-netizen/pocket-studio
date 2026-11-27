@@ -115,7 +115,8 @@ Estimates and accuracy
 ----------------------
 Measured columns that have a tag (note, bpm, key) are compared on every
 tagged file, one row per pair in <csv_prefix>_accuracy.csv:
-  rar, type, measure, tagged, agree, half_double, relative, error_pct, usable
+  rar, type, measure, tagged, agree, half_double, relative, error_pct, usable,
+  error_fold_pct (bpm only: the error once half / double are folded onto the tag)
 agree: note within 50 cents (pitch class), bpm within 2 %, key exact. A bpm at
 half or double the tag and a relative key are near misses, counted in their
 own column and never as agreement. usable=yes only when the one-sided 95 % Wilson
@@ -2361,8 +2362,12 @@ class Accuracy:
         out = []
         for (typ, m), (n, a, hd, rel) in sorted(self.d.items()):
             err = 100.0 * (n - a) / n if n else None
+            # half / double folded onto the tag: the octave slip is not a miss (critique M6);
+            # usable stays on the raw rate, the raw tempo column still holds the slipped value
+            fold = 100.0 * (n - a - hd) / n if n and m == "bpm" else None
             out.append({"type": typ, "measure": m, "tagged": n, "agree": a, "half_double": hd, "relative": rel,
-                        "error_pct": err, "usable": "yes" if n and _wilson_upper(n - a, n) < 0.05 else "no"})
+                        "error_pct": err, "usable": "yes" if n and _wilson_upper(n - a, n) < 0.05 else "no",
+                        "error_fold_pct": fold})
         return out
 
     def lines(self, typ):
@@ -2375,6 +2380,16 @@ def _bpm_agree(m, t):
     if m is None or t is None:
         return None
     return abs(m - t) / t <= 0.02
+
+
+def fold_bpm(m, t):
+    """The measured tempo folded onto the tag when heard at half or double (62.5 for 125), else unchanged."""
+    if m is None or t is None or _bpm_agree(m, t):
+        return m
+    for f in (2.0, 0.5):
+        if abs(m * f - t) / t <= 0.02:
+            return m * f
+    return m
 
 
 def _bpm_class(m, t):
@@ -2860,7 +2875,8 @@ def main(argv=None):
                 wr.writerow({k: _fmt(r.get(k)) for k in cols})
                 total += 1
     with open("%s_accuracy.csv" % args.out, "w", newline="", encoding="utf-8") as fh:
-        wr = csv.DictWriter(fh, fieldnames=["rar", "type", "measure", "tagged", "agree", "half_double", "relative", "error_pct", "usable"])
+        wr = csv.DictWriter(fh, fieldnames=["rar", "type", "measure", "tagged", "agree", "half_double", "relative", "error_pct", "usable",
+                                           "error_fold_pct"])
         wr.writeheader()
         for r in acc.rows():
             r["rar"] = rar

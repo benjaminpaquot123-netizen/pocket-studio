@@ -60,6 +60,45 @@ def key_breakdown(rows):
     return d
 
 
+TEMPO_CLASSES = ("exact", "half_double", "other")
+
+
+def _num(cell):
+    try:
+        v = float(cell)
+    except (TypeError, ValueError):
+        return None
+    return v if v > 0 else None
+
+
+def tempo_breakdown(rows):
+    """{(type, rar): {exact, half_double, other}} plus (type, 'all'); tempo heard (bpm_measured, else bpm_est)
+    against the written one. half_double is the octave slip (62.5 for 125), folded apart (critique M6)."""
+    d = {}
+    for r in rows:
+        t = _num(r.get("bpm_tag"))
+        m = _num(r.get("bpm_measured")) or _num(r.get("bpm_est"))
+        if t is None or m is None:
+            continue
+        c = tout._bpm_class(m, t)
+        c = "exact" if c is True else ("half_double" if c == "half_double" else "other")
+        typ = r.get("type") or "?"
+        for g in ((typ, r.get("rar") or "?"), (typ, "all")):
+            d.setdefault(g, dict.fromkeys(TEMPO_CLASSES, 0))[c] += 1
+    return d
+
+
+def print_tempo(d):
+    print("%-14s %-4s %6s %6s %11s %6s %7s %12s" % ("type", "rar", "n", "exact", "half_double", "other", "exact%",
+                                                    "after_fold%"))
+    for (typ, rar) in sorted(d, key=lambda g: (g[0], g[1] == "all", g[1].zfill(3))):
+        c = d[(typ, rar)]
+        n = sum(c.values())
+        print("%-14s %-4s %6d %6d %11d %6d %6.1f%% %11.1f%%" % (
+            typ, rar, n, c["exact"], c["half_double"], c["other"], 100.0 * c["exact"] / n if n else 0.0,
+            100.0 * (c["exact"] + c["half_double"]) / n if n else 0.0))
+
+
 def print_breakdown(d):
     print("%-14s %-4s %6s %6s %10s %8s %6s %7s" % ("type", "rar", "n", "exact", "same_tonic", "relative", "other", "exact%"))
     for (typ, rar) in sorted(d, key=lambda g: (g[0], g[1] == "all", g[1].zfill(3))):
@@ -69,13 +108,13 @@ def print_breakdown(d):
                                                        c["other"], 100.0 * c["exact"] / n if n else 0.0))
 
 
-def tables_rows(folder):
+def tables_rows(folder, need=("key_est", "key_tag")):
     rows = []
     for f in sorted(glob.glob(os.path.join(folder, "*.csv"))):
         with open(f, newline="", encoding="utf-8") as fh:
             lines = [ln for ln in fh if not ln.startswith("#")]
         rd = csv.DictReader(lines)
-        if rd.fieldnames and "key_est" in rd.fieldnames and "key_tag" in rd.fieldnames:
+        if rd.fieldnames and all(c in rd.fieldnames for c in need):
             rows += list(rd)
     return rows
 
@@ -148,5 +187,7 @@ def main():
 if __name__ == "__main__":
     if sys.argv[1:2] == ["--tables"]:
         print_breakdown(key_breakdown(tables_rows(sys.argv[2])))
+        print()
+        print_tempo(tempo_breakdown(tables_rows(sys.argv[2], ("bpm_tag",))))
         sys.exit(0)
     sys.exit(main())

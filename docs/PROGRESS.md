@@ -2,7 +2,8 @@
 
 Page courte, lue par le chef à chaque début de session. Tout ce qui date d'avant le 19 novembre 2026 est dans `docs/archive/PROGRESS-2026-10-18-a-2026-11-18.md` (historique, ne se suit pas).
 
-## Où on en est (2026-11-27, 10 h 05 belge)
+## Où on en est (2026-11-27, 10 h 15 belge)
+- **2026-11-27, 10 h 15** : autres familles **finies et contrôlées** (`eq/son-fin-autres` `f919dc7df`, 124 cibles définitives, 0 doute sans réponse). Critique à l'aveugle ouverte (`session_014RxrDNWVEhDYRf6nWqi6gR`, branche `eq/son-fin-critique-autres`). **Prochaine étape** : à son « fini », contrôler la branche (fichiers, liens, sons, nom de vendeur) et lire `docs/sons/fin/CRITIQUE-AUTRES.md` ; du grave = un lot de correction, sinon cette partie est close. La batterie attend toujours la réponse de Benjamin (ligne suivante).
 - Sons, deuxième passe des 12 RAR : finie, réunie (`eq/passe2-reunion` `8d4b14d9e`, 12 425 lignes, 0 erreur) et critiquée à l'aveugle (`eq/passe2-critique` `eefa5745d` : 8 chiffres tiennent, 6 fragiles, 2 faux). Plan : `docs/sons/PLAN-PASSE2.md` (restent les étapes 1 et 9).
 - Sons du matin pour Benjamin (écoute seule, rien dans l'intégration) : finis. Page privée de 157 MP3 (adresse dans la conversation) : avant-après des lots du Grand Remplacement (`eq/matin-avant-apres` `e456217ef`), morceaux entiers et batteries seules avec la batterie mesurée, coups un par un et variantes (`eq/matin-batterie2` `a275ae1ce`). Toutes les discussions de la nuit sont archivées.
 - Tour 9 et Grand Remplacement : en pause (décisions du 2026-11-25), voir `docs/audits/ultra/EN-COURS.md`.

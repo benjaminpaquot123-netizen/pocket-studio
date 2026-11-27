@@ -575,12 +575,10 @@ def attack_gauss(x, t_off, f0):
     f = np.fft.fftfreq(n, 1 / SR)
     sf = f0 / GAUSS_BANDS
     env = np.zeros(n)
-    for k in range(1, 13):
-        if k * f0 >= 10000:
-            break
+    for k in _attack_partials(f0):
         env += np.abs(np.fft.ifft(spec * np.exp(-0.5 * ((f - k * f0) / sf) ** 2)))
     st = 1.0 / (2 * math.pi * sf)
-    return attack_fit(env[: len(xp)], t_off + PAD / SR, st)
+    return attack_fit(env[: len(xp)], t_off + PAD / SR, Kernel(sigma=st))
 
 
 def _erf(u):
@@ -599,33 +597,101 @@ def _ramp_gauss(u, sigma):
     return u * 0.5 * (1.0 + _erf(z)) + sigma / math.sqrt(2 * math.pi) * np.exp(-z * z)
 
 
-def attack_fit(env, t_off, sigma):
+class Kernel:
+    """Smoothing kernel of an envelope path, known exactly: a Gaussian (std sigma, closed form) or
+    the sampled kernel of the boxes (its smoothed ramp tabulated once, then interpolated)."""
+
+    def __init__(self, sigma=None, taps=None):
+        self.sigma = sigma
+        if taps is not None:
+            taps = np.asarray(taps, float) / float(np.sum(taps))
+            half = len(taps) // 2
+            u = np.arange(-2 * half - 1, 2 * half + 2) / SR
+            ramp = np.convolve(np.maximum(u, 0.0), taps[::-1], mode="same")
+            self.u, self.table, self.half = u, ramp, (half + 1) / SR
+
+    @property
+    def reach(self):
+        return 4 * self.sigma if self.sigma is not None else self.half
+
+    def ramp(self, u):
+        """A unit-slope ramp starting at 0, smoothed by the kernel, evaluated at u."""
+        if self.sigma is not None:
+            return _ramp_gauss(u, self.sigma)
+        return np.where(u >= self.half, u, np.interp(u, self.u, self.table, left=0.0))
+
+
+def box_kernel(length, times):
+    """Taps of `times` moving averages of `length` samples (what _boxcar applies)."""
+    k = np.ones(1)
+    for _ in range(times):
+        k = np.convolve(k, np.ones(length) / length)
+    return k
+
+
+def _fit_rows(e, t, t0s, T, kern):
+    """Residual of the best ramp + drift model for each start in t0s (ramp length T).
+
+    Model: g * ramp(t0, T) + h * drift, both smoothed by the Gaussian kernel; drift is a straight
+    line that starts where the ramp ends (the slow decay, or detuned voices still beating up).
+    The drift slope is kept under a quarter of the ramp slope, otherwise it is dropped (h = 0):
+    a slow attack must not be read as a short ramp plus a rising line."""
+    u = t[None, :] - t0s[:, None]
+    m = (kern.ramp(u) - kern.ramp(u - T)) / T
+    d = kern.ramp(u - T)
+    mm, dd, md = (m * m).sum(1), (d * d).sum(1), (m * d).sum(1)
+    me, de = m @ e, d @ e
+    det = np.maximum(mm * dd - md * md, 1e-30)
+    g = (me * dd - de * md) / det
+    h = (de * mm - me * md) / det
+    bad = (np.abs(h) > 0.25 * np.abs(g) / T) | (dd <= 1e-30)
+    g0 = me / np.maximum(mm, 1e-30)
+    g = np.where(bad, g0, g)
+    h = np.where(bad, 0.0, h)
+    return ((e[None, :] - g[:, None] * m - h[:, None] * d) ** 2).sum(1)
+
+
+def attack_fit(env, t_off, kern):
     """Attack by fitting a straight ramp (start t0, length T) smoothed by the known Gaussian kernel
-    to the rise of the envelope, least squares over a grid (no moments, no derivative)."""
+    to the rise of the envelope, least squares (no moments, no derivative). A slow straight drift
+    after the ramp is part of the model, so a decay or a beat right after the attack does not bend
+    the reading. Coarse grid on T, then a fine grid around the best (steps of 0.25 %)."""
     pk = _rise_peak(env, t_off)
     top = float(env[pk])
     if top <= 0:
         return None
     i0 = int(np.argmax(env[:pk + 1] > 0.02 * top))
-    lo = max(0, i0 - int(4 * sigma * SR))
+    lo = max(0, i0 - int(kern.reach * SR))
     # 2 kHz is plenty (the envelope is smoothed by sigma >= a few ms); long pad rises are
     # thinned further so the grid stays bounded (at most ~1500 points, 0.1 % of the span).
     dec = max(24, (pk - lo) // 1500)
     e = env[lo:pk + 1:dec]
     t = (lo + np.arange(len(e)) * dec) / SR
-    best = (math.inf, None)
-    for T in np.geomspace(0.0003, 0.6, 160):
-        t0s = np.arange(t[0] - T, t[-1], max(0.00025, T / 40, (t[-1] - t[0]) / 1500))
-        rows = max(1, 2_000_000 // len(e))  # bounded memory on long pad rises
+
+    def best_for(T):
+        t0s = np.arange(t[0] - T, t[-1], max(0.00025, T / 80, (t[-1] - t[0]) / 1500))
+        rows = max(1, 1_000_000 // len(e))  # bounded memory on long pad rises
+        out = math.inf
         for c in range(0, len(t0s), rows):
-            u = t[None, :] - t0s[c:c + rows, None]
-            m = (_ramp_gauss(u, sigma) - _ramp_gauss(u - T, sigma)) / T
-            g = (m @ e) / np.maximum((m * m).sum(1), 1e-30)
-            r = ((e[None, :] - g[:, None] * m) ** 2).sum(1)
-            j = int(np.argmin(r))
-            if r[j] < best[0]:
-                best = (float(r[j]), float(T))
-    return None if best[1] is None else 0.8 * best[1]
+            out = min(out, float(_fit_rows(e, t, t0s[c:c + rows], T, kern).min()))
+        return out
+
+    coarse = np.geomspace(0.0003, 0.6, 160)
+    res = [best_for(T) for T in coarse]
+    j = int(np.argmin(res))
+    fine = np.geomspace(coarse[max(j - 1, 0)], coarse[min(j + 1, len(coarse) - 1)], 41)
+    resf = [best_for(T) for T in fine]
+    return 0.8 * float(fine[int(np.argmin(resf))])
+
+
+ATT_FMAX = 600.0  # Hz: partials used for the attack (see _attack_partials)
+
+
+def _attack_partials(f0):
+    """Partials summed for the attack: up to 12, but only those under ATT_FMAX (at least two).
+    Detuned voices beat at a rate proportional to the partial's frequency in Hz (12 cents at
+    600 Hz: 4 Hz); above that the beat turns within the 30 ms of a rise and bends it."""
+    return [k for k in range(1, 13) if k <= 2 or k * f0 <= ATT_FMAX]
 
 
 GAUSS_BANDS = 5.0  # Gaussian band standard deviation = f0 / 5 (neighbour at 5 sigma)
@@ -640,33 +706,148 @@ def resolved_attack(att, f0):
     return att
 
 
-def env_path_a(x, t_off, f0):
-    """Sliding RMS for decay and release; attack from the demodulated harmonics (no squaring)."""
+REL_FMAX = 8000.0  # Hz: partials used for the release
+REL_KMAX = 40
+
+
+def _release_partials(x, t_off, f0):
+    """Partials used for the release: up to REL_KMAX under REL_FMAX, and only those whose level
+    at the end of the hold is within 40 dB of the strongest (per-partial rms over 100 ms)."""
+    off = int(t_off * SR)
+    seg = x[max(0, off - SR // 10): off]
+    t = np.arange(len(seg)) / SR
+    ks = [k for k in range(1, REL_KMAX + 1) if k == 1 or k * f0 <= REL_FMAX]
+    lv = np.array([abs(np.mean(seg * np.exp(-2j * math.pi * k * f0 * t))) for k in ks])
+    return [k for k, v in zip(ks, lv) if v >= 0.01 * lv.max()]
+
+
+REL_FS = 400  # Hz: rate of the demodulated partials for the release fit (beats stay below 200 Hz)
+
+
+def _order(z, cap=6):
+    """Number of damped components in z: singular values of its Hankel matrix over 1e-3 of the
+    largest (a pure exponential gives one, two detuned voices two)."""
+    n = len(z)
+    L = n // 3
+    Y = np.lib.stride_tricks.sliding_window_view(z, L + 1)
+    S = np.linalg.svd(Y, compute_uv=False)
+    return Y, int(min(cap, max(1, np.sum(S > 1e-3 * S[0]))))
+
+
+def _poles_pencil(z):
+    """Matrix pencil (Hua-Sarkar): poles from the shift between the two halves of the signal
+    subspace."""
+    Y, m = _order(z)
+    _, _, vh = np.linalg.svd(Y, full_matrices=False)
+    v = vh[:m].conj().T
+    return np.linalg.eigvals(np.linalg.pinv(v[:-1]) @ v[1:]), m
+
+
+def _poles_lp(z):
+    """Forward linear prediction (Prony), same order: poles = roots of the predictor (forward
+    only: the backward pass would mirror decaying poles into growing ones)."""
+    _, m = _order(z)
+    zf = np.lib.stride_tricks.sliding_window_view(z, m + 1)
+    a, *_ = np.linalg.lstsq(zf[:, :m][:, ::-1], zf[:, m], rcond=None)
+    return np.roots(np.concatenate(([1.0], -a))), m
+
+
+def _partial_tau(z, poles_fn):
+    """tau of one demodulated partial after note-off: z = sum of damped exponentials, poles
+    from poles_fn; decay rate = energy-weighted mean of the decaying components."""
+    poles, m = poles_fn(z)
+    poles = poles[np.isfinite(poles) & (np.abs(poles) > 1e-6)]
+    if len(poles) == 0:
+        return None
+    n = np.arange(len(z))
+    V = poles[None, :] ** n[:, None]
+    c, *_ = np.linalg.lstsq(V, z, rcond=None)
+    e = np.abs(c) ** 2 * np.minimum(np.abs(V) ** 2, 1e6).sum(0)
+    keep = np.argsort(-e)[:m]
+    poles, e = poles[keep], e[keep]
+    rate = -np.log(np.abs(poles)) * REL_FS
+    if np.sum(e[rate <= 0]) > 0.1 * np.sum(e):
+        return None  # a growing or steady part carries the energy: no release here
+    rate, e = rate[rate > 0], e[rate > 0]
+    return float(np.sum(e) / np.sum(e * rate))
+
+
+def _release_from_partials(zs, skip, tail_s, poles_fn):
+    """Release = time to -40 dB = tau * ln(100), tau the median over partials. Each partial is a
+    sum of damped exponentials (one per voice, all with the voices' tau): fitting the poles
+    takes the beats in, where a fit of the envelope rose or dipped with the beat phase at
+    note-off (the -40 dB crossing moved from 0.39 to 0.82 s for one sound). None when the
+    release outlasts the recorded tail."""
+    dec = SR // REL_FS
+    taus = []
+    for z in zs:
+        z = z[skip::dec]
+        lv = np.abs(z)
+        # fit until -60 dB of the level at the start, at most 1.5 s
+        low = np.nonzero(lv < 1e-3 * lv[:max(1, REL_FS // 50)].max())[0]
+        end = min(len(z), int(1.5 * REL_FS), low[0] if len(low) else len(z))
+        if end < 12:
+            continue
+        tau = _partial_tau(z[:end], poles_fn)
+        if tau is not None:
+            taus.append(tau)
+    if not taus:
+        return None
+    rel = float(np.median(taus)) * math.log(100.0)
+    return rel if rel <= tail_s else None
+
+
+def _died_out(env, t_off):
+    off = int(t_off * SR)
+    return float(np.mean(env[off - SR // 50: off])) < 0.01 * float(env[:off].max())
+
+
+def env_path_a(x, t_off, f0, harmonic=True):
+    """Sliding RMS for decay; release from the demodulated partials (median of per-partial fits);
+    attack from the demodulated harmonics (no squaring)."""
     win = max(int(0.005 * SR), int(2 * SR / f0))
-    _, decay, release = _times_from_env(_env_rms(x, win), t_off, win)
+    rms = _env_rms(x, win)
+    _, decay, release = _times_from_env(rms, t_off, win)
+    length = max(2, int(round(2 * SR / f0)))
+    off = int(t_off * SR)
+    if harmonic and not _died_out(rms, t_off):
+        pre = 4 * length
+        xs = x[off - pre:]
+        zs = [_hetero(xs, k * f0, length)[pre:] for k in _release_partials(x, t_off, f0)]
+        release = _release_from_partials(zs, 2 * length + int(0.005 * SR), (len(x) - off) / SR,
+                                         _poles_pencil)
     # Boxes of TWO periods: nulls at every multiple of f0 / 2, so a sub-oscillator one octave
     # down (its odd harmonics sit half-way between ours) does not leak in and ripple the envelope.
-    length = max(2, int(round(2 * SR / f0)))
     xp = np.concatenate((np.zeros(PAD), x[: int(t_off * SR)]))
     env = np.zeros(len(xp))
-    for k in range(1, 13):
-        if k * f0 >= 10000:
-            break
+    for k in _attack_partials(f0):
         env += np.abs(_hetero(xp, k * f0, length))
     # Same model as path B (ramp smoothed by the known kernel, least-squares fit), its own
-    # envelope: two boxes of one period (triangle), fitted as a Gaussian of the same variance.
-    att = attack_fit(env, t_off + PAD / SR, math.sqrt(_box_var(length, 2)))
+    # envelope: the two boxes of _hetero, a triangle, taken exactly (not as a Gaussian).
+    att = attack_fit(env, t_off + PAD / SR, Kernel(taps=box_kernel(length, 2)))
     return resolved_attack(att, f0), decay, release
 
 
-def env_path_b(x, t_off, f0):
-    """Hilbert envelope; release from the Schroeder backward integral (slope fit -5..-25 dB)."""
+def env_path_b(x, t_off, f0, harmonic=True):
+    """Hilbert envelope for decay; release from each partial cut out by a Gaussian band (FFT),
+    median of per-partial fits; without a note, from the Schroeder backward integral."""
     env = _env_analytic(x, f0)
     _, decay, rel = _times_from_env(env, t_off, max(int(0.004 * SR), int(round(2 * SR / f0))))
     attack = resolved_attack(attack_gauss(x, t_off, f0), f0)
     off = int(t_off * SR)
-    if rel is None and float(np.mean(env[off - SR // 50: off])) < 0.01 * float(env[:off].max()):
+    if rel is None and _died_out(env, t_off):
         return attack, decay, None
+    if harmonic:
+        pre = int(round(8 * SR / f0))
+        xs = x[off - pre:]
+        n = 1 << int(math.ceil(math.log2(len(xs) + PAD)))
+        spec = np.fft.fft(xs, n)
+        f = np.fft.fftfreq(n, 1 / SR)
+        sf = f0 / GAUSS_BANDS
+        zs = [np.fft.ifft(spec * np.exp(-0.5 * ((f - k * f0) / sf) ** 2))[pre: len(xs)]
+              for k in _release_partials(x, t_off, f0)]
+        skip = int(4 / (2 * math.pi * sf) * SR) + int(0.005 * SR)
+        return attack, decay, _release_from_partials(zs, skip, (len(x) - off) / SR, _poles_lp)
     tail = x[off:] ** 2
     sch = np.cumsum(tail[::-1])[::-1]
     sch_db = 10 * np.log10(np.maximum(sch / max(sch[0], 1e-30), 1e-30))
@@ -885,8 +1066,8 @@ def fingerprint(st, t_off, pad=False):
         out["largeur_sm_db"] = (width_time(sst), None, False, "contre-mesure hors outil (accord)")
 
     ref = f0 if note_ok else 100.0
-    ta = env_path_a(mono, t_off, ref)
-    tb = env_path_b(mono, t_off, ref)
+    ta = env_path_a(mono, t_off, ref, note_ok)
+    tb = env_path_b(mono, t_off, ref, note_ok)
     for i, key in enumerate(ENV_KEYS):
         out[key] = (ta[i], tb[i], agree(key, ta[i], tb[i], 1.0 / ref))
     tra, ca = bright_track_freq(mono, ref, fmax=16000 if note_ok else None)

@@ -34,6 +34,7 @@ Au début de chaque session, le chef d'orchestre (ou une discussion sans fiche) 
 - Toujours parler français avec Benjamin (conversation, messages, rappels).
 - Messages pour lui : français, courts, sans jargon, écoutables en audio. Humour Kaamelott bienvenu dans les changelogs.
 - Goûts de Benjamin (2026-11-25) : grand fan de Jean-Marie Poiré (Les Visiteurs et ses autres films), de la plupart des films de Christian Clavier (et de son Jurisconsulte dans Kaamelott), des Nuls, des Inconnus, des Robins des Bois et de François Pirette (2026-11-25 : « Première revendication : acceptez toutes nos revendications ! »). Clins d'œil à ces films et troupes bienvenus dans les messages et les changelogs, comme Kaamelott.
+- Répliques Kaamelott (Benjamin, 2026-11-27) : les choisir dans `docs/KAAMELOTT.md` selon le contexte, jamais deux fois la même dans une conversation, toujours le bon personnage, jamais inventées.
 - Interface en français. Code, commentaires et commits en anglais.
 - Rappels et tâches planifiées (nom et message) : toujours en français.
 - Surveillance par événement (Benjamin, 2026-11-15 ; remplace la minuterie toutes les 2 h du 2026-11-04) : attendre la fin d'une CI, d'un agent ou le message d'une discussion (notifications, attente en arrière-plan), jamais une minuterie périodique sur une discussion à grosse mémoire. Une seule minuterie de secours par chantier, à moins d'une heure, et seulement quand rien d'autre ne peut prévenir. Raison : un réveil après plus d'une heure réécrit toute la mémoire, pour environ dix fois le prix d'une action.

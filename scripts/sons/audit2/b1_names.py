@@ -133,7 +133,7 @@ WANT = {
     'Drums/Claps/808 Clap.wav': 'type=drum_oneshot, subtype=clap, role=snare, style=unlabelled, end_cut=0',
     'Drums/Hats/TR-808 Hat Closed.wav': 'type=drum_oneshot, subtype=hat_closed, role=hats, style=unlabelled, end_cut=0',
     'Drums/TR-808/Kick 01.wav': 'type=drum_oneshot, subtype=kick, role=kick, style=unlabelled, end_cut=0',
-    'Drums/808s/808 C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled, end_cut=0',
+    'Drums/808s/808 C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled, note_tag=C, end_cut=0',
     'Drums/909/Kick 01.wav': 'type=drum_oneshot, subtype=kick, role=kick, style=unlabelled, end_cut=0',
     'Drums/Kicks/Kick 808 Style.wav': 'type=drum_oneshot, subtype=kick, role=kick, style=unlabelled, end_cut=0',
     'Drum Loops/Full Drum Loop 128.wav': 'type=drum_loop, subtype=-, role=full, style=unlabelled, bpm_tag=128',
@@ -186,9 +186,9 @@ WANT = {
     'Drum Kits/Kit 01/Snare 01.wav': 'type=drum_oneshot, subtype=snare, role=snare, style=unlabelled, end_cut=0',
     'Kit 808/Kick 01.wav': 'type=drum_oneshot, subtype=kick, role=kick, style=unlabelled, end_cut=0',
     'Kits/Trap Kit 140 Am/Drums.wav': ['type=kit, subtype=-, role=-, style=trap, bpm_tag=140, key_tag=A minor', 'type=kit_stem, subtype=-, role=drums, style=trap, bpm_tag=140'],  # a drum stem carries no key (repair 7)
-    'Drums/808s/808 Long 140bpm C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled',  # end_cut blank = no verdict (repair 18)
-    'Drums/808s/808 Long C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled, end_cut=0',
-    'Drums/808s/808 Very Long C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled, end_cut=0',
+    'Drums/808s/808 Long 140bpm C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled, note_tag=C',  # end_cut blank = no verdict (repair 18)
+    'Drums/808s/808 Long C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled, note_tag=C, end_cut=0',
+    'Drums/808s/808 Very Long C.wav': 'type=drum_oneshot, subtype=kick_808, role=808, style=unlabelled, note_tag=C, end_cut=0',
     'Drums/Cymbals/Crash Long.wav': 'type=drum_oneshot, subtype=crash, role=hats, style=unlabelled, end_cut=0',
     'Bass/Sub Bass C1.wav': 'type=oneshot_melodic, subtype=-, role=bass, style=unlabelled, note_tag=C, end_cut=0',
     'Bass/Bass Shot 01.wav': 'type=oneshot_melodic, subtype=-, role=bass, style=unlabelled, end_cut=1',

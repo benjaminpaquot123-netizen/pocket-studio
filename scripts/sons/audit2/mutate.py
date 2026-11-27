@@ -36,7 +36,8 @@ def m(fam, name, old, new, f="tout.py"):
 m("type", "drum one-shot max 6 s -> 3 s", "LONG_FAMILIES else 6.0)", "LONG_FAMILIES else 3.0)")
 m("type", "melodic one-shot max 8 s -> 4 s", "dur < 8.0) or ONESHOT_DIR", "dur < 4.0) or ONESHOT_DIR")
 m("type", "bpm word makes a loop from 1.5 s -> 0.2 s", "dur >= 1.5)", "dur >= 0.2)")
-m("type", "fx word wins even on a drum name", "if FX_RX.search(text) and not drum_named:", "if FX_RX.search(text):")
+m("type", "fx word wins even on a drum name", "if FX_RX.search(text) and not drum_named and not atmos_loop:",
+  "if FX_RX.search(text) and not atmos_loop:")
 m("type", "drum loop even when a melodic word is there", '"drum_loop" if drummy and not melodic else', '"drum_loop" if drummy else')
 m("type", "kick in an 808 folder no longer kick_808", 'if fam == "kick" and re.search(r"808", inner):', 'if False and re.search(r"808", inner):')
 m("type", "long 808 no longer allowed 10 s", 'LONG_FAMILIES = ("kick_808", "crash", "cymbal", "ride")', 'LONG_FAMILIES = ("crash", "cymbal", "ride")')
@@ -78,7 +79,8 @@ m("type", "reversed crash filed as fx keeps the role hats", '                out
 m("tags", "bpm word accepted up to 180 only", "if 40 <= v <= 250:", "if 40 <= v <= 180:")
 m("tags", "bare number accepted from 100 only", "if 60 <= v <= 200:", "if 100 <= v <= 200:")
 m("tags", "flat goes up instead of down", "        pc -= 1", "        pc += 1")
-m("tags", "key without mode = minor", 'mode or "major")', 'mode or "minor")')
+m("tags", "root-only key tag ignores the heard mode (minor)", 'ref = (ref[0], k[1] if k is not None else "major")',
+  'ref = (ref[0], "minor")')
 m("tags", "'96k', '96 kHz', '24 bit' read as tempo again", "(?i:bars?|x|k|khz|hz|bits?)", "(?i:bars?|x)")
 m("tags", "'140-bpm' no longer read", r"\s*-?\s*bpm\b", r"\s*bpm\b")
 m("tags", "relative key: +3 -> +4", "(tag[0] + 3) % 12", "(tag[0] + 4) % 12")

@@ -115,7 +115,8 @@ Estimates and accuracy
 ----------------------
 Measured columns that have a tag (note, bpm, key) are compared on every
 tagged file, one row per pair in <csv_prefix>_accuracy.csv:
-  rar, type, measure, tagged, agree, half_double, relative, error_pct, usable
+  rar, type, measure, tagged, agree, half_double, relative, error_pct, usable,
+  error_fold_pct (bpm only: the error once half / double are folded onto the tag)
 agree: note within 50 cents (pitch class), bpm within 2 %, key exact. A bpm at
 half or double the tag and a relative key are near misses, counted in their
 own column and never as agreement. usable=yes only when the one-sided 95 % Wilson
@@ -182,7 +183,7 @@ TYPE_COLUMNS = {
     "drum_oneshot": [c for c in mesure.COLUMNS if c not in ("folder", "file", "sr", "channels", "dur_ms",
                                                             "peak_dbfs", "error")]
                     + ["hat_measured", "drop_start_hz", "drop_end_hz", "drop_t50_ms", "drop_t90_ms",
-                       "drop_shape", "note_measured"],
+                       "drop_shape", "note_tag", "note_measured"],
 }
 END_COLS = ["end_cut", "end_fade_ms"]
 for _t in TYPE_COLUMNS:  # tag and estimate live in the fixed columns (bpm_est, key_est)
@@ -464,6 +465,8 @@ def parse_tags(parts, typ):
                 continue  # 'Synth A 01', 'Kit B': an index or a version, not a note
             if not acc and text[m.end():].strip(" -"):
                 continue  # 'E Piano', 'G Funk Lead', 'Plan B Lead': a word, not a note (audit 2 #12)
+            if typ == "drum_oneshot" and not acc and not re.search(r"808", text):
+                continue  # 'Snare A', 'Kick 01 B': a variant letter, not a note (blind critique m2)
             lone.append((_pc(letter, acc), _is_flat(m)))
         if octaved:
             out["note"] = octaved[-1][0]
@@ -843,6 +846,18 @@ def _pack_top(folder):
     return top
 
 
+def own_style(own, pack_named):
+    """Style named inside the pack (own: path parts without the pack's wrapping folder; the pack's own
+    folder names no role and comes last for style, audit 3 #4). When the pack names a style, only the
+    title after the tempo ('_125_Soul') loses its genre (RAR 3 case 4). passe2/lance.py counts the
+    'style du pack' rows with this same function (M7)."""
+    if not pack_named:
+        return style_of("/".join(own))
+    stem = os.path.splitext(own[-1])[0]
+    cut = re.search(r"_\d{2,3}_", stem)
+    return style_of("/".join(own[:-1] + ([stem[:cut.start()]] if cut else [own[-1]])))
+
+
 def classify(rel, dur):
     """rel: path inside the pack (with or without the pack folder).
     dur: length in seconds (None for MIDI). Returns type/subtype/role/style."""
@@ -852,11 +867,7 @@ def classify(rel, dur):
     inner = "/".join(folders)  # every folder counts: "Vocals/Dry" is still a vocal (blind audit B1)
     text = (inner + "/" + name)
     own = parts[1:] if _PACK_TOP[0] and len(parts) > 1 and parts[0] == _PACK_TOP[0] else parts
-    style = style_of("/".join(own))  # the pack's own folder names no role and comes last for style (audit 3 #4)
-    if _PACK_STYLE[0] not in (None, "unlabelled"):
-        stem = os.path.splitext(own[-1])[0]
-        cut = re.search(r"_\d{2,3}_", stem)  # only the title after the tempo loses its genre (RAR 3 case 4)
-        style = style_of("/".join(own[:-1] + ([stem[:cut.start()]] if cut else [own[-1]])))
+    style = own_style(own, _PACK_STYLE[0] not in (None, "unlabelled"))
     role = role_of(name)
     if role == "-":
         for f in reversed(own[:-1]):
@@ -2351,8 +2362,12 @@ class Accuracy:
         out = []
         for (typ, m), (n, a, hd, rel) in sorted(self.d.items()):
             err = 100.0 * (n - a) / n if n else None
+            # half / double folded onto the tag: the octave slip is not a miss (critique M6);
+            # usable stays on the raw rate, the raw tempo column still holds the slipped value
+            fold = 100.0 * (n - a - hd) / n if n and m == "bpm" else None
             out.append({"type": typ, "measure": m, "tagged": n, "agree": a, "half_double": hd, "relative": rel,
-                        "error_pct": err, "usable": "yes" if n and _wilson_upper(n - a, n) < 0.05 else "no"})
+                        "error_pct": err, "usable": "yes" if n and _wilson_upper(n - a, n) < 0.05 else "no",
+                        "error_fold_pct": fold})
         return out
 
     def lines(self, typ):
@@ -2365,6 +2380,16 @@ def _bpm_agree(m, t):
     if m is None or t is None:
         return None
     return abs(m - t) / t <= 0.02
+
+
+def fold_bpm(m, t):
+    """The measured tempo folded onto the tag when heard at half or double (62.5 for 125), else unchanged."""
+    if m is None or t is None or _bpm_agree(m, t):
+        return m
+    for f in (2.0, 0.5):
+        if abs(m * f - t) / t <= 0.02:
+            return m * f
+    return m
 
 
 def _bpm_class(m, t):
@@ -2580,6 +2605,8 @@ def _measure_file(p, rel, parts, acc, rar):
             row.setdefault("bpm_tag", tags.get("bpm"))
             row.setdefault("key_tag", key_name(tags.get("key")))
             confirm_tags(row, tags)  # flats as written, lone notes and keys checked by ear
+            if typ == "drum_oneshot" and tags.get("note") is not None:
+                row["note_tag"] = spell(NOTE_NAMES[tags["note"]], tags.get("flat"))  # the label as written (m2)
             if typ in END_TYPES and row.get("bpm_tag") is not None:
                 # one hit has no tempo; the name's number only tells the fence
                 # that the hit may run on to the bar line (reunion, defect 18)
@@ -2848,7 +2875,8 @@ def main(argv=None):
                 wr.writerow({k: _fmt(r.get(k)) for k in cols})
                 total += 1
     with open("%s_accuracy.csv" % args.out, "w", newline="", encoding="utf-8") as fh:
-        wr = csv.DictWriter(fh, fieldnames=["rar", "type", "measure", "tagged", "agree", "half_double", "relative", "error_pct", "usable"])
+        wr = csv.DictWriter(fh, fieldnames=["rar", "type", "measure", "tagged", "agree", "half_double", "relative", "error_pct", "usable",
+                                           "error_fold_pct"])
         wr.writeheader()
         for r in acc.rows():
             r["rar"] = rar

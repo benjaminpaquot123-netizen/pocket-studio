@@ -487,6 +487,16 @@ def test_short_bpm_name_not_a_loop():
         check_eq("bpm-short '%s' %.1f s" % (name, dur), tout.classify(name, dur).get("type"), want)
 
 
+def test_root_only_midi_key_heard_mode():
+    """Mutation 'root-only key tag ignores the heard mode': a MIDI tagged 'C' alone and played in C major
+    is read in C major (chords I-IV-V-I, every note in the scale), not in C minor."""
+    notes = [(i * 1920, 1920, p, 100, 0)
+             for i, chord in enumerate(((60, 64, 67), (65, 69, 72), (67, 71, 74), (60, 64, 67))) for p in chord]
+    out = tout.measure_midi_bytes(st.midi_bytes(notes), {"key": (0, None)})
+    check_eq("root-only C midi: chords in the heard major", out.get("chords"), "I-IV-V-I")
+    check_eq("root-only C midi: scale fit in the heard major", out.get("scale_fit"), 1.0)
+
+
 def test_rar3_name_cases():
     """docs/sons/passe2/CAS-A-REJOUER.md, cases 1-6 and 9 (invented names, same shape as the real ones)."""
     pt = tout.parse_tags
@@ -547,7 +557,7 @@ def test_rar3_name_cases():
         tout._PACK_STYLE[0] = old
 
 
-TESTS = [test_rar3_name_cases, test_short_bpm_name_not_a_loop, test_reversed_crash_role_fx, test_mutation_survivors_2, test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
+TESTS = [test_rar3_name_cases, test_root_only_midi_key_heard_mode, test_short_bpm_name_not_a_loop, test_reversed_crash_role_fx, test_mutation_survivors_2, test_review2_limits, test_review_oneshot_limits, test_accuracy_wilson_gate, test_rf64_rifx_named, test_digital_silence_is_an_error, test_short_file_absolute_gate, test_midi_waltz_by_accents, test_drum_grid_band_bleed, test_flat_key_est_spelled_like_tag, test_kit_confirmed_tempo_reaches_all, test_oneshot_note_accuracy_50_cents, test_doc_empty_end_cut_not_clean, test_file_id_has_the_pack, test_single_root_folder_is_the_pack, test_pack_style_named, test_oneshot_with_tempo, test_lone_letter_root, test_kit_midi_key, test_drum_stem_no_key, test_bare_equal_first, test_bars_when_tempo_contradicted]
 
 
 def main():

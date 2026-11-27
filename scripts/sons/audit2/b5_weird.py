@@ -1,5 +1,5 @@
 """Batch 5: weird files, crashes, cell formats, skipped formats."""
-import os, sys, struct, shutil, subprocess
+import os, re, sys, struct, shutil, subprocess
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import *
 ROOT = os.path.join(S, "pack", "b5")  # under the work folder, never in the repository
@@ -141,5 +141,9 @@ for label, rows, con, code in SEEN:
     else:
         chk.eq(label + " error", r.get("error"), "")
         chk.near(label + " dur_s", r.get("dur_s"), DUR.get(label, 0.5), 0.01)
+        said = re.search(r"about ([0-9.]+) MB", label)
+        if said:  # the label's size must be the file's size (it once said 11.5 MB for 0.96 MB)
+            mb = float(r.get("size_kb") or 0) * 1024 / 1e6
+            chk.near(label + " size", round(mb, 3), float(said.group(1)), 0.02)
 chk.clean_repo()
 chk.done()

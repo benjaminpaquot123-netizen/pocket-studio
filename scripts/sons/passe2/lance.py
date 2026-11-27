@@ -220,12 +220,14 @@ def id_map(folder):
     return out
 
 
-def own_style(rel, top):
-    """Style named inside the pack (tout.classify: the pack's own wrapping folder does not count)."""
+def own_style(rel, top, pack_named):
+    """Style named inside the pack, read exactly as tout.classify reads it (tout.own_style: the pack's
+    own wrapping folder does not count; the title after the tempo loses its genre when the pack names
+    a style). A copy of the rule here counted one row less than tout.py (M7)."""
     parts = rel.split("/")
     if top and len(parts) > 1 and parts[0] == top:
         parts = parts[1:]
-    return tout.style_of("/".join(parts))
+    return tout.own_style(parts, pack_named)
 
 
 def read_csv(path):
@@ -278,7 +280,7 @@ def merge(plan, per_pack, rar):
                         rel = ids.get(row.get("file_id", ""))
                         if rel is None:
                             pk["unresolved"] += 1
-                        elif own_style(rel, top) == "unlabelled":
+                        elif own_style(rel, top, pk["posed"] != "unlabelled") == "unlabelled":
                             # the style came from the pack folder's name (tout.py's 'style du pack' rows)
                             pk["pack_styled"] += pk["posed"] != "unlabelled"
                             if pk["force"]:

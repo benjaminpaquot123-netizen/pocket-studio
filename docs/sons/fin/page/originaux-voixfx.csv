@@ -1,0 +1,8 @@
+slug,famille,style,statut,mesures_definitives,poids,cle,pack,dur_s,rms_dbfs,peak_dbfs,cible_dur_s,cible_rms_dbfs,cible_peak_dbfs,distance,candidats,exclus,remesure_ok
+voix_tous,voix,tous,définitive,dur_s,dur_s=1 rms_dbfs=0.5 peak_dbfs=0.5,r7-p2-c16bf7be40,r7p2,4.8,-19.31,-3.007,4.688,-19.31,-3.012,0.016,1467,,
+voix_dnb,voix,dnb,définitive,peak_dbfs,dur_s=0.5 rms_dbfs=0.5 peak_dbfs=1,r11-p2-d2b10bb3e3,r11p2,11.03,-15.6,-0.1049,11.03,-15.2,-0.1049,0.018,36,,
+effet_tous,effet,tous,définitive,dur_s rms_dbfs peak_dbfs,dur_s=1 rms_dbfs=1 peak_dbfs=1,r5-p1-5b1e76b656,r5p1,6.4,-17.03,-0.1049,7.68,-17.13,-0.1049,0.062,772,,
+effet_dnb,effet,dnb,définitive,dur_s rms_dbfs peak_dbfs,dur_s=1 rms_dbfs=1 peak_dbfs=1,r10-p1-7584a42a04,r10p1,11.03,-17.17,-0.1049,11.03,-17.16,-0.1049,0.001,88,,
+effet_dubstep,effet,dubstep,définitive,dur_s rms_dbfs peak_dbfs,dur_s=1 rms_dbfs=1 peak_dbfs=1,r8-p1-5623dc8956,r8p1,3.429,-14.65,-0.1049,3.429,-14.6,-0.1049,0.003,109,,
+effet_techno,effet,techno,définitive,dur_s rms_dbfs peak_dbfs,dur_s=1 rms_dbfs=1 peak_dbfs=1,r5-p1-93757bbc9d,r5p1,6.4,-21.22,-0.1049,6.4,-21.11,-0.5524,0.175,40,,
+effet_rave,effet,rave,définitive,dur_s,dur_s=1 rms_dbfs=0.5 peak_dbfs=0.5,r11-p3-5d84529e14,r11p3,12.39,-15.77,-0.1049,12.39,-16.12,-0.1049,0.019,45,,

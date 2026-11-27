@@ -182,7 +182,7 @@ TYPE_COLUMNS = {
     "drum_oneshot": [c for c in mesure.COLUMNS if c not in ("folder", "file", "sr", "channels", "dur_ms",
                                                             "peak_dbfs", "error")]
                     + ["hat_measured", "drop_start_hz", "drop_end_hz", "drop_t50_ms", "drop_t90_ms",
-                       "drop_shape", "note_measured"],
+                       "drop_shape", "note_tag", "note_measured"],
 }
 END_COLS = ["end_cut", "end_fade_ms"]
 for _t in TYPE_COLUMNS:  # tag and estimate live in the fixed columns (bpm_est, key_est)
@@ -464,6 +464,8 @@ def parse_tags(parts, typ):
                 continue  # 'Synth A 01', 'Kit B': an index or a version, not a note
             if not acc and text[m.end():].strip(" -"):
                 continue  # 'E Piano', 'G Funk Lead', 'Plan B Lead': a word, not a note (audit 2 #12)
+            if typ == "drum_oneshot" and not acc and not re.search(r"808", text):
+                continue  # 'Snare A', 'Kick 01 B': a variant letter, not a note (blind critique m2)
             lone.append((_pc(letter, acc), _is_flat(m)))
         if octaved:
             out["note"] = octaved[-1][0]
@@ -2588,6 +2590,8 @@ def _measure_file(p, rel, parts, acc, rar):
             row.setdefault("bpm_tag", tags.get("bpm"))
             row.setdefault("key_tag", key_name(tags.get("key")))
             confirm_tags(row, tags)  # flats as written, lone notes and keys checked by ear
+            if typ == "drum_oneshot" and tags.get("note") is not None:
+                row["note_tag"] = spell(NOTE_NAMES[tags["note"]], tags.get("flat"))  # the label as written (m2)
             if typ in END_TYPES and row.get("bpm_tag") is not None:
                 # one hit has no tempo; the name's number only tells the fence
                 # that the hit may run on to the bar line (reunion, defect 18)

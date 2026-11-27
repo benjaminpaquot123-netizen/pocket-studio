@@ -17,7 +17,9 @@ Mode "long": frame 2048, hop 512, gate -60 dB under the loudest frame.
 Mode "coup" (drum one-shots, sounds under 0.5 s): frame 512 zero-padded to
 2048, hop 128, gate -20 dB, so a hit is described by its body, not its tail.
 One-shot rolloff: one zero-padded spectrum of the body (about 2.7 Hz per bin).
-Pitch: frame 4096.
+Pitch: frame 4096, one-shots only.
+Counter-measure: librosa loads, resamples, frames and gates on its own.
+Truth: tempo and note written in file names, compared in aggregate only.
 """
 import collections
 import csv
@@ -27,6 +29,7 @@ import io
 import json
 import math
 import os
+import re
 import sys
 import zipfile
 
@@ -255,7 +258,7 @@ def ess_measure(stereo, typ, fam):
         out["effective_dur_s"] = float(es.EffectiveDuration(sampleRate=SR)(rms_env(y)))
     except Exception:
         pass
-    if typ in PITCHED or fam.endswith("/808") or fam.endswith("/bass"):
+    if pitched(typ, fam):
         yp = y[:int(PITCH_S * SR)]
         yin = es.PitchYin(frameSize=PFRAME, sampleRate=SR, minFrequency=30, maxFrequency=2000)
         f0 = []
@@ -280,32 +283,115 @@ def ess_measure(stereo, typ, fam):
 
 
 # ---------------------------------------------------------------- librosa
-def lib_measure(stereo, typ, fam):
+# The counter-measure is independent: librosa loads and resamples the file
+# itself (soundfile + soxr), with its own frames (centred STFT), its own gate
+# and its own body detection (librosa.effects.trim). Only the definitions of
+# the measures and the time grid of f0 are shared, so the two can be compared.
+LIB_BEAT_HOP = 128  # tempo lag step at 145 BPM: about 0.7 % (hop 512: 2.8 %)
+
+
+def lib_measure(data, typ, fam):
     import librosa
-    st = stereo[:, :2] if stereo.shape[1] >= 2 else np.repeat(stereo[:, :1], 2, 1)
-    y = st.mean(1).astype(np.float32)
-    S = np.abs(librosa.stft(y, n_fft=FRAME, hop_length=HOP, window="hann", center=True, pad_mode="constant"))
+    import scipy.fft
+    import scipy.signal
+    y, _ = librosa.load(io.BytesIO(data), sr=SR, mono=True, duration=MAX_S, res_type="soxr_hq")
+    y = np.asarray(y, dtype=np.float32)
+    coup = typ == "drum_oneshot" or len(y) < COUP_MAX_S * SR
+    win, hop, gate = (COUP_FRAME, COUP_HOP, COUP_GATE_DB) if coup else (FRAME, HOP, GATE_DB)
+    S = np.abs(librosa.stft(y, n_fft=FRAME, hop_length=hop, win_length=win, window="hann",
+                            center=True, pad_mode="constant"))
     cen = librosa.feature.spectral_centroid(S=S, sr=SR)[0]
     roll = librosa.feature.spectral_rolloff(S=S ** 2, sr=SR, roll_percent=0.85)[0]  # energy, as Essentia RollOff
     flat = librosa.feature.spectral_flatness(S=S)[0]
-    zcr = librosa.feature.zero_crossing_rate(y, frame_length=FRAME, hop_length=HOP, center=True)[0]
-    rms = librosa.feature.rms(y=y, frame_length=FRAME, hop_length=HOP, center=True, pad_mode="constant")[0]
+    zcr = librosa.feature.zero_crossing_rate(y, frame_length=win, hop_length=hop, center=True)[0]
+    rms = librosa.feature.rms(y=y, frame_length=win, hop_length=hop, center=True, pad_mode="constant")[0]
     n = min(len(cen), len(zcr), len(rms))
     cen, roll, flat, zcr, rms = cen[:n], roll[:n], flat[:n], zcr[:n], rms[:n]
-    on = rms > rms.max() * 10 ** (GATE_DB / 20) if rms.max() > 0 else rms > 1
-    out = {"centroid_hz": med(cen[on]), "rolloff_hz": med(roll[on]), "zcr": med(zcr[on]),
+    on = rms > rms.max() * 10 ** (gate / 20) if rms.max() > 0 else rms > 1
+    out = {"mode": "coup" if coup else "long", "dur_s": len(y) / SR,
+           "centroid_hz": med(cen[on]), "rolloff_hz": med(roll[on]), "rolloff_res_hz": SR / FRAME,
+           "zcr": med(zcr[on]),
            "flatness_db": med(10 * np.log10(np.maximum(flat[on], 1e-10))) if on.any() else None,
            "rms_db": db(float(np.sqrt(np.mean(rms[on].astype(np.float64) ** 2)))) if on.any() else None}
-    if typ in PITCHED or fam.endswith("/808") or fam.endswith("/bass"):
+    if typ in ONESHOTS and len(y) >= 16 and np.abs(y).max() > 0:
+        _, (a, b) = librosa.effects.trim(y, top_db=-gate, frame_length=win, hop_length=hop)
+        seg = y[a:min(b, a + int(BODY_MAX_S * SR))].astype(np.float64)
+        if len(seg) >= 16:
+            nf = max(BODY_NFFT, 1 << int(math.ceil(math.log2(len(seg)))))
+            p = np.abs(scipy.fft.rfft(seg * scipy.signal.get_window("hann", len(seg)), nf)) ** 2
+            c = np.cumsum(p)
+            if c[-1] > 0:
+                out["rolloff_hz"] = float(np.argmax(c >= 0.85 * c[-1])) * SR / nf
+                out["rolloff_res_hz"] = SR / nf
+    if pitched(typ, fam):
         yp = y[:int(PITCH_S * SR)]
         f0, vf, _ = librosa.pyin(yp, fmin=30, fmax=2000, sr=SR, frame_length=PFRAME, hop_length=HOP)
         f0 = np.where(vf & np.isfinite(f0), f0, np.nan)
         out["f0_hz"] = med(f0[np.isfinite(f0)])
         out["_f0"] = f0
     if typ in LOOPS and len(y) >= 4 * SR:
-        t, _ = librosa.beat.beat_track(y=y, sr=SR, hop_length=HOP)
+        t, _ = librosa.beat.beat_track(y=y, sr=SR, hop_length=LIB_BEAT_HOP)
         out["bpm"] = float(np.atleast_1d(t)[0])
     return out
+
+
+def pitched(typ, fam):
+    """f0 is measured on one-shots only (melodic, 808, bass hits), never on loops."""
+    return typ not in LOOPS and (typ in PITCHED or fam.endswith("/808") or fam.endswith("/bass"))
+
+
+# ---------------------------------------------------------------- ground truth
+NOTE = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
+_SEP = re.compile(r"[ _\-.()\[\]]+")
+_BPM = re.compile(r"(\d{2,3}(?:\.\d+)?)\s*bpm", re.I)
+_NOTE = re.compile(r"^([A-G])([#b]?)(-?\d)?(m|min|maj|minor|major)?$")
+
+
+def truth(base_name, typ):
+    """Tempo and note written in a file name, when unambiguous. Used only in
+    aggregate (never per sound in the repository)."""
+    stem = os.path.splitext(os.path.basename(base_name))[0]
+    out = {}
+    if typ in LOOPS:
+        m = _BPM.search(stem)
+        if m:
+            out["bpm"] = float(m.group(1))
+        else:
+            c = [f for f in re.split(r"[ _]+", stem) if f.isdigit() and 60 <= int(f) <= 200]
+            if len(c) == 1:
+                out["bpm"] = int(c[0])
+    if typ in ONESHOTS:
+        c = []
+        for f in _SEP.split(stem.replace(" #", "#")):
+            m = _NOTE.match(f)
+            if m and (m.group(2) or m.group(3) is not None or m.group(4)):  # a lone letter is a variant
+                c.append((NOTE[m.group(1)] + {"#": 1, "b": -1, "": 0}[m.group(2)]) % 12)
+        if len(set(c)) == 1:
+            out["note"] = c[0]
+    return out
+
+
+def measure_bytes(data, typ, fam):
+    """Both tools on one encoded file: Essentia on our decode + resample,
+    librosa on its own load."""
+    x, sr = decode(data)
+    x = x[:int(MAX_S * sr)]
+    st = resample(x, sr)
+    if st.ndim == 1:
+        st = st[:, None]
+    rec = {"sr_in": sr, "ess": ess_measure(st, typ, fam), "lib": lib_measure(data, typ, fam)}
+    a, b = rec["ess"].pop("_f0", None), rec["lib"].pop("_f0", None)
+    if a is not None and b is not None:
+        n = min(len(a), len(b))
+        a, b = a[:n], b[:n]
+        both = np.isfinite(a) & np.isfinite(b)  # frames voiced for both tools
+        rec["ess"]["f0_common_hz"] = med(a[both])
+        rec["lib"]["f0_common_hz"] = med(b[both])
+        either = np.isfinite(a) | np.isfinite(b)
+        if either.any():  # voiced for one tool only = a disagreement
+            ok = both & (np.abs(1200 * np.log2(np.where(both, a, 1) / np.where(both, b, 1))) <= 50)
+            rec["f0_frames_agree"] = float(ok.sum() / either.sum())
+    return rec
 
 
 def one(job):
@@ -318,20 +404,10 @@ def one(job):
     try:
         with zipfile.ZipFile(os.path.join(stock, sid, "archive.bin")) as z:
             data = z.read(member)
-        x, sr = decode(data)
-        x = x[:int(MAX_S * sr)]
-        st = resample(x, sr)
-        if st.ndim == 1:
-            st = st[:, None]
-        rec["sr_in"] = sr
-        rec["ess"] = ess_measure(st, typ, fam)
-        rec["lib"] = lib_measure(st, typ, fam)
-        a, b = rec["ess"].pop("_f0", None), rec["lib"].pop("_f0", None)
-        if a is not None and b is not None:
-            n = min(len(a), len(b))
-            both = np.isfinite(a[:n]) & np.isfinite(b[:n])  # frames voiced for both tools
-            rec["ess"]["f0_common_hz"] = med(a[:n][both])
-            rec["lib"]["f0_common_hz"] = med(b[:n][both])
+        rec.update(measure_bytes(data, typ, fam))
+        gt = truth(member, typ)
+        if gt:
+            rec["truth"] = gt
     except Exception as e:  # a sound that cannot be read is counted, not hidden
         rec["error"] = type(e).__name__
         if os.environ.get("ESS_DEBUG"):
@@ -366,24 +442,41 @@ STAT_KEYS = ("dur_s", "peak_db", "rms_db", "lufs", "centroid_hz", "rolloff_hz", 
              "mfcc1", "mfcc2", "mfcc3", "mfcc4", "mfcc5", "f0_hz", "bpm", "key_strength")
 
 
-def agree(k, a, b):
-    """Counter-measure tolerance, per measure (None = not comparable)."""
+def cents(a, b):
+    return 1200 * math.log2(a / b)
+
+
+BPM_FOLDS = (0.5, 2 / 3, 1, 1.5, 2)
+
+
+def agree(k, a, b, res=None):
+    """Counter-measure tolerance, per measure (None = not comparable).
+    res: the coarser spectral bin of the two measures, for rolloff."""
     if a is None or b is None:
         return None
-    if k in ("centroid_hz", "rolloff_hz"):
+    if k == "rolloff_hz":
+        return abs(a - b) <= max(0.05 * max(abs(b), 1e-9), 1.5 * (res or 0.0))
+    if k == "centroid_hz":
         return abs(a - b) <= 0.05 * max(abs(b), 1e-9) or abs(a - b) <= 25.0
     if k == "zcr":
         return abs(a - b) <= 0.05 * max(abs(b), 1e-9) or abs(a - b) <= 0.002
     if k in ("flatness_db", "rms_db"):
         return abs(a - b) <= (1.0 if k == "flatness_db" else 0.5)
     if k in ("f0_hz", "f0_common_hz"):
-        return a > 0 and b > 0 and abs(1200 * math.log2(a / b)) <= 50
-    if k == "bpm":
-        return a > 0 and b > 0 and min(abs(a * m - b) / b for m in (0.5, 1, 2)) <= 0.02
+        return a > 0 and b > 0 and abs(cents(a, b)) <= 50
+    if k == "f0_hz_octave":  # same pitch class, octave errors forgiven
+        return a > 0 and b > 0 and abs((cents(a, b) + 600) % 1200 - 600) <= 50
+    if k == "bpm":  # strict
+        return a > 0 and b > 0 and abs(a - b) / b <= 0.02
+    if k == "bpm_replie":  # half, two thirds, x1, three halves, double
+        return a > 0 and b > 0 and min(abs(a * m - b) / b for m in BPM_FOLDS) <= 0.02
     return None
 
 
-AGREE_KEYS = ("centroid_hz", "rolloff_hz", "flatness_db", "zcr", "rms_db", "f0_hz", "f0_common_hz", "bpm")
+AGREE_KEYS = ("centroid_hz", "rolloff_hz", "flatness_db", "zcr", "rms_db",
+              "f0_hz", "f0_hz_octave", "f0_common_hz", "bpm", "bpm_replie")
+SOURCE_KEY = {"f0_hz_octave": "f0_hz", "bpm_replie": "bpm"}  # folded keys read the plain value
+F0_FRAMES_OK = 0.8  # a sound's f0 tracks agree when >= 80 % of its voiced frames match
 MIN_FAMILY = 5  # a family with fewer sounds is listed, its percentiles are not
 
 
@@ -430,17 +523,43 @@ def cmd_stats(src, outdir):
     with open(os.path.join(outdir, "essentia-accord.tsv"), "w") as f:
         f.write("famille\tmesure\tcomparees\td_accord\taccord_pct\n")
         for fam in sorted(by_fam):
-            for k in AGREE_KEYS:
-                res = [agree(k, r["ess"].get(k), r["lib"].get(k)) for r in by_fam[fam]]
-                res = [x for x in res if x is not None]
+            for k in AGREE_KEYS + ("f0_trames",):
+                if k == "f0_trames":
+                    res = [r["f0_frames_agree"] >= F0_FRAMES_OK for r in by_fam[fam] if "f0_frames_agree" in r]
+                else:
+                    sk = SOURCE_KEY.get(k, k)
+                    res = [agree(k, r["ess"].get(sk), r["lib"].get(sk),
+                                 max(r["ess"].get("rolloff_res_hz") or 0, r["lib"].get("rolloff_res_hz") or 0))
+                           for r in by_fam[fam]]
+                    res = [x for x in res if x is not None]
                 if not res:
                     continue
                 tot[(k, 0)] += len(res)
                 tot[(k, 1)] += sum(res)
                 f.write("%s\t%s\t%d\t%d\t%.1f\n" % (fam, k, len(res), sum(res), 100.0 * sum(res) / len(res)))
-        for k in AGREE_KEYS:
+        for k in AGREE_KEYS + ("f0_trames",):
             if tot[(k, 0)]:
                 f.write("TOUT\t%s\t%d\t%d\t%.1f\n" % (k, tot[(k, 0)], tot[(k, 1)], 100.0 * tot[(k, 1)] / tot[(k, 0)]))
+    # Ground truth written in file names, in aggregate per type only.
+    with open(os.path.join(outdir, "essentia-verite.tsv"), "w") as f:
+        f.write("type\tmesure\tsons_avec_verite\tessentia_pct\tlibrosa_pct\n")
+        by_typ = collections.defaultdict(list)
+        for r in ok:
+            if r.get("truth"):
+                by_typ[r["fam"].split("/")[0]].append(r)
+        for typ in sorted(by_typ):
+            for k, test in (("bpm", lambda v, t: agree("bpm", v, t)),
+                            ("bpm_replie", lambda v, t: agree("bpm_replie", v, t)),
+                            ("note", lambda v, t: abs(((12 * math.log2(v / 440.0) + 9) - t + 6) % 12 - 6) <= 0.5)):
+                src, tk = ("f0_hz", "note") if k == "note" else ("bpm", "bpm")
+                rs = [r for r in by_typ[typ] if tk in r["truth"]]
+                if len(rs) < MIN_FAMILY:
+                    continue
+                pct = []
+                for tool in ("ess", "lib"):
+                    v = [test(r[tool][src], r["truth"][tk]) if r[tool].get(src) else False for r in rs]
+                    pct.append(100.0 * sum(bool(x) for x in v) / len(rs))
+                f.write("%s\t%s\t%d\t%.1f\t%.1f\n" % (typ, k, len(rs), pct[0], pct[1]))
     errs = collections.Counter(r["error"] for r in recs if "error" in r)
     print("records %d, measured %d, errors %s, families %d" % (len(recs), len(ok), dict(errs), len(by_fam)))
 

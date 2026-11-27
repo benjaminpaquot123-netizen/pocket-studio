@@ -44,9 +44,14 @@ def agree(key, a, b, period=0.0):
 
     For decay and release the floor is at least one period of the note (they last hundreds of ms).
     The attack keeps its fixed tolerance whatever the note: low notes get no extra slack."""
+    rel, floor = TOL[key]
+    if key == "attaque_s" and period > 0 and (a is None) != (b is None):
+        # None = "shorter than one period": an interval [0, period]. The other path agrees when
+        # it lies within the same fixed tolerance of that interval (the tolerance does not grow).
+        v = a if b is None else b
+        return v - period <= max(floor, rel * v)
     if a is None or b is None:
         return a is None and b is None
-    rel, floor = TOL[key]
     if key in ENV_KEYS and key != "attaque_s":
         floor = max(floor, period)
     return abs(a - b) <= max(floor, rel * max(abs(a), abs(b)))
@@ -121,6 +126,15 @@ def note_time(x):
         if cm[t] < 0.12 and cm[t] <= cm[t + 1]:
             while t + 1 < max_lag and cm[t + 1] < cm[t]:
                 t += 1
+            # Octave check: a weak sub-oscillator makes the true period twice the heard one.
+            # Correlation at half the period r = (P_even - P_odd) / P; r > 0.6 means the odd
+            # harmonics carry less than a quarter of the even ones (same rule as note_freq).
+            h = t // 2
+            if h - 2 > min_lag:
+                lo, hi = int(0.95 * h), int(1.05 * h) + 2
+                j = lo + int(np.argmin(d[lo:hi]))
+                if 1.0 - d[j] / max(w0 + wt[j], 1e-30) > 0.6:
+                    t, cm = j, d
             a, b, c = cm[t - 1], cm[t], cm[t + 1]
             den = a - 2 * b + c
             off = 0.5 * (a - c) / den if den > 0 else 0.0
@@ -143,6 +157,15 @@ def note_freq(x):
         s = logm[idx].mean()
         if s > best:
             best, best_f = s, f
+    # Octave check (same rule as note_time): odd harmonics under a quarter of the even ones
+    # = a weak sub-oscillator, the heard note is one octave up.
+    def band(fr):
+        i = int(round(fr / hz))
+        return float((mag[max(1, i - 2): i + 3] ** 2).sum()) if i + 3 < len(mag) else 0.0
+    p_odd = sum(band(k * best_f) for k in (1, 3, 5, 7))
+    p_even = sum(band(k * best_f) for k in (2, 4, 6, 8))
+    if p_odd < 0.25 * p_even:
+        best_f *= 2
     num = den = 0.0
     for k in range(1, 11):
         c = int(round(k * best_f / hz))
@@ -419,11 +442,13 @@ def _times_from_env(env, t_off):
     a90 = int(np.argmax(env[:pk + 1] >= 0.9 * top))
     attack = (a90 - a10) / SR
     lvl_off = float(np.mean(env[off - SR // 50: off]))
-    mid = math.sqrt(top * lvl_off)
+    # Decay = time constant by area: integral of (env - sustain) / (top - sustain) from the end of
+    # the attack to note-off (= tau for an exponential decay). An area averages out the ripple of
+    # beating voices, where a level crossing jumps from one beat to the next. Sustain over 200 ms.
+    lvl_s = float(np.mean(env[max(pk, off - SR // 5): off]))
     decay = None
-    if top / max(lvl_off, 1e-12) > 1.41:
-        j = pk + int(np.argmax(env[pk:off] <= mid))
-        decay = (j - pk) / SR
+    if top / max(lvl_s, 1e-12) > 1.41:
+        decay = float(np.sum(env[pk:off] - lvl_s)) / (top - lvl_s) / SR
     tail = env[off:]
     below = np.nonzero(tail <= lvl_off * 0.01)[0]
     release = below[0] / SR if len(below) else None
@@ -523,21 +548,25 @@ def attack_fit(env, t_off, sigma):
     top = float(env[pk])
     if top <= 0:
         return None
-    dec = 24  # 2 kHz is plenty: the envelope is smoothed by sigma >= a few ms
     i0 = int(np.argmax(env[:pk + 1] > 0.02 * top))
     lo = max(0, i0 - int(4 * sigma * SR))
+    # 2 kHz is plenty (the envelope is smoothed by sigma >= a few ms); long pad rises are
+    # thinned further so the grid stays bounded (at most ~1500 points, 0.1 % of the span).
+    dec = max(24, (pk - lo) // 1500)
     e = env[lo:pk + 1:dec]
     t = (lo + np.arange(len(e)) * dec) / SR
     best = (math.inf, None)
     for T in np.geomspace(0.0003, 0.6, 160):
-        t0s = np.arange(t[0] - T, t[-1], 0.00025)
-        u = t[None, :] - t0s[:, None]
-        m = (_ramp_gauss(u, sigma) - _ramp_gauss(u - T, sigma)) / T
-        g = (m @ e) / np.maximum((m * m).sum(1), 1e-30)
-        r = ((e[None, :] - g[:, None] * m) ** 2).sum(1)
-        j = int(np.argmin(r))
-        if r[j] < best[0]:
-            best = (float(r[j]), float(T))
+        t0s = np.arange(t[0] - T, t[-1], max(0.00025, T / 40, (t[-1] - t[0]) / 1500))
+        rows = max(1, 2_000_000 // len(e))  # bounded memory on long pad rises
+        for c in range(0, len(t0s), rows):
+            u = t[None, :] - t0s[c:c + rows, None]
+            m = (_ramp_gauss(u, sigma) - _ramp_gauss(u - T, sigma)) / T
+            g = (m @ e) / np.maximum((m * m).sum(1), 1e-30)
+            r = ((e[None, :] - g[:, None] * m) ** 2).sum(1)
+            j = int(np.argmin(r))
+            if r[j] < best[0]:
+                best = (float(r[j]), float(T))
     return None if best[1] is None else 0.8 * best[1]
 
 
@@ -564,7 +593,9 @@ def env_path_a(x, t_off, f0):
         if k * f0 >= 10000:
             break
         env += np.abs(_hetero(xp, k * f0, length))
-    att = attack_moments(env, t_off + PAD / SR, _box_var(length, 2))
+    # Same model as path B (ramp smoothed by the known kernel, least-squares fit), its own
+    # envelope: two boxes of one period (triangle), fitted as a Gaussian of the same variance.
+    att = attack_fit(env, t_off + PAD / SR, math.sqrt(_box_var(length, 2)))
     return resolved_attack(att, f0), decay, release
 
 
@@ -589,21 +620,29 @@ def env_path_b(x, t_off, f0):
 
 # ---------------------------------------------------------------- brightness and filter envelope
 
-def bright_track_freq(x, f0, hop_s=0.005):
-    """RMS frequency (harmonic units) per 1024-sample frame from the STFT."""
-    n, hop = 1024, int(hop_s * SR)
+def bright_frame(f0):
+    """Frame length: 1024 samples, or more so that a frame holds at least 2.5 periods (basses:
+    a shorter Hann frame leaks the fundamental towards 0 Hz and lowers the brightness)."""
+    return max(1024, 2 * int(1.25 * SR / f0))
+
+
+def bright_track_freq(x, f0, hop_s=0.005, fmax=None):
+    """RMS frequency (harmonic units) per frame (bright_frame) from the STFT, up to fmax."""
+    n, hop = bright_frame(f0), int(hop_s * SR)
     w = np.hanning(n)
     f = np.fft.rfftfreq(n, 1 / SR)
+    keep = f < (fmax or SR)
+    f = f[keep]
     out = []
     for at in range(0, len(x) - n, hop):
-        p = np.abs(np.fft.rfft(x[at: at + n] * w)) ** 2
+        p = np.abs(np.fft.rfft(x[at: at + n] * w))[keep] ** 2
         out.append(math.sqrt((f * f * p).sum() / max(p.sum(), 1e-30)) / f0)
     return np.array(out), n / 2 / SR
 
 
 def bright_track_time(x, f0, hop_s=0.005):
     """Same quantity in the time domain: RMS of the derivative over RMS of the signal (Hann frames)."""
-    n, hop = 1024, int(hop_s * SR)
+    n, hop = bright_frame(f0), int(hop_s * SR)
     w = np.hanning(n)
     # 5-point derivative, accurate to about 8 kHz at 48 kHz.
     d = np.zeros_like(x)
@@ -618,9 +657,9 @@ def bright_track_time(x, f0, hop_s=0.005):
 
 def bright_track_harm(x, f0, hop_s=0.005):
     """Independent counter: each harmonic k demodulated in the time domain (heterodyne, no FFT,
-    no derivative), RMS harmonic number sqrt(sum k^2 |a_k|^2 / sum |a_k|^2) per Hann frame of 1024
-    samples. Only the harmonics count (noise between them does not), up to 16 kHz."""
-    n, hop = 1024, int(hop_s * SR)
+    no derivative), RMS harmonic number sqrt(sum k^2 |a_k|^2 / sum |a_k|^2) per Hann frame
+    (bright_frame). Only the harmonics count (noise between them does not), up to 16 kHz."""
+    n, hop = bright_frame(f0), int(hop_s * SR)
     w2 = np.hanning(n) ** 2
     length = max(2, int(round(SR / f0)))
     p0 = np.zeros(len(x))
@@ -779,10 +818,8 @@ def fingerprint(st, t_off, pad=False):
             out["inharm_b"] = _pair("inharm_b", inharm_freq(steady, f0, strong), inharm_time(steady, f0, strong))
         else:
             out["inharm_b"] = (None, None, True, "hors mesure (désaccord ou vibrato)")
-        sp = max(sa or 0.0, sb or 0.0)
-        out["souffle_hnr_db"] = _pair("souffle_hnr_db", hnr_freq(steady, f0, sp), hnr_time(steady, f0))
-        if sp >= 3.0 or vib >= 3.0:
-            out["souffle_hnr_db"] += ("désaccord ou vibrato compté comme souffle par le contre-chemin",)
+        # Breath (HNR) is left out of the fingerprint: on our synth its two paths agreed on 4/11
+        # sounds only (detune, unison and chorus read as noise by one path, not the other).
         out["largeur_sm_db"] = _pair("largeur_sm_db", width_time(sst), width_harm(sst, f0))
     else:
         out["largeur_sm_db"] = (width_time(sst), None, False, "contre-mesure hors outil (accord)")
@@ -792,7 +829,7 @@ def fingerprint(st, t_off, pad=False):
     tb = env_path_b(mono, t_off, ref)
     for i, key in enumerate(ENV_KEYS):
         out[key] = (ta[i], tb[i], agree(key, ta[i], tb[i], 1.0 / ref))
-    tra, ca = bright_track_freq(mono, ref)
+    tra, ca = bright_track_freq(mono, ref, fmax=16000 if note_ok else None)
     trb, cb = bright_track_harm(mono, ref) if note_ok else bright_track_time(mono, ref)
     fa_ = filter_env(tra, ca, onset, t_off)
     fb_ = filter_env(trb, cb, onset, t_off)

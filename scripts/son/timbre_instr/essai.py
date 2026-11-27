@@ -75,7 +75,7 @@ def render(binary, midi, hold, total, params):
 
 
 KEYS = ["note_hz", "pente_db_oct", "pair_impair_db", "inharm_b", "desaccord_cents", "vibrato_hz",
-        "vibrato_cents", "largeur_sm_db", "souffle_hnr_db", "attaque_s", "chute_s", "relache_s",
+        "vibrato_cents", "largeur_sm_db", "attaque_s", "chute_s", "relache_s",
         "brillance_attaque", "brillance_tenue", "chute_filtre_s", "evolution_pct", "evolution_periode_s"]
 
 

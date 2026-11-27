@@ -101,8 +101,11 @@ def main():
     both("pair/impair (dB)", fp, "pair_impair_db", E.even_odd_from_amps(p))
     both("inharmonicité B", fp, "inharm_b", 0.0)
     both("attaque 10-90 % (s)", fp, "attaque_s", 0.016)
-    mid = math.sqrt(1.0 * (0.4 + 0.6 * math.exp(-(t_off - 0.02) / 0.15)))
-    both("chute (s)", fp, "chute_s", -0.15 * math.log((mid - 0.4) / 0.6))
+    # Truth: the decay definition (area from the end of the attack to note-off, sustain = mean
+    # of the last 200 ms) applied to the known envelope itself.
+    te = env_fn(np.arange(int(0.020 * SR), int(t_off * SR)) / SR)
+    lvl = float(te[-SR // 5:].mean())
+    both("chute (s)", fp, "chute_s", float((te - lvl).sum()) / (1.0 - lvl) / SR)
     both("relâchement -40 dB (s)", fp, "relache_s", 0.08 * math.log(100))
     both("désaccord (cents)", fp, "desaccord_cents", 0.0)
     both("largeur mono (dB)", fp, "largeur_sm_db", -60.0)
@@ -181,7 +184,12 @@ def main():
     nz = np.fft.irfft(spec, len(h))
     nz *= math.sqrt((h * h).mean() / (nz * nz).mean()) * 10 ** (-15 / 20)
     fp, st = E.fingerprint(stereo(0.2 * (h + nz)), t_off)
-    both("souffle HNR (dB)", fp, "souffle_hnr_db", 15.0)
+    # Breath is out of the fingerprint (paths agreed on 4/11 synth sounds): it must stay absent.
+    if "souffle_hnr_db" in fp:
+        print("  NON souffle encore dans l'empreinte")
+        FAILS.append("souffle retiré")
+    else:
+        print("  ok  souffle retiré de l'empreinte (non mesuré)")
 
     print("9. enveloppe de filtre : brillance qui retombe (tau 0.15 s)")
     f0, ca, cs, tau = 110.0, 12.0, 3.0, 0.15

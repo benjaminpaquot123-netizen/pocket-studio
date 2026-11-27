@@ -1,0 +1,10 @@
+slug,famille,style,statut,cle,pack,tempo_fabricant,dur_s,rms_dbfs,peak_dbfs,cible_dur_s,cible_rms_dbfs,cible_peak_dbfs,distance,remesure_ok
+bouclemelodique_tous,boucle mélodique,tous,définitive,r5-p1-07ddad181f,r5p1,150,6.4,-14.08,-0.1049,7.68,-14.05,-0.1049,0.104,oui
+bouclemelodique_dnb,boucle mélodique,dnb,définitive,r10-p1-0c67caebad,r10p1,174,11.03,-8.885,-0.1005,11.03,,-0.1049,0.004,à faire
+bouclemelodique_dubstep,boucle mélodique,dubstep,définitive,r9-p3-a90b72fc2a,r9p3,140,6.857,-7.245,-0.1049,6.857,-7.255,-0.1049,0.001,à faire
+bouclemelodique_techno,boucle mélodique,techno,définitive,r3-p1-4f400f88a0,r3p1,125,7.68,-14.34,-0.9995,7.68,-14.33,-0.9802,0.008,oui
+bouclebatterie_tous,boucle de batterie,tous,définitive,r5-p1-25d2443f13,r5p1,150,6.4,-17.18,-0.1049,6.858,-17.34,-0.1049,0.100,oui
+bouclebatterie_dnb,boucle de batterie,dnb,définitive,r1-p1-7515055228,r1p1,174,5.518,-15.72,-0.1,5.517,-15.02,-0.1049,0.030,à faire
+bouclebatterie_dubstep,boucle de batterie,dubstep,définitive,r1-p1-fe88e65085,r1p1,140,6.858,-12.96,-0.1,6.857,-13.54,-0.1049,0.028,à faire
+bouclebatterie_house,boucle de batterie,house,définitive,r12-p2-4e836e41f3,r12p2,125,7.68,-20.55,-0.2719,7.68,-19.93,-0.2691,0.017,à faire
+bouclebatterie_techno,boucle de batterie,techno,définitive,r5-p1-079dfe0c92,r5p1,150,6.4,-6.187,-0.1049,,,-0.1049,0.000,oui

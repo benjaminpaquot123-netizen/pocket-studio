@@ -47,7 +47,22 @@ LINES = [("basse_tous", "basse (coups)", "tous", DEF), ("basse_dnb", "basse (cou
 LINES += [("%s_tous" % r, "coup mélodique : %s" % r, "tous", EX)
           for r in ("arp", "strings", "bell", "pluck", "guitar", "brass")]
 # remeasure of the extracted file against the table (mesure.py + compare.agree): cle -> "oui" / "non"
-REMESURE = {}
+REMESURE = {
+    "r10-p1-806926203a": "oui",
+    "r10-p2-4742cddabd": "oui",
+    "r11-p1-e14187e0f9": "oui",
+    "r11-p1-f3cff6d1d1": "oui",
+    "r12-p2-3ef91a1e90": "oui",
+    "r2-p1-0fa4f9ba8c": "oui",
+    "r5-p1-420bfc4ac0": "oui",
+    "r8-p1-4e1c7e62a9": "oui",
+    "r8-p1-b20ffa9fea": "oui",
+    "r9-p1-2c772fbaa0": "oui",
+    "r9-p2-362f4ff4f2": "oui",
+    "r9-p2-7fcc5be6ac": "oui",
+    "r9-p2-b361b88c37": "oui",
+    "r9-p2-fc61b5ead8": "oui",
+}
 COLS = ["slug", "famille", "style", "statut", "cle", "pack", "dur_s", "rms_dbfs", "peak_dbfs",
         "mediane_dur_s", "mediane_rms_dbfs", "mediane_peak_dbfs", "mesures", "distance", "candidats",
         "remesure_ok"]

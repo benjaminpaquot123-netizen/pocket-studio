@@ -1,0 +1,15 @@
+slug,famille,style,statut,cle,pack,dur_s,rms_dbfs,peak_dbfs,mediane_dur_s,mediane_rms_dbfs,mediane_peak_dbfs,mesures,distance,candidats,remesure_ok
+basse_tous,basse (coups),tous,définitive,r8-p1-b20ffa9fea,r8p1,0.8571,-6.806,-0.1049,0.8571,-6.81,-0.1049,dur_s rms_dbfs peak_dbfs,0.000,749,oui
+basse_dnb,basse (coups),dnb,définitive,r10-p1-806926203a,r10p1,0.69,-12.2,-0.1444,0.8621,-11.85,-0.1049,dur_s rms_dbfs peak_dbfs,0.121,35,oui
+basse_dubstep,basse (coups),dubstep,définitive,r8-p1-4e1c7e62a9,r8p1,0.8571,-6.285,-0.1049,,-6.285,-0.1049,rms_dbfs peak_dbfs,0.000,483,oui
+basse_house,basse (coups),house,définitive,r12-p2-3ef91a1e90,r12p2,0.72,-12.95,-0.3066,,-13.2,-0.33,rms_dbfs peak_dbfs,0.052,48,oui
+basse_techno,basse (coups),techno,définitive,r5-p1-420bfc4ac0,r5p1,0.8,-12.94,-0.1049,0.8,-12.98,-0.1049,dur_s rms_dbfs peak_dbfs,0.006,30,oui
+basse_trap,basse (coups),trap,définitive,r9-p2-b361b88c37,r9p2,5,-10.66,-1.035e-06,,-10.66,-1.035e-06,rms_dbfs peak_dbfs,0.000,27,oui
+pad_tous,coup mélodique : pad,tous,définitive,r2-p1-0fa4f9ba8c,r2p1,13.71,-17.84,-0.1049,13.71,,-0.1049,dur_s peak_dbfs,0.000,61,oui
+coupdivers_tous,coup mélodique : -,tous,définitive,r11-p1-e14187e0f9,r11p1,1.106,-13.13,-0.1049,,-13.18,-0.1049,rms_dbfs peak_dbfs,0.004,88,oui
+arp_tous,coup mélodique : arp,tous,exemple,r9-p1-2c772fbaa0,r9p1,4,-23.18,-0.33,4,-23.9,-0.33,dur_s rms_dbfs peak_dbfs,0.045,20,oui
+strings_tous,coup mélodique : strings,tous,exemple,r11-p1-f3cff6d1d1,r11p1,0.6805,-12.52,-0.1049,0.7026,-12.54,-0.1049,dur_s rms_dbfs peak_dbfs,0.004,106,oui
+bell_tous,coup mélodique : bell,tous,exemple,r9-p2-7fcc5be6ac,r9p2,6.72,-23.72,-1.035e-06,6.788,-22.07,-5.175e-07,dur_s rms_dbfs peak_dbfs,0.075,12,oui
+pluck_tous,coup mélodique : pluck,tous,exemple,r10-p2-4742cddabd,r10p2,3.934,-21.41,-0.33,3.155,-21.96,-0.33,dur_s rms_dbfs peak_dbfs,0.204,12,oui
+guitar_tous,coup mélodique : guitar,tous,exemple,r9-p2-362f4ff4f2,r9p2,5.538,-17.94,0,5.76,-18.31,-1.035e-06,dur_s rms_dbfs peak_dbfs,0.045,11,oui
+brass_tous,coup mélodique : brass,tous,exemple,r9-p2-fc61b5ead8,r9p2,6.857,-13.82,0,5.572,-14.12,-5.175e-07,dur_s rms_dbfs peak_dbfs,0.126,8,oui

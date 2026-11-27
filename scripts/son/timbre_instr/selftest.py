@@ -101,11 +101,8 @@ def main():
     both("pair/impair (dB)", fp, "pair_impair_db", E.even_odd_from_amps(p))
     both("inharmonicité B", fp, "inharm_b", 0.0)
     both("attaque 10-90 % (s)", fp, "attaque_s", 0.016)
-    # Truth: the decay definition (area from the end of the attack to note-off, sustain = mean
-    # of the last 200 ms) applied to the known envelope itself.
-    te = env_fn(np.arange(int(0.020 * SR), int(t_off * SR)) / SR)
-    lvl = float(te[-SR // 5:].mean())
-    both("chute (s)", fp, "chute_s", float((te - lvl).sum()) / (1.0 - lvl) / SR)
+    # Truth: the tau of the known envelope's decay.
+    both("chute (s)", fp, "chute_s", 0.15)
     both("relâchement -40 dB (s)", fp, "relache_s", 0.08 * math.log(100))
     both("désaccord (cents)", fp, "desaccord_cents", 0.0)
     both("largeur mono (dB)", fp, "largeur_sm_db", -60.0)

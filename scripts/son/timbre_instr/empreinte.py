@@ -50,6 +50,15 @@ def agree(key, a, b, period=0.0):
         # it lies within the same fixed tolerance of that interval (the tolerance does not grow).
         v = a if b is None else b
         return v - period <= max(floor, rel * v)
+    if key == "chute_s" and {a, b} == {None, 0.0}:
+        # A decay shorter than the smoothing also gets smoothed under the 3 dB gate: below the
+        # resolution, "too short" (0.0) and "none" (None) are the same reading.
+        return True
+    if key == "chute_s" and period > 0 and (a == 0.0) != (b == 0.0) and None not in (a, b):
+        # 0.0 = "shorter than the smoothing" (at most path A's window, max(5 ms, two periods)): the other
+        # path agrees when it lies within the same tolerance of that interval.
+        v = a if b == 0.0 else b
+        return v - max(0.005, 2 * period) <= max(floor, rel * v)
     if a is None or b is None:
         return a is None and b is None
     if key in ENV_KEYS and key != "attaque_s":
@@ -87,7 +96,8 @@ def _env_rms(x, win):
 
 
 def _env_analytic(x, f0):
-    """Analytic-signal magnitude smoothed over one period (path B, no squaring)."""
+    """Analytic-signal magnitude smoothed over two periods (path B, no squaring): nulls at every
+    multiple of f0 / 2, so a sub-oscillator one octave down does not ripple the envelope."""
     n = len(x)
     spec = np.fft.fft(x)
     h = np.zeros(n)
@@ -96,7 +106,7 @@ def _env_analytic(x, f0):
     if n % 2 == 0:
         h[n // 2] = 1.0
     mag = np.abs(np.fft.ifft(spec * h))
-    return _boxcar(mag, max(int(0.004 * SR), int(round(SR / f0))), 1)
+    return _boxcar(mag, max(int(0.004 * SR), int(round(2 * SR / f0))), 1)
 
 
 # ---------------------------------------------------------------- note (two paths)
@@ -159,9 +169,11 @@ def note_freq(x):
             best, best_f = s, f
     # Octave check (same rule as note_time): odd harmonics under a quarter of the even ones
     # = a weak sub-oscillator, the heard note is one octave up.
+    # Peak power within +-f0/4 of each multiple: a detuned main oscillator does not sit
+    # exactly on twice the sub's harmonics, a fixed +-2 bin band misses it.
     def band(fr):
-        i = int(round(fr / hz))
-        return float((mag[max(1, i - 2): i + 3] ** 2).sum()) if i + 3 < len(mag) else 0.0
+        lo, hi = max(1, int((fr - 0.25 * best_f) / hz)), int((fr + 0.25 * best_f) / hz) + 1
+        return float(mag[lo:hi].max() ** 2) if hi < len(mag) else 0.0
     p_odd = sum(band(k * best_f) for k in (1, 3, 5, 7))
     p_even = sum(band(k * best_f) for k in (2, 4, 6, 8))
     if p_odd < 0.25 * p_even:
@@ -423,7 +435,7 @@ def vibrato_time(x, f0, k):
 
 # ---------------------------------------------------------------- envelope
 
-def _times_from_env(env, t_off):
+def _times_from_env(env, t_off, skip=0):
     """Attack 10-90 %, decay to the midway dB level, release to -40 dB after note-off (crossings)."""
     off = int(t_off * SR)
     pk = int(np.argmax(env[:off]))
@@ -442,19 +454,60 @@ def _times_from_env(env, t_off):
     a90 = int(np.argmax(env[:pk + 1] >= 0.9 * top))
     attack = (a90 - a10) / SR
     lvl_off = float(np.mean(env[off - SR // 50: off]))
-    # Decay = time constant by area: integral of (env - sustain) / (top - sustain) from the end of
-    # the attack to note-off (= tau for an exponential decay). An area averages out the ripple of
-    # beating voices, where a level crossing jumps from one beat to the next. Sustain over 200 ms.
-    lvl_s = float(np.mean(env[max(pk, off - SR // 5): off]))
+    # Decay = time constant of an exponential to a sustain, s + a * exp(-t / tau), fitted by least
+    # squares from just after the attack (skip = the envelope's own smoothing, so the rounded top
+    # does not count) to note-off. A fit averages out the ripple of beating voices, does not
+    # depend on the exact top value (which the smoothing lowers differently on each path) and its
+    # truth is the tau of the envelope itself. No decay when the top is under 3 dB above the
+    # sustain, when the fit finds no falling exponential, or when tau sits on the grid's edge.
     decay = None
+    lvl_s = float(np.mean(env[max(pk, off - SR // 5): off]))
     if top / max(lvl_s, 1e-12) > 1.41:
-        decay = float(np.sum(env[pk:off] - lvl_s)) / (top - lvl_s) / SR
+        i0 = min(pk + skip, off - 1)
+        if (env[i0] - lvl_s) / (top - lvl_s) < math.exp(-1):
+            # More than one tau already went by inside the smoothing: the decay is real but
+            # shorter than this path can resolve. 0.0 = "shorter than the smoothing" (see agree).
+            decay = 0.0
+        else:
+            decay = _decay_fit(env, i0, off)
     tail = env[off:]
     below = np.nonzero(tail <= lvl_off * 0.01)[0]
     release = below[0] / SR if len(below) else None
     if lvl_off < 0.01 * top:
         release = None  # the note had already died out (pluck): no release to measure
     return attack, decay, release
+
+
+def _decay_fit(env, i0, off):
+    """tau of env ~ s + a * exp(-(t - t0) / tau) over [i0, off), a > 0; grid on tau, s and a by
+    linear least squares. None when nothing falls or tau is at an edge of the grid."""
+    dec = max(1, (off - i0) // 2000)
+    e = env[i0:off:dec]
+    if len(e) < 20:
+        return None
+    t = np.arange(len(e)) * dec / SR
+    taus = np.geomspace(0.003, 10.0, 300)
+    flat = float(((e - e.mean()) ** 2).sum())
+    best = (math.inf, None, 0.0)
+    for k, tau in enumerate(taus):
+        g = np.exp(-t / tau)
+        A = np.stack((np.ones_like(t), g), 1)
+        coef, *_ = np.linalg.lstsq(A, e, rcond=None)
+        if coef[0] < 0:
+            # The sustain cannot be negative: a long, almost straight fall would otherwise trade a
+            # negative sustain against tau freely. Refit with s = 0 (a plain exponential).
+            coef = np.array([0.0, float(g @ e) / float(g @ g)])
+        r = float(((A @ coef - e) ** 2).sum())
+        if r < best[0]:
+            best = (r, k, float(coef[1]))
+    r, k, a = best
+    if k is None or a <= 0 or k in (0, len(taus) - 1):
+        return None
+    if r > 0.5 * flat:
+        return None  # the exponential explains under half of the motion: a wave, not a decay
+    # A tau longer than the stretch it is fitted on is not measurable (the fall looks straight
+    # and any long tau fits): report it as that stretch, "at least as slow as the held note".
+    return float(min(taus[k], (off - i0) / SR))
 
 
 def _rise_peak(env, t_off):
@@ -585,8 +638,10 @@ def resolved_attack(att, f0):
 def env_path_a(x, t_off, f0):
     """Sliding RMS for decay and release; attack from the demodulated harmonics (no squaring)."""
     win = max(int(0.005 * SR), int(2 * SR / f0))
-    _, decay, release = _times_from_env(_env_rms(x, win), t_off)
-    length = max(2, int(round(SR / f0)))
+    _, decay, release = _times_from_env(_env_rms(x, win), t_off, win)
+    # Boxes of TWO periods: nulls at every multiple of f0 / 2, so a sub-oscillator one octave
+    # down (its odd harmonics sit half-way between ours) does not leak in and ripple the envelope.
+    length = max(2, int(round(2 * SR / f0)))
     xp = np.concatenate((np.zeros(PAD), x[: int(t_off * SR)]))
     env = np.zeros(len(xp))
     for k in range(1, 13):
@@ -602,7 +657,7 @@ def env_path_a(x, t_off, f0):
 def env_path_b(x, t_off, f0):
     """Hilbert envelope; release from the Schroeder backward integral (slope fit -5..-25 dB)."""
     env = _env_analytic(x, f0)
-    _, decay, rel = _times_from_env(env, t_off)
+    _, decay, rel = _times_from_env(env, t_off, max(int(0.004 * SR), int(round(2 * SR / f0))))
     attack = resolved_attack(attack_gauss(x, t_off, f0), f0)
     off = int(t_off * SR)
     if rel is None and float(np.mean(env[off - SR // 50: off])) < 0.01 * float(env[:off].max()):

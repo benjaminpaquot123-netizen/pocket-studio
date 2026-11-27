@@ -131,6 +131,15 @@ def resample(x, sr):
     return np.stack([rs(np.ascontiguousarray(x[:, c], dtype=np.float32)) for c in range(x.shape[1])], 1)
 
 
+def rms_env(y, win_s=0.010):
+    """Centred moving RMS over win_s, one value per sample (float32)."""
+    n = max(1, int(win_s * SR))
+    c = np.concatenate(([0.0], np.cumsum(np.asarray(y, dtype=np.float64) ** 2)))
+    lo = np.clip(np.arange(len(y)) - n // 2, 0, len(y))
+    hi = np.clip(lo + n, 0, len(y))
+    return np.sqrt((c[hi] - c[lo]) / n).astype(np.float32)
+
+
 def db(v):
     return 20 * math.log10(v) if v > 0 else None
 
@@ -196,7 +205,9 @@ def ess_measure(stereo, typ, fam):
     try:
         env = es.Envelope(sampleRate=SR)(y)
         out["log_attack"] = float(es.LogAttackTime(sampleRate=SR)(env)[0])
-        out["effective_dur_s"] = float(es.EffectiveDuration(sampleRate=SR)(y))
+        # EffectiveDuration wants an envelope, not the raw signal; Envelope's
+        # default 1.5 s release would hold it up, so a 10 ms RMS envelope.
+        out["effective_dur_s"] = float(es.EffectiveDuration(sampleRate=SR)(rms_env(y)))
     except Exception:
         pass
     if typ in PITCHED or fam.endswith("/808") or fam.endswith("/bass"):

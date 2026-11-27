@@ -61,3 +61,5 @@
 | --- | --- | --- | --- |
 | [FDK AAC](https://github.com/nu774/fdkaac) (`fdkaac`) | paquet système Ubuntu 24.04 | Licence FDK AAC (Fraunhofer) | Matrice des exports (`scripts/export-matrix.sh`) : encodage M4A de contrôle |
 | [FFmpeg](https://ffmpeg.org) | 6.1.1 (paquet système) | LGPL-2.1+/GPL-2+ | Relecture des fichiers exportés, décodage MP3 du contrôle sur vraie chanson |
+| [Essentia](https://essentia.upf.edu) (`essentia`, pip) | 2.1b6.dev1389 (dernière sur PyPI) | AGPL-3.0-only | Mesure de toute la base de sons hors appli (`scripts/son/essentia/base.py`), venv isolé, rien dans l'APK |
+| [librosa](https://librosa.org) (pip) | 1.0.1 (dernière sur PyPI) | ISC | Contre-mesure des mesures Essentia (`scripts/son/essentia/base.py`), hors appli |

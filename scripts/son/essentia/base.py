@@ -168,7 +168,11 @@ def ess_measure(stereo, typ, fam):
         p = (s ** 2).astype(np.float32)
         F["lo"].append(bands[0](p)), F["mi"].append(bands[1](p)), F["hi"].append(bands[2](p))
         M.append(mfcc(s)[1])
-    F = {k: np.asarray(v, dtype=np.float64) for k, v in F.items()}
+    # FrameGenerator adds one trailing frame (mostly padding) beyond the centred
+    # frames k*HOP, k <= len/HOP; drop it so short one-shots are not skewed.
+    nf = 1 + len(y) // HOP
+    F = {k: np.asarray(v[:nf], dtype=np.float64) for k, v in F.items()}
+    M = M[:nf]
     on = F["rms"] > F["rms"].max() * 10 ** (GATE_DB / 20) if F["rms"].max() > 0 else F["rms"] > 1
     out["active_frames"] = int(on.sum())
     out["centroid_hz"] = med(F["cen"][on])

@@ -7,16 +7,22 @@
 Inputs: the passe-2 tables (docs/sons/passe2/tout/*.csv, written by scripts/sons/passe2/fin/tables.py)
 and the blind counter-measure (docs/sons/passe2/verif/rar*.csv, joined by `cle`).
 
-A figure is "définitive" only when ALL hold:
-  - at least MIN_N sounds and MIN_PACKS distinct packs (rar + pack);
-  - its column was counter-measured on at least MIN_N of these same sounds with >= ACCORD agreement
-    (the counter-measure's own tolerance, docs/sons/passe2/verif/TOLERANCES.md).
-The drum-loop tempo is read on the name tag (bpm_tag), and only from loops whose audio estimate,
-folded to half / double, agrees with the tag (bpm_gap_folded_pct <= FOLD_TOL): two independent paths,
-the share of loops in agreement must be >= TEMPO_ACCORD.
+A level figure is "définitive" only when ALL hold on the sounds of its line (rule hardened 2026-11-27):
+  1. at least MIN_N sounds;
+  2. at least MIN_PACKS packs (rar + pack) that each hold at least PACK_MIN sounds (column packs_5);
+  3. no pack holds more than MAX_SHARE of the sounds (column part_pack_max, in %);
+  4. its column was counter-measured on at least MIN_N of these same sounds with >= ACCORD agreement
+     (the counter-measure's own tolerance, docs/sons/passe2/verif/TOLERANCES.md).
+Otherwise: "pas de cible, on garde le son actuel", with the reason in column raison.
+The drum-loop tempo has no counter-measure, so it is never "définitive". It gets its own status,
+"tempo du fabricant sûr": the tempo written by the pack maker (bpm_tag), confirmed by our audio estimate
+folded to half / double (bpm_gap_folded_pct <= FOLD_TOL). One vote per pack: the median tag of the
+confirmed loops of each pack holding at least PACK_MIN of them. Sure only when at least MIN_PACKS packs
+vote, all votes lie within TEMPO_SPREAD of each other, and >= TEMPO_ACCORD of the tagged loops that have
+an estimate are confirmed. Column sons = every tagged loop; column accord = confirmed / with an estimate.
 Never a target on: the estimated key, the raw tempo estimate, the note of a melodic sound
 (f0_hz: 81 % agreement only), nor any column the counter-measure did not check (MIDI, voice pitch,
-envelopes): those rows are written with status "pas de cible" and the reason.
+envelopes).
 """
 import argparse
 import csv
@@ -30,8 +36,11 @@ TABLES = os.path.join(ROOT, "docs/sons/passe2/tout")
 VERIF = os.path.join(ROOT, "docs/sons/passe2/verif")
 OUT = os.path.join(ROOT, "docs/sons/fin/cibles-autres-definitives.tsv")
 MIN_N, MIN_PACKS, ACCORD, TEMPO_ACCORD, FOLD_TOL = 20, 2, 0.98, 0.90, 2.0
-COLS = ["famille", "style", "sons", "packs", "liste_packs", "mesure",
-        "p10", "p25", "mediane", "p75", "p90", "statut"]
+PACK_MIN, MAX_SHARE, CARRIED, TEMPO_SPREAD = 5, 0.90, 0.75, 0.02
+DEF, KEEP = "définitive", "pas de cible, on garde le son actuel"
+TEMPO_SURE, TEMPO_NOT = "tempo du fabricant sûr", "pas de tempo du fabricant sûr"
+COLS = ["famille", "style", "sons", "packs", "packs_5", "part_pack_max", "liste_packs", "mesure",
+        "p10", "p25", "mediane", "p75", "p90", "accord", "statut", "raison"]
 LEVEL = ["dur_s", "rms_dbfs", "peak_dbfs"]  # counter-measured on every audio file
 # family name -> (table, row filter, measures). A measure is a column or (label, function(row)).
 NOT_CHECKED = "pas de cible (colonne non contre-mesurée)"
@@ -97,43 +106,86 @@ def accord(rows, col, vidx):
         if v in ("yes", "no"):
             seen += 1
             ok += v == "yes"
-    return seen, (ok / seen if seen else 0.0)
+    return seen, ok
 
 
-def line(fam, style, rows, label, vals, statut):
-    packs = sorted({"r%s%s" % (r["rar"], r["pack"]) for r in rows})
+def pack_of(r):
+    return "r%s%s" % (r["rar"], r["pack"])
+
+
+def pack_counts(rows):
+    c = {}
+    for r in rows:
+        c[pack_of(r)] = c.get(pack_of(r), 0) + 1
+    return c
+
+
+def line(fam, style, rows, label, vals):
+    c = pack_counts(rows)
     q = [pct(vals, x) for x in (0.10, 0.25, 0.50, 0.75, 0.90)]
-    return dict(zip(COLS, [fam, style, len(vals), len(packs), " ".join(packs), label]
-                    + ["" if v is None else "%.4g" % v for v in q] + [statut]))
+    share = max(c.values()) / len(rows) if rows else 0.0
+    return dict(zip(COLS, [fam, style, len(rows), len(c), sum(v >= PACK_MIN for v in c.values()),
+                           "%d" % round(100 * share) if rows else "", " ".join(sorted(c)), label]
+                    + ["" if v is None else "%.4g" % v for v in q] + ["", "", ""]))
+
+
+def spread_ok(votes):
+    return len(votes) >= MIN_PACKS and max(votes) <= min(votes) * (1 + TEMPO_SPREAD)
+
+
+def tempo_line(fam, style, rows):
+    tagged = [r for r in rows if fnum(r.get("bpm_tag"))]
+    est = [r for r in tagged if fnum(r.get("bpm_gap_folded_pct")) is not None]
+    good = [r for r in est if fnum(r["bpm_gap_folded_pct"]) <= FOLD_TOL]
+    out = line(fam, style, tagged, "tempo du fabricant", [fnum(r["bpm_tag"]) for r in good])
+    out["accord"] = "%d/%d" % (len(good), len(est))
+    by = {}
+    for r in good:
+        by.setdefault(pack_of(r), []).append(fnum(r["bpm_tag"]))
+    votes = {p: pct(v, 0.5) for p, v in by.items() if len(v) >= PACK_MIN}
+    seen = ", ".join("%s %.4g (%d)" % (p, votes[p], len(by[p])) for p in sorted(votes)) or "aucun"
+    share = len(good) / len(est) if est else 0.0
+    why = []
+    if style == "tous":
+        why.append("tempos de styles différents mélangés")
+    if len(votes) < MIN_PACKS:
+        why.append("%d pack d'au moins %d boucles confirmées" % (len(votes), PACK_MIN))
+    elif not spread_ok(list(votes.values())):
+        why.append("pas de tempo unique")
+    if share < TEMPO_ACCORD:
+        why.append("étiquette et estimation d'accord %d %% < %d %%" % (round(100 * share), round(100 * TEMPO_ACCORD)))
+    out["statut"] = TEMPO_NOT if why else TEMPO_SURE
+    out["raison"] = "; ".join(why + ["votes " + seen])
+    return out
 
 
 def target(fam, style, rows, meas, vidx):
     rows = [r for r in rows if not r.get("error")]
     if meas == "tempo":
-        tagged = [r for r in rows if fnum(r.get("bpm_tag"))]
-        good = [r for r in tagged if fnum(r.get("bpm_gap_folded_pct")) is not None
-                and fnum(r["bpm_gap_folded_pct"]) <= FOLD_TOL]
-        share = len(good) / len(tagged) if tagged else 0.0
-        vals = [fnum(r["bpm_tag"]) for r in good]
-        out = line(fam, style, good, "tempo étiqueté (accord replié %d %%)" % round(100 * share), vals, "")
-        ok = share >= TEMPO_ACCORD and style != "tous"
-        reason = ("" if ok else " (tempos de styles différents mélangés)" if style == "tous"
-                  else " (étiquette et estimation repliée d'accord < %d %%)" % round(100 * TEMPO_ACCORD))
-    else:
-        label, fn = (meas, None) if isinstance(meas, str) else meas
-        fn = fn or (lambda r, c=label: fnum(r.get(c)))
-        kept = [(r, fn(r)) for r in rows]
-        kept = [(r, v) for r, v in kept if v is not None]
-        seen, share = accord([r for r, _ in kept], label, vidx)
-        out = line(fam, style, [r for r, _ in kept], label, [v for _, v in kept], "")
-        ok = seen >= MIN_N and share >= ACCORD
-        reason = "" if ok else (" (contre-mesure %d %% sur %d)" % (round(100 * share), seen) if seen
-                                else " (colonne non contre-mesurée)")
-    if out["sons"] >= MIN_N and out["packs"] >= MIN_PACKS and ok:
-        out["statut"] = "définitive"
-    else:
-        small = out["sons"] < MIN_N or out["packs"] < MIN_PACKS
-        out["statut"] = "pas de cible" + (" (n %d, %d packs)" % (out["sons"], out["packs"]) if small else "") + reason
+        return tempo_line(fam, style, rows)
+    label, fn = (meas, None) if isinstance(meas, str) else meas
+    fn = fn or (lambda r, c=label: fnum(r.get(c)))
+    kept = [(r, fn(r)) for r in rows]
+    kept = [(r, v) for r, v in kept if v is not None]
+    seen, ok = accord([r for r, _ in kept], label, vidx)
+    out = line(fam, style, [r for r, _ in kept], label, [v for _, v in kept])
+    out["accord"] = "%d/%d" % (ok, seen) if seen else ""
+    why = []
+    if out["sons"] < MIN_N:
+        why.append("%d sons < %d" % (out["sons"], MIN_N))
+    if out["packs_5"] < MIN_PACKS:
+        why.append("%d pack(s) d'au moins %d sons" % (out["packs_5"], PACK_MIN))
+    biggest = max(pack_counts([r for r, _ in kept]).values()) if kept else 0
+    if kept and biggest > MAX_SHARE * out["sons"]:
+        why.append("un pack pèse %s %% > %d %%" % (out["part_pack_max"], round(100 * MAX_SHARE)))
+    if not seen:
+        why.append("colonne non contre-mesurée")
+    elif seen < MIN_N or ok < ACCORD * seen:
+        why.append("contre-mesure %d/%d" % (ok, seen))
+    out["statut"] = KEEP if why else DEF
+    out["raison"] = "; ".join(why)
+    if not why and biggest > CARRIED * out["sons"]:
+        out["raison"] = "portée surtout par un pack"
     return out
 
 
@@ -270,8 +322,9 @@ def main(argv=None):
         return selftest()
     rows = build(a.tables, a.verif)
     write(rows, a.out)
-    n = sum(r["statut"] == "définitive" for r in rows)
-    print("ok: %d lines, %d définitives -> %s" % (len(rows), n, os.path.relpath(a.out, ROOT)))
+    n = sum(r["statut"] == DEF for r in rows)
+    t = sum(r["statut"] == TEMPO_SURE for r in rows)
+    print("ok: %d lines, %d définitives, %d tempos sûrs -> %s" % (len(rows), n, t, os.path.relpath(a.out, ROOT)))
     return 0
 
 

@@ -25,6 +25,10 @@ REPO = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
 sys.path.insert(0, HERE)
 import fakerar  # noqa: E402
 import lance  # noqa: E402
+import noms  # noqa: E402
+
+# the neutral test packs are forced from the command line; the built-in table holds hashed titles
+FORCE = ["--force-style", r"acid\W*rave=techno", "--force-style", "petals=lofi"]
 
 SR = 44100
 FAILS = []
@@ -64,21 +68,21 @@ def midi(path):
 
 
 def build(src):
-    a = os.path.join(src, "Bundle", "Ghosthack - Blood Rave")
-    wav(os.path.join(a, "One Shots", "Kicks", "BR Kick 01.wav"), "kick", 0.4)
-    wav(os.path.join(a, "One Shots", "Kicks", "BR Kick 02.wav"), "kick", 0.5)
-    wav(os.path.join(a, "Loops", "Bass Loops", "BR Bass Loop 01 120 BPM Am.wav"), "loop", 4.0)
-    wav(os.path.join(a, "House Stabs", "BR Stab 01 C.wav"), "tone", 0.6)  # inner folder names a style: it wins
-    midi(os.path.join(a, "MIDI", "BR Melody 01 120 BPM Am.mid"))
+    a = os.path.join(src, "Bundle", "Label - Acid Rave")
+    wav(os.path.join(a, "One Shots", "Kicks", "AR Kick 01.wav"), "kick", 0.4)
+    wav(os.path.join(a, "One Shots", "Kicks", "AR Kick 02.wav"), "kick", 0.5)
+    wav(os.path.join(a, "Loops", "Bass Loops", "AR Bass Loop 01 120 BPM Am.wav"), "loop", 4.0)
+    wav(os.path.join(a, "House Stabs", "AR Stab 01 C.wav"), "tone", 0.6)  # inner folder names a style: it wins
+    midi(os.path.join(a, "MIDI", "AR Melody 01 120 BPM Am.mid"))
     k = os.path.join(a, "Construction Kits", "Kit 01 120 BPM Am")
-    wav(os.path.join(k, "BR Kit 01 Drums 120 BPM Am.wav"), "loop", 4.0)
-    wav(os.path.join(k, "BR Kit 01 Bass 120 BPM Am.wav"), "loop", 4.0)
-    c = os.path.join(src, "Bundle", "Ghosthack - Cherry Blossom")  # forced lofi, no inner style folder
-    wav(os.path.join(c, "One Shots", "CB Kick 01.wav"), "kick", 0.3)
-    wav(os.path.join(c, "Loops", "CB Keys Loop 01 90 BPM C.wav"), "loop", 2.0)
-    midi(os.path.join(c, "MIDI", "CB Chords 01 90 BPM C.mid"))
-    b = os.path.join(src, "Bundle", "Ghosthack - Riddim Riot")
-    wav(os.path.join(b, "Loops", "RR Drum Loop 01 120 BPM.wav"), "loop", 4.0)
+    wav(os.path.join(k, "AR Kit 01 Drums 120 BPM Am.wav"), "loop", 4.0)
+    wav(os.path.join(k, "AR Kit 01 Bass 120 BPM Am.wav"), "loop", 4.0)
+    c = os.path.join(src, "Bundle", "Label - Petals")  # forced lofi, no inner style folder
+    wav(os.path.join(c, "One Shots", "PT Kick 01.wav"), "kick", 0.3)
+    wav(os.path.join(c, "Loops", "PT Keys Loop 01 90 BPM C.wav"), "loop", 2.0)
+    midi(os.path.join(c, "MIDI", "PT Chords 01 90 BPM C.mid"))
+    b = os.path.join(src, "Bundle", "Label - Riddim Pack")
+    wav(os.path.join(b, "Loops", "RP Drum Loop 01 120 BPM.wav"), "loop", 4.0)
     with open(os.path.join(b, "Preset 01.fxp"), "wb") as fh:
         fh.write(b"CcnK" + b"\0" * 60)
     os.makedirs(os.path.join(src, "Bundle", "Docs"))
@@ -92,16 +96,16 @@ def pack_forms(base):
     a wrapper folder holding packs gives each pack; mixed layouts too."""
     names = lambda ps: [os.path.basename(p) for p in ps]
     one = os.path.join(base, "form-one")
-    pk = os.path.join(one, "Ghosthack - Blood Rave")
-    wav(os.path.join(pk, "Loops", "BR Loop 01 120 BPM.wav"), "loop", 1.0)
-    midi(os.path.join(pk, "MIDI", "BR Melody 01.mid"))
-    wav(os.path.join(pk, "One-Shots", "Kicks", "BR Kick 01.wav"), "kick", 0.2)
-    check(names(lance.find_packs(one)) == ["Ghosthack - Blood Rave"], "single pack at the root = 1 pack, its own name")
+    pk = os.path.join(one, "Label - Acid Rave")
+    wav(os.path.join(pk, "Loops", "AR Loop 01 120 BPM.wav"), "loop", 1.0)
+    midi(os.path.join(pk, "MIDI", "AR Melody 01.mid"))
+    wav(os.path.join(pk, "One-Shots", "Kicks", "AR Kick 01.wav"), "kick", 0.2)
+    check(names(lance.find_packs(one)) == ["Label - Acid Rave"], "single pack at the root = 1 pack, its own name")
     gen = os.path.join(base, "form-samples")
-    pk = os.path.join(gen, "Ghosthack - Riddim Riot", "Samples")
-    wav(os.path.join(pk, "Drum Loops", "RR Loop 01.wav"), "loop", 1.0)
-    midi(os.path.join(pk, "MIDI", "RR Melody 01.mid"))
-    check(names(lance.find_packs(gen)) == ["Ghosthack - Riddim Riot"], "pack/Samples/<categories> = 1 pack, pack name kept")
+    pk = os.path.join(gen, "Label - Riddim Pack", "Samples")
+    wav(os.path.join(pk, "Drum Loops", "RP Loop 01.wav"), "loop", 1.0)
+    midi(os.path.join(pk, "MIDI", "RP Melody 01.mid"))
+    check(names(lance.find_packs(gen)) == ["Label - Riddim Pack"], "pack/Samples/<categories> = 1 pack, pack name kept")
     wrap = os.path.join(base, "form-wrap", "Bundle")
     for n in ("Pack A", "Pack B"):
         wav(os.path.join(wrap, n, "Loops", "L 01.wav"), "loop", 1.0)
@@ -109,12 +113,12 @@ def pack_forms(base):
     os.makedirs(os.path.join(wrap, "Docs"))
     check(names(lance.find_packs(os.path.dirname(wrap))) == ["Pack A", "Pack B"], "wrapper of two packs = 2 packs")
     mix = os.path.join(base, "form-mix")
-    pk = os.path.join(mix, "Ghosthack - Riddim Riot")
-    wav(os.path.join(pk, "Loops", "RR Loop 01.wav"), "loop", 1.0)
-    midi(os.path.join(pk, "02. MIDI", "RR Melody 01.mid"))
-    wav(os.path.join(pk, "Bonus Content", "RR Extra 01.wav"), "tone", 0.3)
-    wav(os.path.join(pk, "RR Kit 01 140 BPM", "RR Kit 01 Drums.wav"), "loop", 1.0)
-    check(names(lance.find_packs(mix)) == ["Ghosthack - Riddim Riot"], "pack with category and other folders = 1 pack")
+    pk = os.path.join(mix, "Label - Riddim Pack")
+    wav(os.path.join(pk, "Loops", "RP Loop 01.wav"), "loop", 1.0)
+    midi(os.path.join(pk, "02. MIDI", "RP Melody 01.mid"))
+    wav(os.path.join(pk, "Bonus Content", "RP Extra 01.wav"), "tone", 0.3)
+    wav(os.path.join(pk, "RP Kit 01 140 BPM", "RP Kit 01 Drums.wav"), "loop", 1.0)
+    check(names(lance.find_packs(mix)) == ["Label - Riddim Pack"], "pack with category and other folders = 1 pack")
     mix2 = os.path.join(base, "form-mix2")
     wav(os.path.join(mix2, "Pack A", "Loops", "L 01.wav"), "loop", 1.0)
     wav(os.path.join(mix2, "Pack B", "B 01.wav"), "tone", 0.3)
@@ -132,7 +136,28 @@ def run(args, env=None):
                           env=env)
 
 
+def hashed_titles():
+    """Bought pack titles live in the code as hashes only (noms.py); they still match whole words."""
+    k = noms.key("Pack B")
+    check(k.startswith("sha:") and len(k) == 20, "noms.key gives sha:<16 hex>")
+    check(noms.matcher(k)("Label - Pack-B Vol 2") and not noms.matcher(k)("Label - Pack Bass"),
+          "a hashed title matches as whole words only")
+    check(all(re_ok(p) for p, st in lance.FORCES), "FORCES: regex or sha:<16 hex>")
+    old = lance.FORCES
+    lance.FORCES = [(k, "lofi")] + old
+    try:
+        check(lance.forced_style("Label - Pack B", []) == "lofi", "a hashed FORCES entry forces its style")
+        check(lance.forced_style("Label - Pack B", [("pack", "house")]) == "house", "the command line wins")
+    finally:
+        lance.FORCES = old
+
+
+def re_ok(p):
+    return (p.startswith("sha:") and len(p) == 20 and all(c in "0123456789abcdef" for c in p[4:])) or not p.startswith("sha:")
+
+
 def main():
+    hashed_titles()
     if not shutil.which("unrar"):
         print("FAIL unrar missing (apt-get update && apt-get install -y unrar)")
         return 1
@@ -147,16 +172,16 @@ def main():
         check(subprocess.run(["unrar", "t", "-idq", rar]).returncode == 0, "fake archive passes unrar t")
 
         env = dict(os.environ, PASSE2_WORK=work)
-        r = run(["--rar", "7", "--url", "file://" + rar, "--out", out, "--plan"], env)
+        r = run(["--rar", "7", "--url", "file://" + rar, "--out", out, "--plan"] + FORCE, env)
         check(r.returncode == 0, "--plan exits 0 (%s)" % r.stderr.strip()[-200:])
-        check("p1" in r.stdout and "Blood Rave" in r.stdout and "forced techno" in r.stdout, "--plan lists p1 forced techno")
-        check("Riddim Riot" in r.stdout and "dubstep" in r.stdout, "--plan lists p3 dubstep")
-        check("Cherry Blossom" in r.stdout and "forced lofi" in r.stdout, "--plan lists p2 forced lofi")
+        check("p1" in r.stdout and "Acid Rave" in r.stdout and "forced techno" in r.stdout, "--plan lists p1 forced techno")
+        check("Riddim Pack" in r.stdout and "dubstep" in r.stdout, "--plan lists p3 dubstep")
+        check("Petals" in r.stdout and "forced lofi" in r.stdout, "--plan lists p2 forced lofi")
         check("Docs" not in r.stdout, "a folder without sounds is no pack")
         check(os.listdir(out) == [], "--plan writes nothing")
         check(os.listdir(work) == [], "--plan leaves no work folder")
 
-        r = run(["--rar", "7", "--url", "file://" + rar, "--out", out], env)
+        r = run(["--rar", "7", "--url", "file://" + rar, "--out", out] + FORCE, env)
         print(r.stdout.strip())
         check(r.returncode == 0, "full run exits 0 (rc %d, %s)" % (r.returncode, r.stderr.strip()[-300:]))
         check(os.listdir(work) == [], "download and extraction deleted")
@@ -169,9 +194,9 @@ def main():
               "control: tout.py's pack-style count matches the tables")
         check(all(c["unresolved"] == "0" for c in ctl), "forced packs: every row found again (unresolved 0)")
         check(ctl[1]["style_forced"] == "lofi" and ctl[1]["rows_forced"] == ctl[1]["rows"] != "0",
-              "Cherry Blossom: rows forced = rows of the pack (%s / %s)" % (ctl[1]["rows_forced"], ctl[1]["rows"]))
+              "Petals: rows forced = rows of the pack (%s / %s)" % (ctl[1]["rows_forced"], ctl[1]["rows"]))
         check(int(ctl[0]["rows_forced"]) == int(ctl[0]["rows"]) - 1 + int(ctl[0]["kit_rows"]),
-              "Blood Rave: every row forced but the House Stabs one (%s)" % ctl[0]["rows_forced"])
+              "Acid Rave: every row forced but the House Stabs one (%s)" % ctl[0]["rows_forced"])
         data = []
         for f in sorted(os.listdir(out)):
             if f.endswith(".csv") and f not in ("rar7_controle.csv", "rar7_accuracy.csv"):
@@ -185,12 +210,12 @@ def main():
         p2 = [r_ for f, r_ in data if r_["pack"] == "p2"]
         p3 = [r_ for f, r_ in data if r_["pack"] == "p3"]
         check(sorted(r_["style"] for r_ in p1) == ["house"] + ["techno"] * (len(p1) - 1),
-              "Blood Rave rows forced to techno, inner House Stabs folder wins")
-        check(p2 and all(r_["style"] == "lofi" for r_ in p2), "Cherry Blossom rows forced to lofi")
-        check(p3 and all(r_["style"] == "dubstep" for r_ in p3), "Riddim Riot rows dubstep")
+              "Acid Rave rows forced to techno, inner House Stabs folder wins")
+        check(p2 and all(r_["style"] == "lofi" for r_ in p2), "Petals rows forced to lofi")
+        check(p3 and all(r_["style"] == "dubstep" for r_ in p3), "Riddim Pack rows dubstep")
         text = "".join(open(os.path.join(out, f), encoding="utf-8").read() for f in os.listdir(out) if f.endswith(".csv"))
-        check("Kick" not in text and "Blood" not in text and "Cherry" not in text and "BPM" not in text, "CSVs carry no file or pack name")
-        check(open(os.path.join(out, "rar7_packs.txt")).read().startswith("p1\tGhosthack - Blood Rave"), "packs.txt maps p1")
+        check("Kick" not in text and "Acid" not in text and "Petals" not in text and "BPM" not in text, "CSVs carry no file or pack name")
+        check(open(os.path.join(out, "rar7_packs.txt")).read().startswith("p1\tLabel - Acid Rave"), "packs.txt maps p1")
 
         # point c: tout.py's pack-style line is shown for every pack
         check("p1: style du pack : rave, posé sur" in r.stdout, "pack-style line shown for p1")
@@ -208,7 +233,7 @@ def main():
         err = io.StringIO()
         try:
             with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
-                rc = lance.main(["--rar", "7", "--archive", rar, "--out", out, "--work", w2])
+                rc = lance.main(["--rar", "7", "--archive", rar, "--out", out, "--work", w2] + FORCE)
         finally:
             lance.TOUT = old
             shutil.rmtree(w2, ignore_errors=True)
@@ -240,7 +265,7 @@ def main():
         rar1 = os.path.join(base, "one.rar")
         fakerar.main(["fakerar", rar1, one])
         r = run(["--rar", "7", "--archive", rar1, "--out", out, "--plan"], env)
-        check(r.returncode == 0 and "1 pack(s)" in r.stdout and "Ghosthack - Blood Rave" in r.stdout
+        check(r.returncode == 0 and "1 pack(s)" in r.stdout and "Label - Acid Rave" in r.stdout
               and "rave" in r.stdout, "--plan on a one-pack RAR: 1 pack, named, style read (%s)" % r.stdout.strip()[-200:])
 
         # point d: without RARLAB unrar the launcher refuses before anything else (no download, no skipped test)

@@ -27,16 +27,21 @@ import re
 import sys
 import zipfile
 
-# pack folder (after the vendor prefix) -> style label
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import noms  # noqa: E402
+
+# pack folder (after the vendor prefix) -> style label. Bought pack titles are
+# stored as hashes (noms.py: the repository is public); genre phrases stay plain.
 STYLES = [
     ("Acid Techno", "techno"), ("Melodic Techno", "techno"),
     ("Deep House", "house"), ("Afro House", "afro-house"), ("Amapiano", "amapiano"),
-    ("Mainstage DnB", "dnb"), ("Liquid DnB", "dnb"),
-    ("Deathstep", "dubstep"), ("Riddim Riot", "dubstep"),
-    ("Neo Rave", "rave"), ("Keta", "rave"),
-    ("Chillhop", "lofi"), ("Downtown Drift", "drift-phonk"),
-    ("Drum Hero 6", "multi"),
+    ("sha:03e1214bbf232a6e", "dnb"), ("Liquid DnB", "dnb"),
+    ("Deathstep", "dubstep"), ("sha:ebf86742cf449b7b", "dubstep"),
+    ("sha:80e1f243e9bde824", "rave"), ("sha:c90a5e70871e232a", "rave"),
+    ("Chillhop", "lofi"), ("sha:cfc7d5d987fa3e2c", "drift-phonk"),
+    ("sha:d3d53be6facf7c05", "multi"),
 ]
+_STYLE_MATCH = [(noms.matcher(k), st) for k, st in STYLES]
 
 # never drum one-shots
 SKIP_PATH = re.compile(r"(?i)loop|construction kit|melody kit|stem|midi|/fx/|whoosh|"
@@ -69,8 +74,8 @@ SUBTYPE_DIRS = re.compile(r"(?i)^(acoustic|foley|synth hard|synth soft|lofi|dist
 
 
 def style_of(path):
-    for key, st in STYLES:
-        if key.lower() in path.lower():
+    for m, st in _STYLE_MATCH:
+        if m(path):
             return st
     return None
 

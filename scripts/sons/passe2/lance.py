@@ -38,14 +38,17 @@ REPO = os.path.dirname(os.path.dirname(SONS))
 TOUT = os.path.join(SONS, "tout.py")
 sys.path.insert(0, SONS)  # our own scripts only; never the archive's folders (python -I)
 import tout  # noqa: E402
+import noms  # noqa: E402
 
-# Pack folder name (regex, case-insensitive) -> style to force when tout.py's
-# rule reads another style (or none) from that name. Source: docs/sons/STYLES-PACKS.md.
+# Pack folder name (regex, case-insensitive; or a hashed title "sha:...", see
+# noms.py: bought pack titles never appear in the public repository) -> style to
+# force when tout.py's rule reads another style (or none) from that name.
+# Source: docs/sons/STYLES-PACKS.md (packs noted rN/pN).
 FORCES = [
-    (r"blood\W*rave", "techno"),        # acid techno; 'Rave' in the name reads rave
-    (r"consciousness", "techno"),      # melodic techno; no genre word unless the folder says so
-    (r"cherry\W*blossom", "lofi"),     # chillhop; no genre word unless the folder says so
-    (r"\bdrift\b", "drift-phonk"),         # 'Drift Phonk' reads phonk, only 'Downtown Drift' reads drift-phonk
+    ("sha:3db7d139e260eb90", "techno"),  # RAR 5 pack: acid techno; 'Rave' in the name reads rave
+    ("sha:003a7a99f8dc0add", "techno"),  # RAR 3 pack: melodic techno; no genre word unless the folder says so
+    ("sha:e87dbc11f08b7135", "lofi"),    # RAR 4 pack: chillhop; no genre word unless the folder says so
+    (r"\bdrift\b", "drift-phonk"),         # 'Drift Phonk' reads phonk; the RAR 2 pack title reads drift-phonk
     (r"synthwave", "synthwave"),       # no synthwave style in tout.py: would stay unlabelled
 ]
 
@@ -180,7 +183,7 @@ def find_packs(root):
 
 def forced_style(name, cli):
     for pat, st in cli + FORCES:
-        if re.search(pat, name, re.I):
+        if (noms.matcher(pat)(name) if pat.startswith("sha:") else re.search(pat, name, re.I)):
             return st
     return None
 

@@ -257,7 +257,7 @@ const Tight kTight[] = {
     {4, 4, {39, 69}, {87, 193}, {7111, 10162}},  {4, 5, {50, 96}, {103, 149}, {7907, 10076}},
     {5, 0, {86, 453}, {298, 845}, {6589, 9381}}, {5, 1, {86, 453}, {298, 845}, {6589, 9381}},
     {5, 2, {86, 453}, {298, 845}, {6589, 9381}}, {5, 3, {637, 1279}, {724, 1783}, {9626, 13847}},
-    {5, 4, {86, 453}, {298, 845}, {6589, 9381}}, {5, 5, {86, 453}, {298, 845}, {6589, 9381}},
+    {5, 4, {86, 453}, {298, 845}, {6589, 9381}}, {5, 5, {71, 194}, {120, 400}, {6589, 9381}},
     {8, 0, {610, 1277}, {985, 2228}, {5055, 6805}}, {8, 1, {610, 1277}, {985, 2228}, {5055, 6805}},
     {8, 2, {610, 1277}, {985, 2228}, {5055, 6805}}, {8, 3, {489, 701}, {889, 1038}, {5184, 6313}},
     {8, 4, {519, 1113}, {1269, 2180}, {6424, 7628}}, {8, 5, {1075, 1355}, {1796, 2351}, {4377, 5554}},
@@ -432,15 +432,27 @@ void testMeasuredKitDefaultIdentical() {
 }
 
 // The bench's command swaps the kit's voices for the measured ones (kick, snares, clap, hats, rim,
-// toms, crash; a studio kick kind too) and leaves the others (808 kind on pad 1, shaker, cowbell, conga, zap) as they were; finite,
-// below full scale, no allocation while playing.
+// toms, crash; a studio kick kind too) where measured::choice() has a version, and leaves the others
+// (a family kept by the choice table, the 808 kind on pad 1, shaker, cowbell, conga, zap) as they were;
+// finite, below full scale, no allocation while playing.
 void testMeasuredKitCommand() {
     using K = ps::DrumKit;
-    const int swapped[] = {K::Kick, K::Snare, K::Snare2, K::Clap, K::ClosedHat, K::OpenHat, K::LowTom, K::MidTom, K::HighTom, K::Rim, K::Cymbal};
+    namespace m = ps::measured;
+    struct Lane { int voice, family; };
+    const Lane lanes[] = {{K::Kick, m::Kick},       {K::Snare, m::Snare},     {K::Snare2, m::Snare},  {K::Clap, m::Clap},
+                          {K::ClosedHat, m::ClosedHat}, {K::OpenHat, m::OpenHat}, {K::LowTom, m::Tom}, {K::MidTom, m::Tom},
+                          {K::HighTom, m::Tom},     {K::Rim, m::Rim},         {K::Cymbal, m::Crash}};
     const int kept[] = {K::Kick2, K::Cowbell, K::Shaker, K::Conga, K::Zap};
-    for (int style = 0; style < ps::measured::kStyles; ++style) {
-        int changed = 0;
-        for (int lane : swapped) changed += fnv(kitSong(3, float(style), lane)) != fnv(kitSong(3, -2.0f, lane));
+    for (int style = 0; style < m::kStyles; ++style) {
+        int right = 0, swapped = 0;
+        for (const Lane& l : lanes) {
+            const bool changed = fnv(kitSong(3, float(style), l.voice)) != fnv(kitSong(3, -2.0f, l.voice));
+            const bool expect = m::choice(l.family, style) != m::ChoiceKeep;
+            // Snare2 (DaisySP's synthetic snare) already differs between two engines (see kitSong):
+            // kept, its lane cannot be compared, so it only counts when swapped.
+            right += changed == expect || (l.voice == K::Snare2 && !expect);
+            swapped += changed;
+        }
         int same = 0;
         for (int lane : kept) same += fnv(kitSong(3, float(style), lane)) == fnv(kitSong(3, -2.0f, lane));
         const auto all = kitSong(3, float(style), -1, true);
@@ -453,11 +465,50 @@ void testMeasuredKitCommand() {
             peak = std::max(peak, std::fabs(v));
             sum += double(v) * v;
         }
-        std::printf("  measured kit %-9s swapped %d/11 kept %d/5 peak %.2f rms %.1f dB alloc %d\n", kStyleNames[style], changed, same,
-                    double(peak), 10.0 * std::log10(sum / double(all.size()) + 1e-20), allocations);
-        CHECK(changed == 11 && same == 5);
+        std::printf("  measured kit %-9s swapped %d/11 as chosen %d/11 kept %d/5 peak %.2f rms %.1f dB alloc %d\n", kStyleNames[style], swapped,
+                    right, same, double(peak), 10.0 * std::log10(sum / double(all.size()) + 1e-20), allocations);
+        CHECK(right == 11 && same == 5);
         CHECK(finite && peak > 0.05f && peak <= 1.0f && allocations == 0);
     }
+}
+
+// The chosen versions (measured::chosen, the table of scripts/son/matin_choix.sh): every family and
+// style that has one sounds inside its measured range (t20, t40 with the in-range test's 10 % margin,
+// the kick's note with 8 %), safe (no NaN, below full scale, no allocation); ChoiceKeep only where the
+// target does not count (CONCLUSION-BATTERIE.md: fewer than 20 hits, or the 808's single pack).
+void testMeasuredChosenInRange() {
+    namespace m = ps::measured;
+    int failed = 0, kept = 0;
+    for (const Target& t : kTargets) {
+        const int c = m::choice(t.family, t.style);
+        if (c == m::ChoiceKeep) {
+            ++kept;
+            continue;
+        }
+        const std::vector<float> x = renderRecipe(m::chosen(t.family, t.style));
+        const int allocations = g_allocations.load();
+        float peak = 0.0f;
+        bool finite = true;
+        for (float v : x) {
+            finite = finite && std::isfinite(v);
+            peak = std::max(peak, std::fabs(v));
+        }
+        const std::vector<double> e = envelopeDb(x);
+        const double t20 = lastAbove(e, 20.0), t40 = lastAbove(e, 40.0);
+        const bool pitched = t.steady.set();
+        const double steady = pitched ? pitchHz(x, t.family == 7 ? 40.0 : 60.0, std::max(120.0, std::min(t20, 300.0)), 4.0 * t.steady.hi) : 0.0;
+        const bool ok = finite && peak > 0.1f && peak < 1.0f && allocations == 0 && (!t.t20.set() || within(t20, t.t20, 0.1)) &&
+                        within(t40, t.t40, 0.1) && (!pitched || within(steady, t.steady, 0.08));
+        std::printf("  chosen %-9s %-9s v%+d %s t20 %4.0f [%4.0f-%4.0f] t40 %4.0f [%4.0f-%4.0f] note %5.1f peak %.2f\n", kFamilyNames[t.family],
+                    kStyleNames[t.style], c, ok ? "ok  " : "FAIL", t20, double(t.t20.lo), double(t.t20.hi), t40, double(t.t40.lo), double(t.t40.hi),
+                    steady, double(peak));
+        if (!ok) ++failed;
+    }
+    std::printf("  chosen: %d kept as the app's own voice\n", kept);
+    CHECK(failed == 0);
+    // The families without a target that counts keep the app's voice (the 808, rims, house snare...).
+    CHECK(m::choice(m::Bass808, m::Trap) == m::ChoiceKeep && m::choice(m::Rim, m::House) == m::ChoiceKeep);
+    CHECK(m::choice(m::Kick, m::Techno) != m::ChoiceKeep && m::choice(m::Snare, m::House) == m::ChoiceKeep);
 }
 
 }  // namespace matin_tests
@@ -469,4 +520,5 @@ void testMeasuredKitCommand() {
     {"matin_measured_drums_retrigger", matin_tests::testMeasuredDrumsRetrigger}, \
     {"matin_measured_drums_stop", matin_tests::testMeasuredDrumsStop},      \
     {"matin_measured_kit_default_identical", matin_tests::testMeasuredKitDefaultIdentical}, \
-    {"matin_measured_kit_command", matin_tests::testMeasuredKitCommand},
+    {"matin_measured_kit_command", matin_tests::testMeasuredKitCommand}, \
+    {"matin_measured_chosen_in_range", matin_tests::testMeasuredChosenInRange},

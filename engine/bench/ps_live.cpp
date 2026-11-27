@@ -6,11 +6,12 @@
 //
 //   ps_live [--seconds S (90)] [--burst N (96)] [--wav out.wav] [--csv out.csv] [--solo ch[,ch...]] [--quiet]
 //           [--cpu-scale X (3)] [--buffer-bursts B (2)] [--cpu-out times.f32] [--alloc-probe]
-//           [--measured-drums STYLE] <in.pslive>
+//           [--measured-drums STYLE] [--measured-trim DB] <in.pslive>
 //
 // --measured-drums: the kit's voices played by the measured drums of STYLE (0 house, 1 tech house,
 // 2 techno, 3 trap, 4 dnb, 5 dubstep; docs/sons/matin/BATTERIE.md), posted with the app's first
 // pause like --solo. Listening material only: the app never sends this command.
+// --measured-trim: an extra level in dB for those measured voices (the per-song calibration).
 //
 // --solo: those mixer channels alone (posted with the app's first pause, after the project is loaded:
 // the song's basses, META bass, for the « basse au téléphone » column). The recording's own solo
@@ -573,6 +574,7 @@ int main(int argc, char** argv) {
     std::vector<int> solo;
     bool soloing = false;  // --solo given: the recording's own solo commands are left out
     int measuredDrums = -1;
+    float measuredTrimDb = 0.0f;
     for (int i = 1; i < argc; ++i) {
         if (!std::strcmp(argv[i], "--seconds") && i + 1 < argc) seconds = std::atof(argv[++i]);
         else if (!std::strcmp(argv[i], "--burst") && i + 1 < argc) burst = std::max(16, std::atoi(argv[++i]));
@@ -584,6 +586,7 @@ int main(int argc, char** argv) {
         else if (!std::strcmp(argv[i], "--cpu-out") && i + 1 < argc) cpuPath = argv[++i];
         else if (!std::strcmp(argv[i], "--alloc-probe")) allocProbe = true;
         else if (!std::strcmp(argv[i], "--measured-drums") && i + 1 < argc) measuredDrums = std::clamp(std::atoi(argv[++i]), 0, 5);
+        else if (!std::strcmp(argv[i], "--measured-trim") && i + 1 < argc) measuredTrimDb = std::clamp(static_cast<float>(std::atof(argv[++i])), -24.0f, 24.0f);
         else if (!std::strcmp(argv[i], "--solo") && i + 1 < argc) {
             std::istringstream list(argv[++i]);
             std::string ch;
@@ -594,7 +597,7 @@ int main(int argc, char** argv) {
     }
     if (files.size() != 1) {
         std::fprintf(stderr, "usage: ps_live [--seconds S] [--burst N] [--wav out.wav] [--csv out.csv] [--solo ch[,ch]] [--quiet] "
-                             "[--cpu-scale X] [--buffer-bursts B] [--cpu-out times.f32] [--measured-drums STYLE] <in.pslive>\n");
+                             "[--cpu-scale X] [--buffer-bursts B] [--cpu-out times.f32] [--measured-drums STYLE] [--measured-trim DB] <in.pslive>\n");
         return 1;
     }
     std::ifstream in(files[0]);
@@ -651,7 +654,8 @@ int main(int argc, char** argv) {
             // --solo: with the app's first pause (the project loaded, before ▶).
             for (int ch : solo) player->post({ps::CommandType::SetChannelSolo, 1.0f, ch, 0});
             solo.clear();
-            if (measuredDrums >= 0) player->post({ps::CommandType::SetMeasuredDrums, static_cast<float>(measuredDrums), 0, 0});
+            if (measuredDrums >= 0) player->post({ps::CommandType::SetMeasuredDrums, static_cast<float>(measuredDrums),
+                                                         static_cast<int32_t>(std::lround(measuredTrimDb * 100.0f)), 0});
             measuredDrums = -1;
             if (what == "ms") {
                 player->playFor(n * 48);

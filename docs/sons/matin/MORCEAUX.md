@@ -37,8 +37,10 @@ l'appli : on juge le son, pas le volume. Écart mesuré sur la piste batterie se
 | dnb | −0,3 dB | liquid dnb | −0,1 dB |
 | dubstep | −1,0 dB | riddim | +1,4 dB |
 
-Le script refuse un écart de plus de 2 dB. Techno, minimal et hard techno partagent le
-même réglage, donc on ne peut pas descendre sous 1,5 dB pour les trois à la fois.
+Ces écarts datent d'avant le calage par morceau. Depuis, le script mesure d'abord la piste
+batterie « avant » et « après » de chaque morceau, puis rejoue « après » avec ce calage
+(`--measured-trim`) : techno, minimal et hard techno n'ont plus à partager un seul réglage.
+Le garde-fou passe de 2 dB à 1 dB (piste batterie et best-of). Voir `CONCLUSION-BATTERIE.md`.
 
 ## Le drill : pourquoi ça change peu
 

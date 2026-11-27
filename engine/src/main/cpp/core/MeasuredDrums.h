@@ -45,6 +45,14 @@ Recipe variant(int family, int style, int which);
 // A pure kick for deep / techno (not industrial): a clean round body that hits hard.
 Recipe deepTechnoKick();
 
+// The version chosen per family and style by scripts/son/matin_choix.sh (CONCLUSION-BATTERIE.md):
+// ChoiceLow / ChoiceRecipe / ChoiceDry are variant()'s -1 / 0 / +1, ChoiceDeep deepTechnoKick(),
+// ChoiceKeep: no target that counts (fewer than 20 hits or one pack), the kit keeps its own voice.
+enum Choice : int { ChoiceLow = -1, ChoiceRecipe = 0, ChoiceDry = 1, ChoiceDeep = 2, ChoiceKeep = 9 };
+int choice(int family, int style);
+// The chosen version's recipe (the recipe itself for ChoiceKeep).
+Recipe chosen(int family, int style);
+
 // One voice (monophonic: a new hit restarts it).
 class Voice {
 public:

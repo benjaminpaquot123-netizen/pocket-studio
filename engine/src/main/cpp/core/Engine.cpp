@@ -149,7 +149,7 @@ void Engine::applyCommand(const Command& command) {
             if (std::isfinite(command.value)) drums_.setVersion(static_cast<int>(std::lround(command.value)));
             break;
         case CommandType::SetMeasuredDrums:
-            if (std::isfinite(command.value)) drums_.setMeasured(static_cast<int>(std::lround(command.value)));
+            if (std::isfinite(command.value)) drums_.setMeasured(static_cast<int>(std::lround(command.value)), static_cast<float>(command.a) / 100.0f);
             break;
         case CommandType::SetSoundVersion:
             if (std::isfinite(command.value)) {

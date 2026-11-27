@@ -347,6 +347,11 @@ float DrumKit::renderStudio(int voice, int kind, bool trig, float v) {
 }
 
 int DrumKit::measuredFamily(int voice, int kind) const {
+    const int family = measuredFamilyOf(voice, kind);
+    return family >= 0 && measured::choice(family, measuredStyle_) == measured::ChoiceKeep ? -1 : family;
+}
+
+int DrumKit::measuredFamilyOf(int voice, int kind) const {
     if (measuredStyle_ < 0) return -1;
     using namespace measured;
     switch (voice) {
@@ -382,18 +387,18 @@ constexpr float kMeasuredTrim[measured::kFamilies] = {0.89f, 1.0f, 3.16f, 0.84f,
 constexpr float kMeasuredStyleTrimDb[measured::kStyles] = {-3.5f, -8.0f, -8.2f, 0.0f, 0.65f, -7.0f};
 }  // namespace
 
-void DrumKit::setMeasured(int style) {
+void DrumKit::setMeasured(int style, float trimDb) {
     measuredStyle_ = style < 0 ? -1 : std::min(style, static_cast<int>(measured::kStyles) - 1);
     if (measuredStyle_ < 0) return;
     for (int voice = 0; voice < kVoices; ++voice) {
         const int family = measuredFamily(voice, KitVoice);
         if (family < 0) continue;
-        measured::Recipe r = measured::recipe(family, measuredStyle_);
+        measured::Recipe r = measured::chosen(family, measuredStyle_);
         // The toms a fourth apart around the measured one.
         const float ratio = voice == LowTom ? 0.75f : voice == HighTom ? 1.335f : 1.0f;
         r.startHz *= ratio;
         r.endHz *= ratio;
-        r.gain *= kMeasuredTrim[family] * std::pow(10.0f, kMeasuredStyleTrimDb[measuredStyle_] / 20.0f);
+        r.gain *= kMeasuredTrim[family] * std::pow(10.0f, (kMeasuredStyleTrimDb[measuredStyle_] + trimDb) / 20.0f);
         measured_[static_cast<size_t>(voice)].setRecipe(r);
     }
 }

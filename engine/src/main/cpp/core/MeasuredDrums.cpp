@@ -1,6 +1,7 @@
 #include "MeasuredDrums.h"
 
 #include <algorithm>
+#include <cstdint>
 
 namespace ps::measured {
 
@@ -16,7 +17,7 @@ Recipe kick(int style) {
     static constexpr K k[kStyles] = {
         {41.2f, 322.0f, 170.0f, 98.0f, 0.15f, 0.10f},   // house: E1, long round body
         {49.0f, 335.0f, 188.0f, 126.0f, 0.55f, 0.30f},  // tech house: G1, a firmer click (was too dark)
-        {49.0f, 327.0f, 200.0f, 120.0f, 0.45f, 0.30f},  // techno: G1, harder
+        {49.0f, 327.0f, 340.0f, 60.0f, 0.45f, 0.30f},   // techno: G1, harder and long (t20 / t40 near 373 / 394 ms)
         {43.65f, 190.0f, 65.0f, 64.0f, 0.05f, 0.05f},   // trap: F1, short (the 808 holds the low end)
         {49.0f, 208.0f, 79.0f, 99.0f, 0.45f, 0.30f},    // dnb: G1, short and punchy
         {43.65f, 233.0f, 169.0f, 114.0f, 0.45f, 0.25f}, // dubstep: F1
@@ -116,7 +117,7 @@ Recipe hat(int style, bool open) {
     };
     static constexpr H opened[kStyles] = {
         {37.0f, 275.0f, 4000.0f, 8000.0f},   {37.0f, 275.0f, 4500.0f, 9000.0f}, {37.0f, 275.0f, 4500.0f, 9000.0f},
-        {778.0f, 172.0f, 8000.0f, 20000.0f}, {37.0f, 275.0f, 4500.0f, 9000.0f}, {60.0f, 260.0f, 4500.0f, 9000.0f},
+        {778.0f, 172.0f, 8000.0f, 20000.0f}, {37.0f, 275.0f, 4500.0f, 9000.0f}, {88.0f, 50.0f, 4500.0f, 9000.0f},
     };
     const H& x = open ? opened[style] : closed[style];
     Recipe r;
@@ -173,7 +174,7 @@ Recipe crash(int style) {
     struct X { float hold, fall, hp, lp; };
     static constexpr X x[kStyles] = {
         {637.0f, 728.0f, 2000.0f, 7000.0f}, {637.0f, 728.0f, 2000.0f, 7000.0f}, {637.0f, 728.0f, 2000.0f, 7000.0f},
-        {352.0f, 415.0f, 1800.0f, 5500.0f}, {500.0f, 600.0f, 3000.0f, 7700.0f}, {733.0f, 960.0f, 1400.0f, 4500.0f},
+        {352.0f, 440.0f, 1800.0f, 5500.0f}, {500.0f, 600.0f, 3000.0f, 7700.0f}, {733.0f, 960.0f, 1400.0f, 4500.0f},
     };
     const X& c = x[style];
     Recipe r;
@@ -259,6 +260,34 @@ Recipe deepTechnoKick() {
     r.clickHpHz = 3000.0f;
     r.gain = 0.8f;
     return r;
+}
+
+namespace {
+// Printed by scripts/son/matin_choix.py (kick, 808, clap, snare, closed hat, open hat, rim, tom,
+// crash x house, tech house, techno, trap, dnb, dubstep); matin_choix.sh checks it is copied here.
+static constexpr int8_t kChoice[kFamilies][kStyles] = {
+    {0, 0, 0, 0, 0, 0},  // kick
+    {9, 9, 9, 9, 9, 9},  // 808
+    {0, 0, 0, 9, 9, 0},  // clap
+    {9, 9, 9, 0, 0, 0},  // caisse_claire
+    {0, 0, 0, 0, 0, 0},  // charley_ferme
+    {9, 0, 0, 0, 0, 0},  // charley_ouvert
+    {9, 9, 9, 9, 9, 9},  // rim
+    {9, 0, 0, 0, 0, 0},  // tom
+    {0, 0, 0, 0, 9, 0},  // crash
+};
+}  // namespace
+
+int choice(int family, int style) {
+    if (family < 0 || family >= kFamilies) return ChoiceKeep;
+    if (style < 0 || style >= kStyles) style = House;
+    return kChoice[family][style];
+}
+
+Recipe chosen(int family, int style) {
+    const int c = choice(family, style);
+    if (c == ChoiceDeep) return deepTechnoKick();
+    return variant(family, style, c == ChoiceKeep ? 0 : c);
 }
 
 }  // namespace ps::measured

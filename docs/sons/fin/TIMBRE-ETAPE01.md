@@ -56,6 +56,60 @@ pack, aucune mesure d'un son précis dans le dépôt : seulement des statistique
 - Tenue des graves à 97,9 % d'accord : à exclure de la règle ou à refaire avant l'étape 2.
 - Kick house, kick trap, clap trap et les charleys de trap n'ont qu'un seul pack : pas de cible.
 
+## Étapes 0-1, tour 2 (arrêté avant la fin)
+
+Chantier arrêté le 27 novembre sur décision de Benjamin : on repart de zéro avec Essentia, dans une
+autre discussion. Ce qui suit est une note de passage, pas un résultat validé. Les chiffres viennent
+d'un rejeu provisoire (rangement « plat », où quelques sons sont mal rattachés à leur case) ; la
+table `timbre-familles.tsv` n'a pas été refaite et aucune critique à l'aveugle n'a eu lieu.
+
+**Longueurs par bande (t20_low, t20_mid, t20_high) : cause prouvée.** L'ancienne contre-mesure
+passait par le même masque de bande et le même filtre que la mesure : elle n'était pas indépendante.
+Sur les 10 désaccords de t20_low (463 accords sur 473, 97,9 %), 9 sont des sons où le grave pèse
+entre -30 et -25 dB du son entier. Avec un filtre qui ne partage rien (Butterworth, phase nulle),
+l'accord dépend de la pente du filtre partout où la bande ne porte que le bord du son, et pas là où
+elle porte son corps : grave des kicks 224 sur 225 aux ordres 2, 4 et 8 ; médium des kicks 5, 171
+puis 214 sur 225. Une longueur de bande n'appartient au son que là où la bande porte son corps ;
+ailleurs elle mesure la jupe du filtre.
+
+**Correction faite dans le code** (commits « rouge » puis « vert ») : `collection.counter_bands`,
+contre-mesure indépendante d'ordre 4, pour les trois bandes ; la règle des 98 % n'a pas été touchée,
+c'est elle qui trie. En provisoire, six lignes perdent « définitive » : t20_mid des kicks techhouse,
+dnb et dubstep (64 à 80 %), t20_low de la caisse claire dubstep (93 %), t20_mid du charley fermé
+techhouse et techno (89 à 93 %). Le t20_low des kicks reste (98 à 100 %), comme tous les t20_high.
+
+**Témoin Essentia** (trames, `FrequencyBands`, même lecture) : même image. Grave des kicks 224 ou 225
+sur 225, médium des claps 177 sur 177, aigu des caisses claires, claps, charleys et crashs 100 %.
+Médium des kicks : 3, 95 puis 51 sur 225 pour des trames de 256, 1024 et 4096 points. Aucune taille
+de trame ne convient aux trois bandes à la fois. `scripts/son/timbre/tiers_essentia.py` contient cet
+essai ; ce fichier a été écrit mais pas rejoué tel quel avant l'arrêt.
+
+**Les 7 cases serrées** (verdict au quartile bas / médiane / quartile haut) :
+- kick dubstep : cause prouvée, le t20_mid (mesure de jupe) faisait basculer le quartile haut ; sans
+  lui la case devient sûre (« nouvelle »), à confirmer sur la table refaite.
+- kick techno : 30 sons, 2 packs, 5 mesures, aucune longueur ; le gagnant change quand on retire un
+  pack ou une seule mesure, et même la médiane n'est pas tranchée. Trop peu de matière.
+- clap techhouse : écart de 0,011 à la médiane, c'est la règle d'égalité qui décide. House seul et
+  techno seul donnent le même verdict : le regroupement n'est pas la cause.
+- clap techno (5 mesures), clap dubstep (8), charley fermé dnb, caisse claire dubstep : la médiane est
+  nette, les quartiles basculent sur l'axe long/court (B au quartile bas, A au quartile haut). La
+  fourchette est simplement plus large que l'écart entre candidats. Pas de faute d'outil trouvée.
+
+**Compte provisoire : 9 cases sûres sur 15 (60 %), sous les 80 %.** Aucune règle n'a été touchée pour
+monter. Cases sûres : kick techhouse, kick dnb, kick dubstep (à confirmer), caisse claire dnb (B),
+clap dnb (B), charley fermé techhouse, techno et dubstep, crash dubstep.
+
+**Pour les autres instruments.** Valent pour tout : une contre-mesure ne doit partager ni filtre ni
+masque avec sa mesure ; une mesure par bande ou par partiel ne compte que là où le son a son corps ;
+peu de sons, peu de packs ou peu de mesures donnent un gagnant instable ; juger un son réglé sur la
+médiane de la même collection tourne en rond. À vérifier dans l'outil des instruments : ses deux
+chemins d'enveloppe partagent leurs lecteurs de temps. Ne valent que pour la batterie : les trois
+bandes fixes, les candidats A, B, « nouvelle » et « deep », le regroupement techhouse, les longueurs
+de coups uniques.
+
+**Ce qui n'est pas vert** : 60 % au lieu de 80 % ; table non refaite ; pas de critique à l'aveugle ;
+le témoin Essentia non rejoué depuis le fichier commité ; Essentia pas encore dans `THIRD_PARTY.md`.
+
 ## Critique
 
 Relecture à l'aveugle par un sous-agent neuf, qui a recalculé avec son propre script.

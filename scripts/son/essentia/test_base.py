@@ -174,6 +174,84 @@ def test_flatness_does_not_depend_on_the_source_rate():
         assert abs(fa - fb) < 0.3, "%s flatness %.2f dB at 44.1 kHz, %.2f dB at 48 kHz" % (tool, fa, fb)
 
 
+# ---------------------------------------------------------------- 7. contre-lecture of ec2059e41
+FIN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "docs", "sons", "fin")
+
+
+def test_doc_family_sizes_match_the_tsv():
+    """The "Sons" column of ESSENTIA-BASE.md is the family size: the largest
+    n_sons of that family in essentia-familles.tsv, not one measure's count."""
+    import csv
+    size = {}
+    with open(os.path.join(FIN, "essentia-familles.tsv")) as f:
+        for r in csv.DictReader(f, delimiter="\t"):
+            size[r["famille"]] = max(size.get(r["famille"], 0), int(r["n_sons"]))
+    bad = []
+    with open(os.path.join(FIN, "ESSENTIA-BASE.md")) as f:
+        for line in f:
+            c = [x.strip() for x in line.strip().strip("|").split("|")]
+            if len(c) > 2 and c[0] in size and c[1].isdigit() and int(c[1]) != size[c[0]]:
+                bad.append("%s %s != %d" % (c[0], c[1], size[c[0]]))
+    assert not bad, "; ".join(bad)
+
+
+def test_doc_names_only_files_that_exist():
+    """Every `NAME.md` the doc cites sits next to it or in the repository."""
+    import re
+    root = os.path.join(FIN, "..", "..", "..")
+    with open(os.path.join(FIN, "ESSENTIA-BASE.md")) as f:
+        names = set(re.findall(r"`([^`\s]+\.md)`", f.read()))
+    miss = [n for n in names if not (os.path.exists(os.path.join(FIN, n)) or os.path.exists(os.path.join(root, n)))]
+    assert not miss, "dead names: %s" % miss
+
+
+def test_truth_leaves_unmeasured_loops_out():
+    """A loop with no measured tempo is not a wrong tempo: it leaves the
+    denominator and is counted in its own column."""
+    import csv
+    import json
+    import tempfile
+    d = tempfile.mkdtemp()
+    src = os.path.join(d, "b.jsonl")
+    with open(src, "w") as f:
+        for i in range(8):
+            m = {"bpm": 120.0} if i < 5 else {}
+            f.write(json.dumps({"sid": "s", "id": str(i), "fam": "drum_loop/full", "style": "x", "pack": "p",
+                                "ess": dict(m), "lib": dict(m), "truth": {"bpm": 120}}) + "\n")
+    base.cmd_stats(src, d)
+    with open(os.path.join(d, "essentia-verite.tsv")) as f:
+        rows = {r["mesure"]: r for r in csv.DictReader(f, delimiter="\t")}
+    r = rows["bpm"]
+    assert float(r["essentia_pct"]) == 100.0, "essentia_pct %s, want 100" % r["essentia_pct"]
+    assert r.get("essentia_non_mesures") == "3", "essentia_non_mesures %s, want 3" % r.get("essentia_non_mesures")
+
+
+def test_effective_duration_of_a_low_808():
+    """A 30 and a 40 Hz sine decaying with tau = 150 ms: the envelope must not
+    ripple with the period, so the duration stays near tau * ln 2.5 (137 ms)."""
+    t = np.arange(int(1.5 * SR)) / SR
+    for f0 in (30, 40):
+        y = 0.9 * np.sin(2 * np.pi * f0 * t) * np.exp(-t / 0.15)
+        d = base.ess_measure(stereo(y), "oneshot_melodic", "oneshot_melodic/808")["effective_dur_s"]
+        assert abs(d - 0.1374) / 0.1374 < 0.05, "%d Hz: effective duration %.4f s, want 0.137 +- 5 %%" % (f0, d)
+
+
+def test_kick_attack_survives_the_body_window():
+    """A 60 Hz kick with a loud 10 ms click: the click holds most of the
+    energy, so the rolloff is high. A full Hann window on the body erases
+    the attack; only the end of the body may be tapered."""
+    t = np.arange(int(2 * SR)) / SR
+    r = np.random.default_rng(1)
+    m = int(0.010 * SR)
+    click = np.zeros_like(t)
+    click[:m] = r.standard_normal(m) * np.exp(-np.arange(m) / (0.002 * SR))
+    y = 0.9 * np.sin(2 * np.pi * 60 * t) * np.exp(-t / 0.12) + 3 * click
+    y = 0.9 * y / np.abs(y).max()
+    rec = base.measure_bytes(wav_bytes(y, SR), "drum_oneshot", "drum_oneshot/kick")
+    for tool in ("ess", "lib"):
+        assert rec[tool]["rolloff_hz"] > 4000, "%s rolloff %.0f Hz, want > 4000" % (tool, rec[tool]["rolloff_hz"])
+
+
 TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
 
 

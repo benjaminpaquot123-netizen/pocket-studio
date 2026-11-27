@@ -177,7 +177,7 @@ def holds_without_biggest(kept, label):
     med, mw, p25, p75 = pct(vals, 0.5), pct(rest, 0.5), pct(vals, 0.25), pct(vals, 0.75)
     inside = p25 - 1e-9 <= mw <= p75 + 1e-9
     limit = ONE_DUR * abs(med) if label == "dur_s" else ONE_DB
-    return mw, inside or abs(mw - med) < limit
+    return mw, inside or abs(mw - med) < limit - 1e-9  # "at least 20 %" includes exactly 20 %
 
 
 def target(fam, style, rows, meas, vidx):

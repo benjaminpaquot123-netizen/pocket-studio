@@ -129,6 +129,38 @@ def test_ground_truth_from_the_file_name():
     assert tr("Kick_A.wav", "drum_oneshot").get("note") is None  # a variant letter, not a note
 
 
+# ---------------------------------------------------------------- 5. families
+def test_families_are_refined():
+    """Generic keyword rules only (never a pack or vendor name)."""
+    cases = [
+        ("drum_oneshot/kick_808", "a/b/808 Boom C.wav", "oneshot_melodic/808"),
+        ("oneshot_melodic/bass", "a/808 Long F.wav", "oneshot_melodic/808"),
+        ("melodic_loop/bass", "a/808 Loop 140 BPM.wav", "melodic_loop/808"),
+        ("drum_oneshot/hat_closed", "a/808 Hat.wav", "drum_oneshot/hat_closed"),  # a drum-machine hat
+        ("melodic_loop/autre", "a/Adlib Hey 140 BPM.wav", "vocal/vocal"),
+        ("melodic_loop/autre", "a/Sung Word 90 BPM.wav", "vocal/vocal"),
+        ("oneshot_melodic/autre", "a/Viola Held C.wav", "oneshot_melodic/strings"),
+        ("oneshot_melodic/autre", "a/Kalimba A.wav", "oneshot_melodic/bell"),
+        ("kit_stem/autre", "a/Claves 100 BPM.wav", "kit_stem/perc"),
+        ("drum_loop/pad", "a/texture.wav", "melodic_loop/pad"),
+        ("drum_loop/synth", "a/x.wav", "drum_loop/full"),
+        ("fx/drums", "a/x.wav", "fx/fx"),
+        ("fx/chords", "a/x.wav", "melodic_loop/chords"),
+        ("melodic_loop/drums", "a/top.wav", "drum_loop/drums"),
+        ("melodic_loop/perc", "a/cowbell.wav", "drum_loop/perc"),
+        ("oneshot_melodic/drums", "a/x.wav", "oneshot_melodic/bell"),
+        ("oneshot_melodic/full", "a/Bass Stab.wav", "oneshot_melodic/bass"),
+        ("fx/fx", "a/Bass Hit C.wav", "oneshot_melodic/bass"),
+        ("fx/fx", "a/Riser.wav", "fx/fx"),
+        ("drum_oneshot/kick:attack", "a/x.wav", "drum_oneshot/kick"),
+        ("drum_oneshot/perc_high", "a/x.wav", "drum_oneshot/perc"),
+        ("drum_oneshot/snap", "a/x.wav", "drum_oneshot/clap"),
+        ("drum_oneshot/kick", "a/Kick 3.wav", "drum_oneshot/kick"),
+    ]
+    bad = [(f, m, base.refine(f, m), w) for f, m, w in cases if base.refine(f, m) != w]
+    assert not bad, "; ".join("%s %s -> %s, want %s" % b for b in bad)
+
+
 TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
 
 

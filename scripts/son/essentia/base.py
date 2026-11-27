@@ -47,6 +47,10 @@ GATE_DB = -60.0  # active frame: frame RMS within 60 dB of the loudest frame
 # described by their body, not their tail: 512/128 frames (zero-padded to
 # FRAME, so every spectral instrument keeps its 2048-point grid) and a gate
 # 20 dB under the loudest frame.
+# Flatness stops at 19 kHz: any resampler from 48 kHz empties the band above
+# about 20 kHz, which drags a full-band flatness down by 1 to 2 dB.
+FLAT_TOP_HZ = 19000.0
+FLAT_BINS = int(FLAT_TOP_HZ / SR * FRAME) + 1
 COUP_FRAME, COUP_HOP, COUP_GATE_DB, COUP_MAX_S = 512, 128, -20.0, 0.5
 ONESHOTS = {"drum_oneshot", "oneshot_melodic"}
 # One-shot rolloff: one spectrum of the body (gated span, Hann, at most
@@ -275,7 +279,7 @@ def ess_measure(stereo, typ, fam):
         s = spec(w(fr))
         F["cen"].append(cen(s))
         F["roll"].append(roll(s))
-        F["flat"].append(flat(np.maximum(s.astype(np.float64) ** 2, 1e-10).astype(np.float32)))
+        F["flat"].append(flat(np.maximum(s[:FLAT_BINS].astype(np.float64) ** 2, 1e-10).astype(np.float32)))
         F["zcr"].append(zcr(fr))
         F["rms"].append(rms(fr))
         # EnergyBand squares its input itself: give it the magnitude spectrum.
@@ -363,7 +367,7 @@ def lib_measure(data, typ, fam):
                             center=True, pad_mode="constant"))
     cen = librosa.feature.spectral_centroid(S=S, sr=SR)[0]
     roll = librosa.feature.spectral_rolloff(S=S ** 2, sr=SR, roll_percent=0.85)[0]  # energy, as Essentia RollOff
-    flat = librosa.feature.spectral_flatness(S=S)[0]
+    flat = librosa.feature.spectral_flatness(S=S[:FLAT_BINS])[0]
     zcr = librosa.feature.zero_crossing_rate(y, frame_length=win, hop_length=hop, center=True)[0]
     rms = librosa.feature.rms(y=y, frame_length=win, hop_length=hop, center=True, pad_mode="constant")[0]
     n = min(len(cen), len(zcr), len(rms))

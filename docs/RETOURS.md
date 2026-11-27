@@ -236,3 +236,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - 2026-11-25 : « pas normal que ça reste dans le chat principal, c'est pas ton job » : les analyses (sons, mesures) se font dans des discussions, pas dans la principale.
 - 2026-11-25 : « c'est quoi cette manie de pas ouvrir de nouvelles discussions ? » : préférer une discussion neuve à un sous-agent.
 - 2026-11-25 : « Il faut obligatoirement n'utiliser uniquement que les sons que je t'enverrai via Google Drive. Ça m'a coûté 130 euros » : vrais sons = seulement ses packs Drive, jamais d'autres.
+- 2026-11-27 matin : « Je suis un peu perdu avec tout les sons. Ça fait beaucoup. De son à écouter. Fait le nécessaire pour terminer au mieux complètement ton analyse de son » : 157 sons, c'est trop ; finir l'analyse sans lui et réduire l'écoute à l'essentiel. (en cours : quatre lots « son-fin »)

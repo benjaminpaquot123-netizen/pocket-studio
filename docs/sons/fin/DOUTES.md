@@ -4,6 +4,8 @@ Sources : `docs/sons/passe2/verif/DESACCORDS-A.md`, `-B.md`, `-C.md` et `docs/so
 « levé » = preuve donnée ; « reste » = on ne sait pas, mais aucune cible n'en dépend (dit pourquoi).
 Un seul doute changeait des cibles : B1 (voix, boucles mélodiques, coups « - ») ; il est levé par la preuve ci-dessous.
 Zéro doute sans réponse.
+Seconde critique (v3) : la 5e condition « la cible ne dépend pas d'un seul fabricant » retire 21 lignes (99 → 78) ;
+elle ne lève ni n'ouvre aucun doute (détail : `REPONSE-CRITIQUE2-AUTRES.md`).
 
 ## DESACCORDS-A (RAR 1, 2, 3, 4, 12)
 

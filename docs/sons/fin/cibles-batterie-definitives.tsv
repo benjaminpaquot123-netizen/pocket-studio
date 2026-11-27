@@ -1,0 +1,535 @@
+# Cibles définitives de la batterie (règle : docs/sons/fin/REGLE-BATTERIE.md), écrites par scripts/sons/fin/cibles_batterie.py.
+# Packs notés rN/pN ; « pas de cible » = on garde le son actuel, la première condition qui échoue est écrite ; « tous_styles » est un repère pour les originaux, pas une cible.
+famille	style	coups	packs	liste_packs	mesure	p10	p25	mediane	p75	p90	statut
+kick	house	20	1	r12/p2	dur_s	0.48	0.48	0.48	0.48	0.48	pas de cible : (2) moins de 2 packs de 5 sons
+kick	house	20	1	r12/p2	peak_dbfs	-0.2521	-0.2497	-0.2482	-0.2457	-0.244	pas de cible : (2) moins de 2 packs de 5 sons
+kick	house	20	1	r12/p2	rms_dbfs	-8.4394	-7.969	-7.708	-7.3405	-7.2431	pas de cible : (2) moins de 2 packs de 5 sons
+kick	house	20	1	r12/p2	t20_ms	188.844	217.5575	235.475	249.63	269.683	pas de cible : (2) moins de 2 packs de 5 sons
+kick	house	20	1	r12/p2	t60_ms	246.063	289.43	313.29	375.685	426.585	pas de cible : (2) moins de 2 packs de 5 sons
+kick	house	20	1	r12/p2	centroid_hz	87.52	94.55	104.995	115.975	124.247	pas de cible : (2) moins de 2 packs de 5 sons
+kick	house	20	1	r12/p2	hf_db	-62.327	-56.7575	-47.89	-43.17	-38.333	pas de cible : (2) moins de 2 packs de 5 sons
+kick	house	20	1	r12/p2	transient_body_db	-14.934	-14.5825	-13.865	-12.8875	-12.577	pas de cible : (2) moins de 2 packs de 5 sons
+kick	house	20	1	r12/p2	pitch_steady_hz	37.254	41.085	44.005	44.9825	48.252	pas de cible : (2) moins de 2 packs de 5 sons
+kick	techhouse	50	3	r12/p2 r3/p1 r5/p1	dur_s	0.4	0.4	0.48	0.48	0.48	définitive (regroupement house+techno)
+kick	techhouse	50	3	r12/p2 r3/p1 r5/p1	peak_dbfs	-0.9975	-0.2514	-0.2456	-0.1049	-0.1049	définitive (regroupement house+techno)
+kick	techhouse	50	3	r12/p2 r3/p1 r5/p1	rms_dbfs	-10.593	-8.3168	-7.333	-5.761	-5.3651	définitive (regroupement house+techno)
+kick	techhouse	50	3	r12/p2 r3/p1 r5/p1	t20_ms	193.833	218.46	250.48	374.5875	384.304	définitive (regroupement house+techno)
+kick	techhouse	50	3	r12/p2 r3/p1 r5/p1	t60_ms	246.063	286.73	382.3	397.9	399.232	définitive (regroupement house+techno)
+kick	techhouse	50	3	r12/p2 r3/p1 r5/p1	centroid_hz	85.941	93.455	113.93	140.195	167.631	définitive (regroupement house+techno)
+kick	techhouse	50	3	r12/p2 r3/p1 r5/p1	hf_db	-60.143	-53.9025	-44.11	-35.925	-32.289	définitive (regroupement house+techno)
+kick	techhouse	50	3	r12/p2 r3/p1 r5/p1	transient_body_db	-15.874	-15.1125	-14.185	-12.8925	-12.546	définitive (regroupement house+techno)
+kick	techhouse	50	3	r12/p2 r3/p1 r5/p1	pitch_steady_hz	41.298	44.145	47.495	53.4425	59.784	pas de cible : (4) contre-mesure d'accord sur 62 % seulement
+kick	techno	30	2	r3/p1 r5/p1	dur_s	0.4	0.4	0.4	0.48	0.4812	définitive
+kick	techno	30	2	r3/p1 r5/p1	peak_dbfs	-0.9999	-0.996	-0.1049	-0.1049	-0.1049	définitive
+kick	techno	30	2	r3/p1 r5/p1	rms_dbfs	-11.823	-9.3063	-5.8315	-5.4982	-5.2679	pas de cible : (5) sans le plus gros pack la médiane passe à -10.61
+kick	techno	30	2	r3/p1 r5/p1	t20_ms	201.445	219.22	368.72	379.21	385.857	pas de cible : (5) sans le plus gros pack la médiane passe à 215.3
+kick	techno	30	2	r3/p1 r5/p1	t60_ms	248.902	277.71	396.835	397.9625	398.415	pas de cible : (5) sans le plus gros pack la médiane passe à 252.6
+kick	techno	30	2	r3/p1 r5/p1	centroid_hz	82.521	93.3275	134.535	161.1675	171.755	pas de cible : (5) sans le plus gros pack la médiane passe à 89.38
+kick	techno	30	2	r3/p1 r5/p1	hf_db	-58.442	-51.455	-38.21	-33.9925	-30.27	pas de cible : (5) sans le plus gros pack la médiane passe à -55.7
+kick	techno	30	2	r3/p1 r5/p1	transient_body_db	-16.077	-15.5125	-14.485	-13.11	-12.345	pas de cible : (5) sans le plus gros pack la médiane passe à -12.83
+kick	techno	30	2	r3/p1 r5/p1	pitch_steady_hz	45.382	47.3825	50.6	57.6225	64.009	pas de cible : (4) contre-mesure d'accord sur 56 % seulement
+kick	trap	39	1	r2/p1	dur_s	0.1762	0.5	0.5	0.5	0.5	pas de cible : (2) moins de 2 packs de 5 sons
+kick	trap	39	1	r2/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (2) moins de 2 packs de 5 sons
+kick	trap	39	1	r2/p1	rms_dbfs	-12.828	-12.225	-11.4	-10.31	-7.0812	pas de cible : (2) moins de 2 packs de 5 sons
+kick	trap	39	1	r2/p1	t20_ms	70.992	85.355	97.07	113.085	124.968	pas de cible : (2) moins de 2 packs de 5 sons
+kick	trap	39	1	r2/p1	t60_ms	116.62	126.835	152.93	170.805	182.69	pas de cible : (2) moins de 2 packs de 5 sons
+kick	trap	39	1	r2/p1	centroid_hz	56.1	61.97	67.26	72.485	79.136	pas de cible : (2) moins de 2 packs de 5 sons
+kick	trap	39	1	r2/p1	hf_db	-90.238	-85.105	-80.12	-71.775	-68.064	pas de cible : (2) moins de 2 packs de 5 sons
+kick	trap	39	1	r2/p1	transient_body_db	-18.546	-16.3	-14.35	-12.24	-8.8276	pas de cible : (2) moins de 2 packs de 5 sons
+kick	trap	39	1	r2/p1	pitch_steady_hz	34.912	41.405	46.33	49.095	52.394	pas de cible : (2) moins de 2 packs de 5 sons
+kick	dnb	56	2	r10/p1 r11/p2	dur_s	0.2197	0.2405	0.3448	0.3448	0.3448	définitive
+kick	dnb	56	2	r10/p1 r11/p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+kick	dnb	56	2	r10/p1 r11/p2	rms_dbfs	-12.205	-10.7125	-9.359	-7.9263	-6.6635	définitive
+kick	dnb	56	2	r10/p1 r11/p2	t20_ms	109.67	125.8275	158.855	181.915	200.02	définitive
+kick	dnb	56	2	r10/p1 r11/p2	t60_ms	188.08	207.0675	242.8	269.0625	303.705	définitive
+kick	dnb	56	2	r10/p1 r11/p2	centroid_hz	84.98	96.1525	122.965	201.5625	242.215	définitive
+kick	dnb	56	2	r10/p1 r11/p2	hf_db	-43.045	-40.285	-33.155	-29.755	-27.43	définitive
+kick	dnb	56	2	r10/p1 r11/p2	transient_body_db	-14.42	-13.3125	-11.505	-9.0947	-7.6125	définitive
+kick	dnb	56	2	r10/p1 r11/p2	pitch_steady_hz	36.44	40.9475	45.945	52.165	57.115	pas de cible : (4) contre-mesure d'accord sur 42 % seulement
+kick	dubstep	80	2	r8/p1 r9/p3	dur_s	0.2928	0.2933	0.5	0.5	0.5	définitive
+kick	dubstep	80	2	r8/p1 r9/p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+kick	dubstep	80	2	r8/p1 r9/p3	rms_dbfs	-8.9041	-8.2508	-7.7205	-7.4108	-7.1848	définitive
+kick	dubstep	80	2	r8/p1 r9/p3	t20_ms	189.642	208.695	226.475	238.205	261.3	définitive
+kick	dubstep	80	2	r8/p1 r9/p3	t60_ms	262.535	282.87	315.12	345.09	389.82	définitive
+kick	dubstep	80	2	r8/p1 r9/p3	centroid_hz	63.951	74.2	104.06	114.8525	131.815	pas de cible : (5) sans le plus gros pack la médiane passe à 70.4
+kick	dubstep	80	2	r8/p1 r9/p3	hf_db	-41.076	-39.185	-36.52	-33.1725	-30.118	pas de cible : (5) sans le plus gros pack la médiane passe à -39.71
+kick	dubstep	80	2	r8/p1 r9/p3	transient_body_db	-19.008	-16.2725	-12.33	-11.5875	-11.027	pas de cible : (5) sans le plus gros pack la médiane passe à -17.13
+kick	dubstep	80	2	r8/p1 r9/p3	pitch_steady_hz	39.835	43.4375	47.74	52.195	54.93	pas de cible : (4) contre-mesure d'accord sur 90 % seulement
+kick	tous_styles	506	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	dur_s	0.2281	0.2933	0.4	0.5	0.7037	repère tous styles
+kick	tous_styles	506	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	repère tous styles
+kick	tous_styles	506	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	rms_dbfs	-16.19	-12.3175	-9.544	-7.5865	-5.8775	repère tous styles
+kick	tous_styles	506	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	t20_ms	100.745	143.7075	199.49	248.5875	378.685	repère tous styles
+kick	tous_styles	506	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	t60_ms	171.815	225.8925	291.12	385.85	569.5	repère tous styles
+kick	tous_styles	506	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	centroid_hz	67.33	82.6525	107.165	169.29	295.865	repère tous styles
+kick	tous_styles	506	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	hf_db	-69.975	-48.5575	-37.825	-31.11	-26.3	repère tous styles
+kick	tous_styles	506	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	transient_body_db	-17.915	-15.415	-12.51	-9.7797	-6.454	repère tous styles
+kick	tous_styles	506	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	pitch_steady_hz	36.115	42.4975	47.975	54.4375	64.705	pas de cible : (4) contre-mesure d'accord sur 50 % seulement
+808	house	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+808	house	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+808	house	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+808	house	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+808	house	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+808	house	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+808	house	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+808	house	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+808	techhouse	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+808	techhouse	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+808	techhouse	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+808	techhouse	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+808	techhouse	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+808	techhouse	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+808	techhouse	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+808	techhouse	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+808	techno	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+808	techno	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+808	techno	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+808	techno	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+808	techno	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+808	techno	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+808	techno	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+808	techno	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+808	trap	2	1	r2/p1	dur_s	3.18	3.45	3.9	4.35	4.62	pas de cible : (1) 2 sons (moins de 20)
+808	trap	2	1	r2/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (1) 2 sons (moins de 20)
+808	trap	2	1	r2/p1	rms_dbfs	-7.144	-6.6235	-5.756	-4.8885	-4.368	pas de cible : (1) 2 sons (moins de 20)
+808	trap	2	1	r2/p1	t20_ms	3118.692	3382.065	3821.02	4259.975	4523.348	pas de cible : (1) 2 sons (moins de 20)
+808	trap	2	1	r2/p1	t60_ms	3173.574	3443.22	3892.63	4342.04	4611.686	pas de cible : (1) 2 sons (moins de 20)
+808	trap	2	1	r2/p1	centroid_hz	65.819	66.7175	68.215	69.7125	70.611	pas de cible : (1) 2 sons (moins de 20)
+808	trap	2	1	r2/p1	hf_db	-82.031	-81.6575	-81.035	-80.4125	-80.039	pas de cible : (1) 2 sons (moins de 20)
+808	trap	2	1	r2/p1	transient_body_db	-32.317	-31.7275	-30.745	-29.7625	-29.173	pas de cible : (1) 2 sons (moins de 20)
+808	dnb	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+808	dnb	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+808	dnb	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+808	dnb	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+808	dnb	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+808	dnb	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+808	dnb	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+808	dnb	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+808	dubstep	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+808	dubstep	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+808	dubstep	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+808	dubstep	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+808	dubstep	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+808	dubstep	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+808	dubstep	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+808	dubstep	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+808	tous_styles	23	2	r1/p1 r2/p1	dur_s	0.9513	1.62	1.865	2.3355	2.921	pas de cible : (2) moins de 2 packs de 5 sons
+808	tous_styles	23	2	r1/p1 r2/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1048	pas de cible : (2) moins de 2 packs de 5 sons
+808	tous_styles	23	2	r1/p1 r2/p1	rms_dbfs	-11.222	-8.6005	-6.295	-4.4985	-3.9002	pas de cible : (2) moins de 2 packs de 5 sons
+808	tous_styles	23	2	r1/p1 r2/p1	t20_ms	790.49	1159.415	1455.92	1860.48	2283.104	pas de cible : (2) moins de 2 packs de 5 sons
+808	tous_styles	23	2	r1/p1 r2/p1	t60_ms	918.038	1490.02	1787.52	2284.31	2888.786	pas de cible : (2) moins de 2 packs de 5 sons
+808	tous_styles	23	2	r1/p1 r2/p1	centroid_hz	30.002	39.905	46.14	65.89	73.21	pas de cible : (2) moins de 2 packs de 5 sons
+808	tous_styles	23	2	r1/p1 r2/p1	hf_db	-92.882	-90.575	-88.17	-85.88	-82.618	pas de cible : (2) moins de 2 packs de 5 sons
+808	tous_styles	23	2	r1/p1 r2/p1	transient_body_db	-32.504	-30.02	-23.72	-20.325	-16.254	pas de cible : (2) moins de 2 packs de 5 sons
+caisse_claire	house	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+caisse_claire	house	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+caisse_claire	house	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+caisse_claire	house	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+caisse_claire	house	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+caisse_claire	house	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+caisse_claire	house	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+caisse_claire	house	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+caisse_claire	techhouse	10	1	r3/p1	dur_s	0.4918	0.4918	0.4918	0.4918	0.4978	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techhouse	10	1	r3/p1	peak_dbfs	-1.0152	-0.9871	-0.9275	-0.8498	-0.8273	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techhouse	10	1	r3/p1	rms_dbfs	-22.7	-21.0675	-19.72	-18.8975	-17.71	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techhouse	10	1	r3/p1	t20_ms	47.344	50.1425	65.15	72.1275	81.208	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techhouse	10	1	r3/p1	t60_ms	128.683	150.61	204.955	237.1875	250.548	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techhouse	10	1	r3/p1	centroid_hz	633.884	687.195	798.46	1032.9425	1391.335	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techhouse	10	1	r3/p1	hf_db	-22.671	-21.59	-20.795	-16.365	-14.246	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techhouse	10	1	r3/p1	transient_body_db	-7.4157	-3.522	-0.7229	0.9092	2.0677	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techno	10	1	r3/p1	dur_s	0.4918	0.4918	0.4918	0.4918	0.4978	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techno	10	1	r3/p1	peak_dbfs	-1.0152	-0.9871	-0.9275	-0.8498	-0.8273	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techno	10	1	r3/p1	rms_dbfs	-22.7	-21.0675	-19.72	-18.8975	-17.71	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techno	10	1	r3/p1	t20_ms	47.344	50.1425	65.15	72.1275	81.208	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techno	10	1	r3/p1	t60_ms	128.683	150.61	204.955	237.1875	250.548	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techno	10	1	r3/p1	centroid_hz	633.884	687.195	798.46	1032.9425	1391.335	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techno	10	1	r3/p1	hf_db	-22.671	-21.59	-20.795	-16.365	-14.246	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	techno	10	1	r3/p1	transient_body_db	-7.4157	-3.522	-0.7229	0.9092	2.0677	pas de cible : (1) 10 sons (moins de 20)
+caisse_claire	trap	21	2	r10/p1 r2/p1	dur_s	0.1865	0.2181	0.4286	0.4286	0.4286	pas de cible : (2) moins de 2 packs de 5 sons
+caisse_claire	trap	21	2	r10/p1 r2/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (2) moins de 2 packs de 5 sons
+caisse_claire	trap	21	2	r10/p1 r2/p1	rms_dbfs	-19.32	-18.23	-16.67	-15.55	-14.41	pas de cible : (2) moins de 2 packs de 5 sons
+caisse_claire	trap	21	2	r10/p1 r2/p1	t20_ms	80.14	100.61	122.61	139.07	158.8	pas de cible : (2) moins de 2 packs de 5 sons
+caisse_claire	trap	21	2	r10/p1 r2/p1	t60_ms	154.44	180.05	230.98	284.42	325.03	pas de cible : (2) moins de 2 packs de 5 sons
+caisse_claire	trap	21	2	r10/p1 r2/p1	centroid_hz	1592.09	2021.36	2536.18	2888.85	3237.21	pas de cible : (2) moins de 2 packs de 5 sons
+caisse_claire	trap	21	2	r10/p1 r2/p1	hf_db	-20.3	-17.78	-16.41	-13.02	-11.99	pas de cible : (2) moins de 2 packs de 5 sons
+caisse_claire	trap	21	2	r10/p1 r2/p1	transient_body_db	-9.242	-7.638	-6.854	-5.062	-4.171	pas de cible : (2) moins de 2 packs de 5 sons
+caisse_claire	dnb	63	2	r10/p1 r11/p2	dur_s	0.1584	0.2091	0.3448	0.3448	0.3448	pas de cible : (5) sans le plus gros pack la médiane passe à 0.1994
+caisse_claire	dnb	63	2	r10/p1 r11/p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+caisse_claire	dnb	63	2	r10/p1 r11/p2	rms_dbfs	-17.932	-15.58	-14.63	-11.865	-10.624	pas de cible : (5) sans le plus gros pack la médiane passe à -11.34
+caisse_claire	dnb	63	2	r10/p1 r11/p2	t20_ms	49.338	57.495	79.86	152.755	173.32	pas de cible : (5) sans le plus gros pack la médiane passe à 56.62
+caisse_claire	dnb	63	2	r10/p1 r11/p2	t60_ms	138.614	164.48	201.36	268.33	273.44	définitive
+caisse_claire	dnb	63	2	r10/p1 r11/p2	centroid_hz	1929.596	2452.085	2900.89	3604.53	4068.992	définitive
+caisse_claire	dnb	63	2	r10/p1 r11/p2	hf_db	-17.616	-14.945	-12.86	-10.73	-9.5104	définitive
+caisse_claire	dnb	63	2	r10/p1 r11/p2	transient_body_db	-9.1766	-7.8535	-5.819	-3.0975	-0.0312	définitive
+caisse_claire	dubstep	60	2	r8/p1 r9/p3	dur_s	0.5	0.6317	0.6339	1	1	définitive
+caisse_claire	dubstep	60	2	r8/p1 r9/p3	peak_dbfs	-6	-6	-3.0524	-0.1049	-0.1049	définitive
+caisse_claire	dubstep	60	2	r8/p1 r9/p3	rms_dbfs	-17.903	-16.9225	-16.115	-13.57	-12.941	définitive
+caisse_claire	dubstep	60	2	r8/p1 r9/p3	t20_ms	103.481	136.0525	248.335	355.5525	392.506	définitive
+caisse_claire	dubstep	60	2	r8/p1 r9/p3	t60_ms	405.86	446.8725	613.585	938.07	965.803	définitive
+caisse_claire	dubstep	60	2	r8/p1 r9/p3	centroid_hz	614.176	695.8225	1159.3	2419.0025	2929.02	pas de cible : (5) sans le plus gros pack la médiane passe à 2447
+caisse_claire	dubstep	60	2	r8/p1 r9/p3	hf_db	-27.226	-25.085	-20.745	-13.5075	-11.269	pas de cible : (5) sans le plus gros pack la médiane passe à -13.37
+caisse_claire	dubstep	60	2	r8/p1 r9/p3	transient_body_db	-13.302	-10.8575	-9.4415	-8.3767	-7.6158	définitive
+caisse_claire	tous_styles	411	12	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r3/p1 r4/p1 r6/p1 r8/p1 r8/p2 r9/p3	dur_s	0.1584	0.2388	0.3871	0.6339	1	repère tous styles
+caisse_claire	tous_styles	411	12	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r3/p1 r4/p1 r6/p1 r8/p1 r8/p2 r9/p3	peak_dbfs	-0.33	-0.1049	-0.1049	-0.1049	-0.1049	repère tous styles
+caisse_claire	tous_styles	411	12	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r3/p1 r4/p1 r6/p1 r8/p1 r8/p2 r9/p3	rms_dbfs	-24.34	-20.7	-16.73	-14.12	-12.21	repère tous styles
+caisse_claire	tous_styles	411	12	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r3/p1 r4/p1 r6/p1 r8/p1 r8/p2 r9/p3	t20_ms	57.76	85.77	124.2	166.825	224.35	repère tous styles
+caisse_claire	tous_styles	411	12	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r3/p1 r4/p1 r6/p1 r8/p1 r8/p2 r9/p3	t60_ms	138.07	179.72	270.91	562.945	788.71	repère tous styles
+caisse_claire	tous_styles	411	12	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r3/p1 r4/p1 r6/p1 r8/p1 r8/p2 r9/p3	centroid_hz	782.72	1270.15	1989.53	2797.23	3458.11	repère tous styles
+caisse_claire	tous_styles	411	12	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r3/p1 r4/p1 r6/p1 r8/p1 r8/p2 r9/p3	hf_db	-26.39	-21.375	-15.37	-12.405	-10.51	repère tous styles
+caisse_claire	tous_styles	411	12	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r3/p1 r4/p1 r6/p1 r8/p1 r8/p2 r9/p3	transient_body_db	-10.84	-8.6915	-5.678	-2.667	-0.0034	repère tous styles
+clap	house	20	1	r12/p2	dur_s	0.24	0.24	0.24	0.24	0.24	pas de cible : (2) moins de 2 packs de 5 sons
+clap	house	20	1	r12/p2	peak_dbfs	-1.1707	-0.8641	-0.499	-0.2933	-0.2785	pas de cible : (2) moins de 2 packs de 5 sons
+clap	house	20	1	r12/p2	rms_dbfs	-18.789	-18.425	-16.95	-16.15	-15.394	pas de cible : (2) moins de 2 packs de 5 sons
+clap	house	20	1	r12/p2	t20_ms	67.854	75.3925	85	111.5175	118.21	pas de cible : (2) moins de 2 packs de 5 sons
+clap	house	20	1	r12/p2	t60_ms	128.944	177.1575	224.04	234.3225	237.402	pas de cible : (2) moins de 2 packs de 5 sons
+clap	house	20	1	r12/p2	centroid_hz	1846.071	2423.4925	2889.945	3510.1325	4415.733	pas de cible : (2) moins de 2 packs de 5 sons
+clap	house	20	1	r12/p2	hf_db	-19.616	-17.375	-14.975	-12.465	-10.1383	pas de cible : (2) moins de 2 packs de 5 sons
+clap	house	20	1	r12/p2	transient_body_db	-7.701	-6.6837	-5.919	-4.7745	-4.1972	pas de cible : (2) moins de 2 packs de 5 sons
+clap	techhouse	50	3	r12/p2 r3/p1 r5/p1	dur_s	0.24	0.24	0.4	0.4	0.48	définitive (regroupement house+techno)
+clap	techhouse	50	3	r12/p2 r3/p1 r5/p1	peak_dbfs	-1.0183	-0.8608	-0.2914	-0.1049	-0.1049	définitive (regroupement house+techno)
+clap	techhouse	50	3	r12/p2 r3/p1 r5/p1	rms_dbfs	-23.675	-18.705	-16.41	-15.4275	-14.849	définitive (regroupement house+techno)
+clap	techhouse	50	3	r12/p2 r3/p1 r5/p1	t20_ms	67.966	77.6375	101.79	124.6675	166.032	définitive (regroupement house+techno)
+clap	techhouse	50	3	r12/p2 r3/p1 r5/p1	t60_ms	161.454	192.0625	214.945	235.54	266.407	définitive (regroupement house+techno)
+clap	techhouse	50	3	r12/p2 r3/p1 r5/p1	centroid_hz	2291.992	2731.935	3391.61	4275.3	4725.549	définitive (regroupement house+techno)
+clap	techhouse	50	3	r12/p2 r3/p1 r5/p1	hf_db	-17.729	-15.65	-13.085	-11.455	-8.8991	définitive (regroupement house+techno)
+clap	techhouse	50	3	r12/p2 r3/p1 r5/p1	transient_body_db	-9.7138	-8.4533	-6.7345	-4.6815	-2.8362	définitive (regroupement house+techno)
+clap	techno	30	2	r3/p1 r5/p1	dur_s	0.4	0.4	0.4	0.48	0.48	définitive
+clap	techno	30	2	r3/p1 r5/p1	peak_dbfs	-0.9733	-0.848	-0.1049	-0.1049	-0.1049	définitive
+clap	techno	30	2	r3/p1 r5/p1	rms_dbfs	-24.772	-22.1725	-15.62	-15.145	-14.48	pas de cible : (5) sans le plus gros pack la médiane passe à -23.73
+clap	techno	30	2	r3/p1 r5/p1	t20_ms	67.966	80.55	118.63	148.245	168.58	pas de cible : (5) sans le plus gros pack la médiane passe à 74.57
+clap	techno	30	2	r3/p1 r5/p1	t60_ms	173.904	196.365	212.745	236.0125	281.457	définitive
+clap	techno	30	2	r3/p1 r5/p1	centroid_hz	2529.378	2978.805	3845.37	4317.875	5962.501	pas de cible : (5) sans le plus gros pack la médiane passe à 2720
+clap	techno	30	2	r3/p1 r5/p1	hf_db	-15.667	-14.1475	-12.38	-11.24	-8.3776	pas de cible : (5) sans le plus gros pack la médiane passe à -14.66
+clap	techno	30	2	r3/p1 r5/p1	transient_body_db	-9.9731	-9.1022	-8.183	-4.5652	-0.6183	pas de cible : (5) sans le plus gros pack la médiane passe à -2.293
+clap	trap	10	1	r2/p1	dur_s	0.1071	0.1845	0.3423	1.3927	1.714	pas de cible : (1) 10 sons (moins de 20)
+clap	trap	10	1	r2/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (1) 10 sons (moins de 20)
+clap	trap	10	1	r2/p1	rms_dbfs	-24.699	-22.73	-18.02	-16.545	-14.366	pas de cible : (1) 10 sons (moins de 20)
+clap	trap	10	1	r2/p1	t20_ms	57.17	69.4875	92.86	122.72	137.864	pas de cible : (1) 10 sons (moins de 20)
+clap	trap	10	1	r2/p1	t60_ms	79.704	102.82	151.075	210.6325	278.254	pas de cible : (1) 10 sons (moins de 20)
+clap	trap	10	1	r2/p1	centroid_hz	2552.606	2610.085	2744.715	3170.92	3390.282	pas de cible : (1) 10 sons (moins de 20)
+clap	trap	10	1	r2/p1	hf_db	-26.998	-23.0175	-21.625	-20.0425	-18.872	pas de cible : (1) 10 sons (moins de 20)
+clap	trap	10	1	r2/p1	transient_body_db	-7.9942	-7.676	-7.0865	-5.0088	-2.5766	pas de cible : (1) 10 sons (moins de 20)
+clap	dnb	37	2	r10/p1 r11/p2	dur_s	0.1695	0.2478	0.3448	0.3448	0.3448	pas de cible : (5) sans le plus gros pack la médiane passe à 0.1897
+clap	dnb	37	2	r10/p1 r11/p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+clap	dnb	37	2	r10/p1 r11/p2	rms_dbfs	-20.832	-19.29	-17.04	-15.92	-14.85	définitive
+clap	dnb	37	2	r10/p1 r11/p2	t20_ms	67.498	72.47	93.58	123.7	174.264	pas de cible : (5) sans le plus gros pack la médiane passe à 70.63
+clap	dnb	37	2	r10/p1 r11/p2	t60_ms	158.008	173.15	234.22	254.69	274.008	définitive
+clap	dnb	37	2	r10/p1 r11/p2	centroid_hz	2514.912	2885.98	3323.9	3846.96	4393.066	définitive
+clap	dnb	37	2	r10/p1 r11/p2	hf_db	-20.052	-15.89	-14.36	-12.56	-10.636	définitive
+clap	dnb	37	2	r10/p1 r11/p2	transient_body_db	-9.6008	-7.178	-5.667	-3.916	-2.7992	définitive
+clap	dubstep	80	2	r8/p1 r9/p3	dur_s	0.351	0.351	0.5	0.5	0.5	définitive
+clap	dubstep	80	2	r8/p1 r9/p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+clap	dubstep	80	2	r8/p1 r9/p3	rms_dbfs	-16.63	-15.7025	-14.89	-13.6875	-13.032	définitive
+clap	dubstep	80	2	r8/p1 r9/p3	t20_ms	93.047	109.765	158.695	213.4925	289.045	définitive
+clap	dubstep	80	2	r8/p1 r9/p3	t60_ms	172.55	226.005	425.035	485.6875	494.567	pas de cible : (5) sans le plus gros pack la médiane passe à 212.5
+clap	dubstep	80	2	r8/p1 r9/p3	centroid_hz	1984.825	2188.6025	2580.91	3041.1225	3843.665	pas de cible : (5) sans le plus gros pack la médiane passe à 3328
+clap	dubstep	80	2	r8/p1 r9/p3	hf_db	-22.659	-21.0325	-18.205	-13.9825	-11.953	pas de cible : (5) sans le plus gros pack la médiane passe à -13.42
+clap	dubstep	80	2	r8/p1 r9/p3	transient_body_db	-13.765	-12.5275	-10.895	-9.5527	-8.001	définitive
+clap	tous_styles	298	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	dur_s	0.173	0.24	0.3763	0.5	0.5	repère tous styles
+clap	tous_styles	298	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	peak_dbfs	-0.2686	-0.1049	-0.1049	-0.1049	-0.1049	repère tous styles
+clap	tous_styles	298	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	rms_dbfs	-22.858	-19.515	-16.62	-15.125	-13.74	repère tous styles
+clap	tous_styles	298	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	t20_ms	69.141	84.66	113.695	166.7725	229.859	repère tous styles
+clap	tous_styles	298	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	t60_ms	143.643	174.855	233.155	377.365	493.479	repère tous styles
+clap	tous_styles	298	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	centroid_hz	2133.031	2528.8825	3185.415	4389.2975	6928.306	repère tous styles
+clap	tous_styles	298	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	hf_db	-22.23	-19.08	-14.13	-10.46	-5.9742	repère tous styles
+clap	tous_styles	298	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	transient_body_db	-13.159	-10.41	-7.703	-5.3268	-3.1075	repère tous styles
+charley_ferme	house	20	1	r12/p2	dur_s	0.12	0.12	0.12	0.12	0.12	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	house	20	1	r12/p2	peak_dbfs	-1.6514	-1.5815	-1.2395	-0.8408	-0.5748	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	house	20	1	r12/p2	rms_dbfs	-19.301	-17.61	-16.43	-15.5175	-15.125	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	house	20	1	r12/p2	t20_ms	34.535	43.465	55.18	68.33	70.466	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	house	20	1	r12/p2	t60_ms	61.454	74.9475	112.065	118.1225	118.57	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	house	20	1	r12/p2	centroid_hz	6814.324	7360.72	7891.65	8674.555	9993.138	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	house	20	1	r12/p2	hf_db	-9.78	-8.6558	-7.081	-4.652	-3.3819	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	house	20	1	r12/p2	transient_body_db	-11.325	-6.7893	-4.659	-2.8425	-1.5727	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	techhouse	50	3	r12/p2 r3/p1 r5/p1	dur_s	0.1	0.1	0.12	0.1425	0.48	définitive (regroupement house+techno)
+charley_ferme	techhouse	50	3	r12/p2 r3/p1 r5/p1	peak_dbfs	-1.5794	-1.205	-0.6238	-0.1049	-0.1049	définitive (regroupement house+techno)
+charley_ferme	techhouse	50	3	r12/p2 r3/p1 r5/p1	rms_dbfs	-24.114	-19.0825	-15.64	-11.245	-10.32	définitive (regroupement house+techno)
+charley_ferme	techhouse	50	3	r12/p2 r3/p1 r5/p1	t20_ms	42.231	50.63	68.47	75.485	83.107	définitive (regroupement house+techno)
+charley_ferme	techhouse	50	3	r12/p2 r3/p1 r5/p1	t60_ms	75.315	94.405	99.025	118.57	176.082	définitive (regroupement house+techno)
+charley_ferme	techhouse	50	3	r12/p2 r3/p1 r5/p1	centroid_hz	6852.75	7274.65	7899.075	8644.05	10193.85	définitive (regroupement house+techno)
+charley_ferme	techhouse	50	3	r12/p2 r3/p1 r5/p1	hf_db	-10.446	-8.8158	-6.9435	-4.65	-3.3712	définitive (regroupement house+techno)
+charley_ferme	techhouse	50	3	r12/p2 r3/p1 r5/p1	transient_body_db	-11.514	-7.8883	-6.331	-3.0375	-1.0133	définitive (regroupement house+techno)
+charley_ferme	techno	30	2	r3/p1 r5/p1	dur_s	0.1	0.1	0.1	0.48	0.4812	définitive
+charley_ferme	techno	30	2	r3/p1 r5/p1	peak_dbfs	-1.0079	-0.6992	-0.1049	-0.1049	-0.1049	définitive
+charley_ferme	techno	30	2	r3/p1 r5/p1	rms_dbfs	-24.67	-23.6575	-11.545	-10.575	-10.079	pas de cible : (5) sans le plus gros pack la médiane passe à -24.21
+charley_ferme	techno	30	2	r3/p1 r5/p1	t20_ms	47.805	65.64	71.915	77.39	86.26	définitive
+charley_ferme	techno	30	2	r3/p1 r5/p1	t60_ms	94.167	95.7775	98.72	147.1625	194.637	pas de cible : (5) sans le plus gros pack la médiane passe à 164.2
+charley_ferme	techno	30	2	r3/p1 r5/p1	centroid_hz	6879.008	7222.56	7990.04	8511.17	10258.94	pas de cible : (5) sans le plus gros pack la médiane passe à 9838
+charley_ferme	techno	30	2	r3/p1 r5/p1	hf_db	-10.473	-8.8158	-6.9435	-4.7495	-3.3712	pas de cible : (5) sans le plus gros pack la médiane passe à -3.602
+charley_ferme	techno	30	2	r3/p1 r5/p1	transient_body_db	-11.575	-8.0828	-6.817	-4.2613	-1.0133	pas de cible : (5) sans le plus gros pack la médiane passe à -1.313
+charley_ferme	trap	29	1	r2/p1	dur_s	0.1071	0.1071	0.1232	0.1468	0.1641	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	trap	29	1	r2/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	trap	29	1	r2/p1	rms_dbfs	-21.666	-19.98	-19.56	-18.78	-18.068	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	trap	29	1	r2/p1	t20_ms	33.766	40.88	45.87	53.85	65.748	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	trap	29	1	r2/p1	t60_ms	78.668	85.03	88.82	102.88	121.296	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	trap	29	1	r2/p1	centroid_hz	4783.596	6678.98	7824.88	9714.54	11947.78	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	trap	29	1	r2/p1	hf_db	-12.098	-8.723	-6.341	-4.701	-1.0158	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	trap	29	1	r2/p1	transient_body_db	-9.3242	-7.112	-4.556	-2.43	-0.3625	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ferme	dnb	47	2	r10/p1 r11/p2	dur_s	0.097	0.1239	0.3448	0.3448	0.3448	pas de cible : (5) sans le plus gros pack la médiane passe à 0.1169
+charley_ferme	dnb	47	2	r10/p1 r11/p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+charley_ferme	dnb	47	2	r10/p1 r11/p2	rms_dbfs	-23.162	-21.48	-20.36	-18.915	-17.524	définitive
+charley_ferme	dnb	47	2	r10/p1 r11/p2	t20_ms	31.576	39.285	54.72	67.915	89.544	définitive
+charley_ferme	dnb	47	2	r10/p1 r11/p2	t60_ms	58.542	85.525	116.01	191.165	220.236	définitive
+charley_ferme	dnb	47	2	r10/p1 r11/p2	centroid_hz	6444.594	7146.505	8178.29	10210.5	11627.32	pas de cible : (5) sans le plus gros pack la médiane passe à 1.043e+04
+charley_ferme	dnb	47	2	r10/p1 r11/p2	hf_db	-10.61	-9.4135	-5.125	-2.5575	-1.8084	définitive
+charley_ferme	dnb	47	2	r10/p1 r11/p2	transient_body_db	-5.2398	-2.503	-1.07	1.1643	4.0658	définitive
+charley_ferme	dubstep	20	2	r8/p1 r9/p3	dur_s	0.3558	0.3558	0.4279	0.5	0.5	définitive
+charley_ferme	dubstep	20	2	r8/p1 r9/p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+charley_ferme	dubstep	20	2	r8/p1 r9/p3	rms_dbfs	-28.434	-26.5225	-22.32	-19.655	-17.805	pas de cible : (5) sans le plus gros pack la médiane passe à -19.5
+charley_ferme	dubstep	20	2	r8/p1 r9/p3	t20_ms	34.912	45.6575	50.25	54.26	57.708	définitive
+charley_ferme	dubstep	20	2	r8/p1 r9/p3	t60_ms	80.185	92.355	105.355	117.9	128.185	définitive
+charley_ferme	dubstep	20	2	r8/p1 r9/p3	centroid_hz	7497.105	7760.665	9333.605	10314.525	11034.45	définitive
+charley_ferme	dubstep	20	2	r8/p1 r9/p3	hf_db	-11.062	-5.0553	-3.934	-3.0562	-2.2524	définitive
+charley_ferme	dubstep	20	2	r8/p1 r9/p3	transient_body_db	-7.2905	-5.8033	-0.93	1.565	4.7775	pas de cible : (5) sans le plus gros pack la médiane passe à -5.896
+charley_ferme	tous_styles	245	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	dur_s	0.1044	0.12	0.3448	0.5	0.544	repère tous styles
+charley_ferme	tous_styles	245	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	peak_dbfs	-0.6735	-0.1049	-0.1049	-0.1049	-0.1049	repère tous styles
+charley_ferme	tous_styles	245	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	rms_dbfs	-25.774	-24.01	-20.97	-18.44	-14.894	repère tous styles
+charley_ferme	tous_styles	245	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	t20_ms	34.468	43.9	55.44	68.75	84.684	repère tous styles
+charley_ferme	tous_styles	245	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	t60_ms	80.056	94.33	121.2	233.79	408.524	repère tous styles
+charley_ferme	tous_styles	245	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	centroid_hz	6327.37	7118.51	8092.3	9655.58	10944.08	repère tous styles
+charley_ferme	tous_styles	245	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	hf_db	-11.06	-8.82	-5.948	-3.58	-2.2558	repère tous styles
+charley_ferme	tous_styles	245	14	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r12/p3 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	transient_body_db	-7.8864	-5.71	-2.62	-0.0059	2.3696	repère tous styles
+charley_ouvert	house	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	house	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	house	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	house	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	house	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	house	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	house	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	house	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techhouse	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techhouse	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techhouse	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techhouse	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techhouse	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techhouse	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techhouse	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techhouse	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techno	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techno	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techno	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techno	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techno	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techno	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techno	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	techno	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+charley_ouvert	trap	30	1	r2/p1	dur_s	0.6429	0.7333	1.071	2.13	2.6126	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ouvert	trap	30	1	r2/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ouvert	trap	30	1	r2/p1	rms_dbfs	-24.722	-22.585	-20.75	-19.715	-18.429	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ouvert	trap	30	1	r2/p1	t20_ms	550.769	637.4125	864.565	1279.01	1495.207	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ouvert	trap	30	1	r2/p1	t60_ms	634.251	724.0225	1058.21	1783.1825	2150.156	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ouvert	trap	30	1	r2/p1	centroid_hz	8419.701	9626.4	10514.5	13846.9	15544.62	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ouvert	trap	30	1	r2/p1	hf_db	-6.6026	-4.4705	-2.3755	-1.3065	-0.3621	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ouvert	trap	30	1	r2/p1	transient_body_db	-19.227	-16.845	-13.19	-11.59	-10.974	pas de cible : (2) moins de 2 packs de 5 sons
+charley_ouvert	dnb	3	1	r11/p2	dur_s	0.3448	0.3448	0.3448	0.3448	0.3448	pas de cible : (1) 3 sons (moins de 20)
+charley_ouvert	dnb	3	1	r11/p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (1) 3 sons (moins de 20)
+charley_ouvert	dnb	3	1	r11/p2	rms_dbfs	-21.5	-21.005	-20.18	-19.5	-19.092	pas de cible : (1) 3 sons (moins de 20)
+charley_ouvert	dnb	3	1	r11/p2	t20_ms	89.806	105.805	132.47	133.04	133.382	pas de cible : (1) 3 sons (moins de 20)
+charley_ouvert	dnb	3	1	r11/p2	t60_ms	219.692	235.76	262.54	268.9	272.716	pas de cible : (1) 3 sons (moins de 20)
+charley_ouvert	dnb	3	1	r11/p2	centroid_hz	6852.092	7138.205	7615.06	8087.235	8370.54	pas de cible : (1) 3 sons (moins de 20)
+charley_ouvert	dnb	3	1	r11/p2	hf_db	-8.606	-7.967	-6.902	-6.048	-5.5356	pas de cible : (1) 3 sons (moins de 20)
+charley_ouvert	dnb	3	1	r11/p2	transient_body_db	-3.423	-2.8515	-1.899	-1.528	-1.3054	pas de cible : (1) 3 sons (moins de 20)
+charley_ouvert	dubstep	12	2	r8/p1 r9/p3	dur_s	0.351	0.351	0.351	0.3919	0.5	pas de cible : (1) 12 sons (moins de 20)
+charley_ouvert	dubstep	12	2	r8/p1 r9/p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (1) 12 sons (moins de 20)
+charley_ouvert	dubstep	12	2	r8/p1 r9/p3	rms_dbfs	-20.749	-19.8475	-17.45	-14.97	-14.319	pas de cible : (1) 12 sons (moins de 20)
+charley_ouvert	dubstep	12	2	r8/p1 r9/p3	t20_ms	94.177	109.6225	122.685	191.075	194.528	pas de cible : (1) 12 sons (moins de 20)
+charley_ouvert	dubstep	12	2	r8/p1 r9/p3	t60_ms	155.646	163.5975	193.955	229.355	232.343	pas de cible : (1) 12 sons (moins de 20)
+charley_ouvert	dubstep	12	2	r8/p1 r9/p3	centroid_hz	7134.465	8268.495	9409.895	10396.675	11456.5	pas de cible : (1) 12 sons (moins de 20)
+charley_ouvert	dubstep	12	2	r8/p1 r9/p3	hf_db	-7.3574	-5.1695	-3.4385	-2.095	-1.8442	pas de cible : (1) 12 sons (moins de 20)
+charley_ouvert	dubstep	12	2	r8/p1 r9/p3	transient_body_db	-11.782	-10.3375	-7.946	-6.7805	-6.0848	pas de cible : (1) 12 sons (moins de 20)
+charley_ouvert	tous_styles	151	9	r1/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r8/p2 r9/p3	dur_s	0.128	0.2104	0.3871	0.8571	1.255	repère tous styles
+charley_ouvert	tous_styles	151	9	r1/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r8/p2 r9/p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	repère tous styles
+charley_ouvert	tous_styles	151	9	r1/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r8/p2 r9/p3	rms_dbfs	-26.39	-22.51	-18.54	-16.23	-14.63	repère tous styles
+charley_ouvert	tous_styles	151	9	r1/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r8/p2 r9/p3	t20_ms	73.88	102.905	146.56	255.515	806.3	repère tous styles
+charley_ouvert	tous_styles	151	9	r1/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r8/p2 r9/p3	t60_ms	124.35	166.145	266.75	749.12	1055.08	repère tous styles
+charley_ouvert	tous_styles	151	9	r1/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r8/p2 r9/p3	centroid_hz	6021.77	6583.76	7615.06	9534.095	11516.3	repère tous styles
+charley_ouvert	tous_styles	151	9	r1/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r8/p2 r9/p3	hf_db	-11.44	-8.669	-6.214	-3.609	-1.513	repère tous styles
+charley_ouvert	tous_styles	151	9	r1/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r8/p2 r9/p3	transient_body_db	-14.25	-10.835	-7.07	-4.782	-3.011	repère tous styles
+crash	house	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+crash	house	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+crash	house	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+crash	house	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+crash	house	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+crash	house	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+crash	house	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+crash	house	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+crash	techhouse	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+crash	techhouse	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+crash	techhouse	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+crash	techhouse	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+crash	techhouse	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+crash	techhouse	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+crash	techhouse	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+crash	techhouse	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+crash	techno	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+crash	techno	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+crash	techno	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+crash	techno	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+crash	techno	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+crash	techno	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+crash	techno	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+crash	techno	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+crash	trap	1	1	r2/p1	dur_s	0.8129	0.8129	0.8129	0.8129	0.8129	pas de cible : (1) 1 sons (moins de 20)
+crash	trap	1	1	r2/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (1) 1 sons (moins de 20)
+crash	trap	1	1	r2/p1	rms_dbfs	-18.37	-18.37	-18.37	-18.37	-18.37	pas de cible : (1) 1 sons (moins de 20)
+crash	trap	1	1	r2/p1	t20_ms	518.62	518.62	518.62	518.62	518.62	pas de cible : (1) 1 sons (moins de 20)
+crash	trap	1	1	r2/p1	t60_ms	787.21	787.21	787.21	787.21	787.21	pas de cible : (1) 1 sons (moins de 20)
+crash	trap	1	1	r2/p1	centroid_hz	5008.12	5008.12	5008.12	5008.12	5008.12	pas de cible : (1) 1 sons (moins de 20)
+crash	trap	1	1	r2/p1	hf_db	-12.41	-12.41	-12.41	-12.41	-12.41	pas de cible : (1) 1 sons (moins de 20)
+crash	trap	1	1	r2/p1	transient_body_db	-11.26	-11.26	-11.26	-11.26	-11.26	pas de cible : (1) 1 sons (moins de 20)
+crash	dnb	16	2	r10/p1 r11/p2	dur_s	1.0404	1.2975	2.759	2.759	2.759	pas de cible : (1) 16 sons (moins de 20)
+crash	dnb	16	2	r10/p1 r11/p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (1) 16 sons (moins de 20)
+crash	dnb	16	2	r10/p1 r11/p2	rms_dbfs	-20.705	-19.3925	-18.145	-17.5875	-16.93	pas de cible : (1) 16 sons (moins de 20)
+crash	dnb	16	2	r10/p1 r11/p2	t20_ms	481.69	519.0275	938.31	1113.12	1322.255	pas de cible : (1) 16 sons (moins de 20)
+crash	dnb	16	2	r10/p1 r11/p2	t60_ms	933.025	1268.875	1806.405	2179.715	2354.005	pas de cible : (1) 16 sons (moins de 20)
+crash	dnb	16	2	r10/p1 r11/p2	centroid_hz	5867.135	6424.4425	7081.135	7627.5475	9470.965	pas de cible : (1) 16 sons (moins de 20)
+crash	dnb	16	2	r10/p1 r11/p2	hf_db	-12.94	-9.331	-8.499	-5.8868	-3.5775	pas de cible : (1) 16 sons (moins de 20)
+crash	dnb	16	2	r10/p1 r11/p2	transient_body_db	-19.67	-18.1475	-15.685	-13.7	-12.14	pas de cible : (1) 16 sons (moins de 20)
+crash	dubstep	20	2	r8/p1 r9/p3	dur_s	1.6142	1.8842	2.1685	3	3	définitive
+crash	dubstep	20	2	r8/p1 r9/p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+crash	dubstep	20	2	r8/p1 r9/p3	rms_dbfs	-20.471	-19.4875	-17.14	-15.9725	-15.376	pas de cible : (5) sans le plus gros pack la médiane passe à -15.85
+crash	dubstep	20	2	r8/p1 r9/p3	t20_ms	1020.441	1075.275	1213.12	1355.03	1536.901	définitive
+crash	dubstep	20	2	r8/p1 r9/p3	t60_ms	1544.814	1796.2475	2018.15	2351.4875	2901.344	définitive
+crash	dubstep	20	2	r8/p1 r9/p3	centroid_hz	3964.835	4376.9225	4946.535	5553.5325	6093.622	définitive
+crash	dubstep	20	2	r8/p1 r9/p3	hf_db	-18.522	-15.7725	-14.31	-11.7325	-10.828	définitive
+crash	dubstep	20	2	r8/p1 r9/p3	transient_body_db	-25.141	-23.14	-21.77	-19.6025	-19.179	définitive
+crash	tous_styles	65	9	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r9/p3	dur_s	1.0759	1.548	2.219	2.869	3.1266	repère tous styles
+crash	tous_styles	65	9	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r9/p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	repère tous styles
+crash	tous_styles	65	9	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r9/p3	rms_dbfs	-21.264	-20.11	-18.3	-16.72	-15.548	repère tous styles
+crash	tous_styles	65	9	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r9/p3	t20_ms	522.52	789.92	1087.28	1377.23	1820.968	repère tous styles
+crash	tous_styles	65	9	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r9/p3	t60_ms	880.154	1283.24	1899.89	2331.75	2931.932	repère tous styles
+crash	tous_styles	65	9	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r9/p3	centroid_hz	4369.43	5015.12	6168.89	6820.22	7397.438	repère tous styles
+crash	tous_styles	65	9	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r9/p3	hf_db	-17.032	-14.19	-11.04	-8.413	-6.1974	repère tous styles
+crash	tous_styles	65	9	r1/p1 r10/p1 r11/p2 r11/p3 r12/p3 r2/p1 r6/p1 r8/p1 r9/p3	transient_body_db	-29.108	-23.95	-20.09	-16.66	-14.782	repère tous styles
+rim	house	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+rim	house	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+rim	house	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+rim	house	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+rim	house	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+rim	house	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+rim	house	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+rim	house	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+rim	techhouse	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+rim	techhouse	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+rim	techhouse	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+rim	techhouse	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+rim	techhouse	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+rim	techhouse	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+rim	techhouse	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+rim	techhouse	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+rim	techno	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+rim	techno	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+rim	techno	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+rim	techno	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+rim	techno	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+rim	techno	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+rim	techno	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+rim	techno	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+rim	trap	1	1	r2/p1	dur_s	0.5357	0.5357	0.5357	0.5357	0.5357	pas de cible : (1) 1 sons (moins de 20)
+rim	trap	1	1	r2/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (1) 1 sons (moins de 20)
+rim	trap	1	1	r2/p1	rms_dbfs	-19.1	-19.1	-19.1	-19.1	-19.1	pas de cible : (1) 1 sons (moins de 20)
+rim	trap	1	1	r2/p1	t20_ms	56.12	56.12	56.12	56.12	56.12	pas de cible : (1) 1 sons (moins de 20)
+rim	trap	1	1	r2/p1	t60_ms	371.07	371.07	371.07	371.07	371.07	pas de cible : (1) 1 sons (moins de 20)
+rim	trap	1	1	r2/p1	centroid_hz	1479.09	1479.09	1479.09	1479.09	1479.09	pas de cible : (1) 1 sons (moins de 20)
+rim	trap	1	1	r2/p1	hf_db	-25.38	-25.38	-25.38	-25.38	-25.38	pas de cible : (1) 1 sons (moins de 20)
+rim	trap	1	1	r2/p1	transient_body_db	-5.539	-5.539	-5.539	-5.539	-5.539	pas de cible : (1) 1 sons (moins de 20)
+rim	dnb	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+rim	dnb	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+rim	dnb	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+rim	dnb	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+rim	dnb	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+rim	dnb	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+rim	dnb	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+rim	dnb	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+rim	dubstep	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+rim	dubstep	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+rim	dubstep	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+rim	dubstep	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+rim	dubstep	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+rim	dubstep	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+rim	dubstep	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+rim	dubstep	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+rim	tous_styles	5	2	r2/p1 r6/p1	dur_s	0.1106	0.1723	0.36	0.531	0.5338	pas de cible : (1) 5 sons (moins de 20)
+rim	tous_styles	5	2	r2/p1 r6/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible : (1) 5 sons (moins de 20)
+rim	tous_styles	5	2	r2/p1 r6/p1	rms_dbfs	-23.098	-20.26	-19.1	-18.21	-17.1	pas de cible : (1) 5 sons (moins de 20)
+rim	tous_styles	5	2	r2/p1 r6/p1	t20_ms	30.442	32.2	56.12	60.95	64.094	pas de cible : (1) 5 sons (moins de 20)
+rim	tous_styles	5	2	r2/p1 r6/p1	t60_ms	108.938	171.5	274.6	354.29	364.358	pas de cible : (1) 5 sons (moins de 20)
+rim	tous_styles	5	2	r2/p1 r6/p1	centroid_hz	952.706	1231.34	1479.09	1905.24	2443.374	pas de cible : (1) 5 sons (moins de 20)
+rim	tous_styles	5	2	r2/p1 r6/p1	hf_db	-46.9	-44.38	-34.39	-33.79	-28.744	pas de cible : (1) 5 sons (moins de 20)
+rim	tous_styles	5	2	r2/p1 r6/p1	transient_body_db	-5.6872	-5.539	3.664	5.332	8.1568	pas de cible : (1) 5 sons (moins de 20)
+tom	house	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+tom	house	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	house	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	house	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	house	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	house	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+tom	house	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+tom	house	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+tom	techhouse	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+tom	techhouse	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	techhouse	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	techhouse	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	techhouse	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	techhouse	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+tom	techhouse	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+tom	techhouse	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+tom	techno	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+tom	techno	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	techno	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	techno	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	techno	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	techno	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+tom	techno	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+tom	techno	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+tom	trap	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+tom	trap	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	trap	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	trap	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	trap	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	trap	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+tom	trap	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+tom	trap	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+tom	dnb	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+tom	dnb	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	dnb	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	dnb	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	dnb	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	dnb	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+tom	dnb	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+tom	dnb	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+tom	dubstep	0	0		dur_s						pas de cible : (1) 0 sons (moins de 20)
+tom	dubstep	0	0		peak_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	dubstep	0	0		rms_dbfs						pas de cible : (1) 0 sons (moins de 20)
+tom	dubstep	0	0		t20_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	dubstep	0	0		t60_ms						pas de cible : (1) 0 sons (moins de 20)
+tom	dubstep	0	0		centroid_hz						pas de cible : (1) 0 sons (moins de 20)
+tom	dubstep	0	0		hf_db						pas de cible : (1) 0 sons (moins de 20)
+tom	dubstep	0	0		transient_body_db						pas de cible : (1) 0 sons (moins de 20)
+tom	tous_styles	54	2	r1/p1 r8/p2	dur_s	0.4967	0.5	0.9052	1.3117	1.5906	repère tous styles
+tom	tous_styles	54	2	r1/p1 r8/p2	peak_dbfs	-0.1439	-0.1049	-0.1049	-0.1049	-0.1049	repère tous styles
+tom	tous_styles	54	2	r1/p1 r8/p2	rms_dbfs	-28.721	-27.03	-22.105	-16.175	-13.069	pas de cible : (5) sans le plus gros pack la médiane passe à -13.81
+tom	tous_styles	54	2	r1/p1 r8/p2	t20_ms	119.107	166.01	261.905	463.8975	634.441	pas de cible : (5) sans le plus gros pack la médiane passe à 147.3
+tom	tous_styles	54	2	r1/p1 r8/p2	t60_ms	248.45	407.5275	733.615	1094.6975	1371.425	pas de cible : (5) sans le plus gros pack la médiane passe à 269.7
+tom	tous_styles	54	2	r1/p1 r8/p2	centroid_hz	118.75	170.4625	566.1	1021.3475	1471.606	pas de cible : (5) sans le plus gros pack la médiane passe à 147.9
+tom	tous_styles	54	2	r1/p1 r8/p2	hf_db	-65.389	-45.3675	-35.73	-27.985	-23.86	pas de cible : (5) sans le plus gros pack la médiane passe à -66.6
+tom	tous_styles	54	2	r1/p1 r8/p2	transient_body_db	-11.517	-9.3392	-6.9475	-2.9868	-0.2158	repère tous styles
+boucle	house	213	2	r1/p1 r12/p2	dur_s	7.68	7.68	7.68	7.68	7.68	définitive
+boucle	house	213	2	r1/p1 r12/p2	peak_dbfs	-1.131	-0.6383	-0.2691	-0.2442	-0.1	définitive
+boucle	house	213	2	r1/p1 r12/p2	rms_dbfs	-23.808	-22.17	-19.93	-8.063	-7.4942	définitive
+boucle	techhouse	559	4	r1/p1 r12/p2 r3/p1 r5/p1	dur_s	6.4	6.4	7.68	7.68	7.68	définitive (regroupement house+techno)
+boucle	techhouse	559	4	r1/p1 r12/p2 r3/p1 r5/p1	peak_dbfs	-1.287	-0.6521	-0.2418	-0.1049	-0.1049	définitive (regroupement house+techno)
+boucle	techhouse	559	4	r1/p1 r12/p2 r3/p1 r5/p1	rms_dbfs	-24.714	-21.115	-15.06	-8.198	-6.1904	définitive (regroupement house+techno)
+boucle	techno	346	3	r1/p1 r3/p1 r5/p1	dur_s	6.4	6.4	6.4	6.858	7.68	définitive
+boucle	techno	346	3	r1/p1 r3/p1 r5/p1	peak_dbfs	-1.906	-0.8659	-0.1049	-0.1049	-0.1049	définitive
+boucle	techno	346	3	r1/p1 r3/p1 r5/p1	rms_dbfs	-27.095	-17.65	-14.56	-9.5678	-5.798	pas de cible : (5) sans le plus gros pack la médiane passe à -21.14
+boucle	trap	172	2	r1/p1 r2/p1	dur_s	6	6.857	8	9.6	9.6	pas de cible : (5) sans le plus gros pack la médiane passe à 10.14
+boucle	trap	172	2	r1/p1 r2/p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1	-0	définitive (regroupement trap+drift-phonk)
+boucle	trap	172	2	r1/p1 r2/p1	rms_dbfs	-23.618	-20.9125	-12.58	-9.3235	-7.8695	pas de cible : (5) sans le plus gros pack la médiane passe à -22.81
+boucle	dnb	224	3	r1/p1 r10/p1 r11/p2	dur_s	5.517	5.517	5.517	5.518	11.03	définitive
+boucle	dnb	224	3	r1/p1 r10/p1 r11/p2	peak_dbfs	-0.2005	-0.1049	-0.1049	-0.1005	-0.1	définitive
+boucle	dnb	224	3	r1/p1 r10/p1 r11/p2	rms_dbfs	-23.48	-19.95	-15.015	-10.8275	-10.123	définitive
+boucle	dubstep	165	3	r1/p1 r8/p1 r9/p3	dur_s	1.714	6.857	6.857	6.857	6.858	définitive
+boucle	dubstep	165	3	r1/p1 r8/p1 r9/p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1	définitive
+boucle	dubstep	165	3	r1/p1 r8/p1 r9/p3	rms_dbfs	-22.596	-19.7	-13.54	-11.66	-10.076	définitive
+boucle	tous_styles	1858	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	dur_s	5.517	6.4	6.858	8	10.67	repère tous styles
+boucle	tous_styles	1858	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	peak_dbfs	-0.4558	-0.1049	-0.1049	-0.1049	-0.1	repère tous styles
+boucle	tous_styles	1858	13	r1/p1 r10/p1 r11/p2 r11/p3 r12/p2 r2/p1 r3/p1 r4/p1 r5/p1 r6/p1 r8/p1 r8/p2 r9/p3	rms_dbfs	-24.973	-21.93	-17.335	-11.17	-7.8919	repère tous styles

@@ -263,3 +263,327 @@ def copie_trial(family_seed=31, target=7):
     y[1:] += 0.02 * y[:-1]
     rows.append(("le son lui-même", caught(y)))
     return rows
+
+
+# --- The collection: one archive at a time, per-sound lines outside the repository.
+
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
+VERIF = os.path.join(REPO, "scripts", "sons", "passe2", "verif")
+TABLES = os.path.join(REPO, "docs", "sons", "passe2", "tout")
+EXCLUSIONS = os.path.join(REPO, "docs", "sons", "fin", "exclusions-batterie.tsv")
+FAMILY = {"kick": "kick", "kick_808": "808", "snare": "caisse_claire", "clap": "clap",
+          "hat_closed": "charley_ferme", "hat_open": "charley_ouvert", "crash": "crash",
+          "rim": "rim", "tom": "tom"}
+FAMILIES = ("kick", "808", "caisse_claire", "clap", "charley_ferme", "charley_ouvert", "crash", "rim", "tom")
+STYLES = (("house", ("house",), ""), ("techhouse", ("house", "techno"), "house+techno"),
+          ("techno", ("techno",), ""), ("trap", ("trap", "drift-phonk"), "trap+drift-phonk"),
+          ("dnb", ("dnb",), ""), ("dubstep", ("dubstep",), ""))
+TABLE_STYLES = {s for _, srcs, _ in STYLES for s in srcs}
+MAX_S = 6.0  # seconds kept after the onset (a crash's t60 stays well inside)
+
+
+def scope_rows(rar):
+    import csv
+    excl = set()
+    with open(EXCLUSIONS) as f:
+        for r in csv.DictReader(f, delimiter="\t"):
+            excl.add(r["cle"])
+    rows = []
+    with open(os.path.join(TABLES, "drum_oneshot.csv"), newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if (r["rar"] == str(rar) and r["subtype"] in FAMILY and r["style"] in TABLE_STYLES
+                    and r["cle"] not in excl):
+                rows.append(r)
+    return rows
+
+
+def _one(job):
+    cle, path = job
+    sys.path.insert(0, VERIF)
+    import mesure as M
+    try:
+        sr, x = M.read_audio(path)
+        y = to_48k(M.mono(x), sr)
+        y = y[:T.onset_of(y) + int(MAX_S * SR)]
+        m, c = measure(y), counter(y)
+        mp = np.round(T.band_time_map(y), 1).tolist()
+        return {"cle": cle, "m": m, "c": c, "map": mp}
+    except Exception as e:  # a file that cannot be read is counted, not hidden
+        return {"cle": cle, "error": "%s: %s" % (type(e).__name__, e)}
+
+
+def cmd_mesure(root, rar, out):
+    import json
+    import multiprocessing
+    sys.path.insert(0, VERIF)
+    import compare as CMP
+    rows = scope_rows(rar)
+    by_pack = {}
+    for r in rows:
+        by_pack.setdefault(r["pack"], []).append(r)
+    dirs = CMP.find_pack_dirs(root, by_pack)
+    jobs, missing = [], []
+    for pk, rs in sorted(by_pack.items()):
+        ids = CMP.ids_under(dirs[pk]) if pk in dirs else {}
+        for r in rs:
+            p = ids.get(r["file_id"])
+            (jobs.append((r["cle"], p)) if p else missing.append(r["cle"]))
+    with multiprocessing.Pool(4) as pool:
+        res = pool.map(_one, jobs)
+    meta = {r["cle"]: r for r in rows}
+    with open(out, "a") as f:
+        for d in res:
+            r = meta[d["cle"]]
+            d.update(famille=FAMILY[r["subtype"]], style=r["style"], pack="r%s/%s" % (r["rar"], r["pack"]))
+            f.write(json.dumps(d) + "\n")
+        for cle in missing:
+            r = meta[cle]
+            f.write(json.dumps({"cle": cle, "error": "not found", "famille": FAMILY[r["subtype"]],
+                                "style": r["style"], "pack": "r%s/%s" % (r["rar"], r["pack"])}) + "\n")
+    err = sum(1 for d in res if "error" in d)
+    print("rar%s: %d in scope, %d measured, %d unreadable, %d not found" % (
+        rar, len(rows), len(res) - err, err, len(missing)))
+
+
+def load_lines(paths):
+    import json
+    seen, out = set(), []
+    for p in paths:
+        with open(p) as f:
+            for line in f:
+                d = json.loads(line)
+                if d["cle"] not in seen:
+                    seen.add(d["cle"])
+                    out.append(d)
+    return out
+
+
+def _db_key(k):
+    return k in ("hf_db", "transient_body_db") or k in T.ENV_KEYS
+
+
+def target(cell, k, label):
+    """The drum rule (docs/sons/fin/REGLE-BATTERIE.md), on one measure of one case."""
+    vals = [(d["pack"], d["m"][k], agree(k, d["m"][k], d["c"][k])) for d in cell
+            if not math.isnan(d["m"][k])]
+    xs = [v[1] for v in vals]
+    packs = {}
+    for p, _, _ in vals:
+        packs[p] = packs.get(p, 0) + 1
+    n = len(xs)
+    q = [T.quantile(xs, a) for a in (0.10, 0.25, 0.50, 0.75, 0.90)] if xs else [None] * 5
+    acc = 100.0 * sum(v[2] for v in vals) / n if n else float("nan")
+    statut = None
+    if n < 20:
+        statut = "pas de cible : (1) %d sons (moins de 20)" % n
+    elif sum(1 for c in packs.values() if c >= 5) < 2:
+        statut = "pas de cible : (2) moins de 2 packs de 5 sons"
+    elif max(packs.values()) > 0.90 * n:
+        statut = "pas de cible : (3) un pack a %d %% des sons" % round(100.0 * max(packs.values()) / n)
+    elif acc < 98.0:
+        statut = "pas de cible : (4) contre-mesure d'accord sur %d %% seulement" % int(acc)
+    else:
+        big = max(sorted(packs), key=lambda p: packs[p])
+        m2 = T.quantile([v[1] for v in vals if v[0] != big], 0.5)
+        out = not (q[1] <= m2 <= q[3])
+        moved = abs(m2 - q[2]) >= 1.0 if _db_key(k) else abs(m2 - q[2]) >= 0.20 * abs(q[2])
+        if out and moved:
+            statut = "pas de cible : (5) sans le plus gros pack la médiane passe à %.4g" % m2
+    if statut is None:
+        statut = "définitive" + (" (regroupement %s)" % label if label else "")
+    return n, packs, q, acc, statut
+
+
+def fmt(x):
+    if x is None or (isinstance(x, float) and math.isnan(x)):
+        return ""
+    return ("%.4f" % x).rstrip("0").rstrip(".")
+
+
+def cells(lines):
+    good = [d for d in lines if "error" not in d]
+    for fam in FAMILIES:
+        for style, srcs, label in STYLES:
+            yield fam, style, label, [d for d in good if d["famille"] == fam and d["style"] in srcs]
+
+
+def cmd_table(lines, out):
+    head = ["famille", "style", "mesure", "coups", "packs", "p10", "p25", "mediane", "p75", "p90",
+            "accord_contre", "statut"]
+    rows = []
+    for fam, style, label, cell in cells(lines):
+        for k in ALL_KEYS:
+            n, packs, q, acc, statut = target(cell, k, label)
+            rows.append([fam, style, k, str(n), str(len(packs))] + [fmt(x) for x in q] + [fmt(acc), statut])
+    with open(out, "w") as f:
+        f.write("# Empreinte du timbre sur la collection, par famille et par style (règle : "
+                "docs/sons/fin/REGLE-BATTERIE.md), écrite par scripts/son/timbre/collection.py.\n")
+        f.write("# Statistiques de famille seulement ; accord_contre = %% des sons où la contre-mesure "
+                "indépendante donne le même nombre ; « pas de cible » = la première condition qui échoue.\n")
+        f.write("\t".join(head) + "\n")
+        for r in rows:
+            f.write("\t".join(r) + "\n")
+    return rows
+
+
+def cmd_carte(lines, out):
+    """Copy-guard calibration: per family (all styles), each sound's nearest neighbour on the
+    25x9 map; the threshold is the 5th centile."""
+    good = [d for d in lines if "error" not in d]
+    res = []
+    for fam in FAMILIES:
+        fs = [d for d in good if d["famille"] == fam]
+        if len(fs) < 10:
+            res.append([fam, str(len(fs)), str(len({d["pack"] for d in fs})), "", "", "", ""])
+            continue
+        mp = [np.array(d["map"]) for d in fs]
+        nn = [min(T.map_distance(mp[i], mp[j]) for j in range(len(mp)) if j != i) for i in range(len(mp))]
+        res.append([fam, str(len(fs)), str(len({d["pack"] for d in fs})), fmt(min(nn)),
+                    fmt(map_threshold(nn)), fmt(T.quantile(nn, 0.5)), fmt(T.quantile(nn, 0.95))])
+    with open(out, "w") as f:
+        f.write("# Seuil anti-copie : distance de chaque son à son plus proche voisin sur la carte "
+                "25 bandes x 9 tranches (dB), par famille, tous styles ; seuil = 5e centile.\n")
+        f.write("famille\tsons\tpacks\tmin\tseuil_p5\tmediane\tp95\n")
+        for r in res:
+            f.write("\t".join(r) + "\n")
+    return res
+
+
+# --- Step 1: the rule replayed on the app's sounds (nouvelle) and their candidates (A / B / deep).
+
+TIE = 0.05
+LENGTH_TABLE = os.path.join(REPO, "docs", "sons", "fin", "cibles-batterie-definitives.tsv")
+
+
+def read_targets(path, keys=None, length_table=False):
+    """(family, style) -> measure -> (p10, p25, median, p75, p90), definitive rows only."""
+    out = {}
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            c = line.rstrip("\n").split("\t")
+            if line.startswith("#") or c[0] == "famille":
+                continue
+            if length_table:
+                fam, style, k, q, st = c[0], c[1], c[5], c[6:11], c[11]
+            else:
+                fam, style, k, q, st = c[0], c[1], c[2], c[5:10], c[11]
+            if not st.startswith("définitive") or (keys and k not in keys):
+                continue
+            out.setdefault((fam, style), {})[k] = tuple(float(v) for v in q)
+    return out
+
+
+def score(m, tg, at):
+    """Mean gap 2|v - T| / (p90 - p10) over the case's definitive measures; T = quantile index at."""
+    gaps = [2.0 * abs(m[k] - t[at]) / (t[4] - t[0]) for k, t in tg.items() if t[4] > t[0] and not math.isnan(m[k])]
+    return sum(gaps) / len(gaps) if gaps else float("nan")
+
+
+def winner(cands, tg, at):
+    sc = {v: score(m, tg, at) for v, m in cands.items()}
+    best = min(sc, key=lambda v: sc[v])
+    if "nouvelle" in sc and sc["nouvelle"] <= sc[best] + TIE:
+        best = "nouvelle"
+    return best, sc
+
+
+def app_sounds(binary):
+    """The app's 54 chosen sounds, played by the engine's voice (render_voice list / render), 4 s."""
+    import subprocess
+    keys, recs = [], []
+    for line in subprocess.run([binary, "list"], stdout=subprocess.PIPE, check=True).stdout.decode().splitlines():
+        v = line.split()
+        keys.append((FAMILY_ORDER[int(v[0])], STYLE_ORDER[int(v[1])]))
+        recs.append(" ".join(v[2:]))
+    raw = subprocess.run([binary, "render", str(4 * SR)], input=("\n".join(recs) + "\n").encode(),
+                         stdout=subprocess.PIPE, check=True).stdout
+    ys = np.frombuffer(raw, dtype="<f4").reshape(len(recs), 4 * SR).astype(np.float64)
+    return dict(zip(keys, ys))
+
+
+FAMILY_ORDER = ("kick", "808", "clap", "caisse_claire", "charley_ferme", "charley_ouvert", "rim", "tom", "crash")
+STYLE_ORDER = ("house", "techhouse", "techno", "trap", "dnb", "dubstep")
+
+
+def cmd_etape1(table, raw_dir, binary, out):
+    sys.path.insert(0, os.path.join(REPO, "scripts", "sons"))
+    import mesure as MS
+    app = app_sounds(binary)
+    tg = read_targets(table)
+    lt = read_targets(LENGTH_TABLE, keys=("t20_ms", "t60_ms"), length_table=True)
+    sounds = {}
+    for name in sorted(os.listdir(raw_dir)):
+        fam_style, ver = name[:-4].rsplit("_", 1)
+        fam, style = fam_style.rsplit("_", 1)
+        y = np.fromfile(os.path.join(raw_dir, name), dtype="<f4").astype(np.float64)
+        sounds.setdefault((fam, style), {})[ver] = y
+    lines, inside_len, n_len, sure, n_case = [], 0, 0, 0, 0
+    lines.append("famille\tstyle\tmesures_cible\tdans_fourchette\tlongueurs\tgagnant\tverdict\tscores")
+    for fam in FAMILIES:
+        for style, _, _ in STYLES:
+            vers = sounds.get((fam, style), {})
+            if (fam, style) not in app:
+                continue
+            y = app[(fam, style)]
+            tm = MS.measure(SR, y)
+            lens = lt.get((fam, style), {})
+            li = sum(1 for k, t in lens.items() if t[0] <= tm[k] <= t[4])
+            inside_len += li
+            n_len += len(lens)
+            t = tg.get((fam, style), {})
+            if not t:
+                lines.append("%s\t%s\t0\t\t%d/%d\t\tpas de cible\t" % (fam, style, li, len(lens)))
+                continue
+            cands = {v: measure(x) for v, x in vers.items()}
+            m = measure(y)
+            ins = sum(1 for k, q in t.items() if q[0] <= m[k] <= q[4])
+            ws = [winner(cands, t, at) for at in (1, 2, 3)]
+            names = {w for w, _ in ws}
+            ok = len(names) == 1
+            n_case += 1
+            sure += ok
+            win = ws[1][0] if ok else "nouvelle"
+            sc = " ".join("%s=%.2f" % (v, s) for v, s in sorted(ws[1][1].items()))
+            lines.append("%s\t%s\t%d\t%d\t%d/%d\t%s\t%s\t%s" % (
+                fam, style, len(t), ins, li, len(lens), win, "sûr" if ok else "serré (%s)" % "/".join(w for w, _ in ws), sc))
+    with open(out, "w") as f:
+        f.write("\n".join(lines) + "\n")
+    print("cases with a definitive timbre target: %d; sûr: %d (%.0f %%)" % (n_case, sure, 100.0 * sure / max(n_case, 1)))
+    print("lengths inside: %d of %d" % (inside_len, n_len))
+
+
+def main(argv):
+    import argparse
+    ap = argparse.ArgumentParser()
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    a = sub.add_parser("mesure")
+    a.add_argument("root")
+    a.add_argument("--rar", required=True)
+    a.add_argument("--out", required=True)
+    b = sub.add_parser("table")
+    b.add_argument("lines", nargs="+")
+    b.add_argument("--out", required=True)
+    b.add_argument("--carte", required=True)
+    c = sub.add_parser("copie")
+    e = sub.add_parser("etape1")
+    e.add_argument("table")
+    e.add_argument("raw")
+    e.add_argument("render_voice")
+    e.add_argument("--out", required=True)
+    args = ap.parse_args(argv)
+    if args.cmd == "mesure":
+        cmd_mesure(args.root, args.rar, args.out)
+    elif args.cmd == "table":
+        lines = load_lines(args.lines)
+        cmd_table(lines, args.out)
+        cmd_carte(lines, args.carte)
+    elif args.cmd == "etape1":
+        cmd_etape1(args.table, args.raw, args.render_voice, args.out)
+    elif args.cmd == "copie":
+        for grid, caught in copie_trial():
+            print("%s\t%s" % (grid, "\t".join("%s=%s" % (k, "attrapée" if v else "passe") for k, v in caught.items())))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

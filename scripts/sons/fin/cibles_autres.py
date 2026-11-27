@@ -192,10 +192,33 @@ def selftest():
         loops += [{"rar": str(1 + i % 2), "pack": "p1", "cle": "h%d" % i, "style": "house", "error": "",
                    "bpm_tag": "125", "bpm_gap_folded_pct": "0.5" if i < 15 else "30", "dur_s": "4",
                    "rms_dbfs": "-12", "peak_dbfs": "-1"} for i in range(25)]
+        # durcie: one pack of 5+ loops in agreement = no sure tempo; two packs of 5 within 2 % = sure;
+        # two packs that disagree (125 / 150) = no single tempo.
+        loops += [{"rar": "5", "pack": "p1", "cle": "t%d" % i, "style": "techno", "error": "",
+                   "bpm_tag": "150", "bpm_gap_folded_pct": "0.5", "dur_s": "4",
+                   "rms_dbfs": "-12", "peak_dbfs": "-1"} for i in range(25)]
+        loops += [{"rar": "1" if i < 5 else "8", "pack": "p1", "cle": "s%d" % i, "style": "dubstep", "error": "",
+                   "bpm_tag": "140" if i < 5 else "142", "bpm_gap_folded_pct": "0.5", "dur_s": "4",
+                   "rms_dbfs": "-12", "peak_dbfs": "-1"} for i in range(10)]
+        loops += [{"rar": "3" if i < 6 else "5", "pack": "p1", "cle": "w%d" % i, "style": "rave", "error": "",
+                   "bpm_tag": "125" if i < 6 else "150", "bpm_gap_folded_pct": "0.5", "dur_s": "4",
+                   "rms_dbfs": "-12", "peak_dbfs": "-1"} for i in range(12)]
         wr(os.path.join(tdir, "drum_loop.csv"), loops)
+        # durcie: 77 sounds + 1 of a second pack; 93 % of one pack (93 + 7)
+        om = [{"rar": "7" if i < 77 else "9", "pack": "p3" if i < 77 else "p2", "cle": "k%d" % i,
+               "role": "keys", "style": "trap", "error": "", "dur_s": "2", "rms_dbfs": "-20",
+               "peak_dbfs": "-1"} for i in range(78)]
+        om += [{"rar": "8" if i < 93 else "9", "pack": "p1" if i < 93 else "p3", "cle": "l%d" % i,
+                "role": "lead", "style": "dubstep", "error": "", "dur_s": "2", "rms_dbfs": "-20",
+                "peak_dbfs": "-1"} for i in range(100)]
+        om += [{"rar": "8" if i < 60 else "9", "pack": "p1" if i < 60 else "p3", "cle": "y%d" % i,
+                "role": "synth", "style": "dubstep", "error": "", "dur_s": "2", "rms_dbfs": "-20",
+                "peak_dbfs": "-1"} for i in range(80)]
+        wr(os.path.join(tdir, "oneshot_melodic.csv"), om)
         ver = [{"cle": "fx%d" % i, "dur_s_ok": "yes", "rms_dbfs_ok": "yes" if i else "no", "peak_dbfs_ok": "yes"}
                for i in range(25)]
         ver += [{"cle": "v%d" % i, "dur_s_ok": "yes", "rms_dbfs_ok": "yes", "peak_dbfs_ok": "yes"} for i in range(30)]
+        ver += [{"cle": r["cle"], "dur_s_ok": "yes", "rms_dbfs_ok": "yes", "peak_dbfs_ok": "yes"} for r in om]
         wr(os.path.join(vdir, "rar1.csv"), ver)
         res = build(tdir, vdir)
         get = {(r["famille"], r["style"], r["mesure"].split(" (")[0]): r for r in res}
@@ -206,12 +229,30 @@ def selftest():
         check("fx dur p10", r["p10"], "3.4")
         check("fx packs", r["liste_packs"], "r1p1 r2p1")
         check("fx rms 96 % agreement refused", get[("effet", "tous", "rms_dbfs")]["statut"].startswith("pas de cible"), True)
-        check("voice one pack refused", get[("voix", "tous", "dur_s")]["statut"].startswith("pas de cible (n 30, 1 packs)"), True)
-        check("voice range never checked", "non contre-mesurée" in get[("voix", "tous", "range_st")]["statut"], True)
-        check("dnb tempo 92 % definitive", get[("boucle de batterie", "dnb", "tempo étiqueté")]["statut"], "définitive")
-        check("dnb tempo n = agreeing loops only", get[("boucle de batterie", "dnb", "tempo étiqueté")]["sons"], 23)
-        check("house tempo 60 % refused", get[("boucle de batterie", "house", "tempo étiqueté")]["statut"].startswith("pas de cible"), True)
-        check("tempo of all styles mixed refused", "mélangés" in get[("boucle de batterie", "tous", "tempo étiqueté")]["statut"], True)
+        check("voice one pack refused", get[("voix", "tous", "dur_s")]["statut"] == "définitive", False)
+        check("voice range never checked", "non contre-mesurée" in get[("voix", "tous", "range_st")].get("raison", ""), True)
+        tempo = {(r["famille"], r["style"]): r for r in res if r["mesure"].startswith("tempo")}
+        sure = "tempo du fabricant sûr"
+        check("dnb tempo 2 packs of 5+ agreeing = sure", tempo[("boucle de batterie", "dnb")]["statut"], sure)
+        check("dnb tempo n = every tagged loop", tempo[("boucle de batterie", "dnb")]["sons"], 25)
+        check("dnb tempo agreement 23/25 written", "23/25" in tempo[("boucle de batterie", "dnb")].get("accord", ""), True)
+        check("house tempo 60 % refused", tempo[("boucle de batterie", "house")]["statut"] == sure, False)
+        check("tempo of all styles mixed refused", tempo[("boucle de batterie", "tous")]["statut"] == sure, False)
+        check("tempo one pack in agreement not sure", tempo[("boucle de batterie", "techno")]["statut"] == sure, False)
+        check("tempo 2 packs of 5 within 2 % sure", tempo[("boucle de batterie", "dubstep")]["statut"], sure)
+        check("tempo 125 / 150 by pack not sure", tempo[("boucle de batterie", "rave")]["statut"] == sure, False)
+        check("tempo 125 / 150 written pack by pack", all(x in tempo[("boucle de batterie", "rave")].get("raison", "")
+                                                           for x in ("r3p1 125", "r5p1 150")), True)
+        check("tempo never 'définitive'", any(r["statut"] == "définitive" for r in tempo.values()), False)
+        k = get[("coup mélodique : keys", "trap", "dur_s")]
+        check("77 + 1 of a second pack not definitive", k["statut"] == "définitive", False)
+        check("77 + 1: packs_5 = 1", k.get("packs_5"), 1)
+        l = get[("coup mélodique : lead", "dubstep", "dur_s")]
+        check("93 % of one pack not definitive", l["statut"] == "définitive", False)
+        check("93 %: part_pack_max", l.get("part_pack_max"), "93")
+        check("60 + 20 definitive", get[("coup mélodique : synth", "dubstep", "dur_s")]["statut"], "définitive")
+        check("refused line keeps the current sound", l["statut"], "pas de cible, on garde le son actuel")
+        check("refused line has a reason", "90 %" in l.get("raison", ""), True)
         check("no verif = no target on loop levels", get[("boucle de batterie", "dnb", "dur_s")]["statut"].startswith("pas de cible"), True)
         check("no key / raw tempo / f0 column", any(m in r["mesure"] for r in res for m in ("key_est", "bpm_est", "f0_hz")), False)
     print("%d failed" % len(fails))

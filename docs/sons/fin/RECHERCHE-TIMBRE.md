@@ -545,6 +545,8 @@ le seuil de la carte bandes-temps sur les écarts entre voisins de chaque famill
 - Si l'oreille dit non quand les chiffres disent oui, c'est l'empreinte qui a un trou : on cherche
   la mesure qui manque avant de retoucher le son.
 
+Étape 0 faite, étape 1 rejouée (53 % « sûr », pas vert) : voir `TIMBRE-ETAPE01.md`.
+
 ## 7. Limites : ce qui n'est pas prouvé
 
 - **Aucun chiffre ne vient de la vraie collection**, sauf les fourchettes déjà publiées (essai

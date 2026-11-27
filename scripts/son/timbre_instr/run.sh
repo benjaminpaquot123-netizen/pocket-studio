@@ -14,10 +14,16 @@ g++ -std=c++17 -O2 -w -include "$ROOT/engine/third_party/daisysp_rand_override.h
     "$DS/Filters/svf.cpp" "$DS/Filters/ladder.cpp" "$DS/Control/adsr.cpp" "$DS/Synthesis/oscillator.cpp" \
     -o "$D/render_instr"
 cd "$HERE"
-python3 -B selftest.py | tee "$D/selftest.txt"
-if [ "$(tail -n 1 "$D/selftest.txt")" != "SELFTEST VERT" ]; then
+# Every phase draw of the self-test must be green: one red draw and nothing is measured.
+if ! python3 -I -B selftest.py > "$D/selftest.txt"; then
+    tail -n 12 "$D/selftest.txt" >&2
     echo "self-test rouge : on ne mesure pas" >&2
     exit 1
 fi
-python3 -B essai.py instruments "$D/render_instr"
-python3 -B essai.py cma
+tail -n 1 "$D/selftest.txt"
+case "$(tail -n 1 "$D/selftest.txt")" in "SELFTEST VERT ("*) ;; *)
+    echo "self-test rouge : on ne mesure pas" >&2
+    exit 1 ;;
+esac
+python3 -I -B essai.py instruments "$D/render_instr"
+python3 -I -B essai.py cma

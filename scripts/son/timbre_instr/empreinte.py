@@ -42,12 +42,12 @@ ENV_KEYS = ("attaque_s", "chute_s", "relache_s")
 def agree(key, a, b, period=0.0):
     """True when two paths agree for this measure (both None also counts: nothing to measure).
 
-    For the envelope times the floor is at least one period of the note: an envelope is not
-    resolved finer than one cycle of the wave it rides on (32 ms on a low C, 4 ms on a C5)."""
+    For decay and release the floor is at least one period of the note (they last hundreds of ms).
+    The attack keeps its fixed tolerance whatever the note: low notes get no extra slack."""
     if a is None or b is None:
         return a is None and b is None
     rel, floor = TOL[key]
-    if key in ENV_KEYS:
+    if key in ENV_KEYS and key != "attaque_s":
         floor = max(floor, period)
     return abs(a - b) <= max(floor, rel * max(abs(a), abs(b)))
 
@@ -60,9 +60,12 @@ def _db(p):
 
 def _boxcar(z, length, times=2):
     """Moving average of `length` samples applied `times` times (zeros at multiples of SR/length)."""
-    k = np.ones(length) / length
+    n = len(z)
+    hi = np.minimum(np.arange(n) + (length - 1) // 2 + 1, n)
+    lo = np.maximum(np.arange(n) + (length - 1) // 2 - (length - 1), 0)
     for _ in range(times):
-        z = np.convolve(z, k, mode="same")
+        c = np.concatenate(([0], np.cumsum(z)))
+        z = (c[hi] - c[lo]) / length  # same as np.convolve(z, ones(length)/length, "same"), O(n)
     return z
 
 

@@ -4,14 +4,16 @@ Each measure AND its counter-measure must find the truth within the tolerance of
 Last line: "SELFTEST VERT" or "SELFTEST ROUGE (n échecs)".
 """
 import math
+import os
 import sys
 
 import numpy as np
 
-import empreinte as E
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # works under python3 -I
+import empreinte as E  # noqa: E402
 
 SR = E.SR
-RNG = np.random.default_rng(7)
+RNG = np.random.default_rng(7)  # replaced per draw by run_seed()
 FAILS = []
 
 
@@ -214,13 +216,32 @@ def main():
     if st == "une note":
         FAILS.append("bruit pris pour une note")
 
-    if FAILS:
-        print("échecs :", ", ".join(FAILS))
-        print(f"SELFTEST ROUGE ({len(FAILS)} échecs)")
-        return 1
-    print("SELFTEST VERT")
-    return 0
+    print(f"  tirage : {len(FAILS)} échecs" if FAILS else "  tirage vert")
+    return 1 if FAILS else 0
+
+
+SEEDS = (1, 3, 7, 11, 19, 23, 42, 101)
+
+
+def run_seed(seed):
+    global RNG
+    RNG = np.random.default_rng(seed)
+    FAILS.clear()
+    print(f"=== tirage de phases, graine {seed}")
+    main()
+    return list(FAILS)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    seeds = [int(a) for a in sys.argv[1:]] or list(SEEDS)
+    red = {}
+    for sd in seeds:
+        f = run_seed(sd)
+        if f:
+            red[sd] = f
+    for sd, f in red.items():
+        print(f"graine {sd} : {len(f)} échecs : {', '.join(f)}")
+    if red:
+        print(f"SELFTEST ROUGE ({len(red)} tirages rouges sur {len(seeds)})")
+        sys.exit(1)
+    print(f"SELFTEST VERT ({len(seeds)} tirages)")

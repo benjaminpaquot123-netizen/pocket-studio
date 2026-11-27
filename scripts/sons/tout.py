@@ -152,6 +152,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import mesure  # noqa: E402
 from mesure import BadAudio  # noqa: E402,F401
 import mine_or  # noqa: E402
+import noms  # noqa: E402
 
 MAX_BYTES = 512 * 1024 * 1024
 MAX_SECONDS = 600.0
@@ -589,7 +590,7 @@ GENRES = [("techno", r"techno"), ("house", r"house"), ("dnb", r"dnb|drum ?(and|&
 GENRES = [(g, rx.replace("afro", "afro(?:beats?|house)?") if g == "afro" else rx) for g, rx in GENRES]
 # A style is a whole word ('Warehouse', 'Strap', 'Soulful', 'Entrance' name no style), plural allowed.
 GENRES = [(g, re.compile(r"(?<![a-z])(?:%s)s?(?![a-z])" % rx, re.I)) for g, rx in GENRES]
-_PACK_STYLES = [(re.compile(r"(?<![a-z])%s(?![a-z])" % re.escape(k), re.I), st) for k, st in mine_or.STYLES]
+_PACK_STYLES = [(noms.matcher(k), st) for k, st in mine_or.STYLES]  # hashed titles: noms.py
 # phrases whose genre word names no style: 'Rock Solid Kicks', 'Pop Up Drums', 'House of Loops' (audit 3 #3)
 _STYLE_NOISE = re.compile(r"(?i)jungle ?perc\w*|garage ?doors?|rock ?solid|pop ?ups?\b|jungle ?animals?|house ?of\b"
                           r"|soul ?food|garage ?band|\bsouls\b")  # plural souls: people, not soul music
@@ -608,8 +609,8 @@ def _style_in(part):
     ('Hip-Hop & Trap' -> trap, 'Lo-Fi House' -> house)."""
     part = _STYLE_NOISE.sub(" ", part)
     for text in (part, _CAMEL.sub(" ", part)):
-        for rx, st in _PACK_STYLES:
-            if rx.search(text):
+        for m, st in _PACK_STYLES:
+            if m(text):
                 return st
         best = None
         for g, rx in GENRES:

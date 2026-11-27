@@ -154,7 +154,7 @@ def test_style():
                 "Drums/Kicks/Garage Door Kick 01.wav", "Drums/Snares/Soulful Snare 01.wav",
                 "Drums/Kicks/Trapdoor Kick 01.wav", "Drums/Kicks/Contrapunto Kick 01.wav",
                 "Drums/Kicks/Extra Punch Kick 01.wav", "Drums/Kicks/Travel Kick 01.wav",
-                "Drums/Kicks/Ultra Phat Kick 01.wav", "Neo Raver Tools/Kick 01.wav", "Ketamine Kicks/Kick 01.wav"):
+                "Drums/Kicks/Ultra Phat Kick 01.wav", "Neon Raver Tools/Kick 01.wav", "Ketamine Kicks/Kick 01.wav"):
         check_eq("13 no style: %s" % rel, tout.style_of(rel), "unlabelled")
     for rel, want in (("Drums/Kicks/Pop Kick 01.wav", "pop"), ("Deep House/Kicks/Kick 01.wav", "house"),
                       ("Techno/House Kicks/Kick 01.wav", "house"), ("Hip-Hop & Trap/Kicks/Kick 01.wav", "trap"),
@@ -169,7 +169,7 @@ def test_style():
                       ("Rock/Kicks/Kick 01.wav", "rock"), ("Reggaeton/Kicks/Kick 01.wav", "reggaeton"),
                       ("Dembow/Kicks/Kick 01.wav", "reggaeton"), ("Drill/Kicks/Kick 01.wav", "drill"),
                       ("Disco/Kicks/Kick 01.wav", "disco"), ("Funk/Kicks/Kick 01.wav", "funk"),
-                      ("Hardstyle/Kicks/Kick 01.wav", "hardstyle"), ("Neo Rave/Kicks/Kick 01.wav", "rave"),
+                      ("Hardstyle/Kicks/Kick 01.wav", "hardstyle"), ("Neon Rave/Kicks/Kick 01.wav", "rave"),
                       ("Liquid DnB/Kicks/Kick 01.wav", "dnb"), ("Afro House/Kicks/Kick 01.wav", "afro-house")):
         check_eq("13 style: %s" % rel, tout.style_of(rel), want)
     check_eq("13 classify uses the whole word", tout.classify("Drums/Kicks/Warehouse Kick 01.wav", 0.4)["style"],

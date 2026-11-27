@@ -10,8 +10,8 @@ Format of every number: **median [q25–q75]**.
 ### Source corruption (not recoverable from this source)
 - The zip served by Drive contains three runs of zero bytes (about 6.1–7.2 GB, 10.3–12.3 GB, 13.6–14.8 GB of the file; 4.28 GB in total).
   A direct byte-range request to Drive returns the same zeros, so the file stored on Drive is itself damaged (not a download error).
-- 3 537 entries are unreadable (bad local header / CRC). By pack: Riddim Riot 756, Deathstep 661, Neo Rave 583, Exclusive Vocals 495,
-  Mainstage DnB 406, Afro House 398, Trap Melody Kits 169, Atmospheres 69.
+- 3 537 entries are unreadable (bad local header / CRC). By pack: Pack A (dubstep) 756, Pack B (deathstep) 661, Pack C (rave) 583, Pack D (vocals) 495,
+  Pack E (dnb) 406, Pack F (afro house) 398, Pack G (trap melody) 169, Pack H (atmospheres) 69.
 - Drum one-shots found: 2 380 (+3 drum-looking files that matched no family). **Kept 1 649, lost 731.**
 
 | family | kept | lost | lost by style |

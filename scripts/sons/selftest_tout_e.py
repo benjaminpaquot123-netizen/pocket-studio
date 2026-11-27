@@ -356,7 +356,7 @@ def test_39_guard_without_git():
         os.makedirs(os.path.join(repo, "scripts", "sons"))
         os.makedirs(os.path.join(repo, "docs", "sons"))
         open(os.path.join(repo, "CLAUDE.md"), "w").write("x")
-        for f in ("tout.py", "mesure.py", "mine_or.py"):
+        for f in ("tout.py", "mesure.py", "mine_or.py", "noms.py"):
             shutil.copy(os.path.join(HERE, f), os.path.join(repo, "scripts", "sons", f))
         pack = os.path.join(tmp, "pack")
         write(os.path.join(pack, "Kicks", "Kick 01.wav"), wav_bytes(kick()))

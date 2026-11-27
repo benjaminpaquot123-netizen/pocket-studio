@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+"""Self-test of the collection tool (collection.py): every measure and its independent
+counter-measure on sounds whose answer is known, then the agreement on invented drum families,
+then the "copie" trial (does any guard catch one sound redrawn with our own noise?).
+
+    python3 -I scripts/son/timbre/selftest_collection.py
+"""
+import math
+import os
+import sys
+
+import numpy as np
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import collection as C  # noqa: E402
+import timbre as T  # noqa: E402
+
+SR = T.SR
+FAILED = []
+
+
+def check(name, got, want, tol):
+    ok = got == got and abs(got - want) <= tol
+    print("%s\t%s\tgot %.4g, expected %.4g (tolerance %.3g)" % ("ok  " if ok else "FAIL", name, got, want, tol))
+    if not ok:
+        FAILED.append(name)
+
+
+def truth(name, cond):
+    print("%s\t%s" % ("ok  " if cond else "FAIL", name))
+    if not cond:
+        FAILED.append(name)
+
+
+def main():
+    rng = np.random.default_rng(0)
+    t = np.arange(SR) / SR
+
+    # A decaying 1 kHz sine after 30 ms of silence: onset 30 ms, t20/t40/t60 = 1, 2, 3 x tau ln 10.
+    tau = 0.050
+    x = np.concatenate([np.zeros(int(0.030 * SR)), np.sin(2 * math.pi * 1000.0 * t) * np.exp(-t / tau)])
+    m, c = C.measure(x), C.counter(x)
+    for k, mult in (("t20_ms", 1), ("t40_ms", 2), ("t60_ms", 3)):
+        want = 1000.0 * mult * tau * math.log(10.0)
+        check("measure: %s of exp(-t/tau)" % k, m[k], want, 1.0)
+        check("counter: %s of exp(-t/tau)" % k, c[k], want, 1.0)
+    check("counter onset after 30 ms of silence (ms)", 1000.0 * C.counter_onset(x) / SR, 30.0, 0.5)
+    check("counter: centroid of a 1 kHz sine", c["centroid_hz"], 1000.0, 10.0)
+    check("counter: t20 of the mid band", c["t20_mid_ms"], 1000.0 * tau * math.log(10.0), 2.0)
+
+    # The counter's decay is not Schroeder's: a forward sum over 1 ms blocks, read between blocks.
+    p = np.zeros(SR // 10)
+    p[:480] = 1.0  # all the energy in the first 10 ms, flat: -20 dB is reached at 9.9 ms
+    check("counter decay of a flat 10 ms block, -20 dB (ms)", C.counter_decay_ms(p, 0, 20.0), 9.9, 0.15)
+
+    # White noise: share above 10 kHz by both roads.
+    w = rng.standard_normal(SR) * np.exp(-t / 0.080)
+    want = 10.0 * math.log10(10000.0 / 19980.0)
+    check("measure: white noise hf share", C.measure(w)["hf_db"], want, 0.5)
+    check("counter: white noise hf share", C.counter(w)["hf_db"], want, 0.5)
+
+    # Attack against body: 10 ms at level 1 then 90 ms at level 0.1 (a +-1 square at Nyquist,
+    # so the energies are exact; a random noise would move the answer by its own draw).
+    b = np.where(np.arange(int(0.100 * SR)) % 2 == 0, 1.0, -1.0)
+    b[int(0.010 * SR):] *= 0.1
+    want = 10.0 * math.log10(10.0 / (90.0 * 0.01))
+    check("measure: attack against body", C.measure(b)["transient_body_db"], want, 0.4)
+    check("counter: attack against body", C.counter(b)["transient_body_db"], want, 0.4)
+
+    # Resampling keeps the pitch: 1 kHz at 44.1 kHz read at 48 kHz.
+    y = np.sin(2 * math.pi * 1000.0 * np.arange(44100) / 44100.0) * np.exp(-np.arange(44100) / 44100.0 / 0.05)
+    check("resampled 44.1 kHz sine: centroid", C.measure(C.to_48k(y, 44100))["centroid_hz"], 1000.0, 10.0)
+    truth("resampled length", abs(len(C.to_48k(y, 44100)) - 48000) <= 1)
+
+    # Agreement rule.
+    truth("agree: t20 within 5 ms", C.agree("t20_ms", 30.0, 34.0))
+    truth("agree: t20 10 % but more than 5 ms is not", not C.agree("t20_ms", 100.0, 112.0))
+    truth("agree: centroid within 10 %", C.agree("centroid_hz", 1000.0, 1090.0))
+    truth("agree: hf 1.5 dB", C.agree("hf_db", -20.0, -21.4) and not C.agree("hf_db", -20.0, -21.6))
+    truth("agree: one road empty is a disagreement", not C.agree("t20_low_ms", float("nan"), 20.0))
+    truth("agree: both bands empty agree", C.agree("env0_db", T.FLOOR_DB, T.FLOOR_DB + 2.0))
+
+    # Map threshold: the 5th centile of the nearest-neighbour distances, never the minimum.
+    d = list(range(100))
+    check("map threshold = 5th centile", C.map_threshold(d), 4.95, 1e-9)
+
+    # Independent counter: on invented drums (30 snares, hats, kicks), every measure agrees >= 98 %.
+    sounds = []
+    for kind, seed in (("snare", 31), ("hat", 32), ("kick", 33)):
+        sounds += T.family(kind, 30, np.random.default_rng(seed))
+    pairs = [(C.measure(s), C.counter(s)) for s in sounds]
+    for k in C.ALL_KEYS:
+        n, ok = C.agreement([a[k] for a, _ in pairs], [b[k] for _, b in pairs], k)
+        check("agreement on 90 invented drums: %s (%d counted)" % (k, n), 100.0 * ok / max(n, 1), 100.0, 2.0)
+
+    # The copie trial: one invented snare redrawn with our own noise on finer and finer grids.
+    rows = C.copie_trial()
+    for grid, caught in rows:
+        print("copie\t%s\t%s" % (grid, "  ".join("%s %s" % (k, "attrapée" if v else "passe") for k, v in caught.items())))
+    truth("copie: the sound itself (a hair of filtering) is caught by the 25x9 map", rows[-1][1]["carte 25x9"])
+
+    print("\n%s" % ("selftest: all green" if not FAILED else "selftest: %d FAILED" % len(FAILED)))
+    return 1 if FAILED else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

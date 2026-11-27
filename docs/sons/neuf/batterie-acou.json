@@ -1,0 +1,4008 @@
+{
+ "zone": "batterie-acou",
+ "note": "note_essentia = distance RMS à la médiane de la famille (écarts-types, 0 = parfait), mesurée sur le MP3 décodé ; CLAP non disponible.",
+ "sons": [
+  {
+   "fichier": "boom-bap-caisse-claire-01.mp3",
+   "style": "boom-bap",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_offcenter_vl29",
+   "note_essentia": 0.46,
+   "ecarts_principaux": {
+    "flatness_db": -1.27,
+    "mfcc3": -0.87,
+    "rolloff_hz": 0.6
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4771.51220703125,
+    "rms_db": -17.660608291625977,
+    "dur_s": 0.361
+   },
+   "pic_dbfs": -1.37,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-caisse-claire-01.mp3"
+  },
+  {
+   "fichier": "boom-bap-caisse-claire-02.mp3",
+   "style": "boom-bap",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl29",
+   "note_essentia": 0.41,
+   "ecarts_principaux": {
+    "flatness_db": -1.17,
+    "centroid_hz": -0.64,
+    "mfcc4": -0.62
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 3627.172119140625,
+    "rms_db": -20.030057907104492,
+    "dur_s": 0.52
+   },
+   "pic_dbfs": -1.25,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-caisse-claire-02.mp3"
+  },
+  {
+   "fichier": "boom-bap-caisse-claire-03.mp3",
+   "style": "boom-bap",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl25",
+   "note_essentia": 0.35,
+   "ecarts_principaux": {
+    "effective_dur_s": 0.8,
+    "rolloff_hz": 0.54,
+    "mfcc3": -0.53
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5209.369140625,
+    "rms_db": -17.170169830322266,
+    "dur_s": 0.381
+   },
+   "pic_dbfs": -1.18,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-caisse-claire-03.mp3"
+  },
+  {
+   "fichier": "boom-bap-caisse-claire-04.mp3",
+   "style": "boom-bap",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_offcenter_vl30",
+   "note_essentia": 0.43,
+   "ecarts_principaux": {
+    "flatness_db": -0.95,
+    "mfcc5": -0.68,
+    "mfcc3": -0.61
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4656.93310546875,
+    "rms_db": -18.259279251098633,
+    "dur_s": 0.331
+   },
+   "pic_dbfs": -1.14,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-caisse-claire-04.mp3"
+  },
+  {
+   "fichier": "boom-bap-charleston-ferme-01.mp3",
+   "style": "boom-bap",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr4",
+   "note_essentia": 0.27,
+   "ecarts_principaux": {
+    "mfcc3": -0.55,
+    "mfcc5": 0.42,
+    "rolloff_hz": -0.36
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7853.021484375,
+    "rms_db": -21.797916412353516,
+    "dur_s": 0.281
+   },
+   "pic_dbfs": -1.33,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-charleston-ferme-01.mp3"
+  },
+  {
+   "fichier": "boom-bap-charleston-ferme-02.mp3",
+   "style": "boom-bap",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr1",
+   "note_essentia": 0.3,
+   "ecarts_principaux": {
+    "flatness_db": 0.68,
+    "low_share_db": 0.63,
+    "dur_s": -0.45
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7247.25390625,
+    "rms_db": -20.95807647705078,
+    "dur_s": 0.261
+   },
+   "pic_dbfs": -1.02,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-charleston-ferme-02.mp3"
+  },
+  {
+   "fichier": "boom-bap-charleston-ferme-03.mp3",
+   "style": "boom-bap",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr2",
+   "note_essentia": 0.45,
+   "ecarts_principaux": {
+    "dur_s": -0.99,
+    "flatness_db": -0.86,
+    "rms_db": -0.66
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8729.9599609375,
+    "rms_db": -21.45768928527832,
+    "dur_s": 0.16
+   },
+   "pic_dbfs": -2.1,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-charleston-ferme-03.mp3"
+  },
+  {
+   "fichier": "boom-bap-charleston-ferme-04.mp3",
+   "style": "boom-bap",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr4",
+   "note_essentia": 0.53,
+   "ecarts_principaux": {
+    "flatness_db": -1.8,
+    "log_attack": -0.52,
+    "mfcc2": 0.5
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6661.80712890625,
+    "rms_db": -23.624378204345703,
+    "dur_s": 0.291
+   },
+   "pic_dbfs": -1.28,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-charleston-ferme-04.mp3"
+  },
+  {
+   "fichier": "boom-bap-charleston-ouvert-01.mp3",
+   "style": "boom-bap",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl3_rr3",
+   "note_essentia": 0.31,
+   "ecarts_principaux": {
+    "dur_s": 0.55,
+    "log_attack": 0.53,
+    "high_share_db": 0.49
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6722.99560546875,
+    "rms_db": -24.365055084228516,
+    "dur_s": 0.739
+   },
+   "pic_dbfs": -1.12,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-charleston-ouvert-01.mp3"
+  },
+  {
+   "fichier": "boom-bap-charleston-ouvert-02.mp3",
+   "style": "boom-bap",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl4_rr3",
+   "note_essentia": 0.3,
+   "ecarts_principaux": {
+    "dur_s": -0.79,
+    "log_attack": 0.72,
+    "high_share_db": 0.39
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8207.6689453125,
+    "rms_db": -19.413288116455078,
+    "dur_s": 0.23
+   },
+   "pic_dbfs": -1.63,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-charleston-ouvert-02.mp3"
+  },
+  {
+   "fichier": "boom-bap-charleston-ouvert-03.mp3",
+   "style": "boom-bap",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl3_rr1",
+   "note_essentia": 0.37,
+   "ecarts_principaux": {
+    "high_share_db": 0.66,
+    "mfcc5": -0.59,
+    "lufs": 0.54
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6609.494140625,
+    "rms_db": -24.077436447143555,
+    "dur_s": 0.433
+   },
+   "pic_dbfs": -1.38,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-charleston-ouvert-03.mp3"
+  },
+  {
+   "fichier": "boom-bap-charleston-ouvert-04.mp3",
+   "style": "boom-bap",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl3_rr2",
+   "note_essentia": 0.4,
+   "ecarts_principaux": {
+    "mfcc5": -0.86,
+    "high_share_db": 0.68,
+    "mfcc3": -0.54
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7779.5205078125,
+    "rms_db": -19.785566329956055,
+    "dur_s": 0.316
+   },
+   "pic_dbfs": -1.26,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-charleston-ouvert-04.mp3"
+  },
+  {
+   "fichier": "boom-bap-crash-01.mp3",
+   "style": "boom-bap",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl2_rr4",
+   "note_essentia": 0.31,
+   "ecarts_principaux": {
+    "flatness_db": -0.7,
+    "mfcc4": 0.6,
+    "mfcc1": -0.52
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6816.71923828125,
+    "rms_db": -19.270355224609375,
+    "dur_s": 2.154
+   },
+   "pic_dbfs": -1.21,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-crash-01.mp3"
+  },
+  {
+   "fichier": "boom-bap-crash-02.mp3",
+   "style": "boom-bap",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl3_rr4",
+   "note_essentia": 0.63,
+   "ecarts_principaux": {
+    "flatness_db": -2.12,
+    "rms_db": -0.71,
+    "mfcc3": 0.64
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5037.16064453125,
+    "rms_db": -23.504650115966797,
+    "dur_s": 2.521
+   },
+   "pic_dbfs": -1.29,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-crash-02.mp3"
+  },
+  {
+   "fichier": "boom-bap-crash-03.mp3",
+   "style": "boom-bap",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl2_rr3",
+   "note_essentia": 0.66,
+   "ecarts_principaux": {
+    "flatness_db": -2.27,
+    "effective_dur_s": -0.72,
+    "mfcc5": -0.72
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5541.7802734375,
+    "rms_db": -21.746231079101562,
+    "dur_s": 1.705
+   },
+   "pic_dbfs": -1.47,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-crash-03.mp3"
+  },
+  {
+   "fichier": "boom-bap-crash-04.mp3",
+   "style": "boom-bap",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl3_rr2",
+   "note_essentia": 0.57,
+   "ecarts_principaux": {
+    "flatness_db": -1.6,
+    "mfcc5": -0.9,
+    "mfcc1": -0.74
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5083.99853515625,
+    "rms_db": -21.838241577148438,
+    "dur_s": 1.61
+   },
+   "pic_dbfs": -1.41,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-crash-04.mp3"
+  },
+  {
+   "fichier": "boom-bap-kick-01.mp3",
+   "style": "boom-bap",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl3_rr1",
+   "note_essentia": 0.38,
+   "ecarts_principaux": {
+    "high_share_db": -0.88,
+    "mfcc4": -0.7,
+    "mfcc2": -0.48
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 292.61175537109375,
+    "rms_db": -10.004585266113281,
+    "dur_s": 0.393
+   },
+   "pic_dbfs": -1.31,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-kick-01.mp3"
+  },
+  {
+   "fichier": "boom-bap-kick-02.mp3",
+   "style": "boom-bap",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl3_rr1",
+   "note_essentia": 0.48,
+   "ecarts_principaux": {
+    "high_share_db": -1.04,
+    "mfcc2": -0.88,
+    "rolloff_hz": 0.64
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 1218.382568359375,
+    "rms_db": -11.739662170410156,
+    "dur_s": 0.477
+   },
+   "pic_dbfs": -1.26,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-kick-02.mp3"
+  },
+  {
+   "fichier": "boom-bap-kick-03.mp3",
+   "style": "boom-bap",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl4_rr2",
+   "note_essentia": 0.48,
+   "ecarts_principaux": {
+    "mfcc5": -0.84,
+    "mfcc4": -0.77,
+    "rolloff_hz": 0.72
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 1542.7767333984375,
+    "rms_db": -10.383605003356934,
+    "dur_s": 0.469
+   },
+   "pic_dbfs": -1.21,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-kick-03.mp3"
+  },
+  {
+   "fichier": "boom-bap-kick-04.mp3",
+   "style": "boom-bap",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl4_rr4",
+   "note_essentia": 0.54,
+   "ecarts_principaux": {
+    "mfcc2": -1.55,
+    "mfcc4": -0.87,
+    "mfcc5": -0.61
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 1068.890869140625,
+    "rms_db": -11.02918529510498,
+    "dur_s": 0.447
+   },
+   "pic_dbfs": -1.26,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-kick-04.mp3"
+  },
+  {
+   "fichier": "boom-bap-ride-01.mp3",
+   "style": "boom-bap",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl3_rr3",
+   "note_essentia": 0.39,
+   "ecarts_principaux": {
+    "flatness_db": -1.14,
+    "mfcc1": 0.63,
+    "low_share_db": 0.49
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7140.11083984375,
+    "rms_db": -22.485862731933594,
+    "dur_s": 0.659
+   },
+   "pic_dbfs": -1.4,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-ride-01.mp3"
+  },
+  {
+   "fichier": "boom-bap-ride-02.mp3",
+   "style": "boom-bap",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_bell_vl2_rr2",
+   "note_essentia": 0.39,
+   "ecarts_principaux": {
+    "flatness_db": -0.95,
+    "effective_dur_s": -0.68,
+    "lufs": -0.57
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7351.62646484375,
+    "rms_db": -24.668073654174805,
+    "dur_s": 0.551
+   },
+   "pic_dbfs": -1.56,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-ride-02.mp3"
+  },
+  {
+   "fichier": "boom-bap-ride-03.mp3",
+   "style": "boom-bap",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl3_rr1",
+   "note_essentia": 0.41,
+   "ecarts_principaux": {
+    "flatness_db": -1.13,
+    "rms_db": -0.85,
+    "low_share_db": 0.44
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7763.7294921875,
+    "rms_db": -23.59297752380371,
+    "dur_s": 0.495
+   },
+   "pic_dbfs": -1.4,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-ride-03.mp3"
+  },
+  {
+   "fichier": "boom-bap-ride-04.mp3",
+   "style": "boom-bap",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_bell_vl2_rr3",
+   "note_essentia": 0.48,
+   "ecarts_principaux": {
+    "flatness_db": -1.3,
+    "log_attack": 0.68,
+    "effective_dur_s": -0.6
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6943.3310546875,
+    "rms_db": -24.266298294067383,
+    "dur_s": 0.487
+   },
+   "pic_dbfs": -1.87,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-ride-04.mp3"
+  },
+  {
+   "fichier": "boom-bap-tom-01.mp3",
+   "style": "boom-bap",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl15",
+   "note_essentia": 0.26,
+   "ecarts_principaux": {
+    "mfcc3": -0.49,
+    "lufs": 0.4,
+    "rms_db": 0.4
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 1282.947509765625,
+    "rms_db": -23.66726303100586,
+    "dur_s": 0.987
+   },
+   "pic_dbfs": -1.39,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-tom-01.mp3"
+  },
+  {
+   "fichier": "boom-bap-tom-02.mp3",
+   "style": "boom-bap",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl12",
+   "note_essentia": 0.31,
+   "ecarts_principaux": {
+    "mfcc3": -0.95,
+    "low_share_db": 0.37,
+    "log_attack": 0.33
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 1104.0712890625,
+    "rms_db": -23.706886291503906,
+    "dur_s": 0.894
+   },
+   "pic_dbfs": -1.23,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-tom-02.mp3"
+  },
+  {
+   "fichier": "boom-bap-tom-03.mp3",
+   "style": "boom-bap",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl9",
+   "note_essentia": 0.39,
+   "ecarts_principaux": {
+    "mfcc3": -0.82,
+    "high_share_db": -0.6,
+    "centroid_hz": -0.58
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 939.3057861328125,
+    "rms_db": -24.055320739746094,
+    "dur_s": 0.968
+   },
+   "pic_dbfs": -1.27,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-tom-03.mp3"
+  },
+  {
+   "fichier": "boom-bap-tom-04.mp3",
+   "style": "boom-bap",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl9",
+   "note_essentia": 0.41,
+   "ecarts_principaux": {
+    "mfcc3": -0.86,
+    "centroid_hz": -0.6,
+    "dur_s": 0.59
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 545.8367919921875,
+    "rms_db": -24.47669792175293,
+    "dur_s": 1.224
+   },
+   "pic_dbfs": -1.17,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-tom-04.mp3"
+  },
+  {
+   "fichier": "funk-caisse-claire-01.mp3",
+   "style": "funk",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl21",
+   "note_essentia": 0.5,
+   "ecarts_principaux": {
+    "flatness_db": -1.43,
+    "rolloff_hz": 0.61,
+    "mfcc3": -0.6
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4691.84716796875,
+    "rms_db": -19.840625762939453,
+    "dur_s": 0.345
+   },
+   "pic_dbfs": -1.26,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-caisse-claire-01.mp3"
+  },
+  {
+   "fichier": "funk-caisse-claire-02.mp3",
+   "style": "funk",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl22",
+   "note_essentia": 0.51,
+   "ecarts_principaux": {
+    "flatness_db": -1.41,
+    "rms_db": -0.99,
+    "low_share_db": 0.59
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4113.62109375,
+    "rms_db": -21.605026245117188,
+    "dur_s": 0.447
+   },
+   "pic_dbfs": -1.37,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-caisse-claire-02.mp3"
+  },
+  {
+   "fichier": "funk-caisse-claire-03.mp3",
+   "style": "funk",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_rimshot_vl12",
+   "note_essentia": 0.66,
+   "ecarts_principaux": {
+    "flatness_db": -1.62,
+    "mfcc4": -1.23,
+    "rms_db": -0.87
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4634.68408203125,
+    "rms_db": -19.084558486938477,
+    "dur_s": 0.335
+   },
+   "pic_dbfs": -1.48,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-caisse-claire-03.mp3"
+  },
+  {
+   "fichier": "funk-caisse-claire-04.mp3",
+   "style": "funk",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_rimshot_vl8",
+   "note_essentia": 0.63,
+   "ecarts_principaux": {
+    "rms_db": -1.3,
+    "mfcc5": -1.28,
+    "mfcc3": -1.03
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5633.94482421875,
+    "rms_db": -21.731767654418945,
+    "dur_s": 0.535
+   },
+   "pic_dbfs": -1.45,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-caisse-claire-04.mp3"
+  },
+  {
+   "fichier": "funk-charleston-ferme-01.mp3",
+   "style": "funk",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr3",
+   "note_essentia": 0.4,
+   "ecarts_principaux": {
+    "rms_db": -0.85,
+    "mfcc5": -0.76,
+    "effective_dur_s": -0.57
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7574.6669921875,
+    "rms_db": -24.09101676940918,
+    "dur_s": 0.292
+   },
+   "pic_dbfs": -1.01,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-charleston-ferme-01.mp3"
+  },
+  {
+   "fichier": "funk-charleston-ferme-02.mp3",
+   "style": "funk",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr4",
+   "note_essentia": 0.42,
+   "ecarts_principaux": {
+    "dur_s": -1.0,
+    "high_share_db": 0.63,
+    "mfcc2": 0.55
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8368.865234375,
+    "rms_db": -18.57741355895996,
+    "dur_s": 0.158
+   },
+   "pic_dbfs": -2.02,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-charleston-ferme-02.mp3"
+  },
+  {
+   "fichier": "funk-charleston-ferme-03.mp3",
+   "style": "funk",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr4",
+   "note_essentia": 0.43,
+   "ecarts_principaux": {
+    "high_share_db": 0.79,
+    "flatness_db": 0.78,
+    "mfcc2": 0.55
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8313.3916015625,
+    "rms_db": -22.48724937438965,
+    "dur_s": 0.329
+   },
+   "pic_dbfs": -1.52,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-charleston-ferme-03.mp3"
+  },
+  {
+   "fichier": "funk-charleston-ferme-04.mp3",
+   "style": "funk",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr2",
+   "note_essentia": 0.48,
+   "ecarts_principaux": {
+    "mfcc4": -1.19,
+    "rms_db": -1.02,
+    "dur_s": -0.58
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8088.26318359375,
+    "rms_db": -22.890792846679688,
+    "dur_s": 0.236
+   },
+   "pic_dbfs": -1.4,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-charleston-ferme-04.mp3"
+  },
+  {
+   "fichier": "funk-charleston-ouvert-01.mp3",
+   "style": "funk",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl4_rr2",
+   "note_essentia": 0.32,
+   "ecarts_principaux": {
+    "flatness_db": 0.64,
+    "dur_s": 0.57,
+    "rms_db": -0.55
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6203.6845703125,
+    "rms_db": -26.91988182067871,
+    "dur_s": 0.749
+   },
+   "pic_dbfs": -1.39,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-charleston-ouvert-01.mp3"
+  },
+  {
+   "fichier": "funk-charleston-ouvert-02.mp3",
+   "style": "funk",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl4_rr1",
+   "note_essentia": 0.31,
+   "ecarts_principaux": {
+    "mfcc4": -0.63,
+    "high_share_db": 0.57,
+    "mfcc3": -0.51
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7740.01953125,
+    "rms_db": -23.626535415649414,
+    "dur_s": 0.625
+   },
+   "pic_dbfs": -1.3,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-charleston-ouvert-02.mp3"
+  },
+  {
+   "fichier": "funk-charleston-ouvert-03.mp3",
+   "style": "funk",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl3_rr3",
+   "note_essentia": 0.43,
+   "ecarts_principaux": {
+    "mfcc4": -1.23,
+    "rms_db": -0.74,
+    "high_share_db": 0.63
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8795.6708984375,
+    "rms_db": -23.975147247314453,
+    "dur_s": 0.391
+   },
+   "pic_dbfs": -1.2,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-charleston-ouvert-03.mp3"
+  },
+  {
+   "fichier": "funk-charleston-ouvert-04.mp3",
+   "style": "funk",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl3_rr2",
+   "note_essentia": 0.48,
+   "ecarts_principaux": {
+    "mfcc3": -1.14,
+    "high_share_db": 1.06,
+    "zcr": 0.62
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8598.556640625,
+    "rms_db": -21.252229690551758,
+    "dur_s": 0.365
+   },
+   "pic_dbfs": -1.06,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-charleston-ouvert-04.mp3"
+  },
+  {
+   "fichier": "funk-crash-01.mp3",
+   "style": "funk",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl3_rr4",
+   "note_essentia": 0.47,
+   "ecarts_principaux": {
+    "flatness_db": -1.26,
+    "rms_db": -0.74,
+    "log_attack": 0.72
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5616.58544921875,
+    "rms_db": -22.781204223632812,
+    "dur_s": 2.118
+   },
+   "pic_dbfs": -1.96,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-crash-01.mp3"
+  },
+  {
+   "fichier": "funk-crash-02.mp3",
+   "style": "funk",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl3_rr1",
+   "note_essentia": 0.3,
+   "ecarts_principaux": {
+    "log_attack": 0.98,
+    "mfcc2": 0.35,
+    "lufs": -0.31
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6806.8095703125,
+    "rms_db": -20.08655548095703,
+    "dur_s": 2.043
+   },
+   "pic_dbfs": -1.04,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-crash-02.mp3"
+  },
+  {
+   "fichier": "funk-crash-03.mp3",
+   "style": "funk",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl3_rr3",
+   "note_essentia": 0.58,
+   "ecarts_principaux": {
+    "flatness_db": -2.01,
+    "rms_db": -0.75,
+    "log_attack": 0.71
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5425.35595703125,
+    "rms_db": -22.609407424926758,
+    "dur_s": 2.126
+   },
+   "pic_dbfs": -1.37,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-crash-03.mp3"
+  },
+  {
+   "fichier": "funk-crash-04.mp3",
+   "style": "funk",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl2_rr4",
+   "note_essentia": 0.41,
+   "ecarts_principaux": {
+    "mid_share_db": 0.7,
+    "flatness_db": -0.67,
+    "mfcc5": -0.59
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6611.7197265625,
+    "rms_db": -19.79643440246582,
+    "dur_s": 1.86
+   },
+   "pic_dbfs": -1.15,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-crash-04.mp3"
+  },
+  {
+   "fichier": "funk-kick-01.mp3",
+   "style": "funk",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl3_rr2",
+   "note_essentia": 0.41,
+   "ecarts_principaux": {
+    "rolloff_hz": 0.64,
+    "low_share_db": 0.63,
+    "mfcc4": -0.62
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 319.1615905761719,
+    "rms_db": -9.614791870117188,
+    "dur_s": 0.395
+   },
+   "pic_dbfs": -1.31,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-kick-01.mp3"
+  },
+  {
+   "fichier": "funk-kick-02.mp3",
+   "style": "funk",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl3_rr1",
+   "note_essentia": 0.43,
+   "ecarts_principaux": {
+    "rolloff_hz": 0.72,
+    "low_share_db": 0.68,
+    "mfcc1": -0.66
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 514.98681640625,
+    "rms_db": -10.749761581420898,
+    "dur_s": 0.485
+   },
+   "pic_dbfs": -1.24,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-kick-02.mp3"
+  },
+  {
+   "fichier": "funk-kick-03.mp3",
+   "style": "funk",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl4_rr2",
+   "note_essentia": 0.53,
+   "ecarts_principaux": {
+    "mfcc2": -1.03,
+    "mfcc4": -0.96,
+    "rolloff_hz": 0.8
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 421.6318359375,
+    "rms_db": -9.970521926879883,
+    "dur_s": 0.339
+   },
+   "pic_dbfs": -1.29,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-kick-03.mp3"
+  },
+  {
+   "fichier": "funk-kick-04.mp3",
+   "style": "funk",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl4_rr1",
+   "note_essentia": 0.53,
+   "ecarts_principaux": {
+    "rolloff_hz": 0.8,
+    "mfcc5": -0.79,
+    "mfcc4": -0.71
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 467.05914306640625,
+    "rms_db": -11.851239204406738,
+    "dur_s": 0.388
+   },
+   "pic_dbfs": -1.25,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-kick-04.mp3"
+  },
+  {
+   "fichier": "funk-ride-01.mp3",
+   "style": "funk",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl2_rr4",
+   "note_essentia": 0.47,
+   "ecarts_principaux": {
+    "flatness_db": -1.57,
+    "effective_dur_s": -0.61,
+    "high_share_db": 0.44
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7400.61474609375,
+    "rms_db": -22.65740203857422,
+    "dur_s": 0.493
+   },
+   "pic_dbfs": -1.13,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-ride-01.mp3"
+  },
+  {
+   "fichier": "funk-ride-02.mp3",
+   "style": "funk",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_bell_vl3_rr2",
+   "note_essentia": 0.35,
+   "ecarts_principaux": {
+    "log_attack": 0.8,
+    "flatness_db": -0.64,
+    "low_share_db": 0.51
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7558.13134765625,
+    "rms_db": -22.576210021972656,
+    "dur_s": 0.581
+   },
+   "pic_dbfs": -1.13,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-ride-02.mp3"
+  },
+  {
+   "fichier": "funk-ride-03.mp3",
+   "style": "funk",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl2_rr3",
+   "note_essentia": 0.36,
+   "ecarts_principaux": {
+    "flatness_db": -0.78,
+    "mfcc1": 0.55,
+    "rms_db": -0.5
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7228.01025390625,
+    "rms_db": -21.97237777709961,
+    "dur_s": 0.625
+   },
+   "pic_dbfs": -1.33,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-ride-03.mp3"
+  },
+  {
+   "fichier": "funk-ride-04.mp3",
+   "style": "funk",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl3_rr4",
+   "note_essentia": 0.51,
+   "ecarts_principaux": {
+    "flatness_db": -1.46,
+    "dur_s": 0.76,
+    "mfcc5": -0.64
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6766.30908203125,
+    "rms_db": -23.186113357543945,
+    "dur_s": 0.79
+   },
+   "pic_dbfs": -1.07,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-ride-04.mp3"
+  },
+  {
+   "fichier": "funk-tom-01.mp3",
+   "style": "funk",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl10",
+   "note_essentia": 0.28,
+   "ecarts_principaux": {
+    "mfcc3": -0.74,
+    "centroid_hz": -0.49,
+    "mfcc1": 0.39
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 493.5921936035156,
+    "rms_db": -26.074392318725586,
+    "dur_s": 0.905
+   },
+   "pic_dbfs": -1.2,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-tom-01.mp3"
+  },
+  {
+   "fichier": "funk-tom-02.mp3",
+   "style": "funk",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl15",
+   "note_essentia": 0.3,
+   "ecarts_principaux": {
+    "mfcc3": -0.64,
+    "mfcc5": -0.63,
+    "dur_s": 0.38
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 611.8035278320312,
+    "rms_db": -25.607328414916992,
+    "dur_s": 1.111
+   },
+   "pic_dbfs": -1.13,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-tom-02.mp3"
+  },
+  {
+   "fichier": "funk-tom-03.mp3",
+   "style": "funk",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl15",
+   "note_essentia": 0.27,
+   "ecarts_principaux": {
+    "mfcc3": -0.57,
+    "rms_db": 0.46,
+    "effective_dur_s": 0.39
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 1076.07470703125,
+    "rms_db": -21.253692626953125,
+    "dur_s": 0.983
+   },
+   "pic_dbfs": -1.55,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-tom-03.mp3"
+  },
+  {
+   "fichier": "funk-tom-04.mp3",
+   "style": "funk",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl13",
+   "note_essentia": 0.38,
+   "ecarts_principaux": {
+    "mfcc3": -1.05,
+    "mfcc2": -0.62,
+    "dur_s": -0.56
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 918.6913452148438,
+    "rms_db": -25.373489379882812,
+    "dur_s": 0.728
+   },
+   "pic_dbfs": -1.07,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-tom-04.mp3"
+  },
+  {
+   "fichier": "jazz-soul-caisse-claire-01.mp3",
+   "style": "jazz-soul",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl23",
+   "note_essentia": 0.48,
+   "ecarts_principaux": {
+    "flatness_db": -1.09,
+    "rms_db": -0.72,
+    "dur_s": 0.71
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4066.763671875,
+    "rms_db": -22.222637176513672,
+    "dur_s": 0.728
+   },
+   "pic_dbfs": -1.12,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-caisse-claire-01.mp3"
+  },
+  {
+   "fichier": "jazz-soul-caisse-claire-02.mp3",
+   "style": "jazz-soul",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl34",
+   "note_essentia": 0.51,
+   "ecarts_principaux": {
+    "flatness_db": -1.09,
+    "mfcc2": 0.79,
+    "mfcc5": -0.76
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4344.625,
+    "rms_db": -19.86374282836914,
+    "dur_s": 0.608
+   },
+   "pic_dbfs": -1.19,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-caisse-claire-02.mp3"
+  },
+  {
+   "fichier": "jazz-soul-caisse-claire-03.mp3",
+   "style": "jazz-soul",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_crossstick_vl15",
+   "note_essentia": 0.62,
+   "ecarts_principaux": {
+    "flatness_db": -1.57,
+    "rms_db": -1.19,
+    "effective_dur_s": 0.7
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 3224.2412109375,
+    "rms_db": -22.386104583740234,
+    "dur_s": 0.707
+   },
+   "pic_dbfs": -1.02,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-caisse-claire-03.mp3"
+  },
+  {
+   "fichier": "jazz-soul-caisse-claire-04.mp3",
+   "style": "jazz-soul",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_offcenter_vl31",
+   "note_essentia": 0.63,
+   "ecarts_principaux": {
+    "flatness_db": -1.6,
+    "mfcc4": -1.12,
+    "mfcc5": -1.08
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4239.42578125,
+    "rms_db": -19.975717544555664,
+    "dur_s": 0.457
+   },
+   "pic_dbfs": -1.26,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-caisse-claire-04.mp3"
+  },
+  {
+   "fichier": "jazz-soul-charleston-ferme-01.mp3",
+   "style": "jazz-soul",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr1",
+   "note_essentia": 0.64,
+   "ecarts_principaux": {
+    "rms_db": -1.62,
+    "mfcc5": -0.99,
+    "mfcc3": -0.91
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8323.509765625,
+    "rms_db": -25.387239456176758,
+    "dur_s": 0.322
+   },
+   "pic_dbfs": -1.98,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-charleston-ferme-01.mp3"
+  },
+  {
+   "fichier": "jazz-soul-charleston-ferme-02.mp3",
+   "style": "jazz-soul",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr1",
+   "note_essentia": 0.82,
+   "ecarts_principaux": {
+    "rms_db": -1.93,
+    "low_share_db": 1.38,
+    "mfcc2": 1.25
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7349.6806640625,
+    "rms_db": -25.20676612854004,
+    "dur_s": 0.335
+   },
+   "pic_dbfs": -1.49,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-charleston-ferme-02.mp3"
+  },
+  {
+   "fichier": "jazz-soul-charleston-ferme-03.mp3",
+   "style": "jazz-soul",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr2",
+   "note_essentia": 0.72,
+   "ecarts_principaux": {
+    "effective_dur_s": 1.44,
+    "dur_s": -1.27,
+    "rms_db": -1.23
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8778.783203125,
+    "rms_db": -19.247718811035156,
+    "dur_s": 0.107
+   },
+   "pic_dbfs": -1.94,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-charleston-ferme-03.mp3"
+  },
+  {
+   "fichier": "jazz-soul-charleston-ferme-04.mp3",
+   "style": "jazz-soul",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr4",
+   "note_essentia": 0.75,
+   "ecarts_principaux": {
+    "rms_db": -2.33,
+    "log_attack": 1.04,
+    "effective_dur_s": 0.96
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7474.9443359375,
+    "rms_db": -26.696481704711914,
+    "dur_s": 0.403
+   },
+   "pic_dbfs": -1.39,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-charleston-ferme-04.mp3"
+  },
+  {
+   "fichier": "jazz-soul-charleston-ouvert-01.mp3",
+   "style": "jazz-soul",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl3_rr1",
+   "note_essentia": 0.35,
+   "ecarts_principaux": {
+    "log_attack": 0.75,
+    "dur_s": 0.61,
+    "mfcc5": -0.47
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8017.72216796875,
+    "rms_db": -25.31900405883789,
+    "dur_s": 0.776
+   },
+   "pic_dbfs": -1.27,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-charleston-ouvert-01.mp3"
+  },
+  {
+   "fichier": "jazz-soul-charleston-ouvert-02.mp3",
+   "style": "jazz-soul",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl4_rr4",
+   "note_essentia": 0.36,
+   "ecarts_principaux": {
+    "rms_db": -0.79,
+    "mfcc3": -0.68,
+    "mfcc4": -0.58
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8485.9609375,
+    "rms_db": -26.083534240722656,
+    "dur_s": 0.467
+   },
+   "pic_dbfs": -1.17,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-charleston-ouvert-02.mp3"
+  },
+  {
+   "fichier": "jazz-soul-charleston-ouvert-03.mp3",
+   "style": "jazz-soul",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl4_rr2",
+   "note_essentia": 0.52,
+   "ecarts_principaux": {
+    "log_attack": 1.23,
+    "high_share_db": 0.93,
+    "effective_dur_s": 0.69
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8491.0771484375,
+    "rms_db": -20.965621948242188,
+    "dur_s": 0.329
+   },
+   "pic_dbfs": -2.01,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-charleston-ouvert-03.mp3"
+  },
+  {
+   "fichier": "jazz-soul-charleston-ouvert-04.mp3",
+   "style": "jazz-soul",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl4_rr1",
+   "note_essentia": 0.48,
+   "ecarts_principaux": {
+    "mfcc5": -1.16,
+    "high_share_db": 0.9,
+    "rms_db": -0.64
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8691.5556640625,
+    "rms_db": -22.6842098236084,
+    "dur_s": 0.308
+   },
+   "pic_dbfs": -2.5,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-charleston-ouvert-04.mp3"
+  },
+  {
+   "fichier": "jazz-soul-crash-01.mp3",
+   "style": "jazz-soul",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl3_rr3",
+   "note_essentia": 0.53,
+   "ecarts_principaux": {
+    "flatness_db": -1.74,
+    "mfcc1": -0.77,
+    "effective_dur_s": -0.65
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5352.72900390625,
+    "rms_db": -23.905521392822266,
+    "dur_s": 2.485
+   },
+   "pic_dbfs": -1.34,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-crash-01.mp3"
+  },
+  {
+   "fichier": "jazz-soul-crash-02.mp3",
+   "style": "jazz-soul",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl3_rr2",
+   "note_essentia": 0.63,
+   "ecarts_principaux": {
+    "flatness_db": -2.19,
+    "log_attack": 0.94,
+    "mfcc1": -0.44
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5262.9033203125,
+    "rms_db": -21.290109634399414,
+    "dur_s": 2.466
+   },
+   "pic_dbfs": -1.38,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-crash-02.mp3"
+  },
+  {
+   "fichier": "jazz-soul-crash-03.mp3",
+   "style": "jazz-soul",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl3_rr4",
+   "note_essentia": 0.53,
+   "ecarts_principaux": {
+    "flatness_db": -1.49,
+    "log_attack": 0.83,
+    "rms_db": -0.8
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6575.14306640625,
+    "rms_db": -21.887788772583008,
+    "dur_s": 2.185
+   },
+   "pic_dbfs": -1.2,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-crash-03.mp3"
+  },
+  {
+   "fichier": "jazz-soul-crash-04.mp3",
+   "style": "jazz-soul",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl3_rr1",
+   "note_essentia": 0.54,
+   "ecarts_principaux": {
+    "flatness_db": -1.27,
+    "rms_db": -1.27,
+    "log_attack": 0.95
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6889.22802734375,
+    "rms_db": -22.532066345214844,
+    "dur_s": 2.382
+   },
+   "pic_dbfs": -1.95,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-crash-04.mp3"
+  },
+  {
+   "fichier": "jazz-soul-kick-01.mp3",
+   "style": "jazz-soul",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl3_rr1",
+   "note_essentia": 0.5,
+   "ecarts_principaux": {
+    "mfcc5": -1.1,
+    "high_share_db": -1.04,
+    "rms_db": -0.76
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 484.3860168457031,
+    "rms_db": -11.843358039855957,
+    "dur_s": 0.443
+   },
+   "pic_dbfs": -1.25,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-kick-01.mp3"
+  },
+  {
+   "fichier": "jazz-soul-kick-02.mp3",
+   "style": "jazz-soul",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl4_rr4",
+   "note_essentia": 0.53,
+   "ecarts_principaux": {
+    "mfcc4": -1.04,
+    "mfcc5": -0.8,
+    "high_share_db": -0.78
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 454.611328125,
+    "rms_db": -11.849260330200195,
+    "dur_s": 0.43
+   },
+   "pic_dbfs": -1.24,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-kick-02.mp3"
+  },
+  {
+   "fichier": "jazz-soul-kick-03.mp3",
+   "style": "jazz-soul",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl3_rr4",
+   "note_essentia": 0.54,
+   "ecarts_principaux": {
+    "mfcc5": -1.02,
+    "rms_db": -1.02,
+    "high_share_db": -0.67
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 498.0765380859375,
+    "rms_db": -12.170218467712402,
+    "dur_s": 0.481
+   },
+   "pic_dbfs": -1.27,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-kick-03.mp3"
+  },
+  {
+   "fichier": "jazz-soul-kick-04.mp3",
+   "style": "jazz-soul",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl4_rr2",
+   "note_essentia": 0.57,
+   "ecarts_principaux": {
+    "low_share_db": 1.03,
+    "high_share_db": -0.98,
+    "mfcc2": -0.95
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 291.728515625,
+    "rms_db": -11.90117359161377,
+    "dur_s": 0.389
+   },
+   "pic_dbfs": -1.25,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-kick-04.mp3"
+  },
+  {
+   "fichier": "jazz-soul-ride-01.mp3",
+   "style": "jazz-soul",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl2_rr4",
+   "note_essentia": 0.57,
+   "ecarts_principaux": {
+    "flatness_db": -1.75,
+    "rms_db": -1.08,
+    "mfcc3": 0.57
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7302.1494140625,
+    "rms_db": -25.104087829589844,
+    "dur_s": 0.602
+   },
+   "pic_dbfs": -1.92,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-ride-01.mp3"
+  },
+  {
+   "fichier": "jazz-soul-ride-02.mp3",
+   "style": "jazz-soul",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl2_rr3",
+   "note_essentia": 0.36,
+   "ecarts_principaux": {
+    "flatness_db": -0.85,
+    "rms_db": -0.6,
+    "high_share_db": 0.45
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8025.69287109375,
+    "rms_db": -22.27386474609375,
+    "dur_s": 0.535
+   },
+   "pic_dbfs": -1.23,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-ride-02.mp3"
+  },
+  {
+   "fichier": "jazz-soul-ride-03.mp3",
+   "style": "jazz-soul",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "flatride_crash_vl3",
+   "note_essentia": 0.36,
+   "ecarts_principaux": {
+    "dur_s": -1.02,
+    "mfcc5": -0.49,
+    "high_share_db": 0.48
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8975.55859375,
+    "rms_db": -21.224496841430664,
+    "dur_s": 0.384
+   },
+   "pic_dbfs": -1.04,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-ride-03.mp3"
+  },
+  {
+   "fichier": "jazz-soul-ride-04.mp3",
+   "style": "jazz-soul",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "flatride_crash_vl4",
+   "note_essentia": 0.42,
+   "ecarts_principaux": {
+    "rms_db": -1.08,
+    "mfcc5": -0.96,
+    "mfcc1": -0.45
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8575.1015625,
+    "rms_db": -23.828411102294922,
+    "dur_s": 0.493
+   },
+   "pic_dbfs": -1.52,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-ride-04.mp3"
+  },
+  {
+   "fichier": "jazz-soul-tom-01.mp3",
+   "style": "jazz-soul",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl14",
+   "note_essentia": 0.23,
+   "ecarts_principaux": {
+    "mfcc3": -0.58,
+    "dur_s": -0.31,
+    "high_share_db": -0.3
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 896.8253784179688,
+    "rms_db": -26.24062728881836,
+    "dur_s": 0.806
+   },
+   "pic_dbfs": -1.27,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-tom-01.mp3"
+  },
+  {
+   "fichier": "jazz-soul-tom-02.mp3",
+   "style": "jazz-soul",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl13",
+   "note_essentia": 0.26,
+   "ecarts_principaux": {
+    "mfcc5": -0.47,
+    "mfcc3": -0.4,
+    "log_attack": 0.38
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 730.0165405273438,
+    "rms_db": -26.391132354736328,
+    "dur_s": 1.056
+   },
+   "pic_dbfs": -1.12,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-tom-02.mp3"
+  },
+  {
+   "fichier": "jazz-soul-tom-03.mp3",
+   "style": "jazz-soul",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl13",
+   "note_essentia": 0.27,
+   "ecarts_principaux": {
+    "high_share_db": -0.63,
+    "centroid_hz": -0.42,
+    "mid_share_db": 0.41
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 647.6143188476562,
+    "rms_db": -21.671459197998047,
+    "dur_s": 0.911
+   },
+   "pic_dbfs": -1.3,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-tom-03.mp3"
+  },
+  {
+   "fichier": "jazz-soul-tom-04.mp3",
+   "style": "jazz-soul",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl10",
+   "note_essentia": 0.4,
+   "ecarts_principaux": {
+    "mfcc3": -0.81,
+    "mfcc5": -0.69,
+    "lufs": 0.69
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 738.648193359375,
+    "rms_db": -19.35822868347168,
+    "dur_s": 0.89
+   },
+   "pic_dbfs": -1.16,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-tom-04.mp3"
+  },
+  {
+   "fichier": "lo-fi-caisse-claire-01.mp3",
+   "style": "lo-fi",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl24",
+   "note_essentia": 0.54,
+   "ecarts_principaux": {
+    "flatness_db": -1.8,
+    "centroid_hz": -0.53,
+    "lufs": 0.5
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 3635.360107421875,
+    "rms_db": -17.7405948638916,
+    "dur_s": 0.574
+   },
+   "pic_dbfs": -1.37,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-caisse-claire-01.mp3"
+  },
+  {
+   "fichier": "lo-fi-caisse-claire-02.mp3",
+   "style": "lo-fi",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl35",
+   "note_essentia": 0.51,
+   "ecarts_principaux": {
+    "flatness_db": -1.57,
+    "rms_db": -0.81,
+    "centroid_hz": -0.66
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4019.966064453125,
+    "rms_db": -19.90915298461914,
+    "dur_s": 0.359
+   },
+   "pic_dbfs": -1.19,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-caisse-claire-02.mp3"
+  },
+  {
+   "fichier": "lo-fi-caisse-claire-03.mp3",
+   "style": "lo-fi",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_offcenter_vl19",
+   "note_essentia": 0.57,
+   "ecarts_principaux": {
+    "flatness_db": -1.87,
+    "mfcc5": -0.61,
+    "centroid_hz": -0.59
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4492.8623046875,
+    "rms_db": -19.67141342163086,
+    "dur_s": 0.406
+   },
+   "pic_dbfs": -1.42,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-caisse-claire-03.mp3"
+  },
+  {
+   "fichier": "lo-fi-caisse-claire-04.mp3",
+   "style": "lo-fi",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_offcenter_vl32",
+   "note_essentia": 0.74,
+   "ecarts_principaux": {
+    "flatness_db": -2.0,
+    "mfcc5": -0.99,
+    "centroid_hz": -0.91
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 3644.26123046875,
+    "rms_db": -19.69995880126953,
+    "dur_s": 0.539
+   },
+   "pic_dbfs": -1.11,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-caisse-claire-04.mp3"
+  },
+  {
+   "fichier": "lo-fi-charleston-ferme-01.mp3",
+   "style": "lo-fi",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr4",
+   "note_essentia": 0.89,
+   "ecarts_principaux": {
+    "flatness_db": -3.18,
+    "low_share_db": 1.02,
+    "rms_db": -0.84
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7915.3974609375,
+    "rms_db": -22.896644592285156,
+    "dur_s": 0.294
+   },
+   "pic_dbfs": -1.48,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-charleston-ferme-01.mp3"
+  },
+  {
+   "fichier": "lo-fi-charleston-ferme-02.mp3",
+   "style": "lo-fi",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr2",
+   "note_essentia": 0.77,
+   "ecarts_principaux": {
+    "flatness_db": -2.55,
+    "effective_dur_s": 0.85,
+    "mfcc5": -0.8
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7040.07275390625,
+    "rms_db": -19.31907081604004,
+    "dur_s": 0.223
+   },
+   "pic_dbfs": -1.35,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-charleston-ferme-02.mp3"
+  },
+  {
+   "fichier": "lo-fi-charleston-ferme-03.mp3",
+   "style": "lo-fi",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr3",
+   "note_essentia": 0.78,
+   "ecarts_principaux": {
+    "flatness_db": -2.53,
+    "dur_s": -1.05,
+    "low_share_db": 0.81
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8006.74560546875,
+    "rms_db": -18.728235244750977,
+    "dur_s": 0.148
+   },
+   "pic_dbfs": -1.23,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-charleston-ferme-03.mp3"
+  },
+  {
+   "fichier": "lo-fi-charleston-ferme-04.mp3",
+   "style": "lo-fi",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr2",
+   "note_essentia": 0.83,
+   "ecarts_principaux": {
+    "flatness_db": -2.65,
+    "rms_db": -1.25,
+    "dur_s": -1.12
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7951.92041015625,
+    "rms_db": -18.755172729492188,
+    "dur_s": 0.136
+   },
+   "pic_dbfs": -1.76,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-charleston-ferme-04.mp3"
+  },
+  {
+   "fichier": "lo-fi-charleston-ouvert-01.mp3",
+   "style": "lo-fi",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl4_rr3",
+   "note_essentia": 0.53,
+   "ecarts_principaux": {
+    "flatness_db": -1.69,
+    "dur_s": -0.64,
+    "log_attack": 0.51
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7854.0673828125,
+    "rms_db": -17.661163330078125,
+    "dur_s": 0.26
+   },
+   "pic_dbfs": -1.63,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-charleston-ouvert-01.mp3"
+  },
+  {
+   "fichier": "lo-fi-charleston-ouvert-02.mp3",
+   "style": "lo-fi",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl3_rr4",
+   "note_essentia": 0.56,
+   "ecarts_principaux": {
+    "flatness_db": -1.55,
+    "mfcc5": -0.78,
+    "log_attack": 0.73
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7453.03857421875,
+    "rms_db": -19.698780059814453,
+    "dur_s": 0.32
+   },
+   "pic_dbfs": -1.12,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-charleston-ouvert-02.mp3"
+  },
+  {
+   "fichier": "lo-fi-charleston-ouvert-03.mp3",
+   "style": "lo-fi",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl4_rr2",
+   "note_essentia": 0.56,
+   "ecarts_principaux": {
+    "flatness_db": -1.77,
+    "rolloff_hz": -0.74,
+    "centroid_hz": -0.55
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7772.20703125,
+    "rms_db": -20.558740615844727,
+    "dur_s": 0.363
+   },
+   "pic_dbfs": -1.06,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-charleston-ouvert-03.mp3"
+  },
+  {
+   "fichier": "lo-fi-charleston-ouvert-04.mp3",
+   "style": "lo-fi",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl4_rr1",
+   "note_essentia": 0.59,
+   "ecarts_principaux": {
+    "flatness_db": -1.9,
+    "effective_dur_s": -0.92,
+    "centroid_hz": -0.59
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 3212.97412109375,
+    "rms_db": -24.259851455688477,
+    "dur_s": 0.599
+   },
+   "pic_dbfs": -1.04,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-charleston-ouvert-04.mp3"
+  },
+  {
+   "fichier": "lo-fi-crash-01.mp3",
+   "style": "lo-fi",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl3_rr2",
+   "note_essentia": 0.72,
+   "ecarts_principaux": {
+    "flatness_db": -2.54,
+    "rms_db": -0.89,
+    "log_attack": 0.53
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 3830.7412109375,
+    "rms_db": -23.728178024291992,
+    "dur_s": 2.291
+   },
+   "pic_dbfs": -1.15,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-crash-01.mp3"
+  },
+  {
+   "fichier": "lo-fi-crash-02.mp3",
+   "style": "lo-fi",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl2_rr3",
+   "note_essentia": 0.64,
+   "ecarts_principaux": {
+    "flatness_db": -2.13,
+    "mfcc1": -0.87,
+    "log_attack": -0.51
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6541.341796875,
+    "rms_db": -21.779865264892578,
+    "dur_s": 2.392
+   },
+   "pic_dbfs": -1.21,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-crash-02.mp3"
+  },
+  {
+   "fichier": "lo-fi-crash-03.mp3",
+   "style": "lo-fi",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl3_rr1",
+   "note_essentia": 0.85,
+   "ecarts_principaux": {
+    "flatness_db": -3.24,
+    "log_attack": 0.7,
+    "rms_db": -0.67
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6754.35693359375,
+    "rms_db": -22.351560592651367,
+    "dur_s": 2.227
+   },
+   "pic_dbfs": -2.16,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-crash-03.mp3"
+  },
+  {
+   "fichier": "lo-fi-crash-04.mp3",
+   "style": "lo-fi",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl3_rr1",
+   "note_essentia": 0.8,
+   "ecarts_principaux": {
+    "flatness_db": -2.81,
+    "mfcc1": -0.76,
+    "effective_dur_s": -0.68
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 3899.65185546875,
+    "rms_db": -23.189586639404297,
+    "dur_s": 1.853
+   },
+   "pic_dbfs": -2.04,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-crash-04.mp3"
+  },
+  {
+   "fichier": "lo-fi-kick-01.mp3",
+   "style": "lo-fi",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl3_rr4",
+   "note_essentia": 0.44,
+   "ecarts_principaux": {
+    "high_share_db": -0.71,
+    "mfcc5": -0.71,
+    "mfcc1": -0.67
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 898.38037109375,
+    "rms_db": -10.102518081665039,
+    "dur_s": 0.432
+   },
+   "pic_dbfs": -1.28,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-kick-01.mp3"
+  },
+  {
+   "fichier": "lo-fi-kick-02.mp3",
+   "style": "lo-fi",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl3_rr2",
+   "note_essentia": 0.47,
+   "ecarts_principaux": {
+    "mfcc3": -1.05,
+    "high_share_db": -0.94,
+    "mfcc5": -0.67
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 321.02679443359375,
+    "rms_db": -9.19639778137207,
+    "dur_s": 0.529
+   },
+   "pic_dbfs": -1.26,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-kick-02.mp3"
+  },
+  {
+   "fichier": "lo-fi-kick-03.mp3",
+   "style": "lo-fi",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl4_rr1",
+   "note_essentia": 0.48,
+   "ecarts_principaux": {
+    "mfcc4": -0.96,
+    "high_share_db": -0.74,
+    "mfcc5": -0.73
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 1160.65087890625,
+    "rms_db": -11.73188304901123,
+    "dur_s": 0.426
+   },
+   "pic_dbfs": -1.26,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-kick-03.mp3"
+  },
+  {
+   "fichier": "lo-fi-kick-04.mp3",
+   "style": "lo-fi",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl3_rr4",
+   "note_essentia": 0.49,
+   "ecarts_principaux": {
+    "high_share_db": -1.01,
+    "mfcc2": -0.99,
+    "dur_s": 0.74
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 592.8431396484375,
+    "rms_db": -11.46610164642334,
+    "dur_s": 0.58
+   },
+   "pic_dbfs": -1.27,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-kick-04.mp3"
+  },
+  {
+   "fichier": "lo-fi-ride-01.mp3",
+   "style": "lo-fi",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl2_rr3",
+   "note_essentia": 0.69,
+   "ecarts_principaux": {
+    "flatness_db": -2.54,
+    "rms_db": -0.57,
+    "low_share_db": 0.5
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7717.04345703125,
+    "rms_db": -22.87094497680664,
+    "dur_s": 0.686
+   },
+   "pic_dbfs": -1.1,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-ride-01.mp3"
+  },
+  {
+   "fichier": "lo-fi-ride-02.mp3",
+   "style": "lo-fi",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_bell_vl2_rr2",
+   "note_essentia": 0.75,
+   "ecarts_principaux": {
+    "flatness_db": -2.77,
+    "dur_s": 0.76,
+    "low_share_db": 0.57
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7001.97705078125,
+    "rms_db": -23.939172744750977,
+    "dur_s": 0.789
+   },
+   "pic_dbfs": -1.28,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-ride-02.mp3"
+  },
+  {
+   "fichier": "lo-fi-ride-03.mp3",
+   "style": "lo-fi",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl3_rr2",
+   "note_essentia": 0.76,
+   "ecarts_principaux": {
+    "flatness_db": -2.61,
+    "lufs": -0.97,
+    "rms_db": -0.89
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 3840.06005859375,
+    "rms_db": -26.183887481689453,
+    "dur_s": 0.576
+   },
+   "pic_dbfs": -1.19,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-ride-03.mp3"
+  },
+  {
+   "fichier": "lo-fi-ride-04.mp3",
+   "style": "lo-fi",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl3_rr3",
+   "note_essentia": 0.72,
+   "ecarts_principaux": {
+    "flatness_db": -2.5,
+    "effective_dur_s": -0.76,
+    "lufs": -0.57
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6547.6259765625,
+    "rms_db": -24.888885498046875,
+    "dur_s": 0.602
+   },
+   "pic_dbfs": -1.7,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-ride-04.mp3"
+  },
+  {
+   "fichier": "lo-fi-tom-01.mp3",
+   "style": "lo-fi",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl12",
+   "note_essentia": 0.23,
+   "ecarts_principaux": {
+    "mfcc4": 0.47,
+    "log_attack": 0.41,
+    "mfcc3": -0.37
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 760.9181518554688,
+    "rms_db": -25.96082878112793,
+    "dur_s": 1.084
+   },
+   "pic_dbfs": -1.19,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-tom-01.mp3"
+  },
+  {
+   "fichier": "lo-fi-tom-02.mp3",
+   "style": "lo-fi",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl16",
+   "note_essentia": 0.27,
+   "ecarts_principaux": {
+    "mfcc3": -0.55,
+    "high_share_db": -0.54,
+    "dur_s": 0.51
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 1465.1824951171875,
+    "rms_db": -23.25505256652832,
+    "dur_s": 1.183
+   },
+   "pic_dbfs": -1.26,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-tom-02.mp3"
+  },
+  {
+   "fichier": "lo-fi-tom-03.mp3",
+   "style": "lo-fi",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl16",
+   "note_essentia": 0.34,
+   "ecarts_principaux": {
+    "high_share_db": -0.62,
+    "log_attack": 0.61,
+    "mfcc2": -0.53
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 1658.3485107421875,
+    "rms_db": -20.49158477783203,
+    "dur_s": 0.837
+   },
+   "pic_dbfs": -1.21,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-tom-03.mp3"
+  },
+  {
+   "fichier": "lo-fi-tom-04.mp3",
+   "style": "lo-fi",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation, bitcrush)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl9",
+   "note_essentia": 0.36,
+   "ecarts_principaux": {
+    "mfcc5": 0.83,
+    "mfcc3": -0.72,
+    "high_share_db": -0.47
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 998.9237670898438,
+    "rms_db": -26.194860458374023,
+    "dur_s": 0.87
+   },
+   "pic_dbfs": -1.29,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-tom-04.mp3"
+  },
+  {
+   "fichier": "pop-caisse-claire-01.mp3",
+   "style": "pop",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl33",
+   "note_essentia": 0.4,
+   "ecarts_principaux": {
+    "flatness_db": -1.19,
+    "rolloff_hz": 0.52,
+    "mfcc2": 0.51
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 3711.93603515625,
+    "rms_db": -19.918987274169922,
+    "dur_s": 0.608
+   },
+   "pic_dbfs": -1.06,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-caisse-claire-01.mp3"
+  },
+  {
+   "fichier": "pop-caisse-claire-02.mp3",
+   "style": "pop",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl25",
+   "note_essentia": 0.45,
+   "ecarts_principaux": {
+    "flatness_db": -1.26,
+    "low_share_db": 0.61,
+    "log_attack": -0.52
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 3626.43896484375,
+    "rms_db": -19.202219009399414,
+    "dur_s": 0.587
+   },
+   "pic_dbfs": -1.29,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-caisse-claire-02.mp3"
+  },
+  {
+   "fichier": "pop-caisse-claire-03.mp3",
+   "style": "pop",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_offcenter_vl21",
+   "note_essentia": 0.51,
+   "ecarts_principaux": {
+    "flatness_db": -1.35,
+    "mfcc5": -0.82,
+    "mfcc4": -0.61
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4078.36962890625,
+    "rms_db": -18.938657760620117,
+    "dur_s": 0.367
+   },
+   "pic_dbfs": -1.2,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-caisse-claire-03.mp3"
+  },
+  {
+   "fichier": "pop-caisse-claire-04.mp3",
+   "style": "pop",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_rimshot_vl12",
+   "note_essentia": 0.52,
+   "ecarts_principaux": {
+    "flatness_db": -1.3,
+    "mfcc4": -0.88,
+    "rms_db": -0.8
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4436.7939453125,
+    "rms_db": -21.236186981201172,
+    "dur_s": 0.511
+   },
+   "pic_dbfs": -1.4,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-caisse-claire-04.mp3"
+  },
+  {
+   "fichier": "pop-charleston-ferme-01.mp3",
+   "style": "pop",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr1",
+   "note_essentia": 0.39,
+   "ecarts_principaux": {
+    "mfcc4": -0.74,
+    "low_share_db": 0.67,
+    "rolloff_hz": -0.61
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7812.3505859375,
+    "rms_db": -22.03616714477539,
+    "dur_s": 0.3
+   },
+   "pic_dbfs": -1.02,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-charleston-ferme-01.mp3"
+  },
+  {
+   "fichier": "pop-charleston-ferme-02.mp3",
+   "style": "pop",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr3",
+   "note_essentia": 0.42,
+   "ecarts_principaux": {
+    "dur_s": -1.03,
+    "mfcc1": 0.65,
+    "mfcc4": -0.56
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8115.39453125,
+    "rms_db": -18.79857635498047,
+    "dur_s": 0.152
+   },
+   "pic_dbfs": -1.19,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-charleston-ferme-02.mp3"
+  },
+  {
+   "fichier": "pop-charleston-ferme-03.mp3",
+   "style": "pop",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr3",
+   "note_essentia": 0.51,
+   "ecarts_principaux": {
+    "dur_s": -0.9,
+    "low_share_db": 0.86,
+    "rms_db": -0.82
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8422.12890625,
+    "rms_db": -21.68135643005371,
+    "dur_s": 0.177
+   },
+   "pic_dbfs": -1.69,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-charleston-ferme-03.mp3"
+  },
+  {
+   "fichier": "pop-charleston-ferme-04.mp3",
+   "style": "pop",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr1",
+   "note_essentia": 0.59,
+   "ecarts_principaux": {
+    "mfcc2": 1.11,
+    "low_share_db": 1.05,
+    "rms_db": -1.04
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7549.16455078125,
+    "rms_db": -22.008047103881836,
+    "dur_s": 0.296
+   },
+   "pic_dbfs": -1.52,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-charleston-ferme-04.mp3"
+  },
+  {
+   "fichier": "pop-charleston-ouvert-01.mp3",
+   "style": "pop",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl4_rr1",
+   "note_essentia": 0.31,
+   "ecarts_principaux": {
+    "log_attack": 0.51,
+    "centroid_hz": -0.5,
+    "rms_db": -0.44
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7031.3369140625,
+    "rms_db": -26.02068328857422,
+    "dur_s": 0.598
+   },
+   "pic_dbfs": -1.4,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-charleston-ouvert-01.mp3"
+  },
+  {
+   "fichier": "pop-charleston-ouvert-02.mp3",
+   "style": "pop",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl3_rr1",
+   "note_essentia": 0.42,
+   "ecarts_principaux": {
+    "rms_db": -0.96,
+    "mfcc1": 0.56,
+    "high_share_db": 0.54
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6796.90283203125,
+    "rms_db": -24.389190673828125,
+    "dur_s": 0.528
+   },
+   "pic_dbfs": -1.05,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-charleston-ouvert-02.mp3"
+  },
+  {
+   "fichier": "pop-charleston-ouvert-03.mp3",
+   "style": "pop",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl3_rr3",
+   "note_essentia": 0.41,
+   "ecarts_principaux": {
+    "high_share_db": 0.79,
+    "rms_db": -0.74,
+    "mfcc4": -0.61
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 9231.9873046875,
+    "rms_db": -23.42106056213379,
+    "dur_s": 0.329
+   },
+   "pic_dbfs": -1.66,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-charleston-ouvert-03.mp3"
+  },
+  {
+   "fichier": "pop-charleston-ouvert-04.mp3",
+   "style": "pop",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl4_rr3",
+   "note_essentia": 0.39,
+   "ecarts_principaux": {
+    "flatness_db": 0.84,
+    "mfcc1": 0.69,
+    "low_share_db": 0.66
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8062.62548828125,
+    "rms_db": -22.621936798095703,
+    "dur_s": 0.369
+   },
+   "pic_dbfs": -1.22,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-charleston-ouvert-04.mp3"
+  },
+  {
+   "fichier": "pop-crash-01.mp3",
+   "style": "pop",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl2_rr4",
+   "note_essentia": 0.6,
+   "ecarts_principaux": {
+    "flatness_db": -2.12,
+    "rms_db": -0.64,
+    "mfcc4": -0.5
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5539.3486328125,
+    "rms_db": -22.250940322875977,
+    "dur_s": 2.358
+   },
+   "pic_dbfs": -1.46,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-crash-01.mp3"
+  },
+  {
+   "fichier": "pop-crash-02.mp3",
+   "style": "pop",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl3_rr2",
+   "note_essentia": 0.44,
+   "ecarts_principaux": {
+    "flatness_db": -0.99,
+    "rms_db": -0.75,
+    "effective_dur_s": -0.65
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6936.98681640625,
+    "rms_db": -22.923067092895508,
+    "dur_s": 1.989
+   },
+   "pic_dbfs": -1.61,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-crash-02.mp3"
+  },
+  {
+   "fichier": "pop-crash-03.mp3",
+   "style": "pop",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl3_rr3",
+   "note_essentia": 0.37,
+   "ecarts_principaux": {
+    "rms_db": -0.72,
+    "log_attack": 0.65,
+    "lufs": -0.57
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7071.39013671875,
+    "rms_db": -22.32968521118164,
+    "dur_s": 2.272
+   },
+   "pic_dbfs": -1.48,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-crash-03.mp3"
+  },
+  {
+   "fichier": "pop-crash-04.mp3",
+   "style": "pop",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl3_rr2",
+   "note_essentia": 0.65,
+   "ecarts_principaux": {
+    "flatness_db": -2.14,
+    "mfcc3": 0.79,
+    "mfcc1": -0.71
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5244.85498046875,
+    "rms_db": -23.112445831298828,
+    "dur_s": 2.511
+   },
+   "pic_dbfs": -1.11,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-crash-04.mp3"
+  },
+  {
+   "fichier": "pop-kick-01.mp3",
+   "style": "pop",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl3_rr2",
+   "note_essentia": 0.44,
+   "ecarts_principaux": {
+    "high_share_db": -0.73,
+    "mfcc4": -0.72,
+    "mfcc1": -0.58
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 371.26312255859375,
+    "rms_db": -10.376731872558594,
+    "dur_s": 0.357
+   },
+   "pic_dbfs": -1.27,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-kick-01.mp3"
+  },
+  {
+   "fichier": "pop-kick-02.mp3",
+   "style": "pop",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl3_rr1",
+   "note_essentia": 0.5,
+   "ecarts_principaux": {
+    "dur_s": 0.96,
+    "log_attack": -0.84,
+    "mfcc2": -0.79
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 747.2517700195312,
+    "rms_db": -14.29168701171875,
+    "dur_s": 0.633
+   },
+   "pic_dbfs": -1.16,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-kick-02.mp3"
+  },
+  {
+   "fichier": "pop-kick-03.mp3",
+   "style": "pop",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl4_rr3",
+   "note_essentia": 0.48,
+   "ecarts_principaux": {
+    "mfcc4": -0.86,
+    "high_share_db": -0.8,
+    "mfcc2": -0.78
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 298.52447509765625,
+    "rms_db": -11.690563201904297,
+    "dur_s": 0.458
+   },
+   "pic_dbfs": -1.29,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-kick-03.mp3"
+  },
+  {
+   "fichier": "pop-kick-04.mp3",
+   "style": "pop",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl4_rr2",
+   "note_essentia": 0.6,
+   "ecarts_principaux": {
+    "mfcc4": -1.17,
+    "mfcc5": -1.13,
+    "high_share_db": -0.98
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 339.3890380859375,
+    "rms_db": -12.356867790222168,
+    "dur_s": 0.543
+   },
+   "pic_dbfs": -1.28,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-kick-04.mp3"
+  },
+  {
+   "fichier": "pop-ride-01.mp3",
+   "style": "pop",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_bell_vl2_rr2",
+   "note_essentia": 0.33,
+   "ecarts_principaux": {
+    "rms_db": -1.03,
+    "flatness_db": -0.38,
+    "high_share_db": 0.37
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7682.97119140625,
+    "rms_db": -25.01775360107422,
+    "dur_s": 0.633
+   },
+   "pic_dbfs": -1.18,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-ride-01.mp3"
+  },
+  {
+   "fichier": "pop-ride-02.mp3",
+   "style": "pop",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_bell_vl3_rr3",
+   "note_essentia": 0.38,
+   "ecarts_principaux": {
+    "rms_db": -1.01,
+    "flatness_db": -0.57,
+    "zcr": 0.47
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8068.75830078125,
+    "rms_db": -24.51626968383789,
+    "dur_s": 0.524
+   },
+   "pic_dbfs": -1.44,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-ride-02.mp3"
+  },
+  {
+   "fichier": "pop-ride-03.mp3",
+   "style": "pop",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl3_rr4",
+   "note_essentia": 0.46,
+   "ecarts_principaux": {
+    "flatness_db": -1.3,
+    "rms_db": -0.72,
+    "mfcc5": -0.65
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7453.2939453125,
+    "rms_db": -24.14971923828125,
+    "dur_s": 0.563
+   },
+   "pic_dbfs": -1.83,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-ride-03.mp3"
+  },
+  {
+   "fichier": "pop-ride-04.mp3",
+   "style": "pop",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl3_rr1",
+   "note_essentia": 0.44,
+   "ecarts_principaux": {
+    "flatness_db": -1.09,
+    "rms_db": -1.04,
+    "low_share_db": 0.57
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7493.7021484375,
+    "rms_db": -24.744701385498047,
+    "dur_s": 0.591
+   },
+   "pic_dbfs": -2.23,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-ride-04.mp3"
+  },
+  {
+   "fichier": "pop-tom-01.mp3",
+   "style": "pop",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl13",
+   "note_essentia": 0.26,
+   "ecarts_principaux": {
+    "low_share_db": 0.51,
+    "log_attack": -0.46,
+    "mfcc3": -0.44
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 524.8145141601562,
+    "rms_db": -22.385173797607422,
+    "dur_s": 0.851
+   },
+   "pic_dbfs": -1.3,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-tom-01.mp3"
+  },
+  {
+   "fichier": "pop-tom-02.mp3",
+   "style": "pop",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl16",
+   "note_essentia": 0.27,
+   "ecarts_principaux": {
+    "rms_db": 0.48,
+    "high_share_db": -0.46,
+    "mfcc2": -0.39
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 719.132080078125,
+    "rms_db": -21.671628952026367,
+    "dur_s": 1.07
+   },
+   "pic_dbfs": -1.29,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-tom-02.mp3"
+  },
+  {
+   "fichier": "pop-tom-03.mp3",
+   "style": "pop",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_offcenter_vl9",
+   "note_essentia": 0.33,
+   "ecarts_principaux": {
+    "mfcc4": -0.67,
+    "mfcc2": -0.57,
+    "rms_db": 0.54
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 655.7754516601562,
+    "rms_db": -21.502742767333984,
+    "dur_s": 0.893
+   },
+   "pic_dbfs": -1.3,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-tom-03.mp3"
+  },
+  {
+   "fichier": "pop-tom-04.mp3",
+   "style": "pop",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl9",
+   "note_essentia": 0.35,
+   "ecarts_principaux": {
+    "log_attack": 0.76,
+    "centroid_hz": -0.58,
+    "lufs": -0.5
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 493.92822265625,
+    "rms_db": -28.41923713684082,
+    "dur_s": 1.118
+   },
+   "pic_dbfs": -1.74,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-tom-04.mp3"
+  },
+  {
+   "fichier": "rock-caisse-claire-01.mp3",
+   "style": "rock",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl35",
+   "note_essentia": 0.43,
+   "ecarts_principaux": {
+    "flatness_db": -1.16,
+    "mfcc5": -0.59,
+    "rms_db": -0.57
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4542.78271484375,
+    "rms_db": -19.047321319580078,
+    "dur_s": 0.389
+   },
+   "pic_dbfs": -1.27,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-caisse-claire-01.mp3"
+  },
+  {
+   "fichier": "rock-caisse-claire-02.mp3",
+   "style": "rock",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_center_vl25",
+   "note_essentia": 0.49,
+   "ecarts_principaux": {
+    "flatness_db": -1.58,
+    "effective_dur_s": 0.72,
+    "rolloff_hz": 0.51
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4327.5146484375,
+    "rms_db": -18.555086135864258,
+    "dur_s": 0.475
+   },
+   "pic_dbfs": -1.09,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-caisse-claire-02.mp3"
+  },
+  {
+   "fichier": "rock-caisse-claire-03.mp3",
+   "style": "rock",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_rimshot_vl7",
+   "note_essentia": 0.51,
+   "ecarts_principaux": {
+    "flatness_db": -1.09,
+    "effective_dur_s": 0.95,
+    "mfcc4": 0.65
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4874.57373046875,
+    "rms_db": -20.636878967285156,
+    "dur_s": 0.6
+   },
+   "pic_dbfs": -1.14,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-caisse-claire-03.mp3"
+  },
+  {
+   "fichier": "rock-caisse-claire-04.mp3",
+   "style": "rock",
+   "famille": "caisse-claire",
+   "famille_adn": "drum_oneshot/snare",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "snare_rimshot_vl8",
+   "note_essentia": 0.58,
+   "ecarts_principaux": {
+    "flatness_db": -1.41,
+    "rms_db": -1.17,
+    "mfcc3": -0.74
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4961.171875,
+    "rms_db": -20.255632400512695,
+    "dur_s": 0.397
+   },
+   "pic_dbfs": -1.21,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-caisse-claire-04.mp3"
+  },
+  {
+   "fichier": "rock-charleston-ferme-01.mp3",
+   "style": "rock",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr2",
+   "note_essentia": 0.41,
+   "ecarts_principaux": {
+    "dur_s": -0.71,
+    "low_share_db": 0.66,
+    "mfcc1": 0.63
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7976.5361328125,
+    "rms_db": -21.247129440307617,
+    "dur_s": 0.211
+   },
+   "pic_dbfs": -1.08,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-charleston-ferme-01.mp3"
+  },
+  {
+   "fichier": "rock-charleston-ferme-02.mp3",
+   "style": "rock",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl4_rr4",
+   "note_essentia": 0.44,
+   "ecarts_principaux": {
+    "mfcc4": -0.72,
+    "rolloff_hz": -0.67,
+    "low_share_db": 0.66
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8072.45703125,
+    "rms_db": -21.944856643676758,
+    "dur_s": 0.279
+   },
+   "pic_dbfs": -1.55,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-charleston-ferme-02.mp3"
+  },
+  {
+   "fichier": "rock-charleston-ferme-03.mp3",
+   "style": "rock",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr2",
+   "note_essentia": 0.43,
+   "ecarts_principaux": {
+    "low_share_db": 1.0,
+    "mfcc1": 0.77,
+    "log_attack": 0.5
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7491.56787109375,
+    "rms_db": -21.229129791259766,
+    "dur_s": 0.317
+   },
+   "pic_dbfs": -1.82,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-charleston-ferme-03.mp3"
+  },
+  {
+   "fichier": "rock-charleston-ferme-04.mp3",
+   "style": "rock",
+   "famille": "charleston-ferme",
+   "famille_adn": "drum_oneshot/hat_closed",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_closed_vl3_rr3",
+   "note_essentia": 0.58,
+   "ecarts_principaux": {
+    "flatness_db": 1.3,
+    "mfcc1": 1.04,
+    "low_share_db": 0.98
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7680.5859375,
+    "rms_db": -22.856399536132812,
+    "dur_s": 0.297
+   },
+   "pic_dbfs": -1.48,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-charleston-ferme-04.mp3"
+  },
+  {
+   "fichier": "rock-charleston-ouvert-01.mp3",
+   "style": "rock",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl4_rr3",
+   "note_essentia": 0.33,
+   "ecarts_principaux": {
+    "mfcc5": -0.75,
+    "flatness_db": 0.68,
+    "mfcc4": -0.4
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8151.93310546875,
+    "rms_db": -21.714866638183594,
+    "dur_s": 0.353
+   },
+   "pic_dbfs": -1.25,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-charleston-ouvert-01.mp3"
+  },
+  {
+   "fichier": "rock-charleston-ouvert-02.mp3",
+   "style": "rock",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl3_rr4",
+   "note_essentia": 0.41,
+   "ecarts_principaux": {
+    "mfcc5": -1.17,
+    "rms_db": -0.76,
+    "log_attack": -0.5
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8481.4296875,
+    "rms_db": -25.7651309967041,
+    "dur_s": 0.579
+   },
+   "pic_dbfs": -1.59,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-charleston-ouvert-02.mp3"
+  },
+  {
+   "fichier": "rock-charleston-ouvert-03.mp3",
+   "style": "rock",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_half_vl4_rr1",
+   "note_essentia": 0.42,
+   "ecarts_principaux": {
+    "mfcc5": -1.23,
+    "log_attack": 0.67,
+    "dur_s": 0.47
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 8308.9736328125,
+    "rms_db": -24.562454223632812,
+    "dur_s": 0.686
+   },
+   "pic_dbfs": -1.39,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-charleston-ouvert-03.mp3"
+  },
+  {
+   "fichier": "rock-charleston-ouvert-04.mp3",
+   "style": "rock",
+   "famille": "charleston-ouvert",
+   "famille_adn": "drum_oneshot/hat_open",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "hh_open_vl4_rr1",
+   "note_essentia": 0.44,
+   "ecarts_principaux": {
+    "rms_db": -0.91,
+    "high_share_db": 0.85,
+    "mfcc3": -0.66
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7933.75732421875,
+    "rms_db": -27.851469039916992,
+    "dur_s": 0.645
+   },
+   "pic_dbfs": -2.25,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-charleston-ouvert-04.mp3"
+  },
+  {
+   "fichier": "rock-crash-01.mp3",
+   "style": "rock",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl2_rr4",
+   "note_essentia": 0.58,
+   "ecarts_principaux": {
+    "flatness_db": -1.9,
+    "rms_db": -0.82,
+    "mfcc3": 0.74
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5506.07177734375,
+    "rms_db": -23.05730438232422,
+    "dur_s": 2.546
+   },
+   "pic_dbfs": -1.28,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-crash-01.mp3"
+  },
+  {
+   "fichier": "rock-crash-02.mp3",
+   "style": "rock",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_crash_vl3_rr3",
+   "note_essentia": 0.62,
+   "ecarts_principaux": {
+    "flatness_db": -2.02,
+    "rms_db": -0.91,
+    "mfcc1": -0.69
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 5698.86572265625,
+    "rms_db": -22.922183990478516,
+    "dur_s": 2.016
+   },
+   "pic_dbfs": -1.35,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-crash-02.mp3"
+  },
+  {
+   "fichier": "rock-crash-03.mp3",
+   "style": "rock",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl3_rr1",
+   "note_essentia": 0.37,
+   "ecarts_principaux": {
+    "log_attack": 0.94,
+    "rms_db": -0.62,
+    "flatness_db": -0.44
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6749.32763671875,
+    "rms_db": -21.637706756591797,
+    "dur_s": 2.213
+   },
+   "pic_dbfs": -1.28,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-crash-03.mp3"
+  },
+  {
+   "fichier": "rock-crash-04.mp3",
+   "style": "rock",
+   "famille": "crash",
+   "famille_adn": "drum_oneshot/crash",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "crash_sizzle_vl3_rr4",
+   "note_essentia": 0.38,
+   "ecarts_principaux": {
+    "rms_db": -0.74,
+    "log_attack": 0.63,
+    "mfcc5": -0.55
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7156.2802734375,
+    "rms_db": -22.467498779296875,
+    "dur_s": 1.962
+   },
+   "pic_dbfs": -2.03,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-crash-04.mp3"
+  },
+  {
+   "fichier": "rock-kick-01.mp3",
+   "style": "rock",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl3_rr1",
+   "note_essentia": 0.46,
+   "ecarts_principaux": {
+    "high_share_db": -0.98,
+    "mfcc5": -0.89,
+    "rms_db": -0.61
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 458.11126708984375,
+    "rms_db": -12.186213493347168,
+    "dur_s": 0.435
+   },
+   "pic_dbfs": -1.26,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-kick-01.mp3"
+  },
+  {
+   "fichier": "rock-kick-02.mp3",
+   "style": "rock",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl3_rr4",
+   "note_essentia": 0.46,
+   "ecarts_principaux": {
+    "high_share_db": -1.0,
+    "mfcc5": -0.91,
+    "mfcc4": -0.75
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 300.1221008300781,
+    "rms_db": -11.471393585205078,
+    "dur_s": 0.442
+   },
+   "pic_dbfs": -1.22,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-kick-02.mp3"
+  },
+  {
+   "fichier": "rock-kick-03.mp3",
+   "style": "rock",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snon_vl3_rr1",
+   "note_essentia": 0.46,
+   "ecarts_principaux": {
+    "low_share_db": 0.78,
+    "mfcc1": -0.78,
+    "log_attack": -0.65
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 483.4283752441406,
+    "rms_db": -10.523661613464355,
+    "dur_s": 0.419
+   },
+   "pic_dbfs": -1.27,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-kick-03.mp3"
+  },
+  {
+   "fichier": "rock-kick-04.mp3",
+   "style": "rock",
+   "famille": "kick",
+   "famille_adn": "drum_oneshot/kick",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "kick_snoff_vl4_rr1",
+   "note_essentia": 0.61,
+   "ecarts_principaux": {
+    "mfcc4": -1.33,
+    "mfcc5": -1.16,
+    "high_share_db": -1.05
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 291.7503356933594,
+    "rms_db": -11.56086540222168,
+    "dur_s": 0.449
+   },
+   "pic_dbfs": -1.26,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-kick-04.mp3"
+  },
+  {
+   "fichier": "rock-ride-01.mp3",
+   "style": "rock",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_bell_vl2_rr2",
+   "note_essentia": 0.42,
+   "ecarts_principaux": {
+    "flatness_db": -1.33,
+    "high_share_db": 0.53,
+    "mfcc4": 0.53
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7949.23046875,
+    "rms_db": -22.742191314697266,
+    "dur_s": 0.622
+   },
+   "pic_dbfs": -1.01,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-ride-01.mp3"
+  },
+  {
+   "fichier": "rock-ride-02.mp3",
+   "style": "rock",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl2_rr3",
+   "note_essentia": 0.39,
+   "ecarts_principaux": {
+    "lufs": -0.91,
+    "rms_db": -0.79,
+    "mfcc5": -0.58
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7476.63623046875,
+    "rms_db": -25.325166702270508,
+    "dur_s": 0.584
+   },
+   "pic_dbfs": -2.16,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-ride-02.mp3"
+  },
+  {
+   "fichier": "rock-ride-03.mp3",
+   "style": "rock",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_ride_vl3_rr2",
+   "note_essentia": 0.42,
+   "ecarts_principaux": {
+    "flatness_db": -1.07,
+    "high_share_db": 0.68,
+    "rms_db": -0.67
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 7314.3154296875,
+    "rms_db": -24.38629150390625,
+    "dur_s": 0.645
+   },
+   "pic_dbfs": -1.48,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-ride-03.mp3"
+  },
+  {
+   "fichier": "rock-ride-04.mp3",
+   "style": "rock",
+   "famille": "ride",
+   "famille_adn": "drum_oneshot/ride",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ride_bell_vl3_rr3",
+   "note_essentia": 0.52,
+   "ecarts_principaux": {
+    "flatness_db": -1.61,
+    "centroid_hz": -0.64,
+    "log_attack": 0.61
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 6710.56201171875,
+    "rms_db": -25.25605010986328,
+    "dur_s": 0.637
+   },
+   "pic_dbfs": -1.34,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-ride-04.mp3"
+  },
+  {
+   "fichier": "rock-tom-01.mp3",
+   "style": "rock",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl14",
+   "note_essentia": 0.25,
+   "ecarts_principaux": {
+    "mid_share_db": 0.52,
+    "mfcc3": -0.47,
+    "mfcc2": -0.35
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 1006.3479614257812,
+    "rms_db": -24.243125915527344,
+    "dur_s": 0.961
+   },
+   "pic_dbfs": -1.42,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-tom-01.mp3"
+  },
+  {
+   "fichier": "rock-tom-02.mp3",
+   "style": "rock",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl15",
+   "note_essentia": 0.28,
+   "ecarts_principaux": {
+    "mfcc3": -0.96,
+    "dur_s": -0.4,
+    "high_share_db": -0.32
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 896.0623779296875,
+    "rms_db": -24.52541732788086,
+    "dur_s": 0.776
+   },
+   "pic_dbfs": -1.06,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-tom-02.mp3"
+  },
+  {
+   "fichier": "rock-tom-03.mp3",
+   "style": "rock",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "htom_center_vl12",
+   "note_essentia": 0.34,
+   "ecarts_principaux": {
+    "high_share_db": -0.57,
+    "rms_db": 0.57,
+    "mfcc3": -0.53
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 718.0068969726562,
+    "rms_db": -20.152442932128906,
+    "dur_s": 0.755
+   },
+   "pic_dbfs": -1.33,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-tom-03.mp3"
+  },
+  {
+   "fichier": "rock-tom-04.mp3",
+   "style": "rock",
+   "famille": "tom",
+   "famille_adn": "drum_oneshot/tom",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation)",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0",
+   "prise_source": "ltom_center_vl10",
+   "note_essentia": 0.34,
+   "ecarts_principaux": {
+    "mfcc3": -0.72,
+    "centroid_hz": -0.56,
+    "effective_dur_s": -0.45
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 327.02471923828125,
+    "rms_db": -28.005462646484375,
+    "dur_s": 1.015
+   },
+   "pic_dbfs": -1.36,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-tom-04.mp3"
+  },
+  {
+   "fichier": "boom-bap-boucle-01.mp3",
+   "style": "boom-bap",
+   "famille": "boucle",
+   "famille_adn": "drum_loop/drums",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation) ; séquence 4 mesures 90 BPM",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0 (via les coups de ce style)",
+   "prise_source": null,
+   "note_essentia": 0.66,
+   "ecarts_principaux": {
+    "log_attack": 1.67,
+    "mfcc2": 0.99,
+    "mfcc3": 0.91
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4685.388671875,
+    "rms_db": -19.187786102294922,
+    "dur_s": 10.667
+   },
+   "pic_dbfs": -1.76,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/boom-bap-boucle-01.mp3"
+  },
+  {
+   "fichier": "funk-boucle-01.mp3",
+   "style": "funk",
+   "famille": "boucle",
+   "famille_adn": "drum_loop/drums",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation) ; séquence 4 mesures 100 BPM",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0 (via les coups de ce style)",
+   "prise_source": null,
+   "note_essentia": 0.35,
+   "ecarts_principaux": {
+    "high_share_db": 0.67,
+    "flatness_db": -0.52,
+    "mfcc2": 0.46
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4624.814453125,
+    "rms_db": -19.11146354675293,
+    "dur_s": 9.6
+   },
+   "pic_dbfs": -1.33,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/funk-boucle-01.mp3"
+  },
+  {
+   "fichier": "jazz-soul-boucle-01.mp3",
+   "style": "jazz-soul",
+   "famille": "boucle",
+   "famille_adn": "drum_loop/drums",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation) ; séquence 4 mesures 126 BPM",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0 (via les coups de ce style)",
+   "prise_source": null,
+   "note_essentia": 0.38,
+   "ecarts_principaux": {
+    "log_attack": 0.97,
+    "flatness_db": -0.62,
+    "low_share_db": 0.46
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4744.17041015625,
+    "rms_db": -16.186878204345703,
+    "dur_s": 7.619
+   },
+   "pic_dbfs": -1.27,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/jazz-soul-boucle-01.mp3"
+  },
+  {
+   "fichier": "lo-fi-boucle-01.mp3",
+   "style": "lo-fi",
+   "famille": "boucle",
+   "famille_adn": "drum_loop/drums",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation) ; séquence 4 mesures 82 BPM",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0 (via les coups de ce style)",
+   "prise_source": null,
+   "note_essentia": 0.35,
+   "ecarts_principaux": {
+    "flatness_db": -0.68,
+    "mid_share_db": 0.48,
+    "log_attack": 0.46
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4844.01953125,
+    "rms_db": -19.396854400634766,
+    "dur_s": 11.707
+   },
+   "pic_dbfs": -1.4,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/lo-fi-boucle-01.mp3"
+  },
+  {
+   "fichier": "pop-boucle-01.mp3",
+   "style": "pop",
+   "famille": "boucle",
+   "famille_adn": "drum_loop/drums",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation) ; séquence 4 mesures 100 BPM",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0 (via les coups de ce style)",
+   "prise_source": null,
+   "note_essentia": 0.4,
+   "ecarts_principaux": {
+    "flatness_db": -0.96,
+    "high_share_db": 0.73,
+    "mid_share_db": 0.58
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4090.229736328125,
+    "rms_db": -18.2734317779541,
+    "dur_s": 9.6
+   },
+   "pic_dbfs": -1.22,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/pop-boucle-01.mp3"
+  },
+  {
+   "fichier": "rock-boucle-01.mp3",
+   "style": "rock",
+   "famille": "boucle",
+   "famille_adn": "drum_loop/drums",
+   "outil": "pycma (CMA-ES) -> pedalboard (mix 6 micros, filtres, EQ, compresseur, saturation) ; séquence 4 mesures 112 BPM",
+   "source": "Virtuosity Drums (sfzinstruments/virtuosity_drums, enregistré chez Virtuosity Musical Instruments, Boston), CC0 1.0 (via les coups de ce style)",
+   "prise_source": null,
+   "note_essentia": 0.38,
+   "ecarts_principaux": {
+    "flatness_db": -0.85,
+    "high_share_db": 0.77,
+    "mfcc3": 0.5
+   },
+   "note_clap": null,
+   "librosa": {
+    "centroid_hz": 4273.6123046875,
+    "rms_db": -19.3533992767334,
+    "dur_s": 8.571
+   },
+   "pic_dbfs": -2.09,
+   "url_asset": "https://claude.ai/artifact/NwXXiuXDvKaDa4NvJt7YGK/mp3/rock-boucle-01.mp3"
+  }
+ ]
+}

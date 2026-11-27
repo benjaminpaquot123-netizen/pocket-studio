@@ -61,3 +61,9 @@
 | --- | --- | --- | --- |
 | [FDK AAC](https://github.com/nu774/fdkaac) (`fdkaac`) | paquet système Ubuntu 24.04 | Licence FDK AAC (Fraunhofer) | Matrice des exports (`scripts/export-matrix.sh`) : encodage M4A de contrôle |
 | [FFmpeg](https://ffmpeg.org) | 6.1.1 (paquet système) | LGPL-2.1+/GPL-2+ | Relecture des fichiers exportés, décodage MP3 du contrôle sur vraie chanson |
+
+## Sources sonores des nouveaux sons (hors appli, outils de fabrication)
+
+| Source | Version | Licence | Usage |
+| --- | --- | --- | --- |
+| [Virtuosity Drums](https://github.com/sfzinstruments/virtuosity_drums) | dépôt GitHub, branche principale (2026-11-27) | CC0 1.0 | Batterie acoustique : prises 6 micros remixées (`scripts/son/neuf/batterie-acou/`) ; audio jamais dans git |

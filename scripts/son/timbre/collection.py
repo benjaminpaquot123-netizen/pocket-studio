@@ -420,13 +420,6 @@ def _db_key(k):
     return k in ("hf_db", "transient_body_db") or k in T.ENV_KEYS
 
 
-# Measures kept in the table but left out of the rule. t20_low: its filter has a hard edge at
-# 20 Hz, so a sound with a rumble or an offset near 20 Hz gets a length that depends on how the
-# filter is built (a 15 Hz rumble under a snare: 178 ms by the FFT mask, 142 ms by the FIR).
-# The two roads then disagree on 2 % of the sounds, and only a new measure could fix it.
-OUT_OF_RULE = {"t20_low_ms": "hors règle : la tenue des graves dépend du filtre à 20 Hz"}
-
-
 def target(cell, k, label):
     """The drum rule (docs/sons/fin/REGLE-BATTERIE.md), on one measure of one case."""
     vals = [(d["pack"], d["m"][k], agree(k, d["m"][k], d["c"][k])) for d in cell
@@ -438,10 +431,8 @@ def target(cell, k, label):
     n = len(xs)
     q = [T.quantile(xs, a) for a in (0.10, 0.25, 0.50, 0.75, 0.90)] if xs else [None] * 5
     acc = 100.0 * sum(v[2] for v in vals) / n if n else float("nan")
-    statut = OUT_OF_RULE.get(k)
-    if statut:
-        pass
-    elif n < 20:
+    statut = None
+    if n < 20:
         statut = "pas de cible : (1) %d sons (moins de 20)" % n
     elif sum(1 for c in packs.values() if c >= 5) < 2:
         statut = "pas de cible : (2) moins de 2 packs de 5 sons"

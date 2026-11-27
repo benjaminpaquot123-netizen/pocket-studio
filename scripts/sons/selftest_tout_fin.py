@@ -85,7 +85,48 @@ def test_tempo_fold():
     check_eq("7 tempo breakdown rar 5 melodic", d.get(("melodic_loop", "5")), {"exact": 0, "half_double": 1, "other": 0})
 
 
-TESTS = [test_key_breakdown, test_drum_note_label, test_tempo_fold]
+def test_relabel():
+    """RAR 7 p2 (DESACCORDS-B): adlib / sung voices filed as melodic loops move to vocal, by id only."""
+    sys.path.insert(0, os.path.join(HERE, "passe2", "fin"))
+    import tables
+    t = {g: [] for g in ("drum_oneshot", "melodic_loop", "oneshot_melodic", "vocal")}
+    t["melodic_loop"] = [{"rar": "7", "pack": "p2", "file_id": "aaa", "cle": "r7-p2-aaa", "type": "melodic_loop",
+                          "subtype": "loop", "role": "melody", "kit_id": "k1", "peak_dbfs": "-3", "bpm_est": "120"},
+                         {"rar": "7", "pack": "p2", "file_id": "bbb", "cle": "r7-p2-bbb", "type": "melodic_loop"}]
+    t["oneshot_melodic"] = [{"rar": "7", "pack": "p2", "file_id": "ccc", "cle": "r7-p2-ccc", "type": "oneshot_melodic"}]
+    t["drum_oneshot"] = [{"rar": "7", "pack": "p2", "file_id": "ddd", "cle": "r7-p2-ddd", "type": "drum_oneshot"}]
+    rel = [{"rar": "7", "pack": "p2", "file_id": "aaa", "type": "vocal", "subtype": "-", "role": "vocal",
+            "bpm_est": "", "key_est": "", "wet": "", "tail_db": "-60", "pitch_median_hz": "300",
+            "range_st": "5", "voiced_pct": "50"},
+           {"rar": "7", "pack": "p2", "file_id": "ccc", "type": "vocal", "subtype": "-", "role": "vocal",
+            "bpm_est": "", "key_est": "", "wet": "", "tail_db": "-60", "pitch_median_hz": "200",
+            "range_st": "3", "voiced_pct": "40"}]
+    moved = tables.apply_relabel(t, rel)
+    check_eq("R moved count", moved, {"melodic_loop": 1, "oneshot_melodic": 1})
+    check_eq("R melodic keeps the other row", [r["cle"] for r in t["melodic_loop"]], ["r7-p2-bbb"])
+    check_eq("R oneshot emptied", t["oneshot_melodic"], [])
+    v = {r["cle"]: r for r in t["vocal"]}
+    check_eq("R vocal rows", sorted(v), ["r7-p2-aaa", "r7-p2-ccc"])
+    check_eq("R kept columns", (v["r7-p2-aaa"]["kit_id"], v["r7-p2-aaa"]["peak_dbfs"]), ("k1", "-3"))
+    check_eq("R overridden columns", (v["r7-p2-aaa"]["type"], v["r7-p2-aaa"]["bpm_est"],
+                                      v["r7-p2-aaa"]["range_st"]), ("vocal", "", "5"))
+    check_eq("R drum untouched", [r["cle"] for r in t["drum_oneshot"]], ["r7-p2-ddd"])
+    bad = [{"rar": "7", "pack": "p2", "file_id": "ddd", "type": "vocal"}]
+    try:
+        tables.apply_relabel(t, bad)
+        got = "accepted"
+    except ValueError:
+        got = "refused"
+    check_eq("R a drum row is never relabelled", got, "refused")
+    try:
+        tables.apply_relabel(t, [{"rar": "7", "pack": "p2", "file_id": "zzz", "type": "vocal"}])
+        got = "accepted"
+    except ValueError:
+        got = "refused"
+    check_eq("R an unknown id is refused", got, "refused")
+
+
+TESTS = [test_key_breakdown, test_drum_note_label, test_tempo_fold, test_relabel]
 
 
 def main():

@@ -1,0 +1,482 @@
+famille	style	sons	packs	liste_packs	mesure	p10	p25	mediane	p75	p90	statut
+basse (coups)	tous	749	16	r10p1 r10p2 r10p3 r11p2 r11p3 r12p2 r2p1 r3p1 r4p1 r5p1 r6p1 r7p3 r8p1 r9p1 r9p2 r9p3	dur_s	0.6316	0.8571	0.8571	1.714	4.042	définitive
+basse (coups)	tous	749	16	r10p1 r10p2 r10p3 r11p2 r11p3 r12p2 r2p1 r3p1 r4p1 r5p1 r6p1 r7p3 r8p1 r9p1 r9p2 r9p3	rms_dbfs	-13.85	-9.653	-6.81	-6.051	-5.714	définitive
+basse (coups)	tous	749	16	r10p1 r10p2 r10p3 r11p2 r11p3 r12p2 r2p1 r3p1 r4p1 r5p1 r6p1 r7p3 r8p1 r9p1 r9p2 r9p3	peak_dbfs	-0.33	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+basse (coups)	amapiano	10	1	r6p1	dur_s	4.211	4.22	4.568	5.217	5.347	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+basse (coups)	amapiano	10	1	r6p1	rms_dbfs	-21.27	-19.27	-16.49	-11.1	-9.311	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+basse (coups)	amapiano	10	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+basse (coups)	dnb	35	2	r10p1 r11p2	dur_s	0.4599	0.6472	0.8621	1.551	2.759	définitive
+basse (coups)	dnb	35	2	r10p1 r11p2	rms_dbfs	-15.36	-13.8	-11.85	-10.03	-7.628	définitive
+basse (coups)	dnb	35	2	r10p1 r11p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+basse (coups)	drift-phonk	28	1	r2p1	dur_s	3.429	3.429	3.692	3.692	4.8	pas de cible (n 28, 1 packs)
+basse (coups)	drift-phonk	28	1	r2p1	rms_dbfs	-10.02	-8.014	-7.062	-5.147	-4.063	pas de cible (n 28, 1 packs)
+basse (coups)	drift-phonk	28	1	r2p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 28, 1 packs)
+basse (coups)	dubstep	483	2	r8p1 r9p3	dur_s	0.8571	0.8571	0.8571	0.8571	1.714	définitive
+basse (coups)	dubstep	483	2	r8p1 r9p3	rms_dbfs	-8.025	-7.034	-6.285	-5.94	-5.655	définitive
+basse (coups)	dubstep	483	2	r8p1 r9p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+basse (coups)	edm	4	1	r7p3	dur_s	0.4138	0.4138	0.4138	1.241	2.731	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+basse (coups)	edm	4	1	r7p3	rms_dbfs	-11.86	-11.7	-10.48	-9.305	-9.236	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+basse (coups)	edm	4	1	r7p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+basse (coups)	hardstyle	24	1	r10p3	dur_s	3.097	3.097	3.2	3.2	3.2	pas de cible (n 24, 1 packs)
+basse (coups)	hardstyle	24	1	r10p3	rms_dbfs	-6.914	-6.725	-6.724	-6.542	-4.677	pas de cible (n 24, 1 packs)
+basse (coups)	hardstyle	24	1	r10p3	peak_dbfs	-0.332	-0.33	-0.33	-0.33	-0.33	pas de cible (n 24, 1 packs)
+basse (coups)	house	48	2	r10p2 r12p2	dur_s	0.684	0.81	1.05	3.841	7.805	définitive
+basse (coups)	house	48	2	r10p2 r12p2	rms_dbfs	-16.82	-16.01	-13.2	-11.66	-10.22	définitive
+basse (coups)	house	48	2	r10p2 r12p2	peak_dbfs	-0.33	-0.33	-0.33	-0.2647	-0.2589	définitive
+basse (coups)	lofi	13	2	r4p1 r7p3	dur_s	8.672	11.71	12.63	13.33	15.71	pas de cible (n 13, 2 packs) (contre-mesure 100 % sur 13)
+basse (coups)	lofi	13	2	r4p1 r7p3	rms_dbfs	-20.04	-17.63	-10.32	-8.373	-7.304	pas de cible (n 13, 2 packs) (contre-mesure 100 % sur 13)
+basse (coups)	lofi	13	2	r4p1 r7p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-1.035e-06	0	pas de cible (n 13, 2 packs) (contre-mesure 100 % sur 13)
+basse (coups)	rave	20	1	r11p3	dur_s	0.3871	0.3871	0.3871	0.3871	0.3871	pas de cible (n 20, 1 packs)
+basse (coups)	rave	20	1	r11p3	rms_dbfs	-12.54	-11.62	-10.96	-9.017	-6.733	pas de cible (n 20, 1 packs)
+basse (coups)	rave	20	1	r11p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 20, 1 packs)
+basse (coups)	synthwave	27	1	r9p1	dur_s	0.619	0.9285	1.263	4.241	8.844	pas de cible (n 27, 1 packs)
+basse (coups)	synthwave	27	1	r9p1	rms_dbfs	-19.47	-17.83	-16.3	-14.37	-11.24	pas de cible (n 27, 1 packs)
+basse (coups)	synthwave	27	1	r9p1	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 27, 1 packs)
+basse (coups)	techno	30	2	r3p1 r5p1	dur_s	0.48	0.48	0.8	0.8	0.8	définitive
+basse (coups)	techno	30	2	r3p1 r5p1	rms_dbfs	-15.08	-13.69	-12.98	-11.62	-10.6	définitive
+basse (coups)	techno	30	2	r3p1 r5p1	peak_dbfs	-1	-1	-0.1049	-0.1049	-0.1049	définitive
+basse (coups)	trap	27	2	r7p3 r9p2	dur_s	4.92	5.143	7.385	9.011	11.47	définitive
+basse (coups)	trap	27	2	r7p3 r9p2	rms_dbfs	-15.12	-11.93	-10.66	-8.942	-8.506	définitive
+basse (coups)	trap	27	2	r7p3 r9p2	peak_dbfs	-1.035e-06	-1.035e-06	-1.035e-06	0	0	définitive
+coup mélodique : -	tous	88	4	r11p1 r12p3 r6p1 r9p2	dur_s	0.4958	0.6771	1.023	4.034	6.557	définitive
+coup mélodique : -	tous	88	4	r11p1 r12p3 r6p1 r9p2	rms_dbfs	-19.85	-17.17	-13.18	-11.47	-10.04	définitive
+coup mélodique : -	tous	88	4	r11p1 r12p3 r6p1 r9p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-1.035e-06	définitive
+coup mélodique : -	amapiano	2	1	r6p1	dur_s	4.5	4.822	5.357	5.893	6.215	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : -	amapiano	2	1	r6p1	rms_dbfs	-20.04	-17.57	-13.46	-9.341	-6.871	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : -	amapiano	2	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : -	rave	2	1	r12p3	dur_s	0.4	0.4	0.4	0.4	0.4	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : -	rave	2	1	r12p3	rms_dbfs	-8.643	-8.396	-7.983	-7.571	-7.323	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : -	rave	2	1	r12p3	peak_dbfs	0	0	0	0	0	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : -	trap	12	1	r9p2	dur_s	3.6	6.428	8.285	12.43	14.66	pas de cible (n 12, 1 packs) (contre-mesure 100 % sur 12)
+coup mélodique : -	trap	12	1	r9p2	rms_dbfs	-27.04	-25.9	-19.04	-14.56	-13.05	pas de cible (n 12, 1 packs) (contre-mesure 100 % sur 12)
+coup mélodique : -	trap	12	1	r9p2	peak_dbfs	-1.035e-06	-1.035e-06	-5.175e-07	0	0	pas de cible (n 12, 1 packs) (contre-mesure 100 % sur 12)
+coup mélodique : arp	tous	20	5	r10p2 r10p3 r2p1 r9p1 r9p2	dur_s	2.468	3	4	5.357	6.4	définitive
+coup mélodique : arp	tous	20	5	r10p2 r10p3 r2p1 r9p1 r9p2	rms_dbfs	-26.7	-26.07	-23.9	-20.68	-18.63	définitive
+coup mélodique : arp	tous	20	5	r10p2 r10p3 r2p1 r9p1 r9p2	peak_dbfs	-0.33	-0.33	-0.33	-0.01547	-9.315e-07	définitive
+coup mélodique : arp	drift-phonk	1	1	r2p1	dur_s	3	3	3	3	3	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : arp	drift-phonk	1	1	r2p1	rms_dbfs	-19.64	-19.64	-19.64	-19.64	-19.64	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : arp	drift-phonk	1	1	r2p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : arp	hardstyle	2	1	r10p3	dur_s	6.4	6.4	6.4	6.4	6.4	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : arp	hardstyle	2	1	r10p3	rms_dbfs	-26.56	-26.56	-26.56	-26.56	-26.56	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : arp	hardstyle	2	1	r10p3	peak_dbfs	-0.01547	-0.01547	-0.01547	-0.01547	-0.01547	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : arp	house	2	1	r10p2	dur_s	1.91	1.917	1.928	1.94	1.946	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : arp	house	2	1	r10p2	rms_dbfs	-25.9	-25.89	-25.87	-25.84	-25.83	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : arp	house	2	1	r10p2	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : arp	synthwave	11	1	r9p1	dur_s	3	3.215	4	4.926	6	pas de cible (n 11, 1 packs) (contre-mesure 100 % sur 11)
+coup mélodique : arp	synthwave	11	1	r9p1	rms_dbfs	-27.54	-25.09	-23.51	-22.22	-20.82	pas de cible (n 11, 1 packs) (contre-mesure 100 % sur 11)
+coup mélodique : arp	synthwave	11	1	r9p1	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 11, 1 packs) (contre-mesure 100 % sur 11)
+coup mélodique : arp	trap	4	1	r9p2	dur_s	3.269	3.372	4.286	5.357	5.743	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : arp	trap	4	1	r9p2	rms_dbfs	-24.7	-21.85	-15.71	-10.88	-10.36	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : arp	trap	4	1	r9p2	peak_dbfs	-1.035e-06	-1.035e-06	-5.175e-07	0	0	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : bell	tous	12	2	r9p1 r9p2	dur_s	3.486	4.857	6.788	8.828	12.48	pas de cible (n 12, 2 packs) (contre-mesure 100 % sur 12)
+coup mélodique : bell	tous	12	2	r9p1 r9p2	rms_dbfs	-28.26	-26.02	-22.07	-18.13	-14.89	pas de cible (n 12, 2 packs) (contre-mesure 100 % sur 12)
+coup mélodique : bell	tous	12	2	r9p1 r9p2	peak_dbfs	-0.297	-1.035e-06	-5.175e-07	0	0	pas de cible (n 12, 2 packs) (contre-mesure 100 % sur 12)
+coup mélodique : bell	synthwave	2	1	r9p1	dur_s	2.616	2.752	2.978	3.203	3.339	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : bell	synthwave	2	1	r9p1	rms_dbfs	-26.94	-26.72	-26.37	-26.02	-25.8	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : bell	synthwave	2	1	r9p1	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : bell	trap	10	1	r9p2	dur_s	5.029	6	6.857	9.343	12.89	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+coup mélodique : bell	trap	10	1	r9p2	rms_dbfs	-28.96	-24.01	-19.68	-18.06	-14.04	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+coup mélodique : bell	trap	10	1	r9p2	peak_dbfs	-1.035e-06	-1.035e-06	0	0	0	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+coup mélodique : brass	tous	8	4	r10p2 r10p3 r6p1 r9p2	dur_s	3.596	4.167	5.572	8	8.171	pas de cible (n 8, 4 packs) (contre-mesure 100 % sur 8)
+coup mélodique : brass	tous	8	4	r10p2 r10p3 r6p1 r9p2	rms_dbfs	-22.09	-20.25	-14.12	-13.34	-12.23	pas de cible (n 8, 4 packs) (contre-mesure 100 % sur 8)
+coup mélodique : brass	tous	8	4	r10p2 r10p3 r6p1 r9p2	peak_dbfs	-0.33	-0.1612	-5.175e-07	0	0	pas de cible (n 8, 4 packs) (contre-mesure 100 % sur 8)
+coup mélodique : brass	amapiano	2	1	r6p1	dur_s	4.286	4.286	4.286	4.286	4.286	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : brass	amapiano	2	1	r6p1	rms_dbfs	-18.71	-17.32	-15	-12.68	-11.29	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : brass	amapiano	2	1	r6p1	peak_dbfs	-0.09441	-0.07868	-0.05245	-0.02623	-0.01049	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : brass	hardstyle	1	1	r10p3	dur_s	3.097	3.097	3.097	3.097	3.097	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : brass	hardstyle	1	1	r10p3	rms_dbfs	-22.07	-22.07	-22.07	-22.07	-22.07	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : brass	hardstyle	1	1	r10p3	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : brass	house	1	1	r10p2	dur_s	3.81	3.81	3.81	3.81	3.81	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : brass	house	1	1	r10p2	rms_dbfs	-22.15	-22.15	-22.15	-22.15	-22.15	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : brass	house	1	1	r10p2	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : brass	trap	4	1	r9p2	dur_s	7.2	7.714	8	8.143	8.4	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : brass	trap	4	1	r9p2	rms_dbfs	-14.25	-13.97	-13.63	-13.34	-13.16	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : brass	trap	4	1	r9p2	peak_dbfs	0	0	0	0	0	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : chords	tous	76	8	r10p1 r10p2 r10p3 r11p3 r12p3 r7p3 r9p1 r9p2	dur_s	0.6207	4.892	6.4	8.308	10.11	définitive
+coup mélodique : chords	tous	76	8	r10p1 r10p2 r10p3 r11p3 r12p3 r7p3 r9p1 r9p2	rms_dbfs	-20.59	-18.59	-16.9	-15.09	-13.43	définitive
+coup mélodique : chords	tous	76	8	r10p1 r10p2 r10p3 r11p3 r12p3 r7p3 r9p1 r9p2	peak_dbfs	-0.33	-0.33	-0.33	-0.3139	-1.035e-06	définitive
+coup mélodique : chords	dnb	2	1	r10p1	dur_s	5.517	5.517	5.517	5.517	5.517	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : chords	dnb	2	1	r10p1	rms_dbfs	-21.52	-21.36	-21.1	-20.84	-20.68	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : chords	dnb	2	1	r10p1	peak_dbfs	-0.1884	-0.1745	-0.1513	-0.1281	-0.1142	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : chords	edm	5	1	r7p3	dur_s	0.4138	0.4138	0.6207	0.6207	2.731	pas de cible (n 5, 1 packs) (contre-mesure 100 % sur 5)
+coup mélodique : chords	edm	5	1	r7p3	rms_dbfs	-15.95	-14.75	-13.99	-13.4	-12.51	pas de cible (n 5, 1 packs) (contre-mesure 100 % sur 5)
+coup mélodique : chords	edm	5	1	r7p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 5, 1 packs) (contre-mesure 100 % sur 5)
+coup mélodique : chords	hardstyle	24	1	r10p3	dur_s	4.098	6.194	6.297	6.4	6.4	pas de cible (n 24, 1 packs)
+coup mélodique : chords	hardstyle	24	1	r10p3	rms_dbfs	-24.03	-17.96	-17.55	-16.13	-15.6	pas de cible (n 24, 1 packs)
+coup mélodique : chords	hardstyle	24	1	r10p3	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 24, 1 packs)
+coup mélodique : chords	house	7	1	r10p2	dur_s	3.934	3.934	7.68	7.711	7.793	pas de cible (n 7, 1 packs) (contre-mesure 100 % sur 7)
+coup mélodique : chords	house	7	1	r10p2	rms_dbfs	-20.87	-18.46	-17.93	-15.93	-13.47	pas de cible (n 7, 1 packs) (contre-mesure 100 % sur 7)
+coup mélodique : chords	house	7	1	r10p2	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 7, 1 packs) (contre-mesure 100 % sur 7)
+coup mélodique : chords	rave	8	2	r11p3 r12p3	dur_s	0.5099	0.5625	0.5625	0.7742	0.7819	pas de cible (n 8, 2 packs) (contre-mesure 100 % sur 8)
+coup mélodique : chords	rave	8	2	r11p3 r12p3	rms_dbfs	-18.89	-17.57	-14.53	-13.41	-12.76	pas de cible (n 8, 2 packs) (contre-mesure 100 % sur 8)
+coup mélodique : chords	rave	8	2	r11p3 r12p3	peak_dbfs	-1.396	-0.0664	-1.035e-06	0	0	pas de cible (n 8, 2 packs) (contre-mesure 100 % sur 8)
+coup mélodique : chords	synthwave	25	1	r9p1	dur_s	6.857	8	10.11	10.11	12	pas de cible (n 25, 1 packs)
+coup mélodique : chords	synthwave	25	1	r9p1	rms_dbfs	-19.96	-19.24	-16.14	-15.13	-13.88	pas de cible (n 25, 1 packs)
+coup mélodique : chords	synthwave	25	1	r9p1	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 25, 1 packs)
+coup mélodique : chords	trap	5	1	r9p2	dur_s	5.646	6.4	6.857	9.231	10.6	pas de cible (n 5, 1 packs) (contre-mesure 100 % sur 5)
+coup mélodique : chords	trap	5	1	r9p2	rms_dbfs	-20.12	-19.14	-16.94	-15.59	-13.74	pas de cible (n 5, 1 packs) (contre-mesure 100 % sur 5)
+coup mélodique : chords	trap	5	1	r9p2	peak_dbfs	-6.21e-07	0	0	0	0	pas de cible (n 5, 1 packs) (contre-mesure 100 % sur 5)
+coup mélodique : drums	tous	1	1	r6p1	dur_s	4.211	4.211	4.211	4.211	4.211	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : drums	tous	1	1	r6p1	rms_dbfs	-25.51	-25.51	-25.51	-25.51	-25.51	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : drums	tous	1	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : drums	amapiano	1	1	r6p1	dur_s	4.211	4.211	4.211	4.211	4.211	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : drums	amapiano	1	1	r6p1	rms_dbfs	-25.51	-25.51	-25.51	-25.51	-25.51	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : drums	amapiano	1	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : full	tous	1	1	r7p3	dur_s	0.6207	0.6207	0.6207	0.6207	0.6207	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : full	tous	1	1	r7p3	rms_dbfs	-14.71	-14.71	-14.71	-14.71	-14.71	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : full	tous	1	1	r7p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : full	edm	1	1	r7p3	dur_s	0.6207	0.6207	0.6207	0.6207	0.6207	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : full	edm	1	1	r7p3	rms_dbfs	-14.71	-14.71	-14.71	-14.71	-14.71	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : full	edm	1	1	r7p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : guitar	tous	11	2	r10p2 r9p2	dur_s	3.902	4.538	5.76	7.978	10.29	pas de cible (n 11, 2 packs) (contre-mesure 100 % sur 11)
+coup mélodique : guitar	tous	11	2	r10p2 r9p2	rms_dbfs	-26.81	-23.12	-18.31	-17.77	-15.52	pas de cible (n 11, 2 packs) (contre-mesure 100 % sur 11)
+coup mélodique : guitar	tous	11	2	r10p2 r9p2	peak_dbfs	-0.33	-1.035e-06	-1.035e-06	0	0	pas de cible (n 11, 2 packs) (contre-mesure 100 % sur 11)
+coup mélodique : guitar	house	2	1	r10p2	dur_s	3.905	3.91	3.918	3.926	3.931	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : guitar	house	2	1	r10p2	rms_dbfs	-18.03	-17.61	-16.91	-16.22	-15.8	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : guitar	house	2	1	r10p2	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : guitar	trap	9	1	r9p2	dur_s	4.853	5.538	6.857	8.571	10.63	pas de cible (n 9, 1 packs) (contre-mesure 100 % sur 9)
+coup mélodique : guitar	trap	9	1	r9p2	rms_dbfs	-27.01	-23.92	-21.58	-17.84	-17.09	pas de cible (n 9, 1 packs) (contre-mesure 100 % sur 9)
+coup mélodique : guitar	trap	9	1	r9p2	peak_dbfs	-1.035e-06	-1.035e-06	0	0	0	pas de cible (n 9, 1 packs) (contre-mesure 100 % sur 9)
+coup mélodique : keys	tous	98	7	r10p2 r10p3 r11p1 r4p1 r6p1 r7p3 r9p2	dur_s	2.469	3.997	6.857	10.29	13.96	définitive
+coup mélodique : keys	tous	98	7	r10p2 r10p3 r11p1 r4p1 r6p1 r7p3 r9p2	rms_dbfs	-25.74	-22.92	-20.62	-17.81	-14.98	définitive
+coup mélodique : keys	tous	98	7	r10p2 r10p3 r11p1 r4p1 r6p1 r7p3 r9p2	peak_dbfs	-0.33	-0.1049	-0.1049	-1.035e-06	0	définitive
+coup mélodique : keys	amapiano	1	1	r6p1	dur_s	6.316	6.316	6.316	6.316	6.316	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : keys	amapiano	1	1	r6p1	rms_dbfs	-13.88	-13.88	-13.88	-13.88	-13.88	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : keys	amapiano	1	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : keys	hardstyle	1	1	r10p3	dur_s	3.2	3.2	3.2	3.2	3.2	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : keys	hardstyle	1	1	r10p3	rms_dbfs	-22.58	-22.58	-22.58	-22.58	-22.58	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : keys	hardstyle	1	1	r10p3	peak_dbfs	-1.035e-06	-1.035e-06	-1.035e-06	-1.035e-06	-1.035e-06	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : keys	house	15	1	r10p2	dur_s	2.676	3.918	7.68	7.869	7.869	pas de cible (n 15, 1 packs) (contre-mesure 100 % sur 15)
+coup mélodique : keys	house	15	1	r10p2	rms_dbfs	-23.01	-22.61	-19.52	-19.29	-18.43	pas de cible (n 15, 1 packs) (contre-mesure 100 % sur 15)
+coup mélodique : keys	house	15	1	r10p2	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 15, 1 packs) (contre-mesure 100 % sur 15)
+coup mélodique : keys	lofi	26	2	r4p1 r7p3	dur_s	8.471	12	12.89	16.22	17.62	définitive
+coup mélodique : keys	lofi	26	2	r4p1 r7p3	rms_dbfs	-26.62	-25.93	-22.38	-19.17	-16.91	définitive
+coup mélodique : keys	lofi	26	2	r4p1 r7p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-2.588e-07	0	définitive
+coup mélodique : keys	trap	20	2	r7p3 r9p2	dur_s	6.478	6.857	7.59	10.18	10.41	définitive
+coup mélodique : keys	trap	20	2	r7p3 r9p2	rms_dbfs	-25.4	-20.16	-18.94	-15.19	-13.56	définitive
+coup mélodique : keys	trap	20	2	r7p3 r9p2	peak_dbfs	-1.035e-06	-1.035e-06	-1.035e-06	0	0	définitive
+coup mélodique : lead	tous	139	9	r10p1 r10p2 r10p3 r6p1 r7p3 r8p1 r9p1 r9p2 r9p3	dur_s	1.034	1.714	3.2	5.572	8.084	définitive
+coup mélodique : lead	tous	139	9	r10p1 r10p2 r10p3 r6p1 r7p3 r8p1 r9p1 r9p2 r9p3	rms_dbfs	-21.35	-19.25	-16.53	-14.28	-11.81	définitive
+coup mélodique : lead	tous	139	9	r10p1 r10p2 r10p3 r6p1 r7p3 r8p1 r9p1 r9p2 r9p3	peak_dbfs	-0.33	-0.33	-0.1049	-0.1049	-1.035e-06	définitive
+coup mélodique : lead	amapiano	4	1	r6p1	dur_s	6.35	6.401	7.425	8.421	8.421	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : lead	amapiano	4	1	r6p1	rms_dbfs	-19	-16.4	-14.77	-13.76	-12.25	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : lead	amapiano	4	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : lead	dnb	1	1	r10p1	dur_s	3.965	3.965	3.965	3.965	3.965	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : lead	dnb	1	1	r10p1	rms_dbfs	-18.93	-18.93	-18.93	-18.93	-18.93	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : lead	dnb	1	1	r10p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : lead	dubstep	40	2	r8p1 r9p3	dur_s	0.8357	1.286	1.714	2.571	3.429	définitive
+coup mélodique : lead	dubstep	40	2	r8p1 r9p3	rms_dbfs	-20.44	-18.63	-16.05	-13.87	-11.48	définitive
+coup mélodique : lead	dubstep	40	2	r8p1 r9p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+coup mélodique : lead	edm	12	1	r7p3	dur_s	0.6207	0.6207	1.551	2.069	3.931	pas de cible (n 12, 1 packs) (contre-mesure 100 % sur 12)
+coup mélodique : lead	edm	12	1	r7p3	rms_dbfs	-14.95	-14.18	-13.11	-11.91	-11.49	pas de cible (n 12, 1 packs) (contre-mesure 100 % sur 12)
+coup mélodique : lead	edm	12	1	r7p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 12, 1 packs) (contre-mesure 100 % sur 12)
+coup mélodique : lead	hardstyle	27	1	r10p3	dur_s	3.097	3.097	3.2	6.194	6.4	pas de cible (n 27, 1 packs)
+coup mélodique : lead	hardstyle	27	1	r10p3	rms_dbfs	-18.64	-17.27	-15.97	-15.04	-12.92	pas de cible (n 27, 1 packs)
+coup mélodique : lead	hardstyle	27	1	r10p3	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 27, 1 packs)
+coup mélodique : lead	house	15	1	r10p2	dur_s	1.923	1.967	3.871	3.934	7.843	pas de cible (n 15, 1 packs) (contre-mesure 100 % sur 15)
+coup mélodique : lead	house	15	1	r10p2	rms_dbfs	-22.59	-19.91	-18.21	-15.88	-12.81	pas de cible (n 15, 1 packs) (contre-mesure 100 % sur 15)
+coup mélodique : lead	house	15	1	r10p2	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 15, 1 packs) (contre-mesure 100 % sur 15)
+coup mélodique : lead	synthwave	24	1	r9p1	dur_s	2.797	3.857	4.8	6	7.657	pas de cible (n 24, 1 packs)
+coup mélodique : lead	synthwave	24	1	r9p1	rms_dbfs	-24.17	-22.55	-20.27	-18.9	-15.85	pas de cible (n 24, 1 packs)
+coup mélodique : lead	synthwave	24	1	r9p1	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 24, 1 packs)
+coup mélodique : lead	trap	16	1	r9p2	dur_s	4.572	5.786	8.571	9.496	10.68	pas de cible (n 16, 1 packs) (contre-mesure 100 % sur 16)
+coup mélodique : lead	trap	16	1	r9p2	rms_dbfs	-22.54	-18.61	-16.43	-14.25	-12	pas de cible (n 16, 1 packs) (contre-mesure 100 % sur 16)
+coup mélodique : lead	trap	16	1	r9p2	peak_dbfs	-1.035e-06	-1.035e-06	0	0	0	pas de cible (n 16, 1 packs) (contre-mesure 100 % sur 16)
+coup mélodique : pad	tous	61	7	r10p1 r10p2 r2p1 r6p1 r7p3 r9p1 r9p2	dur_s	9	11.16	13.71	15	19.2	définitive
+coup mélodique : pad	tous	61	7	r10p1 r10p2 r2p1 r6p1 r7p3 r9p1 r9p2	rms_dbfs	-19.34	-18.14	-16.93	-15.27	-13.34	définitive
+coup mélodique : pad	tous	61	7	r10p1 r10p2 r2p1 r6p1 r7p3 r9p1 r9p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-1.035e-06	définitive
+coup mélodique : pad	amapiano	1	1	r6p1	dur_s	8.421	8.421	8.421	8.421	8.421	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : pad	amapiano	1	1	r6p1	rms_dbfs	-19.12	-19.12	-19.12	-19.12	-19.12	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : pad	amapiano	1	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : pad	ambient	2	1	r10p1	dur_s	7.198	9.72	13.92	18.13	20.65	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pad	ambient	2	1	r10p1	rms_dbfs	-19.05	-18.26	-16.95	-15.64	-14.85	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pad	ambient	2	1	r10p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pad	dnb	4	1	r10p1	dur_s	11.16	11.16	16.74	23.72	26.24	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : pad	dnb	4	1	r10p1	rms_dbfs	-13.75	-13.48	-13.24	-13.07	-12.93	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : pad	dnb	4	1	r10p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 4, 1 packs) (contre-mesure 100 % sur 4)
+coup mélodique : pad	drift-phonk	40	1	r2p1	dur_s	10.48	12	13.86	15	17.04	pas de cible (n 40, 1 packs)
+coup mélodique : pad	drift-phonk	40	1	r2p1	rms_dbfs	-19.36	-18.86	-17.81	-16.57	-15.9	pas de cible (n 40, 1 packs)
+coup mélodique : pad	drift-phonk	40	1	r2p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 40, 1 packs)
+coup mélodique : pad	edm	1	1	r7p3	dur_s	4.138	4.138	4.138	4.138	4.138	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : pad	edm	1	1	r7p3	rms_dbfs	-13.57	-13.57	-13.57	-13.57	-13.57	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : pad	edm	1	1	r7p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : pad	house	2	1	r10p2	dur_s	7.869	7.869	7.869	7.869	7.869	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pad	house	2	1	r10p2	rms_dbfs	-12.8	-12.4	-11.73	-11.06	-10.66	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pad	house	2	1	r10p2	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pad	synthwave	2	1	r9p1	dur_s	10.01	10.63	11.66	12.68	13.3	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pad	synthwave	2	1	r9p1	rms_dbfs	-15.36	-15	-14.4	-13.8	-13.44	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pad	synthwave	2	1	r9p1	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pad	trap	9	2	r7p3 r9p2	dur_s	8.914	9.6	12	14.9	17.97	pas de cible (n 9, 2 packs) (contre-mesure 100 % sur 9)
+coup mélodique : pad	trap	9	2	r7p3 r9p2	rms_dbfs	-17.06	-16.51	-15.27	-14.01	-13.44	pas de cible (n 9, 2 packs) (contre-mesure 100 % sur 9)
+coup mélodique : pad	trap	9	2	r7p3 r9p2	peak_dbfs	-1.035e-06	-1.035e-06	0	0	0	pas de cible (n 9, 2 packs) (contre-mesure 100 % sur 9)
+coup mélodique : perc	tous	3	2	r10p1 r12p1	dur_s	7.676	7.678	7.68	7.84	7.936	pas de cible (n 3, 2 packs) (contre-mesure 100 % sur 3)
+coup mélodique : perc	tous	3	2	r10p1 r12p1	rms_dbfs	-21.59	-21.18	-20.5	-17.91	-16.36	pas de cible (n 3, 2 packs) (contre-mesure 100 % sur 3)
+coup mélodique : perc	tous	3	2	r10p1 r12p1	peak_dbfs	-0.23	-0.1831	-0.1049	-0.1049	-0.1049	pas de cible (n 3, 2 packs) (contre-mesure 100 % sur 3)
+coup mélodique : perc	dnb	2	1	r10p1	dur_s	7.707	7.756	7.838	7.919	7.968	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : perc	dnb	2	1	r10p1	rms_dbfs	-21.72	-21.52	-21.18	-20.84	-20.64	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : perc	dnb	2	1	r10p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : perc	edm	1	1	r12p1	dur_s	7.68	7.68	7.68	7.68	7.68	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : perc	edm	1	1	r12p1	rms_dbfs	-15.32	-15.32	-15.32	-15.32	-15.32	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : perc	edm	1	1	r12p1	peak_dbfs	-0.2613	-0.2613	-0.2613	-0.2613	-0.2613	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : pluck	tous	12	2	r10p2 r6p1	dur_s	1.076	1.916	3.155	3.887	3.934	pas de cible (n 12, 2 packs) (contre-mesure 100 % sur 12)
+coup mélodique : pluck	tous	12	2	r10p2 r6p1	rms_dbfs	-23.55	-23.35	-21.96	-20.81	-18.73	pas de cible (n 12, 2 packs) (contre-mesure 100 % sur 12)
+coup mélodique : pluck	tous	12	2	r10p2 r6p1	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.1274	pas de cible (n 12, 2 packs) (contre-mesure 100 % sur 12)
+coup mélodique : pluck	amapiano	2	1	r6p1	dur_s	2.679	2.946	3.393	3.839	4.107	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pluck	amapiano	2	1	r6p1	rms_dbfs	-23.66	-21.89	-18.96	-16.02	-14.26	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pluck	amapiano	2	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : pluck	house	10	1	r10p2	dur_s	0.9836	1.909	2.873	3.863	3.934	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+coup mélodique : pluck	house	10	1	r10p2	rms_dbfs	-23.44	-23.2	-21.96	-21.06	-20.2	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+coup mélodique : pluck	house	10	1	r10p2	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+coup mélodique : strings	tous	106	3	r10p2 r11p1 r9p2	dur_s	0.2997	0.55	0.7026	4.008	4.234	définitive
+coup mélodique : strings	tous	106	3	r10p2 r11p1 r9p2	rms_dbfs	-20.69	-14.68	-12.54	-11.1	-10.25	définitive
+coup mélodique : strings	tous	106	3	r10p2 r11p1 r9p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+coup mélodique : strings	house	2	1	r10p2	dur_s	8.56	9.694	11.58	13.47	14.6	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : strings	house	2	1	r10p2	rms_dbfs	-13.69	-13.65	-13.6	-13.54	-13.5	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : strings	house	2	1	r10p2	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : strings	trap	5	1	r9p2	dur_s	5.172	10.11	10.11	11.08	12.66	pas de cible (n 5, 1 packs) (contre-mesure 100 % sur 5)
+coup mélodique : strings	trap	5	1	r9p2	rms_dbfs	-17.99	-17.58	-15.96	-15.16	-14.97	pas de cible (n 5, 1 packs) (contre-mesure 100 % sur 5)
+coup mélodique : strings	trap	5	1	r9p2	peak_dbfs	0	0	0	0	0	pas de cible (n 5, 1 packs) (contre-mesure 100 % sur 5)
+coup mélodique : synth	tous	140	11	r10p2 r11p2 r11p3 r12p2 r2p1 r3p1 r5p1 r6p1 r7p3 r9p1 r9p2	dur_s	0.48	1.379	2	3	5.517	définitive
+coup mélodique : synth	tous	140	11	r10p2 r11p2 r11p3 r12p2 r2p1 r3p1 r5p1 r6p1 r7p3 r9p1 r9p2	rms_dbfs	-22.05	-19.88	-17.23	-13.64	-11.31	définitive
+coup mélodique : synth	tous	140	11	r10p2 r11p2 r11p3 r12p2 r2p1 r3p1 r5p1 r6p1 r7p3 r9p1 r9p2	peak_dbfs	-0.3406	-0.1388	-0.1049	-0.1049	-0.1049	définitive
+coup mélodique : synth	amapiano	2	1	r6p1	dur_s	5.902	5.902	5.902	5.902	5.902	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : synth	amapiano	2	1	r6p1	rms_dbfs	-11.66	-11.58	-11.44	-11.3	-11.22	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : synth	amapiano	2	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+coup mélodique : synth	dnb	25	1	r11p2	dur_s	0.6897	0.6897	1.379	2.759	5.517	pas de cible (n 25, 1 packs)
+coup mélodique : synth	dnb	25	1	r11p2	rms_dbfs	-17.45	-15.18	-12.71	-11.04	-10.43	pas de cible (n 25, 1 packs)
+coup mélodique : synth	dnb	25	1	r11p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 25, 1 packs)
+coup mélodique : synth	drift-phonk	29	1	r2p1	dur_s	2	2.4	2.571	3.429	4.26	pas de cible (n 29, 1 packs)
+coup mélodique : synth	drift-phonk	29	1	r2p1	rms_dbfs	-23.87	-21.53	-19.05	-16.44	-15.49	pas de cible (n 29, 1 packs)
+coup mélodique : synth	drift-phonk	29	1	r2p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 29, 1 packs)
+coup mélodique : synth	house	25	2	r10p2 r12p2	dur_s	1.056	1.56	1.8	1.98	3.312	définitive
+coup mélodique : synth	house	25	2	r10p2 r12p2	rms_dbfs	-22.08	-20.39	-19.09	-17.69	-15.78	définitive
+coup mélodique : synth	house	25	2	r10p2 r12p2	peak_dbfs	-0.4314	-0.33	-0.2586	-0.2471	-0.2425	définitive
+coup mélodique : synth	rave	25	1	r11p3	dur_s	0.3871	0.3871	1.548	1.548	3.097	pas de cible (n 25, 1 packs)
+coup mélodique : synth	rave	25	1	r11p3	rms_dbfs	-15.48	-14.29	-13.21	-11.45	-10.82	pas de cible (n 25, 1 packs)
+coup mélodique : synth	rave	25	1	r11p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 25, 1 packs)
+coup mélodique : synth	synthwave	1	1	r9p1	dur_s	12	12	12	12	12	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : synth	synthwave	1	1	r9p1	rms_dbfs	-19.02	-19.02	-19.02	-19.02	-19.02	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : synth	synthwave	1	1	r9p1	peak_dbfs	-0.33	-0.33	-0.33	-0.33	-0.33	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+coup mélodique : synth	techno	30	2	r3p1 r5p1	dur_s	0.48	0.566	2	2.4	3.11	définitive
+coup mélodique : synth	techno	30	2	r3p1 r5p1	rms_dbfs	-22.32	-21.41	-20	-17.77	-15.5	définitive
+coup mélodique : synth	techno	30	2	r3p1 r5p1	peak_dbfs	-1	-1	-0.1049	-0.1049	-0.1049	définitive
+coup mélodique : synth	trap	3	2	r7p3 r9p2	dur_s	8.129	8.803	9.925	13.53	15.7	pas de cible (n 3, 2 packs) (contre-mesure 100 % sur 3)
+coup mélodique : synth	trap	3	2	r7p3 r9p2	rms_dbfs	-20.3	-18.17	-14.62	-11.91	-10.28	pas de cible (n 3, 2 packs) (contre-mesure 100 % sur 3)
+coup mélodique : synth	trap	3	2	r7p3 r9p2	peak_dbfs	-1.035e-06	-1.035e-06	-1.035e-06	-5.175e-07	-2.07e-07	pas de cible (n 3, 2 packs) (contre-mesure 100 % sur 3)
+boucle mélodique	tous	982	13	r10p1 r11p2 r11p3 r12p2 r2p1 r3p1 r4p1 r5p1 r6p1 r8p1 r8p2 r8p3 r9p3	dur_s	6.194	6.857	7.68	11.03	15.74	définitive
+boucle mélodique	tous	982	13	r10p1 r11p2 r11p3 r12p2 r2p1 r3p1 r4p1 r5p1 r6p1 r8p1 r8p2 r8p3 r9p3	rms_dbfs	-20.16	-16.98	-14.05	-10.91	-7.294	définitive
+boucle mélodique	tous	982	13	r10p1 r11p2 r11p3 r12p2 r2p1 r3p1 r4p1 r5p1 r6p1 r8p1 r8p2 r8p3 r9p3	peak_dbfs	-0.9899	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+boucle mélodique	afro-house	78	1	r8p2	dur_s	7.619	7.869	8	15.61	15.74	pas de cible (n 78, 1 packs)
+boucle mélodique	afro-house	78	1	r8p2	rms_dbfs	-21.61	-18.97	-15.96	-14.09	-11.69	pas de cible (n 78, 1 packs)
+boucle mélodique	afro-house	78	1	r8p2	peak_dbfs	-3.013	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 78, 1 packs)
+boucle mélodique	amapiano	142	1	r6p1	dur_s	8.348	8.348	8.571	8.571	8.571	pas de cible (n 142, 1 packs)
+boucle mélodique	amapiano	142	1	r6p1	rms_dbfs	-22.32	-19.95	-16.66	-14.41	-13.42	pas de cible (n 142, 1 packs)
+boucle mélodique	amapiano	142	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 142, 1 packs)
+boucle mélodique	dnb	98	3	r10p1 r11p2 r6p1	dur_s	5.517	11.03	11.03	11.03	22.07	définitive
+boucle mélodique	dnb	98	3	r10p1 r11p2 r6p1	rms_dbfs	-19.57	-16.09	-13.25	-10.47	-7.579	définitive
+boucle mélodique	dnb	98	3	r10p1 r11p2 r6p1	peak_dbfs	-0.2005	-0.2005	-0.1049	-0.1049	-0.1049	définitive
+boucle mélodique	drift-phonk	140	1	r2p1	dur_s	6	6.857	8	12	16	pas de cible (n 140, 1 packs)
+boucle mélodique	drift-phonk	140	1	r2p1	rms_dbfs	-16.48	-14.98	-13.81	-11.94	-8.115	pas de cible (n 140, 1 packs)
+boucle mélodique	drift-phonk	140	1	r2p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 140, 1 packs)
+boucle mélodique	dubstep	150	2	r8p1 r9p3	dur_s	3.429	3.429	6.857	6.857	6.857	définitive
+boucle mélodique	dubstep	150	2	r8p1 r9p3	rms_dbfs	-15.51	-11.68	-7.255	-6.699	-6.293	définitive
+boucle mélodique	dubstep	150	2	r8p1 r9p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+boucle mélodique	house	78	2	r12p2 r6p1	dur_s	7.68	7.68	7.68	7.68	7.68	définitive
+boucle mélodique	house	78	2	r12p2 r6p1	rms_dbfs	-17.07	-15.09	-13.06	-10.24	-8.537	définitive
+boucle mélodique	house	78	2	r12p2 r6p1	peak_dbfs	-0.5426	-0.3769	-0.2774	-0.2492	-0.2437	définitive
+boucle mélodique	lofi	66	2	r4p1 r6p1	dur_s	12.55	23.7	24.94	25.95	25.95	définitive
+boucle mélodique	lofi	66	2	r4p1 r6p1	rms_dbfs	-23.18	-21.12	-19.73	-16.39	-12.86	définitive
+boucle mélodique	lofi	66	2	r4p1 r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+boucle mélodique	rave	50	1	r11p3	dur_s	6.194	12.39	12.39	12.39	12.39	pas de cible (n 50, 1 packs)
+boucle mélodique	rave	50	1	r11p3	rms_dbfs	-14.88	-13.49	-11.99	-11.06	-9.657	pas de cible (n 50, 1 packs)
+boucle mélodique	rave	50	1	r11p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 50, 1 packs)
+boucle mélodique	techno	179	2	r3p1 r5p1	dur_s	6.4	6.4	7.68	7.68	7.68	définitive
+boucle mélodique	techno	179	2	r3p1 r5p1	rms_dbfs	-19.71	-17.16	-14.33	-11.71	-10.02	définitive
+boucle mélodique	techno	179	2	r3p1 r5p1	peak_dbfs	-1.008	-0.9998	-0.9802	-0.1049	-0.1049	définitive
+boucle de batterie	tous	1791	13	r10p1 r11p2 r11p3 r12p2 r1p1 r2p1 r3p1 r4p1 r5p1 r6p1 r8p1 r8p2 r9p3	tempo étiqueté (accord replié 97 %)	100	120	140	150	174	pas de cible (tempos de styles différents mélangés)
+boucle de batterie	tous	1858	13	r10p1 r11p2 r11p3 r12p2 r1p1 r2p1 r3p1 r4p1 r5p1 r6p1 r8p1 r8p2 r9p3	dur_s	5.517	6.4	6.858	8	10.67	définitive
+boucle de batterie	tous	1858	13	r10p1 r11p2 r11p3 r12p2 r1p1 r2p1 r3p1 r4p1 r5p1 r6p1 r8p1 r8p2 r9p3	rms_dbfs	-24.97	-21.93	-17.34	-11.17	-7.892	définitive
+boucle de batterie	tous	1858	13	r10p1 r11p2 r11p3 r12p2 r1p1 r2p1 r3p1 r4p1 r5p1 r6p1 r8p1 r8p2 r9p3	peak_dbfs	-0.4558	-0.1049	-0.1049	-0.1049	-0.1	définitive
+boucle de batterie	afro-house	44	1	r8p2	tempo étiqueté (accord replié 57 %)	120	120	120	122	122	pas de cible (n 44, 1 packs) (étiquette et estimation repliée d'accord < 90 %)
+boucle de batterie	afro-house	77	1	r8p2	dur_s	7.742	7.742	7.869	8	8	pas de cible (n 77, 1 packs)
+boucle de batterie	afro-house	77	1	r8p2	rms_dbfs	-24.92	-22.77	-20.53	-14.67	-10.39	pas de cible (n 77, 1 packs)
+boucle de batterie	afro-house	77	1	r8p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 77, 1 packs)
+boucle de batterie	amapiano	129	1	r6p1	tempo étiqueté (accord replié 100 %)	112	113	113	114	115	pas de cible (n 129, 1 packs)
+boucle de batterie	amapiano	131	1	r6p1	dur_s	8.348	8.348	8.496	8.496	8.571	pas de cible (n 131, 1 packs)
+boucle de batterie	amapiano	131	1	r6p1	rms_dbfs	-26.11	-24.18	-21.69	-18.53	-14.67	pas de cible (n 131, 1 packs)
+boucle de batterie	amapiano	131	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 131, 1 packs)
+boucle de batterie	dnb	217	3	r10p1 r11p2 r1p1	tempo étiqueté (accord replié 98 %)	174	174	174	174	174	définitive
+boucle de batterie	dnb	224	3	r10p1 r11p2 r1p1	dur_s	5.517	5.517	5.517	5.518	11.03	définitive
+boucle de batterie	dnb	224	3	r10p1 r11p2 r1p1	rms_dbfs	-23.48	-19.95	-15.02	-10.83	-10.12	définitive
+boucle de batterie	dnb	224	3	r10p1 r11p2 r1p1	peak_dbfs	-0.2005	-0.1049	-0.1049	-0.1005	-0.1	définitive
+boucle de batterie	drift-phonk	149	1	r2p1	tempo étiqueté (accord replié 99 %)	100	100	120	140	160	pas de cible (n 149, 1 packs)
+boucle de batterie	drift-phonk	150	1	r2p1	dur_s	6	6.857	7.688	9.6	9.6	pas de cible (n 150, 1 packs)
+boucle de batterie	drift-phonk	150	1	r2p1	rms_dbfs	-22.72	-20.45	-11.19	-9.004	-7.748	pas de cible (n 150, 1 packs)
+boucle de batterie	drift-phonk	150	1	r2p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-1.035e-06	pas de cible (n 150, 1 packs)
+boucle de batterie	dubstep	161	3	r1p1 r8p1 r9p3	tempo étiqueté (accord replié 98 %)	140	140	140	140	140	définitive
+boucle de batterie	dubstep	165	3	r1p1 r8p1 r9p3	dur_s	1.714	6.857	6.857	6.857	6.858	définitive
+boucle de batterie	dubstep	165	3	r1p1 r8p1 r9p3	rms_dbfs	-22.6	-19.7	-13.54	-11.66	-10.08	définitive
+boucle de batterie	dubstep	165	3	r1p1 r8p1 r9p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1	définitive
+boucle de batterie	hiphop	24	1	r1p1	tempo étiqueté (accord replié 100 %)	80	80	85	90	90	pas de cible (n 24, 1 packs)
+boucle de batterie	hiphop	27	1	r1p1	dur_s	10.67	10.67	12	12	12	pas de cible (n 27, 1 packs)
+boucle de batterie	hiphop	27	1	r1p1	rms_dbfs	-30.5	-28.16	-25.72	-19.77	-14.39	pas de cible (n 27, 1 packs)
+boucle de batterie	hiphop	27	1	r1p1	peak_dbfs	-0.1	-0.1	-0.1	-0.1	-0.1	pas de cible (n 27, 1 packs)
+boucle de batterie	house	209	2	r12p2 r1p1	tempo étiqueté (accord replié 98 %)	125	125	125	125	125	définitive
+boucle de batterie	house	213	2	r12p2 r1p1	dur_s	7.68	7.68	7.68	7.68	7.68	définitive
+boucle de batterie	house	213	2	r12p2 r1p1	rms_dbfs	-23.81	-22.17	-19.93	-8.063	-7.494	définitive
+boucle de batterie	house	213	2	r12p2 r1p1	peak_dbfs	-1.131	-0.6383	-0.2691	-0.2442	-0.1	définitive
+boucle de batterie	lofi	53	1	r4p1	tempo étiqueté (accord replié 100 %)	75	76	77	80	82	pas de cible (n 53, 1 packs)
+boucle de batterie	lofi	53	1	r4p1	dur_s	11.71	12	12.47	12.63	12.8	pas de cible (n 53, 1 packs)
+boucle de batterie	lofi	53	1	r4p1	rms_dbfs	-27.05	-24.91	-21.91	-13.59	-11.4	pas de cible (n 53, 1 packs)
+boucle de batterie	lofi	53	1	r4p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 53, 1 packs)
+boucle de batterie	multi	302	1	r1p1	tempo étiqueté (accord replié 98 %)	90	120	128	140	172	pas de cible (n 302, 1 packs)
+boucle de batterie	multi	310	1	r1p1	dur_s	4	6.4	7.385	8.001	10.67	pas de cible (n 310, 1 packs)
+boucle de batterie	multi	310	1	r1p1	rms_dbfs	-25.74	-23.36	-20.69	-18.2	-15.92	pas de cible (n 310, 1 packs)
+boucle de batterie	multi	310	1	r1p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 310, 1 packs)
+boucle de batterie	rave	140	1	r11p3	tempo étiqueté (accord replié 100 %)	155	155	155	155	155	pas de cible (n 140, 1 packs)
+boucle de batterie	rave	140	1	r11p3	dur_s	6.194	6.194	6.194	6.194	6.194	pas de cible (n 140, 1 packs)
+boucle de batterie	rave	140	1	r11p3	rms_dbfs	-19.15	-17	-10.61	-7.217	-3.784	pas de cible (n 140, 1 packs)
+boucle de batterie	rave	140	1	r11p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 140, 1 packs)
+boucle de batterie	techno	341	3	r1p1 r3p1 r5p1	tempo étiqueté (accord replié 99 %)	125	125	150	150	150	définitive
+boucle de batterie	techno	346	3	r1p1 r3p1 r5p1	dur_s	6.4	6.4	6.4	6.858	7.68	définitive
+boucle de batterie	techno	346	3	r1p1 r3p1 r5p1	rms_dbfs	-27.09	-17.65	-14.56	-9.568	-5.798	définitive
+boucle de batterie	techno	346	3	r1p1 r3p1 r5p1	peak_dbfs	-1.906	-0.8659	-0.1049	-0.1049	-0.1049	définitive
+boucle de batterie	trap	22	1	r1p1	tempo étiqueté (accord replié 100 %)	90	90	95	100	110	pas de cible (n 22, 1 packs)
+boucle de batterie	trap	22	1	r1p1	dur_s	8.728	9.601	10.14	10.67	10.67	pas de cible (n 22, 1 packs)
+boucle de batterie	trap	22	1	r1p1	rms_dbfs	-28.1	-26.31	-22.81	-16.6	-14.41	pas de cible (n 22, 1 packs)
+boucle de batterie	trap	22	1	r1p1	peak_dbfs	-0.1	-0.1	-0.1	-0.1	-0.1	pas de cible (n 22, 1 packs)
+voix	tous	1467	11	r10p1 r10p2 r11p2 r11p3 r12p2 r12p3 r2p1 r5p1 r6p1 r7p2 r8p2	dur_s	1.714	2.786	4.688	6.857	9.6	définitive
+voix	tous	1467	11	r10p1 r10p2 r11p2 r11p3 r12p2 r12p3 r2p1 r5p1 r6p1 r7p2 r8p2	rms_dbfs	-25.03	-22.09	-19.31	-17.12	-15.05	définitive
+voix	tous	1467	11	r10p1 r10p2 r11p2 r11p3 r12p2 r12p3 r2p1 r5p1 r6p1 r7p2 r8p2	peak_dbfs	-4.576	-3.033	-3.012	-2.338	-0.1049	définitive
+voix	tous	1454	11	r10p1 r10p2 r11p2 r11p3 r12p2 r12p3 r2p1 r5p1 r6p1 r7p2 r8p2	range_st	2.329	3.861	5.742	10.22	18.41	pas de cible (colonne non contre-mesurée)
+voix	tous	1454	11	r10p1 r10p2 r11p2 r11p3 r12p2 r12p3 r2p1 r5p1 r6p1 r7p2 r8p2	voiced_pct	12.6	28.79	47.74	64.2	75.17	pas de cible (colonne non contre-mesurée)
+voix	afro-house	10	1	r8p2	dur_s	16.18	16.96	17.7	18.44	47.41	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+voix	afro-house	10	1	r8p2	rms_dbfs	-18.32	-17.82	-16.97	-16.2	-15.94	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+voix	afro-house	10	1	r8p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+voix	afro-house	10	1	r8p2	range_st	6.742	6.944	7.117	7.33	9.787	pas de cible (n 10, 1 packs) (colonne non contre-mesurée)
+voix	afro-house	10	1	r8p2	voiced_pct	51.92	67.18	70.93	74.24	76.54	pas de cible (n 10, 1 packs) (colonne non contre-mesurée)
+voix	amapiano	99	1	r6p1	dur_s	0.6296	1.523	2.143	8.571	8.571	pas de cible (n 99, 1 packs)
+voix	amapiano	99	1	r6p1	rms_dbfs	-18.88	-17.76	-15.14	-12.96	-11.97	pas de cible (n 99, 1 packs)
+voix	amapiano	99	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 99, 1 packs)
+voix	amapiano	99	1	r6p1	range_st	2.758	4.354	7.934	14.91	24.73	pas de cible (n 99, 1 packs) (colonne non contre-mesurée)
+voix	amapiano	99	1	r6p1	voiced_pct	45.18	57.3	72.25	85.25	94.44	pas de cible (n 99, 1 packs) (colonne non contre-mesurée)
+voix	dnb	36	2	r10p1 r11p2	dur_s	0.3448	0.3448	11.03	11.03	11.03	définitive
+voix	dnb	36	2	r10p1 r11p2	rms_dbfs	-18.71	-17.12	-15.2	-11.7	-8.952	définitive
+voix	dnb	36	2	r10p1 r11p2	peak_dbfs	-0.1527	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+voix	dnb	36	2	r10p1 r11p2	range_st	0.1848	0.7915	4.17	17.25	25.35	pas de cible (colonne non contre-mesurée)
+voix	dnb	36	2	r10p1 r11p2	voiced_pct	23.95	43.42	73.91	97.65	100	pas de cible (colonne non contre-mesurée)
+voix	drift-phonk	10	1	r2p1	dur_s	4.8	5.1	6	6.857	6.971	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+voix	drift-phonk	10	1	r2p1	rms_dbfs	-16.5	-15.72	-15.13	-14.3	-13.46	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+voix	drift-phonk	10	1	r2p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 10, 1 packs) (contre-mesure 100 % sur 10)
+voix	drift-phonk	10	1	r2p1	range_st	2.834	4.396	13.46	15.46	18.4	pas de cible (n 10, 1 packs) (colonne non contre-mesurée)
+voix	drift-phonk	10	1	r2p1	voiced_pct	15.87	45.92	61.37	66.32	70.07	pas de cible (n 10, 1 packs) (colonne non contre-mesurée)
+voix	dubstep	2	1	r7p2	dur_s	1.179	1.179	1.179	1.179	1.179	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+voix	dubstep	2	1	r7p2	rms_dbfs	-23.43	-23.41	-23.38	-23.35	-23.33	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+voix	dubstep	2	1	r7p2	peak_dbfs	-3.012	-3.012	-3.012	-3.012	-3.012	pas de cible (n 2, 1 packs) (contre-mesure 100 % sur 2)
+voix	dubstep	2	1	r7p2	range_st	14.16	14.23	14.34	14.46	14.53	pas de cible (n 2, 1 packs) (colonne non contre-mesurée)
+voix	dubstep	2	1	r7p2	voiced_pct	19.65	19.91	20.35	20.8	21.06	pas de cible (n 2, 1 packs) (colonne non contre-mesurée)
+voix	house	21	2	r10p2 r12p2	dur_s	7.68	7.68	7.68	7.68	7.68	définitive
+voix	house	21	2	r10p2 r12p2	rms_dbfs	-21.47	-19.74	-18.34	-17.13	-15.44	définitive
+voix	house	21	2	r10p2 r12p2	peak_dbfs	-0.6188	-0.3874	-0.33	-0.268	-0.2512	définitive
+voix	house	19	2	r10p2 r12p2	range_st	0.1593	3.548	11.84	13.98	24.71	pas de cible (n 19, 2 packs) (colonne non contre-mesurée)
+voix	house	19	2	r10p2 r12p2	voiced_pct	1.992	3.538	12.58	22.8	59.86	pas de cible (n 19, 2 packs) (colonne non contre-mesurée)
+voix	rave	50	2	r11p3 r12p3	dur_s	0.8297	1.425	3.097	6.194	6.194	définitive
+voix	rave	50	2	r11p3 r12p3	rms_dbfs	-23.32	-18.44	-16.11	-14.52	-13.63	définitive
+voix	rave	50	2	r11p3 r12p3	peak_dbfs	-2.557	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+voix	rave	44	2	r11p3 r12p3	range_st	3.12	6.934	11.18	19.11	21.62	pas de cible (colonne non contre-mesurée)
+voix	rave	44	2	r11p3 r12p3	voiced_pct	7.639	16	26.48	45	52.15	pas de cible (colonne non contre-mesurée)
+voix	techno	20	1	r5p1	dur_s	6.4	6.4	6.4	6.4	6.4	pas de cible (n 20, 1 packs)
+voix	techno	20	1	r5p1	rms_dbfs	-18.88	-17.22	-16.52	-16.3	-14.89	pas de cible (n 20, 1 packs)
+voix	techno	20	1	r5p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 20, 1 packs)
+voix	techno	15	1	r5p1	range_st	0.008613	0.5142	0.946	15.68	20.75	pas de cible (n 15, 1 packs) (colonne non contre-mesurée)
+voix	techno	15	1	r5p1	voiced_pct	1.512	2.205	7.559	11.1	28.38	pas de cible (n 15, 1 packs) (colonne non contre-mesurée)
+effet	tous	772	17	r10p1 r11p2 r11p3 r12p1 r12p2 r12p3 r1p1 r2p1 r3p1 r4p1 r5p1 r6p1 r8p1 r8p2 r8p3 r9p2 r9p3	dur_s	2.206	3.429	7.68	11.03	16	définitive
+effet	tous	772	17	r10p1 r11p2 r11p3 r12p1 r12p2 r12p3 r1p1 r2p1 r3p1 r4p1 r5p1 r6p1 r8p1 r8p2 r8p3 r9p2 r9p3	rms_dbfs	-23.85	-20.3	-17.13	-14.09	-12.21	définitive
+effet	tous	772	17	r10p1 r11p2 r11p3 r12p1 r12p2 r12p3 r1p1 r2p1 r3p1 r4p1 r5p1 r6p1 r8p1 r8p2 r8p3 r9p2 r9p3	peak_dbfs	-0.2726	-0.1787	-0.1049	-0.1049	-1.035e-06	définitive
+effet	afro-house	25	1	r8p2	dur_s	3.934	7.869	7.869	12	15.74	pas de cible (n 25, 1 packs)
+effet	afro-house	25	1	r8p2	rms_dbfs	-22.67	-21.38	-18.62	-16.12	-13.35	pas de cible (n 25, 1 packs)
+effet	afro-house	25	1	r8p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 25, 1 packs)
+effet	amapiano	27	1	r6p1	dur_s	4.248	6.428	8.496	8.496	8.526	pas de cible (n 27, 1 packs)
+effet	amapiano	27	1	r6p1	rms_dbfs	-27.88	-25.37	-23.85	-21.32	-19.79	pas de cible (n 27, 1 packs)
+effet	amapiano	27	1	r6p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 27, 1 packs)
+effet	ambient	1	1	r12p1	dur_s	7.68	7.68	7.68	7.68	7.68	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+effet	ambient	1	1	r12p1	rms_dbfs	-10.64	-10.64	-10.64	-10.64	-10.64	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+effet	ambient	1	1	r12p1	peak_dbfs	-0.2586	-0.2586	-0.2586	-0.2586	-0.2586	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+effet	dnb	88	2	r10p1 r11p2	dur_s	5.517	5.517	11.03	11.03	13.2	définitive
+effet	dnb	88	2	r10p1 r11p2	rms_dbfs	-23.09	-20.1	-17.16	-13.79	-10.72	définitive
+effet	dnb	88	2	r10p1 r11p2	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+effet	drift-phonk	34	1	r2p1	dur_s	0.6637	1.714	3.75	13.71	13.71	pas de cible (n 34, 1 packs)
+effet	drift-phonk	34	1	r2p1	rms_dbfs	-19.95	-18.54	-16.98	-15.32	-11.88	pas de cible (n 34, 1 packs)
+effet	drift-phonk	34	1	r2p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 34, 1 packs)
+effet	dubstep	109	3	r1p1 r8p1 r9p3	dur_s	1.708	2	3.429	3.429	13.71	définitive
+effet	dubstep	109	3	r1p1 r8p1 r9p3	rms_dbfs	-19.13	-17.99	-14.6	-12.38	-10.74	définitive
+effet	dubstep	109	3	r1p1 r8p1 r9p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+effet	edm	254	1	r12p1	dur_s	2.287	3.207	6.442	7.68	7.68	pas de cible (n 254, 1 packs)
+effet	edm	254	1	r12p1	rms_dbfs	-23.13	-20.2	-17.94	-15.14	-12.41	pas de cible (n 254, 1 packs)
+effet	edm	254	1	r12p1	peak_dbfs	-0.2915	-0.261	-0.2202	-0.1008	-0.07679	pas de cible (n 254, 1 packs)
+effet	hiphop	1	1	r1p1	dur_s	10.67	10.67	10.67	10.67	10.67	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+effet	hiphop	1	1	r1p1	rms_dbfs	-32.03	-32.03	-32.03	-32.03	-32.03	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+effet	hiphop	1	1	r1p1	peak_dbfs	-0.1	-0.1	-0.1	-0.1	-0.1	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+effet	house	23	2	r12p2 r1p1	dur_s	7.68	7.68	7.68	7.68	7.68	définitive
+effet	house	23	2	r12p2 r1p1	rms_dbfs	-27.26	-26.44	-23.98	-22.88	-21.02	définitive
+effet	house	23	2	r12p2 r1p1	peak_dbfs	-1.373	-0.8955	-0.4739	-0.2811	-0.1503	définitive
+effet	lofi	19	1	r4p1	dur_s	2.4	2.571	3.429	4.286	5.486	pas de cible (n 19, 1 packs) (contre-mesure 100 % sur 19)
+effet	lofi	19	1	r4p1	rms_dbfs	-25.44	-23.73	-21.61	-19.94	-18.95	pas de cible (n 19, 1 packs) (contre-mesure 100 % sur 19)
+effet	lofi	19	1	r4p1	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	pas de cible (n 19, 1 packs) (contre-mesure 100 % sur 19)
+effet	rave	45	2	r11p3 r12p3	dur_s	6.194	6.194	12.39	12.39	12.39	définitive
+effet	rave	45	2	r11p3 r12p3	rms_dbfs	-23	-18.56	-16.12	-13.88	-12.77	définitive
+effet	rave	45	2	r11p3 r12p3	peak_dbfs	-0.1049	-0.1049	-0.1049	-0.1049	-0.1049	définitive
+effet	rnb	1	1	r10p1	dur_s	22.07	22.07	22.07	22.07	22.07	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+effet	rnb	1	1	r10p1	rms_dbfs	-17.34	-17.34	-17.34	-17.34	-17.34	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+effet	rnb	1	1	r10p1	peak_dbfs	-0.2005	-0.2005	-0.2005	-0.2005	-0.2005	pas de cible (n 1, 1 packs) (contre-mesure 100 % sur 1)
+effet	techno	40	2	r3p1 r5p1	dur_s	2.544	3.84	6.4	6.4	6.4	définitive
+effet	techno	40	2	r3p1 r5p1	rms_dbfs	-25.7	-23.49	-21.11	-19.25	-17.03	définitive
+effet	techno	40	2	r3p1 r5p1	peak_dbfs	-1	-1	-0.5524	-0.1049	-0.1049	définitive
+effet	trap	6	2	r1p1 r9p2	dur_s	8.979	9.591	10.88	11.17	14.17	pas de cible (n 6, 2 packs) (contre-mesure 100 % sur 6)
+effet	trap	6	2	r1p1 r9p2	rms_dbfs	-32.7	-27.97	-21.82	-18.82	-16.71	pas de cible (n 6, 2 packs) (contre-mesure 100 % sur 6)
+effet	trap	6	2	r1p1 r9p2	peak_dbfs	-0.1	-0.075	-1.035e-06	-2.588e-07	0	pas de cible (n 6, 2 packs) (contre-mesure 100 % sur 6)
+midi	tous	1817	19	r10p1 r10p2 r10p3 r11p2 r11p3 r12p2 r2p1 r3p1 r4p1 r5p1 r6p1 r7p1 r7p2 r7p3 r8p1 r8p2 r9p1 r9p2 r9p3	notes_per_bar	1	2	4	8	12	pas de cible (colonne non contre-mesurée)
+midi	tous	1817	19	r10p1 r10p2 r10p3 r11p2 r11p3 r12p2 r2p1 r3p1 r4p1 r5p1 r6p1 r7p1 r7p2 r7p3 r8p1 r8p2 r9p1 r9p2 r9p3	etendue_demitons	0	5	10	19	27	pas de cible (colonne non contre-mesurée)
+midi	tous	1817	19	r10p1 r10p2 r10p3 r11p2 r11p3 r12p2 r2p1 r3p1 r4p1 r5p1 r6p1 r7p1 r7p2 r7p3 r8p1 r8p2 r9p1 r9p2 r9p3	bars	4	4	8	8	14	pas de cible (colonne non contre-mesurée)
+midi	afro-house	107	2	r7p1 r8p2	notes_per_bar	0.75	2	4	6	14.27	pas de cible (colonne non contre-mesurée)
+midi	afro-house	107	2	r7p1 r8p2	etendue_demitons	0	0	6	12.5	22.4	pas de cible (colonne non contre-mesurée)
+midi	afro-house	107	2	r7p1 r8p2	bars	4	4	4	8	11.2	pas de cible (colonne non contre-mesurée)
+midi	amapiano	131	1	r6p1	notes_per_bar	1	2	4	5	6	pas de cible (n 131, 1 packs) (colonne non contre-mesurée)
+midi	amapiano	131	1	r6p1	etendue_demitons	0	0	3	9.5	15	pas de cible (n 131, 1 packs) (colonne non contre-mesurée)
+midi	amapiano	131	1	r6p1	bars	4	4	4	4	4	pas de cible (n 131, 1 packs) (colonne non contre-mesurée)
+midi	dnb	216	4	r10p1 r11p2 r6p1 r7p1	notes_per_bar	0.75	2	4	8	8	pas de cible (colonne non contre-mesurée)
+midi	dnb	216	4	r10p1 r11p2 r6p1 r7p1	etendue_demitons	5	7	12	17	22	pas de cible (colonne non contre-mesurée)
+midi	dnb	216	4	r10p1 r11p2 r6p1 r7p1	bars	6	8	8	8	8	pas de cible (colonne non contre-mesurée)
+midi	drift-phonk	140	1	r2p1	notes_per_bar	0.8547	1.482	5.5	8	16	pas de cible (n 140, 1 packs) (colonne non contre-mesurée)
+midi	drift-phonk	140	1	r2p1	etendue_demitons	7	8	12	19	27	pas de cible (n 140, 1 packs) (colonne non contre-mesurée)
+midi	drift-phonk	140	1	r2p1	bars	4	4	4	7	8	pas de cible (n 140, 1 packs) (colonne non contre-mesurée)
+midi	dubstep	80	3	r7p1 r8p1 r9p3	notes_per_bar	1.493	2.25	4.125	8.5	14.2	pas de cible (colonne non contre-mesurée)
+midi	dubstep	80	3	r7p1 r8p1 r9p3	etendue_demitons	3.9	6.5	10	16	24	pas de cible (colonne non contre-mesurée)
+midi	dubstep	80	3	r7p1 r8p1 r9p3	bars	4	4	4	8	16	pas de cible (colonne non contre-mesurée)
+midi	edm	68	2	r7p1 r7p3	notes_per_bar	1.25	2	5.125	8.188	12.9	pas de cible (colonne non contre-mesurée)
+midi	edm	68	2	r7p1 r7p3	etendue_demitons	0	2	7	12.5	24.6	pas de cible (colonne non contre-mesurée)
+midi	edm	68	2	r7p1 r7p3	bars	4	7	8	8	16	pas de cible (colonne non contre-mesurée)
+midi	hardstyle	85	1	r10p3	notes_per_bar	1	3	3.875	6	10.3	pas de cible (n 85, 1 packs) (colonne non contre-mesurée)
+midi	hardstyle	85	1	r10p3	etendue_demitons	7	10	16	20	26.6	pas de cible (n 85, 1 packs) (colonne non contre-mesurée)
+midi	hardstyle	85	1	r10p3	bars	8	8	8	8	8	pas de cible (n 85, 1 packs) (colonne non contre-mesurée)
+midi	house	210	4	r10p2 r12p2 r6p1 r7p1	notes_per_bar	1	3	5	7.5	12	pas de cible (colonne non contre-mesurée)
+midi	house	210	4	r10p2 r12p2 r6p1 r7p1	etendue_demitons	2	5	10	19	24	pas de cible (colonne non contre-mesurée)
+midi	house	210	4	r10p2 r12p2 r6p1 r7p1	bars	4	4	4	8	8	pas de cible (colonne non contre-mesurée)
+midi	lofi	78	4	r4p1 r6p1 r7p1 r7p3	notes_per_bar	1.212	1.812	3.625	6	8.15	pas de cible (colonne non contre-mesurée)
+midi	lofi	78	4	r4p1 r6p1 r7p1 r7p3	etendue_demitons	5	7.25	19	33.75	47.9	pas de cible (colonne non contre-mesurée)
+midi	lofi	78	4	r4p1 r6p1 r7p1 r7p3	bars	4	8	8	8	16	pas de cible (colonne non contre-mesurée)
+midi	rave	126	1	r11p3	notes_per_bar	0.75	1.812	4	7	12	pas de cible (n 126, 1 packs) (colonne non contre-mesurée)
+midi	rave	126	1	r11p3	etendue_demitons	0	0	6	13	18.5	pas de cible (n 126, 1 packs) (colonne non contre-mesurée)
+midi	rave	126	1	r11p3	bars	4	6	8	8	8	pas de cible (n 126, 1 packs) (colonne non contre-mesurée)
+midi	synthwave	98	1	r9p1	notes_per_bar	1.25	3	6.375	8	16	pas de cible (n 98, 1 packs) (colonne non contre-mesurée)
+midi	synthwave	98	1	r9p1	etendue_demitons	7	8	15	24	29	pas de cible (n 98, 1 packs) (colonne non contre-mesurée)
+midi	synthwave	98	1	r9p1	bars	4	8	8	8	8	pas de cible (n 98, 1 packs) (colonne non contre-mesurée)
+midi	techno	192	3	r3p1 r5p1 r7p1	notes_per_bar	2	4	5	10	16	pas de cible (colonne non contre-mesurée)
+midi	techno	192	3	r3p1 r5p1 r7p1	etendue_demitons	0	0	7	15.25	26.9	pas de cible (colonne non contre-mesurée)
+midi	techno	192	3	r3p1 r5p1 r7p1	bars	3	4	4	4	8	pas de cible (colonne non contre-mesurée)
+midi	trance	33	1	r7p1	notes_per_bar	2.6	5.75	9	15.88	29.6	pas de cible (n 33, 1 packs) (colonne non contre-mesurée)
+midi	trance	33	1	r7p1	etendue_demitons	5	8	16	26	35	pas de cible (n 33, 1 packs) (colonne non contre-mesurée)
+midi	trance	33	1	r7p1	bars	4	4	8	16	16	pas de cible (n 33, 1 packs) (colonne non contre-mesurée)
+midi	trap	172	3	r7p1 r7p3 r9p2	notes_per_bar	0.47	1	2.375	6	8.975	pas de cible (colonne non contre-mesurée)
+midi	trap	172	3	r7p1 r7p3 r9p2	etendue_demitons	0	5	12	24.25	35.9	pas de cible (colonne non contre-mesurée)
+midi	trap	172	3	r7p1 r7p3 r9p2	bars	4	8	12	16	16	pas de cible (colonne non contre-mesurée)

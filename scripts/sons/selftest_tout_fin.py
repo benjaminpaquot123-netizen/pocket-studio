@@ -126,7 +126,19 @@ def test_relabel():
     check_eq("R an unknown id is refused", got, "refused")
 
 
-TESTS = [test_key_breakdown, test_drum_note_label, test_tempo_fold, test_relabel]
+def test_cibles_autres():
+    """Targets of the other families: their own self-test on fabricated tables must pass."""
+    sys.path.insert(0, os.path.join(HERE, "fin"))
+    import contextlib
+    import io
+    import cibles_autres
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rc = cibles_autres.selftest()
+    check_eq("C cibles_autres self-test", (rc, buf.getvalue().strip().splitlines()[-1]), (0, "0 failed"))
+
+
+TESTS = [test_key_breakdown, test_drum_note_label, test_tempo_fold, test_relabel, test_cibles_autres]
 
 
 def main():

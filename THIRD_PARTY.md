@@ -61,3 +61,9 @@
 | --- | --- | --- | --- |
 | [FDK AAC](https://github.com/nu774/fdkaac) (`fdkaac`) | paquet système Ubuntu 24.04 | Licence FDK AAC (Fraunhofer) | Matrice des exports (`scripts/export-matrix.sh`) : encodage M4A de contrôle |
 | [FFmpeg](https://ffmpeg.org) | 6.1.1 (paquet système) | LGPL-2.1+/GPL-2+ | Relecture des fichiers exportés, décodage MP3 du contrôle sur vraie chanson |
+| [VocalSet](https://zenodo.org/records/1193957) (Wilkins, Seetharaman, Wahl, Pardo, 2018) | 1.2 (Zenodo 1193957) | CC BY 4.0 | Sons neufs « claviers-fx » (`scripts/son/neuf/claviers-fx/`) : coupures de voix tirées des voyelles tenues et arpèges (jamais de paroles) ; audio hors du dépôt |
+| [pedalboard](https://github.com/spotify/pedalboard) (Spotify) | 0.9.26 | GPL-3.0 | Sons neufs « claviers-fx » : chaîne de traitement (filtres, compression, réverbe) réglée par CMA-ES |
+| [pycma](https://github.com/CMA-ES/pycma) | 4.6.0 | BSD-3-Clause | Sons neufs « claviers-fx » : réglage de la chaîne vers l'ADN Essentia de la famille |
+| [Essentia](https://essentia.upf.edu) | 2.1b6.dev1389 | AGPL-3.0 | Sons neufs « claviers-fx » : mesure de la distance à l'ADN (`scripts/son/essentia/base.py`) |
+| [librosa](https://librosa.org) | 0.11.0 | ISC | Sons neufs « claviers-fx » : contre-mesure de la distance |
+| [LAION-CLAP](https://github.com/LAION-AI/CLAP) (checkpoint `music_audioset_epoch_15_esc_90.14`) | 1.1.7 | CC0-1.0 (code et poids) | Sons neufs « claviers-fx » : note facultative de ressemblance au texte (style + famille) |

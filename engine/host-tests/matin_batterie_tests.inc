@@ -428,7 +428,9 @@ void testMeasuredKitDefaultIdentical() {
     CHECK(v1 == 0x13771f7c1240426bull);
     CHECK(v3 == 0xa6b2386ef329bd87ull);
     CHECK(fnv(kitSong(3, -1.0f)) == v3);
-    CHECK(fnv(kitSong(3, 0.0f)) != v3);
+    // House keeps every voice since the definitive targets (docs/sons/fin): dubstep swaps the most.
+    CHECK(fnv(kitSong(3, 0.0f)) == v3);
+    CHECK(fnv(kitSong(3, 5.0f)) != v3);
 }
 
 // The bench's command swaps the kit's voices for the measured ones (kick, snares, clap, hats, rim,
@@ -497,8 +499,12 @@ void testMeasuredChosenInRange() {
         const double t20 = lastAbove(e, 20.0), t40 = lastAbove(e, 40.0);
         const bool pitched = t.steady.set();
         const double steady = pitched ? pitchHz(x, t.family == 7 ? 40.0 : 60.0, std::max(120.0, std::min(t20, 300.0)), 4.0 * t.steady.hi) : 0.0;
-        const bool ok = finite && peak > 0.1f && peak < 1.0f && allocations == 0 && (!t.t20.set() || within(t20, t.t20, 0.1)) &&
-                        within(t40, t.t40, 0.1) && (!pitched || within(steady, t.steady, 0.08));
+        // The dnb snare's long version is the one the definitive target picks (Schroeder t60 inside p25..p75,
+        // docs/sons/fin/cibles-batterie-definitives.tsv): the old t20 / t40 window no longer holds it.
+        const bool superseded = t.family == m::Snare && t.style == m::Dnb && c == m::ChoiceLow;
+        const bool ok = finite && peak > 0.1f && peak < 1.0f && allocations == 0 &&
+                        (superseded || ((!t.t20.set() || within(t20, t.t20, 0.1)) && within(t40, t.t40, 0.1))) &&
+                        (!pitched || within(steady, t.steady, 0.08));
         std::printf("  chosen %-9s %-9s v%+d %s t20 %4.0f [%4.0f-%4.0f] t40 %4.0f [%4.0f-%4.0f] note %5.1f peak %.2f\n", kFamilyNames[t.family],
                     kStyleNames[t.style], c, ok ? "ok  " : "FAIL", t20, double(t.t20.lo), double(t.t20.hi), t40, double(t.t40.lo), double(t.t40.hi),
                     steady, double(peak));
@@ -508,7 +514,9 @@ void testMeasuredChosenInRange() {
     CHECK(failed == 0);
     // The families without a target that counts keep the app's voice (the 808, rims, house snare...).
     CHECK(m::choice(m::Bass808, m::Trap) == m::ChoiceKeep && m::choice(m::Rim, m::House) == m::ChoiceKeep);
-    CHECK(m::choice(m::Kick, m::Techno) != m::ChoiceKeep && m::choice(m::Snare, m::House) == m::ChoiceKeep);
+    CHECK(m::choice(m::Kick, m::TechHouse) != m::ChoiceKeep && m::choice(m::Snare, m::House) == m::ChoiceKeep);
+    // Definitive targets (docs/sons/fin): the techno kick only has a length and a peak that count, so it stays.
+    CHECK(m::choice(m::Kick, m::Techno) == m::ChoiceKeep && m::choice(m::Snare, m::Dnb) == m::ChoiceLow);
 }
 
 }  // namespace matin_tests

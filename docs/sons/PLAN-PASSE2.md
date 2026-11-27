@@ -36,8 +36,8 @@ Au plus fort : 11 discussions ouvertes à la fois, sous le plafond de 31. Chacun
 | 8 | Dubstep + afro-house | 26-11 22 h 17 | `9a804e452` | oui (1218 fichiers, 1224 lignes dont 6 de kit) | 0 |
 | 9 | Deathstep | 26-11 22 h 17 | `6d4803c8b` | oui (1325 fichiers, 1376 lignes dont 51 de kit) ; pack 1 forcé en synthwave comme prévu | 0 |
 | 10 | DnB, deep house, hardstyle | 26-11 22 h 17 | `d9f22701b` | oui (1025 fichiers, 1077 lignes dont 52 de kit) ; fausse alerte du lanceur pour 2 lignes de style (p1) | 0 |
-| 11 | Ghosthack 4-5-6 | 26-11 22 h 17 | `fc23b0808` | oui (1903 fichiers, 1977 lignes dont 74 de kit) ; le pack DnB est ici et non au RAR 10 comme l'écrit `STYLES-PACKS.md` | 0 |
-| 12 | Ghosthack 1-2-3 | 26-11 22 h 17 | `d05cf617a` | oui (786 = 786) | 0 |
+| 11 | lot de packs 4-5-6 | 26-11 22 h 17 | `fc23b0808` | oui (1903 fichiers, 1977 lignes dont 74 de kit) ; le pack DnB est ici et non au RAR 10 comme l'écrit `STYLES-PACKS.md` | 0 |
+| 12 | lot de packs 1-2-3 | 26-11 22 h 17 | `d05cf617a` | oui (786 = 786) | 0 |
 
 Contrôle du chef du 2026-11-26, 22 h 30 (RAR 10 : 22 h 35), sur les tables poussées (un seul commit par branche, que des CSV dans `docs/sons/passe2/rarN/`, 0 lien symbolique, 0 identifiant en double, somme des lignes égale au tableau de contrôle). RAR 7 et 11 contrôlés de la même façon à 22 h 40. La comparaison du nombre de fichiers avec la première passe est faite par la discussion de réunion.
 

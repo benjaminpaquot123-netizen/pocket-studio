@@ -22,5 +22,5 @@ if [ "${1:-}" = "bench" ]; then
 fi
 
 # The tool is checked before it measures: no study on a red self-test.
-PYTHONDONTWRITEBYTECODE=1 python3 -I "$here/selftest.py" | tail -n 1
-PYTHONDONTWRITEBYTECODE=1 python3 -I "$here/etude.py" "$work/render_voice" "$@"
+python3 -I -B "$here/selftest.py" | tail -n 1
+python3 -I -B "$here/etude.py" "$work/render_voice" "$@"

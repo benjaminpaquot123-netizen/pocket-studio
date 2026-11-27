@@ -48,5 +48,5 @@ p25, à la médiane et au p75 ; « serré » sinon.
 - **Caisse claire dnb en A** : A gagne nettement (0,19 contre 1,00), mais A est une variante d'écoute
   du matin ; à confirmer à l'oreille.
 - Le timbre (brillance) n'entre toujours pas dans la règle : seules les longueurs comptent.
-- Page des originaux : construite seulement quand Google Drive laisse retélécharger les archives
-  (quota dépassé le 27 novembre).
+- Page des originaux (privée) : 5 boucles sur 60 lignes. Le transfert du 27 novembre ne contenait
+  aucun coup isolé de la liste ; les 55 lignes batterie y sont marquées « manque ».

@@ -576,7 +576,8 @@ def attack_gauss(x, t_off, f0):
     sf = f0 / GAUSS_BANDS
     env = np.zeros(n)
     for k in _attack_partials(f0):
-        env += np.abs(np.fft.ifft(spec * np.exp(-0.5 * ((f - k * f0) / sf) ** 2)))
+        env += np.abs(np.fft.ifft(spec * np.exp(-0.5 * ((f - k * f0) / sf) ** 2))) ** 2
+    env = np.sqrt(env)
     st = 1.0 / (2 * math.pi * sf)
     return attack_fit(env[: len(xp)], t_off + PAD / SR, Kernel(sigma=st))
 
@@ -821,7 +822,8 @@ def env_path_a(x, t_off, f0, harmonic=True):
     xp = np.concatenate((np.zeros(PAD), x[: int(t_off * SR)]))
     env = np.zeros(len(xp))
     for k in _attack_partials(f0):
-        env += np.abs(_hetero(xp, k * f0, length))
+        env += np.abs(_hetero(xp, k * f0, length)) ** 2
+    env = np.sqrt(env)
     # Same model as path B (ramp smoothed by the known kernel, least-squares fit), its own
     # envelope: the two boxes of _hetero, a triangle, taken exactly (not as a Gaussian).
     att = attack_fit(env, t_off + PAD / SR, Kernel(taps=box_kernel(length, 2)))

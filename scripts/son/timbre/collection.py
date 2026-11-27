@@ -55,6 +55,30 @@ def fir_band(x, key, mask):
     return fftconv(x, h)[d:d + len(x)]
 
 
+# Band lengths (t20_low/mid/high). The counter cuts its three bands with its own shape and its
+# own code: the classic 24 dB/octave crossover (4th-order Butterworth magnitude on each side),
+# where the measure uses a one-octave sine/cosine crossfade. Nothing is borrowed from the
+# measure but the three edges and the "empty band" level, which are the definition. A length
+# that both shapes read alike belongs to the sound; one that follows the shape is the skirt of
+# the neighbour band, and the 98 % rule then refuses it (TIMBRE-ETAPE01.md, tour 2).
+BAND_EDGES_HZ = ((20.0, 200.0), (200.0, 2000.0), (2000.0, 20000.0))
+BAND_ORDER = 4
+BAND_EMPTY_DB = 30.0
+BAND_PAD = 16384
+
+
+def counter_bands(x, order=BAND_ORDER):
+    """x cut in three bands, zero phase: |H| = 1 / sqrt(1 + (lo/f)^2n) / sqrt(1 + (f/hi)^2n)."""
+    padded = np.concatenate([np.zeros(BAND_PAD), np.asarray(x, dtype=np.float64), np.zeros(BAND_PAD)])
+    spec = np.fft.rfft(padded)
+    f = np.maximum(np.fft.rfftfreq(len(padded), 1.0 / SR), 1e-6)
+    out = []
+    for lo, hi in BAND_EDGES_HZ:
+        gain = 1.0 / np.sqrt((1.0 + (lo / f) ** (2 * order)) * (1.0 + (f / hi) ** (2 * order)))
+        out.append(np.fft.irfft(spec * gain, len(padded))[BAND_PAD:BAND_PAD + len(x)])
+    return out
+
+
 def counter_onset(x):
     """Start of the first 0.5 ms block whose RMS is within 30 dB of the loudest block."""
     x = np.asarray(x, dtype=np.float64)
@@ -132,9 +156,9 @@ def counter(x):
         out["hf_db"] = max(10.0 * math.log10(max(hf / tot, 1e-30)), -80.0)
 
     whole = float(power[onset:].sum())
-    for g, name in enumerate(("low", "mid", "high")):
-        p = fir_band(x, ("group", g), lambda f, g=g: T._group_mask(f, g)) ** 2
-        if p[onset:].sum() > whole * 10.0 ** (-30.0 / 10.0):
+    for name, band in zip(("low", "mid", "high"), counter_bands(x)):
+        p = band ** 2
+        if p[onset:].sum() > whole * 10.0 ** (-BAND_EMPTY_DB / 10.0):
             out["t20_%s_ms" % name] = counter_decay_ms(p, onset, 20)
 
     out["centroid_hz"] = _kernel_centroid(seg, None)

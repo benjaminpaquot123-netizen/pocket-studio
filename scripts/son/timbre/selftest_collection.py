@@ -83,7 +83,7 @@ def main():
 
     # Band lengths: the counter cuts its bands with its own shape and its own code. It may not
     # borrow the measure's band mask nor its filter, or the agreement only checks arithmetic.
-    band_src = inspect.getsource(C.counter) + inspect.getsource(getattr(C, "counter_band", C.fir_band))
+    band_src = inspect.getsource(C.counter) + inspect.getsource(C.counter_bands)
     truth("independence: the band-length counter never uses the measure's band mask", "_group_mask" not in band_src)
     truth("independence: the band-length counter never uses the measure's filter", "_fir(" not in band_src
           and "soft_mask" not in band_src)
@@ -140,9 +140,28 @@ def main():
     for kind, seed in (("snare", 31), ("hat", 32), ("kick", 33)):
         sounds += T.family(kind, 30, np.random.default_rng(seed))
     pairs = [(C.measure(s), C.counter(s)) for s in sounds]
+
+    def share(k, lo, hi):
+        n, ok = C.agreement([a[k] for a, _ in pairs[lo:hi]], [b[k] for _, b in pairs[lo:hi]], k)
+        return n, 100.0 * ok / max(n, 1)
+
     for k in C.ALL_KEYS:
-        n, ok = C.agreement([a[k] for a, _ in pairs], [b[k] for _, b in pairs], k)
-        check("agreement on 90 invented drums: %s (%d counted)" % (k, n), 100.0 * ok / max(n, 1), 100.0, 2.0)
+        if k == "t20_mid_ms":
+            continue
+        n, pct = share(k, 0, 90)
+        check("agreement on 90 invented drums: %s (%d counted)" % (k, n), pct, 100.0, 2.0)
+    # Band lengths: the two band shapes read the same length where the band carries the body of
+    # the sound (the snare everywhere, the hat on top, the kick at the bottom)...
+    for kind, lo, k in (("snare", 0, "t20_low_ms"), ("snare", 0, "t20_mid_ms"), ("snare", 0, "t20_high_ms"),
+                        ("hat", 30, "t20_high_ms"), ("kick", 60, "t20_low_ms")):
+        n, pct = share(k, lo, lo + 30)
+        check("band length where the body is: %s %s (%d counted)" % (kind, k, n), pct, 100.0, 2.0)
+    # ...and not where it only holds the skirt of the neighbour band: the length then follows
+    # the shape of the filter, and the 98 % rule must refuse it (it did not, with a shared mask).
+    for kind, lo in (("hat", 30), ("kick", 60)):
+        n, pct = share("t20_mid_ms", lo, lo + 30)
+        truth("skirt band refused by the 98 %% rule: %s t20_mid_ms (%d counted, %.0f %%)" % (kind, n, pct),
+              n > 0 and pct < 98.0)
 
     # The copie trial: one invented snare redrawn with our own noise on finer and finer grids.
     rows = C.copie_trial()

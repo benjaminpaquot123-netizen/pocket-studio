@@ -9,19 +9,23 @@ sons inventés pour l'étude, jamais sur un échantillon acheté. Tout se rejoue
 1. **Le constat.** La règle ne regarde que la longueur, et ça se voit : nos sons sont dans la
    fourchette pour 23 longueurs sur 23, mais pour 16 mesures de timbre sur 27. Sur un charley, 71
    recettes sur 75 sont « aussi bonnes » pour la règle alors que leur brillance va de 1 686 à 16 090 Hz.
-2. **La méthode qui gagne.** Mesurer le timbre (17 nombres en plus des deux longueurs, chacun vérifié
-   par un deuxième calcul), viser le portrait-robot de la famille, et laisser une recherche
+2. **La méthode qui gagne.** Mesurer le timbre (17 nombres en plus des deux longueurs, dont 15
+   vérifiés par un deuxième calcul), viser le portrait-robot de la famille, et laisser une recherche
    automatique régler la recette. Sur trois familles inventées, la voix d'aujourd'hui passe de 3, 5
-   et 3 mesures dans la fourchette à 19 sur 19, 16 sur 17 et 17 sur 18.
+   et 3 mesures dans la fourchette à 19 sur 19, 16 sur 17 et 17 sur 18 (comptées sur les sons qui
+   ont servi à régler : à confirmer sur des sons mis de côté).
 3. **La limite légale.** On ne garde aucun son, aucun morceau de son, et on vise toujours une famille
-   (au moins 20 sons, 2 packs), jamais un son. Deux garde-fous chiffrés disent quand un réglage
-   ressemble trop à un seul original.
+   (au moins 20 sons, 2 packs), jamais un son. C'est cette règle de travail qui protège : les deux
+   garde-fous chiffrés repèrent une copie presque identique, pas une copie redessinée avec notre
+   propre bruit.
 4. **Le coût.** La recherche se fait sur la machine de développement : zéro calcul en plus sur le
-   téléphone. Une voix plus riche (bruit en bandes, quelques résonances) coûterait au plus 1,7 à 1,9
-   fois la voix d'aujourd'hui ; elle n'est à construire que là où la recherche plafonne.
+   téléphone. Une voix plus riche (bruit en bandes, quelques résonances) coûterait de l'ordre de 1,5
+   à 2 fois la voix d'aujourd'hui selon le son (chiffre de la machine de test, à refaire sur le
+   téléphone) ; elle n'est à construire que là où la recherche plafonne.
 5. **Ce qui n'est pas prouvé.** Rien n'a été mesuré sur la vraie collection : c'est l'étape 0 du
    plan. La note du kick se lit par deux chemins sur 5 de nos 6 kicks ; le sixième est trop court
-   pour avoir une note. L'oreille de Benjamin reste le dernier juge (écoute A/B, étape 5).
+   pour avoir une note. L'oreille de Benjamin reste le dernier juge (écoute A/B, étape 5). Une
+   relecture à l'aveugle a fait corriger plusieurs affirmations trop belles : section 8.
 
 ## 1. D'où on part
 
@@ -60,9 +64,11 @@ cibles définitives déjà publiées.
 | part au-dessus de 10 kHz | 6 sur 9 |
 | attaque contre corps | 8 sur 10 |
 
-Longueurs : 23 sur 23. Timbre : 16 sur 27. Les plus loin : la caisse claire dnb (centre de gravité
-à 440 Hz pour une fourchette de 1 930 à 4 069 Hz), les claps dnb et techhouse (aigus 6 à 12 dB trop
-bas), le crash dubstep (3 115 Hz pour 3 965 à 6 094). Les charleys sont dedans partout.
+Longueurs : 23 sur 23. Timbre : 16 sur 27. Le 23 sur 23 n'est pas un exploit : les recettes ont été
+choisies sur ces longueurs-là, il dit seulement que le choix a été bien fait. Les plus loin pour le
+timbre : la caisse claire dnb (centre de gravité à 440 Hz pour une fourchette de 1 930 à 4 069 Hz),
+les claps dnb et techhouse (part d'aigus 6 à 7 dB sous le bas de la fourchette, environ 12 dB sous
+la médiane), le crash dubstep (3 115 Hz pour 3 965 à 6 094). Les charleys sont dedans partout.
 
 Essai `aveugle` : pour une case, 75 variantes de la recette choisie ; on garde celles que la règle
 actuelle juge aussi bonnes, et on regarde leur timbre.
@@ -75,6 +81,12 @@ actuelle juge aussi bonnes, et on regarde leur timbre.
 
 La règle actuelle ne fait donc pas la différence entre un charley sourd et un charley qui siffle.
 
+Portée de cet essai : les variantes ne changent que les deux filtres du bruit, le clic et le métal,
+jamais les enveloppes ; « aussi bonne » veut dire un score de longueur pas plus mauvais que celui de
+la recette choisie (ou sous 0,5). Il montre que la règle laisse passer des timbres très différents,
+pas combien de recettes en tout sont dans ce cas. La ligne du kick est la moins parlante : ses
+variantes bougent peu.
+
 ## 2. La limite entre « s'inspirer » et « copier »
 
 Je ne suis pas juriste : ce qui suit est une lecture prudente, à faire confirmer si un jour l'appli
@@ -85,9 +97,14 @@ est vendue.
 - **Europe.** Arrêt Pelham (Cour de justice de l'Union européenne, C-476/17, 29 juillet 2019) :
   reprendre un extrait d'un enregistrement, même très court, est une reproduction, sauf s'il est
   modifié au point de ne plus être reconnaissable à l'oreille. C'est le droit du producteur de
-  l'enregistrement (directive 2001/29, article 2 c).
+  l'enregistrement (directive 2001/29, article 2 c). À ne pas étirer : cet arrêt parle d'extraits
+  pris dans un enregistrement. Il ne dit rien d'un son refait de zéro qui imite, et son « plus
+  reconnaissable à l'oreille » n'est pas un permis de déguiser une copie.
 - **États-Unis.** 17 U.S.C. § 114(b) : le droit sur un enregistrement ne couvre pas un autre
-  enregistrement fait de sons produits indépendamment, même s'il imite ou simule le premier.
+  enregistrement fait de sons produits indépendamment, même s'il imite ou simule le premier. Pour
+  les extraits très courts, les juges ne sont pas d'accord entre eux : Bridgeport (6e circuit,
+  2005) ne tolère aucun extrait d'enregistrement, VMG Salsoul (9e circuit, 2016) en tolère de
+  minuscules. Raison de plus pour n'en prendre aucun.
 - **Le contrat.** Un coup de batterie isolé n'a en général pas de droit d'auteur comme une mélodie ;
   ce qui compte, c'est le droit sur l'enregistrement et la licence du pack. Ces licences interdisent
   souvent de refaire une banque de sons ou un instrument avec leur contenu, et de plus en plus
@@ -117,10 +134,21 @@ ce que valent ses 29 voisines de famille (la plus proche est à 0,42 en empreint
 | 513 × 286 | 146 718 | 0,38 | 1,55 dB | −0,1 dB |
 | le son lui-même, à peine filtré | tout | 0,02 | 0,03 dB | −41,5 dB |
 
-Deux leçons. Le test d'annulation (soustraire l'original et voir ce qui reste) est **aveugle** pour un
-son de bruit : il ne voit jamais la copie redessinée. La distance au plus proche voisin, elle, la
-voit : dès 22 bandes, le dessin est plus près de ce son que n'importe quel autre son de la famille.
-Une grille de 9 bandes reste plus loin que ses propres voisins.
+Le seuil du garde-fou est l'écart des deux sons les plus proches de la famille : 0,28 en empreinte,
+1,77 dB en carte. Trois leçons, dont deux contre nous :
+
+- Le test d'annulation (soustraire l'original et voir ce qui reste) est **aveugle** pour un son de
+  bruit : il ne voit jamais la copie redessinée.
+- La distance d'empreinte **ne la voit pas non plus**. Aucune grille ne passe sous 0,28 (0,36 au
+  mieux), et recopier 146 718 nombres ne rapproche pas plus qu'en recopier 264 : ce qui reste, c'est
+  l'écart d'un autre tirage du bruit.
+- La carte bandes-temps ne la voit que pour les deux grilles les plus fines (1,71 et 1,55 dB). Les
+  grilles de 22 à 49 bandes, qui recopient déjà des centaines de nombres d'un seul son, passent.
+
+Autrement dit : **aucun de nos chiffres ne repère de façon sûre une copie redessinée avec notre
+propre bruit.**
+Ils repèrent la copie presque identique (dernière ligne du tableau). Contre la copie redessinée, la
+seule protection est la façon de travailler : ne jamais régler sur un son.
 
 Essai `copie`, partie tonale : on colle des résonances sur le corps d'un kick inventé (ses 29 voisins
 s'annulent contre lui de 3,2 dB en médiane, 6,9 dB au mieux).
@@ -163,6 +191,17 @@ Deux garde-fous, à passer pour chaque son avant qu'il entre :
 2. **Annulation** : contre chaque référence, notre son ne doit pas s'annuler plus profondément que
    les références entre elles. Ce test ne vaut que pour les sons tonaux (kick, 808, tom).
 
+Ce que valent ces garde-fous (essai `copie`) : ils arrêtent une copie presque identique, et un
+réglage tonal collé sur un seul son (le kick à 16 nombres s'annule de 14,6 dB, bien plus profond que
+son meilleur voisin, 6,9 dB). Ils **n'arrêtent pas** une copie redessinée avec notre bruit. Et le
+test d'annulation ne cherche le meilleur calage que sur 5 ms de part et d'autre, à vitesse égale :
+une copie décalée de 1 à 2 % en hauteur lui échapperait sans doute (pas mesuré ici). Ils ne
+remplacent donc pas la **règle de travail**, qui passe avant eux :
+
+- aucune analyse d'un son précis ne règle la synthèse : les cibles sont des tableaux de famille,
+  rien d'autre ;
+- les techniques de la classe D (section 3) restent refusées, quoi que disent les distances.
+
 Les mesures faites sur un son précis ne sortent jamais de la machine de mesure : seul le tableau de
 famille (médiane, fourchettes, nombre de sons) est publié, comme aujourd'hui.
 
@@ -184,6 +223,14 @@ qu'il n'est pas mesuré dessus.
 | réponse courte, 64 points | 20,7 ns | ×0,69 |
 | réponse courte, 256 points | 110 ns | ×3,7 |
 | réponse courte, 2 048 points | 1 242 ns | ×41 |
+
+Ces chiffres sont fragiles, pour trois raisons. Le « ×1 » est une seule recette (une caisse claire) :
+le relecteur, avec son propre banc (hors dépôt), trouve de 25 ns (charley fermé) à 50 ns (kick)
+selon la recette, donc un même bloc pèse du simple au double selon le son auquel on le compare.
+D'un passage à l'autre, sur une machine occupée, un bloc peut varier de moitié (32 résonances : 16 à
+25 ns chez lui ; le bruit en 24 bandes lui a donné 16,4 ns, pas 18,2). Enfin le banc tourne sur un
+processeur de serveur, sans les conditions d'un téléphone. À retenir : l'ordre de grandeur, pas la
+décimale.
 
 Tous ces blocs sont écrits comme le veut le thread audio : tableaux de taille fixe, aucune
 allocation, aucun verrou. Un piège trouvé en les mesurant : une résonance qu'on laisse mourir
@@ -252,7 +299,8 @@ restent dehors après A1 (aujourd'hui, les charleys sont dedans).
 | Recherche bayésienne | Quand un essai coûte cher | Un essai coûte ici une fraction de seconde |
 | Réponse courte synthétisée (convolution) | Une couleur de « boîte » ou de pièce, fabriquée par nous | 64 points coûtent autant que B1 pour moins de réglages ; au-delà de 256 points, trop cher |
 | Tables pré-rendues depuis notre synthé | Zéro calcul | On perd les réglages en direct |
-| Modèle physique (membrane, plaque) | Batteries acoustiques | Lourd, et nos familles sont des sons de machines |
+| Modèle physique (membrane, plaque) | Batteries acoustiques ; une membrane dont la tension se relâche donne toute seule le glissé de note d'un kick ou d'un tom | Lourd, et nos familles sont des sons de machines ; le glissé réglé à la main (B4) fait le même travail avec deux nombres |
+| Bruit dans un filtre qui change au fil du son (LPC image par image) | Une couleur de bruit qui évolue finement | Réglé sur des médianes de famille, c'est B1 en plus cher ; réglé en suivant un son, c'est la classe D |
 | Grain « vieille machine » (résolution réduite, saturation) | Une part de la couleur des références | À ajouter seulement si une mesure le réclame |
 
 ### Classe D : refusé
@@ -281,10 +329,12 @@ hors de portée d'un téléphone.
 Même formule que la règle actuelle (écart = 2 × |valeur − médiane| ÷ (p90 − p10)), mêmes cinq
 conditions par case pour qu'une cible soit « définitive ».
 
-### Les contre-mesures : chaque nombre calculé par un deuxième chemin
+### Les contre-mesures : un deuxième chemin pour 15 nombres sur 17
 
 Le premier chemin découpe les bandes dans le spectre ; le second passe le son dans des filtres
-écrits dans le temps, et calcule les centres de gravité sans spectre du tout. Essai `contre`, sur
+écrits dans le temps, et calcule les centres de gravité sans spectre du tout. Deux nombres n'ont
+pas encore de second chemin (part au-dessus de 10 kHz, attaque contre corps), et les longueurs t20
+et t60 gardent la contre-mesure de la règle actuelle, qui n'est pas rejouée ici. Essai `contre`, sur
 144 sons (nos 54 et 90 inventés) :
 
 | Mesure | Accord | Pire écart |
@@ -295,6 +345,12 @@ Le premier chemin découpe les bandes dans le spectre ; le second passe le son d
 | t20 de l'aigu | 93 sur 93 | 0,0 % |
 | bande la plus grave (20 à 100 Hz) | 99 sur 100 | 1,14 dB |
 | les huit autres bandes | toutes | 0,26 dB |
+
+Réserve relevée par le relecteur : pour les bandes et leurs t20, les deux chemins filtrent
+différemment mais partagent le dessin des bandes, le repérage du début du son et le calcul de la
+chute. Ce tableau prouve donc que le **filtrage** est juste, pas le reste : un défaut dans ces trois
+morceaux communs passerait sans bruit. Une contre-mesure complète (autre repérage du début, autre
+calcul de la chute) est à écrire à l'étape 0.
 
 ### L'outil s'est fait prendre par sa propre contre-mesure, trois fois
 
@@ -366,7 +422,8 @@ Essai `famille` : trois familles inventées (30 sons, 3 « packs » inventés ch
 synthétiseur caché plus riche que notre voix. On vise leur portrait-robot.
 
 « Dans la fourchette » = nombre de mesures de l'empreinte entre p10 et p90 de la famille. Un vrai
-membre de la famille en a 15 sur 19 en médiane (caisse claire), 14 sur 17 (charley), 14 sur 18 (kick).
+membre de la famille en a 15 sur 19 en médiane (caisse claire), 14 sur 17 (charley), 14 sur 18 (kick),
+en le comptant lui-même dans la fourchette.
 
 | Réglage | Caisse claire | Charley | Kick |
 |---|---|---|---|
@@ -378,6 +435,12 @@ membre de la famille en a 15 sur 19 en médiane (caisse claire), 14 sur 17 (char
 
 Ce qu'on en tire :
 
+- **À lire avec prudence : le 19 sur 19 est presque automatique.** La recherche réduit exactement ces
+  écarts-là, sur les 30 sons qui définissent la fourchette, et on garde le meilleur de trois
+  départs avec ce même score. Aucun son n'a été mis de côté, et une seule mesure n'a jamais été
+  visée (la carte bandes-temps). Ce chiffre dit que la voix *peut* atteindre la cible, pas que le
+  son est bon. Il fait même mieux qu'un vrai membre de la famille (15 sur 19), ce qui doit mettre
+  la puce à l'oreille.
 - **Viser les longueurs seules peut empirer le timbre** : le score du charley passe de 3,30 à 11,01,
   celui du kick de 2,62 à 16,29 (il ne reste que 3 mesures sur 18 dans la fourchette, au lieu de 10).
 - **La recherche sur toute l'empreinte suffit presque partout, avec la voix d'aujourd'hui.** C'est la
@@ -393,8 +456,9 @@ Ce qu'on en tire :
 - Trois départs différents de la recherche arrivent à des scores voisins pour la caisse claire (0,25
   à 0,33) et le charley (0,17 à 0,24). Pour le kick, un départ sur trois s'arrête moins bien (0,20,
   0,22 et 0,36) : on lance toujours trois départs et on garde le meilleur.
-- **Garde-fou anti-copie tenu partout.** Distance du son trouvé à sa référence la plus proche, contre
-  la distance des deux références les plus proches entre elles :
+- **Garde-fou du plus proche voisin tenu partout**, avec la réserve de la section 2 : il prouve
+  l'absence de copie presque identique, rien de plus. Distance du son trouvé à sa référence la plus
+  proche, contre la distance des deux références les plus proches entre elles :
 
 | | Caisse claire | Charley | Kick |
 |---|---|---|---|
@@ -404,7 +468,18 @@ Ce qu'on en tire :
 | copie déguisée d'une référence (pour vérifier le garde-fou) | 0,017 | 0,050 | 0,010 |
 | test d'annulation de la copie déguisée | −41,5 dB | −34,0 dB | −67,4 dB |
 
-@@NULL@@
+- **Garde-fou d'annulation tenu aussi.** Annulation la plus profonde (plus le chiffre est bas, plus
+  les deux sons se ressemblent onde pour onde) :
+
+| | Caisse claire | Charley | Kick |
+|---|---|---|---|
+| les références entre elles | −2,3 dB | −0,1 dB | −15,8 dB |
+| voix d'aujourd'hui contre chaque référence | −1,1 dB | −0,1 dB | −9,5 dB |
+| voix plus riche contre chaque référence | −0,4 dB | −0,1 dB | −6,5 dB |
+
+  Nos sons s'annulent toujours moins profondément que les références entre elles. Pour le charley,
+  et presque autant pour la caisse claire, le test ne dit rien (du bruit ne s'annule pas) ; il ne
+  parle que pour le kick.
 
 Ces chiffres sont optimistes : voir la section 7.
 
@@ -414,10 +489,16 @@ Chaque étape a son critère chiffré ; on ne passe à la suivante que s'il est 
 
 **Étape 0. L'outil, sur la vraie collection** (dans la discussion de mesure, là où sont les sons).
 Relire les licences des packs. Porter l'empreinte et ses contre-mesures dans la chaîne de mesure
-existante, écrire celles qui manquent (part d'aigus, attaque contre corps, t40).
+existante, écrire celles qui manquent (part d'aigus, attaque contre corps, t40) et rendre les
+autres vraiment indépendantes (autre repérage du début du son, autre calcul de la chute). Étalonner
+le seuil de la carte bandes-temps sur les écarts entre voisins de chaque famille (par exemple leur
+5e centile plutôt que leur minimum). Chercher une mesure qui attrape la copie redessinée de l'essai
+`copie` ; aucune de celles essayées ici n'y arrive sous 86 bandes.
 - Critère : `selftest.py` vert ; accord mesure / contre-mesure ≥ 98 % par mesure et par case ; le
-  tableau de famille est publié avec le nombre de cases « définitives » par mesure. Aucun son ni
-  aucune mesure d'un son précis dans le dépôt.
+  tableau de famille est publié avec le nombre de cases « définitives » par mesure ; le self-test
+  dit, pour chaque grille de l'essai `copie`, si le garde-fou l'attrape (et si aucune mesure n'y
+  arrive, c'est écrit dans la règle : seule la règle de travail protège). Aucun son ni aucune
+  mesure d'un son précis dans le dépôt.
 
 **Étape 1. Le timbre entre dans la règle.**
 - Critère : la règle rejouée sur les 54 sons donne, pour chaque son, son nombre de mesures dans la
@@ -425,11 +506,18 @@ existante, écrire celles qui manquent (part d'aigus, attaque contre corps, t40)
   moins 80 % des cases qui ont une cible définitive ; les longueurs restent à 23 sur 23.
 
 **Étape 2. Recherche sur la voix d'aujourd'hui** (aucun changement du moteur, seulement des recettes).
-- Critère par son : score ≤ 0,5 ; au moins 80 % des mesures de timbre dans la fourchette ; les deux
-  longueurs toujours dedans ; trois départs de recherche, on garde le meilleur, et au moins deux
+- Critère par son : score ≤ 0,5 ; au moins autant de mesures de timbre dans la fourchette que le
+  membre médian de sa famille ; les deux longueurs toujours dedans ; trois départs de recherche, on garde le meilleur, et au moins deux
   des trois finissent à moins de 0,15 de score l'un de l'autre (sinon on relance avec plus de
   tours) ; garde-fou du plus proche voisin tenu ; carte bandes-temps pas plus loin de la référence
   la plus proche qu'avant la recherche ; `live-bench.sh` sans alerte.
+- Pour que ce critère ne soit pas gagné d'avance : chaque membre de la famille est compté sur une
+  fourchette calculée sans lui (c'est ce chiffre qui fixe « le membre médian ») ; la recherche règle
+  sur une moitié de la famille tirée au sort et le critère se lit sur l'autre moitié quand la case a
+  au moins 40 sons, sinon on le rejoue en retirant un pack à la fois et il doit tenir à chaque
+  fois ; le seuil de 0,5 (ce que vaut un son dont les mesures tombent au hasard dans la
+  fourchette) est revu sur le score réel du membre médian ; la carte bandes-temps, jamais visée,
+  est publiée à côté de chaque score.
 - Ce qui ne tient pas ce critère part à l'étape 3, avec la liste des mesures restées dehors.
 
 **Étape 3. Voix plus riche, seulement pour ces sons-là** (B1 d'abord, puis B2 si le corps manque).
@@ -446,10 +534,14 @@ existante, écrire celles qui manquent (part d'aigus, attaque contre corps, t40)
 **Étape 5. L'écoute A/B côte à côte.** Les chiffres ne décident pas seuls.
 - Avant / après : un MP3 par style, 40 s avant, 1 s de pause, 40 s après, rendu par
   `scripts/live-bench.sh` puis `ps_live` (la règle du projet).
-- Trouver l'intrus : par famille, 10 séries de trois sons (deux références, le nôtre, dans le
-  désordre). Critère : Benjamin désigne le nôtre comme l'intrus 5 fois sur 10 au plus (le hasard en
-  donne 3 ou 4). Ces fichiers contiennent des références : ils restent privés, envoyés à Benjamin
-  seulement, jamais dans le dépôt.
+- Trouver l'intrus : 30 séries de trois sons par séance (deux références, le nôtre, dans le
+  désordre), toutes familles mélangées, au moins 3 séries par famille. Critère : Benjamin désigne
+  le nôtre comme l'intrus 14 fois sur 30 au plus. Si on ne l'entend pas (une chance sur trois), ce
+  critère passe 96 fois sur 100 ; s'il le reconnaît deux fois sur trois, il ne passe que 2 fois sur
+  100. Le détail par famille n'est qu'un indice : trop peu d'essais pour conclure. (Le brouillon
+  disait « 5 sur 10 » : un son reconnu deux fois sur trois passait encore une fois sur cinq.) Ces
+  fichiers contiennent des références : ils restent privés, envoyés à Benjamin seulement, jamais
+  dans le dépôt.
 - Si l'oreille dit non quand les chiffres disent oui, c'est l'empreinte qui a un trou : on cherche
   la mesure qui manque avant de retoucher le son.
 
@@ -464,13 +556,70 @@ existante, écrire celles qui manquent (part d'aigus, attaque contre corps, t40)
   D'où la carte bandes-temps gardée hors cible, et l'étape 5.
 - L'empreinte ne voit pas tout : le grain du métal (la façon dont les partiels battent entre eux),
   les très petites variations de l'attaque.
-- Le coût sur téléphone est estimé par des rapports mesurés sur un autre processeur.
+- Le coût sur téléphone est estimé par des rapports mesurés sur un autre processeur, et ces rapports
+  bougent du simple au double selon le son pris comme repère.
+- **Aucune mesure d'ici ne repère de façon sûre une copie redessinée avec notre bruit** (section 2). Les garde-fous
+  chiffrés sont un filet contre la copie grossière, pas une preuve d'innocence.
+- Les contre-mesures des bandes partagent trois morceaux de code avec la mesure ; deux nombres de
+  l'empreinte n'en ont pas du tout.
+- Les « 19 sur 19 » sont comptés sur les sons qui ont servi à régler.
 - La partie juridique est une lecture prudente, pas un avis d'avocat.
 - La note du kick : validée sur nos rendus et sur des sons inventés seulement.
 
 ## 8. Critique
 
-@@CRITIQUE@@
+Un relecteur neuf, qui n'a pas écrit l'étude, a eu pour seule consigne de la contredire. Il a
+rejoué les essais `cibles`, `aveugle`, `note`, `copie`, `bruit` et le banc de coût, et remesuré
+quelques chiffres avec son propre code.
+
+### Confirmé par une nouvelle mesure
+
+- Les chiffres rejoués sortent identiques, sauf un coût (le bruit en 24 bandes).
+- Recalculés par un autre code : centre de gravité de la caisse claire dnb 437 Hz (étude : 440), du
+  clap dnb 2 078 Hz (2 082), du crash dubstep 3 115 Hz (3 115) ; part d'aigus du clap dnb −26,1 dB
+  (−26,07).
+- Note du kick par une troisième méthode (autocorrélation) : house 41,75 Hz (étude : 41,37), techno
+  50,01 Hz (49,06, soit 1,9 % d'écart). Sur le kick trap, sa méthode seule lit 45 Hz dans une queue
+  de 46 ms, là où l'étude répond « pas de note » : c'est le cas prévu, un chemin seul lit toujours
+  quelque chose, les deux ensemble savent se taire.
+- 30 kicks inventés : pire écart 0,07 %, comme annoncé.
+- Le self-test n'est pas décoratif : ses tolérances sont serrées, et `run.sh` s'arrête s'il rougit.
+- Règles du dépôt tenues : aucun son, aucun nom de vendeur, de pack ou de fichier, aucun lien.
+
+### Contesté, et corrigé dans le texte
+
+1. **Le garde-fou « plus proche voisin » ne voit pas la copie redessinée.** Le brouillon disait
+   qu'il la voyait « dès 22 bandes ». Faux : il comparait au voisin du son copié (0,42) et non au
+   seuil du garde-fou (0,28). Aucune grille ne passe sous ce seuil en empreinte, deux seulement en
+   carte. Section 2 réécrite ; la règle de travail passe devant les chiffres ; l'étape 0 doit
+   étalonner le seuil et chercher une mesure qui attrape cette copie.
+2. **« Chaque nombre vérifié par un deuxième calcul » était faux.** C'est 15 sur 17, et les deux
+   chemins partagent le dessin des bandes, le repérage du début et le calcul de la chute. Résumé,
+   section 4 et étape 0 corrigés.
+3. **Le « 19 sur 19 » est presque automatique** : mêmes sons pour régler et pour compter, meilleur
+   de trois départs. Dit en tête de la section 5 ; l'étape 2 demande maintenant des sons mis de
+   côté.
+4. **Le coût « au plus 1,7 à 1,9 fois » était trop précis** : le repère est une seule recette, et la
+   mesure bouge d'un passage à l'autre. Remplacé par « de l'ordre de 1,5 à 2 fois, à refaire sur le
+   téléphone ».
+5. **L'écoute « 5 sur 10 » ne prouvait rien** : un son reconnu deux fois sur trois passait encore
+   une fois sur cinq. Remplacé par 30 séries et un seuil de 14.
+6. **L'arrêt Pelham était un peu étiré** : il parle d'extraits pris, pas de sons refaits. Précisé,
+   avec deux décisions américaines qui se contredisent sur les extraits très courts.
+7. **Formules floues** : « aigus 6 à 12 dB trop bas » (c'est 6 à 7 dB sous la fourchette, 12 sous la
+   médiane), « 23 sur 23 » présenté comme un résultat (les recettes ont été choisies là-dessus),
+   portée de l'essai `aveugle` (les enveloppes n'y bougent pas). Précisé en section 1.
+8. **Deux techniques manquaient au classement** : la membrane physique dont la tension se relâche,
+   et le bruit dans un filtre qui change au fil du son. Ajoutées en classe C.
+
+### Ce qui reste ouvert
+
+- Le relecteur n'a pas rejoué `famille` ni `contre` (trop longs) : il les a lus. Il n'a pas relu
+  les textes de loi, ni mesuré quoi que ce soit sur un téléphone.
+- Aucune mesure ne sépare encore « s'inspirer d'une famille » de « redessiner un son avec notre
+  bruit ». Tant que c'est le cas, la limite légale tient par la méthode, pas par un chiffre.
+- Le chiffre de coût par recette du relecteur vient de son propre banc, qui n'est pas dans le
+  dépôt : `run.sh bench` devrait mesurer plusieurs recettes avant l'étape 3.
 
 ## 9. Rejouer et sources
 
@@ -489,7 +638,8 @@ Sources :
 
 - Cour de justice de l'Union européenne, Pelham c. Hütter, C-476/17, 29 juillet 2019 ; directive
   2001/29/CE, article 2 c.
-- États-Unis, 17 U.S.C. § 114(b).
+- États-Unis, 17 U.S.C. § 114(b) ; Bridgeport Music c. Dimension Films (6e circuit, 2005) ; VMG
+  Salsoul c. Ciccone (9e circuit, 2016).
 - Serra et Smith, « Spectral Modeling Synthesis », Computer Music Journal, 1990 (sinusoïdes + bruit).
 - Roy et Kailath, « ESPRIT », IEEE Transactions on Acoustics, Speech, and Signal Processing, 1989.
 - Hansen, « The CMA Evolution Strategy: A Tutorial », arXiv 1604.00772.

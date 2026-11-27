@@ -161,6 +161,19 @@ def test_families_are_refined():
     assert not bad, "; ".join("%s %s -> %s, want %s" % b for b in bad)
 
 
+# ---------------------------------------------------------------- 6. flatness and source rate
+def test_flatness_does_not_depend_on_the_source_rate():
+    """White noise recorded at 48 kHz or at 44.1 kHz is the same sound. The
+    resampler empties the band above about 20 kHz, which drags a full-band
+    flatness down by 1 to 2 dB: both tools must read the same as native."""
+    r = np.random.default_rng(3)
+    a = base.measure_bytes(wav_bytes(0.3 * r.standard_normal(2 * 44100), 44100), "fx", "fx/fx")
+    b = base.measure_bytes(wav_bytes(0.3 * r.standard_normal(2 * 48000), 48000), "fx", "fx/fx")
+    for tool in ("ess", "lib"):
+        fa, fb = a[tool]["flatness_db"], b[tool]["flatness_db"]
+        assert abs(fa - fb) < 0.3, "%s flatness %.2f dB at 44.1 kHz, %.2f dB at 48 kHz" % (tool, fa, fb)
+
+
 TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
 
 

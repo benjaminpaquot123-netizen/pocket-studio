@@ -41,3 +41,4 @@
 - [ ] 2026-11-27 : la page privée d'écoute couvre tous les types de sons des packs (mélodies, synthés, basses, boucles, voix, effets, pas seulement la batterie), avec le son d'origine à côté de celui de l'appli ; tout est exploité pour en tirer le meilleur. (2026-11-27, 11 h 20 : cinq équipes ouvertes pour ça.)
 - [ ] 2026-11-27 : à la fin du travail en cours, la page privée d'écoute est terminée (tous les types de sons, original à côté du son de l'appli) et Benjamin peut y cocher lui-même, son par son, ce qui est bon à entrer dans l'appli ; le chef lit ses choix et n'entre que ceux-là.
 - [ ] 2026-11-27 : après l'étude Fable sur la brillance (batterie), en discuter avec Benjamin, refaire toute la batterie, puis ouvrir une suite pour les autres instruments (basses, synthés, nappes, leads) en partant de ses conclusions.
+- [ ] 2026-11-27 : garder en stock tous les sons des packs reçus (même les copies), sans rien supprimer tant que Benjamin ne l'a pas autorisé.

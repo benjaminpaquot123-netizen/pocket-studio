@@ -42,7 +42,10 @@ LINES = [("voix_tous", "voix", "vocal", "tous"), ("voix_dnb", "voix", "vocal", "
 # keys set aside after download (file not found, or re-measure off the table): key -> reason
 EXCLUS = {}
 # re-measure of the picked sound with scripts/sons/passe2/verif/mesure.py: key -> "oui" / "non"
-REMESURE = {}
+REMESURE = {  # 2026-11-27, sounds sent by Benjamin; all within TOLERANCES.md
+    "r7-p2-c16bf7be40": "oui", "r11-p2-d2b10bb3e3": "oui", "r5-p1-5b1e76b656": "oui",
+    "r10-p1-7584a42a04": "oui", "r8-p1-5623dc8956": "oui", "r5-p1-93757bbc9d": "oui",
+    "r11-p3-5d84529e14": "oui"}
 COLS = ["slug", "famille", "style", "statut", "mesures_definitives", "poids", "cle", "pack",
         "dur_s", "rms_dbfs", "peak_dbfs", "cible_dur_s", "cible_rms_dbfs", "cible_peak_dbfs",
         "distance", "candidats", "exclus", "remesure_ok"]

@@ -12,8 +12,12 @@ Family and style come from the existing classification: the passe-2 tables
 and tout.classify on the member path for archives whose paths match no row.
 Same content (zip CRC + size) in several archives is measured once.
 
-Fixed analysis: mono, 44.1 kHz (Essentia Resample), frame 2048, hop 512, Hann,
-first 30 s. Pitch: frame 4096. Both tools get the same decoded array.
+Fixed analysis: mono, 44.1 kHz (Essentia Resample), first 30 s, Hann.
+Mode "long": frame 2048, hop 512, gate -60 dB under the loudest frame.
+Mode "coup" (drum one-shots, sounds under 0.5 s): frame 512 zero-padded to
+2048, hop 128, gate -20 dB, so a hit is described by its body, not its tail.
+One-shot rolloff: one zero-padded spectrum of the body (about 2.7 Hz per bin).
+Pitch: frame 4096.
 """
 import collections
 import csv
@@ -36,6 +40,15 @@ FRAME, HOP, PFRAME = 2048, 512, 4096
 MAX_S = 30.0
 PITCH_S = 3.0
 GATE_DB = -60.0  # active frame: frame RMS within 60 dB of the loudest frame
+# Short hits ("coup": every drum one-shot, and any sound under COUP_MAX_S) are
+# described by their body, not their tail: 512/128 frames (zero-padded to
+# FRAME, so every spectral instrument keeps its 2048-point grid) and a gate
+# 20 dB under the loudest frame.
+COUP_FRAME, COUP_HOP, COUP_GATE_DB, COUP_MAX_S = 512, 128, -20.0, 0.5
+ONESHOTS = {"drum_oneshot", "oneshot_melodic", "kick_808"}
+# One-shot rolloff: one spectrum of the body (gated span, Hann, at most
+# BODY_MAX_S), zero-padded to at least BODY_NFFT points (2.7 Hz per bin).
+BODY_MAX_S, BODY_NFFT = 2.0, 16384
 AUDIO = (".wav", ".wave", ".aif", ".aiff", ".aifc", ".flac", ".mp3", ".ogg")
 PITCHED = {"oneshot_melodic", "kick_808"}  # types/subtypes whose f0 is measured
 LOOPS = {"drum_loop", "melodic_loop", "kit_stem"}
@@ -140,6 +153,30 @@ def rms_env(y, win_s=0.010):
     return np.sqrt((c[hi] - c[lo]) / n).astype(np.float32)
 
 
+def body_span(y, on, hop):
+    """Samples from the first to the last gated frame (frames centred on k*hop),
+    at most BODY_MAX_S."""
+    k = np.flatnonzero(on)
+    a = max(0, int(k[0]) * hop - hop // 2)
+    b = min(len(y), int(k[-1]) * hop + hop // 2 + 1)
+    return y[a:min(b, a + int(BODY_MAX_S * SR))]
+
+
+def body_rolloff(y, on, hop, cutoff=0.85):
+    """85 % energy rolloff of one zero-padded Hann spectrum of the body;
+    returns (Hz, bin width in Hz)."""
+    seg = np.asarray(body_span(y, on, hop), dtype=np.float64)
+    if len(seg) < 16:
+        return None, None
+    n = max(BODY_NFFT, 1 << int(math.ceil(math.log2(len(seg)))))
+    p = np.abs(np.fft.rfft(seg * np.hanning(len(seg)), n)) ** 2
+    c = np.cumsum(p)
+    if c[-1] <= 0:
+        return None, None
+    i = int(np.searchsorted(c, cutoff * c[-1]))
+    return i * SR / n, SR / n
+
+
 def db(v):
     return 20 * math.log10(v) if v > 0 else None
 
@@ -155,7 +192,10 @@ def ess_measure(stereo, typ, fam):
     y = np.ascontiguousarray(st.mean(1).astype(np.float32))
     out = {"dur_s": len(y) / SR}
     out["peak_db"] = db(float(np.abs(st).max()))
-    w = es.Windowing(type="hann", size=FRAME, normalized=False)
+    coup = typ == "drum_oneshot" or len(y) < COUP_MAX_S * SR
+    fsz, hop, gate = (COUP_FRAME, COUP_HOP, COUP_GATE_DB) if coup else (FRAME, HOP, GATE_DB)
+    out["mode"] = "coup" if coup else "long"
+    w = es.Windowing(type="hann", size=fsz, zeroPadding=FRAME - fsz, normalized=False)
     spec = es.Spectrum(size=FRAME)
     cen = es.Centroid(range=SR / 2)
     roll = es.RollOff(cutoff=0.85, sampleRate=SR)
@@ -167,7 +207,7 @@ def ess_measure(stereo, typ, fam):
              for a, b in ((20, 250), (250, 4000), (4000, 20000))]
     F = {k: [] for k in ("cen", "roll", "flat", "zcr", "rms", "lo", "mi", "hi")}
     M = []
-    for fr in es.FrameGenerator(y, frameSize=FRAME, hopSize=HOP, startFromZero=False):
+    for fr in es.FrameGenerator(y, frameSize=fsz, hopSize=hop, startFromZero=False):
         s = spec(w(fr))
         F["cen"].append(cen(s))
         F["roll"].append(roll(s))
@@ -178,14 +218,19 @@ def ess_measure(stereo, typ, fam):
         F["lo"].append(bands[0](s)), F["mi"].append(bands[1](s)), F["hi"].append(bands[2](s))
         M.append(mfcc(s)[1])
     # FrameGenerator adds one trailing frame (mostly padding) beyond the centred
-    # frames k*HOP, k <= len/HOP; drop it so short one-shots are not skewed.
-    nf = 1 + len(y) // HOP
+    # frames k*hop, k <= len/hop; drop it so short one-shots are not skewed.
+    nf = 1 + len(y) // hop
     F = {k: np.asarray(v[:nf], dtype=np.float64) for k, v in F.items()}
     M = M[:nf]
-    on = F["rms"] > F["rms"].max() * 10 ** (GATE_DB / 20) if F["rms"].max() > 0 else F["rms"] > 1
+    on = F["rms"] > F["rms"].max() * 10 ** (gate / 20) if F["rms"].max() > 0 else F["rms"] > 1
     out["active_frames"] = int(on.sum())
     out["centroid_hz"] = med(F["cen"][on])
     out["rolloff_hz"] = med(F["roll"][on])
+    out["rolloff_res_hz"] = SR / FRAME
+    if typ in ONESHOTS and on.any():
+        r, res = body_rolloff(y, on, hop)
+        if r is not None:
+            out["rolloff_hz"], out["rolloff_res_hz"] = r, res
     fl = F["flat"][on]
     out["flatness_db"] = med(10 * np.log10(np.maximum(fl, 1e-10))) if len(fl) else None
     out["zcr"] = med(F["zcr"][on])

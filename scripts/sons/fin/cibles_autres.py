@@ -255,6 +255,10 @@ def selftest():
         loops += [{"rar": "3" if i < 6 else "5", "pack": "p1", "cle": "w%d" % i, "style": "rave", "error": "",
                    "bpm_tag": "125" if i < 6 else "150", "bpm_gap_folded_pct": "0.5", "dur_s": "4",
                    "rms_dbfs": "-12", "peak_dbfs": "-1"} for i in range(12)]
+        # tempo quantiles: 10 confirmed loops at 80 + 10 unconfirmed at 90 -> median of all tagged = 85
+        loops += [{"rar": "4", "pack": "p1", "cle": "q%d" % i, "style": "lofi", "error": "",
+                   "bpm_tag": "80" if i < 10 else "90", "bpm_gap_folded_pct": "0.5" if i < 10 else "30",
+                   "dur_s": "4", "rms_dbfs": "-12", "peak_dbfs": "-1"} for i in range(20)]
         wr(os.path.join(tdir, "drum_loop.csv"), loops)
         # durcie: 77 sounds + 1 of a second pack; 93 % of one pack (93 + 7)
         om = [{"rar": "7" if i < 77 else "9", "pack": "p3" if i < 77 else "p2", "cle": "k%d" % i,
@@ -266,6 +270,19 @@ def selftest():
         om += [{"rar": "8" if i < 60 else "9", "pack": "p1" if i < 60 else "p3", "cle": "y%d" % i,
                 "role": "synth", "style": "dubstep", "error": "", "dur_s": "2", "rms_dbfs": "-20",
                 "peak_dbfs": "-1"} for i in range(80)]
+        # one-maker test: pad techno = 60 at 2 s / -20 dB (r20p1) + 25 at 0.48 s / -20.6 dB (r21p1)
+        # + 15 at 0.6 s / -20.5 dB (r22p1): without r20p1 the duration median falls to 0.48 s, out of
+        # p25-p75 and -76 % -> not definitive; the level moves 0.55 dB only -> stays definitive.
+        # pluck house = 60 at 2 s + 20 at 1.7 s + 20 at 1.75 s: out of p25-p75 but -14 % -> definitive.
+        for i in range(100):
+            a = i < 60
+            om.append({"rar": "20" if a else ("21" if i < 85 else "22"), "pack": "p1", "cle": "pt%d" % i,
+                       "role": "pad", "style": "techno", "error": "",
+                       "dur_s": "2" if a else ("0.48" if i < 85 else "0.6"),
+                       "rms_dbfs": "-20" if a else ("-20.6" if i < 80 else "-20.5"), "peak_dbfs": "-1"})
+            om.append({"rar": "20" if a else ("21" if i < 80 else "22"), "pack": "p1", "cle": "ph%d" % i,
+                       "role": "pluck", "style": "house", "error": "",
+                       "dur_s": "2" if a else ("1.7" if i < 80 else "1.75"), "rms_dbfs": "-20", "peak_dbfs": "-1"})
         wr(os.path.join(tdir, "oneshot_melodic.csv"), om)
         ver = [{"cle": "fx%d" % i, "dur_s_ok": "yes", "rms_dbfs_ok": "yes" if i else "no", "peak_dbfs_ok": "yes"}
                for i in range(25)]
@@ -306,6 +323,19 @@ def selftest():
         check("refused line keeps the current sound", l["statut"], "pas de cible, on garde le son actuel")
         check("refused line has a reason", "90 %" in l.get("raison", ""), True)
         check("no verif = no target on loop levels", get[("boucle de batterie", "dnb", "dur_s")]["statut"].startswith("pas de cible"), True)
+        pd = get[("coup mélodique : pad", "techno", "dur_s")]
+        check("2 s -> 0.48 s without the biggest pack: not definitive", pd["statut"], KEEP)
+        check("2 s -> 0.48 s: reason one pack", "dépend d'un seul pack" in pd.get("raison", ""), True)
+        check("2 s -> 0.48 s: median without the biggest pack", pd.get("mediane_sans_gros_pack"), "0.48")
+        check("2 s -> 0.48 s: tient_sans_gros_pack", pd.get("tient_sans_gros_pack"), "non")
+        pr = get[("coup mélodique : pad", "techno", "rms_dbfs")]
+        check("level moving 0.55 dB stays definitive", pr["statut"], DEF)
+        check("level moving 0.55 dB: tient oui", pr.get("tient_sans_gros_pack"), "oui")
+        ph = get[("coup mélodique : pluck", "house", "dur_s")]
+        check("out of p25-p75 but -14 % duration stays definitive", ph["statut"], DEF)
+        check("-14 %: median without the biggest pack", ph.get("mediane_sans_gros_pack"), "1.725")
+        check("new columns at the end", COLS[-2:], ["mediane_sans_gros_pack", "tient_sans_gros_pack"])
+        check("tempo quantiles on every tagged loop", tempo[("boucle de batterie", "lofi")]["mediane"], "85")
         check("no key / raw tempo / f0 column", any(m in r["mesure"] for r in res for m in ("key_est", "bpm_est", "f0_hz")), False)
     print("%d failed" % len(fails))
     return 1 if fails else 0

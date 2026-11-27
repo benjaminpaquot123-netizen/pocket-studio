@@ -60,7 +60,32 @@ def test_drum_note_label():
     check_eq("4 table: no label for 'Kick Hard E'", r2.get("note_tag") or None, None)
 
 
-TESTS = [test_key_breakdown, test_drum_note_label]
+def test_tempo_fold():
+    """Point 7 (M6): a tempo heard at half or double (62.5 for 125) is folded apart, not counted as wrong."""
+    check_eq("7 fold 62.5 onto 125", tout.fold_bpm(62.5, 125.0), 125.0)
+    check_eq("7 fold 250 onto 125", tout.fold_bpm(250.0, 125.0), 125.0)
+    check_eq("7 no fold for 100 vs 125", tout.fold_bpm(100.0, 125.0), 100.0)
+    check_eq("7 no fold without a tag", tout.fold_bpm(62.5, None), 62.5)
+    acc = tout.Accuracy()
+    for m in (125.0, 124.0, 62.5, 250.0, 100.0):
+        acc.add("drum_loop", "bpm", tout._bpm_class(m, 125.0))
+    r = acc.rows()[0]
+    check_eq("7 accuracy agree / half_double", (r["agree"], r["half_double"]), (2, 2))
+    check_eq("7 raw error_pct still counts the octave as wrong", r["error_pct"], 60.0)
+    check_eq("7 error after fold counts only the true miss", r.get("error_fold_pct"), 20.0)
+    check_eq("7 usable stays on the raw rate", r["usable"], "no")
+    import accuracy
+    rows = [{"type": "drum_loop", "rar": "3", "bpm_tag": "125", "bpm_measured": "62.5"},
+            {"type": "drum_loop", "rar": "3", "bpm_tag": "125", "bpm_measured": "125.4"},
+            {"type": "drum_loop", "rar": "3", "bpm_tag": "125", "bpm_measured": "100"},
+            {"type": "melodic_loop", "rar": "5", "bpm_tag": "90", "bpm_est": "180"},
+            {"type": "melodic_loop", "rar": "5", "bpm_tag": "", "bpm_est": "180"}]
+    d = accuracy.tempo_breakdown(rows)
+    check_eq("7 tempo breakdown rar 3 drums", d.get(("drum_loop", "3")), {"exact": 1, "half_double": 1, "other": 1})
+    check_eq("7 tempo breakdown rar 5 melodic", d.get(("melodic_loop", "5")), {"exact": 0, "half_double": 1, "other": 0})
+
+
+TESTS = [test_key_breakdown, test_drum_note_label, test_tempo_fold]
 
 
 def main():

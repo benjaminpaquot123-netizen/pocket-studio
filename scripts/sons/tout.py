@@ -843,6 +843,18 @@ def _pack_top(folder):
     return top
 
 
+def own_style(own, pack_named):
+    """Style named inside the pack (own: path parts without the pack's wrapping folder; the pack's own
+    folder names no role and comes last for style, audit 3 #4). When the pack names a style, only the
+    title after the tempo ('_125_Soul') loses its genre (RAR 3 case 4). passe2/lance.py counts the
+    'style du pack' rows with this same function (M7)."""
+    if not pack_named:
+        return style_of("/".join(own))
+    stem = os.path.splitext(own[-1])[0]
+    cut = re.search(r"_\d{2,3}_", stem)
+    return style_of("/".join(own[:-1] + ([stem[:cut.start()]] if cut else [own[-1]])))
+
+
 def classify(rel, dur):
     """rel: path inside the pack (with or without the pack folder).
     dur: length in seconds (None for MIDI). Returns type/subtype/role/style."""
@@ -852,11 +864,7 @@ def classify(rel, dur):
     inner = "/".join(folders)  # every folder counts: "Vocals/Dry" is still a vocal (blind audit B1)
     text = (inner + "/" + name)
     own = parts[1:] if _PACK_TOP[0] and len(parts) > 1 and parts[0] == _PACK_TOP[0] else parts
-    style = style_of("/".join(own))  # the pack's own folder names no role and comes last for style (audit 3 #4)
-    if _PACK_STYLE[0] not in (None, "unlabelled"):
-        stem = os.path.splitext(own[-1])[0]
-        cut = re.search(r"_\d{2,3}_", stem)  # only the title after the tempo loses its genre (RAR 3 case 4)
-        style = style_of("/".join(own[:-1] + ([stem[:cut.start()]] if cut else [own[-1]])))
+    style = own_style(own, _PACK_STYLE[0] not in (None, "unlabelled"))
     role = role_of(name)
     if role == "-":
         for f in reversed(own[:-1]):

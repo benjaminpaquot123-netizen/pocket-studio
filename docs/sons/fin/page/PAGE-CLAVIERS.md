@@ -5,26 +5,26 @@ But : un son d'origine des packs par ligne « coup mélodique » (chords, keys, 
 
 ## Le choix (8 lignes, toutes « définitive »)
 
-| slug | pack | distance | mesures visées |
-|---|---|---|---|
-| chords_tous | r10p3 | 0,001 | durée, niveau moyen, crête |
-| keys_tous | r9p2 | 0,103 | durée, niveau moyen, crête |
-| keys_lofi | r4p1 | 0,101 | durée, niveau moyen, crête |
-| lead_tous | r8p1 | 0,064 | durée, niveau moyen, crête |
-| lead_dubstep | r8p1 | 0,020 | durée, niveau moyen, crête |
-| synth_tous | r5p1 | 0,096 | durée, niveau moyen, crête |
-| synth_house | r12p2 | 0,000 | crête seule |
-| synth_techno | r5p1 | 0,000 | crête seule |
+| slug | pack | distance | mesures visées | son |
+|---|---|---|---|---|
+| chords_tous | r10p3 | 0,001 | durée, niveau moyen, crête | prêt, remesuré |
+| keys_tous | r9p2 | 0,103 | durée, niveau moyen, crête | prêt, remesuré |
+| keys_lofi | r4p1 | 0,101 | durée, niveau moyen, crête | prêt, remesuré |
+| lead_tous | r8p1 | 0,064 | durée, niveau moyen, crête | prêt, remesuré |
+| lead_dubstep | r8p1 | 0,020 | durée, niveau moyen, crête | prêt, remesuré |
+| synth_tous | r5p1 | 0,096 | durée, niveau moyen, crête | prêt, remesuré |
+| synth_house | r12p2 | 0,000 | crête seule | prêt, remesuré |
+| synth_techno | r5p1 | 0,000 | crête seule | prêt, remesuré |
 
 Détail (clé du son, mesures, médianes visées) : `originaux-claviers.csv`. Aucune ligne sans candidat.
 
 ## État de la page (2026-11-27)
 
-Pas encore publiée. Les six archives utiles (RAR 4, 5, 8, 9, 10, 12) répondent toutes « quota
-dépassé » au téléchargement ; seuls les morceaux de 16 Mo au plus passent, et on ne contourne pas
-cette limite en découpant. Colonne `remesure_ok` vide tant que les sons ne sont pas remesurés.
-À reprendre quand le quota est revenu : télécharger, n'extraire que les fichiers choisis, remesurer
-avec `scripts/sons/passe2/verif/mesure.py`, noter `oui` / `non` dans `REMESURE` du script, rejouer.
+Publiée en page privée (adresse donnée au chef seulement, jamais ici). Les 8 lignes ont un son.
+Les six archives utiles répondaient « quota dépassé » : les sons sont venus d'un envoi de Benjamin,
+puis ont été remesurés avec `scripts/sons/passe2/verif/mesure.py` ; les 8 sont égaux au tableau
+(durée 0,01 s, crête 0,1 dB, niveau moyen 0,2 dB), donc `remesure_ok = oui` partout et aucun
+remplacement par le suivant du classement. House et techno ne sont jugés que sur la crête.
 
 ## Rejouer le choix
 

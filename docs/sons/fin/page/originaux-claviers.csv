@@ -1,9 +1,9 @@
 slug,famille,style,statut,cle,pack,dur_s,rms_dbfs,peak_dbfs,cible_dur_s,cible_rms_dbfs,cible_peak_dbfs,distance,remesure_ok
-chords_tous,coup mélodique : chords,tous,définitive,r10-p3-d049a8f49a,r10p3,6.4,-16.91,-0.33,6.4,-16.9,-0.33,0.001,
-keys_tous,coup mélodique : keys,tous,définitive,r9-p2-f411418c4f,r9p2,7.385,-20.54,-1.035e-06,6.857,-20.62,-0.1049,0.103,
-keys_lofi,coup mélodique : keys,lofi,définitive,r4-p1-a21b2b92cd,r4p1,11.85,-22.76,-0.1049,12.89,-22.38,-0.1049,0.101,
-lead_tous,coup mélodique : lead,tous,définitive,r8-p1-e9c3ed1604,r8p1,2.571,-16.68,-0.1049,3.2,-16.53,-0.1049,0.064,
-lead_dubstep,coup mélodique : lead,dubstep,définitive,r8-p1-4d702f1911,r8p1,1.714,-15.77,-0.1049,1.714,-16.05,-0.1049,0.020,
-synth_tous,coup mélodique : synth,tous,définitive,r5-p1-4f062a398d,r5p1,2.4,-16.97,-0.1049,2,-17.23,-0.1049,0.096,
-synth_house,coup mélodique : synth,house,définitive,r12-p2-21dafac6dc,r12p2,1.92,-19.9,-0.2586,,,-0.2586,0.000,
-synth_techno,coup mélodique : synth,techno,définitive,r5-p1-01d909656a,r5p1,2,-22.61,-0.1049,,,-0.1049,0.000,
+chords_tous,coup mélodique : chords,tous,définitive,r10-p3-d049a8f49a,r10p3,6.4,-16.91,-0.33,6.4,-16.9,-0.33,0.001,oui
+keys_tous,coup mélodique : keys,tous,définitive,r9-p2-f411418c4f,r9p2,7.385,-20.54,-1.035e-06,6.857,-20.62,-0.1049,0.103,oui
+keys_lofi,coup mélodique : keys,lofi,définitive,r4-p1-a21b2b92cd,r4p1,11.85,-22.76,-0.1049,12.89,-22.38,-0.1049,0.101,oui
+lead_tous,coup mélodique : lead,tous,définitive,r8-p1-e9c3ed1604,r8p1,2.571,-16.68,-0.1049,3.2,-16.53,-0.1049,0.064,oui
+lead_dubstep,coup mélodique : lead,dubstep,définitive,r8-p1-4d702f1911,r8p1,1.714,-15.77,-0.1049,1.714,-16.05,-0.1049,0.020,oui
+synth_tous,coup mélodique : synth,tous,définitive,r5-p1-4f062a398d,r5p1,2.4,-16.97,-0.1049,2,-17.23,-0.1049,0.096,oui
+synth_house,coup mélodique : synth,house,définitive,r12-p2-21dafac6dc,r12p2,1.92,-19.9,-0.2586,,,-0.2586,0.000,oui
+synth_techno,coup mélodique : synth,techno,définitive,r5-p1-01d909656a,r5p1,2,-22.61,-0.1049,,,-0.1049,0.000,oui

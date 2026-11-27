@@ -38,7 +38,9 @@ LINES = [("chords_tous", "chords", "tous"), ("keys_tous", "keys", "tous"), ("key
          ("synth_techno", "synth", "techno")]
 # key -> "oui"/"non": the extracted file re-measured with scripts/sons/passe2/verif/mesure.py matches the
 # table (dur 0.01 s, peak 0.1 dB, rms 0.2 dB). "non" removes the key from the candidates.
-REMESURE = {}
+REMESURE = {k: "oui" for k in (  # all 8 picks re-measured 2026-11-27 from the files Benjamin sent
+    "r10-p3-d049a8f49a", "r9-p2-f411418c4f", "r4-p1-a21b2b92cd", "r8-p1-e9c3ed1604",
+    "r8-p1-4d702f1911", "r5-p1-4f062a398d", "r12-p2-21dafac6dc", "r5-p1-01d909656a")}
 COLS = ["slug", "famille", "style", "statut", "cle", "pack", "dur_s", "rms_dbfs", "peak_dbfs",
         "cible_dur_s", "cible_rms_dbfs", "cible_peak_dbfs", "distance", "remesure_ok"]
 

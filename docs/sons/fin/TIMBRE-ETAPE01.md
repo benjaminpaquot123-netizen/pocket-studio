@@ -23,10 +23,17 @@ pack, aucune mesure d'un son précis dans le dépôt : seulement des statistique
 - Seuil anti-copie (5e centile du plus proche voisin, carte 25 bandes × 9 tranches, en dB) :
   kick 1,07 ; caisse claire 1,96 ; clap 2,14 ; charley fermé 1,85 ; charley ouvert 1,55 ; crash 2,82.
   Pas de seuil pour 808, rim et tom (moins de 10 sons).
-- Essai de copie (un son redessiné de plus en plus finement) : la carte 25 × 9 l'attrape dès une grille
-  de 49 × 44, le garde « un voisin sort du lot » dès 22 × 24, le son lui-même est attrapé par tous les
-  gardes. Les cartes plus fines (64 × 24, 128 × 48) et le test de soustraction ne l'attrapent qu'à
-  l'identique. On garde donc la carte 25 × 9 et le garde du voisin dans la règle.
+- Essai de copie (un son inventé, redessiné de plus en plus finement), sur trois familles :
+  - caisse claire : la carte 25 × 9 l'attrape dès une grille de 49 × 44, le garde « un voisin sort
+    du lot » dès 22 × 24 ; les cartes plus fines et le test de soustraction seulement à l'identique ;
+  - kick : seuil de la carte 0,98 ; les copies redessinées restent à 2,41 à 2,85, une copie
+    transposée d'un demi-ton à 3,75 : aucune grille n'est attrapée ;
+  - charley fermé : seuil 0,84 ; même à la grille la plus fine (513 × 286), la copie est à 1,16 ;
+    seuls la carte 128 × 48, le garde du voisin et le test de soustraction l'attrapent, et
+    seulement à cette grille-là.
+  - Donc « on garde la carte 25 × 9 » ne tient que pour la caisse claire : en kick et en charley,
+    la carte ne reconnaît pas une copie redessinée. Le garde anti-copie est à refaire avant de
+    s'en servir (carte plus fine par famille, ou garde par la forme d'onde).
 
 ## Licences
 
@@ -66,9 +73,8 @@ Relecture à l'aveugle par un sous-agent neuf, qui a recalculé avec son propre 
 - Corrigé : « 1 mesure sur 9 » parlait du son actuel, pas du gagnant B (0 sur 9).
 - Reste vrai : 3 cases techhouse sur 15 (55 cibles sur 182) réutilisent les sons house et techno.
   Le 8 sur 15 compte donc des cases qui ne sont pas indépendantes.
-- Reste vrai : l'essai de copie repose sur une seule caisse claire inventée, avec des seuils
-  calibrés sur cette famille. « On garde la carte 25 × 9 » est un indice, pas une preuve. Les cartes
-  fines sont peut-être seulement mal réglées.
+- Tour 2 : l'essai de copie couvre maintenant kick et charley fermé ; il contredit « on garde la
+  carte 25 × 9 » hors caisse claire (voir étape 0).
 - Reste vrai : la note des candidats vient des fichiers bruts, la fourchette du rendu de l'appli.
   Les deux diffèrent un peu, ce qui est peut-être un simple décalage.
 

@@ -78,7 +78,7 @@ HAT = {
     "base": (300, 560, True), "metal": (0.2, 1.0, False), "decay_s": (0.015, 0.12, True),
     "hp": (5000, 10000, True), "lp": (11000, 19000, True), "bp_g": (-4, 8, False),
     "drive": (0.0, 8.0, False), "len_s": (0.1, 0.5, False), "curve": (0.7, 2.0, False),
-    "bits": (6, 16, False),
+    "bits": (6, 16, False), "tail": (0.05, 0.6, True), "spike_s": (0.001, 0.008, True),
 }
 OHAT = dict(HAT, decay_s=(0.12, 0.7, True), len_s=(0.3, 1.2, False))
 PERC = {
@@ -155,7 +155,8 @@ def hat(p, rng):
     t = np.arange(n) / SR
     sq = sum(np.sign(np.sin(2 * np.pi * p["base"] * r * t + rng.uniform(0, 6.28))) for r in RATIOS) / 6
     x = p["metal"] * sq + (1 - p["metal"]) * noise(n, rng) * 0.5
-    x = x * env_exp(n, 0.0003, p["decay_s"], p["curve"])
+    # stick transient on top of a quieter ringing body (pack hats peak hard, then ring under 40%)
+    x = x * (env_exp(n, 0.0003, p["spike_s"]) * (1 - p["tail"]) + p["tail"] * env_exp(n, 0.0003, p["decay_s"], p["curve"]))
     bits = p["bits"] if p["bits"] < 13 else None
     y = chain(x, hp=p["hp"], lp=p["lp"], bp=(10000, p["bp_g"], 1.0), drive=p["drive"], bits=bits)
     y[-int(0.005 * SR):] *= np.linspace(1, 0, int(0.005 * SR))

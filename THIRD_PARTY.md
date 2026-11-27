@@ -61,3 +61,6 @@
 | --- | --- | --- | --- |
 | [FDK AAC](https://github.com/nu774/fdkaac) (`fdkaac`) | paquet système Ubuntu 24.04 | Licence FDK AAC (Fraunhofer) | Matrice des exports (`scripts/export-matrix.sh`) : encodage M4A de contrôle |
 | [FFmpeg](https://ffmpeg.org) | 6.1.1 (paquet système) | LGPL-2.1+/GPL-2+ | Relecture des fichiers exportés, décodage MP3 du contrôle sur vraie chanson |
+| [pedalboard](https://github.com/spotify/pedalboard) | 0.9.26 | GPL-3.0 | Sons neufs de batterie électronique (`scripts/son/neuf/batterie-elec/`) : filtres, saturation, réverbération, compresseur hors-ligne |
+| [pycma](https://github.com/CMA-ES/pycma) (`cma`) | 4.6.0 | BSD-3-Clause | Sons neufs de batterie électronique : réglage CMA-ES des paramètres vers l'ADN Essentia |
+| [LAION-CLAP](https://github.com/LAION-AI/CLAP) (`laion_clap`) | 1.1.7 | CC0-1.0 | Sons neufs de batterie électronique : note CLAP (ressemblance avec la description de la famille) |

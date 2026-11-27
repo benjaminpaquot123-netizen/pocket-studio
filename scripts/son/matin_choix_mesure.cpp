@@ -6,7 +6,10 @@
 // Measures (the same as engine/host-tests/matin_batterie_tests.inc): t20 / t40 / t60 (ms, last
 // millisecond of a 5 ms RMS above peak - N dB), the kick's steady note (Hz), the peak (dBFS), the
 // RMS until -40 dB (dBFS), the spectral centroid until -40 dB (Hz, an indication only).
-// Usage: matin_choix_mesure > mesures.tsv
+// Usage: matin_choix_mesure [RAW_DIR] > mesures.tsv
+// With RAW_DIR, every render is also written there as raw mono float32 at 48 kHz
+// (<famille>_<style>_<version>.f32), so that scripts/son/matin_choix_tables.py can measure the
+// candidates with the same method as the reference tables (scripts/sons/mesure.py).
 
 #include <algorithm>
 #include <cmath>
@@ -20,6 +23,7 @@ namespace {
 
 constexpr int kRate = 48000;
 namespace m = ps::measured;
+const char* gRawDir = nullptr;
 const char* const kFamilies[] = {"kick", "808", "clap", "caisse_claire", "charley_ferme", "charley_ouvert", "rim", "tom", "crash"};
 const char* const kStyles[] = {"house", "techhouse", "techno", "trap", "dnb", "dubstep"};
 
@@ -109,6 +113,14 @@ double centroidHz(const std::vector<float>& x, double t40Ms) {
 
 void row(const char* family, const char* style, const char* version, const m::Recipe& r, bool kick) {
     const std::vector<float> x = renderRecipe(r);
+    if (gRawDir != nullptr) {
+        char path[1024];
+        std::snprintf(path, sizeof path, "%s/%s_%s_%s.f32", gRawDir, family, style, version);
+        if (FILE* f = std::fopen(path, "wb")) {
+            std::fwrite(x.data(), sizeof(float), x.size(), f);
+            std::fclose(f);
+        }
+    }
     const std::vector<double> e = envelopeDb(x);
     const double t20 = lastAbove(e, 20.0), t40 = lastAbove(e, 40.0), t60 = lastAbove(e, 60.0);
     double peak = 0.0, sum = 0.0;
@@ -122,7 +134,8 @@ void row(const char* family, const char* style, const char* version, const m::Re
 
 }  // namespace
 
-int main() {
+int main(int argc, char** argv) {
+    if (argc > 1) gRawDir = argv[1];
     std::printf("famille\tstyle\tversion\tt20\tt40\tt60\tnote\tcrete_db\trms_db\tcentroide\n");
     const char* const names[] = {"A", "nouvelle", "B"};
     for (int f = 0; f < m::kFamilies; ++f)

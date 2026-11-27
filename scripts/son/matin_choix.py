@@ -10,6 +10,13 @@ printed by matin_choix_mesure). Rule, fixed before any number was computed:
     the same winner three times = "sur", otherwise "serre" and "nouvelle" is kept;
   - a target counts only with >= 20 hits and >= 2 packs ("?": packs not written in the repo,
     counted but flagged); otherwise "actuel": the app's own voice stays.
+Definitive targets (docs/sons/fin/cibles-batterie-definitives.tsv, with a "statut" column; rule
+docs/sons/fin/REGLE-BATTERIE.md, b), the rule is adapted as follows:
+  - only "definitive" rows count (the five conditions are already checked there); measures t20_ms
+    and t60_ms, plus pitch_steady_hz for the kick, read from the candidates' table-method columns
+    (matin_choix_tables.py: Schroeder decay, like the reference tables);
+  - a family and style without any definitive measure is "actuel" (the app's own voice stays);
+  - gap, score, tie and margin are unchanged.
 Prints the choice table and the C++ table literal (MeasuredDrums.cpp must hold it).
 """
 import csv, sys
@@ -27,7 +34,13 @@ def rows(path):
 
 def main(cibles, mesures):
     tgt = {}
-    for r in rows(cibles):
+    rs = rows(cibles)
+    definitive = bool(rs) and "statut" in rs[0]
+    for r in rs:
+        if definitive:
+            keep = ("t20_ms", "t60_ms") + (("pitch_steady_hz",) if r["famille"] == "kick" else ())
+            if not r["statut"].startswith("d\u00e9finitive") or r["mesure"] not in keep:
+                continue
         tgt.setdefault((r["famille"], r["style"]), {})[r["mesure"]] = r
     cand = {}
     for r in rows(mesures):
@@ -37,14 +50,16 @@ def main(cibles, mesures):
         for s in STYLES:
             t, c = tgt.get((f, s)), cand.get((f, s))
             if not t or not c:
-                table[f, s] = "actuel"; out.append(f"{f}\t{s}\tactuel\tpas de cible ni de mesure"); continue
+                table[f, s] = "actuel"
+                out.append(f"{f}\t{s}\tactuel\tpas de cible{' definitive' if definitive else ''} ni de mesure, on garde le son actuel")
+                continue
             any_t = next(iter(t.values()))
             coups, packs = int(any_t["coups"]), any_t["packs"]
-            if coups < 20 or (packs != "?" and int(packs) < 2):
+            if not definitive and (coups < 20 or (packs != "?" and int(packs) < 2)):
                 table[f, s] = "actuel"
                 out.append(f"{f}\t{s}\tactuel\tpas de cible ({coups} coups, {packs} pack(s)), on garde le son actuel")
                 continue
-            meas = [m for m in ("t20", "t40", "note") if m in t]
+            meas = [m for m in ("t20", "t40", "note", "t20_ms", "t60_ms", "pitch_steady_hz") if m in t]
 
             def score(v, col):
                 return sum(2 * abs(float(c[v][m]) - float(t[m][col])) / (float(t[m]["p90"]) - float(t[m]["p10"]))

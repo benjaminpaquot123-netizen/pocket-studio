@@ -1,0 +1,3 @@
+rar,kit_id,type,subtype,role,style,dur_s,sr,ch,size_kb,peak_dbfs,rms_dbfs,lufs_i,bpm_tag,key_tag,bpm_est,key_est,error,note_tag,note_measured,f0_hz,cents_gap,attack_ms,decay_ms,sustain_db,release_ms,centroid_start_hz,centroid_mid_hz,centroid_end_hz,harmonic_ratio,stereo_width,loopable,end_cut,end_fade_ms,file_id
+11,,oneshot_melodic,-,chords,rave,0.7742,44100,2,266.81,-4.032,-20.61,-16,,,,,,,,,,9.229,30.91,-2.929,53.91,1658.36,1805.73,1242.05,,0.06569,1,0,40,7d27ef27f9
+11,,oneshot_melodic,-,chords,rave,0.7742,44100,2,266.81,-1.035e-06,-18.16,-13.63,,,,,,,,,,3.978,164.8,-4.599,67.92,1763.74,1546.69,1728.94,,0.01441,1,0,80,a3031c9637

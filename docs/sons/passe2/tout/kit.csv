@@ -1,0 +1,192 @@
+rar,pack,kit_id,type,subtype,role,style,dur_s,sr,ch,size_kb,peak_dbfs,rms_dbfs,lufs_i,bpm_tag,key_tag,bpm_est,key_est,error,n_stems,n_midi,roles,bpm_gap_pct,key_match,bars,file_id,cle
+7,p2,r7k005,kit,-,-,unlabelled,,,,382597.7,,,,127,F# minor,128,F# minor,,52,12,bass+chords+drums+full+hats+kick+lead+snare+vocal,0.7874,exact,31.75,2693856929,r7-p2-2693856929
+7,p2,r7k001,kit,-,-,unlabelled,,,,195983.7,,,,128,C minor,128,C minor,,36,8,bass+chords+drums+full+fx+hats+keys+kick+lead+pluck+snare+vocal,0,exact,30,6653859144,r7-p2-6653859144
+7,p2,r7k003,kit,-,-,unlabelled,,,,287127.5,,,,140,F minor,140,G# major,,29,4,bass+chords+drums+full+fx+hats+keys+kick+lead+perc+snare+synth+vocal,0,relative,35,7da5c26d1e,r7-p2-7da5c26d1e
+7,p2,r7k004,kit,-,-,unlabelled,,,,292273.5,,,,174,G# minor,87,E major,,53,16,bass+chords+drums+full+fx+hats+kick+lead+pad+snare+vocal,-50,other,43.5,b2d017244c,r7-p2-b2d017244c
+7,p2,r7k002,kit,-,-,unlabelled,,,,138916.8,,,,150,C minor,150,C minor,,22,2,drums+full+hats+kick+lead+snare+vocal,0,exact,24,cf5f506358,r7-p2-cf5f506358
+7,p3,r7k002,kit,-,-,lofi,,,,151992.8,,,,,,,,,25,15,bass+full+fx+keys,,,,4878e4861f,r7-p3-4878e4861f
+7,p3,r7k001,kit,-,-,edm,,,,93125.7,,,,,,,,,27,22,bass+chords+full+lead+pad,,,,8c109942d7,r7-p3-8c109942d7
+7,p3,r7k003,kit,-,-,trap,,,,87117.3,,,,,,,,,25,15,bass+full+keys+lead+pad+synth,,,,d8522d3b96,r7-p3-d8522d3b96
+8,p2,r8k004,kit,-,-,afro-house,,,,43337.6,,,,126,,126,,,11,0,bass+hats+kick+perc+snare,0,,8,16a58d08cf,r8-p2-16a58d08cf
+8,p2,r8k002,kit,-,-,afro-house,,,,37219.6,,,,120,,120,,,9,0,bass+drums+hats+kick+snare,0,,8,47e56972c3,r8-p2-47e56972c3
+8,p2,r8k001,kit,-,-,afro-house,,,,36629.3,,,,122,,122,,,9,0,bass+hats+kick+perc+snare,-3.071e-05,,8,6336b22dc3,r8-p2-6336b22dc3
+8,p2,r8k005,kit,-,-,afro-house,,,,28471.4,,,,122,,122,,,7,0,bass+hats+kick+perc,-3.071e-05,,8,765c589abd,r8-p2-765c589abd
+8,p2,r8k003,kit,-,-,afro-house,,,,32273.6,,,,123,,123,,,8,0,bass+hats+kick+perc,-0.0001098,,8,b7a494cf0b,r8-p2-b7a494cf0b
+8,p2,r8k006,kit,-,-,afro-house,,,,16281.3,,,,122,,122,,,4,0,bass+hats+kick,-3.071e-05,,8,e6e73a6766,r8-p2-e6e73a6766
+9,p1,r9k009,kit,-,-,synthwave,,,,26123.2,,,,95,E minor,95,B minor,,5,3,bass+chords+full+lead+vocal,2.362e-05,other,8,015184eff4,r9-p1-015184eff4
+9,p1,r9k023,kit,-,-,synthwave,,,,43419.7,,,,80,C minor,80,C minor,,7,6,arp+bass+chords+full+lead+synth,0,exact,8,064bc24a1d,r9-p1-064bc24a1d
+9,p1,r9k016,kit,-,-,synthwave,,,,17721.1,,,,140,A major,140,E major,,5,4,arp+bass+chords+full+lead,0,other,8,0d0134d5b8,r9-p1-0d0134d5b8
+9,p1,r9k005,kit,-,-,synthwave,,,,20673.5,,,,120,F# minor,120,A major,,5,4,arp+bass+chords+full+lead,0,relative,8,0f44f6eef8,r9-p1-0f44f6eef8
+9,p1,r9k020,kit,-,-,synthwave,,,,16543.8,,,,120,C# minor,120,C# minor,,4,3,bass+chords+full+lead,0,exact,8,199ba68464,r9-p1-199ba68464
+9,p1,r9k010,kit,-,-,synthwave,,,,26114.0,,,,95,A minor,95,A minor,,5,4,arp+bass+chords+full+lead,2.362e-05,exact,8,27212aefd8,r9-p1-27212aefd8
+9,p1,r9k003,kit,-,-,synthwave,,,,16538.9,,,,120,D minor,120,D minor,,4,3,bass+chords+full+lead,0,exact,8,2986d6383f,r9-p1-2986d6383f
+9,p1,r9k011,kit,-,-,synthwave,,,,24813.2,,,,120,D minor,120,D minor,,6,4,arp+bass+chords+full+lead+vocal,0,exact,8,3f2a966aa7,r9-p1-3f2a966aa7
+9,p1,r9k025,kit,-,-,synthwave,,,,20890.8,,,,95,G minor,95,D minor,,4,3,bass+chords+full+lead,2.362e-05,other,8,42d3deb4cf,r9-p1-42d3deb4cf
+9,p1,r9k026,kit,-,-,synthwave,,,,24808.8,,,,120,G# minor,120,D# minor,,6,5,arp+bass+chords+full+lead,0,other,8,4b001943db,r9-p1-4b001943db
+9,p1,r9k006,kit,-,-,synthwave,,,,20892.3,,,,95,B minor,95,B minor,,4,3,bass+chords+full+lead,2.362e-05,exact,8,5090bf7dc6,r9-p1-5090bf7dc6
+9,p1,r9k014,kit,-,-,synthwave,,,,24812.7,,,,100,D minor,100,A minor,,5,3,bass+chords+full+lead+vocal,0,other,8,51713ac041,r9-p1-51713ac041
+9,p1,r9k022,kit,-,-,synthwave,,,,19845.9,,,,100,B minor,100,B minor,,4,3,bass+chords+full+lead,0,exact,8,599c662c0b,r9-p1-599c662c0b
+9,p1,r9k017,kit,-,-,synthwave,,,,20890.5,,,,95,A minor,95,A minor,,4,3,bass+chords+full+lead,2.362e-05,exact,8,66ef0dc4e5,r9-p1-66ef0dc4e5
+9,p1,r9k019,kit,-,-,synthwave,,,,37211.5,,,,80,C# minor,80,C# minor,,6,4,arp+bass+chords+full+lead+vocal,0,exact,8,704765839d,r9-p1-704765839d
+9,p1,r9k008,kit,-,-,synthwave,,,,26113.6,,,,95,F minor,95,C minor,,5,4,bass+bell+chords+full+lead,2.362e-05,other,8,8167333584,r9-p1-8167333584
+9,p1,r9k018,kit,-,-,synthwave,,,,17720.0,,,,140,E minor,70,B minor,,5,4,bass+chords+full+lead+pad,-50,other,8,85d04ec201,r9-p1-85d04ec201
+9,p1,r9k021,kit,-,-,synthwave,,,,31014.7,,,,80,G major,80,G major,,5,4,arp+bass+chords+full+lead,0,exact,8,a6022d3ffd,r9-p1-a6022d3ffd
+9,p1,r9k015,kit,-,-,synthwave,,,,24808.1,,,,100,A# minor,100,F minor,,5,3,arp+bass+chords+full+vocal,0,other,8,b2e5c22400,r9-p1-b2e5c22400
+9,p1,r9k013,kit,-,-,synthwave,,,,31014.3,,,,80,A minor,80,G major,,5,3,bass+chords+full+lead+vocal,0,other,8,b6f5325f92,r9-p1-b6f5325f92
+9,p1,r9k001,kit,-,-,synthwave,,,,103105.2,,,,80,C minor,80,C minor,,18,6,arp+bass+chords+drums+full+hats+kick+lead+snare+synth,0,exact,8,bfc29a55d6,r9-p1-bfc29a55d6
+9,p1,r9k002,kit,-,-,synthwave,,,,14186.3,,,,140,E major,140,E major,,4,3,bass+chords+full+lead,0,exact,8,c043dcf277,r9-p1-c043dcf277
+9,p1,r9k007,kit,-,-,synthwave,,,,17725.5,,,,140,F major,140,A minor,,5,4,arp+bass+chords+full+lead,0,other,8,cea230841c,r9-p1-cea230841c
+9,p1,r9k004,kit,-,-,synthwave,,,,17720.8,,,,140,C minor,70,G minor,,5,4,bass+bell+chords+full+lead,-50,other,8,ec53a6f93b,r9-p1-ec53a6f93b
+9,p1,r9k024,kit,-,-,synthwave,,,,24809.0,,,,100,E minor,100,E minor,,5,4,bass+chords+full+lead+pad,0,exact,8,f1aa0c6b64,r9-p1-f1aa0c6b64
+9,p1,r9k012,kit,-,-,synthwave,,,,31336.9,,,,95,F# minor,95,F# minor,,6,4,arp+bass+chords+full+lead+vocal,2.362e-05,exact,8,f594de3e55,r9-p1-f594de3e55
+9,p2,r9k004,kit,-,-,trap,,,,35441.3,,,,140,C minor,70,C minor,,5,4,bell+full+guitar+synth,-50,exact,16,10c9380225,r9-p2-10c9380225
+9,p2,r9k016,kit,-,-,trap,,,,41356.7,,,,120,G minor,90,D minor,,5,4,bass+full+lead+strings,-25,other,,16220fe99b,r9-p2-16220fe99b
+9,p2,r9k009,kit,-,-,trap,,,,35463.2,,,,140,D# minor,70,D# minor,,5,4,bass+full+fx+pad,-50,exact,16,199464ab5c,r9-p2-199464ab5c
+9,p2,r9k005,kit,-,-,trap,,,,31023.8,,,,160,C# minor,160,C# minor,,5,4,arp+bass+full+keys+pad,0,exact,16,1e6c97bce3,r9-p2-1e6c97bce3
+9,p2,r9k018,kit,-,-,trap,,,,33086.3,,,,120,F minor,120,C minor,,4,3,bass+bell+full+keys,0,other,16,222a9ba102,r9-p2-222a9ba102
+9,p2,r9k003,kit,-,-,trap,,,,39712.7,,,,150,F# minor,150,C# minor,,6,5,arp+bass+full+fx+keys+lead,0,other,16,41c868a49f,r9-p2-41c868a49f
+9,p2,r9k023,kit,-,-,trap,,,,47633.0,,,,125,A# minor,125,F major,,6,5,bass+bell+chords+full+keys+lead,0,other,16,6c524f695f,r9-p2-6c524f695f
+9,p2,r9k010,kit,-,-,trap,,,,42541.8,,,,140,A minor,70,A minor,,6,5,bass+brass+full+guitar+keys+pad,-50,exact,16,76acc55c8f,r9-p2-76acc55c8f
+9,p2,r9k025,kit,-,-,trap,,,,42542.5,,,,140,F# minor,140,F# minor,,6,5,arp+bass+full+keys+lead,0,exact,16,8016003351,r9-p2-8016003351
+9,p2,r9k021,kit,-,-,trap,,,,46336.7,,,,150,D# minor,75,F# major,,7,6,bass+bell+chords+full+lead,-50,relative,16,87c589d17d,r9-p2-87c589d17d
+9,p2,r9k019,kit,-,-,trap,,,,30532.6,,,,130,B minor,130,B minor,,4,3,bass+full+strings,-6.496e-05,exact,16,9d3742d8ab,r9-p2-9d3742d8ab
+9,p2,r9k014,kit,-,-,trap,,,,45813.7,,,,130,G# minor,97.5,G# minor,,6,5,bass+chords+full+fx+guitar+keys,-25,exact,,a56334bddf,r9-p2-a56334bddf
+9,p2,r9k022,kit,-,-,trap,,,,42536.5,,,,140,B minor,140,B minor,,6,5,bass+bell+full+keys+lead,0,exact,16,a5924c7ee4,r9-p2-a5924c7ee4
+9,p2,r9k012,kit,-,-,trap,,,,38170.2,,,,130,C minor,130,G major,,5,4,bell+full+keys,-6.496e-05,other,16,af29bd129e,r9-p2-af29bd129e
+9,p2,r9k008,kit,-,-,trap,,,,45813.4,,,,130,B minor,130,B minor,,6,5,full+fx+guitar+keys+strings,-6.496e-05,exact,16,b299cd6a58,r9-p2-b299cd6a58
+9,p2,r9k007,kit,-,-,trap,,,,35440.7,,,,140,A minor,140,A minor,,5,4,bell+full+guitar+keys+strings,0,exact,16,b6a6316a75,r9-p2-b6a6316a75
+9,p2,r9k013,kit,-,-,trap,,,,39697.3,,,,125,G minor,125,C major,,5,4,bass+bell+full+keys,0,other,16,b74773db20,r9-p2-b74773db20
+9,p2,r9k006,kit,-,-,trap,,,,49630.5,,,,140,A minor,70,C major,,7,6,arp+bass+chords+full+lead,-50,relative,16,bab47db321,r9-p2-bab47db321
+9,p2,r9k024,kit,-,-,trap,,,,42537.3,,,,140,D minor,140,E minor,,6,5,bass+full+keys+lead,0,other,16,d01148b4f6,r9-p2-d01148b4f6
+9,p2,r9k002,kit,-,-,trap,,,,41358.6,,,,120,C# minor,180,C# minor,,5,4,bass+brass+full,50,exact,,d177c7ea8f,r9-p2-d177c7ea8f
+9,p2,r9k015,kit,-,-,trap,,,,56717.6,,,,140,D minor,140,F major,,8,6,bass+brass+full+lead,0,relative,16,dcdf91050b,r9-p2-dcdf91050b
+9,p2,r9k001,kit,-,-,trap,,,,35449.0,,,,140,D minor,70,A minor,,5,4,bell+full+guitar+keys,-50,other,16,dd580bc4ff,r9-p2-dd580bc4ff
+9,p2,r9k017,kit,-,-,trap,,,,47654.1,,,,140,C minor,125,C minor,,6,5,bass+bell+full+guitar+pad+synth,-10.71,exact,,f866e06897,r9-p2-f866e06897
+9,p2,r9k020,kit,-,-,trap,,,,38179.9,,,,130,F minor,130,C minor,,5,4,bass+full+guitar+lead,-6.496e-05,other,16,fd5a6075ab,r9-p2-fd5a6075ab
+9,p2,r9k011,kit,-,-,trap,,,,28352.9,,,,140,D minor,140,D minor,,4,3,bass+full+guitar+keys,0,exact,16,ff04e5763d,r9-p2-ff04e5763d
+10,p2,r10k019,kit,-,-,house,,,,20169.3,,,,123,C# minor,123,E major,,5,3,bass+full+guitar+keys+vocal,-0.0001098,relative,8,1386feacc7,r10-p2-1386feacc7
+10,p2,r10k023,kit,-,-,house,,,,20173.6,,,,123,F minor,123,F minor,,5,4,bass+full+keys+lead,-0.0001098,exact,8,227c522254,r10-p2-227c522254
+10,p2,r10k024,kit,-,-,house,,,,19846.2,,,,125,F minor,125,F minor,,5,4,bass+chords+full+keys+pluck,0,exact,8,29d1b6dfc1,r10-p2-29d1b6dfc1
+10,p2,r10k008,kit,-,-,house,,,,52873.4,,,,122,G minor,122,G minor,,10,8,bass+chords+full+keys+lead+synth+vocal,-3.071e-05,exact,16,3e9f39460e,r10-p2-3e9f39460e
+10,p2,r10k004,kit,-,-,house,,,,16267.3,,,,122,C minor,122,C minor,,4,3,bass+full+keys+lead,-3.071e-05,exact,8,448aa8d37c,r10-p2-448aa8d37c
+10,p2,r10k021,kit,-,-,house,,,,16005.4,,,,124,F minor,124,F minor,,4,3,bass+full+keys+pad,-4.252e-05,exact,8,4e08a636d3,r10-p2-4e08a636d3
+10,p2,r10k020,kit,-,-,house,,,,15755.8,,,,126,G minor,94.5,G minor,,4,3,bass+brass+full+pluck,-25,exact,,5052d65718,r10-p2-5052d65718
+10,p2,r10k010,kit,-,-,house,,,,20333.8,,,,122,E minor,122,E minor,,5,3,bass+full+keys+lead+vocal,-3.071e-05,exact,8,588ca99952,r10-p2-588ca99952
+10,p2,r10k022,kit,-,-,house,,,,16010.1,,,,124,F minor,124,F minor,,4,3,bass+chords+full+vocal,-4.252e-05,exact,8,611a2d945e,r10-p2-611a2d945e
+10,p2,r10k018,kit,-,-,house,,,,16009.6,,,,124,D minor,62,D minor,,4,3,bass+chords+full+lead,-50,exact,8,6d52144789,r10-p2-6d52144789
+10,p2,r10k016,kit,-,-,house,,,,35440.6,,,,126,A minor,126,A minor,,7,6,arp+bass+full+keys+pluck,0,exact,16,6e425da2e8,r10-p2-6e425da2e8
+10,p2,r10k025,kit,-,-,house,,,,15876.9,,,,125,G# minor,125,G# minor,,4,2,bass+full+pluck+vocal,0,exact,8,70ef8b7f99,r10-p2-70ef8b7f99
+10,p2,r10k015,kit,-,-,house,,,,19688.3,,,,126,G minor,126,G minor,,5,3,bass+full+lead+vocal,0,exact,8,74e4d9b801,r10-p2-74e4d9b801
+10,p2,r10k003,kit,-,-,house,,,,23815.2,,,,125,G minor,125,G minor,,6,4,bass+chords+full+lead+vocal,0,exact,8,7ab7a45793,r10-p2-7ab7a45793
+10,p2,r10k007,kit,-,-,house,,,,40017.9,,,,124,D# minor,124,D# minor,,9,7,bass+chords+full+lead+pluck+vocal,3.071e-05,exact,16,7d6d84b33f,r10-p2-7d6d84b33f
+10,p2,r10k012,kit,-,-,house,,,,52437.8,,,,123,E minor,123,E minor,,7,5,arp+bass+full+lead+strings+vocal,-3.72e-05,exact,16,8c562d4b35,r10-p2-8c562d4b35
+10,p2,r10k009,kit,-,-,house,,,,32534.9,,,,122,A minor,122,A minor,,7,5,bass+chords+full+pluck+vocal,-3.071e-05,exact,16,a18cff2885,r10-p2-a18cff2885
+10,p2,r10k005,kit,-,-,house,,,,20006.8,,,,124,F major,124,A minor,,5,4,bass+full+keys+pad+pluck,-4.252e-05,other,8,a39c99179e,r10-p2-a39c99179e
+10,p2,r10k026,kit,-,-,house,,,,16272.3,,,,122,C minor,122,G minor,,4,3,bass+full+keys+pluck,-3.071e-05,other,8,a4f2c41750,r10-p2-a4f2c41750
+10,p2,r10k017,kit,-,-,house,,,,16139.8,,,,123,F minor,123,F minor,,4,3,bass+full+keys+lead,-0.0001098,exact,8,a85c865100,r10-p2-a85c865100
+10,p2,r10k001,kit,-,-,house,,,,116047.6,,,,124,D# minor,124,F# major,,29,7,bass+chords+drums+full+fx+hats+kick+lead+pluck+snare+vocal,-4.252e-05,relative,8,ae7e9a8f96,r10-p2-ae7e9a8f96
+10,p2,r10k014,kit,-,-,house,,,,27785.8,,,,125,G minor,125,G minor,,6,4,bass+full+keys+strings+vocal,0,exact,16,bd3dbb960d,r10-p2-bd3dbb960d
+10,p2,r10k002,kit,-,-,house,,,,15750.8,,,,126,D# minor,126,D# minor,,4,3,bass+full+keys+vocal,0,exact,8,cdb521ad4b,r10-p2-cdb521ad4b
+10,p2,r10k006,kit,-,-,house,,,,19867.5,,,,125,C minor,125,C major,,5,4,full+synth,0,other,8,cea11fd211,r10-p2-cea11fd211
+10,p2,r10k011,kit,-,-,house,,,,16005.0,,,,124,F minor,124,F minor,,4,3,bass+full+pluck,-4.252e-05,exact,8,d05187cbc8,r10-p2-d05187cbc8
+10,p2,r10k013,kit,-,-,house,,,,24007.7,,,,124,F minor,124,F minor,,6,4,bass+full+guitar+keys+lead+vocal,-4.252e-05,exact,8,eed0bcc1f5,r10-p2-eed0bcc1f5
+10,p3,r10k004,kit,-,-,hardstyle,,,,12804.2,,,,155,A major,77.5,A major,,4,3,bass+chords+full+lead,-50,exact,8,0570d9beda,r10-p3-0570d9beda
+10,p3,r10k017,kit,-,-,hardstyle,,,,16010.0,,,,155,D minor,77.5,D minor,,5,3,bass+chords+full+lead+vocal,-50,exact,8,0b81338b01,r10-p3-0b81338b01
+10,p3,r10k012,kit,-,-,hardstyle,,,,12809.3,,,,155,F minor,77.5,D# major,,4,3,bass+chords+full+lead,-50,other,8,11a7d846bd,r10-p3-11a7d846bd
+10,p3,r10k020,kit,-,-,hardstyle,,,,13235.9,,,,150,G minor,75,A# major,,4,3,bass+chords+full+lead,-50,relative,8,192c2e3489,r10-p3-192c2e3489
+10,p3,r10k002,kit,-,-,hardstyle,,,,16544.6,,,,150,D# minor,75,D# minor,,5,4,arp+bass+chords+full+lead,-50,exact,8,1954a4492c,r10-p3-1954a4492c
+10,p3,r10k019,kit,-,-,hardstyle,,,,13231.5,,,,150,C# minor,75,E major,,4,3,bass+chords+full+lead,-50,relative,8,2daf7a6ce7,r10-p3-2daf7a6ce7
+10,p3,r10k001,kit,-,-,hardstyle,,,,66153.6,,,,150,A major,75,A major,,20,6,bass+chords+drums+full+hats+keys+kick+lead+snare,-50,exact,8,3731e97652,r10-p3-3731e97652
+10,p3,r10k023,kit,-,-,hardstyle,,,,23160.2,,,,150,A major,75,A major,,6,5,bass+chords+full+keys+lead,-50,exact,16,3f6fd86b07,r10-p3-3f6fd86b07
+10,p3,r10k009,kit,-,-,hardstyle,,,,13236.3,,,,150,A minor,75,A minor,,4,3,bass+chords+full+lead,-50,exact,8,3fc2ad9adc,r10-p3-3fc2ad9adc
+10,p3,r10k015,kit,-,-,hardstyle,,,,16543.5,,,,150,D# minor,75,D# minor,,5,3,bass+chords+full+lead+vocal,-50,exact,8,4a5feca6fb,r10-p3-4a5feca6fb
+10,p3,r10k007,kit,-,-,hardstyle,,,,13231.6,,,,150,G major,75,B minor,,4,3,bass+chords+full+lead,-50,other,8,5fc2d1a622,r10-p3-5fc2d1a622
+10,p3,r10k021,kit,-,-,hardstyle,,,,13236.4,,,,150,B minor,75,B minor,,4,3,bass+chords+full+lead,-50,exact,8,6043ad8193,r10-p3-6043ad8193
+10,p3,r10k010,kit,-,-,hardstyle,,,,12809.6,,,,155,F# minor,77.5,F# minor,,4,3,bass+chords+full+lead,-50,exact,8,7bf4fd47d9,r10-p3-7bf4fd47d9
+10,p3,r10k018,kit,-,-,hardstyle,,,,13238.7,,,,150,D minor,75,D minor,,4,3,bass+chords+full+lead,-50,exact,8,8064d2dd9e,r10-p3-8064d2dd9e
+10,p3,r10k025,kit,-,-,hardstyle,,,,13237.0,,,,150,A minor,75,A minor,,4,3,bass+chords+full+lead,-50,exact,8,990cc71f57,r10-p3-990cc71f57
+10,p3,r10k014,kit,-,-,hardstyle,,,,13231.1,,,,150,G# minor,75,G# minor,,4,3,bass+chords+full+lead,-50,exact,8,b4b23e5eef,r10-p3-b4b23e5eef
+10,p3,r10k022,kit,-,-,hardstyle,,,,12809.4,,,,155,F minor,77.5,F major,,4,3,bass+brass+full+lead,-50,other,8,b62da3998d,r10-p3-b62da3998d
+10,p3,r10k006,kit,-,-,hardstyle,,,,12809.2,,,,155,E minor,77.5,E minor,,4,3,bass+chords+full+lead,-50,exact,8,b91739e67b,r10-p3-b91739e67b
+10,p3,r10k011,kit,-,-,hardstyle,,,,12804.3,,,,155,D# minor,77.5,D# minor,,4,3,bass+chords+full+lead,-50,exact,8,c1a8df5391,r10-p3-c1a8df5391
+10,p3,r10k008,kit,-,-,hardstyle,,,,16543.4,,,,150,A# minor,75,G# major,,5,3,bass+chords+full+lead+vocal,-50,other,8,cd63652edc,r10-p3-cd63652edc
+10,p3,r10k016,kit,-,-,hardstyle,,,,13234.2,,,,150,F minor,75,C minor,,4,3,bass+chords+full+lead,-50,other,8,d542d05200,r10-p3-d542d05200
+10,p3,r10k024,kit,-,-,hardstyle,,,,13236.2,,,,150,G minor,75,D minor,,4,3,bass+chords+full+lead,-50,other,8,de683fc653,r10-p3-de683fc653
+10,p3,r10k003,kit,-,-,hardstyle,,,,12809.4,,,,155,A minor,77.5,A minor,,4,3,bass+chords+full+lead,-50,exact,8,e951dd841b,r10-p3-e951dd841b
+10,p3,r10k005,kit,-,-,hardstyle,,,,16011.2,,,,155,G major,77.5,D major,,5,4,arp+bass+chords+full+lead,-50,other,8,ed21f3a048,r10-p3-ed21f3a048
+10,p3,r10k026,kit,-,-,hardstyle,,,,12804.1,,,,155,G minor,155,G major,,4,3,chords+full+lead,-5.905e-06,other,8,ef878ac80f,r10-p3-ef878ac80f
+10,p3,r10k013,kit,-,-,hardstyle,,,,13231.0,,,,150,F minor,75,F minor,,4,3,bass+chords+full+lead,-50,exact,8,f28bde830e,r10-p3-f28bde830e
+11,p1,r11k002,kit,-,-,unlabelled,,,,31571.9,,,,110,A#,82.5,D minor,,7,0,full+keys+strings,-25,other,,0dc9939ccf,r11-p1-0dc9939ccf
+11,p1,r11k016,kit,-,-,unlabelled,,,,31571.9,,,,110,A minor,96.25,A minor,,7,0,full+keys+lead+strings,-12.5,exact,,0ff883784d,r11-p1-0ff883784d
+11,p1,r11k022,kit,-,-,unlabelled,,,,28940.9,,,,120,G minor,195,A# major,,7,0,full+keys+strings,62.5,relative,,1ffc88d0b0,r11-p1-1ffc88d0b0
+11,p1,r11k004,kit,-,-,unlabelled,,,,38592.7,,,,90,G,90,D major,,7,0,full+keys+strings+vocal,0,other,8,20092bfb9a,r11-p1-20092bfb9a
+11,p1,r11k018,kit,-,-,unlabelled,,,,28940.9,,,,120,D minor,60,D minor,,7,0,full+keys+strings,-50,exact,8,25ef56cee6,r11-p1-25ef56cee6
+11,p1,r11k007,kit,-,-,unlabelled,,,,38592.7,,,,90,D minor,90,A minor,,7,0,full+keys+lead+strings,0,other,8,2c2399257a,r11-p1-2c2399257a
+11,p1,r11k005,kit,-,-,unlabelled,,,,40592.4,,,,110,D#,110,D# major,,9,0,full+keys+strings,5.905e-05,root,8,2eee2f9464,r11-p1-2eee2f9464
+11,p1,r11k015,kit,-,-,unlabelled,,,,38587.8,,,,90,D minor,90,D minor,,7,0,full+keys+strings,0,exact,8,35d67c19dc,r11-p1-35d67c19dc
+11,p1,r11k011,kit,-,-,unlabelled,,,,28940.9,,,,120,G minor,60,G minor,,7,0,full+keys+strings,-50,exact,8,4d1865af63,r11-p1-4d1865af63
+11,p1,r11k028,kit,-,-,unlabelled,,,,38587.8,,,,90,C minor,90,C minor,,7,0,full+keys+strings,0,exact,8,5222afde80,r11-p1-5222afde80
+11,p1,r11k027,kit,-,-,unlabelled,,,,28945.8,,,,120,D minor,120,D minor,,7,0,full+keys+strings,0,exact,8,5f5ffc5966,r11-p1-5f5ffc5966
+11,p1,r11k030,kit,-,-,unlabelled,,,,28940.9,,,,120,F# minor,,C# minor,,7,0,full+keys+strings,,other,8,7566000496,r11-p1-7566000496
+11,p1,r11k001,kit,-,-,ambient,,,,31571.9,,,,110,C,89.25,C major,,7,0,full+pad,-18.86,root,,76bafce1aa,r11-p1-76bafce1aa
+11,p1,r11k023,kit,-,-,unlabelled,,,,38587.8,,,,90,G# minor,90,G# minor,,7,0,full+keys+strings,0,exact,8,7720924da9,r11-p1-7720924da9
+11,p1,r11k012,kit,-,-,unlabelled,,,,38597.6,,,,90,A#,146.25,D minor,,7,0,full+keys+strings,62.5,other,,790aae01dd,r11-p1-790aae01dd
+11,p1,r11k010,kit,-,-,unlabelled,,,,31576.8,,,,110,F minor,82.5,G# major,,7,0,full+keys+lead+strings,-25,relative,,8cd655ca01,r11-p1-8cd655ca01
+11,p1,r11k013,kit,-,-,unlabelled,,,,28945.8,,,,120,D minor,90,D minor,,7,0,full+keys+strings,-25,exact,,8ebe40fc9e,r11-p1-8ebe40fc9e
+11,p1,r11k019,kit,-,-,unlabelled,,,,31576.8,,,,110,C minor,82.5,C minor,,7,0,full+keys+lead+strings,-25,exact,,90490a1dd8,r11-p1-90490a1dd8
+11,p1,r11k024,kit,-,-,unlabelled,,,,28955.7,,,,120,B major,120,B major,,7,0,full+keys+strings,0,root,8,9782105145,r11-p1-9782105145
+11,p1,r11k006,kit,-,-,unlabelled,,,,28940.9,,,,120,C#,120,A# minor,,7,0,full+keys+strings,0,other,8,985bd9042a,r11-p1-985bd9042a
+11,p1,r11k008,kit,-,-,unlabelled,,,,28950.8,,,,120,D# minor,60,F# major,,7,0,full+keys+strings,-50,relative,8,b5ad00a9f1,r11-p1-b5ad00a9f1
+11,p1,r11k025,kit,-,-,unlabelled,,,,40607.2,,,,110,D# minor,110,F# major,,9,0,full+keys+strings,-7.086e-05,relative,8,c47a24f079,r11-p1-c47a24f079
+11,p1,r11k020,kit,-,-,unlabelled,,,,38587.8,,,,90,G minor,121.5,G minor,,7,0,full+keys+strings,35,exact,,c6be15aff4,r11-p1-c6be15aff4
+11,p1,r11k026,kit,-,-,unlabelled,,,,31571.9,,,,110,A#,192.5,A# major,,7,0,full+keys+lead+strings,75,root,,cc98b353bf,r11-p1-cc98b353bf
+11,p1,r11k017,kit,-,-,unlabelled,,,,31571.9,,,,110,D minor,110,A minor,,7,0,full+keys+strings,5.905e-05,other,8,d2aa178556,r11-p1-d2aa178556
+11,p1,r11k009,kit,-,-,unlabelled,,,,38597.6,,,,90,A# minor,67.5,G# major,,7,0,full+keys+strings,-25,other,,e1dac6ec9e,r11-p1-e1dac6ec9e
+11,p1,r11k003,kit,-,-,unlabelled,,,,38602.6,,,,90,D minor,131,D minor,,7,0,full+keys+lead+strings,45.56,exact,,e5ea088d73,r11-p1-e5ea088d73
+11,p1,r11k021,kit,-,-,unlabelled,,,,44100.3,,,,90,G minor,90,G minor,,8,0,full+keys+strings,0,exact,8,e919db375c,r11-p1-e919db375c
+11,p1,r11k014,kit,-,-,unlabelled,,,,28940.9,,,,120,A#,105,A# major,,7,0,full+keys+strings,-12.5,root,,f3c212f5b0,r11-p1-f3c212f5b0
+11,p1,r11k029,kit,-,-,unlabelled,,,,31576.8,,,,110,D minor,,A minor,,7,0,full+keys+strings,,other,8,f7c8fde2e6,r11-p1-f7c8fde2e6
+11,p2,r11k005,kit,-,-,dnb,,,,11406.4,,,,174,G# minor,87,G# minor,,4,3,bass+full+lead,-50,exact,8,03019a8d7a,r11-p2-03019a8d7a
+11,p2,r11k019,kit,-,-,dnb,,,,11406.4,,,,174,E minor,87,A major,,4,3,bass+full+lead,-50,other,8,08dfeb2bea,r11-p2-08dfeb2bea
+11,p2,r11k011,kit,-,-,dnb,,,,25664.7,,,,174,F# minor,87,F# minor,,9,8,arp+bass+brass+chords+full+lead+pad,-50,exact,8,1e2457c40c,r11-p2-1e2457c40c
+11,p2,r11k002,kit,-,-,dnb,,,,58459.0,,,,174,E minor,87,B minor,,21,6,bass+chords+drums+full+fx+hats+kick+lead+pluck+snare,-50,other,8,213591f8ea,r11-p2-213591f8ea
+11,p2,r11k006,kit,-,-,dnb,,,,11407.6,,,,174,G# minor,174,G# minor,,4,3,bass+chords+full+lead,-6.378e-05,exact,8,38f8c4ef0b,r11-p2-38f8c4ef0b
+11,p2,r11k007,kit,-,-,dnb,,,,11406.5,,,,174,F# minor,87,A major,,4,3,bass+full+lead+pad,-50,relative,8,5a2bcfec7f,r11-p2-5a2bcfec7f
+11,p2,r11k009,kit,-,-,dnb,,,,22813.2,,,,174,F minor,174,F minor,,8,7,arp+bass+chords+full+lead+pad,-6.378e-05,exact,8,5d02d38d43,r11-p2-5d02d38d43
+11,p2,r11k008,kit,-,-,dnb,,,,11406.6,,,,174,E minor,174,E major,,4,3,arp+bass+full+lead,-6.378e-05,other,8,608e4c27b3,r11-p2-608e4c27b3
+11,p2,r11k022,kit,-,-,dnb,,,,11406.4,,,,174,F minor,174,F major,,4,3,bass+full+lead,-6.378e-05,other,8,855f6e125a,r11-p2-855f6e125a
+11,p2,r11k021,kit,-,-,dnb,,,,11406.4,,,,174,D# minor,87,D# minor,,4,3,bass+full+lead,-50,exact,8,87b963a87c,r11-p2-87b963a87c
+11,p2,r11k020,kit,-,-,dnb,,,,11406.3,,,,174,A minor,87,A minor,,4,3,bass+chords+full+lead,-50,exact,8,901c0673c7,r11-p2-901c0673c7
+11,p2,r11k015,kit,-,-,dnb,,,,19961.6,,,,174,F minor,174,F major,,7,6,bass+chords+full+lead,-6.378e-05,other,8,91329eff67,r11-p2-91329eff67
+11,p2,r11k003,kit,-,-,dnb,,,,14261.0,,,,174,G# minor,174,G# minor,,5,4,bass+chords+full+lead,-6.378e-05,exact,8,932924348f,r11-p2-932924348f
+11,p2,r11k016,kit,-,-,dnb,,,,14258.2,,,,174,A# minor,87,A# minor,,5,4,bass+full+lead,-50,exact,8,a1c30bf9d8,r11-p2-a1c30bf9d8
+11,p2,r11k004,kit,-,-,dnb,,,,19963.0,,,,174,G minor,87,D minor,,7,6,bass+chords+full+lead+pad,-50,other,8,ab4529a43c,r11-p2-ab4529a43c
+11,p2,r11k010,kit,-,-,dnb,,,,14257.9,,,,174,F minor,87,E major,,5,4,bass+full+perc,-50,other,8,b45bcc215d,r11-p2-b45bcc215d
+11,p2,r11k014,kit,-,-,dnb,,,,11406.5,,,,174,G minor,87,G minor,,4,3,bass+chords+full+lead,-50,exact,8,bb4224dd48,r11-p2-bb4224dd48
+11,p2,r11k018,kit,-,-,dnb,,,,14257.9,,,,174,F# minor,174,A major,,5,4,bass+full+lead+synth,-6.378e-05,relative,8,c325579f16,r11-p2-c325579f16
+11,p2,r11k017,kit,-,-,dnb,,,,11406.4,,,,174,G minor,87,G minor,,4,3,bass+full+lead,-50,exact,8,da975d01ac,r11-p2-da975d01ac
+11,p2,r11k001,kit,-,-,dnb,,,,76276.3,,,,174,E minor,87,E minor,,28,9,arp+bass+chords+drums+full+fx+hats+kick+lead+pad+snare,-50,exact,8,eb5a83796a,r11-p2-eb5a83796a
+11,p2,r11k012,kit,-,-,dnb,,,,11407.4,,,,174,F minor,174,C minor,,4,3,arp+bass+full+lead,-6.378e-05,other,8,f2623fe421,r11-p2-f2623fe421
+11,p2,r11k013,kit,-,-,dnb,,,,11406.3,,,,174,A# minor,87,G# major,,4,3,bass+full+lead,-50,other,8,f75aa4149a,r11-p2-f75aa4149a
+11,p3,r11k003,kit,-,-,rave,,,,12805.6,,,,155,F minor,155,E major,,4,3,bass+full+lead,-5.905e-06,other,8,0f7d52c45b,r11-p3-0f7d52c45b
+11,p3,r11k005,kit,-,-,rave,,,,12805.2,,,,155,E minor,155,E major,,4,3,bass+chords+full+lead,-5.905e-06,other,8,12a720ef9b,r11-p3-12a720ef9b
+11,p3,r11k002,kit,-,-,rave,,,,60833.0,,,,155,F# minor,155,F# minor,,21,7,bass+full+fx+hats+kick+lead+pluck+snare+vocal,-5.905e-06,exact,8,61584de5ad,r11-p3-61584de5ad
+11,p3,r11k021,kit,-,-,rave,,,,16005.4,,,,155,E minor,155,E minor,,5,4,bass+chords+full+lead,-5.905e-06,exact,8,7ee1f9d4b1,r11-p3-7ee1f9d4b1
+11,p3,r11k004,kit,-,-,rave,,,,12804.0,,,,155,,155,,,4,3,full+lead,-5.905e-06,,8,8232273996,r11-p3-8232273996
+11,p3,r11k018,kit,-,-,rave,,,,16006.3,,,,155,D# minor,155,D# minor,,5,4,bass+full+lead+pad,-5.905e-06,exact,8,920b2c6ddf,r11-p3-920b2c6ddf
+11,p3,r11k014,kit,-,-,rave,,,,19206.6,,,,155,G minor,155,G major,,5,4,bass+chords+full+lead,-5.905e-06,other,16,95ad2a99b7,r11-p3-95ad2a99b7
+11,p3,r11k009,kit,-,-,rave,,,,12805.3,,,,155,G minor,155,D major,,4,3,bass+full+lead,-5.905e-06,other,8,9c6695ac72,r11-p3-9c6695ac72
+11,p3,r11k017,kit,-,-,rave,,,,16005.0,,,,155,,155,,,5,4,bass+full+lead,-5.905e-06,,8,9c9298f30b,r11-p3-9c9298f30b
+11,p3,r11k019,kit,-,-,rave,,,,16006.1,,,,155,E minor,155,B minor,,5,4,bass+full+lead,-5.905e-06,other,8,b1e4c21f2b,r11-p3-b1e4c21f2b
+11,p3,r11k006,kit,-,-,rave,,,,12809.1,,,,155,F minor,155,D minor,,4,3,full+lead,-5.905e-06,other,8,b7071b2edf,r11-p3-b7071b2edf
+11,p3,r11k022,kit,-,-,rave,,,,12804.0,,,,155,F minor,155,F major,,4,3,bass+full+lead,-5.905e-06,other,8,bb10b4d983,r11-p3-bb10b4d983
+11,p3,r11k013,kit,-,-,rave,,,,12808.9,,,,155,D# minor,155,D minor,,4,3,full+lead,-5.905e-06,other,8,cb18fc1af2,r11-p3-cb18fc1af2
+11,p3,r11k008,kit,-,-,rave,,,,12808.9,,,,155,,116.25,,,4,3,full+lead,-25,,,cb75097ee6,r11-p3-cb75097ee6
+11,p3,r11k010,kit,-,-,rave,,,,12804.0,,,,155,E minor,155,D minor,,4,3,full+lead,-5.905e-06,other,8,d032ba5afd,r11-p3-d032ba5afd
+11,p3,r11k007,kit,-,-,rave,,,,12809.2,,,,155,D minor,155,D major,,4,3,bass+full+lead,-5.905e-06,other,8,d4a13cc1ad,r11-p3-d4a13cc1ad
+11,p3,r11k020,kit,-,-,rave,,,,12804.2,,,,155,D# minor,155,C minor,,4,3,full+lead,-5.905e-06,other,8,e8c7a04c3b,r11-p3-e8c7a04c3b
+11,p3,r11k012,kit,-,-,rave,,,,12804.9,,,,155,F# minor,155,F# minor,,4,3,bass+chords+full+lead,-5.905e-06,exact,8,e983e193d2,r11-p3-e983e193d2
+11,p3,r11k015,kit,-,-,rave,,,,12809.2,,,,155,F# minor,155,F# minor,,4,3,bass+full+lead,-5.905e-06,exact,8,f0cc9f1018,r11-p3-f0cc9f1018
+11,p3,r11k001,kit,-,-,rave,,,,127286.6,,,,155,E minor,155,E major,,42,13,bass+drums+full+fx+hats+kick+lead+snare+vocal,-5.905e-06,other,8,f1c7790392,r11-p3-f1c7790392
+11,p3,r11k016,kit,-,-,rave,,,,32014.8,,,,155,D# minor,155,D minor,,5,4,bass+full+lead,-5.905e-06,other,16,fc5e9d56d8,r11-p3-fc5e9d56d8
+11,p3,r11k011,kit,-,-,rave,,,,12808.8,,,,155,D# minor,155,D minor,,4,3,full+lead,-5.905e-06,other,8,fd56b2713e,r11-p3-fd56b2713e

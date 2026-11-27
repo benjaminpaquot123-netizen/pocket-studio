@@ -1,0 +1,8 @@
+type	mesure	sons_avec_verite	essentia_pct	librosa_pct
+drum_loop	bpm	1907	66.7	53.0
+drum_loop	bpm_replie	1907	84.1	81.8
+kit_stem	bpm	1346	43.1	33.0
+kit_stem	bpm_replie	1346	70.8	60.7
+melodic_loop	bpm	926	46.0	25.9
+melodic_loop	bpm_replie	926	65.2	51.1
+oneshot_melodic	note	280	81.1	79.6

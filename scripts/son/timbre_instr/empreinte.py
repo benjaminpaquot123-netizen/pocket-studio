@@ -59,6 +59,10 @@ def agree(key, a, b, period=0.0):
         # path agrees when it lies within the same tolerance of that interval.
         v = a if b == 0.0 else b
         return v - max(0.005, 2 * period) <= max(floor, rel * v)
+    if key == "relache_s" and period > 0 and (a == 0.0) != (b == 0.0) and None not in (a, b):
+        # 0.0 = "over before the smoothing lets go" (at most four periods + 5 ms after note-off).
+        v = a if b == 0.0 else b
+        return v - (4 * period + 0.005) <= max(floor, rel * v)
     if a is None or b is None:
         return a is None and b is None
     if key in ENV_KEYS and key != "attaque_s":
@@ -757,7 +761,9 @@ def _partial_tau(z, poles_fn):
     """tau of one demodulated partial after note-off: z = sum of damped exponentials, poles
     from poles_fn; decay rate = energy-weighted mean of the decaying components."""
     poles, m = poles_fn(z)
-    poles = poles[np.isfinite(poles) & (np.abs(poles) > 1e-6)]
+    # A pole losing more than half its level per sample (tau under 5 ms at REL_FS) is faster
+    # than the decimated path resolves: it fits the smoothing kernel or the cut, not the voice.
+    poles = poles[np.isfinite(poles) & (np.abs(poles) > math.exp(-0.5))]
     if len(poles) == 0:
         return None
     n = np.arange(len(z))
@@ -780,6 +786,12 @@ def _release_from_partials(zs, skip, tail_s, poles_fn):
     note-off (the -40 dB crossing moved from 0.39 to 0.82 s for one sound). None when the
     release outlasts the recorded tail."""
     dec = SR // REL_FS
+    # Already under -40 dB when the smoothing lets go (typical partial): the release is shorter
+    # than the path can see. Reported as 0.0, "below the resolution", never as a number (a fit
+    # there reads the kernel's own tail).
+    gone = [abs(z[min(skip, len(z) - 1)]) < 0.01 * np.abs(z[:max(1, skip // 8)]).max() for z in zs]
+    if zs and np.mean(gone) > 0.5:
+        return 0.0
     taus = []
     for z in zs:
         z = z[skip::dec]

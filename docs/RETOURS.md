@@ -237,3 +237,4 @@ Format : `- [ ] AAAA-MM-JJ · écran / capture · ce que dit Benjamin` ; `- [x]`
 - 2026-11-25 : « c'est quoi cette manie de pas ouvrir de nouvelles discussions ? » : préférer une discussion neuve à un sous-agent.
 - 2026-11-25 : « Il faut obligatoirement n'utiliser uniquement que les sons que je t'enverrai via Google Drive. Ça m'a coûté 130 euros » : vrais sons = seulement ses packs Drive, jamais d'autres.
 - 2026-11-27 matin : « Je suis un peu perdu avec tout les sons. Ça fait beaucoup. De son à écouter. Fait le nécessaire pour terminer au mieux complètement ton analyse de son » : 157 sons, c'est trop ; finir l'analyse sans lui et réduire l'écoute à l'essentiel. (en cours : quatre lots « son-fin »)
+- 2026-11-27 matin : « si tu as des doutes sur les résultats de l'analyse, fais en sorte que l'analyse soit correcte et qu'il n'y ait plus de doutes. […] c'est la dernière ligne droite […] c'est pour du définitif » : contre-mesure complète des 12 RAR lancée. (en cours)

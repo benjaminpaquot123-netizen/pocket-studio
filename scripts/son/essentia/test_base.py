@@ -50,6 +50,29 @@ def test_effective_duration_reads_the_envelope():
     assert 0.025 < d < 0.070, "effective duration %.4f s, want about 0.041" % d
 
 
+# ---------------------------------------------------------------- 3. short hits
+def test_kick_rolloff_is_finer_than_a_bin():
+    """A kick-like 75 Hz decaying sine: the rolloff must land near 75 Hz with a
+    resolution finer than the 21.5 Hz bin of a 2048-point frame."""
+    t = np.arange(SR) / SR
+    y = 0.9 * np.sin(2 * np.pi * 75 * t) * np.exp(-t / 0.15)
+    out = base.ess_measure(stereo(y), "drum_oneshot", "drum_oneshot/kick")
+    res = out.get("rolloff_res_hz")
+    assert res is not None and res < 5, "rolloff resolution %s Hz, want < 5" % res
+    assert abs(out["rolloff_hz"] - 75) < 6, "rolloff %.1f Hz, want about 75" % out["rolloff_hz"]
+
+
+def test_short_hit_describes_its_body_not_its_tail():
+    """A bright 30 ms noise burst, then 0.5 s of a quiet 200 Hz tail (about
+    -30 dB): the hat is bright, its tail must not drag the centroid down."""
+    burst = RNG.standard_normal(int(0.030 * SR))
+    burst = 0.8 * burst / np.abs(burst).max()
+    y = np.concatenate([burst, tone(200, 0.5, 0.01)])
+    out = base.ess_measure(stereo(y), "drum_oneshot", "drum_oneshot/hat_closed")
+    assert out.get("mode") == "coup", "mode %s, want coup" % out.get("mode")
+    assert out["centroid_hz"] > 4000, "centroid %.0f Hz, want > 4000" % out["centroid_hz"]
+
+
 TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
 
 

@@ -39,6 +39,17 @@ def test_band_shares_are_energy():
     assert abs(low - want_low) < 0.3, "low share %.2f dB, want %.2f" % (low, want_low)
 
 
+# ---------------------------------------------------------------- 2. effective duration
+def test_effective_duration_reads_the_envelope():
+    """Noise decaying with tau = 45 ms: its envelope stays above 40 % of the
+    peak for about 41 ms (tau * ln 2.5). The raw signal gives a few ms."""
+    t = np.arange(SR) / SR
+    y = 0.8 * RNG.standard_normal(SR) * np.exp(-t / 0.045)
+    out = base.ess_measure(stereo(y / np.abs(y).max() * 0.8), "fx", "fx/fx")
+    d = out["effective_dur_s"]
+    assert 0.025 < d < 0.070, "effective duration %.4f s, want about 0.041" % d
+
+
 TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
 
 

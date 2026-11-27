@@ -261,12 +261,15 @@ def _redraw(ref, bands, slices, rng):
     return etude.redraw(ref, bands, slices, rng)
 
 
-def copie_trial(family_seed=31, target=7):
-    """One invented snare redrawn with our own noise on finer and finer grids; which guard
+COPIE_KINDS = (("snare", 31), ("kick", 33), ("hat", 32))
+
+
+def copie_trial(kind="snare", family_seed=31, target=7):
+    """One invented sound of `kind` (snare, kick, hat) redrawn with our own noise on finer and finer grids; which guard
     catches it? A guard catches when the redraw is closer to the sound than the guard's
     threshold (5th centile of the family's nearest-neighbour distances); the null test
     catches when the redraw cancels the sound deeper than any neighbour does (p5 too)."""
-    refs = T.family("snare", 30, np.random.default_rng(family_seed))
+    refs = T.family(kind, 30, np.random.default_rng(family_seed))
     maps = {k: [f(r) for r in refs] for k, f in DETECTORS.items()}
     thr = {k: map_threshold(min(T.map_distance(m[i], m[j]) for j in range(len(m)) if j != i)
                             for i in range(len(m))) for k, m in maps.items()}
@@ -417,6 +420,13 @@ def _db_key(k):
     return k in ("hf_db", "transient_body_db") or k in T.ENV_KEYS
 
 
+# Measures kept in the table but left out of the rule. t20_low: its filter has a hard edge at
+# 20 Hz, so a sound with a rumble or an offset near 20 Hz gets a length that depends on how the
+# filter is built (a 15 Hz rumble under a snare: 178 ms by the FFT mask, 142 ms by the FIR).
+# The two roads then disagree on 2 % of the sounds, and only a new measure could fix it.
+OUT_OF_RULE = {"t20_low_ms": "hors règle : la tenue des graves dépend du filtre à 20 Hz"}
+
+
 def target(cell, k, label):
     """The drum rule (docs/sons/fin/REGLE-BATTERIE.md), on one measure of one case."""
     vals = [(d["pack"], d["m"][k], agree(k, d["m"][k], d["c"][k])) for d in cell
@@ -428,8 +438,10 @@ def target(cell, k, label):
     n = len(xs)
     q = [T.quantile(xs, a) for a in (0.10, 0.25, 0.50, 0.75, 0.90)] if xs else [None] * 5
     acc = 100.0 * sum(v[2] for v in vals) / n if n else float("nan")
-    statut = None
-    if n < 20:
+    statut = OUT_OF_RULE.get(k)
+    if statut:
+        pass
+    elif n < 20:
         statut = "pas de cible : (1) %d sons (moins de 20)" % n
     elif sum(1 for c in packs.values() if c >= 5) < 2:
         statut = "pas de cible : (2) moins de 2 packs de 5 sons"
@@ -637,8 +649,9 @@ def main(argv):
     elif args.cmd == "etape1":
         cmd_etape1(args.table, args.raw, args.render_voice, args.out)
     elif args.cmd == "copie":
-        for grid, caught in copie_trial():
-            print("%s\t%s" % (grid, "\t".join("%s=%s" % (k, "attrapée" if v else "passe") for k, v in caught.items())))
+        for kind, seed in COPIE_KINDS:
+            for grid, caught in copie_trial(kind, seed):
+                print("%s\t%s\t%s" % (kind, grid, "\t".join("%s=%s" % (k, "attrapée" if v else "passe") for k, v in caught.items())))
     return 0
 
 

@@ -1,0 +1,129 @@
+famille	style	mesure	champ	tsv	recalcul
+boucle de batterie	tous	tempo du fabricant	refus_plus_strict_que_regle	pas de tempo du fabricant sûr	2 packs a 2 %
+boucle de batterie	afro-house	tempo du fabricant	p75	122	120.0
+boucle de batterie	drift-phonk	tempo du fabricant	mediane	120	125.0
+boucle de batterie	techno	tempo du fabricant	refus_plus_strict_que_regle	pas de tempo du fabricant sûr	2 packs a 2 %
+coup mélodique : strings	unlabelled	dur_s	ligne_absente		99
+coup mélodique : strings	unlabelled	rms_dbfs	ligne_absente		99
+coup mélodique : strings	unlabelled	peak_dbfs	ligne_absente		99
+coup mélodique : -	unlabelled	dur_s	ligne_absente		72
+coup mélodique : -	unlabelled	rms_dbfs	ligne_absente		72
+coup mélodique : -	unlabelled	peak_dbfs	ligne_absente		72
+coup mélodique : keys	unlabelled	dur_s	ligne_absente		35
+coup mélodique : keys	unlabelled	rms_dbfs	ligne_absente		35
+coup mélodique : keys	unlabelled	peak_dbfs	ligne_absente		35
+boucle mélodique	unlabelled	dur_s	ligne_absente		1
+boucle mélodique	unlabelled	rms_dbfs	ligne_absente		1
+boucle mélodique	unlabelled	peak_dbfs	ligne_absente		1
+voix	unlabelled	dur_s	ligne_absente		1219
+voix	unlabelled	rms_dbfs	ligne_absente		1219
+voix	unlabelled	peak_dbfs	ligne_absente		1219
+voix	unlabelled	range_st	ligne_absente		1219
+voix	unlabelled	voiced_pct	ligne_absente		1219
+effet	unlabelled	dur_s	ligne_absente		99
+effet	unlabelled	rms_dbfs	ligne_absente		99
+effet	unlabelled	peak_dbfs	ligne_absente		99
+midi	unlabelled	notes_per_bar	ligne_absente		81
+midi	unlabelled	etendue_demitons	ligne_absente		81
+midi	unlabelled	bars	ligne_absente		81
+
+famille	style	mesure	plus_gros_pack	part	mediane	mediane_sans_lui	p25	p75	dans_p25_p75	ecart_important
+basse (coups)	tous	dur_s	r8p1	38	0.8571	1.714	0.8571	1.714	oui	
+basse (coups)	tous	rms_dbfs	r8p1	38	-6.81	-6.972	-9.653	-6.051	oui	
+basse (coups)	tous	peak_dbfs	r8p1	38	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+basse (coups)	dnb	dur_s	r10p1	57	0.8621	0.6897	0.6472	1.551	oui	
+basse (coups)	dnb	rms_dbfs	r10p1	57	-11.85	-11.53	-13.8	-10.03	oui	
+basse (coups)	dnb	peak_dbfs	r10p1	57	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+basse (coups)	dubstep	dur_s	r8p1	59	0.8571	1.714	0.8571	0.8571	NON	oui
+basse (coups)	dubstep	rms_dbfs	r8p1	59	-6.285	-5.95	-7.034	-5.94	oui	
+basse (coups)	dubstep	peak_dbfs	r8p1	59	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+basse (coups)	house	dur_s	r10p2	58	1.05	0.72	0.81	3.841	NON	oui
+basse (coups)	house	rms_dbfs	r10p2	58	-13.2	-12.67	-16.01	-11.66	oui	
+basse (coups)	house	peak_dbfs	r10p2	58	-0.33	-0.2636	-0.33	-0.2647	NON	
+basse (coups)	techno	dur_s	r5p1	67	0.8	0.48	0.48	0.8	oui	
+basse (coups)	techno	rms_dbfs	r5p1	67	-12.98	-12.29	-13.69	-11.62	oui	
+basse (coups)	techno	peak_dbfs	r5p1	67	-0.1049	-1	-1	-0.1049	oui	
+basse (coups)	trap	dur_s	r9p2	81	7.385	9.931	5.143	9.011	NON	oui
+basse (coups)	trap	rms_dbfs	r9p2	81	-10.66	-11.32	-11.93	-8.942	oui	
+basse (coups)	trap	peak_dbfs	r9p2	81	-1.035e-06	0	-1.035e-06	0	oui	
+coup mélodique : -	tous	dur_s	r11p1	82	1.023	7.268	0.6771	4.034	NON	oui
+coup mélodique : -	tous	rms_dbfs	r11p1	82	-13.18	-16.96	-17.17	-11.47	oui	
+coup mélodique : -	tous	peak_dbfs	r11p1	82	-0.1049	-5.175e-07	-0.1049	-0.1049	NON	
+coup mélodique : chords	tous	dur_s	r9p1	33	6.4	6.194	4.892	8.308	oui	
+coup mélodique : chords	tous	rms_dbfs	r9p1	33	-16.9	-16.94	-18.59	-15.09	oui	
+coup mélodique : chords	tous	peak_dbfs	r9p1	33	-0.33	-0.33	-0.33	-0.3139	oui	
+coup mélodique : keys	tous	dur_s	r11p1	36	6.857	8.471	3.997	10.29	oui	
+coup mélodique : keys	tous	rms_dbfs	r11p1	36	-20.62	-19.96	-22.92	-17.81	oui	
+coup mélodique : keys	tous	peak_dbfs	r11p1	36	-0.1049	-0.1049	-0.1049	-1.035e-06	oui	
+coup mélodique : keys	lofi	dur_s	r4p1	62	12.89	10.59	12	16.22	NON	
+coup mélodique : keys	lofi	rms_dbfs	r4p1	62	-22.38	-22.38	-25.93	-19.17	oui	
+coup mélodique : keys	lofi	peak_dbfs	r4p1	62	-0.1049	0	-0.1049	-2.588e-07	NON	
+coup mélodique : lead	tous	dur_s	r10p3	19	3.2	3.429	1.714	5.572	oui	
+coup mélodique : lead	tous	rms_dbfs	r10p3	19	-16.53	-16.83	-19.25	-14.28	oui	
+coup mélodique : lead	tous	peak_dbfs	r10p3	19	-0.1049	-0.1049	-0.33	-0.1049	oui	
+coup mélodique : lead	dubstep	dur_s	r8p1	50	1.714	1.714	1.286	2.571	oui	
+coup mélodique : lead	dubstep	rms_dbfs	r8p1	50	-16.05	-16.81	-18.63	-13.87	oui	
+coup mélodique : lead	dubstep	peak_dbfs	r8p1	50	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+coup mélodique : pad	tous	dur_s	r2p1	66	13.71	11.16	11.16	15	oui	
+coup mélodique : pad	tous	rms_dbfs	r2p1	66	-16.93	-14.01	-18.14	-15.27	NON	oui
+coup mélodique : pad	tous	peak_dbfs	r2p1	66	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+coup mélodique : synth	tous	dur_s	r2p1	21	2	1.8	1.379	3	oui	
+coup mélodique : synth	tous	rms_dbfs	r2p1	21	-17.23	-16.17	-19.88	-13.64	oui	
+coup mélodique : synth	tous	peak_dbfs	r2p1	21	-0.1049	-0.1049	-0.1388	-0.1049	oui	
+coup mélodique : synth	house	dur_s	r12p2	80	1.8	0.96	1.56	1.98	NON	oui
+coup mélodique : synth	house	rms_dbfs	r12p2	80	-19.09	-21.27	-20.39	-17.69	NON	oui
+coup mélodique : synth	house	peak_dbfs	r12p2	80	-0.2586	-0.33	-0.33	-0.2471	oui	
+coup mélodique : synth	techno	dur_s	r5p1	67	2	0.48	0.566	2.4	NON	oui
+coup mélodique : synth	techno	rms_dbfs	r5p1	67	-20	-17.38	-21.41	-17.77	NON	oui
+coup mélodique : synth	techno	peak_dbfs	r5p1	67	-0.1049	-1	-1	-0.1049	oui	
+boucle mélodique	tous	dur_s	r6p1	15	7.68	7.68	6.857	11.03	oui	
+boucle mélodique	tous	rms_dbfs	r6p1	15	-14.05	-13.46	-16.98	-10.91	oui	
+boucle mélodique	tous	peak_dbfs	r6p1	15	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+boucle mélodique	dnb	dur_s	r11p2	55	11.03	11.03	11.03	11.03	oui	
+boucle mélodique	dnb	rms_dbfs	r11p2	55	-13.25	-16.21	-16.09	-10.47	NON	oui
+boucle mélodique	dnb	peak_dbfs	r11p2	55	-0.1049	-0.2005	-0.2005	-0.1049	oui	
+boucle mélodique	dubstep	dur_s	r8p1	53	6.857	6.857	3.429	6.857	oui	
+boucle mélodique	dubstep	rms_dbfs	r8p1	53	-7.255	-7.112	-11.68	-6.699	oui	
+boucle mélodique	dubstep	peak_dbfs	r8p1	53	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+boucle mélodique	techno	dur_s	r3p1	56	7.68	6.4	6.4	7.68	oui	
+boucle mélodique	techno	rms_dbfs	r3p1	56	-14.33	-12.13	-17.16	-11.71	oui	
+boucle mélodique	techno	peak_dbfs	r3p1	56	-0.9802	-0.1049	-0.9998	-0.1049	oui	
+boucle de batterie	tous	dur_s	r1p1	25	6.858	6.857	6.4	8	oui	
+boucle de batterie	tous	rms_dbfs	r1p1	25	-17.34	-15.05	-21.93	-11.17	oui	
+boucle de batterie	tous	peak_dbfs	r1p1	25	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+boucle de batterie	dnb	dur_s	r11p2	51	5.517	5.518	5.517	5.518	oui	
+boucle de batterie	dnb	rms_dbfs	r11p2	51	-15.02	-19.03	-19.95	-10.83	oui	
+boucle de batterie	dnb	peak_dbfs	r11p2	51	-0.1049	-0.1005	-0.1049	-0.1005	oui	
+boucle de batterie	dubstep	dur_s	r9p3	48	6.857	6.857	6.857	6.857	oui	
+boucle de batterie	dubstep	rms_dbfs	r9p3	48	-13.54	-13.11	-19.7	-11.66	oui	
+boucle de batterie	dubstep	peak_dbfs	r9p3	48	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+boucle de batterie	house	dur_s	r12p2	89	7.68	7.751	7.68	7.68	NON	
+boucle de batterie	house	rms_dbfs	r12p2	89	-19.93	-20.95	-22.17	-8.063	oui	
+boucle de batterie	house	peak_dbfs	r12p2	89	-0.2691	-0.1	-0.6383	-0.2442	NON	
+boucle de batterie	techno	dur_s	r5p1	65	6.4	7.68	6.4	6.858	NON	
+boucle de batterie	techno	rms_dbfs	r5p1	65	-14.56	-21.14	-17.65	-9.568	NON	oui
+boucle de batterie	techno	peak_dbfs	r5p1	65	-0.1049	-1	-0.8659	-0.1049	NON	
+voix	tous	dur_s	r7p2	83	4.688	6.194	2.786	6.857	oui	
+voix	tous	rms_dbfs	r7p2	83	-19.31	-16.07	-22.09	-17.12	NON	oui
+voix	tous	peak_dbfs	r7p2	83	-3.012	-0.1049	-3.033	-2.338	NON	oui
+voix	dnb	dur_s	r11p2	83	11.03	16.55	0.3448	11.03	NON	oui
+voix	dnb	rms_dbfs	r11p2	83	-15.2	-17.33	-17.12	-11.7	NON	oui
+voix	dnb	peak_dbfs	r11p2	83	-0.1049	-0.2005	-0.1049	-0.1049	NON	
+voix	rave	dur_s	r11p3	80	3.097	1.11	1.425	6.194	NON	oui
+voix	rave	rms_dbfs	r11p3	80	-16.11	-23.33	-18.44	-14.52	NON	oui
+voix	rave	peak_dbfs	r11p3	80	-0.1049	-2.907	-0.1049	-0.1049	NON	oui
+effet	tous	dur_s	r12p1	33	7.68	7.714	3.429	11.03	oui	
+effet	tous	rms_dbfs	r12p1	33	-17.13	-16.39	-20.3	-14.09	oui	
+effet	tous	peak_dbfs	r12p1	33	-0.1049	-0.1049	-0.1787	-0.1049	oui	
+effet	dnb	dur_s	r11p2	58	11.03	10.95	5.517	11.03	oui	
+effet	dnb	rms_dbfs	r11p2	58	-17.16	-18.71	-20.1	-13.79	oui	
+effet	dnb	peak_dbfs	r11p2	58	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+effet	dubstep	dur_s	r8p1	52	3.429	3.429	2	3.429	oui	
+effet	dubstep	rms_dbfs	r8p1	52	-14.6	-14.16	-17.99	-12.38	oui	
+effet	dubstep	peak_dbfs	r8p1	52	-0.1049	-0.1049	-0.1049	-0.1049	oui	
+effet	rave	dur_s	r11p3	89	12.39	7.742	6.194	12.39	oui	
+effet	rave	rms_dbfs	r11p3	89	-16.12	-27.22	-18.56	-13.88	NON	oui
+effet	rave	peak_dbfs	r11p3	89	-0.1049	-7.123	-0.1049	-0.1049	NON	oui
+effet	techno	dur_s	r3p1	50	6.4	6.4	3.84	6.4	oui	
+effet	techno	rms_dbfs	r3p1	50	-21.11	-21.81	-23.49	-19.25	oui	
+effet	techno	peak_dbfs	r3p1	50	-0.5524	-0.1049	-1	-0.1049	oui	

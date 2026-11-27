@@ -12,14 +12,19 @@ A level figure is "définitive" only when ALL hold on the sounds of its line (ru
   2. at least MIN_PACKS packs (rar + pack) that each hold at least PACK_MIN sounds (column packs_5);
   3. no pack holds more than MAX_SHARE of the sounds (column part_pack_max, in %);
   4. its column was counter-measured on at least MIN_N of these same sounds with >= ACCORD agreement
-     (the counter-measure's own tolerance, docs/sons/passe2/verif/TOLERANCES.md).
+     (the counter-measure's own tolerance, docs/sons/passe2/verif/TOLERANCES.md);
+  5. the target does not depend on one maker (added 2026-11-27): the median recomputed WITHOUT the
+     biggest pack (column mediane_sans_gros_pack) stays inside p25-p75 of the line, or moves by less than
+     ONE_DB dB (peak, mean level) / less than ONE_DUR of the median (duration). Column
+     tient_sans_gros_pack = oui / non; when non, the reason "dépend d'un seul pack" is written.
 Otherwise: "pas de cible, on garde le son actuel", with the reason in column raison.
 The drum-loop tempo has no counter-measure, so it is never "définitive". It gets its own status,
 "tempo du fabricant sûr": the tempo written by the pack maker (bpm_tag), confirmed by our audio estimate
 folded to half / double (bpm_gap_folded_pct <= FOLD_TOL). One vote per pack: the median tag of the
 confirmed loops of each pack holding at least PACK_MIN of them. Sure only when at least MIN_PACKS packs
 vote, all votes lie within TEMPO_SPREAD of each other, and >= TEMPO_ACCORD of the tagged loops that have
-an estimate are confirmed. Column sons = every tagged loop; column accord = confirmed / with an estimate.
+an estimate are confirmed. Columns sons and p10-p90 = every tagged loop; accord = confirmed / with an
+estimate (the votes use the confirmed loops only).
 Never a target on: the estimated key, the raw tempo estimate, the note of a melodic sound
 (f0_hz: 81 % agreement only), nor any column the counter-measure did not check (MIDI, voice pitch,
 envelopes).
@@ -37,10 +42,12 @@ VERIF = os.path.join(ROOT, "docs/sons/passe2/verif")
 OUT = os.path.join(ROOT, "docs/sons/fin/cibles-autres-definitives.tsv")
 MIN_N, MIN_PACKS, ACCORD, TEMPO_ACCORD, FOLD_TOL = 20, 2, 0.98, 0.90, 2.0
 PACK_MIN, MAX_SHARE, CARRIED, TEMPO_SPREAD = 5, 0.90, 0.75, 0.02
+ONE_DB, ONE_DUR = 1.0, 0.20  # condition 5: shift that changes a target
 DEF, KEEP = "définitive", "pas de cible, on garde le son actuel"
 TEMPO_SURE, TEMPO_NOT = "tempo du fabricant sûr", "pas de tempo du fabricant sûr"
 COLS = ["famille", "style", "sons", "packs", "packs_5", "part_pack_max", "liste_packs", "mesure",
-        "p10", "p25", "mediane", "p75", "p90", "accord", "statut", "raison"]
+        "p10", "p25", "mediane", "p75", "p90", "accord", "statut", "raison",
+        "mediane_sans_gros_pack", "tient_sans_gros_pack"]
 LEVEL = ["dur_s", "rms_dbfs", "peak_dbfs"]  # counter-measured on every audio file
 # family name -> (table, row filter, measures). A measure is a column or (label, function(row)).
 NOT_CHECKED = "pas de cible (colonne non contre-mesurée)"
@@ -126,7 +133,7 @@ def line(fam, style, rows, label, vals):
     share = max(c.values()) / len(rows) if rows else 0.0
     return dict(zip(COLS, [fam, style, len(rows), len(c), sum(v >= PACK_MIN for v in c.values()),
                            "%d" % round(100 * share) if rows else "", " ".join(sorted(c)), label]
-                    + ["" if v is None else "%.4g" % v for v in q] + ["", "", ""]))
+                    + ["" if v is None else "%.4g" % v for v in q] + ["", "", "", "", ""]))
 
 
 def spread_ok(votes):
@@ -137,7 +144,7 @@ def tempo_line(fam, style, rows):
     tagged = [r for r in rows if fnum(r.get("bpm_tag"))]
     est = [r for r in tagged if fnum(r.get("bpm_gap_folded_pct")) is not None]
     good = [r for r in est if fnum(r["bpm_gap_folded_pct"]) <= FOLD_TOL]
-    out = line(fam, style, tagged, "tempo du fabricant", [fnum(r["bpm_tag"]) for r in good])
+    out = line(fam, style, tagged, "tempo du fabricant", [fnum(r["bpm_tag"]) for r in tagged])
     out["accord"] = "%d/%d" % (len(good), len(est))
     by = {}
     for r in good:
@@ -159,6 +166,20 @@ def tempo_line(fam, style, rows):
     return out
 
 
+def holds_without_biggest(kept, label):
+    """Condition 5. kept = [(row, value)]. Returns (median without the biggest pack or None, holds)."""
+    c = pack_counts([r for r, _ in kept])
+    if len(c) < 2:
+        return None, False
+    big = sorted(c, key=lambda p: (-c[p], p))[0]
+    vals = [v for _, v in kept]
+    rest = [v for r, v in kept if pack_of(r) != big]
+    med, mw, p25, p75 = pct(vals, 0.5), pct(rest, 0.5), pct(vals, 0.25), pct(vals, 0.75)
+    inside = p25 - 1e-9 <= mw <= p75 + 1e-9
+    limit = ONE_DUR * abs(med) if label == "dur_s" else ONE_DB
+    return mw, inside or abs(mw - med) < limit
+
+
 def target(fam, style, rows, meas, vidx):
     rows = [r for r in rows if not r.get("error")]
     if meas == "tempo":
@@ -178,6 +199,11 @@ def target(fam, style, rows, meas, vidx):
     biggest = max(pack_counts([r for r, _ in kept]).values()) if kept else 0
     if kept and biggest > MAX_SHARE * out["sons"]:
         why.append("un pack pèse %s %% > %d %%" % (out["part_pack_max"], round(100 * MAX_SHARE)))
+    mw, holds = holds_without_biggest(kept, label) if kept else (None, False)
+    out["mediane_sans_gros_pack"] = "" if mw is None else "%.4g" % mw
+    out["tient_sans_gros_pack"] = "oui" if holds else "non"
+    if kept and not holds:
+        why.append("dépend d'un seul pack")
     if not seen:
         why.append("colonne non contre-mesurée")
     elif seen < MIN_N or ok < ACCORD * seen:
@@ -283,6 +309,12 @@ def selftest():
             om.append({"rar": "20" if a else ("21" if i < 80 else "22"), "pack": "p1", "cle": "ph%d" % i,
                        "role": "pluck", "style": "house", "error": "",
                        "dur_s": "2" if a else ("1.7" if i < 80 else "1.75"), "rms_dbfs": "-20", "peak_dbfs": "-1"})
+        # exactly +20 %: arp techno = r20p1 60 at 6.4 s + 10 at 7 s, r21p1 20 at 7.68 s, r22p1 10 at 6.5 s
+        for i in range(100):
+            om.append({"rar": "20" if i < 70 else ("21" if i < 90 else "22"), "pack": "p1", "cle": "at%d" % i,
+                       "role": "arp", "style": "techno", "error": "",
+                       "dur_s": "6.4" if i < 60 else ("7" if i < 70 else ("7.68" if i < 90 else "6.5")),
+                       "rms_dbfs": "-20", "peak_dbfs": "-1"})
         wr(os.path.join(tdir, "oneshot_melodic.csv"), om)
         ver = [{"cle": "fx%d" % i, "dur_s_ok": "yes", "rms_dbfs_ok": "yes" if i else "no", "peak_dbfs_ok": "yes"}
                for i in range(25)]
@@ -334,6 +366,8 @@ def selftest():
         ph = get[("coup mélodique : pluck", "house", "dur_s")]
         check("out of p25-p75 but -14 % duration stays definitive", ph["statut"], DEF)
         check("-14 %: median without the biggest pack", ph.get("mediane_sans_gros_pack"), "1.725")
+        check("exactly +20 % duration (6.4 -> 7.68 s) not definitive",
+              get[("coup mélodique : arp", "techno", "dur_s")]["statut"], KEEP)
         check("new columns at the end", COLS[-2:], ["mediane_sans_gros_pack", "tient_sans_gros_pack"])
         check("tempo quantiles on every tagged loop", tempo[("boucle de batterie", "lofi")]["mediane"], "85")
         check("no key / raw tempo / f0 column", any(m in r["mesure"] for r in res for m in ("key_est", "bpm_est", "f0_hz")), False)

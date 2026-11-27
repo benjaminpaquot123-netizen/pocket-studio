@@ -203,6 +203,30 @@ def map_threshold(nearest):
     return T.quantile(list(nearest), 0.05)
 
 
+def neighbour_ratios(maps):
+    """For each sound: distance to its second nearest neighbour over the distance to its
+    nearest (1 = two equal neighbours, 2 = twice as close to one of them)."""
+    out = []
+    for i in range(len(maps)):
+        d = sorted(T.map_distance(maps[i], maps[j]) for j in range(len(maps)) if j != i)
+        out.append(d[1] / d[0] if d[0] > 0 else float("inf"))
+    return out
+
+
+def ratio_threshold(ratios):
+    """The 'one neighbour stands out' guard: 95 % of the family's own sounds are not that much
+    closer to one sound than to the next (the 95th centile of the neighbour ratios)."""
+    return T.quantile(list(ratios), 0.95)
+
+
+def nearest_is(m, maps, target, ratio_thr):
+    """True when the map m is nearest to maps[target] and that much nearer than to any other:
+    a redraw too coarse to fall under the distance threshold can still give itself away."""
+    d = [T.map_distance(m, q) for q in maps]
+    order = sorted(range(len(d)), key=d.__getitem__)
+    return order[0] == target and d[order[0]] > 0 and d[order[1]] / d[order[0]] > ratio_thr
+
+
 def fine_map(x, bands, slices, n=1024, hop=256):
     """Like timbre.band_time_map with a finer grid: `bands` log bands from 20 Hz to 20 kHz
     over `slices` geometric slices of the first second, dB under the whole, clamped."""
@@ -249,9 +273,12 @@ def copie_trial(family_seed=31, target=7):
     null_thr = map_threshold(min(T.null_db(refs[i], refs[j]) for j in range(len(refs)) if j != i)
                              for i in range(len(refs)))
     ref = refs[target]
+    m25 = maps["carte 25x9"]
+    ratio_thr = ratio_threshold(neighbour_ratios(m25))
 
     def caught(y):
         out = {k: T.map_distance(DETECTORS[k](y), maps[k][target]) < thr[k] for k in DETECTORS}
+        out["voisin 25x9"] = nearest_is(T.band_time_map(y), m25, target, ratio_thr)
         out["nul"] = T.null_db(ref, y) < null_thr
         return out
 
@@ -291,7 +318,7 @@ def scope_rows(rar):
     rows = []
     with open(os.path.join(TABLES, "drum_oneshot.csv"), newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
-            if (r["rar"] == str(rar) and r["subtype"] in FAMILY and r["style"] in TABLE_STYLES
+            if ((rar is None or r["rar"] == str(rar)) and r["subtype"] in FAMILY and r["style"] in TABLE_STYLES
                     and r["cle"] not in excl):
                 rows.append(r)
     return rows
@@ -312,22 +339,40 @@ def _one(job):
         return {"cle": cle, "error": "%s: %s" % (type(e).__name__, e)}
 
 
+def flat_jobs(root, rows):
+    """The WeTransfer layout: every sound at <root>/<cle>.<ext>, whatever its archive."""
+    by_key = {}
+    for name in os.listdir(root):
+        stem, ext = os.path.splitext(name)
+        if ext.lower() in (".wav", ".aif", ".aiff", ".flac") and not os.path.islink(os.path.join(root, name)):
+            by_key[stem] = os.path.join(root, name)
+    jobs, missing = [], []
+    for r in rows:
+        p = by_key.get(r["cle"])
+        (jobs.append((r["cle"], p)) if p else missing.append(r["cle"]))
+    return jobs, missing
+
+
 def cmd_mesure(root, rar, out):
     import json
     import multiprocessing
     sys.path.insert(0, VERIF)
     import compare as CMP
-    rows = scope_rows(rar)
-    by_pack = {}
-    for r in rows:
-        by_pack.setdefault(r["pack"], []).append(r)
-    dirs = CMP.find_pack_dirs(root, by_pack)
-    jobs, missing = [], []
-    for pk, rs in sorted(by_pack.items()):
-        ids = CMP.ids_under(dirs[pk]) if pk in dirs else {}
-        for r in rs:
-            p = ids.get(r["file_id"])
-            (jobs.append((r["cle"], p)) if p else missing.append(r["cle"]))
+    if rar == "plat":
+        rows = scope_rows(None)
+        jobs, missing = flat_jobs(root, rows)
+    else:
+        rows = scope_rows(rar)
+        by_pack = {}
+        for r in rows:
+            by_pack.setdefault(r["pack"], []).append(r)
+        dirs = CMP.find_pack_dirs(root, by_pack)
+        jobs, missing = [], []
+        for pk, rs in sorted(by_pack.items()):
+            ids = CMP.ids_under(dirs[pk]) if pk in dirs else {}
+            for r in rs:
+                p = ids.get(r["file_id"])
+                (jobs.append((r["cle"], p)) if p else missing.append(r["cle"]))
     with multiprocessing.Pool(4) as pool:
         res = pool.map(_one, jobs)
     meta = {r["cle"]: r for r in rows}
@@ -434,16 +479,18 @@ def cmd_carte(lines, out):
     for fam in FAMILIES:
         fs = [d for d in good if d["famille"] == fam]
         if len(fs) < 10:
-            res.append([fam, str(len(fs)), str(len({d["pack"] for d in fs})), "", "", "", ""])
+            res.append([fam, str(len(fs)), str(len({d["pack"] for d in fs})), "", "", "", "", ""])
             continue
         mp = [np.array(d["map"]) for d in fs]
         nn = [min(T.map_distance(mp[i], mp[j]) for j in range(len(mp)) if j != i) for i in range(len(mp))]
         res.append([fam, str(len(fs)), str(len({d["pack"] for d in fs})), fmt(min(nn)),
-                    fmt(map_threshold(nn)), fmt(T.quantile(nn, 0.5)), fmt(T.quantile(nn, 0.95))])
+                    fmt(map_threshold(nn)), fmt(T.quantile(nn, 0.5)), fmt(T.quantile(nn, 0.95)),
+                    fmt(ratio_threshold(neighbour_ratios(mp)))])
     with open(out, "w") as f:
         f.write("# Seuil anti-copie : distance de chaque son à son plus proche voisin sur la carte "
-                "25 bandes x 9 tranches (dB), par famille, tous styles ; seuil = 5e centile.\n")
-        f.write("famille\tsons\tpacks\tmin\tseuil_p5\tmediane\tp95\n")
+                "25 bandes x 9 tranches (dB), par famille, tous styles ; seuil = 5e centile ; "
+                "rapport_p95 = 95e centile de (2e voisin / 1er voisin).\n")
+        f.write("famille\tsons\tpacks\tmin\tseuil_p5\tmediane\tp95\trapport_p95\n")
         for r in res:
             f.write("\t".join(r) + "\n")
     return res
@@ -558,7 +605,7 @@ def main(argv):
     sub = ap.add_subparsers(dest="cmd", required=True)
     a = sub.add_parser("mesure")
     a.add_argument("root")
-    a.add_argument("--rar", required=True)
+    a.add_argument("--rar", required=True, help="archive number, or 'plat' for <root>/<cle>.wav")
     a.add_argument("--out", required=True)
     b = sub.add_parser("table")
     b.add_argument("lines", nargs="+")

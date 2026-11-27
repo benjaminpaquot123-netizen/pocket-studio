@@ -73,6 +73,14 @@ def main():
     check("resampled 44.1 kHz sine: centroid", C.measure(C.to_48k(y, 44100))["centroid_hz"], 1000.0, 10.0)
     truth("resampled length", abs(len(C.to_48k(y, 44100)) - 48000) <= 1)
 
+    # Independence: the counter's code never calls the measure's onset, decay, spectrum or band
+    # functions; it shares only the definitions (band masks, the 30 dB onset level).
+    import inspect
+    src = "".join(inspect.getsource(f) for f in (C.counter, C.counter_onset, C.counter_decay_ms,
+                                                 C._kernel_centroid, C.fir_band))
+    for name in ("fingerprint(", "onset_of(", "decay_index(", "_spectrum(", "band_signal(", "_centroid("):
+        truth("independence: the counter never calls T.%s)" % name, "T." + name not in src)
+
     # Agreement rule.
     truth("agree: t20 within 5 ms", C.agree("t20_ms", 30.0, 34.0))
     truth("agree: t20 10 % but more than 5 ms is not", not C.agree("t20_ms", 100.0, 112.0))
@@ -84,6 +92,35 @@ def main():
     # Map threshold: the 5th centile of the nearest-neighbour distances, never the minimum.
     d = list(range(100))
     check("map threshold = 5th centile", C.map_threshold(d), 4.95, 1e-9)
+
+    # Copy-guard calibration (the code that will run on the collection, cmd_carte) on invented
+    # families written as measurement lines: its threshold is the 5th centile computed by hand,
+    # a near copy of a sound falls under it, and at most 5 % of the family's sounds do.
+    import tempfile
+    lines, fam_maps = [], {}
+    for fam, kind, seed in (("caisse_claire", "snare", 31), ("charley_ferme", "hat", 32), ("kick", "kick", 33)):
+        refs = T.family(kind, 30, np.random.default_rng(seed))
+        fam_maps[fam] = (refs, [T.band_time_map(r) for r in refs])
+        for i, mp in enumerate(fam_maps[fam][1]):
+            lines.append({"cle": "f%d" % i, "famille": fam, "style": "house", "pack": "r0/p%d" % (i % 3), "map": mp.tolist()})
+    with tempfile.TemporaryDirectory() as tmp:
+        res = {r[0]: r for r in C.cmd_carte(lines, os.path.join(tmp, "carte.tsv"))}
+        header = open(os.path.join(tmp, "carte.tsv")).read().splitlines()[1]
+    truth("carte: header has seuil_p5 and rapport_p95", "seuil_p5" in header and "rapport_p95" in header)
+    truth("carte: a family under 10 sounds gets no threshold", res["clap"][4] == "")
+    for fam, (refs, mp) in fam_maps.items():
+        nn = [min(T.map_distance(mp[i], mp[j]) for j in range(30) if j != i) for i in range(30)]
+        thr = T.quantile(nn, 0.05)
+        check("carte %s: seuil_p5 = 5th centile by hand" % fam, float(res[fam][4]), thr, 0.006)
+        truth("carte %s: at most 5 %% of the family under its own threshold" % fam, sum(d < thr for d in nn) <= 2)
+        near = refs[7] * 0.999
+        near[1:] += 0.01 * near[:-1]
+        truth("carte %s: a near copy falls under the threshold" % fam,
+              T.map_distance(T.band_time_map(near), mp[7]) < float(res[fam][4]))
+        ratios = C.neighbour_ratios(mp)
+        check("carte %s: rapport_p95 = 95th centile by hand" % fam, float(res[fam][7]), T.quantile(ratios, 0.95), 0.006)
+        truth("carte %s: a near copy stands out from its neighbours" % fam,
+              C.nearest_is(T.band_time_map(near), mp, 7, C.ratio_threshold(ratios)))
 
     # Independent counter: on invented drums (30 snares, hats, kicks), every measure agrees >= 98 %.
     sounds = []
@@ -99,6 +136,10 @@ def main():
     for grid, caught in rows:
         print("copie\t%s\t%s" % (grid, "  ".join("%s %s" % (k, "attrapée" if v else "passe") for k, v in caught.items())))
     truth("copie: the sound itself (a hair of filtering) is caught by the 25x9 map", rows[-1][1]["carte 25x9"])
+    by = dict(rows)
+    truth("copie: the neighbour guard catches the 22 x 24 redraw that every distance guard lets pass",
+          by["22 x 24"]["voisin 25x9"] and not any(v for k, v in by["22 x 24"].items() if k != "voisin 25x9"))
+    truth("copie: nothing catches the coarse 9 x 6 redraw (it is no copy)", not any(by["9 x 6"].values()))
 
     print("\n%s" % ("selftest: all green" if not FAILED else "selftest: %d FAILED" % len(FAILED)))
     return 1 if FAILED else 0

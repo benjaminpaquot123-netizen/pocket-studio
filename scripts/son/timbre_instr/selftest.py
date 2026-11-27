@@ -147,6 +147,18 @@ def main():
     no_vibrato(fp, "pas de vibrato vu dans les battements")
     both("attaque 10-90 % (s)", fp, "attaque_s", 0.024, 1 / 65.4)
 
+    print("5c. attaques courtes : basse 41 Hz en 3 ms (sous une période), aigu 440 Hz en 6 ms")
+    x = additive(41.2, saw_amps(p=1.0), total) * adsr(t, 0.003, 0.3, 0.6, t_off, 0.1)
+    fp, st = E.fingerprint(stereo(0.3 * x), t_off)
+    m = fp["attaque_s"]
+    ok = m[0] is None and m[1] is None
+    print(f"  {'ok ' if ok else 'NON'} {'attaque 41 Hz : sous une période':<34} {E.fmt(m[0])} {E.fmt(m[1])}")
+    if not ok:
+        FAILS.append("attaque courte grave")
+    x = additive(440.0, saw_amps(p=1.2), total) * adsr(t, 0.006, 0.2, 0.6, t_off, 0.1)
+    fp, st = E.fingerprint(stereo(0.2 * x), t_off)
+    both("attaque 440 Hz 10-90 % (s)", fp, "attaque_s", 0.0048)
+
     print("6. vibrato 5.5 Hz, ±20 cents, 262 Hz")
     x = additive(262.0, saw_amps(p=1.5), total, vib=(5.5, 20.0))
     fp, st = E.fingerprint(stereo(0.2 * x), t_off)

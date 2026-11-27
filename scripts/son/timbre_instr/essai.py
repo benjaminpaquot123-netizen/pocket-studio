@@ -15,7 +15,8 @@ from multiprocessing import Pool
 
 import numpy as np
 
-import empreinte as E
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # works under python3 -I
+import empreinte as E  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 MODEL = os.path.join(ROOT, "project-model", "src", "main", "kotlin", "com", "pocketstudio", "model")
@@ -132,12 +133,14 @@ def toy(params, seed):
 SR = E.SR
 
 
-def light_fp(x):
-    """Only the five measures the demo aims at (main path of each)."""
+def light_fp(x, path="a"):
+    """Only the five measures the demo aims at; path "b" takes attack and release from the
+    counter-measure (envelope path B) to check the optimum on a second chain."""
     steady = x[int(0.25 * SR): int((HOLD - 0.05) * SR)]
     pa = E.amps_freq(steady, F0)
     strong = [k for k in range(2, 9) if pa[k - 1] > 1e-5]
-    att, _, rel = E.env_path_a(x, HOLD, F0)
+    att, _, rel = (E.env_path_a if path == "a" else E.env_path_b)(x, HOLD, F0)
+    att = 0.0 if att is None else att  # below one period: counted as 0
     rel = TOTAL - HOLD if rel is None else rel  # release longer than the tail: count the tail
     return np.array([E.slope_from_amps(pa), E.even_odd_from_amps(pa), att, rel,
                      E.spread_freq(steady, F0, strong) if strong else 0.0])
@@ -148,12 +151,20 @@ def dist(fp, target):
     return float(np.sqrt(np.mean(((fp - target) / tol) ** 2)))
 
 
+TRAIN_SEEDS = (11, 21, 31)       # phase draws averaged inside the cost
+TARGET_SEEDS = (3, 4, 5)         # phase draws averaged for the target fingerprint
+UNSEEN_SEEDS = (101, 102, 103, 104, 105)  # never seen by the search
 _TARGET = None
 
 
+def _params(u):
+    return LO + np.clip(u, 0, 1) * (HI - LO)
+
+
 def _loss(u):
-    params = LO + np.clip(u, 0, 1) * (HI - LO)
-    return dist(light_fp(toy(params, 11)), _TARGET) + 10 * float(np.sum(np.abs(u - np.clip(u, 0, 1))))
+    params = _params(u)
+    d = np.mean([dist(light_fp(toy(params, sd)), _TARGET) for sd in TRAIN_SEEDS])
+    return float(d) + 10 * float(np.sum(np.abs(u - np.clip(u, 0, 1))))
 
 
 def _init(target):
@@ -161,29 +172,52 @@ def _init(target):
     _TARGET = target
 
 
+def _unseen(args):
+    params, sd, path, target = args
+    return dist(light_fp(toy(params, sd), path), target)
+
+
 def cma_demo():
     sys.path.insert(0, os.path.join(ROOT, "scripts", "son", "timbre"))
     import timbre as T  # read-only use of the study's CMA
 
     hidden = np.array([1.3, 0.35, 0.025, 0.12, 7.0])
-    target = light_fp(toy(hidden, 3))
-    # Floor: the same hidden sound, other phase draws (our synth draws phases per note).
-    floor = float(np.median([dist(light_fp(toy(hidden, sd)), target) for sd in (5, 12, 13, 14)]))
+    with Pool(4) as pool:
+        tgt = np.mean(pool.map(light_fp, [toy(hidden, sd) for sd in TARGET_SEEDS]), axis=0)
     rng = np.random.default_rng(1)
     x0 = rng.uniform(0.1, 0.9, 5)
-    start = dist(light_fp(toy(LO + x0 * (HI - LO), 11)), target)
-    with Pool(4, initializer=_init, initargs=(target,)) as pool:
+    with Pool(4, initializer=_init, initargs=(tgt,)) as pool:
+        start = pool.map(_loss, [x0])[0]
         best_u, best_f = T.cma(lambda xs: pool.map(_loss, list(xs)), x0, 0.25, 30, 10, rng)
-    found = LO + np.clip(best_u, 0, 1) * (HI - LO)
+    found = _params(best_u)
     print("Démo CMA : la recherche de l'étude (timbre.cma) vise l'empreinte d'un instrument factice")
+    print(f"  coût moyenné sur {len(TRAIN_SEEDS)} rendus à phases différentes ; cible = moyenne de "
+          f"{len(TARGET_SEEDS)} rendus du son caché")
     print(f"  distance au départ          {start:.2f}  (1 = une tolérance)")
     print(f"  distance trouvée (optimum)  {best_f:.2f}")
-    print(f"  plancher (même son, autres tirages de phases, médiane de 4) {floor:.2f}")
+    ok = True
+    with Pool(4) as pool:
+        for path, label in (("a", "mesure"), ("b", "contre-mesure (attaque, relâchement chemin B)")):
+            tgt_p = tgt if path == "a" else np.mean(
+                pool.map(_unseen_fp, [(hidden, sd, "b") for sd in TARGET_SEEDS]), axis=0)
+            d_found = pool.map(_unseen, [(found, sd, path, tgt_p) for sd in UNSEEN_SEEDS])
+            d_hid = pool.map(_unseen, [(hidden, sd, path, tgt_p) for sd in UNSEEN_SEEDS])
+            mf, mh = float(np.median(d_found)), float(np.median(d_hid))
+            good = float(np.max(d_found)) <= 1.0 and mf <= mh + 0.5
+            ok &= good
+            print(f"  graines jamais vues ({len(UNSEEN_SEEDS)}), {label} :")
+            print(f"    trouvé : médiane {mf:.2f}, pire {max(d_found):.2f} ; "
+                  f"son caché lui-même (plancher) : médiane {mh:.2f}  -> {'tient' if good else 'NE TIENT PAS'}")
     for n, h, f in zip(NAMES, hidden, found):
         print(f"  {n:<22} caché {h:.3g}   trouvé {f:.3g}")
-    ok = best_f <= max(1.0, 2 * floor)
+    print("  critère : sur chaque graine jamais vue, distance <= 1 tolérance, et médiane <= plancher + 0.5")
     print("CMA VERT" if ok else "CMA ROUGE")
     return 0 if ok else 1
+
+
+def _unseen_fp(args):
+    params, sd, path = args
+    return light_fp(toy(params, sd), path)
 
 
 if __name__ == "__main__":

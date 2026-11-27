@@ -432,15 +432,147 @@ def _times_from_env(env, t_off):
     return attack, decay, release
 
 
+def _rise_peak(env, t_off):
+    """Index where the attack ends (same rule as _times_from_env)."""
+    off = int(t_off * SR)
+    pk = int(np.argmax(env[:off]))
+    a10 = int(np.argmax(env[:pk + 1] >= 0.1 * env[pk]))
+    win = int(0.020 * SR)
+    if pk - a10 > win:
+        rise = env[a10 + win:pk + 1] - env[a10:pk + 1 - win]
+        steep = int(np.argmax(rise))
+        slow = np.nonzero(rise[steep:] < 0.1 * rise[steep])[0]
+        if len(slow):
+            pk = int(np.argmax(env[:a10 + steep + slow[0] + win + 1]))
+    return pk
+
+
+RAMP_10_90 = 0.8 * math.sqrt(12.0)  # 10-90 % time of a straight ramp, in standard deviations
+
+
+def attack_moments(env, t_off, kernel_var):
+    """Attack time with the smoothing taken out (works on low notes).
+
+    The rise of an envelope is a positive pulse in its derivative; smoothing the envelope by a
+    kernel convolves that pulse, so their variances add. The kernel's own variance (known) is
+    removed, whatever the note's period. The width is given as the 10-90 % time of a straight
+    ramp of the same spread."""
+    pk = _rise_peak(env, t_off)
+    top = float(env[pk])
+    if top <= 0:
+        return None
+    i0 = int(np.argmax(env[:pk + 1] > 1e-3 * top))
+    d = np.diff(env[: pk + 1 + int(0.2 * SR)])
+    steep = i0 + int(np.argmax(d[i0:pk + 1]))
+    stop = np.nonzero(d[steep:] <= 0.0)[0]
+    i1 = steep + (int(stop[0]) if len(stop) else len(d) - steep)
+    seg = np.maximum(d[i0:i1], 0.0)
+    if seg.sum() <= 0:
+        return None
+    t = np.arange(len(seg)) / SR
+    mean = float((t * seg).sum() / seg.sum())
+    var = float(((t - mean) ** 2 * seg).sum() / seg.sum()) - kernel_var
+    return RAMP_10_90 * math.sqrt(max(var, 0.0))
+
+
+PAD = int(0.1 * SR)  # silence put before the note so the smoothing does not cut the rise
+
+
+def _box_var(length, times):
+    return times * (length * length - 1) / 12.0 / (SR * SR)
+
+
+def attack_gauss(x, t_off, f0):
+    """Counter for the attack: each harmonic cut out in the frequency domain by a Gaussian band
+    (FFT, analytic), magnitudes summed; a Gaussian kernel has a known variance and, unlike a box,
+    lets nothing of the neighbour harmonics through while the note switches on."""
+    xp = np.concatenate((np.zeros(PAD), x, np.zeros(PAD)))
+    n = 1 << int(math.ceil(math.log2(len(xp))))
+    spec = np.fft.fft(xp, n)
+    f = np.fft.fftfreq(n, 1 / SR)
+    sf = f0 / GAUSS_BANDS
+    env = np.zeros(n)
+    for k in range(1, 13):
+        if k * f0 >= 10000:
+            break
+        env += np.abs(np.fft.ifft(spec * np.exp(-0.5 * ((f - k * f0) / sf) ** 2)))
+    st = 1.0 / (2 * math.pi * sf)
+    return attack_fit(env[: len(xp)], t_off + PAD / SR, st)
+
+
+def _erf(u):
+    """Abramowitz-Stegun 7.1.26 (error below 1.5e-7), numpy has no erf."""
+    s = np.sign(u)
+    a = np.abs(u)
+    t = 1.0 / (1.0 + 0.3275911 * a)
+    y = 1.0 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t
+               + 0.254829592) * t * np.exp(-a * a)
+    return s * y
+
+
+def _ramp_gauss(u, sigma):
+    """Integral of a unit step smoothed by a Gaussian of std sigma, evaluated at u."""
+    z = u / (sigma * math.sqrt(2.0))
+    return u * 0.5 * (1.0 + _erf(z)) + sigma / math.sqrt(2 * math.pi) * np.exp(-z * z)
+
+
+def attack_fit(env, t_off, sigma):
+    """Attack by fitting a straight ramp (start t0, length T) smoothed by the known Gaussian kernel
+    to the rise of the envelope, least squares over a grid (no moments, no derivative)."""
+    pk = _rise_peak(env, t_off)
+    top = float(env[pk])
+    if top <= 0:
+        return None
+    dec = 24  # 2 kHz is plenty: the envelope is smoothed by sigma >= a few ms
+    i0 = int(np.argmax(env[:pk + 1] > 0.02 * top))
+    lo = max(0, i0 - int(4 * sigma * SR))
+    e = env[lo:pk + 1:dec]
+    t = (lo + np.arange(len(e)) * dec) / SR
+    best = (math.inf, None)
+    for T in np.geomspace(0.0003, 0.6, 160):
+        t0s = np.arange(t[0] - T, t[-1], 0.00025)
+        u = t[None, :] - t0s[:, None]
+        m = (_ramp_gauss(u, sigma) - _ramp_gauss(u - T, sigma)) / T
+        g = (m @ e) / np.maximum((m * m).sum(1), 1e-30)
+        r = ((e[None, :] - g[:, None] * m) ** 2).sum(1)
+        j = int(np.argmin(r))
+        if r[j] < best[0]:
+            best = (float(r[j]), float(T))
+    return None if best[1] is None else 0.8 * best[1]
+
+
+GAUSS_BANDS = 5.0  # Gaussian band standard deviation = f0 / 5 (neighbour at 5 sigma)
+
+
+def resolved_attack(att, f0):
+    """An attack shorter than one period of the note has no envelope to measure (the first cycle
+    is the whole rise and its shape depends on the phases): reported as None, "below one period",
+    never as a number. The tolerance itself does not depend on the period."""
+    if att is None or att < 1.0 / f0:
+        return None
+    return att
+
+
 def env_path_a(x, t_off, f0):
+    """Sliding RMS for decay and release; attack from the demodulated harmonics (no squaring)."""
     win = max(int(0.005 * SR), int(2 * SR / f0))
-    return _times_from_env(_env_rms(x, win), t_off)
+    _, decay, release = _times_from_env(_env_rms(x, win), t_off)
+    length = max(2, int(round(SR / f0)))
+    xp = np.concatenate((np.zeros(PAD), x[: int(t_off * SR)]))
+    env = np.zeros(len(xp))
+    for k in range(1, 13):
+        if k * f0 >= 10000:
+            break
+        env += np.abs(_hetero(xp, k * f0, length))
+    att = attack_moments(env, t_off + PAD / SR, _box_var(length, 2))
+    return resolved_attack(att, f0), decay, release
 
 
 def env_path_b(x, t_off, f0):
     """Hilbert envelope; release from the Schroeder backward integral (slope fit -5..-25 dB)."""
     env = _env_analytic(x, f0)
-    attack, decay, rel = _times_from_env(env, t_off)
+    _, decay, rel = _times_from_env(env, t_off)
+    attack = resolved_attack(attack_gauss(x, t_off, f0), f0)
     off = int(t_off * SR)
     if rel is None and float(np.mean(env[off - SR // 50: off])) < 0.01 * float(env[:off].max()):
         return attack, decay, None
@@ -481,6 +613,29 @@ def bright_track_time(x, f0, hop_s=0.005):
         a = (x[at: at + n] * w) ** 2
         b = (d[at: at + n] * w) ** 2
         out.append(math.sqrt(b.sum() / max(a.sum(), 1e-30)) / (2 * math.pi) / f0)
+    return np.array(out), n / 2 / SR
+
+
+def bright_track_harm(x, f0, hop_s=0.005):
+    """Independent counter: each harmonic k demodulated in the time domain (heterodyne, no FFT,
+    no derivative), RMS harmonic number sqrt(sum k^2 |a_k|^2 / sum |a_k|^2) per Hann frame of 1024
+    samples. Only the harmonics count (noise between them does not), up to 16 kHz."""
+    n, hop = 1024, int(hop_s * SR)
+    w2 = np.hanning(n) ** 2
+    length = max(2, int(round(SR / f0)))
+    p0 = np.zeros(len(x))
+    p2 = np.zeros(len(x))
+    for k in range(1, 401):
+        if k * f0 >= 16000:
+            break
+        pk = np.abs(_hetero(x, k * f0, length)) ** 2
+        p0 += pk
+        p2 += k * k * pk
+    out = []
+    for at in range(0, len(x) - n, hop):
+        a = float((p0[at: at + n] * w2).sum())
+        b = float((p2[at: at + n] * w2).sum())
+        out.append(math.sqrt(b / max(a, 1e-30)))
     return np.array(out), n / 2 / SR
 
 
@@ -638,7 +793,7 @@ def fingerprint(st, t_off, pad=False):
     for i, key in enumerate(ENV_KEYS):
         out[key] = (ta[i], tb[i], agree(key, ta[i], tb[i], 1.0 / ref))
     tra, ca = bright_track_freq(mono, ref)
-    trb, cb = bright_track_time(mono, ref)
+    trb, cb = bright_track_harm(mono, ref) if note_ok else bright_track_time(mono, ref)
     fa_ = filter_env(tra, ca, onset, t_off)
     fb_ = filter_env(trb, cb, onset, t_off)
     for i, key in enumerate(("brillance_attaque", "brillance_tenue", "chute_filtre_s")):

@@ -2,6 +2,7 @@
 
 Sources : `docs/sons/passe2/verif/DESACCORDS-A.md`, `-B.md`, `-C.md` et `docs/sons/passe2/CORRECTIONS-CRITIQUE.md`.
 « levé » = preuve donnée ; « reste » = on ne sait pas, mais aucune cible n'en dépend (dit pourquoi).
+Un seul doute changeait des cibles : B1 (voix, boucles mélodiques, coups « - ») ; il est levé par la preuve ci-dessous.
 Zéro doute sans réponse.
 
 ## DESACCORDS-A (RAR 1, 2, 3, 4, 12)
@@ -22,7 +23,7 @@ Zéro doute sans réponse.
 
 | doute | état | preuve ou raison |
 |---|---|---|
-| B1 type des voix d'ornement de r7p2 | levé | 622 sons nommés comme des voix ; durée et crête identiques à la remesure (0 écart) ; corrigé : déplacés vers « voix » (`passe2/fin/reetiquetage/`, commit vert) |
+| B1 type des voix d'ornement de r7p2 | levé (change des cibles) | 622 sons nommés comme des voix ; durée et crête identiques à la remesure (0 écart) ; déplacés vers « voix » (`passe2/fin/reetiquetage/`) : 605 venaient des boucles mélodiques, 17 des coups mélodiques « - ». Preuve pour les 17 (table d'avant, commit eefa5745d, contre `n7_vocal.csv`) : tous sans sous-type, part chantée médiane 49 % (55 % pour les 605 autres voix de r7p2), étendue 2,6 demi-tons (5,2), hauteur 392 Hz (295), crête −3,01 dB exactement comme les 605, durée 1,9 à 7,5 s (médiane 5,6 s, bien plus longue que les coups « - » restants : 1 s) : ce sont bien des voix. Effet chiffré : `CONCLUSION-AUTRES.md`, « Le déplacement des 622 voix » |
 | B2 8 lignes MIDI sans fichier, r7p2 | levé | ce sont les 8 MIDI d'un kit ; l'extraction coupe leurs noms, donc l'id change ; relus par `tout.py`, chacun retrouve une seule ligne (notes, note basse, note haute) ; rien à corriger |
 | B3 9 hats ouverts très courts, rar8 | reste | batterie, hors lot ; les hats sont rangés par mesure, pas par nom : la cible ne bouge pas |
 | B4 type lu par le chemin à 31,8 % sur rar7 | levé | outil du vérificateur ; la table a raison (B1 réglé, le reste est un nom de dossier lu de travers) |

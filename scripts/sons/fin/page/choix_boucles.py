@@ -48,6 +48,8 @@ LINES = [("bouclemelodique_tous", "boucle mélodique", "melodic_loop", "tous"),
 NOT_FOUND = set()  # keys skipped after extraction (none so far)
 REMEASURED = {  # keys re-measured equal to the table after extraction
     "r5-p1-07ddad181f", "r3-p1-4f400f88a0", "r5-p1-25d2443f13", "r5-p1-079dfe0c92",
+    "r10-p1-0c67caebad", "r9-p3-a90b72fc2a", "r1-p1-7515055228", "r1-p1-fe88e65085",
+    "r12-p2-4e836e41f3",
 }
 COLS = ["slug", "famille", "style", "statut", "cle", "pack", "tempo_fabricant", "dur_s", "rms_dbfs",
         "peak_dbfs", "cible_dur_s", "cible_rms_dbfs", "cible_peak_dbfs", "distance", "remesure_ok"]

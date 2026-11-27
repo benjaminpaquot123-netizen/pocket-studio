@@ -165,8 +165,8 @@ def ess_measure(stereo, typ, fam):
         F["flat"].append(flat(np.maximum(s.astype(np.float64) ** 2, 1e-10).astype(np.float32)))
         F["zcr"].append(zcr(fr))
         F["rms"].append(rms(fr))
-        p = (s ** 2).astype(np.float32)
-        F["lo"].append(bands[0](p)), F["mi"].append(bands[1](p)), F["hi"].append(bands[2](p))
+        # EnergyBand squares its input itself: give it the magnitude spectrum.
+        F["lo"].append(bands[0](s)), F["mi"].append(bands[1](s)), F["hi"].append(bands[2](s))
         M.append(mfcc(s)[1])
     # FrameGenerator adds one trailing frame (mostly padding) beyond the centred
     # frames k*HOP, k <= len/HOP; drop it so short one-shots are not skewed.

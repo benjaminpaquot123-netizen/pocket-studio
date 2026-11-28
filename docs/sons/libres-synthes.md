@@ -1,108 +1,244 @@
-# Synthés et effets libres : comparaison avec les sons fabriqués
+# Synthés et effets libres : comparaison avec les sons fabriqués (fouille élargie)
 
-Date : 2026-11-28. Branche : `eq/synthes-libres`.
+Date : 2026-11-28. Branche : `eq/synthes-libres`. Remplace la version du même jour (21 MP3, Freesound seul, anciens synthés).
 
-## But
+## En bref
 
-Pour chaque famille de synthé (stab, pluck, nappe, accords, boucle lead, arpège) et pour les effets et ambiances :
-mettre le meilleur son **fabriqué** par l'appli face au meilleur son **libre** trouvé, avec la même distance aux cibles,
-garder le meilleur, et lister les sortes de sons qui manquent à l'appli.
+- **Nos fabriqués tiennent la route presque partout** : sur 96 cases (8 familles × 12 styles), 72 sont à égalité
+  (écart < 0,3) et le fabriqué est en tête dans 13 autres (à égalité avec un A ou un B ; 11 sont des arpèges où le libre « oscarsynth » reste un peu plus près). Il est distancé dans 11 cases :
+  9 en stab ou effet (« A = B devant »), 1 « A devant » (arpège rnb), 1 « B devant » (ambiance house).
+- **Un seul vrai trou** : nappe d'ambiance **house** (fabriqué 0,93, meilleur B 0,50, meilleur A 0,82). Lo-fi est limite
+  (fabriqué 0,75, B 0,45 : écart juste sous 0,3).
+- **Stab** : un *orchestra hit* libre (0,18) est plus près de la cible que tous nos stabs dans les 12 styles (notre meilleur : drill, 0,24),
+  et nettement (écart > 0,3) dans 7 : boom-bap, house, techno, dnb, edm, reggaeton-afro, synthwave (nos stabs à 0,59 à 0,94).
+- **Effets** : le « faller » CC0 de Wyzowl (0,39 sur le WAV d'origine, 0,41 sur le MP3 commité) devance nos effets en lo-fi (0,72) et rnb (0,85).
+- **Arpège** : le libre « oscarsynth » (0,50, mais 1,7 s seulement) est plus près que notre meilleur arpège dans les 12 styles ;
+  à égalité dans 11, nettement devant en rnb (notre 0,89).
+- Les sons B (MusicRadar, gratuits mais non redistribuables) ne gagnent seuls nulle part, sauf l'ambiance house.
 
 ## Méthode
 
-- Cibles : `docs/sons/fin/cibles/zone-c-synthes.{md,tsv}` (branche `eq/son-fin-essentia-01` @ `faa70cb3a`).
-- Mesure : `scripts/son/essentia/cibles_desc.py`, la même pour tous les sons.
-- Distance : même calcul que `scripts/son/cible/c/tgt_c.py` (branche `eq/son-cible-c`) : écart de chaque mesure à la cible
-  ramené à l'étalement de la cible (IQR/1,349, avec planchers), écrêté, moyenne quadratique pondérée. **Plus bas = plus près.**
-- Cellules : style propre quand la cible existe (nappe/trap, nappe/dnb, accords/dnb, boucle/dnb, fx-nappe/lofi, house,
-  techno, dnb, fx-effet/techno, dnb), sinon la cellule « * » (tous les styles).
-- Sons fabriqués comparés : les 144 synthés de la page précédente (préréglages Surge, GPL-3.0-or-later) et les 20 effets
-  fabriqués (œuvre neuve). La sortie de `eq/son-cible-c` n'était pas encore poussée (tête `3243f2c6`, pas de
-  `docs/sons/cible/c`) : ces nouveaux sons ne sont donc pas dans la comparaison.
-- Sons libres : Freesound, filtre **CC0 seulement**, 528 sons téléchargés (aperçus HQ MP3 128 k), triés par mots du titre
-  (stab, pluck, pad, chord, lead, arp, ambient, riser, impact…) et sans acoustique, voix, batterie ni prise de terrain.
-  Chaque son retenu a été vérifié CC0 sur sa page.
+- **Fabriqués** : les 768 sons de la zone C (`docs/sons/cible/c/index.json`, branche `eq/son-cible-c` @ `8def77b2`),
+  12 styles × 8 familles × 8 variantes. Pour chaque famille et style, le meilleur des 8 (sa `distance_adn_sigma`,
+  remesurée ici à l'identique : techno-stab-01 = 1,058, dnb-boucle-01 = 0,781).
+- **Cibles et distance** : `docs/sons/fin/cibles/zone-c-synthes.{md,tsv}` (branche `eq/son-fin-essentia-01` @ `faa70cb3a`),
+  calcul `scripts/son/cible/c/tgt_c.py` : écart de chaque mesure Essentia à la cible ramené à son étalement, écrêté, moyenne
+  quadratique pondérée. **Plus bas = plus près.** Cellule du style quand elle existe (nappe/trap, nappe/dnb, accords/dnb,
+  boucle-lead/dnb, fx-nappe lofi/house/techno/dnb, fx-effet techno/dnb), sinon la cellule « * ».
+- **Libres** : chaque son mesuré une fois (`cibles_desc.from_bytes`), comparé à toutes les cellules de ses familles.
+  2 573 sons distincts mesurés :
+  - Freesound, filtre **CC0** et durée 0,2 à 40 s, 14 familles de recherche (les 8 familles, plus hoover, orchestra hit,
+    vocal chop, cloche FM, vinyle, glitch), 3 pages par requête : 1 700 résultats, 1 492 gardés après tri des titres
+    (sans acoustique, batterie ni voix parlée), aperçus HQ MP3 ;
+  - archive.org : ESQ-1 « piano 2 chord » (Paisley Computer, 93 sons) et « VHS sample pack » (Freezywaves, 27 sons),
+    marqués *Public Domain Mark 1.0* par leurs auteurs ;
+  - Wyzowl SFX Kit (HuggingFace, CC0 1.0, 78 effets) ;
+  - classe B, mesurés mais **jamais commités** : MusicRadar SampleRadar « 00s synths » (arps, accords, nappes,
+    multisamples), « synth impacts », « drum'n'bass FX », « glitch vocals » (938 fichiers).
+- **Verdict** : « égalité » quand tous sont à moins de 0,3 du meilleur ; sinon on nomme ceux qui sont en tête
+  (à moins de 0,3 du meilleur) ; « pas de verdict » si même le meilleur dépasse 1,5.
+- Titres vérifiés à la main : retirés des A les voix, guitare, piano, harmonica, cloche d'école, allumette, « Rock Loop ».
+- Python lancé en `-I` sur tous les fichiers téléchargés ; aucun son téléchargé hors scratchpad sauf les A choisis.
 
 ## Résultats par famille et par style
 
-| Famille | Cible (styles) | Meilleur fabriqué | Meilleur libre | Verdict |
-|---|---|---|---|---|
-| stab | stab/* (tous) | synthes__techno-stab-01 : **0.35** | [Shock Stab 06](https://freesound.org/people/nomiqbomi/sounds/578380/) — nomiqbomi, CC0 ([mp3](libres/mp3/freesound-578380.mp3)) : **0.42** | à égalité (écart < 0,3) |
-| pluck | pluck/* (tous) | synthes__pop-pluck-01 : **0.44** | [EDM Pluck 1 One-shot F Key-Dry&Wet](https://freesound.org/people/CAT-FOX_ALEX/sounds/845410/) — CAT-FOX_ALEX, CC0 ([mp3](libres/mp3/freesound-845410.mp3)) : **0.65** | à égalité (écart < 0,3) |
-| nappe | nappe/trap (trap, drill) | synthes__trap-pad-02 : **0.84** | [Glowing Pad.wav](https://freesound.org/people/staticpony1/sounds/249612/) — staticpony1, CC0 ([mp3](libres/mp3/freesound-249612.mp3)) : **0.75** | à égalité (écart < 0,3) |
-| nappe | nappe/* (boom-bap, lo-fi, house, techno, edm, reggaeton-afro, pop, synthwave, rnb) | synthes__lofi-pad-01 : **1.11** | [Angel Awaken Pad](https://freesound.org/people/Kurlyjoe/sounds/425413/) — Kurlyjoe, CC0 ([mp3](libres/mp3/freesound-425413.mp3)) ⚠ stéréo en opposition de phase : **0.90** | à égalité (écart < 0,3) |
-| nappe | nappe/dnb (dnb) | synthes__dnb-pad-01 : **1.93** | [Angel Awaken Pad](https://freesound.org/people/Kurlyjoe/sounds/425413/) — Kurlyjoe, CC0 ([mp3](libres/mp3/freesound-425413.mp3)) ⚠ stéréo en opposition de phase : **1.06** | **libre** |
-| accords | accords/* (trap, drill, boom-bap, lo-fi, house, techno, edm, reggaeton-afro, pop, synthwave, rnb) | synthes__edm-accords-02 : **0.29** | [Chord Progression-Trance Chord Progression 1-124bpm](https://freesound.org/people/CAT-FOX_ALEX/sounds/849664/) — CAT-FOX_ALEX, CC0 ([mp3](libres/mp3/freesound-849664.mp3)) : **0.68** | **fabriqué** |
-| accords | accords/dnb (dnb) | synthes__dnb-accords-03 : **1.04** | [Chord Progression-Trance Chord Progression 1-124bpm](https://freesound.org/people/CAT-FOX_ALEX/sounds/849664/) — CAT-FOX_ALEX, CC0 ([mp3](libres/mp3/freesound-849664.mp3)) : **0.88** | à égalité (écart < 0,3) |
-| boucle | boucle-lead/* (trap, drill, boom-bap, lo-fi, house, techno, edm, reggaeton-afro, pop, synthwave, rnb) | synthes__trap-lead-02 : **0.30** | [Funk Lead Loop](https://freesound.org/people/ehohnke/sounds/376416/) — ehohnke, CC0 ([mp3](libres/mp3/freesound-376416.mp3)) : **0.77** | **fabriqué** |
-| boucle | boucle-lead/dnb (dnb) | synthes__dnb-lead-01 : **1.25** | [135-trap-melody.wav](https://freesound.org/people/GENERALMiDiGUy/sounds/431187/) — GENERALMiDiGUy, CC0 ([mp3](libres/mp3/freesound-431187.mp3)) : **0.94** | **libre** |
-| arpege | boucle-synth/* (tous) | synthes__pop-arp-02 : **0.92** | [Happy Trance - Bass Chord Progression (Arp2) - 120Bpm](https://freesound.org/people/elaineaeris/sounds/509466/) — elaineaeris, CC0 ([mp3](libres/mp3/freesound-509466.mp3)) : **1.92** | **fabriqué** |
-| ambiance | fx-nappe/* (trap, drill, boom-bap, edm, reggaeton-afro, pop, synthwave, rnb) | aucun | [Dark_Texture_1.wav](https://freesound.org/people/DneproMan/sounds/256831/) — DneproMan, CC0 ([mp3](libres/mp3/freesound-256831.mp3)) ⚠ stéréo en opposition de phase : **1.02** | libre seul (rien de fabriqué) |
-| ambiance | fx-nappe/lofi (lo-fi) | aucun | [Dark_Texture_1.wav](https://freesound.org/people/DneproMan/sounds/256831/) — DneproMan, CC0 ([mp3](libres/mp3/freesound-256831.mp3)) ⚠ stéréo en opposition de phase : **1.69** | pas de verdict (tous loin) |
-| ambiance | fx-nappe/house (house) | aucun | [Dark_Texture_1.wav](https://freesound.org/people/DneproMan/sounds/256831/) — DneproMan, CC0 ([mp3](libres/mp3/freesound-256831.mp3)) ⚠ stéréo en opposition de phase : **2.67** | pas de verdict (tous loin) |
-| ambiance | fx-nappe/techno (techno) | aucun | [Dark_Texture_1.wav](https://freesound.org/people/DneproMan/sounds/256831/) — DneproMan, CC0 ([mp3](libres/mp3/freesound-256831.mp3)) ⚠ stéréo en opposition de phase : **1.49** | libre seul (rien de fabriqué) |
-| ambiance | fx-nappe/dnb (dnb) | aucun | [Dark_Texture_1.wav](https://freesound.org/people/DneproMan/sounds/256831/) — DneproMan, CC0 ([mp3](libres/mp3/freesound-256831.mp3)) ⚠ stéréo en opposition de phase : **0.56** | libre seul (rien de fabriqué) |
-| effet | fx-effet/* (trap, drill, boom-bap, lo-fi, house, edm, reggaeton-afro, pop, synthwave, rnb) | claviers-fx__edm-effet-04 : **0.74** | [Lunar Downlifter FX 4.wav](https://freesound.org/people/maqsim/sounds/172157/) — maqsim, CC0 ([mp3](libres/mp3/freesound-172157.mp3)) : **0.61** | à égalité (écart < 0,3) |
-| effet | fx-effet/techno (techno) | claviers-fx__edm-effet-04 : **1.08** | [Impacts.wav](https://freesound.org/people/Anuj_Shrestha1/sounds/555637/) — Anuj_Shrestha1, CC0 ([mp3](libres/mp3/freesound-555637.mp3)) : **0.78** | **libre** |
-| effet | fx-effet/dnb (dnb) | claviers-fx__pop-effet-02 : **0.82** | [laser zap 2.wav](https://freesound.org/people/.Andre_Onate/sounds/135118/) — .Andre_Onate, CC0 ([mp3](libres/mp3/freesound-135118.mp3)) : **0.61** | à égalité (écart < 0,3) |
+### Stab
 
-### Effets par sorte (cible fx-effet/*)
+| Style | Cellule cible | Meilleur fabriqué | Meilleur A (libre) | Meilleur B (gratuit, non redistribuable) | Verdict |
+|---|---|---|---|---|---|
+| trap | stab/* | 0,42 `trap-stab-02` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| drill | stab/* | 0,24 `drill-stab-01` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| boom-bap | stab/* | 0,94 `boom-bap-stab-01` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | A = B à égalité, devant |
+| lo-fi | stab/* | 0,38 `lo-fi-stab-01` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| house | stab/* | 0,59 `house-stab-03` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | A = B à égalité, devant |
+| techno | stab/* | 0,72 `techno-stab-03` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | A = B à égalité, devant |
+| dnb | stab/* | 0,70 `dnb-stab-07` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | A = B à égalité, devant |
+| edm | stab/* | 0,70 `edm-stab-04` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | A = B à égalité, devant |
+| reggaeton-afro | stab/* | 0,73 `reggaeton-afro-stab-02` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | A = B à égalité, devant |
+| pop | stab/* | 0,39 `pop-stab-03` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| synthwave | stab/* | 0,88 `synthwave-stab-05` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | A = B à égalité, devant |
+| rnb | stab/* | 0,46 `rnb-stab-02` | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 [SI_SynHitProc4-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
 
-| Sorte | Meilleur libre | Distance |
+### Pluck
+
+| Style | Cellule cible | Meilleur fabriqué | Meilleur A (libre) | Meilleur B (gratuit, non redistribuable) | Verdict |
+|---|---|---|---|---|---|
+| trap | pluck/* | 0,25 `trap-pluck-01` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| drill | pluck/* | 0,35 `drill-pluck-04` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| boom-bap | pluck/* | 0,22 `boom-bap-pluck-01` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| lo-fi | pluck/* | 0,22 `lo-fi-pluck-03` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| house | pluck/* | 0,28 `house-pluck-01` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| techno | pluck/* | 0,28 `techno-pluck-01` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| dnb | pluck/* | 0,37 `dnb-pluck-04` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| edm | pluck/* | 0,33 `edm-pluck-02` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| reggaeton-afro | pluck/* | 0,25 `reggaeton-afro-pluck-03` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| pop | pluck/* | 0,24 `pop-pluck-03` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| synthwave | pluck/* | 0,21 `synthwave-pluck-02` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| rnb | pluck/* | 0,20 `rnb-pluck-02` | 0,50 [Pluck-Bubule Pluck E Maj Chord](libres/mp3/freesound-840529.mp3) ([fiche](https://freesound.org/s/840529/), CC0) | 0,48 [00s_SkweelyLead_D#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = B à égalité, devant |
+
+### Nappe
+
+| Style | Cellule cible | Meilleur fabriqué | Meilleur A (libre) | Meilleur B (gratuit, non redistribuable) | Verdict |
+|---|---|---|---|---|---|
+| trap | nappe/trap | 0,39 `trap-nappe-05` | 0,54 [Pad-Aurora_Cmaj](libres/mp3/freesound-875696.mp3) ([fiche](https://freesound.org/s/875696/), CC0) | 0,57 [00s_SkweelyLead_C4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| drill | nappe/trap | 0,40 `drill-nappe-04` | 0,54 [Pad-Aurora_Cmaj](libres/mp3/freesound-875696.mp3) ([fiche](https://freesound.org/s/875696/), CC0) | 0,57 [00s_SkweelyLead_C4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| boom-bap | nappe/* | 0,65 `boom-bap-nappe-02` | 0,56 [Really cool smooth pad synth](libres/mp3/freesound-572965.mp3) ([fiche](https://freesound.org/s/572965/), CC0) | 0,85 [00s_SkweelyLead_F#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| lo-fi | nappe/* | 0,66 `lo-fi-nappe-01` | 0,56 [Really cool smooth pad synth](libres/mp3/freesound-572965.mp3) ([fiche](https://freesound.org/s/572965/), CC0) | 0,85 [00s_SkweelyLead_F#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| house | nappe/* | 0,84 `house-nappe-03` | 0,56 [Really cool smooth pad synth](libres/mp3/freesound-572965.mp3) ([fiche](https://freesound.org/s/572965/), CC0) | 0,85 [00s_SkweelyLead_F#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| techno | nappe/* | 0,60 `techno-nappe-01` | 0,56 [Really cool smooth pad synth](libres/mp3/freesound-572965.mp3) ([fiche](https://freesound.org/s/572965/), CC0) | 0,85 [00s_SkweelyLead_F#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| dnb | nappe/dnb | 0,92 `dnb-nappe-08` | 0,73 [Pad Double Chord Stretch.wav](libres/mp3/freesound-396538.mp3) ([fiche](https://freesound.org/s/396538/), CC0) | 0,74 [00s_SkweelyLead_D#2](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| edm | nappe/* | 0,55 `edm-nappe-03` | 0,56 [Really cool smooth pad synth](libres/mp3/freesound-572965.mp3) ([fiche](https://freesound.org/s/572965/), CC0) | 0,85 [00s_SkweelyLead_F#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| reggaeton-afro | nappe/* | 0,73 `reggaeton-afro-nappe-01` | 0,56 [Really cool smooth pad synth](libres/mp3/freesound-572965.mp3) ([fiche](https://freesound.org/s/572965/), CC0) | 0,85 [00s_SkweelyLead_F#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| pop | nappe/* | 0,63 `pop-nappe-02` | 0,56 [Really cool smooth pad synth](libres/mp3/freesound-572965.mp3) ([fiche](https://freesound.org/s/572965/), CC0) | 0,85 [00s_SkweelyLead_F#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| synthwave | nappe/* | 0,69 `synthwave-nappe-03` | 0,56 [Really cool smooth pad synth](libres/mp3/freesound-572965.mp3) ([fiche](https://freesound.org/s/572965/), CC0) | 0,85 [00s_SkweelyLead_F#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| rnb | nappe/* | 0,61 `rnb-nappe-01` | 0,56 [Really cool smooth pad synth](libres/mp3/freesound-572965.mp3) ([fiche](https://freesound.org/s/572965/), CC0) | 0,85 [00s_SkweelyLead_F#4](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+
+### Accords de synthé
+
+| Style | Cellule cible | Meilleur fabriqué | Meilleur A (libre) | Meilleur B (gratuit, non redistribuable) | Verdict |
+|---|---|---|---|---|---|
+| trap | accords/* | 0,25 `trap-accords-02` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| drill | accords/* | 0,23 `drill-accords-07` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| boom-bap | accords/* | 0,19 `boom-bap-accords-05` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| lo-fi | accords/* | 0,32 `lo-fi-accords-04` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| house | accords/* | 0,22 `house-accords-01` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| techno | accords/* | 0,20 `techno-accords-02` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| dnb | accords/dnb | 0,46 `dnb-accords-02` | 0,52 [Spaceship Pads, Chord Progression](libres/mp3/freesound-503242.mp3) ([fiche](https://freesound.org/s/503242/), CC0) | 0,73 [00s_JaySawz[125]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| edm | accords/* | 0,34 `edm-accords-04` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| reggaeton-afro | accords/* | 0,24 `reggaeton-afro-accords-01` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| pop | accords/* | 0,27 `pop-accords-01` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| synthwave | accords/* | 0,25 `synthwave-accords-01` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| rnb | accords/* | 0,32 `rnb-accords-01` | 0,43 [Synth pad chord](libres/mp3/freesound-727082.mp3) ([fiche](https://freesound.org/s/727082/), CC0) | 0,33 [00s_JaySawz[140]-A](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+
+### Boucle mélodique
+
+| Style | Cellule cible | Meilleur fabriqué | Meilleur A (libre) | Meilleur B (gratuit, non redistribuable) | Verdict |
+|---|---|---|---|---|---|
+| trap | boucle-lead/* | 0,43 `trap-boucle-03` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| drill | boucle-lead/* | 0,30 `drill-boucle-02` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| boom-bap | boucle-lead/* | 0,35 `boom-bap-boucle-01` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| lo-fi | boucle-lead/* | 0,33 `lo-fi-boucle-01` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| house | boucle-lead/* | 0,24 `house-boucle-02` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| techno | boucle-lead/* | 0,43 `techno-boucle-06` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| dnb | boucle-lead/dnb | 0,57 `dnb-boucle-04` | 0,59 [Melo2XX.wav](libres/mp3/freesound-411454.mp3) ([fiche](https://freesound.org/s/411454/), CC0) | 0,40 [GV_StripVocPad_120-Dmaj](https://www.musicradar.com/news/sampleradar-glitch-vocal-samples) (MusicRadar, non redistribuable) | égalité |
+| edm | boucle-lead/* | 0,31 `edm-boucle-01` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| reggaeton-afro | boucle-lead/* | 0,45 `reggaeton-afro-boucle-05` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| pop | boucle-lead/* | 0,27 `pop-boucle-02` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| synthwave | boucle-lead/* | 0,34 `synthwave-boucle-01` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+| rnb | boucle-lead/* | 0,23 `rnb-boucle-03` | 0,49 [Supersaw/square synth loop 1 (120 BPM)](libres/mp3/freesound-709165.mp3) ([fiche](https://freesound.org/s/709165/), CC0) | 0,35 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | égalité |
+
+### Arpège
+
+| Style | Cellule cible | Meilleur fabriqué | Meilleur A (libre) | Meilleur B (gratuit, non redistribuable) | Verdict |
+|---|---|---|---|---|---|
+| trap | boucle-synth/* | 0,69 `trap-arpege-03` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| drill | boucle-synth/* | 0,52 `drill-arpege-01` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| boom-bap | boucle-synth/* | 0,66 `boom-bap-arpege-04` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| lo-fi | boucle-synth/* | 0,66 `lo-fi-arpege-01` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| house | boucle-synth/* | 0,57 `house-arpege-01` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| techno | boucle-synth/* | 0,55 `techno-arpege-02` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| dnb | boucle-synth/* | 0,61 `dnb-arpege-04` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| edm | boucle-synth/* | 0,79 `edm-arpege-01` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| reggaeton-afro | boucle-synth/* | 0,53 `reggaeton-afro-arpege-05` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| pop | boucle-synth/* | 0,58 `pop-arpege-01` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| synthwave | boucle-synth/* | 0,77 `synthwave-arpege-01` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | fabriqué = A à égalité, devant |
+| rnb | boucle-synth/* | 0,89 `rnb-arpege-01` | 0,50 [oscarsynth.wav](libres/mp3/freesound-484756.mp3) ([fiche](https://freesound.org/s/484756/), CC0) | 0,86 [00s_Arp[125]-E](https://www.musicradar.com/news/sampleradar-00s-synth-samples) (MusicRadar, non redistribuable) | A devant |
+
+### Nappe d'ambiance
+
+| Style | Cellule cible | Meilleur fabriqué | Meilleur A (libre) | Meilleur B (gratuit, non redistribuable) | Verdict |
+|---|---|---|---|---|---|
+| trap | fx-nappe/* | 0,24 `trap-ambiance-01` | 0,51 [ambience_atonal_shimmery.wav](libres/mp3/freesound-557104.mp3) ([fiche](https://freesound.org/s/557104/), CC0) | 0,22 [DNB_FX_37](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | égalité |
+| drill | fx-nappe/* | 0,27 `drill-ambiance-02` | 0,51 [ambience_atonal_shimmery.wav](libres/mp3/freesound-557104.mp3) ([fiche](https://freesound.org/s/557104/), CC0) | 0,22 [DNB_FX_37](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | égalité |
+| boom-bap | fx-nappe/* | 0,33 `boom-bap-ambiance-01` | 0,51 [ambience_atonal_shimmery.wav](libres/mp3/freesound-557104.mp3) ([fiche](https://freesound.org/s/557104/), CC0) | 0,22 [DNB_FX_37](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | égalité |
+| lo-fi | fx-nappe/lofi | 0,75 `lo-fi-ambiance-04` | 0,81 [Vinyl Crackle (Real).mp3](libres/mp3/freesound-434822.mp3) ([fiche](https://freesound.org/s/434822/), CC0) | 0,45 [DNB_FX_37](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | fabriqué = B à égalité, devant |
+| house | fx-nappe/house | 0,93 `house-ambiance-02` | 0,82 [Whoosh stereo light (transition), xkeril](libres/mp3/freesound-701104.mp3) ([fiche](https://freesound.org/s/701104/), CC0) | 0,50 [DNB_FX_99](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | B devant |
+| techno | fx-nappe/techno | 0,68 `techno-ambiance-01` | 0,80 [ambience_atonal_shimmery.wav](libres/mp3/freesound-557104.mp3) ([fiche](https://freesound.org/s/557104/), CC0) | 0,56 [DNB_FX_69](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | égalité |
+| dnb | fx-nappe/dnb | 0,33 `dnb-ambiance-01` | 0,38 [Inerstellar_Ambient_Drone_13](libres/mp3/freesound-872314.mp3) ([fiche](https://freesound.org/s/872314/), CC0) | 0,38 [DNB_FX_84](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | égalité |
+| edm | fx-nappe/* | 0,24 `edm-ambiance-02` | 0,51 [ambience_atonal_shimmery.wav](libres/mp3/freesound-557104.mp3) ([fiche](https://freesound.org/s/557104/), CC0) | 0,22 [DNB_FX_37](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | égalité |
+| reggaeton-afro | fx-nappe/* | 0,33 `reggaeton-afro-ambiance-01` | 0,51 [ambience_atonal_shimmery.wav](libres/mp3/freesound-557104.mp3) ([fiche](https://freesound.org/s/557104/), CC0) | 0,22 [DNB_FX_37](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | égalité |
+| pop | fx-nappe/* | 0,37 `pop-ambiance-04` | 0,51 [ambience_atonal_shimmery.wav](libres/mp3/freesound-557104.mp3) ([fiche](https://freesound.org/s/557104/), CC0) | 0,22 [DNB_FX_37](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | égalité |
+| synthwave | fx-nappe/* | 0,38 `synthwave-ambiance-01` | 0,51 [ambience_atonal_shimmery.wav](libres/mp3/freesound-557104.mp3) ([fiche](https://freesound.org/s/557104/), CC0) | 0,22 [DNB_FX_37](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | égalité |
+| rnb | fx-nappe/* | 0,39 `rnb-ambiance-03` | 0,51 [ambience_atonal_shimmery.wav](libres/mp3/freesound-557104.mp3) ([fiche](https://freesound.org/s/557104/), CC0) | 0,22 [DNB_FX_37](https://www.musicradar.com/news/tech/sampleradar-100-free-drum-n-bass-fx-samples-444650) (MusicRadar, non redistribuable) | égalité |
+
+### Effet
+
+| Style | Cellule cible | Meilleur fabriqué | Meilleur A (libre) | Meilleur B (gratuit, non redistribuable) | Verdict |
+|---|---|---|---|---|---|
+| trap | fx-effet/* | 0,43 `trap-effet-descendant-01` | 0,39 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,42 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| drill | fx-effet/* | 0,55 `drill-effet-descendant-02` | 0,39 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,42 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| boom-bap | fx-effet/* | 0,52 `boom-bap-effet-descendant-01` | 0,39 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,42 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| lo-fi | fx-effet/* | 0,72 `lo-fi-effet-descendant-01` | 0,39 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,42 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | A = B à égalité, devant |
+| house | fx-effet/* | 0,58 `house-effet-descendant-01` | 0,39 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,42 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| techno | fx-effet/techno | 0,62 `techno-effet-descendant-01` | 0,41 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,55 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| dnb | fx-effet/dnb | 0,56 `dnb-effet-descendant-01` | 0,53 [Digital Data Whoosh](libres/mp3/freesound-222493.mp3) ([fiche](https://freesound.org/s/222493/), CC0) | 0,40 [SI_SynHitProc5-B](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| edm | fx-effet/* | 0,64 `edm-effet-descendant-01` | 0,39 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,42 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| reggaeton-afro | fx-effet/* | 0,61 `reggaeton-afro-effet-descendant-02` | 0,39 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,42 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| pop | fx-effet/* | 0,55 `pop-effet-descendant-02` | 0,39 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,42 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| synthwave | fx-effet/* | 0,59 `synthwave-effet-descendant-02` | 0,39 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,42 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | égalité |
+| rnb | fx-effet/* | 0,85 `rnb-effet-montant-01` | 0,39 [risers-and-fallers_faller-4s-strong](libres/mp3/wyzowl-faller-4s-strong.mp3) (Wyzowl, CC0) | 0,42 [SI_SynHitProc5-D02](https://www.musicradar.com/news/sampleradar-free-synth-impacts-samples) (MusicRadar, non redistribuable) | A = B à égalité, devant |
+
+## Sortes en plus (hoover, orchestra hit, vocal chop, cloche FM, vinyle, glitch)
+
+Ces sortes n'ont pas de cible propre : chacune est mesurée sur la cellule « * » de la famille la plus proche.
+
+| Sorte | Famille de mesure | Meilleur A (libre, commité) | Meilleur B |
+|---|---|---|---|
+| hoover | stab | 0,65 [hardhouse hoover](libres/mp3/freesound-11512.mp3) ([fiche](https://freesound.org/s/11512/), CC0) | — (aucun hoover B trouvé) |
+| orchestra hit | stab | 0,18 [Orchestra Hit DIY](libres/mp3/freesound-794524.mp3) ([fiche](https://freesound.org/s/794524/), CC0) | 0,33 SI_SynHitProc4-B (synth impacts) |
+| vocal chop | boucle | 0,39 [Gated vocal sample](libres/mp3/freesound-623055.mp3) ([fiche](https://freesound.org/s/623055/), CC0) | 0,44 GV_StripVocPad_130-Cmaj (glitch vocals) |
+| cloche FM | pluck | 0,52 [DX10SDP5 (C)](libres/mp3/freesound-806082.mp3) ([fiche](https://freesound.org/s/806082/), CC0) | — |
+| vinyle | ambiance | 0,81 (cellule lofi) [Vinyl Crackle (Real)](libres/mp3/freesound-434822.mp3) ([fiche](https://freesound.org/s/434822/), CC0) | — |
+| glitch | effet | 0,76 [Glitch SFX 0.46 s](libres/mp3/freesound-673771.mp3) ([fiche](https://freesound.org/s/673771/), CC0) | 0,43 GV_VocMashB_170-03 (glitch vocals, cellule dnb) |
+| basse reese | — | [Mono Poly Reese Bass](libres/mp3/freesound-25595.mp3) ([fiche](https://freesound.org/s/25595/), CC0), hors cible (> 4) | — |
+| arrêt de bande | — | rien de libre et propre : à fabriquer | — |
+
+## Sources fouillées
+
+| Source | Classe | Ce qu'on en a tiré |
 |---|---|---|
-| montant | [Scary Hits & Risers 002](https://freesound.org/people/Xinematix/sounds/396160/) — Xinematix, CC0 ([mp3](libres/mp3/freesound-396160.mp3)) | 0.77 |
-| descendant | [Lunar Downlifter FX 4.wav](https://freesound.org/people/maqsim/sounds/172157/) — maqsim, CC0 ([mp3](libres/mp3/freesound-172157.mp3)) | 0.61 |
-| impact | [Impacts.wav](https://freesound.org/people/Anuj_Shrestha1/sounds/555637/) — Anuj_Shrestha1, CC0 ([mp3](libres/mp3/freesound-555637.mp3)) | 0.66 |
-| balayage | [Whoosh stereo light (transition)](https://freesound.org/people/xkeril/sounds/701104/) — xkeril, CC0 ([mp3](libres/mp3/freesound-701104.mp3)) | 0.77 |
-| laser | [laser zap 2.wav](https://freesound.org/people/.Andre_Onate/sounds/135118/) — .Andre_Onate, CC0 ([mp3](libres/mp3/freesound-135118.mp3)) | 0.71 |
-| arrêt bande | rien de libre trouvé | — |
+| [Freesound](https://freesound.org) (filtre CC0) | A | 1 492 sons mesurés, 20 commités |
+| [archive.org ESQ-1 piano 2 chord](https://archive.org/details/esq-1-piano-2-chord) | A (PD Mark, posé par l'auteur) | 93 mesurés, aucun en tête |
+| [archive.org VHS sample pack](https://archive.org/details/vhs-sample-pack) | A (PD Mark, posé par le label) | 27 mesurés, aucun en tête |
+| [Wyzowl SFX Kit](https://huggingface.co/datasets/wyzowl/sfx-kit) | A (CC0 1.0) | 78 mesurés, le « faller 4 s » commité |
+| [VCSL](https://github.com/sgossner/VCSL) (CC0, cloche TX81Z), [Sample Pi](https://github.com/alex-esc/sample-pi) (CC0) | A | non téléchargés : GitHub hors du périmètre de la session |
+| Kenney Sci-Fi / Digital SFX, Juhani Junkala 512 SFX (OpenGameArt, CC0) | A | non téléchargés : site bloqué (403) |
+| BigSoundBank, Freepats, Producerspace (CC0) | A | repérés ; peu de synthés (surtout bruitages, instruments acoustiques) ; Producerspace 1,6 Go non pris |
+| Beckstrom modular (archive.org, CC-BY) | A (attribution) | repéré, non mesuré (CC-BY, pas CC0) |
+| [MusicRadar SampleRadar](https://www.musicradar.com/news/sampleradar) (00s synths, synth impacts, dnb FX, glitch vocals) | B | 938 mesurés, jamais commités |
+| 99Sounds, Legowelt, Sonniss GDC, Cymatics, Looperman, SampleSwap, BBC SFX | B (ou licence floue) | repérés ; non pris (inscription, courriel, usage non commercial ou licence floue) |
+| KVR (fils p=9182158, p=9179000, p=8253774), uzu.lurk.org (Beckstrom) | — | lus : renvois vers les sources ci-dessus |
+| Reddit (r/WeAreTheMusicMakers, r/edmproduction, r/synthesizers…), Gearspace, Bandcamp | — | **illisibles** depuis la session (403/406, recherche refusée) ; Gearspace vu en extraits seulement |
 
-## Ce qu'il faut retenir
+Leçon : hors de Freesound, aucune source A propre pour hoover, stab, pluck, arpège ou boucle de synthé ; les packs
+gratuits de producteurs sont presque tous en « libre de droits, redistribution interdite » (B).
 
-Règle de verdict (après la critique) : « à égalité » si l'écart est sous 0,3 ; « pas de verdict » si même le meilleur est au-delà de 1,5.
+## À savoir en lisant les tableaux
 
-- **Fabriqués nettement devant** : accords (cellule générale, 0,29 contre 0,68), boucle lead (0,30 contre 0,77), arpège (0,92 contre 1,92).
-- **Libres nettement devant** : nappe dnb (1,06 contre 1,93), boucle lead dnb (0,94 contre 1,25) et effet techno (0,78 contre 1,08) :
-  nos sons dnb sont les plus loin de leur cible.
-- **À égalité** : stab, pluck, nappes trap et générale, accords dnb, effets généraux et dnb. Garder nos fabriqués ; les libres
-  servent de second choix.
-- **Ambiances : l'appli n'en fabrique aucune.** « Dark_Texture_1 » bouche le trou pour dnb (0,56), techno et la cellule générale ;
-  pour lo-fi et house, rien ne colle (pas de verdict).
-- Arrêt de bande (« tape stop ») : rien de libre et propre ; à fabriquer.
-- Trois sons libres ont une stéréo en opposition de phase (⚠) : ils peuvent s'affaiblir sur le haut-parleur mono du téléphone.
-
-## Critique à l'aveugle (sous-agent neuf)
-
-- Remesure de 5 sons clés (425413, 849664, 172157, techno-stab-01, dnb-pad-01) : mêmes mesures (écart < 2 %), mêmes distances
-  à 3 décimales. Débit MP3 comparable des deux côtés (~190 kbps).
-- Corrigé ici : écarts trop faibles déclarés « à égalité » ; « Backrooms Ambience » (enregistrement de pièce) et
-  « ahhhhhhhh--uplift » (voix probable) retirés ; drapeau ⚠ pour la stéréo en opposition de phase.
-- Restent, à savoir en lisant les tableaux :
-  1. tailles de pool inégales (cellule « * » : 24 fabriqués de tous styles ; cellule dnb : 3 ; côté libre : toute la famille,
-     sans filtre de style, d'où des « dnb » libres qui n'en sont pas) ;
-  2. une seule cible fx-effet pour toutes les sortes d'effets (montant, impact, laser…), d'où des égalités ;
-  3. boucles et sons uniques comparés sur les mêmes mesures (attaque, déclin) ; « Impacts.wav » et « laser zap 2 » contiennent
-     plusieurs coups ;
-  4. « Happy Trance (Arp2) » est plutôt une boucle basse et accords.
-
-## Sortes de sons qui manquent à l'appli
-
-L'appli a déjà sirène, corne de brume, laser, montant et impact (sons de fête). Il lui manque :
-
-| Sorte | Son libre proposé |
-|---|---|
-| hoover (rave) | [hardhouse hoover](https://freesound.org/people/woowah/sounds/11512/) — woowah, CC0 ([mp3](libres/mp3/freesound-11512.mp3)) |
-| orchestra hit | [Orch Hit](https://freesound.org/people/BigDumbWeirdo/sounds/90741/) — BigDumbWeirdo, CC0 ([mp3](libres/mp3/freesound-90741.mp3)) |
-| voix découpée (vocal chop) | [Chopped Vocal Loop 1](https://freesound.org/people/wenter13/sounds/161507/) — wenter13, CC0 ([mp3](libres/mp3/freesound-161507.mp3)) |
-| cloche FM | [FM Elevator bell](https://freesound.org/people/CosmicD/sounds/500357/) — CosmicD, CC0 ([mp3](libres/mp3/freesound-500357.mp3)) |
-| basse reese | [Mono Poly Reese Bass](https://freesound.org/people/Walter_Odington/sounds/25595/) — Walter_Odington, CC0 ([mp3](libres/mp3/freesound-25595.mp3)) |
-| craquement vinyle | [Vinyl Dust 50](https://freesound.org/people/mitchanary/sounds/614342/) — mitchanary, CC0 ([mp3](libres/mp3/freesound-614342.mp3)) |
-| glitch | [Glitch](https://freesound.org/people/Poligonstudio/sounds/392602/) — Poligonstudio, CC0 ([mp3](libres/mp3/freesound-392602.mp3)) |
-| ambiance / drone | voir la famille ambiance ci-dessus |
-| arrêt de bande, rafale de bruit | rien de libre et propre : à fabriquer |
+1. Les A et B ne sont pas filtrés par style : le même libre peut être « meilleur » dans 10 styles de la cellule « * ».
+2. Familles de substitution pour les sortes en plus (ex. vinyle mesuré comme une ambiance).
+3. Le *PD Mark* d'archive.org est posé par celui qui a déposé le fichier, pas vérifié par un tiers.
+4. « Orchestra Hit DIY » est un orchestra hit, pas un stab de synthé : il prouve que la cible stab aime les coups courts
+   et brillants, pas qu'il faut remplacer nos stabs.
+5. Le meilleur vrai stab de synthé libre est « Shock Stab 06 » ([mp3](libres/mp3/freesound-578380.mp3),
+   [fiche](https://freesound.org/s/578380/)) à 0,42 ; l'ancienne progression trance
+   ([mp3](libres/mp3/freesound-849664.mp3), [fiche](https://freesound.org/s/849664/)) est gardée pour l'écoute, à 0,68.
+6. Deux verdicts « devant » sont à la limite de 0,3 : pluck rnb (fabriqué 0,195 contre A 0,50) et ambiance lo-fi
+   (fabriqué 0,75 contre B 0,45). Le faller Wyzowl est mesuré sur son WAV (0,39) ; le MP3 commité donne 0,41, ce qui
+   met l'effet lo-fi à la limite (écart 0,31).
+7. « oscarsynth » (arpège) ne dure que 1,7 s ; « Gated vocal sample » est une voix hachée (vocal chop), pas une boucle lead.
+8. Boucles et sons uniques sont comparés sur les mêmes mesures (attaque, déclin).
 
 ## Fichiers et licence
 
-Les 21 MP3 sont dans `docs/sons/libres/mp3/freesound-<numéro>.mp3` (aperçu HQ 128 k de Freesound, non retouché).
-Tous sont sous **CC0 1.0** (domaine public, redistribution libre, attribution non obligatoire mais notée ici par politesse :
-auteur et lien dans les tableaux). Rien d'acheté, rien en « usage personnel ».
+23 MP3 dans `docs/sons/libres/mp3/` : `freesound-<numéro>.mp3` (aperçu HQ de Freesound, non retouché) et
+`wyzowl-faller-4s-strong.mp3` (WAV CC0 converti en MP3 192 k). Tous **CC0 1.0** (attribution notée par politesse ; licence de chaque fiche Freesound revérifiée le 2026-11-28, y compris 25595 et 701104 gardés de la version précédente).
+Aucun son B, rien des packs privés de Benjamin, rien d'acheté.
+
+## Critique à l'aveugle
+
+Un relecteur neuf, qui n'a pas écrit ce rapport, a remesuré 6 sons : orchestra hit 794524 (0,178), accords 727082 (0,430),
+B 00s_Arp[125]-E (0,352 et 0,860), B SI_SynHitProc4-B (0,331), fabriqué rnb-pluck-02 (0,194) : identiques au rapport.
+Le faller Wyzowl donne 0,41 sur le MP3 contre 0,39 sur le WAV (noté). Corrections reprises : le stab libre bat nos stabs
+dans les 12 styles (pas 7) ; en arpège le libre est plus près partout ; deux verdicts à la limite signalés ; titre de 701104
+ajouté ; licences CC0 de 25595 et 701104 revérifiées sur Freesound.

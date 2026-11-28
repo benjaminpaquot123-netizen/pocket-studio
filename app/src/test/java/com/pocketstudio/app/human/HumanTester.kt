@@ -181,6 +181,8 @@ abstract class HumanTester(private val seat: String) {
     private var seatDir: File? = null
     /** The turn being played (the journal's « #N »). */
     private var turnNow = 0
+    /** Tour 8, banc9 (point c): the journal the bench's own lines go to (the seat's, or an amenée's), null in plain tests. */
+    private var benchJournal: File? = null
     private lateinit var options: SeatOptions
     private var watchdog: BenchWatchdog? = null
     private val layoutSeen = HashSet<String>()
@@ -194,16 +196,27 @@ abstract class HumanTester(private val seat: String) {
         val (o, warnings) = SeatOptions.read(File(dir, "start.txt"))
         val journal = File(dir, "journal.txt")
         seatDir = dir
+        benchJournal = journal
         journal.appendText("#0 SIEGE ${o.describe()}\n")
         warnings.forEach { journal.appendText("#0 OPTION ? $it\n") }
         val dog = BenchWatchdog(Thread.currentThread()).start()
         watchdog = dog
+        val driveBegan = System.currentTimeMillis()
         try {
             begin(o)
             firstScreenLine?.let { journal.appendText("#0 PREMIER ECRAN $it\n") }
             o.amenee?.let { amenee(it, journal) }
             stalls(journal, 0)
             seatLoop(dir, o, journal)
+        } catch (e: Throwable) {
+            // Tour 9, banc A (drapeaux): no seat ends without its verdict (the amenée and the loop write their own).
+            runCatching {
+                if (journal.readLines().none { BenchFlags.parse(it)?.get("kind") == BenchFlags.VERDICT }) {
+                    journal.appendText(BenchFlags.flag(turnNow, "drive", "le siège joué", "${e.javaClass.simpleName}: ${e.message}", System.currentTimeMillis() - driveBegan, routeNow()) + "\n")
+                    journal.appendText(BenchFlags.verdict(turnNow, false, "drive", "${e.javaClass.simpleName}: ${e.message}") + "\n")
+                }
+            }
+            throw e
         } finally {
             dog.stop()
             stalls(journal, turnNow)
@@ -249,27 +262,35 @@ abstract class HumanTester(private val seat: String) {
                 .mapNotNull { l -> Regex("^#(\\d+) DOIGT (.*)$").find(l)?.groupValues?.let { it[1].toInt() to it[2] } }
                 .groupBy({ it.first }, { it.second }).mapValues { it.value.first() }
         }
-        var lastDiff: String? = null
+        // Tour 8, banc9 (point f): this turn's difference (null when the screen sticks again) and the last one, for the verdict.
+        val diffs = ReplayDiffs()
         val moved = mutableListOf<String>()
         val timeoutMs = o.timeoutMinutes * 60_000
         var benchExceptions = 0
-        fun end(why: String) {
+        val seatBegan = System.currentTimeMillis()
+        /** Tour 9, banc A (drapeaux): one grep-able line where the bench or the seat fails ([BenchFlags]). */
+        fun flag(where: String, want: String, saw: String, waitedMs: Long = 0) =
+            journal.appendText(BenchFlags.flag(n, where, want, saw, waitedMs, routeNow()) + "\n")
+        fun end(why: String, want: String = "fin", saw: String = why) {
+            val (ok, where) = BenchFlags.ofEnd(why)
+            if (!ok) flag(where, want, saw, System.currentTimeMillis() - seatBegan)
+            journal.appendText(BenchFlags.verdict(n, ok, where, why.takeIf { !ok }) + "\n")
             journal.appendText("#$n FIN : $why\n")
             File(dir, "fin.txt").writeText(why)
         }
         fun replayVerdict(head: String) {
             val shown = origin?.listFiles()?.any { it.name.matches(Regex("screen-\\d+\\.txt")) } == true
             val lines = listOf(
-                lastDiff?.let { "dernier écran différent de l'origine : $it" }
+                diffs.last?.let { "dernier écran différent de l'origine : $it" }
                     ?: if (shown) "aucun écran différent de l'origine" else "pas d'écran-texte à l'origine (${origin?.path ?: "-"}) : écrans non comparés",
             ) + moved
             File(dir, "rejeu.txt").writeText(head + lines.joinToString("") { "\n  $it" })
-            end("rejeu : $head")
+            end("rejeu : $head", want = o.replayExpect?.let { "« $it » à l'écran" } ?: o.replayAbsent?.let { "« $it » absent" } ?: "le rejeu jusqu'au bout", saw = head)
         }
-        fun handBack(why: String) {
+        fun handBack(why: String, originDone: Boolean = false) {
             replaying = false
             journal.appendText("#$n REJEU main rendue : $why\n")
-            File(dir, "rejeu.txt").writeText(SeatOptions.handBackNote(n, o.replayN, why, lastDiff))
+            File(dir, "rejeu.txt").writeText(SeatOptions.handBackNote(n, o.replayN, why, diffs.now, originDone))
         }
         while (true) {
             turnNow = n
@@ -297,7 +318,11 @@ abstract class HumanTester(private val seat: String) {
             journal.appendText("#$n ROUTE ${snap.route} | MODE ${if (SettingsStore.state.value.simpleMode) "simple" else "pro"} | EMPREINTE $print | ${inside()}\n")
             journal.appendText("#$n SON ${sound.lineSequence().first()}\n")
             // Audit method v2: the bench's own stalls, apart from the app's (seat-metrics counts them as « banc »).
-            if (benchStalls > stallsSaid) { journal.appendText("#$n BANC repos non venu en $IDLE_CAP_S s (${benchStalls - stallsSaid} fois)\n"); stallsSaid = benchStalls }
+            if (benchStalls > stallsSaid) {
+                journal.appendText("#$n BANC repos non venu en $IDLE_CAP_S s (${benchStalls - stallsSaid} fois)\n")
+                flag("seat.repos", "le banc au repos", "pas de repos (${benchStalls - stallsSaid} fois)", (benchStalls - stallsSaid) * IDLE_CAP_S * 1000)
+                stallsSaid = benchStalls
+            }
             layout(journal, n, snap)
             if (replaying) {
                 // Audit method v2: a replay test of a fixed defect plays the gestures without comparing screens (the fix
@@ -305,12 +330,12 @@ abstract class HumanTester(private val seat: String) {
                 val oracle = o.replayExpect != null || o.replayAbsent != null
                 val wasText = File(origin, "screen-$n.txt").takeIf { it.isFile }
                 val was = wasText?.let { fingerprint(it, File(origin, "sound-$n.txt")) }
-                if (wasText != null && was != print) {
-                    fun seen(d: File) = File(d, "screen-$n.txt").readLines().drop(1) +
-                        File(d, "sound-$n.txt").takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") }
-                    lastDiff = "écran $n, empreinte $print (origine $was), première ligne différente : " +
-                        (ScreenText.firstDifference(seen(origin!!), seen(dir)) ?: "aucune (le son ?)")
-                }
+                fun seen(d: File) = File(d, "screen-$n.txt").readLines().drop(1) +
+                    File(d, "sound-$n.txt").takeIf { it.isFile }?.readLines().orEmpty().filterNot { it.startsWith("Rien ne change") }
+                diffs.turn(
+                    if (wasText != null && was != print) "écran $n, empreinte $print (origine $was), première ligne différente : " +
+                        (ScreenText.firstDifference(seen(origin!!), seen(dir)) ?: "aucune (le son ?)") else null,
+                )
                 if (o.replayHandBack) {
                     // Tour 7, banc B2: the same words in other places (a dialog the app moved within the thumb's reach) are the
                     // origin's screen; its moved buttons are aimed at by their tags below.
@@ -331,19 +356,19 @@ abstract class HumanTester(private val seat: String) {
                     return
                 }
             }
-            if (same >= 5) { journal.appendText("#$n RIEN NE CHANGE (5 écrans identiques)\n"); end("rien ne change (5 écrans identiques)"); return }
+            if (same >= 5) { journal.appendText("#$n RIEN NE CHANGE (5 écrans identiques)\n"); end("rien ne change (5 écrans identiques)", want = "un écran qui change", saw = "5 écrans identiques"); return }
             if (same == 3) journal.appendText("#$n RIEN NE CHANGE (3 écrans identiques)\n")
             val cmdFile = File(dir, "cmd-$n.txt")
             if (replaying) {
                 val from = File(source, "cmd-$n.txt")
-                if (o.replayHandBack && !from.isFile) handBack(SeatOptions.handBackWhy(n, o.replayN, false, originHasGesture = false)!!)
+                if (o.replayHandBack && !from.isFile) handBack(SeatOptions.handBackWhy(n, o.replayN, false, originHasGesture = false)!!, originDone = true)
                 else if (!from.isFile) { replayVerdict("divergé au pas $n (pas de geste $n à l'origine)"); return }
                 else cmdFile.writeText(from.readText())
             }
             val waitEnd = System.currentTimeMillis() + timeoutMs
             while (!cmdFile.isFile) {
-                if (System.currentTimeMillis() > waitEnd) { journal.appendText("#$n no gesture for too long: end\n"); end("abandon : plus de geste"); return }
-                Thread.sleep(100)
+                if (System.currentTimeMillis() > waitEnd) { journal.appendText("#$n no gesture for too long: end\n"); end("abandon : plus de geste", want = "cmd-$n.txt", saw = "aucun geste en ${timeoutMs / 1000} s"); return }
+                Thread.sleep(20)
             }
             var cmd = cmdFile.readText().trim()
             // Socle du banc, point 3: « touche <étiquette> » (and appui-long, double-touche) aims at the node of that test
@@ -361,6 +386,9 @@ abstract class HumanTester(private val seat: String) {
                 // reach, the nearest reachable point of the node (a tag touch must not be refused where a finger would not be).
                 if (reached == null) {
                     journal.appendText("#$n > $cmd\n#$n BANC étiquette introuvable : $tag\n")
+                    flag("seat.etiquette", "« $tag » à l'écran", "$tag absent")
+                    // Tour 9 (banc-b, « drapeaux »): where and why, and what the screen offers instead.
+                    journal.appendText(BenchFlag.line(n, aimed[0], tag, found = false, why = BenchFlag.TAG_MISSING, screen = runCatching { screenText().tagged() }.getOrNull()) + "\n")
                     if (replaying && o.replayHandBack) {
                         // The bench's copy of the origin's gesture goes: gesture n is the tester's, on this screen again.
                         cmdFile.delete()
@@ -380,7 +408,15 @@ abstract class HumanTester(private val seat: String) {
                 // popup over it): when there is none, the touch is refused, as a finger could not touch that element there.
                 val at = reachableNear(tag, reached, o.hand)
                 if (at == null) {
-                    journal.appendText("#$n > $cmd\n#$n REFUS « $tag » : aucun point visible, à portée du pouce (${o.hand.word}) et sous le doigt\n")
+                    val covered = runCatching { aim(tag)?.let { (x, y) -> screenText().coverAt(x, y) } }.getOrNull()
+                    journal.appendText("#$n > $cmd\n#$n REFUS « $tag » : aucun point visible, à portée du pouce (${o.hand.word}) et sous le doigt" +
+                        (covered?.let { " ($it)" } ?: "") + "\n")
+                    journal.appendText(
+                        BenchFlag.line(
+                            n, aimed[0], tag, found = true, why = BenchFlag.NO_POINT, coveredBy = BenchFlag.coverName(covered),
+                            bounds = flagBounds(tag), at = reached, more = "main ${o.hand.word}",
+                        ) + "\n",
+                    )
                     say("Ce bouton est caché, hors de l'écran ou trop loin de ton pouce (tu tiens l'appareil ${o.hand.word}) : rien ne s'est passé.")
                     n++
                     continue
@@ -393,7 +429,7 @@ abstract class HumanTester(private val seat: String) {
             // pixels are no longer on it) aims at that button where it is now, as « touche <étiquette> » does.
             if (replaying && o.replayHandBack && aimed.size == 3 && aimed[0].lowercase() in TAG_GESTURES) {
                 val px = number(aimed[1]); val py = number(aimed[2])
-                val tag = if (px != null && py != null) SeatOptions.reaimTag(originFinger[n], screenText().under(px, py)) else null
+                val tag = if (px != null && py != null) SeatOptions.reaimTag(originFinger[n], screenText().under(px, py), ::actionablesIn) else null
                 val at = tag?.let { t -> runCatching { reachTag(t) }.getOrNull()?.let { reachableNear(t, it, o.hand) } }
                 if (tag != null && at != null) {
                     journal.appendText("#$n REJEU visé : $tag déplacé, touché en ${at.first.toInt()},${at.second.toInt()}\n")
@@ -426,6 +462,7 @@ abstract class HumanTester(private val seat: String) {
             }
             if (malformed) {
                 journal.appendText("#$n BANC geste mal écrit : $cmd\n")
+                journal.appendText(BenchFlag.line(n, kind, cmd, found = false, why = BenchFlag.MALFORMED) + "\n")
                 say("Banc : geste mal écrit (« $cmd ») : rien n'a été fait. Les gestes : touche X Y (ou touche ÉTIQUETTE), appui-long X Y, double-touche X Y, glisse X1 Y1 X2 Y2, tape X Y N MS (ou tape X Y N tempo : la pulsation du défi), ecris TEXTE, retour, attends S.")
                 if (kind != "attends" && kind != "regarde") gestures--
                 n++
@@ -439,13 +476,39 @@ abstract class HumanTester(private val seat: String) {
             val m = app.resources.displayMetrics
             if (points.any { (x, y) -> !SeatOptions.reachable(o.hand, x, y, m.widthPixels, m.heightPixels, m.density) }) {
                 journal.appendText("#$n REFUS hors de portée du pouce (${o.hand.word})\n")
+                val beyond = points.first { (x, y) -> !SeatOptions.reachable(o.hand, x, y, m.widthPixels, m.heightPixels, m.density) }
+                val there = runCatching { screenText().under(beyond.first, beyond.second) }.getOrDefault("rien")
+                journal.appendText(
+                    BenchFlag.line(n, kind, there, found = !there.startsWith("rien"), why = BenchFlag.OUT_OF_REACH, at = beyond, more = "main ${o.hand.word}, écran ${m.widthPixels}x${m.heightPixels}") + "\n",
+                )
                 say("Ce point est trop loin de ton pouce (tu tiens l'appareil ${o.hand.word}) : rien ne s'est passé.")
                 n++
                 continue
             }
-            points.firstOrNull()?.let { (x, y) ->
-                val under = screenText().under(x, y)
-                journal.appendText("#$n DOIGT $under\n")
+            val finger = points.firstOrNull()
+            if (finger != null) {
+                val (x, y) = finger
+                val touch = screenText().finger(n, x, y, kind)
+                val under = touch.under
+                // Tour 8, banc9 (point f): an untagged button the origin touched is no longer under the replayed finger: the
+                // seat gets its hand back here (the copied gesture goes), instead of touching whatever is there now. Read
+                // before the finger's lines, so the journal has no DOIGT for a gesture that is not played.
+                val gone = if (replaying && o.replayHandBack && kind in TAG_GESTURES) SeatOptions.goneWords(originFinger[n], under) else null
+                if (gone != null) {
+                    journal.appendText("#$n REJEU bouton « $gone » plus sous le doigt\n")
+                    cmdFile.delete()
+                    gestures--
+                    handBack(SeatOptions.handBackWhy(n, o.replayN, false, true, gone = gone)!!)
+                    continue
+                }
+                // Tour 8, banc9 (point i, review #1): an element drawn over the target takes the touch: the finger fails,
+                // and the journal says who covers whom.
+                touch.lines.forEach { journal.appendText("$it\n") }
+                if (touch.refused) {
+                    say("Banc : un autre élément est dessiné par-dessus ce point et prend le toucher : rien ne s'est passé.")
+                    n++
+                    continue
+                }
                 if (replaying) originFinger[n]?.let { was -> fingerGone(was, under)?.let { moved += "pas $n : $it"; journal.appendText("#$n REJEU $it\n") } }
                 Regex("(?:^|dans:|désactivé )(help_[A-Za-z0-9_]*)").find(under)?.let { journal.appendText("#$n AIDE ${it.groupValues[1]}\n") }
             }
@@ -468,6 +531,7 @@ abstract class HumanTester(private val seat: String) {
                 if (!thrownByTheApp(e)) {
                     benchExceptions++
                     journal.appendText("#$n BANC exception du banc (pas de l'appli) : ${e.javaClass.name}: ${e.message?.take(300)}\n${e.stackTrace.take(8).joinToString("\n") { "    at $it" }}\n")
+                    flag("seat.banc-exception", "le geste joué", "${e.javaClass.simpleName}: ${e.message?.take(120)} @ ${e.stackTrace.firstOrNull { it.className.startsWith("com.pocketstudio") } ?: e.stackTrace.firstOrNull()}")
                     say("Banc : le banc a eu un souci pendant ce geste (${e.javaClass.simpleName}) ; ce n'est pas l'appli. Note-le dans « incidents-banc » avec banc?: banc.")
                     // Review of « banc6b » (M3): what the gesture saw before the bench's exception is written, as for any gesture.
                     problems.forEach { journal.appendText("#$n SCREEN ERROR $it\n") }
@@ -481,7 +545,7 @@ abstract class HumanTester(private val seat: String) {
                 File(dir, "sound-${n + 1}.txt").writeText("⚠ L'appli s'est arrêtée (plantage).")
                 runCatching { capture(dir, n + 1); publish(dir, n + 1, emptyList()) }
                 n++
-                end("plantage")
+                end("plantage", want = "le geste joué", saw = "${e.javaClass.simpleName}: ${e.message?.take(120)} @ ${e.stackTrace.firstOrNull { it.className.startsWith("com.pocketstudio") } ?: e.stackTrace.firstOrNull()}")
                 return
             }
             stalls(journal, n)
@@ -679,6 +743,8 @@ abstract class HumanTester(private val seat: String) {
         runCatching { scenario?.onActivity { v = ViewModelProvider(it)[RhythmViewModel::class.java] } }
         // An example of 8 s to hear (Robolectric has no engine to render it).
         v?.let { if (it.guideRenderForTest == null) it.guideRenderForTest = { _, _ -> FloatArray(OfflineExport.SAMPLE_RATE * 8) { k -> 0.3f * kotlin.math.sin(k * 0.05f) } to FloatArray(2) } }
+        // Tour 9, D17: the tutorial's kit, downloaded in the middle of a wait, decoded as on a phone ([BenchFlac.readable]).
+        v?.let { if (it.tutoKitDecodeForTest == null) it.tutoKitDecodeForTest = flac::readable }
         // The built-in sounds as the phone's engine renders them (Robolectric has none: « Ce son n'a pas pu être lu »).
         runCatching {
             scenario?.onActivity { a ->
@@ -798,25 +864,106 @@ abstract class HumanTester(private val seat: String) {
      * [play] never applies it), each way in is the welcome's (first opening, Mode simple) or « Que veux-tu faire ? »'s
      * (Mode Pro: its guide seen), and the target is scrolled into view where it is (BenchAmeneesProfilesTest).
      */
+    /** The safety net of an amenée's waits, in real milliseconds (the bench's own tests shorten it). */
+    internal var ameneeCapMs = 120_000L
+
+    /** How many times an amenée touches again a target that moved under the finger (tests: 0 = the tour 9 refusal). */
+    internal var ameneeRetaps = AMENEE_RETAPS
+
+    /** The bench's own tests: called between an amenée's aim at a tag and its touch (where a real screen may move). */
+    internal var ameneeAfterAim: ((String) -> Unit)? = null
+
+    /** Where the screen is, for a flag: never throws (a flag is written while something else is failing). */
+    private fun routeNow(): String = runCatching { screenText().read().route }.getOrDefault("?")
+
+    /** What an amenée that refuses was at: (where, want, saw), for its flag ([amenee]). */
+    private var ameneeRefusal: Triple<String, String, String>? = null
+
+    /**
+     * Tour 9, banc A (drapeaux): an amenée that refuses says where and why in the seat's journal, as one « BENCH-FLAG »
+     * line and the seat's « BENCH-VERDICT fail », before its exception ends the seat.
+     */
     internal fun amenee(name: String, journal: File) {
+        val began = System.currentTimeMillis()
+        ameneeRefusal = null
+        try {
+            ameneeSteps(name, journal)
+        } catch (e: Throwable) {
+            val (where, want, saw) = ameneeRefusal ?: Triple("amenee.step", "#0 AMENEE prête", e.message ?: e.javaClass.name)
+            runCatching {
+                journal.appendText(BenchFlags.flag(0, where, want, saw, System.currentTimeMillis() - began, routeNow()) + "\n")
+                journal.appendText(BenchFlags.verdict(0, false, where, e.message ?: e.javaClass.name) + "\n")
+            }
+            throw e
+        }
+    }
+
+    private fun ameneeSteps(name: String, journal: File) {
+        benchJournal = journal
         journal.appendText("#0 AMENEE $name\n")
-        fun tap(tag: String) {
-            val at = reachTag(tag) ?: error("amenée $name : « $tag » introuvable")
+        fun refuse(where: String, want: String, saw: String, why: String): Nothing {
+            ameneeRefusal = Triple(where, want, saw)
+            error("amenée $name : $why")
+        }
+        fun where(tag: String) = centerOf(tag)?.let { "$tag@${it.first.toInt()},${it.second.toInt()}" } ?: "$tag absent"
+        // Tour 9, banc A (seats t9-16, t9-38): the last touch, and where its target was when it was aimed at. A screen that
+        // moves between the aim and the touch (the tutorial's kit card coming with the packs' catalogue, in real time)
+        // leaves the touch beside its target: [waitFor] sees it and touches again, instead of waiting for nothing.
+        var lastTag: String? = null
+        var lastAt: Pair<Float, Float>? = null
+        // Tour 9 (seats t9-57, t9-45): the point the finger went to. The screen may move between the aim and the reading of
+        // [lastAt] (the kit card then came before that reading): the touch is judged by where it went, not only by the move.
+        var touched: Pair<Float, Float>? = null
+        // Only a point that was on the drawn target when aimed is judged (a target cut by an edge outside a list that scrolls
+        // is touched at its hidden middle, on purpose: never « beside » then).
+        var touchedWasOn = false
+        var retaps = 0
+        fun tap(tag: String, again: Boolean = false) {
+            val at = reachTag(tag) ?: refuse("amenee.tag", "« $tag » à l'écran", "$tag absent", "« $tag » introuvable")
+            touchedWasOn = touchedOn(tag, at, missing = false)
+            ameneeAfterAim?.invoke(tag)
+            if (!again) retaps = 0
+            lastTag = tag
+            touched = at
+            lastAt = centerOf(tag)
             journal.appendText("#0 AMENEE > touche ${at.first.toInt()} ${at.second.toInt()} ($tag)\n")
             play("touche ${at.first} ${at.second}")
         }
         /** The first of [tags] the screen has (the welcome's, then « Que veux-tu faire ? »'s), touched. */
         fun tapFirst(vararg tags: String): String {
-            val tag = tags.firstOrNull { centerOf(it) != null } ?: error("amenée $name : ${tags.joinToString(" ou ") { "« $it »" }} introuvable")
+            val tag = tags.firstOrNull { centerOf(it) != null }
+                ?: refuse("amenee.tag", tags.joinToString(" ou ") { "« $it »" } + " à l'écran", tags.joinToString(" ") { "$it absent" }, "${tags.joinToString(" ou ") { "« $it »" }} introuvable")
             tap(tag)
             return tag
         }
         fun waitFor(what: String, done: () -> Boolean) {
-            val until = System.currentTimeMillis() + 120_000
+            val from = System.currentTimeMillis()
+            var polls = 0
             while (!done()) {
-                if (System.currentTimeMillis() > until) error("amenée $name : $what n'est jamais venu")
+                val waited = System.currentTimeMillis() - from
+                if (waited > ameneeCapMs) refuse("amenee.wait", what, lastTag?.let { "après touche ${where(it)}" } ?: "-", "$what n'est jamais venu")
                 play("attends 0.5")
+                polls++
+                // The state has not come and the target of the last touch is no longer where it was aimed at: the touch
+                // went beside it. Touched again where it is now (twice at most), said in the journal.
+                val tag = lastTag
+                val now = tag?.let { centerOf(it) }
+                val was = lastAt
+                val went = touched
+                val moved = now != null && was != null &&
+                    (kotlin.math.abs(now.first - was.first) > AMENEE_MOVED_PX || kotlin.math.abs(now.second - was.second) > AMENEE_MOVED_PX)
+                val beside = tag != null && went != null && now != null && touchedWasOn && !touchedOn(tag, went, missing = true)
+                if (polls >= AMENEE_RETAP_POLLS && tag != null && now != null && retaps < ameneeRetaps && (moved || beside) && !done()) {
+                    retaps++
+                    val aimed = went ?: was!!
+                    journal.appendText(BenchFlags.flag(0, "amenee.tap-missed", what, "$tag visé ${aimed.first.toInt()},${aimed.second.toInt()} puis ${where(tag)}", waited, routeNow()) + "\n")
+                    tap(tag, again = true)
+                    polls = 0
+                }
             }
+            lastTag = null
+            // A wait that came, but slowly in real time: said too (where a loaded machine loses its seconds).
+            (System.currentTimeMillis() - from).takeIf { it >= AMENEE_SLOW_MS }?.let { journal.appendText(BenchFlags.flag(0, "amenee.wait-slow", what, "venu", it, routeNow()) + "\n") }
         }
         fun chooseMode() {
             if (centerOf("mode_card_simple") != null) tap(if (options.simple == false) "mode_card_pro" else "mode_card_simple")
@@ -826,7 +973,7 @@ abstract class HumanTester(private val seat: String) {
             tuto != null -> {
                 // METHODE-V4 §4.5 (« siège court ancré »): « J'apprends », the style at the mode's level, then its chapter.
                 val level = if (options.simple == false) com.pocketstudio.model.tuto.TutoLevel.Pro else com.pocketstudio.model.tuto.TutoLevel.Facile
-                SeatOptions.tutoAmeneeError(name, level)?.let { error(it) }
+                SeatOptions.tutoAmeneeError(name, level)?.let { ameneeRefusal = Triple("amenee.options", "une amenée de ce mode", it); error(it) }
                 val (style, chapter) = tuto
                 tapFirst("welcome_learn", "launch_learn")
                 waitFor("le choix du tuto") { centerOf("tuto_chooser") != null || centerOf("mode_card_simple") != null }
@@ -837,10 +984,25 @@ abstract class HumanTester(private val seat: String) {
                 if (chapter > 1) {
                     // Tour 7, banc B1: the chapters skipped are built into the project first, as playing them does.
                     val v = lastVm ?: error("amenée $name : pas de projet ouvert")
-                    val built = TutoAnchor.built(v.project.value, style, level, chapter) ?: error("amenée $name : pas de cours $style")
+                    val built = TutoAnchor.built(v.project.value, style, level, chapter) { id -> journal.appendText("#0 AMENEE pas non fait : $id\n") } ?: error("amenée $name : pas de cours $style")
                     v.tutoEdit { built }
                     play("attends 0.5")
                     journal.appendText("#0 AMENEE chapitres 1 à ${chapter - 1} construits dans le projet\n")
+                    // Tour 9 (common cause): the chapters skipped are ticked too, as playing them does, or the course can
+                    // never be finished from here. The tutorial is left, its kept progress ticked, then resumed: the
+                    // app's own doors, since it only reads the store when it opens or resumes.
+                    val course = com.pocketstudio.model.tuto.TutoCourse.of(style)?.chaptersFor(level) ?: error("amenée $name : pas de cours $style")
+                    tap("tuto_chapters")
+                    waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
+                    tap("tuto_quit")
+                    waitFor("« Reprendre le tuto »") { centerOf("tuto_resume") != null }
+                    val store = PrefsTutoStore(app)
+                    val kept = store.load(v.projectId) ?: error("amenée $name : pas de tuto gardé")
+                    val skipped = course.take(chapter - 1).flatMap { it.steps }.map { it.id }
+                    store.save(v.projectId, kept.copy(done = kept.done + skipped, current = course[chapter - 1].steps.first().id))
+                    tap("tuto_resume")
+                    waitFor("le tuto repris") { centerOf("tuto_chapters") != null }
+                    journal.appendText("#0 AMENEE chapitres 1 à ${chapter - 1} cochés (${skipped.size} étapes)\n")
                     tap("tuto_chapters")
                     waitFor("les chapitres") { centerOf("tuto_chapter_list") != null }
                     tap("tuto_chapter_${chapter - 1}")
@@ -848,7 +1010,7 @@ abstract class HumanTester(private val seat: String) {
                     // Tour 7, control tuto2 (seat c): the seat never starts on another chapter than the one asked for.
                     val steps = com.pocketstudio.model.tuto.TutoCourse.of(style)?.chaptersFor(level)?.getOrNull(chapter - 1)?.steps?.map { it.id }.orEmpty()
                     val at = PrefsTutoStore(app).load((lastVm ?: v).projectId)?.current
-                    if (at !in steps) error("amenée $name : le tuto est à « $at », pas au chapitre $chapter")
+                    if (at !in steps) refuse("amenee.chapter", "chapitre $chapter", "tuto à « $at »", "le tuto est à « $at », pas au chapitre $chapter")
                 }
             }
             name == AMENEE_SONG -> {
@@ -892,34 +1054,96 @@ abstract class HumanTester(private val seat: String) {
      * « Pad Live » was touched below the screen. The bench scrolls its container to it (as a swipe on it would),
      * then swipes on the target's own column if it is still at an edge.
      */
+    /**
+     * « Mes projets » says « Chargement de la liste… » until it has read its list: [tag] is not looked for there, the list is
+     * waited for. At least 20 s of the phone's time, and at least [LIST_WAIT_REAL_MS] of real time: the reading may wait in
+     * real time (a closing save polled with `delay`) where no worker runs, and on a loaded machine 40 « attends 0.5 » pass in
+     * a few real seconds (Tour 9, L9, CI 382). Returns the number of waits.
+     */
+    internal fun waitWhileListLoads(tag: String): Int {
+        var waits = 0
+        val until = System.currentTimeMillis() + LIST_WAIT_REAL_MS
+        while (centerOf(tag) == null && centerOf("projects_loading") != null && waits < 400 &&
+            (waits < 40 || System.currentTimeMillis() < until)) { play("attends 0.5"); waits++ }
+        // CI 398 and 403 (p5): the list never came in 60 s and nothing said why. What the app's own threads do then is printed
+        // (the test's output, kept with its result): a worker held in an operation, or no worker left at all.
+        if (centerOf(tag) == null && centerOf("projects_loading") != null) println(
+            "BANC liste jamais chargée (« $tag », $waits attentes) :\n" + Thread.getAllStackTraces().entries
+                .filter { (t, st) -> t !== Thread.currentThread() && st.any { it.className.startsWith("com.pocketstudio") } }
+                .joinToString("\n") { (t, st) -> "fil " + t.name + " " + t.state + " :\n" + st.take(14).joinToString("\n") { "    at $it" } }
+                .ifEmpty { "aucun fil de l'appli au travail (l'ouvrier de la liste n'existe plus ?)" })
+        return waits
+    }
+
     internal fun reachTag(tag: String): Pair<Float, Float>? {
+        // Tour 8, banc9 (point j): « Mes projets » still loading shows its wheel, not its rows (as Coquille2SeatTest waits).
+        val waits = waitWhileListLoads(tag)
+        if (centerOf(tag) == null && centerOf("projects_loading") != null) benchJournal?.appendText(BenchFlags.flag(turnNow, "reach.loading", "« $tag » après le chargement", "projects_loading encore là", waits * 500L, routeNow()) + "\n")
         val first = centerOf(tag) ?: return null
         if (tag.startsWith("vue_")) return first
-        // PLAN-RESTE R.6 (re-reads of banc-r1): an element the screen shows whole is touched where it is, as a finger does; the
-        // swipes below (up to 8 « glisse » + « attends 1 », 22 to 26 s of the bench's clock) are for one cut or off the screen.
+        // PLAN-RESTE R.6 (re-reads of banc-r1): an element the screen shows whole is touched where it is, as a finger does.
         if (shownWhole(tag)) return first
-        // Tour 7, control tuto2 (seat c): a row cut by its list's edge has its middle in the screen's middle part, outside
-        // what is drawn of it (the list's next control there: « Recommencer le tuto » under « Chapitres »' list). It is
-        // scrolled into view whatever its place, and a middle outside its drawn part is never touched.
+        // Tour 8, banc9 (points a, b): one cut by an edge is touched in the middle of its drawn part when that part is big enough
+        // for a finger; nothing is scrolled then. Only a part too small is scrolled into view, and only inside a list that scrolls
+        // (banc8b: 8 swipes, ~12 s, for a target in no list, then its hidden middle touched).
+        aim(tag)?.let { return it }
+        val scrolls = runCatching {
+            generateSequence(taggedNodes(tag).fetchSemanticsNodes().first().parent) { it.parent }
+                .any { it.config.contains(androidx.compose.ui.semantics.SemanticsActions.ScrollBy) }
+        }.getOrDefault(false)
+        if (!scrolls) return first
         if (runCatching { taggedNodes(tag)[0].performScrollTo() }.isSuccess) play("attends 0.5")
         repeat(8) {
             val at = centerOf(tag) ?: return null
-            if (inMiddle(at) && drawnAt(tag, at)) return at
+            if (shownWhole(tag)) return at
+            aim(tag)?.let { if (inMiddle(it)) return it }
             val x = at.first.coerceIn(10f, app.resources.displayMetrics.widthPixels - 10f)
             val dy = (at.second - screenHeight / 2f).coerceIn(-500f, 500f)
+            benchJournal?.appendText("#$turnNow VISEE « $tag » glisse ${x.toInt()} ${(screenHeight / 2f + dy / 2).toInt()} ${x.toInt()} ${(screenHeight / 2f - dy / 2).toInt()}\n")
             play("glisse $x ${screenHeight / 2f + dy / 2} $x ${screenHeight / 2f - dy / 2}")
             play("attends 1")
         }
-        return centerOf(tag)
+        return aim(tag) ?: centerOf(tag)
     }
 
     private fun inMiddle(at: Pair<Float, Float>) = at.second in 0.2f * screenHeight..0.8f * screenHeight
 
-    /** [at] (the middle of the node tagged [tag]) is in what is drawn of it (not under its scrolling parent's edge). */
-    private fun drawnAt(tag: String, at: Pair<Float, Float>): Boolean = runCatching {
+    /**
+     * The middle of what is drawn of the node tagged [tag] (see [SeatOptions.drawnAim]), or null when that part is too small
+     * for a finger. Tour 8, banc9 (point c): a shape the bench cannot read is said in the seat's journal, not taken as drawn.
+     */
+    private fun aim(tag: String): Pair<Float, Float>? = runCatching {
         val n = taggedNodes(tag).fetchSemanticsNodes().first()
-        BenchWindows.drawnBounds(n, app.resources.displayMetrics).contains(androidx.compose.ui.geometry.Offset(at.first, at.second))
-    }.getOrDefault(true)
+        val m = app.resources.displayMetrics
+        val p = BenchWindows.drawnPosition(n, m)
+        val d = BenchWindows.drawnBounds(n, m)
+        SeatOptions.drawnAim(
+            SeatOptions.Box(p.x, p.y, p.x + n.size.width, p.y + n.size.height), SeatOptions.Box(d.left, d.top, d.right, d.bottom),
+            m.widthPixels, m.heightPixels, m.density,
+        )
+    }.getOrElse { e -> benchJournal?.appendText("#$turnNow BANC forme de « $tag » illisible : ${e.message}\n"); null }
+
+    /** The buttons (nodes that take a touch) inside the nodes tagged [tag]: a container's middle is its button only when it holds one. */
+    private fun actionablesIn(tag: String): Int = runCatching {
+        fun count(n: androidx.compose.ui.semantics.SemanticsNode): Int =
+            (if (n.config.contains(androidx.compose.ui.semantics.SemanticsActions.OnClick)) 1 else 0) + n.children.sumOf { count(it) }
+        compose.onAllNodesWithTag(tag, useUnmergedTree = true).fetchSemanticsNodes().sumOf { count(it) }
+    }.getOrDefault(0)
+
+    /** The test tags drawn inside the nodes tagged [tag] (« remix_pick_thumb » in « remix_pick »): a touch on them is on [tag]. */
+    private fun tagsInside(tag: String): Set<String> = runCatching {
+        fun walk(n: androidx.compose.ui.semantics.SemanticsNode): List<String> =
+            n.children.flatMap { c -> listOfNotNull(c.config.getOrNull(SemanticsProperties.TestTag)) + walk(c) }
+        taggedNodes(tag).fetchSemanticsNodes().flatMap { root ->
+            compose.onAllNodesWithTag(root.config.getOrNull(SemanticsProperties.TestTag) ?: tag, useUnmergedTree = true).fetchSemanticsNodes().flatMap(::walk)
+        }.toSet()
+    }.getOrDefault(emptySet())
+
+    /** The point [at] is inside what the screen draws of the first node tagged [tag] (where a touch there lands on it); [missing] when unreadable. */
+    private fun touchedOn(tag: String, at: Pair<Float, Float>, missing: Boolean): Boolean = runCatching {
+        val b = BenchWindows.drawnBounds(taggedNodes(tag).fetchSemanticsNodes().first(), app.resources.displayMetrics)
+        at.first in b.left..b.right && at.second in b.top..b.bottom
+    }.getOrDefault(missing)
 
     /** The first node tagged [tag] is drawn whole on the screen (see [shownWhole]). */
     private fun shownWhole(tag: String): Boolean =
@@ -2159,10 +2383,19 @@ abstract class HumanTester(private val seat: String) {
      * screen (cut by its parents, as boundsInWindow is) that [hand]'s thumb reaches and where the element under the finger is that
      * node (the journal's « DOIGT » line names it). Null: no such point, the touch is refused (review of rejeux6, grave 2).
      */
+    /** Tour 9 (banc-b, « drapeaux »): where [tag]'s first node is drawn (« l,t,r,b »), for a refusal's flag; null when nothing carries it. */
+    private fun flagBounds(tag: String): String? = runCatching {
+        taggedNodes(tag).fetchSemanticsNodes().firstOrNull()?.let { n ->
+            BenchWindows.drawnBounds(n, app.resources.displayMetrics).let { BenchFlag.bounds(it.left, it.top, it.right, it.bottom) }
+        }
+    }.getOrNull()
+
     private fun reachableNear(tag: String, middle: Pair<Float, Float>, hand: SeatOptions.Hand): Pair<Float, Float>? {
         val m = app.resources.displayMetrics
         val screen = screenText()
-        val hits = { x: Float, y: Float -> fingerOn(tag, screen.under(x, y)) }
+        val inside = if (tag.startsWith("vue_") || tag.endsWith("*")) emptySet() else tagsInside(tag)
+        // Tour 8, banc9 (point i): a point where an element drawn over the target takes the touch is not on the target.
+        val hits = { x: Float, y: Float -> SeatOptions.fingerOn(tag, screen.under(x, y), inside) && screen.coverAt(x, y) == null }
         if (tag.startsWith("vue_")) {
             return middle.takeIf { (x, y) -> SeatOptions.reachable(hand, x, y, m.widthPixels, m.heightPixels, m.density) && hits(x, y) }
         }
@@ -2179,12 +2412,6 @@ abstract class HumanTester(private val seat: String) {
      * The finger ([under], a « DOIGT » line: « <tag> « words » », « dans:<tag> » for a part of it, « désactivé … ») is on [tag]
      * (« prefix* »: on one of that family; « vue_X »: the Android view showing X). As scripts/bench/rejeu-defauts.sh reads it.
      */
-    private fun fingerOn(tag: String, under: String): Boolean {
-        if (tag.startsWith("vue_")) return under.startsWith("vue « ${tag.removePrefix("vue_")} »")
-        val name = under.removePrefix("désactivé ").removePrefix("dans:").substringBefore(' ')
-        return if (tag.endsWith("*")) name.startsWith(tag.dropLast(1)) else name == tag
-    }
-
     /**
      * The nodes of a replay's [tag]: the tag itself, or « prefix* » for the first of a family whose ids change at every run
      * (« project_p-* »: the projects' ids are random).
@@ -2231,10 +2458,30 @@ abstract class HumanTester(private val seat: String) {
         val v = vm() ?: return@runCatching "no activity"
         val p = PrefsTutoStore(app).load(v.projectId)
         if (p == null) "project=${v.projectId} no tuto"
-        else "project=${v.projectId} tuto=${p.style}/${p.level} active=${p.active} step=${p.current} done=${p.done.size} playing=${v.transport.value.playing}"
+        else "project=${v.projectId} ${tutoState(p)} playing=${v.transport.value.playing}"
     }.getOrElse { "inside? ${it.message}" }
 
     companion object {
+        /** Real time « Mes projets » is waited for at least while it still reads its list ([waitWhileListLoads]). */
+        internal const val LIST_WAIT_REAL_MS = 60_000L
+
+        /** The journal's words on where the tutorial is ([inside]), read by a round's oracle. */
+        internal fun tutoState(p: com.pocketstudio.model.tuto.TutoProgress): String =
+            "tuto=${p.style}/${p.level} active=${p.active} step=${p.current} done=${p.done.size} chapters=${chaptersOver(p)}"
+
+        /**
+         * Tour 9: the chapters of [p]'s course that are over (1-based, « - » for none), by the app's own rule (a step
+         * ticked; in Pro an example to listen to holds nothing back). A step ticked stays shown with its « Bravo »
+         * until « Chapitre suivant », so `step=` alone cannot say a slice is finished.
+         */
+        internal fun chaptersOver(p: com.pocketstudio.model.tuto.TutoProgress): String {
+            val chapters = com.pocketstudio.model.tuto.TutoCourse.of(p.style)?.chaptersFor(p.level).orEmpty()
+            val over = chapters.indices.filter { c ->
+                chapters[c].steps.all { it.id in p.done || (p.level == com.pocketstudio.model.tuto.TutoLevel.Pro && it.listening) }
+            }
+            return if (over.isEmpty()) "-" else over.joinToString(",") { "${it + 1}" }
+        }
+
         /** Socle du banc, point 3: the gestures that may name a test tag instead of pixels (« touche <étiquette> »). */
         val TAG_GESTURES = setOf("touche", "appui-long", "double-touche")
 
@@ -2274,6 +2521,13 @@ abstract class HumanTester(private val seat: String) {
          */
         /** Compose's rest awaited this long at most (Espresso's default, 60 s, made 4 × 60 s frozen gestures in round 4). */
         const val IDLE_CAP_S = 8L
+
+        /** [amenee]: polls of a wait before a touch that went beside its moved target is made again, how many times, how far. */
+        const val AMENEE_RETAP_POLLS = 2
+        const val AMENEE_RETAPS = 2
+        const val AMENEE_MOVED_PX = 4f
+        /** [amenee]: a wait of this many real milliseconds is said in the journal even when it came. */
+        const val AMENEE_SLOW_MS = 5_000L
         /** The real time one « attends » may give the bench's slow stand-ins (banc fiable 1.4). */
         const val SLOW_WORK_CAP_MS = 120_000L
         /** PLAN-RESTE 4.4: « attends » gives the hand back once nothing of the bench's slow work moved for this long. */

@@ -1,0 +1,10 @@
+lang=fr
+device=phone
+font=100
+mode=simple
+amenee=tuto:trance:7
+gestes.max=167
+mission=tuto-facile
+profil=moyen
+niveau=2
+timeout.minutes=30

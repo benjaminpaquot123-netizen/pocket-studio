@@ -99,7 +99,8 @@ class StarterWizardTest {
 
     @Test
     fun melodicPartsAreInTheKeyAndLocked() {
-        for (style in StarterWizard.STYLES) {
+        // On the styles without their format v2 body (its tracks: BodyHeardTest, StyleBodyTest).
+        for (style in StarterWizard.STYLES.map { PlainStyles.plain(it) }) {
             // The proposed sounds exist in the library, and the bass rhythm is a bar.
             StarterWizard.Part.entries.forEach { part ->
                 val first = StarterWizard.soundsFor(part, style).first()
@@ -342,7 +343,7 @@ class StarterWizardTest {
         val club = StarterWizard.scenePlan(setOf(R.Kick, R.Hat), setOf(P.Bass, P.Pad), acid = false, signature = P.Pad, form = StarterWizard.SongForm.Club)
         assertEquals(setOf(0, 1, 2, 3), club.parts[P.Pad])
         // Built: a style whose chords are its signature has them in every scene.
-        val boomBap = StarterWizard.style("boom_bap")!!.let { it.copy(melody = it.melody.copy(signature = P.Pad)) }
+        val boomBap = PlainStyles.plain("boom_bap").let { it.copy(melody = it.melody.copy(signature = P.Pad)) }
         val parts = listOf(P.Bass, P.Pad).associateWith { StarterWizard.soundsFor(it, boomBap).first() }
         val p = StarterWizard.build(boomBap, boomBap.lines.associate { it.role to null }, StarterWizard.Mood.Dark, parts)
         // Its Pont too (the chords without kick nor bass), and every variant of the song.
@@ -509,9 +510,10 @@ class StarterWizardTest {
                 val spec = plan.variants[i - plan.count]
                 assertEquals("${style.name} $mood ${sc.label}", sc.label, spec.label)
                 val roles = sc.drums.lanes.indices.filter { sc.drums.lanes[it].hits.isNotEmpty() }.mapNotNull { lane -> R.entries.firstOrNull { it.lane == lane } }
-                // G0: the last Drop's scene adds a layer of its own (an open hat, a percussion, claps).
+                // G0: the last Drop's scene adds a layer of its own (an open hat, a percussion, claps). Pad 8
+                // is the toms fill's high tom (DrumHumanizer); pad 9 stays the snap's (format v2).
                 val layer = if (spec.extra) setOf(R.OpenHat, R.Perc2, R.Hat, R.Clap) else emptySet()
-                assertTrue("${style.name} $mood ${sc.label} $roles", roles.all { it in lines.keys || it == R.Ride || it in layer || (on808 && it == R.Bass808) })
+                assertTrue("${style.name} $mood ${sc.label} $roles", roles.all { it in lines.keys || it == R.Ride || it in layer || (on808 && it == R.Bass808) || it == R.Tom })
             }
             // Cumulative over the first three (a line in a section is in every section after it); with a
             // Montée, what the Intro and the Montée play is in the Drop, and the Montée has no kick; a rap
@@ -600,7 +602,8 @@ class StarterWizardTest {
 
     @Test
     fun theStylesEffectsGoOnWhatIsUsed() {
-        val base = StarterWizard.style("lofi")!!
+        // Without a counter-melody, a riser or a vocal: their tracks would take mixer channels of their own.
+        val base = PlainStyles.plain("lofi").let { it.copy(melody = it.melody.copy(counter = null), riser = false, vocal = null) }
         val style = base.copy(
             effects = listOf(
                 StarterWizard.StyleFx("pad", insert = "VINYL"),

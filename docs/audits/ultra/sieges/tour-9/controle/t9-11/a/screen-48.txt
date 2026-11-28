@@ -1,0 +1,59 @@
+Écran 48 (900x1509)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 284,42
+bouton « Simple » @ 612,42
+bouton ● @ 701,42
+bouton ■ « this part » @ 778,42
+icône ⋮ @ 855,42
+icône (flèches en boucle) « A bar 1/1 » [désactivé] @ 349,144
+bouton « 112  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Part: A » ▾ @ 99,240
+texte « Drum rim » @ 142,302
+texte « 1 more dotted cell here » @ 275,356
+bouton « 1 » [état « empty »] @ 90,433
+bouton [état « empty »] @ 192,433
+bouton [état « empty »] @ 294,433
+bouton [état « empty »] @ 397,433
+bouton « 2 » [état « empty »] @ 500,433
+bouton [état « empty »] @ 603,433
+bouton [état « hit, strength 100 % »] @ 706,433
+bouton [état « empty »] @ 809,433
+bouton « 3 » [état « empty »] @ 90,514
+bouton [état « hit, strength 100 % »] @ 192,514
+bouton [état « empty »] @ 294,514
+bouton [état « empty »] @ 397,514
+bouton « 4 » [état « empty »] @ 500,514
+bouton [état « empty, dotted: tap it »] @ 603,514
+bouton [état « empty »] @ 706,514
+bouton [état « empty »] @ 809,514
+texte « Fill » @ 67,598
+texte « all » [coupé] @ 132,596
+texte « 1/2 » [coupé] @ 211,596
+texte « 1/4 » [coupé] @ 296,596
+texte « ◀ » [coupé] @ 377,596
+texte « ▶ » [coupé] @ 452,596
+texte « Clear » [coupé] @ 554,596
+texte « The percussion Chapter 2/12 · Step 5/7 · Easy » @ 357,688
+icône (liste) « Chapters » @ 750,688
+icône ⌄ @ 843,688
+texte « Your turn: tap “Switch to 2 bars”. » @ 348,800
+texte « ▸ Why? » @ 450,869
+bouton ⊕ «   Switch to 2 bars » @ 450,946
+bouton ▶ «  Listen to the example » @ 232,1060
+bouton (œil) «  Show me » @ 667,1060
+icône ← «  Previous » @ 141,1174
+icône « Next  » → @ 796,1174
+icône ↶ « Undo » @ 109,1277
+image ↷ @ 258,1257
+icône ■ « the song » @ 436,1278
+texte « 112 Tempo » @ 629,1277
+icône ⋮ « More » @ 793,1277
+onglet (lignes et note) « My song » @ 85,1389
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 268,1389
+onglet (touches de piano) « Keyboard » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Share » @ 815,1389
+texte « ●  REC » @ 637,1479
+texte « ✎  Note » @ 754,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 297,1479

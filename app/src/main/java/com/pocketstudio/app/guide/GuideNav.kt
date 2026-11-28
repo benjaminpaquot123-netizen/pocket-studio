@@ -84,6 +84,8 @@ object GuideNav {
         "new.style", "song.guide", "sounds.main", "record.melody", "remix", GuideViewModel.PLAY,
         // The tutorial: the song's « Ajouter : » buttons.
         "song.add",
+        // The tutorial's « Montre-moi » of a part to make: « Ajouter : » first, else where "song.parts" goes.
+        "song.make",
     )
 
     /**
@@ -99,6 +101,7 @@ object GuideNav {
             // n° 19: in the Mode simple no switch; an empty song: where parts are added.
             "song.parts" -> GuideGo.Tab(AppTab.Morceau, listOf("part_play_0", "structure_switch", "song_add", "timeline_ruler"), partsView = !simple)
             "song.add" -> GuideGo.Tab(AppTab.Morceau, listOf("song_add"), partsView = !simple)
+            "song.make" -> GuideGo.Tab(AppTab.Morceau, listOf("song_add", "part_play_0", "structure_switch", "timeline_ruler"), partsView = !simple)
             "sounds.track", "sounds.favorite" -> soundOf(track) ?: structure
             // G3: an instrument track's layers in their editor; another track's sound as before.
             "sounds.layers" -> track?.key?.takeIf { it.startsWith("inst:") }?.removePrefix("inst:")?.toIntOrNull()?.let { GuideGo.Layers(it) } ?: soundOf(track) ?: structure

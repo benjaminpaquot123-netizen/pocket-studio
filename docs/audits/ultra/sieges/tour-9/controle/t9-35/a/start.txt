@@ -1,0 +1,10 @@
+lang=ko
+device=tablet8
+font=200
+mode=simple
+amenee=tuto:industrial_techno:1
+gestes.max=150
+mission=tuto-facile
+profil=débutant motivé
+niveau=1
+timeout.minutes=30

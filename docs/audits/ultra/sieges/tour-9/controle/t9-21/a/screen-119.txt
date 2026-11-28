@@ -1,0 +1,41 @@
+Écran 119 (540x1170)
+bouton (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 100,42
+bouton « Semplice » @ 243,42
+bouton ● @ 332,42
+bouton ■ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+bouton « 174  Tempo » @ 83,114
+icône (flèches en boucle) « A battuta 1/8 » [désactivé] @ 239,114
+bouton « ? » @ 495,114
+onglet « Acid 303 Linea di basso » [coupé] @ 51,186
+bouton « Basso Synth » @ 145,186
+bouton « Accordi Pad » @ 270,186
+bouton « Melodia Supersaw » ⋮ @ 430,186
+image ← @ 10,187
+image → @ 529,187
+icône « Parte: A » ▾ @ 76,264
+texte « A tempo 50% » [coupé] @ 444,324
+icône (liste) « Capitoli » @ 405,375
+texte « La tua prima parte: il Groove Capitolo 8/15 · Passo 1/2 · Facile » @ 192,375
+icône ⌄ @ 483,375
+texte « Ascolta il tuo loop per qualche secondo (tutto quello che hai fatto), poi l'esempio. Questo ritmo che fa venire voglia di muoversi è il groove. » @ 270,510
+texte « • Loop: un passaggio che si ripete senza fermarsi. » @ 251,604
+texte « ▸ Perché? » @ 270,642
+bouton ■ «   Ferma » @ 270,705
+bouton ▶ «  Ascolta l'esempio » @ 270,789
+icône ← «  Indietro » @ 95,870
+icône « Avanti  » → @ 452,870
+icône ↶ « Annulla » @ 64,954
+image ↷ @ 164,944
+bouton ■ « il brano » @ 264,954
+texte « 174 Tempo » @ 370,954
+icône ⋮ « Altro » @ 476,954
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » @ 160,1050
+onglet (touches de piano) « Tastiera » [sélectionné] @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Annota » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 138,1140

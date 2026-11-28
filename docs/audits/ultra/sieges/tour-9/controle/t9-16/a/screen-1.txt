@@ -1,0 +1,39 @@
+Écran 1 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ▶ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 98,123
+bouton « ? » @ 543,123
+icône « Parte: A · Groove » ▾ @ 150,198
+bouton « Bombo de estudio FX » [coupé] @ 84,272
+bouton « Bombo 2 » [coupé] @ 224,272
+bouton « Caja » [coupé] @ 364,272
+bouton « Caja 2 » [coupé] @ 504,272
+texte « Entender las partes Capítulo 7/13 · Paso 1/4 · Fácil » @ 202,343
+icône (liste) « Capítulos » @ 439,344
+icône ⌄ @ 531,344
+texte « Escucha la Intro: la batería y las percusiones, sin bajo ni piano. » @ 294,455
+texte « Energía » @ 68,526
+bouton « Descargar el kit Deep house (4 MB) » @ 213,684
+texte « Más tarde » @ 480,684
+texte « ▸ ¿Por qué? » @ 294,766
+icône « Seguir leyendo » ⌄ @ 294,820
+bouton ▶ «  Escuchar el ejemplo » @ 294,892
+icône ← «  Anterior » @ 112,976
+icône « Siguiente  » → @ 466,976
+icône ↶ « Deshacer » @ 72,1061
+image ↷ @ 185,1048
+bouton ▶ « la canción » @ 304,1061
+texte « 120 Tempo » @ 424,1061
+icône ⋮ « Más » @ 527,1061
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 356,1248
+texte « ✎  Anotar » @ 454,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 160,1248

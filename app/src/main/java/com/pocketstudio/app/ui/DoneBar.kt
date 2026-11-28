@@ -1,6 +1,8 @@
 package com.pocketstudio.app.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,11 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.Neon
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 
 /** How long « Fait : … » stays. */
 private const val DONE_MS = 6000L
@@ -55,5 +60,22 @@ fun DoneBar(text: String?, undo: () -> Unit, dismiss: () -> Unit, modifier: Modi
         Text(text, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, maxLines = 3,
             modifier = Modifier.weight(1f).padding(horizontal = 10.dp).testTag("done_text"))
         TextButton(onClick = undo, modifier = Modifier.testTag("done_undo")) { Text(tr("Annuler")) }
+    }
+}
+
+/**
+ * Tour 9, F111 (« Le message « nouvelle longueur » disparaît après quelques secondes ou au geste suivant. »): the next
+ * touch or swipe on the page lets « Fait : … » go, at the finger's release. Read last (final pass), so « Annuler » has
+ * had its click; and only the message shown when the finger came down goes: one that this very touch said stays.
+ * [done] is read as it is now, not as composed: a click's new message is not composed yet at the release.
+ */
+fun Modifier.letDoneGoAtNextTouch(done: StateFlow<String?>, dismiss: () -> Unit): Modifier = pointerInput(done, dismiss) {
+    awaitEachGesture {
+        awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Final)
+        val shown = done.value
+        do {
+            val event = awaitPointerEvent(PointerEventPass.Final)
+        } while (event.changes.any { it.pressed })
+        if (shown != null && done.value == shown) dismiss()
     }
 }

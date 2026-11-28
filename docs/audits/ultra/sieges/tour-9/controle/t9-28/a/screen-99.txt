@@ -1,0 +1,16 @@
+Écran 99 (588x1278)
+texte « Tutorial dari A sampai Z » @ 258,60
+icône ✕ @ 528,60
+bouton « 1 Tempo dan kunci nada » (rond coché) @ 294,149
+bouton « 2 Kick gabber 2/3 » @ 294,240
+bouton « 3 Sisa drum » (rond coché) @ 294,331
+bouton « 4 Hoover (akor) » (rond coché) @ 294,422
+bouton « 5 Riff 1/2 » @ 294,513
+bouton « 6 Bagian pertamamu: Groove » (rond coché) @ 294,604
+bouton « 7 Memahami bagian 4/6 » @ 294,695
+bouton « 8 Bangun bagian-bagianmu » (rond coché) @ 294,786
+bouton « 9 Susun bagian-bagianmu » (rond coché) @ 294,877
+bouton « 10 Transisi » (rond coché) [coupé] @ 294,930
+bouton « Kembali ke Mudah » @ 294,982
+bouton ↺ «  Ulangi tutorial (proyek kosong baru) » @ 294,1083
+texte « Keluar dari tutorial (bisa dilanjutkan nanti) » @ 294,1201

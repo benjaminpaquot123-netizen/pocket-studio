@@ -1,0 +1,28 @@
+Écran 171 (540x1170)
+texte « Sua primeira parte: o Groove Capítulo 6/14 · Etapa 2/2 · Pro » @ 176,120
+icône (liste) « Capítulos » @ 389,120
+icône ⌄ @ 483,120
+texte « Sua vez: dê o nome “Groove” a esta cena: o loop completo, de onde você vai tirar as outras partes. » [coupé] @ 270,286
+bouton « Baixar o kit Techno de Detroit (4 MB) » @ 186,384
+texte « Mais tarde » @ 429,384
+texte « ▸ Por quê? » @ 270,472
+icône « Continuar lendo » ⌄ @ 270,535
+bouton ⊕ «   Nomear a parte “Groove” » @ 270,692
+bouton ▶ «  Ouvir o exemplo » @ 142,834
+bouton (œil) «  Mostre-me » @ 397,834
+icône ← «  Anterior » @ 136,948
+icône « Próximo  » → @ 404,948
+texte « 126 Andamento » @ 376,1051
+icône ↶ « Desfazer » @ 34,1052
+icône ↷ « Refazer » [désactivé] @ 92,1052
+icône ▶ « a música » @ 199,1052
+icône (trois points reliés) « Compartilhar » @ 505,1052
+onglet (ligne brisée et points) « Estrutura » @ 49,1106
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1106
+onglet (curseurs) « Mix » @ 271,1106
+onglet (neuf points) « Live » @ 381,1106
+onglet ⋯ « Mais » @ 491,1106
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

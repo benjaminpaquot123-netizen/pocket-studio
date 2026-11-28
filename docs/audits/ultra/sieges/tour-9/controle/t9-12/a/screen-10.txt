@@ -1,0 +1,54 @@
+Écran 10 (588x1278)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 134,42
+bouton « Simple » @ 311,42
+bouton ● @ 399,42
+bouton ▶ « this part » @ 471,42
+icône ⋮ @ 543,42
+bouton « 112  Tempo » @ 83,114
+bouton « ? » @ 543,114
+texte « Add: » @ 65,165
+bouton « + A · Drop » @ 129,228
+bouton « + New part (copy of A · Drop) » [coupé] @ 227,286
+texte « Understanding parts Chapter 7/12 · Step 2/3 · Easy » @ 210,348
+icône (liste) « Chapters » @ 447,348
+icône ⌄ @ 531,348
+texte « Listen to the Groove: the kick and the piano, but no log drum yet. » @ 294,447
+texte « Energy » @ 55,504
+texte « Intro » @ 48,597
+texte « 8 » @ 48,621
+texte « Groove » @ 157,597
+texte « 24 » @ 157,621
+texte « Drop » @ 293,597
+texte « 16 » @ 293,621
+texte « 8 » @ 375,609
+texte « Drop 2 » @ 458,597
+texte « 16 » @ 458,621
+texte « End » @ 540,597
+texte « 8 » @ 540,621
+texte «  Intro » @ 60,658
+texte «  Groove » @ 151,658
+texte «  Drop » @ 244,658
+texte «  Break » @ 329,658
+texte «  Drop 2 » @ 423,658
+texte «  End » @ 508,658
+texte « Each number: the part's length in bars. » @ 197,688
+bouton « Download the Amapiano kit (2 MB) » @ 247,759
+texte « Later » @ 514,759
+texte « ▸ Why? » @ 294,825
+bouton ▶ «  Listen to the example » @ 294,894
+icône ← «  Previous » @ 101,978
+icône « Next  » → @ 508,978
+icône ↶ « Undo » @ 72,1062
+image ↷ @ 180,1052
+bouton ▶ « the song » @ 288,1062
+texte « 112 Tempo » @ 402,1062
+icône ⋮ « More » @ 516,1062
+onglet (lignes et note) « My song » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rhythm » @ 174,1158
+onglet (touches de piano) « Keyboard » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Share » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

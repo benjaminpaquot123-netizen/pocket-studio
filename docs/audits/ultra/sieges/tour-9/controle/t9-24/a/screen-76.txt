@@ -1,0 +1,35 @@
+Écran 76 (588x1278)
+texte « Efekty · Akordy » @ 184,60
+bouton « Pod wodą » [coupé] @ 126,112
+bouton « Sen » [coupé] @ 255,112
+bouton « Bez efektu » [coupé] @ 387,112
+texte « Dotknij klimatu, żeby go wypróbować: zawsze możesz wrócić przez Cofnij. » @ 294,167
+texte « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » @ 294,233
+texte « Pad XY, góra-dół: » @ 132,293
+bouton « ? » @ 243,293
+bouton « Przestrzeń » [sélectionné] @ 131,363
+bouton « Brud » @ 269,363
+bouton « Ruch » @ 378,363
+texte « ↑ Odległy » @ 294,423
+texte « ← Ciemny » @ 149,708
+texte « ↓ Sucho » @ 293,708
+texte « Jasny → » @ 438,708
+texte « Przesuwaj palcem, żeby niszczyć dźwięk na żywo. Dwa dotknięcia: powrót do oryginału. » @ 294,759
+curseur [état « Neutralny », à 50 %] @ 112,837
+texte « Kolor » @ 112,891
+texte « Neutralny » @ 112,916
+curseur [état « 0 », à 0 %] @ 233,837
+texte « Brud » @ 232,891
+texte « 0 » @ 233,916
+curseur [état « 0 », à 0 %] @ 354,837
+texte « Ruch » @ 354,891
+texte « 0 » @ 354,916
+curseur [état « 0 », à 0 %] @ 476,837
+texte « Przestrzeń » @ 476,891
+texte « 0 » @ 476,916
+texte « Wspólny pogłos i echo » @ 168,957
+texte « Akordy ✓ · Werbel: ustaw tutaj » @ 207,1009
+texte « Wysyłka pogłos » @ 269,1038
+texte « 30% » @ 503,1038
+curseur [état « 30% », à 30 %] @ 294,1089
+texte « Zamknij » @ 477,1206

@@ -1,0 +1,52 @@
+Écran 47 (540x1170)
+bouton (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 100,42
+bouton « Semplice » @ 243,42
+bouton ● @ 332,42
+bouton ■ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+bouton « 174  Tempo » @ 83,114
+icône (flèches en boucle) « A battuta 2/2 » [désactivé] @ 239,114
+bouton « ? » @ 495,114
+icône « Parte: A » ▾ @ 76,180
+texte « Battuta 1/2 · Drum & bass · Hi-hat » [coupé] @ 141,223
+texte « Battuta 2 · 7 caselle → » [coupé] @ 358,234
+bouton « 1 » [état « colpo, forza 100 % »] @ 67,296
+bouton [état « vuoto »] @ 124,296
+bouton [état « colpo, forza 100 % »] @ 182,296
+bouton [état « vuoto »] @ 240,296
+bouton « 2 » [état « colpo, forza 100 % »] @ 298,296
+bouton [état « vuoto »] @ 356,296
+bouton [état « colpo, forza 100 % »] @ 414,296
+bouton [état « vuoto »] @ 472,296
+bouton « 3 » [coupé, état « colpo, forza 100 % »] @ 67,347
+bouton [coupé, état « vuoto »] @ 124,347
+bouton [coupé, état « colpo, forza 100 % »] @ 182,347
+bouton [coupé, état « vuoto »] @ 240,347
+bouton « 4 » [coupé, état « colpo, forza 100 % »] @ 298,347
+bouton [coupé, état « vuoto »] @ 356,347
+bouton [coupé, état « vuoto »] @ 414,347
+bouton [coupé, état « vuoto »] @ 472,347
+icône (liste) « Capitoli » @ 405,408
+texte « Gli hi-hat Capitolo 4/15 · Passo 1/4 · Facile » @ 192,408
+icône ⌄ @ 483,408
+texte « Tocca a te: sul pad “Drum & bass · Hi-hat”, tocca tutte le caselle tratteggiate delle 2 battute. » @ 270,525
+texte « ▸ Perché? » @ 270,603
+bouton (doigt qui touche) «   Lo faccio io » @ 270,699
+bouton ▶ «  Ascolta l'esempio » @ 142,786
+bouton (œil) «  Mostrami » @ 397,786
+icône ← «  Indietro » @ 95,870
+icône « Avanti  » → @ 452,870
+icône ↶ « Annulla » @ 64,954
+image ↷ @ 164,944
+bouton ■ « il brano » @ 264,954
+texte « 174 Tempo » @ 370,954
+icône ⋮ « Altro » @ 476,954
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Annota » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 138,1140

@@ -1,9 +1,9 @@
 {
   "Lire": "Oku",
-  "Bravo, chapitre fini !": "Bravo, bölüm bitti!",
-  "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "Şarkını şimdiki haliyle dinle, sonra bir sonraki bölüme geç: “%s”.",
-  "Chapitre suivant : « %s ».": "Sonraki bölüm: “%s”.",
-  "Chapitre suivant": "Sonraki bölüm",
+  "Bravo, chapitre fini !": "Bravo, aşama bitti!",
+  "Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « %s ».": "Şarkını şimdiki haliyle dinle, sonra bir sonraki aşamaya geç: “%s”.",
+  "Chapitre suivant : « %s ».": "Sonraki aşama: “%s”.",
+  "Chapitre suivant": "Sonraki aşama",
   "Écouter mon morceau": "Şarkımı dinle",
   "Un son gardé s'appelle déjà « %s » : choisis un autre nom.": "“%s” adında kayıtlı bir ses zaten var: başka bir ad seç.",
   "Ce son est déjà dans tes favoris : « %s ».": "Bu ses zaten favorilerinde: “%s”.",

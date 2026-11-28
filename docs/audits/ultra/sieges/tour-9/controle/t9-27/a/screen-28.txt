@@ -1,0 +1,75 @@
+Écran 28 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 194,42
+texte « Pro » @ 415,42
+bouton « A » ▾ @ 490,42
+icône ↶ @ 565,42
+icône ↷ [désactivé] @ 637,42
+bouton ● @ 709,42
+bouton ▶ « bagian ini » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » [sélectionné] @ 71,183
+onglet « Acid 303 Bassline » @ 212,183
+onglet « Vokal Mikrofon » @ 365,183
+onglet « Remix Pisahkan » @ 516,183
+bouton + «  Trek » @ 672,183
+texte « Bagian: A » @ 68,243
+titre « STEP: GABBER · HI-HAT TERBUKA » [coupé, état « Terbuka »] @ 368,275
+bouton « ? » [coupé] @ 457,275
+bouton « Semua pad » [coupé] @ 776,276
+texte « Gabber · Hi-hat terbuka » @ 170,333
+texte « Masih 4 kotak bergaris putus di sini » @ 243,362
+bouton « 1 » [état « kosong »] @ 90,433
+bouton [état « kosong »] @ 192,433
+bouton [état « kosong, bertitik: sentuh »] @ 294,433
+bouton [état « kosong »] @ 397,433
+bouton « 2 » [état « kosong »] @ 500,433
+bouton [état « kosong »] @ 603,433
+bouton [état « kosong, bertitik: sentuh »] @ 706,433
+bouton [état « kosong »] @ 809,433
+bouton « 3 » [état « kosong »] @ 90,514
+bouton [état « kosong »] @ 192,514
+bouton [état « kosong, bertitik: sentuh »] @ 294,514
+bouton [état « kosong »] @ 397,514
+bouton « 4 » [état « kosong »] @ 500,514
+bouton [état « kosong »] @ 603,514
+bouton [état « kosong, bertitik: sentuh »] @ 706,514
+bouton [état « kosong »] @ 809,514
+bouton « Pukulan » [sélectionné] @ 108,600
+bouton « Roll » @ 225,600
+bouton « Pan » @ 320,600
+bouton « Pitch » @ 422,600
+bouton « Velocity » @ 545,600
+texte « semua » @ 114,684
+texte « 1/2 » @ 200,684
+texte « 1/4 » @ 275,684
+texte « ◀ » [désactivé] @ 350,684
+texte « ▶ » [désactivé] @ 425,684
+texte « Hapus » [désactivé] @ 510,684
+texte « Isi » @ 53,684
+texte « Sentuh kotak untuk menambah pukulan, geser jari untuk mengecat beberapa. Tekan lama pukulan: kekuatan dan roll (×2 sampai ×8). » @ 450,759
+texte « Sisa drum Bab 3/14 · Langkah 1/5 · Pro » @ 378,855
+icône (liste) « Bab » @ 771,855
+icône ⌄ @ 843,855
+texte « Giliranmu: taruh hi-hat terbuka di offbeat. » @ 255,936
+texte « ▸ Kenapa? » @ 450,978
+bouton (doigt qui touche) «   Aku yang buat » @ 450,1044
+bouton ▶ «  Dengar contohnya » @ 232,1128
+bouton (œil) «  Tunjukkan » @ 667,1128
+icône ← «  Sebelumnya » @ 119,1209
+icône « Berikutnya  » → @ 789,1209
+icône ↶ « Urungkan » @ 124,1293
+icône ↷ « Ulangi » [désactivé] @ 285,1293
+bouton ▶ « lagu » @ 445,1293
+texte « 175 Tempo » @ 610,1293
+icône (trois points reliés) « Bagikan » @ 776,1293
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

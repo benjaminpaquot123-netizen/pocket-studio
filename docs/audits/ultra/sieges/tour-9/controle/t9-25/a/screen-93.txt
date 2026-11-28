@@ -1,0 +1,42 @@
+Écran 93 (540x1170)
+bouton (dossier ouvert) ✓ @ 102,42
+bouton « Basit » @ 246,42
+bouton ● @ 333,42
+bouton ▶ « bu bölüm » @ 414,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+onglet « Acid 303 Bas çizgisi » @ 106,204
+bouton « Bas Wobble bas » ⋮ @ 324,204
+icône ♪ « Ses » [coupé] @ 483,205
+image → @ 529,205
+icône « Bölüm: A » ▾ @ 96,283
+texte « − » [coupé] @ 174,320
+texte « + » [coupé] @ 345,320
+texte « Ritimde %50 » [coupé] @ 451,352
+bouton « Akorlar » [coupé] @ 116,356
+bouton « Hayalet bas » [coupé, sélectionné] @ 297,356
+texte « Bas Aşama 5/15 · Tamam · Kolay » @ 176,434
+icône (liste) « Aşamalar » @ 389,435
+icône ⌄ @ 483,435
+image (coupe) @ 57,587
+texte « Bravo, bölüm bitti! » @ 215,550
+texte « Şarkını şimdiki haliyle dinle, sonra bir sonraki bölüme geç: “Pad”. » @ 295,607
+bouton « Sonraki bölüm   » → @ 270,703
+bouton ▶ «  Şarkımı dinle » @ 142,787
+bouton ▶ «  Örneği dinle » @ 397,787
+icône ← «  Önceki » @ 105,868
+icône ↶ « Geri al » @ 64,953
+image ↷ @ 164,940
+bouton ▶ « şarkı » @ 264,953
+texte « 140 Tempo » @ 370,953
+icône ⋮ « Diğer » @ 476,953
+onglet (lignes et note) « Şarkım » @ 49,1050
+onglet (quatre carrés) « Ritim » @ 160,1050
+onglet (touches de piano) « Klavye » [sélectionné] @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

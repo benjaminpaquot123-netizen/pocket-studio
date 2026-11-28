@@ -1,0 +1,43 @@
+Écran 95 (588x1278)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « Pro » @ 236,42
+icône ↶ @ 311,42
+bouton ● @ 383,42
+bouton ▶ « bagian ini » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 175  BPM » @ 83,123
+icône « Drop birama 33/144 » ▾ @ 290,123
+bouton (flèches en boucle) [état « mati »] @ 462,123
+bouton « ? » @ 543,123
+image (courbe) @ 0,0
+texte « Disimpan di Music › BenStudio: Laguku-lagu-klub-20261119-075420.wav » @ 294,198
+texte « ✓ Siap dibagikan » @ 159,266
+texte « Durasi: 3 mnt 17 dtk » @ 160,308
+texte « Level: tepat di target (Klub) » @ 205,347
+texte « Puncak: di bawah batas, tidak clipping » @ 271,386
+texte « WAV, 48 kHz, 24-bit » @ 163,425
+texte « −8,0 LUFS terintegrasi · puncak −3,2 dBTP » [coupé] @ 272,471
+bouton « ? » [coupé] @ 524,478
+texte « Ekspor lagumu Bab 14/14 · Langkah 2/2 · Pro » @ 222,537
+icône (liste) « Bab » @ 459,538
+icône ⌄ @ 531,538
+image (coupe) @ 57,690
+texte « Bagus, berhasil! » @ 201,635
+texte « Dengarkan hasilmu, lalu sentuh “Langkah berikutnya” kapan saja kamu siap. » @ 319,710
+bouton « Langkah berikutnya   » → @ 294,892
+icône ← @ 57,976
+bouton ▶ «  Dengar hasilmu » @ 334,976
+icône ↶ « Urungkan » @ 79,1061
+icône ↷ « Ulangi » [désactivé] @ 194,1061
+bouton ▶ « lagu » @ 297,1061
+texte « 175 Tempo » @ 405,1061
+icône (trois points reliés) « Bagikan » @ 518,1061
+onglet (ligne brisée et points) « Struktur » @ 54,1158
+onglet (touches de piano) « Suara » @ 174,1158
+onglet (curseurs) « Mix » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Lainnya » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Catat » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode masukan » @ 162,1248

@@ -1,0 +1,10 @@
+lang=es
+device=tablet8
+font=200
+mode=simple
+amenee=tuto:lofi:6
+gestes.max=150
+mission=tuto-facile
+profil=débutant motivé
+niveau=1
+timeout.minutes=30

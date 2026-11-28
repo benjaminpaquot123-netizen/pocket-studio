@@ -1,0 +1,6 @@
+Écran 74 (1035x1243)
+texte « Preparo il tuo brano… » @ 334,484
+texte « Creazione del suono, poi compressione in M4A. » @ 452,555
+texte «   29% » @ 861,608
+texte « Poi scegli l'app per inviarlo. » @ 298,659
+texte « Annulla » @ 831,749

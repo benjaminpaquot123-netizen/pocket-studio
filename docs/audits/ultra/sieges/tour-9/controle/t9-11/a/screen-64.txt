@@ -1,0 +1,63 @@
+Écran 64 (900x1509)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 284,42
+bouton « Simple » @ 612,42
+bouton ● @ 701,42
+bouton ■ « this part » @ 778,42
+icône ⋮ @ 855,42
+icône (flèches en boucle) « A bar 1/2 » [désactivé] @ 349,144
+bouton « 112  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Part: A » ▾ @ 99,240
+texte « Bar » @ 73,312
+bouton « 1 » [sélectionné] @ 150,312
+bouton « 2 » @ 231,312
+bouton « Follow » @ 363,312
+texte « Bar 1/2 · Maracas » @ 215,400
+texte « Bar 2 · 4 cells → » @ 680,400
+bouton « 1 » [état « empty »] @ 90,489
+bouton [état « empty »] @ 192,489
+bouton [état « empty »] @ 294,489
+bouton [état « empty »] @ 397,489
+bouton « 2 » [état « hit, strength 100 % »] @ 500,489
+bouton [état « empty »] @ 603,489
+bouton [état « empty »] @ 706,489
+bouton [état « hit, strength 100 % »] @ 809,489
+bouton « 3 » [état « empty »] @ 90,570
+bouton [état « empty »] @ 192,570
+bouton [état « hit, strength 100 % »] @ 294,570
+bouton [état « empty »] @ 397,570
+bouton « 4 » [état « hit, strength 100 % »] @ 500,570
+bouton [état « empty »] @ 603,570
+bouton [état « empty »] @ 706,570
+bouton [état « empty »] @ 809,570
+texte « all » @ 132,656
+texte « 1/2 » @ 211,656
+texte « 1/4 » @ 296,656
+texte « ◀ » @ 377,656
+texte « ▶ » @ 452,656
+texte « Clear » @ 554,656
+texte « Fill » @ 67,656
+texte « Tap a cell to add a hit, slide your finger to paint several. Long press on a hit: strength and rolls (×2 to ×8). » @ 450,782
+texte « Length » @ 106,908
+bouton « 1 bar » @ 248,908
+bouton « 2 » [sélectionné] @ 362,908
+bouton « 3 » @ 445,908
+bouton « 4 » @ 528,908
+texte « The percussion Chapter 2/12 · Step 6/7 · Easy » @ 357,1009
+icône (liste) « Chapters » @ 750,1009
+icône ⌃ @ 843,1009
+icône « Your turn: on the “Conga” pad, tap the 8 dotted cells: the clave. Read » ⌃ @ 450,1152
+icône ↶ « Undo » @ 109,1277
+image ↷ @ 258,1257
+icône ■ « the song » @ 436,1278
+texte « 112 Tempo » @ 629,1277
+icône ⋮ « More » @ 793,1277
+onglet (lignes et note) « My song » @ 85,1389
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 268,1389
+onglet (touches de piano) « Keyboard » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Share » @ 815,1389
+texte « ●  REC » @ 637,1479
+texte « ✎  Note » @ 754,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 297,1479

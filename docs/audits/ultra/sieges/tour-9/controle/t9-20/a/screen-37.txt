@@ -1,0 +1,33 @@
+Écran 37 (588x1278)
+icône (dossier ouvert) ✓ @ 127,42
+bouton « Einfach » @ 297,42
+bouton ● @ 385,42
+bouton ▶ « dieser Teil » @ 464,42
+icône ⋮ @ 543,42
+bouton « 116  Tempo » @ 136,144
+bouton « ? » @ 543,144
+texte « Die Teile verstehen Kapitel 7/13 · Schritt 2/3 · Einfach » @ 208,237
+icône (liste) « Kapitel » @ 445,237
+icône ⌄ @ 531,237
+texte « Hör dir den Drop an, den Refrain: Die Streicher und das Tamburin kommen dazu. » [coupé] @ 294,438
+bouton « Kit Disco / Funk laden (2 MB) » @ 236,590
+texte « Später » @ 503,590
+texte « ▸ Warum? » @ 294,669
+icône « Weiterlesen » ⌄ @ 294,732
+bouton ▶ «  Beispiel anhören » @ 294,828
+icône ← «  Zurück » @ 125,917
+icône « Weiter  » → @ 467,917
+texte « 116 Tempo » @ 422,1020
+icône ↶ « Rückgängig » @ 56,1021
+image ↷ @ 152,1013
+icône ▶ « der Song » @ 280,1021
+icône ⋮ « Mehr » @ 533,1020
+onglet (lignes et note) « Mein Song » [sélectionné] @ 54,1145
+onglet (quatre carrés) « Rhythmus » @ 174,1145
+onglet (touches de piano) « Tastatur » @ 294,1145
+onglet (curseurs) « Mix » @ 414,1145
+onglet (trois points reliés) « Teilen » @ 534,1145
+texte « ●  REC » @ 272,1248
+texte « ✎  Notieren » @ 416,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback-Modus » @ 114,1248

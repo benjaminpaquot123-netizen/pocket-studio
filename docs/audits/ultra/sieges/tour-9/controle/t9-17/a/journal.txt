@@ -1,0 +1,952 @@
+#0 SIEGE lang=pt-BR device=phone360 font=200 mode=pro theme=- fresh=non gestes.max=181 lit=oui main=both amenee=tuto:detroit:1
+#0 PREMIER ECRAN reel_s=5.3 simule_s=2.4 jvm_s=11.6 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:detroit:1
+#0 AMENEE > touche 270 698 (launch_learn)
+#0 AMENEE > touche 270 1100 (mode_card_pro)
+#0 AMENEE > touche 270 760 (tuto_style_detroit)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE bbbc2b98e4 | project=p-72bede60 tuto=detroit/Pro active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Compartilhar » ellipsized (« … »)
+#1 LAYOUT CUT « Modo comentários » ellipsized (« … »)
+#1 LAYOUT OVERLAP « 120 » over « O tempo e a tonalidade » (54 x 7 dp)
+#1 LAYOUT OVERLAP « 120 » over « Capítulo 1/14 · Etapa 1/4 · Pro » (54 x 27 dp)
+#1 LAYOUT OVERLAP « O tempo e a tonalidade » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 34 dp)
+#1 LAYOUT OVERLAP « O tempo e a tonalidade » over the touchable « Andamento: 120 BPM Mudar o andamento » (132 x 15 dp)
+#1 LAYOUT OVERLAP « Capítulo 1/14 · Etapa 1/4 · Pro » over the touchable « Andamento: 120 BPM Mudar o andamento » (132 x 33 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 270 746
+#1 DOIGT tuto_listen «  Ouvir o exemplo »
+#2 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 2876317b8a | project=p-72bede60 tuto=detroit/Pro active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 404 835
+#2 DOIGT tuto_next « Próximo  »
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 1bbf44cf3b | project=p-72bede60 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CUT « Estrutura » drawn past its parent's edge (down, 19 dp shown of 28)
+#3 LAYOUT CUT « Sons » drawn past its parent's edge (down, 20 dp shown of 30)
+#3 LAYOUT CUT « Mix » drawn past its parent's edge (down, 20 dp shown of 30)
+#3 LAYOUT CUT « Live » drawn past its parent's edge (down, 20 dp shown of 30)
+#3 LAYOUT CUT « Mais » drawn past its parent's edge (down, 20 dp shown of 30)
+#3 LAYOUT OVERLAP « 120 » over « Capítulo 1/14 · Etapa 2/4 · Pro » (54 x 22 dp)
+#3 LAYOUT OVERLAP « O tempo e a tonalidade » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 22 dp)
+#3 LAYOUT OVERLAP « Capítulo 1/14 · Etapa 2/4 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 14 dp)
+#3 LAYOUT OVERLAP « Capítulo 1/14 · Etapa 2/4 · Pro » over the touchable « Andamento: 120 BPM Mudar o andamento » (132 x 29 dp)
+#3 LAYOUT OVERLAP « Capítulos » over the touchable « Tocar esta parte Tocar esta parte » (47 x 18 dp)
+#3 > touche 270 537
+#3 DOIGT tuto_text_more « Continuar lendo »
+#4 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c47b607664 | project=p-72bede60 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 376 995
+#4 DOIGT thumb_tempo « Andamento: 120 BPM »
+#5 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 6d304d26a7 | project=p-72bede60 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#5 LAYOUT CUT « ? » lines cut (taller than its box)
+#5 LAYOUT CUT « Fechar » a word split over two lines
+#5 LAYOUT OVERLAP « Andamento » over the touchable « Fechar planilha » (193 x 45 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Fechar planilha » (13 x 18 dp)
+#5 LAYOUT OVERLAP « Fechar » over the touchable « Fechar planilha » (77 x 75 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Fechar planilha » (96 x 61 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « Fechar planilha » (70 x 42 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « Fechar planilha » (36 x 34 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « Fechar planilha » (36 x 34 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Fechar planilha » (54 x 34 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « Fechar planilha » (54 x 34 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « Fechar planilha » (54 x 34 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « Fechar planilha » (25 x 42 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « Fechar planilha » (36 x 42 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « Fechar planilha » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « Fechar planilha » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « Fechar planilha » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « Fechar planilha » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « Fechar planilha » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « Fechar planilha » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « Fechar planilha » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « Fechar planilha » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « Fechar planilha » (23 x 43 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « Fechar planilha » (23 x 43 dp)
+#5 LAYOUT OVERLAP « OK » over the touchable « Fechar planilha » (51 x 43 dp)
+#5 LAYOUT OVERLAP « Bater no ritmo » over the touchable « Fechar planilha » (193 x 42 dp)
+#5 LAYOUT OVERLAP « Toque aqui a cada tempo: o andamento acompanha. » over the touchable « Fechar planilha » (244 x 104 dp)
+#5 LAYOUT CONTRAST « ? » 1.60:1 (needs 3.0:1, 16 sp)
+#5 > touche 103 609
+#5 DOIGT tempo_key_1 « 1 »
+#6 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 36ba26ac38 | project=p-72bede60 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 1 » over the touchable « Fechar planilha » (32 x 61 dp)
+#6 LAYOUT OVERLAP « Entre 40 e 300 » over the touchable « Fechar planilha » (185 x 37 dp)
+#6 > touche 270 609
+#6 DOIGT tempo_key_2 « 2 »
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 1e97b2cffb | project=p-72bede60 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 12 » over the touchable « Fechar planilha » (64 x 61 dp)
+#7 > touche 437 696
+#7 DOIGT tempo_key_6 « 6 »
+#8 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE e65967bbdd | project=p-72bede60 tuto=detroit/Pro active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 126 » over the touchable « Fechar planilha » (96 x 61 dp)
+#8 > touche 437 870
+#8 DOIGT tempo_key_ok « OK »
+#9 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE fc3e510bcd | project=p-72bede60 tuto=detroit/Pro active=true step=tempo done=2 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 126 » over « Capítulo 1/14 · Etapa 2/4 · Pro » (54 x 22 dp)
+#9 LAYOUT OVERLAP « Capítulo 1/14 · Etapa 2/4 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 29 dp)
+#9 > touche 270 809
+#9 DOIGT tuto_next_big « Próxima etapa   »
+#10 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e8ba525905 | project=p-72bede60 tuto=detroit/Pro active=true step=key done=2 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 126 » over « Capítulo 1/14 · Etapa 3/4 · Pro » (54 x 22 dp)
+#10 LAYOUT OVERLAP « Capítulo 1/14 · Etapa 3/4 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 14 dp)
+#10 LAYOUT OVERLAP « Capítulo 1/14 · Etapa 3/4 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 29 dp)
+#10 > touche 270 664
+#10 DOIGT tuto_do «   Eu faço »
+#11 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 4c6badacea | project=p-72bede60 tuto=detroit/Pro active=true step=key done=2 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « Tonalidade da música » over the touchable « Fechar planilha » (183 x 89 dp)
+#11 LAYOUT OVERLAP « Fechar » over the touchable « Fechar planilha » (87 x 37 dp)
+#11 LAYOUT OVERLAP « Tom da música: nenhuma » over the touchable « Fechar planilha » (314 x 37 dp)
+#11 LAYOUT OVERLAP « Escala » over the touchable « Fechar planilha » (82 x 37 dp)
+#11 LAYOUT OVERLAP « Maior » over the touchable « Fechar planilha » (75 x 42 dp)
+#11 LAYOUT OVERLAP « Menor » over the touchable « Fechar planilha » (85 x 42 dp)
+#11 LAYOUT OVERLAP « Dórico » over the touchable « Fechar planilha » (90 x 42 dp)
+#11 LAYOUT OVERLAP « Penta menor » over the touchable « Fechar planilha » (169 x 42 dp)
+#11 LAYOUT OVERLAP « Penta maior » over the touchable « Fechar planilha » (159 x 42 dp)
+#11 LAYOUT OVERLAP « Blues » over the touchable « Fechar planilha » (72 x 42 dp)
+#11 LAYOUT OVERLAP « Frígio » over the touchable « Fechar planilha » (74 x 42 dp)
+#11 LAYOUT OVERLAP « Menor harmônica » over the touchable « Fechar planilha » (234 x 42 dp)
+#11 LAYOUT OVERLAP « Tônica » over the touchable « Fechar planilha » (84 x 37 dp)
+#11 LAYOUT OVERLAP « Dó » over the touchable « Fechar planilha » (37 x 42 dp)
+#11 LAYOUT OVERLAP « Dó♯ » over the touchable « Fechar planilha » (52 x 42 dp)
+#11 LAYOUT OVERLAP « Ré » over the touchable « Fechar planilha » (34 x 42 dp)
+#11 LAYOUT OVERLAP « Mi♭ » over the touchable « Fechar planilha » (42 x 42 dp)
+#11 LAYOUT OVERLAP « Mi » over the touchable « Fechar planilha » (32 x 42 dp)
+#11 LAYOUT OVERLAP « Fá » over the touchable « Fechar planilha » (32 x 42 dp)
+#11 LAYOUT OVERLAP « Fá♯ » over the touchable « Fechar planilha » (47 x 42 dp)
+#11 LAYOUT OVERLAP « Sol » over the touchable « Fechar planilha » (41 x 42 dp)
+#11 LAYOUT OVERLAP « Lá♭ » over the touchable « Fechar planilha » (42 x 42 dp)
+#11 LAYOUT OVERLAP « Lá » over the touchable « Fechar planilha » (32 x 42 dp)
+#11 LAYOUT OVERLAP « Si♭ » over the touchable « Fechar planilha » (35 x 42 dp)
+#11 LAYOUT OVERLAP « Si » over the touchable « Fechar planilha » (25 x 42 dp)
+#11 > touche 110 535
+#11 DOIGT tuto_scale_Dorian « Dórico »
+#12 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 78d871bfd8 | project=p-72bede60 tuto=detroit/Pro active=true step=key done=2 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « Tom da música: Dó · Dórico » over the touchable « Fechar planilha » (249 x 75 dp)
+#12 > touche 174 1098
+#12 DOIGT tuto_root_9 « Lá »
+#13 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 1292d541fa | project=p-72bede60 tuto=detroit/Pro active=true step=key done=3 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « Tom da música: Lá · Dórico » over the touchable « Fechar planilha » (244 x 75 dp)
+#13 LAYOUT OVERLAP « Conseguiu! A cor da música está escolhida. » over the touchable « Fechar planilha » (237 x 5 dp)
+#13 > touche 432 139
+#13 DOIGT tuto_key_close « Fechar »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 5c411ae8c5 | project=p-72bede60 tuto=detroit/Pro active=true step=key done=3 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « A » ellipsized (« … »)
+#14 > touche 270 813
+#14 DOIGT tuto_next_folded « Feito »
+#15 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 432be2958c | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 126 » over « Capítulo 1/14 · Etapa 4/4 · Pro » (54 x 22 dp)
+#15 LAYOUT OVERLAP « Capítulo 1/14 · Etapa 4/4 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 14 dp)
+#15 LAYOUT OVERLAP « Capítulo 1/14 · Etapa 4/4 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 29 dp)
+#15 > touche 270 664
+#15 DOIGT tuto_do «   Eu faço »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE f1fef5464f | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CUT « Contagem » a word split over two lines
+#16 LAYOUT CUT « Sua vez: coloque o swing em uns 20%: os hi-hats pequenos se arrastam um pouco, como se tocados por um humano. » ellipsized (« … »)
+#16 > glisse 270 470 270 250
+#16 DOIGT rien
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 74740c41a9 | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 483 616
+#17 DOIGT tuto_fold
+#18 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 432be2958c | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 397 778
+#18 DOIGT tuto_show «  Mostre-me »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE 3c3f38ed13 | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Contagem » 3.86:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Parar » 3.91:1 (needs 4.5:1, 14 sp)
+#19 > attends 4
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE f40f227ad9 | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 103 495
+#20 DOIGT rien (texte « Swing »)
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE f40f227ad9 | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#21 SON Son : rien ne joue.
+#21 > glisse 270 495 270 455
+#21 DOIGT rien
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 115af6437d | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#22 SON Son : rien ne joue.
+#22 > glisse 270 495 270 380
+#22 DOIGT rien
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE d6b792f44a | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 125 487
+#23 DOIGT dans:rhythm_swing « Swing »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE d6b792f44a | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=3 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 155 487
+#24 DOIGT dans:rhythm_swing « Swing »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 8a9bfb937f | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=4 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 270 813
+#25 DOIGT tuto_chapter_end_folded « Muito bem, capítulo concluído! »
+#26 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 3027c7fd4a | project=p-72bede60 tuto=detroit/Pro active=true step=swing done=4 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT OVERLAP « 126 » over « O tempo e a tonalidade » (54 x 17 dp)
+#26 LAYOUT OVERLAP « O tempo e a tonalidade » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 24 dp)
+#26 > touche 270 752
+#26 DOIGT tuto_next_big « Próximo capítulo   »
+#27 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e6cec756d8 | project=p-72bede60 tuto=detroit/Pro active=true step=ready done=4 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT OVERLAP « 126 » over « A bateria » (54 x 7 dp)
+#27 LAYOUT OVERLAP « 126 » over « Capítulo 2/14 · Etapa 1/8 · Pro » (54 x 27 dp)
+#27 LAYOUT OVERLAP « A bateria » over the touchable « Andamento: 126 BPM Mudar o andamento » (115 x 15 dp)
+#27 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 1/8 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 33 dp)
+#27 LAYOUT CONTRAST « esta parte » 3.64:1 (needs 4.5:1, 6 sp)
+#27 > touche 270 746
+#27 DOIGT tuto_mark «   Entendi »
+#28 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE a9f81042fb | project=p-72bede60 tuto=detroit/Pro active=true step=kick_do done=5 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT OVERLAP « 126 » over « Capítulo 2/14 · Etapa 2/8 · Pro » (54 x 20 dp)
+#28 LAYOUT OVERLAP « A bateria » over the touchable « Parte atual: A. Toque para trocar de par » (31 x 20 dp)
+#28 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 2/8 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 16 dp)
+#28 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 2/8 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 27 dp)
+#28 LAYOUT OVERLAP « Capítulos » over the touchable « Tocar esta parte Tocar esta parte » (47 x 5 dp)
+#28 > touche 270 607
+#28 DOIGT tuto_do «   Eu faço »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 49940885af | project=p-72bede60 tuto=detroit/Pro active=true step=kick_do done=5 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 12 sp)
+#29 LAYOUT CONTRAST « 2 » 4.16:1 (needs 4.5:1, 12 sp)
+#29 > touche 67 495
+#29 DOIGT step_0 « Passo 1 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE a66ecbebd4 | project=p-72bede60 tuto=detroit/Pro active=true step=kick_do done=5 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « 2 » 2.63:1 (needs 4.5:1, 12 sp)
+#30 > touche 298 496
+#30 DOIGT step_4 « Passo 5 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE 586ff0ec8d | project=p-72bede60 tuto=detroit/Pro active=true step=kick_do done=5 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 67 543
+#31 DOIGT step_8 « Passo 9 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE 4d5c775d91 | project=p-72bede60 tuto=detroit/Pro active=true step=kick_do done=5 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 298 543
+#32 DOIGT step_12 « Passo 13 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE fee09cd9c3 | project=p-72bede60 tuto=detroit/Pro active=true step=kick_do done=6 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « 1 » 2.60:1 (needs 4.5:1, 12 sp)
+#33 > touche 270 813
+#33 DOIGT tuto_next_folded « Feito »
+#34 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 70fd8e35bb | project=p-72bede60 tuto=detroit/Pro active=true step=snare_do done=6 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT OVERLAP « 126 » over « Capítulo 2/14 · Etapa 3/8 · Pro » (54 x 20 dp)
+#34 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 3/8 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 16 dp)
+#34 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 3/8 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 27 dp)
+#34 > touche 270 607
+#34 DOIGT tuto_do «   Eu faço »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE c778fc54e6 | project=p-72bede60 tuto=detroit/Pro active=true step=snare_do done=6 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « 2 » 2.32:1 (needs 4.5:1, 12 sp)
+#35 > touche 298 496
+#35 DOIGT step_4 « Passo 5 »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE a933278ae4 | project=p-72bede60 tuto=detroit/Pro active=true step=snare_do done=6 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 298 543
+#36 DOIGT step_12 « Passo 13 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE f30c9cfeb6 | project=p-72bede60 tuto=detroit/Pro active=true step=snare_do done=7 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « 1 » 2.27:1 (needs 4.5:1, 12 sp)
+#37 > touche 270 813
+#37 DOIGT tuto_next_folded « Feito »
+#38 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE fc1ce3f437 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT OVERLAP « 126 » over « Capítulo 2/14 · Etapa 4/8 · Pro » (54 x 20 dp)
+#38 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 4/8 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 16 dp)
+#38 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 4/8 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 27 dp)
+#38 > touche 270 607
+#38 DOIGT tuto_do «   Eu faço »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 85ec9a145c | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CUT « Sua vez: os hi-hats juntinhos, com duas intensidades (um a cada dois mais suave). » ellipsized (« … »)
+#39 LAYOUT CONTRAST « 1 » 2.55:1 (needs 4.5:1, 12 sp)
+#39 LAYOUT CONTRAST « 2 » 3.71:1 (needs 4.5:1, 12 sp)
+#39 > touche 67 495
+#39 DOIGT step_0 « Passo 1 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE d6ab70c2f3 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 124 477
+#40 DOIGT step_1 « Passo 2 »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 84df7905d7 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 240 477
+#41 DOIGT step_3 « Passo 4 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 72d107d34c | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#42 > touche 298 477
+#42 DOIGT step_4 « Passo 5 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE 432112b8ea | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 356 477
+#43 DOIGT step_5 « Passo 6 »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 6bdfd56299 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 472 477
+#44 DOIGT step_7 « Passo 8 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 90df9bbb56 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 67 525
+#45 DOIGT step_0 « Passo 1 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 16c19b4942 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « 1 » 3.20:1 (needs 4.5:1, 12 sp)
+#46 > touche 124 525
+#46 DOIGT step_1 « Passo 2 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE 69afb5e448 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « 1 » 3.01:1 (needs 4.5:1, 12 sp)
+#47 > touche 240 525
+#47 DOIGT step_3 « Passo 4 »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE fe89b3c4a3 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#48 > touche 298 525
+#48 DOIGT step_4 « Passo 5 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE 6f78b9c4a2 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 356 525
+#49 DOIGT step_5 « Passo 6 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE 418fdca1e1 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 472 525
+#50 DOIGT step_7 « Passo 8 »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE 85ec9a145c | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 67 495
+#51 DOIGT step_0 « Passo 1 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE d6ab70c2f3 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 124 495
+#52 DOIGT step_1 « Passo 2 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 84df7905d7 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 240 495
+#53 DOIGT step_3 « Passo 4 »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 72d107d34c | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 298 495
+#54 DOIGT step_4 « Passo 5 »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE 432112b8ea | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 356 495
+#55 DOIGT step_5 « Passo 6 »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE 6bdfd56299 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 472 495
+#56 DOIGT step_7 « Passo 8 »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 90df9bbb56 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 67 543
+#57 DOIGT step_8 « Passo 9 »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE 34b9b3b4d1 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 124 543
+#58 DOIGT step_9 « Passo 10 »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE 5dd62e8f3f | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 240 543
+#59 DOIGT step_11 « Passo 12 »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE d1279b1782 | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 298 543
+#60 DOIGT step_12 « Passo 13 »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE 88714c382f | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 356 543
+#61 DOIGT step_13 « Passo 14 »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE 08bfdd9aaa | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=7 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 472 543
+#62 DOIGT step_15 « Passo 16 »
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 407484b8ef | project=p-72bede60 tuto=detroit/Pro active=true step=hat_do done=8 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 270 813
+#63 DOIGT tuto_next_folded « Feito »
+#64 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 8aca65e9d6 | project=p-72bede60 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT OVERLAP « 126 » over « Capítulo 2/14 · Etapa 5/8 · Pro » (54 x 20 dp)
+#64 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 5/8 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 16 dp)
+#64 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 5/8 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 27 dp)
+#64 > touche 270 607
+#64 DOIGT tuto_do «   Eu faço »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE dea333cd37 | project=p-72bede60 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CUT « Faltam 4 casas pontilhadas aqui » ellipsized (« … »)
+#65 LAYOUT CUT « Sua vez: coloque o hi-hat aberto nos contratempos. » ellipsized (« … »)
+#65 LAYOUT CONTRAST « Faltam 4 casas pontilhadas aqui » 2.41:1 (needs 3.0:1, 14 sp)
+#65 > touche 182 495
+#65 DOIGT rien (texte « Faltam 4 casas pontilhadas aqui »)
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE dea333cd37 | project=p-72bede60 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 414 495
+#66 DOIGT rien (texte « Faltam 4 casas pontilhadas aqui »)
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE dea333cd37 | project=p-72bede60 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#67 SON Son : rien ne joue.
+#67 RIEN NE CHANGE (3 écrans identiques)
+#67 > touche 182 543
+#67 DOIGT step_2 « Passo 3 »
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE ebb7e10999 | project=p-72bede60 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CUT « Faltam 3 casas pontilhadas aqui » ellipsized (« … »)
+#68 LAYOUT CONTRAST « Faltam 3 casas pontilhadas aqui » 2.41:1 (needs 3.0:1, 14 sp)
+#68 > touche 414 530
+#68 DOIGT step_6 « Passo 7 »
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 627e0b693b | project=p-72bede60 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CUT « Faltam 2 casas pontilhadas aqui » ellipsized (« … »)
+#69 LAYOUT CONTRAST « Faltam 2 casas pontilhadas aqui » 2.41:1 (needs 3.0:1, 14 sp)
+#69 > glisse 270 540 270 470
+#69 DOIGT rien
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE 78d2efc2a2 | project=p-72bede60 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 182 543
+#70 DOIGT step_10 « Passo 11 »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE 3cbedbe42f | project=p-72bede60 tuto=detroit/Pro active=true step=open_hat_do done=8 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 414 543
+#71 DOIGT step_14 « Passo 15 »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE b81e6b188a | project=p-72bede60 tuto=detroit/Pro active=true step=open_hat_do done=9 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « 1 » 2.24:1 (needs 4.5:1, 12 sp)
+#72 LAYOUT CONTRAST « 2 » 2.66:1 (needs 4.5:1, 12 sp)
+#72 > touche 270 813
+#72 DOIGT tuto_next_folded « Feito »
+#73 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 03a9566891 | project=p-72bede60 tuto=detroit/Pro active=true step=perc_do done=9 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT OVERLAP « 126 » over « Capítulo 2/14 · Etapa 6/8 · Pro » (54 x 20 dp)
+#73 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 6/8 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 16 dp)
+#73 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 6/8 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 27 dp)
+#73 > touche 270 607
+#73 DOIGT tuto_do «   Eu faço »
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 901742131c | project=p-72bede60 tuto=detroit/Pro active=true step=perc_do done=9 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT CUT « Sua vez: o rim, respondendo ao kick: é ele que deixa o groove funky. » ellipsized (« … »)
+#74 > touche 182 496
+#74 DOIGT step_2 « Passo 3 »
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE c5ce5d5df0 | project=p-72bede60 tuto=detroit/Pro active=true step=perc_do done=9 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 356 496
+#75 DOIGT step_5 « Passo 6 »
+#76 ROUTE tab_Sons | MODE pro | EMPREINTE 0d7adf1f0e | project=p-72bede60 tuto=detroit/Pro active=true step=perc_do done=9 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 472 496
+#76 DOIGT step_7 « Passo 8 »
+#77 ROUTE tab_Sons | MODE pro | EMPREINTE c47db15c28 | project=p-72bede60 tuto=detroit/Pro active=true step=perc_do done=9 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 182 543
+#77 DOIGT step_10 « Passo 11 »
+#78 ROUTE tab_Sons | MODE pro | EMPREINTE e6264dd4c2 | project=p-72bede60 tuto=detroit/Pro active=true step=perc_do done=9 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 356 543
+#78 DOIGT step_13 « Passo 14 »
+#79 ROUTE tab_Sons | MODE pro | EMPREINTE a5d31ceb91 | project=p-72bede60 tuto=detroit/Pro active=true step=perc_do done=9 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 472 543
+#79 DOIGT step_15 « Passo 16 »
+#80 ROUTE tab_Sons | MODE pro | EMPREINTE fe39898dd1 | project=p-72bede60 tuto=detroit/Pro active=true step=perc_do done=10 playing=false
+#80 SON Son : rien ne joue.
+#80 LAYOUT CONTRAST « 1 » 2.20:1 (needs 4.5:1, 12 sp)
+#80 LAYOUT CONTRAST « 2 » 2.62:1 (needs 4.5:1, 12 sp)
+#80 > touche 270 813
+#80 DOIGT tuto_next_folded « Feito »
+#81 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 983a21590c | project=p-72bede60 tuto=detroit/Pro active=true step=ride_do done=10 playing=false
+#81 SON Son : rien ne joue.
+#81 LAYOUT OVERLAP « 126 » over « Capítulo 2/14 · Etapa 7/8 · Pro » (54 x 20 dp)
+#81 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 7/8 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 16 dp)
+#81 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 7/8 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 27 dp)
+#81 > touche 270 607
+#81 DOIGT tuto_do «   Eu faço »
+#82 ROUTE tab_Sons | MODE pro | EMPREINTE a79b641077 | project=p-72bede60 tuto=detroit/Pro active=true step=ride_do done=10 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT CUT « Sua vez: a ride no 1 e no 3, para o Drop (Strings of Life: “a ride no ritmo do kick”). » ellipsized (« … »)
+#82 > touche 67 518
+#82 DOIGT step_0 « Passo 1 »
+#83 ROUTE tab_Sons | MODE pro | EMPREINTE ea10c88aae | project=p-72bede60 tuto=detroit/Pro active=true step=ride_do done=10 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT CUT « Falta 1 casa pontilhada aqui » ellipsized (« … »)
+#83 > glisse 270 530 270 460
+#83 DOIGT rien
+#84 ROUTE tab_Sons | MODE pro | EMPREINTE 96a2485074 | project=p-72bede60 tuto=detroit/Pro active=true step=ride_do done=10 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT CONTRAST « 3 » 2.72:1 (needs 4.5:1, 12 sp)
+#84 > touche 67 531
+#84 DOIGT step_8 « Passo 9 »
+#85 ROUTE tab_Sons | MODE pro | EMPREINTE b76adc945d | project=p-72bede60 tuto=detroit/Pro active=true step=ride_do done=11 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 270 813
+#85 DOIGT tuto_next_folded « Feito »
+#86 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c72234dca2 | project=p-72bede60 tuto=detroit/Pro active=true step=drums_hear done=11 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT OVERLAP « 126 » over « Capítulo 2/14 · Etapa 8/8 · Pro » (54 x 34 dp)
+#86 LAYOUT OVERLAP « A bateria » over the touchable « Parte atual: A. Toque para trocar de par » (31 x 16 dp)
+#86 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 8/8 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 48 dp)
+#86 > touche 270 663
+#86 DOIGT tuto_play_mine «   Ouvir seu resultado »
+#87 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 17185a7163 | project=p-72bede60 tuto=detroit/Pro active=true step=drums_hear done=11 playing=true
+#87 SON Son : la musique du projet joue en boucle.
+#87 LAYOUT OVERLAP « Capítulo 2/14 · Etapa 8/8 · Pro » over the touchable « Tocar a partir de uma parte » (37 x 62 dp)
+#87 LAYOUT OVERLAP « Capítulos » over the touchable « Tocar a partir de uma parte » (68 x 18 dp)
+#87 > attends 4
+#88 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 17185a7163 | project=p-72bede60 tuto=detroit/Pro active=true step=drums_hear done=11 playing=true
+#88 SON Son : la musique du projet joue en boucle.
+#88 > touche 270 749
+#88 DOIGT tuto_listen «  Ouvir o exemplo »
+#89 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d9c2200d4e | project=p-72bede60 tuto=detroit/Pro active=true step=drums_hear done=11 playing=false
+#89 SON Son : l'exemple du tuto joue (encore 3 s).
+#89 > attends 8
+#90 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE cf61d69708 | project=p-72bede60 tuto=detroit/Pro active=true step=drums_hear done=12 playing=false
+#90 SON Son : rien ne joue.
+#90 LAYOUT OVERLAP « 126 » over « Capítulo 2/14 · Feito · Pro » (54 x 34 dp)
+#90 LAYOUT OVERLAP « Capítulo 2/14 · Feito · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 48 dp)
+#90 > touche 270 607
+#90 DOIGT tuto_next_big « Próximo capítulo   »
+#91 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE cfff4d35f4 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_hear done=12 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT OVERLAP « 126 » over « Os acordes » (54 x 7 dp)
+#91 LAYOUT OVERLAP « 126 » over « Capítulo 3/14 · Etapa 1/2 · Pro » (54 x 27 dp)
+#91 LAYOUT OVERLAP « Os acordes » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 15 dp)
+#91 LAYOUT OVERLAP « Capítulo 3/14 · Etapa 1/2 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 33 dp)
+#91 > touche 270 746
+#91 DOIGT tuto_listen «  Ouvir o exemplo »
+#92 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 56831d26e4 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_hear done=12 playing=false
+#92 SON Son : l'exemple du tuto joue (encore 3 s).
+#92 > attends 8
+#93 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE a726f1a8dc | project=p-72bede60 tuto=detroit/Pro active=true step=pad_hear done=13 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 404 835
+#93 DOIGT tuto_next « Próximo  »
+#94 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ffac3739d0 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT OVERLAP « 126 » over « Sua vez: crie a faixa Acordes (som “String machine”). Compasso 1: Lám7 fechado (Lá Dó Mi Sol); compasso 2: Ré7 com condução de vozes (Lá Dó Ré Fá♯): só duas notas se mexem. “Copiar nos próximos compassos”. » (54 x 31 dp)
+#94 LAYOUT OVERLAP « Capítulo 3/14 · Etapa 2/2 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 36 dp)
+#94 LAYOUT OVERLAP « Sua vez: crie a faixa Acordes (som “String machine”). Compasso 1: Lám7 fechado (Lá Dó Mi Sol); compasso 2: Ré7 com condução de vozes (Lá Dó Ré Fá♯): só duas notas se mexem. “Copiar nos próximos compassos”. » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 38 dp)
+#94 LAYOUT OVERLAP « Sua vez: crie a faixa Acordes (som “String machine”). Compasso 1: Lám7 fechado (Lá Dó Mi Sol); compasso 2: Ré7 com condução de vozes (Lá Dó Ré Fá♯): só duas notas se mexem. “Copiar nos próximos compassos”. » over the touchable « Identificar a tela » (32 x 38 dp)
+#94 > touche 270 636
+#94 DOIGT tuto_need «   Criar a faixa Acordes »
+#95 ROUTE tab_Sons | MODE pro | EMPREINTE 15b1cd6418 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#95 SON Son : rien ne joue.
+#95 LAYOUT CUT « String machine » ellipsized (« … »)
+#95 LAYOUT CUT « Sua vez: crie a faixa Acordes (som “String machine”). Compasso 1: Lám7 fechado (Lá Dó Mi Sol); compasso 2: Ré7 com condução de vozes (Lá Dó Ré Fá♯): só duas notas se mexem. “Copiar nos próximos compassos”. » ellipsized (« … »)
+#95 > touche 146 511
+#95 DOIGT chord_mode « Acordes »
+#96 ROUTE tab_Sons | MODE pro | EMPREINTE 0b28d6f15e | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 146 511
+#96 DOIGT chord_mode « Acordes »
+#97 ROUTE tab_Sons | MODE pro | EMPREINTE 15b1cd6418 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 270 813
+#97 DOIGT tuto_folded_text « Sua vez: crie a faixa Acordes (som “Stri »
+#98 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE af4d875d97 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 270 608
+#98 DOIGT tuto_do «   Eu faço »
+#99 ROUTE tab_Sons | MODE pro | EMPREINTE 15b1cd6418 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#99 SON Son : rien ne joue.
+#99 > glisse 270 540 270 440
+#99 DOIGT rien
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE 020093ec01 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#100 SON Son : rien ne joue.
+#100 LAYOUT CUT « Acordes · compasso 1/4 » ellipsized (« … »)
+#100 LAYOUT CUT « Acordes pontilhados para tocar: 2 » ellipsized (« … »)
+#100 > glisse 270 540 270 440
+#100 DOIGT tuto_notes_left « Acordes · compasso 1/4 »
+#101 ROUTE tab_Sons | MODE pro | EMPREINTE b857f98d53 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT CUT « comp. » lines dropped (more lines than room)
+#101 > glisse 270 600 270 900
+#101 DOIGT tuto_toggle « Os acordes »
+#102 ROUTE tab_Sons | MODE pro | EMPREINTE b857f98d53 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 270 488
+#102 DOIGT tuto_notes_left « Acordes · compasso 1/4 »
+#103 ROUTE tab_Sons | MODE pro | EMPREINTE b857f98d53 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#103 SON Son : rien ne joue.
+#103 RIEN NE CHANGE (3 écrans identiques)
+#103 > glisse 270 545 270 150
+#103 DOIGT roll_bar_0 « 1 »
+#104 ROUTE tab_Sons | MODE pro | EMPREINTE afcc54f548 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#104 SON Son : rien ne joue.
+#104 LAYOUT TARGET « Fá3 Tocar » 36 x 20 dp (touch 48 x 48)
+#104 LAYOUT TARGET « Mi3 Tocar » 36 x 20 dp (touch 48 x 48)
+#104 LAYOUT TARGET « Ré♯3 Tocar » 36 x 20 dp (touch 48 x 48)
+#104 > touche 297 508
+#104 DOIGT rien
+#105 ROUTE tab_Sons | MODE pro | EMPREINTE afcc54f548 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 270 813
+#105 DOIGT tuto_folded_text « Sua vez: crie a faixa Acordes (som “Stri »
+#106 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE af4d875d97 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 397 722
+#106 DOIGT tuto_show «  Mostre-me »
+#107 ROUTE tab_Sons | MODE pro | EMPREINTE 90f22f087f | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#107 SON Son : rien ne joue.
+#107 > attends 6
+#108 ROUTE tab_Sons | MODE pro | EMPREINTE 0dd465539d | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#108 SON Son : 8 notes du synthé.
+#108 LAYOUT CUT « Pronto. Vou deixar como estava… » ellipsized (« … »)
+#108 > attends 3
+#109 ROUTE tab_Sons | MODE pro | EMPREINTE afcc54f548 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 150 508
+#109 DOIGT rien
+#110 ROUTE tab_Sons | MODE pro | EMPREINTE a181d0f728 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#110 SON Son : rien ne joue.
+#110 LAYOUT TARGET « Sol3 Tocar » 36 x 20 dp (touch 48 x 48)
+#110 LAYOUT TARGET « Fá♯3 Tocar » 36 x 20 dp (touch 48 x 48)
+#110 > touche 270 813
+#110 DOIGT tuto_folded_text « Sua vez: crie a faixa Acordes (som “Stri »
+#111 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE af4d875d97 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#111 SON Son : rien ne joue.
+#111 > touche 404 836
+#111 DOIGT tuto_next « Próximo  »
+#112 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ec3358fb79 | project=p-72bede60 tuto=detroit/Pro active=true step=pad_do done=13 playing=false
+#112 SON Son : rien ne joue.
+#112 LAYOUT OVERLAP « 126 » over « Sem cordas, falta a alma de Detroit. Toque de novo em “Próximo” para pular mesmo assim. » (54 x 31 dp)
+#112 LAYOUT OVERLAP « Sem cordas, falta a alma de Detroit. Toque de novo em “Próximo” para pular mesmo assim. » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 38 dp)
+#112 LAYOUT OVERLAP « Sem cordas, falta a alma de Detroit. Toque de novo em “Próximo” para pular mesmo assim. » over the touchable « Identificar a tela » (26 x 38 dp)
+#112 > touche 404 836
+#112 DOIGT tuto_next « Próximo  »
+#113 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 55e012465d | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#113 SON Son : rien ne joue.
+#113 LAYOUT OVERLAP « 126 » over « Sua vez: crie a faixa Baixo (som “Baixo redondo”): compasso 1 em Lá com os pulos de oitava, compasso 2 em Ré voltando para Lá, depois “Copiar nos próximos compassos”. » (54 x 31 dp)
+#113 LAYOUT OVERLAP « Capítulo 4/14 · Etapa 1/1 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 36 dp)
+#113 LAYOUT OVERLAP « Sua vez: crie a faixa Baixo (som “Baixo redondo”): compasso 1 em Lá com os pulos de oitava, compasso 2 em Ré voltando para Lá, depois “Copiar nos próximos compassos”. » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 38 dp)
+#113 LAYOUT OVERLAP « Sua vez: crie a faixa Baixo (som “Baixo redondo”): compasso 1 em Lá com os pulos de oitava, compasso 2 em Ré voltando para Lá, depois “Copiar nos próximos compassos”. » over the touchable « Identificar a tela » (15 x 38 dp)
+#113 > touche 270 608
+#113 DOIGT tuto_need «   Criar a faixa Baixo »
+#114 ROUTE tab_Sons | MODE pro | EMPREINTE d977e91a3d | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#114 SON Son : rien ne joue.
+#114 LAYOUT CUT « Baixo redondo » ellipsized (« … »)
+#114 LAYOUT CUT « Sua vez: crie a faixa Baixo (som “Baixo redondo”): compasso 1 em Lá com os pulos de oitava, compasso 2 em Ré voltando para Lá, depois “Copiar nos próximos compassos”. » ellipsized (« … »)
+#114 LAYOUT TARGET « Lá♯1 Tocar » 36 x 20 dp (touch 48 x 48)
+#114 LAYOUT TARGET « Lá1 Tocar » 36 x 20 dp (touch 48 x 48)
+#114 LAYOUT TARGET « Sol♯1 Tocar » 36 x 20 dp (touch 48 x 48)
+#114 > touche 120 478
+#114 DOIGT rien
+#115 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#115 SON Son : 1 note du synthé.
+#115 > touche 260 508
+#115 DOIGT rien
+#116 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#116 SON Son : 1 note du synthé.
+#116 > touche 322 508
+#116 DOIGT rien
+#117 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#117 SON Son : 1 note du synthé.
+#117 > touche 460 508
+#117 DOIGT rien
+#118 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#118 SON Son : 1 note du synthé.
+#118 > glisse 270 470 270 545
+#118 DOIGT rien
+#119 ROUTE tab_Sons | MODE pro | EMPREINTE 8d8e0638cf | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#119 SON Son : rien ne joue.
+#119 LAYOUT CUT « Dó2 » lines cut (taller than its box)
+#119 LAYOUT TARGET « Si1 Tocar » 36 x 20 dp (touch 48 x 48)
+#119 > touche 270 813
+#119 DOIGT tuto_folded_text « Sua vez: crie a faixa Baixo (som “Baixo  »
+#120 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f402d418b6 | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#120 SON Son : rien ne joue.
+#120 > touche 270 608
+#120 DOIGT tuto_do «   Eu faço »
+#121 ROUTE tab_Sons | MODE pro | EMPREINTE d977e91a3d | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#121 SON Son : rien ne joue.
+#121 LAYOUT TARGET « Lá♯2 Tocar » 36 x 20 dp (touch 48 x 48)
+#121 LAYOUT TARGET « Lá2 Tocar » 36 x 20 dp (touch 48 x 48)
+#121 LAYOUT TARGET « Sol♯2 Tocar » 36 x 20 dp (touch 48 x 48)
+#121 > touche 184 508
+#121 DOIGT rien
+#122 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#122 SON Son : 1 note du synthé.
+#122 > touche 384 508
+#122 DOIGT rien
+#123 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#123 SON Son : 1 note du synthé.
+#123 > touche 270 813
+#123 DOIGT tuto_folded_text « Sua vez: crie a faixa Baixo (som “Baixo  »
+#124 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f402d418b6 | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#124 SON Son : rien ne joue.
+#124 > touche 270 608
+#124 DOIGT tuto_do «   Eu faço »
+#125 ROUTE tab_Sons | MODE pro | EMPREINTE d977e91a3d | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#125 SON Son : rien ne joue.
+#125 LAYOUT TARGET « Ré♯2 Tocar » 36 x 20 dp (touch 48 x 48)
+#125 LAYOUT TARGET « Ré2 Tocar » 36 x 20 dp (touch 48 x 48)
+#125 LAYOUT TARGET « Dó♯2 Tocar » 36 x 20 dp (touch 48 x 48)
+#125 > touche 184 508
+#125 DOIGT rien
+#126 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#126 SON Son : 1 note du synthé.
+#126 > touche 270 813
+#126 DOIGT tuto_folded_text « Sua vez: crie a faixa Baixo (som “Baixo  »
+#127 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f402d418b6 | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#127 SON Son : rien ne joue.
+#127 > touche 270 608
+#127 DOIGT tuto_do «   Eu faço »
+#128 ROUTE tab_Sons | MODE pro | EMPREINTE d977e91a3d | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#128 SON Son : rien ne joue.
+#128 > touche 384 508
+#128 DOIGT rien
+#129 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#129 SON Son : 1 note du synthé.
+#129 > touche 270 813
+#129 DOIGT tuto_folded_text « Sua vez: crie a faixa Baixo (som “Baixo  »
+#130 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f402d418b6 | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#130 SON Son : rien ne joue.
+#130 > touche 270 608
+#130 DOIGT tuto_do «   Eu faço »
+#131 ROUTE tab_Sons | MODE pro | EMPREINTE d977e91a3d | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#131 SON Son : rien ne joue.
+#131 LAYOUT TARGET « Ré♯1 Tocar » 36 x 20 dp (touch 48 x 48)
+#131 LAYOUT TARGET « Ré1 Tocar » 36 x 20 dp (touch 48 x 48)
+#131 LAYOUT TARGET « Dó♯1 Tocar » 36 x 20 dp (touch 48 x 48)
+#131 > touche 260 508
+#131 DOIGT rien
+#132 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#132 SON Son : 1 note du synthé.
+#132 > touche 322 508
+#132 DOIGT rien
+#133 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#133 SON Son : 1 note du synthé.
+#133 > touche 460 508
+#133 DOIGT rien
+#134 ROUTE tab_Sons | MODE pro | EMPREINTE 8fe5f13dde | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#134 SON Son : 1 note du synthé.
+#134 > touche 120 508
+#134 DOIGT rien
+#135 ROUTE tab_Sons | MODE pro | EMPREINTE d85eef4ad6 | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=13 playing=false
+#135 SON Son : 1 note du synthé.
+#135 > touche 270 813
+#135 DOIGT tuto_need_folded « Copiar nos próximos compassos »
+#136 ROUTE tab_Sons | MODE pro | EMPREINTE da5ef6c08a | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=14 playing=false
+#136 SON Son : rien ne joue.
+#136 > touche 270 608
+#136 DOIGT tuto_toggle « O baixo »
+#137 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f884bdbbc7 | project=p-72bede60 tuto=detroit/Pro active=true step=bass_do done=14 playing=false
+#137 SON Son : rien ne joue.
+#137 LAYOUT OVERLAP « 126 » over « Muito bem, capítulo concluído! » (10 x 23 dp)
+#137 LAYOUT OVERLAP « Capítulo 4/14 · Feito · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 36 dp)
+#137 LAYOUT OVERLAP « Muito bem, capítulo concluído! » over the touchable « Andamento: 126 BPM Mudar o andamento » (86 x 30 dp)
+#137 LAYOUT OVERLAP « Muito bem, capítulo concluído! » over the touchable « Identificar a tela » (7 x 30 dp)
+#137 > touche 270 608
+#137 DOIGT tuto_next_big « Próximo capítulo   »
+#138 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE b45b626fe3 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#138 SON Son : rien ne joue.
+#138 LAYOUT OVERLAP « 126 » over « Sua vez: crie a faixa Melodia (som “Sino FM”): Lá Dó Lá, Mi Dó Lá, depois Lá Dó Lá e um Mi sustentado. “Copiar nos próximos compassos”. » (54 x 31 dp)
+#138 LAYOUT OVERLAP « Capítulo 5/14 · Etapa 1/1 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 36 dp)
+#138 LAYOUT OVERLAP « Sua vez: crie a faixa Melodia (som “Sino FM”): Lá Dó Lá, Mi Dó Lá, depois Lá Dó Lá e um Mi sustentado. “Copiar nos próximos compassos”. » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 38 dp)
+#138 > touche 270 636
+#138 DOIGT tuto_need «   Criar a faixa Melodia »
+#139 ROUTE tab_Sons | MODE pro | EMPREINTE 92673327ec | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#139 SON Son : rien ne joue.
+#139 LAYOUT CUT « Dó4 » lines cut (taller than its box)
+#139 LAYOUT CUT « Sua vez: crie a faixa Melodia (som “Sino FM”): Lá Dó Lá, Mi Dó Lá, depois Lá Dó Lá e um Mi sustentado. “Copiar nos próximos compassos”. » ellipsized (« … »)
+#139 LAYOUT TARGET « Dó♯4 Tocar » 36 x 20 dp (touch 48 x 48)
+#139 LAYOUT TARGET « Dó4 Dó4 Tocar » 36 x 20 dp (touch 48 x 48)
+#139 LAYOUT TARGET « Si3 Tocar » 36 x 20 dp (touch 48 x 48)
+#139 > touche 160 508
+#139 DOIGT rien
+#140 ROUTE tab_Sons | MODE pro | EMPREINTE 8da164c6b8 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#140 SON Son : 1 note du synthé.
+#140 > touche 360 508
+#140 DOIGT rien
+#141 ROUTE tab_Sons | MODE pro | EMPREINTE 8da164c6b8 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#141 SON Son : 1 note du synthé.
+#141 > touche 270 813
+#141 DOIGT tuto_folded_text « Sua vez: crie a faixa Melodia (som “Sino »
+#142 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ec9724b955 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#142 SON Son : rien ne joue.
+#142 > touche 270 608
+#142 DOIGT tuto_do «   Eu faço »
+#143 ROUTE tab_Sons | MODE pro | EMPREINTE 2eb1da2d9d | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#143 SON Son : rien ne joue.
+#143 LAYOUT TARGET « Lá♯3 Tocar » 36 x 20 dp (touch 48 x 48)
+#143 LAYOUT TARGET « Lá3 Tocar » 36 x 20 dp (touch 48 x 48)
+#143 LAYOUT TARGET « Sol♯3 Tocar » 36 x 20 dp (touch 48 x 48)
+#143 > touche 110 508
+#143 DOIGT rien
+#144 ROUTE tab_Sons | MODE pro | EMPREINTE 600cc0c943 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#144 SON Son : 1 note du synthé.
+#144 > touche 208 508
+#144 DOIGT rien
+#145 ROUTE tab_Sons | MODE pro | EMPREINTE 600cc0c943 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#145 SON Son : 1 note du synthé.
+#145 > touche 410 508
+#145 DOIGT rien
+#146 ROUTE tab_Sons | MODE pro | EMPREINTE 600cc0c943 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#146 SON Son : 1 note du synthé.
+#146 > touche 270 813
+#146 DOIGT tuto_folded_text « Sua vez: crie a faixa Melodia (som “Sino »
+#147 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ec9724b955 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#147 SON Son : rien ne joue.
+#147 > touche 270 608
+#147 DOIGT tuto_do «   Eu faço »
+#148 ROUTE tab_Sons | MODE pro | EMPREINTE 2eb1da2d9d | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#148 SON Son : rien ne joue.
+#148 LAYOUT TARGET « Fá4 Tocar » 36 x 20 dp (touch 48 x 48)
+#148 LAYOUT TARGET « Mi4 Tocar » 36 x 20 dp (touch 48 x 48)
+#148 LAYOUT TARGET « Ré♯4 Tocar » 36 x 20 dp (touch 48 x 48)
+#148 > touche 310 508
+#148 DOIGT rien
+#149 ROUTE tab_Sons | MODE pro | EMPREINTE 600cc0c943 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#149 SON Son : 1 note du synthé.
+#149 > touche 270 813
+#149 DOIGT tuto_folded_text « Sua vez: crie a faixa Melodia (som “Sino »
+#150 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ec9724b955 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#150 SON Son : rien ne joue.
+#150 > touche 270 608
+#150 DOIGT tuto_do «   Eu faço »
+#151 ROUTE tab_Sons | MODE pro | EMPREINTE 92673327ec | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#151 SON Son : rien ne joue.
+#151 > touche 160 508
+#151 DOIGT rien
+#152 ROUTE tab_Sons | MODE pro | EMPREINTE 8da164c6b8 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#152 SON Son : 1 note du synthé.
+#152 > touche 270 813
+#152 DOIGT tuto_folded_text « Sua vez: crie a faixa Melodia (som “Sino »
+#153 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ec9724b955 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#153 SON Son : rien ne joue.
+#153 > touche 270 608
+#153 DOIGT tuto_do «   Eu faço »
+#154 ROUTE tab_Sons | MODE pro | EMPREINTE 2eb1da2d9d | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#154 SON Son : rien ne joue.
+#154 > touche 110 508
+#154 DOIGT rien
+#155 ROUTE tab_Sons | MODE pro | EMPREINTE 600cc0c943 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#155 SON Son : 1 note du synthé.
+#155 > touche 208 508
+#155 DOIGT rien
+#156 ROUTE tab_Sons | MODE pro | EMPREINTE 600cc0c943 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#156 SON Son : 1 note du synthé.
+#156 > touche 270 813
+#156 DOIGT tuto_folded_text « Sua vez: crie a faixa Melodia (som “Sino »
+#157 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ec9724b955 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#157 SON Son : rien ne joue.
+#157 > touche 270 608
+#157 DOIGT tuto_do «   Eu faço »
+#158 ROUTE tab_Sons | MODE pro | EMPREINTE 2eb1da2d9d | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#158 SON Son : rien ne joue.
+#158 > glisse 305 508 490 508
+#158 DOIGT rien
+#159 ROUTE tab_Sons | MODE pro | EMPREINTE 2eb1da2d9d | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#159 SON Son : rien ne joue.
+#159 > touche 270 813
+#159 DOIGT tuto_folded_text « Sua vez: crie a faixa Melodia (som “Sino »
+#160 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE ec9724b955 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#160 SON Son : rien ne joue.
+#160 > touche 270 608
+#160 DOIGT tuto_do «   Eu faço »
+#161 ROUTE tab_Sons | MODE pro | EMPREINTE 2eb1da2d9d | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#161 SON Son : rien ne joue.
+#161 > touche 310 508
+#161 DOIGT rien
+#162 ROUTE tab_Sons | MODE pro | EMPREINTE 600cc0c943 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#162 SON Son : 1 note du synthé.
+#162 > touche 470 508
+#162 DOIGT rien
+#163 ROUTE tab_Sons | MODE pro | EMPREINTE 398ded5423 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=14 playing=false
+#163 SON Son : 1 note du synthé.
+#163 > touche 270 813
+#163 DOIGT tuto_need_folded « Copiar nos próximos compassos »
+#164 ROUTE tab_Sons | MODE pro | EMPREINTE f94ab4d323 | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=15 playing=false
+#164 SON Son : rien ne joue.
+#164 > touche 270 608
+#164 DOIGT tuto_toggle « O sino »
+#165 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 9f317ddd1a | project=p-72bede60 tuto=detroit/Pro active=true step=lead_do done=15 playing=false
+#165 SON Son : rien ne joue.
+#165 LAYOUT OVERLAP « Capítulo 5/14 · Feito · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 36 dp)
+#165 > touche 270 608
+#165 DOIGT tuto_next_big « Próximo capítulo   »
+#166 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE af7306220c | project=p-72bede60 tuto=detroit/Pro active=true step=groove_hear done=15 playing=false
+#166 SON Son : rien ne joue.
+#166 LAYOUT OVERLAP « 126 » over « Capítulo 6/14 · Etapa 1/2 · Pro » (54 x 22 dp)
+#166 LAYOUT OVERLAP « Sua primeira parte: o Groove » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 22 dp)
+#166 LAYOUT OVERLAP « Capítulo 6/14 · Etapa 1/2 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 14 dp)
+#166 LAYOUT OVERLAP « Capítulo 6/14 · Etapa 1/2 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 29 dp)
+#166 > touche 270 664
+#166 DOIGT tuto_play_mine «   Ouvir seu resultado »
+#167 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d83f0ac95c | project=p-72bede60 tuto=detroit/Pro active=true step=groove_hear done=15 playing=true
+#167 SON Son : la musique du projet joue en boucle.
+#167 LAYOUT OVERLAP « Capítulo 6/14 · Etapa 1/2 · Pro » over the touchable « Tocar a partir de uma parte » (32 x 39 dp)
+#167 LAYOUT OVERLAP « Capítulos » over the touchable « Parar Parar » (47 x 18 dp)
+#167 LAYOUT OVERLAP « Ouça seu loop por alguns segundos, depois o exemplo. Cordas que cantam sobre uma bateria eletrônica que dança: isso é Detroit. » over the touchable « Tocar a partir de uma parte » (139 x 10 dp)
+#167 > attends 4
+#168 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d83f0ac95c | project=p-72bede60 tuto=detroit/Pro active=true step=groove_hear done=15 playing=true
+#168 SON Son : la musique du projet joue en boucle.
+#168 > touche 270 750
+#168 DOIGT tuto_listen «  Ouvir o exemplo »
+#169 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c28279eca5 | project=p-72bede60 tuto=detroit/Pro active=true step=groove_hear done=15 playing=false
+#169 SON Son : l'exemple du tuto joue (encore 3 s).
+#169 > attends 4
+#170 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c38d6acc29 | project=p-72bede60 tuto=detroit/Pro active=true step=groove_hear done=16 playing=false
+#170 SON Son : rien ne joue.
+#170 > touche 270 610
+#170 DOIGT tuto_next_big « Próxima etapa   »
+#171 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 0e9312b817 | project=p-72bede60 tuto=detroit/Pro active=true step=groove_name done=16 playing=false
+#171 SON Son : rien ne joue.
+#171 LAYOUT OVERLAP « 126 » over « Capítulo 6/14 · Etapa 2/2 · Pro » (54 x 22 dp)
+#171 LAYOUT OVERLAP « Capítulo 6/14 · Etapa 2/2 · Pro » over the touchable « Parte atual: A. Toque para trocar de par » (52 x 14 dp)
+#171 LAYOUT OVERLAP « Capítulo 6/14 · Etapa 2/2 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 29 dp)
+#171 LAYOUT TARGET « Estrutura » 66 x 5 dp (touch 66 x 48)
+#171 LAYOUT TARGET « Sons » 66 x 5 dp (touch 66 x 48)
+#171 LAYOUT TARGET « Mix » 65 x 5 dp (touch 65 x 48)
+#171 LAYOUT TARGET « Live » 65 x 5 dp (touch 65 x 48)
+#171 LAYOUT TARGET « Mais » 65 x 5 dp (touch 65 x 48)
+#171 > touche 270 692
+#171 DOIGT tuto_need «   Nomear a parte “Groove” »
+#172 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE cf7bd6066c | project=p-72bede60 tuto=detroit/Pro active=true step=groove_name done=17 playing=false
+#172 SON Son : rien ne joue.
+#172 LAYOUT OVERLAP « 126 » over « Sua primeira parte: o Groove » (54 x 3 dp)
+#172 LAYOUT OVERLAP « 126 » over « Capítulo 6/14 · Feito · Pro » (54 x 31 dp)
+#172 LAYOUT OVERLAP « Sua primeira parte: o Groove » over the touchable « Modo Pro. Toque para mudar de modo. Muda » (56 x 45 dp)
+#172 LAYOUT OVERLAP « Sua primeira parte: o Groove » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 11 dp)
+#172 LAYOUT OVERLAP « Capítulo 6/14 · Feito · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 37 dp)
+#172 > touche 270 720
+#172 DOIGT tuto_next_big « Próximo capítulo   »
+#173 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE a6925146d1 | project=p-72bede60 tuto=detroit/Pro active=true step=brick done=17 playing=false
+#173 SON Son : rien ne joue.
+#173 LAYOUT OVERLAP « 126 » over « Entender as partes » (54 x 8 dp)
+#173 LAYOUT OVERLAP « 126 » over « Capítulo 7/14 · Etapa 1/5 · Pro » (54 x 26 dp)
+#173 LAYOUT OVERLAP « Entender as partes » over the touchable « Modo Pro. Toque para mudar de modo. Muda » (56 x 41 dp)
+#173 LAYOUT OVERLAP « Entender as partes » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 15 dp)
+#173 LAYOUT OVERLAP « Capítulo 7/14 · Etapa 1/5 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 33 dp)
+#173 > touche 270 746
+#173 DOIGT tuto_mark «   Entendi »
+#174 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 92f6fd8185 | project=p-72bede60 tuto=detroit/Pro active=true step=map_intro done=18 playing=false
+#174 SON Son : rien ne joue.
+#174 LAYOUT OVERLAP « 126 » over « Capítulo 7/14 · Etapa 2/5 · Pro » (54 x 26 dp)
+#174 LAYOUT OVERLAP « Capítulo 7/14 · Etapa 2/5 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 33 dp)
+#174 > touche 270 746
+#174 DOIGT tuto_listen «  Ouvir o exemplo »
+#175 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 3d5e0be96a | project=p-72bede60 tuto=detroit/Pro active=true step=map_intro done=18 playing=false
+#175 SON Son : l'exemple du tuto joue (encore 3 s).
+#175 > attends 4
+#176 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c15ec39bf0 | project=p-72bede60 tuto=detroit/Pro active=true step=map_intro done=19 playing=false
+#176 SON Son : rien ne joue.
+#176 > touche 270 726
+#176 DOIGT tuto_next_big « Próxima etapa   »
+#177 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE a639c3fcfe | project=p-72bede60 tuto=detroit/Pro active=true step=map_drop done=19 playing=false
+#177 SON Son : rien ne joue.
+#177 LAYOUT OVERLAP « 126 » over « Capítulo 7/14 · Etapa 3/5 · Pro » (54 x 26 dp)
+#177 LAYOUT OVERLAP « Capítulo 7/14 · Etapa 3/5 · Pro » over the touchable « Andamento: 126 BPM Mudar o andamento » (132 x 33 dp)
+#177 > fin
+#177 FIN : fin

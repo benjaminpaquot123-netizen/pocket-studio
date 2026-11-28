@@ -9,7 +9,7 @@
   "À toi : écris les 5 notes de la mesure 2.": "Te toca: escribe las 5 notas del compás 2.",
   "À toi : écris les 4 notes de la mesure 2.": "Te toca: escribe las 4 notas del compás 2.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "Te toca: toca la nota de abajo punteada de cada acorde del compás 1: se coloca todo el acorde.",
-  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Te toca: “Lo hago yo” abre la ficha Tono: toca los dos botones marcados.",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Te toca: “Lo hago yo” abre la ficha “Tonalidad del tema”: toca los dos botones marcados.",
   "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "Te toca: en el pad “Kick”, toca las casillas punteadas de los 2 compases.",
   "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "Te toca: en el pad “Caja”, toca las casillas punteadas de los 2 compases.",
   "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "Te toca: en el pad “Hi-hat”, toca las casillas punteadas de los 2 compases.",
@@ -21,5 +21,5 @@
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "Te toca: bajo “Añadir”, toca en orden: Intro, Estribillo, Estrofa, Pre-estribillo, Estribillo, Estrofa, Pre-estribillo, Estribillo y la Intro al final.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "Te toca: bajo “Añadir”, toca en orden: Intro, Estrofa, Pre-estribillo, Estribillo, Post-estribillo, Estrofa, Pre-estribillo, Estribillo, Puente, Estribillo y la Intro al final.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "Te toca: da a cada parte su duración: Intro 4 compases, Estrofa 8, Pre-estribillo 4, Estribillo 16 (8 la 2.ª vez, 16 la 3.ª), Post-estribillo 4, Puente 8, Fin 4.",
-  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Te toca: en la pestaña “Mix”, baja un poco los faders “Acordes” y “Melodía”. Bajo el fader, “Normal” pasa a “−2”."
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Te toca: en la pestaña “Mix”, baja un poco los faders “Acordes” y “Melodía”. Bajo el fader, “Normal” pasa a “−1”."
 }

@@ -1,0 +1,59 @@
+Écran 47 (588x1278)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 150,42
+texte « 간단 » @ 327,42
+bouton ● @ 399,42
+bouton ▶ « 이 파트 » @ 471,42
+icône ⋮ @ 543,42
+bouton « 136  템포 » @ 69,114
+icône (flèches en boucle) « 드롭 2 4/8마디 » ▾ @ 210,114
+bouton « ? » @ 543,114
+icône « 파트: G · 드롭 2 » ▾ @ 103,180
+texte « 심벌 » @ 75,251
+bouton « 1 » [allumé, état « 히트, 세기 100 % »] @ 70,334
+bouton [état « 비어 있음 »] @ 133,334
+bouton [état « 비어 있음 »] @ 197,335
+bouton [état « 비어 있음 »] @ 261,335
+bouton « 2 » [état « 비어 있음 »] @ 325,335
+bouton [état « 비어 있음 »] @ 389,335
+bouton [état « 비어 있음 »] @ 453,335
+bouton [état « 비어 있음 »] @ 517,335
+bouton « 3 » [état « 비어 있음 »] @ 70,413
+bouton [état « 비어 있음 »] @ 133,413
+bouton [état « 비어 있음 »] @ 197,414
+bouton [état « 비어 있음 »] @ 261,414
+bouton « 4 » [état « 비어 있음 »] @ 325,414
+bouton [état « 비어 있음 »] @ 389,414
+bouton [état « 비어 있음 »] @ 453,414
+bouton [état « 비어 있음 »] @ 517,414
+texte « 채우기 » @ 68,499
+texte « 전체 » @ 134,499
+texte « 1/2 » @ 209,499
+texte « 1/4 » @ 284,499
+texte « ◀ » @ 359,499
+texte « ▶ » @ 434,499
+texte « 지우기 » @ 83,571
+texte « 칸을 탭하면 히트가 들어가고, 손가락을 밀면 여러 개를 그려요. 히트를 길게 누르면: 세기와 롤 (×2~×8). » [coupé] @ 294,622
+texte « 트랜지션 10/13장 · 완료 · 쉬움 » @ 222,673
+icône (liste) « 챕터 » @ 459,673
+icône ⌄ @ 531,673
+image (coupe) @ 57,791
+texte « 잘했어요, 챕터 완료! » @ 177,763
+texte « 지금 상태의 곡을 들어 보고 다음 챕터로 넘어가세요: “이펙트”. » @ 319,806
+bouton « 다음 챕터   » → @ 294,894
+icône ← @ 57,978
+bouton ■ «  정지 » @ 216,978
+bouton ▶ «  예시 듣기 » @ 453,978
+icône ↶ « 실행 취소 » @ 72,1062
+image ↷ @ 180,1050
+bouton ■ « 곡 » @ 288,1062
+texte « 136 템포 » @ 402,1062
+icône ⋮ « 더보기 » @ 516,1062
+onglet (lignes et note) « 내 곡 » @ 54,1158
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 174,1158
+onglet (touches de piano) « 건반 » @ 294,1158
+onglet (curseurs) « 믹스 » @ 414,1158
+onglet (trois points reliés) « 공유 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  메모 » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « 피드백 모드 » @ 162,1248

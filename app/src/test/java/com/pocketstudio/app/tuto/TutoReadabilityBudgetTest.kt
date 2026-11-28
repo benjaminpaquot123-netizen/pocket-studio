@@ -61,16 +61,26 @@ class TutoReadabilityBudgetTest {
         assertTrue("${known.size} exceptions: the list only shrinks (frozen at $FACILE_FROZEN)", known.size <= FACILE_FROZEN)
     }
 
+    /** Tour 8, garde-fous: an exception whose consigne now fits (shortened, or gone) makes this red with its name. */
+    @Test fun everyFacileExceptionStillMisses() {
+        val now = all(TutoLevel.Facile).map(::case).toSet()
+        val stale = frozen().filter { it !in now }.sorted()
+        assertTrue("${stale.size} entries of $FACILE now fit, delete them (style/step lang state scale width):\n" + stale.joinToString("\n"), stale.isEmpty())
+    }
+
     @Test fun proOutOfBudgetOnlyGoesDown() {
-        val n = all(TutoLevel.Pro).size
+        val misses = all(TutoLevel.Pro)
+        val n = misses.size
         File("build/tuto-readability-pro-count.txt").writeText("$n\n")
+        // The whole list, to find which consignes a change pushed out of budget (diff two runs).
+        File("build/tuto-readability-pro.txt").writeText(misses.joinToString("\n", postfix = "\n"))
         assertTrue("$n Pro consignes out of budget: the ratchet is $PRO_RATCHET (lower it when it goes down)", n <= PRO_RATCHET)
     }
 
     companion object {
         const val FACILE = "tuto/readability-facile-exceptions.txt"
-        const val FACILE_FROZEN = 409
-        const val PRO_RATCHET = 3725
+        const val FACILE_FROZEN = 400
+        const val PRO_RATCHET = 3722
         val GRID_CHECKS = setOf("lane", "gap", "fill", "crash", "velocity", "triplet", "offset", "swing")
     }
 }

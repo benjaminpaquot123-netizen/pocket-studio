@@ -129,7 +129,7 @@ def image_allowed(seat, n):
         return True, ""
     # Tour 7, control tuto2 (seat e): a seat ending on « attends » (no gesture) never earned the image of the screen it
     # reached. The last screen's image is given once the seat ends (« fin » played, or the bench ended it).
-    if n == turn(seat) and (ended(seat) is not None or read(os.path.join(seat, f"cmd-{n}.txt")).strip().startswith("fin")):
+    if ended(seat) is not None or read(os.path.join(seat, f"cmd-{n}.txt")).strip().startswith("fin"):
         return True, ""
     return False, (f"Plafond d'images atteint ({len(looked)} pour {gestures(seat)} gestes : une pour 5) : lis l'écran en texte. "
                    "L'image du dernier écran reste permise après « fin ».")

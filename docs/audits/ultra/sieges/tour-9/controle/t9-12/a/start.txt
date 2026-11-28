@@ -1,0 +1,10 @@
+lang=en
+device=phone
+font=100
+mode=simple
+amenee=tuto:amapiano:6
+gestes.max=150
+mission=tuto-facile
+profil=curieux
+niveau=0
+timeout.minutes=30

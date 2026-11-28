@@ -1,0 +1,20 @@
+fusion: 6120a5b228da174bcfb41a6f458c01a3eab06a2d
+branche: eq/tour-9-L6
+tete: 4366286c9e6a5524685e25cec0fd085e51df8b2a
+relecture: docs/audits/ultra/tour-9-L6-relecture.md
+relu: 30f27db24
+filtres: com.pocketstudio.app.session.Tour9* com.pocketstudio.app.ui.Tour9* com.pocketstudio.app.ui.PlayStripLogicTest com.pocketstudio.app.SongArrangementTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

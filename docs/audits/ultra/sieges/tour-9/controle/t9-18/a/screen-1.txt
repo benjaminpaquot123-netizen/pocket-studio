@@ -1,0 +1,57 @@
+Écran 1 (1035x1243)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 214,42
+texte « Pro » @ 456,42
+bouton « A · Groove » ▾ @ 576,42
+icône ↶ @ 697,42
+icône ↷ [désactivé] @ 769,42
+bouton ● @ 841,42
+bouton ▶ « esta parte » @ 915,42
+icône (trois points reliés) @ 990,42
+bouton « 126  BPM » @ 73,114
+bouton « ? » @ 990,114
+onglet « Bateria 16 pads » [sélectionné] @ 77,183
+onglet « Acid 303 Linha de baixo » @ 248,183
+onglet « Voz Microfone » @ 432,183
+onglet « Remix Separar » @ 584,183
+bouton « Acordes String machine » @ 756,183
+bouton « Baixo Baixo redondo » [coupé] @ 938,183
+image → @ 1024,184
+texte « Parte: A · Groove » @ 108,243
+bouton « Kick de estúdio FX » @ 75,330
+bouton « Kick 2 » @ 200,330
+bouton « Caixa FX » @ 325,330
+bouton « Caixa 2 » @ 450,330
+bouton « Clap » [coupé] @ 75,416
+bouton « Hi-hat E 30 » [coupé] @ 200,416
+bouton « Hi-hat aberto D 30 » [coupé] @ 325,416
+bouton « Tom grave » [coupé] @ 450,416
+titre « PASSOS: KICK DE ESTÚDIO » [état « Expandido »] @ 671,342
+bouton « ? » @ 771,342
+bouton « Todos os pads » @ 893,342
+texte « Kick de estúdio » @ 639,426
+texte « Construa suas partes Capítulo 8/14 · Etapa 1/6 · Pro » @ 431,493
+icône (liste) « Capítulos » @ 892,493
+icône ⌄ @ 978,493
+texte « Sua vez: crie a Intro a partir do Groove: o kick, os hi-hats, o “toc” e as cordas. » @ 461,574
+bouton « Baixar o kit Techno de Detroit (4 MB) » @ 451,649
+texte « Mais tarde » @ 942,649
+texte « ▸ Por quê? » @ 517,715
+bouton ⊕ «   Criar a parte “Intro” » @ 517,778
+bouton ▶ «  Ouvir o exemplo » @ 266,862
+bouton (œil) «  Mostre-me » @ 768,862
+icône ← «  Anterior » @ 97,943
+icône « Próximo  » → @ 936,943
+icône ↶ « Desfazer » @ 141,1027
+icône ↷ « Refazer » [désactivé] @ 317,1027
+bouton ▶ « a música » @ 494,1027
+texte « 126 Andamento » @ 681,1027
+icône (trois points reliés) « Compartilhar » @ 880,1027
+onglet (ligne brisée et points) « Estrutura » @ 99,1123
+onglet (touches de piano) « Sons » [sélectionné] @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Mais » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Anotar » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentários » @ 385,1213

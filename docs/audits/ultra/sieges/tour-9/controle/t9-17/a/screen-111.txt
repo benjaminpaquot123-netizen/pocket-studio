@@ -1,0 +1,28 @@
+Écran 111 (540x1170)
+texte « Os acordes Capítulo 3/14 · Etapa 2/2 · Pro » @ 176,92
+icône (liste) « Capítulos » @ 389,92
+icône ⌄ @ 483,92
+texte « Sua vez: crie a faixa Acordes (som “String machine”). Compasso 1: Lám7 fechado (Lá Dó Mi Sol); compasso 2: Ré7 com condução de vozes (Lá Dó Ré Fá♯): só duas notas se mexem. “Copiar nos próximos compassos”. » [coupé] @ 270,230
+bouton « Baixar o kit Techno de Detroit (4 MB) » @ 186,328
+texte « Mais tarde » @ 429,328
+texte « ▸ Por quê? » @ 270,416
+icône « Continuar lendo » ⌄ @ 270,479
+bouton (doigt qui touche) «   Eu faço » @ 270,608
+bouton ▶ «  Ouvir o exemplo » @ 142,722
+bouton (œil) «  Mostre-me » @ 397,722
+icône ← «  Anterior » @ 136,836
+icône « Próximo  » → @ 404,836
+icône ▶ « a música » @ 199,940
+texte « 126 Andamento » @ 376,939
+icône ↶ « Desfazer » @ 34,940
+icône ↷ « Refazer » [désactivé] @ 92,940
+icône (trois points reliés) « Compartilhar » @ 505,940
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

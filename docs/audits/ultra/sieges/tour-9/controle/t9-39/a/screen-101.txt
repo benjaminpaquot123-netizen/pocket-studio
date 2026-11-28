@@ -1,0 +1,46 @@
+Écran 101 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 283,42
+bouton « Simple » @ 608,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+bouton « Accords Changer le son » › @ 300,198
+bouton ▶ « Écouter seule » @ 672,198
+icône (curseurs) @ 822,198
+bouton « Mélodie Changer le son » › @ 300,308
+bouton ▶ « Écouter seule » @ 672,308
+icône (curseurs) @ 822,308
+titre « LE MORCEAU » [état « Déplié »] @ 154,437
+bouton « ? » @ 245,437
+texte « La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures. Ajoute-les dans l'ordre. » @ 450,498
+texte « Ajouter : » @ 83,552
+bouton « + A · Groove » @ 141,615
+bouton « + Nouvelle partie (copie de A · Groove) » @ 484,615
+bouton « + Nouvelle partie vide » @ 190,696
+bouton (barres de son) «   Ce qui joue dans le morceau » @ 450,780
+texte « Ta première partie : le Groove Chapitre 8/15 · Fait · Facile » @ 363,906
+icône (liste) « Chapitres » @ 756,906
+icône ⌄ @ 843,906
+image (coupe) @ 57,1023
+texte « Bravo, chapitre fini ! » @ 194,996
+texte « Écoute ton morceau tel qu'il est maintenant, puis passe au chapitre suivant : « Comprendre les parties ». » @ 475,1038
+bouton « Chapitre suivant   » → @ 450,1125
+icône ← @ 57,1209
+bouton ▶ «  Écouter mon morceau » @ 294,1209
+bouton ▶ «  Écouter l'exemple » @ 687,1209
+icône ↶ « Annuler » @ 121,1293
+image ↷ @ 279,1283
+bouton ▶ « le morceau » @ 444,1293
+texte « 174 Tempo » @ 615,1293
+icône ⋮ « Plus » @ 779,1293
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 85,1389
+onglet (quatre carrés) « Rythme » @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

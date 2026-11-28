@@ -109,7 +109,9 @@ class BenchSelfTest : HumanTester("selftest") {
      */
     @Test
     fun theScreenInTextSaysWhatIsCutNotAnArrowTheAppDoesNotDraw() {
-        begin()
+        // The seats' taller phone: on the bench's own one, the welcome (drawn in the screen, above the feedback strip,
+        // tour 9 « flash ») ends just above the « Extraire la voix » card, so no card is cut there.
+        begin(SeatOptions(device = "phone411"))
         val lines = screenLines()
         assertTrue("an arrow the app does not draw:\n" + lines.joinToString("\n"), lines.none { "la suite plus bas" in it || "la suite sur le côté" in it })
         assertTrue("the card cut by the screen's bottom edge:\n" + lines.joinToString("\n"), lines.any { "Extraire la voix" in it && "coupé" in it })

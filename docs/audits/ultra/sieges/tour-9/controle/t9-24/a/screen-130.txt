@@ -1,0 +1,28 @@
+Écran 130 (588x1278)
+dessin @ 294,36
+texte « Gotowe do udostępnienia? » @ 258,108
+icône ✕ @ 522,108
+champ « Nazwa utworu (i projektu) » contenu « Mój utwór » @ 294,211
+icône ✕ @ 522,218
+texte « „Udostępnij” zmienia też nazwę projektu „Mój projekt 1”. » @ 294,291
+texte « 3:30 » @ 66,343
+texte « 4 części » @ 159,348
+bouton ▶ «  Słuchaj » @ 466,392
+texte « Głośność: −9,0, głośno, jak muzyka klubowa » @ 196,390
+texte « szczegóły » @ 261,439
+bouton « ? » @ 341,438
+bouton « Streaming » @ 312,514
+bouton « Klub » @ 446,514
+texte « Głośność docelowa » @ 128,514
+bouton « Auto (styl) » [sélectionné] @ 109,595
+bouton « ? » @ 218,595
+image (rond coché) @ 45,666
+texte « Wszystko gra: żadne solo nie jest włączone, żadna ścieżka wyciszona. » @ 316,679
+bouton (clap de cinéma) «   Wideo do social mediów · 30 s » @ 294,763
+bouton (notes sur une pile) « Inne pliki Ścieżka po ścieżce, MIDI, FLAC… w Miksie » › @ 272,859
+bouton « ? » @ 536,859
+bouton « M4A · do udostępniania » @ 176,957
+bouton « WAV · maks. jakość » [sélectionné] @ 155,1038
+bouton (trois points reliés) «   Udostępnij » @ 294,1134
+bouton (dossier) « Moje pliki Znajdź i wyślij ponownie: M4A, WAV, wideo, .zip » › @ 272,1236
+bouton « ? » @ 536,1236

@@ -1,0 +1,8 @@
+Écran 114 (1035x1243)
+texte « Het is klaar » @ 275,352
+texte « Klaar: Mijn-nummer-20261119-074927.m4a, er staat ook een kopie in Muziek › BenStudio. » @ 517,524
+texte « −9,0 LUFS geïntegreerd · piek −4,2 dBTP » @ 499,668
+texte « M4A, 48 kHz, 256 kb/s · 3 min 29 s » @ 447,726
+texte « Doel: Auto (stijl) · −9 LUFS » @ 369,784
+texte « Mijn bestanden bekijken » @ 544,886
+texte « OK » @ 853,886

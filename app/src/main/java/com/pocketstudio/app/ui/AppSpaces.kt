@@ -77,6 +77,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -319,26 +320,37 @@ internal fun PlusSpace(
                 // Tour 7, D3: when the rows of full tiles would not all stand above the fold (Mode simple, 360 × 780: the
                 // Recette alone on a fifth row, pushed under it, one scroll more), the tiles go compact (a smaller icon,
                 // tighter padding) so that every row stands whole above the Guide's bar.
-                val fontScale = androidx.compose.ui.platform.LocalDensity.current.fontScale
-                val rowCount = (entries.size + perRow - 1) / perRow
-                val fullHeight = (if (leave != null) 48f else 0f) + rowCount * (PLUS_TILE_CHROME_DP + PLUS_TILE_TEXT_DP * fontScale) + 6f * (rowCount - 1)
-                val compact = tiles && perRow > 1 && fullHeight > (roomHeight - 24.dp).value
-                if (tiles) {
-                    Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp)) {
-                        FoldColumn(fold = roomHeight - 12.dp, minHeight = roomHeight - 24.dp, gap = 6.dp) {
-                            if (leave != null) PlusLeaveRow(leave) else Spacer(Modifier.height(0.dp))
-                            // Tour 5, lot « moyens »: with big text (Taille 130 %, the phone's font at 200 %) three tiles a
-                            // row cut their titles (« Bibliothèque de sons »): two a row, then the list, as the room allows.
-                            if (perRow > 1) {
-                                entries.chunked(perRow).forEach { row ->
-                                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                        row.forEach { e -> PlusTile(e, Modifier.weight(1f).fillMaxHeight(), compact) { pick(e) } }
-                                        repeat(perRow - row.size) { Spacer(Modifier.weight(1f)) }
-                                    }
-                                }
-                            } else entries.forEach { e -> PlusRow(e, selected = false) { pick(e) } }
+                // Tour 8, R (guide2): the height of the rows of full tiles is measured, not guessed (58 + 36 × fontScale dp
+                // a row, where a title on two or three lines takes more: full tiles pushed under the Guide's bar).
+                val tileRows: @Composable (Boolean, Boolean) -> Unit = { small, probe ->
+                    entries.chunked(perRow).forEach { row ->
+                        Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            row.forEach { e -> PlusTile(e, Modifier.weight(1f).fillMaxHeight(), small, probe) { pick(e) } }
+                            repeat(perRow - row.size) { Spacer(Modifier.weight(1f)) }
                         }
                     }
+                }
+                if (tiles) androidx.compose.ui.layout.SubcomposeLayout(Modifier.fillMaxSize()) { c ->
+                    val pad = 12.dp.roundToPx()
+                    // The full tiles, measured unseen (never drawn, nothing said to TalkBack), as FitFaders does.
+                    val fullHeight = if (perRow > 1) subcompose("probe") {
+                        Column(Modifier.clearAndSetSemantics { }, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            if (leave != null) PlusLeaveRow(leave, probe = true)
+                            tileRows(false, true)
+                        }
+                    }.first().measure(androidx.compose.ui.unit.Constraints(maxWidth = (c.maxWidth - 2 * pad).coerceAtLeast(0))).height else 0
+                    val compact = perRow > 1 && fullHeight > (roomHeight - 24.dp).roundToPx()
+                    val main = subcompose("tiles") {
+                        Box(Modifier.fillMaxSize().testTag(if (perRow == 1) "plus_tiles_list" else if (compact) "plus_tiles_compact" else "plus_tiles_full").verticalScroll(rememberScrollState()).padding(12.dp)) {
+                            FoldColumn(fold = roomHeight - 12.dp, minHeight = roomHeight - 24.dp, gap = 6.dp) {
+                                if (leave != null) PlusLeaveRow(leave) else Spacer(Modifier.height(0.dp))
+                                // Tour 5, lot « moyens »: with big text (Taille 130 %, the phone's font at 200 %) three tiles a
+                                // row cut their titles (« Bibliothèque de sons »): two a row, then the list, as the room allows.
+                                if (perRow > 1) tileRows(compact, false) else entries.forEach { e -> PlusRow(e, selected = false) { pick(e) } }
+                            }
+                        }
+                    }.first().measure(c)
+                    layout(main.width, main.height) { main.place(0, 0) }
                 } else {
                     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         if (leave != null) PlusLeaveRow(leave)
@@ -400,10 +412,6 @@ private fun FoldColumn(fold: androidx.compose.ui.unit.Dp, minHeight: androidx.co
 
 private const val PLUS_TILES_PER_ROW = 3
 
-/** A full Plus tile's height without its title (padding, icon, spacing), and its title's two lines at the font's size, in dp. */
-private const val PLUS_TILE_CHROME_DP = 58f
-private const val PLUS_TILE_TEXT_DP = 36f
-
 /** The room a tile's title needs at the least, in dp at the font's own size (« Bibliothèque » on two lines at most). */
 private const val PLUS_TILE_TITLE_MIN_DP = 100f
 
@@ -419,13 +427,14 @@ internal fun plusTilesPerRow(width: androidx.compose.ui.unit.Dp, fontScale: Floa
 
 /** An entry of the Plus page as a tile: its icon over its title (its line said to TalkBack as what a touch does). */
 @Composable
-private fun PlusTile(e: PlusEntry, modifier: Modifier, compact: Boolean = false, onClick: () -> Unit) {
+private fun PlusTile(e: PlusEntry, modifier: Modifier, compact: Boolean = false, probe: Boolean = false, onClick: () -> Unit) {
     Column(
         modifier.heightIn(min = if (compact) 72.dp else 88.dp).clip(RoundedCornerShape(14.dp)).background(Neon.Surface)
             .border(1.dp, Neon.Outline, RoundedCornerShape(14.dp))
-            .clickable(role = Role.Button, onClickLabel = e.line, onClick = onClick)
+            // A probe (measured unseen, [PlusSpace]) is neither touched nor found by its tag.
+            .then(if (probe) Modifier else Modifier.clickable(role = Role.Button, onClickLabel = e.line, onClick = onClick))
             .padding(horizontal = 4.dp, vertical = if (compact) 5.dp else 8.dp)
-            .testTag(if (e.page != null) "tool_${e.page.name}" else "plus_${e.key}"),
+            .then(if (probe) Modifier else Modifier.testTag(if (e.page != null) "tool_${e.page.name}" else "plus_${e.key}")),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(if (compact) 3.dp else 6.dp, Alignment.CenterVertically),
     ) {
@@ -442,10 +451,11 @@ private fun PlusTile(e: PlusEntry, modifier: Modifier, compact: Boolean = false,
 
 /** « ← Retour » over the Mode simple's Plus list: back where its ⋮ was touched. */
 @Composable
-private fun PlusLeaveRow(leave: () -> Unit) {
+private fun PlusLeaveRow(leave: () -> Unit, probe: Boolean = false) {
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp)).clickable(role = Role.Button, onClick = leave)
-            .padding(horizontal = 4.dp).testTag("plus_leave"),
+        Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+            .then(if (probe) Modifier else Modifier.clickable(role = Role.Button, onClick = leave).testTag("plus_leave"))
+            .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = Neon.Cyan)

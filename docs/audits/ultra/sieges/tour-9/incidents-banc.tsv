@@ -1,0 +1,45 @@
+siege	geste	attente	vu
+controle/t9-02/a	-	0	aucun outil hors human-act.py ; seul le dossier du siège a été lu (start.txt, journal.txt pour les numéros de gestes)
+controle/t9-04/a	62	0	« Fin du siège : rien ne change (5 écrans identiques) » ; le changement d'onglet n'a pas ete joue
+controle/t9-04/a	59	0	« doigt couvert : ドラム couvre Acid 303 の音量 » alors que l'image ne montre rien par-dessus (gestes 58 a 61)
+controle/t9-04/a	-	0	outils hors human-act : cat/ls/grep/tail dans mon dossier de siege seulement, plus lecture des deux gabarits donnes par le chef
+controle/t9-06/a	64	0	fin du tuto « 거의 다 됐어요! 10단계 남았어요 » : les étapes restantes sont dans les chapitres 1-5 que le banc a construits à ma place (amenée), pas un oubli de ma part
+controle/t9-07/a	18	0	écran texte vide après le geste, un « regarde » l'a rendu
+controle/t9-07/a	78	0	écran texte vide après le geste, un « regarde » l'a rendu
+controle/t9-07/a	103	0	écran texte vide deux fois (geste + regarde), seule l'image screen-103-grille.png montrait la feuille d'effets
+controle/t9-08/a	44	0	« Fin du siège : rien ne change (5 écrans identiques) » ; mes glissés vers le bas partaient de l'en-tête fixe « 段落：D · 高潮 2 », siège fermé à 37 gestes sur 160
+controle/t9-11/a			lecture des images du siège ; sorties du banc redirigées vers un fichier du bloc-notes, sans écriture dans le dépôt)
+controle/t9-12/a	63	0	« Almost done! 5 steps left » lists steps of chapters 1-3 (and chapter list shows 1, 2, 3, 5 not ticked): these chapters were built by the bench's set-up, not played by me; not a defect
+controle/t9-12/a	-	0	outils hors human-act : lecture des images screen-N-grille.png de mon siège, grep/sed sur la sortie de human-act et sur journal.txt/start.txt de mon siège ; un BrokenPipe Python au geste 65 venait de mon propre «
+controle/t9-13/a	3	0	« regarde image » refusée (quota d'images)
+controle/t9-13/a	61	0	glisse sur le curseur swing sans effet (touche marche) ; idem glisse #65 #71 #72 #76 #77 #82 pour défiler
+controle/t9-13/a	-	0	hors banc j'ai lu les 2 gabarits (consigne), ls/cat du dossier du siège et ouvert les PNG grille du siège
+controle/t9-14/a	74-77, 80-81, 87, 119-121	0	le banc refuse chaque glisse sur le mixeur « doigt couvert : Drums couvre Volume van Akkoorden » ; je ne sais pas dire si c'est l'appli ou le banc
+controle/t9-16/a	-	0	aucun gel ; lu les 2 gabarits hors du siège sur consigne du chef (pas de code de l'appli)
+controle/t9-17/a	-	0	outils hors human-act.py : lecture des captures et de journal.txt / start.txt / rapport.md de mon siège, et des deux gabarits au départ
+controle/t9-18/a	50, 51, 59, 73, 77, 78, 79, 80, 83, 85, 92, 93	0	REFUS « doigt couvert : Bateria couvre Volume de … / Acid 303 / Baixo » sur toute la carte Volumes du Mix, même Bateria entièrement visible ; aucun fader ni nom de piste touchable
+controle/t9-19/a	-	-	aucun ecran vide ; le texte du banc doublait parfois une ligne (ex. « • BPM… » deux fois) alors que l'image l'affiche une seule fois
+controle/t9-19/a	-	-	outils hors human-act.py : lecture de start.txt, meta-1.txt, journal.txt et des PNG d'ecran du siege (cat/tail/grep/Read), plus les deux gabarits demandes
+controle/t9-23/a	-	0	outils hors human-act utilisés par le testeur : lecture de start.txt au départ, filtres grep/sed/tail sur la sortie, fichier temporaire /tmp/claude-0/o.txt ; une trace BrokenPipe due à « head »
+controle/t9-24/a	74	0	le banc dit « doigt couvert : Perkusja couvre Akordy » ; même refus aux gestes 78, 94, 95, 101, 102, 104, 110, 119, 125, 139, 140 (voir défaut 1)
+controle/t9-25/a	-	0	outils hors human-act.py : cat (consignes, gabarit, fichiers du siège), tail/grep sur journal.txt du siège ; aucun gel, aucun écran vide
+controle/t9-27/a	#47	écran du tuto après « Langkah berikutnya »	écran texte presque vide, normal au « regarde » suivant
+controle/t9-27/a			Read des screen-N-grille.png du siège (regarde image), cat/ls dans le siège, lecture des deux gabarits demandés
+controle/t9-29/a	119	0	plafond d'images atteint, fin de partie lue en texte seul (ni écran vide ni attente)
+controle/t9-29/a	-	0	hors human-act.py, j'ai seulement lu les fichiers du siège (screen-N.txt, journal.txt, images)
+controle/t9-30/a	3	0	téléchargement du kit à 0 % puis disparu sans confirmation (écran 4→5), peut-être le banc
+controle/t9-31/a	-	-	aucun écran vide ; hors banc j'ai seulement lu les PNG-grilles de mon siège et les deux gabarits
+controle/t9-32/a	94	0	« بقيت لك 11 خطوة » sur l'écran de fin : chapitres 1-7 construits par l'amenée du banc, leurs étapes d'écoute jamais jouées par moi
+controle/t9-32/a	-	0	outils hors human-act : redirection de la sortie vers un fichier temporaire (/tmp/claude-0/o.txt) et sed/grep/head pour la lire ; lecture de start.txt/routes.txt de mon siège
+controle/t9-33/a	27-172	0	j'ai lu journal.txt du siège pour comprendre des touches refusées (pas d'autre outil hors human-act.py)
+controle/t9-33/a	167	0	carte du tuto déjà dépliée, ma touche sur ⌃ a pris « 見せて » (positions qui bougent)
+controle/t9-35/a	1	0	l'écran texte 1 listait « Industrial techno 킷 다운로드 (3 MB) » et « 계속 읽기 » que l'image 1 ne montrait pas (texte et image décalés)
+controle/t9-36/a	-	0	aucun outil hors human-act.py ; chapitres 1-6 construits par l'amenée, d'où « 4단계 남았어요 » à l'écran 63
+controle/t9-40/a	81	0	le texte de l'écran 81 n'avait pas la consigne « À toi » que l'image montre
+controle/t9-42/a	83	0	« 7 steps left » pointe vers les chapitres 1 à 4, que le banc a construits avant mon arrivée (amenée au chapitre 9) : sans doute le banc, pas une fiche
+controle/t9-43/a			hésitation (kaart ingeklapt na klaar, extra tik)
+controle/t9-43/a			compris du premier coup
+controle/t9-43/a			hésitation (tekst « 3.2 » vs stip op 4.3 ; ghost notes niet zachter maar toch goed)
+controle/t9-43/a			hésitation (kaart verbergt « Vullen » ; tekst zegt shaker, raster is Rim)
+controle/t9-43/a			bloqué (stap 2 niet gevalideerd ondanks juiste noten ; overgeslagen met 2× « Volgende »)
+controle/t9-43/a			compris du premier coup (via « Ik doe het » ; Sub-spoor toont nog gestippelde noten)

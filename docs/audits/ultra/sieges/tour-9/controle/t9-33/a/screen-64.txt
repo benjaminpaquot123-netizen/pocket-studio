@@ -1,0 +1,60 @@
+Écran 64 (540x1170)
+icône « マイプロジェクト 1 » ✓ @ 274,36
+bouton « プロ » @ 494,36
+bouton (dossier ouvert) @ 84,114
+bouton « A » ▾ @ 198,114
+icône ↶ @ 273,114
+bouton ● @ 345,114
+bouton ▶ « このパート » @ 420,114
+icône (trois points reliés) @ 495,114
+bouton « 122  BPM » @ 73,186
+bouton « ? » @ 495,186
+onglet « ドラム 16パッド » [sélectionné] @ 79,255
+onglet « Acid 303 ベースライン » @ 239,255
+onglet « ボーカル マイク » @ 403,255
+onglet « リミックス 分離 » [coupé] @ 500,255
+image → @ 529,256
+texte « パート：A » @ 69,315
+titre « ステップ：ROLAND TR-909 · ハイハット » [état « 開いた状態 »] @ 203,375
+bouton « ? » @ 342,375
+bouton « 全パッド » @ 431,375
+texte « 小節 » @ 63,459
+bouton « 1 » @ 129,459
+bouton « 2 » [sélectionné] @ 210,459
+bouton « 追従 » @ 301,459
+texte « 小節 2/2 · Roland TR-909 · ハイハット » @ 232,528
+texte « ここに3回多い（取り消し線） » @ 202,557
+bouton « 1 » [état « ヒット、強さ 100 % »] @ 67,623
+bouton [état « ヒット、強さ 100 % »] @ 124,623
+bouton [état « 空 »] @ 182,623
+bouton [état « ヒット、強さ 100 % »] @ 240,623
+bouton « 2 » [état « ヒット、強さ 100 % »] @ 298,623
+bouton [état « ヒット、強さ 100 % »] @ 356,623
+bouton [état « ヒット、強さ 100 %, 取り消し線：消そう »] @ 414,623
+bouton [état « ヒット、強さ 100 % »] @ 472,623
+bouton « 3 » [état « ヒット、強さ 100 % »] @ 67,692
+bouton [état « ヒット、強さ 100 % »] @ 124,692
+bouton [état « ヒット、強さ 100 %, 取り消し線：消そう »] @ 182,692
+bouton [état « ヒット、強さ 100 % »] @ 240,692
+bouton « 4 » [état « ヒット、強さ 100 % »] @ 298,692
+bouton [état « ヒット、強さ 100 % »] @ 356,692
+bouton [état « ヒット、強さ 100 %, 取り消し線：消そう »] @ 414,692
+bouton [état « ヒット、強さ 100 % »] @ 472,692
+icône (liste) « チャプター » @ 396,770
+texte « ハイハット、リムショット、スウィング チャプター 4/17 · ステップ 2/5 · プロ » @ 183,770
+icône ⌃ @ 483,770
+icône « あなたの番：クローズハイハットを置こう。拍の上は強く、まわりは弱く、オープンハイハットの下は空ける。 読む » ⌃ @ 270,869
+icône ↶ « 元に戻す » @ 64,954
+icône ↷ « やり直す » [désactivé] @ 164,954
+bouton ▶ « 曲 » @ 264,954
+texte « 122 テンポ » @ 370,954
+icône (trois points reliés) « シェア » @ 476,954
+onglet (ligne brisée et points) « 構成 » @ 49,1050
+onglet (touches de piano) « サウンド » [sélectionné] @ 160,1050
+onglet (curseurs) « ミックス » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « その他 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  メモ » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « フィードバックモード » @ 138,1140

@@ -1,0 +1,636 @@
+#0 SIEGE lang=it device=phone360 font=100 mode=simple theme=- fresh=non gestes.max=167 lit=oui main=both amenee=tuto:dnb:1
+#0 PREMIER ECRAN reel_s=4.5 simule_s=2.4 jvm_s=10.3 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:dnb:1
+#0 AMENEE > touche 270 621 (welcome_learn)
+#0 AMENEE > touche 270 771 (mode_card_simple)
+#0 AMENEE > touche 270 1105 (tuto_style_dnb)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 655778df0c | project=p-f34c5244 tuto=dnb/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Il mio progetto 1 » ellipsized (« … »)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Perché? » 332 x 20 dp (touch 332 x 48)
+#1 > touche 270 786
+#1 DOIGT tuto_listen «  Ascolta l'esempio »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b272b59be5 | project=p-f34c5244 tuto=dnb/Facile active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 215 585
+#2 DOIGT tuto_kit_download « Scarica il kit Drum & bass (2 MB) »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 666cfa795e | project=p-f34c5244 tuto=dnb/Facile active=true step=ref done=1 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > touche 270 786
+#3 DOIGT tuto_next_big « Passo successivo   »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b03b36ec59 | project=p-f34c5244 tuto=dnb/Facile active=true step=tempo done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 83 114
+#4 DOIGT top_tempo « Tempo: 120 battiti al minuto »
+#5 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 26f98a3a0e | project=p-f34c5244 tuto=dnb/Facile active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « Tempo » over the touchable « Chiudi il foglio » (73 x 28 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Chiudi il foglio » (7 x 15 dp)
+#5 LAYOUT OVERLAP « Chiudi » over the touchable « Chiudi il foglio » (45 x 20 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Chiudi il foglio » (86 x 53 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « Chiudi il foglio » (39 x 24 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « Chiudi il foglio » (21 x 19 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « Chiudi il foglio » (21 x 19 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Chiudi il foglio » (32 x 19 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « Chiudi il foglio » (32 x 19 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « Chiudi il foglio » (32 x 19 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « Chiudi il foglio » (14 x 24 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « Chiudi il foglio » (21 x 24 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « Chiudi il foglio » (14 x 27 dp)
+#5 LAYOUT OVERLAP « OK » over the touchable « Chiudi il foglio » (33 x 27 dp)
+#5 LAYOUT OVERLAP « Batti a tempo » over the touchable « Chiudi il foglio » (101 x 24 dp)
+#5 LAYOUT OVERLAP « Tocca qui a ogni battito: il tempo segue. » over the touchable « Chiudi il foglio » (242 x 18 dp)
+#5 > touche 460 570
+#5 DOIGT tempo_preset_174 « 174 »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e6335b29ad | project=p-f34c5244 tuto=dnb/Facile active=true step=tempo done=2 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 270 786
+#6 DOIGT tuto_next_big « Passo successivo   »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE bbc8a335e4 | project=p-f34c5244 tuto=dnb/Facile active=true step=key done=2 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 270 699
+#7 DOIGT tuto_do «   Lo faccio io »
+#8 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 542bc7374b | project=p-f34c5244 tuto=dnb/Facile active=true step=key done=2 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Tonalità del brano » over the touchable « Chiudi il foglio » (189 x 28 dp)
+#8 LAYOUT OVERLAP « Tonalità del brano: nessuna » over the touchable « Chiudi il foglio » (182 x 20 dp)
+#8 LAYOUT OVERLAP « Scala » over the touchable « Chiudi il foglio » (37 x 20 dp)
+#8 LAYOUT OVERLAP « Maggiore » over the touchable « Chiudi il foglio » (72 x 24 dp)
+#8 LAYOUT OVERLAP « Minore » over the touchable « Chiudi il foglio » (55 x 24 dp)
+#8 LAYOUT OVERLAP « Dorica » over the touchable « Chiudi il foglio » (49 x 24 dp)
+#8 LAYOUT OVERLAP « Penta minore » over the touchable « Chiudi il foglio » (99 x 24 dp)
+#8 LAYOUT OVERLAP « Penta maggiore » over the touchable « Chiudi il foglio » (118 x 24 dp)
+#8 LAYOUT OVERLAP « Blues » over the touchable « Chiudi il foglio » (42 x 24 dp)
+#8 LAYOUT OVERLAP « Frigia » over the touchable « Chiudi il foglio » (42 x 24 dp)
+#8 LAYOUT OVERLAP « Minore armonica » over the touchable « Chiudi il foglio » (127 x 24 dp)
+#8 LAYOUT OVERLAP « Tonica » over the touchable « Chiudi il foglio » (46 x 20 dp)
+#8 LAYOUT OVERLAP « Do » over the touchable « Chiudi il foglio » (21 x 24 dp)
+#8 LAYOUT OVERLAP « Do♯ » over the touchable « Chiudi il foglio » (29 x 24 dp)
+#8 LAYOUT OVERLAP « Re » over the touchable « Chiudi il foglio » (19 x 24 dp)
+#8 LAYOUT OVERLAP « Mi♭ » over the touchable « Chiudi il foglio » (24 x 24 dp)
+#8 LAYOUT OVERLAP « Mi » over the touchable « Chiudi il foglio » (19 x 24 dp)
+#8 LAYOUT OVERLAP « Fa » over the touchable « Chiudi il foglio » (18 x 24 dp)
+#8 LAYOUT OVERLAP « Fa♯ » over the touchable « Chiudi il foglio » (26 x 24 dp)
+#8 LAYOUT OVERLAP « Sol » over the touchable « Chiudi il foglio » (23 x 24 dp)
+#8 LAYOUT OVERLAP « La♭ » over the touchable « Chiudi il foglio » (23 x 24 dp)
+#8 LAYOUT OVERLAP « La » over the touchable « Chiudi il foglio » (18 x 24 dp)
+#8 LAYOUT OVERLAP « Si♭ » over the touchable « Chiudi il foglio » (19 x 24 dp)
+#8 LAYOUT OVERLAP « Si » over the touchable « Chiudi il foglio » (14 x 24 dp)
+#8 > touche 236 642
+#8 DOIGT tuto_scale_Minor « Minore »
+#9 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE c24a872f86 | project=p-f34c5244 tuto=dnb/Facile active=true step=key done=2 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Tonalità del brano: Do · Minore » over the touchable « Chiudi il foglio » (203 x 20 dp)
+#9 > touche 63 1017
+#9 DOIGT tuto_root_5 « Fa »
+#10 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 852cb903cc | project=p-f34c5244 tuto=dnb/Facile active=true step=key done=3 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « Tonalità del brano: Fa · Minore » over the touchable « Chiudi il foglio » (200 x 20 dp)
+#10 LAYOUT OVERLAP « Fatto! Il colore del brano è scelto. » over the touchable « Chiudi il foglio » (261 x 24 dp)
+#10 LAYOUT OVERLAP « Torna al tutorial » over the touchable « Chiudi il foglio » (110 x 20 dp)
+#10 > touche 270 1095
+#10 DOIGT tuto_key_continue « Torna al tutorial »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5b3a5e7aee | project=p-f34c5244 tuto=dnb/Facile active=true step=key done=3 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 270 870
+#11 DOIGT tuto_chapter_end_folded « Bravo, capitolo finito! »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0ad7415cdb | project=p-f34c5244 tuto=dnb/Facile active=true step=key done=3 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Maracas » 2.46:1 (needs 4.5:1, 14 sp)
+#12 > touche 270 786
+#12 DOIGT tuto_next_big « Capitolo successivo   »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e433eb092c | project=p-f34c5244 tuto=dnb/Facile active=true step=ready done=3 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 270 723
+#13 DOIGT tuto_why « ▸ Perché? »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 87bb938b76 | project=p-f34c5244 tuto=dnb/Facile active=true step=ready done=3 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT TARGET « ▾ Perché? » 332 x 20 dp (touch 332 x 48)
+#14 > touche 270 786
+#14 DOIGT tuto_mark «   Ho capito »
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 38ac7ef4f1 | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_hear done=4 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 270 786
+#15 DOIGT tuto_listen «  Ascolta l'esempio »
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 52dc8021c3 | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_hear done=4 playing=false
+#16 SON Son : l'exemple du tuto joue (encore 3 s).
+#16 > attends 4
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e8b11a0901 | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_hear done=5 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 270 786
+#17 DOIGT tuto_next_big « Passo successivo   »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1e4e9a926d | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=5 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « Ancora 2 caselle tratteggiate qui » 2.30:1 (needs 3.0:1, 14 sp)
+#18 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#18 > touche 270 699
+#18 DOIGT tuto_need «   Passa a 2 battute »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6907f8115c | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=5 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « Battuta » 1.45:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « 1 » 1.61:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « 2 » 1.36:1 (needs 4.5:1, 14 sp)
+#19 LAYOUT CONTRAST « Segui » 1.42:1 (needs 4.5:1, 14 sp)
+#19 > touche 67 380
+#19 DOIGT step_0 « Passo 1 »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 30a84ed15c | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=5 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 182 451
+#20 DOIGT step_10 « Passo 11 »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cc47e2f7d0 | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=5 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « Battuta 1/2 · Grancassa da studio » ellipsized (« … »)
+#21 > touche 358 300
+#21 DOIGT tuto_bar_go « Battuta 2 · 2 caselle → »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0ce976537f | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=5 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « 1 » 1.28:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 2 » 1.47:1 (needs 4.5:1, 14 sp)
+#22 > touche 67 380
+#22 DOIGT step_16 « Passo 1 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5248dd8f1a | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=5 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 182 451
+#23 DOIGT step_26 « Passo 11 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d2a708bb6b | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=6 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 270 870
+#24 DOIGT tuto_chapter_end_folded « Bravo, capitolo finito! »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9a8293170b | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=6 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « Battuta » 1.50:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « 1 » 1.24:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « 2 » 1.96:1 (needs 4.5:1, 14 sp)
+#25 LAYOUT CONTRAST « Segui » 1.39:1 (needs 4.5:1, 14 sp)
+#25 > touche 270 786
+#25 DOIGT rien
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9a8293170b | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=6 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 142 786
+#26 DOIGT tuto_play_mine «  Ascolta il mio brano »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 484e65e092 | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=6 playing=true
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 270 699
+#27 DOIGT rien
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 484e65e092 | project=p-f34c5244 tuto=dnb/Facile active=true step=kick_do done=6 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 270 780
+#28 DOIGT tuto_next_big « Capitolo successivo   »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c4d3bbb533 | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=6 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 LAYOUT CONTRAST « Ancora 4 caselle tratteggiate qui » 2.90:1 (needs 3.0:1, 14 sp)
+#29 LAYOUT CONTRAST « 2 » 3.40:1 (needs 4.5:1, 12 sp)
+#29 > touche 298 296
+#29 DOIGT step_4 « Passo 5 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 54771bff11 | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=6 playing=true
+#30 SON Son : la musique du projet joue en boucle.
+#30 LAYOUT CONTRAST « Ancora 3 caselle tratteggiate qui » 2.90:1 (needs 3.0:1, 14 sp)
+#30 > touche 472 296
+#30 DOIGT step_7 « Passo 8 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ec66b3cc55 | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=6 playing=true
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT CONTRAST « Ancora 2 caselle tratteggiate qui » 2.90:1 (needs 3.0:1, 14 sp)
+#31 > touche 124 347
+#31 DOIGT step_9 « Passo 10 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 98c85810db | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=6 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 LAYOUT CONTRAST « Ancora 1 casella tratteggiata qui » 2.90:1 (needs 3.0:1, 14 sp)
+#32 > touche 298 347
+#32 DOIGT step_12 « Passo 13 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 845a6d44f1 | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=6 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 LAYOUT CUT « Battuta 1/2 · Rullante » ellipsized (« … »)
+#33 LAYOUT CONTRAST « Battuta 1/2 · Rullante » 1.24:1 (needs 4.5:1, 13 sp)
+#33 LAYOUT CONTRAST « Battuta 2 · 5 caselle → » 1.25:1 (needs 3.0:1, 14 sp)
+#33 > touche 358 234
+#33 DOIGT tuto_bar_go « Battuta 2 · 5 caselle → »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6ce4599176 | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=6 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 LAYOUT CONTRAST « Ancora 5 caselle tratteggiate qui » 2.90:1 (needs 3.0:1, 14 sp)
+#34 > touche 182 296
+#34 DOIGT step_18 « Passo 3 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4637b70333 | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=6 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 298 296
+#35 DOIGT step_20 « Passo 5 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dc68ac7bc3 | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=6 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 472 296
+#36 DOIGT step_23 « Passo 8 »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 63cee1e7cc | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=6 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 298 347
+#37 DOIGT step_28 « Passo 13 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c55da3307e | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=6 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 > touche 414 347
+#38 DOIGT step_30 « Passo 15 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5777e04bb0 | project=p-f34c5244 tuto=dnb/Facile active=true step=snare_do done=7 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 LAYOUT CONTRAST « Battuta 2/2 · Rullante » 1.26:1 (needs 4.5:1, 13 sp)
+#39 > touche 270 780
+#39 DOIGT tuto_next_big « Capitolo successivo   »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b33959b8f8 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 LAYOUT CONTRAST « Ancora 7 caselle tratteggiate qui » 2.90:1 (needs 3.0:1, 14 sp)
+#40 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#40 > touche 67 296
+#40 DOIGT step_0 « Passo 1 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2555e20e88 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 LAYOUT CONTRAST « Ancora 6 caselle tratteggiate qui » 2.90:1 (needs 3.0:1, 14 sp)
+#41 > touche 182 296
+#41 DOIGT step_2 « Passo 3 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2986f7a0ee | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 LAYOUT CONTRAST « 2 » 3.60:1 (needs 4.5:1, 12 sp)
+#42 > touche 298 296
+#42 DOIGT step_4 « Passo 5 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b6a516d508 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 414 296
+#43 DOIGT step_6 « Passo 7 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b0e3a4f196 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 67 347
+#44 DOIGT step_8 « Passo 9 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 07d3bccc58 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 182 347
+#45 DOIGT step_10 « Passo 11 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 88bfea0ae6 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 298 347
+#46 DOIGT step_12 « Passo 13 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 65d6e08bec | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CUT « Battuta 1/2 · Drum & bass · Hi-hat » ellipsized (« … »)
+#47 LAYOUT CONTRAST « Battuta 1/2 · Drum & bass · Hi-hat » 1.26:1 (needs 4.5:1, 13 sp)
+#47 LAYOUT CONTRAST « Battuta 2 · 7 caselle → » 1.27:1 (needs 3.0:1, 14 sp)
+#47 > touche 358 234
+#47 DOIGT tuto_bar_go « Battuta 2 · 7 caselle → »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a85a489a61 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 67 296
+#48 DOIGT step_16 « Passo 1 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 55e15db29b | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 > touche 182 296
+#49 DOIGT step_18 « Passo 3 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2986f7a0ee | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#50 SON Son : la musique du projet joue en boucle.
+#50 > touche 298 296
+#50 DOIGT step_20 « Passo 5 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a32a6a11b3 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 > touche 414 296
+#51 DOIGT step_22 « Passo 7 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b0e3a4f196 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 > touche 67 347
+#52 DOIGT step_24 « Passo 9 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 43723f6b41 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 > touche 182 347
+#53 DOIGT step_26 « Passo 11 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 99e7b88920 | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=7 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 > touche 298 347
+#54 DOIGT step_28 « Passo 13 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b3bbcf050a | project=p-f34c5244 tuto=dnb/Facile active=true step=hat_do done=8 playing=true
+#55 SON Son : la musique du projet joue en boucle.
+#55 LAYOUT CONTRAST « Battuta 2/2 · Drum & bass · Hi-hat » 1.25:1 (needs 4.5:1, 13 sp)
+#55 > touche 270 780
+#55 DOIGT tuto_next_big « Passo successivo   »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c7babbf0db | project=p-f34c5244 tuto=dnb/Facile active=true step=ohat_do done=8 playing=true
+#56 SON Son : la musique du projet joue en boucle.
+#56 > touche 472 347
+#56 DOIGT step_15 « Passo 16 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7a79b2f58e | project=p-f34c5244 tuto=dnb/Facile active=true step=ohat_do done=8 playing=true
+#57 SON Son : la musique du projet joue en boucle.
+#57 > touche 472 347
+#57 DOIGT step_15 « Passo 16 »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c7babbf0db | project=p-f34c5244 tuto=dnb/Facile active=true step=ohat_do done=8 playing=true
+#58 SON Son : la musique du projet joue en boucle.
+#58 > touche 414 347
+#58 DOIGT step_14 « Passo 15 »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c5e5da0ac8 | project=p-f34c5244 tuto=dnb/Facile active=true step=ohat_do done=8 playing=true
+#59 SON Son : la musique du projet joue en boucle.
+#59 LAYOUT CUT « Battuta 1/2 · Drum & bass · Hi-hat aperto » ellipsized (« … »)
+#59 LAYOUT CONTRAST « Battuta 1/2 · Drum & bass · Hi-hat aperto » 1.26:1 (needs 4.5:1, 13 sp)
+#59 LAYOUT CONTRAST « Battuta 2 · 1 casella → » 1.27:1 (needs 3.0:1, 14 sp)
+#59 > touche 360 234
+#59 DOIGT tuto_bar_go « Battuta 2 · 1 casella → »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 593d3ceb52 | project=p-f34c5244 tuto=dnb/Facile active=true step=ohat_do done=8 playing=true
+#60 SON Son : la musique du projet joue en boucle.
+#60 > touche 414 347
+#60 DOIGT step_30 « Passo 15 »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6eaf671126 | project=p-f34c5244 tuto=dnb/Facile active=true step=ohat_do done=9 playing=true
+#61 SON Son : la musique du projet joue en boucle.
+#61 LAYOUT CONTRAST « Battuta 2/2 · Drum & bass · Hi-hat aperto » 1.26:1 (needs 4.5:1, 13 sp)
+#61 > touche 270 780
+#61 DOIGT tuto_next_big « Passo successivo   »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4ab39dfd37 | project=p-f34c5244 tuto=dnb/Facile active=true step=ride_do done=9 playing=true
+#62 SON Son : la musique du projet joue en boucle.
+#62 > touche 182 296
+#62 DOIGT step_2 « Passo 3 »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b136dc564b | project=p-f34c5244 tuto=dnb/Facile active=true step=ride_do done=9 playing=true
+#63 SON Son : la musique du projet joue en boucle.
+#63 > touche 414 296
+#63 DOIGT step_6 « Passo 7 »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f792452c25 | project=p-f34c5244 tuto=dnb/Facile active=true step=ride_do done=9 playing=true
+#64 SON Son : la musique du projet joue en boucle.
+#64 > touche 182 347
+#64 DOIGT step_10 « Passo 11 »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 94dae1401c | project=p-f34c5244 tuto=dnb/Facile active=true step=ride_do done=9 playing=true
+#65 SON Son : la musique du projet joue en boucle.
+#65 > touche 414 347
+#65 DOIGT step_14 « Passo 15 »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 09472c786d | project=p-f34c5244 tuto=dnb/Facile active=true step=ride_do done=9 playing=true
+#66 SON Son : la musique du projet joue en boucle.
+#66 LAYOUT CUT « Battuta 1/2 · Piatto » ellipsized (« … »)
+#66 LAYOUT CONTRAST « Battuta 1/2 · Piatto » 1.25:1 (needs 4.5:1, 13 sp)
+#66 LAYOUT CONTRAST « Battuta 2 · 4 caselle → » 1.25:1 (needs 3.0:1, 14 sp)
+#66 > touche 357 234
+#66 DOIGT tuto_bar_go « Battuta 2 · 4 caselle → »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2b1f504cd7 | project=p-f34c5244 tuto=dnb/Facile active=true step=ride_do done=9 playing=true
+#67 SON Son : la musique du projet joue en boucle.
+#67 > touche 182 296
+#67 DOIGT step_18 « Passo 3 »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c267ac3981 | project=p-f34c5244 tuto=dnb/Facile active=true step=ride_do done=9 playing=true
+#68 SON Son : la musique du projet joue en boucle.
+#68 > touche 414 296
+#68 DOIGT step_22 « Passo 7 »
+#69 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 966dd29e87 | project=p-f34c5244 tuto=dnb/Facile active=true step=ride_do done=9 playing=true
+#69 SON Son : la musique du projet joue en boucle.
+#69 > touche 182 347
+#69 DOIGT step_26 « Passo 11 »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f36c1abe18 | project=p-f34c5244 tuto=dnb/Facile active=true step=ride_do done=9 playing=true
+#70 SON Son : la musique du projet joue en boucle.
+#70 > touche 414 347
+#70 DOIGT step_30 « Passo 15 »
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f0c4be5f68 | project=p-f34c5244 tuto=dnb/Facile active=true step=ride_do done=10 playing=true
+#71 SON Son : la musique du projet joue en boucle.
+#71 LAYOUT CONTRAST « Battuta 2/2 · Piatto » 1.26:1 (needs 4.5:1, 13 sp)
+#71 > touche 270 780
+#71 DOIGT tuto_next_big « Passo successivo   »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bb80f63be7 | project=p-f34c5244 tuto=dnb/Facile active=true step=drums_hear done=10 playing=true
+#72 SON Son : la musique du projet joue en boucle.
+#72 LAYOUT CONTRAST « Battuta 2/2 · Piatto » 1.30:1 (needs 4.5:1, 13 sp)
+#72 > attends 4
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bb80f63be7 | project=p-f34c5244 tuto=dnb/Facile active=true step=drums_hear done=10 playing=true
+#73 SON Son : la musique du projet joue en boucle.
+#73 > touche 270 789
+#73 DOIGT tuto_listen «  Ascolta l'esempio »
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2100650b50 | project=p-f34c5244 tuto=dnb/Facile active=true step=drums_hear done=10 playing=false
+#74 SON Son : l'exemple du tuto joue (encore 3 s).
+#74 > attends 4
+#75 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4ff1c3cd6e | project=p-f34c5244 tuto=dnb/Facile active=true step=drums_hear done=11 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 270 699
+#75 DOIGT tuto_next_big « Capitolo successivo   »
+#76 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE baf775af1e | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_hear done=11 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 270 786
+#76 DOIGT tuto_listen «  Ascolta l'esempio »
+#77 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9fa9f22803 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_hear done=11 playing=false
+#77 SON Son : l'exemple du tuto joue (encore 3 s).
+#77 > attends 8
+#78 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 449513a630 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_hear done=12 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 270 786
+#78 DOIGT tuto_next_big « Passo successivo   »
+#79 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 87859e04b2 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_do done=12 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 270 699
+#79 DOIGT tuto_need «   Crea la traccia Basso »
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 768f26e994 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_do done=12 playing=false
+#80 SON Son : rien ne joue.
+#80 LAYOUT TARGET « Sol1 Suona » 36 x 20 dp (touch 48 x 48)
+#80 LAYOUT TARGET « Sol♭1 Suona » 36 x 20 dp (touch 48 x 48)
+#80 LAYOUT TARGET « Fa1 Suona » 36 x 20 dp (touch 48 x 48)
+#80 LAYOUT TARGET « Mi1 Suona » 36 x 20 dp (touch 48 x 48)
+#80 LAYOUT TARGET « Mi♭1 Suona » 36 x 20 dp (touch 48 x 48)
+#80 > touche 198 628
+#80 DOIGT rien
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE eaf0dbb523 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_do done=12 playing=false
+#81 SON Son : 1 note du synthé.
+#81 > touche 420 628
+#81 DOIGT rien
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fb3074352d | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_do done=13 playing=false
+#82 SON Son : 1 note du synthé.
+#82 LAYOUT CUT « Ancora 3 note tratteggiate, più avanti → » ellipsized (« … »)
+#82 > touche 270 870
+#82 DOIGT tuto_next_folded « Riuscito »
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 8835d2a9b8 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_2 done=13 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 270 699
+#83 DOIGT tuto_do «   Lo faccio io »
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 0cf0670052 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_2 done=13 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT CUT « ↑ Ancora 2 note tratteggiate da toccare » ellipsized (« … »)
+#84 > touche 198 628
+#84 DOIGT rien
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE d8911925f1 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_2 done=13 playing=false
+#85 SON Son : 1 note du synthé.
+#85 LAYOUT CUT « ↑ Ancora 1 nota tratteggiata da toccare » ellipsized (« … »)
+#85 > touche 384 628
+#85 DOIGT rien
+#86 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 79b240b7e1 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_2 done=13 playing=false
+#86 SON Son : 1 note du synthé.
+#86 LAYOUT CUT « Ancora 1 nota tratteggiata, più in alto ↑ » ellipsized (« … »)
+#86 > touche 440 432
+#86 DOIGT tuto_notes_left « Basso · battuta 2/8 »
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 22d7dbb3ce | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_2 done=13 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT TARGET « Sol2 Suona » 36 x 20 dp (touch 48 x 48)
+#87 LAYOUT TARGET « Sol♭2 Suona » 36 x 20 dp (touch 48 x 48)
+#87 LAYOUT TARGET « Fa2 Suona » 36 x 20 dp (touch 48 x 48)
+#87 LAYOUT TARGET « Mi2 Suona » 36 x 20 dp (touch 48 x 48)
+#87 LAYOUT TARGET « Mi♭2 Suona » 36 x 20 dp (touch 48 x 48)
+#87 > touche 457 628
+#87 DOIGT rien
+#88 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dae81587ec | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_2 done=13 playing=false
+#88 SON Son : 1 note du synthé.
+#88 > touche 270 870
+#88 DOIGT tuto_need_folded « Copia sulle battute successive »
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b98a2c2ac7 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_2 done=13 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 434 432
+#89 DOIGT tuto_roll_copy « Copia »
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7cb71ed2c1 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_2 done=14 playing=false
+#90 SON Son : rien ne joue.
+#90 LAYOUT CUT « Tutte le note tratteggiate sono state messe » ellipsized (« … »)
+#90 > touche 270 870
+#90 DOIGT tuto_chapter_end_folded « Bravo, capitolo finito! »
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE fb535a2b25 | project=p-f34c5244 tuto=dnb/Facile active=true step=bass_2 done=14 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 270 699
+#91 DOIGT tuto_next_big « Capitolo successivo   »
+#92 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 78a68476a4 | project=p-f34c5244 tuto=dnb/Facile active=true step=pad_do done=14 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 270 699
+#92 DOIGT tuto_need «   Crea la traccia Accordi »
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dd033d8dd1 | project=p-f34c5244 tuto=dnb/Facile active=true step=pad_do done=14 playing=false
+#93 SON Son : rien ne joue.
+#93 LAYOUT CUT « ↑ Accordi tratteggiati da toccare: 1 » ellipsized (« … »)
+#93 LAYOUT CUT « Tocca a te: tocca “Crea la traccia Accordi”, poi la nota bassa tratteggiata di ogni accordo della battuta 1: si mette tutto l'accordo. » ellipsized (« … »)
+#93 LAYOUT TARGET « Si♭2 Suona » 36 x 20 dp (touch 48 x 48)
+#93 LAYOUT TARGET « La2 Suona » 36 x 20 dp (touch 48 x 48)
+#93 LAYOUT TARGET « La♭2 Suona » 36 x 20 dp (touch 48 x 48)
+#93 > touche 297 628
+#93 DOIGT rien
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1a34a198e0 | project=p-f34c5244 tuto=dnb/Facile active=true step=pad_do done=15 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 270 870
+#94 DOIGT tuto_next_folded « Riuscito »
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE cb77794016 | project=p-f34c5244 tuto=dnb/Facile active=true step=pad_end done=15 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 270 699
+#95 DOIGT tuto_need «   Copia sulle battute successive »
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE cb77794016 | project=p-f34c5244 tuto=dnb/Facile active=true step=pad_end done=15 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 434 415
+#96 DOIGT tuto_roll_copy « Copia »
+#97 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1fcb41e2ae | project=p-f34c5244 tuto=dnb/Facile active=true step=pad_end done=16 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 270 699
+#97 DOIGT tuto_next_big « Capitolo successivo   »
+#98 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dcd6c7aa42 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_hear done=16 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 270 786
+#98 DOIGT tuto_listen «  Ascolta l'esempio »
+#99 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ac5822bcd4 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_hear done=16 playing=false
+#99 SON Son : l'exemple du tuto joue (encore 3 s).
+#99 > attends 8
+#100 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 401c99d7e1 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_hear done=17 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 270 786
+#100 DOIGT tuto_next_big « Passo successivo   »
+#101 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1b0d3d94d3 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_do done=17 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 270 699
+#101 DOIGT tuto_need «   Crea la traccia Melodia »
+#102 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 055d55621d | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_do done=17 playing=false
+#102 SON Son : rien ne joue.
+#102 LAYOUT CUT « ↑ Ancora 4 note tratteggiate da toccare » ellipsized (« … »)
+#102 LAYOUT CUT « Tocca a te: tocca “Crea la traccia Melodia”, poi le 5 note tratteggiate della battuta 1. » ellipsized (« … »)
+#102 LAYOUT TARGET « Si♭3 Suona » 36 x 20 dp (touch 48 x 48)
+#102 LAYOUT TARGET « La3 Suona » 36 x 20 dp (touch 48 x 48)
+#102 LAYOUT TARGET « La♭3 Suona » 36 x 20 dp (touch 48 x 48)
+#102 LAYOUT TARGET « Sol3 Suona » 36 x 20 dp (touch 48 x 48)
+#102 LAYOUT TARGET « Sol♭3 Suona » 36 x 20 dp (touch 48 x 48)
+#102 LAYOUT TARGET « Fa3 Suona » 36 x 20 dp (touch 48 x 48)
+#102 > touche 210 617
+#102 DOIGT rien
+#103 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3e38ed75f9 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_do done=17 playing=false
+#103 SON Son : 1 note du synthé.
+#103 LAYOUT CUT « ↑ Ancora 3 note tratteggiate da toccare » ellipsized (« … »)
+#103 > touche 422 557
+#103 DOIGT rien
+#104 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f43ccf0824 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_do done=17 playing=false
+#104 SON Son : 1 note du synthé.
+#104 > touche 430 432
+#104 DOIGT tuto_notes_left « Melodia · battuta 1/8 »
+#105 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 16f526bcf7 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_do done=17 playing=false
+#105 SON Son : rien ne joue.
+#105 LAYOUT TARGET « Do4 Do4 Suona » 36 x 14 dp (touch 48 x 48)
+#105 LAYOUT TARGET « Si3 Suona » 36 x 14 dp (touch 48 x 48)
+#105 LAYOUT TARGET « Si♭3 Suona » 36 x 14 dp (touch 48 x 48)
+#105 LAYOUT TARGET « La3 Suona » 36 x 14 dp (touch 48 x 48)
+#105 LAYOUT TARGET « La♭3 Suona » 36 x 14 dp (touch 48 x 48)
+#105 LAYOUT TARGET « Sol3 Suona » 36 x 14 dp (touch 48 x 48)
+#105 LAYOUT TARGET « Sol♭3 Suona » 36 x 14 dp (touch 48 x 48)
+#105 LAYOUT TARGET « Fa3 Suona » 36 x 14 dp (touch 48 x 48)
+#105 > touche 297 555
+#105 DOIGT rien
+#106 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9f6ee1d02c | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_do done=17 playing=false
+#106 SON Son : 1 note du synthé.
+#106 > touche 135 702
+#106 DOIGT rien
+#107 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1735b4c667 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_do done=17 playing=false
+#107 SON Son : 1 note du synthé.
+#107 > touche 470 638
+#107 DOIGT rien
+#108 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4dc1e99008 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_do done=18 playing=false
+#108 SON Son : 1 note du synthé.
+#108 > touche 270 870
+#108 DOIGT tuto_next_folded « Riuscito »
+#109 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dd9c415b1d | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_2 done=18 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 483 450
+#109 DOIGT tuto_fold
+#110 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ab33dd66e7 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_2 done=18 playing=false
+#110 SON Son : rien ne joue.
+#110 LAYOUT CUT « ↓ Ancora 2 note tratteggiate da toccare » ellipsized (« … »)
+#110 LAYOUT TARGET « Mi3 Suona » 36 x 14 dp (touch 48 x 48)
+#110 > touche 430 432
+#110 DOIGT tuto_notes_left « Melodia · battuta 2/8 »
+#111 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 64347d7e98 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_2 done=18 playing=false
+#111 SON Son : rien ne joue.
+#111 LAYOUT TARGET « Mi♭3 Suona » 36 x 14 dp (touch 48 x 48)
+#111 LAYOUT TARGET « Re3 Suona » 36 x 14 dp (touch 48 x 48)
+#111 LAYOUT TARGET « Re♭3 Suona » 36 x 14 dp (touch 48 x 48)
+#111 > touche 196 585
+#111 DOIGT rien
+#112 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b223e07e82 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_2 done=18 playing=false
+#112 SON Son : 1 note du synthé.
+#112 > touche 470 628
+#112 DOIGT rien
+#113 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 37d5052b4f | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_2 done=18 playing=false
+#113 SON Son : 1 note du synthé.
+#113 > touche 422 670
+#113 DOIGT rien
+#114 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c94142fc16 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_2 done=18 playing=false
+#114 SON Son : 1 note du synthé.
+#114 > touche 270 870
+#114 DOIGT tuto_need_folded « Copia sulle battute successive »
+#115 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b202a53216 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_2 done=18 playing=false
+#115 SON Son : rien ne joue.
+#115 > touche 434 432
+#115 DOIGT tuto_roll_copy « Copia »
+#116 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 1bf968a5b5 | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_2 done=19 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 483 771
+#116 DOIGT tuto_fold
+#117 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE f0ce3e40ae | project=p-f34c5244 tuto=dnb/Facile active=true step=lead_2 done=19 playing=false
+#117 SON Son : rien ne joue.
+#117 > touche 270 699
+#117 DOIGT tuto_next_big « Capitolo successivo   »
+#118 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 326289ad33 | project=p-f34c5244 tuto=dnb/Facile active=true step=groove_hear done=19 playing=false
+#118 SON Son : rien ne joue.
+#118 > touche 270 705
+#118 DOIGT tuto_play_mine «   Ascolta il tuo risultato »
+#119 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE add5b9cd1e | project=p-f34c5244 tuto=dnb/Facile active=true step=groove_hear done=19 playing=true
+#119 SON Son : la musique du projet joue en boucle.
+#119 > attends 6
+#120 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 48c837af60 | project=p-f34c5244 tuto=dnb/Facile active=true step=groove_hear done=19 playing=true
+#120 SON Son : la musique du projet joue en boucle.
+#120 > touche 270 789
+#120 DOIGT tuto_listen «  Ascolta l'esempio »
+#121 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE af60461004 | project=p-f34c5244 tuto=dnb/Facile active=true step=groove_hear done=19 playing=false
+#121 SON Son : l'exemple du tuto joue (encore 3 s).
+#121 > attends 10
+#122 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 7423a86f15 | project=p-f34c5244 tuto=dnb/Facile active=true step=groove_hear done=20 playing=false
+#122 SON Son : rien ne joue.
+#122 > touche 270 699
+#122 DOIGT tuto_next_big « Passo successivo   »
+#123 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7338ed664a | project=p-f34c5244 tuto=dnb/Facile active=true step=groove_name done=20 playing=false
+#123 SON Son : rien ne joue.
+#123 > touche 270 699
+#123 DOIGT tuto_need «   Dai il nome “Groove” alla parte »
+#124 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3ee3142d77 | project=p-f34c5244 tuto=dnb/Facile active=true step=groove_name done=21 playing=false
+#124 SON Son : rien ne joue.
+#124 > fin
+#124 FIN : fin

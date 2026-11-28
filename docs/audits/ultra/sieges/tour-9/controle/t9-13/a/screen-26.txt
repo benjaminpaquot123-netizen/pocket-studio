@@ -1,0 +1,55 @@
+Écran 26 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 86,114
+bouton « A » ▾ @ 202,114
+icône ↶ @ 278,114
+bouton ● @ 350,114
+bouton ▶ « dit deel » @ 422,114
+icône (trois points reliés) @ 495,114
+bouton « 92  BPM » @ 74,195
+bouton « ? » @ 495,195
+onglet « Drums 16 pads » [sélectionné] @ 87,276
+onglet « Acid 303 Baslijn » @ 260,276
+onglet « Zang Microfoon » [coupé] @ 438,276
+image → @ 529,277
+texte « Deel: A » @ 69,345
+texte « Maat » [coupé] @ 75,380
+bouton « 1 » [coupé] @ 153,381
+bouton « 2 » [coupé, sélectionné] @ 234,381
+bouton « Volgen » [coupé] @ 351,381
+texte « Maat 2/2 · Boom bap · Kick » @ 223,451
+bouton « 1 » [état « slag, kracht 100 % »] @ 67,531
+bouton [état « leeg »] @ 124,531
+bouton [état « slag, kracht 100 % »] @ 182,531
+bouton [état « leeg »] @ 240,531
+bouton « 2 » [état « leeg »] @ 298,531
+bouton [état « leeg »] @ 356,531
+bouton [état « leeg »] @ 414,531
+bouton [état « leeg »] @ 472,531
+bouton « 3 » [état « leeg »] @ 67,602
+bouton [état « leeg »] @ 124,602
+bouton [état « slag, kracht 100 % »] @ 182,602
+bouton [état « leeg »] @ 240,602
+bouton « 4 » [état « leeg »] @ 298,602
+bouton [état « slag, kracht 100 % »] @ 356,602
+bouton [état « leeg »] @ 414,602
+bouton [état « leeg »] @ 472,602
+texte « De drums Hoofdstuk 2/14 · Stap 1/8 · Pro » @ 176,726
+icône (liste) « Hoofdstukken » @ 389,727
+icône ⌃ @ 483,727
+icône (rond coché) « Gelukt Volgende stap » → @ 270,857
+icône ↶ « Ongedaan maken » @ 57,953
+icône ↷ « Opnieuw » [désactivé] @ 157,953
+icône ▶ « het nummer » @ 276,953
+texte « 92 Tempo » @ 396,953
+icône (trois points reliés) « Delen » @ 489,953
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 297,1140
+texte « ✎  Noteren » @ 400,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 130,1140

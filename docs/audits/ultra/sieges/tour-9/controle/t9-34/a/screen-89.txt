@@ -1,0 +1,61 @@
+Écran 89 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 288,42
+bouton « プロ » @ 609,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 122  BPM » @ 83,123
+icône « イントロ 小節 1/96 » ▾ @ 254,123
+bouton (flèches en boucle) « ループ » [état « オフ »] @ 871,123
+bouton « ? » @ 990,123
+image (courbe) @ 0,0
+texte « 音量 » @ 241,213
+bouton « ? » @ 468,213
+texte « フェーダーをスライドで音量。トラック名をタップでエフェクトとカーブ。 » @ 263,277
+texte « ドラム » @ 84,380
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 57,455
+bouton (casque) [état « オフ »] @ 111,455
+curseur [état « +0.0 dB », à 80 %] @ 84,626
+texte « Acid 303 » @ 204,380
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 177,455
+bouton (casque) [état « オフ »] @ 231,455
+curseur [état « +0.0 dB », à 80 %] @ 204,626
+texte « ベース » @ 324,380
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 297,455
+bouton (casque) [état « オフ »] @ 351,455
+curseur [état « +0.0 dB », à 80 %] @ 324,626
+texte « サブ » @ 444,380
+bouton (haut-parleur et ondes) [allumé, état « オン »] @ 417,455
+bouton (casque) [état « オフ »] @ 471,455
+curseur [état « +0.0 dB », à 80 %] @ 444,626
+texte « 新しいカーブ：下に描いてください。 » @ 771,215
+texte « コード » @ 633,288
+texte « 空にする » @ 822,331
+icône (poubelle) @ 945,331
+texte « フィルター カットオフ » @ 648,356
+texte « 音を開く（明るい）か閉じる（こもる）：フィルタースイープ。 » @ 879,460
+bouton (curseurs) «  設定を見る » @ 686,560
+bouton « ループ » [sélectionné] @ 628,641
+bouton « パートごと » @ 798,641
+bouton « 曲 » @ 940,641
+texte « ループのたびに同じカーブ（64 ステップ）。 » @ 771,722
+texte « エフェクト チャプター 14/17 · ステップ 2/2 · プロ » @ 425,811
+icône (liste) « チャプター » @ 885,811
+icône ⌃ @ 978,811
+icône « あなたの番：ビルドアップで「コード」トラックのフィルターの「カットオフ」をオートメーションしよう：「設定をオートメーション」、「コード」、「フィルター（スイープ）」、「パートごと」と進み、上がるカーブを描く。 読む » ⌃ @ 517,924
+icône ↶ « 元に戻す » @ 149,1023
+icône ↷ « やり直す » [désactivé] @ 339,1023
+bouton ▶ « 曲 » @ 524,1023
+texte « 122 テンポ » @ 708,1023
+icône (trois points reliés) « シェア » @ 893,1023
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » @ 309,1123
+onglet (curseurs) « ミックス » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  メモ » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 385,1213

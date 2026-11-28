@@ -1,0 +1,51 @@
+Écran 1 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 180,42
+bouton « プロ » @ 393,42
+bouton « A · グルーヴ » ▾ @ 542,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « ドラム 16パッド » [sélectionné] @ 90,205
+onglet « Acid 303 ベースライン » @ 277,205
+onglet « ボーカル マイク » @ 470,205
+onglet « リミックス 分離 » @ 660,205
+bouton « ベース 丸いベース » @ 850,205
+bouton « サブ ピュアなサブ » [coupé] @ 978,205
+image → @ 1024,206
+texte « パートを理解する チャプター 10/17 · ステップ 1/5 · プロ » @ 425,302
+icône (liste) « チャプター » @ 885,302
+icône ⌄ @ 978,302
+texte « イントロを聴こう：ドラムだけ、ベースもピアノもなし。マップのブレイクは、曲のひと休みのこと。 » @ 517,414
+texte « エネルギー » @ 82,486
+texte « 16 » [coupé] @ 102,588
+texte « 8 » [coupé] @ 226,588
+texte « 16 » [coupé] @ 351,588
+texte « 16 » [coupé] @ 517,588
+texte « 8 » [coupé] @ 642,588
+texte « 16 » [coupé] @ 767,588
+texte « 16 » [coupé] @ 933,588
+bouton « ハウス キットをダウンロード（4 MB） » @ 463,654
+texte « あとで » @ 953,654
+texte « ▸ なぜ？ » @ 517,725
+icône « 続きを読む » ⌄ @ 517,779
+bouton ▶ «  例を聴く » @ 517,851
+icône ← «  前へ » @ 85,935
+icône « 次へ  » → @ 950,935
+icône ↶ « 元に戻す » @ 149,1023
+icône ↷ « やり直す » [désactivé] @ 339,1023
+bouton ▶ « 曲 » @ 524,1023
+texte « 122 テンポ » @ 708,1023
+icône (trois points reliés) « シェア » @ 893,1023
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » [sélectionné] @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  メモ » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 385,1213

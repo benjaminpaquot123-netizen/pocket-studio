@@ -166,7 +166,8 @@ class Tour6Tuto4TechnoTest {
         for (s in chapter("parts").steps.filter { it.check.startsWith("part:") }) {
             val label = s.check.removePrefix("part:").substringBefore(':')
             for (fr in texts(s)) {
-                if ("« Créer la partie « $label » »" !in seen(fr, s)) bad += "fr ${s.id}: not « Créer la partie « $label » »: $fr"
+                // Tour 9 L5a (F058): the button's words, never inside a second pair of « » (« « Créer la partie « Intro » » »).
+                if ("Créer la partie « $label »" !in seen(fr, s)) bad += "fr ${s.id}: not Créer la partie « $label »: $fr"
                 for (l in langs) {
                     val button = tr(l, "Créer la partie « %s »")
                     val shown = Regex(Regex.escape(button.substringBefore("%s")) + ".+?" + Regex.escape(button.substringAfter("%s")))
@@ -404,6 +405,14 @@ class Tour6Tuto4TechnoTest {
         val gap = step("gap")
         for (fr in listOf(gap.textFor(TutoLevel.Pro))) for (t in listOf(fr) + langs.map { tr(it, fr) }) {
             if (!Regex("(?<![\\d−-])$crosses(?!\\d)").containsMatchIn(t)) bad += "gap: the $crosses crosses not counted: $t"
+        }
+        // Tour 8 (T0c): the Facile words count theirs too (Tour7TutoGapWordsMatchCrossesTest holds the French count);
+        // every translation says the same number.
+        val facile = gap.textFor(TutoLevel.Facile)
+        val counted = Regex("(?<![\\d−-])(\\d+)(?!\\d)").findAll(facile).map { it.value }.toList()
+        if (counted.isEmpty()) bad += "fr Facile gap: no count: $facile"
+        for (l in langs) tr(l, facile).let { t ->
+            for (n in counted) if (!Regex("(?<![\\d−-])$n(?!\\d)").containsMatchIn(t)) bad += "${l.code} Facile gap: no « $n »: $t"
         }
         val share = step("share").text
         if (!Regex("« −14 ».*streaming").containsMatchIn(share)) bad += "fr share: « −14 » not explained: $share"

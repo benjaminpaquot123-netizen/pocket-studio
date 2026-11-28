@@ -32,9 +32,10 @@ import com.pocketstudio.ui.ScaledDropdownMenu
 /**
  * What the editors (Rythme, Acide, Synthé, Audio) say above their grids: [title] the part being
  * edited (« Partie : C · Drop »), [note] one short line under it when there is something to know,
- * [loop] the part loops (the ⟳ icon lit in the accent).
+ * [loop] the part loops (the ⟳ icon lit in the accent), [empty] the part holds nothing yet (F103: its menu then offers a
+ * new empty part, not a « copie »).
  */
-data class PartHeaderUi(val title: String, val note: String? = null, val loop: Boolean = false)
+data class PartHeaderUi(val title: String, val note: String? = null, val loop: Boolean = false, val empty: Boolean = false)
 
 /**
  * The header of the editors for [p]: the part shown; while the song plays and the screens follow
@@ -44,7 +45,10 @@ data class PartHeaderUi(val title: String, val note: String? = null, val loop: B
  * ([SessionUi.pending]); said only outside the song mode, where it is a part someone picked (round 5, A a #27: until
  * then nothing said the choice was taken). In the song mode it is the song's next part: not said.
  */
-fun partHeader(p: Project, playing: Boolean, songPlaying: Boolean, loopPart: Boolean, armedBySelf: Boolean, waiting: Int? = null): PartHeaderUi {
+fun partHeader(p: Project, playing: Boolean, songPlaying: Boolean, loopPart: Boolean, armedBySelf: Boolean, waiting: Int? = null): PartHeaderUi =
+    headerOf(p, playing, songPlaying, loopPart, armedBySelf, waiting).copy(empty = p.allScenes.getOrNull(p.scene)?.isEmpty != false)
+
+private fun headerOf(p: Project, playing: Boolean, songPlaying: Boolean, loopPart: Boolean, armedBySelf: Boolean, waiting: Int?): PartHeaderUi {
     val title = tr("Partie : %s", p.sceneTitle(p.scene))
     val hasSong = p.song.isNotEmpty()
     return when {
@@ -97,7 +101,7 @@ fun PartHeader(ui: PartHeaderUi, modifier: Modifier = Modifier, parts: List<Stri
                     if (newPart != null) {
                         androidx.compose.material3.HorizontalDivider(color = Neon.Outline.copy(alpha = 0.45f))
                         androidx.compose.material3.DropdownMenuItem(
-                            text = { Text(tr("+ Nouvelle partie (copie de %s)", parts.getOrElse(current) { "" })) },
+                            text = { Text(if (ui.empty) tr("+ Nouvelle partie vide") else tr("+ Nouvelle partie (copie de %s)", parts.getOrElse(current) { "" })) },
                             onClick = { open = false; newPart() },
                             modifier = Modifier.testTag("part_new"),
                         )

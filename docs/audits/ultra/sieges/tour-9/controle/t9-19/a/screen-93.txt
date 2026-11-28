@@ -1,0 +1,52 @@
+Écran 93 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 195,42
+bouton « Einfach » @ 436,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ■ « dieser Teil » @ 677,42
+bouton ■ « der Song » @ 775,42
+icône ⋮ @ 855,42
+bouton « 116  Tempo » @ 98,123
+icône (flèches en boucle) « A Takt 2/8 » [désactivé] @ 268,123
+bouton « ? » @ 855,123
+onglet « Acid 303 Bassline » @ 100,204
+bouton « Bass Gezupfter Bass » ⋮ @ 333,204
+icône ♪ « Sound » @ 553,205
+bouton + «  Spur » @ 721,205
+icône « Teil: A » ▾ @ 77,283
+texte « Im Takt 50 % » [coupé] @ 526,323
+texte « 100 % » [coupé] @ 697,323
+texte « Löschen » @ 119,370
+texte « Takt » @ 84,431
+bouton « 4 » @ 486,439
+bouton « 5 » [coupé] @ 853,439
+texte « D♯ » [coupé] @ 84,474
+texte « D » @ 84,498
+texte « C♯ » @ 84,540
+texte « C3 » @ 84,582
+texte « H » @ 84,624
+texte « A♯ » @ 84,666
+texte « A » @ 84,708
+texte « G♯ » @ 84,750
+texte « G » @ 84,792
+texte « F♯ » @ 84,834
+texte « F » @ 84,876
+texte « E » @ 84,917
+dessin [coupé] @ 492,704
+texte « Die Gitarre Kapitel 4/13 · Schritt 1/3 · Einfach » @ 366,987
+icône (liste) « Kapitel » @ 759,988
+icône ⌄ @ 843,988
+texte « Hör dir die Gitarre allein an. » @ 212,1076
+texte « ▸ Warum? » @ 450,1128
+bouton ▶ «  Beispiel anhören » @ 450,1197
+icône ← «  Zurück » @ 105,1281
+icône « Weiter  » → @ 798,1281
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » @ 268,1389
+onglet (touches de piano) « Tastatur » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

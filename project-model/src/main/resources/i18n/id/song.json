@@ -13,7 +13,6 @@
   "Afficher :": "Tampilkan:",
   "Aide de la ligne du temps": "Bantuan timeline",
   "Ajouter :": "Tambah:",
-  "Ajouter à la fin :": "Tambah di akhir:",
   "Ajouter à la suite": "Tambah sesudahnya",
   "Annuler la dernière action": "Urungkan",
   "Annuler la prise": "Batalkan rekaman",
@@ -275,8 +274,8 @@
   "Terminé": "Selesai",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Lagumu kosong: tambah bagianmu sesuai urutan mainnya (Intro, Verse, Reff…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Sentuh pad untuk memulai suaranya, sentuh lagi untuk menghentikannya. Semuanya tetap pas di ketukan.",
-  "Touche une partie : elle joue juste après celle en cours.": "Sentuh bagian: ia main tepat setelah bagian yang sedang jalan.",
-  "Touche une partie pour écouter le morceau à partir d'elle.": "Sentuh bagian untuk mendengar lagu mulai dari situ.",
+  "Touche une partie pour régler sa longueur ; ▶ la joue juste après celle en cours.": "Sentuh bagian untuk mengatur panjangnya; ▶ memainkannya tepat setelah bagian yang sedang jalan.",
+  "Touche une partie pour régler sa longueur ; ▶ écoute le morceau à partir d'elle.": "Sentuh bagian untuk mengatur panjangnya; ▶ memutar lagu mulai dari situ.",
   "Toucher la règle : jouer depuis cette partie.": "Sentuh penggaris: putar dari bagian itu.",
   "Toucher une case : couper ou remettre la piste dans cette partie.": "Sentuh kotak: mute atau unmute trek di bagian ini.",
   "Tout couper": "Stop semua",
@@ -404,5 +403,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Mainkan not: bunyinya di Acid 303. Ketuk kotaknya lagi untuk berhenti: loop-nya pas di birama.",
   "Le micro ne répond pas : réessaie.": "Mik tidak merespons: coba lagi.",
   "Vider la case": "Kosongkan kotak",
-  "Annuler possible": "Bisa diurungkan"
+  "Annuler possible": "Bisa diurungkan",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : ulangan. Abu: durasi tetap (saran atau Live) atau 1 kali."
 }

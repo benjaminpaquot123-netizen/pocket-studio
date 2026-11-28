@@ -1,0 +1,33 @@
+Écran 63 (900x1509)
+dessin @ 450,228
+texte « Teil 4 · E · Break » @ 163,288
+texte « Schließen » @ 789,305
+texte « 8 Takte » @ 74,329
+bouton (étincelles) « Variation » @ 234,403
+bouton (barres de son) « Fill am Ende » @ 666,403
+bouton ❚❚ « Break danach · 4 Takte » @ 234,502
+bouton ❚❚ « Break danach · 8 Takte » @ 666,502
+bouton (courbe qui monte) « Build-up davor · 4 Takte » @ 234,601
+bouton (courbe qui monte) « Build-up davor · 8 Takte » @ 666,601
+bouton (haut-parleur et ondes) « Fade-in » @ 234,700
+bouton (haut-parleur et une onde) « Fade-out » @ 666,700
+bouton (drapeau) « Ende hinzufügen » @ 234,799
+texte « Energie: 3 » @ 93,876
+bouton « 1 · Pads » @ 100,948
+bouton « 2 · + Bass » @ 275,948
+bouton « 3 · + Drums » [sélectionné] @ 478,948
+bouton « 4 · Vollgas » @ 686,948
+texte « Länge » @ 66,1019
+champ « Takte » contenu « 8 » @ 268,1110
+icône ✕ @ 315,1118
+texte « OK » [désactivé] @ 403,1110
+icône − [désactivé] @ 60,1110
+icône + @ 141,1110
+texte « Teil » @ 47,1200
+icône (crayon) « Umbenennen » @ 151,1272
+icône (curseurs) « Was spielt » @ 389,1272
+icône ↑ « Nach oben » @ 609,1272
+icône ↓ « Nach unten » @ 137,1344
+icône (deux feuilles) « Duplizieren » @ 369,1344
+icône + « Danach einfügen » @ 639,1344
+icône (poubelle) « Entfernen » @ 126,1416

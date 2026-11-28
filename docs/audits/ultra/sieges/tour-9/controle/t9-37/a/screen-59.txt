@@ -1,0 +1,62 @@
+Écran 59 (540x1170)
+icône « 我的项目 1 » ✓ @ 274,36
+bouton « 专业 » @ 490,36
+bouton (dossier ouvert) @ 81,114
+bouton « A » ▾ @ 192,114
+icône ↶ @ 268,114
+bouton ● @ 340,114
+bouton ▶ « 这个段落 » @ 417,114
+icône (trois points reliés) @ 495,114
+bouton « 140  BPM » @ 83,195
+bouton « ? » @ 495,195
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 105,277
+onglet « Acid 303 贝斯线 » @ 296,277
+onglet « 人声 麦克风 » @ 456,277
+image → @ 529,278
+texte « 段落：A » @ 71,347
+texte « 这里还有 2 个虚线格子 » [coupé] @ 201,392
+bouton « 1 » [état « 空 »] @ 67,454
+bouton [état « 空 »] @ 124,454
+bouton [état « 空 »] @ 182,454
+bouton [état « 空 »] @ 240,454
+bouton « 2 » [état « 空 »] @ 298,454
+bouton [état « 空 »] @ 356,454
+bouton [état « 空，虚线：点一下 »] @ 414,454
+bouton [état « 空 »] @ 472,454
+bouton « 3 » [état « 空 »] @ 67,525
+bouton [état « 空 »] @ 124,525
+bouton [état « 空 »] @ 182,525
+bouton [état « 空 »] @ 240,525
+bouton « 4 » [état « 空 »] @ 298,525
+bouton [état « 空 »] @ 356,525
+bouton [état « 空，虚线：点一下 »] @ 414,525
+bouton [état « 空 »] @ 472,525
+bouton « 打击 » [sélectionné] @ 95,606
+bouton « 滚奏 » @ 207,606
+bouton « 声像 » @ 319,606
+bouton « 音高 » @ 431,606
+bouton « 力度 » [coupé] @ 494,606
+texte « 全部 » [coupé] @ 138,673
+texte « 1/2 » [coupé] @ 218,673
+texte « 1/4 » [coupé] @ 293,673
+texte « ◀ » [désactivé, coupé] @ 368,673
+texte « ▶ » [désactivé, coupé] @ 443,673
+texte « 填充 » [coupé] @ 68,679
+texte « 踩镲和打击乐 第 4/15 章 · 第 3/4 步 · 专业 » @ 198,738
+icône (liste) « 章节 » @ 411,738
+icône ⌃ @ 483,738
+icône « 轮到你：在“开镲”打击垫上，点 4 个虚线格子：它会在副歌里回应底鼓。 阅读 » ⌃ @ 270,851
+icône ↶ « 撤销 » @ 64,950
+icône ↷ « 重做 » [désactivé] @ 164,950
+bouton ▶ « 歌曲 » @ 264,950
+texte « 140 速度 » @ 370,950
+icône (trois points reliés) « 分享 » @ 476,950
+onglet (ligne brisée et points) « 结构 » @ 49,1050
+onglet (touches de piano) « 音色 » [sélectionné] @ 160,1050
+onglet (curseurs) « 混音 » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « 更多 » @ 491,1050
+texte « ●  REC » @ 311,1140
+texte « ✎  记一笔 » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « 反馈模式 » @ 137,1140

@@ -196,7 +196,7 @@
         },
         {
           "id": "lead_2",
-          "text": "À toi : écris la note de la fin de la mesure 2.",
+          "text": "À toi : écris la note de la fin de la mesure 2 ; le bouton qui apparaît ensuite la recopie sur les mesures suivantes.",
           "levels": "f",
           "check": "notes:lead",
           "spot": "notes.track",
@@ -372,7 +372,7 @@
         {
           "id": "gap",
           "text": "À toi : à la fin du Break, efface les coups du dernier temps : un silence avant le Drop 2.",
-          "textPro": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "textPro": "À toi : dans la partie « Break », efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
           "why": "Même le grondement se tait : le retour du kick fait l'effet d'un coup de marteau.",
           "check": "gap",
           "spot": "rhythm.pattern",

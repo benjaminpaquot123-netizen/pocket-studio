@@ -1,0 +1,50 @@
+Écran 2 (900x1509)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 284,42
+bouton « Simple » @ 612,42
+bouton ● @ 701,42
+bouton ▶ « this part » @ 778,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Part: A » ▾ @ 99,240
+bouton « Studio bass drum FX » @ 123,330
+bouton « Bass drum 2 » @ 341,330
+bouton « Snare » @ 559,330
+bouton « Snare 2 » @ 777,330
+bouton « Handclap FX » @ 123,408
+bouton « Hi-hat FX L 30 » @ 341,408
+bouton « Open hi-hat R 30 » @ 559,408
+bouton « Low tom » @ 777,408
+bouton « Mid tom R 45 » @ 123,486
+bouton « High tom » @ 341,486
+bouton « Drum rim FX R 50 » @ 559,486
+bouton « Bell » @ 777,486
+bouton « Cymbal FX R 40 » [coupé] @ 123,533
+bouton « Maracas L 50 » [coupé] @ 341,533
+bouton « Conga » [coupé] @ 559,533
+bouton « Laser » [coupé] @ 777,533
+texte « The song's speed and colour Chapter 1/12 · Step 1/3 · Easy » @ 357,604
+icône (liste) « Chapters » @ 750,604
+icône ⌄ @ 843,604
+texte « Listen to a clip of a finished amapiano song: first the piano and light percussion, then the log drum comes in and bounces. » [coupé] @ 450,748
+bouton « Download the Amapiano kit (2 MB) » @ 403,868
+texte « Later » @ 826,868
+texte « ▸ Why? » @ 450,947
+icône « Read on » ⌄ @ 450,1010
+bouton ■ «  Stop listening » @ 450,1085
+icône ← «  Previous » [désactivé] @ 141,1174
+icône « Next  » → @ 796,1174
+icône ↶ « Undo » [désactivé] @ 109,1277
+image ↷ @ 258,1257
+icône ▶ « the song » @ 436,1278
+texte « 120 Tempo » @ 629,1277
+icône ⋮ « More » @ 793,1277
+onglet (lignes et note) « My song » @ 85,1389
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 268,1389
+onglet (touches de piano) « Keyboard » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Share » @ 815,1389
+texte « ●  REC » @ 637,1479
+texte « ✎  Note » @ 754,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 297,1479

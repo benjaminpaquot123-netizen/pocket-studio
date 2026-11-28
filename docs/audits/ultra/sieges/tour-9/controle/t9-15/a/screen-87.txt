@@ -1,0 +1,55 @@
+Écran 87 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 206,42
+bouton « Simple » @ 455,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ▶ « esta parte » @ 689,42
+bouton ▶ « la canción » @ 779,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 855,114
+onglet « Acid 303 Línea de bajo » @ 104,186
+bouton « Bajo Bajo redondo » @ 292,186
+bouton « Acordes Piano FM » ⋮ @ 474,186
+icône ♪ « Sonido » @ 636,186
+bouton + «  Pista » @ 790,186
+icône « Parte: A » ▾ @ 76,264
+texte « A tiempo 50 % » @ 472,351
+texte « 100 % » @ 619,351
+texte « Borrar » @ 723,351
+bouton « Acordes » [sélectionné] @ 109,351
+bouton « Bajo fantasma » [sélectionné] @ 278,351
+texte « comp. » @ 84,408
+bouton « 2 » @ 486,420
+bouton « 3 » [coupé] @ 853,420
+texte « Sol » [coupé] @ 84,465
+texte « Sol♭ » @ 84,499
+texte « Fa » @ 84,541
+texte « Mi » @ 84,583
+texte « Mi♭ » @ 84,625
+texte « Re » @ 84,667
+texte « Re♭ » @ 84,709
+texte « Do3 » @ 84,751
+texte « Si » @ 84,793
+texte « Si♭ » @ 84,835
+texte « La » [coupé] @ 84,867
+dessin [coupé] @ 492,666
+texte « La voz Capítulo 5/13 · Paso 1/1 · Fácil » @ 364,927
+icône (liste) « Capítulos » @ 757,927
+icône ⌄ @ 843,927
+texte « Te toca: toca “Crear la pista Melodía”. » @ 235,1008
+texte « ▸ ¿Por qué? » @ 450,1050
+bouton ⊕ «   Crear la pista Melodía » @ 450,1116
+bouton ▶ «  Escuchar el ejemplo » @ 232,1200
+bouton (œil) «  Muéstramelo » @ 667,1200
+icône ← «  Anterior » @ 97,1281
+icône « Siguiente  » → @ 795,1281
+onglet (lignes et note) « Mi canción » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Teclado » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Compartir » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Anotar » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 318,1479

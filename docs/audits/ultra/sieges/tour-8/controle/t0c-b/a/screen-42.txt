@@ -1,0 +1,55 @@
+Écran 42 (588x1278)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 129,42
+bouton « シンプル » @ 303,42
+bouton ● @ 393,42
+bouton ■ « このパート » @ 468,42
+icône ⋮ @ 543,42
+bouton « 132  テンポ » @ 79,114
+icône (flèches en boucle) « ビルドアップ 小節 1/4 » [désactivé] @ 245,114
+bouton « ? » @ 543,114
+icône « パート：B · ビルドアップ » ▾ @ 155,180
+texte « 小節 4/4 · シンバル » [coupé] @ 143,223
+bouton « 1 » [état « 空 »] @ 70,299
+bouton [état « 空 »] @ 133,299
+bouton [état « 空 »] @ 197,300
+bouton [état « 空 »] @ 261,300
+bouton « 2 » [état « 空 »] @ 325,300
+bouton [état « 空 »] @ 389,300
+bouton [état « 空 »] @ 453,300
+bouton [état « 空 »] @ 517,300
+bouton « 3 » [coupé, état « 空 »] @ 70,350
+bouton [coupé, état « 空 »] @ 133,350
+bouton [coupé, état « 空 »] @ 197,350
+bouton [coupé, état « 空 »] @ 261,350
+bouton « 4 » [coupé, état « 空 »] @ 325,350
+bouton [coupé, état « 空 »] @ 389,350
+bouton [coupé, état « 空 »] @ 453,350
+bouton [coupé, état « 空 »] @ 517,350
+texte « パートを作ろう チャプター 10/15 · ステップ 6/7 · かんたん » @ 207,406
+icône (liste) « チャプター » @ 444,406
+icône ⌄ @ 531,406
+texte « あなたの番：「足りないものを置く」をタップ。 » @ 285,487
+bouton « テクノ キットをダウンロード（4 MB） » @ 247,562
+texte « あとで » @ 514,562
+texte « ▸ なぜ？ » @ 294,628
+texte « 前の章で作るものがまだありません。 » @ 199,668
+bouton ⊕ «   足りないものを置く » @ 294,732
+texte « 第4章へ » @ 294,816
+bouton ▶ «  例を聴く » @ 154,897
+bouton (œil) «  見せて » @ 433,897
+icône ← «  前へ » @ 77,978
+icône « 次へ  » → @ 511,978
+icône ↶ « 元に戻す » @ 72,1062
+image ↷ @ 180,1050
+bouton ■ « 曲 » @ 288,1062
+texte « 132 テンポ » @ 402,1062
+icône ⋮ « その他 » @ 516,1062
+onglet (lignes et note) « マイソング » @ 54,1158
+onglet (quatre carrés) « リズム » [sélectionné] @ 174,1158
+onglet (touches de piano) « 鍵盤 » @ 294,1158
+onglet (curseurs) « ミックス » @ 414,1158
+onglet (trois points reliés) « シェア » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

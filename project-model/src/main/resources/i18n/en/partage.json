@@ -20,5 +20,10 @@
   "Pour partager : l'onglet Partager.": "To share: the Share tab.",
   "Reprendre ton morceau sur un autre appareil : « Partager » › « Sauvegarder le morceau en .zip » (un .zip avec tous ses sons), puis, sur l'autre appareil, Mes projets › « Importer un projet (.zip) ».": "To pick up your song on another device: “Share” › “Save the song as a .zip” (a .zip with all its sounds), then, on the other device, My projects › “Import a project (.zip)”.",
   "La partie en cours, jouée sur %s.": "The current part, played over %s.",
-  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "The .zip is ready: %s. But the copy in Documents could not be made: keep it from the share menu."
+  "Le .zip est prêt : %s. Mais la copie dans Documents n'a pas pu se faire : garde-le depuis le menu de partage.": "The .zip is ready: %s. But the copy in Documents could not be made: keep it from the share menu.",
+  "comme la musique en streaming (−14 LUFS, le niveau de Spotify et YouTube)": "like streaming music (−14 LUFS, the level of Spotify and YouTube)",
+  "le volume habituel de ton style": "the usual volume of your style",
+  "Mesuré pendant l'écoute : %s LUFS · crête %s dBTP": "Measured while listening: %s LUFS · peak %s dBTP",
+  "(avec les reprises : %d)": "(with repeats: %d)",
+  "Renommer aussi le projet": "Rename the project too"
 }

@@ -1,0 +1,47 @@
+Écran 109 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 172,42
+bouton « Pro » @ 378,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ▶ « ta część » @ 693,42
+bouton ▶ « utwór » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Acid 303 Linia basu » [coupé] @ 21,262
+onglet « Wokal Mikrofon » @ 146,262
+onglet « Remix Rozdziel » @ 382,262
+bouton « 808 808 » @ 562,262
+bouton « Akordy Smyczki » ⋮ @ 755,262
+image ← @ 10,263
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « 100% » @ 114,435
+texte « Wyczyść » @ 296,435
+texte « Do rytmu 50% » [coupé] @ 625,390
+bouton « Akordy · takt 1/8 Wszystkie kropkowane nuty są położone » @ 450,536
+texte « takt » @ 84,621
+bouton « 1 » @ 486,621
+bouton « 2 » [coupé] @ 853,621
+texte « B♭ » [coupé] @ 84,658
+dessin [coupé] @ 492,658
+texte « Akordy Rozdział 6/16 · Zrobione · Pro » @ 356,728
+icône (liste) « Rozdziały » @ 749,728
+icône ⌄ @ 843,728
+image (coupe) @ 57,927
+texte « Brawo, rozdział ukończony! » @ 352,849
+texte « Posłuchaj swojego utworu w obecnej postaci, a potem przejdź do następnego rozdziału: „Melodia”. » @ 475,955
+bouton « Następny rozdział   » → @ 450,1138
+bouton ▶ «  Posłuchaj mojego utworu » @ 294,1252
+bouton ▶ «  Posłuchaj przykładu » @ 687,1252
+icône ← @ 57,1252
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

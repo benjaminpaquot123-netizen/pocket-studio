@@ -1,0 +1,30 @@
+Écran 6 (540x1170)
+dessin @ 270,82
+texte « Tempo » @ 110,158
+texte « Close » @ 443,158
+bouton « ? » @ 218,158
+icône − @ 60,262
+texte « 1 » @ 218,261
+texte «  BPM » @ 294,263
+icône + @ 480,262
+texte « Between 40 and 300 » @ 270,353
+bouton « 70 » @ 75,435
+bouton « 90 » @ 186,435
+bouton « 120 » [sélectionné] @ 310,435
+bouton « 140 » @ 448,435
+bouton « ½ » @ 204,516
+bouton « ×2 » @ 307,516
+bouton « 174 » @ 88,516
+bouton « 1 » @ 103,609
+bouton « 2 » @ 270,609
+bouton « 3 » @ 437,609
+bouton « 4 » @ 103,696
+bouton « 5 » @ 270,696
+bouton « 6 » @ 437,696
+bouton « 7 » @ 103,783
+bouton « 8 » @ 270,783
+bouton « 9 » @ 437,783
+bouton ⌫ @ 103,870
+bouton « 0 » @ 270,870
+bouton « OK » [désactivé] @ 437,870
+bouton (doigt qui touche) « Tap in time Tap here on each beat: the tempo follows. » @ 270,1036

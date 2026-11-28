@@ -1,0 +1,56 @@
+Écran 122 (1035x1243)
+icône (dossier ouvert) ✓ « Mijn nummer Opgeslagen » @ 295,42
+bouton « Pro » @ 623,42
+icône ↶ @ 701,42
+icône ↷ [désactivé] @ 773,42
+bouton ● @ 845,42
+bouton ▶ « dit deel » @ 917,42
+icône (trois points reliés) @ 990,42
+icône « Intro maat 1/80 » ▾ @ 320,144
+bouton « 92  BPM » @ 100,144
+bouton (flèches en boucle) « Lus » [état « uit »] @ 878,144
+bouton « ? » @ 990,144
+bouton (haut-parleur et ondes) [coupé, allumé, état « aan »] @ 57,223
+bouton (casque) [coupé, état « uit »] @ 111,223
+curseur [état « +0,0 dB », à 80 %] @ 84,384
+texte « +0,0 » @ 84,547
+image (étincelles) @ 70,602
+texte « 2 » @ 96,602
+bouton (haut-parleur et ondes) [coupé, allumé, état « aan »] @ 177,223
+bouton (casque) [coupé, état « uit »] @ 231,223
+curseur [état « +0,0 dB », à 80 %] @ 204,384
+texte « +0,0 » @ 204,547
+bouton (haut-parleur et ondes) [coupé, allumé, état « aan »] @ 297,216
+bouton (casque) [coupé, état « uit »] @ 351,216
+curseur [état « +0,0 dB », à 80 %] @ 324,370
+texte « +0,0 » @ 324,533
+bouton (haut-parleur et ondes) [coupé, allumé, état « aan »] @ 417,223
+bouton (casque) [coupé, état « uit »] @ 471,223
+curseur [état « +0,0 dB », à 80 %] @ 444,384
+texte « +0,0 » @ 444,547
+image (étincelles) @ 434,602
+texte « 1 » @ 456,602
+image (courbe) @ 0,0
+texte « Opgeslagen in Muziek › BenStudio: Mijn-nummer-20261119-074927.m4a » @ 771,308
+texte « ✓ Klaar om te delen » @ 737,452
+texte « Duur: 3 min 29 s » @ 697,509
+texte « Niveau: op het doel (Auto (stijl)) » @ 771,590
+texte « Piek: onder de grens, geen vervorming » [coupé] @ 771,661
+texte « De mix Hoofdstuk 12/14 · Stap 1/2 · Pro » @ 424,743
+icône (liste) « Hoofdstukken » @ 885,743
+icône ⌃ @ 978,743
+icône « Nu jij: zet in Mix ‘Akkoorden’ en ‘Melodie’ een beetje lager: de kick en de snare vooraan, de loop erachter, de stem in het midden. Lees » ⌃ @ 517,886
+icône ▶ « het nummer » @ 590,1012
+texte « 92 Tempo » @ 792,1011
+icône ↶ « Ongedaan maken » @ 152,1012
+icône ↷ « Opnieuw » [désactivé] @ 374,1011
+icône (trois points reliés) « Delen » @ 942,1011
+onglet (ligne brisée et points) « Structuur » @ 99,1123
+onglet (touches de piano) « Klanken » @ 309,1123
+onglet (curseurs) « Mix » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Meer » @ 936,1123
+texte « ●  REC » @ 726,1213
+texte « ✎  Noteren » @ 866,1213
+texte « ⋯ » @ 987,1213
+texte « Feedbackmodus » @ 341,1213

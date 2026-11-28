@@ -1,0 +1,54 @@
+Écran 99 (588x1278)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 114,42
+texte « Pro » @ 255,42
+icône ↶ @ 327,42
+bouton ● @ 399,42
+bouton ▶ « ta część » @ 471,42
+icône (trois points reliés) @ 543,42
+bouton « 142  BPM » @ 73,114
+icône « Intro takt 1/124 » ▾ @ 223,114
+bouton (flèches en boucle) [état « wył. »] @ 462,114
+bouton « ? » @ 543,114
+image (étincelles) [coupé] @ 76,145
+texte « 3 » [coupé] @ 96,146
+image (étincelles) [coupé] @ 318,145
+texte « 1 » [coupé] @ 336,146
+image (étincelles) [coupé] @ 436,145
+texte « 2 » [coupé] @ 456,146
+image (étincelles) [coupé] @ 540,145
+texte « 1 » [coupé] @ 558,146
+image (courbe) [coupé] @ 568,145
+image (courbe) @ 60,240
+texte « Krzywe i efekty » @ 183,226
+texte « 1 ustawienie rusza się samo. » @ 223,257
+bouton « Pokaż krzywe » @ 165,319
+bouton « Co gra » @ 423,319
+bouton ● « Nagraj » @ 469,454
+titre « KRZYWE » [état « Rozwinięte »] @ 217,454
+bouton « ? » @ 199,454
+texte « Spraw, żeby ustawienie ruszało się samo: wybierz je, potem narysuj krzywą (palcem albo linią w dwóch dotknięciach). » @ 294,542
+bouton + «  Automatyzuj ustawienie » [coupé] @ 223,608
+texte « Efekty Rozdział 13/16 · Zrobione · Pro » @ 207,669
+icône (liste) « Rozdziały » @ 444,669
+icône ⌄ @ 531,669
+image (coupe) @ 57,786
+texte « Brawo, rozdział ukończony! » @ 232,759
+texte « Posłuchaj swojego utworu w obecnej postaci, a potem przejdź do następnego rozdziału: „Miks”. » @ 319,801
+bouton « Następny rozdział   » → @ 294,888
+icône ← @ 57,975
+bouton ▶ «  Posłuchaj mojego utworu » @ 216,975
+bouton ▶ «  Posłuchaj przykładu » @ 453,975
+icône ↶ « Cofnij » @ 71,1062
+icône ↷ « Ponów » [désactivé] @ 177,1062
+bouton ▶ « utwór » @ 284,1062
+texte « 142 Tempo » @ 396,1062
+icône (trois points reliés) « Udostępnij » @ 513,1062
+onglet (ligne brisée et points) « Struktura » @ 54,1158
+onglet (touches de piano) « Dźwięki » @ 174,1158
+onglet (curseurs) « Miks » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Więcej » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Zanotuj » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Tryb uwag » @ 162,1248

@@ -1,0 +1,56 @@
+Écran 36 (540x1170)
+icône (dossier ouvert) ✓ « مشروعي 1 تم الحفظ » @ 425,42
+bouton « بسيط » @ 273,42
+bouton ● @ 191,42
+bouton ▶ « هذا الجزء » @ 118,42
+icône ⋮ @ 45,42
+bouton « 120  السرعة » @ 453,139
+bouton « ? » @ 45,139
+onglet « Acid 303 خط باص » @ 440,239
+bouton + «  المسار » @ 256,239
+icône « الجزء: A » ▾ @ 460,322
+bouton ● «  سجّل لحني » @ 347,418
+icône (chronomètre) «  1 » @ 116,418
+bouton « ? » @ 39,418
+bouton @ 504,557
+dessin [désactivé, état « خارج سلّم الأغنية »] @ 485,525
+bouton @ 468,557
+dessin [désactivé, état « خارج سلّم الأغنية »] @ 449,525
+bouton @ 432,557
+dessin [désactivé, état « خارج سلّم الأغنية »] @ 413,525
+bouton @ 396,557
+bouton @ 360,557
+dessin [désactivé, état « خارج سلّم الأغنية »] @ 341,525
+bouton @ 324,557
+dessin [désactivé, état « خارج سلّم الأغنية »] @ 305,525
+bouton « دو » @ 288,557
+bouton @ 252,557
+dessin [désactivé, état « خارج سلّم الأغنية »] @ 233,525
+bouton @ 216,557
+dessin [désactivé, état « خارج سلّم الأغنية »] @ 197,525
+bouton @ 180,557
+dessin [désactivé, état « خارج سلّم الأغنية »] @ 161,525
+bouton @ 144,557
+bouton @ 108,557
+dessin [désactivé, état « خارج سلّم الأغنية »] @ 89,525
+bouton @ 72,557
+dessin [désactivé, état « خارج سلّم الأغنية »] @ 53,525
+bouton « دو » @ 36,557
+texte « الـ303 أولًا الفصل 2/9 · الخطوة 2/2 · سهل » @ 342,706
+icône (liste) « الفصول » @ 129,707
+icône ⌃ @ 57,707
+icône « دورك: للـ303 شاشتها الخاصة. «سأفعلها» يفتحها، و«أرني» يكتب الخط فيها: شاهد نوتاتها الـ13 توضع. اقرأ » ⌃ @ 270,831
+bouton ▶ « الأغنية » @ 276,936
+texte « 120 السرعة » @ 170,936
+icône ↶ « تراجع » @ 476,936
+image ↷ @ 376,918
+icône ⋮ « المزيد » @ 64,936
+onglet (lignes et note) « أغنيتي » @ 490,1044
+onglet (quatre carrés) « الإيقاع » @ 379,1044
+onglet (touches de piano) « لوحة المفاتيح » [sélectionné] @ 269,1044
+onglet (curseurs) « المكس » @ 159,1044
+onglet (trois points reliés) « مشاركة » @ 49,1044
+texte « ●  REC » @ 228,1140
+texte « ✎  دوّن » @ 132,1140
+texte « ⋯ » @ 48,1140
+texte « وضع الملاحظات » @ 402,1140

@@ -1,0 +1,53 @@
+Écran 48 (540x1170)
+bouton (dossier ouvert) ✓ @ 102,42
+bouton « Basit » @ 246,42
+bouton ● @ 333,42
+bouton ▶ « bu bölüm » @ 414,42
+icône ⋮ @ 495,42
+bouton « 140  Tempo » @ 98,123
+bouton « ? » @ 495,123
+icône « Bölüm: A » ▾ @ 96,198
+texte « Ölçü 1/2 · Hi-hat » [coupé] @ 139,240
+texte « Ölçü 2 · 8 kutu → » [coupé] @ 356,249
+bouton « 1 » [état « vuruş, güç %100 »] @ 67,309
+bouton [état « boş »] @ 124,309
+bouton [état « vuruş, güç %100 »] @ 182,309
+bouton [état « boş »] @ 240,309
+bouton « 2 » [état « vuruş, güç %100 »] @ 298,309
+bouton [état « boş »] @ 356,309
+bouton [état « vuruş, güç %100 »] @ 414,309
+bouton [état « boş »] @ 472,309
+bouton « 3 » [état « boş »] @ 67,380
+bouton [état « boş »] @ 124,380
+bouton [état « vuruş, güç %100 »] @ 182,380
+bouton [état « boş »] @ 240,380
+bouton « 4 » [état « vuruş, güç %100 »] @ 298,380
+bouton [état « boş »] @ 356,380
+bouton [état « vuruş, güç %100 »] @ 414,380
+bouton [état « vuruş, güç %100 »] @ 472,380
+texte « tümü » @ 172,461
+texte « 1/2 » @ 259,461
+texte « 1/4 » @ 334,461
+texte « ◀ » @ 409,461
+texte « Doldur » @ 82,461
+texte « ▶ » @ 78,533
+texte « Temizle » @ 182,533
+texte « Vuruş eklemek için bir kutuya dokun, birkaç tane boyamak için parmağını kaydır. Bir vuruşa uzun bas: güç ve roll'lar (×2 ile ×8). » [coupé] @ 270,619
+texte « Hi-hat'ler Aşama 4/15 · Adım 1/4 · Kolay » @ 176,726
+icône (liste) « Aşamalar » @ 389,727
+icône ⌃ @ 483,727
+icône « Sıra sende: “Hi-hat” pad'inde noktalı kutulara dokun. Oku » ⌃ @ 270,857
+icône ↶ « Geri al » @ 64,953
+image ↷ @ 164,940
+bouton ▶ « şarkı » @ 264,953
+texte « 140 Tempo » @ 370,953
+icône ⋮ « Diğer » @ 476,953
+onglet (lignes et note) « Şarkım » @ 49,1050
+onglet (quatre carrés) « Ritim » [sélectionné] @ 160,1050
+onglet (touches de piano) « Klavye » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Paylaş » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Not al » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Geri bildirim modu » @ 138,1140

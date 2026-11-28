@@ -1,0 +1,10 @@
+Écran 46 (1035x1243)
+texte « Parte a editar » @ 602,111
+texte « A · Groove » @ 643,168
+texte « B · Intro » @ 643,240
+texte « C · Intro 2 » @ 643,312
+texte « D · Drop » @ 643,384
+icône ✓ « E · Break » @ 643,456
+texte « F · Drop 2 » @ 643,528
+texte « G · Fim » @ 643,600
+icône + « Nova parte vazia » @ 643,674

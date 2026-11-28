@@ -1,0 +1,62 @@
+Écran 127 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 223,42
+bouton « 专业 » @ 479,42
+icône ↶ @ 556,42
+icône ↷ [désactivé] @ 628,42
+bouton ● @ 700,42
+bouton ▶ « 这个段落 » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+image (courbe) @ 0,0
+texte « 音量 » @ 428,213
+bouton « ? » @ 842,213
+texte « 滑动推子调音量；点音轨名称查看它的效果和曲线。 » @ 326,259
+texte « 鼓 » @ 84,344
+bouton (haut-parleur et ondes) [allumé, état « 开 »] @ 57,419
+bouton (casque) [état « 关 »] @ 111,419
+curseur [état « +0.0 dB », à 80 %] @ 84,590
+texte « Acid 303 » @ 204,344
+bouton (haut-parleur et ondes) [allumé, état « 开 »] @ 177,419
+bouton (casque) [état « 关 »] @ 231,419
+curseur [état « +0.0 dB », à 80 %] @ 204,590
+texte « 贝斯 » @ 324,344
+bouton (haut-parleur et ondes) [allumé, état « 开 »] @ 297,419
+bouton (casque) [état « 关 »] @ 351,419
+curseur [état « +0.0 dB », à 80 %] @ 324,590
+texte « 和弦 » @ 444,344
+bouton (haut-parleur et ondes) [allumé, état « 开 »] @ 417,419
+bouton (casque) [état « 关 »] @ 471,419
+curseur [état « +0.0 dB », à 80 %] @ 444,590
+texte « 旋律 » @ 564,344
+bouton (haut-parleur et ondes) [allumé, état « 开 »] @ 537,419
+bouton (casque) [état « 关 »] @ 591,419
+curseur [état « +0.0 dB », à 80 %] @ 564,590
+texte « Remix » @ 684,344
+bouton (haut-parleur et ondes) [allumé, état « 开 »] @ 657,419
+bouton (casque) [état « 关 »] @ 711,419
+curseur [état « +0.0 dB », à 80 %] @ 684,590
+texte « 马林巴 第 5/14 章 · 第 2/2 步 · 专业 » @ 378,780
+icône (liste) « 章节 » @ 771,780
+icône ⌄ @ 843,780
+texte « 轮到你：在混音里，把“旋律”音轨的“回声发送”调高：马林巴在重复中飘浮。 » @ 450,892
+texte « ▸ 为什么？ » @ 450,967
+bouton (doigt qui touche) «   我来做 » @ 450,1036
+bouton ▶ «  听示例 » @ 232,1120
+bouton (œil) «  示范给我看 » @ 667,1120
+icône ← «  上一步 » @ 99,1201
+icône « 下一步  » → @ 801,1201
+icône ↶ « 撤销 » @ 124,1289
+icône ↷ « 重做 » [désactivé] @ 284,1289
+bouton ▶ « 歌曲 » @ 444,1289
+texte « 122 速度 » @ 610,1289
+icône (trois points reliés) « 分享 » @ 776,1289
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » @ 268,1389
+onglet (curseurs) « 混音 » [sélectionné] @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 671,1479
+texte « ✎  记一笔 » @ 767,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 317,1479

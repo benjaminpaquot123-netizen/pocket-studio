@@ -1,0 +1,28 @@
+Écran 28 (540x1170)
+texte « A bateria Capítulo 2/14 · Etapa 2/8 · Pro » @ 176,145
+icône (liste) « Capítulos » @ 389,145
+icône ⌄ @ 483,145
+texte « Sua vez: o kick em cada tempo. » [coupé] @ 270,283
+bouton « Baixar o kit Techno de Detroit (4 MB) » @ 186,381
+texte « Mais tarde » @ 429,381
+texte « ▸ Por quê? » @ 270,469
+icône « Continuar lendo » ⌄ @ 270,532
+bouton (doigt qui touche) «   Eu faço » @ 270,607
+bouton ▶ «  Ouvir o exemplo » @ 142,721
+bouton (œil) «  Mostre-me » @ 397,721
+icône ← «  Anterior » @ 136,835
+icône « Próximo  » → @ 404,835
+icône ▶ « a música » @ 199,939
+texte « 126 Andamento » @ 376,938
+icône ↶ « Desfazer » @ 34,939
+icône ↷ « Refazer » [désactivé] @ 92,939
+icône (trois points reliés) « Compartilhar » @ 505,939
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

@@ -1,0 +1,20 @@
+Écran 108 (900x1509)
+texte « Beri nama bagian A » @ 233,488
+texte « Ini bagian lagu yang mana? » @ 201,551
+bouton « Intro » @ 114,614
+bouton « Verse » @ 226,614
+bouton « Pre-chorus » @ 371,614
+bouton « Reff » @ 508,614
+bouton « Post-chorus » @ 651,614
+bouton « Bridge » @ 124,686
+bouton « Groove » [sélectionné] @ 252,686
+bouton « Build-up » @ 392,686
+bouton « Drop palsu » @ 551,686
+bouton « Break » @ 695,686
+bouton « Drop » @ 115,758
+bouton « Akhir » @ 225,758
+bouton « Fill » @ 326,758
+champ « Atau nama lain 6/20 » contenu « Groove » @ 450,871
+icône ✕ @ 798,862
+texte « Batal » @ 690,1009
+texte « OK » @ 790,1009

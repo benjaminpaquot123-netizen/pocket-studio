@@ -1,0 +1,30 @@
+Écran 10 (540x1170)
+dessin @ 270,55
+texte « Parçanın tonu » @ 211,127
+texte « Kapat » @ 457,127
+texte « Parçanın tonu: Mi · Frigyen » @ 203,198
+texte « Gam » @ 55,254
+bouton « Majör » @ 82,326
+bouton « Minör » @ 207,326
+bouton « Dorian » @ 340,326
+bouton « Minör penta » @ 127,407
+bouton « Majör penta » @ 341,407
+bouton « Blues » @ 81,488
+bouton « Frigyen » @ 221,488
+bouton « Harmonik minör » @ 154,569
+texte « Ton » @ 49,640
+bouton « Do » @ 63,712
+bouton « Do♯ » @ 157,712
+bouton « Re » @ 252,712
+bouton « Mi♭ » @ 340,712
+bouton « Mi » @ 428,712
+bouton « Fa » @ 63,793
+bouton « Fa♯ » @ 155,793
+bouton « Sol » @ 248,793
+bouton « La♭ » @ 337,793
+bouton « La » @ 425,793
+bouton « Si♭ » @ 63,874
+bouton « Si » @ 150,874
+image (rond coché) @ 58,983
+texte « Başardın! Parçanın rengi seçildi. » @ 292,983
+bouton « Eğitime dön » @ 270,1095

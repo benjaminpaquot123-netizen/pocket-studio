@@ -86,6 +86,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.model.AutoTarget
 import com.pocketstudio.model.AutomationLane
@@ -390,6 +391,9 @@ private val ZOOMS = listOf(1, 2, 4, 8)
 
 /** The curve's height, and the width of its value scale. */
 private val CURVE_HEIGHT = 136.dp
+
+/** F127: how far under the curve a finger still draws (and the page does not scroll). */
+private val CURVE_EDGE = 14.dp
 private val AXIS_WIDTH = 56.dp
 
 @Composable
@@ -567,8 +571,22 @@ internal fun LaneBlock(
         val part = ui.partSteps.coerceAtMost(AutomationLane.STEPS)
         if (!song && loopSteps != null && (part > ui.steps || own)) {
             fun length(steps: Int) = if (ui.stepsPerBar > 0 && steps % ui.stepsPerBar == 0) com.pocketstudio.app.ui.barsShort(steps / ui.stepsPerBar) else com.pocketstudio.model.i18n.trCount(steps, "1 pas", "%d pas")
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                FilterChip(selected = !own, onClick = { loopSteps(i, 0) }, label = { Text(tr("Sur la batterie · %s", length(ui.steps))) },
+            // F130: the options say whose curve they shape (« Pour : Rhodes »); « Sur la batterie » only for the drums' own
+            // curves, another track's says the loop's length (« Sur 1 mesure. »).
+            val ch = lane.target.ch
+            val drums = ch == 0 || com.pocketstudio.model.Mixer.isPad(ch)
+            val bars = if (ui.stepsPerBar > 0 && ui.steps % ui.stepsPerBar == 0) ui.steps / ui.stepsPerBar else 0
+            val drumLoop = when {
+                drums || bars == 0 -> tr("Sur la batterie · %s", length(ui.steps))
+                else -> com.pocketstudio.model.i18n.trCount(bars, "Sur 1 mesure.", "Sur %d mesures.")
+            }
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
+                itemVerticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(tr("Pour : %s", laneOwner(lane.target, strips).first), Modifier.testTag("auto_len_for_$i"),
+                    style = MaterialTheme.typography.labelMedium, color = Neon.TextSecondary)
+                FilterChip(selected = !own, onClick = { loopSteps(i, 0) }, label = { Text(drumLoop) },
                     modifier = Modifier.testTag("auto_len_drums_$i"))
                 FilterChip(selected = own, onClick = { loopSteps(i, maxOf(part, ui.steps)) }, label = { Text(tr("Sur toute la partie · %s", length(if (own) lane.loopSteps else maxOf(part, ui.steps)))) },
                     modifier = Modifier.testTag("auto_len_part_$i"))
@@ -650,12 +668,15 @@ internal fun LaneBlock(
                     modifier = Modifier.weight(1f),
                 )
             }
+            // F129: a loop said in bars (« 4 mes. ») is counted in bars under its curve too, as a song; beats only
+            // while a bar or less is in sight.
+            val loopBar = ui.stepsPerBar.takeIf { !song && it > 0 && count % it == 0 && visible > it }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    if (song) tr("mesure") else tr("temps"), Modifier.width(AXIS_WIDTH).padding(end = 4.dp),
-                    style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, textAlign = TextAlign.End,
+                com.pocketstudio.ui.FitText(
+                    if (song || loopBar != null) tr("mesure") else tr("temps"), Modifier.width(AXIS_WIDTH).padding(end = 4.dp).testTag("auto_time_unit_$i"),
+                    style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, textAlign = TextAlign.End, min = 7.sp,
                 )
-                TimeAxis(song, first, visible, perBar, Modifier.weight(1f))
+                TimeAxis(song || loopBar != null, first, visible, loopBar ?: perBar, Modifier.weight(1f).testTag("auto_time_$i"))
             }
             // Phase 37: the parts' names under the song's curve, where each starts (« B · Drop »).
             if (song && ui.parts.isNotEmpty()) {
@@ -720,9 +741,10 @@ private fun ValueAxis(t: AutoTarget, channels: List<Channel>, master: List<Inser
         Modifier.width(AXIS_WIDTH).height(CURVE_HEIGHT).padding(end = 4.dp).testTag("auto_scale_${t.pack()}"),
         verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.End,
     ) {
-        Text(automationValueText(t, 1f, channels, master), style = style, color = ink, maxLines = 1, softWrap = false)
-        Text(if (t.isOnOff) "" else automationValueText(t, 0.5f, channels, master), style = style, color = ink, maxLines = 1, softWrap = false)
-        Text(automationValueText(t, 0f, channels, master), style = style, color = ink, maxLines = 1, softWrap = false)
+        // F128: each value whole (« 18,0 kHz », not « 18,0 kH »): smaller letters rather than a cut.
+        com.pocketstudio.ui.FitText(automationValueText(t, 1f, channels, master), style = style, color = ink, maxLines = 1, min = 6.sp, textAlign = TextAlign.End)
+        com.pocketstudio.ui.FitText(if (t.isOnOff) "" else automationValueText(t, 0.5f, channels, master), style = style, color = ink, maxLines = 1, min = 6.sp, textAlign = TextAlign.End)
+        com.pocketstudio.ui.FitText(automationValueText(t, 0f, channels, master), style = style, color = ink, maxLines = 1, min = 6.sp, textAlign = TextAlign.End)
     }
 }
 
@@ -861,22 +883,22 @@ private fun CurveEditor(
     fun finish(a: Pair<Int, Float>, b: Pair<Int, Float>) {
         if (zoning) zone(minOf(a.first, b.first), maxOf(a.first, b.first), b.second) else ramp(a.first, a.second, b.first, b.second)
     }
-    Canvas(
+    // F127: the finger that lands on the canvas's bottom line, a hair under it, draws (value 0) instead of
+    // scrolling the page: the touch area reaches CURVE_EDGE below the drawn canvas.
+    Box(
         modifier
             .fillMaxWidth()
-            .height(CURVE_HEIGHT)
-            .background(back, RoundedCornerShape(8.dp))
-            .testTag(tag)
+            .height(CURVE_HEIGHT + CURVE_EDGE)
             .pointerInput(tool) {
                 if (twoTouch) {
                     detectTapGestures { o ->
-                        val u = unitAt(o.x, size.width.toFloat()) to valueAt(o.y, size.height.toFloat())
+                        val u = unitAt(o.x, size.width.toFloat()) to valueAt(o.y, CURVE_HEIGHT.toPx())
                         val a = anchor
                         if (a == null) { anchor = u; dragTo = null } else { anchor = null; dragTo = null; finish(a, u) }
                     }
                 } else {
                     detectTapGestures(
-                        onTap = { o -> point(unitAt(o.x, size.width.toFloat()), valueAt(o.y, size.height.toFloat())) },
+                        onTap = { o -> point(unitAt(o.x, size.width.toFloat()), valueAt(o.y, CURVE_HEIGHT.toPx())) },
                         onDoubleTap = { o -> point(unitAt(o.x, size.width.toFloat()), null) },
                     )
                 }
@@ -885,7 +907,7 @@ private fun CurveEditor(
                 var last: Pair<Int, Float>? = null
                 detectDragGestures(
                     onDragStart = { o ->
-                        val u = unitAt(o.x, size.width.toFloat()) to valueAt(o.y, size.height.toFloat())
+                        val u = unitAt(o.x, size.width.toFloat()) to valueAt(o.y, CURVE_HEIGHT.toPx())
                         if (twoTouch) { anchor = u; dragTo = u } else { point(u.first, u.second); last = u }
                     },
                     onDragEnd = {
@@ -897,7 +919,7 @@ private fun CurveEditor(
                     },
                     onDragCancel = { anchor = null; dragTo = null; last = null },
                 ) { change, _ ->
-                    val u = unitAt(change.position.x, size.width.toFloat()) to valueAt(change.position.y, size.height.toFloat())
+                    val u = unitAt(change.position.x, size.width.toFloat()) to valueAt(change.position.y, CURVE_HEIGHT.toPx())
                     if (twoTouch) { dragTo = u; return@detectDragGestures }
                     // A fast finger skips points: the ones in between follow the line it drew.
                     val l = last
@@ -914,6 +936,7 @@ private fun CurveEditor(
                 }
             },
     ) {
+    Canvas(Modifier.fillMaxWidth().height(CURVE_HEIGHT).background(back, RoundedCornerShape(8.dp)).testTag(tag)) {
         val w = size.width / visible
         fun xOf(u: Float) = (u - first) * w
         // The grid: beats faint, bars stronger, the middle line.
@@ -987,6 +1010,7 @@ private fun CurveEditor(
             }
         }
         drawPlayhead(playhead(), first, visible, w, head, column = !song)
+    }
     }
 }
 

@@ -1,0 +1,52 @@
+Écran 44 (1035x1243)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 348,42
+bouton « Simple » @ 741,42
+bouton ● @ 831,42
+bouton ▶ « cette partie » @ 910,42
+icône ⋮ @ 990,42
+bouton « 105  Tempo » @ 98,123
+icône (flèches en boucle) « Pont mesure 5/8 » ▾ @ 297,123
+bouton « ? » @ 990,123
+icône ▶ « B · Intro × 1  ·  8 mes. » @ 155,218
+icône − [désactivé] @ 304,218
+icône + @ 376,218
+icône ⋮ @ 448,218
+texte « − / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois. » @ 263,322
+texte « Ajouter à la fin : » @ 146,390
+bouton « + A · Refrain » @ 162,459
+bouton « + B · Intro » @ 144,540
+bouton « + C · Couplet » @ 168,621
+bouton « + D · Pré-refrain » @ 188,702
+bouton « + E · Post-refrain » [coupé] @ 194,759
+titre « MES PISTES » [état « Déplié »] @ 651,222
+texte « Touche le nom d'une piste pour changer son son ; ▶ pour l'écouter seule. » @ 771,306
+bouton « Batterie Changer le son » › @ 696,414
+bouton ▶ @ 882,414
+icône (curseurs) @ 957,414
+bouton « Basse Changer le son » › @ 696,524
+bouton ▶ @ 882,524
+icône (curseurs) @ 957,524
+bouton « Accords Changer le son » › @ 696,634
+bouton ▶ @ 882,634
+icône (curseurs) @ 957,634
+bouton « Mélodie Changer le son » › [coupé] @ 696,734
+bouton ▶ [coupé] @ 882,737
+icône (curseurs) [coupé] @ 957,740
+texte « Range tes parties Chapitre 11/15 · Étape 1/2 · Facile » @ 424,817
+icône (liste) « Chapitres » @ 885,818
+icône ⌃ @ 978,818
+icône (rond coché) « Réussi Étape suivante » → @ 517,930
+bouton ■ « le morceau » @ 514,1026
+icône ↶ « Annuler » @ 139,1026
+image ↷ @ 317,1013
+texte « 105 Tempo » @ 717,1026
+icône ⋮ « Plus » @ 897,1026
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Rythme » @ 309,1123
+onglet (touches de piano) « Clavier » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Partager » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Noter » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode retours » @ 385,1213

@@ -1,0 +1,291 @@
+#0 SIEGE lang=de device=tablet8 font=130 mode=pro theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:techno:8
+#0 PREMIER ECRAN reel_s=4.1 simule_s=2.4 jvm_s=9.0 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:techno:8
+#0 AMENEE > touche 450 1268 (launch_learn)
+#0 AMENEE > touche 670 1307 (mode_card_pro)
+#0 AMENEE > touche 450 329 (tuto_style_techno)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 759 730 (tuto_chapters)
+#0 AMENEE > touche 450 786 (tuto_chapter_7)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE 601bed7080 | project=p-aa25a374 tuto=techno/Pro active=true step=groove_hear done=15 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Gespeichert » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1042
+#1 DOIGT tuto_play_mine «   Dein Ergebnis anhören »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE 4e2373d847 | project=p-aa25a374 tuto=techno/Pro active=true step=groove_hear done=15 playing=true
+#2 SON Son : la musique du projet joue en boucle.
+#2 > touche 450 1126
+#2 DOIGT tuto_listen «  Beispiel anhören »
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE 80ad68060e | project=p-aa25a374 tuto=techno/Pro active=true step=groove_hear done=15 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 3 s).
+#3 > touche 798 1207
+#3 DOIGT tuto_next « Weiter  »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE a0758b83ac | project=p-aa25a374 tuto=techno/Pro active=true step=groove_name done=16 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 450 1042
+#4 DOIGT tuto_need «   Teil „Groove“ benennen »
+#5 ROUTE tab_Structure | MODE pro | EMPREINTE 1fd91c2c28 | project=p-aa25a374 tuto=techno/Pro active=true step=groove_name done=17 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 450 1123
+#5 DOIGT tuto_next_big « Nächstes Kapitel   »
+#6 ROUTE tab_Structure | MODE pro | EMPREINTE ae4f7d0d92 | project=p-aa25a374 tuto=techno/Pro active=true step=brick done=17 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 450 1123
+#6 DOIGT tuto_mark «   Verstanden »
+#7 ROUTE tab_Structure | MODE pro | EMPREINTE 7a75704948 | project=p-aa25a374 tuto=techno/Pro active=true step=map_intro done=18 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#7 > touche 450 1123
+#7 DOIGT tuto_listen «  Beispiel anhören »
+#8 ROUTE tab_Structure | MODE pro | EMPREINTE 94d2eb910c | project=p-aa25a374 tuto=techno/Pro active=true step=map_intro done=18 playing=false
+#8 SON Son : l'exemple du tuto joue (encore 3 s).
+#8 > attends 4
+#9 ROUTE tab_Structure | MODE pro | EMPREINTE f821749fda | project=p-aa25a374 tuto=techno/Pro active=true step=map_intro done=19 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 450 1123
+#9 DOIGT tuto_next_big « Nächster Schritt   »
+#10 ROUTE tab_Structure | MODE pro | EMPREINTE 609f5c5c5f | project=p-aa25a374 tuto=techno/Pro active=true step=map_intro2 done=19 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 798 1207
+#10 DOIGT tuto_next « Weiter  »
+#11 ROUTE tab_Structure | MODE pro | EMPREINTE 44bcc3ae3f | project=p-aa25a374 tuto=techno/Pro active=true step=map_drop done=20 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 798 1207
+#11 DOIGT tuto_next « Weiter  »
+#12 ROUTE tab_Structure | MODE pro | EMPREINTE 57528e295e | project=p-aa25a374 tuto=techno/Pro active=true step=map_break done=21 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 798 1207
+#12 DOIGT tuto_next « Weiter  »
+#13 ROUTE tab_Structure | MODE pro | EMPREINTE eca9d059d8 | project=p-aa25a374 tuto=techno/Pro active=true step=map_montee done=22 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 798 1207
+#13 DOIGT tuto_next « Weiter  »
+#14 ROUTE tab_Structure | MODE pro | EMPREINTE ae60db0957 | project=p-aa25a374 tuto=techno/Pro active=true step=map_phrases done=23 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 450 1123
+#14 DOIGT tuto_mark «   Verstanden »
+#15 ROUTE tab_Structure | MODE pro | EMPREINTE b24919cc92 | project=p-aa25a374 tuto=techno/Pro active=true step=map_phrases done=24 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 450 1123
+#15 DOIGT tuto_next_big « Nächstes Kapitel   »
+#16 ROUTE tab_Structure | MODE pro | EMPREINTE 1b8a3d6663 | project=p-aa25a374 tuto=techno/Pro active=true step=make_intro done=24 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1042
+#16 DOIGT tuto_need «   Teil „Intro“ erstellen »
+#17 ROUTE tab_Structure | MODE pro | EMPREINTE 677a4fa844 | project=p-aa25a374 tuto=techno/Pro active=true step=make_intro done=25 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 450 1123
+#17 DOIGT tuto_next_big « Nächster Schritt   »
+#18 ROUTE tab_Structure | MODE pro | EMPREINTE 8dee28fe8c | project=p-aa25a374 tuto=techno/Pro active=true step=make_intro2 done=25 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 450 1042
+#18 DOIGT tuto_need «   Teil „Intro 2“ erstellen »
+#19 ROUTE tab_Structure | MODE pro | EMPREINTE 815d7fdea5 | project=p-aa25a374 tuto=techno/Pro active=true step=make_intro2 done=26 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 450 1123
+#19 DOIGT tuto_next_big « Nächster Schritt   »
+#20 ROUTE tab_Structure | MODE pro | EMPREINTE 62573c4944 | project=p-aa25a374 tuto=techno/Pro active=true step=make_drop done=26 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1042
+#20 DOIGT tuto_need «   Teil „Drop“ erstellen »
+#21 ROUTE tab_Structure | MODE pro | EMPREINTE a4acf44d30 | project=p-aa25a374 tuto=techno/Pro active=true step=make_drop done=27 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 450 1123
+#21 DOIGT tuto_next_big « Nächster Schritt   »
+#22 ROUTE tab_Structure | MODE pro | EMPREINTE bbf8f29aa9 | project=p-aa25a374 tuto=techno/Pro active=true step=make_break done=27 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 450 1042
+#22 DOIGT tuto_need «   Teil „Break“ erstellen »
+#23 ROUTE tab_Structure | MODE pro | EMPREINTE 6ff2c16c8b | project=p-aa25a374 tuto=techno/Pro active=true step=make_break done=28 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 450 1123
+#23 DOIGT tuto_next_big « Nächster Schritt   »
+#24 ROUTE tab_Structure | MODE pro | EMPREINTE 6a20dda21c | project=p-aa25a374 tuto=techno/Pro active=true step=make_montee done=28 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 450 1042
+#24 DOIGT tuto_need «   Teil „Build-up“ erstellen »
+#25 ROUTE tab_Structure | MODE pro | EMPREINTE 1ab1155adc | project=p-aa25a374 tuto=techno/Pro active=true step=make_montee done=29 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 450 1123
+#25 DOIGT tuto_next_big « Nächster Schritt   »
+#26 ROUTE tab_Structure | MODE pro | EMPREINTE 35f9bf2d19 | project=p-aa25a374 tuto=techno/Pro active=true step=make_drop2 done=29 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 450 1042
+#26 DOIGT tuto_need «   Teil „Drop 2“ erstellen »
+#27 ROUTE tab_Structure | MODE pro | EMPREINTE 56451c4458 | project=p-aa25a374 tuto=techno/Pro active=true step=make_drop2 done=30 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 450 1123
+#27 DOIGT tuto_next_big « Nächster Schritt   »
+#28 ROUTE tab_Structure | MODE pro | EMPREINTE 6d3c9a33f7 | project=p-aa25a374 tuto=techno/Pro active=true step=make_fin done=30 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 450 1042
+#28 DOIGT tuto_need «   Teil „Ende“ erstellen »
+#29 ROUTE tab_Structure | MODE pro | EMPREINTE 3f501391a0 | project=p-aa25a374 tuto=techno/Pro active=true step=make_fin done=31 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 450 1123
+#29 DOIGT tuto_next_big « Nächstes Kapitel   »
+#30 ROUTE tab_Structure | MODE pro | EMPREINTE c88e8dbf5b | project=p-aa25a374 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 395 246
+#30 DOIGT add_part_1 « + B · Intro »
+#31 ROUTE tab_Structure | MODE pro | EMPREINTE 7a1cfe55f5 | project=p-aa25a374 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 623 198
+#31 DOIGT add_part_2 « + C · Intro 2 »
+#32 ROUTE tab_Structure | MODE pro | EMPREINTE f9ff2388cf | project=p-aa25a374 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 146 279
+#32 DOIGT add_part_3 « + D · Drop »
+#33 ROUTE tab_Structure | MODE pro | EMPREINTE e0d82927b6 | project=p-aa25a374 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 369 279
+#33 DOIGT add_part_4 « + E · Break »
+#34 ROUTE tab_Structure | MODE pro | EMPREINTE c9bffe112e | project=p-aa25a374 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 615 279
+#34 DOIGT add_part_5 « + F · Build-up »
+#35 ROUTE tab_Structure | MODE pro | EMPREINTE 9d70a2afdb | project=p-aa25a374 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 159 360
+#35 DOIGT add_part_6 « + G · Drop 2 »
+#36 ROUTE tab_Structure | MODE pro | EMPREINTE c406465ea0 | project=p-aa25a374 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 391 360
+#36 DOIGT add_part_7 « + H · Ende »
+#37 ROUTE tab_Structure | MODE pro | EMPREINTE 8987148766 | project=p-aa25a374 tuto=techno/Pro active=true step=song_order done=32 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 450 1123
+#37 DOIGT tuto_next_big « Nächster Schritt   »
+#38 ROUTE tab_Structure | MODE pro | EMPREINTE d86901f71f | project=p-aa25a374 tuto=techno/Pro active=true step=song_phrases done=32 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 450 1042
+#38 DOIGT tuto_need «   Empfohlene Längen setzen »
+#39 ROUTE tab_Structure | MODE pro | EMPREINTE 616be00452 | project=p-aa25a374 tuto=techno/Pro active=true step=song_phrases done=33 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 450 1123
+#39 DOIGT tuto_next_big « Nächstes Kapitel   »
+#40 ROUTE tab_Structure | MODE pro | EMPREINTE 576ab62f72 | project=p-aa25a374 tuto=techno/Pro active=true step=fill done=33 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 450 1042
+#40 DOIGT tuto_need «   Zum Teil „Build-up“ gehen »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 2905de8c5f | project=p-aa25a374 tuto=techno/Pro active=true step=fill done=33 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CUT « Mein Projekt 1 » ellipsized (« … »)
+#41 LAYOUT CUT « Gespeichert » wider than its box (by 27.7 dp)
+#41 LAYOUT CUT « F · Build-up » ellipsized (« … »)
+#41 LAYOUT CUT « Du bist dran: Im Teil „Build-up“, letzter Takt, Pad „Clap“: Drück lange auf den letzten Schlag vor der letzten Zählzeit, dann „Roll“ ×3 oder ×4: die letzte Salve. » ellipsized (« … »)
+#41 LAYOUT CONTRAST « STEPS: CLAP · BUILD-UP » 1.43:1 (needs 4.5:1, 12 sp)
+#41 LAYOUT CONTRAST « ? » 1.76:1 (needs 4.5:1, 12 sp)
+#41 LAYOUT CONTRAST « Alle Pads » 1.39:1 (needs 4.5:1, 14 sp)
+#41 > appui-long 397 634
+#41 DOIGT step_59 « Step 12 »
+#42 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 5adbfe5905 | project=p-aa25a374 tuto=techno/Pro active=true step=fill done=33 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 334 516
+#42 DOIGT roll_4 « ×4 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE 1b37cda72b | project=p-aa25a374 tuto=techno/Pro active=true step=fill done=34 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 450 1196
+#43 DOIGT tuto_next_folded « Geschafft »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 37d856924d | project=p-aa25a374 tuto=techno/Pro active=true step=gap done=34 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 500 590
+#44 DOIGT step_60 « Step 13 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 4bf12758af | project=p-aa25a374 tuto=techno/Pro active=true step=gap done=34 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 603 590
+#45 DOIGT step_61 « Step 14 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 137d597f5c | project=p-aa25a374 tuto=techno/Pro active=true step=gap done=34 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 809 590
+#46 DOIGT step_63 « Step 16 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE c9e0ced108 | project=p-aa25a374 tuto=techno/Pro active=true step=gap done=35 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 450 1123
+#47 DOIGT tuto_next_big « Nächster Schritt   »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE dd28fbf9b5 | project=p-aa25a374 tuto=techno/Pro active=true step=crash done=35 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « Takt » 2.01:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « 1 » 1.46:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « 2 » 1.60:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « 3 » 1.51:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « 4 » 3.22:1 (needs 4.5:1, 14 sp)
+#48 LAYOUT CONTRAST « Folgen » 1.60:1 (needs 4.5:1, 14 sp)
+#48 > touche 450 1042
+#48 DOIGT tuto_need «   Zum Teil „Drop“ gehen »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE 8a67cbbbb9 | project=p-aa25a374 tuto=techno/Pro active=true step=crash done=35 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT CUT « Du bist dran: Tippe im Teil „Drop“ auf dem Pad „Becken“ auf das allererste Kästchen, es ist noch leer: ein Schlag in dem Moment, in dem alles einsetzt. » ellipsized (« … »)
+#49 LAYOUT CONTRAST « 1 » 3.08:1 (needs 4.5:1, 12 sp)
+#49 > touche 90 393
+#49 DOIGT step_0 « Step 1 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE 6dd7affaaf | project=p-aa25a374 tuto=techno/Pro active=true step=crash done=36 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CONTRAST « Becken » 1.45:1 (needs 4.5:1, 13 sp)
+#50 LAYOUT CONTRAST « ? » 4.38:1 (needs 4.5:1, 12 sp)
+#50 > touche 450 1196
+#50 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE 861f005cef | project=p-aa25a374 tuto=techno/Pro active=true step=crash done=36 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT CONTRAST « Becken » 1.41:1 (needs 4.5:1, 13 sp)
+#51 > touche 450 1123
+#51 DOIGT tuto_next_big « Nächstes Kapitel   »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 745c0aa023 | project=p-aa25a374 tuto=techno/Pro active=true step=reverb done=36 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « Becken » 1.53:1 (needs 4.5:1, 13 sp)
+#52 > touche 450 1042
+#52 DOIGT tuto_do «   Ich mach's »
+#53 ROUTE dialogue:effects_box_20 | MODE pro | EMPREINTE 12ddeea225 | project=p-aa25a374 tuto=techno/Pro active=true step=reverb done=37 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#53 LAYOUT CONTRAST « Neutral » 4.44:1 (needs 4.5:1, 12 sp)
+#53 LAYOUT CONTRAST « 0 » 4.44:1 (needs 4.5:1, 12 sp)
+#53 LAYOUT CONTRAST « Gemeinsames Reverb und Echo » 4.44:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « 30 % » 3.63:1 (needs 4.5:1, 14 sp)
+#53 LAYOUT CONTRAST « Schließen » 3.63:1 (needs 4.5:1, 14 sp)
+#53 > touche 762 1437
+#53 DOIGT fx_close « Schließen »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 8a77ab05a4 | project=p-aa25a374 tuto=techno/Pro active=true step=reverb done=37 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 450 1196
+#54 DOIGT tuto_next_folded « Geschafft »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE 05e5ad23f7 | project=p-aa25a374 tuto=techno/Pro active=true step=filter done=37 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « Becken » 1.55:1 (needs 4.5:1, 13 sp)
+#55 > touche 450 1042
+#55 DOIGT tuto_do «   Ich mach's »
+#56 ROUTE automation/tab_Mix | MODE pro | EMPREINTE f86a2daf1e | project=p-aa25a374 tuto=techno/Pro active=true step=filter done=38 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « ? » 3.29:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « Aufnehmen » 3.59:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Lass eine Einstellung sich von selbst bewegen: Wähl sie aus und zeichne ihre Kurve (mit dem Finger oder eine Linie mit zwei Taps). » 3.99:1 (needs 4.5:1, 13 sp)
+#56 LAYOUT CONTRAST «  Was spielt » 3.99:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Melodie » 4.21:1 (needs 4.5:1, 13 sp)
+#56 LAYOUT CONTRAST « Leeren » 3.33:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Öffnet (hell) oder schließt (dumpf) den Sound: der Filter-Sweep. » 4.06:1 (needs 4.5:1, 13 sp)
+#56 LAYOUT CONTRAST «  Einstellung zeigen » 4.12:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Loop » 4.16:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Pro Teil » 4.16:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « 1 Punkt pro Schlag (¼ Takt) » 4.18:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Ein Wert pro Takt über den ganzen Song (128 Takte); er gleitet von Punkt zu Punkt. » 4.25:1 (needs 4.5:1, 13 sp)
+#56 LAYOUT CONTRAST « Linie » 3.74:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Bereich » 3.74:1 (needs 4.5:1, 14 sp)
+#56 LAYOUT CONTRAST « Glätten » 3.49:1 (needs 4.5:1, 14 sp)
+#56 > glisse 450 900 450 400
+#56 DOIGT rien (texte « Ein Wert pro Takt über den ganzen Song ( »)
+#57 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE d4d47b73c9 | project=p-aa25a374 tuto=techno/Pro active=true step=filter done=38 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#57 LAYOUT CUT « 849 Hz » lines dropped (more lines than room)
+#57 LAYOUT CUT « 1 » drawn past its parent's edge (down, 18 dp shown of 21)
+#57 LAYOUT CUT « 9 » drawn past its parent's edge (down, 18 dp shown of 21)
+#57 LAYOUT CUT « 17 » drawn past its parent's edge (down, 18 dp shown of 21)
+#57 LAYOUT CUT « 25 » drawn past its parent's edge (down, 18 dp shown of 21)
+#57 LAYOUT CUT « 33 » drawn past its parent's edge (down, 18 dp shown of 21)
+#57 LAYOUT CUT « 41 » drawn past its parent's edge (down, 18 dp shown of 21)
+#57 LAYOUT CUT « 49 » drawn past its parent's edge (down, 18 dp shown of 21)
+#57 LAYOUT CUT « 57 » drawn past its parent's edge (down, 18 dp shown of 21)
+#57 > fin
+#57 FIN : fin

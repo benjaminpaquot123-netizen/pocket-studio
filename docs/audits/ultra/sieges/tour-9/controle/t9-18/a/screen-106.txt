@@ -1,0 +1,30 @@
+Écran 106 (1035x1243)
+dessin @ 518,118
+icône ✕ @ 932,190
+texte « Pronto para compartilhar? » @ 482,190
+champ « Nome da música (e do projeto) » contenu « Minha música » @ 518,293
+icône ✕ @ 932,300
+texte « “Compartilhar” também renomeia o projeto “Meu projeto 1”. » @ 518,373
+texte « 3:49 » @ 104,425
+texte « 6 partes » @ 196,430
+bouton ▶ «  Ouvir » @ 887,460
+texte « Volume: −8,0, alto, como música de balada » @ 431,458
+texte « detalhes » @ 700,494
+bouton « ? » @ 773,493
+bouton « Streaming » @ 279,569
+bouton « Club » [sélectionné] @ 413,569
+bouton « Auto (estilo) » @ 559,569
+texte « Volume-alvo » @ 130,569
+bouton « ? » @ 677,569
+image (rond coché) @ 83,640
+texte « Tudo pronto: nenhum solo esquecido, nenhuma faixa silenciada. » @ 540,638
+bouton (clap de cinéma) «   Vídeo para as redes · 30 s » @ 518,709
+bouton (notes sur une pile) « Outros arquivos Faixa por faixa, MIDI, FLAC… em Mix » › @ 496,805
+bouton « ? » @ 946,805
+bouton (boîte, flèche vers le bas) « Compartilhar o projeto (.zip) Para outro aparelho ou uma cópia de segurança » › @ 496,907
+bouton « ? » @ 946,907
+bouton « M4A · para compartilhar » [sélectionné] @ 216,1003
+bouton « WAV · qualidade máx. » @ 513,1003
+bouton (trois points reliés) «   Compartilhar » @ 518,1099
+bouton (dossier) « Meus arquivos Encontrar e enviar de novo: M4A, WAV, vídeo, .zip » › @ 496,1201
+bouton « ? » @ 946,1201

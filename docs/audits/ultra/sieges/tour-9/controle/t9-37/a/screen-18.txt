@@ -1,0 +1,35 @@
+Écran 18 (540x1170)
+icône « 我的项目 1 » ✓ @ 274,36
+bouton « 专业 » @ 490,36
+bouton (dossier ouvert) @ 81,114
+bouton « A » ▾ @ 192,114
+icône ↶ @ 268,114
+bouton ● @ 340,114
+bouton ▶ « 这个段落 » @ 417,114
+icône (trois points reliés) @ 495,114
+texte « 五下底鼓 第 2/15 章 · 第 2/2 步 · 专业 » @ 198,231
+icône (liste) « 章节 » @ 411,231
+icône ⌄ @ 483,231
+texte « 未收听，已跳过示例。 » @ 161,317
+texte « 轮到你：在“录音棚底鼓”打击垫上，5 下打在第 1、5、9、12、15 步（间隔 4-4-3-3-2）：这就是“bounce”。 » @ 270,416
+texte « ▸ 为什么？ » @ 270,514
+icône « 收起 » ⌃ @ 270,568
+bouton (doigt qui touche) «   我来做 » @ 270,697
+bouton ▶ «  听示例 » @ 142,781
+bouton (œil) «  示范给我看 » @ 397,781
+icône ← «  上一步 » @ 99,862
+icône « 下一步  » → @ 441,862
+icône ↶ « 撤销 » @ 64,950
+icône ↷ « 重做 » [désactivé] @ 164,950
+bouton ▶ « 歌曲 » @ 264,950
+texte « 140 速度 » @ 370,950
+icône (trois points reliés) « 分享 » @ 476,950
+onglet (ligne brisée et points) « 结构 » @ 49,1050
+onglet (touches de piano) « 音色 » [sélectionné] @ 160,1050
+onglet (curseurs) « 混音 » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « 更多 » @ 491,1050
+texte « ●  REC » @ 311,1140
+texte « ✎  记一笔 » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « 反馈模式 » @ 137,1140

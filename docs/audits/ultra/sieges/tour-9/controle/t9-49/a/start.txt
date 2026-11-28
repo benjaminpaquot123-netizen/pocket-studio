@@ -1,0 +1,10 @@
+lang=pt-BR
+device=phone360
+font=130
+mode=pro
+amenee=tuto:minimal:8
+gestes.max=153
+mission=tuto-pro
+profil=pro
+niveau=4
+timeout.minutes=30

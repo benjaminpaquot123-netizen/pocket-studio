@@ -1,0 +1,8 @@
+Écran 133 (588x1278)
+texte « Gotowe » @ 103,493
+texte « Gotowe: Mój-utwór-20261119-075352.wav, kopia jest też w Muzyka › BenStudio. » @ 294,571
+texte « −9,0 LUFS zintegrowane · szczyt −4,7 dBTP » @ 236,620
+texte « WAV, 48 kHz, 24 bit · 3 min 30 s » @ 182,653
+texte « Cel: Auto (styl) · −9 LUFS » @ 151,686
+texte « Zobacz moje pliki » @ 343,772
+texte « OK » @ 508,772

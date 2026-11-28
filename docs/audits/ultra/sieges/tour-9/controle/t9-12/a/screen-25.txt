@@ -1,0 +1,43 @@
+Écran 25 (588x1278)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 134,42
+bouton « Simple » @ 311,42
+bouton ● @ 399,42
+bouton ▶ « this part » @ 471,42
+icône ⋮ @ 543,42
+bouton « 112  Tempo » @ 83,114
+bouton « ? » @ 543,114
+bouton › « Bass Change the sound » [coupé] @ 219,152
+bouton ▶ [coupé] @ 435,149
+icône (curseurs) [coupé] @ 510,146
+titre « THE SONG » [état « Expanded »] @ 140,248
+bouton « ? » @ 217,248
+texte « The timeline puts your parts in order, each with its length in bars. Add them in order. » @ 294,309
+texte « Add: » @ 65,363
+bouton « + A · Drop » @ 129,426
+bouton « + B · Intro » @ 311,426
+bouton « + C · Break » @ 134,507
+bouton « + New part (copy of C · Break) » [coupé] @ 231,561
+texte « Build your parts Chapter 8/12 · Step 3/6 · Easy » @ 210,618
+icône (liste) « Chapters » @ 447,618
+icône ⌄ @ 531,618
+texte « Your turn: tap “Create the “Drop 2” part”. » @ 253,699
+texte « ▸ Why? » @ 294,741
+bouton ⊕ «   Create the “Drop 2” part » @ 294,807
+bouton ▶ «  Listen to the example » @ 154,894
+bouton (œil) «  Show me » @ 433,894
+icône ← «  Previous » @ 101,978
+icône « Next  » → @ 508,978
+icône ↶ « Undo » @ 72,1062
+image ↷ @ 180,1052
+bouton ▶ « the song » @ 288,1062
+texte « 112 Tempo » @ 402,1062
+icône ⋮ « More » @ 516,1062
+onglet (lignes et note) « My song » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rhythm » @ 174,1158
+onglet (touches de piano) « Keyboard » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Share » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

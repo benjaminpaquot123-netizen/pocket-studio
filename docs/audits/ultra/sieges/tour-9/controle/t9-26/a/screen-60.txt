@@ -1,0 +1,19 @@
+Écran 60 (1035x1243)
+texte « Vuruş 12 » @ 401,540
+icône ✕ @ 715,540
+texte « Güç » @ 162,613
+bouton « Güçlü » [sélectionné] @ 203,686
+bouton « Orta » @ 356,686
+bouton « Yumuşak » @ 541,686
+texte « Roll » @ 158,759
+bouton « ×1 » [sélectionné] @ 169,832
+bouton « ×2 » @ 271,832
+bouton « ×3 » @ 377,832
+bouton « ×4 » @ 485,832
+bouton « ×6 » @ 592,832
+bouton « ×8 » @ 699,832
+texte « Triole » @ 177,905
+bouton « 2 hücreye 3 » @ 260,978
+bouton « ↗ Yükselen » [désactivé] @ 256,1059
+bouton « Eşit » [désactivé, sélectionné] @ 454,1059
+bouton « ↘ Alçalan » [désactivé] @ 635,1059

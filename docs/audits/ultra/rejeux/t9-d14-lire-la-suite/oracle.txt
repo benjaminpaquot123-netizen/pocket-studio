@@ -1,0 +1,4 @@
+source=docs/audits/ultra/sieges/tour-9/controle/t9-44/a
+rejeu.n=1
+rejeu.attendu=C op de bas A (= Am7). » @
+rejeu.absent=C op de bas A (= Am7). » [coupé]

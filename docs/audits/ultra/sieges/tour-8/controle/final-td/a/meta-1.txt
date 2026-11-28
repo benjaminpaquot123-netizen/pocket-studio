@@ -1,0 +1,2 @@
+route=tuto_panel/tab_Sons
+nouvelle=1

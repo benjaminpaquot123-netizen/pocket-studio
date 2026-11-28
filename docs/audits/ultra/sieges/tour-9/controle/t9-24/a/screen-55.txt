@@ -1,0 +1,12 @@
+Écran 55 (588x1278)
+texte « Graj od… » @ 215,177
+icône ▶ « Cały utwór, od początku » @ 318,234
+texte « 1 · Intro » @ 318,306
+texte « 2 · Refren » @ 318,378
+texte « 3 · Zwrotka » @ 318,450
+texte « 4 · Pre-chorus » @ 318,522
+texte « 5 · Refren » @ 318,594
+texte « 6 · Zwrotka » @ 318,666
+texte « 7 · Pre-chorus » @ 318,738
+texte « 8 · Refren » @ 318,810
+texte « 9 · Intro » @ 318,882

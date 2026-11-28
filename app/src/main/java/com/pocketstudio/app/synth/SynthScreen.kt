@@ -86,6 +86,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pocketstudio.model.SynthPatch
 import com.pocketstudio.app.rhythm.PlayUi
 import com.pocketstudio.app.sounds.SoundBrowser
@@ -416,17 +417,50 @@ fun SynthScreen(
                 }
             }
         } else {
+            // Tour 8 (t4-26, a phone at 130 and 200 %): in the Mode simple the big letters made the head (the mode switch,
+            // the take's card, the keyboard's title) taller than the room above the Guide's bar, and the keys stood under
+            // it. With big letters on a phone the take's card comes first, the keys right under it (as high as the room
+            // left allows, never under 110 dp), and the keyboard's title, its chips and the mode switch after them.
+            val bigLetters = simple && !tabletUpright && LocalDensity.current.fontScale >= BIG_LETTERS
+            var recordTall by remember { mutableStateOf(0) }
+            var barTall by remember { mutableStateOf(0) }
+            val page = rememberScrollState()
             Column(
-                Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
+                Modifier.fillMaxSize().verticalScroll(page).padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                tracks?.takeIf { it.showBar }?.let { TrackBar(it) }
+                val bar = tracks?.takeIf { it.showBar }
+                if (bar != null) Box(Modifier.onSizeChanged { barTall = it.height }) { TrackBar(bar) }
+                if (bigLetters) {
+                    record?.let { r -> Box(Modifier.onSizeChanged { recordTall = it.height }) { r(false) } }
+                    // Tour 9 (F142): the take's card gone, its height goes too (it kept the keys short after a take).
+                    val density = LocalDensity.current
+                    val above = if (record != null) with(density) { recordTall.toDp() } + 10.dp else 0.dp
+                    // Tour 9 (F117, t9-05 at 200 % over the tutorial's panel): the track's bar is above the keys too.
+                    // When the room left is under the keys' least height, the page slides by what is missing (the
+                    // bar goes up first, the take's card stays), so the whole keys stand in sight.
+                    val barRoom = if (bar != null) with(density) { barTall.toDp() } + 10.dp else 0.dp
+                    val room = screenHigh - 12.dp - barRoom - above - 6.dp
+                    val keysHigh = room.coerceIn(110.dp, 150.dp)
+                    val missing = with(density) { (110.dp - room).coerceIn(0.dp, barRoom).roundToPx() }
+                    LaunchedEffect(missing) { if (missing > 0 && page.value < missing) page.scrollTo(missing) }
+                    Box(trackKeyboard.testTag("synth_keys_first")) {
+                        if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = keysHigh)
+                        else PlayKeys(keyLayout, octave, uprightOctaves, harmony, english, keyOn, keyOff, keysHigh)
+                    }
+                    KeyboardCard(octave, octaves = uprightOctaves, height = keysHigh, actions = actions, harmony = harmony, chordKeys = chordKeys,
+                        onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
+                        chordPads = chordPads, onChordPads = { chordPads = it },
+                        keyLayout = keyLayout, onKeyLayout = setKeyLayout, english = english, simple = true, keysAbove = true)
+                    if (notes != null) ModeSwitch(showNotes, tracks, onChange = pickMode)
+                } else {
                 if (notes != null) ModeSwitch(showNotes, tracks, onChange = pickMode)
                 record?.invoke(false)
                 KeyboardCard(octave, octaves = uprightOctaves, height = if (tabletUpright) 190.dp else 150.dp, actions = actions, harmony = harmony, chordKeys = chordKeys,
                     onChordKeys = { chordKeys = it }, keyOn = keyOn, keyOff = keyOff, play = play, playActions = playActions,
                     chordPads = chordPads, onChordPads = { chordPads = it }, modifier = trackKeyboard,
                     keyLayout = keyLayout, onKeyLayout = setKeyLayout, english = english, simple = simple)
+                }
                 // The same sound sections, in the same order, as in Notes mode.
                 SoundArea(trackSounds) {
                     SoundSections(patch, actions, instrument, browser, advanced, effects, simpleSound = tracks?.takeIf { simple }) { advanced = it }
@@ -520,14 +554,16 @@ private fun KeyboardCard(
     english: Boolean = false,
     /** The Mode simple: the keys first (on a phone at 130 % they sat under the Guide's bar), the ways to play after them, no bend. */
     simple: Boolean = false,
+    /** The Mode simple with big letters: the keys stand above the card (the card keeps its title, octave and chips). */
+    keysAbove: Boolean = false,
 ) {
     NeonCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SectionLabel(if (chordPads) tr("Pads d'accords") else tr("Clavier"), help = if (chordPads) Glossary.CHORD else null, foldKey = "Clavier")
+            SectionLabel(if (chordPads) tr("Pads d'accords") else tr("Clavier"), help = keyboardHelp(harmony, chordPads), foldKey = "Clavier")
             Box(Modifier.weight(1f))
             OctaveControl(octave, actions)
         }
-        if (simple) {
+        if (simple && !keysAbove) {
             if (chordPads) ChordPads(harmony, 12 * (octave + 1), actions.noteOn, actions.noteOff, height = height)
             else PlayKeys(keyLayout, octave, octaves, harmony, english, keyOn, keyOff, height)
         }
@@ -555,7 +591,7 @@ private fun SimpleSoundCard(tracks: TracksUi) {
     NeonCard(modifier = Modifier.testTag("simple_sound")) {
         SectionLabel(tr("Le son"), foldKey = "Le son (mode simple)")
         // Audit ultra round 1, n° 36 (seat F a): the sound's own name (« Orgue »), not its kind (« Synthé ») once it is changed.
-        Text(com.pocketstudio.model.guide.GuideSheets.soundName(t), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+        Text(trackSoundName(t), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
             modifier = Modifier.testTag("simple_sound_name"))
         tracks.changeSound?.let { change ->
             androidx.compose.material3.Button(onClick = { change(t.id) }, modifier = Modifier.pressScale().fillMaxWidth().heightIn(min = 48.dp).testTag("simple_change_sound")) {
@@ -570,6 +606,20 @@ private fun SimpleSoundCard(tracks: TracksUi) {
  * tablet lying down (an 8.7" Galaxy Tab A11 leaves about 470 dp under the bars), not a phone (about 330).
  */
 internal val TALL_LANDSCAPE = 440.dp
+
+/** From this font scale a phone's Mode simple Clavier puts the take's card and the keys first (tour 8, t4-26). */
+internal const val BIG_LETTERS = 1.15f
+
+/**
+ * Tour 9 (F117, t9-05): the keyboard's « ? » says what the keys do (the one beside them was the take's, about
+ * recording only): in the song's scale they cannot play a wrong note; else they try notes over the beat.
+ */
+internal fun keyboardHelp(harmony: Harmony, chordPads: Boolean): com.pocketstudio.ui.Help? = when {
+    chordPads -> Glossary.CHORD
+    harmony.lock && harmony.scale != com.pocketstudio.model.Scale.Off ->
+        com.pocketstudio.ui.Help(tr("Clavier"), tr("Le clavier : joue, il reste dans la gamme du morceau : aucune fausse note possible."))
+    else -> com.pocketstudio.ui.Help(tr("Clavier"), tr("Le clavier : joue pour essayer des notes par-dessus le rythme."))
+}
 
 /** From this width a screen held upright is a tablet's (an 8.7" one is 600 dp wide). */
 internal val TABLET_WIDTH = 600.dp
@@ -906,10 +956,25 @@ private fun Key(
         contentAlignment = Alignment.BottomCenter,
     ) {
         if (label != null) {
-            Text(
-                label, style = MaterialTheme.typography.labelMedium, maxLines = 1, softWrap = false,
-                color = if (down) Neon.OnAccent else Color(0xFF5B6068), modifier = Modifier.padding(bottom = 6.dp),
-            )
+            // Big letters (200 %) on a narrow key: the name shrinks to the key's width rather than be cut.
+            BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
+                val base = MaterialTheme.typography.labelMedium
+                val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+                val room = constraints.maxWidth
+                val style = remember(label, room, base) {
+                    var size = base.fontSize
+                    var st = base
+                    while (size.value > 6f && measurer.measure(label, st, maxLines = 1, softWrap = false).size.width > room) {
+                        size = (size.value * 0.9f).sp
+                        st = base.copy(fontSize = size, lineHeight = size * 1.2f)
+                    }
+                    st
+                }
+                Text(
+                    label, style = style, maxLines = 1, softWrap = false,
+                    color = if (down) Neon.OnAccent else Color(0xFF5B6068), modifier = Modifier.padding(bottom = 6.dp),
+                )
+            }
         }
     }
 }

@@ -1,0 +1,46 @@
+Écran 9 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ▶ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 98,123
+bouton « ? » @ 543,123
+icône « Parte: A · Groove » ▾ @ 150,198
+bouton « Bombo de estudio FX » [coupé] @ 84,272
+bouton « Bombo 2 » [coupé] @ 224,272
+bouton « Caja » [coupé] @ 364,272
+bouton « Caja 2 » [coupé] @ 504,272
+texte « Entender las partes Capítulo 7/13 · Paso 3/4 · Fácil » @ 202,343
+icône (liste) « Capítulos » @ 439,344
+icône ⌄ @ 531,344
+image (rond coché) @ 36,424
+texte « Escucha el Break: el kick y el bajo callan, el piano y las percusiones siguen. » @ 313,478
+texte « Energía » @ 68,572
+texte « 28 » @ 98,681
+texte « 4 » @ 189,681
+texte « 16 » @ 247,681
+texte « 12 » @ 327,681
+texte « 4 » @ 374,681
+texte « 16 » @ 432,681
+texte « 16 » @ 523,681
+texte « ▸ ¿Por qué? » @ 294,738
+icône « Seguir leyendo » ⌄ @ 294,792
+bouton « Paso siguiente   » → @ 294,864
+bouton ▶ «  Escuchar el ejemplo » @ 229,962
+icône ← @ 57,962
+icône « Siguiente  » → @ 466,962
+icône ↶ « Deshacer » @ 72,1061
+image ↷ @ 185,1048
+bouton ▶ « la canción » @ 304,1061
+texte « 120 Tempo » @ 424,1061
+icône ⋮ « Más » @ 527,1061
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 356,1248
+texte « ✎  Anotar » @ 454,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 160,1248

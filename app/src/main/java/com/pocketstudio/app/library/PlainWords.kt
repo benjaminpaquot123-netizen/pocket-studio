@@ -19,7 +19,15 @@ import com.pocketstudio.ui.Neon
  */
 internal object PlainWords {
     /** A word of the trade as it appears in the French texts, and its explanation. */
-    private class Term(val pattern: Regex, val plain: () -> String)
+    private class Term(pattern: Regex, val plain: () -> String) {
+        /**
+         * Tour 9, F079 (t9-31): `\b` is not a letter boundary on the JVM (« é » is not a word letter there), so « accordé »
+         * gave the « Accord » line. Each `\b` of a pattern is read as a boundary between a letter or digit and anything else.
+         */
+        val pattern = Regex(pattern.pattern.replace("\\b", BOUNDARY), pattern.options)
+    }
+
+    private const val BOUNDARY = """(?:(?<![\p{L}\p{N}])(?=[\p{L}\p{N}])|(?<=[\p{L}\p{N}])(?![\p{L}\p{N}]))"""
 
     private val TERMS = listOf(
         Term(Regex("""\bBPM\b""")) { tr("BPM : la vitesse du morceau, en battements par minute.") },
@@ -53,6 +61,11 @@ internal object PlainWords {
         Term(Regex("""\b707\b""")) { tr("707 : une boîte à rythmes célèbre, ses sons de batterie.") },
         Term(Regex("""(?i)\bswing\b""")) { tr("Swing : décaler un coup sur deux pour que le rythme balance.") },
         Term(Regex("""(?i)\bbreaks?\b""")) { tr("Break : un moment plus calme, le kick et la basse se taisent.") },
+        // Tour 9, F065 (t9-01, t9-42, t9-52, t9-62): the acid words were never explained.
+        Term(Regex("""\b303\b""")) { tr("303 : une petite machine à basse, son son qui couine et grogne fait l'acid.") },
+        Term(Regex("""(?i)\baccents?\b""")) { tr("Accent : une note jouée plus fort que les autres.") },
+        Term(Regex("""(?i)\bslides?\b""")) { tr("Slide : la note glisse jusqu'à la suivante au lieu de sauter.") },
+        Term(Regex("""(?i)\bglides?\b""")) { tr("Glide : le son glisse doucement d'une note à l'autre.") },
     )
 
     /** The plain lines for the words of the trade in [french] (French keys), each once, in the list's order. */

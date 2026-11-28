@@ -1,0 +1,34 @@
+Écran 9 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 86,114
+bouton « A » ▾ @ 202,114
+icône ↶ @ 278,114
+bouton ● @ 350,114
+bouton ▶ « dit deel » @ 422,114
+icône (trois points reliés) @ 495,114
+bouton « 92  BPM » @ 74,195
+bouton « ? » @ 495,195
+texte « Tempo en toonsoort Hoofdstuk 1/14 · Stap 2/3 · Pro » @ 176,271
+icône (liste) « Hoofdstukken » @ 389,272
+icône ⌄ @ 483,272
+image (coupe) @ 57,424
+texte « Goed gedaan, het is gelukt! » @ 277,387
+texte « Tik op ‘Volgende stap’ wanneer je wilt. » @ 295,444
+bouton « Volgende stap   » → @ 270,756
+bouton ▶ «  Luister naar het voorbeeld » @ 310,854
+icône ← @ 57,854
+icône ↶ « Ongedaan maken » @ 57,953
+icône ↷ « Opnieuw » [désactivé] @ 157,953
+icône ▶ « het nummer » @ 276,953
+texte « 92 Tempo » @ 396,953
+icône (trois points reliés) « Delen » @ 489,953
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 297,1140
+texte « ✎  Noteren » @ 400,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 130,1140

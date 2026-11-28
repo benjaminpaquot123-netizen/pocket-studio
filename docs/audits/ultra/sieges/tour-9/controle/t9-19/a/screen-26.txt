@@ -1,0 +1,67 @@
+Écran 26 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 281,42
+bouton « Einfach » @ 607,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône ⋮ @ 855,42
+bouton « 116  Tempo » @ 98,123
+bouton « ? » @ 855,123
+icône « Teil: A » ▾ @ 77,198
+titre « STEPS: DISCO / FUNK · GROSSE TROMMEL 1 » [coupé, état « Aufgeklappt »] @ 362,250
+bouton « ? » [coupé] @ 661,245
+bouton « Alle Pads » [coupé] @ 770,246
+texte « Disco / Funk · Große Trommel 1 » @ 250,318
+bouton « 1 » [état « Schlag, Stärke 100 % »] @ 90,403
+bouton [état « leer »] @ 192,403
+bouton [état « leer »] @ 294,403
+bouton [état « leer »] @ 397,403
+bouton « 2 » [état « Schlag, Stärke 100 % »] @ 500,403
+bouton [état « leer »] @ 603,403
+bouton [état « leer »] @ 706,403
+bouton [état « leer »] @ 809,403
+bouton « 3 » [état « Schlag, Stärke 100 % »] @ 90,484
+bouton [état « leer »] @ 192,484
+bouton [état « leer »] @ 294,484
+bouton [état « leer »] @ 397,484
+bouton « 4 » [état « Schlag, Stärke 100 % »] @ 500,484
+bouton [état « leer »] @ 603,484
+bouton [état « leer »] @ 706,484
+bouton [état « leer »] @ 809,484
+texte « Füllen » @ 79,570
+texte « alles » @ 163,570
+texte « 1/2 » @ 246,570
+texte « 1/4 » @ 321,570
+texte « ◀ » @ 396,570
+texte « ▶ » @ 471,570
+texte « Löschen » @ 581,570
+texte « Tippe auf ein Kästchen, um einen Schlag hinzuzufügen, wisch mit dem Finger, um mehrere zu malen. Lang auf einen Schlag drücken: Stärke und Rolls (×2 bis ×8). » @ 450,672
+texte « Länge » @ 83,774
+bouton « 1 Takt » [sélectionné] @ 196,774
+bouton « 2 » @ 305,774
+bouton « 3 » @ 386,774
+bouton « 4 » @ 467,774
+texte « Die Drums Kapitel 2/13 · Schritt 2/8 · Einfach » @ 366,860
+icône (liste) « Kapitel » @ 759,861
+icône ⌄ @ 843,861
+image (coupe) @ 57,995
+texte « Bravo, geschafft! » @ 207,958
+texte « Hör dir dein Ergebnis an und tippe dann auf „Nächster Schritt“, wenn du so weit bist. » [coupé] @ 475,998
+icône « Weiterlesen » ⌄ @ 450,1051
+bouton « Nächster Schritt   » → @ 450,1123
+icône ← @ 57,1207
+bouton ▶ «  Dein Ergebnis anhören » @ 294,1207
+bouton ▶ «  Beispiel anhören » @ 687,1207
+icône ↶ « Rückgängig » @ 127,1292
+image ↷ @ 317,1279
+bouton ▶ « der Song » @ 494,1292
+texte « 116 Tempo » @ 650,1292
+icône ⋮ « Mehr » @ 796,1292
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,171 @@
+Écran 34 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 2 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 100  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône « Partie : A » ▾ @ 82,180
+texte « Charley » [coupé] @ 96,222
+bouton [coupé] @ 163,224
+bouton [coupé] @ 187,224
+bouton [coupé] @ 211,224
+bouton [coupé] @ 235,224
+bouton [coupé] @ 260,224
+bouton [coupé] @ 285,224
+bouton [coupé] @ 310,224
+bouton [coupé] @ 335,224
+bouton [coupé] @ 360,224
+bouton [coupé] @ 385,224
+bouton [coupé] @ 410,224
+bouton [coupé] @ 435,224
+bouton [coupé] @ 460,224
+bouton [coupé] @ 485,224
+bouton [coupé] @ 510,224
+bouton [coupé] @ 535,224
+texte « Charley ouvert » @ 96,253
+bouton @ 163,252
+bouton @ 187,252
+bouton @ 211,252
+bouton @ 235,252
+bouton @ 260,252
+bouton @ 285,252
+bouton @ 310,252
+bouton @ 335,252
+bouton @ 360,252
+bouton @ 385,252
+bouton @ 410,252
+bouton @ 435,252
+bouton @ 460,252
+bouton @ 485,252
+bouton @ 510,252
+bouton @ 535,252
+texte « Tom grave » @ 96,289
+bouton @ 163,288
+bouton @ 187,288
+bouton @ 211,288
+bouton @ 235,288
+bouton @ 260,288
+bouton @ 285,288
+bouton @ 310,288
+bouton @ 335,288
+bouton @ 360,288
+bouton @ 385,288
+bouton @ 410,288
+bouton @ 435,288
+bouton @ 460,288
+bouton @ 485,288
+bouton @ 510,288
+bouton @ 535,288
+texte « Tom médium » @ 96,325
+bouton @ 163,324
+bouton @ 187,324
+bouton @ 211,324
+bouton @ 235,324
+bouton @ 260,324
+bouton @ 285,324
+bouton @ 310,324
+bouton @ 335,324
+bouton @ 360,324
+bouton @ 385,324
+bouton @ 410,324
+bouton @ 435,324
+bouton @ 460,324
+bouton @ 485,324
+bouton @ 510,324
+bouton @ 535,324
+texte « Tom aigu » @ 96,361
+bouton @ 163,360
+bouton @ 187,360
+bouton @ 211,360
+bouton @ 235,360
+bouton @ 260,360
+bouton @ 285,360
+bouton @ 310,360
+bouton @ 335,360
+bouton @ 360,360
+bouton @ 385,360
+bouton @ 410,360
+bouton @ 435,360
+bouton @ 460,360
+bouton @ 485,360
+bouton @ 510,360
+bouton @ 535,360
+texte « Bord de caisse » @ 96,397
+bouton @ 163,396
+bouton @ 187,396
+bouton @ 211,396
+bouton @ 235,396
+bouton @ 260,396
+bouton @ 285,396
+bouton @ 310,396
+bouton @ 335,396
+bouton @ 360,396
+bouton @ 385,396
+bouton @ 410,396
+bouton @ 435,396
+bouton @ 460,396
+bouton @ 485,396
+bouton @ 510,396
+bouton @ 535,396
+texte « Cloche » @ 96,433
+bouton @ 163,432
+bouton @ 187,432
+bouton @ 211,432
+bouton @ 235,432
+bouton @ 260,432
+bouton @ 285,432
+bouton @ 310,432
+bouton @ 335,432
+bouton @ 360,432
+bouton @ 385,432
+bouton @ 410,432
+bouton @ 435,432
+bouton @ 460,432
+bouton @ 485,432
+bouton @ 510,432
+bouton @ 535,432
+texte « Cymbale » @ 96,468
+bouton [coupé] @ 163,466
+bouton [coupé] @ 187,466
+bouton [coupé] @ 211,466
+bouton [coupé] @ 235,466
+bouton [coupé] @ 260,466
+bouton [coupé] @ 285,466
+bouton [coupé] @ 310,466
+bouton [coupé] @ 335,466
+bouton [coupé] @ 360,466
+bouton [coupé] @ 385,466
+bouton [coupé] @ 410,466
+bouton [coupé] @ 435,466
+bouton [coupé] @ 460,466
+bouton [coupé] @ 485,466
+bouton [coupé] @ 510,466
+bouton [coupé] @ 535,466
+texte « Le clap Chapitre 3/15 · Étape 1/1 · Facile » @ 207,528
+icône (liste) « Chapitres » @ 444,528
+icône ⌄ @ 531,528
+texte « À toi : touche « Passer à 2 mesures ». » @ 236,609
+bouton « Télécharger le kit House (4 Mo) » @ 236,684
+texte « Plus tard » @ 503,684
+texte « ▸ Pourquoi ? » @ 294,750
+bouton ⊕ «   Passer à 2 mesures » @ 294,813
+bouton ▶ «  Écouter l'exemple » @ 154,897
+bouton (œil) «  Montre-moi » @ 433,897
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » [désactivé] @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 100 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

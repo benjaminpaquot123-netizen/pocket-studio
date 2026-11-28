@@ -106,8 +106,8 @@
         },
         {
           "id": "snare_do",
-          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé à la fin de la 2e mesure : un petit roulement qui accélère.",
-          "textPro": "À toi : le roulement de caisse en fin de 2e mesure (1, 2, 3, 4 coups par case).",
+          "text": "À toi : sur le pad « Caisse », touche les cases en pointillé à la fin de la 4e mesure : un petit roulement qui accélère.",
+          "textPro": "À toi : le roulement de caisse en fin de 4e mesure (1, 2, 3, 4 coups par case).",
           "why": "Un roulement qui accélère relance l'énergie avant la mesure suivante.",
           "check": "lane:snare",
           "spot": "rhythm.pattern",
@@ -320,8 +320,8 @@
           "text": "À toi : crée la Fin : la 909 seule.",
           "check": "part:Fin:less",
           "spot": "song.parts",
-          "keep": "kick,hat,open_hat,perc",
-          "listen": "vs:Drop:Intro"
+          "keep": "kick,clap,hat,open_hat,snare",
+          "listen": "vs:Drop:Fin"
         }
       ]
     },
@@ -360,7 +360,7 @@
         {
           "id": "gap",
           "text": "À toi : à la fin du Break, efface les coups du dernier temps : un silence avant le Drop 2.",
-          "textPro": "À toi : dans la partie « Break », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
+          "textPro": "À toi : dans la partie « Break », efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop 2.",
           "why": "Un temps de rien, et le hoover qui revient avec le kick paraît énorme.",
           "check": "gap",
           "spot": "rhythm.pattern",

@@ -1,0 +1,459 @@
+#0 SIEGE lang=ar device=phone360 font=130 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:acid_house:1
+#0 PREMIER ECRAN reel_s=4.1 simule_s=2.4 jvm_s=9.5 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:acid_house:1
+#0 AMENEE > touche 270 772 (welcome_learn)
+#0 AMENEE > touche 270 683 (mode_card_simple)
+#0 AMENEE > touche 270 1096 (tuto_style_acid_house)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE ad952a7feb | project=p-194bfa20 tuto=acid_house/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « الجزء: A » drawn past its parent's edge (down, 30 dp shown of 33)
+#1 LAYOUT CUT « تم الحفظ » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 270 761
+#1 DOIGT tuto_listen «  استمع إلى المثال »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5ade3d3dc9 | project=p-194bfa20 tuto=acid_house/Facile active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 316 598
+#2 DOIGT tuto_kit_download « تنزيل الطقم Acid house (6 MB) »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE eaaf5cf67e | project=p-194bfa20 tuto=acid_house/Facile active=true step=ref done=1 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > touche 270 761
+#3 DOIGT tuto_next_big « الخطوة التالية   »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2c2db29cc8 | project=p-194bfa20 tuto=acid_house/Facile active=true step=tempo done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 453 139
+#4 DOIGT top_tempo « السرعة: 100 نبضة في الدقيقة »
+#5 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE f2b8bff504 | project=p-194bfa20 tuto=acid_house/Facile active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « السرعة » over the touchable « إغلاق الورقة » (66 x 43 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « إغلاق الورقة » (9 x 18 dp)
+#5 LAYOUT OVERLAP « إغلاق » over the touchable « إغلاق الورقة » (39 x 33 dp)
+#5 LAYOUT OVERLAP « 100 » over the touchable « إغلاق الورقة » (86 x 53 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « إغلاق الورقة » (50 x 31 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « إغلاق الورقة » (25 x 24 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « إغلاق الورقة » (25 x 24 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « إغلاق الورقة » (38 x 24 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « إغلاق الورقة » (38 x 24 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « إغلاق الورقة » (38 x 24 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « إغلاق الورقة » (17 x 31 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « إغلاق الورقة » (26 x 31 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#5 LAYOUT OVERLAP « حسنًا » over the touchable « إغلاق الورقة » (48 x 42 dp)
+#5 LAYOUT OVERLAP « انقر مع الإيقاع » over the touchable « إغلاق الورقة » (107 x 35 dp)
+#5 LAYOUT OVERLAP « انقر هنا مع كل نبضة: السرعة تتبعك. » over the touchable « إغلاق الورقة » (165 x 29 dp)
+#5 > touche 273 558
+#5 DOIGT tempo_preset_120 « 120 »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 3ece3026c5 | project=p-194bfa20 tuto=acid_house/Facile active=true step=tempo done=2 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 270 762
+#6 DOIGT tuto_next_big « الخطوة التالية   »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0beb5da7ac | project=p-194bfa20 tuto=acid_house/Facile active=true step=key done=2 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT CUT « الجزء: A » drawn past its parent's edge (down, 26 dp shown of 33)
+#7 > touche 270 680
+#7 DOIGT tuto_do «   سأفعلها »
+#8 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 8370415bc9 | project=p-194bfa20 tuto=acid_house/Facile active=true step=key done=2 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « مقام المقطوعة » over the touchable « إغلاق الورقة » (134 x 43 dp)
+#8 LAYOUT OVERLAP « نغمة المقطوعة: لا شيء » over the touchable « إغلاق الورقة » (155 x 33 dp)
+#8 LAYOUT OVERLAP « السلّم » over the touchable « إغلاق الورقة » (38 x 33 dp)
+#8 LAYOUT OVERLAP « كبير » over the touchable « إغلاق الورقة » (29 x 35 dp)
+#8 LAYOUT OVERLAP « صغير » over the touchable « إغلاق الورقة » (40 x 35 dp)
+#8 LAYOUT OVERLAP « Dorian » over the touchable « إغلاق الورقة » (63 x 31 dp)
+#8 LAYOUT OVERLAP « خماسي صغير » over the touchable « إغلاق الورقة » (98 x 35 dp)
+#8 LAYOUT OVERLAP « خماسي كبير » over the touchable « إغلاق الورقة » (88 x 35 dp)
+#8 LAYOUT OVERLAP « Blues » over the touchable « إغلاق الورقة » (52 x 31 dp)
+#8 LAYOUT OVERLAP « Phrygian » over the touchable « إغلاق الورقة » (83 x 31 dp)
+#8 LAYOUT OVERLAP « صغير هارموني » over the touchable « إغلاق الورقة » (105 x 35 dp)
+#8 LAYOUT OVERLAP « المفتاح » over the touchable « إغلاق الورقة » (49 x 33 dp)
+#8 LAYOUT OVERLAP « دو » over the touchable « إغلاق الورقة » (17 x 35 dp)
+#8 LAYOUT OVERLAP « دو♯ » over the touchable « إغلاق الورقة » (29 x 35 dp)
+#8 LAYOUT OVERLAP « ري » over the touchable « إغلاق الورقة » (20 x 35 dp)
+#8 LAYOUT OVERLAP « مي♭ » over the touchable « إغلاق الورقة » (30 x 35 dp)
+#8 LAYOUT OVERLAP « مي » over the touchable « إغلاق الورقة » (23 x 35 dp)
+#8 LAYOUT OVERLAP « فا » over the touchable « إغلاق الورقة » (14 x 35 dp)
+#8 LAYOUT OVERLAP « فا♯ » over the touchable « إغلاق الورقة » (25 x 35 dp)
+#8 LAYOUT OVERLAP « صول » over the touchable « إغلاق الورقة » (37 x 35 dp)
+#8 LAYOUT OVERLAP « لا♭ » over the touchable « إغلاق الورقة » (17 x 35 dp)
+#8 LAYOUT OVERLAP « لا » over the touchable « إغلاق الورقة » (11 x 35 dp)
+#8 LAYOUT OVERLAP « سي♭ » over the touchable « إغلاق الورقة » (34 x 35 dp)
+#8 LAYOUT OVERLAP « سي » over the touchable « إغلاق الورقة » (27 x 35 dp)
+#8 > touche 379 623
+#8 DOIGT tuto_scale_Minor « صغير »
+#9 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 1163bd700e | project=p-194bfa20 tuto=acid_house/Facile active=true step=key done=2 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « نغمة المقطوعة: دو · صغير » over the touchable « إغلاق الورقة » (25 x 33 dp)
+#9 LAYOUT OVERLAP « دو » over the touchable « إغلاق الورقة » (19 x 35 dp)
+#9 > touche 115 1017
+#9 DOIGT tuto_root_9 « لا »
+#10 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 48d7a36efa | project=p-194bfa20 tuto=acid_house/Facile active=true step=key done=3 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « نغمة المقطوعة: لا · صغير » over the touchable « إغلاق الورقة » (12 x 33 dp)
+#10 LAYOUT OVERLAP « نجحت! تم اختيار لون المقطوعة. » over the touchable « إغلاق الورقة » (206 x 35 dp)
+#10 LAYOUT OVERLAP « العودة إلى الدرس » over the touchable « إغلاق الورقة » (123 x 33 dp)
+#10 > touche 270 1095
+#10 DOIGT tuto_key_continue « العودة إلى الدرس »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e837f63b49 | project=p-194bfa20 tuto=acid_house/Facile active=true step=key done=3 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT CUT « البادات تُصدر الصوت، والخانات تحفظ الضربات. ضغطة مطوّلة: تغيير الصوت. » ellipsized (« … »)
+#11 LAYOUT OVERLAP « تصفيق » over « FX » (11 x 2 dp)
+#11 LAYOUT OVERLAP « هاي هات » over « L 30 » (28 x 2 dp)
+#11 LAYOUT OVERLAP « صنج » over « FX » (3 x 2 dp)
+#11 LAYOUT OVERLAP « صنج » over « R 40 » (18 x 2 dp)
+#11 LAYOUT OVERLAP « ماراكاس » over « L 50 » (28 x 2 dp)
+#11 > touche 270 831
+#11 DOIGT tuto_chapter_end_folded « أحسنت، انتهى الفصل! »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dfc7cb9ada | project=p-194bfa20 tuto=acid_house/Facile active=true step=key done=3 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 270 762
+#12 DOIGT tuto_next_big « الفصل التالي   »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6960915b80 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_hear done=3 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT CUT « الجزء: A » lines cut (taller than its box)
+#13 LAYOUT TARGET « الجزء: A تغيير الجزء » 83 x 11 dp (touch 83 x 48)
+#13 > touche 270 530
+#13 DOIGT tuto_why « ▸ لماذا؟ »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 07051c5aff | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_hear done=3 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 270 761
+#14 DOIGT tuto_listen «  استمع إلى المثال »
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 90a3809218 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_hear done=3 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > attends 4
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d72874b149 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_hear done=4 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 270 761
+#16 DOIGT tuto_next_big « الخطوة التالية   »
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c03471c9a3 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « الطبل الكبير 2 » 4.07:1 (needs 4.5:1, 14 sp)
+#17 > touche 142 764
+#17 DOIGT tuto_show «  أرني »
+#18 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE e3ba402d00 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT OVERLAP « صوت: Acid 303 » over the touchable « إغلاق الورقة » (79 x 43 dp)
+#18 LAYOUT OVERLAP « اضغط على صوت: يستبدل صوت هذا المسار في الأغنية كلها. » over the touchable « إغلاق الورقة » (263 x 53 dp)
+#18 LAYOUT OVERLAP « الكلاسيكيات » over the touchable « إغلاق الورقة » (93 x 35 dp)
+#18 LAYOUT OVERLAP « Acid أساسي » over the touchable « إغلاق الورقة » (95 x 33 dp)
+#18 LAYOUT OVERLAP « لامع » over the touchable « إغلاق الورقة » (24 x 27 dp)
+#18 LAYOUT OVERLAP « Squelchy » over the touchable « إغلاق الورقة » (83 x 23 dp)
+#18 LAYOUT OVERLAP « لامع · حاد » over the touchable « إغلاق الورقة » (59 x 27 dp)
+#18 LAYOUT OVERLAP « Da Funk » over the touchable « إغلاق الورقة » (73 x 23 dp)
+#18 LAYOUT OVERLAP « أجوف » over the touchable « إغلاق الورقة » (36 x 27 dp)
+#18 LAYOUT OVERLAP « عشوائي » over the touchable « إغلاق الورقة » (56 x 33 dp)
+#18 LAYOUT OVERLAP « احفظ هذا الصوت » over the touchable « إغلاق الورقة » (71 x 60 dp)
+#18 LAYOUT OVERLAP « «احفظ هذا الصوت» يضعه في مفضّلاتك، لكل مشاريعك. » over the touchable « إغلاق الورقة » (273 x 53 dp)
+#18 > attends 3
+#19 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE e3ba402d00 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 71 410
+#19 DOIGT acid_sound_close « إغلاق »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ed965cf86a | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « دورك: للـ303 شاشتها الخاصة. «سأفعلها» يفتحها، و«أرني» يكتب الخط فيها: شاهد نوتاتها الـ13 توضع. » ellipsized (« … »)
+#20 > touche 270 831
+#20 DOIGT tuto_folded_text « دورك: للـ303 شاشتها الخاصة. «سأفعلها» يف »
+#21 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c03471c9a3 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 142 764
+#21 DOIGT tuto_show «  أرني »
+#22 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE e3ba402d00 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 71 410
+#22 DOIGT acid_sound_close « إغلاق »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1b2b25832c | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « إيقاف » 3.91:1 (needs 4.5:1, 14 sp)
+#23 > touche 270 831
+#23 DOIGT rien (texte « حسنًا. أعيدها كما كانت… »)
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1b2b25832c | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 270 680
+#24 DOIGT tuto_toggle « الـ303 أولًا »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 32dc96a6a8 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 142 764
+#25 DOIGT tuto_show «  أرني »
+#26 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE e3ba402d00 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#26 SON Son : rien ne joue.
+#26 > retour
+#26 RETOUR
+#26 DIALOGUE 0.5 s
+#27 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE 280cfc012f | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT OVERLAP « ابحث عن صوت (سنير، كونغا، صفارة…) » over the touchable « إغلاق الورقة » (210 x 65 dp)
+#27 LAYOUT OVERLAP « 3 أصوات » over the touchable « إغلاق الورقة » (58 x 29 dp)
+#27 LAYOUT OVERLAP « متّسخ » over the touchable « إغلاق الورقة » (45 x 35 dp)
+#27 LAYOUT OVERLAP « صوتان » over the touchable « إغلاق الورقة » (41 x 29 dp)
+#27 LAYOUT OVERLAP « ناعم » over the touchable « إغلاق الورقة » (34 x 35 dp)
+#27 LAYOUT OVERLAP « المس ☆ على صوت لتجده في «المفضّلات». » over the touchable « إغلاق الورقة » (213 x 29 dp)
+#27 > touche 71 339
+#27 DOIGT acid_sound_close « إغلاق »
+#27 DIALOGUE 0.2 s
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1b2b25832c | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#28 SON Son : rien ne joue.
+#28 > attends 3
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ed965cf86a | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 270 831
+#29 DOIGT tuto_folded_text « دورك: للـ303 شاشتها الخاصة. «سأفعلها» يف »
+#30 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c03471c9a3 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 270 680
+#30 DOIGT tuto_do «   سأفعلها »
+#31 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE e3ba402d00 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 71 410
+#31 DOIGT acid_sound_close « إغلاق »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ed965cf86a | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 269 1044
+#32 DOIGT tab_simple_Clavier « لوحة المفاتيح »
+#33 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE be554ca289 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST «  سجّل لحني » 2.78:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT TARGET « دو 4 دو تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « ري 4 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « مي 4 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « فا 4 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « صول 4 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « لا 4 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « سي 4 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « دو 5 دو تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « ري 5 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « مي 5 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « فا 5 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « صول 5 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « لا 5 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 LAYOUT TARGET « سي 5 تشغيل » 21 x 110 dp (touch 48 x 110)
+#33 > touche 270 831
+#33 DOIGT tuto_folded_text « دورك: للـ303 شاشتها الخاصة. «سأفعلها» يف »
+#34 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 98af78b0e8 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 270 680
+#34 DOIGT tuto_do «   سأفعلها »
+#35 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE e3ba402d00 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 270 637
+#35 DOIGT acid_sounds_0 « Acid أساسي »
+#36 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE be554ca289 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 440 239
+#36 DOIGT sons_Acide « Acid 303 »
+#37 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 133a23f639 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 270 585
+#37 DOIGT acid_generate « اكتب لي خطًا »
+#38 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 133a23f639 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#38 SON Son : rien ne joue.
+#38 > glisse 270 620 270 330
+#38 DOIGT acid_generate « اكتب لي خطًا »
+#39 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE dbb15e9b51 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#39 SON Son : rien ne joue.
+#39 > glisse 270 620 270 330
+#39 DOIGT fold_Ligne de basse « خط الباص · الجذر لا »
+#40 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 57f97588d7 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CUT « ↑ » lines cut (taller than its box)
+#40 LAYOUT CUT « مي⌒↓ » lines cut (taller than its box)
+#40 LAYOUT CUT « ↑↑ » lines cut (taller than its box)
+#40 LAYOUT CONTRAST « دو ري مي » 2.77:1 (needs 4.5:1, 14 sp)
+#40 LAYOUT CONTRAST « لا » 4.30:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « مي » 3.28:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « دو » 4.28:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « ↑ » 3.20:1 (needs 4.5:1, 11 sp)
+#40 LAYOUT CONTRAST « لا » 4.34:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « ↑ » 3.27:1 (needs 4.5:1, 11 sp)
+#40 LAYOUT CONTRAST « ↑↑ » 3.27:1 (needs 4.5:1, 11 sp)
+#40 > touche 270 831
+#40 DOIGT tuto_folded_text « دورك: للـ303 شاشتها الخاصة. «سأفعلها» يف »
+#41 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE a7c66fce59 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 142 764
+#41 DOIGT tuto_show «  أرني »
+#42 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE e3ba402d00 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#42 SON Son : rien ne joue.
+#42 > attends 8
+#43 ROUTE dialogue:acid_sound_sheet | MODE simple | EMPREINTE e3ba402d00 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 71 410
+#43 DOIGT acid_sound_close « إغلاق »
+#44 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 57f97588d7 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 356 597
+#44 DOIGT acid_step_13 « – »
+#45 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 57f97588d7 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 270 831
+#45 DOIGT tuto_folded_text « دورك: للـ303 شاشتها الخاصة. «سأفعلها» يف »
+#46 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE a7c66fce59 | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 85 845
+#46 DOIGT tuto_next « التالي  »
+#47 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 4505bed32d | project=p-194bfa20 tuto=acid_house/Facile active=true step=acid_do done=4 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 85 845
+#47 DOIGT tuto_next « التالي  »
+#48 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE f275ac7d18 | project=p-194bfa20 tuto=acid_house/Facile active=true step=ready done=4 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CUT « Acid 303 » lines cut (taller than its box)
+#48 LAYOUT TARGET « Acid 303 خط باص » 121 x 11 dp (touch 121 x 48)
+#48 LAYOUT TARGET « المسار » 115 x 11 dp (touch 115 x 48)
+#48 > touche 270 761
+#48 DOIGT tuto_mark «   فهمت »
+#49 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 3ba4620fca | project=p-194bfa20 tuto=acid_house/Facile active=true step=kick_do done=5 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 270 680
+#49 DOIGT tuto_do «   سأفعلها »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 710cb5190f | project=p-194bfa20 tuto=acid_house/Facile active=true step=kick_do done=5 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT « دورك: على باد «طبل كبير للاستوديو»، اضغط الخانات المنقّطة الـ4: ضربة على كل نبضة. » ellipsized (« … »)
+#50 LAYOUT CONTRAST « الخطوات: طبل كبير للاستوديو » 2.38:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « ? » 1.75:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « كل البادات » 1.57:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « 2 » 4.16:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « 3 » 4.18:1 (needs 4.5:1, 12 sp)
+#50 LAYOUT CONTRAST « 4 » 4.18:1 (needs 4.5:1, 12 sp)
+#50 > touche 67 450
+#50 DOIGT step_0 « الخطوة 1 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 83bb274f38 | project=p-194bfa20 tuto=acid_house/Facile active=true step=kick_do done=5 playing=false
+#51 SON Son : rien ne joue.
+#51 LAYOUT CONTRAST « 2 » 2.75:1 (needs 4.5:1, 12 sp)
+#51 > touche 298 450
+#51 DOIGT step_4 « الخطوة 5 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 972b312d98 | project=p-194bfa20 tuto=acid_house/Facile active=true step=kick_do done=5 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CONTRAST « 3 » 3.58:1 (needs 4.5:1, 12 sp)
+#52 > touche 67 521
+#52 DOIGT step_8 « الخطوة 9 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1173b6ce3d | project=p-194bfa20 tuto=acid_house/Facile active=true step=kick_do done=5 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « 4 » 3.58:1 (needs 4.5:1, 12 sp)
+#53 > touche 298 521
+#53 DOIGT step_12 « الخطوة 13 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5a56560c69 | project=p-194bfa20 tuto=acid_house/Facile active=true step=kick_do done=6 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 270 831
+#54 DOIGT tuto_next_folded « نجحت »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4cce91f585 | project=p-194bfa20 tuto=acid_house/Facile active=true step=clap_do done=6 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 270 680
+#55 DOIGT tuto_do «   سأفعلها »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ac5b5ed13f | project=p-194bfa20 tuto=acid_house/Facile active=true step=clap_do done=6 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « بقيت هنا خانتان منقّطتان » 2.44:1 (needs 3.0:1, 14 sp)
+#56 LAYOUT CONTRAST « 2 » 2.42:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « 4 » 3.51:1 (needs 4.5:1, 12 sp)
+#56 > touche 298 345
+#56 DOIGT step_4 « الخطوة 5 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2e6aa2eab2 | project=p-194bfa20 tuto=acid_house/Facile active=true step=clap_do done=6 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « بقيت هنا خانة منقّطة واحدة (1) » 2.39:1 (needs 3.0:1, 14 sp)
+#57 LAYOUT CONTRAST « 4 » 2.43:1 (needs 4.5:1, 12 sp)
+#57 > touche 298 416
+#57 DOIGT step_12 « الخطوة 13 »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE deda9015a3 | project=p-194bfa20 tuto=acid_house/Facile active=true step=clap_do done=7 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 270 831
+#58 DOIGT tuto_next_folded « نجحت »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e45823e801 | project=p-194bfa20 tuto=acid_house/Facile active=true step=hat_do done=7 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 270 680
+#59 DOIGT tuto_do «   سأفعلها »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 08d5f7ef0d | project=p-194bfa20 tuto=acid_house/Facile active=true step=hat_do done=7 playing=false
+#60 SON Son : rien ne joue.
+#60 LAYOUT CONTRAST « بقيت هنا 16 خانة منقّطة » 2.44:1 (needs 3.0:1, 14 sp)
+#60 LAYOUT CONTRAST « 1 » 2.55:1 (needs 4.5:1, 12 sp)
+#60 LAYOUT CONTRAST « 2 » 3.71:1 (needs 4.5:1, 12 sp)
+#60 LAYOUT CONTRAST « 3 » 3.73:1 (needs 4.5:1, 12 sp)
+#60 LAYOUT CONTRAST « 4 » 3.73:1 (needs 4.5:1, 12 sp)
+#60 > touche 119 497
+#60 DOIGT fill_1 « الكل »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 787c289495 | project=p-194bfa20 tuto=acid_house/Facile active=true step=hat_do done=8 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 270 831
+#61 DOIGT tuto_next_folded « نجحت »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a8da5aca0d | project=p-194bfa20 tuto=acid_house/Facile active=true step=perc_do done=8 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 142 764
+#62 DOIGT tuto_show «  أرني »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 030ad15f47 | project=p-194bfa20 tuto=acid_house/Facile active=true step=perc_do done=8 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CONTRAST « بقيت هنا 4 خانات منقّطة » 2.44:1 (needs 3.0:1, 14 sp)
+#63 > attends 6
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 24a916704b | project=p-194bfa20 tuto=acid_house/Facile active=true step=perc_do done=8 playing=false
+#64 SON Son : le pad « حافة الطبل » sonne (4 coups).
+#64 > attends 3
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d0d41568af | project=p-194bfa20 tuto=acid_house/Facile active=true step=perc_do done=8 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 414 345
+#65 DOIGT step_6 « الخطوة 7 »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a736ace17f | project=p-194bfa20 tuto=acid_house/Facile active=true step=perc_do done=8 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CONTRAST « بقيت هنا 3 خانات منقّطة » 2.44:1 (needs 3.0:1, 14 sp)
+#66 > touche 182 345
+#66 DOIGT step_2 « الخطوة 3 »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 12e8237159 | project=p-194bfa20 tuto=acid_house/Facile active=true step=perc_do done=8 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 414 416
+#67 DOIGT step_14 « الخطوة 15 »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 749811619b | project=p-194bfa20 tuto=acid_house/Facile active=true step=perc_do done=8 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 182 416
+#68 DOIGT step_10 « الخطوة 11 »
+#69 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE da7bd42eb3 | project=p-194bfa20 tuto=acid_house/Facile active=true step=perc_do done=9 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 270 831
+#69 DOIGT tuto_next_folded « نجحت »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ac47f3f5d8 | project=p-194bfa20 tuto=acid_house/Facile active=true step=ohat_do done=9 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 57 379
+#70 DOIGT tuto_fold
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b28865eafc | project=p-194bfa20 tuto=acid_house/Facile active=true step=ohat_do done=9 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 182 345
+#71 DOIGT step_2 « الخطوة 3 »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 89d7417d5a | project=p-194bfa20 tuto=acid_house/Facile active=true step=ohat_do done=9 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 414 345
+#72 DOIGT step_6 « الخطوة 7 »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f08cb053c9 | project=p-194bfa20 tuto=acid_house/Facile active=true step=ohat_do done=9 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 182 416
+#73 DOIGT step_10 « الخطوة 11 »
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 563934857e | project=p-194bfa20 tuto=acid_house/Facile active=true step=ohat_do done=9 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 414 416
+#74 DOIGT step_14 « الخطوة 15 »
+#75 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 022ff6c9d1 | project=p-194bfa20 tuto=acid_house/Facile active=true step=ohat_do done=10 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 270 831
+#75 DOIGT tuto_next_folded « نجحت »
+#76 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a783325ded | project=p-194bfa20 tuto=acid_house/Facile active=true step=drums_hear done=10 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 270 761
+#76 DOIGT tuto_listen «  استمع إلى المثال »
+#77 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d92519181a | project=p-194bfa20 tuto=acid_house/Facile active=true step=drums_hear done=10 playing=false
+#77 SON Son : l'exemple du tuto joue (encore 3 s).
+#77 > attends 4
+#78 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f6bc6cec61 | project=p-194bfa20 tuto=acid_house/Facile active=true step=drums_hear done=11 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT CUT « تابع القراءة » lines cut (taller than its box)
+#78 LAYOUT TARGET « تابع القراءة تابع القراءة » 332 x 11 dp (touch 332 x 48)
+#78 > touche 85 845
+#78 DOIGT tuto_listen «  استمع إلى المثال »
+#79 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE af3cbd4bdf | project=p-194bfa20 tuto=acid_house/Facile active=true step=drums_hear done=11 playing=false
+#79 SON Son : l'exemple du tuto joue (encore 3 s).
+#79 > fin
+#79 FIN : fin

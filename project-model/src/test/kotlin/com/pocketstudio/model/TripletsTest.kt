@@ -152,9 +152,13 @@ class TripletsTest {
         // A ×3 roll in one cell is not it.
         p = p.copy(drums = p.drums.setHit(hat, 4, true).withRoll(hat, 4, 3))
         assertFalse(TutoChecks.done(step, p, target))
-        // The triplet is.
+        // A triplet off the style's cells is not it either (tour 9 F032: trap wants its own, cells 13 and 15).
         p = p.copy(drums = p.drums.withSpread(hat, 4, 3, 2))
-        assertTrue(TutoChecks.done(step, p, target))
+        assertFalse(TutoChecks.done(step, p, target))
+        // In a style whose line has none, any triplet is.
+        val houseTarget = TutoTarget.of("house")!!
+        val hp = houseTarget.blank().let { b -> b.copy(drums = b.drums.setHit(hat, 4, true).withSpread(hat, 4, 3, 2)) }
+        assertTrue(TutoChecks.done(step, hp, houseTarget))
         // « Montre-moi »: the style's triplets on the hats (trap: the first bar's last beat).
         val shown = TutoChecks.show(step, target.blank(), target)
         assertNotNull(shown)

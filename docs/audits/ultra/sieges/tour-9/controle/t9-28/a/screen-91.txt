@@ -1,0 +1,25 @@
+Écran 91 (588x1278)
+dessin @ 294,36
+texte « Siap dibagikan? » @ 258,108
+icône ✕ @ 522,108
+champ « Nama lagu (dan proyek) » contenu « Laguku » @ 294,217
+icône ✕ @ 522,225
+texte « “Bagikan” juga mengganti nama proyek “Proyekku 1”. » @ 294,326
+texte « 3:17 » @ 71,402
+texte « 6 bagian » @ 185,404
+texte « Volume: −8,0, keras, seperti musik klub » @ 184,461
+bouton ▶ «  Dengar » @ 454,464
+texte « detail » @ 250,522
+bouton « ? » @ 316,522
+bouton « Streaming » @ 348,601
+texte « Target loudness » @ 137,601
+bouton « Klub » [sélectionné] @ 85,682
+bouton « Otomatis (gaya) » @ 283,682
+bouton « ? » @ 446,682
+image (rond coché) @ 45,753
+texte « Semua siap: tidak ada solo yang tertinggal, tidak ada trek yang di-mute. » @ 316,797
+bouton « M4A · untuk berbagi » @ 194,928
+bouton « WAV · kualitas maks » [sélectionné] @ 192,1009
+bouton (trois points reliés) «   Bagikan » @ 294,1105
+bouton (dossier) « File-ku Temukan dan kirim lagi: M4A, WAV, video, .zip » › @ 272,1221
+bouton « ? » @ 536,1221

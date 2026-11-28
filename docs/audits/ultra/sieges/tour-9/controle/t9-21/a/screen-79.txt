@@ -1,0 +1,56 @@
+Écran 79 (540x1170)
+bouton (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 100,42
+bouton « Semplice » @ 243,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 495,114
+icône « Parte: A » ▾ @ 76,180
+texte « Battuta 2/2 · Piatto » [coupé] @ 147,223
+bouton « 1 » [état « vuoto »] @ 67,296
+bouton [état « vuoto »] @ 124,296
+bouton [état « colpo, forza 100 % »] @ 182,296
+bouton [état « vuoto »] @ 240,296
+bouton « 2 » [état « vuoto »] @ 298,296
+bouton [état « vuoto »] @ 356,296
+bouton [état « colpo, forza 100 % »] @ 414,296
+bouton [état « vuoto »] @ 472,296
+bouton « 3 » [état « vuoto »] @ 67,367
+bouton [état « vuoto »] @ 124,367
+bouton [état « colpo, forza 100 % »] @ 182,367
+bouton [état « vuoto »] @ 240,367
+bouton « 4 » [état « vuoto »] @ 298,367
+bouton [état « vuoto »] @ 356,367
+bouton [état « colpo, forza 100 % »] @ 414,367
+bouton [état « vuoto »] @ 472,367
+texte « tutto » [coupé] @ 145,440
+texte « 1/2 » [coupé] @ 221,440
+texte « 1/4 » [coupé] @ 296,440
+texte « ◀ » [coupé] @ 371,440
+texte « ▶ » [coupé] @ 446,440
+texte « Riempi » @ 74,448
+texte « Il basso Capitolo 5/15 · Passo 2/3 · Facile » @ 192,510
+icône (liste) « Capitoli » @ 405,510
+icône ⌄ @ 483,510
+texte « Tocca a te: tocca “Crea la traccia Basso”. » @ 255,591
+texte « ▸ Perché? » @ 270,633
+bouton ⊕ «   Crea la traccia Basso » @ 270,699
+bouton ▶ «  Ascolta l'esempio » @ 142,786
+bouton (œil) «  Mostrami » @ 397,786
+icône ← «  Indietro » @ 95,870
+icône « Avanti  » → @ 452,870
+icône ↶ « Annulla » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « il brano » @ 264,954
+texte « 174 Tempo » @ 370,954
+icône ⋮ « Altro » @ 476,954
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Annota » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 138,1140

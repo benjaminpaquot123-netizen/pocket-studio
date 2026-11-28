@@ -1,0 +1,49 @@
+Écran 27 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 358,42
+bouton « Simple » @ 758,42
+bouton ● @ 846,42
+bouton ▶ « this part » @ 918,42
+icône ⋮ @ 990,42
+bouton « 165  Tempo » @ 83,114
+bouton « ? » @ 990,114
+titre « THE SONG » [état « Expanded »] @ 140,207
+bouton « ? » @ 217,207
+texte « The timeline puts your parts in order, each with its length in bars. Add them in order. » @ 263,268
+texte « Add: » @ 65,322
+bouton « + A · Groove » @ 141,385
+bouton « + B · Intro » @ 336,385
+bouton « + New part (copy of B · Intro) » [coupé] @ 225,437
+titre « MY TRACKS » [état « Expanded »] @ 635,204
+texte « Tap a track's name to change its sound; ▶ to hear it alone. » @ 771,261
+bouton « Drums Change the sound » › @ 696,342
+bouton ▶ @ 882,342
+icône (curseurs) @ 957,342
+bouton « Bass Change the sound » › [coupé] @ 696,427
+bouton ▶ [coupé] @ 882,430
+icône (curseurs) [coupé] @ 957,433
+texte « Build your parts Chapter 10/15 · Step 2/6 · Easy » @ 433,493
+icône (liste) « Chapters » @ 894,493
+icône ⌄ @ 978,493
+texte « Your turn: tap “Create the “Build-up” part”. » @ 263,574
+bouton « Download the Jungle kit (6 MB) » @ 471,649
+texte « Later » @ 961,649
+texte « ▸ Why? » @ 517,715
+bouton ⊕ «   Create the “Build-up” part » @ 517,778
+bouton ▶ «  Listen to the example » @ 266,862
+bouton (œil) «  Show me » @ 768,862
+icône ← «  Previous » @ 101,943
+icône « Next  » → @ 955,943
+icône ↶ « Undo » @ 147,1027
+image ↷ @ 329,1017
+bouton ▶ « the song » @ 512,1027
+texte « 165 Tempo » @ 700,1027
+icône ⋮ « More » @ 889,1027
+onglet (lignes et note) « My song » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Note » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 385,1213

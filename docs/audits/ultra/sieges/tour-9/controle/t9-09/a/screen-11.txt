@@ -1,0 +1,27 @@
+Écran 11 (540x1170)
+dessin @ 270,312
+texte « Fermer » @ 461,384
+texte « Tonalité du morceau » @ 215,384
+texte « Tonalité du morceau : Do · Majeure » @ 197,450
+texte « Gamme » @ 63,495
+bouton « Majeure » @ 90,561
+bouton « Mineure » @ 229,561
+bouton « Dorienne » @ 372,561
+bouton « Penta mineure » @ 123,642
+bouton « Penta majeure » @ 331,642
+bouton « Blues » @ 73,723
+bouton « Phrygienne » @ 214,723
+bouton « Mineure harmonique » @ 159,804
+texte « Tonique » @ 65,870
+bouton « Do » @ 63,936
+bouton « Do♯ » @ 151,936
+bouton « Ré » @ 239,936
+bouton « Mi♭ » @ 326,936
+bouton « Mi » @ 413,936
+bouton « Fa » @ 63,1017
+bouton « Fa♯ » @ 150,1017
+bouton « Sol » @ 237,1017
+bouton « La♭ » @ 324,1017
+bouton « La » @ 411,1017
+bouton « Si♭ » @ 63,1098
+bouton « Si » @ 150,1098

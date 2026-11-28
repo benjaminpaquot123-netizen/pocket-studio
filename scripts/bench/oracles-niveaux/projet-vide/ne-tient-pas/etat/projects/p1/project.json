@@ -1,0 +1,468 @@
+{
+ "name": "Vide",
+ "drums": {
+  "steps": 16,
+  "lanes": [
+   {
+    "hits": {
+     "0": {
+      "velocity": 1.0
+     },
+     "8": {
+      "velocity": 1.0
+     }
+    }
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   }
+  ]
+ },
+ "acid": {
+  "length": 16,
+  "steps": [
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   }
+  ]
+ },
+ "synthEngine": 0,
+ "synthTrackName": "Synthé",
+ "synthNotes": {
+  "steps": 16,
+  "notes": []
+ },
+ "tracks": [
+  {
+   "id": 1,
+   "name": "Piano",
+   "engine": 0,
+   "notes": {
+    "steps": 16,
+    "notes": [
+     {
+      "start": 0,
+      "length": 96,
+      "pitch": 61,
+      "velocity": 0.8
+     }
+    ]
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "drums": {
+    "steps": 16,
+    "lanes": [
+     {
+      "hits": {
+       "0": {
+        "velocity": 1.0
+       },
+       "8": {
+        "velocity": 1.0
+       }
+      }
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     }
+    ]
+   },
+   "acid": {
+    "length": 16,
+    "steps": [
+     {
+      "gate": true
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": true
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": true
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": true
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     }
+    ]
+   },
+   "synthNotes": {
+    "steps": 16,
+    "notes": [
+     {
+      "start": 0,
+      "length": 96,
+      "pitch": 48,
+      "velocity": 0.8
+     }
+    ]
+   },
+   "trackNotes": {
+    "1": {
+     "steps": 16,
+     "notes": [
+      {
+       "start": 0,
+       "length": 96,
+       "pitch": 61,
+       "velocity": 0.8
+      }
+     ]
+    },
+    "2": {
+     "steps": 16,
+     "notes": [
+      {
+       "start": 0,
+       "length": 96,
+       "pitch": 62,
+       "velocity": 0.8
+      }
+     ]
+    },
+    "3": {
+     "steps": 16,
+     "notes": [
+      {
+       "start": 0,
+       "length": 96,
+       "pitch": 63,
+       "velocity": 0.8
+      }
+     ]
+    }
+   }
+  },
+  {
+   "drums": {
+    "steps": 16,
+    "lanes": [
+     {
+      "hits": {
+       "0": {
+        "velocity": 1.0
+       },
+       "8": {
+        "velocity": 1.0
+       }
+      }
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     }
+    ]
+   },
+   "acid": {
+    "length": 16,
+    "steps": [
+     {
+      "gate": true
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": true
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": true
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": true
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     }
+    ]
+   },
+   "synthNotes": {
+    "steps": 16,
+    "notes": [
+     {
+      "start": 0,
+      "length": 96,
+      "pitch": 48,
+      "velocity": 0.8
+     }
+    ]
+   },
+   "trackNotes": {
+    "1": {
+     "steps": 16,
+     "notes": [
+      {
+       "start": 0,
+       "length": 96,
+       "pitch": 61,
+       "velocity": 0.8
+      }
+     ]
+    },
+    "2": {
+     "steps": 16,
+     "notes": [
+      {
+       "start": 0,
+       "length": 96,
+       "pitch": 62,
+       "velocity": 0.8
+      }
+     ]
+    },
+    "3": {
+     "steps": 16,
+     "notes": [
+      {
+       "start": 0,
+       "length": 96,
+       "pitch": 63,
+       "velocity": 0.8
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "song": [],
+ "audioTracks": [],
+ "style": null,
+ "guide": null
+}

@@ -1,0 +1,49 @@
+Écran 32 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 174  Tempo » @ 98,123
+bouton « ? » @ 543,123
+onglet « Acid 303 Ligne de basse » @ 134,204
+bouton « Basse Basse growl » ⋮ @ 383,204
+icône ♪ « Son » [coupé] @ 538,205
+image → @ 577,205
+icône « Partie : F · Drop 2 » ▾ @ 151,283
+texte « − » [coupé] @ 177,320
+texte « + » [coupé] @ 357,320
+texte « En rythme 50 % » [coupé] @ 525,370
+bouton « Accords » @ 123,370
+bouton « Basse en fantôme » [sélectionné] @ 354,370
+bouton « Basse · mesure 1/8 Encore 1 note en pointillé à toucher » @ 294,451
+texte « mes. » @ 69,513
+bouton « 1 » @ 321,521
+dessin [coupé] @ 69,554
+dessin @ 69,570
+texte « Do3 » @ 69,600
+dessin @ 69,630
+dessin @ 69,660
+dessin @ 69,690
+dessin @ 69,720
+dessin @ 69,750
+dessin [coupé] @ 69,765
+dessin [coupé] @ 321,660
+texte « Construis tes parties Chapitre 10/15 · Étape 5/8 · Facile » @ 201,834
+icône (liste) « Chapitres » @ 438,835
+icône ⌃ @ 531,835
+icône « À toi : dans le Drop 2, écris une autre basse : les notes en pointillé de la mesure 1. Lire » ⌃ @ 294,965
+icône ↶ « Annuler » @ 65,1061
+image ↷ @ 168,1048
+bouton ▶ « le morceau » @ 291,1061
+texte « 174 Tempo » @ 419,1061
+icône ⋮ « Plus » @ 524,1061
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » [sélectionné] @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

@@ -1,0 +1,27 @@
+Écran 16 (540x1170)
+dessin @ 270,222
+texte « 곡의 키 » @ 215,298
+texte « 닫기 » @ 461,298
+texte « 곡의 키: C · 프리지안 » @ 197,382
+texte « 스케일 » @ 78,454
+bouton « 메이저 » @ 100,534
+bouton « 마이너 » @ 262,534
+bouton « 도리안 » @ 424,534
+bouton « 마이너 펜타 » @ 145,615
+bouton « 메이저 펜타 » @ 145,696
+bouton « 블루스 » @ 352,696
+bouton « 프리지안 » @ 120,777
+bouton « 하모닉 마이너 » @ 366,777
+texte « 키 » @ 42,856
+bouton « C » @ 63,936
+bouton « C♯ » @ 156,936
+bouton « D » @ 249,936
+bouton « E♭ » @ 336,936
+bouton « E » @ 423,936
+bouton « F » @ 63,1017
+bouton « F♯ » @ 153,1017
+bouton « G » @ 243,1017
+bouton « A♭ » @ 331,1017
+bouton « A » @ 419,1017
+bouton « B♭ » @ 63,1098
+bouton « B » @ 150,1098

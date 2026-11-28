@@ -1,0 +1,30 @@
+Écran 9 (540x1170)
+dessin @ 270,128
+texte « 템포 » @ 72,204
+texte « 닫기 » @ 461,204
+bouton « ? » @ 142,204
+texte « 1 » @ 218,308
+icône − @ 60,309
+texte «  BPM » @ 294,310
+icône + @ 480,309
+texte « 40~300 사이 » @ 270,400
+bouton « 70 » @ 75,483
+bouton « 90 » @ 186,483
+bouton « 120 » [sélectionné] @ 310,483
+bouton « 140 » @ 448,483
+bouton « 174 » @ 88,564
+bouton « ½ » @ 204,564
+bouton « ×2 » @ 307,564
+bouton « 1 » @ 103,657
+bouton « 2 » @ 270,657
+bouton « 3 » @ 437,657
+bouton « 4 » @ 103,744
+bouton « 5 » @ 270,744
+bouton « 6 » @ 437,744
+bouton « 7 » @ 103,831
+bouton « 8 » @ 270,831
+bouton « 9 » @ 437,831
+bouton ⌫ @ 103,918
+bouton « 0 » @ 270,918
+bouton « 확인 » [désactivé] @ 437,918
+bouton (doigt qui touche) « 박자에 맞춰 탭 박마다 여기를 탭하세요. 템포가 따라와요. » @ 270,1060

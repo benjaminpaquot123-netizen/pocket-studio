@@ -1,0 +1,38 @@
+Écran 164 (540x1170)
+icône « Meu projeto 1 » ✓ @ 274,38
+bouton « Pro » @ 489,38
+bouton (dossier ouvert) @ 76,118
+icône ↶ @ 264,118
+bouton ● @ 336,118
+bouton ▶ « esta parte » @ 415,118
+icône (trois points reliés) @ 495,118
+bouton « A » ▾ @ 186,118
+bouton « 126  BPM » @ 114,220
+bouton « ? » @ 495,220
+bouton « Baixo Baixo redondo » [coupé] @ 146,338
+bouton « Melodia Sino FM » ⋮ @ 399,338
+image ← @ 10,339
+image → @ 529,339
+texte « Parte: A » @ 95,430
+dessin @ 69,478
+dessin @ 69,508
+dessin @ 69,537
+dessin [coupé] @ 297,508
+texte « O sino Capítulo 5/14 · Feito · Pro » @ 176,644
+icône (liste) « Capítulos » @ 389,644
+icône ⌃ @ 483,644
+icône (coupe) « Muito bem, capítulo concluído! » ⌃ @ 270,813
+icône ▶ « a música » @ 199,939
+texte « 126 Andamento » @ 376,938
+icône ↶ « Desfazer » @ 34,939
+icône ↷ « Refazer » [désactivé] @ 92,939
+icône (trois points reliés) « Compartilhar » @ 505,939
+onglet (ligne brisée et points) « Estrutura » @ 49,1050
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

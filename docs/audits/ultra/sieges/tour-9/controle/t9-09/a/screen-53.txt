@@ -1,0 +1,13 @@
+Écran 53 (540x1170)
+texte « BenStudio » @ 156,72
+texte « Que veux-tu faire ? » @ 220,132
+bouton ✓ « Continuer Simple Mon projet 1 Boucle de 2 mes. Sauvegardé à l'instant » → @ 270,294
+bouton (étincelles) « Nouveau morceau Un style en une touche, ou « Fais-moi un morceau ». » → @ 270,520
+bouton (dossier ouvert) « Mes projets Ouvrir un autre morceau, le copier ou le renommer. » → @ 270,706
+bouton (quatre vagues) « Remix Séparation des pistes : batterie, basse, voix et le reste. » → @ 270,886
+bouton « Pad Live NOUVEAU Des pads prêts à jouer, tes sons, des effets live. Ça sonne tout de suite. » (quatre vagues) → [coupé] @ 270,1005
+bouton « ↓ 5 autres » @ 438,1056
+texte « ●  REC » @ 312,1140
+texte « ✎  Noter » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Mode retours » @ 138,1140

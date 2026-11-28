@@ -108,6 +108,13 @@ android {
             isIncludeAndroidResources = true
             all {
                 it.systemProperty("robolectric.pixelCopyRenderMode", "hardware")
+                // Robolectric's Android jar from Google's Maven Central mirror: repo1.maven.org rate-limits it
+                // (429, 2026-11-24, every Robolectric class failed). CI prefetches it too (scripts/ci/robolectric-jar.sh).
+                it.systemProperty(
+                    "robolectric.dependency.repo.url",
+                    (project.findProperty("robolectric.repo") as String?)
+                        ?: "https://maven-central.storage-download.googleapis.com/maven2",
+                )
                 // Audit ultra round 1 (n° 17): file names in UTF-8 as on a phone (a POSIX locale made « ó » a « ? » on the bench).
                 it.environment("LC_ALL", "C.UTF-8")
                 // SDK 36 Robolectric needs JDK internals on JDK 21+.
@@ -136,6 +143,16 @@ android {
                 // PLAN-RESTE 4.3: a run's JUnit XML in a folder of its own (-Ptest.results.dir), so that two self-tests (or two
                 // passes of one) never read or wipe each other's results in the shared build/test-results.
                 providers.gradleProperty("test.results.dir").orNull?.let { d -> it.reports.junitXml.outputLocation.set(file(d)) }
+                // CI shards (scripts/ci/shards.py): -Pshard.classes=<file> runs only the top-level classes listed there (one per
+                // line; a nested class follows its outer class). The CI checks that the shards' lists make the whole suite.
+                providers.gradleProperty("shard.classes").orNull?.let { path ->
+                    val mine = rootProject.file(path).readLines().map { l -> l.trim() }.filter { l -> l.isNotEmpty() }.toSet()
+                    it.inputs.property("shard.classes", mine.sorted().joinToString(","))
+                    it.exclude(org.gradle.api.specs.Spec<org.gradle.api.file.FileTreeElement> { e ->
+                        !e.isDirectory && e.name.endsWith(".class") &&
+                            e.path.removeSuffix(".class").substringBefore('$').replace('/', '.') !in mine
+                    })
+                }
                 // Every style's song in one run (or every preview, PreviewLevelBench): more room than the tests need.
                 // The suite itself (audit stage 1, flaky tests): a worker runs hundreds of Robolectric classes, more than one
                 // sandbox at a time; at Gradle's default 512 MB its old generation filled up (99.9 %, 500 full GCs): tests

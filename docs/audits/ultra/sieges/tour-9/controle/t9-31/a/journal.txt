@@ -1,0 +1,594 @@
+#0 SIEGE lang=ar device=tablet8 font=130 mode=simple theme=- fresh=non gestes.max=181 lit=oui main=both amenee=tuto:hard_techno:1
+#0 PREMIER ECRAN reel_s=4.3 simule_s=2.4 jvm_s=9.7 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:hard_techno:1
+#0 AMENEE > touche 450 623 (welcome_learn)
+#0 AMENEE > touche 670 1337 (mode_card_simple)
+#0 AMENEE > touche 450 694 (tuto_style_hard_techno)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f6223c23d4 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « تم الحفظ » lines cut (taller than its box)
+#1 LAYOUT OVERLAP « هاي هات مفتوح » over « R 30 » (17 x 4 dp)
+#1 LAYOUT OVERLAP « توم متوسط » over « R 45 » (5 x 4 dp)
+#1 LAYOUT OVERLAP « حافة الطبل » over « R 50 » (29 x 4 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1112
+#1 DOIGT tuto_listen «  استمع إلى المثال »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6c17a1ad68 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 496 916
+#2 DOIGT tuto_kit_download « تنزيل الطقم Hard techno (2 MB) »
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 534569a7f5 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=ref done=1 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > attends 5
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1d42ca6c00 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=ref done=1 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 1 s).
+#4 > touche 450 1112
+#4 DOIGT tuto_next_big « الخطوة التالية   »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8a9767dcfc | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 450 1031
+#5 DOIGT tuto_do «   سأفعلها »
+#6 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE c5e01fe017 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « السرعة » over the touchable « إغلاق الورقة » (66 x 43 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « إغلاق الورقة » (9 x 18 dp)
+#6 LAYOUT OVERLAP « إغلاق » over the touchable « إغلاق الورقة » (39 x 33 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « إغلاق الورقة » (86 x 53 dp)
+#6 LAYOUT OVERLAP «  BPM » over the touchable « إغلاق الورقة » (50 x 31 dp)
+#6 LAYOUT OVERLAP « 70 » over the touchable « إغلاق الورقة » (25 x 24 dp)
+#6 LAYOUT OVERLAP « 90 » over the touchable « إغلاق الورقة » (25 x 24 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « إغلاق الورقة » (38 x 24 dp)
+#6 LAYOUT OVERLAP « 140 » over the touchable « إغلاق الورقة » (38 x 24 dp)
+#6 LAYOUT OVERLAP « 174 » over the touchable « إغلاق الورقة » (38 x 24 dp)
+#6 LAYOUT OVERLAP « ½ » over the touchable « إغلاق الورقة » (17 x 31 dp)
+#6 LAYOUT OVERLAP « ×2 » over the touchable « إغلاق الورقة » (26 x 31 dp)
+#6 LAYOUT OVERLAP « 1 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 2 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 3 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 4 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 5 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 6 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 7 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 8 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 9 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 0 » over the touchable « إغلاق الورقة » (16 x 30 dp)
+#6 LAYOUT OVERLAP « حسنًا » over the touchable « إغلاق الورقة » (48 x 42 dp)
+#6 LAYOUT OVERLAP « انقر مع الإيقاع » over the touchable « إغلاق الورقة » (107 x 35 dp)
+#6 LAYOUT OVERLAP « انقر هنا مع كل نبضة: السرعة تتبعك. » over the touchable « إغلاق الورقة » (214 x 29 dp)
+#6 > touche 737 1071
+#6 DOIGT tempo_key_1 « 1 »
+#7 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 8909eae8c8 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 1 » over the touchable « إغلاق الورقة » (29 x 53 dp)
+#7 LAYOUT OVERLAP « بين 40 و300 » over the touchable « إغلاق الورقة » (101 x 33 dp)
+#7 > touche 450 1158
+#7 DOIGT tempo_key_5 « 5 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 886b890ec2 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 15 » over the touchable « إغلاق الورقة » (57 x 53 dp)
+#8 > touche 450 1332
+#8 DOIGT tempo_key_0 « 0 »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 2f6d5e26da | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 150 » over the touchable « إغلاق الورقة » (86 x 53 dp)
+#9 > touche 163 1332
+#9 DOIGT tempo_key_ok « حسنًا »
+#10 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE d11aa2ed3e | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=tempo done=2 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 450 1182
+#10 DOIGT tuto_next_folded « نجحت »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 64997b90e9 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=key done=2 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 450 1031
+#11 DOIGT tuto_do «   سأفعلها »
+#12 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 4118fa1152 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=key done=2 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « مقام المقطوعة » over the touchable « إغلاق الورقة » (134 x 43 dp)
+#12 LAYOUT OVERLAP « نغمة المقطوعة: لا شيء » over the touchable « إغلاق الورقة » (155 x 33 dp)
+#12 LAYOUT OVERLAP « السلّم » over the touchable « إغلاق الورقة » (38 x 33 dp)
+#12 LAYOUT OVERLAP « كبير » over the touchable « إغلاق الورقة » (29 x 35 dp)
+#12 LAYOUT OVERLAP « صغير » over the touchable « إغلاق الورقة » (39 x 35 dp)
+#12 LAYOUT OVERLAP « Dorian » over the touchable « إغلاق الورقة » (63 x 31 dp)
+#12 LAYOUT OVERLAP « خماسي صغير » over the touchable « إغلاق الورقة » (98 x 35 dp)
+#12 LAYOUT OVERLAP « خماسي كبير » over the touchable « إغلاق الورقة » (88 x 35 dp)
+#12 LAYOUT OVERLAP « Blues » over the touchable « إغلاق الورقة » (52 x 31 dp)
+#12 LAYOUT OVERLAP « Phrygian » over the touchable « إغلاق الورقة » (87 x 31 dp)
+#12 LAYOUT OVERLAP « صغير هارموني » over the touchable « إغلاق الورقة » (105 x 35 dp)
+#12 LAYOUT OVERLAP « المفتاح » over the touchable « إغلاق الورقة » (49 x 33 dp)
+#12 LAYOUT OVERLAP « دو » over the touchable « إغلاق الورقة » (17 x 35 dp)
+#12 LAYOUT OVERLAP « دو♯ » over the touchable « إغلاق الورقة » (29 x 35 dp)
+#12 LAYOUT OVERLAP « ري » over the touchable « إغلاق الورقة » (20 x 35 dp)
+#12 LAYOUT OVERLAP « مي♭ » over the touchable « إغلاق الورقة » (30 x 35 dp)
+#12 LAYOUT OVERLAP « مي » over the touchable « إغلاق الورقة » (23 x 35 dp)
+#12 LAYOUT OVERLAP « فا » over the touchable « إغلاق الورقة » (14 x 35 dp)
+#12 LAYOUT OVERLAP « فا♯ » over the touchable « إغلاق الورقة » (26 x 35 dp)
+#12 LAYOUT OVERLAP « صول » over the touchable « إغلاق الورقة » (37 x 35 dp)
+#12 LAYOUT OVERLAP « لا♭ » over the touchable « إغلاق الورقة » (17 x 35 dp)
+#12 LAYOUT OVERLAP « لا » over the touchable « إغلاق الورقة » (11 x 35 dp)
+#12 LAYOUT OVERLAP « سي♭ » over the touchable « إغلاق الورقة » (34 x 35 dp)
+#12 LAYOUT OVERLAP « سي » over the touchable « إغلاق الورقة » (27 x 35 dp)
+#12 > touche 792 1205
+#12 DOIGT tuto_scale_Phrygian « Phrygian »
+#13 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 51050ec764 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=key done=2 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « نغمة المقطوعة: دو · Phrygian » over the touchable « إغلاق الورقة » (219 x 33 dp)
+#13 LAYOUT OVERLAP « دو » over the touchable « إغلاق الورقة » (19 x 35 dp)
+#13 > touche 311 1356
+#13 DOIGT tuto_root_6 « فا♯ »
+#14 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE ee2a3a4481 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=key done=3 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « نغمة المقطوعة: فا♯ · Phrygian » over the touchable « إغلاق الورقة » (225 x 33 dp)
+#14 LAYOUT OVERLAP « نجحت! تم اختيار لون المقطوعة. » over the touchable « إغلاق الورقة » (240 x 35 dp)
+#14 LAYOUT OVERLAP « العودة إلى الدرس » over the touchable « إغلاق الورقة » (123 x 33 dp)
+#14 > touche 450 1434
+#14 DOIGT tuto_key_continue « العودة إلى الدرس »
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 19c092c6b7 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=key done=3 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 450 1182
+#15 DOIGT tuto_chapter_end_folded « أحسنت، انتهى الفصل! »
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 663457823e | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=key done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1113
+#16 DOIGT tuto_next_big « الفصل التالي   »
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 04766e5bf4 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=ready done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 450 1112
+#17 DOIGT tuto_mark «   فهمت »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a86cc5f437 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=kick_hear done=4 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 450 1112
+#18 DOIGT tuto_listen «  استمع إلى المثال »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0f4b302aa3 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=kick_hear done=4 playing=false
+#19 SON Son : l'exemple du tuto joue (encore 3 s).
+#19 > attends 4
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cc97d412cd | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=kick_hear done=5 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1112
+#20 DOIGT tuto_next_big « الخطوة التالية   »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3c41fb6cd8 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=kick_do done=5 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « ? » 1.78:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « كل البادات » 1.48:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#21 > touche 450 1031
+#21 DOIGT tuto_do «   سأفعلها »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4cfa161d9b | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=kick_do done=5 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « ? » 1.81:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « كل البادات » 1.49:1 (needs 4.5:1, 14 sp)
+#22 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « 2 » 4.18:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « 3 » 4.24:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « 4 » 4.24:1 (needs 4.5:1, 12 sp)
+#22 > touche 90 455
+#22 DOIGT step_0 « الخطوة 1 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 477b32a7c5 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=kick_do done=5 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « 1 » 4.18:1 (needs 4.5:1, 12 sp)
+#23 LAYOUT CONTRAST « 2 » 2.75:1 (needs 4.5:1, 12 sp)
+#23 > touche 500 455
+#23 DOIGT step_4 « الخطوة 5 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1498c76efe | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=kick_do done=5 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 12 sp)
+#24 > touche 90 536
+#24 DOIGT step_8 « الخطوة 9 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0a8b48ca1d | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=kick_do done=5 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 12 sp)
+#25 > touche 500 536
+#25 DOIGT step_12 « الخطوة 13 »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 485eec63ba | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=kick_do done=6 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 450 1182
+#26 DOIGT tuto_next_folded « نجحت »
+#27 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 50edd4c69b | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=rumble_do done=6 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « الخطوات: هدير منخفض » 1.23:1 (needs 4.5:1, 12 sp)
+#27 LAYOUT CONTRAST « 1 » 3.04:1 (needs 4.5:1, 12 sp)
+#27 > touche 232 1115
+#27 DOIGT tuto_show «  أرني »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 26f60f0c7e | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=rumble_do done=6 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « الخطوات: هدير منخفض » 1.20:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « إيقاف » 3.91:1 (needs 4.5:1, 14 sp)
+#28 > attends 5
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8806e28e88 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=rumble_do done=6 playing=false
+#29 SON Son : le pad « هدير منخفض » sonne (4 coups).
+#29 > attends 6
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 93c9e5e101 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=rumble_do done=6 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 90 455
+#30 DOIGT step_0 « الخطوة 1 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8c6e5e88b3 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=rumble_do done=6 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#31 > touche 500 455
+#31 DOIGT step_4 « الخطوة 5 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8edaa63809 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=rumble_do done=6 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « 3 » 3.09:1 (needs 4.5:1, 12 sp)
+#32 > touche 90 536
+#32 DOIGT step_8 « الخطوة 9 »
+#33 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 529abd736a | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=rumble_do done=6 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « 4 » 3.09:1 (needs 4.5:1, 12 sp)
+#33 > touche 500 536
+#33 DOIGT step_12 « الخطوة 13 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cb80080758 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=rumble_do done=7 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 450 1182
+#34 DOIGT tuto_chapter_end_folded « أحسنت، انتهى الفصل! »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f5aaa59ee9 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=rumble_do done=7 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « ? » 1.79:1 (needs 4.5:1, 12 sp)
+#35 > touche 450 1113
+#35 DOIGT tuto_next_big « الفصل التالي   »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4ccd899f6c | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=clap_do done=7 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 450 1031
+#36 DOIGT tuto_need «   الانتقال إلى 2 مازورات »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b823f1e58e | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=clap_do done=7 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « ? » 1.76:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « 2 » 3.06:1 (needs 4.5:1, 12 sp)
+#37 > touche 500 539
+#37 DOIGT step_4 « الخطوة 5 »
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f1b971d009 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=clap_do done=7 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 500 620
+#38 DOIGT step_12 « الخطوة 13 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ca9a6ff3d4 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=clap_do done=7 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 704 433
+#39 DOIGT tuto_bar_go « المازورة 2 · 3 خانات → »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ef49195590 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=clap_do done=7 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 500 539
+#40 DOIGT step_20 « الخطوة 5 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b3d85aa9bc | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=clap_do done=7 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 500 620
+#41 DOIGT step_28 « الخطوة 13 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ce1e114982 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=clap_do done=7 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 809 620
+#42 DOIGT step_31 « الخطوة 16 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 14929537f2 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=clap_do done=8 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 450 1182
+#43 DOIGT tuto_next_folded « نجحت »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ddcdc6a98a | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 450 934
+#44 DOIGT tuto_why « ▸ لماذا؟ »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE efe2083be9 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 450 1031
+#45 DOIGT tuto_do «   سأفعلها »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4aa40cad2e | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 397 539
+#46 DOIGT step_3 « الخطوة 4 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4c8b708f5a | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 397 539
+#47 DOIGT step_3 « الخطوة 4 »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4aa40cad2e | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 706 539
+#48 DOIGT step_6 « الخطوة 7 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f4b868f8b5 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 294 539
+#49 DOIGT step_2 « الخطوة 3 »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a9322866be | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 706 620
+#50 DOIGT step_14 « الخطوة 15 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0f1f523c7f | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 294 620
+#51 DOIGT step_10 « الخطوة 11 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c51526676e | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 704 433
+#52 DOIGT tuto_bar_go « المازورة 2 · 4 خانات → »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3be5a74c44 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 706 539
+#53 DOIGT step_22 « الخطوة 7 »
+#54 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b747dfbcd2 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 294 539
+#54 DOIGT step_18 « الخطوة 3 »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE da89f885df | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 706 620
+#55 DOIGT step_30 « الخطوة 15 »
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7128c73f35 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=8 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 294 620
+#56 DOIGT step_26 « الخطوة 11 »
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a77982a61c | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=open_hat_do done=9 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 450 1182
+#57 DOIGT tuto_next_folded « نجحت »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6c7d2b34fd | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « ? » 1.75:1 (needs 4.5:1, 12 sp)
+#58 > touche 450 1031
+#58 DOIGT tuto_do «   سأفعلها »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7e526f44c0 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « 3 » 4.20:1 (needs 4.5:1, 12 sp)
+#59 > touche 294 539
+#59 DOIGT step_2 « الخطوة 3 »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 554f4d3850 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 603 539
+#60 DOIGT step_5 « الخطوة 6 »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f4b52a58ed | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « 3 » 3.61:1 (needs 4.5:1, 12 sp)
+#61 > touche 90 620
+#61 DOIGT step_8 « الخطوة 9 »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 379514bece | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 397 620
+#62 DOIGT step_11 « الخطوة 12 »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 26b415c76b | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 706 620
+#63 DOIGT step_14 « الخطوة 15 »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 36bfa32999 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 705 433
+#64 DOIGT tuto_bar_go « المازورة 2 · 5 خانات → »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9e647352f5 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 294 539
+#65 DOIGT step_18 « الخطوة 3 »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9b02047c6b | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 603 539
+#66 DOIGT step_21 « الخطوة 6 »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ad66350c8c | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 90 620
+#67 DOIGT step_24 « الخطوة 9 »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c1d9319572 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 397 620
+#68 DOIGT step_27 « الخطوة 12 »
+#69 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fb766d735c | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=9 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 706 620
+#69 DOIGT step_30 « الخطوة 15 »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 95bf0bde58 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=perc_do done=10 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 450 1182
+#70 DOIGT tuto_next_folded « نجحت »
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 25dd852826 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=drums_hear done=10 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 450 1031
+#71 DOIGT tuto_play_mine «   استمع إلى نتيجتك »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 530a5b0ec8 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=drums_hear done=10 playing=true
+#72 SON Son : la musique du projet joue en boucle.
+#72 > touche 450 1115
+#72 DOIGT tuto_listen «  استمع إلى المثال »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2592254fad | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=drums_hear done=10 playing=false
+#73 SON Son : l'exemple du tuto joue (encore 3 s).
+#73 > attends 4
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 38c1d0cd0f | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=drums_hear done=11 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 450 1113
+#74 DOIGT tuto_next_big « الفصل التالي   »
+#75 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9ba90ccc2f | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_hear done=11 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT CONTRAST « كل البادات » 1.56:1 (needs 4.5:1, 14 sp)
+#75 > touche 450 1112
+#75 DOIGT tuto_listen «  استمع إلى المثال »
+#76 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 59a44b6cc1 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_hear done=11 playing=false
+#76 SON Son : l'exemple du tuto joue (encore 3 s).
+#76 > attends 6
+#77 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3a8cb23bf1 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_hear done=12 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 450 1112
+#77 DOIGT tuto_next_big « الخطوة التالية   »
+#78 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3c6a194278 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_do done=12 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 450 1031
+#78 DOIGT tuto_need «   أنشئ مسار الكوردات »
+#79 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 76f3d4ae5c | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_do done=12 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 300 846
+#79 DOIGT rien
+#80 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ad358b95f7 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_do done=12 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 790 496
+#80 DOIGT tuto_notes_left « الكوردات · المازورة 1/8 »
+#81 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 19d32e2607 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_do done=12 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 575 846
+#81 DOIGT rien
+#82 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b1de0f2733 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_do done=12 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 778 846
+#82 DOIGT rien
+#83 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE be9002bc89 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_do done=13 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 450 1266
+#83 DOIGT tuto_next_folded « نجحت »
+#84 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bf7d00abea | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_2 done=13 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 450 1115
+#84 DOIGT tuto_need «   انسخ إلى المازورات التالية »
+#85 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE bf7d00abea | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_2 done=13 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 800 497
+#85 DOIGT tuto_roll_copy « نسخ »
+#86 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 9953a5f020 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=pad_2 done=14 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 450 1197
+#86 DOIGT tuto_next_big « الفصل التالي   »
+#87 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE db48336dba | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_do done=14 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 450 1115
+#87 DOIGT tuto_need «   أنشئ مسار اللحن »
+#88 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4d236222b5 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_do done=14 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 300 846
+#88 DOIGT rien
+#89 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ffa21da6f5 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_do done=14 playing=false
+#89 SON Son : 1 note du synthé.
+#89 > touche 575 846
+#89 DOIGT rien
+#90 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2caf2ff34b | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_do done=14 playing=false
+#90 SON Son : 1 note du synthé.
+#90 > touche 790 496
+#90 DOIGT tuto_notes_left « اللحن · المازورة 1/8 »
+#91 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2b7ffe31c0 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_do done=14 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 800 846
+#91 DOIGT rien
+#92 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE b781771a5d | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_do done=15 playing=false
+#92 SON Son : 1 note du synthé.
+#92 > touche 450 1266
+#92 DOIGT tuto_next_folded « نجحت »
+#93 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 64ff6fe84a | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_2 done=15 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 450 498
+#93 DOIGT tuto_notes_left « اللحن · المازورة 2/8 »
+#94 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 22dcf28104 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_2 done=15 playing=false
+#94 SON Son : rien ne joue.
+#94 LAYOUT CUT « ري » lines cut (taller than its box)
+#94 LAYOUT CUT « دو♯ » lines cut (taller than its box)
+#94 LAYOUT CUT « دو4 » lines cut (taller than its box)
+#94 LAYOUT CUT « سي » lines cut (taller than its box)
+#94 LAYOUT CUT « لا♯ » lines cut (taller than its box)
+#94 LAYOUT CUT « لا » lines cut (taller than its box)
+#94 LAYOUT CUT « صول♯ » lines cut (taller than its box)
+#94 LAYOUT CUT « صول » lines cut (taller than its box)
+#94 LAYOUT CUT « فا♯ » lines cut (taller than its box)
+#94 LAYOUT CUT « فا » lines cut (taller than its box)
+#94 LAYOUT CONTRAST « ري » 3.30:1 (needs 4.5:1, 12 sp)
+#94 LAYOUT CONTRAST « سي » 1.41:1 (needs 4.5:1, 12 sp)
+#94 LAYOUT TARGET « دو♯4 دو♯ تشغيل » 56 x 12 dp (touch 56 x 48)
+#94 LAYOUT TARGET « دو4 دو4 تشغيل » 56 x 12 dp (touch 56 x 48)
+#94 LAYOUT TARGET « سي3 سي تشغيل » 56 x 12 dp (touch 56 x 48)
+#94 LAYOUT TARGET « لا♯3 لا♯ تشغيل » 56 x 12 dp (touch 56 x 48)
+#94 LAYOUT TARGET « لا3 لا تشغيل » 56 x 12 dp (touch 56 x 48)
+#94 LAYOUT TARGET « صول♯3 صول♯ تشغيل » 56 x 12 dp (touch 56 x 48)
+#94 LAYOUT TARGET « صول3 صول تشغيل » 56 x 12 dp (touch 56 x 48)
+#94 LAYOUT TARGET « فا♯3 فا♯ تشغيل » 56 x 12 dp (touch 56 x 48)
+#94 > touche 757 627
+#94 DOIGT rien
+#95 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE cb74a52d69 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_2 done=15 playing=false
+#95 SON Son : 1 note du synthé.
+#95 > touche 395 752
+#95 DOIGT rien
+#96 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 32e5df70f2 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_2 done=15 playing=false
+#96 SON Son : 1 note du synthé.
+#96 > touche 575 752
+#96 DOIGT rien
+#97 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 660564064a | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_2 done=15 playing=false
+#97 SON Son : 1 note du synthé.
+#97 > touche 450 1115
+#97 DOIGT tuto_need «   انسخ إلى المازورات التالية »
+#98 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c8f63f1510 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=lead_2 done=16 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 450 1197
+#98 DOIGT tuto_next_big « الفصل التالي   »
+#99 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE ba125716c9 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=groove_hear done=16 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 450 1115
+#99 DOIGT tuto_play_mine «   استمع إلى نتيجتك »
+#100 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 4a2ab8d8e6 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=groove_hear done=16 playing=true
+#100 SON Son : la musique du projet joue en boucle.
+#100 > attends 3
+#101 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 026b26fd53 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=groove_hear done=16 playing=true
+#101 SON Son : la musique du projet joue en boucle.
+#101 > touche 450 1199
+#101 DOIGT tuto_listen «  استمع إلى المثال »
+#102 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE af3cae49be | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=groove_hear done=16 playing=false
+#102 SON Son : l'exemple du tuto joue (encore 3 s).
+#102 > attends 4
+#103 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 7be30fae24 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=groove_hear done=17 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 450 1196
+#103 DOIGT tuto_next_big « الخطوة التالية   »
+#104 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3a17efa8dd | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=groove_name done=17 playing=false
+#104 SON Son : rien ne joue.
+#104 LAYOUT CUT « مي » lines cut (taller than its box)
+#104 LAYOUT CUT « ري♯ » lines cut (taller than its box)
+#104 LAYOUT CUT « دو3 » lines cut (taller than its box)
+#104 LAYOUT CONTRAST « مي » 1.41:1 (needs 4.5:1, 12 sp)
+#104 LAYOUT CONTRAST « ري » 2.05:1 (needs 4.5:1, 12 sp)
+#104 LAYOUT TARGET « فا3 فا تشغيل » 56 x 12 dp (touch 56 x 48)
+#104 LAYOUT TARGET « مي3 مي تشغيل » 56 x 12 dp (touch 56 x 48)
+#104 LAYOUT TARGET « ري♯3 ري♯ تشغيل » 56 x 12 dp (touch 56 x 48)
+#104 LAYOUT TARGET « ري3 ري تشغيل » 56 x 12 dp (touch 56 x 48)
+#104 LAYOUT TARGET « دو♯3 دو♯ تشغيل » 56 x 12 dp (touch 56 x 48)
+#104 LAYOUT TARGET « دو3 دو3 تشغيل » 56 x 12 dp (touch 56 x 48)
+#104 LAYOUT TARGET « سي2 سي تشغيل » 56 x 12 dp (touch 56 x 48)
+#104 LAYOUT TARGET « لا♯2 لا♯ تشغيل » 56 x 12 dp (touch 56 x 48)
+#104 LAYOUT TARGET « لا2 لا تشغيل » 56 x 12 dp (touch 56 x 48)
+#104 > touche 450 1115
+#104 DOIGT tuto_need «   سمِّ الجزء «غروف» »
+#105 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d694c81dc9 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=groove_name done=18 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 450 1113
+#105 DOIGT tuto_next_big « الفصل التالي   »
+#106 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3fb29a8650 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=brick done=18 playing=false
+#106 SON Son : rien ne joue.
+#106 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#106 LAYOUT CONTRAST « 8 » 4.28:1 (needs 4.5:1, 12 sp)
+#106 LAYOUT CONTRAST « 4 » 3.56:1 (needs 4.5:1, 12 sp)
+#106 > touche 450 1112
+#106 DOIGT tuto_mark «   فهمت »
+#107 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6fa0f12faf | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_intro done=19 playing=false
+#107 SON Son : rien ne joue.
+#107 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#107 > touche 450 1112
+#107 DOIGT tuto_listen «  استمع إلى المثال »
+#108 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 09da08ef53 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_intro done=19 playing=false
+#108 SON Son : l'exemple du tuto joue (encore 3 s).
+#108 > attends 5
+#109 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ff9d85bfdb | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_intro done=20 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 450 1112
+#109 DOIGT tuto_next_big « الخطوة التالية   »
+#110 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bf0af5d63e | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_drop done=20 playing=false
+#110 SON Son : rien ne joue.
+#110 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#110 > touche 450 1112
+#110 DOIGT tuto_listen «  استمع إلى المثال »
+#111 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 00372215d9 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_drop done=20 playing=false
+#111 SON Son : l'exemple du tuto joue (encore 3 s).
+#111 > attends 5
+#112 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 8b2f3886e6 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_drop done=21 playing=false
+#112 SON Son : rien ne joue.
+#112 > touche 450 1112
+#112 DOIGT tuto_next_big « الخطوة التالية   »
+#113 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 163067e61a | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_break done=21 playing=false
+#113 SON Son : rien ne joue.
+#113 LAYOUT CONTRAST « 8 » 2.53:1 (needs 4.5:1, 12 sp)
+#113 > touche 450 1112
+#113 DOIGT tuto_listen «  استمع إلى المثال »
+#114 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 26bf96ae76 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_break done=21 playing=false
+#114 SON Son : l'exemple du tuto joue (encore 3 s).
+#114 > attends 5
+#115 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 08c25fe978 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_break done=22 playing=false
+#115 SON Son : rien ne joue.
+#115 > touche 450 1112
+#115 DOIGT tuto_next_big « الخطوة التالية   »
+#116 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b2c4427128 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_phrases done=22 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 450 1112
+#116 DOIGT tuto_mark «   فهمت »
+#117 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e9f370fd90 | project=p-14d4cf7c tuto=hard_techno/Facile active=true step=map_phrases done=23 playing=false
+#117 SON Son : rien ne joue.
+#117 > fin
+#117 FIN : fin

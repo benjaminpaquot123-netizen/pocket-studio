@@ -1,0 +1,68 @@
+Écran 61 (1035x1243)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 346,42
+bouton « Semplice » @ 737,42
+bouton ● @ 827,42
+bouton ▶ « questa parte » @ 908,42
+icône ⋮ @ 990,42
+bouton « 174  Tempo » @ 98,123
+icône « Intro battuta 1/128 » ▾ @ 312,123
+bouton « ? » @ 990,123
+icône « Parte: B · Intro » ▾ @ 131,198
+bouton « Grancassa da studio FX » @ 75,300
+bouton « Grancassa 2 » @ 200,300
+bouton « Drum & bass · Rullante FX » @ 325,300
+bouton « Rullante 2 » @ 450,300
+bouton « Battimani » @ 75,406
+bouton « Drum & bass · Hi-hat S 30 » @ 200,406
+bouton « Drum & bass · Hi-hat aperto D 30 » @ 325,406
+bouton « Tom grave » @ 450,406
+bouton « Tom medio D 45 » [coupé] @ 75,485
+bouton « Tom acuto » [coupé] @ 200,485
+bouton « Drum & bass · Bordo del tamburo FX D 50 » [coupé] @ 325,485
+bouton « Campana » [coupé] @ 450,485
+bouton « 1 » [coupé, état « colpo, forza 35 % »] @ 575,257
+bouton [coupé, état « vuoto »] @ 632,257
+bouton [coupé, état « colpo, forza 60 % »] @ 688,257
+bouton [coupé, état « vuoto »] @ 744,257
+bouton « 2 » [coupé, état « colpo, forza 35 % »] @ 800,257
+bouton [coupé, état « vuoto »] @ 856,257
+bouton [coupé, état « colpo, forza 60 % »] @ 912,257
+bouton [coupé, état « vuoto »] @ 968,257
+bouton « 3 » [état « colpo, forza 35 % »] @ 575,319
+bouton [état « vuoto »] @ 632,318
+bouton [état « colpo, forza 60 % »] @ 688,318
+bouton [état « vuoto »] @ 744,318
+bouton « 4 » [état « colpo, forza 35 % »] @ 800,318
+bouton [état « vuoto »] @ 856,318
+bouton [état « vuoto »] @ 912,318
+bouton [état « vuoto »] @ 968,318
+texte « tutto » @ 680,399
+texte « 1/2 » @ 764,399
+texte « 1/4 » @ 839,399
+texte « ◀ » @ 914,399
+texte « Riempi » @ 591,399
+texte « ▶ » @ 586,471
+texte « Cancella » @ 697,471
+texte « Gli effetti Capitolo 13/15 · Passo 1/2 · Facile » @ 430,556
+icône (liste) « Capitoli » @ 890,557
+icône ⌄ @ 978,557
+texte « Ascolta il reverb: il rullante e la traccia “Accordi”, prima senza, poi con. Il suono prende spazio, come in una grande sala. » @ 517,668
+texte « • Accordo: più note suonate insieme. » @ 243,741
+texte « ▸ Perché? » @ 517,788
+bouton ■ «  Ferma l'ascolto » @ 517,857
+icône ← «  Indietro » @ 109,941
+icône « Avanti  » → @ 935,941
+bouton ▶ « il brano » @ 521,1026
+icône ↶ « Annulla » @ 142,1026
+image ↷ @ 330,1013
+texte « 174 Tempo » @ 709,1026
+icône ⋮ « Altro » @ 893,1026
+onglet (lignes et note) « Il mio brano » @ 99,1123
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 309,1123
+onglet (touches de piano) « Tastiera » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Condividi » @ 936,1123
+texte « ●  REC » @ 799,1213
+texte « ✎  Annota » @ 899,1213
+texte « ⋯ » @ 987,1213
+texte « Modalità feedback » @ 381,1213

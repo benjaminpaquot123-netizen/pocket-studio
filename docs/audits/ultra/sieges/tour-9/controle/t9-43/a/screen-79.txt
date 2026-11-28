@@ -1,0 +1,63 @@
+Écran 79 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 178,42
+bouton « Pro » @ 385,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 539,42
+bouton ● @ 611,42
+bouton ▶ « dit deel » @ 683,42
+bouton ▶ « het nummer » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [coupé] @ 68,204
+onglet « Acid 303 Baslijn » @ 212,204
+onglet « Zang Microfoon » @ 400,204
+onglet « Remix Splitsen » @ 578,204
+bouton « Bas Ronde bas » ⋮ @ 772,204
+image ← @ 10,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+texte « − » [désactivé, coupé] @ 155,307
+texte « 1 maat » [coupé] @ 243,301
+texte « + » [coupé] @ 330,307
+texte «   Noot » @ 78,356
+bouton « 1/16 » @ 175,356
+bouton « 1/8 » [sélectionné] @ 281,356
+bouton « 1/4 » @ 382,356
+bouton « 1/2 » @ 482,356
+texte «   Raster » @ 87,431
+bouton « 1/8 » @ 187,431
+bouton « 1/16 » [sélectionné] @ 293,431
+bouton « 1/16 t » @ 414,431
+bouton « 1/32 » @ 537,431
+texte « In de maat 50% » @ 646,512
+bouton « Akkoorden » @ 141,512
+bouton « Bas als schaduw » [sélectionné] @ 380,512
+texte « 100% » @ 99,587
+texte « Wissen » @ 228,587
+bouton « Bas · maat 1/1 Nog 1 gestippelde noot om aan te tikken » @ 450,668
+texte « mt » @ 84,730
+bouton « 1 » @ 492,738
+texte « E » [coupé] @ 84,781
+texte « E♭ » @ 84,813
+texte « D » @ 84,855
+texte « D♭ » @ 84,897
+texte « C3 » @ 84,939
+texte « B » @ 84,981
+texte « B♭ » @ 84,1023
+texte « A » @ 84,1065
+texte « A♭ » [coupé] @ 84,1096
+dessin [coupé] @ 492,939
+texte « De bas Hoofdstuk 5/17 · Stap 2/2 · Pro » @ 356,1157
+icône (liste) « Hoofdstukken » @ 749,1158
+icône ⌃ @ 843,1158
+icône « Nu jij: maak het spoor Bas (‘Ronde bas’, zachte pomp). Maat 1 in de pianorol: de grondtoon F aangehouden, dezelfde korter, de kwint C; ‘Kopiëren naar de volgende maten’ zet hem op E en dan op A; dan de aanloop van maat 4 (A, C, E, D, C). Lees » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

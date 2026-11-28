@@ -1,0 +1,29 @@
+Écran 6 (540x1170)
+dessin @ 270,208
+texte « टेम्पो » @ 71,284
+texte « बंद करो » @ 439,284
+bouton « ? » @ 139,284
+icône − @ 60,388
+texte « 120 » @ 218,387
+texte «  BPM » @ 342,389
+icône + @ 480,388
+bouton « 70 » @ 75,487
+bouton « 90 » @ 186,487
+bouton « 120 » [sélectionné] @ 310,487
+bouton « 140 » @ 448,487
+bouton « ½ » @ 204,568
+bouton « ×2 » @ 307,568
+bouton « 174 » @ 88,568
+bouton « 1 » @ 103,661
+bouton « 2 » @ 270,661
+bouton « 3 » @ 437,661
+bouton « 4 » @ 103,748
+bouton « 5 » @ 270,748
+bouton « 6 » @ 437,748
+bouton « 7 » @ 103,835
+bouton « 8 » @ 270,835
+bouton « 9 » @ 437,835
+bouton ⌫ [désactivé] @ 103,922
+bouton « 0 » @ 270,922
+bouton « OK » [désactivé] @ 437,922
+bouton (doigt qui touche) « बीट पर टैप करो हर बीट पर यहाँ टैप करो: टेम्पो साथ चलेगा। » @ 270,1062

@@ -1,0 +1,27 @@
+Écran 175 (540x1170)
+texte « Entender as partes Capítulo 7/14 · Etapa 2/5 · Pro » @ 176,127
+icône (liste) « Capítulos » @ 389,127
+icône ⌄ @ 483,127
+texte « Ouça a Intro: a bateria e as cordas, sem baixo. » @ 270,325
+texte « Energia » @ 95,421
+bouton « Baixar o kit Techno de Detroit (4 MB) » @ 186,520
+texte « Mais tarde » @ 429,520
+texte « ▸ Por quê? » @ 270,608
+icône « Continuar lendo » ⌄ @ 270,671
+bouton ■ «  Parar de ouvir » @ 270,746
+icône ← «  Anterior » @ 136,835
+icône « Próximo  » → @ 404,835
+icône ▶ « a música » @ 199,939
+texte « 126 Andamento » @ 376,938
+icône ↶ « Desfazer » @ 34,939
+icône ↷ « Refazer » [désactivé] @ 92,939
+icône (trois points reliés) « Compartilhar » @ 505,939
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 49,1050
+onglet (touches de piano) « Sons » @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Mais » @ 491,1050
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

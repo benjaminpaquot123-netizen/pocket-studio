@@ -1,0 +1,53 @@
+Écran 44 (900x1509)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 284,42
+bouton « Simple » @ 612,42
+bouton ● @ 701,42
+bouton ■ « this part » @ 778,42
+icône ⋮ @ 855,42
+icône (flèches en boucle) « A bar 1/1 » [désactivé] @ 349,144
+bouton « 112  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Part: A » ▾ @ 99,240
+texte « Amapiano · Handclap » @ 254,311
+texte « 1 more dotted cell here » @ 275,365
+bouton « 1 » [état « empty »] @ 90,442
+bouton [état « empty »] @ 192,442
+bouton [état « empty »] @ 294,442
+bouton [état « empty »] @ 397,442
+bouton « 2 » [allumé, état « hit, strength 100 % »] @ 500,442
+bouton [état « empty »] @ 603,442
+bouton [état « empty »] @ 706,442
+bouton [état « empty »] @ 809,442
+bouton « 3 » [état « empty »] @ 90,523
+bouton [état « empty »] @ 192,523
+bouton [état « empty »] @ 294,523
+bouton [état « empty »] @ 397,523
+bouton « 4 » [état « empty, dotted: tap it »] @ 500,523
+bouton [état « empty »] @ 603,523
+bouton [état « empty »] @ 706,523
+bouton [état « empty »] @ 809,523
+texte « The percussion Chapter 2/12 · Step 4/7 · Easy » @ 357,627
+icône (liste) « Chapters » @ 750,627
+icône ⌄ @ 843,627
+texte « Your turn: on the “Amapiano · Handclap” pad, tap the 2 dotted cells, on 2 and 4. » [coupé] @ 450,739
+texte « ▸ Why? » @ 450,808
+icône « Read on » ⌄ @ 450,871
+bouton (doigt qui touche) «   I'll do it » @ 450,946
+bouton ▶ «  Listen to the example » @ 232,1060
+bouton (œil) «  Show me » @ 667,1060
+icône ← «  Previous » @ 141,1174
+icône « Next  » → @ 796,1174
+icône ↶ « Undo » @ 109,1277
+image ↷ @ 258,1257
+icône ■ « the song » @ 436,1278
+texte « 112 Tempo » @ 629,1277
+icône ⋮ « More » @ 793,1277
+onglet (lignes et note) « My song » @ 85,1389
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 268,1389
+onglet (touches de piano) « Keyboard » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Share » @ 815,1389
+texte « ●  REC » @ 637,1479
+texte « ✎  Note » @ 754,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 297,1479

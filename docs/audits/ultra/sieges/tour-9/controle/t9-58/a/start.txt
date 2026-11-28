@@ -1,0 +1,10 @@
+lang=id
+device=foldable
+font=130
+mode=pro
+amenee=tuto:retro_techno:1
+gestes.max=174
+mission=tuto-pro
+profil=pro
+niveau=4
+timeout.minutes=30

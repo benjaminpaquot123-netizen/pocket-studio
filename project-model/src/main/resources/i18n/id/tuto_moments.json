@@ -9,7 +9,7 @@
   "À toi : écris les 5 notes de la mesure 2.": "Giliranmu: tulis 5 not di birama 2.",
   "À toi : écris les 4 notes de la mesure 2.": "Giliranmu: tulis 4 not di birama 2.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "Giliranmu: sentuh not bawah yang bergaris putus dari tiap akor di birama 1: seluruh akor terpasang.",
-  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Giliranmu: “Aku yang buat” membuka lembar Nada: sentuh kedua tombol yang dilingkari.",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Giliranmu: “Aku yang buat” membuka lembar “Kunci nada lagu”: sentuh kedua tombol yang dilingkari.",
   "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "Giliranmu: di pad “Kick”, sentuh kotak bergaris putus di 2 birama.",
   "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "Giliranmu: di pad “Snare”, sentuh kotak bergaris putus di 2 birama.",
   "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "Giliranmu: di pad “Hi-hat”, sentuh kotak bergaris putus di 2 birama.",
@@ -21,5 +21,5 @@
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "Giliranmu: di bawah “Tambah”, sentuh berurutan: Intro, Reff, Verse, Pre-chorus, Reff, Verse, Pre-chorus, Reff, lalu Intro untuk penutup.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "Giliranmu: di bawah “Tambah”, sentuh berurutan: Intro, Verse, Pre-chorus, Reff, Post-chorus, Verse, Pre-chorus, Reff, Bridge, Reff, lalu Intro untuk penutup.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "Giliranmu: beri tiap bagian durasinya: Intro 4 birama, Verse 8, Pre-chorus 4, Reff 16 (8 di kali ke-2, 16 di kali ke-3), Post-chorus 4, Bridge 8, Akhir 4.",
-  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Giliranmu: di tab “Mix”, turunkan sedikit slider “Akor” dan “Melodi”. Di bawah slider, “Normal” jadi “−2”."
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Giliranmu: di tab “Mix”, turunkan sedikit slider “Akor” dan “Melodi”. Di bawah slider, “Normal” jadi “−1”."
 }

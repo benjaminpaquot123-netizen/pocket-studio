@@ -1,0 +1,68 @@
+Écran 48 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 245,42
+bouton « プロ » @ 522,42
+bouton « A » ▾ @ 606,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 114,144
+bouton « ? » @ 990,144
+onglet « ドラム 16パッド » [sélectionné] @ 118,265
+onglet « Acid 303 ベースライン » @ 374,266
+onglet « ボーカル マイク » @ 630,265
+onglet « リミックス 分離 » @ 870,265
+bouton + «  トラック » [coupé] @ 1009,265
+image → @ 1024,266
+texte « パート：A » @ 112,361
+bouton « クラップ FX » [coupé] @ 75,428
+bouton « ハイハット L 30 » [coupé] @ 200,428
+bouton « オープンハイハット R 30 » [coupé] @ 325,428
+bouton « ロータム » [coupé] @ 450,428
+bouton « ミッドタム R 45 » @ 75,518
+bouton « ハイタム » @ 200,518
+bouton « リム FX R 50 » @ 325,518
+bouton « カウベル » @ 450,518
+bouton « シンバル R 40 » [coupé] @ 75,618
+bouton « シェイカー L 50 » [coupé] @ 200,618
+bouton « コンガ » [coupé] @ 325,618
+bouton « Zap » [coupé] @ 450,618
+texte « ここに点線のマスがあと 5 個 » [coupé] @ 776,414
+bouton « 1 » [état « ヒット、強さ 100 % »] @ 575,476
+bouton [état « 空 »] @ 632,475
+bouton [état « ヒット、強さ 100 % »] @ 688,475
+bouton [état « 空 »] @ 744,475
+bouton « 2 » [état « ヒット、強さ 100 % »] @ 800,475
+bouton [état « 空 »] @ 856,475
+bouton [état « 空、点線：タップしてね »] @ 912,475
+bouton [état « 空 »] @ 968,475
+bouton « 3 » [état « 空、点線：タップしてね »] @ 575,546
+bouton [état « 空 »] @ 632,545
+bouton [état « 空、点線：タップしてね »] @ 688,545
+bouton [état « 空 »] @ 744,545
+bouton « 4 » [état « 空、点線：タップしてね »] @ 800,545
+bouton [état « 空 »] @ 856,545
+bouton [état « 空、点線：タップしてね »] @ 912,545
+bouton [état « 空 »] @ 968,545
+bouton « ヒット » [sélectionné] @ 633,626
+bouton « ロール » @ 806,626
+bouton « パン » [coupé] @ 944,626
+texte « ハイハットとパーカッション チャプター 4/16 · ステップ 4/5 · プロ » @ 426,729
+icône (liste) « チャプター » @ 886,730
+icône ⌃ @ 978,730
+icône « あなたの番：「シンバル」パッド（ライド）で、ドロップ用に8分を置こう。 読む » ⌃ @ 517,875
+texte « 132 テンポ » @ 718,1006
+icône ↶ « 元に戻す » @ 149,1006
+icône ↷ « やり直す » [désactivé] @ 363,1006
+bouton ▶ « 曲 » @ 548,1007
+icône (trois points reliés) « シェア » @ 903,1006
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » [sélectionné] @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 780,1213
+texte « ✎  メモ » @ 893,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 368,1213

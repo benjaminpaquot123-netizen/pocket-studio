@@ -1,0 +1,36 @@
+Écran 65 (1035x1243)
+texte « Effecten · pad 1 (Kick) » @ 364,72
+texte « Effecten actief: 1 van 8 » @ 305,160
+bouton « 1. Bitcrusher » @ 373,230
+icône ⏻ @ 694,230
+icône ⌃ [désactivé] @ 766,230
+icône ⌄ [désactivé] @ 838,230
+icône ✕ @ 910,230
+texte « Speelt in: » @ 172,308
+bouton « Alles » [sélectionné] @ 337,308
+bouton « A · Refrein » @ 541,308
+bouton « B · Intro » @ 771,308
+bouton « C · Couplet » [coupé] @ 912,308
+texte « Een effect kan in maar een paar delen spelen: tik op hun letters. » @ 517,402
+bouton + «   Effect toevoegen » @ 517,500
+texte « Kant-en-klare sferen » @ 286,583
+bouton « ? » @ 506,583
+bouton « Voor: Drums » [sélectionné] @ 231,659
+bouton ★ « Favorieten » @ 520,659
+bouton « Sfeer » @ 742,659
+bouton « Kleur » [coupé] @ 886,659
+texte « Stijl: » @ 126,743
+bouton « Acid » @ 241,743
+bouton « Techno » @ 414,743
+bouton « DnB » @ 583,743
+bouton « Dubstep » @ 760,743
+bouton « House » [coupé] @ 910,743
+bouton « Punch » @ 173,827
+bouton « EDM-pomp » @ 400,827
+bouton « Krokant » @ 641,827
+bouton « Lo-Fi Tape » @ 213,899
+bouton « Kleine kamer » @ 496,899
+bouton « Gedreun » @ 760,899
+bouton « Geen effect » @ 224,971
+texte « Tik op een sfeer om hem te proberen: je kunt altijd terug met Ongedaan maken. » [coupé] @ 517,1055
+texte « Sluiten » @ 861,1167

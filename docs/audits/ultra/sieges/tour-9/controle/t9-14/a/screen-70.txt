@@ -1,0 +1,42 @@
+Écran 70 (1035x1243)
+texte « Effecten · pad 3 (Snare) » @ 387,72
+texte « Effecten actief: 2 van 8 » @ 309,160
+bouton « 1. Verbreder » @ 373,230
+icône ⏻ @ 694,230
+icône ⌃ [désactivé] @ 766,230
+icône ⌄ @ 838,230
+icône ✕ @ 910,230
+texte « Speelt in: » @ 172,308
+bouton « Alles » [sélectionné] @ 337,308
+bouton « A · Refrein » @ 541,308
+bouton « B · Intro » @ 771,308
+bouton « C · Couplet » [coupé] @ 912,308
+bouton « 2. Bitcrusher » @ 373,386
+icône ⏻ @ 694,386
+icône ⌃ @ 766,386
+icône ⌄ [désactivé] @ 838,386
+icône ✕ @ 910,386
+texte « Speelt in: » @ 172,464
+bouton « Alles » [sélectionné] @ 337,464
+bouton « A · Refrein » @ 541,464
+bouton « B · Intro » @ 771,464
+bouton « C · Couplet » [coupé] @ 912,464
+texte « Een effect kan in maar een paar delen spelen: tik op hun letters. » @ 517,558
+bouton + «   Effect toevoegen » @ 517,656
+texte « Ook ingesteld op dit geluid: » @ 348,739
+texte « Gedeelde galm » @ 472,798
+texte « 70% » @ 901,798
+curseur [état « 70% », à 69 %] @ 517,865
+texte « Kant-en-klare sferen » @ 286,944
+bouton « ? » @ 506,944
+bouton « Voor: Drums » [sélectionné] @ 231,1020
+bouton ★ « Favorieten » @ 520,1020
+bouton « Sfeer » @ 742,1020
+bouton « Kleur » [coupé] @ 886,1020
+texte « Stijl: » [coupé] @ 126,1084
+bouton « Acid » [coupé] @ 241,1083
+bouton « Techno » [coupé] @ 414,1083
+bouton « DnB » [coupé] @ 583,1083
+bouton « Dubstep » [coupé] @ 760,1083
+bouton « House » [coupé] @ 910,1083
+texte « Sluiten » @ 861,1167

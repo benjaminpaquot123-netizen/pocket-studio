@@ -203,3 +203,14 @@ fun ScaledPopup(
 ) {
     Popup(alignment = alignment, offset = offset, onDismissRequest = onDismissRequest, properties = properties) { RescaledWindow(content) }
 }
+
+/** A Popup at the interface size, placed by [popupPositionProvider] (e.g. across the top of its window). */
+@Composable
+fun ScaledPopup(
+    popupPositionProvider: androidx.compose.ui.window.PopupPositionProvider,
+    onDismissRequest: (() -> Unit)? = null,
+    properties: PopupProperties = PopupProperties(),
+    content: @Composable () -> Unit,
+) {
+    Popup(popupPositionProvider = popupPositionProvider, onDismissRequest = onDismissRequest, properties = properties) { RescaledWindow(content) }
+}

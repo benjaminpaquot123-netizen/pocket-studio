@@ -80,6 +80,21 @@ object TutoKit {
         return if (asked || fresh(progress, project)) Offer.Apply else Offer.Ask
     }
 
+    /**
+     * Tour 9, F061 (t9-20, t9-48, t9-58): what the ready step says while the style's kit is not on the pads yet
+     * (its card offers it). Its own words said « le kit du disco est chargé » over the studio's sounds.
+     */
+    const val READY_PENDING = "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler."
+
+    /**
+     * The ready step's [text] as shown: while the style's kit is [pending] (its card offered), a text that speaks
+     * of the kit as there (« kit », or the Pro « Déjà prêt » listing its sounds) is replaced by [READY_PENDING]; one
+     * that already says what the card does (« Plus tard », the techno) or names no kit (the drum & bass family's pads
+     * and badges) stays.
+     */
+    fun readyText(text: String, pending: Boolean): String =
+        if (pending && "Plus tard" !in text && ("kit" in text || text.startsWith("Déjà prêt"))) READY_PENDING else text
+
     /** A course not begun: no step done, and no sound of the user's on a pad. */
     fun fresh(progress: TutoProgress, project: Project): Boolean =
         progress.done.isEmpty() && project.drums.lanes.none { it.sample != null }

@@ -118,9 +118,11 @@ class SpotRegistry {
         val match = if (id.endsWith("*")) spots.entries.firstOrNull { it.key.startsWith(id.dropLast(1)) }?.value else spots[id]
         val node = match?.owner as? SpotNode ?: return false
         // What it names to keep in sight with it, above it (the drum grid's bar pages and tuto line over its cells).
-        val above = if (!withHead) 0f else node.revealFrom.mapNotNull { (spots[it]?.owner as? SpotNode)?.windowTop }.minOrNull()
-            ?.let { node.windowTop - it }?.takeIf { it > 0f } ?: 0f
-        node.reveal(roomBelow(REVEAL_MARGIN_PX), above)
+        val tops = if (!withHead) emptyList() else node.revealFrom.mapNotNull { (spots[it]?.owner as? SpotNode)?.windowTop }.filter { it < node.windowTop }
+        val above = tops.minOrNull()?.let { node.windowTop - it } ?: 0f
+        // Lot rouges3: the nearest of them (the tuto's line right over the cells), what a very big font keeps with the first row.
+        val near = tops.maxOrNull()?.let { node.windowTop - it } ?: 0f
+        node.reveal(roomBelow(REVEAL_MARGIN_PX), above, near)
         return true
     }
 
@@ -194,7 +196,7 @@ internal class SpotNode(var id: String, var label: String?, var revealFrom: List
      * tuto's panel) and [above] pixels over it in sight too. Too tall for the screen, its top goes
      * first (what is above it, then itself): A1, the tuto's « Mesure 2 · 3 cases → » went off the top.
      */
-    fun reveal(below: Float = 0f, above: Float = 0f) {
+    fun reveal(below: Float = 0f, above: Float = 0f, near: Float = above) {
         if (isAttached) coroutineScope.launch {
             runCatching {
                 if (width > 0f && height > 0f) {
@@ -207,8 +209,11 @@ internal class SpotNode(var id: String, var label: String?, var revealFrom: List
                     // Tour 5, chantier 4 (TutoBigFontTest): with the phone's font very big there is no room for both; what is
                     // named above it (the tuto's line, « Rumble · Encore 4 cases ») comes back in sight with the control's
                     // first row: the line says what to do there. A no-op whenever both fit.
-                    if (above > 0f && currentValueOf(androidx.compose.ui.platform.LocalDensity).fontScale >= BIG_FONT) {
-                        bringIntoView { Rect(0f, -above, width, minOf(height, 1f)) }
+                    // Lot rouges3 (T9PanelTargetTest, ch. 12 fill, Japanese at 200 % on 360 dp): from the highest of them (the bar
+                    // pages on two rows, then the line) the room asked was taller than the page's room left over the panel; the
+                    // view kept its top and the cells went back under the panel. Only the nearest one ([near], the line).
+                    if (near > 0f && currentValueOf(androidx.compose.ui.platform.LocalDensity).fontScale >= BIG_FONT) {
+                        bringIntoView { Rect(0f, -near, width, minOf(height, 1f)) }
                     }
                     // Round 5 (lot « bloquants »): coming back up from a control far below (the tutorials' Swing, under the
                     // drum grid), the grid stayed with its top under « Partie : A »: its top line brought in last.

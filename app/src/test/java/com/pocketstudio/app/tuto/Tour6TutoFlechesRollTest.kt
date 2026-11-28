@@ -152,6 +152,8 @@ class Tour6TutoFlechesRollTest {
         settle()
         var written = 0
         var arrows = 0
+        // Tour 9 (F059): a step cut to its first bar dots that bar only, as its text counts them (3 notes for the riff).
+        val dotted = leftNotes().size
         // Until the motif is written (the course's own rule: « Copier » is the tutorial's answer, off the main thread).
         val step = TutoCourse.of(style)!!.chapters.flatMap { it.steps }.first { it.id == stepId }
         while (leftNotes().isNotEmpty() && TutoChecks.need(step, h.vm.project.value, target) !is TutoNeed.Copy && written < 40) {
@@ -172,7 +174,7 @@ class Tour6TutoFlechesRollTest {
             written++
             settle()
         }
-        assertTrue("$style/$stepId: notes written $written", written >= 4)
+        assertTrue("$style/$stepId: notes written $written of $dotted dotted", dotted >= 3 && written >= minOf(4, dotted))
     }
 
     @Test

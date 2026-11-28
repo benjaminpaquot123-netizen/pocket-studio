@@ -1,0 +1,65 @@
+Écran 66 (1035x1243)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 346,42
+bouton « Basit » @ 738,42
+bouton ● @ 828,42
+bouton ■ « bu bölüm » @ 909,42
+icône ⋮ @ 990,42
+icône (flèches en boucle) « Yükseliş ölçü 4/4 » ▾ @ 391,144
+bouton « 140  Tempo » @ 136,144
+bouton (flèches en boucle) « Döngü » [allumé, état « açık »] @ 849,144
+bouton « ? » @ 990,144
+icône (flèches en boucle) « Bölüm: C · Yükseliş » ▾ @ 234,240
+texte « Sen düzenlerken döngüde çalar. Şarkıya dönmek için üstteki ⟳ Döngü. » @ 517,322
+bouton « Büyük davul 1 FX » @ 75,446
+bouton « Büyük davul 2 » @ 200,446
+bouton « Trampet FX » @ 325,446
+bouton « Trampet 2 » @ 450,446
+bouton « El çırpma FX » @ 75,552
+bouton « Hi-hat L 30 » @ 200,552
+bouton « Açık hi-hat R 30 » @ 325,552
+bouton « Pes tom » @ 450,552
+bouton « Orta tom R 45 » [coupé] @ 75,643
+bouton « Tiz tom » [coupé] @ 200,643
+bouton « Davul kenarı FX R 50 » [coupé] @ 325,643
+bouton « Çan » [coupé] @ 450,643
+bouton « 1 » [allumé, état « vuruş, güç %62 »] @ 575,424
+bouton [état « boş »] @ 632,423
+bouton [état « vuruş, güç %49 »] @ 688,423
+bouton [état « boş »] @ 744,423
+bouton « 2 » [état « vuruş, güç %53 »] @ 800,423
+bouton [état « boş »] @ 856,423
+bouton [état « vuruş, güç %49 »] @ 912,423
+bouton [état « boş »] @ 968,423
+bouton « 3 » [état « boş »] @ 575,494
+bouton [état « boş »] @ 632,493
+bouton [état « vuruş, güç %62 »] @ 688,493
+bouton [état « boş »] @ 744,493
+bouton « 4 » [état « boş »] @ 800,493
+bouton [état « boş »] @ 856,493
+bouton [état « boş »] @ 912,493
+bouton [état « boş »] @ 968,493
+texte « Doldur » @ 610,574
+texte « tümü » @ 734,574
+texte « 1/2 » @ 839,574
+texte « 1/4 » @ 924,574
+texte « ◀ » @ 586,646
+texte « ▶ » @ 661,646
+texte « Temizle » @ 786,646
+texte « Geçişler Aşama 12/15 · Tamam · Kolay » @ 423,743
+icône (liste) « Aşamalar » @ 883,743
+icône ⌃ @ 978,743
+icône (coupe) « Bravo, bölüm bitti! » ⌃ @ 517,886
+bouton ▶ « şarkı » @ 518,1012
+texte « 140 Tempo » @ 707,1011
+icône ↶ « Geri al » @ 144,1011
+image ↷ @ 337,991
+icône ⋮ « Diğer » @ 899,1011
+onglet (lignes et note) « Şarkım » @ 99,1123
+onglet (quatre carrés) « Ritim » [sélectionné] @ 309,1123
+onglet (touches de piano) « Klavye » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Paylaş » @ 936,1123
+texte « ●  REC » @ 757,1213
+texte « ✎  Not al » @ 882,1213
+texte « ⋯ » @ 987,1213
+texte « Geri bildirim modu » @ 357,1213

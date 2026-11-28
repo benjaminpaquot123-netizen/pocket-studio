@@ -20,6 +20,6 @@
  "Partie « %s » créée : tout le Groove y joue.": "パート「%s」を作りました：グルーヴ全体が鳴ります。",
  "Partie « %1$s » créée (copie du Groove) : sans %2$s.": "パート「%1$s」を作りました（グルーヴのコピー）：%2$s なし。",
  "Sa basse est à toi d'écrire : les notes en pointillé.": "ベースは自分で書きます：点線のノート。",
- "Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.": "スネアが小節ごとに速くなり、最後の拍は鳴りません。",
- "Son pad « %s » accélère mesure après mesure, et son dernier temps se tait.": "パッド「%s」が小節ごとに速くなり、最後の拍は鳴りません。"
+ "Sa caisse claire accélère mesure après mesure.": "スネアが小節ごとに速くなります。",
+ "Son pad « %s » accélère mesure après mesure.": "パッド「%s」が小節ごとに速くなります。"
 }

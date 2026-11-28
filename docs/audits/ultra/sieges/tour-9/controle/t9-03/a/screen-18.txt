@@ -1,0 +1,73 @@
+Écran 18 (900x1509)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 191,42
+bouton « プロ » @ 410,42
+bouton « A » ▾ @ 486,42
+icône ↶ @ 561,42
+icône ↷ [désactivé] @ 633,42
+bouton ● @ 705,42
+bouton ▶ « このパート » @ 780,42
+icône (trois points reliés) @ 855,42
+bouton « 138  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « ドラム 16パッド » [sélectionné] @ 79,183
+onglet « Acid 303 ベースライン » @ 239,183
+onglet « ボーカル マイク » @ 403,183
+onglet « リミックス 分離 » @ 562,183
+bouton + «  トラック » @ 746,183
+texte « パート：A » @ 69,243
+bouton « スタジオキック FX » @ 123,323
+bouton « キック 2 » @ 341,323
+bouton « スネア » @ 559,323
+bouton « スネア 2 » @ 777,323
+bouton « アシッドテクノ · クラップ FX » @ 123,410
+bouton « Roland TR-909 · ハイハット L 30 » @ 341,410
+bouton « Roland TR-909 · オープンハイハット R 30 » @ 559,410
+bouton « ロータム » @ 777,410
+bouton « ミッドタム R 45 » @ 123,497
+bouton « ハイタム » @ 341,497
+bouton « リム R 50 » @ 559,497
+bouton « カウベル » @ 777,497
+bouton « シンバル R 40 » @ 123,584
+bouton « シェイカー L 50 » @ 341,584
+bouton « コンガ » @ 559,584
+bouton « Zap » @ 777,584
+bouton « キット：カスタム » ▾ @ 141,667
+texte « パッドで鳴らし、マスにヒットを記録。長押し：音を変更。 » @ 579,667
+titre « ステップ：スタジオキック » [état « 開いた状態 »] @ 383,775
+bouton « ? » @ 346,775
+bouton « 全パッド » @ 791,775
+texte « スタジオキック » @ 125,859
+bouton « 1 » [état « 空 »] @ 90,944
+bouton [état « 空 »] @ 192,944
+bouton [état « 空 »] @ 294,944
+bouton [état « 空 »] @ 397,944
+bouton « 2 » [état « 空 »] @ 500,944
+bouton [état « 空 »] @ 603,944
+bouton [état « 空 »] @ 706,944
+bouton [état « 空 »] @ 809,944
+bouton « 3 » [état « 空 »] @ 90,1024
+bouton [état « 空 »] @ 192,1024
+bouton [état « 空 »] @ 294,1024
+bouton [état « 空 »] @ 397,1024
+bouton « 4 » [état « 空 »] @ 500,1024
+bouton [état « 空 »] @ 603,1024
+bouton [état « 空 »] @ 706,1024
+bouton [état « 空 »] @ 809,1024
+icône (liste) « チャプター » @ 756,1109
+icône ⌃ @ 843,1109
+texte « テンポとキー チャプター 1/12 · 完了 · プロ » @ 363,1109
+icône (coupe) « よくできました、章クリア！ » ⌃ @ 450,1208
+icône ↶ « 元に戻す » @ 124,1293
+icône ↷ « やり直す » [désactivé] @ 284,1293
+bouton ▶ « 曲 » @ 444,1293
+texte « 138 テンポ » @ 610,1293
+icône (trois points reliés) « シェア » @ 776,1293
+onglet (ligne brisée et points) « 構成 » @ 85,1389
+onglet (touches de piano) « サウンド » [sélectionné] @ 268,1389
+onglet (curseurs) « ミックス » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « その他 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  メモ » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « フィードバックモード » @ 318,1479

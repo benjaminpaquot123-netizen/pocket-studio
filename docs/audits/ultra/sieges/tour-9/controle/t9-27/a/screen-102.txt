@@ -1,0 +1,57 @@
+Écran 102 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 233,42
+texte « Pro » @ 493,42
+icône ↶ @ 565,42
+icône ↷ [désactivé] @ 637,42
+bouton ● @ 709,42
+bouton ▶ « bagian ini » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Timeline » [désactivé] @ 91,192
+onglet « Bagian » [sélectionné] @ 216,192
+titre « LAGUNYA » [état « Terbuka »] @ 136,285
+bouton « ? » @ 208,285
+texte « Garis waktu menyusun bagianmu secara berurutan, masing-masing dengan panjangnya dalam birama. Tambahkan secara berurutan. » @ 450,346
+texte « Tambah: » @ 85,400
+bouton « + Bagian baru (salinan A · Groove) » @ 461,463
+bouton « + A · Groove » @ 141,463
+bouton « + Bagian baru kosong » @ 190,544
+bouton (barres de son) «   Yang main di lagu » @ 450,628
+titre « PENGATURAN LAGU » [état « Terbuka »] @ 450,694
+bouton « berhenti » [sélectionné] @ 202,760
+bouton « mulai ulang » @ 363,760
+texte « Di akhir: » @ 82,760
+bouton « ikuti lagu » [sélectionné] @ 281,844
+bouton « tetap di bagianku » @ 475,844
+texte « Selama diputar: » @ 119,844
+texte « Layar menampilkan bagian yang sedang main. » @ 255,905
+bouton « ? » @ 263,952
+texte « Ketukan per birama: » @ 142,953
+bouton « 2/4 » @ 84,1022
+bouton « 3/4 » @ 178,1022
+bouton « 4/4 » [sélectionné] @ 273,1022
+bouton « 5/4 » @ 367,1022
+bouton « 6/4 » @ 461,1022
+bouton « 7/4 » @ 555,1022
+icône (liste) « Bab » @ 771,1110
+texte « Bagian pertamamu: Groove Bab 6/14 · Langkah 2/2 · Pro » @ 378,1110
+icône ⌃ @ 843,1110
+image (œil) @ 51,1209
+texte « Stop » @ 835,1209
+texte « Lihat, aku yang buat… » @ 435,1209
+icône ↶ « Urungkan » @ 124,1293
+icône ↷ « Ulangi » [désactivé] @ 285,1293
+bouton ▶ « lagu » @ 445,1293
+texte « 175 Tempo » @ 610,1293
+icône (trois points reliés) « Bagikan » @ 776,1293
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+image (doigt qui touche) @ 158,217
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

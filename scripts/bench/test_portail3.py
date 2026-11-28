@@ -826,7 +826,7 @@ class SeatReport(unittest.TestCase):
 
     def test_the_tester_is_told_to_keep_the_two_lines(self):
         tour = os.path.join(self.tmp, "tour-9")
-        write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone360\t100\tsimple\t-\tsimple\t110\tcurieux\tlibre: un son joue\n")
+        write(os.path.join(tour, "sieges-proposes.tsv"), "A\ta\tfr\tphone360\t100\tsimple\t-\tsimple\t110\tcurieux\tlibre: un son joue\t1\n")
         code, out, err = script("fabrique-sieges.py", tour)
         self.assertEqual(code, 0, err)
         brief = read(os.path.join(tour, "briefs", "Aa.txt"))

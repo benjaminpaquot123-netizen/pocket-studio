@@ -1,0 +1,6 @@
+Écran 131 (588x1278)
+texte « Przygotowuję twój utwór… » @ 269,517
+texte « Tworzę dźwięk jako WAV, w jakości studyjnej. » @ 263,580
+texte «   20% » @ 522,622
+texte « Potem wybierz aplikację, żeby to wysłać. » @ 225,662
+texte « Anuluj » @ 500,748

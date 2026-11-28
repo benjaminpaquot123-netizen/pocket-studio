@@ -1,0 +1,77 @@
+Écran 52 (1035x1243)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 346,42
+bouton « Semplice » @ 737,42
+bouton ● @ 827,42
+bouton ▶ « questa parte » @ 908,42
+icône ⋮ @ 990,42
+bouton « 174  Tempo » @ 98,123
+icône « Intro battuta 1/128 » ▾ @ 312,123
+bouton « ? » @ 990,123
+icône « Parte: C · Build-up » ▾ @ 160,198
+bouton « Grancassa da studio FX » @ 75,300
+bouton « Grancassa 2 » @ 200,300
+bouton « Drum & bass · Rullante FX » @ 325,300
+bouton « Rullante 2 » @ 450,300
+bouton « Battimani » @ 75,406
+bouton « Drum & bass · Hi-hat S 30 » @ 200,406
+bouton « Drum & bass · Hi-hat aperto D 30 » @ 325,406
+bouton « Tom grave » @ 450,406
+bouton « Tom medio D 45 » @ 75,512
+bouton « Tom acuto » @ 200,512
+bouton « Drum & bass · Bordo del tamburo FX D 50 » @ 325,512
+bouton « Campana » @ 450,512
+bouton « Piatto D 40 » @ 75,618
+bouton « Maracas S 50 » @ 200,618
+bouton « Conga » @ 325,618
+bouton « Laser » @ 450,618
+texte « I pad suonano, le caselle tengono i colpi. Pressione lunga: cambia il suono. » [coupé] @ 420,721
+bouton « Kit: Drum & bass » ▾ @ 169,730
+titre « PASSI: DRUM & BASS · RULLANTE · BUILD-UP » [coupé, état « Espanso »] @ 680,252
+texte « Battuta » @ 597,318
+bouton « 1 » @ 690,318
+bouton « 2 » @ 771,318
+bouton « 3 » @ 852,318
+bouton « 4 » [sélectionné] @ 933,318
+bouton « Segui » @ 613,399
+texte « Battuta 4/4 · Drum & bass · Rullante » @ 776,483
+bouton « 1 » [état « colpo, forza 90 % »] @ 575,563
+bouton [état « colpo, forza 91 % »] @ 632,562
+bouton [état « colpo, forza 92 % »] @ 688,562
+bouton [état « colpo, forza 93 % »] @ 744,562
+bouton « 2 » [état « colpo, forza 93 % »] @ 800,562
+bouton [état « colpo, forza 94 % »] @ 856,562
+bouton [état « colpo, forza 95 % »] @ 912,562
+bouton [état « colpo, forza 96 % »] @ 968,562
+bouton « 3 » [état « colpo, forza 97 % »] @ 575,633
+bouton [état « colpo, forza 98 % »] @ 632,632
+bouton [état « colpo, forza 98 % »] @ 688,632
+bouton « ×4 » [état « colpo, forza 99 %, 4 ripetizioni »] @ 744,632
+bouton « 4 » [état « vuoto »] @ 800,632
+bouton [état « vuoto »] @ 856,632
+bouton [état « vuoto »] @ 912,632
+bouton [état « vuoto »] @ 968,632
+texte « tutto » @ 680,713
+texte « 1/2 » @ 764,713
+texte « 1/4 » @ 839,713
+texte « ◀ » @ 914,713
+texte « Riempi » @ 591,713
+texte « ▶ » [coupé] @ 586,761
+texte « Cancella » [coupé] @ 697,761
+texte « Le transizioni Capitolo 12/15 · Passo 1/2 · Facile » @ 430,817
+icône (liste) « Capitoli » @ 890,818
+icône ⌃ @ 978,818
+icône (rond coché) « Riuscito Passo successivo » → @ 517,930
+bouton ▶ « il brano » @ 521,1026
+icône ↶ « Annulla » @ 142,1026
+image ↷ @ 330,1013
+texte « 174 Tempo » @ 709,1026
+icône ⋮ « Altro » @ 893,1026
+onglet (lignes et note) « Il mio brano » @ 99,1123
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 309,1123
+onglet (touches de piano) « Tastiera » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Condividi » @ 936,1123
+texte « ●  REC » @ 799,1213
+texte « ✎  Annota » @ 899,1213
+texte « ⋯ » @ 987,1213
+texte « Modalità feedback » @ 381,1213

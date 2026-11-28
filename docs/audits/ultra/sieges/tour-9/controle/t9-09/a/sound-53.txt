@@ -1,0 +1,2 @@
+Son : rien ne joue.
+Un petit message s'affiche quelques secondes en bas de l'écran : « ■ Arrêté · Ton morceau est sauvegardé. ».

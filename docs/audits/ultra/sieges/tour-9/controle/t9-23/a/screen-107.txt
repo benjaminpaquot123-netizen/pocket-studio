@@ -1,0 +1,49 @@
+Écran 107 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 172,42
+bouton « Pro » @ 378,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ▶ « ta część » @ 693,42
+bouton ▶ « utwór » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Acid 303 Linia basu » [coupé] @ 21,262
+onglet « Wokal Mikrofon » @ 146,262
+onglet « Remix Rozdziel » @ 382,262
+bouton « 808 808 » @ 562,262
+bouton « Akordy Smyczki » ⋮ @ 755,262
+image ← @ 10,263
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « 100% » @ 114,435
+texte « Wyczyść » @ 296,435
+texte « Do rytmu 50% » [coupé] @ 625,390
+texte « Akordy · takt 1/8 » @ 221,508
+bouton « Kopiuj » @ 765,536
+texte « Motyw położony! Resztę się kopiuje: » @ 372,560
+texte « takt » @ 84,621
+bouton « 1 » @ 486,621
+bouton « 2 » [coupé] @ 853,621
+texte « B♭ » [coupé] @ 84,658
+dessin [coupé] @ 492,658
+texte « Akordy Rozdział 6/16 · Krok 2/2 · Pro » @ 356,728
+icône (liste) « Rozdziały » @ 749,728
+icône ⌄ @ 843,728
+texte « Twoja kolej: dotknij „Kopiuj na kolejne takty”: kolejne akordy położą się same. » @ 450,872
+texte « ▸ Dlaczego? » @ 450,972
+bouton ⊕ «   Kopiuj na kolejne takty » @ 450,1049
+bouton ▶ «  Posłuchaj przykładu » @ 232,1163
+bouton (œil) «  Pokaż mi » @ 667,1163
+icône ← «  Wstecz » @ 129,1277
+icône « Dalej  » → @ 794,1277
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

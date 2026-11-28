@@ -1,0 +1,44 @@
+Écran 13 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 178,42
+bouton « Pro » @ 390,42
+bouton « A » ▾ @ 475,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Perkusja 16 padów » [sélectionné] @ 132,262
+onglet « Acid 303 Linia basu » @ 388,262
+onglet « Wokal Mikrofon » @ 640,262
+onglet « Remix Rozdziel » [coupé] @ 822,262
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « Tempo i tonacja Rozdział 1/16 · Krok 3/3 · Pro » @ 356,456
+icône (liste) « Rozdziały » @ 749,456
+icône ⌄ @ 843,456
+texte « Twoja kolej: ustaw tonację na g-moll harmoniczną: skala „Molowa harmoniczna”, tonika „G”. Jej F♯ (podwyższona septyma) daje akord D-dur i kolor „film noir” drillowych pianin. „Zrobię to” otwiera kartę Tonacja. » [coupé] @ 450,600
+bouton « Pobierz zestaw Drill (3 MB) » @ 389,720
+texte « Później » @ 812,720
+texte « ▸ Dlaczego? » @ 450,799
+icône « Czytaj dalej » ⌄ @ 450,862
+bouton (doigt qui touche) «   Zrobię to » @ 450,946
+bouton ▶ «  Posłuchaj przykładu » @ 232,1060
+bouton (œil) «  Pokaż mi » @ 667,1060
+icône ← «  Wstecz » @ 129,1174
+icône « Dalej  » → @ 794,1174
+icône ↶ « Cofnij » @ 100,1277
+icône ↷ « Ponów » [désactivé] @ 254,1277
+bouton ▶ « utwór » @ 409,1278
+texte « 142 Tempo » @ 567,1277
+icône (trois points reliés) « Udostępnij » @ 762,1277
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

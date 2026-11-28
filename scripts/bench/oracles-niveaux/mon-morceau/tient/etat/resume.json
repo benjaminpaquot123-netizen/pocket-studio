@@ -1,0 +1,23 @@
+{
+ "projects": [
+  {
+   "id": "p1",
+   "name": "Nuit",
+   "open": true,
+   "parts": 0,
+   "seconds": 0,
+   "tracks": 0,
+   "changed": {
+    "sound": true,
+    "notes": true,
+    "arrange": true
+   }
+  }
+ ],
+ "open": "p1",
+ "stem_sets": 0,
+ "shared": [],
+ "prefs": {
+  "simpleMode": false
+ }
+}

@@ -56,7 +56,7 @@
         {
           "id": "acid_do",
           "text": "À toi : la 303 a son propre écran. « Je le fais » l'ouvre et « Montre-moi » y écrit la ligne : regarde ses 13 notes se poser.",
-          "textPro": "À toi : dans l'onglet Acide, écris les pas en pointillé : la note, l'octave, l'accent (« ! ») et le slide (« ⌒ »). Fondamentale La, octave, 7e (Sol), quinte (Mi), tierce (Do) ; accents sur les pas 1, 3, 7, 12, 15 ; slides sur les pas 3, 11, 12.",
+          "textPro": "À toi : dans l'onglet « Acid 303 », écris les pas en pointillé : la note, l'octave, l'accent (« ! ») et le slide (« ⌒ »). Fondamentale La, octave, 7e (Sol), quinte (Mi), tierce (Do) ; accents sur les pas 1, 3, 7, 12, 15 ; slides sur les pas 3, 11, 12.",
           "why": "Une note accentuée sort plus fort et plus ouverte ; une note « slide » glisse vers la suivante : la ligne se met à parler.",
           "check": "notes:acid",
           "spot": "acid",

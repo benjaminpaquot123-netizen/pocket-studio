@@ -1,0 +1,62 @@
+Écran 16 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 184,42
+bouton « 专业 » @ 400,42
+bouton « A » ▾ @ 480,42
+icône ↶ @ 556,42
+icône ↷ [désactivé] @ 628,42
+bouton ● @ 700,42
+bouton ▶ « 这个段落 » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 105,205
+onglet « Acid 303 贝斯线 » @ 296,205
+onglet « 人声 麦克风 » @ 457,205
+onglet « Remix 分离 » @ 598,205
+bouton + «  音轨 » @ 758,206
+texte « 段落：A » @ 71,275
+bouton « Afro house · 底鼓 FX » @ 123,356
+bouton « 底鼓 2 » @ 341,356
+bouton « 军鼓 » @ 559,356
+bouton « 军鼓 2 » @ 777,356
+bouton « Afro house · 拍手 FX » @ 123,434
+bouton « 踩镲 FX 左 30 » @ 341,434
+bouton « Afro house · 开镲 右 30 » @ 559,434
+bouton « 低音嗵鼓 » @ 777,434
+bouton « 中音嗵鼓 右 45 » @ 123,512
+bouton « 高音嗵鼓 » @ 341,512
+bouton « 鼓边 右 50 » @ 559,512
+bouton « 牛铃 » @ 777,512
+bouton « 镲片 FX 右 40 » @ 123,590
+bouton « 沙锤 FX 左 50 » @ 341,590
+bouton « 康加鼓 » @ 559,590
+bouton « Zap » @ 777,590
+bouton « 鼓组：Afro house » ▾ @ 173,669
+texte « 打击垫只发声，格子保存打击。长按：更换音色。 » @ 611,668
+bouton « 所有打击垫 » @ 763,777
+titre « 步进：AFRO HOUSE · 底鼓 » [état « 已展开 »] @ 355,777
+bouton « ? » @ 432,777
+texte « Afro house · 底鼓 » [coupé] @ 161,846
+texte « 速度和调性 第 1/14 章 · 已完成 · 专业 » @ 378,901
+icône (liste) « 章节 » @ 771,901
+icône ⌄ @ 843,901
+image (coupe) @ 57,1018
+texte « 太棒了，本章完成！ » @ 216,999
+texte « 下一章：“打击乐”。 » @ 202,1038
+bouton « 下一章   » → @ 450,1117
+bouton ▶ «  听示例 » @ 490,1201
+icône ← @ 57,1201
+icône ↶ « 撤销 » @ 124,1289
+icône ↷ « 重做 » [désactivé] @ 284,1289
+bouton ▶ « 歌曲 » @ 444,1289
+texte « 122 速度 » @ 610,1289
+icône (trois points reliés) « 分享 » @ 776,1289
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 671,1479
+texte « ✎  记一笔 » @ 767,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 317,1479

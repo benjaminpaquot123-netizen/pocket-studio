@@ -1,0 +1,42 @@
+Écran 117 (540x1170)
+icône « 我的项目 1 » ✓ @ 274,36
+bouton « 专业 » @ 490,36
+bouton (dossier ouvert) @ 81,114
+bouton « A » ▾ @ 192,114
+icône ↶ @ 268,114
+bouton ● @ 340,114
+bouton ▶ « 这个段落 » @ 417,114
+icône (trois points reliés) @ 495,114
+bouton « 140  BPM » @ 83,195
+bouton « ? » @ 495,195
+onglet « 人声 麦克风 » [coupé] @ 49,277
+onglet « Remix 分离 » @ 154,277
+bouton « 808 808 » @ 281,277
+bouton « 旋律 机器人声 » ⋮ @ 429,277
+image ← @ 10,278
+image → @ 529,278
+texte « 段落：A » @ 71,332
+texte « 你的第一段：副歌 第 7/15 章 · 第 2/2 步 · 专业 » @ 198,395
+icône (liste) « 章节 » @ 411,395
+icône ⌄ @ 483,395
+texte « 轮到你：把这个段落命名为“副歌”：它是你的起点段落，所有东西都在里面播放。 » @ 270,530
+texte « ▸ 为什么？ » @ 270,628
+bouton ⊕ «   把段落命名为“副歌” » @ 270,697
+bouton ▶ «  听示例 » @ 142,781
+bouton (œil) «  示范给我看 » @ 397,781
+icône ← «  上一步 » @ 99,862
+icône « 下一步  » → @ 441,862
+icône ↶ « 撤销 » @ 64,950
+icône ↷ « 重做 » [désactivé] @ 164,950
+bouton ▶ « 歌曲 » @ 264,950
+texte « 140 速度 » @ 370,950
+icône (trois points reliés) « 分享 » @ 476,950
+onglet (ligne brisée et points) « 结构 » @ 49,1050
+onglet (touches de piano) « 音色 » [sélectionné] @ 160,1050
+onglet (curseurs) « 混音 » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « 更多 » @ 491,1050
+texte « ●  REC » @ 311,1140
+texte « ✎  记一笔 » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « 反馈模式 » @ 137,1140

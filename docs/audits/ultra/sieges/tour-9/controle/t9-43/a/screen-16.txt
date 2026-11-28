@@ -1,0 +1,63 @@
+Écran 16 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 191,42
+bouton « Pro » @ 412,42
+bouton « A » ▾ @ 490,42
+icône ↶ @ 566,42
+icône ↷ [désactivé] @ 638,42
+bouton ● @ 710,42
+bouton ▶ « dit deel » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [sélectionné] @ 87,204
+onglet « Acid 303 Baslijn » @ 260,204
+onglet « Zang Microfoon » @ 448,204
+onglet « Remix Splitsen » @ 626,204
+bouton + «  Spoor » [coupé] @ 796,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+bouton « Studiokick FX » @ 123,354
+bouton « Kick 2 » @ 341,354
+bouton « Snare FX » @ 559,354
+bouton « Snare 2 » @ 777,354
+bouton « Clap » @ 123,432
+bouton « Hi-hat L 30 » @ 341,432
+bouton « Open hi-hat R 30 » @ 559,432
+bouton « Lage tom » @ 777,432
+bouton « Midtom R 45 » @ 123,510
+bouton « Hoge tom » @ 341,510
+bouton « Rim R 50 » @ 559,510
+bouton « Koebel » @ 777,510
+bouton « Bekken R 40 » @ 123,588
+bouton « Shaker L 50 » @ 341,588
+bouton « Conga » @ 559,588
+bouton « Zap » @ 777,588
+bouton « Kit: Drum & bass » ▾ @ 169,666
+texte « Pads klinken, vakjes bewaren de slagen. Lang drukken: klank wijzigen. » @ 607,666
+titre « VAKJES: STUDIOKICK » [état « Uitgeklapt »] @ 363,774
+bouton « ? » @ 393,774
+bouton « Alle pads » @ 771,774
+texte « Studiokick » [coupé] @ 123,851
+texte « De kick Hoofdstuk 2/17 · Stap 2/4 · Pro » @ 356,913
+icône (liste) « Hoofdstukken » @ 749,914
+icône ⌄ @ 843,914
+texte « ▸ Waarom? » @ 450,1008
+icône « Verder lezen » ⌄ @ 450,1061
+bouton « Volgende stap   » → @ 450,1123
+icône ← @ 57,1207
+bouton ▶ «  Luister naar het voorbeeld » @ 385,1207
+icône « Volgende  » → @ 778,1207
+icône ↶ « Ongedaan maken » @ 147,1292
+icône ↷ « Opnieuw » [désactivé] @ 336,1292
+icône ▶ « het nummer » @ 502,1292
+texte « 174 Tempo » @ 667,1292
+icône (trois points reliés) « Delen » @ 804,1292
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

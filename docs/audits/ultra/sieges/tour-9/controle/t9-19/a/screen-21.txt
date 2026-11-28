@@ -1,0 +1,53 @@
+Écran 21 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 281,42
+bouton « Einfach » @ 607,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône ⋮ @ 855,42
+bouton « 116  Tempo » @ 98,123
+bouton « ? » @ 855,123
+icône « Teil: A » ▾ @ 77,198
+bouton « Disco / Funk · Große Trommel 1 FX » @ 123,288
+bouton « Große Trommel 2 » @ 341,288
+bouton « Disco / Funk · Snare FX » @ 559,288
+bouton « Snare 2 » @ 777,288
+bouton « Händeklatschen FX » @ 123,366
+bouton « Disco / Funk · Hi-Hat L 30 » @ 341,366
+bouton « Disco / Funk · Offene Hi-Hat R 30 » @ 559,366
+bouton « Tiefes Tom » @ 777,366
+bouton « Mittleres Tom R 45 » @ 123,444
+bouton « Hohes Tom » @ 341,444
+bouton « Trommelrand R 50 » @ 559,444
+bouton « Glocke » @ 777,444
+bouton « Becken FX R 40 » @ 123,522
+bouton « Maracas L 50 » @ 341,522
+bouton « Conga » @ 559,522
+bouton « Laser » @ 777,522
+bouton « Kit: Disco / Funk » ▾ @ 167,600
+texte « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » @ 605,600
+titre « STEPS: DISCO / FUNK · GROSSE TROMMEL 1 » [état « Aufgeklappt »] @ 362,708
+bouton « ? » @ 661,708
+bouton « Alle Pads » @ 770,708
+texte « Disco / Funk · Große Trommel 1 » @ 250,792
+texte « Die Drums Kapitel 2/13 · Schritt 1/8 · Einfach » @ 366,867
+icône (liste) « Kapitel » @ 759,868
+icône ⌄ @ 843,868
+texte « Bevor es losgeht: Das Disco-Kit ist geladen, ein trockenes Schlagzeuger-Kit. Du musst nichts einstellen. » @ 450,979
+texte « ▸ Warum? » @ 450,1054
+bouton ✓ «   Verstanden » @ 450,1123
+icône ← «  Zurück » @ 105,1207
+icône « Weiter  » → @ 798,1207
+icône ↶ « Rückgängig » @ 127,1292
+image ↷ @ 317,1279
+bouton ▶ « der Song » @ 494,1292
+texte « 116 Tempo » @ 650,1292
+icône ⋮ « Mehr » @ 796,1292
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

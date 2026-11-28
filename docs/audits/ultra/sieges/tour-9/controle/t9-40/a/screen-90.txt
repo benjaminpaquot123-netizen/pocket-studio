@@ -1,0 +1,6 @@
+Écran 90 (588x1278)
+texte « Je prépare ton morceau… » @ 276,481
+texte « Fabrication du son, puis compression en M4A. » @ 294,573
+texte «   25 % » @ 509,646
+texte « Ensuite, choisis l'appli pour l'envoyer. » @ 261,697
+texte « Annuler » @ 479,787

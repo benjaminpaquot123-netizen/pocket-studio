@@ -1,0 +1,4 @@
+tab_simple_Rythme
+dialogue:« Pas »
+tuto_panel/tab_simple_Rythme
+dialogue:tuto_chapter_list

@@ -1,0 +1,50 @@
+Écran 51 (588x1278)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 134,42
+bouton « Simple » @ 311,42
+bouton ● @ 399,42
+bouton ▶ « this part » @ 471,42
+icône ⋮ @ 543,42
+bouton « 112  Tempo » @ 83,114
+icône « Intro bar 1/80 » ▾ @ 239,114
+bouton « ? » @ 543,114
+bouton « Song chords B · Intro B♭  B♭  B♭  B♭  B♭  B♭  B♭  B♭ F · Groove B♭  B♭  B♭  B♭  B♭  B♭  B♭  B♭ A · Drop Gm  C  Gm  C  Gm  C  Gm  C C · Break B♭  B♭  B♭  B♭  B♭  B♭  B♭  B♭ D · Drop 2 Gm  C  Gm  C  Gm  C  Gm  C E · End Gm  Gm  Gm  Gm  Gm  Gm  Gm  Gm Tap to change the chords of the whole song. » [coupé] @ 294,162
+icône ▶ « B · Intro 8 bars » @ 186,234
+icône − [désactivé] @ 366,234
+icône + [désactivé] @ 438,234
+icône ⋮ @ 510,234
+icône ▶ « F · Groove 24 bars » @ 186,330
+icône − [désactivé] @ 366,330
+icône + [désactivé] @ 438,330
+icône ⋮ @ 510,330
+icône ▶ « A · Drop 16 bars » @ 186,426
+icône − [désactivé] @ 366,426
+icône + [désactivé] @ 438,426
+icône ⋮ @ 510,426
+icône ▶ « C · Break 8 bars » @ 186,520
+icône − [désactivé] @ 366,522
+icône + [désactivé] @ 438,522
+icône ⋮ @ 510,522
+icône (liste) « Chapters » @ 447,609
+texte « Effects Chapter 10/12 · Done · Easy » @ 210,609
+icône ⌄ @ 531,609
+image (rond coché) @ 36,687
+texte « Listen to the reverb: the piano, first without, then with. » @ 313,708
+texte « ▸ Why? » @ 294,768
+bouton « Next chapter   » → @ 294,888
+icône ← @ 57,975
+bouton ▶ «  Listen to my song » @ 216,975
+bouton ▶ «  Listen to the example » @ 453,975
+icône ↶ « Undo » @ 72,1062
+image ↷ @ 180,1052
+bouton ▶ « the song » @ 288,1062
+texte « 112 Tempo » @ 402,1062
+icône ⋮ « More » @ 516,1062
+onglet (lignes et note) « My song » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rhythm » @ 174,1158
+onglet (touches de piano) « Keyboard » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Share » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

@@ -1,0 +1,10 @@
+Écran 2 (588x1278)
+texte « Partie à modifier » @ 124,243
+texte « A · Groove » @ 213,300
+texte « B · Intro » @ 213,372
+texte « C · Montée » @ 213,444
+texte « D · Drop » @ 213,516
+texte « E · Break » @ 213,588
+texte « F · Drop 2 » @ 213,660
+texte « G · Fin » @ 213,732
+texte « + Nouvelle partie (copie de G · Fin) » @ 213,806

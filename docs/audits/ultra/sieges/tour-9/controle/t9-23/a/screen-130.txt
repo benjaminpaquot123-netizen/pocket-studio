@@ -1,0 +1,51 @@
+Écran 130 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 172,42
+bouton « Pro » @ 378,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ■ « ta część » @ 693,42
+bouton ■ « utwór » @ 783,42
+icône (trois points reliés) @ 855,42
+icône (flèches en boucle) « A takt 4/8 » [désactivé] @ 311,144
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Remix Rozdziel » @ 121,262
+bouton « 808 808 » @ 291,262
+bouton « Akordy Smyczki » @ 466,262
+bouton « Melodia Pianino FM » ⋮ @ 730,262
+image ← @ 10,263
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « 100% » @ 114,435
+texte « Wyczyść » @ 296,435
+texte « Do rytmu 50% » [coupé] @ 625,390
+texte « takt » @ 84,508
+bouton « 4 » @ 486,508
+bouton « 5 » [coupé] @ 853,508
+texte « B » @ 84,555
+texte « B♭ » @ 84,583
+texte « A » @ 84,611
+texte « G♯ » @ 84,639
+texte « G » @ 84,667
+texte « F♯ » @ 84,695
+texte « F » [coupé] @ 84,713
+dessin [coupé] @ 492,629
+texte « Twoja pierwsza część: Refren Rozdział 8/16 · Krok 1/2 · Pro » @ 356,784
+icône (liste) « Rozdziały » @ 749,784
+icône ⌄ @ 843,784
+texte « Posłuchaj swojej pętli przez kilka sekund, potem przykładu. » @ 450,928
+texte « ▸ Dlaczego? » @ 450,1028
+bouton ■ «   Stop » @ 450,1105
+bouton ▶ «  Posłuchaj przykładu » @ 450,1191
+icône ← «  Wstecz » @ 129,1277
+icône « Dalej  » → @ 794,1277
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

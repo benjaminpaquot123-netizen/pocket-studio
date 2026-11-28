@@ -1,0 +1,78 @@
+Écran 41 (900x1509)
+icône (dossier ouvert) ✓ « 我的项目 1 已保存 » @ 184,42
+bouton « 专业 » @ 400,42
+bouton « A » ▾ @ 480,42
+icône ↶ @ 556,42
+icône ↷ [désactivé] @ 628,42
+bouton ● @ 700,42
+bouton ▶ « 这个段落 » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 105,205
+onglet « Acid 303 贝斯线 » @ 296,205
+onglet « 人声 麦克风 » @ 457,205
+onglet « Remix 分离 » @ 598,205
+bouton + «  音轨 » @ 758,206
+texte « 段落：A » @ 71,275
+titre « 步进：踩镲 » [coupé, état « 已展开 »] @ 355,313
+bouton « ? » [coupé] @ 235,313
+bouton « 所有打击垫 » [coupé] @ 763,314
+texte « 小节 » @ 70,386
+bouton « 1 » [sélectionné] @ 143,386
+bouton « 2 » @ 224,386
+bouton « 跟随 » @ 322,386
+texte « 第 1/2 小节 · 踩镲 » @ 156,452
+texte « 这里还有 16 个虚线格子 » @ 207,491
+bouton « 1 » [état « 空，虚线：点一下 »] @ 90,561
+bouton [état « 空，虚线：点一下 »] @ 192,561
+bouton [état « 空，虚线：点一下 »] @ 294,561
+bouton [état « 空，虚线：点一下 »] @ 397,561
+bouton « 2 » [état « 空，虚线：点一下 »] @ 500,561
+bouton [état « 空，虚线：点一下 »] @ 603,561
+bouton [état « 空，虚线：点一下 »] @ 706,561
+bouton [état « 空，虚线：点一下 »] @ 809,561
+bouton « 3 » [état « 空，虚线：点一下 »] @ 90,642
+bouton [état « 空，虚线：点一下 »] @ 192,642
+bouton [état « 空，虚线：点一下 »] @ 294,642
+bouton [état « 空，虚线：点一下 »] @ 397,642
+bouton « 4 » [état « 空，虚线：点一下 »] @ 500,642
+bouton [état « 空，虚线：点一下 »] @ 603,642
+bouton [état « 空，虚线：点一下 »] @ 706,642
+bouton [état « 空，虚线：点一下 »] @ 809,642
+bouton « 打击 » [sélectionné] @ 95,728
+bouton « 滚奏 » @ 207,728
+bouton « 声像 » @ 319,728
+bouton « 音高 » @ 431,728
+bouton « 力度 » @ 543,728
+texte « 全部 » @ 138,812
+texte « 1/2 » @ 218,812
+texte « 1/4 » @ 293,812
+texte « ◀ » [désactivé] @ 368,812
+texte « ▶ » [désactivé] @ 443,812
+texte « 清除 » [désactivé] @ 523,812
+texte « 填充 » @ 68,812
+texte « 点一格添加打击，滑动手指可以一次画好几格。长按一个打击：力度和滚奏（×2 到 ×8）。 » @ 450,896
+texte « 长度 » @ 70,981
+bouton « 1 小节 » @ 169,981
+bouton « 2 » [sélectionné] @ 277,981
+bouton « 3 » @ 358,981
+bouton « 4 » @ 439,981
+texte « 打击乐 第 2/14 章 · 第 4/10 步 · 专业 » @ 378,1077
+icône (liste) « 章节 » @ 771,1077
+icône ⌃ @ 843,1077
+icône « 轮到你：在沙锤打击垫上，点所有格子（“填充”然后“全部”）：它不停地转，在打击之间更响。 阅读 » ⌃ @ 450,1190
+icône ↶ « 撤销 » @ 124,1289
+icône ↷ « 重做 » [désactivé] @ 284,1289
+bouton ▶ « 歌曲 » @ 444,1289
+texte « 122 速度 » @ 610,1289
+icône (trois points reliés) « 分享 » @ 776,1289
+onglet (ligne brisée et points) « 结构 » @ 85,1389
+onglet (touches de piano) « 音色 » [sélectionné] @ 268,1389
+onglet (curseurs) « 混音 » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « 更多 » @ 815,1389
+texte « ●  REC » @ 671,1479
+texte « ✎  记一笔 » @ 767,1479
+texte « ⋯ » @ 852,1479
+texte « 反馈模式 » @ 317,1479

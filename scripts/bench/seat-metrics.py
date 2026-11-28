@@ -419,6 +419,228 @@ def resume_later(state, j, m):
     return "non", "oracle à écrire : le banc n'avance pas encore l'horloge de 3 jours"
 
 
+# --- Lot « niveaux » (tour 8, PLAN-NIVEAUX §3): the level missions, read in the projects' own files ---------
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+LEVEL_FIXTURES = os.path.join(HERE, "oracles-niveaux")
+AUDIO = (".wav", ".flac")
+
+
+def _project_files(state):
+    """(id, project.json as a dict) of each project the seat left (etat/projects/<id>/project.json)."""
+    out = []
+    for f in sorted(glob.glob(os.path.join(state.get("_seat", ""), "etat", "projects", "*", "project.json"))):
+        try:
+            with open(f, encoding="utf-8") as fh:
+                out.append((os.path.basename(os.path.dirname(f)), json.load(fh)))
+        except (OSError, ValueError):
+            continue
+    return out
+
+
+def _views(d):
+    """The project's parts: its live content (the part shown) and each saved part, as (drums, acid, notes by track id)."""
+    def notes(s):
+        out = {0: ((s.get("synthNotes") or {}).get("notes") or [])}
+        for k, clip in (s.get("trackNotes") or {}).items():
+            out[int(k)] = (clip or {}).get("notes") or []
+        return out
+    top = notes(d)
+    for t in d.get("tracks") or []:
+        top[t.get("id")] = ((t.get("notes") or {}).get("notes") or [])
+    return [(d.get("drums") or {}, d.get("acid") or {}, top)] + [
+        (s.get("drums") or {}, s.get("acid") or {}, notes(s)) for s in d.get("scenes") or []]
+
+
+def _hits(drums):
+    steps = drums.get("steps", 16)
+    return [sorted(int(k) for k in (lane.get("hits") or {}) if int(k) < steps) for lane in drums.get("lanes") or []]
+
+
+def _gates(acid):
+    steps = acid.get("steps") or []
+    return any(s.get("gate") for s in steps[:acid.get("length", len(steps))])
+
+
+def _instruments(d):
+    """The instruments with something to play in some part: the drums, the acid line, each melodic track, each take."""
+    views = _views(d)
+    out = []
+    if any(any(_hits(drums)) for drums, _, _ in views):
+        out.append("batterie")
+    if any(_gates(a) for _, a, _ in views):
+        out.append("acide")
+    ids = [0] if d.get("synthEngine") is not None or d.get("synthNotes") else []
+    ids += [t.get("id") for t in d.get("tracks") or []]
+    names = {0: d.get("synthTrackName") or "Synthé", **{t.get("id"): t.get("name") for t in d.get("tracks") or []}}
+    for i in dict.fromkeys(ids):
+        if any(n.get(i) for _, _, n in views):
+            out.append(names.get(i) or f"piste {i}")
+    out += [f"prise {k + 1}" for k, a in enumerate(d.get("audioTracks") or []) if a.get("clip")]
+    return out
+
+
+def _parts(d):
+    """The saved parts with something in them (GuideStart.parts): drum hits, acid gates or notes."""
+    return sum(1 for drums, acid, notes in _views({"scenes": d.get("scenes")})[1:]
+               if any(_hits(drums)) or _gates(acid) or any(notes.values()))
+
+
+def _assistant(d):
+    return d.get("style") is not None or (d.get("guide") or {}).get("start") == "song"
+
+
+def _verdict(done, missing, ok, none):
+    """All goals held: reussie; some: partielle naming the missing; none: non naming them all."""
+    if not missing:
+        return "reussie", ok
+    if done:
+        return "partielle", f"manque : {', '.join(missing)} (fait : {', '.join(done)})"
+    return "non", f"{none} ; manque : {', '.join(missing)}"
+
+
+def my_song(state, j, m):
+    """mon-morceau (PLAN-NIVEAUX §2, niveau 2): a song the assistant made, then its sound, its melody and its structure
+    changed by the tester. Read in SeatState's « changed » facts (GuideStart.changed: the marks taken when the assistant
+    made it, against the project now)."""
+    made = {i for i, d in _project_files(state) if _assistant(d)}
+    facts = [p for p in _projects(state) if p.get("id") in made] if made else []
+    if not made:
+        return "non", "aucun morceau de l'assistant ; manque : son, mélodie, structure"
+    known = [p for p in facts if isinstance(p.get("changed"), dict)]
+    if not known:
+        return "inconnu", "morceau de l'assistant trouvé, mais l'état ne dit pas ce qui a changé (faits « changed » absents)"
+    goals = (("sound", "son"), ("notes", "mélodie"), ("arrange", "structure"))
+    best = max(known, key=lambda p: sum(bool(p["changed"].get(k)) for k, _ in goals))
+    done = [w for k, w in goals if best["changed"].get(k)]
+    missing = [w for k, w in goals if not best["changed"].get(k)]
+    return _verdict(done, missing, f"« {best.get('name')} » : son, mélodie et structure changés", f"« {best.get('name')} » laissé tel quel")
+
+
+def _loop_sheet(state):
+    seat = state.get("_seat", "")
+    for f in (os.path.join(seat, "boucle.json"), os.path.join(LEVEL_FIXTURES, "boucle-imposee", "fiche.json")):
+        try:
+            with open(f, encoding="utf-8") as fh:
+                return json.load(fh)
+        except (OSError, ValueError):
+            continue
+    return None
+
+
+def _rhythm(sheet, drums):
+    lanes = [set(h) for h in _hits(drums)]
+    want = [set(v) for v in sheet.get("rythme", {}).values()]
+    used = set()
+    for w in want:
+        k = next((i for i, h in enumerate(lanes) if i not in used and h == w), None)
+        if k is None:
+            return False
+        used.add(k)
+    return bool(want)
+
+
+def _bass(sheet, notes):
+    want = sorted((b["pas"], b["note"]) for b in sheet.get("basse", []))
+    for ns in notes.values():
+        got = sorted((n["start"] // 24, n["pitch"]) for n in ns)
+        if len(got) == len(want) and want and len({g[1] - w[1] for g, w in zip(got, want)}) == 1 \
+                and [g[0] for g in got] == [w[0] for w in want] and (got[0][1] - want[0][1]) % 12 == 0:
+            return True
+    return False
+
+
+def _chords(sheet, notes):
+    want = {c["pas"]: {n % 12 for n in c["notes"]} for c in sheet.get("accords", [])}
+    for ns in notes.values():
+        got = {}
+        for n in ns:
+            got.setdefault(n["start"] // 24, set()).add(n["pitch"] % 12)
+        if want and got == want:
+            return True
+    return False
+
+
+def imposed_loop(state, j, m):
+    """boucle-imposee (niveau 3): the loop of the sheet (rythme, basse, accords) rebuilt in one part of a project. The
+    rhythm: each pattern is a drum lane's hits; the bass: a track's (step, note), an octave away allowed; the chords:
+    a track's notes by step, as pitch classes."""
+    sheet = _loop_sheet(state)
+    if not sheet:
+        return "non", "fiche de la boucle absente (boucle.json)"
+    best = (-1, [], [], None)
+    for _, d in _project_files(state):
+        for drums, _, notes in _views(d):
+            goals = (("rythme", _rhythm(sheet, drums)), ("basse", _bass(sheet, notes)), ("accords", _chords(sheet, notes)))
+            done = [g for g, ok in goals if ok]
+            if len(done) > best[0]:
+                best = (len(done), done, [g for g, ok in goals if not ok], d.get("name"))
+    if best[0] < 0:
+        return "non", "aucun projet ; manque : rythme, basse, accords"
+    return _verdict(best[1], best[2], f"« {best[3]} » : rythme, basse et accords comme la fiche", f"« {best[3]} » ne ressemble pas à la boucle")
+
+
+def _shared_files(state):
+    """The files the seat shared: their names, and the audio members of a .zip (name, bytes)."""
+    import zipfile
+    seat = state.get("_seat", "")
+    names = list(state.get("shared") or [])
+    out = []
+    for f in sorted(glob.glob(os.path.join(seat, "etat", "partage", "*"))):
+        names.append(os.path.basename(f))
+        if f.lower().endswith(".zip"):
+            try:
+                with zipfile.ZipFile(f) as z:
+                    out += [(n, z.read(n)) for n in z.namelist() if n.lower().endswith(AUDIO)]
+            except (OSError, zipfile.BadZipFile):
+                pass
+        elif f.lower().endswith(AUDIO):
+            with open(f, "rb") as fh:
+                out.append((os.path.basename(f), fh.read()))
+    return list(dict.fromkeys(names)), out
+
+
+def empty_project(state, j, m):
+    """projet-vide (niveau 4): a song from an empty project (no style, not the assistant's), ≥ 6 instruments with
+    something to play, ≥ 8 parts with something in them, exported (a file shared)."""
+    names, _ = _shared_files(state)
+    own = [(i, d) for i, d in _project_files(state) if not _assistant(d)]
+    if not own:
+        return "non", "aucun projet parti de vide ; manque : 6 pistes, 8 parties, export"
+    i, d = max(own, key=lambda p: (len(_instruments(p[1])) >= 6) + (_parts(p[1]) >= 8) + len(_instruments(p[1])) / 100)
+    tracks, parts = len(_instruments(d)), _parts(d)
+    goals = ((f"6 pistes (il y en a {tracks})", tracks >= 6), (f"8 parties (il y en a {parts})", parts >= 8), ("export", bool(names)))
+    return _verdict([g for g, ok in goals if ok], [g for g, ok in goals if not ok],
+                    f"« {d.get('name')} » : {tracks} pistes, {parts} parties ; exporté : {names[0] if names else ''}", f"« {d.get('name')} »")
+
+
+def _seconds(data):
+    """A WAV's length in seconds, None when unreadable (a FLAC: not read here)."""
+    import io
+    import wave
+    try:
+        with wave.open(io.BytesIO(data)) as w:
+            return w.getnframes() / float(w.getframerate())
+    except (wave.Error, EOFError, ValueError):
+        return None
+
+
+def separate_tracks(state, j, m):
+    """pistes-separees (niveau 4): « Piste par piste » exported: ≥ 2 audio files (.wav or .flac, loose or in a .zip),
+    one per instrument that plays, all of the same length. Their existence, count, format and length: never their sound."""
+    _, files = _shared_files(state)
+    if not files:
+        return "non", "aucun fichier audio exporté ; manque : fichiers, format, même durée, une par piste"
+    want = max((len(_instruments(d)) for _, d in _project_files(state)), default=0)
+    lengths = [_seconds(b) if n.lower().endswith(".wav") else None for n, b in files]
+    known = [s for s in lengths if s is not None]
+    same = len(known) == len(files) and max(known) - min(known) <= 0.01
+    goals = (("plusieurs fichiers", len(files) >= 2), (f"une par piste ({len(files)} pour {want})", len(files) >= max(want, 2)),
+             ("même durée" + ("" if len(known) == len(files) else " (durée illisible)"), same))
+    done, missing = [g for g, ok in goals if ok], [g for g, ok in goals if not ok]
+    return _verdict(done, missing, f"{len(files)} fichiers ({', '.join(n for n, _ in files[:4])}) de {known[0]:.2f} s" if known else "", "un seul fichier audio")
+
+
 MISSIONS = {
     # name: (what the tester is asked, its oracle)
     "premier-morceau": ("Premier morceau en Mode simple, jusqu'au fichier partagé (≤ 40 gestes)", song),
@@ -434,6 +656,11 @@ MISSIONS = {
     "tuto-pro": ("Suivre un tuto en Pro (5 chapitres au plus)", tuto("Pro")),
     "synthe": ("Faire un son de A à Z au Synthé et le poser sur deux pistes", synth),
     "libre": ("Explorer librement (explorateur)", free),
+    # Lot « niveaux » (tour 8, PLAN-NIVEAUX §2): the missions of the levels 2 to 4.
+    "mon-morceau": ("Faire un morceau avec l'assistant, puis en changer le son, la mélodie et la structure", my_song),
+    "boucle-imposee": ("Refaire la boucle de la fiche : rythme, basse, accords", imposed_loop),
+    "projet-vide": ("Partir d'un projet vide : 6 pistes, 8 parties, exporté", empty_project),
+    "pistes-separees": ("Exporter piste par piste : un fichier par piste, même durée", separate_tracks),
 }
 ALIASES = {"remix": "remix-voix", "song": "premier-morceau", "pad-live": "padlive", "synth": "synthe", "tuto": "tuto-facile"}
 
@@ -492,7 +719,8 @@ def main(argv):
     opts = start_options(seat)
     mission = mission or opts.get("mission")
     j, m = measures(seat)
-    out = {"siege": os.path.basename(os.path.normpath(seat)), "options": opts, "mesures": m}
+    # Lot « niveaux »: the seat's level (0 to 4, X: none), from start.txt (fabrique-sieges.py), for the dashboard's rows.
+    out = {"siege": os.path.basename(os.path.normpath(seat)), "niveau": opts.get("niveau"), "options": opts, "mesures": m}
     if mission:
         name, result, why = verdict(seat, mission, j, m)
         out.update({"mission": name, "resultat": result, "pourquoi": why})

@@ -1,0 +1,6 @@
+{
+  "fichiers_hors_lot": [],
+  "rapports_refuses": [
+    "controle/final-tc/a : le rapport dit « code testé : c9d48c185 », le banc est parti du commit dd43d00f : ce siège n'a pas jugé le code qu'il nomme"
+  ]
+}

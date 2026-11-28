@@ -136,3 +136,4 @@ La version 1 est retirée : un relecteur méfiant l'a démolie. La version 2 vis
 2. Fait le 15 novembre : « # Compact instructions » et les règles des leviers 1, 2 et 5 sont dans CLAUDE.md.
 3. Entre deux tours, un lot du banc : `pret.sh`, le siège court ancré, le calcul « la fusion touche-t-elle le lot ? » et `TEST_DIRS` (astuce D).
 4. Au premier tour, mesurer de la même façon et comparer aux 22 M d'unités par bug.
+   Fait le 19 novembre pour le tour 8 : 88 M d'unités pour 25 discussions (245 $), 9 bugs constatés corrigés, soit environ 10 M par bug sans le chef (son compteur n'est pas séparable par tour : 4 271 M depuis octobre, point zéro du tour 9). Détail et suite : `PREPARATION-TOUR-9.md`.

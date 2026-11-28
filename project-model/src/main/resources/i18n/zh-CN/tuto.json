@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "这个风格真实的鼓声，用于你的曲子和示例。没有它们，教程也能用内置音色进行。",
   "Téléchargement du kit… %d %%": "正在下载鼓组… %d%%",
   "Mettre les sons du kit %s sur les pads": "把 %s 鼓组的声音放到打击垫上",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "鼓组无法加载：教程继续使用内置音色。",
   "Télécharger le kit %1$s (%2$s)": "下载 %1$s 鼓组（%2$s）",
   "Recommencer le tuto": "重新开始教程",
   "Passer à %d mesures": "改为 %d 小节",
@@ -157,5 +158,10 @@
   "Posé : %s.": "已放好：%s。",
   "Il te manque ce que font les chapitres d'avant.": "你还缺少前面章节做出的内容。",
   "Aller au chapitre %d": "前往第 %d 章",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "你的歌里没有段落“%s”：这一步要在它里面完成。"
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "你的歌里没有段落“%s”：这一步要在它里面完成。",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "开始之前：你的打击垫上是应用自带的鼓声，已经为这个风格调好了。这个风格的鼓组还没放到打击垫上：后面会出现它的卡片，点“稍后”就行，教程用这些声音也能进行。你什么都不用调。",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303：一台小小的贝斯机，它吱吱叫、低吼的声音就是酸性音色。",
+  "Accent : une note jouée plus fort que les autres.": "重音：比其他音弹得更响的音。",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "滑音（Slide）：音不跳过去，而是滑到下一个音。",
+  "Glide : le son glisse doucement d'une note à l'autre.": "滑音（Glide）：声音从一个音平滑地滑到另一个音。"
 }

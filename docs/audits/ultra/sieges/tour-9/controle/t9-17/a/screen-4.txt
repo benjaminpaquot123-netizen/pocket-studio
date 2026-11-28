@@ -1,0 +1,28 @@
+Écran 4 (540x1170)
+texte « O tempo e a tonalidade Capítulo 1/14 · Etapa 2/4 · Pro » @ 176,120
+icône (liste) « Capítulos » @ 389,120
+icône ⌄ @ 483,120
+texte « Sua vez: ajuste o andamento para 126 BPM. “Eu faço” abre a ficha Andamento. » [coupé] @ 270,286
+bouton « Baixar o kit Techno de Detroit (4 MB) » @ 186,384
+texte « Mais tarde » @ 429,384
+texte « ▸ Por quê? » @ 270,472
+icône « Continuar lendo » ⌄ @ 270,535
+bouton (doigt qui touche) «   Eu faço » @ 270,664
+bouton ▶ «  Ouvir o exemplo » @ 142,778
+bouton (œil) «  Mostre-me » @ 397,778
+icône ← «  Anterior » @ 136,892
+icône « Próximo  » → @ 404,892
+icône ▶ « a música » @ 199,996
+texte « 120 Andamento » @ 376,995
+icône ↶ « Desfazer » [désactivé] @ 34,996
+icône ↷ « Refazer » [désactivé] @ 92,996
+icône (trois points reliés) « Compartilhar » @ 505,996
+onglet (ligne brisée et points) « Estrutura » @ 49,1078
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1078
+onglet (curseurs) « Mix » @ 271,1078
+onglet (neuf points) « Live » @ 381,1078
+onglet ⋯ « Mais » @ 491,1078
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

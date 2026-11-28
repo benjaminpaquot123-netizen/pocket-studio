@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.ui.layout.positionInWindow
 import com.pocketstudio.model.i18n.inSentence
 import androidx.compose.ui.draw.drawBehind
@@ -63,6 +64,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -118,6 +123,26 @@ internal fun dottedTouch(dotted: Note, hints: List<Note>, clip: NoteClip, chordM
     else hints.filter { h -> h.start == dotted.start && clip.notes.none { it.pitch == h.pitch && it.start == h.start } }.ifEmpty { listOf(dotted) }
 
 /**
+ * Tour 9 (F118, seat t9-27): the bar a paste goes on. While playing, the bar playing; else the bar chosen (or the one
+ * after a copy) while it is in sight between [left] and [right] (pixels of the roll, [barPx] a bar) or just after it
+ * (the last bar in sight copied, pasted beside it, a short loop growing), else the bar at the middle of the roll: after the tutorial's copy of bars 1 to 5, the roll on bar 2 offered « Coller mes. 6 ».
+ */
+internal fun pasteBarFor(playBar: Int, targetBar: Int, left: Float, right: Float, barPx: Float, lastBar: Int): Int {
+    if (playBar >= 0) return playBar
+    if (right <= left || barPx <= 0f) return targetBar.coerceIn(0, lastBar)
+    val inSight = targetBar * barPx < right + barPx && (targetBar + 1) * barPx > left
+    return (if (inSight) targetBar else ((left + right) / 2f / barPx).toInt()).coerceIn(0, lastBar)
+}
+
+/**
+ * Tour 9 (F113, seats 11, 15, 66): the dotted notes a touch is asked for. In the chords' mode a touch on a chord's
+ * bottom note writes the whole chord, and the step says « the bottom dotted note of each chord »: only those are
+ * aimed at (lit, brought into view); the roll lit the chord's top one. Otherwise every note of [left].
+ */
+internal fun aimedNotes(left: List<Note>, chordMode: Boolean): List<Note> =
+    if (!chordMode) left else left.filter { n -> left.none { it.start == n.start && it.pitch < n.pitch } }
+
+/**
  * The dotted note a tap means while the tutorial shows some: the one under the tap ([tick] in its span, same row),
  * or — when the tap just missed it — the nearest one still to write, within one step in time and one row in pitch.
  * A tutorial's dotted note drawn as a sliver at the view's edge (control seat, tuto Facile, chapter 7: the last
@@ -153,6 +178,8 @@ private const val MIN_STEP = 1.2f
 /** A row (a semitone) at its tallest and at its smallest (« Tout voir »: a whole bass and lead fit; still seen, still touched). */
 private const val MAX_ROW = 40f
 private const val MIN_ROW = 5f
+/** Tour 9, D06: fewer rows than this in sight above the tutorial's panel, the page brings the grid up. */
+private const val FEW_ROWS = 4
 /** Below this row height the keys are not named (their text would not fit): the C's lines stay. */
 private const val NAMED_ROW = 12f
 /** Grid for placing and moving notes, in ticks: 1/8, 1/16, 1/16 triplet, 1/32. */
@@ -234,7 +261,8 @@ fun PianoRoll(
     val barTicks = barSteps * NoteClip.TICKS_PER_STEP
     var newSteps by rememberSaveable { mutableIntStateOf(2) }
     var chordMode by rememberSaveable { mutableStateOf(false) }
-    var showGhosts by rememberSaveable { mutableStateOf(true) }
+    // Tour 9 (F114): off until asked: ticked on a melody or a chords track, the bass shown under it puzzled testers.
+    var showGhosts by rememberSaveable { mutableStateOf(false) }
     // Lot « tuto-flèches » (seats H a and D a, the riff after the chords): a step of the tutorial whose dotted notes come one
     // at a time begins with « Accords » off (it stayed on from the chords' step: a touch beside a dotted note wrote a chord,
     // and nothing said why). Once a step: turned on again by the user, it stays.
@@ -381,7 +409,14 @@ fun PianoRoll(
                 Text(tr("Piste gelée : elle joue son rendu audio dans le morceau. « Dégeler » (menu de la piste) pour modifier ses notes."),
                     style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.testTag("roll_frozen"))
             }
-            val pasteBar = if (playBar >= 0) playBar else targetBar.coerceIn(0, NoteClip.MAX_STEPS / barSteps - 1)
+            val stepPxNow = with(LocalDensity.current) { stepWidth.toPx() }
+            // Read through a derived state: a scroll recomposes the roll only when the bar it names changes.
+            val pasteBar by remember(stepPxNow, barSteps) {
+                androidx.compose.runtime.derivedStateOf {
+                    pasteBarFor(playBar, targetBar, hScroll.value.toFloat(), hScroll.value.toFloat() + hScroll.viewportSize,
+                        stepPxNow * barSteps, NoteClip.MAX_STEPS / barSteps - 1)
+                }
+            }
             val paste: () -> NoteEdits.Result? = {
                 board?.let { b ->
                     NoteEdits.pasteOnBar(clip, b, pasteBar, barTicks).also { r ->
@@ -421,7 +456,29 @@ fun PianoRoll(
             // Tour 6 lot 1 (T4, N4): the rows really in sight, from the roll's top (pixels): what is not scrolled away by
             // the page and not under the tutorial's panel (a 360 dp phone at 130 % kept about 130 px of rows above it).
             val rollSight = remember { mutableStateOf<ClosedFloatingPointRange<Float>?>(null) }
-            Column(gridModifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            // Tour 9, D06 (seats 62, 29: big letters, Mode simple): the page's head and the tutorial's panel left the grid
+            // a few pixels in sight (or none), the page never brought it up above the panel: no dotted note to touch, a
+            // touch on the line did nothing (it waits for rows in sight). Each step, and each touch on the line while
+            // fewer than [FEW_ROWS] rows are in sight, the line, the bar numbers and the grid come up above the panel.
+            val spotsHere = com.pocketstudio.app.learn.LocalSpots.current
+            val rollBring = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+            var rollBoxTall by remember { mutableIntStateOf(0) }
+            val rowPxNow = with(LocalDensity.current) { rowHeight.toPx() }
+            val lineAsks = com.pocketstudio.app.tuto.TutoHints.focus
+            LaunchedEffect(tutoStep, tutoOn, hints.isNotEmpty(), lineAsks) {
+                if (!tutoOn || hints.isEmpty() || tutoStep == null) return@LaunchedEffect
+                // After the page's own bringing (« Créer la piste » sends to the notes: 120 ms).
+                kotlinx.coroutines.delay(200)
+                val rows = rollSight.value
+                if (rows != null && rows.endInclusive - rows.start >= FEW_ROWS * rowPxNow) return@LaunchedEffect
+                val below = spotsHere?.roomBelow(0f) ?: 0f
+                rollBring.bringIntoView(androidx.compose.ui.geometry.Rect(0f, 0f, 1f, rollBoxTall + below))
+            }
+            Column(
+                gridModifier.bringIntoViewRequester(rollBring)
+                    .onSizeChanged { rollBoxTall = it.height },
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
                 if (hints.isNotEmpty()) {
                     TutoNotesLeft(
                         hints.filter { h -> clip.notes.none { n -> n.pitch == h.pitch && n.start == h.start } }, hScroll, stepWidth, barSteps,
@@ -553,8 +610,13 @@ private fun BarRuler(
     pick: (Int) -> Unit,
 ) {
     Row(Modifier.fillMaxWidth().height(32.dp)) {
-        Box(Modifier.width(keysWidth), contentAlignment = Alignment.Center) {
-            Text(tr("mes."), style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1, softWrap = false)
+        Box(Modifier.width(keysWidth).padding(horizontal = 1.dp), contentAlignment = Alignment.Center) {
+            // F115 (t9-20, de 200 %: « Takt » lines dropped): shrunk to the keys' width, as « Force » under them.
+            val label = MaterialTheme.typography.labelSmall
+            androidx.compose.foundation.text.BasicText(
+                tr("mes."), style = label.copy(color = Neon.TextSecondary, letterSpacing = 0.sp), maxLines = 1,
+                autoSize = com.pocketstudio.ui.WholeWordsAutoSize(5.sp, label.fontSize),
+            )
         }
         Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
             Row {
@@ -770,6 +832,8 @@ private fun Grid(
     var view by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
     var lit by remember { mutableStateOf<Note?>(null) }
     val focus = com.pocketstudio.app.tuto.TutoHints.focus
+    // Tour 8, T0a: the note the touch went to while the rows fold (null: no fold under way).
+    var folding by remember { mutableStateOf<Note?>(null) }
     LaunchedEffect(focus, view, steady != null, left.isEmpty()) {
         if (view.width <= 0 || view.height <= 0) return@LaunchedEffect
         // Tour 6 repairs: « Je le fais » asks for the note while the roll is still under the tutorial's panel (no row in
@@ -788,12 +852,44 @@ private fun Grid(
             left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + view.width, top = vScroll.value + seen.start, bottom = vScroll.value + seen.endInclusive,
             stepPx = stepPx, rowPx = rowPx, high = high,
         )
-        com.pocketstudio.model.tuto.TutoRollHint.next(left, shown, barSteps) ?: return@LaunchedEffect
-        val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(left, shown, barSteps, touched)
+        val aimed = aimedNotes(left, chordMode)
+        com.pocketstudio.model.tuto.TutoRollHint.next(aimed, shown, barSteps) ?: return@LaunchedEffect
+        // Tour 8, T0a: the dotted notes of the time in sight too far apart for the rows (house bass, its two « La »): the
+        // rows fold so that they all fit, then the notes are framed (below), instead of going from one to the other.
+        val fold = if (touched) com.pocketstudio.model.tuto.TutoRollHint.folded(left, shown, barSteps, with(density) { MIN_ROW.dp.toPx() }) else null
+        if (fold != null) {
+            folding = com.pocketstudio.model.tuto.TutoRollHint.aside(aimed, shown, barSteps)
+            // A whole number of pixels a row ([rowHeight] rounds): a little under, never over the row that fits.
+            zoomBy(1f, (fold - 0.45f) / rowPx)
+            return@LaunchedEffect
+        }
+        val (dx, dy) = com.pocketstudio.model.tuto.TutoRollHint.brought(aimed, shown, barSteps, touched)
         // The note the touch brings from out of the rows is the one lit (control « tuto2 », seat a), once in sight.
-        lit = com.pocketstudio.model.tuto.TutoRollHint.lit(left, shown, barSteps, touched, vScroll.value.toFloat(), (vScroll.maxValue - vScroll.value).toFloat())
+        lit = com.pocketstudio.model.tuto.TutoRollHint.lit(aimed, shown, barSteps, touched, vScroll.value.toFloat(), (vScroll.maxValue - vScroll.value).toFloat())
         if (dx != 0f) hScroll.animateScrollTo((hScroll.value + dx).roundToInt().coerceIn(0, hScroll.maxValue))
         if (dy != 0f) vScroll.animateScrollTo((vScroll.value + dy).roundToInt().coerceIn(0, vScroll.maxValue))
+    }
+    // Tour 8, T0a: the rows folded, every dotted note of the time in sight framed, the one gone to lit.
+    LaunchedEffect(rowPx, folding) {
+        val gone = folding ?: return@LaunchedEffect
+        androidx.compose.runtime.withFrameNanos { }
+        val seen = sight?.value ?: (0f..view.height.toFloat())
+        // Where the frame is, from the roll's top (the scroll kept from the taller rows means nothing at the new size).
+        val shown = com.pocketstudio.model.tuto.TutoRollView(
+            left = hScroll.value.toFloat(), right = hScroll.value.toFloat() + view.width, top = seen.start, bottom = seen.endInclusive,
+            stepPx = stepPx, rowPx = rowPx, high = high,
+        )
+        val to = com.pocketstudio.model.tuto.TutoRollHint.framed(left, shown, barSteps).roundToInt().coerceAtLeast(0)
+        // The roll's new height is laid out a frame or two after its rows: the scroll can reach the frame then.
+        repeat(3) { if (vScroll.maxValue < to) androidx.compose.runtime.withFrameNanos { } }
+        lit = gone
+        // Cleared last: it is a key of this effect, cleared first it cancelled the scroll above. Cleared also when a drag
+        // cuts the scroll short, or the fold would stay pending and frame the notes again at the next zoom.
+        try {
+            vScroll.animateScrollTo(to.coerceIn(0, vScroll.maxValue))
+        } finally {
+            if (folding === gone) folding = null
+        }
     }
     // The gesture lives across zooms: it reads the latest sizes and zoom (each step multiplies the size it has now).
     val latestZoom = rememberUpdatedState(zoomBy)
@@ -884,6 +980,9 @@ private fun Grid(
                     }
                 }
             }
+            // F112 (t9-20: a drag up past the lowest row scrolled the page, the roll's header with it): what the roll leaves of
+            // an upward drag stays with it; a drag down still gives the page back.
+            .nestedScroll(KeepHeaderInSight)
             .verticalScroll(vScroll)
             // Lot « tuto-flèches »: as much room under the lowest row as the tutorial's panel covers of the roll, so that
             // the lowest notes can come above it (trap's 808 at 130 %: « plus bas ↓ » and no way to scroll that far).
@@ -975,6 +1074,27 @@ private fun Grid(
                                     val shifted = NoteEdits.shift(clip, moving, delta.first)
                                     apply(NoteEdits.transpose(shifted.clip, shifted.selection, delta.second), null)
                                 }
+                                return@awaitEachGesture
+                            }
+                            // Tour 9, S17 (seat 17): a finger drawn along a dotted note of the tutorial (a long one, a wide target)
+                            // scrolled the roll, no note written. Started right on it, the gesture is the grid's: the dotted note
+                            // is written whole when the finger lifts, as a touch writes it; the roll does not scroll. « On it » is
+                            // a touch's own reach (tutoTapTarget: a step aside, a row off), or a finger landing just beside the
+                            // drawn note scrolled where a touch there writes it (bench replay of S17).
+                            val drawn = if (found == null && selection.isEmpty() && com.pocketstudio.app.tuto.TutoHints.active && hints.isNotEmpty()) {
+                                tutoTapTarget(tickAt(down.position.x), pitchAt(down.position.y), hints.filter { h -> clip.notes.none { it.pitch == h.pitch && it.start == h.start } })
+                            } else null
+                            if (drawn != null) {
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    // A second finger: a pinch (É8), nothing written.
+                                    if (event.changes.count { it.pressed } > 1) return@awaitEachGesture
+                                    val change = event.changes.firstOrNull { it.id == down.id } ?: return@awaitEachGesture
+                                    if (!change.pressed) break
+                                    change.consume()
+                                }
+                                val chord = dottedTouch(drawn, hints, clip, chordMode)
+                                if (chord.size > 1) actions.replaceClip(chord.fold(clip) { c, n -> c.add(n) }, null) else actions.add(drawn)
                                 return@awaitEachGesture
                             }
                             if (found == null) {
@@ -1272,16 +1392,21 @@ private fun RollKey(
             val name = if (pitch % 12 == 0) com.pocketstudio.model.NoteNames.withOctave(pitch, english)
             else if (harmony.scale != Scale.Off) harmony.noteName(pitch, english)
             else com.pocketstudio.model.NoteNames.pitchClass(pitch, english, sharp = "♯")
-            Text(
+            // F115 (t9-11, t9-23 at 200 %: each name higher than its row, over its neighbours'): the name shrinks to its row,
+            // with a line as high as its letters, and a black key's to the black part of the key.
+            val label = MaterialTheme.typography.labelSmall
+            val ink = when {
+                black -> Color(0xFFB9BCC2)
+                pitch % 12 == 0 -> Color(0xFF1E2023)
+                else -> Color(0xFF5A5D63)
+            }
+            androidx.compose.foundation.text.BasicText(
                 name,
-                style = MaterialTheme.typography.labelSmall,
-                color = when {
-                    black -> Color(0xFFB9BCC2)
-                    pitch % 12 == 0 -> Color(0xFF1E2023)
-                    else -> Color(0xFF5A5D63)
-                },
-                maxLines = 1, softWrap = false,
-                modifier = if (black) Modifier.align(Alignment.CenterStart).padding(start = 3.dp) else Modifier.padding(end = 3.dp),
+                style = label.copy(color = ink, letterSpacing = 0.sp, lineHeight = androidx.compose.ui.unit.TextUnit.Unspecified),
+                maxLines = 1,
+                autoSize = com.pocketstudio.ui.WholeWordsAutoSize(5.sp, label.fontSize),
+                modifier = if (black) Modifier.align(Alignment.CenterStart).padding(start = 3.dp).widthIn(max = (width * 0.6f - 4.dp).coerceAtLeast(1.dp))
+                else Modifier.padding(start = 2.dp, end = 3.dp),
             )
         }
     }
@@ -1442,11 +1567,17 @@ private fun TutoNotesLeft(
                 top = (v?.value ?: 0) + (sight?.start ?: 0f), bottom = (v?.value ?: 0) + (sight?.endInclusive ?: (v?.viewportSize ?: 0).toFloat()),
                 stepPx = stepPx, rowPx = if (rows) rowPx else 0f, high = high,
             )
-            com.pocketstudio.model.tuto.TutoRollHint.way(left, shown, barSteps) to com.pocketstudio.model.tuto.TutoRollHint.also(left, shown, barSteps)
+            val way = com.pocketstudio.model.tuto.TutoRollHint.way(left, shown, barSteps)
+            val also = com.pocketstudio.model.tuto.TutoRollHint.also(left, shown, barSteps)
+            // Tour 8 T0a/T0b (seat b, ja: « あと 8 個 » over 7 in sight, the 8th below the rows): the dotted notes in
+            // sight while some are, the arrow of [also] saying one more is elsewhere; all of them when none is in sight.
+            val count = com.pocketstudio.model.tuto.TutoRollHint.counted(left, shown, barSteps)
+            Triple(way, also, count)
         }
     }
     val way = ways.first
     val also = ways.second
+    val count = if (left.isEmpty()) 0 else ways.third
     // The bar at the middle of the screen (the one the eye is on); Tour 6 lot 1 (N5): the bar of the next dotted note when it
     // is in sight (« Je le fais » put the last note of bar 2 near the left edge, the line said « mesure 3/8 »).
     val bar by remember(stepPx, barSteps, bars, left) {
@@ -1465,21 +1596,13 @@ private fun TutoNotesLeft(
             .padding(horizontal = 10.dp).testTag("tuto_notes_left"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(Modifier.weight(1f)) {
-            Text(where, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.testTag("tuto_roll_where"))
-            Text(
-                if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
-                else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way, also)
-                else com.pocketstudio.app.tuto.tutoNotesLeft(left.size, way, also),
-                style = MaterialTheme.typography.labelLarge,
-                color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                modifier = Modifier.testTag("tuto_notes_left_text"),
-            )
-        }
+        // Tour 9 (D06): at a large font « Touche ici » beside the line cut it to « ↑ Encor… », the count unread. There it
+        // goes up beside the bar, and the count gets the whole width.
+        val stacked = LocalDensity.current.fontScale > 1.3f
+        val go = copy == null && (way != null || also != null) && left.isNotEmpty()
         // Control seat Da-5 (tour 6): the line pointed away and the seat swiped ten times, never knowing a touch on the line
         // brings the note into view: said on the line while it points away.
-        if (copy == null && (way != null || also != null) && left.isNotEmpty()) {
+        val goLabel: @Composable () -> Unit = {
             Text(
                 tr("Touche ici"), style = MaterialTheme.typography.labelMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                 color = Neon.OnAccent, maxLines = 1, softWrap = false,
@@ -1487,6 +1610,22 @@ private fun TutoNotesLeft(
                     .padding(horizontal = 8.dp, vertical = 4.dp).testTag("tuto_notes_left_go"),
             )
         }
+        Column(Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(where, style = MaterialTheme.typography.labelSmall, color = Neon.TextSecondary, maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.weight(1f).testTag("tuto_roll_where"))
+                if (stacked && go) goLabel()
+            }
+            Text(
+                if (copy != null) com.pocketstudio.app.tuto.tutoMotifDone()
+                else if (chords) com.pocketstudio.app.tuto.tutoChordsLeft(left.map { it.start }.distinct().size, way, also)
+                else com.pocketstudio.app.tuto.tutoNotesLeft(count, way, also),
+                style = MaterialTheme.typography.labelLarge,
+                color = if (left.isEmpty() || copy != null) Neon.Acid else Neon.Amber, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                modifier = Modifier.testTag("tuto_notes_left_text"),
+            )
+        }
+        if (!stacked && go) goLabel()
         if (copy != null) {
             androidx.compose.material3.Button(
                 onClick = copy, modifier = Modifier.heightIn(min = 40.dp).testTag("tuto_roll_copy"),
@@ -1494,4 +1633,13 @@ private fun TutoNotesLeft(
             ) { Text(tr("Copier"), maxLines = 1, softWrap = false) }
         }
     }
+}
+
+/** F112: the part of an upward drag or fling the roll cannot take is not handed to the page under it (whose top is the roll's header). */
+private object KeepHeaderInSight : NestedScrollConnection {
+    override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset =
+        if (available.y < 0f) Offset(0f, available.y) else Offset.Zero
+
+    override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity =
+        if (available.y < 0f) Velocity(0f, available.y) else Velocity.Zero
 }

@@ -77,7 +77,36 @@ class InAppDriver(
     private fun nodes(merged: Boolean): List<Found> =
         roots().flatMap { r -> r.semanticsOwner.getAllSemanticsNodes(mergingEnabled = merged).map { Found(it, r) } }
 
-    private fun tagged(tag: String, merged: Boolean) = nodes(merged).filter { it.node.config.getOrNull(SemanticsProperties.TestTag) == tag }
+    private fun tagged(tag: String, merged: Boolean) = nodes(merged).filter { f ->
+        // « texte:Renommer »: an item the app gives no tag (a menu's), found by the words it shows.
+        if (tag.startsWith(TEXTE)) f.node.config.getOrNull(SemanticsProperties.Text)?.any { it.text == tag.removePrefix(TEXTE) } == true
+        else f.node.config.getOrNull(SemanticsProperties.TestTag) == tag
+    }
+
+    /** Types [text] in the field tagged [tag] (its whole content replaced, as the keyboard's own « coller » would). False: no such field. */
+    fun saisir(tag: String, text: String): Boolean = main.run {
+        val action = tagged(tag, merged = true).lastOrNull()?.node?.config?.getOrNull(SemanticsActions.SetText)?.action
+        action?.invoke(androidx.compose.ui.text.AnnotatedString(text)) == true
+    }.also { if (it) main.pause(FRAME_MS * 4) }
+
+    /** Sets the slider tagged [tag] to [value] (its own accessibility action, as TalkBack does). False: no such slider. */
+    fun regler(tag: String, value: Float): Boolean = main.run {
+        val action = tagged(tag, merged = true).lastOrNull()?.node?.config?.getOrNull(SemanticsActions.SetProgress)?.action
+        action?.invoke(value) == true
+    }.also { if (it) main.pause(FRAME_MS * 4) }
+
+    /** Every vertical list of the top window back at its top (its own accessibility action, as TalkBack's scroll). */
+    fun enHaut() {
+        main.run {
+            val top = roots().lastOrNull() ?: return@run
+            for (n in top.semanticsOwner.getAllSemanticsNodes(mergingEnabled = false)) {
+                val by = n.config.getOrNull(SemanticsActions.ScrollBy)?.action ?: continue
+                val range = n.config.getOrNull(SemanticsProperties.VerticalScrollAxisRange) ?: continue
+                by(0f, if (range.reverseScrolling) 1e6f else -1e6f)
+            }
+        }
+        main.pause(FRAME_MS * 4)
+    }
 
     private fun one(tag: String): Found {
         val all = tagged(tag, merged = true)
@@ -101,11 +130,22 @@ class InAppDriver(
         for (r in roots().asReversed()) {
             for (n in r.semanticsOwner.getAllSemanticsNodes(mergingEnabled = false)) {
                 val tag = n.config.getOrNull(SemanticsProperties.TestTag) ?: continue
+                if (hidden(n)) continue
                 val b = n.boundsInWindow
                 if (b.width > 0f && b.height > 0f) out += tag
             }
         }
         out.toList()
+    }
+
+    /** True when an ancestor (or [n]) clears its semantics: the app hides it (a covered screen), no one reads it. */
+    private fun hidden(n: androidx.compose.ui.semantics.SemanticsNode): Boolean {
+        var p: androidx.compose.ui.semantics.SemanticsNode? = n
+        while (p != null) {
+            if (p.config.isClearingSemantics) return true
+            p = p.parent
+        }
+        return false
     }
 
     /** Hears what a finger could not have done (a touch on a node another window covers), once per tag. */
@@ -219,6 +259,9 @@ class InAppDriver(
     }
 
     companion object {
+        /** The prefix of a pseudo-tag that finds a node by its words ([tagged]). */
+        const val TEXTE = "texte:"
+
         /** A finger's press, well under a long press (400 ms and more). */
         const val PRESS_MS = 60L
         const val FRAME_MS = 17L

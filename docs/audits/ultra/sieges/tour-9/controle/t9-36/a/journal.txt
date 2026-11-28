@@ -1,0 +1,306 @@
+#0 SIEGE lang=ko device=phone font=100 mode=simple theme=- fresh=non gestes.max=153 lit=oui main=both amenee=tuto:industrial_techno:7
+#0 PREMIER ECRAN reel_s=3.7 simule_s=2.4 jvm_s=9.0 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:industrial_techno:7
+#0 AMENEE > touche 294 611 (welcome_learn)
+#0 AMENEE > touche 294 940 (mode_card_simple)
+#0 AMENEE > touche 294 745 (tuto_style_industrial_techno)
+#0 AMENEE chapitres 1 à 6 construits dans le projet
+#0 AMENEE > touche 459 598 (tuto_chapters)
+#0 AMENEE > touche 294 630 (tuto_chapter_6)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b9a0f3f01b | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=brick done=13 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 8 » 3.82:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 16 » 4.28:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ 왜요? » 364 x 21 dp (touch 364 x 48)
+#1 > touche 294 894
+#1 DOIGT tuto_mark «   알겠어요 »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7397760a31 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_intro done=14 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CONTRAST « 인트로 » 4.15:1 (needs 4.5:1, 12 sp)
+#2 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#2 > touche 294 894
+#2 DOIGT tuto_listen «  예시 듣기 »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7f4aa09bcd | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_intro done=14 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 3 s).
+#3 > attends 4
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 54857b8a57 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_intro done=15 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 294 894
+#4 DOIGT tuto_next_big « 다음 단계   »
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 434ecda9d4 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_drop done=15 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « 드롭 » 3.09:1 (needs 4.5:1, 12 sp)
+#5 LAYOUT CONTRAST « 16 » 2.08:1 (needs 4.5:1, 12 sp)
+#5 LAYOUT CONTRAST « 8 » 2.08:1 (needs 4.5:1, 12 sp)
+#5 > touche 294 894
+#5 DOIGT tuto_listen «  예시 듣기 »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE be5925d7df | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_drop done=15 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 3 s).
+#6 > attends 5
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f3a5479943 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_drop done=16 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 294 894
+#7 DOIGT tuto_next_big « 다음 단계   »
+#8 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE e1beedcda6 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_break done=16 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CONTRAST « 16 » 2.53:1 (needs 4.5:1, 12 sp)
+#8 > touche 294 894
+#8 DOIGT tuto_listen «  예시 듣기 »
+#9 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4414e15077 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_break done=16 playing=false
+#9 SON Son : l'exemple du tuto joue (encore 3 s).
+#9 > attends 5
+#10 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 42efa28c35 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_break done=17 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 294 894
+#10 DOIGT tuto_next_big « 다음 단계   »
+#11 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE ed2d537978 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_phrases done=17 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 294 894
+#11 DOIGT tuto_mark «   알겠어요 »
+#12 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f8b249efbc | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=map_phrases done=18 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 294 894
+#12 DOIGT tuto_next_big « 다음 챕터   »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7dc9decc05 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_intro done=18 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 294 813
+#13 DOIGT tuto_need «   “인트로” 파트 만들기 »
+#14 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 531a48e7ed | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_intro done=19 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 294 894
+#14 DOIGT tuto_next_big « 다음 단계   »
+#15 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a048ce0e07 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_intro2 done=19 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 294 813
+#15 DOIGT tuto_need «   “인트로 2” 파트 만들기 »
+#16 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f005293a5d | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_intro2 done=20 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 294 894
+#16 DOIGT tuto_next_big « 다음 단계   »
+#17 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 249d7b23cf | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_drop done=20 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 294 813
+#17 DOIGT tuto_need «   “드롭” 파트 만들기 »
+#18 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d12e59e748 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_drop done=21 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 294 894
+#18 DOIGT tuto_next_big « 다음 단계   »
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a748c27090 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_dropb done=21 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 294 813
+#19 DOIGT tuto_need «   “Drop B” 파트 만들기 »
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d75fe60b3a | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_dropb done=22 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 294 894
+#20 DOIGT tuto_next_big « 다음 단계   »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE da430d16c7 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_break done=22 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 294 813
+#21 DOIGT tuto_need «   “브레이크” 파트 만들기 »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 646f8ee84d | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_break done=23 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 294 894
+#22 DOIGT tuto_next_big « 다음 단계   »
+#23 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b967626ccf | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_drop2 done=23 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 294 813
+#23 DOIGT tuto_need «   “드롭 2” 파트 만들기 »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2bf579be11 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_drop2 done=24 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 294 894
+#24 DOIGT tuto_next_big « 다음 단계   »
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e7b0d3102c | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_fin done=24 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 294 813
+#25 DOIGT tuto_need «   “끝” 파트 만들기 »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e98ecbb706 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_fin done=25 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 216 978
+#26 DOIGT tuto_play_mine «  내 곡 듣기 »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f960dadeb2 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=make_fin done=25 playing=true
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 294 894
+#27 DOIGT tuto_next_big « 다음 챕터   »
+#28 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 905107dcc3 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_order done=25 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 294 813
+#28 DOIGT tuto_do «   직접 할게요 »
+#29 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2c40725740 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_order done=25 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 LAYOUT CUT « 직접 해 보세요: “내 곡”의 “추가” 아래에서 인트로, 인트로 2, 드롭, 드롭 B, 드롭, 브레이크, 드롭 2, 끝을 순서대로 탭하세요. » ellipsized (« … »)
+#29 LAYOUT CONTRAST « + A · 그루브 » 4.06:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + B · 인트로 » 4.06:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + C · 인트로 2 » 4.16:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + D · 드롭 » 4.16:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + E · Drop B » 4.25:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + F · 브레이크 » 4.25:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + G · 드롭 2 » 4.25:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + H · 끝 » 4.25:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + 새 파트 (H · 끝 복사) » 4.37:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + 빈 새 파트 » 4.37:1 (needs 4.5:1, 14 sp)
+#29 > touche 325 344
+#29 DOIGT add_part_1 « + B · 인트로 »
+#30 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 0a1534b382 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_order done=25 playing=true
+#30 SON Son : la musique du projet joue en boucle.
+#30 LAYOUT OVERLAP « 곡 코드 » over the touchable « 템포: 분당 136박 템포 바꾸기 » (41 x 4 dp)
+#30 LAYOUT CONTRAST « + A · 그루브 » 4.25:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + B · 인트로 » 4.26:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + C · 인트로 2 » 4.25:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + D · 드롭 » 4.25:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + E · Drop B » 4.30:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + F · 브레이크 » 4.30:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + G · 드롭 2 » 4.37:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + H · 끝 » 4.37:1 (needs 4.5:1, 14 sp)
+#30 LAYOUT CONTRAST « + 빈 새 파트 » 4.43:1 (needs 4.5:1, 14 sp)
+#30 > touche 142 551
+#30 DOIGT add_part_2 « + C · 인트로 2 »
+#31 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 4c8e000071 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_order done=25 playing=true
+#31 SON Son : la musique du projet joue en boucle.
+#31 > touche 334 551
+#31 DOIGT add_part_3 « + D · 드롭 »
+#32 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 8bce9b3010 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_order done=25 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 > touche 138 632
+#32 DOIGT add_part_4 « + E · Drop B »
+#33 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 487bd8a339 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_order done=25 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 334 551
+#33 DOIGT add_part_3 « + D · 드롭 »
+#34 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE c3f0d1cbac | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_order done=25 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 342 632
+#34 DOIGT add_part_5 « + F · 브레이크 »
+#35 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 75b01de974 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_order done=25 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 133 713
+#35 DOIGT add_part_6 « + G · 드롭 2 »
+#36 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2d6ad068f4 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_order done=25 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 306 713
+#36 DOIGT add_part_7 « + H · 끝 »
+#37 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f6fdc62d9a | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_order done=26 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 > touche 294 977
+#37 DOIGT tuto_next_folded « 성공 »
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f764cf9ec4 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_phrases done=26 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT OVERLAP « 탭해서 곡 전체 코드를 바꿔요. » over the touchable « 템포: 분당 136박 템포 바꾸기 » (48 x 4 dp)
+#38 LAYOUT OVERLAP « 탭해서 곡 전체 코드를 바꿔요. » over the touchable « 파트부터 재생 » (96 x 4 dp)
+#38 > touche 294 813
+#38 DOIGT tuto_need «   추천 길이 적용 »
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 898b6c6a1f | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=song_phrases done=27 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 294 894
+#39 DOIGT tuto_next_big « 다음 챕터   »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6e8bb5e73c | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=gap done=27 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 > touche 294 813
+#40 DOIGT tuto_need «   “브레이크” 파트로 가기 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6bf4491bad | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=gap done=27 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 > touche 325 405
+#41 DOIGT step_12 « 스텝 13 »
+#42 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9852596663 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=gap done=28 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 > touche 294 894
+#42 DOIGT tuto_next_big « 다음 단계   »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0755180041 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=crash done=28 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 294 813
+#43 DOIGT tuto_need «   “드롭 2” 파트로 가기 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1e02531b5e | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=crash done=28 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 294 813
+#44 DOIGT tuto_do «   직접 할게요 »
+#45 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 90288ee90c | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=crash done=28 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 LAYOUT CONTRAST « 심벌 » 4.09:1 (needs 4.5:1, 13 sp)
+#45 LAYOUT CONTRAST « 1 » 2.80:1 (needs 4.5:1, 12 sp)
+#45 > touche 70 334
+#45 DOIGT step_0 « 스텝 1 »
+#46 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ef20c0382a | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=crash done=29 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 294 977
+#46 DOIGT tuto_chapter_end_folded « 잘했어요, 챕터 완료! »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4422eb3726 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=crash done=29 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 294 894
+#47 DOIGT tuto_next_big « 다음 챕터   »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bc15c7ad6e | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=reverb_hear done=29 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 294 894
+#48 DOIGT tuto_listen «  예시 듣기 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 490f18c835 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=reverb_hear done=29 playing=false
+#49 SON Son : l'exemple du tuto joue (encore 7 s).
+#49 > attends 6
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9552abff71 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=reverb_hear done=30 playing=false
+#50 SON Son : l'exemple du tuto joue (encore 1 s).
+#50 > touche 294 894
+#50 DOIGT tuto_next_big « 다음 챕터   »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 13a2f46415 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=levels done=30 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 414 1158
+#51 DOIGT tab_simple_Mix « 믹스 »
+#52 ROUTE tab_simple_Mix | MODE simple | EMPREINTE c72b11ec98 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=levels done=30 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 294 813
+#52 DOIGT tuto_do «   직접 할게요 »
+#53 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 3f873282a7 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=levels done=30 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « 코드 » 3.86:1 (needs 4.5:1, 13 sp)
+#53 LAYOUT CONTRAST « 출력 » 4.33:1 (needs 4.5:1, 13 sp)
+#53 > glisse 216 400 216 460
+#53 DOIGT mix_fader_2 « 코드 볼륨 »
+#54 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 7b3b579d09 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=levels done=30 playing=false
+#54 SON Son : rien ne joue.
+#54 > glisse 339 400 339 460
+#54 DOIGT mix_fader_5 « 멜로디 볼륨 »
+#55 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 33f0e5d154 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=levels done=31 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 294 977
+#55 DOIGT tuto_chapter_end_folded « 잘했어요, 챕터 완료! »
+#56 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 9d8c921f93 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=levels done=31 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « 출력 » 4.34:1 (needs 4.5:1, 13 sp)
+#56 > touche 294 894
+#56 DOIGT tuto_next_big « 다음 챕터   »
+#57 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 3ce1187e5f | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=share done=31 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « 출력 » 4.38:1 (needs 4.5:1, 13 sp)
+#57 > touche 534 1158
+#57 DOIGT tab_simple_Envoyer « 공유 »
+#58 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 417393a781 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=share done=31 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 294 344
+#58 DOIGT share_go «   공유 »
+#59 ROUTE dialogue:share_progress | MODE simple | EMPREINTE 1613351d8e | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=share done=31 playing=false
+#59 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#59 LAYOUT CONTRAST « 취소 » 1.35:1 (needs 4.5:1, 14 sp)
+#59 > attends 10
+#59 PARTAGE 내-곡-20261119-074909.m4a
+#60 ROUTE dialogue:« 내 곡 공유 · 내-곡-20261119-074909.m » | MODE simple | EMPREINTE bb5dc5fc62 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=share done=32 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 294 836
+#60 DOIGT vue « Files »
+#61 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 69c8b2dddb | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=share done=32 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 508 794
+#61 DOIGT share_bilan_ok « OK »
+#62 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 77213c677f | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=share done=32 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 294 894
+#62 DOIGT tuto_next_big « 다음 단계   »
+#63 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE e7cafc8201 | project=p-9ee5b1eb tuto=industrial_techno/Facile active=true step=share done=32 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CUT « ? » lines cut (taller than its box)
+#63 LAYOUT CUT « 인더스트리얼 테크노를 잠깐 들어 보세요: 멜로디는 없고, 쇠와 기계 소리, 절뚝이는 새츄레이션 킥. 이걸 만들 거예요. » ellipsized (« … »)
+#63 LAYOUT CUT « 시작하기 전에: 킷은 이미 인더스트리얼 테크노 킷이에요. 단단하고 새츄레이션 걸린 킥, 으르렁거림, 쇳소리 퍼커션. 설정할 건 없어요. » ellipsized (« … »)
+#63 LAYOUT CUT « 루프를 몇 초 들어 보고, 예시도 들어 보세요. 돌아가는 공장: 이게 인더스트리얼 테크노예요. » ellipsized (« … »)
+#63 LAYOUT TARGET « 내 파일 » 323 x 18 dp (touch 323 x 48)
+#63 LAYOUT TARGET « “내 파일”이란 뭘까요? ? » 29 x 18 dp (touch 48 x 48)
+#63 > fin
+#63 FIN : fin

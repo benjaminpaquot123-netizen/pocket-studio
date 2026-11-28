@@ -1,0 +1,54 @@
+Écran 110 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 178,42
+bouton « Pro » @ 385,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 539,42
+bouton ● @ 611,42
+bouton ▶ « dit deel » @ 683,42
+bouton ▶ « het nummer » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [coupé] @ 68,204
+onglet « Acid 303 Baslijn » @ 212,204
+onglet « Zang Microfoon » @ 400,204
+onglet « Remix Splitsen » @ 578,204
+bouton « Bas Ronde bas » ⋮ @ 772,204
+image ← @ 10,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+texte « Bas · maat 3/4 » [coupé] @ 147,314
+bouton « Kopiëren » @ 763,333
+texte « Patroon staat erin! De rest wordt gekopieerd: » @ 364,348
+texte « mt » @ 84,394
+bouton « 2 » [coupé] @ 171,402
+bouton « 3 » @ 378,402
+bouton « 4 » @ 698,402
+texte « G » [coupé] @ 84,452
+texte « G♭ » @ 84,490
+texte « F » @ 84,532
+texte « E » @ 84,574
+texte « E♭ » @ 84,616
+texte « D » [coupé] @ 84,654
+dessin [coupé] @ 492,553
+texte « De bas Hoofdstuk 5/17 · Stap 2/2 · Pro » @ 356,722
+icône (liste) « Hoofdstukken » @ 749,723
+icône ⌄ @ 843,723
+texte « Zonder bas heeft je liquid geen fundament. Tik nog eens op ‘Volgende’ om hem toch over te slaan. » @ 450,829
+texte « Nu jij: maak het spoor Bas (‘Ronde bas’, zachte pomp). Maat 1 in de pianorol: de grondtoon F aangehouden, dezelfde korter, de kwint C; ‘Kopiëren naar de volgende maten’ zet hem op E en dan op A; dan de aanloop van maat 4 (A, C, E, D, C). » [coupé] @ 450,902
+texte « ▸ Waarom? » @ 450,954
+icône « Verder lezen » ⌄ @ 450,1008
+bouton ⊕ «   Kopiëren naar de volgende maten » @ 450,1116
+bouton ▶ «  Luister naar het voorbeeld » @ 232,1200
+bouton (œil) «  Laat zien » @ 667,1200
+icône ← «  Vorige » @ 101,1281
+icône « Volgende  » → @ 778,1281
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

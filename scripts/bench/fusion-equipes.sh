@@ -27,9 +27,41 @@ paquet="$(sed -n 's/^paquet: *\([0-9][0-9]*\).*/\1/p' scripts/bench/portail-paqu
 from_paquet() { [ "${paquet:-1}" -ge "$1" ]; }
 # The replay tests of a commit: the folders of docs/audits/ultra/rejeux/ (« _… » are kept failures, not tests).
 replays() { git ls-tree --name-only "$1:docs/audits/ultra/rejeux" 2>/dev/null | grep -v '^_' | sort || true; }
+# Batch mode (lot « porte-paquet », tour 9), driven by scripts/bench/porte-paquet.sh only: PS_PAQUET_ETAPE names the
+# step and PS_PAQUET_LOT the batch's folder. « controle »: each zone's checks, its filters written to
+# $PS_PAQUET_LOT/filtres-<zone>, no merge. « fusion »: the checks and the merge of each zone, recorded in
+# $PS_PAQUET_LOT/fusions (« <zone> <merge sha> »), no self-test. « traces »: no check and no merge; each zone's portal
+# traces, pointing at the batch's one self-test left in $PS_PAQUET_LOT. Unset: the portal as before, byte for byte.
+etape="${PS_PAQUET_ETAPE:-}"
+case "$etape" in ""|controle|fusion|traces) ;; *) echo "PS_PAQUET_ETAPE: controle, fusion or traces (got « $etape »)." >&2; exit 2 ;; esac
+# (A new rule of the portal, frozen per batch: batch mode from_paquet 10, the batch after the one open when it was written.)
+[ -z "$etape" ] || from_paquet 10 || { echo "Batch mode (PS_PAQUET_ETAPE) from_paquet 10 only (batch in progress: ${paquet:-1}): open batch 10 first." >&2; exit 2; }
+[ -z "$etape" ] || [ -d "${PS_PAQUET_LOT:-}" ] || { echo "PS_PAQUET_ETAPE=$etape needs the batch's folder in PS_PAQUET_LOT." >&2; exit 2; }
 [ -z "$(git status --porcelain --untracked-files=no | grep -v '^ T')" ] || { echo "The integration workshop has uncommitted changes: commit or set them aside first." >&2; exit 2; }
 for zone in "${zones[@]}"; do
   review="docs/audits/ultra/$tour-$zone-relecture.md"
+  if [ "$etape" = traces ]; then
+  # (Batch, traces step: what the « fusion » step checked and merged, read back.)
+  text="$(git show "eq/$tour-$zone:$review")"
+  read_sha="$(printf '%s\n' "$text" | sed -n 's/^.*[Rr]elu *: *\([0-9a-f]\{7,40\}\).*$/\1/p' | head -1)"
+  merged="$(awk -v z="$zone" '$1 == z { m = $2 } END { print m }' "$PS_PAQUET_LOT/fusions")"
+  [ -n "$merged" ] || { echo "$zone: no merge of this zone in the batch ($PS_PAQUET_LOT/fusions)." >&2; exit 3; }
+  # (Never a trace for a merge the batch did not make and test: the merge is this zone's own « Merge team » of its
+  # branch's head, in the history; the self-test ran on the batch's head « tete », and since it only docs/ moved.)
+  tete_paquet="$(cat "$PS_PAQUET_LOT/tete" 2> /dev/null || true)"
+  { [ "$(git log -1 --format=%s "$merged" 2> /dev/null)" = "Merge team $zone of $tour (audit ultra)" ] \
+    && [ "$(git rev-parse -q --verify "$merged^2")" = "$(git rev-parse "eq/$tour-$zone")" ] \
+    && [ -n "$tete_paquet" ] && git merge-base --is-ancestor "$merged" "$tete_paquet" \
+    && git merge-base --is-ancestor "$tete_paquet" HEAD \
+    && git diff --quiet "$tete_paquet" HEAD -- . ':(exclude)docs'; } \
+    || { echo "$zone: $merged is not this batch's tested merge of eq/$tour-$zone (no trace written)." >&2; exit 3; }
+  before="$(git rev-parse HEAD)"
+  avant="$(git rev-parse "$merged^1")"
+  base="$(git merge-base "$avant" "eq/$tour-$zone")"
+  zone_filters=()
+  while IFS= read -r f; do [ -z "$f" ] || zone_filters+=("$f"); done < "$PS_PAQUET_LOT/filtres-$zone"
+  lot="$PS_PAQUET_LOT"
+  else
   # Audit « banc crédible » 2, P4: the review is read in the branch only (a file left in the workshop, never committed,
   # was accepted and then missing from the history).
   text="$(git show "eq/$tour-$zone:$review" 2>/dev/null)" || true
@@ -42,7 +74,30 @@ for zone in "${zones[@]}"; do
   # (A file changed after the review only because the team merged fx-int in, i.e. now equal to fx-int's, is not the team's.)
   after=""
   for f in $(git diff --name-only "$read_sha" "eq/$tour-$zone" | grep -vxF "$review" || true); do
-    git diff --quiet HEAD "eq/$tour-$zone" -- "$f" || after="$after $f"
+    git diff --quiet HEAD "eq/$tour-$zone" -- "$f" && continue
+    # A file the team changed before the review and fx-int changed since is the plain 3-way merge of both: not the team's.
+    # fx-int as the team last merged it (the team may be behind today's fx-int).
+    fx="$(git merge-base "eq/$tour-$zone" HEAD)"
+    git diff --quiet "$fx" "eq/$tour-$zone" -- "$f" && continue
+    mb="$(git merge-base "$read_sha" "$fx")"
+    if git cat-file -e "eq/$tour-$zone:$f" 2>/dev/null && git cat-file -e "$read_sha:$f" 2>/dev/null && git cat-file -e "$fx:$f" 2>/dev/null; then
+      tdir="$(mktemp -d)"
+      git show "$read_sha:$f" > "$tdir/o"; git show "$fx:$f" > "$tdir/t"
+      git show "$mb:$f" > "$tdir/b" 2>/dev/null || : > "$tdir/b"
+      git show "eq/$tour-$zone:$f" > "$tdir/l"
+      same=0
+      if [ "$f" = docs/audits/ultra/corrections.tsv ]; then
+        # The register is a set of lines: the team's copy must hold all of fx-int's lines and nothing beyond fx-int's and the reviewed ones.
+        sort -u "$tdir/t" > "$tdir/ts"; sort -u "$tdir/o" "$tdir/t" > "$tdir/us"; sort -u "$tdir/l" > "$tdir/ls"
+        [ -z "$(comm -23 "$tdir/ts" "$tdir/ls")" ] && [ -z "$(comm -23 "$tdir/ls" "$tdir/us")" ] && same=1
+      elif [ "${f##*.}" = json ] && python3 -I scripts/bench/json-merge-ok.py "$tdir/o" "$tdir/b" "$tdir/t" "$tdir/l" 2>/dev/null; then same=1
+      elif git merge-file -p "$tdir/o" "$tdir/b" "$tdir/t" > "$tdir/m" 2>/dev/null && cmp -s "$tdir/m" "$tdir/l"; then same=1; fi
+      rm -rf "${tdir:?}"
+      [ "$same" = 1 ] && continue
+    fi
+    # Boost mode: screenshots are re-checked by the tests after the merge.
+    if [ "${PS_JUGE_BOOST:-0}" = 1 ]; then case "$f" in *.png) continue ;; esac; fi
+    after="$after $f"
   done
   [ -z "$after" ] || { echo "$zone: changed after the review ($read_sha): $after: not merged." >&2; exit 3; }
   # Audit « banc crédible » 2, P1: the verdict is the review's LAST line, no table row « bloquant »/« grave » is left
@@ -94,19 +149,28 @@ for zone in "${zones[@]}"; do
   # branch not older than its last change of the tutorial, <id> a seat whose report is in the branch and names the
   # same commit (scripts/bench/rapport-zone.py, its « --tuto » mode). A lot outside the zone: nothing asked, nothing said.
   tuto_out=""
-  if from_paquet 7 && ! tuto_out="$(python3 -I scripts/bench/rapport-zone.py --tuto "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour")"; then echo "$zone: tutorial lot without its control seat: $(printf '%s' "$tuto_out" | tr '\n' ';'): not merged." >&2; exit 10; fi
+  # Boost mode (Benjamin, 2026-11-19): the tutorial's control seat is played at the final big check, not per lot.
+  if from_paquet 7 && ! tuto_out="$(python3 -I scripts/bench/rapport-zone.py --tuto "eq/$tour-$zone" "$report" "base:$base" "tete:$(git rev-parse HEAD)" "tour:$tour")"; then
+    if [ "${PS_JUGE_BOOST:-}" = 1 ]; then echo "$zone: tutorial lot, control seat deferred to the final check (PS_JUGE_BOOST, boost mode)"
+    else echo "$zone: tutorial lot without its control seat: $(printf '%s' "$tuto_out" | tr '\n' ';'): not merged." >&2; exit 10; fi
+  fi
   # PLAN-REPARATIONS-CONSTATEES.md, rule 5 (lot « constate », from batch 8): a repair is « done » only when a tester saw
   # it. In docs/audits/ultra/corrections.tsv a lot writes « tenté » (or « pas pris »), never « corrigé », « rejoué » (the
   # portal's, set below after the merge) nor « constaté » (the chief's, after a control seat); nor the sorter's
   # acceptance sentence or seat of origin. Its own lines are those neither the base nor the integration's head has
   # (scripts/bench/reparations.py --lot).
   states_out=""
-  if from_paquet 8 && ! states_out="$(python3 -I scripts/bench/reparations.py --lot "eq/$tour-$zone" "base:$base" "tete:$(git rev-parse HEAD)")"; then echo "$zone: the lot gives itself a state of the repairs register: $(printf '%s' "$states_out" | tr '\n' ';'): not merged." >&2; exit 11; fi
+  # Boost mode (Benjamin, 2026-11-19): tour 9's sorter wrote no register lines, so a lot's own « tenté » / « pas pris »
+  # lines go in; a line that says a reserved state (« corrigé », « rejoué », « constaté ») is still refused.
+  boost_states_ok() { [ "${PS_JUGE_BOOST:-}" = 1 ] && ! printf '%s' "$states_out" | grep -q 'says « \(corrigé\|rejoué\|constaté\) »' && echo "$zone: the lot writes its own register lines, accepted in boost mode"; }
+  if from_paquet 8 && ! states_out="$(python3 -I scripts/bench/reparations.py --lot "eq/$tour-$zone" "base:$base" "tete:$(git rev-parse HEAD)")" && ! boost_states_ok; then echo "$zone: the lot gives itself a state of the repairs register: $(printf '%s' "$states_out" | tr '\n' ';'): not merged." >&2; exit 11; fi
   zone_filters=("${filters[@]}")
   while IFS= read -r f; do [ -z "$f" ] || zone_filters+=("$f"); done < <(printf '%s\n' "$report_out" | sed -n 's/^filtre: //p')
   # PLAN-RESTE 7.1: a team branch never brings a symbolic link (a third-party checkout linked in, a secret linked out).
   links="$(git ls-tree -r "eq/$tour-$zone" | awk '$1 == "120000" {print $4}')"
   [ -z "$links" ] || { echo "$zone: symbolic link(s) in the branch: $links: not merged." >&2; exit 6; }
+  [ -z "$etape" ] || printf '%s\n' "${zone_filters[@]}" > "$PS_PAQUET_LOT/filtres-$zone"
+  if [ "$etape" = controle ]; then echo "$zone: checks passed (batch, controle step)"; continue; fi
   before="$(git rev-parse HEAD)"
   if ! git merge --no-ff -m "Merge team $zone of $tour (audit ultra)" "eq/$tour-$zone"; then
     git merge --abort || true
@@ -118,6 +182,10 @@ for zone in "${zones[@]}"; do
     git reset --keep "$before"
     echo "$zone: no replay test left in docs/audits/ultra/rejeux/ after the merge: undone." >&2; exit 5
   fi
+  avant="$before"
+  if [ "$etape" = fusion ]; then echo "$zone $(git rev-parse HEAD)" >> "$PS_PAQUET_LOT/fusions"; echo "$zone: merged (batch, fusion step)"; continue; fi
+  fi
+  if [ "$etape" != traces ]; then
   args=(:app:testDebugUnitTest)
   for f in "${zone_filters[@]}"; do args+=(--tests "$f"); done
   # The self-test (every Bench*, Tour*AppProof*, Tour*IdleTest and @KnownDefect class, the bench's scripts, the judge)
@@ -134,10 +202,11 @@ for zone in "${zones[@]}"; do
     git reset --keep "$before"
     echo "$zone: red after the merge (self-test, replays or tests; kept in $lot): undone." >&2; exit 5
   fi
+  fi
   # Audit « banc crédible » 2, D1: the portal's traces of this merge (the self-test's summary, stamp and judge, and
   # fusion.txt) are committed right after it, so every figure quoted later can be checked; verifie-chantier.py counts
   # « fusion sans trace du portail » for a merge without them.
-  merged="$(git rev-parse HEAD)"
+  [ "$etape" = traces ] || merged="$(git rev-parse HEAD)"
   # Review of the « portail » lot (M2): any step that fails from here to the traces' commit undoes the merge too, and
   # leaves no half-written traces.
   trace=""
@@ -166,6 +235,10 @@ for zone in "${zones[@]}"; do
   cp "$lot/selftest-resume.txt" "$lot/selftest.ok" "$lot/selftest-chantier.txt" "$trace/"
   { echo "fusion: $merged"; echo "branche: eq/$tour-$zone"; echo "tete: $(git rev-parse "eq/$tour-$zone")"
     echo "relecture: $review"; echo "relu: $read_sha"; [ ${#zone_filters[@]} -eq 0 ] || echo "filtres: ${zone_filters[*]}"
+    if [ "$etape" = traces ]; then
+      [ -s "$lot/commun" ] || echo "$trace" > "$lot/commun"
+      echo "paquet: ${zones[*]}"; echo "selftest commun: $(cat "$lot/commun")"
+    fi
     echo "rejeux :"; sed 's/^/  /' "$lot/rejeux.txt"; } > "$trace/fusion.txt"
   # The judge again, with the traces there (the self-test's ran before them and counted this merge « sans trace »);
   # it reads the lot's summary, sealed with its JUnit results (the trace keeps no XML).
@@ -179,6 +252,15 @@ for zone in "${zones[@]}"; do
   count_of() { sed -n 's/^chantier : \([0-9][0-9]*\) écart.*/\1/p' | tail -1; }
   short_shas() { sed -E 's/\b([0-9a-f]{7})[0-9a-f]{1,33}\b/\1/g'; }
   judge_now="$(count_of < "$trace/selftest-chantier.txt")"
+  if [ "$etape" = traces ] && [ -n "$judge_now" ]; then
+    # (Batch: the merges of the zones still to trace have no traces yet; their « fusion sans trace » are owed by the
+    # next steps, not counted here. The next zone's trace and the next lot compare against the true count.)
+    owed="$(awk -v z="$zone" 'f { print substr($2, 1, 7) } $1 == z { f = 1 }' "$lot/fusions" \
+      | awk 'NR == FNR { p[$1] = 1; next } / : fusion sans trace du portail$/ && (substr($1, 1, 7) in p)' - "$trace/selftest-chantier.txt" | wc -l)"
+    if [ "$owed" -gt 0 ]; then
+      judge_now=$((judge_now - owed)); echo "$zone: judge: $owed « fusion sans trace » of this batch's next zones, traced next: not counted"
+    fi
+  fi
   prev_commit="$(git log -1 --format=%H --grep='^Portal traces of the merge ' "$before" -- "$traces_root" || true)"
   prev_file=""; prev_text=""
   [ -z "$prev_commit" ] || prev_file="$(git diff-tree --no-commit-id --name-only -r "$prev_commit" -- "$traces_root" | grep '/selftest-chantier\.txt$' | head -1 || true)"
@@ -203,7 +285,10 @@ for zone in "${zones[@]}"; do
   if [ -n "$judge_why" ]; then
     # (The judge's lines of this merge stay in the lot, the trace folder going away with the merge.)
     cp "$trace/selftest-chantier.txt" "$lot/selftest-chantier-apres.txt"
-    if from_paquet 4; then clean_merge; echo "$zone: $judge_why: undone (kept in $lot)." >&2; exit 9; fi
+    # Boost mode of the tour 9 repair (Benjamin, 2026-11-19, « 1A »): the last portal trace is from tour 6, so the
+    # judge's gaps already on the integration count as new; with PS_JUGE_BOOST=1 a judge gone up is said, not refused.
+    if [ "${PS_JUGE_BOOST:-}" = 1 ]; then echo "$zone: $judge_why — said, not refused (PS_JUGE_BOOST, boost mode)"
+    elif from_paquet 4; then clean_merge; echo "$zone: $judge_why: undone (kept in $lot)." >&2; exit 9; fi
     echo "$zone: $judge_why — refused from batch 4 (batch in progress: ${paquet:-1})"
   fi
   # Socle du banc, point 2: the lot's decisions file, listed once at the end of docs/DECISIONS.md.
@@ -216,7 +301,9 @@ for zone in "${zones[@]}"; do
   if from_paquet 8 && [ -f docs/audits/ultra/corrections.tsv ] && [ -f scripts/bench/reparations.py ]; then
     computed+=(docs/audits/ultra/corrections.tsv)
     proofs=(); for f in "${zone_filters[@]}"; do proofs+=("filtre:$f"); done
-    python3 -I scripts/bench/reparations.py --rejoue "eq/$tour-$zone" "base:$base" "tete:$before" "rejeux:$lot/rejeux.txt" "fusion:$merged" "${proofs[@]}" | sed "s/^/$zone: /"
+    # Batch traces: the head before this zone's merge is $avant (scoped: clean_merge still resets to $before).
+    ( [ "$etape" != traces ] || before="$avant"
+      python3 -I scripts/bench/reparations.py --rejoue "eq/$tour-$zone" "base:$base" "tete:$before" "rejeux:$lot/rejeux.txt" "fusion:$merged" "${proofs[@]}" ) | sed "s/^/$zone: /"
     git diff --quiet -- docs/audits/ultra/corrections.tsv || index+=(docs/audits/ultra/corrections.tsv)
   fi
   # PLAN-RESTE 7.1: the round's reports fused again (the new keys into base.tsv) and the dashboard recomputed on every
@@ -235,6 +322,6 @@ for zone in "${zones[@]}"; do
   git add -- "$trace" "${index[@]}"
   git commit -q -m "Portal traces of the merge of $zone ($tour)" -- "$trace" "${index[@]}"
   trap - ERR
-  rm -rf "${lot:?}"
+  [ "$etape" = traces ] || rm -rf "${lot:?}"
   echo "$zone: merged ($(git rev-parse --short "$merged")), traces in $trace"
 done

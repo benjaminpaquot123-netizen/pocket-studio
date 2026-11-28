@@ -1,0 +1,35 @@
+Écran 6 (588x1278)
+icône « 我的项目 1 » ✓ @ 298,38
+bouton « 专业 » @ 538,38
+bouton (dossier ouvert) @ 102,119
+icône ↶ @ 316,119
+bouton ● @ 388,119
+bouton ▶ « 这个段落 » @ 465,119
+icône (trois points reliés) @ 543,119
+bouton « A » ▾ @ 238,119
+texte « 你的第一段：高潮 第 6/14 章 · 第 2/2 步 · 专业 » @ 222,308
+icône (liste) « 章节 » @ 459,309
+icône ⌄ @ 531,309
+texte « 轮到你：把这个段落命名为“高潮”。 » @ 294,481
+bouton « 下载 Afro house 鼓组（2 MB） » @ 247,601
+texte « 稍后 » @ 514,601
+texte « ▸ 为什么？ » @ 294,680
+bouton ⊕ «   把段落命名为“高潮” » @ 294,758
+bouton ▶ «  听示例 » @ 154,845
+bouton (œil) «  示范给我看 » @ 433,845
+icône ← «  上一步 » @ 117,932
+icône « 下一步  » → @ 471,932
+texte « 122 速度 » @ 402,1041
+icône ↶ « 撤销 » @ 72,1041
+icône ↷ « 重做 » [désactivé] @ 180,1041
+bouton ▶ « 歌曲 » @ 288,1042
+icône (trois points reliés) « 分享 » @ 516,1041
+onglet (ligne brisée et points) « 结构 » @ 54,1158
+onglet (touches de piano) « 音色 » [sélectionné] @ 174,1158
+onglet (curseurs) « 混音 » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « 更多 » @ 534,1158
+texte « 反馈模式 » @ 130,1248
+texte « ●  REC » @ 303,1248
+texte « ✎  记一笔 » @ 431,1248
+texte « ⋯ » @ 540,1248

@@ -1,0 +1,6 @@
+# Tour 9, lot L12 : décisions
+
+- 2026-11-19 : F101 non reproduit dans la liste des parties. Les glissés du siège t9-53 partaient du panneau replié du tuto, sous la liste. Choix : SessionScreen.kt reste tel quel, et un test garde « la liste défile d'où que parte le doigt » (trois réglages, contre-épreuve rouge). Raison : rien à corriger dans le fichier du lot ; le panneau du tuto est une autre zone, transmise en demande. Retour arrière : retirer Tour9PartsListScrollsTest.
+- 2026-11-19 : pas de ligne F101 ajoutée à corrections.tsv. Raison : le trieur n'en a pas écrit et un lot ne crée pas de ligne. Retour arrière : aucun.
+- 2026-11-19 : F111, le message « Fait : … · Annuler » part au lever du doigt du geste suivant sur la page (passe finale du Scaffold), seulement s'il est le même qu'au début du geste ; les 6 s restent. Raison : « au geste suivant » de la phrase d'acceptation, sans manger le message qu'un clic vient de dire, et « Annuler » garde son clic. Une touche dans une feuille ou un dialogue (autre fenêtre) ne compte pas. Retour arrière : retirer letDoneGoAtNextTouch de DoneBar.kt et sa ligne dans AppRoot.kt.
+- 2026-11-19 : test F111 en polonais par un glissé, pas par le « ⋮ » de la partie suivante. Raison : là, le message couvre ce « ⋮ » et l'appui tombait sur « Anuluj » (noté dans le rapport). Retour arrière : aucun.

@@ -299,8 +299,11 @@ internal object BenchPristine {
     /** No coroutine worker in the app's code any more, waited for (the main looper running) [capMs] at most. */
     private fun appWorkEnded(capMs: Long): Boolean {
         val until = System.currentTimeMillis() + capMs
-        while (appThreads().isNotEmpty() || appMainCoroutines().isNotEmpty()) {
-            if (System.currentTimeMillis() >= until) return false
+        // Tour 9, L9: work still waiting in the coroutine scheduler's queues (every worker busy: a loaded machine) runs on no
+        // worker yet, so no worker shows the app's code: waited for until a worker takes it (then named) or the queues empty.
+        // Queued work that never shows the app's code by the cap is not the app's: not this test's leak.
+        while (appThreads().isNotEmpty() || appMainCoroutines().isNotEmpty() || queuedWork() > 0) {
+            if (System.currentTimeMillis() >= until) return appThreads().isEmpty() && appMainCoroutines().isEmpty()
             runCatching { org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(10)) }
             Thread.sleep(10)
         }
@@ -391,6 +394,22 @@ internal object BenchPristine {
         }
         return appThreads().isEmpty()
     }
+
+    /**
+     * Tasks waiting in the coroutine scheduler shared by Dispatchers.Default and IO (its two global queues and each
+     * worker's own), not yet run by any worker. 0 when its inside cannot be read (another kotlinx-coroutines).
+     */
+    fun queuedWork(): Int = runCatching {
+        val dispatcher = Class.forName("kotlinx.coroutines.scheduling.DefaultScheduler").getField("INSTANCE").get(null)
+        val scheduler = Class.forName("kotlinx.coroutines.scheduling.SchedulerCoroutineDispatcher")
+            .getDeclaredField("coroutineScheduler").apply { isAccessible = true }.get(dispatcher)
+        val sizeOf = Class.forName("kotlinx.coroutines.internal.LockFreeTaskQueue").getMethod("getSize")
+        val global = listOf("globalCpuQueue", "globalBlockingQueue").sumOf { sizeOf.invoke(scheduler.javaClass.getField(it).get(scheduler)) as Int }
+        val worker = Class.forName("kotlinx.coroutines.scheduling.CoroutineScheduler\$Worker")
+        val local = worker.getField("localQueue")
+        val localSize = Class.forName("kotlinx.coroutines.scheduling.WorkQueue").getMethod("getSize\$kotlinx_coroutines_core")
+        global + liveThreads().filter { worker.isInstance(it) }.sumOf { localSize.invoke(local.get(it)) as Int }
+    }.getOrDefault(0)
 
     private fun liveThreads(): List<Thread> {
         var root = Thread.currentThread().threadGroup

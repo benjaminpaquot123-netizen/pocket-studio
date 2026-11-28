@@ -7,6 +7,7 @@ import com.pocketstudio.app.settings.SettingsStore
 import com.pocketstudio.model.Project
 import com.pocketstudio.model.ProjectStore
 import com.pocketstudio.model.songBars
+import com.pocketstudio.model.guide.GuideStart
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -60,6 +61,9 @@ internal object SeatState {
             .put("audio_clips", p.audioTracks.count { it.clip != null })
             .put("tracks", p.tracks.size)
             .put("synth_tracks", synthTracks(p))
+            // Lot « niveaux »: what the « mon-morceau » oracle reads (null: the song never started in the Guide).
+            .put("changed", if (p.guide.startMarks.isEmpty()) JSONObject.NULL else JSONObject().put("sound", GuideStart.changed(p, GuideStart.SOUND))
+                .put("notes", GuideStart.changed(p, GuideStart.NOTES)).put("arrange", GuideStart.changed(p, GuideStart.ARRANGE)))
     }
 
     /**

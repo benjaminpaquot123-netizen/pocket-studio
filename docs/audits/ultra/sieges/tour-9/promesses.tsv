@@ -1,0 +1,51 @@
+siege	id	promesse	ecran	tenue	pourquoi	contredite
+controle/t9-01/a	-	«سأفعلها» يفتحها، و«أرني» يكتب الخط فيها: شاهد نوتاتها الـ13 توضع.	17	non	les deux boutons ouvrent la feuille « صوت: Acid 303 », jamais l'écran de la 303	
+controle/t9-02/a	-	«M4A» يصنع ملفًا خفيفًا لأصدقائك	55	oui	le bilan dit « ملف M4A: خفيف، يعمل على كل الأجهزة » et le fichier part vers Files	
+controle/t9-03/a	-	あなたの番：「アシッド」タブを開いて、2小節のラインを1マスずつ書こう	58	non	ligne écrite marche par marche, étape jamais validée, aucun indice	
+controle/t9-04/a	-	（「おすすめの長さにする」で一気にできる）	34	oui	un toucher a donne 16/16/32/12/4/32/16 小節, total 128	
+controle/t9-05/a	-	“보여 주세요”를 탭하면 앱이 “Acid 303” 트랙에 대신 써 줘요. 그다음 “내 결과 듣기”로 들어 보세요.	47	non	5 essais (simple et pro, onglets 리듬/건반/구성/사운드), l'étape ne se valide jamais et « 내 결과 듣기 » n'apparaît pas	
+controle/t9-05/a	-	맵을 보세요… 곡선은 에너지를 보여 줘요	81	oui	la carte n'apparaît qu'après « 계속 읽기 » (écran 85)	
+controle/t9-06/a	-	잘했어요, 챕터 완료!	65	oui	la liste des chapitres coche 6, 7, 8, 9, 10 et 11 ; partage M4A fini (écran 62)	
+controle/t9-07/a	-	aucune promesse donnée	-	pas	pas de fiche de promesse pour ce siège	
+controle/t9-08/a	-	太棒了，成功了！ 未收听，已跳过示例。	11	non	j'avais lancé l'exemple (il jouait encore), l'écran dit « non écouté »	
+controle/t9-10/a	tuto-pas-a-pas			non	le chapitre 12 dit « pad Conga », mais il ne valide qu'avec « Bord de caisse »	
+controle/t9-12/a	-	Tap a cell to add a hit, slide your finger to paint several.	29	oui	one tap on an empty cell gave « hit, strength 100 % »	
+controle/t9-12/a	-	Your turn: in “My song”, under “Add”, tap in order Intro, Groove, Drop, Break, Drop 2 and End.	43	oui	« Still to add » list shrank at each tap, then « Passed »	
+controle/t9-12/a	-	Ready: My-song-20261119-074350.m4a, a copy is also in Music › BenStudio.	61	pas	I did not open My files	
+controle/t9-13/a	p1	Goed gedaan, het is gelukt!	9	oui	le kit téléchargé, l'étape a validé	
+controle/t9-13/a	p2	de twee (zachte) ghost notes van maat 2	35	non	les cases pointillées tapées deviennent « slag, kracht 100 % », pas douces	
+controle/t9-13/a	p3	dan ‘Verschuiving van slag’ op +10 ms	75	non	la feuille du coup n'a pas ce réglage	
+controle/t9-13/a	p4	Kopiëren naar de volgende maten	119	oui	maten 2-3 de la basse écrites, chapitre 3 klaar	
+controle/t9-14/a	-	« Nu jij: zet in ‘Hoofduitgang’ het ‘Doelvolume’ op ‘Auto (stijl)’: het mikt op ongeveer −10 LUFS »	95	non	pas de Doelvolume dans Hoofduitgang ; trouvé seulement dans la feuille Delen (écran 109), et Auto y donne −9 LUFS « luid, zoals clubmuziek »	
+controle/t9-15/a	-	Tu primera parte: el Groove Capítulo 6/13 · Hecho · Fácil	101	oui	les 6 chapitres finis en 100 gestes, sans abandon	
+controle/t9-16/a		-				
+controle/t9-18/a	mix-nom-faixa	Deslize um fader para o volume; toque no nome de uma faixa para ver os efeitos e as curvas dela.	51	pas	chaque toucher dans les bandes du Mix est refusé par le banc (« Bateria couvre … »)	
+controle/t9-19/a	-	aucune promesse fournie dans la consigne	-	pas	aucune promesse fournie	
+controle/t9-21/a	-	« Bravo, capitolo finito! »	124	oui	les 8 chapitres finis en 124 gestes, sans blocage	
+controle/t9-22/a	-	« Bravo, ce l'hai fatta! »	77	oui	chapitres 9 à 15 finis, le morceau est exporté en M4A et partagé (écran 76)	
+controle/t9-25/a	-	Bravo, bölüm bitti!	117	oui	chapitres 1 à 8 finis, « İlk bölümün: Groove Aşama 8/15 · Tamam » affiché	
+controle/t9-27/a	-	finir les chapitres 1 à 7 du tuto gabber	124	oui	chaque étape se valide, « Tunjukkan » montre le chemin	
+controle/t9-28/a		ch8 Bangun bagian-bagianmu : hésitation (fini au geste ~20 ; le bouton « + Bagian baru (salinan…) » ne fait pas ce qu'il annonce)				
+controle/t9-28/a		ch9 Susun bagian-bagianmu : compris du premier coup (7 blocs, 144 mesures, 3:17)				
+controle/t9-28/a		ch10 Transisi : hésitation (roll ×4 + suppression des coups barrés OK ; en-tête de grille coupé, pad cymbale mal nommé)				
+controle/t9-28/a		ch11 Efek : bloqué à la main (Mix intouchable), validé seulement par « Aku yang buat » (geste 62)				
+controle/t9-28/a		ch12 Mix : bloqué (étape 1/3 « baisser le fader Akor » impossible, faders intouchables, même après démo et retour par la liste des chapitres) ; étapes 2 et 3 lues				
+controle/t9-28/a		ch13 Mastering : hésitation (« Klub » refusé au premier toucher, accepté juste après la démo « Tunjukkan ») ; fini geste ~87				
+controle/t9-28/a		ch14 Ekspor lagumu : compris du premier coup (WAV 48 kHz 24-bit, −8,0 LUFS, −3,2 dBTP, partage Drive)				
+controle/t9-29/a		aucune promesse donnée par le brief				
+controle/t9-30/a	-	aucune donnée	-	pas	aucune promesse dans la consigne	
+controle/t9-31/a	-	aucune promesse donnée par le brief	-	pas	brief sans promesse	
+controle/t9-32/a	-	«M4A» يصنع ملفًا خفيفًا لأصدقائك	92	oui	le partage a fini sur « جاهز » avec un fichier M4A envoyé à WhatsApp	
+controle/t9-32/a	-	المس ▶ لتسمع مسارًا وحده.	83	pas	pas essayé, la consigne coupée en haut du Mix	
+controle/t9-33/a	-	2小節目のステップ 15 には弱いヒット	28	non	une frappe à 100 % valide l'étape, la force n'est pas vérifiée	
+controle/t9-34/a	-	-	-	pas	aucune promesse donnée dans la fiche	
+controle/t9-35/a	vue-3	그리고 2박과 4박 앞에 약한 히트 두 개.	24	non	les deux coups « avant 2 et 4 » sont posés à « 세기 100 % », pas faibles	
+controle/t9-35/a	vue-4	시작하기 전에: 킷은 이미 인더스트리얼 테크노 킷이에요.	16	non	le bouton du kit affiche « 킷: 커스텀 », pas Industrial techno	
+controle/t9-36/a	-	지금 상태의 곡을 들어 보고 다음 챕터로 넘어가세요	12	oui	chaque fin de chapitre (7 à 12) mène bien au chapitre suivant par « 다음 챕터 »	
+controle/t9-36/a	-	내 차례: ““드롭 2” 파트로 가기”를 누르세요.	44	non	le premier toucher change de partie mais le tuto ne réagit pas ; il faut toucher une 2e fois	
+controle/t9-41/a		« raise the swing to the circled value » (#81) · tenue: non (aucun cercle sur le curseur)				
+controle/t9-41/a		« Copy to the next bars » (#111, #122) · tenue: non (le bouton du panneau ne fait rien)				
+controle/t9-41/a		« Tap here » vers la note pointillée (#137, #138) · tenue: non (saute au-dessus puis en dessous)				
+controle/t9-42/a	-	Watch, I'll do it… / There. Putting it back as it was…	26	oui	« Show me » a fait la partie puis l'a retirée, l'écran est revenu comme avant (écran 27)	
+controle/t9-42/a	-	Part “Drop 2” made: the whole Groove plays in it.	37	non	après Undo la partie F · Drop 2 a disparu de « Add », mais le tuto dit toujours qu'elle est faite et laisse passer à l'étape suivante	
+controle/t9-43/a		deels — elk hoofdstuk eindigt, maar hoofdstuk 5 stap 2 accepteert een bas die exact de tekst volgt niet (overslaan nodig) ; « zachter »-beloftes (ghost notes, hard-dan-zacht) worden niet gecontroleerd				

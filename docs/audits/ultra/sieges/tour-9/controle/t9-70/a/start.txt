@@ -1,0 +1,10 @@
+lang=zh-CN
+device=foldable
+font=130
+mode=pro
+amenee=tuto:techno:11
+gestes.max=150
+mission=tuto-pro
+profil=pro
+niveau=4
+timeout.minutes=30

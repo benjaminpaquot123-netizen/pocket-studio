@@ -1,0 +1,50 @@
+Écran 22 (540x1170)
+bouton (dossier ouvert) ✓ @ 109,42
+bouton « सिंपल » @ 262,42
+bouton ● @ 351,42
+bouton ▶ « यह पार्ट » @ 423,42
+icône ⋮ @ 495,42
+bouton « 140  टेम्पो » @ 102,168
+bouton « ? » @ 495,168
+icône « पार्ट: A » ▾ @ 87,288
+bouton « 1 » [coupé, état « खाली, बिंदुदार: छुओ »] @ 67,337
+bouton [coupé, état « खाली »] @ 124,337
+bouton [coupé, état « खाली »] @ 182,338
+bouton [coupé, état « खाली »] @ 240,338
+bouton « 2 » [coupé, état « खाली »] @ 298,338
+bouton [coupé, état « खाली »] @ 356,338
+bouton [coupé, état « खाली »] @ 414,338
+bouton [coupé, état « खाली »] @ 472,338
+bouton « 3 » [état « खाली »] @ 67,390
+bouton [état « खाली »] @ 124,390
+bouton [état « खाली, बिंदुदार: छुओ »] @ 182,390
+bouton [état « खाली »] @ 240,390
+bouton « 4 » [état « खाली »] @ 298,390
+bouton [état « खाली, बिंदुदार: छुओ »] @ 356,390
+bouton [état « खाली »] @ 414,390
+bouton [état « खाली »] @ 472,390
+texte « भरो » @ 68,471
+texte « सब » @ 136,471
+texte « 1/2 » @ 218,471
+texte « 1/4 » @ 303,471
+texte « ◀ » @ 384,471
+texte « ▶ » @ 459,471
+texte « मिटाओ » [coupé] @ 110,513
+texte « सूखे ड्रम्स अध्याय 2/13 · स्टेप 1/5 · आसान » @ 198,606
+icône (liste) « अध्याय » @ 411,606
+icône ⌃ @ 483,606
+icône « तुम्हारी बारी: “Grime · बड़ा ढोल 1” पैड पर 2 बार के डॉटेड खाने दबाओ। पढ़ें » ⌃ @ 270,775
+bouton ▶ « गाना » @ 277,904
+texte « 140 टेम्पो » @ 379,903
+icône ↶ « पूर्ववत करो » @ 73,904
+image ↷ @ 181,880
+icône ⋮ « और » @ 480,903
+onglet (lignes et note) « मेरा गाना » @ 49,1034
+onglet (trois points reliés) « शेयर करो » @ 491,1034
+onglet (quatre carrés) « रिदम » [sélectionné] @ 160,1034
+onglet (touches de piano) « कीबोर्ड » @ 271,1034
+onglet (curseurs) « मिक्स » @ 381,1034
+texte « ●  REC » @ 254,1140
+texte « ✎  नोट करो » @ 383,1140
+texte « ⋯ » @ 492,1140
+texte « प्रतिक्रिया मोड » @ 105,1140

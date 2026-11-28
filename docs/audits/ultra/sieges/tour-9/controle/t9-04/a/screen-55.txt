@@ -1,0 +1,45 @@
+Écran 55 (588x1278)
+bouton (dossier ouvert) ✓ @ 101,42
+bouton « プロ » @ 234,42
+icône ↶ @ 311,42
+bouton ● @ 383,42
+bouton ▶ « このパート » @ 463,42
+icône (trois points reliés) @ 543,42
+bouton « 138  BPM » @ 83,123
+icône « ドロップ 小節 33/128 » ▾ @ 272,123
+bouton (flèches en boucle) [état « オフ »] @ 462,123
+bouton « ? » @ 543,123
+image (courbe) @ 0,0
+texte « 指で描こう。ダブルタップで点を消去。「スムーズ」で震えた線をなめらかに、「キャンセル」で元に戻します。 » [coupé] @ 294,177
+texte « 100% » @ 84,217
+texte « 50% » @ 91,303
+texte « 0% » @ 99,389
+texte « 拍 » @ 81,425
+texte « 1 » @ 134,425
+texte « 2 » @ 241,425
+texte « 3 » @ 347,425
+texte « 4 » @ 452,425
+texte « フィルターの動き チャプター 9/12 · 完了 · プロ » @ 201,553
+icône (liste) « チャプター » @ 438,553
+icône ⌄ @ 531,553
+image (coupe) @ 57,688
+texte « よくできました、章クリア！ » @ 272,651
+texte « 今の曲を聴いてから、次の章へ進もう：「ミックス」。 » @ 319,708
+bouton « 次の章   » → @ 294,805
+bouton ▶ «  自分の曲を聴く » @ 154,889
+bouton ▶ «  例を聴く » @ 433,889
+icône ← «  前へ » @ 85,970
+icône ↶ « 元に戻す » @ 74,1058
+icône ↷ « やり直す » [désactivé] @ 190,1058
+bouton ▶ « 曲 » @ 300,1058
+texte « 138 テンポ » @ 410,1058
+icône (trois points reliés) « シェア » @ 520,1058
+onglet (ligne brisée et points) « 構成 » @ 54,1158
+onglet (touches de piano) « サウンド » @ 174,1158
+onglet (curseurs) « ミックス » [sélectionné] @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « その他 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  メモ » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « フィードバックモード » @ 162,1248

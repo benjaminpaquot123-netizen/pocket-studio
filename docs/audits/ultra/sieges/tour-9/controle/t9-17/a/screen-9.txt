@@ -1,0 +1,24 @@
+Écran 9 (540x1170)
+texte « O tempo e a tonalidade Capítulo 1/14 · Etapa 2/4 · Pro » @ 176,120
+icône (liste) « Capítulos » @ 389,120
+icône ⌄ @ 483,120
+image (coupe) @ 57,347
+texte « Parabéns, deu certo! » @ 288,295
+texte « Exemplo pulado sem ouvir. » @ 295,375
+bouton « Próxima etapa   » → @ 270,809
+bouton ▶ «  Ouvir o exemplo » @ 310,895
+icône ← @ 57,895
+icône ▶ « a música » @ 199,996
+texte « 126 Andamento » @ 376,995
+icône ↶ « Desfazer » @ 34,996
+icône ↷ « Refazer » [désactivé] @ 92,996
+icône (trois points reliés) « Compartilhar » @ 505,996
+onglet (ligne brisée et points) « Estrutura » @ 49,1078
+onglet (touches de piano) « Sons » [sélectionné] @ 160,1078
+onglet (curseurs) « Mix » @ 271,1078
+onglet (neuf points) « Live » @ 381,1078
+onglet ⋯ « Mais » @ 491,1078
+texte « ●  REC » @ 249,1140
+texte « ✎  Anotar » @ 380,1140
+texte « ⋯ » @ 492,1140
+texte « Modo comentários » @ 103,1140

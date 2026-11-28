@@ -1,0 +1,29 @@
+Écran 39 (540x1170)
+bouton (dossier ouvert) ✓ @ 110,42
+bouton « 간단 » @ 263,42
+bouton ● @ 351,42
+bouton ■ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+texte « 드럼 2/11장 · 5/5단계 · 쉬움 » @ 198,171
+icône (liste) « 챕터 » @ 411,172
+icône ⌄ @ 483,172
+texte « 내 드럼 전체를 몇 초 들어 보고, 예시의 드럼도 들어 보세요. » @ 270,375
+texte « ▸ 왜요? » @ 270,507
+bouton ■ «   정지 » @ 270,650
+bouton ▶ «  예시 듣기 » @ 270,737
+icône ← «  이전 » @ 94,824
+icône « 다음  » → @ 445,824
+texte « 185 템포 » @ 376,933
+icône ↶ « 실행 취소 » @ 65,934
+image ↷ @ 180,915
+bouton ■ « 곡 » @ 282,934
+icône ⋮ « 더보기 » @ 479,933
+onglet (lignes et note) « 내 곡 » @ 49,1050
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 160,1050
+onglet (touches de piano) « 건반 » @ 271,1050
+onglet (curseurs) « 믹스 » @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « 피드백 모드 » @ 123,1140
+texte « ●  REC » @ 289,1140
+texte « ✎  메모 » @ 400,1140
+texte « ⋯ » @ 492,1140

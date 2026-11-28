@@ -1,0 +1,55 @@
+Écran 45 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ■ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 98,123
+icône (flèches en boucle) « Subida compás 7/8 » ▾ @ 271,123
+bouton (flèches en boucle) « Bucle » [allumé, état « activado »] @ 427,123
+bouton « ? » @ 543,123
+icône (flèches en boucle) « Parte: C · Subida » ▾ @ 164,198
+texte « Se repite en bucle mientras la editas. ⟳ Bucle, arriba, para volver a la canción. » @ 294,264
+texte « 3 golpes de más aquí (tachados) » @ 284,326
+bouton « 1 » [état « vacío »] @ 70,394
+bouton [état « vacío »] @ 133,394
+bouton [état « vacío »] @ 197,395
+bouton [état « vacío »] @ 261,395
+bouton « 2 » [état « golpe, fuerza 61 % »] @ 325,395
+bouton [état « vacío »] @ 389,395
+bouton [état « vacío »] @ 453,395
+bouton [état « vacío »] @ 517,395
+bouton « 3 » [état « vacío »] @ 70,473
+bouton [état « vacío »] @ 133,473
+bouton [état « vacío »] @ 197,474
+bouton [état « vacío »] @ 261,474
+bouton « 4 » [état « vacío »] @ 325,474
+bouton [état « golpe, fuerza 59 %, tachado: quítalo »] @ 389,474
+bouton « ×2↗ » [état « golpe, fuerza 72 %, 2 repeticiones, tachado: quítalo »] @ 453,474
+bouton « ×2↗ » [état « golpe, fuerza 89 %, 2 repeticiones, tachado: quítalo »] @ 517,474
+texte « todo » @ 186,559
+texte « 1/2 » @ 269,559
+texte « 1/4 » @ 344,559
+texte « ◀ » @ 419,559
+texte « ▶ » @ 494,559
+texte « Rellenar » @ 91,559
+texte « Borrar » @ 97,631
+texte « Toca una casilla para añadir un golpe, desliza el dedo para pintar varios. Mantén pulsado un golpe: fuerza y redobles (×2 a ×8). » [coupé] @ 294,722
+texte « Las transiciones Capítulo 10/13 · Paso 2/3 · Fácil » @ 202,834
+icône (liste) « Capítulos » @ 439,835
+icône ⌃ @ 531,835
+icône « Te toca: en la Subida, borra los golpes del último tiempo: un silencio antes del Drop. Leer » ⌃ @ 294,965
+icône ↶ « Deshacer » @ 72,1061
+image ↷ @ 185,1048
+bouton ▶ « la canción » @ 304,1061
+texte « 120 Tempo » @ 424,1061
+icône ⋮ « Más » @ 527,1061
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 356,1248
+texte « ✎  Anotar » @ 454,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 160,1248

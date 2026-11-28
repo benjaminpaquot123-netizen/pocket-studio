@@ -1,0 +1,62 @@
+Écran 134 (900x1509)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 230,42
+bouton « プロ » @ 488,42
+icône ↶ @ 561,42
+icône ↷ [désactivé] @ 633,42
+bouton ● @ 705,42
+bouton ▶ « このパート » @ 780,42
+icône (trois points reliés) @ 855,42
+bouton « 138  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « タイムライン » [désactivé] @ 108,192
+onglet « パート » [sélectionné] @ 246,192
+titre « 曲 » [état « 開いた状態 »] @ 96,285
+bouton « ? » @ 129,285
+texte « タイムラインはパートを順番に並べる。それぞれの長さは小節数。 順番に足してね。 » @ 408,333
+texte « 追加： » @ 73,374
+bouton « + A · グルーヴ » @ 147,438
+bouton « + 新しいパート（A · グルーヴのコピー） » @ 493,438
+bouton « + 新しい空のパート » @ 173,519
+bouton (barres de son) «   曲で鳴っているもの » [coupé] @ 450,582
+icône (liste) « チャプター » @ 756,646
+texte « パートを理解する チャプター 5/12 · ステップ 5/5 · プロ » @ 363,646
+icône ⌄ @ 843,646
+texte « マップを見よう：1マスが1パートで、長さは小節数。カーブはエネルギーを表す。 » @ 450,745
+texte « エネルギー » @ 69,804
+texte « イントロ » @ 73,899
+texte « 16 » @ 73,925
+texte « イントロ 2 » @ 182,899
+texte « 16 » @ 182,925
+texte « ドロップ » @ 342,899
+texte « 32 » @ 343,925
+texte « 12 » @ 490,911
+texte « 4 » @ 545,911
+texte « ドロップ 2 » @ 666,899
+texte « 32 » @ 666,925
+texte « 16 » @ 826,911
+texte «  イントロ » @ 78,961
+texte «  イントロ 2 » @ 200,961
+texte «  ドロップ » @ 323,961
+texte «  ブレイク » @ 436,961
+texte «  ビルドアップ » @ 569,961
+texte «  ドロップ 2 » @ 710,961
+texte «  エンディング » @ 96,992
+texte « 数字はパートの長さ（小節数）。 » @ 165,1023
+texte « ▸ なぜ？ » @ 450,1061
+bouton ✓ «   わかった » @ 450,1125
+icône ← «  前へ » @ 77,1209
+icône « 次へ  » → @ 823,1209
+icône ↶ « 元に戻す » @ 124,1293
+icône ↷ « やり直す » [désactivé] @ 284,1293
+bouton ▶ « 曲 » @ 444,1293
+texte « 138 テンポ » @ 610,1293
+icône (trois points reliés) « シェア » @ 776,1293
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 85,1389
+onglet (touches de piano) « サウンド » @ 268,1389
+onglet (curseurs) « ミックス » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « その他 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  メモ » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « フィードバックモード » @ 318,1479

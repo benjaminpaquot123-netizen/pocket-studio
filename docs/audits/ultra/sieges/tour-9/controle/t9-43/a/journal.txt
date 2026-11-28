@@ -1,0 +1,597 @@
+#0 SIEGE lang=nl device=tablet8 font=130 mode=pro theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:liquid_dnb:1
+#0 PREMIER ECRAN reel_s=4.5 simule_s=2.4 jvm_s=10.7 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:liquid_dnb:1
+#0 AMENEE > touche 450 1268 (launch_learn)
+#0 AMENEE > touche 670 1305 (mode_card_pro)
+#0 AMENEE > touche 450 1435 (tuto_style_liquid_dnb)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE ce6d9e0951 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Opgeslagen » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1123
+#1 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE fcc18a5b4a | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 402 926
+#2 DOIGT tuto_kit_download « Kit Liquid DnB downloaden (2 MB) »
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE 82a50e3c24 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ref done=1 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > touche 450 1123
+#3 DOIGT tuto_next_big « Volgende stap   »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE 0166d467e6 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=tempo done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 83 123
+#4 DOIGT top_tempo « Tempo: 120 BPM »
+#5 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE acb29dee6b | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « Tempo » over the touchable « Blad sluiten » (82 x 32 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « Blad sluiten » (9 x 18 dp)
+#5 LAYOUT OVERLAP « Sluiten » over the touchable « Blad sluiten » (63 x 27 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Blad sluiten » (86 x 53 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « Blad sluiten » (50 x 31 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « Blad sluiten » (25 x 24 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « Blad sluiten » (25 x 24 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « Blad sluiten » (38 x 24 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « Blad sluiten » (38 x 24 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « Blad sluiten » (38 x 24 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « Blad sluiten » (17 x 31 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « Blad sluiten » (26 x 31 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « Blad sluiten » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « Blad sluiten » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « Blad sluiten » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « Blad sluiten » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « Blad sluiten » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « Blad sluiten » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « Blad sluiten » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « Blad sluiten » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « Blad sluiten » (16 x 30 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « Blad sluiten » (16 x 30 dp)
+#5 LAYOUT OVERLAP « OK » over the touchable « Blad sluiten » (37 x 30 dp)
+#5 LAYOUT OVERLAP « Tik in de maat » over the touchable « Blad sluiten » (136 x 31 dp)
+#5 LAYOUT OVERLAP « Tik hier op elke tel: het tempo volgt. » over the touchable « Blad sluiten » (286 x 24 dp)
+#5 > touche 494 990
+#5 DOIGT tempo_preset_174 « 174 »
+#6 ROUTE tab_Sons | MODE pro | EMPREINTE 58d16d9a63 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=tempo done=2 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 450 1123
+#6 DOIGT tuto_next_big « Volgende stap   »
+#7 ROUTE tab_Sons | MODE pro | EMPREINTE bf42122a99 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=key done=2 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 450 1042
+#7 DOIGT tuto_do «   Ik doe het »
+#8 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE f491fc6f34 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=key done=2 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « Toonsoort van het nummer » over the touchable « Blad sluiten » (321 x 32 dp)
+#8 LAYOUT OVERLAP « Toonsoort van het nummer: geen » over the touchable « Blad sluiten » (296 x 27 dp)
+#8 LAYOUT OVERLAP « Toonladder » over the touchable « Blad sluiten » (101 x 27 dp)
+#8 LAYOUT OVERLAP « Majeur » over the touchable « Blad sluiten » (65 x 31 dp)
+#8 LAYOUT OVERLAP « Mineur » over the touchable « Blad sluiten » (69 x 31 dp)
+#8 LAYOUT OVERLAP « Dorisch » over the touchable « Blad sluiten » (73 x 31 dp)
+#8 LAYOUT OVERLAP « Mineur-penta » over the touchable « Blad sluiten » (127 x 31 dp)
+#8 LAYOUT OVERLAP « Majeur-penta » over the touchable « Blad sluiten » (127 x 31 dp)
+#8 LAYOUT OVERLAP « Blues » over the touchable « Blad sluiten » (52 x 31 dp)
+#8 LAYOUT OVERLAP « Frygisch » over the touchable « Blad sluiten » (81 x 31 dp)
+#8 LAYOUT OVERLAP « Harmonisch mineur » over the touchable « Blad sluiten » (184 x 31 dp)
+#8 LAYOUT OVERLAP « Grondtoon » over the touchable « Blad sluiten » (96 x 27 dp)
+#8 LAYOUT OVERLAP « C » over the touchable « Blad sluiten » (15 x 31 dp)
+#8 LAYOUT OVERLAP « C♯ » over the touchable « Blad sluiten » (26 x 31 dp)
+#8 LAYOUT OVERLAP « D » over the touchable « Blad sluiten » (15 x 31 dp)
+#8 LAYOUT OVERLAP « E♭ » over the touchable « Blad sluiten » (19 x 31 dp)
+#8 LAYOUT OVERLAP « E » over the touchable « Blad sluiten » (12 x 31 dp)
+#8 LAYOUT OVERLAP « F » over the touchable « Blad sluiten » (12 x 31 dp)
+#8 LAYOUT OVERLAP « F♯ » over the touchable « Blad sluiten » (23 x 31 dp)
+#8 LAYOUT OVERLAP « G » over the touchable « Blad sluiten » (15 x 31 dp)
+#8 LAYOUT OVERLAP « A♭ » over the touchable « Blad sluiten » (21 x 31 dp)
+#8 LAYOUT OVERLAP « A » over the touchable « Blad sluiten » (15 x 31 dp)
+#8 LAYOUT OVERLAP « B♭ » over the touchable « Blad sluiten » (20 x 31 dp)
+#8 LAYOUT OVERLAP « B » over the touchable « Blad sluiten » (13 x 31 dp)
+#8 > touche 236 1132
+#8 DOIGT tuto_scale_Minor « Mineur »
+#9 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 54c3eaf449 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=key done=2 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « Toonsoort van het nummer: C · Mineur » over the touchable « Blad sluiten » (343 x 27 dp)
+#9 > touche 63 1437
+#9 DOIGT tuto_root_9 « A »
+#10 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 71aab429f9 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=key done=3 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « Toonsoort van het nummer: A · Mineur » over the touchable « Blad sluiten » (343 x 27 dp)
+#10 LAYOUT OVERLAP « Gelukt! De kleur van het nummer is gekozen. » over the touchable « Blad sluiten » (435 x 31 dp)
+#10 LAYOUT OVERLAP « Terug naar de tutorial » over the touchable « Blad sluiten » (198 x 27 dp)
+#10 > touche 450 1434
+#10 DOIGT tuto_key_continue « Terug naar de tutorial »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE 0e23c347f4 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=key done=3 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 450 1196
+#11 DOIGT tuto_chapter_end_folded « Goed gedaan, hoofdstuk klaar! »
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE 5992a95cdd | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=key done=3 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 450 1123
+#12 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE d6c2ba6118 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ready done=3 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 1123
+#13 DOIGT tuto_mark «   Begrepen »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 131fabb603 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_hear done=4 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 450 1123
+#14 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 178499e522 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_hear done=4 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > attends 4
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE 21a503ec92 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_hear done=5 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1123
+#16 DOIGT tuto_next_big « Volgende stap   »
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 754b994c21 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_do done=5 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « VAKJES: STUDIOKICK » 1.32:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « ? » 1.78:1 (needs 4.5:1, 12 sp)
+#17 LAYOUT CONTRAST « Alle pads » 1.41:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « 1 » 3.38:1 (needs 4.5:1, 12 sp)
+#17 > touche 90 474
+#17 DOIGT step_0 « Vakje 1 »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE 5717bf33d0 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_do done=5 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 294 555
+#18 DOIGT step_10 « Vakje 11 »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE 49fea25825 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_do done=5 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 450 1042
+#19 DOIGT tuto_need «   Naar 2 maten »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE 2959477f77 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_do done=5 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CUT « Nu jij: op de pad van de kick de gestippelde vakjes van de 2 maten: de two-step (1.1 en 1.3.3) en de aanloop aan het begin van de 2e. » ellipsized (« … »)
+#20 LAYOUT CONTRAST « VAKJES: STUDIOKICK » 1.28:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « ? » 1.76:1 (needs 4.5:1, 12 sp)
+#20 LAYOUT CONTRAST « Alle pads » 1.46:1 (needs 4.5:1, 14 sp)
+#20 > touche 234 384
+#20 DOIGT drum_page_1 « 2 »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE 75ad351099 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_do done=5 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 294 558
+#21 DOIGT step_18 « Vakje 3 »
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE b3ad64e475 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_do done=6 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 450 1196
+#22 DOIGT tuto_next_folded « Gelukt »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE eeff1428a8 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_sound done=6 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « VAKJES: STUDIOKICK » 1.35:1 (needs 4.5:1, 12 sp)
+#23 LAYOUT CONTRAST « ? » 1.73:1 (needs 4.5:1, 12 sp)
+#23 LAYOUT CONTRAST « Alle pads » 1.50:1 (needs 4.5:1, 14 sp)
+#23 > touche 450 1042
+#23 DOIGT tuto_mark «   Begrepen »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 4529e1a36c | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=kick_sound done=7 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 450 1095
+#24 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE b2c6b0e559 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=7 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « VAKJES: SNARE » 1.47:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#25 > touche 500 558
+#25 DOIGT step_4 « Vakje 5 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE 16055d1f6d | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=7 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 809 558
+#26 DOIGT step_7 « Vakje 8 »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE 46971207b9 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=7 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « 4 » 3.06:1 (needs 4.5:1, 12 sp)
+#27 > touche 500 639
+#27 DOIGT step_12 « Vakje 13 »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE e86365db66 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=7 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 234 384
+#28 DOIGT drum_page_1 « 2 »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE e24e349d4c | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=7 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 500 558
+#29 DOIGT step_20 « Vakje 5 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 79e724f71d | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=7 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 809 558
+#30 DOIGT step_23 « Vakje 8 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE b00918d566 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=7 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 500 639
+#31 DOIGT step_28 « Vakje 13 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE 4c077e90e5 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=7 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 706 639
+#32 DOIGT step_30 « Vakje 15 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE e500b4e25b | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=8 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CONTRAST « VAKJES: SNARE » 1.51:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « ? » 1.75:1 (needs 4.5:1, 12 sp)
+#33 LAYOUT CONTRAST « Alle pads » 1.48:1 (needs 4.5:1, 14 sp)
+#33 > appui-long 809 553
+#33 DOIGT step_23 « Vakje 8 »
+#34 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 04db1e8227 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=8 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 632 776
+#34 DOIGT roll_force_2 « Zacht »
+#35 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 172fa429af | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=8 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 804 645
+#35 DOIGT roll_close
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE e500b4e25b | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=snare_do done=8 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 450 1095
+#36 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 9ac4cf3b66 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=hat_do done=8 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CONTRAST « VAKJES: HI-HAT » 1.42:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « Alle pads » 1.37:1 (needs 4.5:1, 14 sp)
+#37 LAYOUT CONTRAST « 1 » 3.09:1 (needs 4.5:1, 12 sp)
+#37 > touche 843 787
+#37 DOIGT tuto_fold
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 586605ee0e | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=hat_do done=8 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CONTRAST « VAKJES: HI-HAT » 1.37:1 (needs 4.5:1, 12 sp)
+#38 > touche 165 809
+#38 DOIGT fill_1 « alles »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 247046fde6 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=hat_do done=9 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « alles » 4.07:1 (needs 4.5:1, 14 sp)
+#39 > touche 450 1196
+#39 DOIGT tuto_next_folded « Gelukt »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE ff4df20b2c | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ohat_do done=9 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « VAKJES: OPEN HI-HAT » 1.42:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « ? » 1.86:1 (needs 4.5:1, 12 sp)
+#40 > touche 706 639
+#40 DOIGT step_14 « Vakje 15 »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 000167ce0e | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ohat_do done=9 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 234 384
+#41 DOIGT drum_page_1 « 2 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 6112d4670f | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ohat_do done=9 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 706 639
+#42 DOIGT step_30 « Vakje 15 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE b32c669f8c | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ohat_do done=10 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 450 1095
+#43 DOIGT tuto_next_big « Volgende stap   »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 332db8fe5a | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=10 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CONTRAST « VAKJES: RIM » 1.33:1 (needs 4.5:1, 12 sp)
+#44 > touche 294 558
+#44 DOIGT step_2 « Vakje 3 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 9e13ed5b38 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=10 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 706 558
+#45 DOIGT step_6 « Vakje 7 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE f8d811bac8 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=10 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 294 639
+#46 DOIGT step_10 « Vakje 11 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE 5f15446559 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=10 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 603 639
+#47 DOIGT step_13 « Vakje 14 »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE 1aa3469596 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=10 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 234 384
+#48 DOIGT drum_page_1 « 2 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE c164eea407 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=10 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 294 558
+#49 DOIGT step_18 « Vakje 3 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE aa97fa2b1b | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=10 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 706 558
+#50 DOIGT step_22 « Vakje 7 »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE 466b02d0be | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=10 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 294 639
+#51 DOIGT step_26 « Vakje 11 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE f4c3c70174 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=10 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 706 639
+#52 DOIGT step_30 « Vakje 15 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 323f8158eb | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=10 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 809 639
+#53 DOIGT step_31 « Vakje 16 »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 95294c8ebc | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=perc_do done=11 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 450 1095
+#54 DOIGT tuto_next_big « Volgende stap   »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE aa0a04f695 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ride_do done=11 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « VAKJES: BEKKEN » 1.45:1 (needs 4.5:1, 12 sp)
+#55 > touche 843 749
+#55 DOIGT tuto_fold
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE 4ece2a1ffd | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ride_do done=11 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CUT « Nu jij: tik op de pad ‘Bekken’ (het grote tinkelende bekken) de gestippelde vakjes aan: om de andere. Hij speelt alleen in de Drop. » ellipsized (« … »)
+#56 LAYOUT CONTRAST « VAKJES: BEKKEN » 1.42:1 (needs 4.5:1, 12 sp)
+#56 > touche 248 809
+#56 DOIGT fill_2 « 1/2 »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE cb46ce61f1 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=ride_do done=12 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « 1/2 » 4.07:1 (needs 4.5:1, 14 sp)
+#57 > touche 450 1196
+#57 DOIGT tuto_next_folded « Gelukt »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE 91d97dff0d | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=swing done=12 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « Hele nummer vastleggen: » 1.49:1 (needs 4.5:1, 13 sp)
+#58 LAYOUT CONTRAST « 1 maat » 1.38:1 (needs 4.5:1, 14 sp)
+#58 LAYOUT CONTRAST « 2 maten » 1.38:1 (needs 4.5:1, 14 sp)
+#58 LAYOUT CONTRAST « 4 maten » 1.38:1 (needs 4.5:1, 14 sp)
+#58 > touche 450 1042
+#58 DOIGT tuto_do «   Ik doe het »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE 699bba5366 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=swing done=12 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « ? » 3.47:1 (needs 4.5:1, 12 sp)
+#59 LAYOUT CONTRAST « 0% » 3.33:1 (needs 4.5:1, 14 sp)
+#59 > glisse 63 955 163 955
+#59 DOIGT dans:rhythm_swing « Swing »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE b1ef0bccd9 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=swing done=13 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 450 1196
+#60 DOIGT tuto_next_folded « Gelukt »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE 7a08f4be1f | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=drums_hear done=13 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 450 1042
+#61 DOIGT tuto_play_mine «   Luister naar je resultaat »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE 6c84dff0a3 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=drums_hear done=13 playing=true
+#62 SON Son : la musique du projet joue en boucle.
+#62 > attends 4
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 60340ef732 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=drums_hear done=13 playing=true
+#63 SON Son : la musique du projet joue en boucle.
+#63 > touche 450 1126
+#63 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE 7603aac514 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=drums_hear done=13 playing=false
+#64 SON Son : l'exemple du tuto joue (encore 3 s).
+#64 > attends 6
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE 18b9c075b6 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=drums_hear done=14 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 450 1095
+#65 DOIGT tuto_next_big « Volgend hoofdstuk   »
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE 7db701d2b1 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_hear done=14 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 450 1123
+#66 DOIGT tuto_listen «  Luister naar het voorbeeld »
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 33bc2d0ba1 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_hear done=14 playing=false
+#67 SON Son : l'exemple du tuto joue (encore 3 s).
+#67 > attends 8
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE 4b3e87c53e | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_hear done=15 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 450 1123
+#68 DOIGT tuto_next_big « Volgende stap   »
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE bce5170aca | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 796 205
+#69 DOIGT track_add «  Spoor »
+#70 ROUTE dialogue:track_add_sheet | MODE pro | EMPREINTE 21707ee84a | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT CONTRAST « Acid 303 » 1.53:1 (needs 4.5:1, 14 sp)
+#70 LAYOUT CONTRAST « Aangehouden akkoorden voor de sfeer » 2.50:1 (needs 4.5:1, 12 sp)
+#70 LAYOUT CONTRAST « Annuleren » 3.52:1 (needs 4.5:1, 14 sp)
+#70 > touche 450 775
+#70 DOIGT track_add_bass « Bas »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE f77e7e06ef | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 796 204
+#71 DOIGT track_1 « Bas »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE 4c50788563 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST «  Mijn melodie opnemen » 2.78:1 (needs 4.5:1, 14 sp)
+#72 > touche 237 354
+#72 DOIGT mode_notes « Noten »
+#73 ROUTE tab_Sons | MODE pro | EMPREINTE 94477daedd | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 843 649
+#73 DOIGT rien
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 94477daedd | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 843 723
+#74 DOIGT tuto_fold
+#75 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2d638aac44 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT CUT « Nu jij: maak het spoor Bas (‘Ronde bas’, zachte pomp). Maat 1 in de pianorol: de grondtoon F aangehouden, dezelfde korter, de kwint C; ‘Kopiëren naar de volgende maten’ zet hem op E en dan op A; dan de aanloop van maat 4 (A, C, E, D, C). » ellipsized (« … »)
+#75 > glisse 450 1000 450 450
+#75 DOIGT rien
+#76 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2dae251517 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 310 939
+#76 DOIGT rien
+#77 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f59b87c24c | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#77 SON Son : 1 note du synthé.
+#77 > touche 675 939
+#77 DOIGT rien
+#78 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 518fc20faa | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#78 SON Son : 1 note du synthé.
+#78 > touche 783 668
+#78 DOIGT tuto_notes_left « Bas · maat 1/1 »
+#79 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a1d285b5c7 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#79 SON Son : rien ne joue.
+#79 LAYOUT CONTRAST « Nog 1 gestippelde noot om aan te tikken » 4.25:1 (needs 4.5:1, 14 sp)
+#79 > touche 808 939
+#79 DOIGT rien
+#80 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 2321afb7d8 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#80 SON Son : 1 note du synthé.
+#80 > touche 450 1270
+#80 DOIGT tuto_need_folded « Kopiëren naar de volgende maten »
+#81 ROUTE synth/tab_Sons | MODE pro | EMPREINTE eb8f76a35e | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#81 SON Son : rien ne joue.
+#81 > touche 763 433
+#81 DOIGT tuto_roll_copy « Kopiëren »
+#82 ROUTE synth/tab_Sons | MODE pro | EMPREINTE eb8f76a35e | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 843 1158
+#82 DOIGT tuto_fold
+#83 ROUTE tab_Sons | MODE pro | EMPREINTE 645641d282 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 450 1116
+#83 DOIGT tuto_need «   Kopiëren naar de volgende maten »
+#84 ROUTE tab_Sons | MODE pro | EMPREINTE 645641d282 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 667 1200
+#84 DOIGT tuto_show «  Laat zien »
+#85 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7c2528570e | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT CONTRAST « Stoppen » 3.91:1 (needs 4.5:1, 14 sp)
+#85 > attends 5
+#86 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e559b5df76 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#86 SON Son : 3 notes du synthé.
+#86 > attends 10
+#87 ROUTE tab_Sons | MODE pro | EMPREINTE 645641d282 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 843 723
+#87 DOIGT tuto_fold
+#88 ROUTE synth/tab_Sons | MODE pro | EMPREINTE eb8f76a35e | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#88 SON Son : rien ne joue.
+#88 > glisse 800 502 200 502
+#88 DOIGT roll_bar_0 « 1 »
+#89 ROUTE synth/tab_Sons | MODE pro | EMPREINTE eb8f76a35e | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#89 SON Son : rien ne joue.
+#89 > glisse 450 400 450 900
+#89 DOIGT rien
+#90 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 30ce8936bc | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 330 521
+#90 DOIGT loop_plus « + »
+#91 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 0c4adde053 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT CONTRAST « + » 3.78:1 (needs 4.5:1, 14 sp)
+#91 > touche 330 521
+#91 DOIGT loop_plus « + »
+#92 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d7b59e5526 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#92 SON Son : rien ne joue.
+#92 LAYOUT CONTRAST « + » 3.64:1 (needs 4.5:1, 14 sp)
+#92 > touche 330 521
+#92 DOIGT loop_plus « + »
+#93 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b65bbc23e4 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#93 SON Son : rien ne joue.
+#93 LAYOUT CONTRAST « + » 3.71:1 (needs 4.5:1, 14 sp)
+#93 > touche 763 909
+#93 DOIGT tuto_roll_copy « Kopiëren »
+#94 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 86019a3490 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 450 432
+#94 DOIGT tuto_notes_left « Bas · maat 4/4 »
+#95 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 75b559d6bc | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#95 SON Son : rien ne joue.
+#95 LAYOUT CONTRAST « Nog 5 gestippelde noten om aan te tikken » 4.25:1 (needs 4.5:1, 14 sp)
+#95 > touche 270 967
+#95 DOIGT rien
+#96 ROUTE synth/tab_Sons | MODE pro | EMPREINTE ce7b2c3c7f | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#96 SON Son : 1 note du synthé.
+#96 > touche 452 841
+#96 DOIGT rien
+#97 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5adc22bc3e | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#97 SON Son : 1 note du synthé.
+#97 > touche 587 673
+#97 DOIGT rien
+#98 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1e0cfa67ae | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#98 SON Son : 1 note du synthé.
+#98 > touche 722 757
+#98 DOIGT rien
+#99 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 65791bef49 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#99 SON Son : 1 note du synthé.
+#99 > touche 810 841
+#99 DOIGT rien
+#100 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 1df3a1e83e | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#100 SON Son : 1 note du synthé.
+#100 > touche 450 1270
+#100 DOIGT tuto_need_folded « Kopiëren naar de volgende maten »
+#101 ROUTE synth/tab_Sons | MODE pro | EMPREINTE d91745ba4a | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 131 502
+#101 DOIGT roll_bar_2 « 3 »
+#102 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f460646e10 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#102 SON Son : rien ne joue.
+#102 LAYOUT CONTRAST « Verwijderen » 3.52:1 (needs 4.5:1, 14 sp)
+#102 > retour
+#102 RETOUR
+#103 ROUTE synth/tab_Sons | MODE pro | EMPREINTE f460646e10 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#103 SON Son : rien ne joue.
+#103 > glisse 450 600 450 1000
+#103 DOIGT rien
+#104 ROUTE synth/tab_Sons | MODE pro | EMPREINTE aa1d007284 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#104 SON Son : rien ne joue.
+#104 > touche 299 652
+#104 DOIGT dans:synth « Geen »
+#105 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 33d0c6cd63 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 169 340
+#105 DOIGT zoom_out « − »
+#106 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5d192dd14a | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#106 SON Son : rien ne joue.
+#106 LAYOUT CONTRAST « − » 3.76:1 (needs 4.5:1, 14 sp)
+#106 > touche 169 340
+#106 DOIGT zoom_out « − »
+#107 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 956fe6b1f4 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#107 SON Son : rien ne joue.
+#107 LAYOUT CONTRAST « − » 3.49:1 (needs 4.5:1, 14 sp)
+#107 > glisse 450 900 450 400
+#107 DOIGT roll_bar_2 « 3 »
+#108 ROUTE synth/tab_Sons | MODE pro | EMPREINTE da9f70ab5c | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 843 1158
+#108 DOIGT tuto_fold
+#109 ROUTE tab_Sons | MODE pro | EMPREINTE 9145e12408 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 778 1281
+#109 DOIGT tuto_next « Volgende  »
+#110 ROUTE tab_Sons | MODE pro | EMPREINTE fca5987aa6 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_do done=15 playing=false
+#110 SON Son : rien ne joue.
+#110 > touche 778 1281
+#110 DOIGT tuto_next « Volgende  »
+#111 ROUTE tab_Sons | MODE pro | EMPREINTE 059759c972 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_sub done=15 playing=false
+#111 SON Son : rien ne joue.
+#111 > touche 450 1116
+#111 DOIGT tuto_need «   Bas een octaaf lager kopiëren »
+#112 ROUTE tab_Sons | MODE pro | EMPREINTE 9c14a8e1c6 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_sub done=16 playing=false
+#112 SON Son : rien ne joue.
+#112 > touche 450 1169
+#112 DOIGT tuto_next_big « Volgende stap   »
+#113 ROUTE tab_Sons | MODE pro | EMPREINTE 73017f1b35 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_pump done=16 playing=false
+#113 SON Son : rien ne joue.
+#113 > touche 450 1116
+#113 DOIGT tuto_do «   Ik doe het »
+#114 ROUTE dialogue:effects_box_2 | MODE pro | EMPREINTE ea8dd948ab | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_pump done=16 playing=false
+#114 SON Son : rien ne joue.
+#114 LAYOUT CONTRAST « Effecten actief: 1 van 8 » 4.44:1 (needs 4.5:1, 14 sp)
+#114 LAYOUT CONTRAST « Kant-en-klare sferen » 4.44:1 (needs 4.5:1, 14 sp)
+#114 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#114 LAYOUT CONTRAST « Sluiten » 3.63:1 (needs 4.5:1, 14 sp)
+#114 > touche 783 1437
+#114 DOIGT fx_close « Sluiten »
+#115 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 6d5c9eb317 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_pump done=16 playing=false
+#115 SON Son : rien ne joue.
+#115 LAYOUT CUT « Nu jij: zet in Mix het effect ‘Pomp’ op het spoor Sub, en dan op het spoor Bas: ze worden bij elke kick zachter (sidechain). Vooral de Sub vecht met de kick in het laag. » ellipsized (« … »)
+#115 > touche 451 1389
+#115 DOIGT tab_Mix « Mix »
+#116 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 94f7ade514 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_pump done=16 playing=false
+#116 SON Son : rien ne joue.
+#116 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#116 > touche 444 301
+#116 COUVERT « Drums » couvre « Bas »
+#116 REFUS doigt couvert : « Drums » couvre « Bas »
+#117 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 5b3681da95 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_pump done=16 playing=false
+#117 SON Son : rien ne joue.
+#117 > touche 444 713
+#117 DOIGT rien
+#118 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 94f7ade514 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_pump done=16 playing=false
+#118 SON Son : rien ne joue.
+#118 > touche 843 1084
+#118 DOIGT tuto_fold
+#119 ROUTE tab_Mix | MODE pro | EMPREINTE bd224510c4 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_pump done=16 playing=false
+#119 SON Son : rien ne joue.
+#119 LAYOUT CONTRAST « ? » 3.92:1 (needs 4.5:1, 12 sp)
+#119 > touche 450 1042
+#119 DOIGT tuto_do «   Ik doe het »
+#120 ROUTE dialogue:effects_box_5 | MODE pro | EMPREINTE b50d973cad | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_pump done=17 playing=false
+#120 SON Son : rien ne joue.
+#120 > touche 783 1437
+#120 DOIGT fx_close « Sluiten »
+#121 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2fffd819b6 | project=p-144c57b1 tuto=liquid_dnb/Pro active=true step=bass_pump done=17 playing=false
+#121 SON Son : rien ne joue.
+#121 > fin
+#121 FIN : fin

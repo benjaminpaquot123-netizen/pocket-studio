@@ -1,0 +1,10 @@
+lang=pl
+device=tablet8
+font=130
+mode=pro
+amenee=tuto:pop:9
+gestes.max=174
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

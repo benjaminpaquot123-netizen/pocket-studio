@@ -1,0 +1,47 @@
+Écran 89 (540x1170)
+icône « マイプロジェクト 1 » ✓ @ 274,36
+bouton « プロ » @ 494,36
+bouton (dossier ouvert) @ 84,114
+bouton « A » ▾ @ 198,114
+icône ↶ @ 273,114
+bouton ● @ 345,114
+bouton ▶ « このパート » @ 420,114
+icône (trois points reliés) @ 495,114
+bouton « 122  BPM » @ 73,186
+bouton « ? » @ 495,186
+onglet « ボーカル マイク » @ 95,258
+onglet « リミックス 分離 » @ 254,258
+bouton « ベース 丸いベース » ⋮ @ 431,258
+image ← @ 10,259
+image → @ 529,259
+texte « パート：A » @ 69,321
+bouton « コード » @ 98,394
+bouton « ベースの影 » [sélectionné] @ 235,394
+texte « リズム補正 50% » @ 406,394
+bouton « ベース · 小節 1/8 タップする点線のノートがあと 2 個 » @ 270,475
+texte « 小節 » @ 69,534
+bouton « 1 » @ 297,544
+dessin @ 69,590
+dessin @ 69,619
+dessin @ 69,649
+dessin @ 69,679
+dessin @ 69,708
+dessin [coupé] @ 297,649
+icône (liste) « チャプター » @ 396,770
+texte « ベース チャプター 5/17 · ステップ 2/2 · プロ » @ 183,770
+icône ⌃ @ 483,770
+icône « あなたの番：ベーストラックを作り、1小節目を書こう（A、オクターブ跳躍）。「コピー」（2小節目は A、3小節目は IV の D に移調）、次に A に戻る E–G のターンを入れた4小節目。 読む » ⌃ @ 270,869
+icône ↶ « 元に戻す » @ 64,954
+icône ↷ « やり直す » [désactivé] @ 164,954
+bouton ▶ « 曲 » @ 264,954
+texte « 122 テンポ » @ 370,954
+icône (trois points reliés) « シェア » @ 476,954
+onglet (ligne brisée et points) « 構成 » @ 49,1050
+onglet (touches de piano) « サウンド » [sélectionné] @ 160,1050
+onglet (curseurs) « ミックス » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « その他 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  メモ » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « フィードバックモード » @ 138,1140

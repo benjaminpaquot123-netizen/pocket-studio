@@ -1,0 +1,3 @@
+tuto_panel/tab_Sons
+tab_Sons
+dialogue:roll_menu

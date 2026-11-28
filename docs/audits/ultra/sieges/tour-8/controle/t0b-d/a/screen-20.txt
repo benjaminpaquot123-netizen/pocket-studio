@@ -1,0 +1,142 @@
+Écran 20 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+icône « Partie : D · Drop » ▾ @ 115,180
+texte « Mesure » @ 79,232
+bouton « 1 » [coupé, sélectionné] @ 161,236
+bouton « 2 » [coupé] @ 242,236
+bouton « Suivre » [coupé] @ 344,236
+texte « Grosse caisse 1 » @ 96,297
+bouton [sélectionné] @ 163,296
+bouton @ 187,296
+bouton @ 211,296
+bouton @ 235,296
+bouton [sélectionné] @ 260,296
+bouton @ 285,296
+bouton @ 310,296
+bouton @ 335,296
+bouton [sélectionné] @ 360,296
+bouton @ 385,296
+bouton @ 410,296
+bouton @ 435,296
+bouton [sélectionné] @ 460,296
+bouton @ 485,296
+bouton @ 510,296
+bouton @ 535,296
+texte « Grosse caisse 2 » @ 96,333
+bouton @ 163,332
+bouton @ 187,332
+bouton @ 211,332
+bouton @ 235,332
+bouton @ 260,332
+bouton @ 285,332
+bouton @ 310,332
+bouton @ 335,332
+bouton @ 360,332
+bouton @ 385,332
+bouton @ 410,332
+bouton @ 435,332
+bouton @ 460,332
+bouton @ 485,332
+bouton @ 510,332
+bouton @ 535,332
+texte « Caisse » @ 96,369
+bouton @ 163,368
+bouton @ 187,368
+bouton @ 211,368
+bouton @ 235,368
+bouton @ 260,368
+bouton @ 285,368
+bouton @ 310,368
+bouton @ 335,368
+bouton @ 360,368
+bouton @ 385,368
+bouton @ 410,368
+bouton @ 435,368
+bouton @ 460,368
+bouton @ 485,368
+bouton @ 510,368
+bouton @ 535,368
+texte « Caisse 2 » @ 96,405
+bouton @ 163,404
+bouton @ 187,404
+bouton @ 211,404
+bouton @ 235,404
+bouton @ 260,404
+bouton @ 285,404
+bouton @ 310,404
+bouton @ 335,404
+bouton @ 360,404
+bouton @ 385,404
+bouton @ 410,404
+bouton @ 435,404
+bouton @ 460,404
+bouton @ 485,404
+bouton @ 510,404
+bouton @ 535,404
+texte « Claquement de mains » @ 96,441
+bouton @ 163,440
+bouton @ 187,440
+bouton @ 211,440
+bouton @ 235,440
+bouton [sélectionné] @ 260,440
+bouton @ 285,440
+bouton @ 310,440
+bouton @ 335,440
+bouton @ 360,440
+bouton @ 385,440
+bouton @ 410,440
+bouton @ 435,440
+bouton [sélectionné] @ 460,440
+bouton @ 485,440
+bouton @ 510,440
+bouton @ 535,440
+texte « Charley » [coupé] @ 96,472
+bouton [coupé, sélectionné] @ 163,470
+bouton [coupé, sélectionné] @ 187,470
+bouton [coupé] @ 211,470
+bouton [coupé, sélectionné] @ 235,470
+bouton [coupé, sélectionné] @ 260,470
+bouton [coupé, sélectionné] @ 285,470
+bouton [coupé] @ 310,470
+bouton [coupé, sélectionné] @ 335,470
+bouton [coupé, sélectionné] @ 360,470
+bouton [coupé, sélectionné] @ 385,470
+bouton [coupé] @ 410,470
+bouton [coupé, sélectionné] @ 435,470
+bouton [coupé, sélectionné] @ 460,470
+bouton [coupé, sélectionné] @ 485,470
+bouton [coupé] @ 510,470
+bouton [coupé, sélectionné] @ 535,470
+texte « Les transitions Chapitre 12/15 · Étape 3/3 · Facile » @ 207,528
+icône (liste) « Chapitres » @ 444,528
+icône ⌄ @ 531,528
+texte « À toi : touche « Aller dans la partie « Drop 2 » ». » @ 293,609
+bouton « Télécharger le kit House (4 Mo) » @ 236,684
+texte « Plus tard » @ 503,684
+texte « ▸ Pourquoi ? » @ 294,750
+bouton ⊕ «   Aller dans la partie « Drop 2 » » @ 294,813
+bouton ▶ «  Écouter l'exemple » @ 154,897
+bouton (œil) «  Montre-moi » @ 433,897
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

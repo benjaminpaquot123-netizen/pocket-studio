@@ -1,0 +1,27 @@
+Écran 12 (540x1170)
+dessin @ 270,36
+texte « Tonalidade da música » @ 186,139
+texte « Fechar » @ 432,139
+texte « Tom da música: Dó · Dórico » @ 270,277
+texte « Escala » @ 85,376
+bouton « Maior » @ 98,455
+bouton « Menor » @ 264,455
+bouton « Dórico » @ 110,536
+bouton « Penta menor » @ 349,536
+bouton « Penta maior » @ 161,617
+bouton « Blues » @ 379,617
+bouton « Frígio » @ 98,698
+bouton « Menor harmônica » @ 218,779
+texte « Tônica » @ 87,858
+bouton « Dó » @ 70,937
+bouton « Dó♯ » @ 182,937
+bouton « Ré » @ 291,937
+bouton « Mi♭ » @ 393,937
+bouton « Mi » @ 66,1018
+bouton « Fá » @ 159,1018
+bouton « Fá♯ » @ 263,1018
+bouton « Sol » @ 375,1018
+bouton « Lá♭ » @ 73,1099
+bouton « Lá » @ 174,1099
+bouton « Si♭ » @ 269,1099
+bouton « Si » @ 361,1099

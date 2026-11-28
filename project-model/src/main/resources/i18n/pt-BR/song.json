@@ -13,7 +13,6 @@
   "Afficher :": "Mostrar:",
   "Aide de la ligne du temps": "Ajuda da linha do tempo",
   "Ajouter :": "Adicionar:",
-  "Ajouter à la fin :": "Adicionar no fim:",
   "Ajouter à la suite": "Adicionar em seguida",
   "Annuler la dernière action": "Desfazer",
   "Annuler la prise": "Cancelar o take",
@@ -275,8 +274,8 @@
   "Terminé": "Pronto",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Sua música está vazia: adicione suas partes na ordem em que tocam (Intro, Verso, Refrão…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Toque num pad para disparar o som, toque de novo para parar. Tudo fica no tempo.",
-  "Touche une partie : elle joue juste après celle en cours.": "Toque numa parte: ela toca logo depois da atual.",
-  "Touche une partie pour écouter le morceau à partir d'elle.": "Toque numa parte para ouvir a música a partir dela.",
+  "Touche une partie pour régler sa longueur ; ▶ la joue juste après celle en cours.": "Toque numa parte para ajustar a duração; ▶ toca ela logo depois da atual.",
+  "Touche une partie pour régler sa longueur ; ▶ écoute le morceau à partir d'elle.": "Toque numa parte para ajustar a duração; ▶ toca a música a partir dela.",
   "Toucher la règle : jouer depuis cette partie.": "Toque na régua: tocar a partir dessa parte.",
   "Toucher une case : couper ou remettre la piste dans cette partie.": "Toque numa casa: silenciar ou reativar a faixa nesta parte.",
   "Tout couper": "Parar tudo",
@@ -404,5 +403,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Toque as notas: elas soam no Acid 303. Toque na casa de novo para parar: o loop se encaixa no compasso.",
   "Le micro ne répond pas : réessaie.": "O microfone não responde: tente de novo.",
   "Vider la case": "Limpar a casa",
-  "Annuler possible": "Dá para desfazer"
+  "Annuler possible": "Dá para desfazer",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : repetições. Cinza: duração fixa (sugerida ou Live) ou só 1 vez."
 }

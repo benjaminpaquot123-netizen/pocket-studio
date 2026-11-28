@@ -1,0 +1,73 @@
+Écran 19 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 194,42
+texte « Pro » @ 415,42
+bouton « A » ▾ @ 490,42
+icône ↶ @ 565,42
+icône ↷ [désactivé] @ 637,42
+bouton ● @ 709,42
+bouton ▶ « bagian ini » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » [sélectionné] @ 71,183
+onglet « Acid 303 Bassline » @ 212,183
+onglet « Vokal Mikrofon » @ 365,183
+onglet « Remix Pisahkan » @ 516,183
+bouton + «  Trek » @ 672,183
+texte « Bagian: A » @ 68,243
+bouton « Gabber · Kick FX » @ 123,322
+bouton « Kick 2 » @ 341,322
+bouton « Roland TR-909 · Snare FX » @ 559,322
+bouton « Snare 2 » @ 777,322
+bouton « Gabber · Clap FX » @ 123,409
+bouton « Roland TR-909 · Hi-hat L 30 » @ 341,409
+bouton « Gabber · Hi-hat terbuka R 30 » @ 559,409
+bouton « Tom rendah » @ 777,409
+bouton « Tom tengah R 45 » @ 123,496
+bouton « Tom tinggi » @ 341,496
+bouton « Rim R 50 » @ 559,496
+bouton « Cowbell » @ 777,496
+bouton « Simbal FX R 40 » @ 123,583
+bouton « Shaker L 50 » @ 341,583
+bouton « Conga » @ 559,583
+bouton « Zap » @ 777,583
+bouton « Kit: Kustom » ▾ @ 116,666
+texte « Pad bunyi, kotak menyimpan pukulan. Tekan lama: ganti suara. » @ 554,666
+titre « STEP: GABBER · KICK » [état « Terbuka »] @ 368,774
+bouton « ? » @ 332,774
+bouton « Semua pad » @ 776,774
+texte « Gabber · Kick » @ 121,858
+bouton « 1 » [état « kosong »] @ 90,943
+bouton [état « kosong »] @ 192,943
+bouton [état « kosong »] @ 294,943
+bouton [état « kosong »] @ 397,943
+bouton « 2 » [état « kosong »] @ 500,943
+bouton [état « kosong »] @ 603,943
+bouton [état « kosong »] @ 706,943
+bouton [état « kosong »] @ 809,943
+bouton « 3 » [état « kosong »] @ 90,1024
+bouton [état « kosong »] @ 192,1024
+bouton [état « kosong »] @ 294,1024
+bouton [état « kosong »] @ 397,1024
+bouton « 4 » [état « kosong »] @ 500,1024
+bouton [état « kosong »] @ 603,1024
+bouton [état « kosong »] @ 706,1024
+bouton [état « kosong »] @ 809,1024
+icône (liste) « Bab » @ 771,1110
+texte « Tempo dan kunci nada Bab 1/14 · Selesai · Pro » @ 378,1110
+icône ⌃ @ 843,1110
+icône (coupe) « Bagus, bab selesai! » ⌃ @ 450,1209
+icône ↶ « Urungkan » @ 124,1293
+icône ↷ « Ulangi » [désactivé] @ 285,1293
+bouton ▶ « lagu » @ 445,1293
+texte « 175 Tempo » @ 610,1293
+icône (trois points reliés) « Bagikan » @ 776,1293
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

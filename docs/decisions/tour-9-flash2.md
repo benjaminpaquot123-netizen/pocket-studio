@@ -1,0 +1,5 @@
+# Décisions du lot « flash2 » (tour 9)
+
+- 2026-11-22 : les deux rouges de la CI 410 (adba37efb) ne viennent pas de « flash » : p5 était déjà rouge de la même façon en CI 398 et 403, et Tour5 « partie neuve » est noté instable dans tour-9-rouges3-rapport.md ; les deux classes passent en local sur adba37efb (deux fois, même sous charge).
+- 2026-11-22 : p5 (« Chargement de la liste… » pour toujours, « aucun fil de l'appli au travail ») : l'ouvrier unique de la file de `ProjectsViewModel` s'arrêtait pour de bon si une opération finissait sur une annulation à elle alors que le modèle vit encore ; toutes les lectures suivantes attendaient. Remède dans l'appli : l'ouvrier ne s'arrête qu'avec le modèle (`isActive`), sinon il note l'interruption, enlève l'attente et passe à la suivante. Cause probable, pas prouvée sur la CI (pas de reproduction locale). Retour arrière : annuler 1e9f33333.
+- 2026-11-22 : Tour5 `simplePartsPickedAfterTheGuidesListenAreEdited` : aucune cause trouvée (pas de reproduction locale, la CI ne garde que le message) ; test laissé tel quel, ni sauté ni affaibli. À reprendre si le rouge revient.

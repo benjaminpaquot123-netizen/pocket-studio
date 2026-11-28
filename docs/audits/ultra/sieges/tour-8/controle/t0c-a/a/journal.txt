@@ -1,0 +1,515 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:techno:8
+#0 PREMIER ECRAN reel_s=4.6 simule_s=2.4 jvm_s=11.2 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:techno:8
+#0 AMENEE > touche 294 621 (welcome_learn)
+#0 AMENEE > touche 294 915 (mode_card_simple)
+#0 AMENEE > touche 294 289 (tuto_style_techno)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 444 450 (tuto_chapters)
+#0 AMENEE > touche 294 729 (tuto_chapter_7)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 0791c9f2d8 | project=p-14a8a1e2 tuto=techno/Facile active=true step=groove_hear done=16 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#1 > touche 294 813
+#1 DOIGT tuto_play_mine «   Écouter ton résultat »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE aab38c6221 | project=p-14a8a1e2 tuto=techno/Facile active=true step=groove_hear done=16 playing=true
+#2 SON Son : la musique du projet joue en boucle.
+#2 > attends 3
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 77e9b2d02e | project=p-14a8a1e2 tuto=techno/Facile active=true step=groove_hear done=16 playing=true
+#3 SON Son : la musique du projet joue en boucle.
+#3 > touche 294 897
+#3 DOIGT tuto_listen «  Écouter l'exemple »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 8b73122e27 | project=p-14a8a1e2 tuto=techno/Facile active=true step=groove_hear done=16 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 3 s).
+#4 > attends 4
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d944273136 | project=p-14a8a1e2 tuto=techno/Facile active=true step=groove_hear done=17 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 493 978
+#5 DOIGT tuto_next « Suivant  »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 470cd6c595 | project=p-14a8a1e2 tuto=techno/Facile active=true step=groove_name done=17 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 294 813
+#6 DOIGT tuto_need «   Nommer la partie « Groove » »
+#7 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 08435fe5c0 | project=p-14a8a1e2 tuto=techno/Facile active=true step=groove_name done=18 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures. Ajoute-les dans l'ordre. » over the touchable « Tempo : 132 battements par minute Change » (77 x 4 dp)
+#7 LAYOUT OVERLAP « La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures. Ajoute-les dans l'ordre. » over the touchable « Étiqueter l'écran » (6 x 4 dp)
+#7 LAYOUT CONTRAST « La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures. Ajoute-les dans l'ordre. » 3.53:1 (needs 4.5:1, 13 sp)
+#7 > touche 216 975
+#7 DOIGT tuto_play_mine «  Écouter mon morceau »
+#8 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3d4e9a875e | project=p-14a8a1e2 tuto=techno/Facile active=true step=groove_name done=18 playing=true
+#8 SON Son : la musique du projet joue en boucle.
+#8 LAYOUT OVERLAP « La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures. Ajoute-les dans l'ordre. » over the touchable « Jouer depuis une partie » (96 x 4 dp)
+#8 > touche 294 888
+#8 DOIGT tuto_next_big « Chapitre suivant   »
+#9 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ab7688ec8f | project=p-14a8a1e2 tuto=techno/Facile active=true step=brick done=18 playing=true
+#9 SON Son : la musique du projet joue en boucle.
+#9 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « 12 » 4.28:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « 4 » 3.56:1 (needs 4.5:1, 12 sp)
+#9 LAYOUT CONTRAST « 16 » 4.24:1 (needs 4.5:1, 12 sp)
+#9 > touche 294 822
+#9 DOIGT tuto_text_more « Lire la suite »
+#10 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2cc6adfd0d | project=p-14a8a1e2 tuto=techno/Facile active=true step=brick done=18 playing=true
+#10 SON Son : la musique du projet joue en boucle.
+#10 > touche 294 894
+#10 DOIGT tuto_mark «   J'ai compris »
+#11 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 30b7bd4cd3 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_intro done=19 playing=true
+#11 SON Son : la musique du projet joue en boucle.
+#11 LAYOUT CONTRAST « Intro » 4.15:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#11 LAYOUT CONTRAST «  Drop » 1.20:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST «  Break » 1.45:1 (needs 4.5:1, 13 sp)
+#11 LAYOUT CONTRAST «  Montée » 1.22:1 (needs 4.5:1, 13 sp)
+#11 > touche 294 822
+#11 DOIGT tuto_text_more « Lire la suite »
+#12 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 1860cf74bc | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_intro done=19 playing=true
+#12 SON Son : la musique du projet joue en boucle.
+#12 > touche 294 894
+#12 DOIGT tuto_listen «  Écouter l'exemple »
+#13 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c869981083 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_intro done=19 playing=false
+#13 SON Son : l'exemple du tuto joue (encore 3 s).
+#13 > attends 4
+#14 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 85b758ff0e | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_intro done=20 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 493 978
+#14 DOIGT tuto_next « Suivant  »
+#15 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE b76e1d0386 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_intro2 done=20 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 294 894
+#15 DOIGT tuto_listen «  Écouter l'exemple »
+#16 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ea2ce5353c | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_intro2 done=20 playing=false
+#16 SON Son : l'exemple du tuto joue (encore 3 s).
+#16 > attends 4
+#17 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE e0481f89e5 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_intro2 done=21 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 493 978
+#17 DOIGT tuto_next « Suivant  »
+#18 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE ec29c21227 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_drop done=21 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « Drop » 3.09:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST «  Drop » 1.46:1 (needs 4.5:1, 13 sp)
+#18 > touche 294 822
+#18 DOIGT tuto_text_more « Lire la suite »
+#19 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 4f37423590 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_drop done=21 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 294 894
+#19 DOIGT tuto_listen «  Écouter l'exemple »
+#20 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2036ed7067 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_drop done=21 playing=false
+#20 SON Son : l'exemple du tuto joue (encore 3 s).
+#20 > attends 4
+#21 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d9ce8be354 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_drop done=22 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 493 978
+#21 DOIGT tuto_next « Suivant  »
+#22 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 55ad79d24f | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_break done=22 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « 12 » 2.53:1 (needs 4.5:1, 12 sp)
+#22 > touche 294 822
+#22 DOIGT tuto_text_more « Lire la suite »
+#23 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3c4716da01 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_break done=22 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 294 894
+#23 DOIGT tuto_listen «  Écouter l'exemple »
+#24 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d4968d9100 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_break done=22 playing=false
+#24 SON Son : l'exemple du tuto joue (encore 3 s).
+#24 > attends 4
+#25 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 25813c3495 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_break done=23 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 493 978
+#25 DOIGT tuto_next « Suivant  »
+#26 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 451262fbe8 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_montee done=23 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « 4 » 2.05:1 (needs 4.5:1, 12 sp)
+#26 LAYOUT CONTRAST «  Montée » 2.43:1 (needs 4.5:1, 13 sp)
+#26 > touche 294 822
+#26 DOIGT tuto_text_more « Lire la suite »
+#27 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 02224d0650 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_montee done=23 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 294 894
+#27 DOIGT tuto_listen «  Écouter l'exemple »
+#28 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3ffdd58871 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_montee done=23 playing=false
+#28 SON Son : l'exemple du tuto joue (encore 3 s).
+#28 > attends 4
+#29 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d6e6770f0c | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_montee done=24 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 294 894
+#29 DOIGT tuto_next_big « Étape suivante   »
+#30 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE aaeec2e8ba | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_phrases done=24 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 294 822
+#30 DOIGT tuto_text_more « Lire la suite »
+#31 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 882d3c30f0 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_phrases done=24 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 294 894
+#31 DOIGT tuto_mark «   J'ai compris »
+#32 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE b763d59551 | project=p-14a8a1e2 tuto=techno/Facile active=true step=map_phrases done=25 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 294 888
+#32 DOIGT tuto_next_big « Chapitre suivant   »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 172fac5576 | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_intro done=25 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 294 813
+#33 DOIGT tuto_need «   Créer la partie « Intro » »
+#34 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2d13d72d73 | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_intro done=26 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 294 888
+#34 DOIGT tuto_next_big « Étape suivante   »
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e909572602 | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_intro2 done=26 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 294 813
+#35 DOIGT tuto_need «   Créer la partie « Intro 2 » »
+#36 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 34c7244be3 | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_intro2 done=27 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 294 888
+#36 DOIGT tuto_next_big « Étape suivante   »
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 798e0c88b1 | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_drop done=27 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 294 813
+#37 DOIGT tuto_need «   Créer la partie « Drop » »
+#38 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 491f16f93b | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_drop done=28 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 294 888
+#38 DOIGT tuto_next_big « Étape suivante   »
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9965296e0d | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_break done=28 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 294 813
+#39 DOIGT tuto_need «   Créer la partie « Break » »
+#40 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5534f2e15d | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_break done=29 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 294 888
+#40 DOIGT tuto_next_big « Étape suivante   »
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e043eb7e86 | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_montee done=29 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 294 813
+#41 DOIGT tuto_need «   Créer la partie « Montée » »
+#42 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 8aee557281 | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_montee done=30 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 216 975
+#42 DOIGT tuto_play_mine «  Écouter ton résultat »
+#43 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 79dbcb1729 | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_montee done=30 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 294 888
+#43 DOIGT tuto_next_big « Étape suivante   »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5a4f5b82ae | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_drop2 done=30 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 294 813
+#44 DOIGT tuto_need «   Créer la partie « Drop 2 » »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d3d1fe9b9b | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_drop2 done=31 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 294 888
+#45 DOIGT tuto_next_big « Étape suivante   »
+#46 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 45d33d9e31 | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_fin done=31 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 294 813
+#46 DOIGT tuto_need «   Créer la partie « Fin » »
+#47 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 41ac87df36 | project=p-14a8a1e2 tuto=techno/Facile active=true step=make_fin done=32 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 294 888
+#47 DOIGT tuto_next_big « Chapitre suivant   »
+#48 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE f0fa582c26 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=32 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 294 813
+#48 DOIGT tuto_do «   Je le fais »
+#49 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 11f59e26f6 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=32 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 LAYOUT CUT « À toi : dans « Mon morceau », sous « Ajouter », touche dans l'ordre Intro, Intro 2, Drop, Break, Montée, Drop 2 et Fin. » ellipsized (« … »)
+#49 LAYOUT CONTRAST « La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures. Ajoute-les dans l'ordre. » 2.34:1 (needs 4.5:1, 13 sp)
+#49 LAYOUT CONTRAST « + A · Groove » 4.06:1 (needs 4.5:1, 14 sp)
+#49 LAYOUT CONTRAST « + B · Intro » 4.06:1 (needs 4.5:1, 14 sp)
+#49 LAYOUT CONTRAST « + C · Intro 2 » 4.16:1 (needs 4.5:1, 14 sp)
+#49 LAYOUT CONTRAST « + D · Drop » 4.16:1 (needs 4.5:1, 14 sp)
+#49 LAYOUT CONTRAST « + E · Break » 4.23:1 (needs 4.5:1, 14 sp)
+#49 LAYOUT CONTRAST « + F · Montée » 4.23:1 (needs 4.5:1, 14 sp)
+#49 LAYOUT CONTRAST « + G · Drop 2 » 4.25:1 (needs 4.5:1, 14 sp)
+#49 LAYOUT CONTRAST « + H · Fin » 4.25:1 (needs 4.5:1, 14 sp)
+#49 LAYOUT CONTRAST « + Nouvelle partie (copie de H · Fin) » 4.30:1 (needs 4.5:1, 14 sp)
+#49 LAYOUT CONTRAST « + Nouvelle partie vide » 4.37:1 (needs 4.5:1, 14 sp)
+#49 > touche 336 264
+#49 DOIGT add_part_1 « + B · Intro »
+#50 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1963aff178 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=32 playing=true
+#50 SON Son : la musique du projet joue en boucle.
+#50 LAYOUT CONTRAST « + A · Groove » 4.25:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « + B · Intro » 4.27:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « + C · Intro 2 » 4.25:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « + D · Drop » 4.25:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « + E · Break » 4.25:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « + F · Montée » 4.25:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « + G · Drop 2 » 4.30:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « + H · Fin » 4.30:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « + Nouvelle partie (copie de H · Fin) » 4.37:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « + Nouvelle partie vide » 4.43:1 (needs 4.5:1, 14 sp)
+#50 > touche 137 471
+#50 DOIGT add_part_2 « + C · Intro 2 »
+#51 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f882ddf6d2 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=32 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 LAYOUT OVERLAP « B · Intro » over the touchable « Tempo : 132 battements par minute Change » (45 x 4 dp)
+#51 LAYOUT OVERLAP « B · Intro » over the touchable « Jouer depuis une partie » (16 x 4 dp)
+#51 > touche 329 471
+#51 DOIGT add_part_3 « + D · Drop »
+#52 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f87d547ace | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=32 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 LAYOUT OVERLAP « C · Intro 2 » over the touchable « Tempo : 132 battements par minute Change » (45 x 4 dp)
+#52 LAYOUT OVERLAP « C · Intro 2 » over the touchable « Jouer depuis une partie » (33 x 4 dp)
+#52 > touche 133 552
+#52 DOIGT add_part_4 « + E · Break »
+#53 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f0af739296 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=32 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 LAYOUT OVERLAP « D · Drop » over the touchable « Tempo : 132 battements par minute Change » (45 x 4 dp)
+#53 LAYOUT OVERLAP « D · Drop » over the touchable « Jouer depuis une partie » (19 x 4 dp)
+#53 > touche 332 552
+#53 DOIGT add_part_5 « + F · Montée »
+#54 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 0d8684522a | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=32 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 LAYOUT OVERLAP « E · Break » over the touchable « Tempo : 132 battements par minute Change » (45 x 4 dp)
+#54 LAYOUT OVERLAP « E · Break » over the touchable « Jouer depuis une partie » (24 x 4 dp)
+#54 > touche 139 633
+#54 DOIGT add_part_6 « + G · Drop 2 »
+#55 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 5b699168ee | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=32 playing=true
+#55 SON Son : la musique du projet joue en boucle.
+#55 LAYOUT OVERLAP « F · Montée » over the touchable « Tempo : 132 battements par minute Change » (45 x 4 dp)
+#55 LAYOUT OVERLAP « F · Montée » over the touchable « Jouer depuis une partie » (40 x 4 dp)
+#55 > touche 324 633
+#55 DOIGT add_part_7 « + H · Fin »
+#56 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f460c79344 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=33 playing=true
+#56 SON Son : la musique du projet joue en boucle.
+#56 LAYOUT OVERLAP « G · Drop 2 » over the touchable « Tempo : 132 battements par minute Change » (45 x 4 dp)
+#56 LAYOUT OVERLAP « G · Drop 2 » over the touchable « Jouer depuis une partie » (34 x 4 dp)
+#56 > glisse 294 300 294 750
+#56 DOIGT rien
+#57 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 71df43ff48 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=33 playing=true
+#57 SON Son : la musique du projet joue en boucle.
+#57 > glisse 294 300 294 750
+#57 DOIGT part_play_2 « D · Drop »
+#58 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 5c2514d910 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_order done=33 playing=true
+#58 SON Son : la musique du projet joue en boucle.
+#58 LAYOUT CUT « Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ » ellipsized (« … »)
+#58 LAYOUT OVERLAP « C · Intro 2 » over the touchable « Tempo : 132 battements par minute Change » (65 x 4 dp)
+#58 LAYOUT OVERLAP « Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ » over the touchable « Jouer depuis une partie » (107 x 4 dp)
+#58 LAYOUT OVERLAP « Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ » over the touchable « Étiqueter l'écran » (14 x 4 dp)
+#58 > touche 294 978
+#58 DOIGT tuto_next_folded « Réussi »
+#59 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE dd2d64a665 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_phrases done=33 playing=true
+#59 SON Son : la musique du projet joue en boucle.
+#59 LAYOUT OVERLAP « − / + : répétitions de la partie (une partie jouée en Live garde sa longueur). » over the touchable « Tempo : 132 battements par minute Change » (77 x 4 dp)
+#59 LAYOUT OVERLAP « − / + : répétitions de la partie (une partie jouée en Live garde sa longueur). » over the touchable « Jouer depuis une partie » (109 x 4 dp)
+#59 LAYOUT OVERLAP « − / + : répétitions de la partie (une partie jouée en Live garde sa longueur). » over the touchable « Étiqueter l'écran » (19 x 4 dp)
+#59 > touche 294 750
+#59 DOIGT tuto_why « ▸ Pourquoi ? »
+#60 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a42b0f38a1 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_phrases done=33 playing=true
+#60 SON Son : la musique du projet joue en boucle.
+#60 LAYOUT TARGET « ▾ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#60 > touche 294 813
+#60 DOIGT tuto_need «   Donner les durées conseillées »
+#61 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3aeb2b9a4a | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_phrases done=34 playing=true
+#61 SON Son : la musique du projet joue en boucle.
+#61 > touche 531 393
+#61 DOIGT tuto_fold
+#62 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 2c274f7695 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_phrases done=34 playing=true
+#62 SON Son : la musique du projet joue en boucle.
+#62 > touche 438 426
+#62 DOIGT désactivé dans:part_2
+#63 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE f416d44552 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_phrases done=34 playing=true
+#63 SON Son : la musique du projet joue en boucle.
+#63 > touche 531 879
+#63 DOIGT tuto_fold
+#64 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE b00e772b72 | project=p-14a8a1e2 tuto=techno/Facile active=true step=song_phrases done=34 playing=true
+#64 SON Son : la musique du projet joue en boucle.
+#64 > touche 294 894
+#64 DOIGT tuto_next_big « Chapitre suivant   »
+#65 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0e206697c1 | project=p-14a8a1e2 tuto=techno/Facile active=true step=gap done=34 playing=true
+#65 SON Son : la musique du projet joue en boucle.
+#65 > touche 294 750
+#65 DOIGT tuto_why « ▸ Pourquoi ? »
+#66 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3176acfd96 | project=p-14a8a1e2 tuto=techno/Facile active=true step=gap done=34 playing=true
+#66 SON Son : la musique du projet joue en boucle.
+#66 > touche 294 813
+#66 DOIGT tuto_need «   Aller dans la partie « Montée » »
+#67 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 1892912f87 | project=p-14a8a1e2 tuto=techno/Facile active=true step=gap done=34 playing=true
+#67 SON Son : la musique du projet joue en boucle.
+#67 LAYOUT CONTRAST « Caisse » 1.33:1 (needs 4.5:1, 13 sp)
+#67 > attends 3
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 99e1e259f1 | project=p-14a8a1e2 tuto=techno/Facile active=true step=gap done=34 playing=true
+#68 SON Son : la musique du projet joue en boucle.
+#68 LAYOUT CONTRAST « Mesure » 1.44:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « 2 » 1.27:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « 3 » 1.25:1 (needs 4.5:1, 14 sp)
+#68 LAYOUT CONTRAST « 4 » 1.95:1 (needs 4.5:1, 14 sp)
+#68 > touche 294 741
+#68 DOIGT tuto_text_more « Lire la suite »
+#69 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE bfd6bc2c90 | project=p-14a8a1e2 tuto=techno/Facile active=true step=gap done=34 playing=true
+#69 SON Son : la musique du projet joue en boucle.
+#69 LAYOUT CUT « Partie : F · Montée » drawn past its parent's edge (down, 16 dp shown of 20)
+#69 LAYOUT TARGET « Partie : F · Montée Changer de partie » 148 x 16 dp (touch 148 x 48)
+#69 > touche 294 813
+#69 DOIGT tuto_do «   Je le fais »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 07ce37cf7e | project=p-14a8a1e2 tuto=techno/Facile active=true step=gap done=34 playing=true
+#70 SON Son : la musique du projet joue en boucle.
+#70 LAYOUT CUT « À toi : à la fin de la Montée, efface les 4 coups du pad « Claquement de mains » du dernier temps. » ellipsized (« … »)
+#70 LAYOUT CONTRAST « Mesure » 1.41:1 (needs 4.5:1, 14 sp)
+#70 LAYOUT CONTRAST « 1 » 1.28:1 (needs 4.5:1, 14 sp)
+#70 LAYOUT CONTRAST « 2 » 1.36:1 (needs 4.5:1, 14 sp)
+#70 LAYOUT CONTRAST « 3 » 1.24:1 (needs 4.5:1, 14 sp)
+#70 LAYOUT CONTRAST « 4 » 1.93:1 (needs 4.5:1, 14 sp)
+#70 > touche 325 544
+#70 DOIGT step_60 « Pas 13 »
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6498d8d098 | project=p-14a8a1e2 tuto=techno/Facile active=true step=gap done=34 playing=true
+#71 SON Son : la musique du projet joue en boucle.
+#71 > touche 389 544
+#71 DOIGT step_61 « Pas 14 »
+#72 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b9f1f8d812 | project=p-14a8a1e2 tuto=techno/Facile active=true step=gap done=34 playing=true
+#72 SON Son : la musique du projet joue en boucle.
+#72 > touche 453 544
+#72 DOIGT step_62 « Pas 15 »
+#73 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c461bb8b33 | project=p-14a8a1e2 tuto=techno/Facile active=true step=gap done=34 playing=true
+#73 SON Son : la musique du projet joue en boucle.
+#73 > touche 517 544
+#73 DOIGT step_63 « Pas 16 »
+#74 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4762382ebf | project=p-14a8a1e2 tuto=techno/Facile active=true step=gap done=35 playing=true
+#74 SON Son : la musique du projet joue en boucle.
+#74 > touche 294 978
+#74 DOIGT tuto_next_folded « Réussi »
+#75 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 6d89b049f7 | project=p-14a8a1e2 tuto=techno/Facile active=true step=crash done=35 playing=true
+#75 SON Son : la musique du projet joue en boucle.
+#75 > touche 294 750
+#75 DOIGT tuto_why « ▸ Pourquoi ? »
+#76 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 06717f8749 | project=p-14a8a1e2 tuto=techno/Facile active=true step=crash done=35 playing=true
+#76 SON Son : la musique du projet joue en boucle.
+#76 > touche 294 813
+#76 DOIGT tuto_need «   Aller dans la partie « Drop » »
+#77 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fe7f3d03c9 | project=p-14a8a1e2 tuto=techno/Facile active=true step=crash done=35 playing=true
+#77 SON Son : la musique du projet joue en boucle.
+#77 LAYOUT CONTRAST « 3 » 3.27:1 (needs 4.5:1, 12 sp)
+#77 LAYOUT CONTRAST « 4 » 3.31:1 (needs 4.5:1, 12 sp)
+#77 > attends 3
+#78 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b39ef3b53c | project=p-14a8a1e2 tuto=techno/Facile active=true step=crash done=35 playing=true
+#78 SON Son : la musique du projet joue en boucle.
+#78 > touche 294 813
+#78 DOIGT tuto_do «   Je le fais »
+#79 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3b6dc0b8cd | project=p-14a8a1e2 tuto=techno/Facile active=true step=crash done=35 playing=true
+#79 SON Son : la musique du projet joue en boucle.
+#79 LAYOUT CONTRAST « Encore 1 case en pointillé ici » 2.95:1 (needs 3.0:1, 14 sp)
+#79 LAYOUT CONTRAST « 1 » 2.79:1 (needs 4.5:1, 12 sp)
+#79 > touche 70 299
+#79 DOIGT step_0 « Pas 1 »
+#80 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 888a048bf3 | project=p-14a8a1e2 tuto=techno/Facile active=true step=crash done=36 playing=true
+#80 SON Son : la musique du projet joue en boucle.
+#80 LAYOUT CONTRAST « Cymbale » 1.24:1 (needs 4.5:1, 13 sp)
+#80 > touche 294 978
+#80 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#81 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE db123bdfab | project=p-14a8a1e2 tuto=techno/Facile active=true step=crash done=36 playing=true
+#81 SON Son : la musique du projet joue en boucle.
+#81 LAYOUT CONTRAST « Cymbale » 1.26:1 (needs 4.5:1, 13 sp)
+#81 > touche 294 888
+#81 DOIGT tuto_next_big « Chapitre suivant   »
+#82 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 897375f2a7 | project=p-14a8a1e2 tuto=techno/Facile active=true step=reverb_hear done=36 playing=true
+#82 SON Son : la musique du projet joue en boucle.
+#82 LAYOUT CONTRAST « Cymbale » 1.23:1 (needs 4.5:1, 13 sp)
+#82 > touche 294 894
+#82 DOIGT tuto_listen «  Écouter l'exemple »
+#83 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2da10b7e90 | project=p-14a8a1e2 tuto=techno/Facile active=true step=reverb_hear done=36 playing=false
+#83 SON Son : l'exemple du tuto joue (encore 7 s).
+#83 > touche 493 978
+#83 DOIGT tuto_next « Suivant  »
+#84 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f1c478ea8e | project=p-14a8a1e2 tuto=techno/Facile active=true step=filter_hear done=37 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 294 894
+#84 DOIGT tuto_listen «  Écouter l'exemple »
+#85 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c30f96eb14 | project=p-14a8a1e2 tuto=techno/Facile active=true step=filter_hear done=37 playing=false
+#85 SON Son : l'exemple du tuto joue (encore 3 s).
+#85 > attends 8
+#86 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fea77d6d7e | project=p-14a8a1e2 tuto=techno/Facile active=true step=filter_hear done=38 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 294 888
+#86 DOIGT tuto_next_big « Chapitre suivant   »
+#87 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fb2835ca07 | project=p-14a8a1e2 tuto=techno/Facile active=true step=levels done=38 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 294 813
+#87 DOIGT tuto_do «   Je le fais »
+#88 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE a51db3d1ef | project=p-14a8a1e2 tuto=techno/Facile active=true step=levels done=38 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CONTRAST « Accords » 3.99:1 (needs 4.5:1, 13 sp)
+#88 LAYOUT CONTRAST « Lance ▶ » 1.92:1 (needs 3.0:1, 14 sp)
+#88 > glisse 339 440 339 510
+#88 DOIGT mix_fader_5 « Volume de Accords »
+#89 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 8ea2ef59e8 | project=p-14a8a1e2 tuto=techno/Facile active=true step=levels done=38 playing=false
+#89 SON Son : rien ne joue.
+#89 > glisse 462 440 462 510
+#89 DOIGT mix_fader_6 « Volume de Mélodie »
+#90 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 626f440685 | project=p-14a8a1e2 tuto=techno/Facile active=true step=levels done=39 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 294 978
+#90 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#91 ROUTE tab_simple_Mix | MODE simple | EMPREINTE aa712c25e8 | project=p-14a8a1e2 tuto=techno/Facile active=true step=levels done=39 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 294 888
+#91 DOIGT tuto_next_big « Chapitre suivant   »
+#92 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE c276862f1d | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=39 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 444 423
+#92 DOIGT tuto_chapters « Chapitres »
+#93 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE cd44be3e0e | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=39 playing=false
+#93 SON Son : rien ne joue.
+#93 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 LAYOUT CONTRAST « 6 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 LAYOUT CONTRAST « 11 » 3.63:1 (needs 4.5:1, 16 sp)
+#93 > touche 528 60
+#93 DOIGT dans:tuto_chapter_list
+#94 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE c276862f1d | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=39 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 294 801
+#94 DOIGT tuto_text_more « Lire la suite »
+#95 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE c276862f1d | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=39 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 294 801
+#95 DOIGT tuto_text_more « Lire la suite »
+#96 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 7e181f6985 | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=39 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 294 894
+#96 DOIGT tuto_do «   Je le fais »
+#97 ROUTE share_sheet/tab_simple_Envoyer | MODE simple | EMPREINTE 440a2fe0e4 | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=39 playing=false
+#97 SON Son : rien ne joue.
+#97 LAYOUT CUT « À toi : touche « Partager » : l'appli fait un fichier son de ton morceau, à envoyer. « M4A » fait un fichier léger pour tes amis, « WAV » garde la qualité studio. Ensuite, « Niveau » dit si ton morceau sonne fort ou doux (« −14 » : aussi fort que la musique en streaming), et « Pas de saturation » veut dire qu'il ne grésille pas, « aucun solo oublié » qu'aucune piste ne joue toute seule. » ellipsized (« … »)
+#97 > touche 294 639
+#97 DOIGT share_go «   Partager »
+#98 ROUTE dialogue:share_progress | MODE simple | EMPREINTE e10aefa96d | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=39 playing=false
+#98 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#98 LAYOUT CONTRAST « Annuler » 3.62:1 (needs 4.5:1, 14 sp)
+#98 > attends 20
+#98 PARTAGE Mon-morceau-20261118-191458.m4a
+#99 ROUTE dialogue:« Partager mon morceau · Mon-mor » | MODE simple | EMPREINTE 425b7f7763 | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=40 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 294 831
+#99 DOIGT vue « Files »
+#100 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE f557842305 | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=40 playing=false
+#100 SON Son : rien ne joue.
+#100 LAYOUT CONTRAST « Pas de saturation. » 1.35:1 (needs 4.5:1, 13 sp)
+#100 > touche 508 789
+#100 DOIGT share_bilan_ok « OK »
+#101 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE c8d9f80a60 | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=40 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 294 978
+#101 DOIGT tuto_next_folded « Réussi »
+#102 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE bb2105527a | project=p-14a8a1e2 tuto=techno/Facile active=true step=share done=40 playing=false
+#102 SON Son : rien ne joue.
+#102 LAYOUT CUT « ? » lines cut (taller than its box)
+#102 LAYOUT CUT « Chapitre 1/15 · La vitesse et la couleur du morceau » ellipsized (« … »)
+#102 LAYOUT CUT « Écoute un extrait de techno finie : l'Intro, l'arrivée de la basse, puis le Drop. Un kick sur chaque temps, qui ne s'arrête jamais : c'est ce que tu vas construire. » ellipsized (« … »)
+#102 LAYOUT CUT « Avant de commencer : tes pads ont déjà des sons pour la techno, avec leurs effets. Sur un pad, « FX » veut dire qu'un effet y est déjà posé. Si la carte du kit Techno s'affiche, « Plus tard » suffit : le tuto marche avec ces sons. Tu n'as rien à régler. » ellipsized (« … »)
+#102 LAYOUT CUT « Écoute le kick de la techno, seul : un coup sec et grave sur chaque temps. » ellipsized (« … »)
+#102 LAYOUT CUT « Écoute toute ta batterie quelques secondes, puis celle de l'exemple. » ellipsized (« … »)
+#102 LAYOUT TARGET « Mes fichiers » 323 x 18 dp (touch 323 x 48)
+#102 LAYOUT TARGET « Qu'est-ce que « Mes fichiers » ? ? » 29 x 18 dp (touch 48 x 48)
+#102 > fin
+#102 FIN : fin

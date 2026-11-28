@@ -1,0 +1,51 @@
+Écran 68 (588x1278)
+icône (dossier ouvert) ✓ @ 456,42
+bouton « بسيط » @ 280,42
+bouton ● @ 191,42
+bouton ▶ « هذا الجزء » @ 118,42
+icône ⋮ @ 45,42
+icône « مقدمة المازورة 1/128 » ▾ @ 221,168
+bouton « 150  السرعة » @ 470,168
+bouton « ? » @ 45,168
+icône « الجزء: F · تصاعد » ▾ @ 430,292
+bouton [coupé, état « ضربة، القوة 96 % »] @ 517,346
+bouton [coupé, état « ضربة، القوة 95 % »] @ 453,346
+bouton [coupé, état « ضربة، القوة 94 % »] @ 389,346
+bouton « 2 » [coupé, état « ضربة، القوة 93 % »] @ 325,346
+bouton [coupé, état « ضربة، القوة 93 % »] @ 261,346
+bouton [coupé, état « ضربة، القوة 92 % »] @ 197,346
+bouton [coupé, état « ضربة، القوة 91 % »] @ 133,345
+bouton « 1 » [coupé, état « ضربة، القوة 90 % »] @ 70,345
+bouton [état « فارغ »] @ 517,402
+bouton [état « فارغ »] @ 453,402
+bouton [état « فارغ »] @ 389,402
+bouton « 4 » [état « فارغ »] @ 325,402
+bouton [état « ضربة، القوة 99 % »] @ 261,402
+bouton [état « ضربة، القوة 98 % »] @ 197,402
+bouton [état « ضربة، القوة 98 % »] @ 133,401
+bouton « 3 » [état « ضربة، القوة 97 % »] @ 70,401
+texte « ▶ » @ 471,487
+texte « ◀ » @ 396,487
+texte « 1/4 » @ 315,487
+texte « 1/2 » @ 230,487
+texte « الكل » @ 144,487
+texte « ملء » @ 70,487
+texte « مسح » [coupé] @ 91,544
+texte « الانتقالات الفصل 10/13 · الخطوة 1/2 · سهل » @ 366,668
+icône (liste) « الفصول » @ 129,668
+icône ⌃ @ 57,668
+icône (rond coché) « نجحت الخطوة التالية » → @ 294,855
+texte « 150 السرعة » @ 183,994
+icône ↶ « تراجع » @ 519,994
+image ↷ @ 413,966
+bouton ▶ « الأغنية » @ 302,995
+icône ⋮ « المزيد » @ 70,994
+onglet (touches de piano) « لوحة المفاتيح » @ 294,1136
+onglet (lignes et note) « أغنيتي » @ 534,1136
+onglet (quatre carrés) « الإيقاع » [sélectionné] @ 414,1136
+onglet (curseurs) « المكس » @ 174,1136
+onglet (trois points reliés) « مشاركة » @ 54,1136
+texte « وضع الملاحظات » @ 435,1248
+texte « ●  REC » @ 238,1248
+texte « ✎  دوّن » @ 133,1248
+texte « ⋯ » @ 48,1248

@@ -1,0 +1,10 @@
+lang=nl
+device=phone
+font=130
+mode=pro
+amenee=tuto:uk_garage:5
+gestes.max=160
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

@@ -1,0 +1,10 @@
+lang=it
+device=foldable
+font=130
+mode=simple
+amenee=tuto:dnb:9
+gestes.max=167
+mission=tuto-facile
+profil=curieux
+niveau=0
+timeout.minutes=30

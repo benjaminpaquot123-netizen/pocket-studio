@@ -1,0 +1,324 @@
+#0 SIEGE lang=en device=phone font=100 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:amapiano:6
+#0 PREMIER ECRAN reel_s=4.4 simule_s=2.4 jvm_s=10.1 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:amapiano:6
+#0 AMENEE > touche 294 606 (welcome_learn)
+#0 AMENEE > touche 294 933 (mode_card_simple)
+#0 AMENEE > touche 294 1213 (tuto_style_amapiano)
+#0 AMENEE chapitres 1 à 5 construits dans le projet
+#0 AMENEE > touche 447 636 (tuto_chapters)
+#0 AMENEE > touche 294 549 (tuto_chapter_5)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fc20b6df85 | project=p-7fc86729 tuto=amapiano/Facile active=true step=groove_hear done=13 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Why? » 364 x 20 dp (touch 364 x 48)
+#1 > touche 294 813
+#1 DOIGT tuto_play_mine «   Listen to your result »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4028f1d4fb | project=p-7fc86729 tuto=amapiano/Facile active=true step=groove_hear done=13 playing=true
+#2 SON Son : la musique du projet joue en boucle.
+#2 > touche 294 897
+#2 DOIGT tuto_listen «  Listen to the example »
+#3 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f914f77170 | project=p-7fc86729 tuto=amapiano/Facile active=true step=groove_hear done=13 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 3 s).
+#3 > touche 294 897
+#3 DOIGT tuto_listen «  Stop listening »
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fc20b6df85 | project=p-7fc86729 tuto=amapiano/Facile active=true step=groove_hear done=13 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 508 978
+#4 DOIGT tuto_next « Next  »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 59884faebf | project=p-7fc86729 tuto=amapiano/Facile active=true step=groove_name done=14 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 294 807
+#5 DOIGT tuto_need «   Name the part “Drop” »
+#6 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d6a86d9340 | project=p-7fc86729 tuto=amapiano/Facile active=true step=groove_name done=15 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 294 888
+#6 DOIGT tuto_next_big « Next chapter   »
+#7 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 7b81a95b02 | project=p-7fc86729 tuto=amapiano/Facile active=true step=map_intro done=15 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « Intro » 4.15:1 (needs 4.5:1, 12 sp)
+#7 LAYOUT CONTRAST « 8 » 2.79:1 (needs 4.5:1, 12 sp)
+#7 > touche 294 894
+#7 DOIGT tuto_listen «  Listen to the example »
+#8 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 8625fa33cf | project=p-7fc86729 tuto=amapiano/Facile active=true step=map_intro done=15 playing=false
+#8 SON Son : l'exemple du tuto joue (encore 3 s).
+#8 > attends 4
+#9 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5464673e98 | project=p-7fc86729 tuto=amapiano/Facile active=true step=map_intro done=16 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 508 978
+#9 DOIGT tuto_next « Next  »
+#10 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 6903b9a56f | project=p-7fc86729 tuto=amapiano/Facile active=true step=map_groove done=16 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « Groove » 4.15:1 (needs 4.5:1, 12 sp)
+#10 LAYOUT CONTRAST « 24 » 2.79:1 (needs 4.5:1, 12 sp)
+#10 > touche 514 759
+#10 DOIGT tuto_kit_later « Later »
+#11 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 949126c79d | project=p-7fc86729 tuto=amapiano/Facile active=true step=map_groove done=16 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 294 894
+#11 DOIGT tuto_listen «  Listen to the example »
+#12 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 301adab5a1 | project=p-7fc86729 tuto=amapiano/Facile active=true step=map_groove done=16 playing=false
+#12 SON Son : l'exemple du tuto joue (encore 3 s).
+#12 > touche 508 978
+#12 DOIGT tuto_next « Next  »
+#13 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE a293ba0039 | project=p-7fc86729 tuto=amapiano/Facile active=true step=map_drop done=17 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « Drop » 3.09:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 16 » 2.08:1 (needs 4.5:1, 12 sp)
+#13 > touche 294 894
+#13 DOIGT tuto_listen «  Listen to the example »
+#14 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 01c5d05313 | project=p-7fc86729 tuto=amapiano/Facile active=true step=map_drop done=17 playing=false
+#14 SON Son : l'exemple du tuto joue (encore 7 s).
+#14 > attends 4
+#15 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 7bf4803509 | project=p-7fc86729 tuto=amapiano/Facile active=true step=map_drop done=18 playing=false
+#15 SON Son : l'exemple du tuto joue (encore 3 s).
+#15 > touche 508 978
+#15 DOIGT tuto_listen «  Stop listening »
+#16 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 3f3f60836f | project=p-7fc86729 tuto=amapiano/Facile active=true step=map_drop done=18 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 294 888
+#16 DOIGT tuto_next_big « Next chapter   »
+#17 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 4cb0372a93 | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_intro done=18 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « The timeline puts your parts in order, each with its length in bars. Add them in order. » over the touchable « Tempo: 112 beats per minute Change the t » (77 x 4 dp)
+#17 > touche 294 807
+#17 DOIGT tuto_need «   Create the “Intro” part »
+#18 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 7171b49c4e | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_intro done=19 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 294 888
+#18 DOIGT tuto_next_big « Next step   »
+#19 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 73e2f032cc | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_break done=19 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 294 741
+#19 DOIGT tuto_why « ▸ Why? »
+#20 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ac0bdc7c07 | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_break done=19 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT TARGET « ▾ Why? » 364 x 20 dp (touch 364 x 48)
+#20 > touche 294 807
+#20 DOIGT tuto_need «   Create the “Break” part »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3bf7ad11da | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_break done=20 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 294 888
+#21 DOIGT tuto_next_big « Next step   »
+#22 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a8c19fd53a | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_drop2 done=20 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 433 894
+#22 DOIGT tuto_show «  Show me »
+#23 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 66bbb03b94 | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_drop2 done=20 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Stop » 3.91:1 (needs 4.5:1, 14 sp)
+#23 > attends 3
+#24 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 0967200e3f | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_drop2 done=20 playing=false
+#24 SON Son : rien ne joue.
+#24 > attends 3
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1d98224a12 | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_drop2 done=20 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 294 807
+#25 DOIGT tuto_need «   Create the “Drop 2” part »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 842ca71cb0 | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_drop2 done=21 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 294 888
+#26 DOIGT tuto_next_big « Next step   »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 61f2390e29 | project=p-7fc86729 tuto=amapiano/Facile active=true step=variation done=21 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 294 807
+#27 DOIGT tuto_do «   I'll do it »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3eaf360723 | project=p-7fc86729 tuto=amapiano/Facile active=true step=variation done=21 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CONTRAST « ? » 1.36:1 (needs 4.5:1, 12 sp)
+#28 LAYOUT CONTRAST « All pads » 1.28:1 (needs 4.5:1, 14 sp)
+#28 > touche 197 468
+#28 DOIGT step_2 « Step 3 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ad8f4f0b34 | project=p-7fc86729 tuto=amapiano/Facile active=true step=variation done=22 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 261 547
+#29 DOIGT step_11 « Step 12 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4161b1e4ba | project=p-7fc86729 tuto=amapiano/Facile active=true step=variation done=22 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 517 547
+#30 DOIGT step_15 « Step 16 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 583e187ccd | project=p-7fc86729 tuto=amapiano/Facile active=true step=variation done=22 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 294 978
+#31 DOIGT tuto_next_folded « Passed »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c0dbe328f0 | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_fin done=22 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CONTRAST « All pads » 1.32:1 (needs 4.5:1, 14 sp)
+#32 > touche 294 807
+#32 DOIGT tuto_need «   Create the “End” part »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0618d36a16 | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_fin done=23 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 294 888
+#33 DOIGT tuto_next_big « Next step   »
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE cc233a7986 | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_groove done=23 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 294 807
+#34 DOIGT tuto_need «   Create the “Groove” part »
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 336dd4c443 | project=p-7fc86729 tuto=amapiano/Facile active=true step=make_groove done=24 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 294 888
+#35 DOIGT tuto_next_big « Next chapter   »
+#36 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 7185eb4771 | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_order done=24 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 311 228
+#36 DOIGT add_part_1 « + B · Intro »
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 74e5414e6b | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_order done=24 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 294 807
+#37 DOIGT tuto_do «   I'll do it »
+#38 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 180fc5d681 | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_order done=24 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT CUT « Your turn: in “My song”, under “Add”, tap in order Intro, Groove, Drop, Break, Drop 2 and End. » ellipsized (« … »)
+#38 LAYOUT OVERLAP « B · Intro » over the touchable « Tempo: 112 beats per minute Change the t » (45 x 4 dp)
+#38 LAYOUT OVERLAP « B · Intro » over the touchable « Play from a part » (16 x 4 dp)
+#38 LAYOUT CONTRAST « + A · Drop » 4.25:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + B · Intro » 4.25:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + C · Break » 4.25:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + D · Drop 2 » 4.25:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + E · End » 4.30:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + F · Groove » 4.30:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + New part (copy of F · Groove) » 4.37:1 (needs 4.5:1, 14 sp)
+#38 LAYOUT CONTRAST « + New empty part » 4.43:1 (needs 4.5:1, 14 sp)
+#38 > touche 312 507
+#38 DOIGT add_part_5 « + F · Groove »
+#39 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE cbe6f26fee | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_order done=24 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « + F · Groove » 4.33:1 (needs 4.5:1, 14 sp)
+#39 > touche 129 471
+#39 DOIGT add_part_0 « + A · Drop »
+#40 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE c511fb509b | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_order done=24 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 134 552
+#40 DOIGT add_part_2 « + C · Break »
+#41 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 3e8421a413 | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_order done=24 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 331 552
+#41 DOIGT add_part_3 « + D · Drop 2 »
+#42 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 300adb900a | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_order done=24 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 123 633
+#42 DOIGT add_part_4 « + E · End »
+#43 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 1632dd99f1 | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_order done=25 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 294 978
+#43 DOIGT tuto_next_folded « Passed »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e0283839d9 | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_phrases done=25 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT OVERLAP « Tap to change the chords of the whole song. » over the touchable « Tempo: 112 beats per minute Change the t » (67 x 4 dp)
+#44 LAYOUT OVERLAP « Tap to change the chords of the whole song. » over the touchable « Play from a part » (96 x 4 dp)
+#44 > touche 294 813
+#44 DOIGT tuto_need «   Set the suggested lengths »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e1f862fdd5 | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_phrases done=26 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 334 978
+#45 DOIGT tuto_play_mine «  Listen to my song »
+#46 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE a18b249d7e | project=p-7fc86729 tuto=amapiano/Facile active=true step=song_phrases done=26 playing=true
+#46 SON Son : le morceau joue (partie « B »).
+#46 LAYOUT CONTRAST « 8 bars  ·  playing » 4.26:1 (needs 4.5:1, 14 sp)
+#46 > touche 294 894
+#46 DOIGT tuto_next_big « Next chapter   »
+#47 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE cc5f18cc61 | project=p-7fc86729 tuto=amapiano/Facile active=true step=reverb_hear done=26 playing=true
+#47 SON Son : le morceau joue (partie « B »).
+#47 > touche 294 894
+#47 DOIGT tuto_listen «  Listen to the example »
+#48 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ae1a885a02 | project=p-7fc86729 tuto=amapiano/Facile active=true step=reverb_hear done=26 playing=false
+#48 SON Son : l'exemple du tuto joue (encore 7 s).
+#48 > attends 8
+#49 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c465836b68 | project=p-7fc86729 tuto=amapiano/Facile active=true step=reverb_hear done=27 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 508 978
+#49 DOIGT tuto_listen «  Listen to the example »
+#50 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE d6f181cf2e | project=p-7fc86729 tuto=amapiano/Facile active=true step=reverb_hear done=27 playing=false
+#50 SON Son : l'exemple du tuto joue (encore 7 s).
+#50 > touche 453 975
+#50 DOIGT tuto_listen «  Stop listening »
+#51 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c465836b68 | project=p-7fc86729 tuto=amapiano/Facile active=true step=reverb_hear done=27 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 294 888
+#51 DOIGT tuto_next_big « Next chapter   »
+#52 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bfe5ae825e | project=p-7fc86729 tuto=amapiano/Facile active=true step=levels done=27 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 414 1158
+#52 DOIGT tab_simple_Mix « Mix »
+#53 ROUTE tab_simple_Mix | MODE simple | EMPREINTE afdaac73be | project=p-7fc86729 tuto=amapiano/Facile active=true step=levels done=27 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 294 807
+#53 DOIGT tuto_do «   I'll do it »
+#54 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE 4b0fd9e291 | project=p-7fc86729 tuto=amapiano/Facile active=true step=levels done=27 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT OVERLAP « Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own. » over the touchable « Tempo: 112 beats per minute Change the t » (81 x 4 dp)
+#54 LAYOUT OVERLAP « Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own. » over the touchable « Play from a part » (96 x 4 dp)
+#54 LAYOUT OVERLAP « Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own. » over the touchable « Label the screen » (13 x 4 dp)
+#54 LAYOUT CONTRAST « Chords » 3.83:1 (needs 4.5:1, 13 sp)
+#54 LAYOUT CONTRAST « Output » 1.32:1 (needs 4.5:1, 13 sp)
+#54 LAYOUT CONTRAST « Press ▶ » 2.05:1 (needs 3.0:1, 14 sp)
+#54 > glisse 216 375 216 425
+#54 DOIGT mix_fader_2 « Volume of Chords »
+#55 ROUTE simple_mix/tab_simple_Mix | MODE simple | EMPREINTE d0e04ee802 | project=p-7fc86729 tuto=amapiano/Facile active=true step=levels done=28 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 294 978
+#55 DOIGT tuto_chapter_end_folded « Well done, chapter finished! »
+#56 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 9b39d78c21 | project=p-7fc86729 tuto=amapiano/Facile active=true step=levels done=28 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « Press ▶ » 1.83:1 (needs 3.0:1, 14 sp)
+#56 > touche 294 888
+#56 DOIGT tuto_next_big « Next chapter   »
+#57 ROUTE tab_simple_Mix | MODE simple | EMPREINTE b4d1299969 | project=p-7fc86729 tuto=amapiano/Facile active=true step=share done=28 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « Press ▶ » 2.09:1 (needs 3.0:1, 14 sp)
+#57 > touche 534 1158
+#57 DOIGT tab_simple_Envoyer « Share »
+#58 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 4c4ebe79fa | project=p-7fc86729 tuto=amapiano/Facile active=true step=share done=28 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 294 444
+#58 DOIGT share_go «   Share »
+#59 ROUTE dialogue:share_progress | MODE simple | EMPREINTE c609757bea | project=p-7fc86729 tuto=amapiano/Facile active=true step=share done=28 playing=false
+#59 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#59 > attends 10
+#59 PARTAGE My-song-20261119-074350.m4a
+#60 ROUTE dialogue:« Share my song · My-song-202611 » | MODE simple | EMPREINTE 722094c905 | project=p-7fc86729 tuto=amapiano/Facile active=true step=share done=29 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 294 543
+#60 DOIGT vue « WhatsApp »
+#61 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE 74487cde60 | project=p-7fc86729 tuto=amapiano/Facile active=true step=share done=29 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « See my files » 1.72:1 (needs 4.5:1, 14 sp)
+#61 LAYOUT CONTRAST « OK » 2.35:1 (needs 4.5:1, 14 sp)
+#61 > touche 508 789
+#61 DOIGT share_bilan_ok « OK »
+#62 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE ab8658d0ac | project=p-7fc86729 tuto=amapiano/Facile active=true step=share done=29 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 294 894
+#62 DOIGT tuto_next_big « Next step   »
+#63 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE d31055e399 | project=p-7fc86729 tuto=amapiano/Facile active=true step=share done=29 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CUT « ? » lines cut (taller than its box)
+#63 LAYOUT CUT « Listen to a clip of a finished amapiano song: first the piano and light percussion, then the log drum comes in and bounces. » ellipsized (« … »)
+#63 LAYOUT CUT « Before you start: the amapiano kit is loaded. You have nothing to set. » ellipsized (« … »)
+#63 LAYOUT TARGET « My files » 323 x 18 dp (touch 323 x 48)
+#63 LAYOUT TARGET « What is “My files”? ? » 29 x 18 dp (touch 48 x 48)
+#63 > touche 113 988
+#63 DOIGT rien (texte « … and 1 more (list ≡) »)
+#64 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE d31055e399 | project=p-7fc86729 tuto=amapiano/Facile active=true step=share done=29 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 447 411
+#64 DOIGT tuto_chapters « Chapters »
+#65 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE a07becfefe | project=p-7fc86729 tuto=amapiano/Facile active=true step=share done=29 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 6 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 LAYOUT CONTRAST « 11 » 3.63:1 (needs 4.5:1, 16 sp)
+#65 > touche 528 60
+#65 DOIGT dans:tuto_chapter_list
+#66 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE d31055e399 | project=p-7fc86729 tuto=amapiano/Facile active=true step=share done=29 playing=false
+#66 SON Son : rien ne joue.
+#66 > fin
+#66 FIN : fin

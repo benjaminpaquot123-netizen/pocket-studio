@@ -1,0 +1,9 @@
+lang=fr
+device=phone360
+font=200
+mode=simple
+amenee=tuto:speed_garage:3
+gestes.max=40
+mission=tuto-facile
+profil=moyen
+niveau=2

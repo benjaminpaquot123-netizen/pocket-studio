@@ -1,0 +1,39 @@
+Écran 26 (588x1278)
+icône (dossier ouvert) ✓ « 내 프로젝트 1 저장됨 » @ 150,42
+texte « 간단 » @ 327,42
+bouton ● @ 399,42
+bouton ▶ « 이 파트 » @ 471,42
+icône ⋮ @ 543,42
+bouton « 136  템포 » @ 69,114
+bouton « ? » @ 543,114
+texte « 추가: » @ 64,164
+bouton « + A · 그루브 » @ 133,228
+bouton « + B · 인트로 » @ 325,228
+bouton « + C · 인트로 2 » @ 142,309
+bouton « + D · 드롭 » @ 334,309
+bouton « + E · Drop B » [coupé] @ 138,384
+bouton « + F · 브레이크 » [coupé] @ 342,384
+texte « 파트를 만들어 보세요 8/13장 · 완료 · 쉬움 » @ 222,457
+icône (liste) « 챕터 » @ 459,457
+icône ⌄ @ 531,457
+image (coupe) @ 57,575
+texte « 잘했어요, 챕터 완료! » @ 177,547
+texte « “끝” 파트를 만들었어요 (그루브 복사): 스네어, 미드 탐, 코드, 멜로디 없이. » @ 319,590
+bouton « 다음 챕터   » → @ 294,894
+icône ← @ 57,978
+bouton ▶ «  내 곡 듣기 » @ 216,978
+bouton ▶ «  예시 듣기 » @ 453,978
+icône ↶ « 실행 취소 » @ 72,1062
+image ↷ @ 180,1050
+bouton ▶ « 곡 » @ 288,1062
+texte « 136 템포 » @ 402,1062
+icône ⋮ « 더보기 » @ 516,1062
+onglet (lignes et note) « 내 곡 » [sélectionné] @ 54,1158
+onglet (quatre carrés) « 리듬 » @ 174,1158
+onglet (touches de piano) « 건반 » @ 294,1158
+onglet (curseurs) « 믹스 » @ 414,1158
+onglet (trois points reliés) « 공유 » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  메모 » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « 피드백 모드 » @ 162,1248

@@ -1,0 +1,27 @@
+Écran 9 (540x1170)
+dessin @ 270,279
+texte « Kapat » @ 457,351
+texte « Parçanın tonu » @ 211,351
+texte « Parçanın tonu: Do · Frigyen » @ 205,422
+texte « Gam » @ 55,478
+bouton « Majör » @ 82,550
+bouton « Minör » @ 207,550
+bouton « Dorian » @ 340,550
+bouton « Minör penta » @ 127,631
+bouton « Majör penta » @ 341,631
+bouton « Blues » @ 81,712
+bouton « Frigyen » @ 221,712
+bouton « Harmonik minör » @ 154,793
+texte « Ton » @ 49,864
+bouton « Do » @ 63,936
+bouton « Do♯ » @ 157,936
+bouton « Re » @ 252,936
+bouton « Mi♭ » @ 340,936
+bouton « Mi » @ 428,936
+bouton « Fa » @ 63,1017
+bouton « Fa♯ » @ 155,1017
+bouton « Sol » @ 248,1017
+bouton « La♭ » @ 337,1017
+bouton « La » @ 425,1017
+bouton « Si♭ » @ 63,1098
+bouton « Si » @ 150,1098

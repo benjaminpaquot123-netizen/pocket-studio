@@ -39,11 +39,16 @@ jobs:
           # The bench's « regarde » (scripts/human-act.py) draws with Pillow; -I only sees the system packages.
           python3 -I -c 'import PIL' 2> /dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends python3-pil > /dev/null; }
           scripts/bench/pre-vol.sh --ci --rapide
+          # The unit tests' shards (lot « ci-rapide »): the split and its check, on toy classes.
+          python3 -I scripts/ci/shards.py selftest
+          # The permanent rule: no job without a time limit or above 50 minutes, the tests stay in shards.
+          python3 -I scripts/ci/shards.py policy
 
   engine:
     name: Engine tests (Linux)
     runs-on: ubuntu-latest
     needs: quick
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -65,16 +70,6 @@ jobs:
         env:
           CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         run: ./scripts/host-tests.sh
-      - name: Run host tests with sanitizers
-        env:
-          HOST_TESTS_BUILD_DIR: build/host-tests-asan
-          CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-          # Picked up by CMake at configure time; recover=all makes UBSan findings fatal.
-          CXXFLAGS: -fsanitize=address,undefined -fno-sanitize-recover=all
-          LDFLAGS: -fsanitize=address,undefined
-        # AddressSanitizer inflates stack frames: the tests' engines (64 live pads since Pad Live) need
-        # more than the default 8 MB main stack.
-        run: ulimit -s 65536 && ./scripts/host-tests.sh
       # Audit stage 0: the audio thread and the UI thread together under ThreadSanitizer (ps_core again, TSan build).
       - name: Engine threads (ThreadSanitizer)
         env:
@@ -87,10 +82,46 @@ jobs:
           name: engine-renders
           path: build/host-tests/renders/
 
+  # Lot « ci-rapide » (2026-11-24): the same tests under AddressSanitizer and UBSan were 12 to 22 minutes of the
+  # « engine » job (28 minutes on a slow runner, run 45328922133): a job of their own, beside the plain ones.
+  sanitizers:
+    name: Engine tests (sanitizers)
+    runs-on: ubuntu-latest
+    needs: quick
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: false
+      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
+        run: |
+          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
+          # update aborts before checking out the others, so --force and a final check.
+          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
+            echo "eigen: attempt $i failed, waiting"; sleep 30
+          done
+          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
+        with:
+          key: engine-host-asan
+      - name: Run host tests with sanitizers
+        env:
+          HOST_TESTS_BUILD_DIR: build/host-tests-asan
+          CMAKE_EXTRA_ARGS: -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          # Picked up by CMake at configure time; recover=all makes UBSan findings fatal.
+          CXXFLAGS: -fsanitize=address,undefined -fno-sanitize-recover=all
+          LDFLAGS: -fsanitize=address,undefined
+        # AddressSanitizer inflates stack frames: the tests' engines (64 live pads since Pad Live) need
+        # more than the default 8 MB main stack.
+        run: ulimit -s 65536 && ./scripts/host-tests.sh
+
   separation:
     name: Separation tests (Linux)
     runs-on: ubuntu-latest
     needs: quick
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -116,12 +147,22 @@ jobs:
   # projects 3, soak 5, APK 6; run 43402800379) is three jobs side by side, « build », « sound » and « apk », with the
   # same steps, each with its own caches and artifacts. None waits for « engine » any more (27 minutes): they start
   # after « quick », and the publish job needs every one of them, « engine » included.
-  build:
-    name: Build, unit tests, screenshots
+  #
+  # Lot « ci-rapide » (2026-11-24): the unit tests and screenshots were one block of 43 to 66 minutes (877 classes one
+  # after the other; runs 436, 438, audio1 and moteur2 were cut at 75 minutes without a red test). They are now six
+  # shards side by side, each with its list of classes (scripts/ci/shards.py: balanced on the classes' past
+  # durations, about 12 minutes of tests each), in one JVM each as before. « build » then checks that the six lists
+  # make the whole suite, that every class left its result exactly once, and names each red test with its shard.
+  tests:
+    name: Unit tests (shard ${{ matrix.shard }}/6)
     runs-on: ubuntu-latest
     needs: quick
-    # Unit tests and screenshots: about 43 minutes in the single job (run 43402800379).
-    timeout-minutes: 75
+    # About 20 minutes (setup 3, compile 4, tests 12); the limit only stops a hung run.
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
     env:
       VERSION_CODE: ${{ github.run_number }}
       RELEASE_CHANNEL: ${{ github.event_name == 'push' && 'stable' || 'preview' }}
@@ -152,16 +193,66 @@ jobs:
         with:
           key: tests-ndk
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      # Robolectric's Android jar (213 MB): cached, then fetched from a Maven Central mirror if missing
+      # (repo1.maven.org rate-limits it, 429, 2026-11-24; scripts/ci/robolectric-jar.sh).
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-android-all-${{ hashFiles('gradle/libs.versions.toml', 'app/src/test/resources/robolectric.properties') }}
+      - name: Robolectric's Android jar (mirrors)
+        run: scripts/ci/robolectric-jar.sh
+      - name: Compile the tests and draw this shard's classes
+        run: |
+          ./gradlew :app:compileDebugUnitTestKotlin
+          python3 -I scripts/ci/shards.py plan --shard ${{ matrix.shard }}/6 --out build/shard \
+            --classes-dir app/build/intermediates/built_in_kotlinc/debugUnitTest/compileDebugUnitTestKotlin/classes
       # The screenshots are compared with the committed ones (app/screenshots/, recorded locally):
       # a difference does not fail the build (the runner may draw a pixel differently) but is
       # flagged as a warning, with the images in the « screenshots-diff » artifact.
-      - name: Unit tests and screenshots
-        run: ./gradlew :project-model:test :app:testDebugUnitTest :app:compareRoborazziDebug
+      - name: Unit tests and screenshots (this shard)
+        run: >-
+          ./gradlew ${{ matrix.shard == 1 && ':project-model:test' || '' }}
+          :app:testDebugUnitTest :app:compareRoborazziDebug --continue -Pshard.classes=build/shard/classes.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: tests-shard-${{ matrix.shard }}
+          path: |
+            build/shard/
+            app/build/reports/tests/testDebugUnitTest/
+            app/build/test-results/testDebugUnitTest/
+            app/build/outputs/roborazzi/
+            app/build/reports/roborazzi/
+            app/build/test-results/roborazzi/
+          if-no-files-found: ignore
+          retention-days: 3
+
+  build:
+    name: Build, unit tests, screenshots
+    runs-on: ubuntu-latest
+    needs: [quick, tests]
+    # Runs even when a shard is red (it is the job that says which test): only a red « quick » or a cancelled run skips it.
+    if: ${{ !cancelled() && needs.quick.result == 'success' }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: false
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: tests-shard-*
+          path: build/shards
+      # Fails when a class is in no shard or in two, left no result, ran twice, or when a test is red; the JUnit XML,
+      # the reports and the screenshots' comparison are gathered where the single job used to leave them.
+      - name: Every class ran once, red tests by name
+        run: |
+          for k in 1 2 3 4 5 6; do [ ! -d "build/shards/tests-shard-$k" ] || mv "build/shards/tests-shard-$k" "build/shards/$k"; done
+          python3 -I scripts/ci/shards.py check build/shards --shards 6 --merge-into .
       - name: Screenshots that changed
         if: always()
         run: python3 -I scripts/screenshot-diff.py app/build/test-results/roborazzi/debug/results-summary.json
-      # A red unit test names itself in the log but not its message (« AssertionError at BenchPristine.kt:54 »): the
-      # HTML report and the JUnit XML (messages, stacks, each class's output and time) are kept when this job fails.
+      # A red unit test names itself in the log with its message; the HTML reports and the JUnit XML (stacks, each
+      # class's output and time), one folder per shard, are kept when this job fails (scripts/bench/ci-rouge.sh).
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
@@ -179,14 +270,18 @@ jobs:
             app/build/reports/roborazzi/
             app/build/test-results/roborazzi/
           if-no-files-found: ignore
+      - name: Every shard green
+        if: always()
+        run: |
+          [ "${{ needs.tests.result }}" = "success" ] || { echo "::error::a shard of the unit tests is ${{ needs.tests.result }}: see « Unit tests (shard k/6) »"; exit 1; }
 
   sound:
-    name: Sound benches (song, live listening, real projects, soak)
+    name: Sound benches (song)
     runs-on: ubuntu-latest
     needs: quick
-    # Song (~21 min), live (~10 min), real projects (~3 min, they use the live bench's tools: same job), soak (~5 min).
-    # 75 minutes had cut the real projects twice when they came after the unit tests (runs 42968491490 and 43154808420).
-    timeout-minutes: 70
+    # Lot « ci-rapide » (2026-11-24): the song bench alone (16 to 22 minutes); the live listening, the real projects and
+    # the soak are the job « live » beside it. Together they took 27 to 53 minutes.
+    timeout-minutes: 45
     env:
       VERSION_CODE: ${{ github.run_number }}
       RELEASE_CHANNEL: ${{ github.event_name == 'push' && 'stable' || 'preview' }}
@@ -217,6 +312,19 @@ jobs:
         with:
           key: sound-host
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      # Robolectric's Android jar (213 MB): cached, then fetched from a Maven Central mirror if missing
+      # (repo1.maven.org rate-limits it, 429, 2026-11-24; scripts/ci/robolectric-jar.sh).
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-android-all-${{ hashFiles('gradle/libs.versions.toml', 'app/src/test/resources/robolectric.properties') }}
+      - name: Robolectric's Android jar (mirrors)
+        run: scripts/ci/robolectric-jar.sh
+      # ffmpeg and fdkaac from cached .deb files: their download took 18.5 minutes once (run 45326803883).
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ps-apt
+          key: apt-ffmpeg-fdkaac-${{ runner.os }}-${{ runner.arch }}-1
       # The song bench (docs/son/BANC.md) on a few styles: the app's real export recorded, replayed by
       # the engine on Linux, measured (LUFS and true peak checked against ffmpeg). Full run: all styles.
       - name: Song bench (5 styles)
@@ -226,7 +334,7 @@ jobs:
           JOBS: 4
         run: |
           # fdkaac (S6): the M4A encoded by FDK AAC, the family of the phone's own encoder (ffmpeg's overshoots far more).
-          { command -v ffmpeg && command -v fdkaac; } > /dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends ffmpeg > /dev/null && { sudo apt-get install -y -qq --no-install-recommends fdkaac > /dev/null || echo "fdkaac unavailable: the bench encodes with ffmpeg"; }; }
+          { command -v ffmpeg && command -v fdkaac; } > /dev/null || scripts/ci/apt-install.sh ffmpeg --optional fdkaac
           python3 -I scripts/bench/test_report.py
           ./scripts/song-bench.sh --styles techno,house,trap,dnb,pop --ffmpeg --m4a --before docs/son/banc/apres-son8.json \
             --title "Banc de mesure du son (CI, 5 styles)"
@@ -242,6 +350,51 @@ jobs:
             build/bench/m4a.txt
             build/bench/gradle.log
           if-no-files-found: ignore
+
+  live:
+    name: Sound benches (live listening, real projects, soak)
+    runs-on: ubuntu-latest
+    needs: quick
+    # Live (~7 min), real projects (~3 min, they use the live bench's tools: same job), soak (~3 min).
+    timeout-minutes: 45
+    env:
+      VERSION_CODE: ${{ github.run_number }}
+      RELEASE_CHANNEL: ${{ github.event_name == 'push' && 'stable' || 'preview' }}
+      # No SIGNING_PASSWORD here: this job runs Gradle, its plugins and third-party actions. The APK
+      # leaves unsigned and the publish job signs it.
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: false
+      - name: Fetch submodules with retries (GitLab is sometimes overloaded)
+        run: |
+          # GitHub ones first, then eigen (GitLab, sometimes overloaded) with retries; a failed
+          # update aborts before checking out the others, so --force and a final check.
+          git submodule update --init --depth=1 --force -- $(git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | grep -v eigen)
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            git submodule update --init --depth=1 --force -- separation/third_party/eigen && break
+            echo "eigen: attempt $i failed, waiting"; sleep 30
+          done
+          if git submodule status | grep -q '^-'; then git submodule status; exit 1; fi
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
+        with:
+          packages: ${{ env.ANDROID_PLATFORM }} ${{ env.BUILD_TOOLS }} ndk;${{ env.NDK_VERSION }} cmake;${{ env.CMAKE_VERSION }}
+      - uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
+        with:
+          key: live-host
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      # Robolectric's Android jar (213 MB): cached, then fetched from a Maven Central mirror if missing
+      # (repo1.maven.org rate-limits it, 429, 2026-11-24; scripts/ci/robolectric-jar.sh).
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-android-all-${{ hashFiles('gradle/libs.versions.toml', 'app/src/test/resources/robolectric.properties') }}
+      - name: Robolectric's Android jar (mirrors)
+        run: scripts/ci/robolectric-jar.sh
       # « Écoute en direct » (docs/son/BANC.md): every style's song as the PHONE plays it, not as an
       # export renders it: the app's own live commands (load, ▶, each part staged after its swap)
       # through the engine driven like the phone's stream, 150 s each (S6: long enough to reach the
@@ -425,9 +578,10 @@ jobs:
     name: Publish APK
     runs-on: ubuntu-latest
     # Every job, named one by one (lot « ci3 »: « engine » was needed through « build » and « smoke » before).
-    needs: [quick, engine, separation, build, sound, apk, smoke]
+    needs: [quick, engine, sanitizers, separation, tests, build, sound, live, apk, smoke]
     # Forks and bots get no secrets: they build and test, but never publish.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 30
     # Releases: the only job that writes (and the only one with the signing secret, in one step).
     permissions:
       contents: write

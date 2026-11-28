@@ -1,0 +1,10 @@
+lang=pl
+device=foldable
+font=100
+mode=pro
+amenee=tuto:pop:1
+gestes.max=181
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

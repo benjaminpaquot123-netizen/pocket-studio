@@ -1,0 +1,64 @@
+Écran 97 (1035x1243)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 299,42
+texte « Pro » @ 625,42
+icône ↶ @ 697,42
+icône ↷ [désactivé] @ 769,42
+bouton ● @ 841,42
+bouton ▶ « esta parte » @ 915,42
+icône (trois points reliés) @ 990,42
+bouton « 126  BPM » @ 73,114
+icône « Drop comp. 33/120 » ▾ @ 242,114
+bouton (flèches en boucle) « Loop » [état « desligado »] @ 887,114
+bouton « ? » @ 990,114
+image (courbe) @ 0,0
+bouton « ? » @ 468,195
+texte « Volumes » @ 241,196
+texte « Deslize um fader para o volume; toque no nome de uma faixa para ver os efeitos e as curvas dela. » @ 263,250
+texte « Bateria » @ 84,343
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 57,418
+bouton (casque) [état « desligado »] @ 111,418
+curseur [coupé, état « +0,0 dB », à 80 %] @ 84,523
+texte « Acid 303 » @ 204,343
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 177,418
+bouton (casque) [état « desligado »] @ 231,418
+curseur [coupé, état « +0,0 dB », à 80 %] @ 204,523
+texte « Acordes » @ 324,343
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 297,418
+bouton (casque) [état « desligado »] @ 351,418
+curseur [coupé, état « +0,0 dB », à 80 %] @ 324,523
+texte « Baixo » @ 444,343
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 417,418
+bouton (casque) [état « desligado »] @ 471,418
+curseur [coupé, état « +0,0 dB », à 80 %] @ 444,523
+titre « CURVAS » [état « Expandido »] @ 694,222
+bouton « ? » @ 702,222
+bouton ● « Gravar » @ 916,222
+texte « Faça um ajuste se mexer sozinho: escolha-o e desenhe a curva dele (com o dedo, ou uma linha em dois toques). » @ 771,310
+bouton + «  Automatizar um ajuste » @ 722,399
+bouton (vagues) «  O que toca » @ 657,480
+texte « Limpar » [coupé] @ 855,561
+texte « Acordes » @ 623,553
+icône (poubelle) [coupé] @ 957,564
+texte « Filtro Corte » [coupé] @ 606,582
+texte « A mixagem Capítulo 12/14 · Etapa 2/3 · Pro » @ 431,637
+icône (liste) « Capítulos » @ 892,637
+icône ⌄ @ 978,637
+texte « Referência: durante o Drop, os medidores do Mixer não devem ficar no vermelho. Se uma faixa ficar vermelha, abaixe o fader dela. » @ 517,736
+texte « ▸ Por quê? » @ 517,796
+bouton ✓ «   Entendi » @ 517,859
+icône ← «  Anterior » @ 97,943
+icône « Próximo  » → @ 936,943
+icône ↶ « Desfazer » @ 141,1027
+icône ↷ « Refazer » [désactivé] @ 317,1027
+bouton ▶ « a música » @ 494,1027
+texte « 126 Andamento » @ 681,1027
+icône (trois points reliés) « Compartilhar » @ 880,1027
+onglet (ligne brisée et points) « Estrutura » @ 99,1123
+onglet (touches de piano) « Sons » @ 309,1123
+onglet (curseurs) « Mix » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Mais » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Anotar » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentários » @ 385,1213

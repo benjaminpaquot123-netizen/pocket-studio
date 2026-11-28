@@ -1,0 +1,57 @@
+Écran 56 (588x1278)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 134,42
+bouton « Simple » @ 311,42
+bouton ● @ 399,42
+bouton ▶ « this part » @ 471,42
+icône ⋮ @ 543,42
+bouton « 112  Tempo » @ 83,114
+icône « Intro bar 1/80 » ▾ @ 239,114
+bouton « ? » @ 543,114
+texte « Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own. » [coupé] @ 297,151
+bouton « Drums ▸ » [état « closed »] @ 75,222
+curseur [état « Normal », à 80 %] @ 84,399
+texte « Normal » @ 84,556
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 56,598
+bouton ▶ [coupé] @ 113,598
+texte « Chords » @ 216,210
+curseur [état « −2 », à 69 %] @ 216,375
+texte « −2 » @ 216,532
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 194,586
+bouton ▶ @ 245,582
+texte « Melody » @ 339,210
+curseur [état « Normal », à 80 %] @ 339,375
+texte « Normal » @ 339,532
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 317,586
+bouton ▶ @ 368,582
+texte « Bass » @ 462,210
+curseur [état « Normal », à 80 %] @ 462,375
+texte « Normal » @ 462,532
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 440,586
+bouton ▶ @ 491,582
+texte « Output » [coupé] @ 566,210
+curseur [coupé, état « −6 », à 60 %] @ 559,375
+texte « Press ▶ » [coupé] @ 562,552
+texte « The mix: the volumes Chapter 11/12 · Done · Easy » @ 210,669
+icône (liste) « Chapters » @ 447,669
+icône ⌄ @ 531,669
+image (coupe) @ 57,786
+texte « Well done, chapter finished! » @ 235,759
+texte « Listen to your song as it is now, then go on to the next chapter: “Export your song”. » @ 319,801
+bouton « Next chapter   » → @ 294,888
+icône ← @ 57,975
+bouton ▶ «  Listen to my song » @ 216,975
+bouton ▶ «  Listen to the example » @ 453,975
+icône ↶ « Undo » @ 72,1062
+image ↷ @ 180,1052
+bouton ▶ « the song » @ 288,1062
+texte « 112 Tempo » @ 402,1062
+icône ⋮ « More » @ 516,1062
+onglet (lignes et note) « My song » @ 54,1158
+onglet (quatre carrés) « Rhythm » @ 174,1158
+onglet (touches de piano) « Keyboard » @ 294,1158
+onglet (curseurs) « Mix » [sélectionné] @ 414,1158
+onglet (trois points reliés) « Share » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

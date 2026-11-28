@@ -1,0 +1,698 @@
+#0 SIEGE lang=ja device=foldable font=130 mode=pro theme=- fresh=non gestes.max=181 lit=oui main=both amenee=tuto:house:10
+#0 PREMIER ECRAN reel_s=4.2 simule_s=2.4 jvm_s=9.7 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:house:10
+#0 AMENEE > touche 518 998 (launch_learn)
+#0 AMENEE > touche 771 1062 (mode_card_pro)
+#0 AMENEE > touche 517 1169 (tuto_style_house)
+#0 AMENEE chapitres 1 à 9 construits dans le projet
+#0 AMENEE > touche 885 595 (tuto_chapters)
+#0 AMENEE > touche 517 947 (tuto_chapter_9)
+#0 AMENEE prête (tuto_panel/tab_Sons)
+#1 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE eb90bba2eb | project=p-dc1cc256 tuto=house/Pro active=true step=map_intro done=16 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « 保存しました » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 517 851
+#1 DOIGT tuto_listen «  例を聴く »
+#2 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d61a3efd38 | project=p-dc1cc256 tuto=house/Pro active=true step=map_intro done=16 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 3 s).
+#2 > touche 953 654
+#2 DOIGT tuto_kit_later « あとで »
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 206d2bad08 | project=p-dc1cc256 tuto=house/Pro active=true step=map_intro done=17 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 2 s).
+#3 > touche 517 851
+#3 DOIGT tuto_next_big « 次のステップ   »
+#4 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 0ad69777cf | project=p-dc1cc256 tuto=house/Pro active=true step=map_montee done=17 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « パート：A · グルーヴ » drawn past its parent's edge (down, 23 dp shown of 27)
+#4 LAYOUT CONTRAST « 8 » 1.85:1 (needs 4.5:1, 12 sp)
+#4 > touche 517 851
+#4 DOIGT tuto_listen «  例を聴く »
+#5 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c3b6b2d32a | project=p-dc1cc256 tuto=house/Pro active=true step=map_montee done=17 playing=false
+#5 SON Son : l'exemple du tuto joue (encore 3 s).
+#5 > attends 3
+#6 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 8e1831e9f6 | project=p-dc1cc256 tuto=house/Pro active=true step=map_montee done=18 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 517 851
+#6 DOIGT tuto_next_big « 次のステップ   »
+#7 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE a0b897defe | project=p-dc1cc256 tuto=house/Pro active=true step=map_drop done=18 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT CONTRAST « 16 » 2.08:1 (needs 4.5:1, 12 sp)
+#7 > touche 517 851
+#7 DOIGT tuto_listen «  例を聴く »
+#8 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE a8507e553c | project=p-dc1cc256 tuto=house/Pro active=true step=map_drop done=18 playing=false
+#8 SON Son : l'exemple du tuto joue (encore 3 s).
+#8 > attends 3
+#9 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d1bacc43d7 | project=p-dc1cc256 tuto=house/Pro active=true step=map_drop done=19 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 517 851
+#9 DOIGT tuto_next_big « 次のステップ   »
+#10 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 28bcb0520c | project=p-dc1cc256 tuto=house/Pro active=true step=map_break done=19 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT CONTRAST « 16 » 2.53:1 (needs 4.5:1, 12 sp)
+#10 > touche 517 851
+#10 DOIGT tuto_listen «  例を聴く »
+#11 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE f43621c370 | project=p-dc1cc256 tuto=house/Pro active=true step=map_break done=19 playing=false
+#11 SON Son : l'exemple du tuto joue (encore 3 s).
+#11 > attends 3
+#12 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 260fd0b20f | project=p-dc1cc256 tuto=house/Pro active=true step=map_break done=20 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CUT « ブレイク（曲のひと休み）を聴こう：キックとベースは黙るけど、ピアノとハイハットは鳴り続ける。 » wider than its box (by 1.0 dp)
+#12 > touche 517 851
+#12 DOIGT tuto_next_big « 次のステップ   »
+#13 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 38327c9208 | project=p-dc1cc256 tuto=house/Pro active=true step=map_phrases done=20 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT CONTRAST « 8 » 3.56:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#13 LAYOUT CONTRAST « 16 » 4.28:1 (needs 4.5:1, 12 sp)
+#13 > touche 517 851
+#13 DOIGT tuto_mark «   わかった »
+#14 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE c6a8a3ffab | project=p-dc1cc256 tuto=house/Pro active=true step=map_phrases done=21 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 517 851
+#14 DOIGT tuto_next_big « 次の章   »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE 594a84de32 | project=p-dc1cc256 tuto=house/Pro active=true step=make_intro done=21 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 517 770
+#15 DOIGT tuto_need «   パート「イントロ」を作る »
+#16 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE ace70c51a0 | project=p-dc1cc256 tuto=house/Pro active=true step=make_intro done=22 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 517 851
+#16 DOIGT tuto_next_big « 次のステップ   »
+#17 ROUTE tab_Structure | MODE pro | EMPREINTE 20def4c583 | project=p-dc1cc256 tuto=house/Pro active=true step=make_montee done=22 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 517 770
+#17 DOIGT tuto_need «   パート「ビルドアップ」を作る »
+#18 ROUTE tab_Structure | MODE pro | EMPREINTE 4d23b83f69 | project=p-dc1cc256 tuto=house/Pro active=true step=make_montee done=23 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 327 935
+#18 DOIGT tuto_play_mine «  結果を聴く »
+#19 ROUTE tab_Structure | MODE pro | EMPREINTE 129cc4fd24 | project=p-dc1cc256 tuto=house/Pro active=true step=make_montee done=23 playing=true
+#19 SON Son : la musique du projet joue en boucle.
+#19 LAYOUT CUT « 小節 1/4 » drawn past its parent's edge (down, 21 dp shown of 27)
+#19 > touche 327 935
+#19 DOIGT tuto_play_mine «  停止 »
+#20 ROUTE tab_Structure | MODE pro | EMPREINTE 4d23b83f69 | project=p-dc1cc256 tuto=house/Pro active=true step=make_montee done=23 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 517 851
+#20 DOIGT tuto_next_big « 次のステップ   »
+#21 ROUTE tab_Structure | MODE pro | EMPREINTE e6538da97f | project=p-dc1cc256 tuto=house/Pro active=true step=make_drop done=23 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 517 770
+#21 DOIGT tuto_need «   パート「ドロップ」を作る »
+#22 ROUTE tab_Structure | MODE pro | EMPREINTE f67b825440 | project=p-dc1cc256 tuto=house/Pro active=true step=make_drop done=24 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 517 851
+#22 DOIGT tuto_next_big « 次のステップ   »
+#23 ROUTE tab_Structure | MODE pro | EMPREINTE 0334dbfc7c | project=p-dc1cc256 tuto=house/Pro active=true step=make_break done=24 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 517 770
+#23 DOIGT tuto_need «   パート「ブレイク」を作る »
+#24 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE c4aeb71dff | project=p-dc1cc256 tuto=house/Pro active=true step=make_break done=25 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 517 851
+#24 DOIGT tuto_next_big « 次のステップ   »
+#25 ROUTE tab_Structure | MODE pro | EMPREINTE b046974061 | project=p-dc1cc256 tuto=house/Pro active=true step=make_drop2 done=25 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 768 854
+#25 DOIGT tuto_show «  見せて »
+#26 ROUTE tab_Structure | MODE pro | EMPREINTE adca9a144b | project=p-dc1cc256 tuto=house/Pro active=true step=make_drop2 done=25 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CUT « ビルドアップ » ellipsized (« … »)
+#26 LAYOUT CUT « ドロップ 2 » ellipsized (« … »)
+#26 LAYOUT CONTRAST « 停止 » 3.91:1 (needs 4.5:1, 14 sp)
+#26 > attends 5
+#27 ROUTE tab_Structure | MODE pro | EMPREINTE b046974061 | project=p-dc1cc256 tuto=house/Pro active=true step=make_drop2 done=25 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 517 770
+#27 DOIGT tuto_need «   パート「ドロップ 2」を作る »
+#28 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 0e792a31c5 | project=p-dc1cc256 tuto=house/Pro active=true step=make_drop2 done=26 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 517 851
+#28 DOIGT tuto_next_big « 次のステップ   »
+#29 ROUTE tab_Structure | MODE pro | EMPREINTE da50ba5065 | project=p-dc1cc256 tuto=house/Pro active=true step=make_fin done=26 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 517 770
+#29 DOIGT tuto_need «   パート「エンディング」を作る »
+#30 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 1b221c0359 | project=p-dc1cc256 tuto=house/Pro active=true step=make_fin done=27 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 517 851
+#30 DOIGT tuto_next_big « 次の章   »
+#31 ROUTE tab_Structure | MODE pro | EMPREINTE 37bd4367bc | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 517 770
+#31 DOIGT tuto_do «   自分でやる »
+#32 ROUTE tab_Structure | MODE pro | EMPREINTE b4044b6e6f | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#32 SON Son : rien ne joue.
+#32 LAYOUT CUT « エンディング » ellipsized (« … »)
+#32 LAYOUT CUT « あなたの番：「構成」の「追加」の下で、イントロ、ビルドアップ、ドロップ、ブレイク、ビルドアップ、ドロップ 2、エンディングの順にタップしよう。 » ellipsized (« … »)
+#32 LAYOUT CONTRAST « + A · グルーヴ » 3.99:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + B · イントロ » 4.06:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + C · ビルドアップ » 4.06:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + D · ドロップ » 4.12:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + E · ブレイク » 4.12:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + F · ドロップ 2 » 4.16:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + G · エンディング » 4.18:1 (needs 4.5:1, 14 sp)
+#32 > touche 169 327
+#32 DOIGT add_part_1 « + B · イントロ »
+#33 ROUTE tab_Structure | MODE pro | EMPREINTE 9afa6c2914 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#33 SON Son : rien ne joue.
+#33 LAYOUT CUT « 小節 1/8 » drawn past its parent's edge (down, 21 dp shown of 27)
+#33 LAYOUT CONTRAST « + A · グルーヴ » 4.12:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + B · イントロ » 3.46:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + C · ビルドアップ » 4.16:1 (needs 4.5:1, 14 sp)
+#33 LAYOUT CONTRAST « + D · ドロップ » 4.18:1 (needs 4.5:1, 14 sp)
+#33 > touche 169 408
+#33 DOIGT rien (texte « 最後に追加： »)
+#34 ROUTE tab_Structure | MODE pro | EMPREINTE 9afa6c2914 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 169 489
+#34 DOIGT add_part_0 « + A · グルーヴ »
+#35 ROUTE tab_Structure | MODE pro | EMPREINTE ccd56c8bfd | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CUT « 小節 1/16 » drawn past its parent's edge (down, 21 dp shown of 27)
+#35 > touche 169 570
+#35 DOIGT add_part_1 « + B · イントロ »
+#36 ROUTE tab_Structure | MODE pro | EMPREINTE fe6984f932 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CUT « 小節 1/24 » drawn past its parent's edge (down, 21 dp shown of 27)
+#36 > glisse 200 300 200 750
+#36 DOIGT rien
+#37 ROUTE tab_Structure | MODE pro | EMPREINTE bb0f901ff3 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT CUT « Am  Am  Am  Am  Am  Am  Am  Am » ellipsized (« … »)
+#37 LAYOUT CUT « Am  Am  D  D  Am  Am  D  D » ellipsized (« … »)
+#37 > touche 448 510
+#37 DOIGT part_menu_1
+#37 DIALOGUE 0.5 s
+#38 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE d50c497fcd | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#38 SON Son : rien ne joue.
+#38 LAYOUT OVERLAP « パート 2 · A · グルーヴ » over the touchable « シートを閉じる » (249 x 37 dp)
+#38 LAYOUT OVERLAP « 8 小節 » over the touchable « シートを閉じる » (55 x 27 dp)
+#38 LAYOUT OVERLAP « 閉じる » over the touchable « シートを閉じる » (56 x 27 dp)
+#38 LAYOUT OVERLAP « バリエーション » over the touchable « シートを閉じる » (131 x 27 dp)
+#38 LAYOUT OVERLAP « 最後にフィル » over the touchable « シートを閉じる » (112 x 27 dp)
+#38 LAYOUT OVERLAP « 後にブレイク · 4小節 » over the touchable « シートを閉じる » (178 x 27 dp)
+#38 LAYOUT OVERLAP « 後にブレイク · 8小節 » over the touchable « シートを閉じる » (178 x 27 dp)
+#38 LAYOUT OVERLAP « 前にビルドアップ · 4小節 » over the touchable « シートを閉じる » (216 x 27 dp)
+#38 LAYOUT OVERLAP « 前にビルドアップ · 8小節 » over the touchable « シートを閉じる » (216 x 27 dp)
+#38 LAYOUT OVERLAP « フェードイン » over the touchable « シートを閉じる » (113 x 27 dp)
+#38 LAYOUT OVERLAP « フェードアウト » over the touchable « シートを閉じる » (131 x 27 dp)
+#38 LAYOUT OVERLAP « エンディングを追加 » over the touchable « シートを閉じる » (168 x 27 dp)
+#38 LAYOUT OVERLAP « エネルギー：3 » over the touchable « シートを閉じる » (124 x 27 dp)
+#38 LAYOUT OVERLAP « 1 · パッド » over the touchable « シートを閉じる » (80 x 27 dp)
+#38 LAYOUT OVERLAP « 2 · ＋ベース » over the touchable « シートを閉じる » (101 x 27 dp)
+#38 LAYOUT OVERLAP « 3 · ＋ドラム » over the touchable « シートを閉じる » (102 x 27 dp)
+#38 LAYOUT OVERLAP « 4 · 全開 » over the touchable « シートを閉じる » (66 x 27 dp)
+#38 LAYOUT OVERLAP « 長さ » over the touchable « シートを閉じる » (37 x 27 dp)
+#38 LAYOUT OVERLAP « 小節 » over the touchable « シートを閉じる » (33 x 25 dp)
+#38 LAYOUT OVERLAP « OK » over the touchable « シートを閉じる » (28 x 27 dp)
+#38 LAYOUT OVERLAP « パート » over the touchable « シートを閉じる » (56 x 27 dp)
+#38 LAYOUT OVERLAP « 名前を変更 » over the touchable « シートを閉じる » (94 x 27 dp)
+#38 LAYOUT OVERLAP « 鳴っているもの » over the touchable « シートを閉じる » (131 x 27 dp)
+#38 LAYOUT OVERLAP « 上へ移動 » over the touchable « シートを閉じる » (75 x 27 dp)
+#38 LAYOUT OVERLAP « 下へ移動 » over the touchable « シートを閉じる » (75 x 27 dp)
+#38 LAYOUT OVERLAP « 複製 » over the touchable « シートを閉じる » (37 x 27 dp)
+#38 LAYOUT OVERLAP « 後ろに挿入 » over the touchable « シートを閉じる » (94 x 27 dp)
+#38 LAYOUT OVERLAP « 外す » over the touchable « シートを閉じる » (37 x 27 dp)
+#38 > touche 475 1167
+#38 DOIGT part_remove_1 « 外す »
+#38 DIALOGUE 0.2 s
+#39 ROUTE tab_Structure | MODE pro | EMPREINTE a00e9fd426 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 448 463
+#39 DOIGT part_menu_1
+#39 DIALOGUE 0.3 s
+#40 ROUTE dialogue:part_sheet | MODE pro | EMPREINTE dd8b6032ee | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT OVERLAP « パート 2 · B · イントロ » over the touchable « シートを閉じる » (246 x 37 dp)
+#40 LAYOUT OVERLAP « 8 小節  ·  2 回再生 » over the touchable « シートを閉じる » (155 x 27 dp)
+#40 LAYOUT OVERLAP « 曲中で 2 回再生。編集する範囲： » over the touchable « シートを閉じる » (283 x 27 dp)
+#40 LAYOUT OVERLAP « このパートだけ » over the touchable « シートを閉じる » (131 x 27 dp)
+#40 LAYOUT OVERLAP « 2 個すべて » over the touchable « シートを閉じる » (89 x 27 dp)
+#40 > touche 475 1205
+#40 DOIGT part_remove_1 « 外す »
+#40 DIALOGUE 0.2 s
+#41 ROUTE tab_Structure | MODE pro | EMPREINTE ecdec3f3d2 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 199 730
+#41 DOIGT add_part_2 « + C · ビルドアップ »
+#42 ROUTE tab_Structure | MODE pro | EMPREINTE daea3f8d1b | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CUT « 小節 1/12 » drawn past its parent's edge (down, 21 dp shown of 27)
+#42 > touche 170 724
+#42 DOIGT add_part_3 « + D · ドロップ »
+#43 ROUTE tab_Structure | MODE pro | EMPREINTE 4583fd514e | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CUT « 小節 1/20 » drawn past its parent's edge (down, 21 dp shown of 27)
+#43 > glisse 200 700 200 400
+#43 DOIGT add_part_3 « + D · ドロップ »
+#44 ROUTE tab_Structure | MODE pro | EMPREINTE dbbf333457 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#44 SON Son : rien ne joue.
+#44 LAYOUT CUT « + 新しいパート（G · エンディングのコピー） » lines dropped (more lines than room)
+#44 > touche 168 529
+#44 DOIGT add_part_4 « + E · ブレイク »
+#45 ROUTE tab_Structure | MODE pro | EMPREINTE fa8e418dcf | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CUT « 小節 1/28 » drawn past its parent's edge (down, 21 dp shown of 27)
+#45 > touche 199 643
+#45 DOIGT add_part_2 « + C · ビルドアップ »
+#46 ROUTE tab_Structure | MODE pro | EMPREINTE 5c2778a773 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CUT « 小節 1/32 » drawn past its parent's edge (down, 21 dp shown of 27)
+#46 > glisse 200 700 200 400
+#46 DOIGT add_part_3 « + D · ドロップ »
+#47 ROUTE tab_Structure | MODE pro | EMPREINTE 61043438d8 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 180 610
+#47 DOIGT add_part_5 « + F · ドロップ 2 »
+#48 ROUTE tab_Structure | MODE pro | EMPREINTE 398a4aa2b4 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CUT « 小節 1/40 » drawn past its parent's edge (down, 21 dp shown of 27)
+#48 > glisse 200 700 200 400
+#48 DOIGT add_part_3 « + D · ドロップ »
+#49 ROUTE tab_Structure | MODE pro | EMPREINTE 4b80c99952 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=27 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 198 691
+#49 DOIGT add_part_6 « + G · エンディング »
+#50 ROUTE tab_Structure | MODE pro | EMPREINTE f542729482 | project=p-dc1cc256 tuto=house/Pro active=true step=song_order done=28 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT « 小節 1/48 » drawn past its parent's edge (down, 21 dp shown of 27)
+#50 > touche 517 924
+#50 DOIGT tuto_next_folded « 成功 »
+#51 ROUTE tab_Structure | MODE pro | EMPREINTE c77ca94d8d | project=p-dc1cc256 tuto=house/Pro active=true step=song_phrases done=28 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 376 277
+#51 DOIGT dans:part_0
+#52 ROUTE tab_Structure | MODE pro | EMPREINTE 133189ad69 | project=p-dc1cc256 tuto=house/Pro active=true step=song_phrases done=28 playing=false
+#52 SON Son : rien ne joue.
+#52 LAYOUT CUT « 小節 1/56 » drawn past its parent's edge (down, 21 dp shown of 27)
+#52 > touche 517 770
+#52 DOIGT tuto_need «   おすすめの長さにする »
+#53 ROUTE tab_Structure | MODE pro | EMPREINTE c3b7100503 | project=p-dc1cc256 tuto=house/Pro active=true step=song_phrases done=29 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CUT « 小節 1/96 » drawn past its parent's edge (down, 21 dp shown of 27)
+#53 > touche 517 851
+#53 DOIGT tuto_next_big « 次の章   »
+#54 ROUTE tab_Structure | MODE pro | EMPREINTE 883660d635 | project=p-dc1cc256 tuto=house/Pro active=true step=fill done=29 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 517 770
+#54 DOIGT tuto_need «   パート「ビルドアップ」へ移動 »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE 22e92e4c00 | project=p-dc1cc256 tuto=house/Pro active=true step=fill done=29 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CUT « オープンハイハット » ellipsized (« … »)
+#55 LAYOUT CUT « パッドで鳴らし、マスにヒットを記録。長押し：音を変更。 » ellipsized (« … »)
+#55 LAYOUT CUT « C · ビルドアップ » ellipsized (« … »)
+#55 LAYOUT CONTRAST « クラップ » 4.09:1 (needs 4.5:1, 14 sp)
+#55 LAYOUT CONTRAST « ステップ：クラップ · ビルドアップ » 2.28:1 (needs 4.5:1, 12 sp)
+#55 > appui-long 744 700
+#55 DOIGT step_59 « ステップ 12 »
+#56 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE cbe9b2d3a0 | project=p-dc1cc256 tuto=house/Pro active=true step=fill done=29 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 521 588
+#56 DOIGT roll_4 « ×4 »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE b3dbee1d46 | project=p-dc1cc256 tuto=house/Pro active=true step=fill done=30 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 517 924
+#57 DOIGT tuto_next_folded « 成功 »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE bd8b896bc8 | project=p-dc1cc256 tuto=house/Pro active=true step=gap done=30 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « 4 » 4.36:1 (needs 4.5:1, 12 sp)
+#58 > touche 517 770
+#58 DOIGT tuto_do «   自分でやる »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE 7e7e2bdd04 | project=p-dc1cc256 tuto=house/Pro active=true step=gap done=30 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « ハイハット » 4.06:1 (needs 4.5:1, 14 sp)
+#59 LAYOUT CONTRAST « 4 » 4.13:1 (needs 4.5:1, 12 sp)
+#59 LAYOUT CONTRAST « ピッチ » 2.39:1 (needs 4.5:1, 14 sp)
+#59 > touche 800 457
+#59 DOIGT step_60 « ステップ 13 »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE b2a51331d2 | project=p-dc1cc256 tuto=house/Pro active=true step=gap done=30 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 856 457
+#60 DOIGT step_61 « ステップ 14 »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE 65be035bd7 | project=p-dc1cc256 tuto=house/Pro active=true step=gap done=30 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 968 457
+#61 DOIGT step_63 « ステップ 16 »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE 9b641d5071 | project=p-dc1cc256 tuto=house/Pro active=true step=gap done=30 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST « オープンハイハット » 4.03:1 (needs 4.5:1, 14 sp)
+#62 > touche 912 457
+#62 DOIGT step_62 « ステップ 15 »
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE cc7c6550fa | project=p-dc1cc256 tuto=house/Pro active=true step=gap done=30 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CONTRAST « → リム » 1.24:1 (needs 3.0:1, 14 sp)
+#63 > touche 912 431
+#63 DOIGT step_62 « ステップ 15 »
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE 7d6ee246cd | project=p-dc1cc256 tuto=house/Pro active=true step=gap done=31 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 517 924
+#64 DOIGT tuto_next_folded « 成功 »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE 7d2129215c | project=p-dc1cc256 tuto=house/Pro active=true step=crash done=31 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CONTRAST « 小節 4/4 · シンバル » 1.52:1 (needs 4.5:1, 13 sp)
+#65 > touche 517 770
+#65 DOIGT tuto_need «   パート「ドロップ」へ移動 »
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE 8c4b48a0a7 | project=p-dc1cc256 tuto=house/Pro active=true step=crash done=31 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#66 LAYOUT CONTRAST « ピッチ » 2.40:1 (needs 4.5:1, 14 sp)
+#66 > touche 575 382
+#66 DOIGT step_0 « ステップ 1 »
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 4978874a8f | project=p-dc1cc256 tuto=house/Pro active=true step=crash done=32 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 517 924
+#67 DOIGT tuto_next_folded « 成功 »
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE cae992ed8b | project=p-dc1cc256 tuto=house/Pro active=true step=variation done=32 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « 小節 1/2 · シェイカー » 1.78:1 (needs 4.5:1, 13 sp)
+#68 > touche 517 770
+#68 DOIGT tuto_need «   パート「ドロップ 2」へ移動 »
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 99cef32ab6 | project=p-dc1cc256 tuto=house/Pro active=true step=variation done=32 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CUT « F · ドロップ 2 » ellipsized (« … »)
+#69 LAYOUT CUT « あなたの番：ドロップ 2 で「シェイカー」パッドにヒットを足そう（またはオープンハイハットをもう1つ）：16小節ごとにレイヤーを1つ、ハウスのルール。 » ellipsized (« … »)
+#69 LAYOUT CONTRAST « 追従 » 1.67:1 (needs 4.5:1, 14 sp)
+#69 > touche 688 462
+#69 DOIGT step_2 « ステップ 3 »
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE 679b4b7548 | project=p-dc1cc256 tuto=house/Pro active=true step=variation done=33 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 517 924
+#70 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE 99eac8e56f | project=p-dc1cc256 tuto=house/Pro active=true step=variation done=33 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « 追従 » 1.46:1 (needs 4.5:1, 14 sp)
+#71 > touche 517 851
+#71 DOIGT tuto_next_big « 次の章   »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE 92782b98b0 | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT CONTRAST « 追従 » 2.06:1 (needs 4.5:1, 14 sp)
+#72 > touche 517 770
+#72 DOIGT tuto_do «   自分でやる »
+#73 ROUTE dialogue:effects_box_20 | MODE pro | EMPREINTE 1466170f32 | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « ← ダーク » 4.32:1 (needs 4.5:1, 12 sp)
+#73 LAYOUT CONTRAST « 閉じる » 3.26:1 (needs 4.5:1, 14 sp)
+#73 > glisse 360 1054 650 1054
+#73 DOIGT send_20_0 « リバーブ センド »
+#74 ROUTE dialogue:effects_box_20 | MODE pro | EMPREINTE 1466170f32 | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 885 1171
+#74 DOIGT fx_close « 閉じる »
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE bb8feb16c0 | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT CUT « あなたの番：ドラムのグリッドで「クラップ」パッドをタップし、次に「パッドのエフェクト」で「リバーブ・センド」を上げよう。ミックスで「コード」トラックにも同じことをしよう。少し汚れた、長すぎないリバーブ：1990年のレコードの音。 » ellipsized (« … »)
+#75 > touche 518 1123
+#75 DOIGT tab_Mix « ミックス »
+#76 ROUTE tab_Mix | MODE pro | EMPREINTE f4b776711b | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « ? » 3.92:1 (needs 4.5:1, 12 sp)
+#76 > glisse 440 380 60 380
+#76 COUVERT « ドラム » couvre « サブ »
+#76 REFUS doigt couvert : « ドラム » couvre « サブ »
+#77 ROUTE tab_Mix | MODE pro | EMPREINTE 7a00ddf9d3 | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#77 SON Son : rien ne joue.
+#77 > glisse 470 400 40 410
+#77 COUVERT « ドラム » couvre « サブ »
+#77 REFUS doigt couvert : « ドラム » couvre « サブ »
+#78 ROUTE tab_Mix | MODE pro | EMPREINTE 7a00ddf9d3 | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#78 SON Son : rien ne joue.
+#78 > glisse 760 700 760 250
+#78 DOIGT rien
+#79 ROUTE tab_Mix | MODE pro | EMPREINTE f55565345e | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 517 924
+#79 DOIGT tuto_folded_text « あなたの番：ドラムのグリッドで「クラップ」パッドをタップし、次に「パッドのエフェ »
+#80 ROUTE tab_Mix | MODE pro | EMPREINTE 147f982428 | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 768 854
+#80 DOIGT tuto_show «  見せて »
+#81 ROUTE dialogue:effects_box_6 | MODE pro | EMPREINTE 8231b14576 | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#81 SON Son : rien ne joue.
+#81 LAYOUT CONTRAST « スペース » 3.50:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « ダート » 3.50:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « モーション » 3.80:1 (needs 4.5:1, 14 sp)
+#81 LAYOUT CONTRAST « ↑ 遠く » 3.79:1 (needs 4.5:1, 12 sp)
+#81 LAYOUT CONTRAST « ↓ ドライ » 3.14:1 (needs 4.5:1, 12 sp)
+#81 LAYOUT CONTRAST « カラー » 2.62:1 (needs 4.5:1, 12 sp)
+#81 LAYOUT CONTRAST « ニュートラル » 3.64:1 (needs 4.5:1, 12 sp)
+#81 LAYOUT CONTRAST « ダート » 2.84:1 (needs 4.5:1, 12 sp)
+#81 LAYOUT CONTRAST « 0 » 3.64:1 (needs 4.5:1, 12 sp)
+#81 LAYOUT CONTRAST « 0% » 2.38:1 (needs 4.5:1, 14 sp)
+#81 > glisse 360 975 650 975
+#81 DOIGT send_6_0 « リバーブ センド »
+#82 ROUTE dialogue:effects_box_6 | MODE pro | EMPREINTE 8231b14576 | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 885 1171
+#82 DOIGT fx_close « 閉じる »
+#83 ROUTE tab_Mix | MODE pro | EMPREINTE af93ed409c | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=33 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 499 924
+#83 DOIGT rien (texte « はい、できた！ 今度はあなたの番。 »)
+#84 ROUTE tab_Mix | MODE pro | EMPREINTE ae952774b7 | project=p-dc1cc256 tuto=house/Pro active=true step=reverb done=34 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 517 924
+#84 DOIGT tuto_next_folded « 成功 »
+#85 ROUTE tab_Mix | MODE pro | EMPREINTE a5eb91d6df | project=p-dc1cc256 tuto=house/Pro active=true step=riser done=34 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 517 770
+#85 DOIGT tuto_need «   パート「ビルドアップ」へ移動 »
+#86 ROUTE tab_Mix | MODE pro | EMPREINTE 28506f7abd | project=p-dc1cc256 tuto=house/Pro active=true step=riser done=34 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT CUT « あなたの番：ビルドアップで「コード」トラックのフィルターの「カットオフ」をオートメーションしよう：「設定をオートメーション」、「コード」、「フィルター（スイープ）」、「パートごと」と進み、上がるカーブを描く。 » ellipsized (« … »)
+#86 > touche 763 445
+#86 DOIGT automation_add «  設定をオートメーション »
+#87 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE 85e1640eaf | project=p-dc1cc256 tuto=house/Pro active=true step=riser done=34 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT CONTRAST « サブ » 1.38:1 (needs 4.5:1, 14 sp)
+#87 LAYOUT CONTRAST « ドラム » 3.36:1 (needs 4.5:1, 16 sp)
+#87 LAYOUT CONTRAST « フィルター（スイープ） » 1.28:1 (needs 4.5:1, 16 sp)
+#87 LAYOUT CONTRAST « 音量 » 1.21:1 (needs 4.5:1, 16 sp)
+#87 LAYOUT CONTRAST « 大きく/小さく：フェード、入り、カット。 » 2.58:1 (needs 4.5:1, 13 sp)
+#87 LAYOUT CONTRAST « リバーブ センド » 3.64:1 (needs 4.5:1, 16 sp)
+#87 LAYOUT CONTRAST « リバーブを多く/少なく：空間と奥行き。 » 2.27:1 (needs 4.5:1, 13 sp)
+#87 LAYOUT CONTRAST « 閉じる » 2.97:1 (needs 4.5:1, 14 sp)
+#87 > touche 800 324
+#87 DOIGT pick_track_6 « コード »
+#88 ROUTE dialogue:automation_picker | MODE pro | EMPREINTE d7e91680af | project=p-dc1cc256 tuto=house/Pro active=true step=riser done=34 playing=false
+#88 SON Son : rien ne joue.
+#88 LAYOUT CONTRAST « コード » 3.31:1 (needs 4.5:1, 16 sp)
+#88 > touche 517 641
+#88 DOIGT pick_filter_6 « フィルター（スイープ） »
+#89 ROUTE tab_Mix | MODE pro | EMPREINTE c80a717fe6 | project=p-dc1cc256 tuto=house/Pro active=true step=riser done=34 playing=false
+#89 SON Son : rien ne joue.
+#89 LAYOUT CUT « 音を開く（明るい）か閉じる（こもる）：フィルタースイープ。 » lines dropped (more lines than room)
+#89 > touche 798 641
+#89 DOIGT auto_mode_0_1 « パートごと »
+#90 ROUTE tab_Mix | MODE pro | EMPREINTE a537918bca | project=p-dc1cc256 tuto=house/Pro active=true step=riser done=34 playing=false
+#90 SON Son : rien ne joue.
+#90 > glisse 771 700 771 300
+#90 DOIGT rien (texte « 曲の一部でこの設定を変えるには（最初は大きく…）、「曲」を選んでね。 »)
+#91 ROUTE tab_Mix | MODE pro | EMPREINTE dcc97e61c8 | project=p-dc1cc256 tuto=house/Pro active=true step=riser done=34 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT CUT « 18.0 kHz » lines dropped (more lines than room)
+#91 > glisse 771 600 771 200
+#91 DOIGT rien (texte « 指で描こう。ダブルタップで点を消去。「スムーズ」で震えた線をなめらかに、「キャン »)
+#92 ROUTE tab_Mix | MODE pro | EMPREINTE 3d884aaba4 | project=p-dc1cc256 tuto=house/Pro active=true step=riser done=34 playing=false
+#92 SON Son : rien ne joue.
+#92 LAYOUT CUT « 849 Hz » lines dropped (more lines than room)
+#92 LAYOUT CUT « 1 » drawn past its parent's edge (down, 18 dp shown of 21)
+#92 LAYOUT CUT « 3 » drawn past its parent's edge (down, 18 dp shown of 21)
+#92 LAYOUT CUT « 5 » drawn past its parent's edge (down, 18 dp shown of 21)
+#92 LAYOUT CUT « 7 » drawn past its parent's edge (down, 18 dp shown of 21)
+#92 LAYOUT CUT « 9 » drawn past its parent's edge (down, 18 dp shown of 21)
+#92 LAYOUT CUT « 11 » drawn past its parent's edge (down, 18 dp shown of 21)
+#92 LAYOUT CUT « 13 » drawn past its parent's edge (down, 18 dp shown of 21)
+#92 LAYOUT CUT « 15 » drawn past its parent's edge (down, 18 dp shown of 21)
+#92 > glisse 645 498 985 335
+#92 DOIGT rien
+#93 ROUTE tab_Mix | MODE pro | EMPREINTE 898c7d9082 | project=p-dc1cc256 tuto=house/Pro active=true step=riser done=35 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 517 924
+#93 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#94 ROUTE tab_Mix | MODE pro | EMPREINTE 6f3ef00147 | project=p-dc1cc256 tuto=house/Pro active=true step=riser done=35 playing=false
+#94 SON Son : rien ne joue.
+#94 > touche 517 851
+#94 DOIGT tuto_next_big « 次の章   »
+#95 ROUTE tab_Mix | MODE pro | EMPREINTE eca07ae9e2 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 517 770
+#95 DOIGT tuto_do «   自分でやる »
+#96 ROUTE tab_Mix | MODE pro | EMPREINTE 846988cdd1 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#96 SON Son : rien ne joue.
+#96 LAYOUT CONTRAST « +0.0 » 3.33:1 (needs 4.5:1, 12 sp)
+#96 LAYOUT CONTRAST « 1 » 3.85:1 (needs 4.5:1, 12 sp)
+#96 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 12 sp)
+#96 > glisse 451 436 451 480
+#96 COUVERT « ドラム » couvre « コード の音量 »
+#96 REFUS doigt couvert : « ドラム » couvre « コード の音量 »
+#97 ROUTE tab_Mix | MODE pro | EMPREINTE 6095a08d04 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#97 SON Son : rien ne joue.
+#97 > glisse 445 437 445 520
+#97 COUVERT « ドラム » couvre « コード の音量 »
+#97 REFUS doigt couvert : « ドラム » couvre « コード の音量 »
+#98 ROUTE tab_Mix | MODE pro | EMPREINTE 6095a08d04 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 445 480
+#98 COUVERT « ドラム » couvre « コード の音量 »
+#98 REFUS doigt couvert : « ドラム » couvre « コード の音量 »
+#99 ROUTE tab_Mix | MODE pro | EMPREINTE 6095a08d04 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#99 SON Son : rien ne joue.
+#99 RIEN NE CHANGE (3 écrans identiques)
+#99 > touche 517 924
+#99 DOIGT tuto_folded_text « あなたの番：ミックスで、コードとメロディのフェーダーを少し下げよう。 »
+#100 ROUTE tab_Mix | MODE pro | EMPREINTE f8ee471ca4 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 768 854
+#100 DOIGT tuto_show «  見せて »
+#101 ROUTE tab_Mix | MODE pro | EMPREINTE 1313166522 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT CONTRAST « 1 » 3.65:1 (needs 4.5:1, 12 sp)
+#101 > attends 3
+#102 ROUTE tab_Mix | MODE pro | EMPREINTE 4e4a693c54 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#102 SON Son : rien ne joue.
+#102 > attends 3
+#103 ROUTE tab_Mix | MODE pro | EMPREINTE 846988cdd1 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#103 SON Son : rien ne joue.
+#103 > glisse 445 440 446 470
+#103 COUVERT « ドラム » couvre « コード の音量 »
+#103 REFUS doigt couvert : « ドラム » couvre « コード の音量 »
+#104 ROUTE tab_Mix | MODE pro | EMPREINTE 6095a08d04 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#104 SON Son : rien ne joue.
+#104 > appui-long 445 437
+#104 COUVERT « ドラム » couvre « コード の音量 »
+#104 REFUS doigt couvert : « ドラム » couvre « コード の音量 »
+#105 ROUTE tab_Mix | MODE pro | EMPREINTE 6095a08d04 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 517 924
+#105 DOIGT tuto_folded_text « あなたの番：ミックスで、コードとメロディのフェーダーを少し下げよう。 »
+#106 ROUTE tab_Mix | MODE pro | EMPREINTE f8ee471ca4 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 950 935
+#106 DOIGT tuto_next « 次へ  »
+#107 ROUTE tuto_panel/tab_Mix | MODE pro | EMPREINTE 06e582fa76 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=35 playing=false
+#107 SON Son : rien ne joue.
+#107 > touche 950 935
+#107 DOIGT tuto_next « 次へ  »
+#108 ROUTE tab_Mix | MODE pro | EMPREINTE df1c1d44bf | project=p-dc1cc256 tuto=house/Pro active=true step=buses done=35 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 517 770
+#108 DOIGT tuto_mark «   わかった »
+#109 ROUTE tab_Mix | MODE pro | EMPREINTE fdc7601ad4 | project=p-dc1cc256 tuto=house/Pro active=true step=buses done=36 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 517 851
+#109 DOIGT tuto_next_big « 次のステップ   »
+#110 ROUTE tab_Mix | MODE pro | EMPREINTE 5a523f6df6 | project=p-dc1cc256 tuto=house/Pro active=true step=loudness done=36 playing=false
+#110 SON Son : rien ne joue.
+#110 LAYOUT CUT « 1 » drawn past its parent's edge (down, 4 dp shown of 21)
+#110 LAYOUT CUT « 3 » drawn past its parent's edge (down, 4 dp shown of 21)
+#110 LAYOUT CUT « 5 » drawn past its parent's edge (down, 4 dp shown of 21)
+#110 LAYOUT CUT « 7 » drawn past its parent's edge (down, 4 dp shown of 21)
+#110 LAYOUT CUT « 9 » drawn past its parent's edge (down, 4 dp shown of 21)
+#110 LAYOUT CUT « 11 » drawn past its parent's edge (down, 4 dp shown of 21)
+#110 LAYOUT CUT « 13 » drawn past its parent's edge (down, 4 dp shown of 21)
+#110 LAYOUT CUT « 15 » drawn past its parent's edge (down, 4 dp shown of 21)
+#110 > touche 517 770
+#110 DOIGT tuto_do «   自分でやる »
+#111 ROUTE tab_Mix | MODE pro | EMPREINTE 1a00e32f63 | project=p-dc1cc256 tuto=house/Pro active=true step=loudness done=36 playing=false
+#111 SON Son : rien ne joue.
+#111 LAYOUT CONTRAST « マスター出力 » 3.66:1 (needs 4.5:1, 12 sp)
+#111 LAYOUT CONTRAST « ? » 3.25:1 (needs 4.5:1, 12 sp)
+#111 LAYOUT CONTRAST « 音量：— » 3.24:1 (needs 4.5:1, 14 sp)
+#111 LAYOUT CONTRAST « −6.0 dB » 3.28:1 (needs 4.5:1, 14 sp)
+#111 LAYOUT CONTRAST « クリップなし：問題ありません。 » 4.06:1 (needs 4.5:1, 13 sp)
+#111 LAYOUT CONTRAST « 詳細 » 3.33:1 (needs 4.5:1, 13 sp)
+#111 LAYOUT CONTRAST « ? » 3.42:1 (needs 4.5:1, 12 sp)
+#111 LAYOUT CONTRAST « オート（スタイル） · −9 LUFS » 3.70:1 (needs 4.5:1, 14 sp)
+#111 > touche 687 745
+#111 DOIGT rien
+#112 ROUTE tab_Mix | MODE pro | EMPREINTE 1a00e32f63 | project=p-dc1cc256 tuto=house/Pro active=true step=loudness done=36 playing=false
+#112 SON Son : rien ne joue.
+#112 > glisse 771 600 771 350
+#112 DOIGT help_目標ラウドネス « 「目標ラウドネス」って何？ »
+#112 AIDE help_
+#113 ROUTE tab_Mix | MODE pro | EMPREINTE 6ac7feacb6 | project=p-dc1cc256 tuto=house/Pro active=true step=loudness done=36 playing=false
+#113 SON Son : rien ne joue.
+#113 > touche 687 545
+#113 DOIGT loudness_target_CLUB « クラブ · −8 LUFS »
+#114 ROUTE tab_Mix | MODE pro | EMPREINTE 84c0ec764a | project=p-dc1cc256 tuto=house/Pro active=true step=loudness done=37 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 517 924
+#114 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#115 ROUTE tab_Mix | MODE pro | EMPREINTE 03712e6cb7 | project=p-dc1cc256 tuto=house/Pro active=true step=loudness done=37 playing=false
+#115 SON Son : rien ne joue.
+#115 > touche 517 851
+#115 DOIGT tuto_next_big « 次の章   »
+#116 ROUTE tab_Mix | MODE pro | EMPREINTE 72fb77bfe4 | project=p-dc1cc256 tuto=house/Pro active=true step=share done=37 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 893 1023
+#116 DOIGT thumb_share « 曲をシェア »
+#116 DIALOGUE 0.3 s
+#117 ROUTE dialogue:share_sheet | MODE pro | EMPREINTE 9680e7d0f2 | project=p-dc1cc256 tuto=house/Pro active=true step=share done=37 playing=false
+#117 SON Son : rien ne joue.
+#117 LAYOUT OVERLAP « シェアの準備はいい？ » over the touchable « シートを閉じる » (244 x 37 dp)
+#117 LAYOUT OVERLAP « 曲名（プロジェクト名にもなります） » over the touchable « シートを閉じる » (285 x 25 dp)
+#117 LAYOUT OVERLAP « 「シェア」でプロジェクト「マイプロジェクト 1」の名前も変わります。 » over the touchable « シートを閉じる » (547 x 25 dp)
+#117 LAYOUT OVERLAP « 3:09 » over the touchable « シートを閉じる » (55 x 30 dp)
+#117 LAYOUT OVERLAP « 6 パート » over the touchable « シートを閉じる » (73 x 27 dp)
+#117 LAYOUT OVERLAP « 音量：−8.0、大きめ、クラブ音楽並み » over the touchable « シートを閉じる » (288 x 25 dp)
+#117 LAYOUT OVERLAP « 詳細 » over the touchable « シートを閉じる » (23 x 15 dp)
+#117 LAYOUT OVERLAP « ? » over the touchable « シートを閉じる » (9 x 18 dp)
+#117 LAYOUT OVERLAP «  試聴 » over the touchable « シートを閉じる » (42 x 27 dp)
+#117 LAYOUT OVERLAP « 目標ラウドネス » over the touchable « シートを閉じる » (131 x 27 dp)
+#117 LAYOUT OVERLAP « ストリーミング » over the touchable « シートを閉じる » (131 x 27 dp)
+#117 LAYOUT OVERLAP « クラブ » over the touchable « シートを閉じる » (56 x 27 dp)
+#117 LAYOUT OVERLAP « オート（スタイル） » over the touchable « シートを閉じる » (169 x 27 dp)
+#117 LAYOUT OVERLAP « 準備OK：ソロの消し忘れも、ミュートしたトラックもありません。 » over the touchable « シートを閉じる » (567 x 27 dp)
+#117 LAYOUT OVERLAP «   SNS 用の動画 · 30秒 » over the touchable « シートを閉じる » (14 x 27 dp)
+#117 LAYOUT OVERLAP « ほかのファイル » over the touchable « シートを閉じる » (131 x 27 dp)
+#117 LAYOUT OVERLAP « M4A · シェア向け » over the touchable « シートを閉じる » (153 x 27 dp)
+#117 LAYOUT OVERLAP « WAV · 最高品質 » over the touchable « シートを閉じる » (135 x 27 dp)
+#117 LAYOUT OVERLAP «   シェア » over the touchable « シートを閉じる » (69 x 31 dp)
+#117 LAYOUT OVERLAP « マイファイル » over the touchable « シートを閉じる » (112 x 27 dp)
+#117 LAYOUT OVERLAP « 探してもう一度送る：M4A、WAV、動画、.zip » over the touchable « シートを閉じる » (354 x 25 dp)
+#117 > touche 518 1099
+#117 DOIGT share_go «   シェア »
+#117 DIALOGUE 0.3 s
+#118 ROUTE dialogue:share_progress | MODE pro | EMPREINTE ad75984d4f | project=p-dc1cc256 tuto=house/Pro active=true step=share done=37 playing=false
+#118 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#118 LAYOUT CONTRAST «   20% » 2.64:1 (needs 4.5:1, 14 sp)
+#118 > attends 8
+#118 PARTAGE マイソング-曲-クラブ-20261119-075358.m4a
+#118 DIALOGUE 1.7 s
+#119 ROUTE dialogue:« 曲をシェア · マイソング-曲-クラブ-20261119-0 » | MODE pro | EMPREINTE 993acd82bb | project=p-dc1cc256 tuto=house/Pro active=true step=share done=38 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 517 731
+#119 DOIGT vue « Drive »
+#119 DIALOGUE 0.2 s
+#120 ROUTE dialogue:share_bilan | MODE pro | EMPREINTE 8087e67020 | project=p-dc1cc256 tuto=house/Pro active=true step=share done=38 playing=false
+#120 SON Son : rien ne joue.
+#120 LAYOUT CONTRAST « 統合 −8.0 LUFS · ピーク −4.0 dBTP » 3.94:1 (needs 4.5:1, 13 sp)
+#120 LAYOUT CONTRAST « 目標: クラブ · −8 LUFS » 1.21:1 (needs 4.5:1, 13 sp)
+#120 > touche 857 785
+#120 DOIGT share_bilan_ok « OK »
+#120 DIALOGUE 0.2 s
+#121 ROUTE tab_Mix | MODE pro | EMPREINTE b70c872769 | project=p-dc1cc256 tuto=house/Pro active=true step=share done=38 playing=false
+#121 SON Son : rien ne joue.
+#121 > touche 517 851
+#121 DOIGT tuto_next_big « 次のステップ   »
+#122 ROUTE tab_Mix | MODE pro | EMPREINTE b0da177303 | project=p-dc1cc256 tuto=house/Pro active=true step=share done=38 playing=false
+#122 SON Son : rien ne joue.
+#122 LAYOUT CUT « 準備OK：TR-909 のキック、クラップ、ハイハット、TR-707 の「リム」パッド、キーにチューニングしたキック。これから作るトラックにも、おすすめの音が入っているよ。 » ellipsized (« … »)
+#122 > touche 517 842
+#122 DOIGT tuto_left_levels « チャプター 15/17 · ミックス »
+#123 ROUTE tab_Mix | MODE pro | EMPREINTE cf3d6732ef | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=38 playing=false
+#123 SON Son : rien ne joue.
+#123 > touche 517 770
+#123 DOIGT tuto_do «   自分でやる »
+#124 ROUTE tab_Mix | MODE pro | EMPREINTE f967803b3c | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=38 playing=false
+#124 SON Son : rien ne joue.
+#124 > glisse 445 430 445 600
+#124 COUVERT « ドラム » couvre « コード の音量 »
+#124 REFUS doigt couvert : « ドラム » couvre « コード の音量 »
+#125 ROUTE tab_Mix | MODE pro | EMPREINTE 62850f7413 | project=p-dc1cc256 tuto=house/Pro active=true step=levels done=38 playing=false
+#125 SON Son : rien ne joue.
+#125 > fin
+#125 FIN : fin

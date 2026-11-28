@@ -1,0 +1,10 @@
+lang=tr
+device=phone
+font=200
+mode=simple
+amenee=tuto:reggaeton:1
+gestes.max=153
+mission=tuto-facile
+profil=débutant motivé
+niveau=1
+timeout.minutes=30

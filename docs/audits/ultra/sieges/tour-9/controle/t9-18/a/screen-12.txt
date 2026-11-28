@@ -1,0 +1,46 @@
+Écran 12 (1035x1243)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 299,42
+texte « Pro » @ 625,42
+icône ↶ @ 697,42
+icône ↷ [désactivé] @ 769,42
+bouton ● @ 841,42
+bouton ▶ « esta parte » @ 915,42
+icône (trois points reliés) @ 990,42
+bouton « 126  BPM » @ 73,114
+bouton « ? » @ 990,114
+onglet « Linha do tempo » [désactivé] @ 125,192
+onglet « Partes » [sélectionné] @ 283,192
+titre « A MÚSICA » [état « Expandido »] @ 139,285
+bouton « ? » @ 214,285
+texte « A linha do tempo coloca suas partes em ordem, cada uma com sua duração em compassos. Adicione na ordem. » @ 263,359
+titre « BLOCOS » [état « Expandido »] @ 637,207
+bouton « ? » @ 702,207
+texte « Um bloco = a bateria, o acid e as notas de uma parte. As partes da música são feitas deles. Toque num para editar, segure e arraste para mover. » @ 771,295
+bouton « 8 » [coupé, sélectionné] @ 679,391
+bouton « 16 » [coupé] @ 760,391
+bouton « 24 » [coupé] @ 843,391
+texte « Mostrar: » @ 592,395
+texte « Construa suas partes Capítulo 8/14 · Etapa 5/6 · Pro » @ 431,457
+icône (liste) « Capítulos » @ 892,457
+icône ⌄ @ 978,457
+image (coupe) @ 57,561
+texte « Parabéns, deu certo! » @ 198,547
+texte « Parte “Drop 2” criada (cópia do Groove): sem Rim. » @ 318,575
+bouton « Próxima etapa   » → @ 517,859
+icône ← @ 57,943
+bouton ▶ «  Ouvir seu resultado » @ 327,943
+bouton ▶ «  Ouvir o exemplo » @ 788,943
+icône ↶ « Desfazer » @ 141,1027
+icône ↷ « Refazer » [désactivé] @ 317,1027
+bouton ▶ « a música » @ 494,1027
+texte « 126 Andamento » @ 681,1027
+icône (trois points reliés) « Compartilhar » @ 880,1027
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 99,1123
+onglet (touches de piano) « Sons » @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Mais » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Anotar » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentários » @ 385,1213

@@ -1,0 +1,27 @@
+Écran 10 (540x1170)
+dessin @ 270,226
+texte « गाने की स्केल » @ 193,302
+texte « बंद करो » @ 439,302
+texte « गाने की key: C · माइनर » @ 200,385
+texte « स्केल » @ 63,456
+bouton « मेजर » @ 78,535
+bouton « माइनर » @ 212,535
+bouton « Dorian » @ 375,535
+bouton « माइनर पेंटा » @ 124,616
+bouton « मेजर पेंटा » @ 321,616
+bouton « Blues » @ 96,697
+bouton « Phrygian » @ 283,697
+bouton « हार्मोनिक माइनर » @ 163,778
+texte « Key » @ 59,857
+bouton « C » @ 63,936
+bouton « C♯ » @ 156,936
+bouton « D » @ 249,936
+bouton « E♭ » @ 336,936
+bouton « E » @ 423,936
+bouton « F » @ 63,1017
+bouton « F♯ » @ 153,1017
+bouton « G » @ 243,1017
+bouton « A♭ » @ 331,1017
+bouton « A » @ 419,1017
+bouton « B♭ » @ 63,1098
+bouton « B » @ 150,1098

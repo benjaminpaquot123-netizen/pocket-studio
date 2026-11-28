@@ -444,7 +444,8 @@ fun GuideCard(
                 stepInView.bringIntoView()
             }
         }
-        Column(Modifier.fillMaxWidth().then(if (named != null) Modifier.bringIntoViewRequester(stepInView) else Modifier), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        // Tour 8, R (guide2): no empty block (and its spacing) when the card has no step to show.
+        if (step != null || canAlone || named != null) Column(Modifier.fillMaxWidth().testTag("guide_step_block").then(if (named != null) Modifier.bringIntoViewRequester(stepInView) else Modifier), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (step != null || canAlone) {
             Row(
                 Modifier.fillMaxWidth().padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically,

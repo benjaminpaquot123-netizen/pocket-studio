@@ -1,0 +1,51 @@
+Écran 68 (1035x1243)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 295,42
+bouton « Pro » @ 623,42
+icône ↶ @ 701,42
+icône ↷ [désactivé] @ 773,42
+bouton ● @ 845,42
+bouton ▶ « dit deel » @ 917,42
+icône (trois points reliés) @ 990,42
+icône « Intro maat 1/80 » ▾ @ 320,144
+bouton « 92  BPM » @ 100,144
+bouton (flèches en boucle) « Lus » [état « uit »] @ 878,144
+bouton « ? » @ 990,144
+image (courbe) @ 0,0
+texte « Volumes » @ 241,262
+bouton « ? » @ 468,262
+texte « Schuif een fader voor het volume; tik op de naam van een spoor voor zijn effecten en curves. » @ 263,400
+texte « Drums » @ 84,577
+bouton (haut-parleur et ondes) [coupé, allumé, état « aan »] @ 57,653
+bouton (casque) [coupé, état « uit »] @ 111,653
+texte « Acid 303 » @ 204,577
+bouton (haut-parleur et ondes) [coupé, allumé, état « aan »] @ 177,653
+bouton (casque) [coupé, état « uit »] @ 231,653
+texte « Bas » @ 324,570
+bouton (haut-parleur et ondes) [allumé, état « aan »] @ 297,645
+bouton (casque) [état « uit »] @ 351,645
+texte « Akkoorden » @ 444,577
+bouton (haut-parleur et ondes) [coupé, allumé, état « aan »] @ 417,653
+bouton (casque) [coupé, état « uit »] @ 471,653
+titre « CURVEN » [état « Uitgeklapt »] @ 636,282
+bouton « ? » @ 701,282
+bouton ● « Opnemen » @ 858,282
+texte « Laat een instelling vanzelf bewegen: kies hem en teken dan de curve (met je vinger, of een lijn in twee tikken). » @ 771,460
+bouton + «  Een instelling automatiseren » [coupé] @ 771,639
+texte « De effecten Hoofdstuk 11/14 · Stap 2/2 · Pro » @ 424,743
+icône (liste) « Hoofdstukken » @ 885,743
+icône ⌃ @ 978,743
+icône « Nu jij: zet in Mix het effect ‘Bitcrusher’ (de korrel van oude 12-bitsamplers, zoals de SP-1200) op de pad ‘Kick’, en dan op de pad ‘Snare’. Houd het licht. Lees » ⌃ @ 517,886
+icône ▶ « het nummer » @ 590,1012
+texte « 92 Tempo » @ 792,1011
+icône ↶ « Ongedaan maken » @ 152,1012
+icône ↷ « Opnieuw » [désactivé] @ 374,1011
+icône (trois points reliés) « Delen » @ 942,1011
+onglet (ligne brisée et points) « Structuur » @ 99,1123
+onglet (touches de piano) « Klanken » @ 309,1123
+onglet (curseurs) « Mix » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Meer » @ 936,1123
+texte « ●  REC » @ 726,1213
+texte « ✎  Noteren » @ 866,1213
+texte « ⋯ » @ 987,1213
+texte « Feedbackmodus » @ 341,1213

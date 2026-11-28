@@ -1,0 +1,34 @@
+Écran 59 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 86,114
+bouton « A » ▾ @ 202,114
+icône ↶ @ 278,114
+bouton ● @ 350,114
+bouton ▶ « dit deel » @ 422,114
+icône (trois points reliés) @ 495,114
+texte « De drums Hoofdstuk 2/14 · Stap 4/8 · Pro » @ 176,208
+icône (liste) « Hoofdstukken » @ 389,209
+icône ⌄ @ 483,209
+texte « Nu jij: 27 % swing op de schuif van de app, ofwel 60 % swing op een MPC (58% voor het klassieke geluid, 62% voor een jazzier geluid). Hij vertraagt om de andere zestiende. » [coupé] @ 270,407
+texte « ▸ Waarom? » @ 270,551
+icône « Verder lezen » ⌄ @ 270,605
+bouton (doigt qui touche) «   Ik doe het » @ 270,677
+bouton ▶ «  Luister naar het voorbeeld » @ 142,774
+bouton (œil) «  Laat zien » @ 397,774
+icône ← «  Vorige » @ 101,868
+icône « Volgende  » → @ 418,868
+icône ↶ « Ongedaan maken » @ 57,953
+icône ↷ « Opnieuw » [désactivé] @ 157,953
+icône ▶ « het nummer » @ 276,953
+texte « 92 Tempo » @ 396,953
+icône (trois points reliés) « Delen » @ 489,953
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 297,1140
+texte « ✎  Noteren » @ 400,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 130,1140

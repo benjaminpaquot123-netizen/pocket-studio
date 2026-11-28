@@ -1,0 +1,155 @@
+Écran 16 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+icône « Partie : C · Montée » ▾ @ 131,180
+texte « Grosse caisse 1 » @ 96,256
+bouton @ 163,255
+bouton @ 187,255
+bouton @ 211,255
+bouton @ 235,255
+bouton @ 260,255
+bouton @ 285,255
+bouton @ 310,255
+bouton @ 335,255
+bouton @ 360,255
+bouton @ 385,255
+bouton @ 410,255
+bouton @ 435,255
+bouton @ 460,255
+bouton @ 485,255
+bouton @ 510,255
+bouton @ 535,255
+texte « Grosse caisse 2 » @ 96,292
+bouton @ 163,291
+bouton @ 187,291
+bouton @ 211,291
+bouton @ 235,291
+bouton @ 260,291
+bouton @ 285,291
+bouton @ 310,291
+bouton @ 335,291
+bouton @ 360,291
+bouton @ 385,291
+bouton @ 410,291
+bouton @ 435,291
+bouton @ 460,291
+bouton @ 485,291
+bouton @ 510,291
+bouton @ 535,291
+texte « Caisse » @ 96,328
+bouton @ 163,327
+bouton @ 187,327
+bouton @ 211,327
+bouton @ 235,327
+bouton @ 260,327
+bouton @ 285,327
+bouton @ 310,327
+bouton @ 335,327
+bouton @ 360,327
+bouton @ 385,327
+bouton @ 410,327
+bouton @ 435,327
+bouton @ 460,327
+bouton @ 485,327
+bouton @ 510,327
+bouton @ 535,327
+texte « Caisse 2 » @ 96,364
+bouton @ 163,363
+bouton @ 187,363
+bouton @ 211,363
+bouton @ 235,363
+bouton @ 260,363
+bouton @ 285,363
+bouton @ 310,363
+bouton @ 335,363
+bouton @ 360,363
+bouton @ 385,363
+bouton @ 410,363
+bouton @ 435,363
+bouton @ 460,363
+bouton @ 485,363
+bouton @ 510,363
+bouton @ 535,363
+texte « Claquement de mains » @ 96,400
+bouton [sélectionné] @ 163,399
+bouton [sélectionné] @ 187,399
+bouton [sélectionné] @ 211,399
+bouton [sélectionné] @ 235,399
+bouton [sélectionné] @ 260,399
+bouton [sélectionné] @ 285,399
+bouton [sélectionné] @ 310,399
+bouton [sélectionné] @ 335,399
+bouton [sélectionné] @ 360,399
+bouton [sélectionné] @ 385,399
+bouton [sélectionné] @ 410,399
+bouton [sélectionné] @ 435,399
+bouton @ 460,399
+bouton @ 485,399
+bouton @ 510,399
+bouton @ 535,399
+texte « Charley » @ 96,436
+bouton [sélectionné] @ 163,435
+bouton [sélectionné] @ 187,435
+bouton @ 211,435
+bouton [sélectionné] @ 235,435
+bouton [sélectionné] @ 260,435
+bouton [sélectionné] @ 285,435
+bouton @ 310,435
+bouton [sélectionné] @ 335,435
+bouton [sélectionné] @ 360,435
+bouton [sélectionné] @ 385,435
+bouton @ 410,435
+bouton [sélectionné] @ 435,435
+bouton @ 460,435
+bouton @ 485,435
+bouton @ 510,435
+bouton @ 535,435
+texte « Charley ouvert » [coupé] @ 96,470
+bouton [coupé] @ 163,467
+bouton [coupé] @ 187,467
+bouton [coupé, sélectionné] @ 211,467
+bouton [coupé] @ 235,467
+bouton [coupé] @ 260,467
+bouton [coupé] @ 285,467
+bouton [coupé, sélectionné] @ 310,467
+bouton [coupé] @ 335,467
+bouton [coupé] @ 360,467
+bouton [coupé] @ 385,467
+bouton [coupé, sélectionné] @ 410,467
+bouton [coupé] @ 435,467
+bouton [coupé] @ 460,467
+bouton [coupé] @ 485,467
+bouton [coupé] @ 510,467
+bouton [coupé] @ 535,467
+texte « Les transitions Chapitre 12/15 · Étape 2/3 · Facile » @ 207,528
+icône (liste) « Chapitres » @ 444,528
+icône ⌄ @ 531,528
+texte « À toi : touche « Aller dans la partie « Drop » ». » @ 282,609
+bouton « Télécharger le kit House (4 Mo) » @ 236,684
+texte « Plus tard » @ 503,684
+texte « ▸ Pourquoi ? » @ 294,750
+bouton ⊕ «   Aller dans la partie « Drop » » @ 294,813
+bouton ▶ «  Écouter l'exemple » @ 154,897
+bouton (œil) «  Montre-moi » @ 433,897
+icône ← «  Précédent » @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

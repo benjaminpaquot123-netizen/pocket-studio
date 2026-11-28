@@ -1,0 +1,44 @@
+Écran 74 (540x1170)
+icône « マイプロジェクト 1 » ✓ @ 274,36
+bouton « プロ » @ 494,36
+bouton (dossier ouvert) @ 84,114
+bouton « A » ▾ @ 198,114
+icône ↶ @ 273,114
+bouton ● @ 345,114
+bouton ▶ « このパート » @ 420,114
+icône (trois points reliés) @ 495,114
+bouton « 122  BPM » @ 73,186
+bouton « ? » @ 495,186
+onglet « ドラム 16パッド » [sélectionné] @ 79,255
+onglet « Acid 303 ベースライン » @ 239,255
+onglet « ボーカル マイク » @ 403,255
+onglet « リミックス 分離 » [coupé] @ 500,255
+image → @ 529,256
+texte « パート：A » @ 69,315
+texte « このパッドに自分の音を：デバイスのファイル（MP3、WAV、FLAC、M4A…）かマイクで。 » @ 270,381
+bouton « メトロノーム » @ 130,505
+bouton « カウント » @ 297,505
+bouton « ? » @ 397,505
+bouton « エフェクト » @ 465,505
+texte « スウィング » @ 102,575
+bouton « ? » @ 183,574
+texte « 0% » @ 480,574
+curseur [état « 0% », à 0 %] @ 270,644
+icône (liste) « チャプター » @ 396,770
+texte « ハイハット、リムショット、スウィング チャプター 4/17 · ステップ 4/5 · プロ » @ 183,770
+icône ⌃ @ 483,770
+icône « あなたの番：スウィングを 33% にしよう：偶数の16分が少し遅れる。シカゴ・ハウス（55〜60 %）とニューヨーク・ハウス（70〜80 %）の間。 読む » ⌃ @ 270,869
+icône ↶ « 元に戻す » @ 64,954
+icône ↷ « やり直す » [désactivé] @ 164,954
+bouton ▶ « 曲 » @ 264,954
+texte « 122 テンポ » @ 370,954
+icône (trois points reliés) « シェア » @ 476,954
+onglet (ligne brisée et points) « 構成 » @ 49,1050
+onglet (touches de piano) « サウンド » [sélectionné] @ 160,1050
+onglet (curseurs) « ミックス » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « その他 » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  メモ » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « フィードバックモード » @ 138,1140

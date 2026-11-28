@@ -284,11 +284,11 @@ fun RhythmScreen(
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             KitChip(kit, onClick = { actions.openKits(); kitSheet = true })
             // A pad only sounds: what stays in the beat is in the cells (beginners tap pads and wait).
-            Text(
+            com.pocketstudio.ui.WholeWordsText(
                 tr("Les pads sonnent, les cases gardent les coups. Appui long : changer le son."),
-                // Three lines at most: the longer languages (German, Spanish) say it all on a phone.
-                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 3,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                // Tour 9, F050: read in full (three lines at most cut its end at 100 % on a 360 dp phone), and
+                // no word split over two lines at 200 % beside the kit's chip.
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, maxLines = 6,
                 modifier = Modifier.weight(1f).testTag("pads_hint"),
             )
         }
@@ -363,6 +363,20 @@ fun RhythmScreen(
     }
 }
 
+/**
+ * The pad the tutorial's step still has something to do on: its dotted cells not touched yet, else the first pad with
+ * a hit it asks to take away (tour 9, F054). Null when none.
+ */
+private fun askedPad(project: Project): Int? {
+    val steps = project.drums.steps
+    com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) ->
+        val hits = project.drums.lanes.getOrNull(l)?.hits ?: return@let
+        if (cells.any { it < steps && it !in hits }) return l
+    }
+    return com.pocketstudio.app.tuto.TutoHints.erase?.entries?.sortedBy { it.key }
+        ?.firstOrNull { (l, s) -> project.drums.lanes.getOrNull(l)?.hits?.let { h -> s.any { it in h } } == true }?.key
+}
+
 /** What a reveal of the cells keeps in sight above them: the bar pages, the tuto's line. */
 private val STEP_CELLS_HEAD = listOf("step_pages", com.pocketstudio.app.tuto.TUTO_GRID_LINE_SPOT)
 
@@ -401,6 +415,8 @@ private fun PadGrid(
                         onHit = {
                             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             onHit(lane)
+                            // Tour 9, F039: « Écoute le kick seul » is heard by playing the kick pad.
+                            com.pocketstudio.app.tuto.TutoPadEar.heard?.invoke(lane)
                         },
                         onHold = {
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -426,7 +442,7 @@ private fun PadGrid(
 }
 
 /** The room a pad's name leaves above it for its « FX » and pan badges. */
-private val BADGE_ROOM = 12.dp
+private val BADGE_TOP = 3.dp
 
 /** A phone pad's height (wide pads, a little lower than on a tablet). */
 private val PHONE_PAD_HEIGHT = 56.dp
@@ -436,7 +452,7 @@ private val TABLET_COLUMN_PAD_HEIGHT = 80.dp
 
 /** The pad's name: the sound placed on it (a sample, a library sound), else its studio voice's (the 808), else the kit voice's name. */
 internal fun padName(project: Project, lane: Int): String =
-    project.drums.lanes.getOrNull(lane)?.sample?.name?.takeIf { it.isNotBlank() }?.let { com.pocketstudio.model.DefaultNames.shownSample(it) }
+    project.drums.lanes.getOrNull(lane)?.sample?.name?.takeIf { it.isNotBlank() }?.let { com.pocketstudio.model.DefaultNames.shownOnPad(it) }
         ?: project.padVoices[lane]?.let { padVoiceName(it.kind) } ?: DrumKitInfo.names[lane]
 
 /** A studio voice's name on its pad ([com.pocketstudio.model.PadVoice.NAMES], translated). */
@@ -497,19 +513,24 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: () -> Bo
         val badged = hasFx || panned
         // A phone's pads are narrow (75 dp at a big interface size): « Cymbale » shrinks a little
         // rather than break mid-word.
-        com.pocketstudio.ui.WholeWordsText(
-            name,
-            textAlign = TextAlign.Center,
-            // Lower pads (a phone): two lines set closer, clear of the LED and of the colour strip.
-            style = if (ratio) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelLarge.copy(lineHeight = 16.sp),
-            color = { lerp(nameRest, Color(0xFF1E2023), glowState.value) },
-            maxLines = 2,
-            // Round 2 integration: the Mode simple's everyday names (« Claquement de mains », « Grondement grave ») have
-            // a 10-letter word: at 130 % it broke as « Claqueme nt » at the usual floor; a pad's name may shrink a little more.
-            minScale = PAD_NAME_MIN_SCALE,
-            modifier = Modifier.padding(horizontal = if (ratio) 4.dp else 8.dp, vertical = 2.dp).padding(bottom = if (ratio) 0.dp else 4.dp)
-                .padding(top = if (badged) BADGE_ROOM else 0.dp),
-        )
+        // Tour 9, F047: the badges grow with the text size (200 %: 22 dp high): the name sits under their real height,
+        // centred in the room left (a fixed room let « Kick » start under « G 100 »).
+        val badgeStyle = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, lineHeight = 11.sp)
+        val nameTop = if (badged) BADGE_TOP + with(androidx.compose.ui.platform.LocalDensity.current) { badgeStyle.lineHeight.toDp() } else 0.dp
+        Box(Modifier.matchParentSize().padding(top = nameTop), contentAlignment = Alignment.Center) {
+            com.pocketstudio.ui.WholeWordsText(
+                name,
+                textAlign = TextAlign.Center,
+                // Lower pads (a phone): two lines set closer, clear of the LED and of the colour strip.
+                style = if (ratio) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelLarge.copy(lineHeight = 16.sp),
+                color = { lerp(nameRest, Color(0xFF1E2023), glowState.value) },
+                maxLines = 2,
+                // Round 2 integration: the Mode simple's everyday names (« Claquement de mains », « Grondement grave ») have
+                // a 10-letter word: at 130 % it broke as « Claqueme nt » at the usual floor; a pad's name may shrink a little more.
+                minScale = PAD_NAME_MIN_SCALE,
+                modifier = Modifier.padding(horizontal = if (ratio) 4.dp else 8.dp, vertical = 2.dp).padding(bottom = if (ratio) 0.dp else 4.dp),
+            )
+        }
         // A small LED when the pad has hits in the loop.
         if (hasHits) {
             Box(
@@ -521,8 +542,8 @@ private fun DrumPad(name: String, color: Color, selected: Boolean, lit: () -> Bo
         // Effects of its own, and a pan off the centre (« G 100 »): small badges in the corner, so
         // a pad sent to one side is seen without opening it.
         if (badged) {
-            val small = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, lineHeight = 11.sp)
-            Row(Modifier.align(Alignment.TopStart).padding(start = 5.dp, top = 3.dp), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+            val small = badgeStyle
+            Row(Modifier.align(Alignment.TopStart).padding(start = 5.dp, top = BADGE_TOP), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                 // Tour 6 lot 1 (R21): the badges say what they are, in the words of the pad's sheet (« Effets du pad »,
                 // « Gauche 30 »): read by TalkBack, and by the « ? » labels.
                 if (hasFx) Text(
@@ -549,6 +570,8 @@ private fun StepGrid(
     project: Project, lane: Int, live: () -> LiveUi, playing: Boolean, actions: RhythmActions, simple: Boolean = false,
     /** A cell's height at most. */
     cellMax: androidx.compose.ui.unit.Dp = 110.dp,
+    /** The interface reads right to left (Arabic): the grid, kept left to right, says where it starts (tour 9, F051). */
+    rtl: Boolean = androidx.compose.ui.platform.LocalLayoutDirection.current == androidx.compose.ui.unit.LayoutDirection.Rtl,
 ) = com.pocketstudio.ui.LeftToRight {
     val haptics = LocalHapticFeedback.current
     val hits = project.drums.lanes[lane].hits
@@ -599,6 +622,13 @@ private fun StepGrid(
     // there. It is placed once when a step begins (the user's « Étape suivante »), and follows « Montre-moi ».
     val tutoStep = com.pocketstudio.app.tuto.TutoHints.step
     var tutoPlacedFor by rememberSaveable { mutableStateOf<String?>(null) }
+    // Tour 8, lot T0b (seat e, ch.12): a step asking for cells or crosses on this pad begins on « Coups » (the fill's
+    // « Roulements » stayed on, and a touch on a cross rolled the hit ×2 instead of taking it away).
+    LaunchedEffect(tutoStep, tutoLeft.isNotEmpty()) { if (tutoLeft.isNotEmpty()) tool = 0 }
+    // Tour 9, F056: a touch on a full cell takes it away on the first touch. « Force » (Pro) never stays on out of sight:
+    // not in the Mode simple (no tool chips there), nor into a new tutorial step (a touch to erase set the hit to 55 %).
+    LaunchedEffect(simple) { if (simple) tool = 0 }
+    LaunchedEffect(tutoStep) { if (tutoActive) tool = 0 }
     LaunchedEffect(tutoStep, tutoLeft.isNotEmpty(), tutoDemo) {
         if (tutoLeft.isEmpty()) return@LaunchedEffect
         if (!tutoDemo && tutoPlacedFor == tutoStep) return@LaunchedEffect
@@ -628,18 +658,22 @@ private fun StepGrid(
     val bar = (if (followedBar >= 0) followedBar else chosenBar).coerceIn(0, bars - 1)
     val chipColors = pillColors()
     NeonCard {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            // The sound on the pad now (« Kick de ma voix ») and the section being edited (the top bar
-            // only has room for its letter on a narrow phone); a long name wraps.
-            val section = if (project.allScenes.size > 1) " · " + com.pocketstudio.model.Scene.shownLabel(project.sceneLabel(project.scene)).ifBlank { com.pocketstudio.model.Scene.NAMES.getOrElse(project.scene) { "?" } } else ""
-            SectionLabel(
-                (if (allPads) tr("Pas : tous les pads") else tr("Pas : %s", padName(project, lane))) + section, Modifier.weight(1f),
-                // Round 3, n° 34 (seat D d): in the Mode simple the « ? » spoke of rolls, place and pitch it has not.
-                color = if (allPads) Neon.Cyan else color, help = Glossary.stepFor(simple), foldKey = "Pas",
-            )
-            FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text(tr("Tous les pads"), maxLines = 1, softWrap = false) }, colors = chipColors,
-                modifier = Modifier.testTag("all_pads"))
-        }
+        // The sound on the pad now (« Kick de ma voix ») and the section being edited (the top bar
+        // only has room for its letter on a narrow phone); a long name wraps.
+        val section = if (project.allScenes.size > 1) " · " + com.pocketstudio.model.Scene.shownLabel(project.sceneLabel(project.scene)).ifBlank { com.pocketstudio.model.Scene.NAMES.getOrElse(project.scene) { "?" } } else ""
+        HeadBesideChip(
+            head = {
+                SectionLabel(
+                    (if (allPads) tr("Pas : tous les pads") else tr("Pas : %s", padName(project, lane))) + section,
+                    // Round 3, n° 34 (seat D d): in the Mode simple the « ? » spoke of rolls, place and pitch it has not.
+                    color = if (allPads) Neon.Cyan else color, help = Glossary.stepFor(simple), foldKey = "Pas",
+                )
+            },
+            chip = {
+                FilterChip(selected = allPads, onClick = { allPads = !allPads }, label = { Text(tr("Tous les pads"), maxLines = 1, softWrap = false) }, colors = chipColors,
+                    modifier = Modifier.testTag("all_pads"))
+            },
+        )
         // The loop's length and its bar pages come under the cells: on a phone the first row of
         // cells stays on screen under the pads (the length is changed far less often than hits).
         val lengths: @Composable () -> Unit = {
@@ -663,11 +697,19 @@ private fun StepGrid(
                 itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier.spot("step_pages").testTag("drum_pages"),
             ) {
-                Text(tr("Mesure"), style = MaterialTheme.typography.bodyMedium)
+                // Tour 9 (L4): one « ? » explains the bar's buttons (pages, ◀ ▶, « Vider · Mesure N », lengths).
+                com.pocketstudio.ui.WithHelp(Glossary.BAR, about = listOf("drum_page_*", "clear_bar", "drum_bars_*")) {
+                    Text(tr("Mesure"), style = MaterialTheme.typography.bodyMedium)
+                }
+                // Tour 9, F053: ◀ ▶ here turn the page only (the ▶ touched to reach bar 2 was the pad's rotate).
+                TextButton(onClick = { chosenBar = bar - 1; follow = false }, enabled = bar > 0, contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier.defaultMinSize(minWidth = 44.dp).semantics { contentDescription = tr("Mesure précédente") }.testTag("drum_page_prev")) { Text("◀") }
                 (0 until bars).forEach { b ->
                     FilterChip(selected = bar == b, onClick = { chosenBar = b; follow = false }, label = { Text("${b + 1}") },
                         colors = chipColors, modifier = Modifier.testTag("drum_page_$b"))
                 }
+                TextButton(onClick = { chosenBar = bar + 1; follow = false }, enabled = bar < bars - 1, contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+                    modifier = Modifier.defaultMinSize(minWidth = 44.dp).semantics { contentDescription = tr("Mesure suivante") }.testTag("drum_page_next")) { Text("▶") }
                 FilterChip(selected = follow, onClick = { follow = !follow; chosenBar = bar }, label = { Text(tr("Suivre")) }, colors = chipColors)
             }
         }
@@ -684,6 +726,7 @@ private fun StepGrid(
                 elsewhere = tutoLeft.firstOrNull { it / per != bar }?.let { it / per to tutoLeft.count { s -> s / per == it / per } },
                 go = { b -> chosenBar = b; follow = false },
                 copy = com.pocketstudio.app.tuto.TutoHints.copy.takeIf { com.pocketstudio.app.tuto.TutoHints.copyOnGrid },
+                toPad = askedPad(project)?.takeIf { it != lane }?.let { asked -> padName(project, asked) to { actions.selectPad(asked) } },
             )
         }
         if (allPads) {
@@ -696,6 +739,7 @@ private fun StepGrid(
         val latestHits by rememberUpdatedState(hits)
         val latestActions by rememberUpdatedState(actions)
         val loopSteps = project.drums.steps
+        if (rtl) Text("1 →", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.testTag("grid_reading_dir"))
         Box { Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             // Revealed with the bar pages and the tuto's line over it (where the cells left are, a touch away).
@@ -745,6 +789,13 @@ private fun StepGrid(
                 },
             ),
         ) {
+        // Tour 8 (seat a, ch.3): the dotted cell to touch first, ringed « Touche ici ».
+        val ringStep = com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) ->
+            if (l != lane) null
+            else com.pocketstudio.model.tuto.TutoPlay.ringed(
+                cells, cells.filter { hits[it] != null || project.drums.lanes[lane].covering(it) != null }.toSet(), bar * per, (bar + 1) * per,
+            )
+        }
         for (row in 0 until 2) {
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (col in 0 until per / 2) {
@@ -834,8 +885,9 @@ private fun StepGrid(
                                 // Audit ultra round 1, n° 34 (seat B d): the tutorial's dotted cells said « vide » like the others.
                                 stateDescription = when {
                                     ownerHit != null -> tr("dans le triolet")
-                                    hit == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true ->
-                                        tr("vide, en pointillé : à toucher")
+                                    // Tour 9, F093: « appui long » on a cell a tap does not make.
+                                    hit == null && com.pocketstudio.app.tuto.TutoHints.dottedState(lane, step) != null ->
+                                        com.pocketstudio.app.tuto.TutoHints.dottedState(lane, step).orEmpty()
                                     hit != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true ->
                                         stepState(hit) + ", " + tr("barré : à enlever")
                                     else -> stepState(hit)
@@ -846,7 +898,7 @@ private fun StepGrid(
                     ) {
                         // « Tuto de A à Z »: a cell of the step's target, still empty, drawn dotted.
                         if (velocity == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (l, cells) -> l == lane && step in cells } == true) {
-                            com.pocketstudio.app.tuto.TutoHintCell(color)
+                            com.pocketstudio.app.tuto.TutoHintCell(color, ring = step == ringStep)
                         }
                         // A hit the step asks to take away: crossed out over it (drawn below, on top of the hit).
                         val erasing = velocity != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true
@@ -905,6 +957,7 @@ private fun StepGrid(
                             RollMenu(hit, step % per + 1, close = { rollStep = -1 },
                                 force = { actions.setHitVelocity(step, it) }, roll = { n, r -> actions.setRoll(step, n, r) }, burst = { actions.burst(step, it) },
                                 chance = { actions.setHitChance(step, it) }, simple = simple,
+                                offset = { actions.setHitOffset(step, it) },
                                 spread = { n, m, r -> actions.setSpread(step, n, m, r) }, roomFor = { m -> step + m <= spreadsTo })
                         }
                     }
@@ -928,14 +981,45 @@ private fun StepGrid(
         // Whole-pad edits, on their own line that wraps: none is cut on a small phone.
         val tight = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp)
         val small = Modifier.defaultMinSize(minWidth = 44.dp)
+        // Tour 9, F055: a fill on a muted pad says why it is not heard (its cells lit, nothing in the speakers).
+        var filled by remember(lane) { mutableStateOf(false) }
+        val padMuted = project.mixer.channels.getOrNull(com.pocketstudio.model.Mixer.padChannel(lane))?.mute == true
         FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(tr("Remplir"), style = MaterialTheme.typography.bodySmall)
+            // Tour 9, S56: during a tutorial step asking for cells on this pad, a fill places those cells (on its grid,
+            // else all of them) and keeps the hits there: the pad's fill wiped them and added cells the step's check refused.
+            val dotted = com.pocketstudio.app.tuto.TutoHints.cells?.takeIf { tutoActive && it.first == lane }?.second
+                ?.filter { it < project.drums.steps }.orEmpty()
             listOf(1 to tr("tout"), 2 to "1/2", 4 to "1/4").forEach { (every, label) ->
-                TextButton(onClick = { actions.fill(every) }, contentPadding = tight, modifier = small.testTag("fill_$every")) { Text(label) }
+                TextButton(onClick = {
+                    if (dotted.isEmpty()) actions.fill(every)
+                    else {
+                        dotted.filter { it % every == 0 }.ifEmpty { dotted }.filter { it !in hits }.forEach { actions.paintStep(it, true) }
+                        actions.paintEnd()
+                    }
+                    filled = true
+                }, contentPadding = tight, modifier = small.testTag("fill_$every")) { Text(label) }
             }
-            TextButton(onClick = { actions.rotate(-1) }, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("rotate_left")) { Text("◀") }
-            TextButton(onClick = { actions.rotate(1) }, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("rotate_right")) { Text("▶") }
+            // Tour 9, F053: the pad's rotate says what it does and is not drawn like the bar arrows (◀ ▶ turn the page).
+            // The word and its two arrows wrap together (an arrow alone on the next line read as another tool).
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(tr("Décalage"), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 6.dp))
+                TextButton(onClick = { actions.rotate(-1) }, enabled = hits.isNotEmpty(), contentPadding = tight,
+                    modifier = small.semantics { contentDescription = tr("Décalage") + " −1" }.testTag("rotate_left")) { Text("⇠") }
+                TextButton(onClick = { actions.rotate(1) }, enabled = hits.isNotEmpty(), contentPadding = tight,
+                    modifier = small.semantics { contentDescription = tr("Décalage") + " +1" }.testTag("rotate_right")) { Text("⇢") }
+            }
             TextButton(onClick = actions.clearPad, enabled = hits.isNotEmpty(), contentPadding = tight, modifier = small.testTag("clear_pad")) { Text(tr("Effacer"), maxLines = 1, softWrap = false) }
+            // Tour 9, S76: the bar shown emptied in one touch (this pad; the other bars keep theirs; one undo step).
+            if (bars > 1) {
+                val inBar = hits.keys.filter { it / per == bar }
+                TextButton(onClick = { inBar.forEach { actions.paintStep(it, false) }; actions.paintEnd() }, enabled = inBar.isNotEmpty(), contentPadding = tight,
+                    modifier = small.testTag("clear_bar")) { Text(tr("Vider") + " · " + tr("Mesure %d", bar + 1), maxLines = 1, softWrap = false) }
+            }
+        }
+        if (filled && padMuted) {
+            Text(tr("%s coupé", padName(project, lane)), style = MaterialTheme.typography.bodySmall, color = Neon.Amber,
+                modifier = Modifier.testTag("fill_muted"))
         }
         val pickedHit = hits[picked]?.takeIf { tool >= 2 }
         // Audit ultra round 3, n° 34 (seat D d): the hit's slider came under the Guide's bar, out of sight: a hit
@@ -1018,11 +1102,12 @@ const val SWING_SPOT = "rhythm_swing"
 @Composable
 private fun GrooveCard(project: Project, transport: TransportUi, actions: RhythmActions, simple: Boolean = false) {
     NeonCard {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Tour 9, F049: the chips wrap (on a 360 dp phone « Effets » was squeezed to nothing beside them).
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), itemVerticalAlignment = Alignment.CenterVertically) {
             val chipColors = pillColors()
             FilterChip(selected = transport.metronome, onClick = actions.toggleMetronome, label = { Text(tr("Métronome")) }, colors = chipColors)
             FilterChip(selected = transport.countIn, onClick = actions.toggleCountIn, label = { Text(tr("Décompte")) }, colors = chipColors)
-            HelpDot(Glossary.METRONOME, Modifier.align(Alignment.CenterVertically))
+            HelpDot(Glossary.METRONOME)
             Box(Modifier.weight(1f))
             if (!simple) OutlinedButton(
                 onClick = actions.openEffects, modifier = Modifier.testTag("drum_effects"),
@@ -1037,11 +1122,27 @@ private fun GrooveCard(project: Project, transport: TransportUi, actions: Rhythm
                 Box(Modifier.weight(1f))
                 Text(percent((project.swing / Project.MAX_SWING * 100).roundToInt()), style = MonoStyle, color = Neon.Cyan)
             }
-            ProSlider(
-                value = (project.swing / Project.MAX_SWING).toFloat(),
-                onValueChange = { actions.setSwing(it * Project.MAX_SWING) },
-                label = tr("Swing"), valueText = percent((project.swing / Project.MAX_SWING * 100).roundToInt()),
-            )
+            // F057 (tour 9): a tutorial's swing step says the value to reach, over the slider.
+            val aim = com.pocketstudio.app.tuto.TutoHints.swing.takeIf { com.pocketstudio.app.tuto.TutoHints.active }
+            if (aim != null) Text(tr("Cible : %s", percent(aim)), style = MaterialTheme.typography.bodySmall, color = Neon.Cyan, modifier = Modifier.testTag("swing_aim"))
+            // Tour 9, F057: « − » and « + » move the swing by one shown point, so the step's 25 % is reached exactly
+            // (a finger on the slider alone landed on 24 or 27).
+            val shown = (project.swing / Project.MAX_SWING * 100).roundToInt()
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(
+                    onClick = { actions.setSwing((shown - 1).coerceIn(0, 100) / 100.0 * Project.MAX_SWING) }, enabled = shown > 0,
+                    modifier = Modifier.semantics { contentDescription = tr("Swing") + " −1" }.testTag("swing_minus"),
+                ) { Text("−", style = MaterialTheme.typography.titleMedium) }
+                ProSlider(
+                    value = (project.swing / Project.MAX_SWING).toFloat(),
+                    onValueChange = { actions.setSwing(it * Project.MAX_SWING) },
+                    label = tr("Swing"), valueText = percent(shown), modifier = Modifier.weight(1f),
+                )
+                TextButton(
+                    onClick = { actions.setSwing((shown + 1).coerceIn(0, 100) / 100.0 * Project.MAX_SWING) }, enabled = shown < 100,
+                    modifier = Modifier.semantics { contentDescription = tr("Swing") + " +1" }.testTag("swing_plus"),
+                ) { Text("+", style = MaterialTheme.typography.titleMedium) }
+            }
         }
     }
 }
@@ -1059,6 +1160,8 @@ private fun RollMenu(
     /** A triplet: (hits, steps, ramp). [roomFor]: whether the pad's loop has that many steps from this one. */
     spread: (Int, Int, Int) -> Unit = { _, _, _ -> },
     roomFor: (Int) -> Boolean = { true },
+    /** The hit early or late, in ms (tour 9, D04: the uk_garage « caisse en retard » is done from this sheet). */
+    offset: (Float) -> Unit = {},
 ) {
     val chips = pillColors()
     ScaledDropdownMenu(expanded = true, onDismissRequest = close, modifier = Modifier.testTag("roll_menu")) {
@@ -1075,6 +1178,10 @@ private fun RollMenu(
                         modifier = Modifier.testTag("roll_force_${(v * 10).roundToInt()}"))
                 }
             }
+            // Tour 9, D04: the long press is where testers look for a hit's settings; its timing is here too (in every mode).
+            LabeledSlider(tr("Décalage du coup %d", beatStep), "%+d ms".format(hit.offset.roundToInt()), hit.offset,
+                -com.pocketstudio.model.Hit.MAX_OFFSET_MS..com.pocketstudio.model.Hit.MAX_OFFSET_MS,
+                modifier = Modifier.testTag("roll_offset")) { offset(it) }
             Text(tr("Roulement"), style = MaterialTheme.typography.labelLarge, color = Neon.TextSecondary)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 com.pocketstudio.model.DrumPattern.ROLLS.forEach { n ->
@@ -1462,13 +1569,14 @@ private fun LabeledSlider(
     v: Float,
     range: ClosedFloatingPointRange<Float>,
     steps: Int = 0,
+    modifier: Modifier = Modifier,
     onChange: (Float) -> Unit,
 ) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Text(value, style = MonoStyle, color = Neon.Cyan)
     }
-    ProSlider(value = v.coerceIn(range), onValueChange = onChange, valueRange = range, steps = steps, label = label, valueText = value)
+    ProSlider(value = v.coerceIn(range), onValueChange = onChange, valueRange = range, steps = steps, label = label, valueText = value, modifier = modifier)
 }
 
 @Composable
@@ -1517,6 +1625,13 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
     Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.testTag("all_pads_grid")) {
         project.drums.lanes.forEachIndexed { lane, l ->
             val color = DrumKitInfo.colors[lane]
+            // Tour 8 (control seat d, ch.3 in « Tous les pads »): the dotted cell to touch first ringed here too.
+            val ringStep = com.pocketstudio.app.tuto.TutoHints.cells?.let { (hl, cells) ->
+                if (hl != lane) null
+                else com.pocketstudio.model.tuto.TutoPlay.ringed(
+                    cells, cells.filter { l.hits[it] != null || l.covering(it) != null }.toSet(), bar * project.stepsPerBar, (bar + 1) * project.stepsPerBar,
+                )
+            }
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(DrumKitInfo.names[lane], style = MaterialTheme.typography.labelSmall, maxLines = 1,
                     color = if (l.hits.keys.none { it < project.drums.steps }) Neon.TextSecondary else Neon.TextPrimary, modifier = Modifier.width(72.dp),
@@ -1539,7 +1654,16 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
                                 selected = hit != null
                             }
                             .testTag("cell_${lane}_$step"),
-                    )
+                    ) {
+                        // Tour 8 (seat c in ko, ch.12): the tutorial's marks here too, as on the pad's own grid.
+                        // F140: a cell a roll covers is played already, no mark on it (as on the pad's own grid).
+                        if (hit == null && l.covering(step) == null && com.pocketstudio.app.tuto.TutoHints.cells?.let { (hl, cells) -> hl == lane && step in cells } == true) {
+                            com.pocketstudio.app.tuto.TutoHintCell(color, ring = step == ringStep)
+                        }
+                        if (hit != null && com.pocketstudio.app.tuto.TutoHints.erase?.get(lane)?.contains(step) == true) {
+                            com.pocketstudio.app.tuto.TutoEraseCell()
+                        }
+                    }
                 }
             }
         }
@@ -1549,3 +1673,33 @@ internal fun AllPadsGrid(project: Project, bar: Int, currentStep: Int, actions: 
 /** How far a pad's name may shrink to keep its words whole ([com.pocketstudio.ui.WholeWordsText]'s floor is 0.72). */
 // Tour 5, lot « langues »: half its size at most (« Händeklatschen » on a 360 dp phone), only when a word would break.
 private const val PAD_NAME_MIN_SCALE = 0.5f
+
+/**
+ * A card's head with a chip at its end, side by side while the head holds on one line beside the chip; else the chip
+ * goes under the head (tour 9, seen at 130 and 200 %: « Tous les pads » kept its width and squeezed « Pas : Kick »
+ * into a column of one word per line).
+ */
+@Composable
+private fun HeadBesideChip(head: @Composable () -> Unit, chip: @Composable () -> Unit) {
+    androidx.compose.ui.layout.Layout(contents = listOf(head, chip)) { (heads, chips), constraints ->
+        val gap = 8.dp.roundToPx()
+        val loose = constraints.copy(minWidth = 0, minHeight = 0)
+        val chipPlaced = chips.first().measure(loose)
+        val headMeasurable = heads.first()
+        val beside = headMeasurable.maxIntrinsicWidth(androidx.compose.ui.unit.Constraints.Infinity) + gap + chipPlaced.width <= constraints.maxWidth
+        if (beside) {
+            val headPlaced = headMeasurable.measure(loose.copy(minWidth = constraints.maxWidth - gap - chipPlaced.width, maxWidth = constraints.maxWidth - gap - chipPlaced.width))
+            val height = maxOf(headPlaced.height, chipPlaced.height)
+            layout(constraints.maxWidth, height) {
+                headPlaced.placeRelative(0, (height - headPlaced.height) / 2)
+                chipPlaced.placeRelative(constraints.maxWidth - chipPlaced.width, (height - chipPlaced.height) / 2)
+            }
+        } else {
+            val headPlaced = headMeasurable.measure(loose.copy(minWidth = constraints.maxWidth))
+            layout(constraints.maxWidth, headPlaced.height + chipPlaced.height) {
+                headPlaced.placeRelative(0, 0)
+                chipPlaced.placeRelative(0, headPlaced.height)
+            }
+        }
+    }
+}

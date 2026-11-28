@@ -1,0 +1,30 @@
+Écran 12 (540x1170)
+dessin @ 270,108
+texte « Tonalité du morceau » @ 215,180
+texte « Fermer » @ 461,180
+texte « Tonalité du morceau : La · Majeure » @ 195,246
+texte « Gamme » @ 63,291
+bouton « Majeure » @ 90,357
+bouton « Mineure » @ 229,357
+bouton « Dorienne » @ 372,357
+bouton « Penta mineure » @ 123,438
+bouton « Penta majeure » @ 331,438
+bouton « Blues » @ 73,519
+bouton « Phrygienne » @ 214,519
+bouton « Mineure harmonique » @ 159,600
+texte « Tonique » @ 65,666
+bouton « Do » @ 63,732
+bouton « Do♯ » @ 151,732
+bouton « Ré » @ 239,732
+bouton « Mi♭ » @ 326,732
+bouton « Mi » @ 413,732
+bouton « Fa » @ 63,813
+bouton « Fa♯ » @ 150,813
+bouton « Sol » @ 237,813
+bouton « La♭ » @ 324,813
+bouton « La » @ 411,813
+bouton « Si♭ » @ 63,894
+bouton « Si » @ 150,894
+image (rond coché) @ 58,993
+texte « Réussi ! La couleur du morceau est choisie. » @ 292,993
+bouton « Revenir au tuto » @ 270,1095

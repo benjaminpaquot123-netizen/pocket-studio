@@ -1,0 +1,41 @@
+Écran 15 (1035x1243)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 346,42
+bouton « Basit » @ 738,42
+bouton ● @ 828,42
+bouton ▶ « bu bölüm » @ 909,42
+icône ⋮ @ 990,42
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+texte « Bölümleri anlamak Aşama 9/15 · Adım 6/7 · Kolay » @ 423,254
+icône (liste) « Aşamalar » @ 883,254
+icône ⌄ @ 978,254
+texte « Drop 2'yi dinle: aynı enerji, üstüne çan. » @ 407,366
+texte « Enerji » @ 78,431
+texte « 16 » [coupé] @ 90,534
+texte « 8 » [coupé] @ 197,534
+texte « 32 » [coupé] @ 374,534
+texte « 8 » [coupé] @ 551,534
+texte « 8 » [coupé] @ 624,534
+texte « 32 » [coupé] @ 802,534
+texte « 8 » [coupé] @ 979,534
+bouton « Dubstep kitini indir (3 MB) » @ 465,602
+texte « Sonra » @ 956,602
+texte « ▸ Neden? » @ 517,681
+icône « Devamını oku » ⌄ @ 517,744
+bouton ■ «  Dinlemeyi durdur » @ 517,819
+icône ← «  Önceki » @ 125,908
+icône « İleri  » → @ 941,908
+bouton ▶ « şarkı » @ 518,1012
+texte « 140 Tempo » @ 707,1011
+icône ↶ « Geri al » @ 144,1011
+image ↷ @ 337,991
+icône ⋮ « Diğer » @ 899,1011
+onglet (lignes et note) « Şarkım » @ 99,1123
+onglet (quatre carrés) « Ritim » [sélectionné] @ 309,1123
+onglet (touches de piano) « Klavye » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Paylaş » @ 936,1123
+texte « ●  REC » @ 757,1213
+texte « ✎  Not al » @ 882,1213
+texte « ⋯ » @ 987,1213
+texte « Geri bildirim modu » @ 357,1213

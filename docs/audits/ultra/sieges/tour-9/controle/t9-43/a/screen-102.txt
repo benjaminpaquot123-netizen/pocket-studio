@@ -1,0 +1,63 @@
+Écran 102 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 178,42
+bouton « Pro » @ 385,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 539,42
+bouton ● @ 611,42
+bouton ▶ « dit deel » @ 683,42
+bouton ▶ « het nummer » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [coupé] @ 68,204
+onglet « Acid 303 Baslijn » @ 212,204
+onglet « Zang Microfoon » @ 400,204
+onglet « Remix Splitsen » @ 578,204
+bouton « Bas Ronde bas » ⋮ @ 772,204
+image ← @ 10,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+texte « Alles » [coupé] @ 189,304
+texte « Geen » [coupé] @ 299,304
+texte « ▲ ½ toon » [coupé] @ 440,304
+texte « ▼ ½ toon » [coupé] @ 610,304
+texte « ▲ octaaf » [coupé] @ 777,304
+texte « ▼ octaaf » @ 122,351
+texte « ◀ » @ 249,351
+texte « ▶ » @ 339,351
+texte « Dupliceren » @ 134,426
+texte « Kopiëren » @ 310,426
+texte « Plak maat 2 » [désactivé] @ 490,426
+texte « In de maat zetten » @ 179,501
+texte « Legato » @ 385,501
+texte « Humaniseren » @ 563,501
+texte « Verwijderen » @ 143,576
+texte « Bas · maat 4/4 » @ 147,637
+bouton « Kopiëren » @ 763,658
+texte « Patroon staat erin! De rest wordt gekopieerd: » @ 364,673
+texte « mt » @ 84,719
+bouton « 3 » [coupé] @ 131,727
+bouton « 4 » @ 498,727
+texte « G » [coupé] @ 84,777
+texte « G♭ » @ 84,815
+texte « F » @ 84,857
+texte « E » @ 84,899
+texte « E♭ » @ 84,941
+texte « D » @ 84,983
+texte « D♭ » @ 84,1025
+texte « C3 » @ 84,1067
+texte « B » [coupé] @ 84,1097
+dessin [coupé] @ 492,933
+texte « De bas Hoofdstuk 5/17 · Stap 2/2 · Pro » @ 356,1157
+icône (liste) « Hoofdstukken » @ 749,1158
+icône ⌃ @ 843,1158
+bouton « Kopiëren naar de volgende maten » → @ 450,1270
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

@@ -1,0 +1,38 @@
+Écran 91 (540x1170)
+bouton (dossier ouvert) ✓ @ 79,42
+bouton « 专业 » @ 191,42
+icône ↶ @ 268,42
+bouton ● @ 340,42
+bouton ▶ « 这个段落 » @ 417,42
+icône (trois points reliés) @ 495,42
+bouton « 140  BPM » @ 83,123
+bouton « ? » @ 495,123
+image (courbe) @ 0,0
+texte « 音量 » @ 248,213
+bouton « ? » @ 482,213
+texte « 滑动推子调音量；点音轨名称查看它的效果和曲线。 » [coupé] @ 270,244
+texte « 人声片段 第 6/15 章 · 第 2/2 步 · 专业 » @ 198,299
+icône (liste) « 章节 » @ 411,299
+icône ⌄ @ 483,299
+texte « 未收听，已跳过示例。 » @ 161,385
+texte « 轮到你：创建旋律音轨（一个人声）：第 1 小节 4 个音节，第 2 小节 5 个，其中一个轻的（结巴效果），都在底鼓之间。“复制”。 » @ 270,507
+texte « ▸ 为什么？ » @ 270,628
+bouton ⊕ «   创建旋律音轨 » @ 270,697
+bouton ▶ «  听示例 » @ 142,781
+bouton (œil) «  示范给我看 » @ 397,781
+icône ← «  上一步 » @ 99,862
+icône « 下一步  » → @ 441,862
+icône ↶ « 撤销 » @ 64,950
+icône ↷ « 重做 » [désactivé] @ 164,950
+bouton ▶ « 歌曲 » @ 264,950
+texte « 140 速度 » @ 370,950
+icône (trois points reliés) « 分享 » @ 476,950
+onglet (ligne brisée et points) « 结构 » @ 49,1050
+onglet (touches de piano) « 音色 » @ 160,1050
+onglet (curseurs) « 混音 » [sélectionné] @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « 更多 » @ 491,1050
+texte « ●  REC » @ 311,1140
+texte « ✎  记一笔 » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « 反馈模式 » @ 137,1140

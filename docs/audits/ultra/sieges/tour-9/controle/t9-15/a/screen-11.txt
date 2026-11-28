@@ -1,0 +1,56 @@
+Écran 11 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 288,42
+bouton « Simple » @ 618,42
+bouton ● @ 706,42
+bouton ▶ « esta parte » @ 780,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 855,114
+icône « Parte: A » ▾ @ 76,180
+bouton « Bombo de estudio FX » @ 123,270
+bouton « Bombo 2 » @ 341,270
+bouton « Caja » @ 559,270
+bouton « Caja 2 » @ 777,270
+bouton « Palmada FX » @ 123,348
+bouton « Hi-hat I 30 » @ 341,348
+bouton « Hi-hat abierto D 30 » @ 559,348
+bouton « Tom grave » @ 777,348
+bouton « Tom medio D 45 » @ 123,426
+bouton « Tom agudo » @ 341,426
+bouton « Aro del tambor D 50 » @ 559,426
+bouton « Campana » @ 777,426
+bouton « Platillo FX D 40 » @ 123,504
+bouton « Maracas I 50 » @ 341,504
+bouton « Conga » @ 559,504
+bouton « Láser » @ 777,504
+bouton « Kit: Estudio » ▾ @ 115,582
+texte « Los pads suenan, las casillas guardan los golpes. Mantén pulsado: cambiar el sonido. » @ 553,582
+titre « PASOS: BOMBO DE ESTUDIO » [coupé, état « Desplegado »] @ 347,681
+bouton « ? » [coupé] @ 403,681
+bouton « Todos los pads » [coupé] @ 755,679
+texte « La batería Capítulo 2/13 · Paso 1/7 · Fácil » @ 364,741
+icône (liste) « Capítulos » @ 757,741
+icône ⌄ @ 843,741
+texte « Antes de empezar: el kit está listo, con el kick, el clap y los toms de la caja de ritmos 909. “FX” en un pad significa que ya tiene un efecto puesto. No tienes nada que ajustar. » @ 450,858
+texte « • Kick: el bombo, el “bum” grave de la batería. » @ 232,934
+texte « • Pad: un cuadrado que tocas para que suene un sonido. » @ 279,964
+texte « • Efecto: lo que cambia el sonido (eco, filtro, distorsión…). » @ 284,994
+texte « • 909: una caja de ritmos famosa, sus sonidos de batería. » @ 284,1024
+texte « ▸ ¿Por qué? » @ 450,1062
+bouton ✓ «   Entendido » @ 450,1125
+icône ← «  Anterior » @ 97,1209
+icône « Siguiente  » → @ 795,1209
+icône ↶ « Deshacer » @ 123,1293
+image ↷ @ 282,1283
+bouton ▶ « la canción » @ 444,1293
+texte « 120 Tempo » @ 612,1293
+icône ⋮ « Más » @ 777,1293
+onglet (lignes et note) « Mi canción » @ 85,1389
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 268,1389
+onglet (touches de piano) « Teclado » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Compartir » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Anotar » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 318,1479

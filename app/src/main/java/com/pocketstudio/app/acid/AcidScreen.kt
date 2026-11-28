@@ -240,10 +240,15 @@ private fun StepGrid(
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 for (col in 0 until 8) {
                     val i = shown * AcidPattern.STEPS_PER_PAGE + row * 8 + col
+                    val hint = com.pocketstudio.app.tuto.TutoHints.acid?.get(i)
                     AcidStepCell(
                         acid, i, english, selected = i == selected, playing = i == playStep,
-                        hint = com.pocketstudio.app.tuto.TutoHints.acid?.get(i),
-                        modifier = Modifier.weight(1f).clickable { actions.selectStep(i) }.testTag("acid_step_$i"),
+                        hint = hint,
+                        modifier = Modifier.weight(1f).clickable {
+                            val wasSelected = i == selected
+                            actions.selectStep(i)
+                            acidCellTap(acid.steps[i], wasSelected, hint)?.let { now -> actions.editStep { now } }
+                        }.testTag("acid_step_$i"),
                     )
                 }
             }
@@ -255,6 +260,19 @@ private fun StepGrid(
             color = Neon.TextSecondary,
         )
     }
+}
+
+/**
+ * Tour 9, F040 (t9-01): what a touch on 303 cell [step] makes of it (null: kept, only selected).
+ * A cell the tutorial points at ([hint]) gets its note; a silent cell gets a note (the one the
+ * keys below last gave it); a note touched again, once selected, goes back to silence; a note
+ * touched first is selected for the keys below.
+ */
+internal fun acidCellTap(step: AcidStep, wasSelected: Boolean, hint: AcidStep?): AcidStep? = when {
+    hint != null && step != hint -> hint
+    !step.gate -> step.copy(gate = true)
+    wasSelected && hint == null -> step.copy(gate = false)
+    else -> null
 }
 
 /**

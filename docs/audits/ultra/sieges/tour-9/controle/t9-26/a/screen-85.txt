@@ -1,0 +1,9 @@
+Écran 85 (1035x1243)
+texte « Hazır » @ 201,351
+texte « Hazır: Şarkım-şarkı-20261119-075145.m4a, bir kopyası da Müzik › BenStudio içinde. » @ 517,495
+texte « Süre: 3 dk 12 sn » @ 275,611
+texte « Seviye: streaming müziği gibi (−14) » @ 445,669
+texte « Doyma yok. » @ 238,727
+texte « M4A dosyası: hafif, her cihazda çalar. » @ 468,785
+texte « Dosyalarımı gör » @ 626,887
+texte « OK » @ 853,887

@@ -1,0 +1,767 @@
+#0 SIEGE lang=pl device=tablet8 font=200 mode=pro theme=- fresh=non gestes.max=160 lit=oui main=both amenee=tuto:drill:1
+#0 PREMIER ECRAN reel_s=3.7 simule_s=2.4 jvm_s=8.3 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:drill:1
+#0 AMENEE > touche 450 1244 (launch_learn)
+#0 AMENEE > touche 670 1126 (mode_card_pro)
+#0 AMENEE > touche 450 1418 (tuto_style_drill)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE 357450f5fc | project=p-e3ba91e7 tuto=drill/Pro active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Zapisano » lines cut (taller than its box)
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT OVERLAP « Kick studyjny » over « FX » (26 x 9 dp)
+#1 LAYOUT OVERLAP « Werbel » over « FX » (5 x 11 dp)
+#1 LAYOUT OVERLAP « Hi-hat » over « L 30 » (17 x 11 dp)
+#1 LAYOUT OVERLAP « Otwarty hi-hat » over « P 30 » (44 x 7 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1085
+#1 DOIGT tuto_listen «  Posłuchaj przykładu »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE fb282703be | project=p-e3ba91e7 tuto=drill/Pro active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 794 1174
+#2 DOIGT tuto_next « Dalej  »
+#3 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE fbc1335259 | project=p-e3ba91e7 tuto=drill/Pro active=true step=tempo done=1 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 450 946
+#3 DOIGT tuto_do «   Zrobię to »
+#4 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE e4b761e77c | project=p-e3ba91e7 tuto=drill/Pro active=true step=tempo done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CUT « ? » lines cut (taller than its box)
+#4 LAYOUT OVERLAP « Tempo » over the touchable « Zamknij arkusz » (114 x 45 dp)
+#4 LAYOUT OVERLAP « ? » over the touchable « Zamknij arkusz » (13 x 18 dp)
+#4 LAYOUT OVERLAP « Zamknij » over the touchable « Zamknij arkusz » (100 x 37 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « Zamknij arkusz » (96 x 61 dp)
+#4 LAYOUT OVERLAP «  BPM » over the touchable « Zamknij arkusz » (70 x 42 dp)
+#4 LAYOUT OVERLAP « 70 » over the touchable « Zamknij arkusz » (36 x 34 dp)
+#4 LAYOUT OVERLAP « 90 » over the touchable « Zamknij arkusz » (36 x 34 dp)
+#4 LAYOUT OVERLAP « 120 » over the touchable « Zamknij arkusz » (54 x 34 dp)
+#4 LAYOUT OVERLAP « 140 » over the touchable « Zamknij arkusz » (54 x 34 dp)
+#4 LAYOUT OVERLAP « 174 » over the touchable « Zamknij arkusz » (54 x 34 dp)
+#4 LAYOUT OVERLAP « ½ » over the touchable « Zamknij arkusz » (25 x 42 dp)
+#4 LAYOUT OVERLAP « ×2 » over the touchable « Zamknij arkusz » (36 x 42 dp)
+#4 LAYOUT OVERLAP « 1 » over the touchable « Zamknij arkusz » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 2 » over the touchable « Zamknij arkusz » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 3 » over the touchable « Zamknij arkusz » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 4 » over the touchable « Zamknij arkusz » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 5 » over the touchable « Zamknij arkusz » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 6 » over the touchable « Zamknij arkusz » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 7 » over the touchable « Zamknij arkusz » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 8 » over the touchable « Zamknij arkusz » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 9 » over the touchable « Zamknij arkusz » (23 x 43 dp)
+#4 LAYOUT OVERLAP « 0 » over the touchable « Zamknij arkusz » (23 x 43 dp)
+#4 LAYOUT OVERLAP « OK » over the touchable « Zamknij arkusz » (51 x 43 dp)
+#4 LAYOUT OVERLAP « Wystukaj tempo » over the touchable « Zamknij arkusz » (221 x 42 dp)
+#4 LAYOUT OVERLAP « Dotykaj tu na każde uderzenie: tempo się dopasuje. » over the touchable « Zamknij arkusz » (490 x 69 dp)
+#4 > touche 163 1000
+#4 DOIGT tempo_key_1 « 1 »
+#5 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5d59b99d56 | project=p-e3ba91e7 tuto=drill/Pro active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « 1 » over the touchable « Zamknij arkusz » (32 x 61 dp)
+#5 LAYOUT OVERLAP « Od 40 do 300 » over the touchable « Zamknij arkusz » (172 x 37 dp)
+#5 > touche 737 1087
+#5 DOIGT tempo_key_6 « 6 »
+#6 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 806dcafa76 | project=p-e3ba91e7 tuto=drill/Pro active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 16 » over the touchable « Zamknij arkusz » (64 x 61 dp)
+#6 > touche 450 1000
+#6 DOIGT tempo_key_2 « 2 »
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE bdfa1db1b4 | project=p-e3ba91e7 tuto=drill/Pro active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 162 » over the touchable « Zamknij arkusz » (96 x 61 dp)
+#7 > touche 163 1261
+#7 DOIGT tempo_key_erase « Usuń cyfrę »
+#8 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 806dcafa76 | project=p-e3ba91e7 tuto=drill/Pro active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 163 1261
+#8 DOIGT tempo_key_erase « Usuń cyfrę »
+#9 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5d59b99d56 | project=p-e3ba91e7 tuto=drill/Pro active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 163 1087
+#9 DOIGT tempo_key_4 « 4 »
+#10 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE b094e4486a | project=p-e3ba91e7 tuto=drill/Pro active=true step=tempo done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 14 » over the touchable « Zamknij arkusz » (64 x 61 dp)
+#10 > touche 450 1000
+#10 DOIGT tempo_key_2 « 2 »
+#11 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE a3b9e2a569 | project=p-e3ba91e7 tuto=drill/Pro active=true step=tempo done=1 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 142 » over the touchable « Zamknij arkusz » (96 x 61 dp)
+#11 > touche 737 1261
+#11 DOIGT tempo_key_ok « OK »
+#12 ROUTE tab_Sons | MODE pro | EMPREINTE 2e72f5706c | project=p-e3ba91e7 tuto=drill/Pro active=true step=tempo done=2 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CUT « Pady grają dźwięk, komórki trzymają uderzenia. Przytrzymaj: zmień dźwięk. » ellipsized (« … »)
+#12 LAYOUT OVERLAP « Średni tom » over « P 45 » (44 x 11 dp)
+#12 LAYOUT OVERLAP « Rim » over « P 50 » (41 x 11 dp)
+#12 LAYOUT OVERLAP « Talerz » over « P 40 » (45 x 11 dp)
+#12 LAYOUT OVERLAP « Shaker » over « L 50 » (21 x 11 dp)
+#12 LAYOUT CONTRAST « Wszystkie pady » 1.60:1 (needs 4.5:1, 14 sp)
+#12 > touche 450 1152
+#12 DOIGT tuto_next_folded « Udało się »
+#13 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 5e67c417de | project=p-e3ba91e7 tuto=drill/Pro active=true step=key done=2 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 946
+#13 DOIGT tuto_do «   Zrobię to »
+#14 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 91ac808c61 | project=p-e3ba91e7 tuto=drill/Pro active=true step=key done=2 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « Tonacja utworu » over the touchable « Zamknij arkusz » (256 x 45 dp)
+#14 LAYOUT OVERLAP « Tonacja utworu: brak » over the touchable « Zamknij arkusz » (258 x 37 dp)
+#14 LAYOUT OVERLAP « Skala » over the touchable « Zamknij arkusz » (67 x 37 dp)
+#14 LAYOUT OVERLAP « Durowa » over the touchable « Zamknij arkusz » (102 x 42 dp)
+#14 LAYOUT OVERLAP « Molowa » over the touchable « Zamknij arkusz » (103 x 42 dp)
+#14 LAYOUT OVERLAP « Dorycka » over the touchable « Zamknij arkusz » (111 x 42 dp)
+#14 LAYOUT OVERLAP « Penta mol » over the touchable « Zamknij arkusz » (132 x 42 dp)
+#14 LAYOUT OVERLAP « Penta dur » over the touchable « Zamknij arkusz » (129 x 42 dp)
+#14 LAYOUT OVERLAP « Blues » over the touchable « Zamknij arkusz » (72 x 42 dp)
+#14 LAYOUT OVERLAP « Frygijska » over the touchable « Zamknij arkusz » (119 x 42 dp)
+#14 LAYOUT OVERLAP « Molowa harmoniczna » over the touchable « Zamknij arkusz » (292 x 42 dp)
+#14 LAYOUT OVERLAP « Tonacja » over the touchable « Zamknij arkusz » (99 x 37 dp)
+#14 LAYOUT OVERLAP « C » over the touchable « Zamknij arkusz » (21 x 42 dp)
+#14 LAYOUT OVERLAP « C♯ » over the touchable « Zamknij arkusz » (36 x 42 dp)
+#14 LAYOUT OVERLAP « D » over the touchable « Zamknij arkusz » (20 x 42 dp)
+#14 LAYOUT OVERLAP « E♭ » over the touchable « Zamknij arkusz » (27 x 42 dp)
+#14 LAYOUT OVERLAP « E » over the touchable « Zamknij arkusz » (17 x 42 dp)
+#14 LAYOUT OVERLAP « F » over the touchable « Zamknij arkusz » (17 x 42 dp)
+#14 LAYOUT OVERLAP « F♯ » over the touchable « Zamknij arkusz » (32 x 42 dp)
+#14 LAYOUT OVERLAP « G » over the touchable « Zamknij arkusz » (21 x 42 dp)
+#14 LAYOUT OVERLAP « A♭ » over the touchable « Zamknij arkusz » (29 x 42 dp)
+#14 LAYOUT OVERLAP « A » over the touchable « Zamknij arkusz » (19 x 42 dp)
+#14 LAYOUT OVERLAP « B♭ » over the touchable « Zamknij arkusz » (28 x 42 dp)
+#14 LAYOUT OVERLAP « B » over the touchable « Zamknij arkusz » (18 x 42 dp)
+#14 > touche 261 1198
+#14 DOIGT tuto_scale_HarmonicMinor « Molowa harmoniczna »
+#15 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 0a95ad2809 | project=p-e3ba91e7 tuto=drill/Pro active=true step=key done=2 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « Tonacja utworu: C · Molowa harmoniczna » over the touchable « Zamknij arkusz » (505 x 37 dp)
+#15 > touche 690 1356
+#15 DOIGT tuto_root_7 « G »
+#16 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 81b9be5102 | project=p-e3ba91e7 tuto=drill/Pro active=true step=key done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « Tonacja utworu: G · Molowa harmoniczna » over the touchable « Zamknij arkusz » (506 x 37 dp)
+#16 LAYOUT OVERLAP « Udało się! Barwa utworu jest wybrana. » over the touchable « Zamknij arkusz » (388 x 84 dp)
+#16 LAYOUT OVERLAP « Wróć do samouczka » over the touchable « Zamknij arkusz » (261 x 37 dp)
+#16 > touche 450 1433
+#16 DOIGT tuto_key_continue « Wróć do samouczka »
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE f7d926c921 | project=p-e3ba91e7 tuto=drill/Pro active=true step=key done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 450 1152
+#17 DOIGT tuto_chapter_end_folded « Brawo, rozdział ukończony! »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE af488c2ae5 | project=p-e3ba91e7 tuto=drill/Pro active=true step=key done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 450 1091
+#18 DOIGT tuto_next_big « Następny rozdział   »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE c3170e335a | project=p-e3ba91e7 tuto=drill/Pro active=true step=snare_hear done=3 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 389 929
+#19 DOIGT tuto_kit_download « Pobierz zestaw Drill (3 MB) »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE 99041c31bd | project=p-e3ba91e7 tuto=drill/Pro active=true step=snare_hear done=3 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1085
+#20 DOIGT tuto_listen «  Posłuchaj przykładu »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE 7b4b5dd7e9 | project=p-e3ba91e7 tuto=drill/Pro active=true step=snare_hear done=3 playing=false
+#21 SON Son : l'exemple du tuto joue (encore 3 s).
+#21 LAYOUT OVERLAP « Drill · Werbel » over « FX » (24 x 9 dp)
+#21 LAYOUT OVERLAP « Drill · Hi-hat » over « L 30 » (42 x 11 dp)
+#21 LAYOUT CONTRAST « FX » 2.87:1 (needs 4.5:1, 9 sp)
+#21 > attends 4
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 35350670b2 | project=p-e3ba91e7 tuto=drill/Pro active=true step=snare_hear done=4 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 794 1174
+#22 DOIGT tuto_next « Dalej  »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE 62b9d53c59 | project=p-e3ba91e7 tuto=drill/Pro active=true step=snare_do done=4 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « Drill · Werbel » 3.61:1 (needs 4.5:1, 13 sp)
+#23 > touche 450 946
+#23 DOIGT tuto_need «   Przejdź na 2 takty »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE be0ab1cb4e | project=p-e3ba91e7 tuto=drill/Pro active=true step=snare_do done=4 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CUT « Twoja kolej: „Przejdź na 2 takty”, potem na padzie „Drill · Werbel”: 3 w takcie 1, 4 w takcie 2. » ellipsized (« … »)
+#24 LAYOUT CONTRAST « 3 » 3.04:1 (needs 4.5:1, 12 sp)
+#24 LAYOUT CONTRAST « Siła » 1.55:1 (needs 4.5:1, 14 sp)
+#24 > touche 90 710
+#24 DOIGT step_8 « Krok 9 »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE ab4ff4e634 | project=p-e3ba91e7 tuto=drill/Pro active=true step=snare_do done=4 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 247 424
+#25 DOIGT drum_page_1 « 2 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE 8a6585a2f0 | project=p-e3ba91e7 tuto=drill/Pro active=true step=snare_do done=4 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « 4 » 3.04:1 (needs 4.5:1, 12 sp)
+#26 > touche 500 710
+#26 DOIGT step_28 « Krok 13 »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE 75a236b2a4 | project=p-e3ba91e7 tuto=drill/Pro active=true step=snare_do done=5 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 450 1152
+#27 DOIGT tuto_chapter_end_folded « Brawo, rozdział ukończony! »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE 26eb6c3dff | project=p-e3ba91e7 tuto=drill/Pro active=true step=snare_do done=5 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 450 1035
+#28 DOIGT tuto_next_big « Następny rozdział   »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE a2e6b3f189 | project=p-e3ba91e7 tuto=drill/Pro active=true step=kick_do done=5 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CONTRAST « Takt » 2.58:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « 1 » 4.39:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « 2 » 2.38:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « Podążaj » 1.94:1 (needs 4.5:1, 14 sp)
+#29 > touche 450 946
+#29 DOIGT tuto_do «   Zrobię to »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 430f3e1ee6 | project=p-e3ba91e7 tuto=drill/Pro active=true step=kick_do done=5 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CUT « Twoja kolej: na padzie „Kick studyjny” 4 kropkowane uderzenia: 2 na takt, nie w tych samych miejscach. » ellipsized (« … »)
+#30 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 12 sp)
+#30 > touche 90 629
+#30 DOIGT step_0 « Krok 1 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE 284dee4397 | project=p-e3ba91e7 tuto=drill/Pro active=true step=kick_do done=5 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 294 710
+#31 DOIGT step_10 « Krok 11 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE c0865e0a55 | project=p-e3ba91e7 tuto=drill/Pro active=true step=kick_do done=5 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 675 512
+#32 DOIGT tuto_bar_go « Takt 2 · 2 pola → »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE fa8dc4cb95 | project=p-e3ba91e7 tuto=drill/Pro active=true step=kick_do done=5 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 603 710
+#33 DOIGT step_29 « Krok 14 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 9b3a1a5c50 | project=p-e3ba91e7 tuto=drill/Pro active=true step=kick_do done=5 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 603 710
+#34 DOIGT step_29 « Krok 14 »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE fa8dc4cb95 | project=p-e3ba91e7 tuto=drill/Pro active=true step=kick_do done=5 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 294 629
+#35 DOIGT step_18 « Krok 3 »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE 8b594ff8f4 | project=p-e3ba91e7 tuto=drill/Pro active=true step=kick_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 809 629
+#36 DOIGT step_23 « Krok 8 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 7e99096147 | project=p-e3ba91e7 tuto=drill/Pro active=true step=kick_do done=6 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 450 1152
+#37 DOIGT tuto_chapter_end_folded « Brawo, rozdział ukończony! »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 322ec8350d | project=p-e3ba91e7 tuto=drill/Pro active=true step=kick_do done=6 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 450 1035
+#38 DOIGT tuto_next_big « Następny rozdział   »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 9a99c871d2 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 450 946
+#39 DOIGT tuto_do «   Zrobię to »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 808c1ef500 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CUT « Twoja kolej: na padzie „Drill · Hi-hat” 3-3-2 w 2 taktach (pola 1, 4, 7, 9, 12, 15) i kropkowane pola na końcu taktu 2. Potem takt 2: pola 11 i 12, przytrzymaj każde, „Roll” ×3; pole 13, „Triola” › „3 na 2 pola”: dwie małe serie i triola tuż przed zapętleniem. » ellipsized (« … »)
+#40 LAYOUT CONTRAST « 1 » 2.56:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « 3 » 3.73:1 (needs 4.5:1, 12 sp)
+#40 > touche 90 629
+#40 DOIGT step_0 « Krok 1 »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 5134fa1206 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 397 629
+#41 DOIGT step_3 « Krok 4 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE a6de0b487e | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 706 629
+#42 DOIGT step_6 « Krok 7 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE f15b3e75d6 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « 3 » 3.23:1 (needs 4.5:1, 12 sp)
+#43 > touche 90 710
+#43 DOIGT step_8 « Krok 9 »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 146ccd1539 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 397 710
+#44 DOIGT step_11 « Krok 12 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 269a55466f | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 706 710
+#45 DOIGT step_14 « Krok 15 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE a48222775c | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 247 424
+#46 DOIGT drum_page_1 « 2 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE a3c262c8fc | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#47 > touche 90 629
+#47 DOIGT step_16 « Krok 1 »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE 740e0b5b56 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 397 629
+#48 DOIGT step_19 « Krok 4 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE ad51ccd631 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 706 629
+#49 DOIGT step_22 « Krok 7 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE 75185af05f | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 90 710
+#50 DOIGT step_24 « Krok 9 »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE 0546e6e7da | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 294 710
+#51 DOIGT step_26 « Krok 11 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE bedb070cac | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 397 710
+#52 DOIGT step_27 « Krok 12 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 43994d9db3 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#53 SON Son : rien ne joue.
+#53 LAYOUT CONTRAST « 4 » 3.23:1 (needs 4.5:1, 12 sp)
+#53 > touche 500 710
+#53 DOIGT step_28 « Krok 13 »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 31311051ea | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 706 710
+#54 DOIGT step_30 « Krok 15 »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE 96035a57b9 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 450 1152
+#55 DOIGT tuto_folded_text « Twoja kolej: na padzie „Drill · Hi-hat”  »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE f3a645cc4b | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 450 946
+#56 DOIGT tuto_do «   Zrobię to »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 96035a57b9 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#57 SON Son : rien ne joue.
+#57 > appui-long 294 674
+#57 DOIGT step_26 « Krok 11 »
+#58 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 52b81bb036 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 272 552
+#58 DOIGT roll_3 « ×3 »
+#59 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 6a1cedb43a | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 690 229
+#59 DOIGT roll_close
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE c85bdf4b8b | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#60 SON Son : rien ne joue.
+#60 > appui-long 397 674
+#60 DOIGT step_27 « Krok 12 »
+#61 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 0c58440aae | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 272 552
+#61 DOIGT roll_3 « ×3 »
+#62 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE df026b5f1e | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 690 229
+#62 DOIGT roll_close
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 04f21c1f47 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#63 SON Son : rien ne joue.
+#63 > appui-long 500 674
+#63 DOIGT step_28 « Krok 13 »
+#64 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 163b5da287 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=6 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 303 698
+#64 DOIGT roll_triplet « 3 na 2 pola »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE db118acb47 | project=p-e3ba91e7 tuto=drill/Pro active=true step=hat_rolls done=7 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 450 1152
+#65 DOIGT tuto_next_folded « Udało się »
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE c892e344ef | project=p-e3ba91e7 tuto=drill/Pro active=true step=perc_do done=7 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CONTRAST « Takt » 2.87:1 (needs 4.5:1, 14 sp)
+#66 LAYOUT CONTRAST « Podążaj » 1.99:1 (needs 4.5:1, 14 sp)
+#66 > touche 450 946
+#66 DOIGT tuto_do «   Zrobię to »
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 22aac2869c | project=p-e3ba91e7 tuto=drill/Pro active=true step=perc_do done=7 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CUT « Twoja kolej: na padzie „Rim” (małe „tok”) dotknij kropkowanych pól w 2 taktach: odpowiada werblowi. » ellipsized (« … »)
+#67 > touche 706 629
+#67 DOIGT step_6 « Krok 7 »
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE bead0aee10 | project=p-e3ba91e7 tuto=drill/Pro active=true step=perc_do done=7 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 706 710
+#68 DOIGT step_14 « Krok 15 »
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 8c9e9ae0ae | project=p-e3ba91e7 tuto=drill/Pro active=true step=perc_do done=7 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 247 424
+#69 DOIGT drum_page_1 « 2 »
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE 9d5da5acae | project=p-e3ba91e7 tuto=drill/Pro active=true step=perc_do done=7 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 706 629
+#70 DOIGT step_22 « Krok 7 »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE 4914340044 | project=p-e3ba91e7 tuto=drill/Pro active=true step=perc_do done=7 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 397 710
+#71 DOIGT step_27 « Krok 12 »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE 2d27f62480 | project=p-e3ba91e7 tuto=drill/Pro active=true step=perc_do done=8 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 450 1152
+#72 DOIGT tuto_next_folded « Udało się »
+#73 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 8ee78e5dd9 | project=p-e3ba91e7 tuto=drill/Pro active=true step=swing done=8 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « Metronom » 3.57:1 (needs 4.5:1, 14 sp)
+#73 LAYOUT CONTRAST « Odliczanie » 3.57:1 (needs 4.5:1, 14 sp)
+#73 > touche 450 946
+#73 DOIGT tuto_do «   Zrobię to »
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE 99d0859773 | project=p-e3ba91e7 tuto=drill/Pro active=true step=swing done=8 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT CUT « Twoja kolej: 16 % swingu na suwaku „Swing” pod siatką: szesnastki między ćwierćnutami przychodzą odrobinę później, hi-haty podskakują. » ellipsized (« … »)
+#74 LAYOUT CONTRAST « 4 takty » 2.87:1 (needs 4.5:1, 14 sp)
+#74 LAYOUT CONTRAST « ? » 3.47:1 (needs 4.5:1, 12 sp)
+#74 LAYOUT CONTRAST « 0% » 3.47:1 (needs 4.5:1, 14 sp)
+#74 > glisse 63 865 200 865
+#74 DOIGT dans:rhythm_swing « Swing »
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE 1f7a31a9d5 | project=p-e3ba91e7 tuto=drill/Pro active=true step=swing done=9 playing=false
+#75 SON Son : rien ne joue.
+#75 > glisse 200 865 210 865
+#75 DOIGT dans:rhythm_swing « Swing »
+#76 ROUTE tab_Sons | MODE pro | EMPREINTE 1f7a31a9d5 | project=p-e3ba91e7 tuto=drill/Pro active=true step=swing done=9 playing=false
+#76 SON Son : rien ne joue.
+#76 > glisse 210 865 204 865
+#76 DOIGT dans:rhythm_swing « Swing »
+#77 ROUTE tab_Sons | MODE pro | EMPREINTE 1f7a31a9d5 | project=p-e3ba91e7 tuto=drill/Pro active=true step=swing done=9 playing=false
+#77 SON Son : rien ne joue.
+#77 > glisse 204 865 190 865
+#77 DOIGT dans:rhythm_swing « Swing »
+#78 ROUTE tab_Sons | MODE pro | EMPREINTE 1f7a31a9d5 | project=p-e3ba91e7 tuto=drill/Pro active=true step=swing done=9 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 450 1152
+#78 DOIGT tuto_next_folded « Udało się »
+#79 ROUTE tab_Sons | MODE pro | EMPREINTE 0669824ce9 | project=p-e3ba91e7 tuto=drill/Pro active=true step=drums_hear done=9 playing=false
+#79 SON Son : rien ne joue.
+#79 LAYOUT CONTRAST « 4 takty » 2.92:1 (needs 4.5:1, 14 sp)
+#79 > touche 450 1002
+#79 DOIGT tuto_play_mine «   Posłuchaj swojego wyniku »
+#80 ROUTE tab_Sons | MODE pro | EMPREINTE af4937b70d | project=p-e3ba91e7 tuto=drill/Pro active=true step=drums_hear done=9 playing=true
+#80 SON Son : la musique du projet joue en boucle.
+#80 > attends 4
+#81 ROUTE tab_Sons | MODE pro | EMPREINTE 9ccc246076 | project=p-e3ba91e7 tuto=drill/Pro active=true step=drums_hear done=9 playing=true
+#81 SON Son : la musique du projet joue en boucle.
+#81 > touche 450 1088
+#81 DOIGT tuto_listen «  Posłuchaj przykładu »
+#82 ROUTE tab_Sons | MODE pro | EMPREINTE 51e66fcc7a | project=p-e3ba91e7 tuto=drill/Pro active=true step=drums_hear done=9 playing=false
+#82 SON Son : l'exemple du tuto joue (encore 3 s).
+#82 > attends 4
+#83 ROUTE tab_Sons | MODE pro | EMPREINTE 93345d1f91 | project=p-e3ba91e7 tuto=drill/Pro active=true step=drums_hear done=10 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 450 1035
+#83 DOIGT tuto_next_big « Następny rozdział   »
+#84 ROUTE tab_Sons | MODE pro | EMPREINTE 8c69d8e177 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_hear done=10 playing=false
+#84 SON Son : rien ne joue.
+#84 LAYOUT CONTRAST « 4 takty » 3.40:1 (needs 4.5:1, 14 sp)
+#84 > touche 794 1174
+#84 DOIGT tuto_next « Dalej  »
+#85 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE d35a40d521 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_do done=11 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 450 946
+#85 DOIGT tuto_need «   Utwórz ścieżkę 808 »
+#86 ROUTE tab_Sons | MODE pro | EMPREINTE 0245812af6 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_do done=11 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT CUT « ↑ Jeszcze 2 kropkowane nuty do dotknięcia » ellipsized (« … »)
+#86 LAYOUT CUT « 1 » drawn past its parent's edge (down, 32 dp shown of 37)
+#86 LAYOUT CUT « 2 » drawn past its parent's edge (down, 32 dp shown of 37)
+#86 LAYOUT CUT « C2 » drawn past its parent's edge (down, 5 dp shown of 32)
+#86 LAYOUT CUT « B » drawn past its parent's edge (down, 28 dp shown of 32)
+#86 LAYOUT CUT « B♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#86 LAYOUT CUT « A » drawn past its parent's edge (down, 28 dp shown of 32)
+#86 LAYOUT CUT « G♯ » drawn past its parent's edge (down, 28 dp shown of 33)
+#86 LAYOUT CUT « G » drawn past its parent's edge (down, 28 dp shown of 32)
+#86 LAYOUT CUT « F♯ » drawn past its parent's edge (down, 28 dp shown of 33)
+#86 LAYOUT CUT « F » drawn past its parent's edge (down, 28 dp shown of 32)
+#86 LAYOUT CUT « E » drawn past its parent's edge (down, 28 dp shown of 32)
+#86 LAYOUT CUT « E♭ » drawn past its parent's edge (down, 28 dp shown of 33)
+#86 LAYOUT CUT « Twoja kolej: utwórz ścieżkę Bas („Bas 808”, w piano rollu). Takt 1: G2, potem G2, które ślizga się do G3. Takt 2: E♭2, które ślizga się do B♭2 (kwinty), potem E♭2, które ślizga się do taktu 3. „Kopiuj”: takt 3 w C. Takt 4: trzymane D3, potem długi ślizg w dół do G2. „Kopiuj”. » ellipsized (« … »)
+#86 > touche 450 536
+#86 DOIGT tuto_notes_left « 808 · takt 1/8 »
+#87 ROUTE tab_Sons | MODE pro | EMPREINTE bf031edfee | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_do done=11 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT CUT « Jeszcze 3 kropkowane nuty do dotknięcia » ellipsized (« … »)
+#87 LAYOUT CUT « G♯ » lines cut (taller than its box)
+#87 LAYOUT CUT « G » lines cut (taller than its box)
+#87 LAYOUT CUT « F♯ » lines cut (taller than its box)
+#87 LAYOUT CUT « F » lines cut (taller than its box)
+#87 LAYOUT CUT « E » lines cut (taller than its box)
+#87 LAYOUT CUT « E♭ » lines cut (taller than its box)
+#87 LAYOUT CUT « D » lines cut (taller than its box)
+#87 LAYOUT CUT « C♯ » lines cut (taller than its box)
+#87 LAYOUT CUT « C2 » lines cut (taller than its box)
+#87 LAYOUT CUT « B » lines cut (taller than its box)
+#87 LAYOUT CUT « B♭ » lines cut (taller than its box)
+#87 LAYOUT CUT « A » lines cut (taller than its box)
+#87 LAYOUT CONTRAST « Jeszcze 3 kropkowane nuty do dotknięcia » 4.29:1 (needs 4.5:1, 14 sp)
+#87 LAYOUT TARGET « G2 G Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « F♯2 F♯ Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « F2 F Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « E2 E Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « E♭2 E♭ Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « D2 D Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « C♯2 C♯ Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « C2 C2 Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « B1 B Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « B♭1 B♭ Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « A1 A Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « G♯1 G♯ Graj » 56 x 19 dp (touch 56 x 48)
+#87 LAYOUT TARGET « G1 G Graj » 56 x 19 dp (touch 56 x 48)
+#87 > touche 300 1018
+#87 DOIGT rien
+#88 ROUTE tab_Sons | MODE pro | EMPREINTE 5319ca1820 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_do done=11 playing=false
+#88 SON Son : 1 note du synthé.
+#88 LAYOUT CUT « Jeszcze 2 kropkowane nuty do dotknięcia » ellipsized (« … »)
+#88 > touche 690 1018
+#88 DOIGT rien
+#89 ROUTE tab_Sons | MODE pro | EMPREINTE f646c02b5c | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_do done=11 playing=false
+#89 SON Son : 1 note du synthé.
+#89 LAYOUT CUT « Jeszcze 1 kropkowana nuta do dotknięcia » ellipsized (« … »)
+#89 > touche 800 682
+#89 DOIGT rien
+#90 ROUTE tab_Sons | MODE pro | EMPREINTE 8623adde20 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_do done=11 playing=false
+#90 SON Son : 1 note du synthé.
+#90 LAYOUT CUT « Jeszcze 3 kropkowane nuty, dalej → » ellipsized (« … »)
+#90 > touche 450 536
+#90 DOIGT tuto_notes_left « 808 · takt 1/8 »
+#91 ROUTE tab_Sons | MODE pro | EMPREINTE 89cae6da93 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_do done=11 playing=false
+#91 SON Son : rien ne joue.
+#91 LAYOUT CUT « 3 » drawn past its parent's edge (down, 32 dp shown of 37)
+#91 LAYOUT CUT « C1 » lines cut (taller than its box)
+#91 LAYOUT TARGET « F♯1 F♯ Graj » 56 x 19 dp (touch 56 x 48)
+#91 LAYOUT TARGET « F1 F Graj » 56 x 19 dp (touch 56 x 48)
+#91 LAYOUT TARGET « E1 E Graj » 56 x 19 dp (touch 56 x 48)
+#91 LAYOUT TARGET « E♭1 E♭ Graj » 56 x 19 dp (touch 56 x 48)
+#91 LAYOUT TARGET « D1 D Graj » 56 x 19 dp (touch 56 x 48)
+#91 LAYOUT TARGET « C♯1 C♯ Graj » 56 x 19 dp (touch 56 x 48)
+#91 LAYOUT TARGET « C1 C1 Graj » 56 x 19 dp (touch 56 x 48)
+#91 > touche 350 947
+#91 DOIGT rien
+#92 ROUTE tab_Sons | MODE pro | EMPREINTE 09f148f9c6 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_do done=11 playing=false
+#92 SON Son : 1 note du synthé.
+#92 > touche 553 751
+#92 DOIGT rien
+#93 ROUTE tab_Sons | MODE pro | EMPREINTE 110fddcbf2 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_do done=11 playing=false
+#93 SON Son : 1 note du synthé.
+#93 > touche 805 947
+#93 DOIGT rien
+#94 ROUTE tab_Sons | MODE pro | EMPREINTE 84961edf67 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_do done=12 playing=false
+#94 SON Son : 1 note du synthé.
+#94 > touche 450 1255
+#94 DOIGT tuto_next_folded « Udało się »
+#95 ROUTE tab_Sons | MODE pro | EMPREINTE 107db0b4ad | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_end done=12 playing=false
+#95 SON Son : rien ne joue.
+#95 LAYOUT CUT « Motyw położony! Resztę się kopiuje: » ellipsized (« … »)
+#95 > touche 450 1049
+#95 DOIGT tuto_need «   Kopiuj na kolejne takty »
+#96 ROUTE tab_Sons | MODE pro | EMPREINTE 63c5889293 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_end done=12 playing=false
+#96 SON Son : rien ne joue.
+#96 LAYOUT CUT « 4 » drawn past its parent's edge (down, 32 dp shown of 37)
+#96 LAYOUT CUT « 5 » drawn past its parent's edge (down, 32 dp shown of 37)
+#96 LAYOUT CUT « Twoja kolej: dotknij „Kopiuj na kolejne takty”: zapisze się takt 3 (ten sam, wyżej). Potem 2 nuty w takcie 4 i znów „Kopiuj”. » ellipsized (« … »)
+#96 > touche 440 751
+#96 DOIGT rien
+#97 ROUTE tab_Sons | MODE pro | EMPREINTE f1f5d656e6 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_end done=12 playing=false
+#97 SON Son : 1 note du synthé.
+#97 > touche 733 947
+#97 DOIGT rien
+#98 ROUTE tab_Sons | MODE pro | EMPREINTE 7f4064820d | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_end done=12 playing=false
+#98 SON Son : 1 note du synthé.
+#98 > touche 450 1255
+#98 DOIGT tuto_need_folded « Kopiuj na kolejne takty »
+#99 ROUTE tab_Sons | MODE pro | EMPREINTE dfafbc59d2 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_end done=13 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 450 1255
+#99 DOIGT tuto_next_folded « Udało się »
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE 23c7eb86c4 | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_pump done=13 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 450 1049
+#100 DOIGT tuto_do «   Zrobię to »
+#101 ROUTE dialogue:effects_box_2 | MODE pro | EMPREINTE dc195b8adc | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_pump done=14 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT CONTRAST « Aktywne efekty: 1 z 8 » 4.44:1 (needs 4.5:1, 14 sp)
+#101 LAYOUT CONTRAST « Ustawione też na tym dźwięku: » 4.44:1 (needs 4.5:1, 14 sp)
+#101 LAYOUT CONTRAST « 40% » 3.63:1 (needs 4.5:1, 14 sp)
+#101 LAYOUT CONTRAST « Gotowe klimaty » 4.44:1 (needs 4.5:1, 14 sp)
+#101 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#101 LAYOUT CONTRAST « Przestrzeń » 4.07:1 (needs 4.5:1, 14 sp)
+#101 LAYOUT CONTRAST « Zamknij » 3.63:1 (needs 4.5:1, 14 sp)
+#101 > touche 755 1433
+#101 DOIGT fx_close « Zamknij »
+#102 ROUTE tab_Sons | MODE pro | EMPREINTE 7b768581cb | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_pump done=14 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 450 1255
+#102 DOIGT tuto_chapter_end_folded « Brawo, rozdział ukończony! »
+#103 ROUTE tab_Sons | MODE pro | EMPREINTE 1eb7f840ce | project=p-e3ba91e7 tuto=drill/Pro active=true step=bass_pump done=14 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 450 1138
+#103 DOIGT tuto_next_big « Następny rozdział   »
+#104 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE e823b26401 | project=p-e3ba91e7 tuto=drill/Pro active=true step=pad_do done=14 playing=false
+#104 SON Son : rien ne joue.
+#104 > touche 450 1049
+#104 DOIGT tuto_need «   Utwórz ścieżkę Akordy »
+#105 ROUTE tab_Sons | MODE pro | EMPREINTE 8db9f260c5 | project=p-e3ba91e7 tuto=drill/Pro active=true step=pad_do done=14 playing=false
+#105 SON Son : rien ne joue.
+#105 LAYOUT CUT « C4 » lines cut (taller than its box)
+#105 LAYOUT CUT « Twoja kolej: utwórz ścieżkę Akordy (smyczki): g-moll w takcie 1, potem „Kopiuj”: E♭ (VI), c-moll (iv) i D-dur (V, z F♯), idąc wzdłuż skali. » ellipsized (« … »)
+#105 LAYOUT TARGET « E4 E Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « E♭4 E♭ Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « D4 D Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « C♯4 C♯ Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « C4 C4 Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « B3 B Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « B♭3 B♭ Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « A3 A Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « G♯3 G♯ Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « G3 G Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « F♯3 F♯ Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « F3 F Graj » 56 x 19 dp (touch 56 x 48)
+#105 LAYOUT TARGET « E3 E Graj » 56 x 19 dp (touch 56 x 48)
+#105 > touche 480 850
+#105 DOIGT rien
+#106 ROUTE tab_Sons | MODE pro | EMPREINTE 7cfcd27af7 | project=p-e3ba91e7 tuto=drill/Pro active=true step=pad_do done=15 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 450 1255
+#106 DOIGT tuto_next_folded « Udało się »
+#107 ROUTE tab_Sons | MODE pro | EMPREINTE ab8e6ac957 | project=p-e3ba91e7 tuto=drill/Pro active=true step=pad_end done=15 playing=false
+#107 SON Son : rien ne joue.
+#107 > touche 450 1049
+#107 DOIGT tuto_need «   Kopiuj na kolejne takty »
+#108 ROUTE tab_Sons | MODE pro | EMPREINTE ab8e6ac957 | project=p-e3ba91e7 tuto=drill/Pro active=true step=pad_end done=15 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 765 536
+#108 DOIGT tuto_roll_copy « Kopiuj »
+#109 ROUTE tab_Sons | MODE pro | EMPREINTE b1a764db37 | project=p-e3ba91e7 tuto=drill/Pro active=true step=pad_end done=16 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 450 1138
+#109 DOIGT tuto_next_big « Następny rozdział   »
+#110 ROUTE tab_Sons | MODE pro | EMPREINTE a70a86fcfd | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_hear done=16 playing=false
+#110 SON Son : rien ne joue.
+#110 LAYOUT CUT « C3 » lines cut (taller than its box)
+#110 LAYOUT TARGET « E♭3 E♭ Graj » 56 x 19 dp (touch 56 x 48)
+#110 LAYOUT TARGET « D3 D Graj » 56 x 19 dp (touch 56 x 48)
+#110 LAYOUT TARGET « C♯3 C♯ Graj » 56 x 19 dp (touch 56 x 48)
+#110 LAYOUT TARGET « C3 C3 Graj » 56 x 19 dp (touch 56 x 48)
+#110 > touche 450 1188
+#110 DOIGT tuto_listen «  Posłuchaj przykładu »
+#111 ROUTE tab_Sons | MODE pro | EMPREINTE d3b61f32a5 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_hear done=16 playing=false
+#111 SON Son : l'exemple du tuto joue (encore 3 s).
+#111 > attends 4
+#112 ROUTE tab_Sons | MODE pro | EMPREINTE a420c76d94 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_hear done=17 playing=false
+#112 SON Son : rien ne joue.
+#112 > touche 794 1277
+#112 DOIGT tuto_next « Dalej  »
+#113 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE 608ddcec22 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#113 SON Son : rien ne joue.
+#113 > touche 450 1049
+#113 DOIGT tuto_need «   Utwórz ścieżkę Melodia »
+#114 ROUTE tab_Sons | MODE pro | EMPREINTE c4b7abd362 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#114 SON Son : rien ne joue.
+#114 LAYOUT CUT « C5 » lines cut (taller than its box)
+#114 LAYOUT CUT « Twoja kolej: utwórz ścieżkę Melodia (pianino): G, B♭ | D, B♭, A | (takt 1, „Kopiuj”) | D, F♯, trzymane G. Zostaje w skali, nie idąc za akordami; F♯ w takcie 4 wypada na D-dur. » ellipsized (« … »)
+#114 LAYOUT TARGET « E5 E Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « E♭5 E♭ Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « D5 D Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « C♯5 C♯ Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « C5 C5 Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « B4 B Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « B♭4 B♭ Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « A4 A Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « G♯4 G♯ Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « G4 G Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « F♯4 F♯ Graj » 56 x 19 dp (touch 56 x 48)
+#114 LAYOUT TARGET « F4 F Graj » 56 x 19 dp (touch 56 x 48)
+#114 > touche 215 934
+#114 DOIGT rien
+#115 ROUTE tab_Sons | MODE pro | EMPREINTE bb988ad9f3 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#115 SON Son : 1 note du synthé.
+#115 > touche 440 850
+#115 DOIGT rien
+#116 ROUTE tab_Sons | MODE pro | EMPREINTE 15b9936cbe | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#116 SON Son : 1 note du synthé.
+#116 > touche 450 536
+#116 DOIGT tuto_notes_left « Melodia · takt 2/8 »
+#117 ROUTE tab_Sons | MODE pro | EMPREINTE 0f01e3f23f | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#117 SON Son : rien ne joue.
+#117 > touche 170 738
+#117 DOIGT rien
+#118 ROUTE tab_Sons | MODE pro | EMPREINTE 3669ca116c | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#118 SON Son : 1 note du synthé.
+#118 > touche 440 850
+#118 DOIGT rien
+#119 ROUTE tab_Sons | MODE pro | EMPREINTE 8c50004aab | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#119 SON Son : 1 note du synthé.
+#119 > touche 620 878
+#119 DOIGT rien
+#120 ROUTE tab_Sons | MODE pro | EMPREINTE 2112c2e34a | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#120 SON Son : 1 note du synthé.
+#120 > touche 450 1255
+#120 DOIGT tuto_need_folded « Kopiuj na kolejne takty »
+#121 ROUTE tab_Sons | MODE pro | EMPREINTE d915810fc2 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#121 SON Son : rien ne joue.
+#121 LAYOUT CUT « ↑ Jeszcze 1 kropkowana nuta do dotknięcia » ellipsized (« … »)
+#121 > touche 450 536
+#121 DOIGT tuto_notes_left « Melodia · takt 4/8 »
+#122 ROUTE tab_Sons | MODE pro | EMPREINTE f644cf6951 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#122 SON Son : rien ne joue.
+#122 LAYOUT TARGET « B5 B Graj » 56 x 19 dp (touch 56 x 48)
+#122 LAYOUT TARGET « B♭5 B♭ Graj » 56 x 19 dp (touch 56 x 48)
+#122 LAYOUT TARGET « A5 A Graj » 56 x 19 dp (touch 56 x 48)
+#122 LAYOUT TARGET « G♯5 G♯ Graj » 56 x 19 dp (touch 56 x 48)
+#122 LAYOUT TARGET « G5 G Graj » 56 x 19 dp (touch 56 x 48)
+#122 LAYOUT TARGET « F♯5 F♯ Graj » 56 x 19 dp (touch 56 x 48)
+#122 LAYOUT TARGET « F5 F Graj » 56 x 19 dp (touch 56 x 48)
+#122 > touche 170 920
+#122 DOIGT rien
+#123 ROUTE tab_Sons | MODE pro | EMPREINTE c54857f5b5 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#123 SON Son : 1 note du synthé.
+#123 > touche 440 808
+#123 DOIGT rien
+#124 ROUTE tab_Sons | MODE pro | EMPREINTE 74a7e8fb65 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#124 SON Son : 1 note du synthé.
+#124 > touche 700 780
+#124 DOIGT rien
+#125 ROUTE tab_Sons | MODE pro | EMPREINTE 61d0ed6874 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=17 playing=false
+#125 SON Son : 1 note du synthé.
+#125 > touche 450 1255
+#125 DOIGT tuto_need_folded « Kopiuj na kolejne takty »
+#126 ROUTE tab_Sons | MODE pro | EMPREINTE b304572b2d | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=18 playing=false
+#126 SON Son : rien ne joue.
+#126 > touche 450 1255
+#126 DOIGT tuto_chapter_end_folded « Brawo, rozdział ukończony! »
+#127 ROUTE tab_Sons | MODE pro | EMPREINTE c02f1e7154 | project=p-e3ba91e7 tuto=drill/Pro active=true step=lead_do done=18 playing=false
+#127 SON Son : rien ne joue.
+#127 > touche 450 1138
+#127 DOIGT tuto_next_big « Następny rozdział   »
+#128 ROUTE tab_Sons | MODE pro | EMPREINTE e91cde4811 | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_hear done=18 playing=false
+#128 SON Son : rien ne joue.
+#128 > touche 450 1105
+#128 DOIGT tuto_play_mine «   Posłuchaj swojego wyniku »
+#129 ROUTE tab_Sons | MODE pro | EMPREINTE 440247ed62 | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_hear done=18 playing=true
+#129 SON Son : la musique du projet joue en boucle.
+#129 > attends 4
+#130 ROUTE tab_Sons | MODE pro | EMPREINTE 75ca134df7 | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_hear done=18 playing=true
+#130 SON Son : la musique du projet joue en boucle.
+#130 > touche 450 1191
+#130 DOIGT tuto_listen «  Posłuchaj przykładu »
+#131 ROUTE tab_Sons | MODE pro | EMPREINTE 17127dd6c3 | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_hear done=18 playing=false
+#131 SON Son : l'exemple du tuto joue (encore 3 s).
+#131 > attends 4
+#132 ROUTE tab_Sons | MODE pro | EMPREINTE 0eed4c39f9 | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_hear done=19 playing=false
+#132 SON Son : rien ne joue.
+#132 > touche 794 1277
+#132 DOIGT tuto_next « Dalej  »
+#133 ROUTE tab_Sons | MODE pro | EMPREINTE ab9415f657 | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_name done=19 playing=false
+#133 SON Son : rien ne joue.
+#133 > touche 462 42
+#133 DOIGT top_scene « Bieżąca część: A. Dotknij, aby zmienić c »
+#134 ROUTE dialogue:scene_menu | MODE pro | EMPREINTE 7c7777e37a | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_name done=19 playing=false
+#134 SON Son : rien ne joue.
+#134 > appui-long 630 192
+#134 DOIGT scene_pick_0 « A »
+#135 ROUTE tab_Sons | MODE pro | EMPREINTE ab9415f657 | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_name done=19 playing=false
+#135 SON Son : rien ne joue.
+#135 > touche 667 1163
+#135 DOIGT tuto_show «  Pokaż mi »
+#136 ROUTE tab_Structure | MODE pro | EMPREINTE 88260f9af1 | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_name done=19 playing=false
+#136 SON Son : rien ne joue.
+#136 LAYOUT CONTRAST « Stop » 3.91:1 (needs 4.5:1, 14 sp)
+#136 > attends 3
+#137 ROUTE tab_Structure | MODE pro | EMPREINTE b4b0b07d63 | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_name done=19 playing=false
+#137 SON Son : rien ne joue.
+#137 > touche 816 1152
+#137 DOIGT tuto_show « Stop »
+#138 ROUTE tab_Structure | MODE pro | EMPREINTE faf14d67df | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_name done=19 playing=false
+#138 SON Son : rien ne joue.
+#138 > touche 450 946
+#138 DOIGT tuto_need «   Nazwij część „Refren” »
+#139 ROUTE tab_Structure | MODE pro | EMPREINTE feb179ffed | project=p-e3ba91e7 tuto=drill/Pro active=true step=groove_name done=20 playing=false
+#139 SON Son : rien ne joue.
+#139 > fin
+#139 FIN : fin

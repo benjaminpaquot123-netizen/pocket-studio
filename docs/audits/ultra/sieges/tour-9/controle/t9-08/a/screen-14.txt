@@ -1,0 +1,39 @@
+Écran 14 (588x1278)
+bouton (dossier ouvert) ✓ @ 103,42
+bouton « 专业 » @ 239,42
+icône ↶ @ 316,42
+bouton ● @ 388,42
+bouton ▶ « 这个段落 » @ 465,42
+icône (trois points reliés) @ 543,42
+bouton « 122  BPM » @ 114,144
+bouton « ? » @ 543,144
+texte « 理解段落 第 7/14 章 · 第 2/4 步 · 专业 » @ 222,248
+icône (liste) « 章节 » @ 459,249
+icône ⌄ @ 531,249
+texte « 听律动：康加鼓、贝斯和马林巴进来，没有 Pad。 » @ 294,421
+texte « 能量 » @ 59,520
+texte « 16 » @ 65,639
+texte « 16 » @ 156,639
+texte « 16 » @ 247,639
+texte « 16 » @ 338,639
+texte « 16 » @ 430,639
+texte « 16 » @ 522,639
+texte « ▸ 为什么？ » @ 294,699
+icône « 继续阅读 » ⌄ @ 294,765
+bouton ▶ «  听示例 » @ 294,842
+icône ← «  上一步 » @ 117,932
+icône « 下一步  » → @ 471,932
+texte « 122 速度 » @ 402,1041
+icône ↶ « 撤销 » @ 72,1041
+icône ↷ « 重做 » [désactivé] @ 180,1041
+bouton ▶ « 歌曲 » @ 288,1042
+icône (trois points reliés) « 分享 » @ 516,1041
+onglet (ligne brisée et points) « 结构 » [sélectionné] @ 54,1158
+onglet (touches de piano) « 音色 » @ 174,1158
+onglet (curseurs) « 混音 » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « 更多 » @ 534,1158
+texte « 反馈模式 » @ 130,1248
+texte « ●  REC » @ 303,1248
+texte « ✎  记一笔 » @ 431,1248
+texte « ⋯ » @ 540,1248

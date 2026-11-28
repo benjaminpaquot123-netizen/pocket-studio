@@ -1,0 +1,162 @@
+package com.pocketstudio.app.tuto
+
+import com.pocketstudio.model.i18n.I18n
+import com.pocketstudio.model.i18n.Lang
+import com.pocketstudio.model.tuto.TutoCourse
+import com.pocketstudio.model.tuto.TutoLevel
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+/**
+ * Tour 9, lot L5b: the tuto's words in each language name what the screen shows (a pad, a tab, a sheet, a part)
+ * and read as a correct sentence. One test per finding (or small group of a same finding).
+ */
+class Tour9L5bTutoWordsTest {
+    private val others = Lang.entries.filter { it != Lang.FR }
+
+    /** Every French text a course shows: titles at both levels, « Pourquoi ? », steps' words at both levels, « Passer ». */
+    private val tutoTexts: Set<String> by lazy {
+        val out = LinkedHashSet<String>()
+        for (style in TutoCourse.STYLES) {
+            val course = TutoCourse.of(style) ?: continue
+            for (level in TutoLevel.entries) course.chaptersFor(level).forEach { ch ->
+                listOfNotNull(ch.titleFor(level), ch.why).forEach { if (it.isNotBlank()) out += it }
+                ch.steps.forEach { s -> listOfNotNull(s.textFor(level), s.why, s.skip).forEach { if (it.isNotBlank()) out += it } }
+            }
+        }
+        out
+    }
+
+    private fun shown(lang: Lang, fr: String): String = I18n.table(lang)[fr]?.takeIf { it.isNotEmpty() } ?: fr
+
+    /** The tuto texts of [lang] whose French matches [frFilter] and whose translation matches [bad]. */
+    private fun offenders(lang: Lang, bad: Regex, frFilter: (String) -> Boolean = { true }): List<String> =
+        tutoTexts.filter(frFilter).map { shown(lang, it) }.filter { bad.containsMatchIn(it) }.distinct()
+
+    private fun assertNoneLeft(what: String, found: Map<Lang, List<String>>) {
+        val bad = found.filterValues { it.isNotEmpty() }
+        assertTrue("$what:\n" + bad.entries.joinToString("\n") { (l, v) -> "${l.code}: ${v.size} : ${v.take(3)}" }, bad.isEmpty())
+    }
+
+    /** F068: the Roll step says what to do with « ×4 » (a verb), in every language, not only « …, and “×4” under “Roll” ». */
+    @Test
+    fun f068RollStepNamesTheTap() {
+        val verb = mapOf(
+            Lang.EN to "tap", Lang.DE to "tippe", Lang.ES to "toca", Lang.HI to "टैप", Lang.ID to "ketuk", Lang.IT to "tocca",
+            Lang.NL to "tik", Lang.PL to "dotknij", Lang.PT_BR to "toque", Lang.TR to "dokun", Lang.AR to "المس",
+            Lang.JA to "タップ", Lang.KO to "탭", Lang.ZH_CN to "点",
+        )
+        val keys = tutoTexts.filter { "sous « Roulement »" in it }
+        assertTrue("the Roll steps are found", keys.size >= 3)
+        assertNoneLeft("Roll step without the tap verb", others.associateWith { l ->
+            val v = verb[l] ?: error("no verb for ${l.code}")
+            keys.map { shown(l, it) }.filter { v !in it.substringAfterLast(',').substringAfterLast('،').substringAfterLast('，') }
+        })
+    }
+
+    /** F073: in Hindi the « part created » message says the listed instruments are removed (« हटाए »), not just listed. */
+    @Test
+    fun f073PartCopyMessageSaysWhatIsRemoved() {
+        val v = I18n.table(Lang.HI)["Partie « %1\$s » créée (copie de « %2\$s ») : sans %3\$s."].orEmpty()
+        assertTrue("hi: $v", "हटाए" in v && v.contains("%1\$s") && v.contains("%2\$s") && v.contains("%3\$s"))
+    }
+
+    /** F075: a step that names the « Mix » tab writes it as the tab reads (Arabic said « مزج », the tab « المكس »). */
+    @Test
+    fun f075MixTabNamedAsTheTab() {
+        val keys = tutoTexts.filter { "« Mix »" in it }
+        assertTrue("the Mix steps are found", keys.isNotEmpty())
+        assertNoneLeft("step naming Mix otherwise than the tab", others.associateWith { l ->
+            val tab = I18n.table(l)["Mix"] ?: "Mix"
+            keys.map { shown(l, it) }.filter { tab !in it }
+        })
+        val title = shown(Lang.AR, "Le mix")
+        assertTrue("ar chapter « Le mix »: $title", I18n.table(Lang.AR)["Mix"].orEmpty() in title)
+    }
+
+    /** F076: the disco chapter « le refrain » asks to name the part « Drop »: its title names that same part. */
+    @Test
+    fun f076DiscoChapterNamesTheDropPart() {
+        val step = "À toi : nomme cette partie « Drop » : c'est ton refrain, le moment où tout joue."
+        val title = "Ta première partie : le refrain"
+        assertTrue("disco still has that chapter", step in tutoTexts && title in tutoTexts)
+        val quote = Regex("""[«“„‘「]\s*([^»”“’」]+?)\s*[»”“’」]""")
+        assertNoneLeft("chapter title without the part's name", others.associateWith { l ->
+            val name = quote.find(shown(l, step))?.groupValues?.get(1) ?: error("no quoted name in ${l.code}")
+            listOf(shown(l, title)).filter { name !in it }
+        })
+    }
+
+    /** F077: a step that opens « la fiche Tonalité » names that sheet by its title (« Tonalité du morceau »). */
+    @Test
+    fun f077KeySheetNamedByItsTitle() {
+        val keys = tutoTexts.filter { "fiche Tonalité" in it }
+        assertTrue("the key-sheet steps are found", keys.size > 10)
+        assertNoneLeft("step naming the key sheet otherwise than its title", others.associateWith { l ->
+            val sheet = I18n.table(l)["Tonalité du morceau"] ?: error("no sheet title in ${l.code}")
+            keys.map { shown(l, it) }.filter { sheet !in it }
+        })
+    }
+
+    /** F082: in Japanese, « toute la batterie, sans la basse, le piano… » no longer reads as a list of what plays. */
+    @Test
+    fun f082IntroSaysOnlyTheDrumsStay() {
+        assertNoneLeft("ambiguous list", mapOf(Lang.JA to offenders(Lang.JA, Regex("ドラム全部、[^。]*はなし"))))
+    }
+
+    /** F085: German « die Schläge des letzten Schlags » says which cells: those of the last beat (« Zählzeit »). */
+    @Test
+    fun f085GermanLastBeatReadsRight() {
+        assertNoneLeft("« des letzten Schlags »", mapOf(Lang.DE to offenders(Lang.DE, Regex("des letzten Schlags"))))
+    }
+
+    /** F088: Arabic names the clap « تصفيق » (as its pad), not « كلاب » (dogs), and rave « رايف », not « ريف » (countryside). */
+    @Test
+    fun f088ArabicSoundNamesAreMusicWords() {
+        val dogs = Regex("""(?<![\p{L}\p{M}])(وال|ال|لل|و|ب)?كلاب(?![\p{L}\p{M}])""")
+        val countryside = Regex("""(?<![\p{L}\p{M}])(ال)?رّ?يف(?![\p{L}\p{M}])""")
+        val rave = Regex("""(?i)\braves?\b""")
+        assertTrue("the clap pad reads تصفيق", I18n.table(Lang.AR)["Clap"] == "تصفيق")
+        assertNoneLeft("كلاب / ريف", mapOf(
+            Lang.AR to offenders(Lang.AR, dogs) +
+                offenders(Lang.AR, countryside) { rave.containsMatchIn(it) && !it.contains("riff", ignoreCase = true) },
+        ))
+    }
+
+    /** F090: the cells to erase are shown struck through (« barré »), never « red crosses » (ja, nl). */
+    @Test
+    fun f090CellsToEraseAreStruckThrough() {
+        assertNoneLeft("red crosses", mapOf(
+            Lang.JA to offenders(Lang.JA, Regex("赤い×")),
+            Lang.NL to offenders(Lang.NL, Regex("(?i)rood kruisje|rode kruisjes")),
+        ))
+    }
+
+    /** F094: Chinese « the off-beat hit » on the Rim pad is plural: four dotted cells wait. */
+    @Test
+    fun f094ChineseOffbeatHitsArePlural() {
+        val fr = "À toi : sur le pad « Rim », pose le coup décalé, la petite accroche rythmique qui tourne en boucle."
+        val v = shown(Lang.ZH_CN, fr)
+        assertTrue("zh: $v", "那个错位的一下" !in v && "几下" in v)
+    }
+
+    /** F096: Dutch writes « overstuurt », never « oversteuurt ». */
+    @Test
+    fun f096DutchOverstuurtSpelledRight() {
+        assertNoneLeft("oversteuurt", mapOf(Lang.NL to offenders(Lang.NL, Regex("oversteuurt"))))
+    }
+
+    /** F097: the Turkish Post-chorus part is « Nakarat sonrası » on its card and in every step. */
+    @Test
+    fun f097TurkishPostChorusName() {
+        assertTrue("tr part name", I18n.table(Lang.TR)["Post-refrain"] == "Nakarat sonrası")
+        assertNoneLeft("Post-nakarat", mapOf(Lang.TR to (offenders(Lang.TR, Regex("Post-nakarat")) +
+            I18n.table(Lang.TR).values.filter { "Post-nakarat" in it })))
+    }
+
+    /** F098: Turkish « Sürgünün altındaki “Normal” » (the one under the slider), not « altında ». */
+    @Test
+    fun f098TurkishUnderTheSliderReadsRight() {
+        assertNoneLeft("altında “", mapOf(Lang.TR to offenders(Lang.TR, Regex("Sürgünün altında “"))))
+    }
+}

@@ -1,0 +1,7 @@
+Écran 132 (588x1278)
+texte « Udostępnij mój utwór · Mój-utwór-20261119-075352.wav » @ 294,460
+bouton « WhatsApp » @ 294,543
+bouton « Messages » @ 294,615
+bouton « Gmail » @ 294,687
+bouton « Drive » @ 294,759
+bouton « Files » @ 294,831

@@ -1,0 +1,53 @@
+Écran 120 (900x1509)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 198,42
+bouton « Simple » @ 440,42
+icône ↶ @ 529,42
+bouton ● @ 601,42
+bouton ▶ « this part » @ 678,42
+bouton ▶ « the song » @ 775,42
+icône ⋮ @ 855,42
+bouton « 112  Tempo » @ 136,144
+bouton « ? » @ 855,144
+onglet « Acid 303 Bass line » [coupé] @ 60,262
+bouton « Chords FM Rhodes » @ 239,262
+bouton « Melody FM piano » @ 491,262
+bouton « Bass Log drum » ⋮ @ 746,262
+image ← @ 10,263
+image → @ 889,263
+icône « Part: A » ▾ @ 99,356
+texte « In time 50% » [coupé] @ 631,394
+texte « 100% » @ 114,439
+texte « Clear » @ 259,439
+bouton « Bass · bar 4/8 3 more dotted notes to tap » @ 450,540
+texte « bar » @ 84,625
+bouton « 4 » @ 486,625
+bouton « 5 » [coupé] @ 853,625
+texte « D » [coupé] @ 84,663
+texte « D♭ » @ 84,681
+texte « C3 » @ 84,708
+texte « B » @ 84,735
+texte « B♭ » @ 84,762
+texte « A » @ 84,789
+texte « A♭ » @ 84,816
+texte « G » @ 84,843
+texte « G♭ » @ 84,870
+texte « F » @ 84,897
+texte « E » @ 84,924
+texte « E♭ » @ 84,951
+texte « D » @ 84,978
+texte « D♭ » @ 84,1005
+texte « C2 » @ 84,1032
+dessin [coupé] @ 492,852
+texte « The log drum Chapter 5/12 · Step 4/4 · Easy » @ 357,1112
+icône (liste) « Chapters » @ 750,1112
+icône ⌃ @ 843,1112
+icône « Your turn: finally write the 3 notes of bar 4: it starts with a silence. Read » ⌃ @ 450,1255
+onglet (lignes et note) « My song » @ 85,1389
+onglet (quatre carrés) « Rhythm » @ 268,1389
+onglet (touches de piano) « Keyboard » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Share » @ 815,1389
+texte « ●  REC » @ 637,1479
+texte « ✎  Note » @ 754,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 297,1479

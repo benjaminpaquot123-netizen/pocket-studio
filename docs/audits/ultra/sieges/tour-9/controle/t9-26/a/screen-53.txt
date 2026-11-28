@@ -1,0 +1,39 @@
+Écran 53 (1035x1243)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 346,42
+bouton « Basit » @ 738,42
+bouton ● @ 828,42
+bouton ▶ « bu bölüm » @ 909,42
+icône ⋮ @ 990,42
+icône « Giriş ölçü 1/112 » ▾ @ 397,144
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+bouton « Şarkı akorları B · Giriş Mi m  Mi m  Mi m  Fa  Mi m  Mi m  Mi m  Fa C · Yükseliş Mi m  Mi m  Mi m  Fa D · Drop Mi m  Mi m  Mi m  Fa  Mi m  Mi m  Mi m  Fa E · Break Mi m  Mi m  Mi m  Fa  Mi m  Mi m  Mi m  Fa F · Drop 2 Mi m  Mi m  Mi m  Fa  Mi m  Mi m  Mi m  Fa G · Bitiş Mi m  Mi m  Mi m  Fa  Mi m  Mi m  Mi m  Fa Tüm şarkının akorlarını değiştirmek için dokun. » [coupé] @ 263,222
+icône ▶ « B · Giriş 16 ölçü » @ 155,300
+icône − [désactivé] @ 304,306
+icône + [désactivé] @ 376,306
+icône ⋮ @ 448,306
+titre « KANALLARIM » [état « Genişletildi »] @ 707,270
+texte « Sesini değiştirmek için bir kanalın adına dokun; tek başına dinlemek için ▶. » [coupé] @ 771,327
+texte « Bölümlerini sırala Aşama 11/15 · Tamam · Kolay » @ 423,415
+icône (liste) « Aşamalar » @ 883,415
+icône ⌄ @ 978,415
+image (coupe) @ 57,588
+texte « Bravo, bölüm bitti! » @ 264,536
+texte « Şarkını şimdiki haliyle dinle, sonra bir sonraki bölüme geç: “Geçişler”. » @ 543,616
+bouton « Sonraki bölüm   » → @ 517,825
+icône ← @ 57,911
+bouton ▶ «  Şarkımı dinle » @ 558,911
+bouton ▶ « şarkı » @ 518,1012
+texte « 140 Tempo » @ 707,1011
+icône ↶ « Geri al » @ 144,1011
+image ↷ @ 337,991
+icône ⋮ « Diğer » @ 899,1011
+onglet (lignes et note) « Şarkım » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Ritim » @ 309,1123
+onglet (touches de piano) « Klavye » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Paylaş » @ 936,1123
+texte « ●  REC » @ 757,1213
+texte « ✎  Not al » @ 882,1213
+texte « ⋯ » @ 987,1213
+texte « Geri bildirim modu » @ 357,1213

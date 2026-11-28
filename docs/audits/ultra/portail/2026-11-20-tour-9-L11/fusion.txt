@@ -1,0 +1,19 @@
+fusion: 86d71a17802de29b6aec9c7359a2fb11cdd369d1
+branche: eq/tour-9-L11
+tete: 0373a387b71121ad8f6e5ca42624758ea6f4e1de
+relecture: docs/audits/ultra/tour-9-L11-relecture.md
+relu: 68e818aa
+filtres: *T9F131* *T9L11* *T9D17* *CutLocalNoteScroll* *CutCurrentMessageScroll* com.pocketstudio.app.live.* *Help* *I18nCatalogTest* *SpacesTest* *WholeWords* *Live*
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu

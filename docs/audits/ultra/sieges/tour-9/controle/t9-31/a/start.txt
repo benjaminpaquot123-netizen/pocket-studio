@@ -1,0 +1,10 @@
+lang=ar
+device=tablet8
+font=130
+mode=simple
+amenee=tuto:hard_techno:1
+gestes.max=181
+mission=tuto-facile
+profil=curieux
+niveau=0
+timeout.minutes=30

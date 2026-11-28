@@ -662,7 +662,7 @@ private fun BoardActionsBar(ui: StemBoardUi, state: StemBoardView, actions: Stem
         message?.let { said ->
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(said, style = MaterialTheme.typography.bodyMedium, color = Neon.TextPrimary, modifier = Modifier.weight(1f).testTag("board_message"))
-                TextButton(onClick = actions::dismissMessage, modifier = Modifier.testTag("board_message_ok")) { Text("OK") }
+                TextButton(onClick = actions::dismissMessage, modifier = Modifier.testTag("board_message_ok")) { Text(tr("OK")) }
             }
         }
     }

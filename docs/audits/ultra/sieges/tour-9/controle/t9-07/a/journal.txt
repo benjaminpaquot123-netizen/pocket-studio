@@ -1,0 +1,646 @@
+#0 SIEGE lang=zh-CN device=tablet8 font=130 mode=pro theme=- fresh=non gestes.max=153 lit=oui main=both amenee=tuto:afro_house:1
+#0 PREMIER ECRAN reel_s=3.5 simule_s=2.4 jvm_s=8.2 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:afro_house:1
+#0 AMENEE > touche 450 1285 (launch_learn)
+#0 AMENEE > touche 670 1349 (mode_card_pro)
+#0 AMENEE > touche 450 1435 (tuto_style_afro_house)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE 3e8db6b1cc | project=p-12a32310 tuto=afro_house/Pro active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « 已保存 » lines cut (taller than its box)
+#1 LAYOUT OVERLAP « 录音棚底鼓 » over « FX » (2 x 3 dp)
+#1 LAYOUT OVERLAP « 踩镲 » over « 左 30 » (18 x 6 dp)
+#1 LAYOUT OVERLAP « 中音嗵鼓 » over « 右 45 » (10 x 6 dp)
+#1 LAYOUT OVERLAP « 镲片 » over « 右 40 » (18 x 6 dp)
+#1 LAYOUT OVERLAP « 沙锤 » over « 左 50 » (18 x 6 dp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 450 1117
+#1 DOIGT tuto_listen «  听示例 »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE 963e4d53b1 | project=p-12a32310 tuto=afro_house/Pro active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 403 920
+#2 DOIGT tuto_kit_download « 下载 Afro house 鼓组（2 MB） »
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE 4d295f6124 | project=p-12a32310 tuto=afro_house/Pro active=true step=ref done=1 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > attends 8
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE b866f9710d | project=p-12a32310 tuto=afro_house/Pro active=true step=ref done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT OVERLAP « Afro house · 开镲 » over « 右 30 » (32 x 3 dp)
+#4 > touche 450 1117
+#4 DOIGT tuto_next_big « 下一步   »
+#5 ROUTE tab_Sons | MODE pro | EMPREINTE ff4c088ba0 | project=p-12a32310 tuto=afro_house/Pro active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 83 123
+#5 DOIGT top_tempo « 速度：100 BPM »
+#6 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 583e984765 | project=p-12a32310 tuto=afro_house/Pro active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 速度 » over the touchable « 关闭工作表 » (49 x 37 dp)
+#6 LAYOUT OVERLAP « ? » over the touchable « 关闭工作表 » (9 x 18 dp)
+#6 LAYOUT OVERLAP « 关闭 » over the touchable « 关闭工作表 » (37 x 27 dp)
+#6 LAYOUT OVERLAP « 100 » over the touchable « 关闭工作表 » (86 x 53 dp)
+#6 LAYOUT OVERLAP «  BPM » over the touchable « 关闭工作表 » (50 x 31 dp)
+#6 LAYOUT OVERLAP « 70 » over the touchable « 关闭工作表 » (25 x 24 dp)
+#6 LAYOUT OVERLAP « 90 » over the touchable « 关闭工作表 » (25 x 24 dp)
+#6 LAYOUT OVERLAP « 120 » over the touchable « 关闭工作表 » (38 x 24 dp)
+#6 LAYOUT OVERLAP « 140 » over the touchable « 关闭工作表 » (38 x 24 dp)
+#6 LAYOUT OVERLAP « 174 » over the touchable « 关闭工作表 » (38 x 24 dp)
+#6 LAYOUT OVERLAP « ½ » over the touchable « 关闭工作表 » (17 x 31 dp)
+#6 LAYOUT OVERLAP « ×2 » over the touchable « 关闭工作表 » (26 x 31 dp)
+#6 LAYOUT OVERLAP « 1 » over the touchable « 关闭工作表 » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 2 » over the touchable « 关闭工作表 » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 3 » over the touchable « 关闭工作表 » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 4 » over the touchable « 关闭工作表 » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 5 » over the touchable « 关闭工作表 » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 6 » over the touchable « 关闭工作表 » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 7 » over the touchable « 关闭工作表 » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 8 » over the touchable « 关闭工作表 » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 9 » over the touchable « 关闭工作表 » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 0 » over the touchable « 关闭工作表 » (16 x 30 dp)
+#6 LAYOUT OVERLAP « 好 » over the touchable « 关闭工作表 » (25 x 37 dp)
+#6 LAYOUT OVERLAP « 跟着节奏点击 » over the touchable « 关闭工作表 » (120 x 31 dp)
+#6 LAYOUT OVERLAP « 每一拍点一下这里：速度会跟着你。 » over the touchable « 关闭工作表 » (269 x 25 dp)
+#6 > touche 163 1083
+#6 DOIGT tempo_key_1 « 1 »
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 093d06402a | project=p-12a32310 tuto=afro_house/Pro active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 1 » over the touchable « 关闭工作表 » (29 x 53 dp)
+#7 LAYOUT OVERLAP « 40 到 300 之间 » over the touchable « 关闭工作表 » (132 x 27 dp)
+#7 > touche 450 1083
+#7 DOIGT tempo_key_2 « 2 »
+#8 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 5ee5dce39b | project=p-12a32310 tuto=afro_house/Pro active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 12 » over the touchable « 关闭工作表 » (57 x 53 dp)
+#8 > touche 450 1083
+#8 DOIGT tempo_key_2 « 2 »
+#9 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 6b73271bc1 | project=p-12a32310 tuto=afro_house/Pro active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 122 » over the touchable « 关闭工作表 » (86 x 53 dp)
+#9 > touche 737 1344
+#9 DOIGT tempo_key_ok « 好 »
+#10 ROUTE tab_Sons | MODE pro | EMPREINTE 15c8eedb60 | project=p-12a32310 tuto=afro_house/Pro active=true step=tempo done=2 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 450 1117
+#10 DOIGT tuto_next_big « 下一步   »
+#11 ROUTE tab_Sons | MODE pro | EMPREINTE 2b3ec0f360 | project=p-12a32310 tuto=afro_house/Pro active=true step=key done=2 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 450 1036
+#11 DOIGT tuto_do «   我来做 »
+#12 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE c4523b704d | project=p-12a32310 tuto=afro_house/Pro active=true step=key done=2 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 歌曲调性 » over the touchable « 关闭工作表 » (98 x 37 dp)
+#12 LAYOUT OVERLAP « 曲子的调：无 » over the touchable « 关闭工作表 » (112 x 27 dp)
+#12 LAYOUT OVERLAP « 音阶 » over the touchable « 关闭工作表 » (37 x 27 dp)
+#12 LAYOUT OVERLAP « 大调 » over the touchable « 关闭工作表 » (40 x 31 dp)
+#12 LAYOUT OVERLAP « 小调 » over the touchable « 关闭工作表 » (40 x 31 dp)
+#12 LAYOUT OVERLAP « 多利亚 » over the touchable « 关闭工作表 » (60 x 31 dp)
+#12 LAYOUT OVERLAP « 小调五声 » over the touchable « 关闭工作表 » (80 x 31 dp)
+#12 LAYOUT OVERLAP « 大调五声 » over the touchable « 关闭工作表 » (80 x 31 dp)
+#12 LAYOUT OVERLAP « Blues » over the touchable « 关闭工作表 » (52 x 31 dp)
+#12 LAYOUT OVERLAP « 弗里几亚 » over the touchable « 关闭工作表 » (80 x 31 dp)
+#12 LAYOUT OVERLAP « 和声小调 » over the touchable « 关闭工作表 » (80 x 31 dp)
+#12 LAYOUT OVERLAP « 主音 » over the touchable « 关闭工作表 » (37 x 27 dp)
+#12 LAYOUT OVERLAP « C » over the touchable « 关闭工作表 » (15 x 31 dp)
+#12 LAYOUT OVERLAP « C♯ » over the touchable « 关闭工作表 » (26 x 31 dp)
+#12 LAYOUT OVERLAP « D » over the touchable « 关闭工作表 » (15 x 31 dp)
+#12 LAYOUT OVERLAP « E♭ » over the touchable « 关闭工作表 » (19 x 31 dp)
+#12 LAYOUT OVERLAP « E » over the touchable « 关闭工作表 » (12 x 31 dp)
+#12 LAYOUT OVERLAP « F » over the touchable « 关闭工作表 » (12 x 31 dp)
+#12 LAYOUT OVERLAP « F♯ » over the touchable « 关闭工作表 » (23 x 31 dp)
+#12 LAYOUT OVERLAP « G » over the touchable « 关闭工作表 » (15 x 31 dp)
+#12 LAYOUT OVERLAP « A♭ » over the touchable « 关闭工作表 » (21 x 31 dp)
+#12 LAYOUT OVERLAP « A » over the touchable « 关闭工作表 » (14 x 31 dp)
+#12 LAYOUT OVERLAP « B♭ » over the touchable « 关闭工作表 » (20 x 31 dp)
+#12 LAYOUT OVERLAP « B » over the touchable « 关闭工作表 » (13 x 31 dp)
+#12 > touche 177 1132
+#12 DOIGT tuto_scale_Minor « 小调 »
+#13 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 0df942b8ed | project=p-12a32310 tuto=afro_house/Pro active=true step=key done=2 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « 曲子的调：C · 小调 » over the touchable « 关闭工作表 » (160 x 27 dp)
+#13 > touche 411 1356
+#13 DOIGT tuto_root_4 « E »
+#14 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE fa88b677d1 | project=p-12a32310 tuto=afro_house/Pro active=true step=key done=3 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT OVERLAP « 曲子的调：E · 小调 » over the touchable « 关闭工作表 » (158 x 27 dp)
+#14 LAYOUT OVERLAP « 成功！歌曲的色彩选好了。 » over the touchable « 关闭工作表 » (240 x 31 dp)
+#14 LAYOUT OVERLAP « 返回教程 » over the touchable « 关闭工作表 » (75 x 27 dp)
+#14 > touche 450 1434
+#14 DOIGT tuto_key_continue « 返回教程 »
+#15 ROUTE tab_Sons | MODE pro | EMPREINTE c3d0cdec59 | project=p-12a32310 tuto=afro_house/Pro active=true step=key done=3 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 450 1190
+#15 DOIGT tuto_chapter_end_folded « 太棒了，本章完成！ »
+#16 ROUTE tab_Sons | MODE pro | EMPREINTE b179d921e0 | project=p-12a32310 tuto=afro_house/Pro active=true step=key done=3 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1117
+#16 DOIGT tuto_next_big « 下一章   »
+#17 ROUTE tab_Sons | MODE pro | EMPREINTE 1e56bceadf | project=p-12a32310 tuto=afro_house/Pro active=true step=ready done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 450 1117
+#17 DOIGT tuto_mark «   明白了 »
+#18 ROUTE tab_Sons | MODE pro | EMPREINTE e93f816649 | project=p-12a32310 tuto=afro_house/Pro active=true step=kick_do done=4 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CONTRAST « 步进：AFRO HOUSE · 底鼓 » 1.47:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « ? » 1.76:1 (needs 4.5:1, 12 sp)
+#18 LAYOUT CONTRAST « 所有打击垫 » 1.65:1 (needs 4.5:1, 14 sp)
+#18 LAYOUT CONTRAST « 1 » 3.38:1 (needs 4.5:1, 12 sp)
+#18 > touche 90 477
+#18 DOIGT step_0 « 第 1 步 »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE 97c9d55e6f | project=p-12a32310 tuto=afro_house/Pro active=true step=kick_do done=4 playing=false
+#19 SON Son : rien ne joue.
+#19 LAYOUT CONTRAST « 2 » 3.58:1 (needs 4.5:1, 12 sp)
+#19 > touche 500 477
+#19 DOIGT step_4 « 第 5 步 »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE cbcd1be268 | project=p-12a32310 tuto=afro_house/Pro active=true step=kick_do done=4 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « 3 » 3.58:1 (needs 4.5:1, 12 sp)
+#20 > touche 90 558
+#20 DOIGT step_8 « 第 9 步 »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE 68312a3770 | project=p-12a32310 tuto=afro_house/Pro active=true step=kick_do done=4 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « 4 » 3.58:1 (needs 4.5:1, 12 sp)
+#21 > touche 500 558
+#21 DOIGT step_12 « 第 13 步 »
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 03ac7dd2bd | project=p-12a32310 tuto=afro_house/Pro active=true step=kick_do done=5 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « 所有打击垫 » 1.72:1 (needs 4.5:1, 14 sp)
+#22 > touche 450 1117
+#22 DOIGT tuto_next_big « 下一步   »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE d54a70fd39 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « 步进：鼓边 » 1.54:1 (needs 4.5:1, 12 sp)
+#23 LAYOUT CONTRAST « 1 » 3.34:1 (needs 4.5:1, 12 sp)
+#23 > touche 450 1036
+#23 DOIGT tuto_need «   改为 2 小节 »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE e9cc9443b5 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « 步进：鼓边 » 1.55:1 (needs 4.5:1, 12 sp)
+#24 LAYOUT CONTRAST « 所有打击垫 » 1.70:1 (needs 4.5:1, 14 sp)
+#24 LAYOUT CONTRAST « 1 » 3.35:1 (needs 4.5:1, 12 sp)
+#24 > touche 90 561
+#24 DOIGT step_0 « 第 1 步 »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 3e5d0fc7ea | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 397 561
+#25 DOIGT step_3 « 第 4 步 »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE 57c1af67b3 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 706 561
+#26 DOIGT step_6 « 第 7 步 »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE d6aba726bf | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#27 SON Son : rien ne joue.
+#27 LAYOUT CONTRAST « 3 » 3.57:1 (needs 4.5:1, 12 sp)
+#27 > touche 90 642
+#27 DOIGT step_8 « 第 9 步 »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE c61babdb76 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 397 642
+#28 DOIGT step_11 « 第 12 步 »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE 34c2071efd | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 706 642
+#29 DOIGT step_14 « 第 15 步 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 71db95382c | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 224 386
+#30 DOIGT drum_page_1 « 2 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE c995aaa346 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 90 561
+#31 DOIGT step_16 « 第 1 步 »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE a46ddab1c4 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 397 561
+#32 DOIGT step_19 « 第 4 步 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE cf79889783 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 706 561
+#33 DOIGT step_22 « 第 7 步 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE f6dfb1d497 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 90 642
+#34 DOIGT step_24 « 第 9 步 »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE 1ce4d5f870 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 294 642
+#35 DOIGT step_26 « 第 11 步 »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE 3ca14aabe6 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « 4 » 3.57:1 (needs 4.5:1, 12 sp)
+#36 > touche 500 642
+#36 DOIGT step_28 « 第 13 步 »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE e37f18de19 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=5 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 706 642
+#37 DOIGT step_30 « 第 15 步 »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE a6c85f0399 | project=p-12a32310 tuto=afro_house/Pro active=true step=perc_do done=6 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 450 1190
+#38 DOIGT tuto_next_folded « 成功 »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE 9f608068ec | project=p-12a32310 tuto=afro_house/Pro active=true step=hat_do done=6 playing=false
+#39 SON Son : rien ne joue.
+#39 LAYOUT CONTRAST « 步进：踩镲 » 1.65:1 (needs 4.5:1, 12 sp)
+#39 LAYOUT CONTRAST « ? » 1.78:1 (needs 4.5:1, 12 sp)
+#39 LAYOUT CONTRAST « 1 » 3.09:1 (needs 4.5:1, 12 sp)
+#39 > touche 450 1036
+#39 DOIGT tuto_do «   我来做 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 5910903ae2 | project=p-12a32310 tuto=afro_house/Pro active=true step=hat_do done=6 playing=false
+#40 SON Son : rien ne joue.
+#40 LAYOUT CONTRAST « 1 » 2.46:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « 2 » 3.73:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « 3 » 3.74:1 (needs 4.5:1, 12 sp)
+#40 LAYOUT CONTRAST « 4 » 3.74:1 (needs 4.5:1, 12 sp)
+#40 > touche 68 812
+#40 DOIGT rien (texte « 填充 »)
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 5910903ae2 | project=p-12a32310 tuto=afro_house/Pro active=true step=hat_do done=6 playing=false
+#41 SON Son : rien ne joue.
+#41 > touche 138 812
+#41 DOIGT fill_1 « 全部 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 45c9aae8de | project=p-12a32310 tuto=afro_house/Pro active=true step=hat_do done=7 playing=false
+#42 SON Son : rien ne joue.
+#42 LAYOUT CONTRAST « 全部 » 4.07:1 (needs 4.5:1, 14 sp)
+#42 > touche 450 1190
+#42 DOIGT tuto_next_folded « 成功 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE 6e31207540 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT CONTRAST « 步进：沙锤 » 1.49:1 (needs 4.5:1, 12 sp)
+#43 > touche 90 561
+#43 DOIGT step_0 « 第 1 步 »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 19bd85b0e6 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 397 561
+#44 DOIGT step_3 « 第 4 步 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE a32fa51152 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 706 561
+#45 DOIGT step_6 « 第 7 步 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE f87fff9826 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#46 SON Son : rien ne joue.
+#46 > touche 90 642
+#46 DOIGT step_8 « 第 9 步 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE c9845f0f92 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#47 SON Son : rien ne joue.
+#47 > touche 397 642
+#47 DOIGT step_11 « 第 12 步 »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE b32b46e4b3 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 706 642
+#48 DOIGT step_14 « 第 15 步 »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE c9e4abb1f2 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#49 SON Son : rien ne joue.
+#49 > touche 224 386
+#49 DOIGT drum_page_1 « 2 »
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE 26d45b4f53 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 90 561
+#50 DOIGT step_16 « 第 1 步 »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE c3bd3e2bc6 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 397 561
+#51 DOIGT step_19 « 第 4 步 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 3512601786 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 706 561
+#52 DOIGT step_22 « 第 7 步 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 769342f859 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 90 642
+#53 DOIGT step_24 « 第 9 步 »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE c35c5d91b1 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 397 642
+#54 DOIGT step_27 « 第 12 步 »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE fe9331568a | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=7 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 706 642
+#55 DOIGT step_30 « 第 15 步 »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE a59cebc9e1 | project=p-12a32310 tuto=afro_house/Pro active=true step=wood_do done=8 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 450 1117
+#56 DOIGT tuto_next_big « 下一步   »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE c567fa32dd | project=p-12a32310 tuto=afro_house/Pro active=true step=tom_do done=8 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « 步进：中音嗵鼓 » 1.73:1 (needs 4.5:1, 12 sp)
+#57 > touche 706 642
+#57 DOIGT step_14 « 第 15 步 »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE 839fdc70dc | project=p-12a32310 tuto=afro_house/Pro active=true step=tom_do done=8 playing=false
+#58 SON Son : rien ne joue.
+#58 > touche 224 386
+#58 DOIGT drum_page_1 « 2 »
+#59 ROUTE tab_Sons | MODE pro | EMPREINTE 62c5ade455 | project=p-12a32310 tuto=afro_house/Pro active=true step=tom_do done=8 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 706 561
+#59 DOIGT step_22 « 第 7 步 »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE 172953d6df | project=p-12a32310 tuto=afro_house/Pro active=true step=tom_do done=8 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 706 642
+#60 DOIGT step_30 « 第 15 步 »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE 63ecee0a5e | project=p-12a32310 tuto=afro_house/Pro active=true step=tom_do done=9 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 450 1117
+#61 DOIGT tuto_next_big « 下一步   »
+#62 ROUTE tab_Sons | MODE pro | EMPREINTE 18af40d511 | project=p-12a32310 tuto=afro_house/Pro active=true step=clap_do done=9 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST « 步进：AFRO HOUSE · 拍手 » 1.70:1 (needs 4.5:1, 12 sp)
+#62 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#62 > touche 500 561
+#62 DOIGT step_4 « 第 5 步 »
+#63 ROUTE tab_Sons | MODE pro | EMPREINTE 24016113d3 | project=p-12a32310 tuto=afro_house/Pro active=true step=clap_do done=9 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CONTRAST « 4 » 3.06:1 (needs 4.5:1, 12 sp)
+#63 > touche 500 642
+#63 DOIGT step_12 « 第 13 步 »
+#64 ROUTE tab_Sons | MODE pro | EMPREINTE a3013f38c0 | project=p-12a32310 tuto=afro_house/Pro active=true step=clap_do done=9 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 224 386
+#64 DOIGT drum_page_1 « 2 »
+#65 ROUTE tab_Sons | MODE pro | EMPREINTE 98f7501d89 | project=p-12a32310 tuto=afro_house/Pro active=true step=clap_do done=9 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 500 561
+#65 DOIGT step_20 « 第 5 步 »
+#66 ROUTE tab_Sons | MODE pro | EMPREINTE 3e6d18bdc7 | project=p-12a32310 tuto=afro_house/Pro active=true step=clap_do done=9 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 500 642
+#66 DOIGT step_28 « 第 13 步 »
+#67 ROUTE tab_Sons | MODE pro | EMPREINTE 0d1418b4a3 | project=p-12a32310 tuto=afro_house/Pro active=true step=clap_do done=10 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 450 1117
+#67 DOIGT tuto_next_big « 下一步   »
+#68 ROUTE tab_Sons | MODE pro | EMPREINTE 78100238d2 | project=p-12a32310 tuto=afro_house/Pro active=true step=ohat_do done=10 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « 步进：AFRO HOUSE · 开镲 » 1.60:1 (needs 4.5:1, 12 sp)
+#68 > touche 294 561
+#68 DOIGT step_2 « 第 3 步 »
+#69 ROUTE tab_Sons | MODE pro | EMPREINTE 007434e7d5 | project=p-12a32310 tuto=afro_house/Pro active=true step=ohat_do done=10 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 706 561
+#69 DOIGT step_6 « 第 7 步 »
+#70 ROUTE tab_Sons | MODE pro | EMPREINTE 3346f2487e | project=p-12a32310 tuto=afro_house/Pro active=true step=ohat_do done=10 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 294 642
+#70 DOIGT step_10 « 第 11 步 »
+#71 ROUTE tab_Sons | MODE pro | EMPREINTE 5a13e8b9c0 | project=p-12a32310 tuto=afro_house/Pro active=true step=ohat_do done=10 playing=false
+#71 SON Son : rien ne joue.
+#71 > touche 706 642
+#71 DOIGT step_14 « 第 15 步 »
+#72 ROUTE tab_Sons | MODE pro | EMPREINTE a5e8d129c0 | project=p-12a32310 tuto=afro_house/Pro active=true step=ohat_do done=10 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 224 386
+#72 DOIGT drum_page_1 « 2 »
+#73 ROUTE tab_Sons | MODE pro | EMPREINTE ddd364d3e8 | project=p-12a32310 tuto=afro_house/Pro active=true step=ohat_do done=10 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 294 561
+#73 DOIGT step_18 « 第 3 步 »
+#74 ROUTE tab_Sons | MODE pro | EMPREINTE f6fdf46276 | project=p-12a32310 tuto=afro_house/Pro active=true step=ohat_do done=10 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 706 561
+#74 DOIGT step_22 « 第 7 步 »
+#75 ROUTE tab_Sons | MODE pro | EMPREINTE c209259edb | project=p-12a32310 tuto=afro_house/Pro active=true step=ohat_do done=10 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 294 642
+#75 DOIGT step_26 « 第 11 步 »
+#76 ROUTE tab_Sons | MODE pro | EMPREINTE 4bfd311693 | project=p-12a32310 tuto=afro_house/Pro active=true step=ohat_do done=10 playing=false
+#76 SON Son : rien ne joue.
+#76 > touche 706 642
+#76 DOIGT step_30 « 第 15 步 »
+#77 ROUTE tab_Sons | MODE pro | EMPREINTE a195c663de | project=p-12a32310 tuto=afro_house/Pro active=true step=ohat_do done=11 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 450 1117
+#77 DOIGT tuto_next_big « 下一步   »
+#78 ROUTE tab_Sons | MODE pro | EMPREINTE fa219567b6 | project=p-12a32310 tuto=afro_house/Pro active=true step=swing done=11 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 310 651
+#78 DOIGT dans:rhythm_swing « Swing »
+#79 ROUTE tab_Sons | MODE pro | EMPREINTE 7ff1dad878 | project=p-12a32310 tuto=afro_house/Pro active=true step=swing done=12 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 450 1117
+#79 DOIGT tuto_next_big « 下一步   »
+#80 ROUTE tab_Sons | MODE pro | EMPREINTE 86362e6a90 | project=p-12a32310 tuto=afro_house/Pro active=true step=drums_hear done=12 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 450 1036
+#80 DOIGT tuto_play_mine «   听你的成果 »
+#81 ROUTE tab_Sons | MODE pro | EMPREINTE a90f0c808b | project=p-12a32310 tuto=afro_house/Pro active=true step=drums_hear done=12 playing=true
+#81 SON Son : la musique du projet joue en boucle.
+#81 > touche 450 1120
+#81 DOIGT tuto_listen «  听示例 »
+#82 ROUTE tab_Sons | MODE pro | EMPREINTE 24a73bd638 | project=p-12a32310 tuto=afro_house/Pro active=true step=drums_hear done=12 playing=false
+#82 SON Son : l'exemple du tuto joue (encore 3 s).
+#82 > attends 4
+#83 ROUTE tab_Sons | MODE pro | EMPREINTE fca351b8a2 | project=p-12a32310 tuto=afro_house/Pro active=true step=drums_hear done=13 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 450 1117
+#83 DOIGT tuto_next_big « 下一章   »
+#84 ROUTE tab_Sons | MODE pro | EMPREINTE 9a5fb78fae | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_hear done=13 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 450 1117
+#84 DOIGT tuto_listen «  听示例 »
+#85 ROUTE tab_Sons | MODE pro | EMPREINTE 53f57f7ebc | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_hear done=13 playing=false
+#85 SON Son : l'exemple du tuto joue (encore 3 s).
+#85 > attends 8
+#86 ROUTE tab_Sons | MODE pro | EMPREINTE ff13f83fad | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_hear done=14 playing=false
+#86 SON Son : rien ne joue.
+#86 > touche 450 1117
+#86 DOIGT tuto_next_big « 下一步   »
+#87 ROUTE tab_Sons | MODE pro | EMPREINTE 5a68a2e9d4 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 450 1036
+#87 DOIGT tuto_need «   创建贝斯音轨 »
+#88 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a3c336d2d3 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 260 822
+#88 DOIGT rien
+#89 ROUTE synth/tab_Sons | MODE pro | EMPREINTE ba78e65d80 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#89 SON Son : 1 note du synthé.
+#89 > touche 373 822
+#89 DOIGT rien
+#90 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e0062cd244 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#90 SON Son : 1 note du synthé.
+#90 > touche 620 822
+#90 DOIGT rien
+#91 ROUTE synth/tab_Sons | MODE pro | EMPREINTE e46d7dfad5 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#91 SON Son : 1 note du synthé.
+#91 > touche 755 822
+#91 DOIGT rien
+#92 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 48960190b3 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#92 SON Son : 1 note du synthé.
+#92 > touche 450 435
+#92 DOIGT tuto_notes_left « 贝斯 · 第 1/8 小节 »
+#93 ROUTE synth/tab_Sons | MODE pro | EMPREINTE be1786101d | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#93 SON Son : rien ne joue.
+#93 > touche 260 854
+#93 DOIGT rien
+#94 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7d285add58 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#94 SON Son : 1 note du synthé.
+#94 > touche 373 854
+#94 DOIGT rien
+#95 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 297b8197de | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#95 SON Son : 1 note du synthé.
+#95 > touche 620 854
+#95 DOIGT rien
+#96 ROUTE synth/tab_Sons | MODE pro | EMPREINTE b204960b55 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#96 SON Son : 1 note du synthé.
+#96 > touche 755 560
+#96 DOIGT rien
+#97 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 563100ab56 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#97 SON Son : 1 note du synthé.
+#97 > touche 450 1270
+#97 DOIGT tuto_need_folded « 复制到后面的小节 »
+#98 ROUTE synth/tab_Sons | MODE pro | EMPREINTE cfbae6a182 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=14 playing=false
+#98 SON Son : rien ne joue.
+#98 > touche 796 436
+#98 DOIGT tuto_roll_copy « 复制 »
+#99 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 8d397d3b3e | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_do done=15 playing=false
+#99 SON Son : rien ne joue.
+#99 > touche 450 1270
+#99 DOIGT tuto_next_folded « 成功 »
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE b1e9484716 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_pump done=15 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 451 1389
+#100 DOIGT tab_Mix « 混音 »
+#101 ROUTE tab_Mix | MODE pro | EMPREINTE 7bc7a99364 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_pump done=15 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT CONTRAST « ? » 3.93:1 (needs 4.5:1, 12 sp)
+#101 > touche 324 344
+#101 COUVERT « 鼓 » couvre « 贝斯 »
+#101 REFUS doigt couvert : « 鼓 » couvre « 贝斯 »
+#102 ROUTE tab_Mix | MODE pro | EMPREINTE 0cda01380f | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_pump done=15 playing=false
+#102 SON Son : rien ne joue.
+#102 > touche 450 1036
+#102 DOIGT tuto_do «   我来做 »
+#103 ROUTE dialogue:effects_box_2 | MODE pro | EMPREINTE 5fc97b0bd1 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_pump done=16 playing=false
+#103 SON Son : rien ne joue.
+#103 LAYOUT CONTRAST « 已放置的效果：1 / 8 » 4.44:1 (needs 4.5:1, 14 sp)
+#103 LAYOUT CONTRAST « 现成的氛围 » 4.44:1 (needs 4.5:1, 14 sp)
+#103 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#103 LAYOUT CONTRAST « 关闭 » 3.63:1 (needs 4.5:1, 14 sp)
+#103 > touche 800 1437
+#103 DOIGT fx_close « 关闭 »
+#104 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 725411e02e | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_pump done=16 playing=false
+#104 SON Son : rien ne joue.
+#104 > touche 450 1190
+#104 DOIGT tuto_chapter_end_folded « 太棒了，本章完成！ »
+#105 ROUTE tab_Mix | MODE pro | EMPREINTE 99d0791462 | project=p-12a32310 tuto=afro_house/Pro active=true step=bass_pump done=16 playing=false
+#105 SON Son : rien ne joue.
+#105 > touche 450 1117
+#105 DOIGT tuto_next_big « 下一章   »
+#106 ROUTE tab_Mix | MODE pro | EMPREINTE 9e3664c366 | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=16 playing=false
+#106 SON Son : rien ne joue.
+#106 > touche 450 1036
+#106 DOIGT tuto_need «   创建和弦音轨 »
+#107 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a80aa6a3c6 | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=16 playing=false
+#107 SON Son : rien ne joue.
+#107 > touche 400 665
+#107 DOIGT rien
+#108 ROUTE synth/tab_Sons | MODE pro | EMPREINTE bfbe20fc6a | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=16 playing=false
+#108 SON Son : rien ne joue.
+#108 > touche 450 1270
+#108 DOIGT tuto_need_folded « 复制到后面的小节 »
+#109 ROUTE synth/tab_Sons | MODE pro | EMPREINTE a75db18337 | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=16 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 792 436
+#109 DOIGT tuto_notes_left « 和弦 · 第 3/8 小节 »
+#110 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c6f3a8ea7e | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=16 playing=false
+#110 SON Son : rien ne joue.
+#110 > touche 300 675
+#110 DOIGT rien
+#111 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 16eed288be | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=16 playing=false
+#111 SON Son : 3 notes du synthé.
+#111 > touche 544 42
+#111 DOIGT top_undo
+#112 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 56e16643eb | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=16 playing=false
+#112 SON Son : rien ne joue.
+#112 > touche 400 1053
+#112 DOIGT rien
+#113 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 7293f11c32 | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=16 playing=false
+#113 SON Son : rien ne joue.
+#113 > touche 792 436
+#113 DOIGT tuto_notes_left « 和弦 · 第 4/8 小节 »
+#114 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 842f0411ba | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=16 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 400 749
+#114 DOIGT rien
+#115 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c21b9bf24a | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=16 playing=false
+#115 SON Son : rien ne joue.
+#115 > touche 450 1270
+#115 DOIGT tuto_need_folded « 复制到后面的小节 »
+#116 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 4539648360 | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=17 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 450 1270
+#116 DOIGT tuto_chapter_end_folded « 太棒了，本章完成！ »
+#117 ROUTE tab_Sons | MODE pro | EMPREINTE 6eb7bb5b2b | project=p-12a32310 tuto=afro_house/Pro active=true step=pad_do done=17 playing=false
+#117 SON Son : rien ne joue.
+#117 > touche 450 1197
+#117 DOIGT tuto_next_big « 下一章   »
+#118 ROUTE tab_Sons | MODE pro | EMPREINTE 0e0010e4c2 | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_do done=17 playing=false
+#118 SON Son : rien ne joue.
+#118 > touche 450 1116
+#118 DOIGT tuto_need «   创建旋律音轨 »
+#119 ROUTE synth/tab_Sons | MODE pro | EMPREINTE cd0509753d | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_do done=17 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 300 612
+#119 DOIGT rien
+#120 ROUTE synth/tab_Sons | MODE pro | EMPREINTE c02246a881 | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_do done=17 playing=false
+#120 SON Son : 1 note du synthé.
+#120 > touche 792 436
+#120 DOIGT tuto_notes_left « 旋律 · 第 1/8 小节 »
+#121 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 5b600e96c0 | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_do done=17 playing=false
+#121 SON Son : rien ne joue.
+#121 > touche 260 822
+#121 DOIGT rien
+#122 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 4b1fb25e4c | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_do done=17 playing=false
+#122 SON Son : 1 note du synthé.
+#122 > touche 560 990
+#122 DOIGT rien
+#123 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 68b59b25dc | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_do done=17 playing=false
+#123 SON Son : 1 note du synthé.
+#123 > touche 450 1270
+#123 DOIGT tuto_need_folded « 复制到后面的小节 »
+#124 ROUTE synth/tab_Sons | MODE pro | EMPREINTE 796d1727c7 | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_do done=18 playing=false
+#124 SON Son : rien ne joue.
+#124 > touche 450 1270
+#124 DOIGT tuto_next_folded « 成功 »
+#125 ROUTE tab_Sons | MODE pro | EMPREINTE 9556fb8d73 | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_delay done=18 playing=false
+#125 SON Son : rien ne joue.
+#125 > touche 451 1389
+#125 DOIGT tab_Mix « 混音 »
+#126 ROUTE tab_Mix | MODE pro | EMPREINTE c89ca61229 | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_delay done=18 playing=false
+#126 SON Son : rien ne joue.
+#126 > touche 564 344
+#126 COUVERT « 鼓 » couvre « 旋律 »
+#126 REFUS doigt couvert : « 鼓 » couvre « 旋律 »
+#127 ROUTE tab_Mix | MODE pro | EMPREINTE 252630b5c5 | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_delay done=18 playing=false
+#127 SON Son : rien ne joue.
+#127 > appui-long 564 344
+#127 COUVERT « 鼓 » couvre « 旋律 »
+#127 REFUS doigt couvert : « 鼓 » couvre « 旋律 »
+#128 ROUTE tab_Mix | MODE pro | EMPREINTE 252630b5c5 | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_delay done=18 playing=false
+#128 SON Son : rien ne joue.
+#128 > touche 667 1120
+#128 DOIGT tuto_show «  示范给我看 »
+#129 ROUTE dialogue:effects_box_6 | MODE pro | EMPREINTE 13999b434f | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_delay done=18 playing=false
+#129 SON Son : rien ne joue.
+#129 LAYOUT CONTRAST « 中性 » 4.44:1 (needs 4.5:1, 12 sp)
+#129 LAYOUT CONTRAST « 0 » 4.44:1 (needs 4.5:1, 12 sp)
+#129 LAYOUT CONTRAST « 公共混响和回声 » 4.44:1 (needs 4.5:1, 14 sp)
+#129 LAYOUT CONTRAST « 0% » 3.63:1 (needs 4.5:1, 14 sp)
+#129 LAYOUT CONTRAST « 25% » 3.63:1 (needs 4.5:1, 14 sp)
+#129 > glisse 260 1320 600 1320
+#129 DOIGT send_6_1 « 回声 发送 »
+#130 ROUTE dialogue:effects_box_6 | MODE pro | EMPREINTE 13999b434f | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_delay done=18 playing=false
+#130 SON Son : rien ne joue.
+#130 LAYOUT CONTRAST « 67% » 3.63:1 (needs 4.5:1, 14 sp)
+#130 > touche 802 1437
+#130 DOIGT fx_close « 关闭 »
+#131 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE d8687d2ae1 | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_delay done=18 playing=false
+#131 SON Son : rien ne joue.
+#131 LAYOUT CONTRAST « 停止 » 3.91:1 (needs 4.5:1, 14 sp)
+#131 > touche 564 301
+#131 COUVERT « 鼓 » couvre « 旋律 »
+#131 REFUS doigt couvert : « 鼓 » couvre « 旋律 »
+#132 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 78dae6f1f9 | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_delay done=18 playing=false
+#132 SON Son : rien ne joue.
+#132 > touche 564 252
+#132 DOIGT rien
+#133 ROUTE mixer/tab_Mix | MODE pro | EMPREINTE 2a26783aec | project=p-12a32310 tuto=afro_house/Pro active=true step=lead_delay done=19 playing=false
+#133 SON Son : rien ne joue.
+#133 > fin
+#133 FIN : fin

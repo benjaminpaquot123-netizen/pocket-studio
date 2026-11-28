@@ -1,0 +1,25 @@
+Écran 61 (1035x1243)
+texte « Effecten · pad 3 (Snare) » @ 387,72
+texte « ↑ Ver weg » [coupé] @ 517,135
+texte « ← Donker » @ 259,423
+texte « ↓ Droog » @ 516,423
+texte « Helder → » @ 774,423
+texte « Schuif met je vinger om het geluid live te vervormen. Twee keer tikken: terug naar het begingeluid. » @ 517,537
+curseur [état « Neutraal », à 50 %] @ 195,666
+texte « Kleur » @ 195,735
+texte « Neutraal » @ 195,786
+curseur [état « 0 », à 0 %] @ 409,666
+texte « Vuil » @ 409,735
+texte « 0 » @ 409,786
+curseur [état « 0 », à 0 %] @ 624,666
+texte « Beweging » @ 624,735
+texte « 0 » @ 624,786
+curseur [état « 0 », à 0 %] @ 839,666
+texte « Ruimte » @ 838,735
+texte « 0 » @ 839,786
+texte « Gedeelde galm en echo » @ 312,850
+texte « Akkoorden: daarna · Snare ✓ » @ 364,928
+texte « galm-send » @ 472,982
+texte « 30% » @ 892,982
+curseur [état « 30% », à 30 %] @ 517,1046
+texte « Sluiten » @ 861,1167

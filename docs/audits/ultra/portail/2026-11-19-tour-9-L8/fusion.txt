@@ -1,0 +1,13 @@
+fusion: 925879244f6a46950f13b91192b586bd1e7101f0
+branche: eq/tour-9-L8
+tete: fe28cbb92c706c63d3664e257b9c4fedfc00fbd3
+relecture: docs/audits/ultra/tour-9-L8-relecture.md
+relu: 12359483c
+filtres: *Tour9L8ShareWordsTest* *Lot6UiShareLevelTest* *ShareCancelReadableTest* *ShareCheckOkMeaningTest* *ShareNameFieldSeenTest* *ShareSignedRtlTest* *BackClosesSheetFirstTest* *RetoursStripReadableTest* *KitSheetNarrowTopTest* *SheetCloseSeparateTest* *TrackAddWholeTest* *TempoSheetNarrowWholeTest* *TempoTypingStaysTest*
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu

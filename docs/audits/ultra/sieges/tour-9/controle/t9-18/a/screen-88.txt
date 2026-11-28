@@ -1,0 +1,14 @@
+Écran 88 (1035x1243)
+texte « BenStudio » @ 224,72
+texte « O que você quer fazer? » @ 328,132
+bouton ✓ « Continuar Pro Meu projeto 1 120 comp. · 3:49 · 6 partes Salvo agora mesmo » → @ 518,294
+bouton (étincelles) « Nova música Um estilo com um toque, ou “Faça uma música pra mim”. » → @ 518,489
+bouton (dossier ouvert) « Meus projetos Abrir outra música, copiar ou renomear. » → @ 518,633
+bouton (quatre vagues) « Remix Separação das faixas: bateria, baixo, voz e o resto. » → @ 518,783
+bouton (grille de pads) « Pad Live NOVO Pads prontos para tocar, seus sons, efeitos live. Já sai som na hora. » → @ 518,943
+bouton ★ ★ ★ « Desafios Ouça um ritmo, repita nos pads: ganhe estrelas. » → [coupé] @ 518,1062
+bouton « ↓ mais 4 » @ 872,1129
+texte « ●  REC » @ 807,1213
+texte « ✎  Anotar » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentários » @ 385,1213

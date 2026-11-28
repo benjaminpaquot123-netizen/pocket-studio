@@ -1,0 +1,57 @@
+Écran 2 (588x1278)
+icône « Mój projekt 1 » ✓ @ 298,36
+texte « Pro » @ 543,36
+bouton (dossier ouvert) @ 111,114
+bouton « A » ▾ @ 252,114
+icône ↶ @ 327,114
+bouton ● @ 399,114
+bouton ▶ « ta część » @ 471,114
+icône (trois points reliés) @ 543,114
+bouton « 142  BPM » @ 73,186
+bouton « ? » @ 543,186
+onglet « Perkusja 16 padów » [sélectionné] @ 86,255
+onglet « Acid 303 Linia basu » @ 245,255
+onglet « Wokal Mikrofon » @ 402,255
+onglet « Remix Rozdziel » [coupé] @ 524,255
+image → @ 577,256
+texte « Część: A · Refren » @ 109,315
+icône (liste) « Rozdziały » @ 444,390
+texte « Zrozumieć części Rozdział 9/16 · Krok 2/5 · Pro » @ 207,390
+icône ⌄ @ 531,390
+texte « Posłuchaj Intro: samo pianino, jak groźba. » @ 255,471
+texte « Energia » @ 58,510
+texte « 8 » @ 38,615
+texte « 16 » @ 93,615
+texte « Zwrotka » @ 193,603
+texte « 30 » @ 193,627
+texte « 16 » @ 303,615
+texte « Zwrotka » @ 403,603
+texte « 30 » @ 403,627
+texte « 16 » @ 513,615
+texte « 4 » @ 558,615
+texte «  Intro » @ 61,664
+texte «  Refren » @ 150,664
+texte «  Zwrotka » @ 254,664
+texte «  Pre-chorus » @ 379,664
+texte «  Outro » @ 493,664
+texte « Każda liczba: długość części w taktach. » @ 204,694
+bouton « Pobierz zestaw Drill (3 MB) » @ 243,765
+texte « Później » @ 510,765
+texte « ▸ Dlaczego? » @ 294,831
+bouton ▶ «  Posłuchaj przykładu » @ 294,894
+icône ← «  Wstecz » @ 93,978
+icône « Dalej  » → @ 506,978
+icône ↶ « Cofnij » @ 71,1062
+icône ↷ « Ponów » [désactivé] @ 177,1062
+bouton ▶ « utwór » @ 284,1062
+texte « 142 Tempo » @ 396,1062
+icône (trois points reliés) « Udostępnij » @ 513,1062
+onglet (ligne brisée et points) « Struktura » @ 54,1158
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 174,1158
+onglet (curseurs) « Miks » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Więcej » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Zanotuj » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Tryb uwag » @ 162,1248

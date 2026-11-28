@@ -1,0 +1,28 @@
+Écran 2 (1035x1243)
+texte « クラップ チャプター 3/16 · ステップ 1/1 · プロ » @ 426,68
+icône (liste) « チャプター » @ 886,69
+icône ⌄ @ 978,69
+texte « あなたの番：「クラップ」パッドで2拍目と4拍目に置き、次にゴーストを1つ：次の小節の直前の最後のマスを長押し。ヒットが置かれてメニューが開くので、「ベロシティ」の下の「ソフト」。 » @ 517,278
+bouton « テクノ キットをダウンロード（4 MB） » @ 464,461
+texte « あとで » @ 955,461
+texte « ▸ なぜ？ » @ 517,540
+icône « 閉じる » ⌃ @ 517,606
+bouton (doigt qui touche) «   自分でやる » @ 517,748
+bouton ▶ «  例を聴く » @ 266,835
+bouton (œil) «  見せて » @ 768,835
+icône ← «  前へ » @ 97,922
+icône « 次へ  » → @ 937,922
+bouton ▶ « 曲 » @ 548,1032
+texte « 132 テンポ » @ 718,1031
+icône ↶ « 元に戻す » @ 149,1031
+icône ↷ « やり直す » [désactivé] @ 363,1031
+icône (trois points reliés) « シェア » @ 903,1031
+onglet (ligne brisée et points) « 構成 » @ 99,1135
+onglet (touches de piano) « サウンド » [sélectionné] @ 309,1135
+onglet (curseurs) « ミックス » @ 518,1135
+onglet (neuf points) « Live » @ 727,1135
+onglet ⋯ « その他 » @ 936,1135
+texte « ●  REC » @ 780,1213
+texte « ✎  メモ » @ 893,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 368,1213

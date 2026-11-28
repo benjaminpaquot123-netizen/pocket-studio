@@ -36,6 +36,7 @@ class BenchAmeneesProfilesTest(private val amenee: String, private val start: St
             AMENEE_REMIX -> assertTrue("« Choisir une chanson »", centerOf("remix_pick") != null)
             AMENEE_PADLIVE -> assertTrue("the ready-to-play pads", centerOf("padlive") != null && project()?.live?.at(4) != null)
             AMENEE_SONG -> assertTrue("a project's tabs", screenLines().any { it.startsWith("onglet") })
+            else -> assertTrue("the tutorial, its chapters within reach", SeatOptions.tutoAmenee(amenee) != null && centerOf("tuto_chapters") != null)
         }
         // The mode the seat asked for is the one the tester gets.
         o.simple?.let { assertTrue("mode", com.pocketstudio.app.settings.SettingsStore.state.value.simpleMode == it) }
@@ -57,6 +58,8 @@ class BenchAmeneesProfilesTest(private val amenee: String, private val start: St
             "lang=fr device=tablet8 font=200 mode=simple",
             "lang=ar device=foldable font=100 mode=simple",
             "lang=ja device=phone411 font=100 mode=simple theme=night",
+            // Tour 9 (seat t9-38): « les chapitres n'est jamais venu », the tutorial's anchor refused before any gesture.
+            "lang=zh-CN device=foldable font=200 mode=pro amenee=tuto:jersey_club:8",
         )
 
         /**
@@ -71,6 +74,13 @@ class BenchAmeneesProfilesTest(private val amenee: String, private val start: St
 
         @JvmStatic
         @ParameterizedRobolectricTestRunner.Parameters(name = "{0} {1}")
-        fun cases(): List<Array<Any>> = lotProfiles().let { profiles -> SeatOptions.AMENEES.flatMap { a -> profiles.map { arrayOf<Any>(a, it) } } }
+        fun cases(): List<Array<Any>> {
+            // A line may carry its seat's own `amenee=tuto:<style>:<chapter>` (tour 9): played on that profile too.
+            fun profile(line: String) = line.split(' ').filterNot { it.startsWith("amenee=") }.joinToString(" ")
+            val lines = lotProfiles()
+            val profiles = lines.map(::profile).distinct()
+            val tutos = lines.mapNotNull { l -> l.split(' ').firstOrNull { it.startsWith("amenee=tuto:") }?.let { arrayOf<Any>(it.substringAfter('='), profile(l)) } }
+            return SeatOptions.AMENEES.flatMap { a -> profiles.map { arrayOf<Any>(a, it) } } + tutos
+        }
     }
 }

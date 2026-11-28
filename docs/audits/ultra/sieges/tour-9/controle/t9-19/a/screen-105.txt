@@ -1,0 +1,53 @@
+Écran 105 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 195,42
+bouton « Einfach » @ 436,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône ⋮ @ 855,42
+bouton « 116  Tempo » @ 98,123
+bouton « ? » @ 855,123
+onglet « Acid 303 Bassline » @ 100,204
+bouton « Bass Gezupfter Bass » @ 315,204
+bouton « Akkorde Kurzer Sound » ⋮ @ 568,204
+icône ♪ « Sound » @ 777,205
+bouton + «  Spur » [coupé] @ 869,205
+image → @ 889,205
+icône « Teil: A » ▾ @ 77,283
+texte « Im Takt 50 % » [coupé] @ 526,323
+texte « 100 % » [coupé] @ 697,323
+texte « Löschen » @ 119,370
+bouton « Akkorde · Takt 2/8 Gestrichelte Akkorde zu tippen: 5 » @ 450,451
+texte « Takt » @ 84,513
+bouton « 2 » @ 486,521
+bouton « 3 » [coupé] @ 853,521
+texte « C♯ » [coupé] @ 84,555
+texte « C5 » @ 84,578
+texte « H » @ 84,620
+texte « A♯ » @ 84,662
+texte « A » @ 84,704
+texte « G♯ » @ 84,746
+texte « G » @ 84,788
+texte « F♯ » @ 84,830
+texte « F » @ 84,872
+texte « E » @ 84,914
+texte « D♯ » @ 84,956
+texte « D » @ 84,998
+texte « C♯ » @ 84,1040
+texte « C4 » @ 84,1082
+texte « H » [coupé] @ 84,1105
+dessin [coupé] @ 492,830
+texte « Die Gitarre Kapitel 4/13 · Schritt 2/3 · Einfach » @ 366,1157
+icône (liste) « Kapitel » @ 759,1158
+icône ⌃ @ 843,1158
+icône « Du bist dran: Tippe in Takt 1 und 2 auf den tiefsten Ton jedes gestrichelten Akkords: Der ganze Akkord wird gesetzt. 6 Schläge pro Takt. Lesen » ⌃ @ 450,1270
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » @ 268,1389
+onglet (touches de piano) « Tastatur » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

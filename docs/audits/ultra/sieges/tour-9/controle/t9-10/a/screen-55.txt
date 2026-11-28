@@ -1,0 +1,75 @@
+Écran 55 (1035x1243)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 348,42
+bouton « Simple » @ 741,42
+bouton ● @ 831,42
+bouton ▶ « cette partie » @ 910,42
+icône ⋮ @ 990,42
+bouton « 105  Tempo » @ 98,123
+icône « Intro mesure 1/84 » ▾ @ 306,123
+bouton « ? » @ 990,123
+icône « Partie : D · Pré-refrain » ▾ @ 183,198
+bouton « Grosse caisse 1 FX » @ 75,300
+bouton « Grosse caisse 2 » @ 200,300
+bouton « Caisse FX » @ 325,300
+bouton « Caisse 2 » @ 450,300
+bouton « Claquement de mains » @ 75,406
+bouton « Charley FX G 30 » @ 200,406
+bouton « Charley ouvert D 30 » @ 325,406
+bouton « Tom grave » @ 450,406
+bouton « Tom médium D 45 » @ 75,512
+bouton « Tom aigu » @ 200,512
+bouton « Bord de caisse D 50 » @ 325,512
+bouton « Cloche » @ 450,512
+bouton « Cymbale FX D 40 » @ 75,618
+bouton « Maracas G 50 » @ 200,618
+bouton « Conga » @ 325,618
+bouton « Laser » @ 450,618
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » [coupé] @ 381,721
+bouton « Kit : Studio » ▾ @ 130,730
+bouton « Suivre » @ 618,263
+texte « Mesure 4/4 · Bord de caisse » @ 740,347
+bouton « 1 » [état « coup, force 60 % »] @ 575,427
+bouton [état « vide »] @ 632,426
+bouton [état « vide »] @ 688,426
+bouton [état « coup, force 60 % »] @ 744,426
+bouton « 2 » [état « vide »] @ 800,426
+bouton [état « vide »] @ 856,426
+bouton [état « coup, force 60 % »] @ 912,426
+bouton [état « vide »] @ 968,426
+bouton « 3 » [état « coup, force 60 % »] @ 575,497
+bouton [état « coup, force 70 % »] @ 632,496
+bouton [état « coup, force 80 % »] @ 688,496
+bouton [état « coup, force 90 % »] @ 744,496
+bouton « 4 » [état « coup, force 60 % »] @ 800,496
+bouton [état « vide »] @ 856,496
+bouton [état « vide »] @ 912,496
+bouton [état « vide »] @ 968,496
+texte « tout » @ 684,577
+texte « 1/2 » @ 763,577
+texte « 1/4 » @ 838,577
+texte « ◀ » @ 913,577
+texte « Remplir » @ 595,577
+texte « ▶ » @ 586,649
+texte « Effacer » @ 687,649
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » [coupé] @ 771,732
+texte « Les transitions Chapitre 12/15 · Étape 1/3 · Facile » @ 424,817
+icône (liste) « Chapitres » @ 885,818
+icône ⌃ @ 978,818
+image (œil) @ 51,930
+texte « Arrêter » @ 946,930
+texte « Regarde, je le fais… » @ 478,930
+bouton ▶ « le morceau » @ 514,1026
+icône ↶ « Annuler » @ 139,1026
+image ↷ @ 317,1013
+texte « 105 Tempo » @ 717,1026
+icône ⋮ « Plus » @ 897,1026
+onglet (lignes et note) « Mon morceau » @ 99,1123
+onglet (quatre carrés) « Rythme » [sélectionné] @ 309,1123
+onglet (touches de piano) « Clavier » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Partager » @ 936,1123
+image (doigt qui touche) @ 781,487
+texte « ●  REC » @ 807,1213
+texte « ✎  Noter » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode retours » @ 385,1213

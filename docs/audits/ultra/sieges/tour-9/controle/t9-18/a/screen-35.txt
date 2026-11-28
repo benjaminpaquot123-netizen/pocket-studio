@@ -1,0 +1,66 @@
+Écran 35 (1035x1243)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 299,42
+texte « Pro » @ 625,42
+icône ↶ @ 697,42
+icône ↷ [désactivé] @ 769,42
+bouton ● @ 841,42
+bouton ▶ « esta parte » @ 915,42
+icône (trois points reliés) @ 990,42
+bouton « 126  BPM » @ 73,114
+icône « Intro comp. 1/104 » ▾ @ 235,114
+bouton (flèches en boucle) « Loop » [état « desligado »] @ 887,114
+bouton « ? » @ 990,114
+icône ▶ « C · Intro 2 × 2  ·  16 comp. » [coupé] @ 155,165
+icône − [coupé] @ 304,159
+icône + [coupé] @ 376,159
+icône ⋮ [coupé] @ 448,159
+icône ▶ « D · Drop × 4  ·  32 comp. » @ 155,240
+icône − @ 304,240
+icône + @ 376,240
+icône ⋮ @ 448,240
+icône ▶ « E · Break × 2  ·  16 comp. » @ 155,336
+icône − @ 304,336
+icône + @ 376,336
+icône ⋮ @ 448,336
+icône ▶ « F · Drop 2 × 2  ·  16 comp. » @ 155,432
+icône − @ 304,432
+icône + @ 376,432
+icône ⋮ @ 448,432
+icône ▶ « G · Fim × 1  ·  8 comp. » [coupé] @ 155,497
+icône − [désactivé, coupé] @ 304,503
+icône + [coupé] @ 376,503
+icône ⋮ [coupé] @ 448,503
+titre « BLOCOS » [état « Expandido »] @ 637,207
+bouton « ? » @ 702,207
+texte « Um bloco = a bateria, o acid e as notas de uma parte. As partes da música são feitas deles. Toque num para editar, segure e arraste para mover. » @ 771,295
+bouton « 8 » [sélectionné] @ 679,397
+bouton « 16 » @ 760,397
+bouton « 24 » @ 843,397
+texte « Mostrar: » @ 592,397
+bouton « A Groove 8 comp. » [coupé] @ 600,476
+bouton « B Intro 8 comp. » [coupé] @ 714,476
+bouton « C Intro 2 8 comp. » [coupé] @ 828,476
+bouton « D Drop 8 comp. » [coupé] @ 942,476
+icône (liste) « Capítulos » @ 892,556
+texte « Organize suas partes Capítulo 9/14 · Etapa 2/2 · Pro » @ 431,556
+icône ⌄ @ 978,556
+texte « Sua vez: as durações: Intro 16 compassos, Intro 2 16, Drop 32, Break 16, Drop 2 24 e Fim 16 (“Dar as durações recomendadas” faz tudo de uma vez). » @ 517,655
+texte « ▸ Por quê? » @ 517,715
+bouton ⊕ «   Dar as durações recomendadas » @ 517,778
+bouton (œil) «  Mostre-me » @ 517,862
+icône ← «  Anterior » @ 97,943
+icône « Próximo  » → @ 936,943
+icône ↶ « Desfazer » @ 141,1027
+icône ↷ « Refazer » [désactivé] @ 317,1027
+bouton ▶ « a música » @ 494,1027
+texte « 126 Andamento » @ 681,1027
+icône (trois points reliés) « Compartilhar » @ 880,1027
+onglet (ligne brisée et points) « Estrutura » [sélectionné] @ 99,1123
+onglet (touches de piano) « Sons » @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Mais » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Anotar » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentários » @ 385,1213

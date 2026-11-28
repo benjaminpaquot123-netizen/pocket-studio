@@ -2,7 +2,6 @@
 
 package com.pocketstudio.app.session
 
-import com.pocketstudio.ui.shrinkToFit
 import com.pocketstudio.ui.pressScale
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.relocation.bringIntoViewRequester
@@ -76,7 +75,9 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.IntOffset
 import kotlin.math.roundToInt
 import androidx.compose.ui.Alignment
@@ -89,6 +90,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,6 +101,7 @@ import androidx.compose.material.icons.filled.GraphicEq
 import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.model.Scene
 import com.pocketstudio.model.SongPart
+import com.pocketstudio.ui.HelpAbout
 import com.pocketstudio.ui.FoldSection
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
@@ -254,7 +258,7 @@ fun SessionScreen(
             top?.invoke()
             if (entries) LiveEntry(actions.openLive)
             if (entries) TimelineEntry(ui, actions)
-            SongCard(ui, actions, simple)
+            SongCard(ui, actions, simple, rename = { renaming = it })
         },
         // A wide screen: the live pads right under the scenes, in reach without scrolling.
         second = {
@@ -272,7 +276,7 @@ fun SessionScreen(
             if (entries) TimelineEntry(ui, actions)
             // The Mode simple: the tracks first (their sounds and volumes, what a beginner changes), then the parts.
             if (simple) tracks?.invoke()
-            SongCard(ui, actions, simple)
+            SongCard(ui, actions, simple, rename = { renaming = it })
             if (!simple) {
                 ScenesCard(ui, actions, rename = { renaming = it })
                 if (entries) LiveSection(live, liveActions, actions)
@@ -374,7 +378,7 @@ private fun LiveSection(live: LivePadsUi?, liveActions: LivePadsActions, actions
 }
 
 @Composable
-private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boolean = false) {
+private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boolean = false, rename: (Int) -> Unit = {}) {
     var inserting by rememberSaveable { mutableStateOf<Int?>(null) }
     NeonCard(accent = Neon.Magenta) {
         SectionLabel(tr("Le morceau"), color = Neon.Magenta, help = Glossary.SONG)
@@ -386,10 +390,16 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
                 ui.song.isEmpty() && (ui.playing || ui.scenes.any { it != null && !it.isEmpty } || ui.rows.any { it.takeSteps > 0 }) ->
                     tr("La ligne du temps met tes parties dans l'ordre, chacune avec sa durée en mesures.") + " " + tr("Ajoute-les dans l'ordre.")
                 ui.song.isEmpty() -> tr("Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).")
-                ui.songIndex >= 0 -> tr("Touche une partie : elle joue juste après celle en cours.")
-                else -> tr("Touche une partie pour écouter le morceau à partir d'elle.")
+                // F104: a touch opens the part's settings; ▶ plays it.
+                ui.songIndex >= 0 -> tr("Touche une partie pour régler sa longueur ; ▶ la joue juste après celle en cours.")
+                else -> tr("Touche une partie pour régler sa longueur ; ▶ écoute le morceau à partir d'elle.")
             },
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary,
+            // F106 (seats t9-12, t9-36): named so the tuto's missions can point at it.
+            // Tour 9 L6: when it speaks of the parts, it explains their touch and their ▶ (no « ? » needed beside them).
+            modifier = Modifier.spot(SONG_HELP_SPOT)
+                .then(if (ui.song.isNotEmpty()) Modifier.semantics { set(HelpAbout, listOf("part_open_#", "part_play_#")) } else Modifier)
+                .testTag("song_help"),
         )
         // What Live takes put aside: one touch to see and bring back an earlier song.
         if (ui.versions > 0) {
@@ -402,29 +412,64 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
         if (totalBars > 0) SongClock(ui, totalBars)
         // Phase 37: the song's chords, every part, a touch from changing them all.
         if (ui.song.isNotEmpty() && ui.chords.isNotEmpty()) SongChordsStrip(ui.chords, actions.openChords)
-        ui.song.forEachIndexed { i, part -> PartRow(i, part, ui, actions, insertAfter = { inserting = it }) }
-        // Testers (lot « tuto 3 »): each part added pushes these buttons down (a row more above, the chords' strip):
-        // after an add they are brought back into view, never left under the bottom of the screen.
+        // Tour 8, R (seat 3a #23): the part just added is brought into view whole too (on a small screen, the buttons
+        // below brought into view pushed it above the top edge).
+        val lastRow = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        ui.song.forEachIndexed { i, part ->
+            PartRow(i, part, ui, actions, insertAfter = { inserting = it },
+                modifier = if (i == ui.song.lastIndex) Modifier.bringIntoViewRequester(lastRow) else Modifier)
+        }
+        // Tour 8, T0c (seat 3a #14): why − / + can be greyed (a fixed length, or one repeat left), right under them;
+        // above the parts it pushed the first one off a phone's screen (SpacesTest).
+        if (ui.song.isNotEmpty()) {
+            Text(
+                tr("− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois."),
+                style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.testTag("song_repeats_help"),
+            )
+        }
+        // Testers (lot « tuto 3 »): each part added pushes these buttons down (a row more above, the chords' strip).
+        // Tour 9, D08 (~19 seats): bringing them back into view after a frame made the list jump. Now the screen scrolls
+        // by what the add pushed them, in the same layout pass: the button touched stays under the finger.
         val addRow = remember { androidx.compose.foundation.relocation.BringIntoViewRequester() }
+        val scroller = remember { androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher() }
+        val noScroll = remember { object : androidx.compose.ui.input.nestedscroll.NestedScrollConnection {} }
+        val songSize by rememberUpdatedState(ui.song.size)
+        // Where the buttons were (y in the root) and the song's size the add is waiting for.
+        var anchor by remember { mutableStateOf<Pair<Float, Int>?>(null) }
+        var addRowY by remember { mutableStateOf(0f) }
         var added by remember { mutableStateOf(false) }
+        fun touched() { added = true; anchor = addRowY to (ui.song.size + 1) }
         LaunchedEffect(ui.song.size) {
             if (added) {
                 added = false
-                kotlinx.coroutines.delay(50)
+                androidx.compose.runtime.withFrameNanos { }
+                anchor = null
                 runCatching { addRow.bringIntoView() }
+                // A no-op when both fit; otherwise the new part wins, the buttons start right under it.
+                runCatching { lastRow.bringIntoView() }
             }
         }
-        Text(if (ui.song.isEmpty()) tr("Ajouter :") else tr("Ajouter à la fin :"), style = MaterialTheme.typography.bodyMedium)
+        // F100: one title before and after an add (« à la fin » and its change read as a new list).
+        Text(tr("Ajouter :"), style = MaterialTheme.typography.bodyMedium)
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
-            modifier = Modifier.bringIntoViewRequester(addRow).spot("song_add").testTag("song_add"),
+            modifier = Modifier.nestedScroll(noScroll, scroller).bringIntoViewRequester(addRow)
+                .onGloballyPositioned { c ->
+                    val y = c.positionInRoot().y
+                    val wait = anchor
+                    if (wait != null && songSize >= wait.second && kotlin.math.abs(y - wait.first) > 0.5f) {
+                        anchor = null
+                        // Content up by what it moved down: a drag of the same length upwards, given to the screen's scroll.
+                        val push = androidx.compose.ui.geometry.Offset(0f, wait.first - y)
+                        scroller.dispatchPostScroll(androidx.compose.ui.geometry.Offset.Zero, push, androidx.compose.ui.input.nestedscroll.NestedScrollSource.UserInput)
+                    } else addRowY = y
+                }
+                .spot("song_add").testTag("song_add"),
         ) {
             ui.scenes.forEachIndexed { i, s ->
-                if (s != null) OutlinedButton(onClick = { added = true; actions.addPart(i) }, enabled = ui.song.size < SongPart.MAX_PARTS, modifier = Modifier.testTag("add_part_$i")) {
-                    Text("+ ${ui.title(i)}", maxLines = 1, softWrap = false)
-                }
+                if (s != null) AddPartButton(i, ui, enabled = ui.song.size < SongPart.MAX_PARTS, add = { touched(); actions.addPart(i) }, rename = rename, whatPlays = { actions.whatPlays(i) })
             }
-            NewPartButtons(ui, enabled = ui.song.size < SongPart.MAX_PARTS) { copy -> added = true; actions.newPart(copy, null) }
+            NewPartButtons(ui, enabled = ui.song.size < SongPart.MAX_PARTS) { copy -> touched(); actions.newPart(copy, null) }
         }
         // ▶ in the top bar plays the song (a part touched above plays from it): no second button here.
         // Everything acting on the sound (effects, sends, curves), each with a way to where it is set.
@@ -476,6 +521,37 @@ private fun SongCard(ui: SessionScreenUi, actions: SessionActions, simple: Boole
 private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
 
 /**
+ * F102: « + A · Intro » adds the part on a touch; a long press opens its menu (rename, what plays in it) and adds nothing
+ * (an OutlinedButton took a long press for a touch). Drawn as the outlined buttons beside it.
+ */
+@Composable
+private fun AddPartButton(i: Int, ui: SessionScreenUi, enabled: Boolean, add: () -> Unit, rename: (Int) -> Unit, whatPlays: () -> Unit) {
+    var menu by remember { mutableStateOf(false) }
+    val shape = RoundedCornerShape(50)
+    Box {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.heightIn(min = 48.dp).padding(vertical = 4.dp).clip(shape)
+                .border(1.dp, if (enabled) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.outline.copy(alpha = 0.38f), shape)
+                .combinedClickable(
+                    enabled = enabled, role = Role.Button, onLongClickLabel = tr("Plus d'actions"),
+                    onLongClick = { menu = true }, onClick = add,
+                )
+                .padding(horizontal = 24.dp, vertical = 10.dp).testTag("add_part_$i"),
+        ) {
+            Text(
+                "+ ${ui.title(i)}", maxLines = 1, softWrap = false, style = MaterialTheme.typography.labelLarge,
+                color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            )
+        }
+        com.pocketstudio.ui.ScaledDropdownMenu(expanded = menu, onDismissRequest = { menu = false }, modifier = Modifier.testTag("add_part_menu")) {
+            DropdownMenuItem(text = { Text(tr("Renommer")) }, onClick = { menu = false; rename(i) }, modifier = Modifier.testTag("add_part_menu_rename"))
+            DropdownMenuItem(text = { Text(tr("Ce qui joue dans %s", ui.title(i))) }, onClick = { menu = false; whatPlays() }, modifier = Modifier.testTag("add_part_menu_what_plays"))
+        }
+    }
+}
+
+/**
  * Audit ultra round 1, n° 24 (seat B b gave up: « je ne trouvais nulle part comment créer une deuxième partie »):
  * « + Nouvelle partie » beside the parts already there: a copy of the part shown to change (the usual way to
  * a variation), or an empty one. The screens then show it.
@@ -483,11 +559,15 @@ private fun clock(seconds: Int) = "%d:%02d".format(seconds / 60, seconds % 60)
 @Composable
 private fun NewPartButtons(ui: SessionScreenUi, enabled: Boolean, onNew: (Boolean) -> Unit) {
     val free = ui.scenes.count { it == null || it.isEmpty } > 0 || ui.scenes.size < Scene.MAX
-    OutlinedButton(onClick = { onNew(true) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_copy")) {
-        Text(tr("+ Nouvelle partie (copie de %s)", ui.title(ui.current)), maxLines = 1, softWrap = false)
+    // F103: a copy of an empty part is an empty part: only « vide » is offered then.
+    if (ui.scenes.getOrNull(ui.current)?.isEmpty == false) {
+        OutlinedButton(onClick = { onNew(true) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_copy")) {
+            // F108: a long part name goes on a second line instead of being cut (Arabic, big font, small phone).
+            Text(tr("+ Nouvelle partie (copie de %s)", ui.title(ui.current)))
+        }
     }
     OutlinedButton(onClick = { onNew(false) }, enabled = enabled && free, modifier = Modifier.heightIn(min = 48.dp).testTag("add_part_new_empty")) {
-        Text(tr("+ Nouvelle partie vide"), maxLines = 1, softWrap = false)
+        Text(tr("+ Nouvelle partie vide"))
     }
 }
 
@@ -554,7 +634,7 @@ private fun ChoiceRow(label: String, first: String, second: String, secondOn: Bo
 
 /** One line of the song: a touch plays from it; repeats; a long press or ⋮ opens its sheet (intentions, move, copy, remove). */
 @Composable
-private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: SessionActions, insertAfter: (Int) -> Unit) {
+private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: SessionActions, insertAfter: (Int) -> Unit, modifier: Modifier = Modifier) {
     val active = i == ui.shownSongIndex
     val next = i == ui.upcoming
     val shape = RoundedCornerShape(10.dp)
@@ -565,7 +645,7 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
     var renamePart by rememberSaveable { mutableStateOf(false) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().clip(shape)
+        modifier = modifier.fillMaxWidth().clip(shape)
             .background(if (active) Neon.Magenta.copy(alpha = 0.16f) else Color.Transparent)
             // How far the part playing has got: filled from the left, read only when drawn.
             .then(
@@ -579,17 +659,33 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f).heightIn(min = 56.dp).clip(shape)
-                .combinedClickable(
-                    role = Role.Button, onClickLabel = tr("Jouer à partir de cette partie"),
-                    onLongClickLabel = tr("Variation, fill, break…"), onLongClick = { sheetOpen = true },
-                ) { actions.playPart(i) }
-                .padding(horizontal = 6.dp)
-                .spot("part_play_$i", if (i == 0) tr("Jouer · appui long : Fill") else null)
-                .testTag("part_play_$i"),
+            modifier = Modifier.weight(1f).heightIn(min = 56.dp).clip(shape),
         ) {
-            Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = if (active) Neon.Magenta else Neon.TextSecondary, modifier = Modifier.size(20.dp))
-            Column(Modifier.padding(start = 6.dp)) {
+            // F104: ▶ plays from the part (a long press: its sheet, as before); a touch on the part opens its settings.
+            // A thumb wide (48 dp, review G2): the only « play from here » now a touch on the part opens it.
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.width(48.dp).heightIn(min = 56.dp).clip(shape)
+                    .combinedClickable(
+                        role = Role.Button, onClickLabel = tr("Jouer à partir de cette partie"),
+                        onLongClickLabel = tr("Variation, fill, break…"), onLongClick = { sheetOpen = true },
+                    ) { actions.playPart(i) }
+                    .spot("part_play_$i", if (i == 0) tr("Jouer · appui long : Fill") else null)
+                    .testTag("part_play_$i"),
+            ) {
+                Icon(Icons.Filled.PlayArrow, contentDescription = tr("Jouer à partir de cette partie"), tint = if (active) Neon.Magenta else Neon.TextSecondary, modifier = Modifier.size(20.dp))
+            }
+            Column(
+                Modifier.weight(1f).heightIn(min = 56.dp).clip(shape)
+                    .combinedClickable(
+                        role = Role.Button, onClickLabel = tr("Plus d'actions"),
+                        onLongClickLabel = tr("Variation, fill, break…"), onLongClick = { sheetOpen = true },
+                    ) { sheetOpen = true }
+                    // Room on the left: the tuto's frame around ▶ stays off the part's name.
+                    .padding(start = 8.dp, end = 6.dp)
+                    .testTag("part_open_$i"),
+                verticalArrangement = Arrangement.Center,
+            ) {
                 // A narrow row (a big text size): the name goes on a second line, never « B · Co… ».
                 Text(
                     ui.title(part.scene), fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis,
@@ -604,7 +700,8 @@ private fun PartRow(i: Int, part: SongPart, ui: SessionScreenUi, actions: Sessio
                         next -> "  ·  " + tr("ensuite")
                         else -> ""
                     },
-                    style = MonoStyle, maxLines = 2, min = 11.sp,
+                    // A third line at a big text size (review G2: the thumb-wide ▶ took 16 dp from it).
+                    style = MonoStyle, maxLines = 3, min = 11.sp,
                     color = when {
                         next -> Neon.Amber
                         active -> Neon.Magenta
@@ -880,10 +977,11 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
     ) {
         // Audit stage 1: a short tile (a phone lying down, a big font, a tall script) shows its three lines
         // a little smaller instead of losing the last one (« 1 batt » cut under « Intro »).
-        Column(Modifier.shrinkToFit(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(Scene.NAMES[i], fontSize = 22.sp, fontWeight = FontWeight.Bold, color = content, lineHeight = 24.sp)
+        // F109/F110: too wide too (a big font, a long name, « 8 mes. »), the three lines shrink whole: never « .. » nor « 8 » alone.
+        Column(Modifier.fitWhole(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(Scene.NAMES[i], fontSize = 22.sp, fontWeight = FontWeight.Bold, color = content, lineHeight = 24.sp, maxLines = 1, softWrap = false)
             if (label.isNotBlank()) {
-                Text(Scene.shownLabel(label), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = content, maxLines = 1, overflow = TextOverflow.Ellipsis, lineHeight = 14.sp)
+                Text(Scene.shownLabel(label), fontSize = 12.sp, fontWeight = FontWeight.Medium, color = content, maxLines = 1, softWrap = false, lineHeight = 14.sp)
             }
             Text(
                 when {
@@ -891,11 +989,33 @@ private fun SceneButton(i: Int, ui: SessionScreenUi, actions: SessionActions, dr
                     empty -> tr("vide")
                     else -> barsLabel(scene!!.stepsFor(ui.stepsPerBar) / ui.stepsPerBar)
                 },
-                fontSize = 11.sp, color = content.copy(alpha = 0.8f), maxLines = 1, lineHeight = 13.sp,
+                fontSize = 11.sp, color = content.copy(alpha = 0.8f), maxLines = 1, softWrap = false, lineHeight = 13.sp,
             )
         }
     }
 }
+
+/**
+ * Content measured at its natural size, then drawn whole and smaller, centred, when it is wider or taller than the
+ * room given (`shrinkToFit` only looks at the height). Content that fits is untouched.
+ */
+private fun Modifier.fitWhole(): Modifier = this.then(
+    Modifier.layout { measurable, constraints ->
+        // A finite width, the content's own: right-to-left lines measured in an endless width land off their box.
+        val natural = measurable.maxIntrinsicWidth(Constraints.Infinity)
+        val placeable = measurable.measure(Constraints(maxWidth = natural))
+        val roomW = if (constraints.hasBoundedWidth) constraints.maxWidth else placeable.width
+        val roomH = if (constraints.hasBoundedHeight) constraints.maxHeight else placeable.height
+        val scale = minOf(1f, if (placeable.width > 0) roomW.toFloat() / placeable.width else 1f, if (placeable.height > 0) roomH.toFloat() / placeable.height else 1f)
+        val w = minOf(placeable.width, roomW).coerceAtLeast(constraints.minWidth)
+        val h = minOf(placeable.height, roomH).coerceAtLeast(constraints.minHeight)
+        layout(w, h) {
+            val x = (w - placeable.width) / 2
+            val y = (h - placeable.height) / 2
+            if (scale == 1f) placeable.place(x, y) else placeable.placeWithLayer(x, y) { scaleX = scale; scaleY = scale }
+        }
+    },
+)
 
 /** Names scene [index]: a song section in one touch, or any name typed. */
 @Composable
@@ -964,3 +1084,6 @@ private fun ScenePickerDialog(title: String, ui: SessionScreenUi, onPick: (Int) 
         dismissButton = { TextButton(onClick = onDismiss) { Text(tr("Annuler")) } },
     )
 }
+
+/** F106: the Structure's help sentence, named for the tuto's missions. */
+private const val SONG_HELP_SPOT = "song_help"

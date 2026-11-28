@@ -1,0 +1,514 @@
+#0 SIEGE lang=fr device=phone font=100 mode=simple theme=- fresh=non gestes.max=80 lit=oui main=both amenee=tuto:house:12
+#0 PREMIER ECRAN reel_s=4.2 simule_s=2.4 jvm_s=9.9 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:house:12
+#0 AMENEE > touche 294 621 (welcome_learn)
+#0 AMENEE > touche 294 915 (mode_card_simple)
+#0 AMENEE > touche 294 1201 (tuto_style_house)
+#0 AMENEE chapitres 1 à 11 construits dans le projet
+#0 AMENEE > touche 444 573 (tuto_chapters)
+#0 AMENEE > touche 294 954 (tuto_chapter_11)
+#0 AMENEE prête (tab_simple_Rythme)
+#1 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3682ebcaf1 | project=p-cfdf6cb7 tuto=house/Facile active=true step=gap done=22 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ Pourquoi ? » 364 x 20 dp (touch 364 x 48)
+#1 > touche 294 813
+#1 DOIGT tuto_need «   Aller dans la partie « Montée » »
+#2 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2cc2a63e21 | project=p-cfdf6cb7 tuto=house/Facile active=true step=gap done=22 playing=false
+#2 SON Son : rien ne joue.
+#2 LAYOUT CUT « À toi : dans la partie « Montée », dernière mesure, efface les coups du dernier temps (touche chaque croix rouge) : un temps de silence juste avant le Drop. » ellipsized (« … »)
+#2 > touche 131 180
+#2 DOIGT part_header_pick « Partie : C · Montée »
+#3 ROUTE dialogue:part_header_menu | MODE simple | EMPREINTE d6bbc5ad03 | project=p-cfdf6cb7 tuto=house/Facile active=true step=gap done=22 playing=false
+#3 SON Son : rien ne joue.
+#3 > retour
+#3 RETOUR
+#4 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2cc2a63e21 | project=p-cfdf6cb7 tuto=house/Facile active=true step=gap done=22 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 325 488
+#4 DOIGT step_60 « Pas 13 »
+#5 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4ca7c473fb | project=p-cfdf6cb7 tuto=house/Facile active=true step=gap done=22 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 389 488
+#5 DOIGT step_61 « Pas 14 »
+#6 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 995dc2a02f | project=p-cfdf6cb7 tuto=house/Facile active=true step=gap done=22 playing=false
+#6 SON Son : rien ne joue.
+#6 > touche 517 488
+#6 DOIGT step_63 « Pas 16 »
+#7 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ed2d952d40 | project=p-cfdf6cb7 tuto=house/Facile active=true step=gap done=22 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 453 488
+#7 DOIGT step_62 « Pas 15 »
+#8 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1b2cef2bd1 | project=p-cfdf6cb7 tuto=house/Facile active=true step=gap done=22 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 453 488
+#8 DOIGT step_62 « Pas 15 »
+#9 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f55e387e8a | project=p-cfdf6cb7 tuto=house/Facile active=true step=gap done=23 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 294 978
+#9 DOIGT tuto_next_folded « Réussi »
+#10 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 1174d37fba | project=p-cfdf6cb7 tuto=house/Facile active=true step=crash done=23 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 294 813
+#10 DOIGT tuto_need «   Aller dans la partie « Drop » »
+#11 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9a1a678a2e | project=p-cfdf6cb7 tuto=house/Facile active=true step=crash done=23 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT CONTRAST « Encore 1 case en pointillé ici » 2.33:1 (needs 3.0:1, 14 sp)
+#11 LAYOUT CONTRAST « 1 » 3.60:1 (needs 4.5:1, 12 sp)
+#11 > glisse 294 300 294 700
+#11 DOIGT rien
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 35bd616de2 | project=p-cfdf6cb7 tuto=house/Facile active=true step=crash done=23 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CONTRAST « Conga » 3.65:1 (needs 4.5:1, 14 sp)
+#12 LAYOUT CONTRAST « Laser » 3.79:1 (needs 4.5:1, 14 sp)
+#12 > touche 450 424
+#12 DOIGT all_pads « Tous les pads »
+#13 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e27b480a0f | project=p-cfdf6cb7 tuto=house/Facile active=true step=crash done=23 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT CUT « Grosse caisse 1 » ellipsized (« … »)
+#13 LAYOUT CUT « Grosse caisse 2 » ellipsized (« … »)
+#13 LAYOUT CUT « Claquement de mains » ellipsized (« … »)
+#13 LAYOUT CUT « Charley ouvert » ellipsized (« … »)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 1, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Grosse caisse 2, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Caisse 2, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Claquement de mains, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#13 LAYOUT TARGET « Charley ouvert, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#13 > glisse 60 760 60 460
+#13 DOIGT rien (texte « Charley »)
+#14 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0eb0602ddd | project=p-cfdf6cb7 tuto=house/Facile active=true step=crash done=23 playing=false
+#14 SON Son : rien ne joue.
+#14 LAYOUT CUT « Tom médium » ellipsized (« … »)
+#14 LAYOUT CUT « Bord de caisse » ellipsized (« … »)
+#14 LAYOUT CONTRAST « Mesure » 3.95:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « 1 » 3.71:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « 2 » 3.37:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT CONTRAST « Suivre » 3.05:1 (needs 4.5:1, 14 sp)
+#14 LAYOUT TARGET « Tom grave, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom grave, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom médium, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Tom aigu, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Bord de caisse, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cloche, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Cymbale, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Maracas, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#14 LAYOUT TARGET « Conga, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#14 > attends 1
+#15 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0eb0602ddd | project=p-cfdf6cb7 tuto=house/Facile active=true step=crash done=23 playing=false
+#15 SON Son : rien ne joue.
+#15 > attends 1
+#16 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0eb0602ddd | project=p-cfdf6cb7 tuto=house/Facile active=true step=crash done=23 playing=false
+#16 SON Son : rien ne joue.
+#16 > glisse 60 600 60 560
+#16 DOIGT rien
+#17 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e6e0c95b4c | project=p-cfdf6cb7 tuto=house/Facile active=true step=crash done=23 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT CONTRAST « Mesure » 1.41:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « 1 » 1.94:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « 2 » 1.36:1 (needs 4.5:1, 14 sp)
+#17 LAYOUT CONTRAST « Suivre » 1.24:1 (needs 4.5:1, 14 sp)
+#17 > glisse 60 560 60 600
+#17 DOIGT rien (texte « Tom médium »)
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0eb0602ddd | project=p-cfdf6cb7 tuto=house/Facile active=true step=crash done=23 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 163 728
+#18 DOIGT cell_12_0 « Cymbale, Pas 1 »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 14f012facb | project=p-cfdf6cb7 tuto=house/Facile active=true step=crash done=24 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 294 978
+#19 DOIGT tuto_next_folded « Réussi »
+#20 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b87d062f26 | project=p-cfdf6cb7 tuto=house/Facile active=true step=variation done=24 playing=false
+#20 SON Son : rien ne joue.
+#20 LAYOUT CONTRAST « Mesure » 3.96:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « 1 » 3.48:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « 2 » 2.73:1 (needs 4.5:1, 14 sp)
+#20 LAYOUT CONTRAST « Suivre » 3.02:1 (needs 4.5:1, 14 sp)
+#20 > touche 294 813
+#20 DOIGT tuto_need «   Aller dans la partie « Drop 2 » »
+#21 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 57c7dcd7d4 | project=p-cfdf6cb7 tuto=house/Facile active=true step=variation done=24 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « 3 » 2.42:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « 4 » 2.91:1 (needs 4.5:1, 14 sp)
+#21 > glisse 60 700 60 500
+#21 DOIGT rien (texte « Tom aigu »)
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE f15ef120dd | project=p-cfdf6cb7 tuto=house/Facile active=true step=variation done=24 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « Grosse caisse 2 » 3.82:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT TARGET « Laser, Pas 1 » 14 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 2 » 14 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 3 » 14 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 4 » 14 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 5 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 6 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 7 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 8 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 9 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 10 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 11 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 12 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 13 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 14 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 15 » 15 x 22 dp (touch 48 x 48)
+#22 LAYOUT TARGET « Laser, Pas 16 » 15 x 22 dp (touch 48 x 48)
+#22 > touche 163 670
+#22 DOIGT cell_13_0 « Maracas, Pas 1 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c1187db6b2 | project=p-cfdf6cb7 tuto=house/Facile active=true step=variation done=25 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 54 1158
+#23 DOIGT tab_simple_Morceau « Mon morceau »
+#24 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE e8c8eeaada | project=p-cfdf6cb7 tuto=house/Facile active=true step=variation done=25 playing=false
+#24 SON Son : rien ne joue.
+#24 > glisse 294 750 294 250
+#24 DOIGT rien
+#25 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE 758ebeb4b6 | project=p-cfdf6cb7 tuto=house/Facile active=true step=variation done=25 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « La m  La m  La m  La m  La m  La m  La m  La m » ellipsized (« … »)
+#25 LAYOUT CUT « Do  Do  La m  La m  Do  Do  La m  La m » ellipsized (« … »)
+#25 LAYOUT CUT « La m  La m  Ré  Ré  La m  La m  Ré  Ré » ellipsized (« … »)
+#25 > touche 444 879
+#25 DOIGT tuto_chapters « Chapitres »
+#26 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE bea1a87ba8 | project=p-cfdf6cb7 tuto=house/Facile active=true step=variation done=25 playing=false
+#26 SON Son : rien ne joue.
+#26 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « 5 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « 6 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 LAYOUT CONTRAST « 11 » 3.63:1 (needs 4.5:1, 16 sp)
+#26 > touche 294 306
+#26 DOIGT tuto_chapter_2 « 3 »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bc1ad7e519 | project=p-cfdf6cb7 tuto=house/Facile active=true step=clap_do done=25 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 57 975
+#27 DOIGT tuto_prev
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 536d17cb01 | project=p-cfdf6cb7 tuto=house/Facile active=true step=kick_do done=25 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 444 555
+#28 DOIGT tuto_chapters « Chapitres »
+#29 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE bea1a87ba8 | project=p-cfdf6cb7 tuto=house/Facile active=true step=kick_do done=25 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 294 1128
+#29 DOIGT tuto_restart «  Recommencer le tuto (nouveau projet vid »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 96933431b9 | project=p-cfcf06ab tuto=house/Facile active=true step=ref done=0 playing=false
+#30 SON Son : rien ne joue.
+#30 LAYOUT CONTRAST « Charley » 1.38:1 (needs 4.5:1, 12 sp)
+#30 > touche 444 573
+#30 DOIGT rien
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 564022b91a | project=p-cfcf06ab tuto=house/Facile active=true step=ref done=0 playing=false
+#31 SON Son : rien ne joue.
+#31 LAYOUT CONTRAST « Charley » 1.34:1 (needs 4.5:1, 12 sp)
+#31 > touche 294 306
+#31 DOIGT rien
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 564022b91a | project=p-cfcf06ab tuto=house/Facile active=true step=ref done=0 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 444 537
+#32 DOIGT tuto_chapters « Chapitres »
+#33 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 391a434940 | project=p-cfcf06ab tuto=house/Facile active=true step=ref done=0 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 294 306
+#33 DOIGT tuto_chapter_2 « 3 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a3b31685a9 | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=0 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 294 813
+#34 DOIGT tuto_need «   Passer à 2 mesures »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e96ab1f05f | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=0 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CUT « À toi : sur le pad « Claquement de mains », touche les cases en pointillé des 2 mesures, sur les temps 2 et 4. » ellipsized (« … »)
+#35 LAYOUT CONTRAST « Caisse 2 » 2.59:1 (needs 4.5:1, 12 sp)
+#35 > touche 531 879
+#35 DOIGT tuto_fold
+#36 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 999d5b70ad | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=0 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « Charley » 1.25:1 (needs 4.5:1, 12 sp)
+#36 > touche 294 813
+#36 DOIGT tuto_do «   Je le fais »
+#37 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e96ab1f05f | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=0 playing=false
+#37 SON Son : rien ne joue.
+#37 > attends 10
+#38 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e96ab1f05f | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=0 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 260 265
+#38 DOIGT cell_4_4 « Claquement de mains, Pas 5 »
+#39 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE bd0533cdf6 | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=0 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 460 265
+#39 DOIGT cell_4_12 « Claquement de mains, Pas 13 »
+#40 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE b3040983e8 | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=0 playing=false
+#40 SON Son : rien ne joue.
+#40 > glisse 294 300 294 600
+#40 DOIGT cell_5_5 « Charley, Pas 6 »
+#41 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7f13d8810f | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=0 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CONTRAST « ? » 3.55:1 (needs 4.5:1, 12 sp)
+#41 > touche 242 332
+#41 DOIGT drum_page_1 « 2 »
+#42 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 93a78fc267 | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=0 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 260 540
+#42 DOIGT cell_4_20 « Claquement de mains, Pas 5 »
+#43 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 826cbeeb5e | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=0 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 460 540
+#43 DOIGT cell_4_28 « Claquement de mains, Pas 13 »
+#44 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cd384ac3df | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=1 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 444 879
+#44 DOIGT tuto_chapters « Chapitres »
+#45 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE d33c352020 | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=1 playing=false
+#45 SON Son : rien ne joue.
+#45 > glisse 294 900 294 300
+#45 DOIGT tuto_chapter_9 « 10 »
+#46 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE 9aa02a0f2a | project=p-cfcf06ab tuto=house/Facile active=true step=clap_do done=1 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « 12 » 3.63:1 (needs 4.5:1, 16 sp)
+#46 LAYOUT CONTRAST « 13 » 3.63:1 (needs 4.5:1, 16 sp)
+#46 LAYOUT CONTRAST « 14 » 3.63:1 (needs 4.5:1, 16 sp)
+#46 LAYOUT CONTRAST « 15 » 3.63:1 (needs 4.5:1, 16 sp)
+#46 > touche 294 711
+#46 DOIGT tuto_chapter_11 « 12 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 41a9560757 | project=p-cfcf06ab tuto=house/Facile active=true step=gap done=1 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CONTRAST « ? » 3.60:1 (needs 4.5:1, 12 sp)
+#47 > touche 294 813
+#47 DOIGT tuto_need «   Créer la partie « Montée » »
+#48 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ec00304c27 | project=p-cfcf06ab tuto=house/Facile active=true step=gap done=2 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « Bord de caisse » 1.27:1 (needs 4.5:1, 12 sp)
+#48 > touche 54 1158
+#48 DOIGT tab_simple_Morceau « Mon morceau »
+#49 ROUTE session/tab_simple_Morceau | MODE simple | EMPREINTE ca352b4df7 | project=p-cfcf06ab tuto=house/Facile active=true step=gap done=2 playing=false
+#49 SON Son : rien ne joue.
+#49 LAYOUT OVERLAP « Batterie » over the touchable « Tempo : 100 battements par minute Change » (43 x 3 dp)
+#49 > fin
+#49 FIN : fin

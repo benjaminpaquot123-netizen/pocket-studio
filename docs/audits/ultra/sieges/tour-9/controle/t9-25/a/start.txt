@@ -1,0 +1,10 @@
+lang=tr
+device=phone360
+font=130
+mode=simple
+amenee=tuto:dubstep:1
+gestes.max=174
+mission=tuto-facile
+profil=débutant motivé
+niveau=1
+timeout.minutes=30

@@ -1,0 +1,38 @@
+Écran 99 (588x1278)
+icône (dossier ouvert) ✓ @ 127,42
+bouton « Einfach » @ 297,42
+bouton ● @ 385,42
+bouton ▶ « dieser Teil » @ 464,42
+icône ⋮ @ 543,42
+icône « Intro Takt 1/96 » ▾ @ 385,144
+bouton « 116  Tempo » @ 136,144
+bouton « ? » @ 543,144
+texte « Du bist dran: lauter, was man hören soll, leiser, was stört. Tippe ▶, um eine Spur allein zu hören. » [coupé] @ 297,211
+bouton « Drums ▸ » [état « geschlossen »] @ 75,288
+curseur [coupé, état « Normal », à 80 %] @ 84,455
+texte « Bass » @ 216,280
+curseur [état « Normal », à 80 %] @ 216,448
+texte « Akkorde » @ 339,270
+curseur [état « Normal », à 80 %] @ 339,435
+texte « Melodie » @ 462,270
+curseur [état « Normal », à 80 %] @ 462,436
+texte « Ausgang » [coupé] @ 556,273
+curseur [coupé, état « −6 », à 60 %] @ 559,440
+texte « Der Mix: die Lautstärken Kapitel 12/13 · Schritt 1/1 · Einfach » @ 208,698
+icône (liste) « Kapitel » @ 445,698
+icône ⌃ @ 531,698
+icône « Du bist dran: Zieh im Tab „Mix“ den Fader der Spur „Melodie“ (die Streicher) etwas runter. Lesen » ⌃ @ 294,895
+texte « 116 Tempo » @ 422,1020
+icône ↶ « Rückgängig » @ 56,1021
+image ↷ @ 152,1013
+icône ▶ « der Song » @ 280,1021
+icône ⋮ « Mehr » @ 533,1020
+onglet (lignes et note) « Mein Song » @ 54,1145
+onglet (quatre carrés) « Rhythmus » @ 174,1145
+onglet (touches de piano) « Tastatur » @ 294,1145
+onglet (curseurs) « Mix » [sélectionné] @ 414,1145
+onglet (trois points reliés) « Teilen » @ 534,1145
+texte « ●  REC » @ 272,1248
+texte « ✎  Notieren » @ 416,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback-Modus » @ 114,1248

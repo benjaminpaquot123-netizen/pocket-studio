@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutInfo
 import androidx.compose.ui.layout.boundsInRoot
@@ -223,6 +224,18 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
             c.getOrNull(SemanticsProperties.ProgressBarRangeInfo)?.let { p ->
                 val span = p.range.endInclusive - p.range.start
                 if (span > 0f && p.current.isFinite()) add("à %d %%".format(((p.current - p.range.start) / span * 100).toInt()))
+            }
+            // Tour 9 L2 (F024 option A): a fader is taken only near its cap, elsewhere the finger scrolls the page. The
+            // line gives where the cap is drawn (from its value: bottom to top when the curseur stands, start to end
+            // when it lies), so a seat aims at it.
+            if (c.contains(SemanticsActions.SetProgress)) c.getOrNull(SemanticsProperties.ProgressBarRangeInfo)?.let { p ->
+                val span = p.range.endInclusive - p.range.start
+                if (span > 0f && p.current.isFinite()) {
+                    val f = ((p.current - p.range.start) / span).coerceIn(0f, 1f)
+                    val cap = if (r.height > r.width) Offset(r.center.x, r.bottom - f * r.height)
+                    else Offset(if (rtl) r.right - f * r.width else r.left + f * r.width, r.center.y)
+                    add("poignée @ ${cap.x.toInt()},${cap.y.toInt()}")
+                }
             }
         }
         val at = "@ ${r.center.x.toInt()},${r.center.y.toInt()}"
@@ -454,6 +467,18 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
     }
 
     /**
+     * Tour 9 (banc-b, optimisation): every node of the unmerged tree, fetched once per [ScreenText]. A [ScreenText] is one
+     * look at the screen (the bench makes a new one at each use, see `HumanTester.screenText`), and a touch aimed at a tag
+     * asks [under] and [coverAt] at up to 82 points of that same look: one fetch instead of two per point. A fetch that
+     * fails is not kept (the next question asks again, as before).
+     */
+    private var everything: List<SemanticsNode>? = null
+
+    private fun everything(): List<SemanticsNode> = everything ?: runCatching {
+        compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("anything") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
+    }.onSuccess { everything = it }.getOrDefault(emptyList())
+
+    /**
      * What is under a finger at ([x], [y]), for the journal: the smallest thing to touch there in the
      * window that gets the touch (« tag « words » », « désactivé tag … »), or « rien » (and the words there).
      */
@@ -461,9 +486,7 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         if (walked.isEmpty()) mark(shownWindows(), composeRoots())
         val win = runCatching { BenchWindows.windows().filter { it.touchable }.firstOrNull { w -> w.touchModal || w.drawn(screen).contains(x.toInt(), y.toInt()) } }.getOrNull()
             ?: return "rien"
-        val nodes = runCatching {
-            compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("anything") { true }, useUnmergedTree = true).fetchSemanticsNodes(atLeastOneRootRequired = false)
-        }.getOrDefault(emptyList()).filter { BenchWindows.windowOf(it)?.view === win.view && seen(it) && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
+        val nodes = everything().filter { BenchWindows.windowOf(it)?.view === win.view && seen(it) && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
         val hit = nodes.filter(::actionable).minByOrNull { val r = drawn(it); r.width * r.height }
         if (hit == null) {
             if (nodes.isEmpty()) viewUnder(win, x, y)?.let { return it }
@@ -476,6 +499,107 @@ internal class ScreenText(private val compose: ComposeTestRule, private val scre
         val off = generateSequence(hit) { it.parent }.any { it.config.contains(SemanticsProperties.Disabled) }
         return (if (off) "désactivé " else "") + tag + (words?.let { " « ${it.take(40)} »" } ?: "")
     }
+
+    /**
+     * Tour 8, banc9 (point i): « « cover » couvre « target » » when the thing [under] finds at ([x], [y]) is covered there by
+     * an element drawn after it that takes the touch (a card, a surface: a traversal group that is neither the target, nor
+     * one of its parents, nor inside it); null when nothing covers it.
+     */
+    fun coverAt(x: Float, y: Float): String? {
+        if (walked.isEmpty()) mark(shownWindows(), composeRoots())
+        val win = runCatching { BenchWindows.windows().filter { it.touchable }.firstOrNull { w -> w.touchModal || w.drawn(screen).contains(x.toInt(), y.toInt()) } }.getOrNull()
+            ?: return null
+        val here = everything().filter { BenchWindows.windowOf(it)?.view === win.view && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
+        val hit = here.filter { actionable(it) && seen(it) }.minByOrNull { val r = drawn(it); r.width * r.height } ?: return null
+        val chain = generateSequence(hit) { it.parent }.map { it.id }.toSet()
+        // A layer drawn on (almost) the whole window is a screen's body or a backdrop, not a card over the target: a
+        // Scaffold lays its body out under its bars. Full-screen layers are the overlay rule's (shownWindows / mark).
+        val area = win.drawn(screen).let { it.width().toFloat() * it.height() }
+        val cover = here.firstOrNull { c ->
+            layer(c) && c.id !in chain && placed(c) &&
+                drawn(c).let { it.width * it.height } < 0.9f * area &&
+                generateSequence(c.parent) { it.parent }.none { it.id == hit.id } && !passThrough(c) && drawnAfter(c, hit)
+        } ?: return null
+        return "« ${nameOf(cover)} » couvre « ${nameOf(hit)} »"
+    }
+
+    /**
+     * Tour 9 (banc-b, « mix curseurs »): [n] and every layout above it were placed. A layout that is measured and never
+     * placed (the Mix's `FitFaders` probes: two whole consoles) draws nothing and takes no touch, yet its nodes stay in
+     * the unmerged tree with bounds at the window's corner; one of them « covered » every fader and every strip's name.
+     */
+    private fun placed(n: SemanticsNode): Boolean =
+        generateSequence(n.layoutInfo) { it.parentInfo }.all { it.isPlaced }
+
+    /** A layer that takes the touch over what is under it: a traversal group, or a container (M3's Surface and Card still
+     *  set the older « IsContainer » key, not « IsTraversalGroup »). */
+    @Suppress("DEPRECATION")
+    private fun layer(c: SemanticsNode): Boolean =
+        c.config.getOrNull(SemanticsProperties.IsTraversalGroup) == true || c.config.getOrNull(SemanticsProperties.IsContainer) == true
+
+    /** What the bench's finger writes for gesture [n] at ([x], [y]); [refused] when the touch must not be played. */
+    class Finger(val under: String, val lines: List<String>, val refused: Boolean)
+
+    /** Tour 8, banc9 (point i, review #1): the finger fails on a covered target, and its lines say who covers whom. */
+    fun finger(n: Int, x: Float, y: Float, action: String = "touche"): Finger {
+        val under = under(x, y)
+        val cover = coverAt(x, y) ?: return Finger(under, listOf("#$n DOIGT $under"), false)
+        // Tour 9 (banc-b, « drapeaux »): the refusal's flag, with who covers what, and where.
+        val flag = BenchFlag.line(
+            n, action, under, found = true, why = BenchFlag.COVERED, coveredBy = BenchFlag.coverName(cover) ?: cover,
+            bounds = hitAt(x, y)?.let { h -> drawn(h).let { BenchFlag.bounds(it.left, it.top, it.right, it.bottom) } }, at = x to y,
+        )
+        return Finger(under, listOf("#$n COUVERT $cover", "#$n REFUS doigt couvert : $cover", flag), true)
+    }
+
+    /** The thing to touch that [under] names at ([x], [y]) (the smallest one in the window that gets the touch), or null. */
+    private fun hitAt(x: Float, y: Float): SemanticsNode? {
+        if (walked.isEmpty()) mark(shownWindows(), composeRoots())
+        val win = runCatching { BenchWindows.windows().filter { it.touchable }.firstOrNull { w -> w.touchModal || w.drawn(screen).contains(x.toInt(), y.toInt()) } }.getOrNull()
+            ?: return null
+        return everything()
+            .filter { BenchWindows.windowOf(it)?.view === win.view && seen(it) && actionable(it) && drawn(it).contains(androidx.compose.ui.geometry.Offset(x, y)) }
+            .minByOrNull { val r = drawn(it); r.width * r.height }
+    }
+
+    /**
+     * Tour 9 (banc-b, « drapeaux »): what the screen offers to touch, for the flag of a target that is not there: the
+     * tags a finger can see (« tag « words » »), in reading order, [max] at most (« +N » says how many more).
+     */
+    fun tagged(max: Int = 30): String {
+        if (walked.isEmpty()) mark(shownWindows(), composeRoots())
+        val all = runCatching {
+            compose.onAllNodes(androidx.compose.ui.test.SemanticsMatcher("tagged") { SemanticsProperties.TestTag in it.config }, useUnmergedTree = true)
+                .fetchSemanticsNodes(atLeastOneRootRequired = false)
+        }.getOrDefault(emptyList())
+            .filter { seen(it) && placed(it) && drawn(it).let { r -> r.width > 1f && r.height > 1f && r.bottom > 0f && r.top < screen.heightPixels && r.right > 0f && r.left < screen.widthPixels } }
+            .sortedWith(compareBy({ drawn(it).top.toInt() }, { drawn(it).left.toInt() }))
+            .map { n ->
+                val words = n.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" ")
+                    ?: n.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text } ?: textBelow(n)
+                n.config[SemanticsProperties.TestTag] + (words?.takeIf { it.isNotBlank() }?.let { " « ${it.take(20)} »" } ?: "")
+            }.distinct()
+        if (all.isEmpty()) return "aucune étiquette"
+        return all.take(max).joinToString(", ") + (if (all.size > max) " +${all.size - max}" else "")
+    }
+
+    /** [a] is drawn after [b]: at their lowest common parent, [a]'s branch comes later (children are in drawing order). */
+    private fun drawnAfter(a: SemanticsNode, b: SemanticsNode): Boolean {
+        val pa = generateSequence(a) { it.parent }.toList().asReversed()
+        val pb = generateSequence(b) { it.parent }.toList().asReversed()
+        var i = 0
+        while (i < pa.size && i < pb.size && pa[i].id == pb[i].id) i++
+        if (i == 0 || i >= pa.size || i >= pb.size) return false
+        val kids = pa[i - 1].children.map { it.id }
+        return kids.indexOf(pa[i].id) > kids.indexOf(pb[i].id)
+    }
+
+    private fun nameOf(n: SemanticsNode): String =
+        n.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text }?.takeIf { it.isNotBlank() }
+            ?: n.config.getOrNull(SemanticsProperties.ContentDescription)?.joinToString(" ")?.takeIf { it.isNotBlank() }
+            ?: textBelow(n)?.takeIf { it.isNotBlank() }
+            ?: n.config.getOrNull(SemanticsProperties.TestTag)
+            ?: "#${n.id}"
 
     private fun textBelow(n: SemanticsNode): String? =
         n.children.firstNotNullOfOrNull { c -> c.config.getOrNull(SemanticsProperties.Text)?.joinToString(" ") { it.text } ?: textBelow(c) }

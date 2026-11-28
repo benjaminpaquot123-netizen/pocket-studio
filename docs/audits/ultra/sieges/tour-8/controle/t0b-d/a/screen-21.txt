@@ -1,0 +1,271 @@
+Écran 21 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+icône « Partie : F · Drop 2 » ▾ @ 123,180
+texte « Mesure » @ 79,232
+bouton « 1 » [coupé, sélectionné] @ 161,236
+bouton « 2 » [coupé] @ 242,236
+bouton « 3 » [coupé] @ 323,236
+bouton « 4 » [coupé] @ 404,236
+bouton « Suivre » @ 99,313
+texte « Grosse caisse 1 » @ 96,378
+bouton [sélectionné] @ 163,377
+bouton @ 187,377
+bouton @ 211,377
+bouton @ 235,377
+bouton [sélectionné] @ 260,377
+bouton @ 285,377
+bouton @ 310,377
+bouton @ 335,377
+bouton [sélectionné] @ 360,377
+bouton @ 385,377
+bouton @ 410,377
+bouton @ 435,377
+bouton [sélectionné] @ 460,377
+bouton @ 485,377
+bouton @ 510,377
+bouton @ 535,377
+texte « Grosse caisse 2 » @ 96,414
+bouton @ 163,413
+bouton @ 187,413
+bouton @ 211,413
+bouton @ 235,413
+bouton @ 260,413
+bouton @ 285,413
+bouton @ 310,413
+bouton @ 335,413
+bouton @ 360,413
+bouton @ 385,413
+bouton @ 410,413
+bouton @ 435,413
+bouton @ 460,413
+bouton @ 485,413
+bouton @ 510,413
+bouton @ 535,413
+texte « Caisse » @ 96,450
+bouton @ 163,449
+bouton @ 187,449
+bouton @ 211,449
+bouton @ 235,449
+bouton @ 260,449
+bouton @ 285,449
+bouton @ 310,449
+bouton @ 335,449
+bouton @ 360,449
+bouton @ 385,449
+bouton @ 410,449
+bouton @ 435,449
+bouton @ 460,449
+bouton @ 485,449
+bouton @ 510,449
+bouton @ 535,449
+texte « Caisse 2 » @ 96,486
+bouton @ 163,485
+bouton @ 187,485
+bouton @ 211,485
+bouton @ 235,485
+bouton @ 260,485
+bouton @ 285,485
+bouton @ 310,485
+bouton @ 335,485
+bouton @ 360,485
+bouton @ 385,485
+bouton @ 410,485
+bouton @ 435,485
+bouton @ 460,485
+bouton @ 485,485
+bouton @ 510,485
+bouton @ 535,485
+texte « Claquement de mains » @ 96,522
+bouton @ 163,521
+bouton @ 187,521
+bouton @ 211,521
+bouton @ 235,521
+bouton [sélectionné] @ 260,521
+bouton @ 285,521
+bouton @ 310,521
+bouton @ 335,521
+bouton @ 360,521
+bouton @ 385,521
+bouton @ 410,521
+bouton @ 435,521
+bouton [sélectionné] @ 460,521
+bouton @ 485,521
+bouton @ 510,521
+bouton @ 535,521
+texte « Charley » @ 96,558
+bouton [sélectionné] @ 163,557
+bouton [sélectionné] @ 187,557
+bouton @ 211,557
+bouton [sélectionné] @ 235,557
+bouton [sélectionné] @ 260,557
+bouton [sélectionné] @ 285,557
+bouton @ 310,557
+bouton [sélectionné] @ 335,557
+bouton [sélectionné] @ 360,557
+bouton [sélectionné] @ 385,557
+bouton @ 410,557
+bouton [sélectionné] @ 435,557
+bouton [sélectionné] @ 460,557
+bouton [sélectionné] @ 485,557
+bouton @ 510,557
+bouton [sélectionné] @ 535,557
+texte « Charley ouvert » @ 96,594
+bouton @ 163,593
+bouton @ 187,593
+bouton [sélectionné] @ 211,593
+bouton @ 235,593
+bouton @ 260,593
+bouton @ 285,593
+bouton [sélectionné] @ 310,593
+bouton @ 335,593
+bouton @ 360,593
+bouton @ 385,593
+bouton [sélectionné] @ 410,593
+bouton @ 435,593
+bouton @ 460,593
+bouton @ 485,593
+bouton [sélectionné] @ 510,593
+bouton @ 535,593
+texte « Tom grave » @ 96,630
+bouton @ 163,629
+bouton @ 187,629
+bouton @ 211,629
+bouton @ 235,629
+bouton @ 260,629
+bouton @ 285,629
+bouton @ 310,629
+bouton @ 335,629
+bouton @ 360,629
+bouton @ 385,629
+bouton @ 410,629
+bouton @ 435,629
+bouton @ 460,629
+bouton @ 485,629
+bouton @ 510,629
+bouton @ 535,629
+texte « Tom médium » @ 96,666
+bouton @ 163,665
+bouton @ 187,665
+bouton @ 211,665
+bouton @ 235,665
+bouton @ 260,665
+bouton @ 285,665
+bouton @ 310,665
+bouton @ 335,665
+bouton @ 360,665
+bouton @ 385,665
+bouton @ 410,665
+bouton @ 435,665
+bouton @ 460,665
+bouton @ 485,665
+bouton @ 510,665
+bouton @ 535,665
+texte « Tom aigu » @ 96,702
+bouton @ 163,701
+bouton @ 187,701
+bouton @ 211,701
+bouton @ 235,701
+bouton @ 260,701
+bouton @ 285,701
+bouton @ 310,701
+bouton @ 335,701
+bouton @ 360,701
+bouton @ 385,701
+bouton @ 410,701
+bouton @ 435,701
+bouton @ 460,701
+bouton @ 485,701
+bouton @ 510,701
+bouton @ 535,701
+texte « Bord de caisse » @ 96,738
+bouton @ 163,737
+bouton @ 187,737
+bouton [sélectionné] @ 211,737
+bouton @ 235,737
+bouton @ 260,737
+bouton @ 285,737
+bouton [sélectionné] @ 310,737
+bouton @ 335,737
+bouton @ 360,737
+bouton @ 385,737
+bouton [sélectionné] @ 410,737
+bouton @ 435,737
+bouton @ 460,737
+bouton @ 485,737
+bouton [sélectionné] @ 510,737
+bouton @ 535,737
+texte « Cloche » @ 96,774
+bouton @ 163,773
+bouton @ 187,773
+bouton @ 211,773
+bouton @ 235,773
+bouton @ 260,773
+bouton @ 285,773
+bouton @ 310,773
+bouton @ 335,773
+bouton @ 360,773
+bouton @ 385,773
+bouton @ 410,773
+bouton @ 435,773
+bouton @ 460,773
+bouton @ 485,773
+bouton @ 510,773
+bouton @ 535,773
+texte « Cymbale » @ 96,810
+bouton @ 163,809
+bouton @ 187,809
+bouton @ 211,809
+bouton @ 235,809
+bouton @ 260,809
+bouton @ 285,809
+bouton @ 310,809
+bouton @ 335,809
+bouton @ 360,809
+bouton @ 385,809
+bouton @ 410,809
+bouton @ 435,809
+bouton @ 460,809
+bouton @ 485,809
+bouton @ 510,809
+bouton @ 535,809
+bouton [coupé] @ 163,830
+bouton [coupé] @ 187,830
+bouton [coupé] @ 211,830
+bouton [coupé] @ 235,830
+bouton [coupé] @ 260,830
+bouton [coupé] @ 285,830
+bouton [coupé] @ 310,830
+bouton [coupé] @ 335,830
+bouton [coupé] @ 360,830
+bouton [coupé] @ 385,830
+bouton [coupé] @ 410,830
+bouton [coupé] @ 435,830
+bouton [coupé] @ 460,830
+bouton [coupé] @ 485,830
+bouton [coupé] @ 510,830
+bouton [coupé] @ 535,830
+icône (liste) « Chapitres » @ 444,879
+texte « Les transitions Chapitre 12/15 · Étape 3/3 · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône « À toi : dans le Drop 2, pad « Maracas », touche 4 cases, une par temps de la mesure 1. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

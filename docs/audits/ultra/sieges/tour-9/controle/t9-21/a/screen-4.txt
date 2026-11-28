@@ -1,0 +1,39 @@
+Écran 4 (540x1170)
+bouton (dossier ouvert) « Il mio progetto 1 » @ 100,42
+bouton « Semplice » @ 243,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 495,114
+icône « Parte: A » ▾ @ 76,180
+bouton « Grancassa da studio FX » [coupé] @ 78,261
+bouton « Grancassa 2 » [coupé] @ 206,261
+bouton « Rullante FX » [coupé] @ 334,261
+bouton « Rullante 2 » [coupé] @ 462,261
+icône (liste) « Capitoli » @ 405,336
+texte « La velocità e il colore del brano Capitolo 1/15 · Passo 2/3 · Facile » @ 192,336
+icône ⌄ @ 483,336
+texte « Tocca a te: imposta il tempo (la velocità del brano) a 174 BPM, 174 battiti al minuto. “Lo faccio io” apre la scheda Tempo. » @ 270,453
+texte « Un brano nuovo parte a 120 BPM: sei tu a dargli la velocità dello stile. » @ 270,546
+texte « • BPM: la velocità del brano, in battiti al minuto. » @ 237,598
+texte « ▸ Perché? » @ 270,636
+bouton (doigt qui touche) «   Lo faccio io » @ 270,699
+bouton ▶ «  Ascolta l'esempio » @ 142,786
+bouton (œil) «  Mostrami » @ 397,786
+icône ← «  Indietro » @ 95,870
+icône « Avanti  » → @ 452,870
+icône ↶ « Annulla » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « il brano » @ 264,954
+texte « 120 Tempo » @ 370,954
+icône ⋮ « Altro » @ 476,954
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 160,1050
+onglet (touches de piano) « Tastiera » @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Annota » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 138,1140

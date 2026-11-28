@@ -1,0 +1,6 @@
+Écran 83 (1035x1243)
+texte « Şarkını hazırlıyorum… » @ 417,429
+texte « Ses hazırlanıyor, sonra M4A'ya sıkıştırılıyor. » @ 517,545
+texte «   %25 » @ 846,641
+texte « Sonra göndermek için uygulamayı seç. » @ 478,707
+texte « İptal » @ 841,809

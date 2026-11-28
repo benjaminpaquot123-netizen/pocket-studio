@@ -1,0 +1,69 @@
+Écran 54 (900x1509)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 178,42
+bouton « Pro » @ 390,42
+bouton « A » ▾ @ 475,42
+icône ↶ @ 555,42
+icône ↷ [désactivé] @ 627,42
+bouton ● @ 699,42
+bouton ▶ « ta część » @ 777,42
+icône (trois points reliés) @ 855,42
+bouton « 142  BPM » @ 114,144
+bouton « ? » @ 855,144
+onglet « Perkusja 16 padów » [sélectionné] @ 132,262
+onglet « Acid 303 Linia basu » @ 388,262
+onglet « Wokal Mikrofon » @ 640,262
+onglet « Remix Rozdziel » [coupé] @ 822,262
+image → @ 889,263
+texte « Część: A » @ 104,354
+texte « Takt » @ 81,424
+bouton « 1 » @ 166,424
+bouton « 2 » [sélectionné] @ 247,424
+bouton « Podążaj » @ 393,424
+texte « Takt 2/2 · Drill · Hi-hat » @ 259,498
+texte « Jeszcze 1 kropkowane pole tutaj » @ 369,552
+bouton « 1 » [état « uderzenie, siła 100 % »] @ 90,629
+bouton [état « pusty »] @ 192,629
+bouton [état « pusty »] @ 294,629
+bouton [état « uderzenie, siła 100 % »] @ 397,629
+bouton « 2 » [état « pusty »] @ 500,629
+bouton [état « pusty »] @ 603,629
+bouton [état « uderzenie, siła 100 % »] @ 706,629
+bouton [état « pusty »] @ 809,629
+bouton « 3 » [état « uderzenie, siła 100 % »] @ 90,710
+bouton [état « pusty »] @ 192,710
+bouton [état « uderzenie, siła 100 % »] @ 294,710
+bouton [état « uderzenie, siła 100 % »] @ 397,710
+bouton « 4 » [état « uderzenie, siła 100 % »] @ 500,710
+bouton [état « pusty »] @ 603,710
+bouton [état « puste, kropkowane: dotknij »] @ 706,710
+bouton [état « pusty »] @ 809,710
+bouton « Uderzenia » [sélectionné] @ 163,796
+bouton « Rolki » @ 361,796
+bouton « Pan » @ 498,796
+bouton « Wysokość » @ 689,796
+bouton « Siła » [coupé] @ 839,796
+texte « Wypełnij » @ 119,880
+texte « wszystko » @ 303,880
+texte « 1/2 » @ 450,880
+texte « 1/4 » @ 535,880
+texte « ◀ » @ 616,880
+texte « ▶ » @ 691,880
+texte « Wyczyść » [coupé] @ 142,932
+texte « Hi-haty i perkusjonalia Rozdział 4/16 · Krok 1/4 · Pro » @ 356,1009
+icône (liste) « Rozdziały » @ 749,1009
+icône ⌃ @ 843,1009
+icône « Twoja kolej: na padzie „Drill · Hi-hat” 3-3-2 w 2 taktach (pola 1, 4, 7, 9, 12, 15) i kropkowane pola na końcu taktu 2. Potem takt 2: pola 11 i 12, przytrzymaj każde, „Roll” ×3; pole 13, „Triola” › „3 na 2 pola”: dwie małe serie i triola tuż przed zapętleniem. Czytaj » ⌃ @ 450,1152
+icône ↶ « Cofnij » @ 100,1277
+icône ↷ « Ponów » [désactivé] @ 254,1277
+bouton ▶ « utwór » @ 409,1278
+texte « 142 Tempo » @ 567,1277
+icône (trois points reliés) « Udostępnij » @ 762,1277
+onglet (ligne brisée et points) « Struktura » @ 85,1389
+onglet (touches de piano) « Dźwięki » [sélectionné] @ 268,1389
+onglet (curseurs) « Miks » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Więcej » @ 815,1389
+texte « ●  REC » @ 598,1479
+texte « ✎  Zanotuj » @ 735,1479
+texte « ⋯ » @ 852,1479
+texte « Tryb uwag » @ 277,1479

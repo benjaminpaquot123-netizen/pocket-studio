@@ -8,7 +8,7 @@
  "Hauteur : touche un coup, puis règle le curseur « Hauteur du coup » juste en dessous pour le monter ou le descendre (en demi-tons).": "Perde: bir vuruşa dokun, sonra hemen altındaki “vuruşun perdesi” sürgüsünü ayarlayarak yükselt ya da alçalt (yarım ton olarak).",
  "Une case de la grille : un seizième de mesure. Allumer un pas fait sonner le son à ce moment-là. Coups : allumer ou éteindre. Roulements : plusieurs coups rapides dans la case. Place : à gauche ou à droite. Hauteur (sons importés) : plus aigu ou plus grave. Force : plus fort ou plus doux.": "Izgaranın bir kutusu: bir ölçünün on altıda biri. Bir adımı açmak sesi o anda çaldırır. Vuruşlar: aç ya da kapat. Roll'lar: kutuda birkaç hızlı vuruş. Konum: sol ya da sağ. Perde (içe aktarılan sesler): daha tiz ya da daha pes. Güç: daha güçlü ya da daha yumuşak.",
  "Une case de la grille : un seizième de mesure. Touche une case pour y mettre un coup, touche-la encore pour l'enlever ; glisse le doigt pour en mettre plusieurs. Appui long sur un coup : sa force et ses roulements.": "Izgaranın bir kutusu: bir ölçünün on altıda biri. Bir kutuya vuruş koymak için dokun, kaldırmak için yine dokun; birkaç tane koymak için parmağını kaydır. Bir vuruşa basılı tut: gücü ve roll'ları.",
- "Ce chapitre n'est pas fini : il reste l'étape %d. Touche « Chapitres » pour y revenir.": "Bu bölüm bitmedi: %d. adım kaldı. Ona dönmek için “Aşamalar”a dokun.",
+ "Ce chapitre n'est pas fini : il reste l'étape %d. Touche « Chapitres » pour y revenir.": "Bu aşama bitmedi: %d. adım kaldı. Ona dönmek için “Aşamalar”a dokun.",
  "pad %s": "pad %s",
  "%s : à régler ici": "%s: burada ayarla",
  "%s : ensuite": "%s: sonra",
@@ -20,6 +20,6 @@
  "Partie « %s » créée : tout le Groove y joue.": "“%s” bölümü oluşturuldu: içinde Groove'un tamamı çalıyor.",
  "Partie « %1$s » créée (copie du Groove) : sans %2$s.": "“%1$s” bölümü oluşturuldu (Groove'un kopyası): %2$s olmadan.",
  "Sa basse est à toi d'écrire : les notes en pointillé.": "Basını sen yazacaksın: noktalı notalar.",
- "Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.": "Trampeti ölçü ölçü hızlanır, son vuruşu susar.",
- "Son pad « %s » accélère mesure après mesure, et son dernier temps se tait.": "“%s” pad'i ölçü ölçü hızlanır, son vuruşu susar."
+ "Sa caisse claire accélère mesure après mesure.": "Trampeti ölçü ölçü hızlanır.",
+ "Son pad « %s » accélère mesure après mesure.": "“%s” pad'i ölçü ölçü hızlanır."
 }

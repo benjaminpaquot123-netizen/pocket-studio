@@ -1,0 +1,69 @@
+Écran 43 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 283,42
+bouton « Simple » @ 608,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+icône « Partie : A » ▾ @ 82,180
+titre « PAS : DRUM & BASS · CHARLEY » [coupé, état « Déplié »] @ 354,227
+bouton « ? » [coupé] @ 433,227
+bouton « Tous les pads » [coupé] @ 762,228
+texte « Mesure » @ 79,300
+bouton « 1 » [sélectionné] @ 161,300
+bouton « 2 » @ 242,300
+bouton « Suivre » @ 344,300
+texte « Mesure 2 · 1 case → » @ 730,384
+texte « Mesure 1/2 · Drum & bass · Charley » @ 224,384
+bouton « 1 » [état « coup, force 100 % »] @ 90,469
+bouton [état « vide »] @ 192,469
+bouton [état « coup, force 100 % »] @ 294,469
+bouton [état « vide »] @ 397,469
+bouton « 2 » [état « coup, force 100 % »] @ 500,469
+bouton [état « vide »] @ 603,469
+bouton [état « coup, force 100 % »] @ 706,469
+bouton [état « vide »] @ 809,469
+bouton « 3 » [état « coup, force 100 % »] @ 90,550
+bouton [état « vide »] @ 192,550
+bouton [état « coup, force 100 % »] @ 294,550
+bouton [état « vide »] @ 397,550
+bouton « 4 » [état « coup, force 100 % »] @ 500,550
+bouton [état « vide »] @ 603,550
+bouton [état « coup, force 100 % »] @ 706,550
+bouton [état « coup, force 100 % »] @ 809,550
+texte « tout » @ 152,636
+texte « 1/2 » @ 227,636
+texte « 1/4 » @ 302,636
+texte « ◀ » @ 377,636
+texte « ▶ » @ 452,636
+texte « Effacer » @ 540,636
+texte « Remplir » @ 77,636
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » @ 450,711
+texte « Longueur » @ 89,786
+bouton « 1 mesure » @ 215,786
+bouton « 2 » [sélectionné] @ 330,786
+bouton « 3 » @ 411,786
+bouton « 4 » @ 492,786
+titre « SON DU PAD » [état « Déplié »] @ 151,903
+bouton « ? » @ 239,903
+texte « Drum & bass · Charley » @ 450,952
+bouton (notes sur une pile) «  Changer le son » @ 450,1015
+icône (liste) « Chapitres » @ 756,1110
+texte « Les charleys Chapitre 4/15 · Étape 1/2 · Facile » @ 363,1110
+icône ⌃ @ 843,1110
+icône « À toi : sur le pad « Drum & bass · Charley », touche toutes les cases en pointillé des 2 mesures. Lire » ⌃ @ 450,1209
+icône ↶ « Annuler » @ 121,1293
+image ↷ @ 279,1283
+bouton ▶ « le morceau » @ 444,1293
+texte « 174 Tempo » @ 615,1293
+icône ⋮ « Plus » @ 779,1293
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » [sélectionné] @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

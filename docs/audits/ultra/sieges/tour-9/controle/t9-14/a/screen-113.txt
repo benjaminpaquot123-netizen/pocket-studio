@@ -1,0 +1,7 @@
+Écran 113 (1035x1243)
+texte « Mijn nummer delen · Mijn-nummer-20261119-074927.m4a » @ 517,443
+bouton « WhatsApp » @ 517,548
+bouton « Messages » @ 517,620
+bouton « Gmail » @ 517,692
+bouton « Drive » @ 517,764
+bouton « Files » @ 517,836

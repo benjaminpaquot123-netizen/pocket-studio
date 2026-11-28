@@ -1,0 +1,569 @@
+#0 SIEGE lang=de device=tablet8 font=130 mode=pro theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:techno:8
+#0 PREMIER ECRAN reel_s=3.7 simule_s=2.4 jvm_s=8.3 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:techno:8
+#0 AMENEE > touche 450 1268 (launch_learn)
+#0 AMENEE > touche 670 1307 (mode_card_pro)
+#0 AMENEE > touche 450 329 (tuto_style_techno)
+#0 AMENEE chapitres 1 à 7 construits dans le projet
+#0 AMENEE > touche 759 730 (tuto_chapters)
+#0 AMENEE > touche 450 786 (tuto_chapter_7)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE 601bed7080 | project=p-f40d9027 tuto=techno/Pro active=true step=groove_hear done=15 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Gespeichert » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 798 1207
+#1 DOIGT tuto_next « Weiter  »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE a0758b83ac | project=p-f40d9027 tuto=techno/Pro active=true step=groove_name done=16 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 450 1042
+#2 DOIGT tuto_need «   Teil „Groove“ benennen »
+#3 ROUTE tab_Structure | MODE pro | EMPREINTE 1fd91c2c28 | project=p-f40d9027 tuto=techno/Pro active=true step=groove_name done=17 playing=false
+#3 SON Son : rien ne joue.
+#3 > touche 450 1123
+#3 DOIGT tuto_next_big « Nächstes Kapitel   »
+#4 ROUTE tab_Structure | MODE pro | EMPREINTE ae4f7d0d92 | project=p-f40d9027 tuto=techno/Pro active=true step=brick done=17 playing=false
+#4 SON Son : rien ne joue.
+#4 > touche 450 1123
+#4 DOIGT tuto_mark «   Verstanden »
+#5 ROUTE tab_Structure | MODE pro | EMPREINTE 7a75704948 | project=p-f40d9027 tuto=techno/Pro active=true step=map_intro done=18 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#5 > touche 450 1123
+#5 DOIGT tuto_listen «  Beispiel anhören »
+#6 ROUTE tab_Structure | MODE pro | EMPREINTE 94d2eb910c | project=p-f40d9027 tuto=techno/Pro active=true step=map_intro done=18 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 3 s).
+#6 > attends 4
+#7 ROUTE tab_Structure | MODE pro | EMPREINTE f821749fda | project=p-f40d9027 tuto=techno/Pro active=true step=map_intro done=19 playing=false
+#7 SON Son : rien ne joue.
+#7 > touche 450 1123
+#7 DOIGT tuto_next_big « Nächster Schritt   »
+#8 ROUTE tab_Structure | MODE pro | EMPREINTE 609f5c5c5f | project=p-f40d9027 tuto=techno/Pro active=true step=map_intro2 done=19 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 798 1207
+#8 DOIGT tuto_next « Weiter  »
+#9 ROUTE tab_Structure | MODE pro | EMPREINTE 44bcc3ae3f | project=p-f40d9027 tuto=techno/Pro active=true step=map_drop done=20 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 798 1207
+#9 DOIGT tuto_next « Weiter  »
+#10 ROUTE tab_Structure | MODE pro | EMPREINTE 57528e295e | project=p-f40d9027 tuto=techno/Pro active=true step=map_break done=21 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 798 1207
+#10 DOIGT tuto_next « Weiter  »
+#11 ROUTE tab_Structure | MODE pro | EMPREINTE eca9d059d8 | project=p-f40d9027 tuto=techno/Pro active=true step=map_montee done=22 playing=false
+#11 SON Son : rien ne joue.
+#11 > touche 798 1207
+#11 DOIGT tuto_next « Weiter  »
+#12 ROUTE tab_Structure | MODE pro | EMPREINTE ae60db0957 | project=p-f40d9027 tuto=techno/Pro active=true step=map_phrases done=23 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 450 1123
+#12 DOIGT tuto_mark «   Verstanden »
+#13 ROUTE tab_Structure | MODE pro | EMPREINTE b24919cc92 | project=p-f40d9027 tuto=techno/Pro active=true step=map_phrases done=24 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 1123
+#13 DOIGT tuto_next_big « Nächstes Kapitel   »
+#14 ROUTE tab_Structure | MODE pro | EMPREINTE 1b8a3d6663 | project=p-f40d9027 tuto=techno/Pro active=true step=make_intro done=24 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 450 1042
+#14 DOIGT tuto_need «   Teil „Intro“ erstellen »
+#15 ROUTE tab_Structure | MODE pro | EMPREINTE 677a4fa844 | project=p-f40d9027 tuto=techno/Pro active=true step=make_intro done=25 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 450 1123
+#15 DOIGT tuto_next_big « Nächster Schritt   »
+#16 ROUTE tab_Structure | MODE pro | EMPREINTE 8dee28fe8c | project=p-f40d9027 tuto=techno/Pro active=true step=make_intro2 done=25 playing=false
+#16 SON Son : rien ne joue.
+#16 > touche 450 1042
+#16 DOIGT tuto_need «   Teil „Intro 2“ erstellen »
+#17 ROUTE tab_Structure | MODE pro | EMPREINTE 815d7fdea5 | project=p-f40d9027 tuto=techno/Pro active=true step=make_intro2 done=26 playing=false
+#17 SON Son : rien ne joue.
+#17 > touche 450 1123
+#17 DOIGT tuto_next_big « Nächster Schritt   »
+#18 ROUTE tab_Structure | MODE pro | EMPREINTE 62573c4944 | project=p-f40d9027 tuto=techno/Pro active=true step=make_drop done=26 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 450 1042
+#18 DOIGT tuto_need «   Teil „Drop“ erstellen »
+#19 ROUTE tab_Structure | MODE pro | EMPREINTE a4acf44d30 | project=p-f40d9027 tuto=techno/Pro active=true step=make_drop done=27 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 450 1123
+#19 DOIGT tuto_next_big « Nächster Schritt   »
+#20 ROUTE tab_Structure | MODE pro | EMPREINTE bbf8f29aa9 | project=p-f40d9027 tuto=techno/Pro active=true step=make_break done=27 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1042
+#20 DOIGT tuto_need «   Teil „Break“ erstellen »
+#21 ROUTE tab_Structure | MODE pro | EMPREINTE 6ff2c16c8b | project=p-f40d9027 tuto=techno/Pro active=true step=make_break done=28 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 450 1123
+#21 DOIGT tuto_next_big « Nächster Schritt   »
+#22 ROUTE tab_Structure | MODE pro | EMPREINTE 6a20dda21c | project=p-f40d9027 tuto=techno/Pro active=true step=make_montee done=28 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 450 1042
+#22 DOIGT tuto_need «   Teil „Build-up“ erstellen »
+#23 ROUTE tab_Structure | MODE pro | EMPREINTE 1ab1155adc | project=p-f40d9027 tuto=techno/Pro active=true step=make_montee done=29 playing=false
+#23 SON Son : rien ne joue.
+#23 > touche 450 1123
+#23 DOIGT tuto_next_big « Nächster Schritt   »
+#24 ROUTE tab_Structure | MODE pro | EMPREINTE 35f9bf2d19 | project=p-f40d9027 tuto=techno/Pro active=true step=make_drop2 done=29 playing=false
+#24 SON Son : rien ne joue.
+#24 > touche 450 1042
+#24 DOIGT tuto_need «   Teil „Drop 2“ erstellen »
+#25 ROUTE tab_Structure | MODE pro | EMPREINTE 56451c4458 | project=p-f40d9027 tuto=techno/Pro active=true step=make_drop2 done=30 playing=false
+#25 SON Son : rien ne joue.
+#25 > touche 450 1123
+#25 DOIGT tuto_next_big « Nächster Schritt   »
+#26 ROUTE tab_Structure | MODE pro | EMPREINTE 6d3c9a33f7 | project=p-f40d9027 tuto=techno/Pro active=true step=make_fin done=30 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 450 1042
+#26 DOIGT tuto_need «   Teil „Ende“ erstellen »
+#27 ROUTE tab_Structure | MODE pro | EMPREINTE 3f501391a0 | project=p-f40d9027 tuto=techno/Pro active=true step=make_fin done=31 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 450 1123
+#27 DOIGT tuto_next_big « Nächstes Kapitel   »
+#28 ROUTE tab_Structure | MODE pro | EMPREINTE c88e8dbf5b | project=p-f40d9027 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#28 SON Son : rien ne joue.
+#28 > touche 450 1042
+#28 DOIGT tuto_do «   Ich mach's »
+#29 ROUTE session/tab_Structure | MODE pro | EMPREINTE 638b57cd8f | project=p-f40d9027 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#29 SON Son : rien ne joue.
+#29 LAYOUT CUT « Du bist dran: Füg in „Struktur“ der Reihe nach Intro, Intro 2, Drop, Break, Build-up, Drop 2 und Ende hinzu (jeder Teil kommt mit der Länge seines Loops, 8 Takte oder 4 fürs Build-up; der nächste Schritt stellt die Längen ein). » ellipsized (« … »)
+#29 LAYOUT CONTRAST « + A · Groove » 3.99:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + B · Intro » 3.99:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + C · Intro 2 » 3.99:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + D · Drop » 4.06:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + E · Break » 4.06:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + F · Build-up » 4.06:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + G · Drop 2 » 4.12:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + H · Ende » 4.12:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + Neuer Teil (Kopie von H · Ende) » 4.16:1 (needs 4.5:1, 14 sp)
+#29 LAYOUT CONTRAST « + Neuer leerer Teil » 4.18:1 (needs 4.5:1, 14 sp)
+#29 > attends 3
+#30 ROUTE session/tab_Structure | MODE pro | EMPREINTE 638b57cd8f | project=p-f40d9027 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 395 246
+#30 DOIGT add_part_1 « + B · Intro »
+#31 ROUTE session/tab_Structure | MODE pro | EMPREINTE adbd619fd9 | project=p-f40d9027 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 623 557
+#31 DOIGT add_part_2 « + C · Intro 2 »
+#32 ROUTE session/tab_Structure | MODE pro | EMPREINTE 8ffe5ba6ac | project=p-f40d9027 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 146 754
+#32 DOIGT add_part_3 « + D · Drop »
+#33 ROUTE session/tab_Structure | MODE pro | EMPREINTE a315b4ff57 | project=p-f40d9027 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 369 754
+#33 DOIGT add_part_4 « + E · Break »
+#34 ROUTE session/tab_Structure | MODE pro | EMPREINTE 2a8526ecd3 | project=p-f40d9027 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#34 SON Son : rien ne joue.
+#34 > touche 615 754
+#34 DOIGT add_part_5 « + F · Build-up »
+#35 ROUTE session/tab_Structure | MODE pro | EMPREINTE caa721139b | project=p-f40d9027 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#35 SON Son : rien ne joue.
+#35 > touche 159 835
+#35 DOIGT add_part_6 « + G · Drop 2 »
+#36 ROUTE session/tab_Structure | MODE pro | EMPREINTE 759efddaab | project=p-f40d9027 tuto=techno/Pro active=true step=song_order done=31 playing=false
+#36 SON Son : rien ne joue.
+#36 > touche 391 835
+#36 DOIGT add_part_7 « + H · Ende »
+#37 ROUTE session/tab_Structure | MODE pro | EMPREINTE af9654ab9a | project=p-f40d9027 tuto=techno/Pro active=true step=song_order done=32 playing=false
+#37 SON Son : rien ne joue.
+#37 > touche 450 1196
+#37 DOIGT tuto_next_folded « Geschafft »
+#38 ROUTE tab_Structure | MODE pro | EMPREINTE d86901f71f | project=p-f40d9027 tuto=techno/Pro active=true step=song_phrases done=32 playing=false
+#38 SON Son : rien ne joue.
+#38 > touche 450 1042
+#38 DOIGT tuto_need «   Empfohlene Längen setzen »
+#39 ROUTE tab_Structure | MODE pro | EMPREINTE 616be00452 | project=p-f40d9027 tuto=techno/Pro active=true step=song_phrases done=33 playing=false
+#39 SON Son : rien ne joue.
+#39 > touche 450 1123
+#39 DOIGT tuto_next_big « Nächstes Kapitel   »
+#40 ROUTE tab_Structure | MODE pro | EMPREINTE 576ab62f72 | project=p-f40d9027 tuto=techno/Pro active=true step=fill done=33 playing=false
+#40 SON Son : rien ne joue.
+#40 > touche 450 1042
+#40 DOIGT tuto_need «   Zum Teil „Build-up“ gehen »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 2905de8c5f | project=p-f40d9027 tuto=techno/Pro active=true step=fill done=33 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT CUT « Mein Projekt 1 » ellipsized (« … »)
+#41 LAYOUT CUT « Gespeichert » wider than its box (by 27.7 dp)
+#41 LAYOUT CUT « F · Build-up » ellipsized (« … »)
+#41 LAYOUT CUT « Du bist dran: Im Teil „Build-up“, letzter Takt, Pad „Clap“: Drück lange auf den letzten Schlag vor der letzten Zählzeit, dann „Roll“ ×3 oder ×4: die letzte Salve. » ellipsized (« … »)
+#41 LAYOUT CONTRAST « STEPS: CLAP · BUILD-UP » 1.43:1 (needs 4.5:1, 12 sp)
+#41 LAYOUT CONTRAST « ? » 1.76:1 (needs 4.5:1, 12 sp)
+#41 LAYOUT CONTRAST « Alle Pads » 1.39:1 (needs 4.5:1, 14 sp)
+#41 > appui-long 397 634
+#41 DOIGT step_59 « Step 12 »
+#42 ROUTE dialogue:roll_menu | MODE pro | EMPREINTE 5adbfe5905 | project=p-f40d9027 tuto=techno/Pro active=true step=fill done=33 playing=false
+#42 SON Son : rien ne joue.
+#42 > touche 334 516
+#42 DOIGT roll_4 « ×4 »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE 1b37cda72b | project=p-f40d9027 tuto=techno/Pro active=true step=fill done=34 playing=false
+#43 SON Son : rien ne joue.
+#43 > touche 450 1196
+#43 DOIGT tuto_next_folded « Geschafft »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 37d856924d | project=p-f40d9027 tuto=techno/Pro active=true step=gap done=34 playing=false
+#44 SON Son : rien ne joue.
+#44 > touche 843 677
+#44 DOIGT tuto_fold
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 92f0c0e060 | project=p-f40d9027 tuto=techno/Pro active=true step=gap done=34 playing=false
+#45 SON Son : rien ne joue.
+#45 LAYOUT CUT « Du bist dran: Lösch im Teil „Build-up“, letzter Takt, die 3 Schläge des Pads „Hi-Hat“ auf dem letzten Schlag (tippe auf die 3 roten Kreuze): ein Schlag Stille direkt vor Drop 2. Das ist ein Übergang (die kleine Stelle, die den nächsten Teil ankündigt). » ellipsized (« … »)
+#45 > glisse 450 870 450 1040
+#45 DOIGT rien (texte « Tippe auf ein Kästchen, um einen Schlag  »)
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 9c933ce4fa | project=p-f40d9027 tuto=techno/Pro active=true step=gap done=34 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT CONTRAST « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » 2.30:1 (needs 4.5:1, 13 sp)
+#46 > touche 770 400
+#46 DOIGT all_pads « Alle Pads »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE adecedf155 | project=p-f40d9027 tuto=techno/Pro active=true step=gap done=34 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CUT « Offene Hi-Hat » ellipsized (« … »)
+#47 LAYOUT CUT « Tiefes Tom » ellipsized (« … »)
+#47 LAYOUT CUT « Mittleres Tom » ellipsized (« … »)
+#47 LAYOUT CUT « Hohes Tom » ellipsized (« … »)
+#47 LAYOUT TARGET « Kick, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Kick 2, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Snare 2, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Clap, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hi-Hat, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Offene Hi-Hat, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Tiefes Tom, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Mittleres Tom, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Hohes Tom, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Rim, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Cowbell, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Becken, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 1 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 2 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 3 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 4 » 28 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 5 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 6 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 7 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 8 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 9 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 10 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 11 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 12 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 13 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 14 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 15 » 27 x 22 dp (touch 48 x 48)
+#47 LAYOUT TARGET « Shaker, Step 16 » 27 x 22 dp (touch 48 x 48)
+#47 > touche 843 1084
+#47 DOIGT tuto_fold
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE e3ea863f4a | project=p-f40d9027 tuto=techno/Pro active=true step=gap done=34 playing=false
+#48 SON Son : rien ne joue.
+#48 LAYOUT CONTRAST « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » 2.33:1 (needs 4.5:1, 13 sp)
+#48 > touche 450 1042
+#48 DOIGT tuto_do «   Ich mach's »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE adecedf155 | project=p-f40d9027 tuto=techno/Pro active=true step=gap done=34 playing=false
+#49 SON Son : rien ne joue.
+#49 > attends 4
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE adecedf155 | project=p-f40d9027 tuto=techno/Pro active=true step=gap done=34 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 705 728
+#50 DOIGT cell_5_60 « Hi-Hat, Step 13 »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE 020728bd32 | project=p-f40d9027 tuto=techno/Pro active=true step=gap done=34 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 749 728
+#51 DOIGT cell_5_61 « Hi-Hat, Step 14 »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 36cd53c529 | project=p-f40d9027 tuto=techno/Pro active=true step=gap done=34 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 837 728
+#52 DOIGT cell_5_63 « Hi-Hat, Step 16 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 368d695331 | project=p-f40d9027 tuto=techno/Pro active=true step=gap done=35 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 450 1196
+#53 DOIGT tuto_next_folded « Geschafft »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE bd3c418ea1 | project=p-f40d9027 tuto=techno/Pro active=true step=crash done=35 playing=false
+#54 SON Son : rien ne joue.
+#54 > touche 450 1042
+#54 DOIGT tuto_need «   Zum Teil „Drop“ gehen »
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE 019f321485 | project=p-f40d9027 tuto=techno/Pro active=true step=crash done=35 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CUT « Du bist dran: Tippe im Teil „Drop“ auf dem Pad „Becken“ auf das allererste Kästchen, es ist noch leer: ein Schlag in dem Moment, in dem alles einsetzt. » ellipsized (« … »)
+#55 LAYOUT TARGET « Conga, Step 1 » 28 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 2 » 28 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 3 » 28 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 4 » 28 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 5 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 6 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 7 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 8 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 9 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 10 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 11 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 12 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 13 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 14 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 15 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Conga, Step 16 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 1 » 28 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 2 » 28 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 3 » 28 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 4 » 28 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 5 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 6 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 7 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 8 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 9 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 10 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 11 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 12 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 13 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 14 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 15 » 27 x 22 dp (touch 48 x 48)
+#55 LAYOUT TARGET « Zap, Step 16 » 27 x 22 dp (touch 48 x 48)
+#55 > touche 174 896
+#55 DOIGT cell_12_0 « Becken, Step 1 »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE 85ea703d35 | project=p-f40d9027 tuto=techno/Pro active=true step=crash done=36 playing=false
+#56 SON Son : rien ne joue.
+#56 > touche 450 1196
+#56 DOIGT tuto_chapter_end_folded « Bravo, Kapitel geschafft! »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 3c39053339 | project=p-f40d9027 tuto=techno/Pro active=true step=crash done=36 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 450 1123
+#57 DOIGT tuto_next_big « Nächstes Kapitel   »
+#58 ROUTE tab_Sons | MODE pro | EMPREINTE ed9eb2b291 | project=p-f40d9027 tuto=techno/Pro active=true step=reverb done=36 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CONTRAST « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » 2.31:1 (needs 4.5:1, 13 sp)
+#58 > touche 450 1042
+#58 DOIGT tuto_do «   Ich mach's »
+#59 ROUTE dialogue:effects_box_20 | MODE pro | EMPREINTE 12ddeea225 | project=p-f40d9027 tuto=techno/Pro active=true step=reverb done=37 playing=false
+#59 SON Son : rien ne joue.
+#59 LAYOUT CONTRAST « ? » 3.84:1 (needs 4.5:1, 12 sp)
+#59 LAYOUT CONTRAST « Neutral » 4.44:1 (needs 4.5:1, 12 sp)
+#59 LAYOUT CONTRAST « 0 » 4.44:1 (needs 4.5:1, 12 sp)
+#59 LAYOUT CONTRAST « Gemeinsames Reverb und Echo » 4.44:1 (needs 4.5:1, 14 sp)
+#59 LAYOUT CONTRAST « 30 % » 3.63:1 (needs 4.5:1, 14 sp)
+#59 LAYOUT CONTRAST « Schließen » 3.63:1 (needs 4.5:1, 14 sp)
+#59 > touche 762 1437
+#59 DOIGT fx_close « Schließen »
+#60 ROUTE tab_Sons | MODE pro | EMPREINTE d2686d9146 | project=p-f40d9027 tuto=techno/Pro active=true step=reverb done=37 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 450 1196
+#60 DOIGT tuto_next_folded « Geschafft »
+#61 ROUTE tab_Sons | MODE pro | EMPREINTE 55d8eb303c | project=p-f40d9027 tuto=techno/Pro active=true step=filter done=37 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 450 1042
+#61 DOIGT tuto_do «   Ich mach's »
+#62 ROUTE automation/tab_Mix | MODE pro | EMPREINTE 1b7b043be2 | project=p-f40d9027 tuto=techno/Pro active=true step=filter done=38 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST « ? » 3.29:1 (needs 4.5:1, 12 sp)
+#62 LAYOUT CONTRAST « Aufnehmen » 3.59:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Lass eine Einstellung sich von selbst bewegen: Wähl sie aus und zeichne ihre Kurve (mit dem Finger oder eine Linie mit zwei Taps). » 3.99:1 (needs 4.5:1, 13 sp)
+#62 LAYOUT CONTRAST «  Was spielt » 3.99:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Melodie » 4.21:1 (needs 4.5:1, 13 sp)
+#62 LAYOUT CONTRAST « Leeren » 3.33:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Öffnet (hell) oder schließt (dumpf) den Sound: der Filter-Sweep. » 4.12:1 (needs 4.5:1, 13 sp)
+#62 LAYOUT CONTRAST «  Einstellung zeigen » 4.12:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Loop » 4.18:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Song » 4.18:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Über den ganzen Teil · 4 Takte » 4.25:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Steps von Teil D (jeder Teil hat seine eigenen). » 4.25:1 (needs 4.5:1, 13 sp)
+#62 LAYOUT CONTRAST « Linie » 3.76:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « Glätten » 3.49:1 (needs 4.5:1, 14 sp)
+#62 LAYOUT CONTRAST « ×1 » 4.25:1 (needs 4.5:1, 14 sp)
+#62 > glisse 450 900 450 450
+#62 DOIGT auto_len_part_0 « Über den ganzen Teil · 4 Takte »
+#63 ROUTE auto_lane_0/tab_Mix | MODE pro | EMPREINTE 7641a0d69c | project=p-f40d9027 tuto=techno/Pro active=true step=filter done=38 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CUT « 18,0 kHz » lines dropped (more lines than room)
+#63 LAYOUT CUT « 849 Hz » lines dropped (more lines than room)
+#63 LAYOUT CUT « Schlag » lines dropped (more lines than room)
+#63 > fin
+#63 FIN : fin

@@ -1,0 +1,63 @@
+Écran 88 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 188,42
+texte « Pro » @ 403,42
+bouton « A » ▾ @ 478,42
+icône ↶ @ 553,42
+bouton ● @ 625,42
+bouton ▶ « bagian ini » @ 698,42
+bouton ▶ « lagu » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » [coupé] @ 54,186
+onglet « Acid 303 Bassline » @ 169,186
+onglet « Vokal Mikrofon » @ 322,186
+onglet « Remix Pisahkan » @ 473,186
+bouton « Akor Hoover » @ 612,186
+bouton « Melodi Lead square » ⋮ @ 779,186
+image ← @ 10,187
+image → @ 889,187
+texte « Bagian: A » @ 68,249
+texte « Arpeggio » [coupé] @ 85,281
+bouton « ? » [coupé] @ 149,285
+bouton « Tidak » [coupé, sélectionné] @ 233,286
+bouton « ↑ » [désactivé, coupé] @ 332,286
+bouton « ↓ » [désactivé, coupé] @ 413,286
+bouton « ↑↓ » [désactivé, coupé] @ 502,286
+bouton « Acak » [désactivé, coupé] @ 605,286
+bouton « Pola » [désactivé, coupé] @ 712,286
+bouton « Tidak » [sélectionné] @ 221,363
+bouton « Ringan » [désactivé] @ 344,363
+bouton « Sedang » [désactivé] @ 477,363
+bouton « Lambat » [désactivé] @ 612,363
+texte « Strum » @ 69,363
+texte « Tidak ada akor di not ini: tidak ada yang perlu diubah di sini. Suaranya sama untuk seluruh trek dan diatur di bawah. » @ 450,438
+texte « Atur suara trek » @ 135,513
+texte « Suara trek (sama untuk semua notnya) » @ 199,607
+titre « INSTRUMEN » [état « Terbuka »] @ 149,681
+bouton « ? » @ 235,681
+onglet (curseurs) « Synth » [sélectionné] @ 107,742
+onglet (rond relié à des points) « Plaits » @ 245,742
+onglet (barres de son) « Sampel » @ 391,742
+onglet (touches de piano) « Instrumen asli » @ 582,742
+onglet (notes sur une pile) « Instrumen » @ 778,742
+titre « SUARA SIAP MAIN » [état « Terbuka »] @ 159,850
+icône ← @ 78,916
+texte « Lead » @ 486,916
+bouton (éclair) (dents de scie) « Lead Saw · ditahan » @ 243,1007
+bouton (éclair) (créneaux) « Lead square Square · ditahan » [sélectionné] @ 657,1007
+bouton (éclair) (dents de scie) « Lead acid Saw · ditahan » [coupé] @ 243,1098
+bouton (éclair) (dents de scie) « Supersaw Saw · 7 suara · ditahan » [coupé] @ 657,1098
+icône (liste) « Bab » @ 771,1182
+texte « Riff Bab 5/14 · Langkah 2/2 · Pro » @ 378,1182
+icône ⌃ @ 843,1182
+icône « Giliranmu: di “Atur suara trek” Melodi, naikkan “Ketebalan (detune)” minimal 15: riff-nya jadi lebih lebar dan lebih galak. Baca » ⌃ @ 450,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

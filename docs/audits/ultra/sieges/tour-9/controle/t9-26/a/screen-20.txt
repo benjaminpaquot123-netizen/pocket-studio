@@ -1,0 +1,39 @@
+Écran 20 (1035x1243)
+icône (dossier ouvert) ✓ « Projem 1 Kaydedildi » @ 346,42
+bouton « Basit » @ 738,42
+bouton ● @ 828,42
+bouton ▶ « bu bölüm » @ 909,42
+icône ⋮ @ 990,42
+bouton « 140  Tempo » @ 136,144
+bouton « ? » @ 990,144
+icône « Bölüm: A · Groove » ▾ @ 206,240
+bouton « Büyük davul 1 FX » [coupé] @ 75,321
+bouton « Büyük davul 2 » [coupé] @ 200,321
+bouton « Trampet FX » [coupé] @ 325,321
+bouton « Trampet 2 » [coupé] @ 450,321
+titre « ADIMLAR: BÜYÜK DAVUL 1 » [coupé, état « Genişletildi »] @ 633,333
+bouton « Tüm pad'ler » [coupé] @ 854,348
+texte « Bölümlerini kur Aşama 10/15 · Adım 1/6 · Kolay » @ 423,415
+icône (liste) « Aşamalar » @ 883,415
+icône ⌄ @ 978,415
+texte « Sıra sende: ““Giriş” bölümünü oluştur” düğmesine dokun. » @ 517,559
+texte « ▸ Neden? » @ 517,659
+bouton ⊕ «   “Giriş” bölümünü oluştur » @ 517,736
+bouton ▶ «  Örneği dinle » @ 266,822
+bouton (œil) «  Göster » @ 768,822
+icône ← «  Önceki » @ 125,908
+icône « İleri  » → @ 941,908
+bouton ▶ « şarkı » @ 518,1012
+texte « 140 Tempo » @ 707,1011
+icône ↶ « Geri al » @ 144,1011
+image ↷ @ 337,991
+icône ⋮ « Diğer » @ 899,1011
+onglet (lignes et note) « Şarkım » @ 99,1123
+onglet (quatre carrés) « Ritim » [sélectionné] @ 309,1123
+onglet (touches de piano) « Klavye » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Paylaş » @ 936,1123
+texte « ●  REC » @ 757,1213
+texte « ✎  Not al » @ 882,1213
+texte « ⋯ » @ 987,1213
+texte « Geri bildirim modu » @ 357,1213

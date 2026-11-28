@@ -1,0 +1,26 @@
+Écran 101 (588x1278)
+texte « Der Mix: die Lautstärken Kapitel 12/13 · Erledigt · Einfach » @ 208,145
+icône (liste) « Kapitel » @ 445,145
+icône ⌄ @ 531,145
+image (coupe) @ 57,478
+texte « Bravo, Kapitel geschafft! » @ 319,348
+texte « Hör dir deinen Song so an, wie er jetzt ist, dann geht es zum nächsten Kapitel: „Exportiere deinen Track“. » [coupé] @ 319,491
+icône « Weiterlesen » ⌄ @ 294,614
+bouton « Nächstes Kapitel   » → @ 294,689
+bouton ▶ «  Meinen Song anhören » @ 154,803
+bouton ▶ «  Beispiel anhören » @ 433,803
+icône ← «  Zurück » @ 125,917
+texte « 116 Tempo » @ 422,1020
+icône ↶ « Rückgängig » @ 56,1021
+image ↷ @ 152,1013
+icône ▶ « der Song » @ 280,1021
+icône ⋮ « Mehr » @ 533,1020
+onglet (lignes et note) « Mein Song » @ 54,1145
+onglet (quatre carrés) « Rhythmus » @ 174,1145
+onglet (touches de piano) « Tastatur » @ 294,1145
+onglet (curseurs) « Mix » [sélectionné] @ 414,1145
+onglet (trois points reliés) « Teilen » @ 534,1145
+texte « ●  REC » @ 272,1248
+texte « ✎  Notieren » @ 416,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback-Modus » @ 114,1248

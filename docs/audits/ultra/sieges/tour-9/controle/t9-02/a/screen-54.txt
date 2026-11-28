@@ -1,0 +1,7 @@
+Écran 54 (1035x1243)
+texte « شارك أغنيتي · أغنيتي-الأغنية-20261119-072559.m4a » @ 517,443
+bouton « WhatsApp » @ 517,568
+bouton « Messages » @ 517,640
+bouton « Gmail » @ 517,712
+bouton « Drive » @ 517,784
+bouton « Files » @ 517,856

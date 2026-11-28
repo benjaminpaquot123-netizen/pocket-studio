@@ -1,0 +1,27 @@
+Écran 149 (540x1170)
+texte « Your first part: the Groove Chapter 8/15 · Step 1/2 · Easy » @ 177,120
+icône (liste) « Chapters » @ 390,120
+icône ⌄ @ 483,120
+image (rond coché) @ 36,270
+texte « Listen to your loop for a few seconds (everything you've made), then to the example. That rhythm that makes you want to move: that's the groove. » [coupé] @ 289,349
+texte « ▸ Why? » @ 270,481
+icône « Read on » ⌄ @ 270,544
+bouton « Next step   » → @ 270,620
+bouton ▶ «  Listen to your result » @ 142,728
+bouton ▶ «  Listen to the example » @ 397,728
+icône ← «  Previous » @ 141,836
+icône « Next  » → @ 436,836
+icône ▶ « the song » @ 249,940
+texte « 165 Tempo » @ 388,939
+icône ↶ « Undo » @ 47,940
+image ↷ @ 130,922
+icône ⋮ « More » @ 492,940
+onglet (lignes et note) « My song » @ 49,1050
+onglet (quatre carrés) « Rhythm » @ 160,1050
+onglet (touches de piano) « Keyboard » [sélectionné] @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Share » @ 491,1050
+texte « ●  REC » @ 277,1140
+texte « ✎  Note » @ 394,1140
+texte « ⋯ » @ 492,1140
+texte « Feedback mode » @ 117,1140

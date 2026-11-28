@@ -1,0 +1,10 @@
+lang=ar
+device=phone360
+font=130
+mode=simple
+amenee=tuto:acid_house:1
+gestes.max=150
+mission=tuto-facile
+profil=curieux
+niveau=0
+timeout.minutes=30

@@ -1,0 +1,52 @@
+Écran 12 (1035x1243)
+icône (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 346,42
+bouton « Semplice » @ 737,42
+bouton ● @ 827,42
+bouton ▶ « questa parte » @ 908,42
+icône ⋮ @ 990,42
+bouton « 174  Tempo » @ 98,123
+bouton « ? » @ 990,123
+icône « Parte: A · Groove » ▾ @ 150,198
+bouton « Grancassa da studio FX » [coupé] @ 75,260
+bouton « Grancassa 2 » [coupé] @ 200,260
+bouton « Drum & bass · Rullante FX » [coupé] @ 325,260
+bouton « Rullante 2 » [coupé] @ 450,260
+texte « Capire le parti Capitolo 9/15 · Passo 5/7 · Facile » @ 430,318
+icône (liste) « Capitoli » @ 890,319
+icône ⌄ @ 978,319
+texte « Ascolta il Break (la pausa): la cassa e il basso tacciono, si respira. » @ 482,407
+texte « • Kick: la cassa, il “bum” grave della batteria. » @ 290,457
+texte « • Break: un momento più calmo, la cassa e il basso tacciono. » @ 385,496
+texte « Energia » @ 68,539
+texte « 24 » @ 112,648
+texte « 8 » @ 237,648
+texte « 32 » @ 392,648
+texte « 8 » @ 548,648
+texte « 8 » @ 612,648
+texte « 32 » @ 767,648
+texte « 16 » @ 953,648
+texte «  Intro » @ 68,702
+texte «  Build-up » @ 186,702
+texte «  Drop » @ 305,702
+texte «  Break » @ 409,702
+texte «  Drop 2 » @ 524,702
+texte «  Fine » @ 629,702
+texte « Ogni numero: la durata della parte in battute. » @ 288,741
+texte « ▸ Perché? » @ 517,788
+bouton ▶ «  Ascolta l'esempio » @ 517,857
+icône ← «  Indietro » @ 109,941
+icône « Avanti  » → @ 935,941
+bouton ▶ « il brano » @ 521,1026
+icône ↶ « Annulla » @ 142,1026
+image ↷ @ 330,1013
+texte « 174 Tempo » @ 709,1026
+icône ⋮ « Altro » @ 893,1026
+onglet (lignes et note) « Il mio brano » @ 99,1123
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 309,1123
+onglet (touches de piano) « Tastiera » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Condividi » @ 936,1123
+texte « ●  REC » @ 799,1213
+texte « ✎  Annota » @ 899,1213
+texte « ⋯ » @ 987,1213
+texte « Modalità feedback » @ 381,1213

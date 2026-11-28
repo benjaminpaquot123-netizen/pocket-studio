@@ -1,0 +1,56 @@
+Écran 43 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 358,42
+bouton « Simple » @ 758,42
+bouton ● @ 846,42
+bouton ▶ « this part » @ 918,42
+icône ⋮ @ 990,42
+bouton « 165  Tempo » @ 83,114
+icône « Intro bar 1/8 » ▾ @ 239,114
+bouton « ? » @ 990,114
+icône ▶ « B · Intro × 1  ·  8 bars » @ 155,186
+icône − [désactivé] @ 304,186
+icône + @ 376,186
+icône ⋮ @ 448,186
+texte « − / + : repeats. Grey: fixed length (suggested or Live) or just once. » @ 263,267
+texte « Add at the end: » @ 117,321
+bouton « + A · Groove » @ 141,384
+bouton « + B · Intro » @ 336,384
+bouton « + C · Build-up » @ 149,465
+bouton « + D · Drop » @ 352,465
+bouton « + E · Break » @ 133,546
+bouton « + F · Drop 2 » @ 328,546
+bouton « + G · End » @ 125,627
+bouton « + New part (copy of G · End) » @ 223,708
+bouton « + New empty part » [coupé] @ 169,774
+titre « MY TRACKS » [état « Expanded »] @ 635,204
+texte « Tap a track's name to change its sound; ▶ to hear it alone. » @ 771,261
+bouton « Drums Change the sound » › @ 696,342
+bouton ▶ @ 882,342
+icône (curseurs) @ 957,342
+bouton « Bass Change the sound » › @ 696,452
+bouton ▶ @ 882,452
+icône (curseurs) @ 957,452
+bouton « Chords Change the sound » › @ 696,562
+bouton ▶ @ 882,562
+icône (curseurs) @ 957,562
+bouton « Melody Change the sound » › @ 696,672
+bouton ▶ @ 882,672
+icône (curseurs) @ 957,672
+icône (liste) « Chapters » @ 894,844
+texte « Arrange your parts Chapter 11/15 · Step 1/2 · Easy » @ 433,844
+icône ⌃ @ 978,844
+icône « Your turn: in “My song”, under “Add”, tap in order the buttons Intro, Drop, Break, Build-up, Drop 2 and End. Read » ⌃ @ 517,943
+icône ↶ « Undo » @ 147,1027
+image ↷ @ 329,1017
+bouton ▶ « the song » @ 512,1027
+texte « 165 Tempo » @ 700,1027
+icône ⋮ « More » @ 889,1027
+onglet (lignes et note) « My song » [sélectionné] @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Note » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 385,1213

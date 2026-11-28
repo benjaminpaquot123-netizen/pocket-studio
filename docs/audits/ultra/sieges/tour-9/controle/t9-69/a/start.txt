@@ -1,0 +1,10 @@
+lang=zh-CN
+device=phone360
+font=100
+mode=pro
+amenee=tuto:techno:6
+gestes.max=167
+mission=tuto-pro
+profil=pro
+niveau=4
+timeout.minutes=30

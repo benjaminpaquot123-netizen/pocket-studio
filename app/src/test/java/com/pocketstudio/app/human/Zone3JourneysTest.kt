@@ -95,8 +95,8 @@ class Zone3JourneysTest : HumanTester("zone3") {
         tap("add_part_0")
         val before = project()!!
         assertEquals(listOf(0), before.song.map { it.scene })
-        compose.onNodeWithTag("add_part_new_copy").performScrollTo()
-        tap("add_part_new_copy")
+        compose.onNodeWithTag("add_part_new_empty").performScrollTo()
+        tap("add_part_new_empty")
         val after = project()!!
         assertEquals("a part more in the song (${rhythm()!!.notice.value})", 2, after.song.size)
         val added = after.song.last().scene

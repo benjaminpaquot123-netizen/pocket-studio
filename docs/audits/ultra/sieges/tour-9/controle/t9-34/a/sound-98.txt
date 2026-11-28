@@ -1,0 +1,2 @@
+Son : rien ne joue.
+Banc : un autre élément est dessiné par-dessus ce point et prend le toucher : rien ne s'est passé.

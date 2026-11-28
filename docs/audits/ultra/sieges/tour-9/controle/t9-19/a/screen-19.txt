@@ -1,0 +1,65 @@
+Écran 19 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 281,42
+bouton « Einfach » @ 607,42
+bouton ● @ 697,42
+bouton ▶ « dieser Teil » @ 776,42
+icône ⋮ @ 855,42
+bouton « 116  Tempo » @ 98,123
+bouton « ? » @ 855,123
+icône « Teil: A » ▾ @ 77,198
+bouton « Disco / Funk · Große Trommel 1 FX » @ 123,292
+bouton « Große Trommel 2 » @ 341,292
+bouton « Disco / Funk · Snare FX » @ 559,292
+bouton « Snare 2 » @ 777,292
+bouton « Händeklatschen FX » @ 123,379
+bouton « Disco / Funk · Hi-Hat L 30 » @ 341,379
+bouton « Disco / Funk · Offene Hi-Hat R 30 » @ 559,379
+bouton « Tiefes Tom » @ 777,379
+bouton « Mittleres Tom R 45 » @ 123,466
+bouton « Hohes Tom » @ 341,466
+bouton « Trommelrand R 50 » @ 559,466
+bouton « Glocke » @ 777,466
+bouton « Becken FX R 40 » @ 123,553
+bouton « Maracas L 50 » @ 341,553
+bouton « Conga » @ 559,553
+bouton « Laser » @ 777,553
+bouton « Kit: Disco / Funk » ▾ @ 167,636
+texte « Pads klingen, Kästchen behalten die Schläge. Lang drücken: Sound ändern. » @ 605,636
+titre « STEPS: DISCO / FUNK · GROSSE TROMMEL 1 » [état « Aufgeklappt »] @ 362,744
+bouton « ? » @ 661,744
+bouton « Alle Pads » @ 770,744
+texte « Disco / Funk · Große Trommel 1 » @ 250,828
+bouton « 1 » [état « leer »] @ 90,913
+bouton [état « leer »] @ 192,913
+bouton [état « leer »] @ 294,913
+bouton [état « leer »] @ 397,913
+bouton « 2 » [état « leer »] @ 500,913
+bouton [état « leer »] @ 603,913
+bouton [état « leer »] @ 706,913
+bouton [état « leer »] @ 809,913
+bouton « 3 » [état « leer »] @ 90,994
+bouton [état « leer »] @ 192,994
+bouton [état « leer »] @ 294,994
+bouton [état « leer »] @ 397,994
+bouton « 4 » [état « leer »] @ 500,994
+bouton [état « leer »] @ 603,994
+bouton [état « leer »] @ 706,994
+bouton [état « leer »] @ 809,994
+texte « Tempo und Farbe des Tracks Kapitel 1/13 · Erledigt · Einfach » @ 366,1083
+icône (liste) « Kapitel » @ 759,1084
+icône ⌃ @ 843,1084
+icône (coupe) « Bravo, Kapitel geschafft! » ⌃ @ 450,1196
+icône ↶ « Rückgängig » @ 127,1292
+image ↷ @ 317,1279
+bouton ▶ « der Song » @ 494,1292
+texte « 116 Tempo » @ 650,1292
+icône ⋮ « Mehr » @ 796,1292
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » [sélectionné] @ 268,1389
+onglet (touches de piano) « Tastatur » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

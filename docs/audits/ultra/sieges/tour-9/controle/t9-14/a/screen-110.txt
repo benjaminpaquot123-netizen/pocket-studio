@@ -1,0 +1,24 @@
+Écran 110 (1035x1243)
+dessin @ 518,74
+image (rond coché) @ 0,0
+texte « Klaar om te delen? » @ 482,146
+icône ✕ @ 932,146
+champ « Naam van het nummer (en van het project) » contenu « Mijn nummer » @ 518,268
+icône ✕ @ 932,280
+texte « ‘Delen’ geeft ook het project ‘Mijn project 1’ deze naam. » @ 518,406
+texte « 3:29 » @ 126,508
+texte « 3 delen » @ 267,512
+texte « Volume: −9,0, luid, zoals clubmuziek » @ 368,592
+bouton ▶ «  Luisteren » @ 824,593
+texte « details » @ 549,677
+bouton « ? » @ 646,677
+texte « Doelvolume » @ 176,764
+bouton « Streaming » @ 415,764
+bouton « Club » @ 614,764
+bouton « Auto (stijl) » [sélectionné] @ 816,764
+bouton « ? » @ 89,830
+bouton « M4A · om te delen » [sélectionné] @ 266,924
+bouton « WAV · max. kwaliteit » @ 694,924
+bouton (trois points reliés) «   Delen » @ 518,1021
+bouton (dossier) « Mijn bestanden Terugvinden en opnieuw versturen: M4A, WAV, video, .zip » › @ 496,1163
+bouton « ? » @ 946,1163

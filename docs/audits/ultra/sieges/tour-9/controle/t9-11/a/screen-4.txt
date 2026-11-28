@@ -1,0 +1,43 @@
+Écran 4 (900x1509)
+icône (dossier ouvert) « My project 1 » @ 284,42
+bouton « Simple » @ 612,42
+bouton ● @ 701,42
+bouton ▶ « this part » @ 778,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 136,144
+bouton « ? » @ 855,144
+icône « Part: A » ▾ @ 99,240
+bouton « Studio bass drum FX » @ 123,330
+bouton « Bass drum 2 » @ 341,330
+bouton « Snare » @ 559,330
+bouton « Snare 2 » @ 777,330
+bouton « Amapiano · Handclap FX » [coupé] @ 123,381
+bouton « Hi-hat FX L 30 » [coupé] @ 341,381
+bouton « Open hi-hat R 30 » [coupé] @ 559,381
+bouton « Low tom » [coupé] @ 777,381
+texte « The song's speed and colour Chapter 1/12 · Step 2/3 · Easy » @ 357,456
+icône (liste) « Chapters » @ 750,456
+icône ⌄ @ 843,456
+texte « Your turn: set the tempo to 112 BPM, slower than house. “I'll do it” opens the Tempo sheet. » @ 450,631
+texte « A new track starts at 120 BPM: you are the one who gives it the style's speed. » [coupé] @ 450,753
+texte « ▸ Why? » @ 450,808
+icône « Read on » ⌄ @ 450,871
+bouton (doigt qui touche) «   I'll do it » @ 450,946
+bouton ▶ «  Listen to the example » @ 232,1060
+bouton (œil) «  Show me » @ 667,1060
+icône ← «  Previous » @ 141,1174
+icône « Next  » → @ 796,1174
+icône ↶ « Undo » @ 109,1277
+image ↷ @ 258,1257
+icône ▶ « the song » @ 436,1278
+texte « 120 Tempo » @ 629,1277
+icône ⋮ « More » @ 793,1277
+onglet (lignes et note) « My song » @ 85,1389
+onglet (quatre carrés) « Rhythm » [sélectionné] @ 268,1389
+onglet (touches de piano) « Keyboard » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Share » @ 815,1389
+texte « ●  REC » @ 637,1479
+texte « ✎  Note » @ 754,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 297,1479

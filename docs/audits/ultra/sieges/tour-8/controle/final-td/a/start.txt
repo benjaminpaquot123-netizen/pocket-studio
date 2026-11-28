@@ -1,0 +1,8 @@
+lang=ja
+device=foldable
+font=200
+mode=pro
+amenee=tuto:techno:3
+gestes.max=120
+mission=tuto-pro
+timeout.minutes=60

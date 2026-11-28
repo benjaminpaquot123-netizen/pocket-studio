@@ -1,0 +1,10 @@
+lang=ja
+device=foldable
+font=130
+mode=pro
+amenee=tuto:house:10
+gestes.max=181
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

@@ -1,0 +1,177 @@
+Écran 13 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 122  Tempo » @ 83,114
+icône « Intro mesure 1/96 » ▾ @ 255,114
+bouton « ? » @ 543,114
+icône « Partie : D · Drop » ▾ @ 115,180
+bouton « Cymbale D 40 » [coupé] @ 84,245
+bouton « Maracas G 50 » [coupé] @ 224,245
+bouton « Conga » [coupé] @ 364,245
+bouton « Laser » [coupé] @ 504,245
+bouton « Kit : Studio » ▾ @ 112,316
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 394,316
+titre « PAS : TOUS LES PADS · DROP » [état « Déplié »] @ 198,424
+bouton « ? » @ 332,424
+bouton « Tous les pads » [sélectionné] @ 450,424
+bouton « 1 » [sélectionné] @ 161,508
+bouton « 2 » @ 242,508
+bouton « Suivre » @ 344,508
+texte « Mesure » @ 79,508
+bouton [sélectionné] @ 163,572
+bouton @ 187,572
+bouton @ 211,572
+bouton @ 235,572
+bouton [sélectionné] @ 260,572
+bouton @ 285,572
+bouton @ 310,572
+bouton @ 335,572
+bouton [sélectionné] @ 360,572
+bouton @ 385,572
+bouton @ 410,572
+bouton @ 435,572
+bouton [sélectionné] @ 460,572
+bouton @ 485,572
+bouton @ 510,572
+bouton @ 535,572
+texte « Grosse caisse 1 » @ 96,573
+bouton @ 163,608
+bouton @ 187,608
+bouton @ 211,608
+bouton @ 235,608
+bouton @ 260,608
+bouton @ 285,608
+bouton @ 310,608
+bouton @ 335,608
+bouton @ 360,608
+bouton @ 385,608
+bouton @ 410,608
+bouton @ 435,608
+bouton @ 460,608
+bouton @ 485,608
+bouton @ 510,608
+bouton @ 535,608
+texte « Grosse caisse 2 » @ 96,609
+bouton @ 163,644
+bouton @ 187,644
+bouton @ 211,644
+bouton @ 235,644
+bouton @ 260,644
+bouton @ 285,644
+bouton @ 310,644
+bouton @ 335,644
+bouton @ 360,644
+bouton @ 385,644
+bouton @ 410,644
+bouton @ 435,644
+bouton @ 460,644
+bouton @ 485,644
+bouton @ 510,644
+bouton @ 535,644
+texte « Caisse » @ 96,645
+bouton @ 163,680
+bouton @ 187,680
+bouton @ 211,680
+bouton @ 235,680
+bouton @ 260,680
+bouton @ 285,680
+bouton @ 310,680
+bouton @ 335,680
+bouton @ 360,680
+bouton @ 385,680
+bouton @ 410,680
+bouton @ 435,680
+bouton @ 460,680
+bouton @ 485,680
+bouton @ 510,680
+bouton @ 535,680
+texte « Caisse 2 » @ 96,681
+bouton @ 163,716
+bouton @ 187,716
+bouton @ 211,716
+bouton @ 235,716
+bouton [sélectionné] @ 260,716
+bouton @ 285,716
+bouton @ 310,716
+bouton @ 335,716
+bouton @ 360,716
+bouton @ 385,716
+bouton @ 410,716
+bouton @ 435,716
+bouton [sélectionné] @ 460,716
+bouton @ 485,716
+bouton @ 510,716
+bouton @ 535,716
+texte « Claquement de mains » @ 96,717
+bouton [sélectionné] @ 163,752
+bouton [sélectionné] @ 187,752
+bouton @ 211,752
+bouton [sélectionné] @ 235,752
+bouton [sélectionné] @ 260,752
+bouton [sélectionné] @ 285,752
+bouton @ 310,752
+bouton [sélectionné] @ 335,752
+bouton [sélectionné] @ 360,752
+bouton [sélectionné] @ 385,752
+bouton @ 410,752
+bouton [sélectionné] @ 435,752
+bouton [sélectionné] @ 460,752
+bouton [sélectionné] @ 485,752
+bouton @ 510,752
+bouton [sélectionné] @ 535,752
+texte « Charley » @ 96,753
+bouton @ 163,788
+bouton @ 187,788
+bouton [sélectionné] @ 211,788
+bouton @ 235,788
+bouton @ 260,788
+bouton @ 285,788
+bouton [sélectionné] @ 310,788
+bouton @ 335,788
+bouton @ 360,788
+bouton @ 385,788
+bouton [sélectionné] @ 410,788
+bouton @ 435,788
+bouton @ 460,788
+bouton @ 485,788
+bouton [sélectionné] @ 510,788
+bouton @ 535,788
+texte « Charley ouvert » @ 96,789
+bouton [coupé] @ 163,819
+bouton [coupé] @ 187,819
+bouton [coupé] @ 211,819
+bouton [coupé] @ 235,819
+bouton [coupé] @ 260,819
+bouton [coupé] @ 285,819
+bouton [coupé] @ 310,819
+bouton [coupé] @ 335,819
+bouton [coupé] @ 360,819
+bouton [coupé] @ 385,819
+bouton [coupé] @ 410,819
+bouton [coupé] @ 435,819
+bouton [coupé] @ 460,819
+bouton [coupé] @ 485,819
+bouton [coupé] @ 510,819
+bouton [coupé] @ 535,819
+texte « Tom grave » [coupé] @ 96,822
+icône (liste) « Chapitres » @ 444,879
+texte « Les transitions Chapitre 12/15 · Étape 2/3 · Facile » @ 207,879
+icône ⌃ @ 531,879
+icône « À toi : dans le Drop, touche la 1re case du pad de la cymbale : tout est revenu. Lire » ⌃ @ 294,978
+icône ↶ « Annuler » @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 122 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

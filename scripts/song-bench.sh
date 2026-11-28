@@ -3,7 +3,7 @@
 # replayed through the engine core on Linux, measured, and summed up in a Markdown report.
 #
 #   scripts/song-bench.sh [--styles a,b,c] [--out DIR] [--ffmpeg] [--before FILE.json] [--no-record] [--jobs N]
-#                         [--premaster] [--m4a] [--keep-wav] [--kit3] [--no-bass] [--no-kick] [--guide accept|first]
+#                         [--premaster] [--m4a] [--keep-wav] [--kit3] [--no-bass] [--no-kick] [--no-tracks] [--guide accept|first]
 #
 #   --styles   only these styles (ids of scripts/packs/recipes); default: all of them
 #   --out      work folder (default build/bench): cmds/ (.pscmd + samples), wav/, json/, render/ (ps_render's
@@ -33,6 +33,9 @@
 #              the kick's pad, 16), the drums alone through the master (strip 0) and the whole song before the master:
 #              ps_measure --punch reads, part by part, how much one kick hit lifts the export against the drums alone
 #              (Benjamin's Acidcore, APK 233: « le gros kick disparaît »). report.py fails a part that buries its kick.
+#   --no-tracks  skips the tracks pass (L4). By default each project track the song sets a volume on (C 20: strips
+#              0-3, 5-15, 32-35) is also rendered alone before the master, and ps_measure --track counts how many
+#              sound together at the Drop (« drop_tracks »; about 12 s a track and a song)
 # Environment: GRADLE_ARGS (default --max-workers=1), CMAKE_EXTRA_ARGS (e.g. ccache), JOBS.
 # The rendered audio stays in the work folder: never commit it.
 set -euo pipefail
@@ -49,6 +52,7 @@ KEEP=0
 KIT3=0
 BASS=1
 KICK=1
+TRACKS=1
 GUIDE=""
 JOBS="${JOBS:-$(nproc 2>/dev/null || echo 2)}"
 while [ $# -gt 0 ]; do
@@ -66,6 +70,7 @@ while [ $# -gt 0 ]; do
         --kit3) KIT3=1; shift ;;
         --no-bass) BASS=0; shift ;;
         --no-kick) KICK=0; shift ;;
+        --no-tracks) TRACKS=0; shift ;;
         --guide) GUIDE="$2"; shift 2 ;;
         *) echo "unknown option $1" >&2; exit 1 ;;
     esac
@@ -107,7 +112,7 @@ if [ "$KIT3" = 1 ]; then
         awk '/^RENDER /{print "AT -1"; print "C 100 3.0 0 0"} {print}' "$OUT/cmds/$s.pscmd" > "$OUT/cmds/$s.kit3"
     done
 fi
-export OUT TOOLS PREMASTER M4A KEEP KIT3 BASS KICK
+export OUT TOOLS PREMASTER M4A KEEP KIT3 BASS KICK TRACKS
 # A recording that names its lead's mixer channel (META lead, S4) also renders the lead alone: the
 # report reads how much its brightness moves along the song (ps_measure --lead).
 list | xargs -P "$JOBS" -I{} sh -c '
@@ -139,9 +144,17 @@ list | xargs -P "$JOBS" -I{} sh -c '
             bassArgs="$bassArgs --dry $OUT/wav/{}.dry.wav"
         fi
     fi
-    "$TOOLS/ps_render" --report "$OUT/render/{}.json" "$cmd" "$OUT/wav/{}.wav" && "$TOOLS/ps_measure" "$OUT/wav/{}.wav" "$cmd" $leadArgs $bassArgs > "$OUT/json/{}.json" \
+    # The tracks pass (L4): each project track the song sets a volume on (SetChannelVolume, 20), alone before the master.
+    trackArgs=""
+    if [ "$TRACKS" = 1 ]; then
+        for ch in $(awk "\$1 == \"C\" && \$2 == 20 { c = \$4 + 0; if (c <= 3 || (c >= 5 && c <= 15) || (c >= 32 && c <= 35)) print c }" "$cmd" | sort -nu); do
+            "$TOOLS/ps_render" --no-limiter --solo "$ch" "$cmd" "$OUT/wav/{}.track$ch.wav" || { echo "FAILED: {} (track $ch)" >&2; exit 255; }
+            trackArgs="$trackArgs --track $ch:$OUT/wav/{}.track$ch.wav"
+        done
+    fi
+    "$TOOLS/ps_render" --report "$OUT/render/{}.json" "$cmd" "$OUT/wav/{}.wav" && "$TOOLS/ps_measure" "$OUT/wav/{}.wav" "$cmd" $leadArgs $bassArgs $trackArgs > "$OUT/json/{}.json" \
         || { echo "FAILED: {}" >&2; exit 255; }
-    rm -f "$OUT/wav/{}.lead.wav" "$OUT/wav/{}.bass.wav" "$OUT/wav/{}.bassfree.wav" "$OUT/wav/{}.dry.wav"
+    rm -f "$OUT/wav/{}.lead.wav" "$OUT/wav/{}.bass.wav" "$OUT/wav/{}.bassfree.wav" "$OUT/wav/{}.dry.wav" "$OUT/wav/{}".track*.wav
     # The kick pass (reusing the kick alone and the song before the master of the bass pass, when it made them).
     if [ "$KICK" = 1 ]; then
         k="${kick:-16}"

@@ -1,0 +1,54 @@
+Écran 71 (900x1509)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 206,42
+bouton « Simple » @ 455,42
+icône ↶ @ 543,42
+bouton ● @ 615,42
+bouton ▶ « esta parte » @ 689,42
+bouton ▶ « la canción » @ 779,42
+icône ⋮ @ 855,42
+bouton « 120  Tempo » @ 83,114
+bouton « ? » @ 855,114
+onglet « Acid 303 Línea de bajo » @ 104,186
+bouton « Bajo Bajo redondo » ⋮ @ 310,186
+icône ♪ « Sonido » @ 491,186
+bouton + «  Pista » @ 645,186
+icône « Parte: A » ▾ @ 76,264
+texte « A tiempo 50 % » @ 472,351
+texte « 100 % » @ 619,351
+texte « Borrar » @ 723,351
+bouton « Acordes » @ 109,351
+bouton « Bajo fantasma » [sélectionné] @ 278,351
+texte « comp. » @ 84,408
+bouton « 2 » @ 486,420
+bouton « 3 » [coupé] @ 853,420
+texte « Mi » [coupé] @ 84,457
+texte « Mi♭ » @ 84,483
+texte « Re » @ 84,525
+texte « Re♭ » @ 84,567
+texte « Do2 » @ 84,609
+texte « Si » @ 84,651
+texte « Si♭ » @ 84,693
+texte « La » @ 84,735
+texte « La♭ » @ 84,777
+texte « Sol » @ 84,819
+texte « Sol♭ » [coupé] @ 84,850
+dessin [coupé] @ 492,657
+texte « El piano eléctrico Capítulo 4/13 · Paso 1/3 · Fácil » @ 364,909
+icône (liste) « Capítulos » @ 757,909
+icône ⌄ @ 843,909
+texte « Escucha el piano solo: solo dos acordes, tocados en golpecitos justo después de los tiempos. » @ 450,1008
+texte « • Tiempo: cada “1, 2, 3, 4” de un compás, donde marcas con el pie. » @ 327,1066
+texte « • Acorde: varias notas tocadas a la vez. » @ 202,1096
+texte « ▸ ¿Por qué? » @ 450,1134
+bouton ■ «  Dejar de escuchar » @ 450,1197
+icône ← «  Anterior » @ 97,1281
+icône « Siguiente  » → @ 795,1281
+onglet (lignes et note) « Mi canción » @ 85,1389
+onglet (quatre carrés) « Ritmo » @ 268,1389
+onglet (touches de piano) « Teclado » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Compartir » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Anotar » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Modo comentarios » @ 318,1479

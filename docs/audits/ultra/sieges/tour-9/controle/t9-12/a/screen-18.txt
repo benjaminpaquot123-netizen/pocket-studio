@@ -1,0 +1,38 @@
+Écran 18 (588x1278)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 134,42
+bouton « Simple » @ 311,42
+bouton ● @ 399,42
+bouton ▶ « this part » @ 471,42
+icône ⋮ @ 543,42
+bouton « 112  Tempo » @ 83,114
+bouton « ? » @ 543,114
+texte « Add: » @ 65,165
+bouton « + A · Drop » @ 129,228
+bouton « + B · Intro » @ 311,228
+bouton « + New part (copy of B · Intro) » @ 225,309
+bouton « + New empty part » @ 169,390
+bouton (barres de son) «   What's playing in the song » @ 294,474
+texte « Build your parts Chapter 8/12 · Step 1/6 · Easy » @ 210,558
+icône (liste) « Chapters » @ 447,558
+icône ⌄ @ 531,558
+image (coupe) @ 57,689
+texte « Well done, you did it! » @ 198,648
+texte « Part “Intro” made (a copy of “Drop”): without Studio bass drum, Handclap, Maracas, Melody, Bass. » @ 319,703
+bouton « Next step   » → @ 294,888
+icône ← @ 57,975
+bouton ▶ «  Listen to your result » @ 216,975
+bouton ▶ «  Listen to the example » @ 453,975
+icône ↶ « Undo » @ 72,1062
+image ↷ @ 180,1052
+bouton ▶ « the song » @ 288,1062
+texte « 112 Tempo » @ 402,1062
+icône ⋮ « More » @ 516,1062
+onglet (lignes et note) « My song » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rhythm » @ 174,1158
+onglet (touches de piano) « Keyboard » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Share » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Note » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Feedback mode » @ 162,1248

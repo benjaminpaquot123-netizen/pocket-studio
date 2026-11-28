@@ -1,0 +1,18 @@
+fusion: d1e635d8fc197234aeef18d5e79bd49492dc2772
+branche: eq/tour-9-L12
+tete: 1291db08c54c633f87b10ef940bb71e31379b061
+relecture: docs/audits/ultra/tour-9-L12-relecture.md
+relu: a02bcd3361664cdfa8f3b2cdccc6beb9ce3e21ad
+filtres: *Tour9PartsListScrollsTest* *Tour9DoneBarGoesTest* *DoneBarNextTouchTest*
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu

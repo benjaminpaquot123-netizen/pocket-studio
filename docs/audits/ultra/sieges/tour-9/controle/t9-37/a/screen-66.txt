@@ -1,0 +1,41 @@
+Écran 66 (540x1170)
+icône « 我的项目 1 » ✓ @ 274,36
+bouton « 专业 » @ 490,36
+bouton (dossier ouvert) @ 81,114
+bouton « A » ▾ @ 192,114
+icône ↶ @ 268,114
+bouton ● @ 340,114
+bouton ■ « 这个段落 » @ 417,114
+icône (trois points reliés) @ 495,114
+bouton « 140  BPM » @ 83,195
+icône (flèches en boucle) « A 小节 1/2 » [désactivé] @ 239,195
+bouton « ? » @ 495,195
+onglet « 鼓 16 个打击垫 » [sélectionné] @ 105,277
+onglet « Acid 303 贝斯线 » @ 296,277
+onglet « 人声 麦克风 » @ 456,277
+image → @ 529,278
+texte « 段落：A » @ 71,347
+texte « 第 2/2 小节 · 开镲 » [coupé] @ 159,380
+texte « 踩镲和打击乐 第 4/15 章 · 第 4/4 步 · 专业 » @ 198,441
+icône (liste) « 章节 » @ 411,441
+icône ⌄ @ 483,441
+texte « 把你的整套鼓听几秒，然后听示例的。 » @ 270,553
+texte « ▸ 为什么？ » @ 270,628
+bouton ■ «   停止 » @ 270,697
+bouton ▶ «  听示例 » @ 270,781
+icône ← «  上一步 » @ 99,862
+icône « 下一步  » → @ 441,862
+icône ↶ « 撤销 » @ 64,950
+icône ↷ « 重做 » [désactivé] @ 164,950
+bouton ■ « 歌曲 » @ 264,950
+texte « 140 速度 » @ 370,950
+icône (trois points reliés) « 分享 » @ 476,950
+onglet (ligne brisée et points) « 结构 » @ 49,1050
+onglet (touches de piano) « 音色 » [sélectionné] @ 160,1050
+onglet (curseurs) « 混音 » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « 更多 » @ 491,1050
+texte « ●  REC » @ 311,1140
+texte « ✎  记一笔 » @ 407,1140
+texte « ⋯ » @ 492,1140
+texte « 反馈模式 » @ 137,1140

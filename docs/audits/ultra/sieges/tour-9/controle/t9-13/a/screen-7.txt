@@ -1,0 +1,30 @@
+Écran 7 (540x1170)
+dessin @ 270,217
+texte « Tempo » @ 86,289
+bouton « ? » @ 169,289
+texte « Sluiten » @ 450,289
+icône − @ 60,383
+texte « 9 » @ 232,383
+icône + @ 480,383
+texte «  BPM » @ 291,388
+texte « Tussen 40 en 300 » @ 270,461
+bouton « 70 » @ 67,536
+bouton « 90 » @ 162,536
+bouton « 120 » [sélectionné] @ 266,536
+bouton « 140 » @ 380,536
+bouton « 174 » @ 76,617
+bouton « ½ » @ 175,617
+bouton « ×2 » @ 264,617
+bouton « 1 » @ 103,710
+bouton « 2 » @ 270,710
+bouton « 3 » @ 437,710
+bouton « 4 » @ 103,797
+bouton « 5 » @ 270,797
+bouton « 6 » @ 437,797
+bouton « 7 » @ 103,884
+bouton « 8 » @ 270,884
+bouton « 9 » @ 437,884
+bouton ⌫ @ 103,971
+bouton « 0 » @ 270,971
+bouton « OK » [désactivé] @ 437,971
+bouton (doigt qui touche) « Tik in de maat Tik hier op elke tel: het tempo volgt. » @ 270,1087

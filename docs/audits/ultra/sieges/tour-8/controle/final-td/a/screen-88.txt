@@ -1,0 +1,41 @@
+Écran 88 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 203,42
+bouton « プロ » @ 438,42
+bouton « A » ▾ @ 522,42
+icône ↶ @ 602,42
+icône ↷ [désactivé] @ 674,42
+bouton ● @ 746,42
+bouton ▶ « このパート » @ 826,42
+bouton ▶ « 曲 » @ 918,42
+icône (trois points reliés) @ 990,42
+bouton « 132  BPM » @ 114,144
+bouton « ? » @ 990,144
+onglet « ドラム 16パッド » [coupé] @ 28,241
+onglet « Acid 303 ベースライン » @ 185,241
+onglet « ボーカル マイク » @ 441,241
+onglet « リミックス 分離 » @ 681,241
+bouton « ベース Plaits » ⋮ @ 915,241
+image ← @ 10,242
+image → @ 1024,242
+texte « スタブ（コード） チャプター 6/16 · ステップ 1/2 · プロ » @ 426,347
+icône (liste) « チャプター » @ 886,348
+icône ⌄ @ 978,348
+texte « あなたの番：コードトラックを作り（音は「プラック」で短いプラック、ダブエコー）、1小節目を書こう：F マイナーのスタブを2つ、拍からずらして（ステップ 4 と 11）。 » [coupé] @ 517,494
+bouton « テクノ キットをダウンロード（4 MB） » @ 464,614
+texte « あとで » @ 955,614
+texte « ▸ なぜ？ » @ 517,693
+icône « 続きを読む » ⌄ @ 517,759
+bouton ⊕ «   コードトラックを作る » @ 517,836
+bouton ▶ «  例を聴く » @ 266,923
+bouton (œil) «  見せて » @ 768,923
+icône ← «  前へ » @ 97,1010
+icône « 次へ  » → @ 937,1010
+onglet (ligne brisée et points) « 構成 » @ 99,1123
+onglet (touches de piano) « サウンド » [sélectionné] @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 780,1213
+texte « ✎  メモ » @ 893,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 368,1213

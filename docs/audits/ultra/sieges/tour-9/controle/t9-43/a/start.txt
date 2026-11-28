@@ -1,0 +1,10 @@
+lang=nl
+device=tablet8
+font=130
+mode=pro
+amenee=tuto:liquid_dnb:1
+gestes.max=150
+mission=tuto-pro
+profil=confirmé
+niveau=3
+timeout.minutes=30

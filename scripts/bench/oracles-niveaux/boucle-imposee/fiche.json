@@ -1,0 +1,66 @@
+{
+ "pas": 16,
+ "rythme": {
+  "kick": [
+   0,
+   4,
+   8,
+   12
+  ],
+  "snare": [
+   4,
+   12
+  ],
+  "hat": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   10,
+   12,
+   14
+  ]
+ },
+ "basse": [
+  {
+   "pas": 0,
+   "note": 36,
+   "longueur": 2
+  },
+  {
+   "pas": 6,
+   "note": 36,
+   "longueur": 2
+  },
+  {
+   "pas": 8,
+   "note": 43,
+   "longueur": 2
+  },
+  {
+   "pas": 12,
+   "note": 41,
+   "longueur": 4
+  }
+ ],
+ "accords": [
+  {
+   "pas": 0,
+   "notes": [
+    60,
+    64,
+    67
+   ]
+  },
+  {
+   "pas": 8,
+   "notes": [
+    57,
+    60,
+    64
+   ]
+  }
+ ],
+ "dit": "Tempo 100. Grosse caisse sur les temps 1, 2, 3, 4 ; caisse claire sur 2 et 4 ; charleston sur chaque croche. Basse : do grave au pas 1, encore do au pas 7, sol au pas 9, fa au pas 13. Accords : do majeur au pas 1, la mineur au pas 9."
+}

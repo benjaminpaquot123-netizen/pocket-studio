@@ -1,0 +1,39 @@
+Écran 84 (1035x1243)
+icône (dossier ouvert) ✓ « My jungle Saved » @ 358,42
+bouton « Simple » @ 758,42
+bouton ● @ 846,42
+bouton ▶ « this part » @ 918,42
+icône ⋮ @ 990,42
+bouton « 165  Tempo » @ 83,114
+icône « Intro bar 1/128 » ▾ @ 241,114
+bouton « ? » @ 990,114
+image (rond coché) @ 0,0
+bouton « M4A · for sharing » [sélectionné] @ 182,198
+bouton « WAV · max quality » @ 425,198
+bouton (trois points reliés) «   Share » @ 518,286
+icône (liste) « Chapters » @ 894,376
+texte « Export your song Chapter 15/15 · Step 1/1 · Easy » @ 433,376
+icône ⌄ @ 978,376
+texte « Almost done! » @ 99,457
+bouton ▶ «  Listen to my song » @ 517,520
+texte « 7 steps left. Tap one to go there: » @ 182,580
+bouton « Chapter 1/15 · The song's speed and colour Listen to a clip of a finished jungle song: the stumbling, rolling drums, the deep bass, then the howling hoover. That's what you're going to build, block by block. » → @ 517,641
+bouton « Chapter 2/15 · The kick Before you start: on a pad, “FX” means an effect is already on it (it makes the sound punchier), “L 30” or “R 45” that the sound is placed a little to the left or right. Everything is ready: you have nothing to set. » → @ 517,725
+bouton « Chapter 2/15 · The kick Listen to the jungle kick (the bass drum, the drums' big “boom”) alone: two close hits at the start, two more after the middle. » → @ 517,809
+bouton « Chapter 4/15 · The cymbals Listen to all your drums for a few seconds, then to the example's. » → @ 517,893
+texte « … and 3 more (list ≡) » @ 115,953
+bouton ← «  Back to the step » [coupé] @ 517,977
+icône ↶ « Undo » @ 147,1027
+image ↷ @ 329,1017
+bouton ▶ « the song » @ 512,1027
+texte « 165 Tempo » @ 700,1027
+icône ⋮ « More » @ 889,1027
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Share » [sélectionné] @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Note » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 385,1213

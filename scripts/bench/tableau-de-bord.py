@@ -14,6 +14,7 @@ then NOT met (the criterion is never reached by lack of a number).
 Writes one table per round (the stop criterion's conditions A-I, and J: the defects the bench hides, MT1, each « oui », « non » or « ? ») and the convergence
 curve across the rounds given. The stop criterion (docs/audits/AUDIT-ULTRA.md §9): A-I « oui » on each of the last two
 complete rounds. Standard library only.
+Lot « niveaux » (PLAN-NIVEAUX §5): under each round, its seats by level (levels()).
 Lot « constate » (PLAN-REPARATIONS-CONSTATEES.md, rule 5): under each round's table, one line « Réparations » with the
 four figures of the register (scripts/bench/reparations.py: constaté, rejoué, tenté, pas pris; each defect once, at its
 best state) and « réparés : <constaté> sur <pris> »; not a condition of the stop criterion.
@@ -138,6 +139,76 @@ def measured(tour_dir, name, root=None, docs=None):
         out["lots_non_joues"] = len({lot for lot, seat in planned} - {lot for lot, seat in planned if os.path.isfile(os.path.join(tour_dir, f"lot{lot}", seat, "mesures.json"))})
         out["sieges_joues"] = played
         out["sieges_coupes_par_le_banc"] = cut
+    return out
+
+
+LEVELS = ("0", "1", "2", "3", "4")
+LEVEL_NAMES = {"0": "curieux", "1": "débutant motivé", "2": "moyen", "3": "confirmé", "4": "pro"}
+
+
+def _median(xs):
+    xs = sorted(x for x in xs if isinstance(x, (int, float)))
+    if not xs:
+        return None
+    k = len(xs) // 2
+    return xs[k] if len(xs) % 2 else (xs[k - 1] + xs[k]) / 2
+
+
+def levels(tour_dir, docs=None):
+    """Lot « niveaux » (PLAN-NIVEAUX §5): one row per level 0 to 4, from the round's seats (sieges.tsv's niveau column, else
+    the seat's mesures.json), never a mean of all: Sièges, Réussi sans aide (« reussie », no help asked), Avec l'aide de
+    l'appli (« reussie » after help), Bloqué (« non » or « partielle »; « inconnu » said apart), Gestes faits / chemin idéal
+    (medians; the ideal path of the mission from chemins-ideaux.tsv, mission<TAB>gestes, in the round or docs folder),
+    Gestes avant le premier son (median), Surprises (« symptome: surprise » cards), Mots incompris (« symptome: incompris »
+    cards and « mots-faux: » lines). A seat at level X, without a level, or on mission « libre » fills no row."""
+    docs = docs or DOCS
+    ideal = {}
+    for f in (os.path.join(docs, "chemins-ideaux.tsv"), os.path.join(tour_dir, "chemins-ideaux.tsv")):
+        for l in read(f).splitlines():
+            parts = l.split("\t")
+            if len(parts) >= 2 and parts[1].strip().isdigit() and not l.startswith("#"):
+                ideal[parts[0].strip()] = int(parts[1])
+    seats = {}
+    for l in read(os.path.join(tour_dir, "sieges.tsv")).splitlines():
+        r = l.split("\t")
+        if l.strip() and not l.startswith(("lot\t", "#")) and len(r) >= 2:
+            seats[(r[0], r[1])] = {"niveau": r[11].strip() if len(r) > 11 else "", "mission": r[7].strip() if len(r) > 7 else ""}
+    rows = {n: {"seats": 0, "alone": 0, "helped": 0, "blocked": 0, "unknown": 0, "gestes": [], "ideal": [], "first": [],
+                "surprises": 0, "words": 0} for n in LEVELS}
+    for (lot, seat), row in seats.items():
+        d = os.path.join(tour_dir, f"lot{lot}", seat)
+        try:
+            m = json.loads(read(os.path.join(d, "mesures.json")) or "{}")
+        except ValueError:
+            m = {}
+        level = row["niveau"] or str(m.get("niveau") or (m.get("options") or {}).get("niveau") or "")
+        mission = row["mission"] or m.get("mission") or ""
+        if level not in rows or mission == "libre":
+            continue
+        r, ms = rows[level], m.get("mesures") or {}
+        r["seats"] += 1
+        result = m.get("resultat")
+        if result == "reussie":
+            r["helped" if (ms.get("appels_aide") or 0) > 0 else "alone"] += 1
+        elif result in ("non", "partielle"):
+            r["blocked"] += 1
+        elif m:
+            r["unknown"] += 1
+        r["gestes"].append(ms.get("gestes"))
+        if mission in ideal:
+            r["ideal"].append(ideal[mission])
+        r["first"].append(ms.get("gestes_premier_son"))
+        report = read(os.path.join(d, "rapport.md"))
+        r["surprises"] += len(re.findall(r"symptome:\s*surprise\b", report))
+        r["words"] += len(re.findall(r"symptome:\s*incompris\b", report)) + len(re.findall(r"^\s*-\s*ecran:[^\n]*\|\s*vu:[^\n]*\|\s*attendu:", report, re.M))
+    def fmt(x):
+        return "?" if x is None else f"{x:g}"
+    out = []
+    for n in LEVELS:
+        r = rows[n]
+        blocked = f"{r['blocked']}" + (f" (+{r['unknown']} inconnu)" if r["unknown"] else "")
+        out.append((f"{n} ({LEVEL_NAMES[n]})", r["seats"], r["alone"], r["helped"], blocked,
+                    f"{fmt(_median(r['gestes']))} / {fmt(_median(r['ideal']))}", fmt(_median(r["first"])), r["surprises"], r["words"]))
     return out
 
 
@@ -306,6 +377,10 @@ def main(argv):
         lines += ["", registre.line(repairs, name) if isinstance(repairs, list)
                   else f"Réparations (registre corrections.tsv) : illisible ({repairs[:160]})"]
         lines += ["", f"Toutes remplies : {'oui' if met[-1] else 'non'}", ""]
+        # Lot « niveaux » (PLAN-NIVEAUX §5): the round read by level, never a mean of all.
+        lines += [f"### {name} par niveau", "", "| Niveau | Sièges | Réussi sans aide | Avec l'aide de l'appli | Bloqué | "
+                  "Gestes faits / chemin idéal | Gestes avant le premier son | Surprises | Mots incompris |", "|---" * 9 + "|"]
+        lines += ["| " + " | ".join(str(v) for v in r) + " |" for r in levels(t)] + [""]
     lines += ["## Courbe de convergence", "",
               "`echelle` : v1 = le mot du testeur (bloquant, grave…), v2 = la conséquence (mission-impossible, contourne-en-N-gestes) ; "
               "`graves_declares` : ce que les testeurs ont écrit, à leur échelle ; `graves_confirmes` : ce que la fusion garde grave "

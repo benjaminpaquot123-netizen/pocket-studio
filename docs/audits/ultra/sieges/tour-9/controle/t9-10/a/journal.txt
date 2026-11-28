@@ -1,0 +1,386 @@
+#0 SIEGE lang=fr device=foldable font=130 mode=simple theme=- fresh=non gestes.max=153 lit=oui main=both amenee=tuto:afrobeats:9
+#0 PREMIER ECRAN reel_s=4.2 simule_s=2.4 jvm_s=9.8 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:afrobeats:9
+#0 AMENEE > touche 518 653 (welcome_learn)
+#0 AMENEE > touche 263 1062 (mode_card_simple)
+#0 AMENEE > touche 517 1169 (tuto_style_afrobeats)
+#0 AMENEE chapitres 1 à 8 construits dans le projet
+#0 AMENEE > touche 885 556 (tuto_chapters)
+#0 AMENEE > touche 517 877 (tuto_chapter_8)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 3b8d5750ea | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=brick done=13 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « Sauvegardé » lines cut (taller than its box)
+#1 LAYOUT CONTRAST « 4 » 3.56:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 16 » 3.82:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 8 » 3.82:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « 8 » 4.28:1 (needs 4.5:1, 12 sp)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 517 785
+#1 DOIGT tuto_text_more « Lire la suite »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7b97169408 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=brick done=13 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 517 857
+#2 DOIGT tuto_mark «   J'ai compris »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 25f5fa5ae5 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_intro done=14 playing=false
+#3 SON Son : rien ne joue.
+#3 LAYOUT CONTRAST « 4 » 2.79:1 (needs 4.5:1, 12 sp)
+#3 > touche 517 857
+#3 DOIGT tuto_listen «  Écouter l'exemple »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 61de55009c | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_intro done=14 playing=false
+#4 SON Son : l'exemple du tuto joue (encore 3 s).
+#4 > attends 4
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f3b37df7c7 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_intro done=15 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 517 857
+#5 DOIGT tuto_next_big « Étape suivante   »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d5a19c6775 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_couplet done=15 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT CONTRAST « 8 » 2.79:1 (needs 4.5:1, 12 sp)
+#6 > touche 517 857
+#6 DOIGT tuto_listen «  Écouter l'exemple »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 65b03385bc | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_couplet done=15 playing=false
+#7 SON Son : l'exemple du tuto joue (encore 3 s).
+#7 > attends 4
+#8 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6f4bbb0e6e | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_couplet done=16 playing=false
+#8 SON Son : rien ne joue.
+#8 > touche 517 857
+#8 DOIGT tuto_next_big « Étape suivante   »
+#9 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 65e5688929 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_pre done=16 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT CONTRAST « 4 » 1.85:1 (needs 4.5:1, 12 sp)
+#9 > touche 187 580
+#9 DOIGT rien
+#10 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 65e5688929 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_pre done=16 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 517 857
+#10 DOIGT tuto_listen «  Écouter l'exemple »
+#11 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f9d6a81ccf | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_pre done=16 playing=false
+#11 SON Son : l'exemple du tuto joue (encore 3 s).
+#11 > attends 4
+#12 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE dade5f43d3 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_pre done=17 playing=false
+#12 SON Son : rien ne joue.
+#12 > touche 517 857
+#12 DOIGT tuto_next_big « Étape suivante   »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 6e46cfc3bc | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_post done=17 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 517 857
+#13 DOIGT tuto_listen «  Écouter l'exemple »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a6de49505a | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_post done=17 playing=false
+#14 SON Son : l'exemple du tuto joue (encore 3 s).
+#14 > attends 4
+#15 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f5f760f2ab | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_post done=18 playing=false
+#15 SON Son : rien ne joue.
+#15 > touche 517 857
+#15 DOIGT tuto_next_big « Étape suivante   »
+#16 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5d1cc3d72f | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_pont done=18 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT CONTRAST « 8 » 2.53:1 (needs 4.5:1, 12 sp)
+#16 > touche 517 857
+#16 DOIGT tuto_listen «  Écouter l'exemple »
+#17 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b25c9c704e | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_pont done=18 playing=false
+#17 SON Son : l'exemple du tuto joue (encore 3 s).
+#17 > attends 4
+#18 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE de41eff20d | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=map_pont done=19 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 517 857
+#18 DOIGT tuto_next_big « Chapitre suivant   »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 09c7077639 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_intro done=19 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 517 776
+#19 DOIGT tuto_need «   Créer la partie « Intro » »
+#20 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 2d6d957a1c | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_intro done=20 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 517 857
+#20 DOIGT tuto_next_big « Étape suivante   »
+#21 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 288c12994c | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_couplet done=20 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CUT « + Nouvelle partie (copie de B · Intro) » lines dropped (more lines than room)
+#21 > touche 517 776
+#21 DOIGT tuto_need «   Créer la partie « Couplet » »
+#22 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 1fc9af2847 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_couplet done=21 playing=false
+#22 SON Son : rien ne joue.
+#22 > touche 327 941
+#22 DOIGT tuto_play_mine «  Écouter ton résultat »
+#23 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 736f67df59 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_couplet done=21 playing=true
+#23 SON Son : la musique du projet joue en boucle.
+#23 > touche 517 857
+#23 DOIGT tuto_next_big « Étape suivante   »
+#24 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE bb6ec2abd9 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_pre done=21 playing=true
+#24 SON Son : la musique du projet joue en boucle.
+#24 > touche 517 776
+#24 DOIGT tuto_need «   Créer la partie « Pré-refrain » »
+#25 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE cd2eb965a5 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_pre done=22 playing=true
+#25 SON Son : la musique du projet joue en boucle.
+#25 LAYOUT CUT « + Nouvelle partie (copie de D · Pré-refrain) » lines dropped (more lines than room)
+#25 > touche 517 857
+#25 DOIGT tuto_next_big « Étape suivante   »
+#26 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 3c48c4ab3a | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_post done=22 playing=true
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 517 776
+#26 DOIGT tuto_need «   Créer la partie « Post-refrain » »
+#27 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 5804f4bb2a | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_post done=23 playing=true
+#27 SON Son : la musique du projet joue en boucle.
+#27 > touche 517 857
+#27 DOIGT tuto_next_big « Étape suivante   »
+#28 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2edaca8077 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_pont done=23 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 517 776
+#28 DOIGT tuto_need «   Créer la partie « Pont » »
+#29 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 928209fd28 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=make_pont done=24 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 517 857
+#29 DOIGT tuto_next_big « Chapitre suivant   »
+#30 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE fcd7b7e93d | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#30 SON Son : la musique du projet joue en boucle.
+#30 > touche 517 776
+#30 DOIGT tuto_do «   Je le fais »
+#31 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 6408b276e2 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT CUT « + Nouvelle partie (copie de F · Pont) » lines dropped (more lines than room)
+#31 LAYOUT CUT « À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir. » ellipsized (« … »)
+#31 LAYOUT CONTRAST « + A · Refrain » 4.06:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + B · Intro » 4.12:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + C · Couplet » 4.18:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + D · Pré-refrain » 4.23:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + E · Post-refrain » 4.25:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + F · Pont » 4.30:1 (needs 4.5:1, 14 sp)
+#31 LAYOUT CONTRAST « + Nouvelle partie (copie de F · Pont) » 4.37:1 (needs 4.5:1, 14 sp)
+#31 > touche 144 327
+#31 DOIGT add_part_1 « + B · Intro »
+#32 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 0c3e8e40ed | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 LAYOUT CONTRAST « + A · Refrain » 4.23:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + B · Intro » 3.51:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + C · Couplet » 4.25:1 (needs 4.5:1, 14 sp)
+#32 LAYOUT CONTRAST « + D · Pré-refrain » 4.30:1 (needs 4.5:1, 14 sp)
+#32 > touche 168 621
+#32 DOIGT add_part_2 « + C · Couplet »
+#33 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 78b49ab81d | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 188 725
+#33 DOIGT add_part_3 « + D · Pré-refrain »
+#34 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c2ff09559c | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 LAYOUT CUT « D · Pré-refrain » ellipsized (« … »)
+#34 > touche 162 503
+#34 DOIGT add_part_0 « + A · Refrain »
+#35 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 9f83a3b5f2 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > glisse 150 680 150 380
+#35 DOIGT add_part_3 « + D · Pré-refrain »
+#36 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE db0de7d120 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 > touche 194 507
+#36 DOIGT add_part_4 « + E · Post-refrain »
+#37 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 468b4b857b | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 LAYOUT CUT « E · Post-refrain » ellipsized (« … »)
+#37 > touche 168 665
+#37 DOIGT add_part_2 « + C · Couplet »
+#38 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1bec32e016 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 > touche 188 725
+#38 DOIGT add_part_3 « + D · Pré-refrain »
+#39 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 69eb071076 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 162 503
+#39 DOIGT add_part_0 « + A · Refrain »
+#40 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE fece5db742 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 > glisse 150 680 150 380
+#40 DOIGT add_part_3 « + D · Pré-refrain »
+#41 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE ac3ec3fda7 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 > touche 143 588
+#41 DOIGT add_part_5 « + F · Pont »
+#42 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f3937be13d | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 > touche 162 459
+#42 DOIGT add_part_0 « + A · Refrain »
+#43 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 16665bf832 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=24 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 > touche 144 540
+#43 DOIGT add_part_1 « + B · Intro »
+#44 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE f3677cf03a | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_order done=25 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 517 930
+#44 DOIGT tuto_next_folded « Réussi »
+#45 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 1e66f3e689 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_phrases done=25 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 517 776
+#45 DOIGT tuto_need «   Donner les durées conseillées »
+#46 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c38e87cb61 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=song_phrases done=26 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 517 857
+#46 DOIGT tuto_next_big « Chapitre suivant   »
+#47 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE c9bcf8d702 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 > touche 517 776
+#47 DOIGT tuto_need «   Aller dans la partie « Pré-refrain » »
+#48 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 5d4b7cbc5c | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 517 776
+#48 DOIGT tuto_do «   Je le fais »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 843f4d5d45 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=true
+#49 SON Son : la musique du projet joue en boucle.
+#49 LAYOUT CUT « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » ellipsized (« … »)
+#49 LAYOUT CONTRAST « Suivre » 4.21:1 (needs 4.5:1, 14 sp)
+#49 > touche 325 618
+#49 DOIGT pad_14 « Conga »
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9aef117e1d | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=true
+#50 SON Son : la musique du projet joue en boucle ; le pad « Conga » sonne.
+#50 LAYOUT CONTRAST « Conga » 4.39:1 (needs 4.5:1, 14 sp)
+#50 LAYOUT CONTRAST « Suivre » 1.22:1 (needs 4.5:1, 14 sp)
+#50 > touche 632 464
+#50 DOIGT step_57 « Pas 10 »
+#51 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 93dac2ef68 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=true
+#51 SON Son : la musique du projet joue en boucle.
+#51 > touche 688 464
+#51 DOIGT step_58 « Pas 11 »
+#52 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5699daf588 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=true
+#52 SON Son : la musique du projet joue en boucle.
+#52 > touche 744 464
+#52 DOIGT step_59 « Pas 12 »
+#53 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8809d8c1fa | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=true
+#53 SON Son : la musique du projet joue en boucle.
+#53 > touche 517 930
+#53 DOIGT tuto_folded_text « À toi : dernière mesure, pad « Conga » : »
+#54 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE f14f100087 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=true
+#54 SON Son : la musique du projet joue en boucle.
+#54 > touche 768 860
+#54 DOIGT tuto_show «  Montre-moi »
+#55 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 745e50813a | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=false
+#55 SON Son : rien ne joue.
+#55 LAYOUT CONTRAST « Arrêter » 3.91:1 (needs 4.5:1, 14 sp)
+#55 > attends 3
+#56 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e4b11becfd | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=false
+#56 SON Son : rien ne joue.
+#56 > attends 3
+#57 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE dfa3d9f4f7 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=false
+#57 SON Son : rien ne joue.
+#57 > touche 325 618
+#57 DOIGT pad_14 « Conga »
+#58 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ab279c74eb | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=false
+#58 SON Son : le pad « Conga » sonne.
+#58 > touche 325 512
+#58 DOIGT pad_10 « Bord de caisse »
+#59 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 961eda3e6d | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=false
+#59 SON Son : le pad « Bord de caisse » sonne.
+#59 > touche 632 496
+#59 DOIGT step_57 « Pas 10 »
+#60 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5268448f24 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=26 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 744 496
+#60 DOIGT step_59 « Pas 12 »
+#61 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7594d720f7 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=fill done=27 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 517 930
+#61 DOIGT tuto_next_folded « Réussi »
+#62 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 2ea8e7bc18 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=gap done=27 playing=false
+#62 SON Son : rien ne joue.
+#62 LAYOUT CONTRAST « Mesure 4/4 · Bord de caisse » 3.42:1 (needs 4.5:1, 13 sp)
+#62 > touche 517 776
+#62 DOIGT tuto_do «   Je le fais »
+#63 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e06a8ab8ed | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=gap done=27 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CONTRAST « Mesure 4/4 · Bord de caisse » 3.37:1 (needs 4.5:1, 13 sp)
+#63 LAYOUT CONTRAST « 4 » 4.13:1 (needs 4.5:1, 12 sp)
+#63 > touche 800 421
+#63 DOIGT step_60 « Pas 13 »
+#64 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 5deaad020a | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=gap done=28 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « 4 » 3.97:1 (needs 4.5:1, 12 sp)
+#64 > touche 517 930
+#64 DOIGT tuto_next_folded « Réussi »
+#65 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 455e624860 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=crash done=28 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CONTRAST « Mesure 4/4 · Cymbale » 1.35:1 (needs 4.5:1, 13 sp)
+#65 > touche 517 776
+#65 DOIGT tuto_need «   Aller dans la partie « Refrain » »
+#66 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 7e45f9692b | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=crash done=28 playing=false
+#66 SON Son : rien ne joue.
+#66 LAYOUT CONTRAST « 1 » 3.23:1 (needs 4.5:1, 12 sp)
+#66 > touche 575 314
+#66 DOIGT step_0 « Pas 1 »
+#67 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE e5518606f6 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=crash done=29 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 517 930
+#67 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#68 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 4aeb0c1d92 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=crash done=29 playing=false
+#68 SON Son : rien ne joue.
+#68 > touche 517 857
+#68 DOIGT tuto_next_big « Chapitre suivant   »
+#69 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE ad0284ba15 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=reverb_hear done=29 playing=false
+#69 SON Son : rien ne joue.
+#69 > touche 517 857
+#69 DOIGT tuto_listen «  Écouter l'exemple »
+#70 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9467b25130 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=reverb_hear done=29 playing=false
+#70 SON Son : l'exemple du tuto joue (encore 7 s).
+#70 > attends 4
+#71 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 36acdfe4ab | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=reverb_hear done=30 playing=false
+#71 SON Son : l'exemple du tuto joue (encore 3 s).
+#71 > touche 517 857
+#71 DOIGT tuto_next_big « Chapitre suivant   »
+#72 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 809778e337 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=levels done=30 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 727 1123
+#72 DOIGT tab_simple_Mix « Mix »
+#73 ROUTE tuto_panel/tab_simple_Mix | MODE simple | EMPREINTE 8f99eedb0b | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=levels done=30 playing=false
+#73 SON Son : rien ne joue.
+#73 > touche 517 776
+#73 DOIGT tuto_do «   Je le fais »
+#74 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 1fb3bcfb69 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=levels done=30 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT CONTRAST « Accords » 3.99:1 (needs 4.5:1, 13 sp)
+#74 LAYOUT CONTRAST « Sortie » 4.34:1 (needs 4.5:1, 13 sp)
+#74 > glisse 339 395 339 425
+#74 DOIGT mix_fader_5 « Volume de Accords »
+#75 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 0899a5d694 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=levels done=30 playing=false
+#75 SON Son : rien ne joue.
+#75 > glisse 339 395 339 425
+#75 DOIGT mix_fader_5 « Volume de Accords »
+#76 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 0899a5d694 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=levels done=30 playing=false
+#76 SON Son : rien ne joue.
+#76 > glisse 462 396 462 456
+#76 DOIGT mix_fader_6 « Volume de Mélodie »
+#77 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 0d4ea39df8 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=levels done=31 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 517 930
+#77 DOIGT tuto_chapter_end_folded « Bravo, chapitre fini ! »
+#78 ROUTE tab_simple_Mix | MODE simple | EMPREINTE 12bf1b6c5d | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=levels done=31 playing=false
+#78 SON Son : rien ne joue.
+#78 > touche 517 857
+#78 DOIGT tuto_next_big « Chapitre suivant   »
+#79 ROUTE tab_simple_Mix | MODE simple | EMPREINTE e6a7fa1639 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=share done=31 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 936 1123
+#79 DOIGT tab_simple_Envoyer « Partager »
+#80 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 7c8e296234 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=share done=31 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 518 312
+#80 DOIGT share_go «   Partager »
+#81 ROUTE dialogue:share_progress | MODE simple | EMPREINTE e7794c9c7b | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=share done=31 playing=false
+#81 SON Son : export (banc : taille et durée d'un export non représentatives, encodeur et moteur du banc ; un téléphone fait bien plus gros).
+#81 > attends 10
+#81 PARTAGE Mon-morceau-20261119-072946.m4a
+#82 ROUTE dialogue:« Partager mon morceau · Mon-mor » | MODE simple | EMPREINTE 1b4bf902b9 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=share done=32 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 517 800
+#82 DOIGT vue « Files »
+#83 ROUTE dialogue:share_bilan | MODE simple | EMPREINTE c04f41cb3a | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=share done=32 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT CONTRAST « Voir mes fichiers » 3.26:1 (needs 4.5:1, 14 sp)
+#83 LAYOUT CONTRAST « OK » 3.26:1 (needs 4.5:1, 14 sp)
+#83 > touche 857 803
+#83 DOIGT share_bilan_ok « OK »
+#84 ROUTE tab_simple_Envoyer | MODE simple | EMPREINTE 80b48840d4 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=share done=32 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 517 857
+#84 DOIGT tuto_next_big « Étape suivante   »
+#85 ROUTE tuto_panel/tab_simple_Envoyer | MODE simple | EMPREINTE 1fd3077099 | project=p-b37e1c2c tuto=afrobeats/Facile active=true step=share done=32 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT CUT « Écoute un extrait d'afrobeats fini : le Pré-refrain (les percussions se resserrent), puis le Refrain (tout joue). C'est ce que tu vas construire, brique par brique. » ellipsized (« … »)
+#85 LAYOUT CUT « Avant de commencer : le kit de l'afrobeats est déjà chargé, avec ses réglages. Tu n'as rien à régler, seulement à jouer. » ellipsized (« … »)
+#85 > fin
+#85 FIN : fin

@@ -1,0 +1,10 @@
+lang=id
+device=tablet8
+font=200
+mode=pro
+amenee=tuto:retro_techno:7
+gestes.max=153
+mission=tuto-pro
+profil=pro
+niveau=4
+timeout.minutes=30

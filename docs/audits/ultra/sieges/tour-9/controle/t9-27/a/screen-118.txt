@@ -1,0 +1,67 @@
+Écran 118 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 233,42
+texte « Pro » @ 493,42
+icône ↶ @ 565,42
+icône ↷ [désactivé] @ 637,42
+bouton ● @ 709,42
+bouton ▶ « bagian ini » @ 782,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+icône « Groove birama 1/8 » ▾ @ 224,114
+bouton (flèches en boucle) « Loop » [état « mati »] @ 752,114
+bouton « ? » @ 855,114
+onglet « Timeline » [coupé] @ 91,161
+onglet « Bagian » [coupé, sélectionné] @ 216,161
+titre « LAGUNYA » [état « Terbuka »] @ 136,241
+bouton « ? » @ 208,241
+texte « Sentuh bagian untuk mendengar lagu mulai dari situ. » @ 282,288
+texte « 8 birama · 0:11 » @ 450,326
+bouton « Akor lagu A · Groove F♯m  F♯m  D  E  F♯m  F♯m  D  E Sentuh untuk mengganti akor seluruh lagu. » @ 450,448
+icône ▶ « A · Groove × 1  ·  8 birama » @ 342,567
+icône − [désactivé] @ 678,567
+icône + @ 750,567
+icône ⋮ @ 822,567
+texte « − / + : ulangan. Abu: durasi tetap (saran atau Live) atau 1 kali. » @ 320,634
+texte « Tambah di akhir: » [coupé] @ 124,666
+texte « Memahami bagian Bab 7/14 · Langkah 4/6 · Pro » @ 378,720
+icône (liste) « Bab » @ 771,720
+icône ⌄ @ 843,720
+texte « Dengarkan Drop: kick kembali bersama riff. » @ 265,801
+texte « Energi » @ 52,840
+texte « Intro » @ 90,933
+texte « 24 » @ 90,957
+texte « 8 » @ 186,945
+texte « Drop » @ 306,933
+texte « 32 » @ 307,957
+texte « Break » @ 473,933
+texte « 24 » @ 473,957
+texte « 8 » @ 569,945
+texte « Drop 2 » @ 690,933
+texte « 32 » @ 690,957
+texte « Akhir » @ 833,933
+texte « 16 » @ 833,957
+texte «  Intro » @ 60,994
+texte «  Build-up » @ 157,994
+texte «  Drop » @ 256,994
+texte «  Break » @ 342,994
+texte «  Drop 2 » @ 436,994
+texte «  Akhir » @ 528,994
+texte « Setiap angka: panjang bagian dalam birama. » @ 225,1024
+texte « ▸ Kenapa? » @ 450,1062
+bouton ■ «  Stop dengar » @ 450,1125
+icône ← «  Sebelumnya » @ 119,1209
+icône « Berikutnya  » → @ 789,1209
+icône ↶ « Urungkan » @ 124,1293
+icône ↷ « Ulangi » [désactivé] @ 285,1293
+bouton ▶ « lagu » @ 445,1293
+texte « 175 Tempo » @ 610,1293
+icône (trois points reliés) « Bagikan » @ 776,1293
+onglet (ligne brisée et points) « Struktur » [sélectionné] @ 85,1389
+onglet (touches de piano) « Suara » @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

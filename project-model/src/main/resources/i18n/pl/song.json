@@ -13,7 +13,6 @@
   "Afficher :": "Pokaż:",
   "Aide de la ligne du temps": "Pomoc osi czasu",
   "Ajouter :": "Dodaj:",
-  "Ajouter à la fin :": "Dodaj na końcu:",
   "Ajouter à la suite": "Dodaj za nią",
   "Annuler la dernière action": "Cofnij",
   "Annuler la prise": "Anuluj nagranie",
@@ -275,8 +274,8 @@
   "Terminé": "Gotowe",
   "Ton morceau est vide : ajoute tes parties dans l'ordre où elles jouent (Intro, Couplet, Refrain…).": "Twój utwór jest pusty: dodaj części w kolejności grania (Intro, Zwrotka, Refren…).",
   "Touche un pad pour lancer son son, retouche-le pour l'arrêter. Tout reste calé sur le temps.": "Dotknij pada, żeby odpalić jego dźwięk, dotknij znowu, żeby go zatrzymać. Wszystko zostaje w rytmie.",
-  "Touche une partie : elle joue juste après celle en cours.": "Dotknij części: zagra zaraz po bieżącej.",
-  "Touche une partie pour écouter le morceau à partir d'elle.": "Dotknij części, żeby posłuchać utworu od niej.",
+  "Touche une partie pour régler sa longueur ; ▶ la joue juste après celle en cours.": "Dotknij części, żeby ustawić jej długość; ▶ zagra ją zaraz po bieżącej.",
+  "Touche une partie pour régler sa longueur ; ▶ écoute le morceau à partir d'elle.": "Dotknij części, żeby ustawić jej długość; ▶ zagra utwór od niej.",
   "Toucher la règle : jouer depuis cette partie.": "Dotknij linijki: graj od tej części.",
   "Toucher une case : couper ou remettre la piste dans cette partie.": "Dotknij pola: wycisz lub przywróć ścieżkę w tej części.",
   "Tout couper": "Zatrzymaj wszystko",
@@ -404,5 +403,6 @@
   "Joue aux notes : elles sonnent sur l'Acid 303. Retouche la case pour arrêter : la boucle se cale sur la mesure.": "Graj na nutach: brzmią na Acid 303. Dotknij pola ponownie, by zatrzymać: pętla dopasuje się do taktu.",
   "Le micro ne répond pas : réessaie.": "Mikrofon nie odpowiada: spróbuj jeszcze raz.",
   "Vider la case": "Wyczyść pole",
-  "Annuler possible": "Można cofnąć"
+  "Annuler possible": "Można cofnąć",
+  "− / + : répétitions. Gris : durée fixée (conseillée ou Live) ou 1 seule fois.": "− / + : powtórzenia. Szare: stała długość (zalecana lub Live) lub 1 raz."
 }

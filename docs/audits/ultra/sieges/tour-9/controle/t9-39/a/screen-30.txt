@@ -1,0 +1,69 @@
+Écran 30 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 283,42
+bouton « Simple » @ 608,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+icône « Partie : A » ▾ @ 82,180
+texte « Mesure » [coupé] @ 79,223
+bouton « 1 » [coupé, sélectionné] @ 161,228
+bouton « 2 » [coupé] @ 242,228
+bouton « Suivre » [coupé] @ 344,228
+texte « Mesure 1/2 · Claquement de mains » @ 221,285
+texte « Encore 2 cases en pointillé ici » @ 213,314
+bouton « 1 » [état « vide »] @ 90,385
+bouton [état « vide »] @ 192,385
+bouton [état « vide »] @ 294,385
+bouton [état « vide »] @ 397,385
+bouton « 2 » [état « vide, en pointillé : à toucher »] @ 500,385
+bouton [état « vide »] @ 603,385
+bouton [état « vide »] @ 706,385
+bouton [état « vide »] @ 809,385
+bouton « 3 » [état « vide »] @ 90,466
+bouton [état « vide »] @ 192,466
+bouton [état « vide »] @ 294,466
+bouton [état « vide »] @ 397,466
+bouton « 4 » [état « vide, en pointillé : à toucher »] @ 500,466
+bouton [état « vide »] @ 603,466
+bouton [état « vide »] @ 706,466
+bouton [état « vide »] @ 809,466
+texte « Remplir » @ 77,552
+texte « tout » @ 152,552
+texte « 1/2 » @ 227,552
+texte « 1/4 » @ 302,552
+texte « ◀ » [désactivé] @ 377,552
+texte « ▶ » [désactivé] @ 452,552
+texte « Effacer » [désactivé] @ 540,552
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » @ 450,627
+bouton « 1 mesure » @ 215,702
+bouton « 2 » [sélectionné] @ 330,702
+bouton « 3 » @ 411,702
+bouton « 4 » @ 492,702
+texte « Longueur » @ 89,702
+icône (liste) « Chapitres » @ 756,786
+texte « Caisse claire et clap Chapitre 3/15 · Étape 2/2 · Facile » @ 363,786
+icône ⌄ @ 843,786
+texte « À toi : sur le pad « Claquement de mains », touche les cases en pointillé, pile sur la caisse claire. » @ 450,885
+texte « • Pad : un carré qu'on touche pour jouer un son. » @ 238,943
+texte « ▸ Pourquoi ? » @ 450,981
+bouton (doigt qui touche) «   Je le fais » @ 450,1044
+bouton ▶ «  Écouter l'exemple » @ 232,1128
+bouton (œil) «  Montre-moi » @ 667,1128
+icône ← «  Précédent » @ 107,1209
+icône « Suivant  » → @ 805,1209
+icône ↶ « Annuler » @ 121,1293
+image ↷ @ 279,1283
+bouton ▶ « le morceau » @ 444,1293
+texte « 174 Tempo » @ 615,1293
+icône ⋮ « Plus » @ 779,1293
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » [sélectionné] @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

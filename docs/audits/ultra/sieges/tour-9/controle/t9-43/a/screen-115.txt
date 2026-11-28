@@ -1,0 +1,56 @@
+Écran 115 (900x1509)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 178,42
+bouton « Pro » @ 385,42
+bouton « A » ▾ @ 463,42
+icône ↶ @ 539,42
+bouton ● @ 611,42
+bouton ▶ « dit deel » @ 683,42
+bouton ▶ « het nummer » @ 775,42
+icône (trois points reliés) @ 855,42
+bouton « 174  BPM » @ 83,123
+bouton « ? » @ 855,123
+onglet « Drums 16 pads » [coupé] @ 59,204
+onglet « Acid 303 Baslijn » @ 195,204
+onglet « Zang Microfoon » @ 383,204
+onglet « Remix Splitsen » @ 561,204
+bouton « Sub Zuivere sub » ⋮ @ 764,204
+image ← @ 10,205
+image → @ 889,205
+texte « Deel: A » @ 69,273
+texte « mt » [coupé] @ 84,314
+bouton « 2 » [coupé] @ 171,322
+bouton « 3 » @ 378,322
+bouton « 4 » @ 698,322
+texte « A♭ » [coupé] @ 84,361
+texte « G » @ 84,391
+texte « G♭ » @ 84,433
+texte « F » @ 84,475
+texte « E » @ 84,517
+texte « E♭ » @ 84,559
+texte « D » @ 84,601
+texte « D♭ » @ 84,643
+texte « C2 » @ 84,685
+texte « B » @ 84,727
+texte « B♭ » @ 84,769
+texte « A » @ 84,811
+texte « A♭ » @ 84,853
+texte « G » @ 84,895
+texte « G♭ » @ 84,937
+texte « F » @ 84,979
+texte « E » @ 84,1021
+texte « E♭ » [coupé] @ 84,1053
+dessin [coupé] @ 492,708
+texte « Kracht » @ 84,1089
+texte « Het basgeluid Hoofdstuk 6/17 · Stap 2/2 · Pro » @ 356,1157
+icône (liste) « Hoofdstukken » @ 749,1158
+icône ⌃ @ 843,1158
+icône « Nu jij: zet in Mix het effect ‘Pomp’ op het spoor Sub, en dan op het spoor Bas: ze worden bij elke kick zachter (sidechain). Vooral de Sub vecht met de kick in het laag. Lees » ⌃ @ 450,1270
+onglet (ligne brisée et points) « Structuur » @ 85,1389
+onglet (touches de piano) « Klanken » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Meer » @ 815,1389
+texte « ●  REC » @ 657,1479
+texte « ✎  Noteren » @ 760,1479
+texte « ⋯ » @ 852,1479
+texte « Feedbackmodus » @ 310,1479

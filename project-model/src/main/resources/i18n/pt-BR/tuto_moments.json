@@ -9,7 +9,7 @@
   "À toi : écris les 5 notes de la mesure 2.": "Sua vez: escreva as 5 notas do compasso 2.",
   "À toi : écris les 4 notes de la mesure 2.": "Sua vez: escreva as 4 notas do compasso 2.",
   "À toi : touche la note du bas de chaque accord en pointillé de la mesure 1 : tout l'accord se pose.": "Sua vez: toque na nota de baixo de cada acorde pontilhado do compasso 1: o acorde inteiro é colocado.",
-  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Sua vez: “Eu faço” abre a ficha Tonalidade: toque nos dois botões destacados.",
+  "À toi : « Je le fais » ouvre la fiche Tonalité : touche les deux boutons entourés.": "Sua vez: “Eu faço” abre a ficha “Tonalidade da música”: toque nos dois botões destacados.",
   "À toi : sur le pad « Kick », touche les cases en pointillé des 2 mesures.": "Sua vez: no pad “Kick”, toque nas casas pontilhadas dos 2 compassos.",
   "À toi : sur le pad « Caisse », touche les cases en pointillé des 2 mesures.": "Sua vez: no pad “Caixa”, toque nas casas pontilhadas dos 2 compassos.",
   "À toi : sur le pad « Charley », touche les cases en pointillé des 2 mesures.": "Sua vez: no pad “Hi-hat”, toque nas casas pontilhadas dos 2 compassos.",
@@ -21,5 +21,5 @@
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Refrain, Couplet, Pré-refrain, Refrain, Couplet, Pré-refrain, Refrain, et Intro pour finir.": "Sua vez: embaixo de “Adicionar”, toque na ordem: Intro, Refrão, Verso, Pré-refrão, Refrão, Verso, Pré-refrão, Refrão e depois Intro para fechar.",
   "À toi : sous « Ajouter », touche dans l'ordre : Intro, Couplet, Pré-refrain, Refrain, Post-refrain, Couplet, Pré-refrain, Refrain, Pont, Refrain, et Intro pour finir.": "Sua vez: embaixo de “Adicionar”, toque na ordem: Intro, Verso, Pré-refrão, Refrão, Pós-refrão, Verso, Pré-refrão, Refrão, Ponte, Refrão e depois Intro para fechar.",
   "À toi : donne à chaque partie sa durée : Intro 4 mesures, Couplet 8, Pré-refrain 4, Refrain 16 (8 la 2e fois, 16 la 3e), Post-refrain 4, Pont 8, Fin 4.": "Sua vez: dê a cada parte sua duração: Intro 4 compassos, Verso 8, Pré-refrão 4, Refrão 16 (8 na 2ª vez, 16 na 3ª), Pós-refrão 4, Ponte 8, Fim 4.",
-  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −2 ».": "Sua vez: na aba “Mix”, abaixe um pouco os faders “Acordes” e “Melodia”. Sob o fader, “Normal” vira “−2”."
+  "À toi : dans l'onglet « Mix », baisse un peu les curseurs « Accords » et « Mélodie ». Sous le curseur, « Normal » devient « −1 ».": "Sua vez: na aba “Mix”, abaixe um pouco os faders “Acordes” e “Melodia”. Sob o fader, “Normal” vira “−1”."
 }

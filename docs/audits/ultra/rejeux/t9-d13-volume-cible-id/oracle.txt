@@ -1,0 +1,4 @@
+source=docs/audits/ultra/sieges/tour-9/controle/t9-28/a
+rejeu.n=1
+rejeu.attendu=« Klub · −8 LUFS » @
+rejeu.absent=« Klub · −8 LUFS » [coupé]

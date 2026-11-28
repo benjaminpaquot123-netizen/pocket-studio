@@ -1,0 +1,40 @@
+Écran 19 (540x1170)
+bouton (dossier ouvert) ✓ @ 110,42
+bouton « 간단 » @ 263,42
+bouton ● @ 351,42
+bouton ▶ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+bouton « 185  템포 » @ 105,144
+bouton « ? » @ 495,144
+icône « 파트: A » ▾ @ 95,240
+bouton « Gabber · 큰북 1 FX » @ 78,336
+bouton « 큰북 2 » @ 206,336
+bouton « 스네어 » @ 334,336
+bouton « 스네어 2 » @ 462,336
+bouton « 손뼉 FX » [coupé] @ 78,393
+bouton « Roland TR-909 · 하이햇 L 30 » [coupé] @ 206,393
+bouton « Roland TR-909 · 오픈 하이햇 R 30 » [coupé] @ 334,393
+bouton « 로우 탐 » [coupé] @ 462,393
+texte « 곡의 빠르기와 색깔 1/11장 · 완료 · 쉬움 » @ 198,470
+icône (liste) « 챕터 » @ 411,471
+icône ⌄ @ 483,471
+image (coupe) @ 57,623
+texte « 잘했어요, 챕터 완료! » @ 255,594
+texte « 다음 챕터: “드럼”. » @ 229,651
+bouton « 다음 챕터   » → @ 270,740
+bouton ▶ «  예시 듣기 » @ 310,827
+icône ← @ 57,828
+texte « 185 템포 » @ 376,933
+icône ↶ « 실행 취소 » @ 65,934
+image ↷ @ 180,915
+bouton ▶ « 곡 » @ 282,934
+icône ⋮ « 더보기 » @ 479,933
+onglet (lignes et note) « 내 곡 » @ 49,1050
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 160,1050
+onglet (touches de piano) « 건반 » @ 271,1050
+onglet (curseurs) « 믹스 » @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « 피드백 모드 » @ 123,1140
+texte « ●  REC » @ 289,1140
+texte « ✎  메모 » @ 400,1140
+texte « ⋯ » @ 492,1140

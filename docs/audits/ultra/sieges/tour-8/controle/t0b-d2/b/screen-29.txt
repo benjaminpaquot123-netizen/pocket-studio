@@ -1,0 +1,185 @@
+Écran 29 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 2 Sauvegardé » @ 127,42
+bouton « Simple » @ 296,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 100  Tempo » @ 83,114
+bouton « ? » @ 543,114
+icône « Partie : A » ▾ @ 82,180
+texte « Claquement de mains » @ 96,235
+bouton @ 163,234
+bouton @ 187,234
+bouton @ 211,234
+bouton @ 235,234
+bouton @ 260,234
+bouton @ 285,234
+bouton @ 310,234
+bouton @ 335,234
+bouton @ 360,234
+bouton @ 385,234
+bouton @ 410,234
+bouton @ 435,234
+bouton @ 460,234
+bouton @ 485,234
+bouton @ 510,234
+bouton @ 535,234
+texte « Charley » @ 96,271
+bouton @ 163,270
+bouton @ 187,270
+bouton @ 211,270
+bouton @ 235,270
+bouton @ 260,270
+bouton @ 285,270
+bouton @ 310,270
+bouton @ 335,270
+bouton @ 360,270
+bouton @ 385,270
+bouton @ 410,270
+bouton @ 435,270
+bouton @ 460,270
+bouton @ 485,270
+bouton @ 510,270
+bouton @ 535,270
+texte « Charley ouvert » @ 96,307
+bouton @ 163,306
+bouton @ 187,306
+bouton @ 211,306
+bouton @ 235,306
+bouton @ 260,306
+bouton @ 285,306
+bouton @ 310,306
+bouton @ 335,306
+bouton @ 360,306
+bouton @ 385,306
+bouton @ 410,306
+bouton @ 435,306
+bouton @ 460,306
+bouton @ 485,306
+bouton @ 510,306
+bouton @ 535,306
+texte « Tom grave » @ 96,343
+bouton @ 163,342
+bouton @ 187,342
+bouton @ 211,342
+bouton @ 235,342
+bouton @ 260,342
+bouton @ 285,342
+bouton @ 310,342
+bouton @ 335,342
+bouton @ 360,342
+bouton @ 385,342
+bouton @ 410,342
+bouton @ 435,342
+bouton @ 460,342
+bouton @ 485,342
+bouton @ 510,342
+bouton @ 535,342
+texte « Tom médium » @ 96,379
+bouton @ 163,378
+bouton @ 187,378
+bouton @ 211,378
+bouton @ 235,378
+bouton @ 260,378
+bouton @ 285,378
+bouton @ 310,378
+bouton @ 335,378
+bouton @ 360,378
+bouton @ 385,378
+bouton @ 410,378
+bouton @ 435,378
+bouton @ 460,378
+bouton @ 485,378
+bouton @ 510,378
+bouton @ 535,378
+texte « Tom aigu » @ 96,415
+bouton @ 163,414
+bouton @ 187,414
+bouton @ 211,414
+bouton @ 235,414
+bouton @ 260,414
+bouton @ 285,414
+bouton @ 310,414
+bouton @ 335,414
+bouton @ 360,414
+bouton @ 385,414
+bouton @ 410,414
+bouton @ 435,414
+bouton @ 460,414
+bouton @ 485,414
+bouton @ 510,414
+bouton @ 535,414
+texte « Bord de caisse » @ 96,451
+bouton @ 163,450
+bouton @ 187,450
+bouton @ 211,450
+bouton @ 235,450
+bouton @ 260,450
+bouton @ 285,450
+bouton @ 310,450
+bouton @ 335,450
+bouton @ 360,450
+bouton @ 385,450
+bouton @ 410,450
+bouton @ 435,450
+bouton @ 460,450
+bouton @ 485,450
+bouton @ 510,450
+bouton @ 535,450
+texte « Cloche » @ 96,487
+bouton @ 163,486
+bouton @ 187,486
+bouton @ 211,486
+bouton @ 235,486
+bouton @ 260,486
+bouton @ 285,486
+bouton @ 310,486
+bouton @ 335,486
+bouton @ 360,486
+bouton @ 385,486
+bouton @ 410,486
+bouton @ 435,486
+bouton @ 460,486
+bouton @ 485,486
+bouton @ 510,486
+bouton @ 535,486
+texte « Cymbale » [coupé] @ 96,518
+bouton [coupé] @ 163,515
+bouton [coupé] @ 187,515
+bouton [coupé] @ 211,515
+bouton [coupé] @ 235,515
+bouton [coupé] @ 260,515
+bouton [coupé] @ 285,515
+bouton [coupé] @ 310,515
+bouton [coupé] @ 335,515
+bouton [coupé] @ 360,515
+bouton [coupé] @ 385,515
+bouton [coupé] @ 410,515
+bouton [coupé] @ 435,515
+bouton [coupé] @ 460,515
+bouton [coupé] @ 485,515
+bouton [coupé] @ 510,515
+bouton [coupé] @ 535,515
+icône (liste) « Chapitres » @ 444,573
+texte « La vitesse et la couleur du morceau Chapitre 1/15 · Étape 1/3 · Facile » @ 207,573
+icône ⌄ @ 531,573
+texte « Écoute un extrait de house finie : la Montée, puis le Drop où tout joue, avec le piano et la basse d'orgue. C'est ce que tu vas construire. » @ 294,690
+texte « • Drop : le moment fort du morceau, quand tout revient d'un coup. » @ 294,780
+texte « ▸ Pourquoi ? » @ 294,831
+bouton ▶ «  Écouter l'exemple » @ 294,894
+icône ← «  Précédent » [désactivé] @ 107,978
+icône « Suivant  » → @ 493,978
+icône ↶ « Annuler » [désactivé] @ 69,1062
+image ↷ @ 175,1052
+bouton ▶ « le morceau » @ 288,1062
+texte « 100 Tempo » @ 407,1062
+icône ⋮ « Plus » @ 519,1062
+onglet (lignes et note) « Mon morceau » @ 54,1158
+onglet (quatre carrés) « Rythme » [sélectionné] @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

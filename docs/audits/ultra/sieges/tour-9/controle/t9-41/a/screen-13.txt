@@ -1,0 +1,29 @@
+Écran 13 (540x1170)
+dessin @ 270,36
+texte « Song key » @ 197,112
+texte « Close » @ 443,112
+texte « Song key: G · Minor » @ 204,195
+texte « Scale » @ 76,266
+bouton « Major » @ 98,345
+bouton « Minor » @ 259,345
+bouton « Dorian » @ 429,345
+bouton « Minor penta » @ 162,426
+bouton « Major penta » @ 161,507
+bouton « Blues » @ 380,507
+bouton « Phrygian » @ 130,588
+bouton « Harmonic minor » @ 201,669
+texte « Key » @ 59,748
+bouton « C » @ 63,827
+bouton « C♯ » @ 156,827
+bouton « D » @ 249,827
+bouton « E♭ » @ 336,827
+bouton « E » @ 423,827
+bouton « F » @ 63,908
+bouton « F♯ » @ 153,908
+bouton « G » @ 243,908
+bouton « A♭ » @ 331,908
+bouton « A » @ 419,908
+bouton « B♭ » @ 63,989
+bouton « B » @ 150,989
+image (rond coché) @ 58,1115
+texte « Done! The song's colour is chosen. » @ 292,1111

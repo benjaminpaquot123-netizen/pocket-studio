@@ -1,0 +1,65 @@
+Écran 62 (900x1509)
+icône (dossier ouvert) ✓ « Proyekku 1 Tersimpan » @ 188,42
+texte « Pro » @ 403,42
+bouton « A » ▾ @ 478,42
+icône ↶ @ 553,42
+bouton ● @ 625,42
+bouton ▶ « bagian ini » @ 698,42
+bouton ▶ « lagu » @ 783,42
+icône (trois points reliés) @ 855,42
+bouton « 175  BPM » @ 73,114
+bouton « ? » @ 855,114
+onglet « Drum 16 pad » @ 71,186
+onglet « Acid 303 Bassline » @ 212,186
+onglet « Vokal Mikrofon » @ 365,186
+onglet « Remix Pisahkan » @ 516,186
+bouton « Akor Hoover » ⋮ @ 673,186
+icône ♪ « Suara » @ 818,186
+image → @ 889,187
+texte « Bagian: A » @ 68,249
+texte « Semua » @ 142,321
+texte « Tidak ada » @ 268,321
+texte « ▲ ½ nada » @ 409,321
+texte « ▼ ½ nada » @ 551,321
+texte « ▲ oktaf » @ 683,321
+texte « 1 not » @ 63,321
+texte « ▼ oktaf » @ 101,396
+texte « ◀ » @ 206,396
+texte « ▶ » @ 296,396
+texte « Duplikat » @ 103,471
+texte « Salin » @ 212,471
+texte « Tempel birama 6 » [désactivé] @ 363,471
+texte « Rapikan ke ketukan » @ 588,471
+texte « Legato » @ 762,471
+texte « Humanize » @ 112,546
+texte « Hapus » @ 238,546
+texte « Akor · birama 2/8 » @ 141,612
+bouton « Salin » @ 798,627
+texte « Pola terpasang! Sisanya disalin: » @ 222,639
+texte « birama » @ 84,684
+bouton « 2 » @ 486,696
+bouton « 3 » [coupé] @ 853,696
+texte « C♯ » @ 84,750
+texte « C5 » @ 84,792
+texte « B » @ 84,834
+texte « A♯ » @ 84,876
+texte « A » @ 84,918
+texte « G♯ » @ 84,960
+texte « G » @ 84,1002
+texte « F♯ » @ 84,1044
+texte « F » @ 84,1086
+texte « E » [coupé] @ 84,1120
+dessin [coupé] @ 492,931
+icône (liste) « Bab » @ 771,1182
+texte « Hoover (akor) Bab 4/14 · Langkah 1/1 · Pro » @ 378,1182
+icône ⌃ @ 843,1182
+bouton « Salin ke birama berikutnya » → @ 450,1281
+onglet (ligne brisée et points) « Struktur » @ 85,1389
+onglet (touches de piano) « Suara » [sélectionné] @ 268,1389
+onglet (curseurs) « Mix » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « Lainnya » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Catat » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode masukan » @ 318,1479

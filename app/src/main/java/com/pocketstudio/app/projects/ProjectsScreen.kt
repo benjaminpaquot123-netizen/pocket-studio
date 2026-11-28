@@ -186,7 +186,7 @@ fun ProjectsScreen(
                     Row(Modifier.padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                         Text(tr("« %s » est dans la corbeille (30 jours).", name), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
                         TextButton(onClick = actions.undoDelete, enabled = !ui.busy, modifier = Modifier.testTag("project_undo_delete")) { Text(tr("Annuler")) }
-                        TextButton(onClick = actions.dismissDeleted) { Text("OK") }
+                        TextButton(onClick = actions.dismissDeleted) { Text(tr("OK")) }
                     }
                 }
             }
@@ -248,7 +248,7 @@ fun ProjectsScreen(
                     modifier = Modifier.testTag("project_name_field"))
             },
             confirmButton = {
-                TextButton(onClick = { actions.rename(p, name); renamingId = null }, enabled = name.isNotBlank(), modifier = Modifier.testTag("project_rename_ok")) { Text("OK") }
+                TextButton(onClick = { actions.rename(p, name); renamingId = null }, enabled = name.isNotBlank(), modifier = Modifier.testTag("project_rename_ok")) { Text(tr("OK")) }
             },
             dismissButton = { TextButton(onClick = { renamingId = null }) { Text(tr("Annuler")) } },
         )

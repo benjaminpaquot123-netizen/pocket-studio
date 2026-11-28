@@ -22,7 +22,11 @@ internal class BenchFlac(private val context: Context, private val dir: File) {
     private val known = HashSet<String>()
     private var decoder = false
 
-    /** The FLACs that came since the last look (a pack just downloaded). */
+    /**
+     * The FLACs that came since the last look (a pack just downloaded). Also called by the app's own decoding of a tutorial
+     * kit, off the main thread (tour 9, D17: [readable]), hence one look at a time.
+     */
+    @Synchronized
     fun register() {
         val files = dir.listFiles()?.filter { it.isDirectory }?.flatMap { d -> d.listFiles()?.filter { it.name.endsWith(".flac") }.orEmpty() }.orEmpty()
         for (f in files) {
@@ -45,6 +49,16 @@ internal class BenchFlac(private val context: Context, private val dir: File) {
             }
             ShadowMediaExtractor.addTrack(DataSource.toDataSource(context, Uri.fromFile(f), null), format, data)
         }
+    }
+
+    /**
+     * Tour 9, D17 (seat t9-75): [file] decoded as the phone decodes it, its pack shown to the extractor first. A download ends
+     * in real time, in the middle of a gesture's wait, and the tutorial decodes its kit at once: [register], called only
+     * before and after each gesture, came too late and every sound was « illisible ». A file that is no FLAC still fails.
+     */
+    fun readable(file: File): com.pocketstudio.app.audio.Pcm {
+        register()
+        return com.pocketstudio.app.audio.AudioDecoder.decode(context, Uri.fromFile(file))
     }
 
     private class Info(val rate: Long, val channels: Int, val frames: Long)

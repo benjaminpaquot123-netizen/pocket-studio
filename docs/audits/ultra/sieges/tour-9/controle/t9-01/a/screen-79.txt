@@ -1,0 +1,55 @@
+Écran 79 (540x1170)
+icône (dossier ouvert) ✓ « مشروعي 1 تم الحفظ » @ 425,42
+bouton « بسيط » @ 273,42
+bouton ● @ 191,42
+bouton ▶ « هذا الجزء » @ 118,42
+icône ⋮ @ 45,42
+bouton « 120  السرعة » @ 453,139
+bouton « ? » @ 45,139
+icône « الجزء: A » ▾ @ 460,229
+texte « هاي هات مفتوح » [coupé] @ 131,265
+bouton [état « فارغ »] @ 472,324
+bouton [état « ضربة، القوة 100 % »] @ 414,324
+bouton [état « فارغ »] @ 356,324
+bouton « 2 » [état « فارغ »] @ 298,324
+bouton [état « فارغ »] @ 240,324
+bouton [état « ضربة، القوة 100 % »] @ 182,324
+bouton [état « فارغ »] @ 124,324
+bouton « 1 » [état « فارغ »] @ 67,324
+bouton [état « فارغ »] @ 472,395
+bouton [état « ضربة، القوة 100 % »] @ 414,395
+bouton [état « فارغ »] @ 356,395
+bouton « 4 » [état « فارغ »] @ 298,395
+bouton [état « فارغ »] @ 240,395
+bouton [état « ضربة، القوة 100 % »] @ 182,395
+bouton [état « فارغ »] @ 124,395
+bouton « 3 » [état « فارغ »] @ 67,395
+texte « ▶ » [coupé] @ 419,458
+texte « ◀ » [coupé] @ 344,458
+texte « 1/4 » [coupé] @ 269,458
+texte « 1/2 » [coupé] @ 194,458
+texte « الكل » [coupé] @ 119,458
+texte « ملء » [coupé] @ 61,462
+texte « آلة الإيقاع الفصل 3/9 · تم · سهل » @ 342,529
+icône (liste) « الفصول » @ 129,530
+icône ⌄ @ 57,530
+texte « ▸ لماذا؟ » @ 270,636
+icône « تابع القراءة » ⌄ @ 270,678
+bouton « الفصل التالي   » → @ 270,726
+bouton ▶ «  استمع إلى أغنيتي » @ 336,828
+bouton ■ «  إيقاف الاستماع » @ 123,828
+icône ← @ 483,828
+bouton ▶ « الأغنية » @ 276,936
+texte « 120 السرعة » @ 170,936
+icône ↶ « تراجع » @ 476,936
+image ↷ @ 376,918
+icône ⋮ « المزيد » @ 64,936
+onglet (lignes et note) « أغنيتي » @ 490,1044
+onglet (quatre carrés) « الإيقاع » [sélectionné] @ 379,1044
+onglet (touches de piano) « لوحة المفاتيح » @ 269,1044
+onglet (curseurs) « المكس » @ 159,1044
+onglet (trois points reliés) « مشاركة » @ 49,1044
+texte « ●  REC » @ 228,1140
+texte « ✎  دوّن » @ 132,1140
+texte « ⋯ » @ 48,1140
+texte « وضع الملاحظات » @ 402,1140

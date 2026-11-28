@@ -1,0 +1,53 @@
+Écran 54 (588x1278)
+icône (dossier ouvert) ✓ « Mój projekt 1 Zapisano » @ 114,42
+texte « Pro » @ 255,42
+icône ↶ @ 327,42
+bouton ● @ 399,42
+bouton ■ « ta część » @ 471,42
+icône (trois points reliés) @ 543,42
+bouton « 142  BPM » @ 73,114
+icône (flèches en boucle) « Refren takt 4/8 » ▾ @ 218,114
+bouton (flèches en boucle) « Pętla » [allumé, état « wł. »] @ 439,114
+bouton « ? » @ 543,114
+bouton « Akordy utworu B · Intro Gm  D  Gm  D  Gm  D  Gm  D A · Refren Gm  E♭  Cm  D  Gm  E♭  Cm  D C · Zwrotka Gm  E♭  Cm  Gm  Gm  E♭  Cm  Gm D · Pre-chorus Gm  D  Gm  D  Gm  D  Gm  D Dotknij, żeby zmienić akordy całego utworu. » [coupé] @ 294,162
+icône ▶ « B · Intro 8 taktów » @ 186,234
+icône − [désactivé] @ 366,234
+icône + [désactivé] @ 438,234
+icône ⋮ @ 510,234
+icône ▶ « A · Refren 16 taktów » @ 186,330
+icône − [désactivé] @ 366,330
+icône + [désactivé] @ 438,330
+icône ⋮ @ 510,330
+icône ▶ « C · Zwrotka 30 taktów » [coupé] @ 186,393
+icône − [désactivé, coupé] @ 366,399
+icône + [désactivé, coupé] @ 438,399
+icône ⋮ [coupé] @ 510,399
+image ✓ @ 33,342
+texte « Gotowe: nowa długość dla C · Zwrotka » @ 264,348
+texte « Anuluj » @ 512,348
+texte « Przejścia Rozdział 12/16 · Krok 1/2 · Pro » @ 207,450
+icône (liste) « Rozdziały » @ 444,450
+icône ⌄ @ 531,450
+texte « Twoja kolej: w części „Pre-chorus”, ostatni takt, pad „Hi-hat”: przytrzymaj ostatnie uderzenie, potem „Roll” ×4: seria przed powrotem 808. » @ 294,567
+bouton « Pobierz zestaw Drill (3 MB) » @ 243,678
+texte « Później » @ 510,678
+texte « ▸ Dlaczego? » @ 294,744
+bouton ⊕ «   Przejdź do części „Pre-chorus” » @ 294,807
+bouton ▶ «  Posłuchaj przykładu » @ 154,894
+bouton (œil) «  Pokaż mi » @ 433,894
+icône ← «  Wstecz » @ 93,978
+icône « Dalej  » → @ 506,978
+icône ↶ « Cofnij » @ 71,1062
+icône ↷ « Ponów » [désactivé] @ 177,1062
+bouton ▶ « utwór » @ 284,1062
+texte « 142 Tempo » @ 396,1062
+icône (trois points reliés) « Udostępnij » @ 513,1062
+onglet (ligne brisée et points) « Struktura » [sélectionné] @ 54,1158
+onglet (touches de piano) « Dźwięki » @ 174,1158
+onglet (curseurs) « Miks » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Więcej » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Zanotuj » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Tryb uwag » @ 162,1248

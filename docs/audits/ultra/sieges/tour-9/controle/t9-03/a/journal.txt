@@ -1,0 +1,690 @@
+#0 SIEGE lang=ja device=tablet8 font=100 mode=pro theme=- fresh=non gestes.max=153 lit=oui main=both amenee=tuto:acid_techno:1
+#0 PREMIER ECRAN reel_s=4.0 simule_s=2.4 jvm_s=9.7 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:acid_techno:1
+#0 AMENEE > touche 450 1293 (launch_learn)
+#0 AMENEE > touche 670 1355 (mode_card_pro)
+#0 AMENEE > touche 450 481 (tuto_style_acid_techno)
+#0 AMENEE prête (tab_Sons)
+#1 ROUTE tab_Sons | MODE pro | EMPREINTE 2e7522e1c4 | project=p-0682a169 tuto=acid_techno/Pro active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 LAYOUT TARGET « ▸ なぜ？ » 572 x 21 dp (touch 572 x 48)
+#1 > touche 450 1125
+#1 DOIGT tuto_listen «  例を聴く »
+#2 ROUTE tab_Sons | MODE pro | EMPREINTE fc1e37b9d8 | project=p-0682a169 tuto=acid_techno/Pro active=true step=ref done=0 playing=false
+#2 SON Son : l'exemple du tuto joue (encore 7 s).
+#2 > touche 403 938
+#2 DOIGT tuto_kit_download « アシッドテクノ キットをダウンロード（4 MB） »
+#3 ROUTE tab_Sons | MODE pro | EMPREINTE 280412d57a | project=p-0682a169 tuto=acid_techno/Pro active=true step=ref done=1 playing=false
+#3 SON Son : l'exemple du tuto joue (encore 6 s).
+#3 > touche 450 1125
+#3 DOIGT tuto_next_big « 次のステップ   »
+#4 ROUTE tab_Sons | MODE pro | EMPREINTE 24d6b48a63 | project=p-0682a169 tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#4 SON Son : rien ne joue.
+#4 LAYOUT CONTRAST « ステップ：スタジオキック » 1.80:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « ? » 1.62:1 (needs 4.5:1, 12 sp)
+#4 LAYOUT CONTRAST « 全パッド » 4.33:1 (needs 4.5:1, 14 sp)
+#4 > touche 73 114
+#4 DOIGT top_tempo « テンポ：120 BPM »
+#5 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 89fdbd4d2c | project=p-0682a169 tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#5 SON Son : rien ne joue.
+#5 LAYOUT OVERLAP « テンポ » over the touchable « シートを閉じる » (66 x 33 dp)
+#5 LAYOUT OVERLAP « ? » over the touchable « シートを閉じる » (7 x 15 dp)
+#5 LAYOUT OVERLAP « 閉じる » over the touchable « シートを閉じる » (42 x 21 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « シートを閉じる » (86 x 53 dp)
+#5 LAYOUT OVERLAP «  BPM » over the touchable « シートを閉じる » (39 x 24 dp)
+#5 LAYOUT OVERLAP « 70 » over the touchable « シートを閉じる » (21 x 19 dp)
+#5 LAYOUT OVERLAP « 90 » over the touchable « シートを閉じる » (21 x 19 dp)
+#5 LAYOUT OVERLAP « 120 » over the touchable « シートを閉じる » (32 x 19 dp)
+#5 LAYOUT OVERLAP « 140 » over the touchable « シートを閉じる » (32 x 19 dp)
+#5 LAYOUT OVERLAP « 174 » over the touchable « シートを閉じる » (32 x 19 dp)
+#5 LAYOUT OVERLAP « ½ » over the touchable « シートを閉じる » (14 x 24 dp)
+#5 LAYOUT OVERLAP « ×2 » over the touchable « シートを閉じる » (21 x 24 dp)
+#5 LAYOUT OVERLAP « 1 » over the touchable « シートを閉じる » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 2 » over the touchable « シートを閉じる » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 3 » over the touchable « シートを閉じる » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 4 » over the touchable « シートを閉じる » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 5 » over the touchable « シートを閉じる » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 6 » over the touchable « シートを閉じる » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 7 » over the touchable « シートを閉じる » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 8 » over the touchable « シートを閉じる » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 9 » over the touchable « シートを閉じる » (14 x 27 dp)
+#5 LAYOUT OVERLAP « 0 » over the touchable « シートを閉じる » (14 x 27 dp)
+#5 LAYOUT OVERLAP « OK » over the touchable « シートを閉じる » (33 x 27 dp)
+#5 LAYOUT OVERLAP « リズムに合わせてタップ » over the touchable « シートを閉じる » (176 x 24 dp)
+#5 LAYOUT OVERLAP « 拍ごとにここをタップ。テンポが合わせて変わります。 » over the touchable « シートを閉じる » (317 x 19 dp)
+#5 > touche 163 1083
+#5 DOIGT tempo_key_1 « 1 »
+#6 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE c45a1ea639 | project=p-0682a169 tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#6 SON Son : rien ne joue.
+#6 LAYOUT OVERLAP « 1 » over the touchable « シートを閉じる » (29 x 53 dp)
+#6 LAYOUT OVERLAP « 40〜300 の範囲 » over the touchable « シートを閉じる » (104 x 21 dp)
+#6 > touche 450 1083
+#6 DOIGT tempo_key_2 « 2 »
+#7 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE b92280ed3e | project=p-0682a169 tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 12 » over the touchable « シートを閉じる » (57 x 53 dp)
+#7 > touche 450 1257
+#7 DOIGT tempo_key_8 « 8 »
+#8 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE 88121c75fe | project=p-0682a169 tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT OVERLAP « 128 » over the touchable « シートを閉じる » (86 x 53 dp)
+#8 > touche 163 1344
+#8 DOIGT tempo_key_erase « 数字を1つ消す »
+#9 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE b92280ed3e | project=p-0682a169 tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 > touche 163 1344
+#9 DOIGT tempo_key_erase « 数字を1つ消す »
+#10 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE c45a1ea639 | project=p-0682a169 tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 > touche 737 1083
+#10 DOIGT tempo_key_3 « 3 »
+#11 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE c8381774eb | project=p-0682a169 tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 13 » over the touchable « シートを閉じる » (57 x 53 dp)
+#11 > touche 450 1257
+#11 DOIGT tempo_key_8 « 8 »
+#12 ROUTE dialogue:tempo_sheet | MODE pro | EMPREINTE f3a044b8fa | project=p-0682a169 tuto=acid_techno/Pro active=true step=tempo done=1 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT OVERLAP « 138 » over the touchable « シートを閉じる » (86 x 53 dp)
+#12 > touche 737 1344
+#12 DOIGT tempo_key_ok « OK »
+#13 ROUTE tab_Sons | MODE pro | EMPREINTE a8ce79612b | project=p-0682a169 tuto=acid_techno/Pro active=true step=tempo done=2 playing=false
+#13 SON Son : rien ne joue.
+#13 > touche 450 1125
+#13 DOIGT tuto_next_big « 次のステップ   »
+#14 ROUTE tab_Sons | MODE pro | EMPREINTE 46c2a23f86 | project=p-0682a169 tuto=acid_techno/Pro active=true step=key done=2 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 450 1044
+#14 DOIGT tuto_do «   自分でやる »
+#15 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 4b58071bd1 | project=p-0682a169 tuto=acid_techno/Pro active=true step=key done=2 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 曲のキー » over the touchable « シートを閉じる » (87 x 33 dp)
+#15 LAYOUT OVERLAP « 曲のキー：なし » over the touchable « シートを閉じる » (98 x 21 dp)
+#15 LAYOUT OVERLAP « スケール » over the touchable « シートを閉じる » (56 x 21 dp)
+#15 LAYOUT OVERLAP « メジャー » over the touchable « シートを閉じる » (63 x 24 dp)
+#15 LAYOUT OVERLAP « マイナー » over the touchable « シートを閉じる » (64 x 24 dp)
+#15 LAYOUT OVERLAP « ドリアン » over the touchable « シートを閉じる » (63 x 24 dp)
+#15 LAYOUT OVERLAP « マイナーペンタ » over the touchable « シートを閉じる » (112 x 24 dp)
+#15 LAYOUT OVERLAP « メジャーペンタ » over the touchable « シートを閉じる » (111 x 24 dp)
+#15 LAYOUT OVERLAP « ブルース » over the touchable « シートを閉じる » (63 x 24 dp)
+#15 LAYOUT OVERLAP « フリジアン » over the touchable « シートを閉じる » (79 x 24 dp)
+#15 LAYOUT OVERLAP « ハーモニックマイナー » over the touchable « シートを閉じる » (160 x 24 dp)
+#15 LAYOUT OVERLAP « キー » over the touchable « シートを閉じる » (28 x 21 dp)
+#15 LAYOUT OVERLAP « C » over the touchable « シートを閉じる » (12 x 24 dp)
+#15 LAYOUT OVERLAP « C♯ » over the touchable « シートを閉じる » (21 x 24 dp)
+#15 LAYOUT OVERLAP « D » over the touchable « シートを閉じる » (11 x 24 dp)
+#15 LAYOUT OVERLAP « E♭ » over the touchable « シートを閉じる » (15 x 24 dp)
+#15 LAYOUT OVERLAP « E » over the touchable « シートを閉じる » (9 x 24 dp)
+#15 LAYOUT OVERLAP « F » over the touchable « シートを閉じる » (9 x 24 dp)
+#15 LAYOUT OVERLAP « F♯ » over the touchable « シートを閉じる » (18 x 24 dp)
+#15 LAYOUT OVERLAP « G » over the touchable « シートを閉じる » (12 x 24 dp)
+#15 LAYOUT OVERLAP « A♭ » over the touchable « シートを閉じる » (17 x 24 dp)
+#15 LAYOUT OVERLAP « A » over the touchable « シートを閉じる » (12 x 24 dp)
+#15 LAYOUT OVERLAP « B♭ » over the touchable « シートを閉じる » (16 x 24 dp)
+#15 LAYOUT OVERLAP « B » over the touchable « シートを閉じる » (11 x 24 dp)
+#15 > touche 242 1223
+#15 DOIGT tuto_scale_Phrygian « フリジアン »
+#16 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE 89e50dab2e | project=p-0682a169 tuto=acid_techno/Pro active=true step=key done=2 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « 曲のキー：C · フリジアン » over the touchable « シートを閉じる » (161 x 21 dp)
+#16 > touche 63 1437
+#16 DOIGT tuto_root_9 « A »
+#17 ROUTE dialogue:tuto_key_sheet | MODE pro | EMPREINTE c4bcd0757c | project=p-0682a169 tuto=acid_techno/Pro active=true step=key done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « 曲のキー：A · フリジアン » over the touchable « シートを閉じる » (161 x 21 dp)
+#17 LAYOUT OVERLAP « できました！曲の色が決まりました。 » over the touchable « シートを閉じる » (272 x 24 dp)
+#17 LAYOUT OVERLAP « チュートリアルに戻る » over the touchable « シートを閉じる » (141 x 21 dp)
+#17 > touche 450 1434
+#17 DOIGT tuto_key_continue « チュートリアルに戻る »
+#18 ROUTE rhythm/tab_Sons | MODE pro | EMPREINTE e3a7aaf8b4 | project=p-0682a169 tuto=acid_techno/Pro active=true step=key done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 > touche 450 1208
+#18 DOIGT tuto_chapter_end_folded « よくできました、章クリア！ »
+#19 ROUTE tab_Sons | MODE pro | EMPREINTE d3e24378c8 | project=p-0682a169 tuto=acid_techno/Pro active=true step=key done=3 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 450 1125
+#19 DOIGT tuto_next_big « 次の章   »
+#20 ROUTE tab_Sons | MODE pro | EMPREINTE 6373dab9b6 | project=p-0682a169 tuto=acid_techno/Pro active=true step=ready done=3 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 450 1125
+#20 DOIGT tuto_mark «   わかった »
+#21 ROUTE tab_Sons | MODE pro | EMPREINTE 08d58c89a0 | project=p-0682a169 tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#21 SON Son : rien ne joue.
+#21 LAYOUT CONTRAST « ステップ：スタジオキック » 1.25:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « ? » 1.36:1 (needs 4.5:1, 12 sp)
+#21 LAYOUT CONTRAST « 全パッド » 1.51:1 (needs 4.5:1, 14 sp)
+#21 LAYOUT CONTRAST « 1 » 3.58:1 (needs 4.5:1, 12 sp)
+#21 > touche 90 434
+#21 DOIGT step_0 « ステップ 1 »
+#22 ROUTE tab_Sons | MODE pro | EMPREINTE 358c4a4a4b | project=p-0682a169 tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CONTRAST « 2 » 3.58:1 (needs 4.5:1, 12 sp)
+#22 > touche 500 434
+#22 DOIGT step_4 « ステップ 5 »
+#23 ROUTE tab_Sons | MODE pro | EMPREINTE a88c8e5c8c | project=p-0682a169 tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CONTRAST « 3 » 3.58:1 (needs 4.5:1, 12 sp)
+#23 > touche 90 515
+#23 DOIGT step_8 « ステップ 9 »
+#24 ROUTE tab_Sons | MODE pro | EMPREINTE 0ac52990ee | project=p-0682a169 tuto=acid_techno/Pro active=true step=kick_do done=4 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CONTRAST « 4 » 3.94:1 (needs 4.5:1, 12 sp)
+#24 > touche 500 515
+#24 DOIGT step_12 « ステップ 13 »
+#25 ROUTE tab_Sons | MODE pro | EMPREINTE 7b5d244643 | project=p-0682a169 tuto=acid_techno/Pro active=true step=kick_do done=5 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CONTRAST « ステップ：スタジオキック » 1.23:1 (needs 4.5:1, 12 sp)
+#25 LAYOUT CONTRAST « ? » 1.34:1 (needs 4.5:1, 12 sp)
+#25 > touche 294 1209
+#25 DOIGT tuto_play_mine «  結果を聴く »
+#26 ROUTE tab_Sons | MODE pro | EMPREINTE fada406e43 | project=p-0682a169 tuto=acid_techno/Pro active=true step=kick_do done=5 playing=true
+#26 SON Son : la musique du projet joue en boucle.
+#26 > touche 450 1125
+#26 DOIGT tuto_next_big « 次のステップ   »
+#27 ROUTE tab_Sons | MODE pro | EMPREINTE f74fddd38e | project=p-0682a169 tuto=acid_techno/Pro active=true step=clap_do done=5 playing=true
+#27 SON Son : la musique du projet joue en boucle.
+#27 LAYOUT CONTRAST « ステップ：アシッドテクノ · クラップ » 1.37:1 (needs 4.5:1, 12 sp)
+#27 LAYOUT CONTRAST « 2 » 3.04:1 (needs 4.5:1, 12 sp)
+#27 > touche 123 397
+#27 DOIGT step_0 « ステップ 1 »
+#28 ROUTE tab_Sons | MODE pro | EMPREINTE d42bbcfa4c | project=p-0682a169 tuto=acid_techno/Pro active=true step=clap_do done=5 playing=true
+#28 SON Son : la musique du projet joue en boucle.
+#28 > touche 90 434
+#28 DOIGT step_0 « ステップ 1 »
+#29 ROUTE tab_Sons | MODE pro | EMPREINTE f74fddd38e | project=p-0682a169 tuto=acid_techno/Pro active=true step=clap_do done=5 playing=true
+#29 SON Son : la musique du projet joue en boucle.
+#29 > touche 500 434
+#29 DOIGT step_4 « ステップ 5 »
+#30 ROUTE tab_Sons | MODE pro | EMPREINTE 70a80c5afc | project=p-0682a169 tuto=acid_techno/Pro active=true step=clap_do done=5 playing=true
+#30 SON Son : la musique du projet joue en boucle.
+#30 LAYOUT CONTRAST « 4 » 3.39:1 (needs 4.5:1, 12 sp)
+#30 > touche 500 515
+#30 DOIGT step_12 « ステップ 13 »
+#31 ROUTE tab_Sons | MODE pro | EMPREINTE fc45ea44dc | project=p-0682a169 tuto=acid_techno/Pro active=true step=clap_do done=6 playing=true
+#31 SON Son : la musique du projet joue en boucle.
+#31 LAYOUT CONTRAST « ステップ：アシッドテクノ · クラップ » 1.30:1 (needs 4.5:1, 12 sp)
+#31 > touche 450 1125
+#31 DOIGT tuto_next_big « 次のステップ   »
+#32 ROUTE tab_Sons | MODE pro | EMPREINTE ddd0a9fdb6 | project=p-0682a169 tuto=acid_techno/Pro active=true step=open_hat_do done=6 playing=true
+#32 SON Son : la musique du projet joue en boucle.
+#32 LAYOUT CONTRAST « ステップ：ROLAND TR-909 · オープンハイハット » 1.37:1 (needs 4.5:1, 12 sp)
+#32 > touche 294 434
+#32 DOIGT step_2 « ステップ 3 »
+#33 ROUTE tab_Sons | MODE pro | EMPREINTE 6a2996c272 | project=p-0682a169 tuto=acid_techno/Pro active=true step=open_hat_do done=6 playing=true
+#33 SON Son : la musique du projet joue en boucle.
+#33 > touche 706 434
+#33 DOIGT step_6 « ステップ 7 »
+#34 ROUTE tab_Sons | MODE pro | EMPREINTE 66e5cf4f88 | project=p-0682a169 tuto=acid_techno/Pro active=true step=open_hat_do done=6 playing=true
+#34 SON Son : la musique du projet joue en boucle.
+#34 > touche 294 515
+#34 DOIGT step_10 « ステップ 11 »
+#35 ROUTE tab_Sons | MODE pro | EMPREINTE b74da885d0 | project=p-0682a169 tuto=acid_techno/Pro active=true step=open_hat_do done=6 playing=true
+#35 SON Son : la musique du projet joue en boucle.
+#35 > touche 706 515
+#35 DOIGT step_14 « ステップ 15 »
+#36 ROUTE tab_Sons | MODE pro | EMPREINTE 5d05d1611a | project=p-0682a169 tuto=acid_techno/Pro active=true step=open_hat_do done=7 playing=true
+#36 SON Son : la musique du projet joue en boucle.
+#36 LAYOUT CONTRAST « ステップ：ROLAND TR-909 · オープンハイハット » 1.35:1 (needs 4.5:1, 12 sp)
+#36 > touche 450 1125
+#36 DOIGT tuto_next_big « 次のステップ   »
+#37 ROUTE tab_Sons | MODE pro | EMPREINTE 14699a4785 | project=p-0682a169 tuto=acid_techno/Pro active=true step=hat_do done=7 playing=true
+#37 SON Son : la musique du projet joue en boucle.
+#37 LAYOUT CONTRAST « ステップ：ROLAND TR-909 · ハイハット » 1.38:1 (needs 4.5:1, 12 sp)
+#37 LAYOUT CONTRAST « 1 » 3.22:1 (needs 4.5:1, 12 sp)
+#37 > touche 147 685
+#37 DOIGT fill_1 « すべて »
+#38 ROUTE tab_Sons | MODE pro | EMPREINTE 46c6022b3d | project=p-0682a169 tuto=acid_techno/Pro active=true step=hat_do done=7 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT CONTRAST « すべて » 4.05:1 (needs 4.5:1, 14 sp)
+#38 > touche 294 434
+#38 DOIGT step_2 « ステップ 3 »
+#39 ROUTE tab_Sons | MODE pro | EMPREINTE f5388397af | project=p-0682a169 tuto=acid_techno/Pro active=true step=hat_do done=7 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 706 434
+#39 DOIGT step_6 « ステップ 7 »
+#40 ROUTE tab_Sons | MODE pro | EMPREINTE 0b351362c9 | project=p-0682a169 tuto=acid_techno/Pro active=true step=hat_do done=7 playing=true
+#40 SON Son : la musique du projet joue en boucle.
+#40 > touche 294 515
+#40 DOIGT step_10 « ステップ 11 »
+#41 ROUTE tab_Sons | MODE pro | EMPREINTE 1b097339d6 | project=p-0682a169 tuto=acid_techno/Pro active=true step=hat_do done=7 playing=true
+#41 SON Son : la musique du projet joue en boucle.
+#41 > touche 706 515
+#41 DOIGT step_14 « ステップ 15 »
+#42 ROUTE tab_Sons | MODE pro | EMPREINTE 9bf80dcd76 | project=p-0682a169 tuto=acid_techno/Pro active=true step=hat_do done=8 playing=true
+#42 SON Son : la musique du projet joue en boucle.
+#42 LAYOUT CONTRAST « ステップ：ROLAND TR-909 · ハイハット » 1.35:1 (needs 4.5:1, 12 sp)
+#42 > touche 450 1125
+#42 DOIGT tuto_next_big « 次のステップ   »
+#43 ROUTE tab_Sons | MODE pro | EMPREINTE dc35575288 | project=p-0682a169 tuto=acid_techno/Pro active=true step=ride_do done=8 playing=true
+#43 SON Son : la musique du projet joue en boucle.
+#43 LAYOUT CONTRAST « ステップ：シンバル » 1.35:1 (needs 4.5:1, 12 sp)
+#43 > touche 294 434
+#43 DOIGT step_2 « ステップ 3 »
+#44 ROUTE tab_Sons | MODE pro | EMPREINTE 8532028f1e | project=p-0682a169 tuto=acid_techno/Pro active=true step=ride_do done=8 playing=true
+#44 SON Son : la musique du projet joue en boucle.
+#44 > touche 706 434
+#44 DOIGT step_6 « ステップ 7 »
+#45 ROUTE tab_Sons | MODE pro | EMPREINTE 5d39d00026 | project=p-0682a169 tuto=acid_techno/Pro active=true step=ride_do done=8 playing=true
+#45 SON Son : la musique du projet joue en boucle.
+#45 > touche 294 515
+#45 DOIGT step_10 « ステップ 11 »
+#46 ROUTE tab_Sons | MODE pro | EMPREINTE 29bf908a99 | project=p-0682a169 tuto=acid_techno/Pro active=true step=ride_do done=8 playing=true
+#46 SON Son : la musique du projet joue en boucle.
+#46 > touche 706 515
+#46 DOIGT step_14 « ステップ 15 »
+#47 ROUTE tab_Sons | MODE pro | EMPREINTE ef283f53e3 | project=p-0682a169 tuto=acid_techno/Pro active=true step=ride_do done=9 playing=true
+#47 SON Son : la musique du projet joue en boucle.
+#47 LAYOUT CONTRAST « ステップ：シンバル » 1.33:1 (needs 4.5:1, 12 sp)
+#47 > touche 450 1125
+#47 DOIGT tuto_next_big « 次のステップ   »
+#48 ROUTE tab_Sons | MODE pro | EMPREINTE 1770e7384d | project=p-0682a169 tuto=acid_techno/Pro active=true step=drums_hear done=9 playing=true
+#48 SON Son : la musique du projet joue en boucle.
+#48 > touche 450 1128
+#48 DOIGT tuto_listen «  例を聴く »
+#49 ROUTE tab_Sons | MODE pro | EMPREINTE 8898c38e5d | project=p-0682a169 tuto=acid_techno/Pro active=true step=drums_hear done=9 playing=false
+#49 SON Son : l'exemple du tuto joue (encore 3 s).
+#49 > attends 4
+#50 ROUTE tab_Sons | MODE pro | EMPREINTE 571d8c663b | project=p-0682a169 tuto=acid_techno/Pro active=true step=drums_hear done=10 playing=false
+#50 SON Son : rien ne joue.
+#50 > touche 450 1125
+#50 DOIGT tuto_next_big « 次の章   »
+#51 ROUTE tab_Sons | MODE pro | EMPREINTE 8cb0992fb8 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_hear done=10 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 450 1125
+#51 DOIGT tuto_listen «  例を聴く »
+#52 ROUTE tab_Sons | MODE pro | EMPREINTE 51ba5fc6b7 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_hear done=10 playing=false
+#52 SON Son : l'exemple du tuto joue (encore 3 s).
+#52 > touche 450 1125
+#52 DOIGT tuto_listen «  試聴を停止 »
+#53 ROUTE tab_Sons | MODE pro | EMPREINTE 8cb0992fb8 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_hear done=10 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 450 1125
+#53 DOIGT tuto_listen «  例を聴く »
+#54 ROUTE tab_Sons | MODE pro | EMPREINTE 51ba5fc6b7 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_hear done=10 playing=false
+#54 SON Son : l'exemple du tuto joue (encore 3 s).
+#54 > attends 4
+#55 ROUTE tab_Sons | MODE pro | EMPREINTE e6470fe7ca | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_hear done=11 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 450 1125
+#55 DOIGT tuto_next_big « 次のステップ   »
+#56 ROUTE tab_Sons | MODE pro | EMPREINTE eb65987c85 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#56 SON Son : rien ne joue.
+#56 LAYOUT CONTRAST « ステップ：シンバル » 1.31:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « ? » 1.43:1 (needs 4.5:1, 12 sp)
+#56 LAYOUT CONTRAST « 全パッド » 1.60:1 (needs 4.5:1, 14 sp)
+#56 > touche 239 183
+#56 DOIGT sons_Acide « Acid 303 »
+#57 ROUTE tab_Sons | MODE pro | EMPREINTE 58491125ce | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#57 SON Son : rien ne joue.
+#57 LAYOUT CONTRAST « ベースライン » 4.16:1 (needs 4.5:1, 12 sp)
+#57 > touche 450 1044
+#57 DOIGT tuto_do «   自分でやる »
+#58 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 6167a4dfab | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT CUT « あなたの番：「アシッド」タブを開いて、2小節のラインを1マスずつ書こう：点線のノート（A、そのオクターブ、C、G、E）、次にアクセント（!）を4マス、スライド（⌒）を3マス。2小節目はバリエーション：G の代わりに B♭、最後のマスは空ける。 » ellipsized (« … »)
+#58 > touche 90 868
+#58 DOIGT acid_step_0 « A »
+#59 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 6167a4dfab | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#59 SON Son : rien ne joue.
+#59 > glisse 450 950 450 450
+#59 DOIGT rien
+#60 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 5fec851116 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 683 960
+#60 DOIGT acid_key_9 « A »
+#61 ROUTE acid/tab_Sons | MODE pro | EMPREINTE de3011eac3 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#61 SON Son : rien ne joue.
+#61 LAYOUT CONTRAST « A » 4.30:1 (needs 4.5:1, 12 sp)
+#61 > touche 192 392
+#61 DOIGT acid_step_1 « A⌒ »
+#62 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 959baf38f7 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 683 960
+#62 DOIGT acid_key_9 « A »
+#63 ROUTE acid/tab_Sons | MODE pro | EMPREINTE de28e0b49c | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#63 SON Son : rien ne joue.
+#63 LAYOUT CONTRAST « A » 4.07:1 (needs 4.5:1, 12 sp)
+#63 > touche 394 1034
+#63 DOIGT dans:acid « スライド »
+#64 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 31b3b7b1c2 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#64 SON Son : rien ne joue.
+#64 LAYOUT CONTRAST « A » 4.28:1 (needs 4.5:1, 12 sp)
+#64 LAYOUT CONTRAST « ⌒ » 2.64:1 (needs 4.5:1, 11 sp)
+#64 > glisse 450 800 450 550
+#64 DOIGT rien
+#65 ROUTE acid/tab_Sons | MODE pro | EMPREINTE bca1d4a85a | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#65 SON Son : rien ne joue.
+#65 > touche 90 307
+#65 DOIGT acid_step_8 « A »
+#66 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 1b93c1b00c | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 683 687
+#66 DOIGT acid_key_9 « A »
+#67 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 6c43c48656 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#67 SON Son : rien ne joue.
+#67 LAYOUT CONTRAST « A » 4.03:1 (needs 4.5:1, 12 sp)
+#67 > touche 294 307
+#67 DOIGT acid_step_10 « A!↑ »
+#68 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 2afd862848 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT CONTRAST « A » 4.40:1 (needs 4.5:1, 12 sp)
+#68 > touche 683 687
+#68 DOIGT acid_key_9 « A »
+#69 ROUTE acid/tab_Sons | MODE pro | EMPREINTE d6061e4e1c | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT CONTRAST « A » 4.08:1 (needs 4.5:1, 12 sp)
+#69 > touche 241 807
+#69 DOIGT dans:acid « アクセント »
+#70 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 560031e96e | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#70 SON Son : rien ne joue.
+#70 > touche 822 891
+#70 DOIGT dans:acid
+#71 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 7cd8f120eb | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT CONTRAST « ↑ » 3.79:1 (needs 4.5:1, 11 sp)
+#71 > touche 397 307
+#71 DOIGT acid_step_11 « A⌒ »
+#72 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 97344433fe | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#72 SON Son : rien ne joue.
+#72 > touche 683 687
+#72 DOIGT acid_key_9 « A »
+#73 ROUTE acid/tab_Sons | MODE pro | EMPREINTE b6b54267e5 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#73 SON Son : rien ne joue.
+#73 LAYOUT CONTRAST « A » 4.25:1 (needs 4.5:1, 12 sp)
+#73 > touche 394 807
+#73 DOIGT dans:acid « スライド »
+#74 ROUTE acid/tab_Sons | MODE pro | EMPREINTE b0cc0f331f | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#74 SON Son : rien ne joue.
+#74 LAYOUT CONTRAST « A » 4.36:1 (needs 4.5:1, 12 sp)
+#74 LAYOUT CONTRAST « ⌒ » 2.71:1 (needs 4.5:1, 11 sp)
+#74 > touche 500 307
+#74 DOIGT acid_step_12 « G »
+#75 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 01f640298b | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#75 SON Son : rien ne joue.
+#75 > touche 566 687
+#75 DOIGT acid_key_7 « G »
+#76 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 0cd37e291c | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#76 SON Son : rien ne joue.
+#76 LAYOUT CONTRAST « G » 4.40:1 (needs 4.5:1, 12 sp)
+#76 > touche 706 307
+#76 DOIGT acid_step_14 « A!⌒↑ »
+#77 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 231ac808f2 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 683 687
+#77 DOIGT acid_key_9 « A »
+#78 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 81cce70d8f | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT CONTRAST « A » 4.05:1 (needs 4.5:1, 12 sp)
+#78 > touche 241 807
+#78 DOIGT dans:acid « アクセント »
+#79 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 74f85852bf | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#79 SON Son : rien ne joue.
+#79 > touche 394 807
+#79 DOIGT dans:acid « スライド »
+#80 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 8baa20e72f | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 822 891
+#80 DOIGT dans:acid
+#81 ROUTE acid/tab_Sons | MODE pro | EMPREINTE ab8ca0514b | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#81 SON Son : rien ne joue.
+#81 LAYOUT CONTRAST « ↑⌒ » 4.02:1 (needs 4.5:1, 11 sp)
+#81 > touche 809 307
+#81 DOIGT acid_step_15 « E »
+#82 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 7f8d32e88e | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#82 SON Son : rien ne joue.
+#82 > touche 333 687
+#82 DOIGT acid_key_4 « E »
+#83 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 8839d4446a | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#83 SON Son : rien ne joue.
+#83 LAYOUT CONTRAST « E » 4.40:1 (needs 4.5:1, 12 sp)
+#83 > glisse 450 450 450 700
+#83 DOIGT rien
+#84 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 33a881ff81 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 294 392
+#84 DOIGT acid_step_2 « A!↑ »
+#85 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 25387aea9e | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#85 SON Son : rien ne joue.
+#85 > touche 683 960
+#85 DOIGT acid_key_9 « A »
+#86 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 62b4dc6ee2 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT CONTRAST « A » 4.01:1 (needs 4.5:1, 12 sp)
+#86 > touche 241 1033
+#86 DOIGT dans:acid « アクセント »
+#87 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 86bd5ac3b2 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#87 SON Son : rien ne joue.
+#87 > touche 500 392
+#87 DOIGT acid_step_4 « A »
+#88 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 75ec1e10b9 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 683 960
+#88 DOIGT acid_key_9 « A »
+#89 ROUTE acid/tab_Sons | MODE pro | EMPREINTE c293551c6e | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#89 SON Son : rien ne joue.
+#89 LAYOUT CONTRAST « A » 3.95:1 (needs 4.5:1, 12 sp)
+#89 > touche 603 392
+#89 DOIGT acid_step_5 « A↑ »
+#90 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 25362e98f5 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#90 SON Son : rien ne joue.
+#90 > touche 683 960
+#90 DOIGT acid_key_9 « A »
+#91 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 56cbd374f6 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 809 392
+#91 DOIGT acid_step_7 « C! »
+#92 ROUTE acid/tab_Sons | MODE pro | EMPREINTE b76c6c8a0f | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#92 SON Son : rien ne joue.
+#92 > touche 100 960
+#92 DOIGT acid_key_0 « C »
+#93 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 7cd6be10af | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#93 SON Son : rien ne joue.
+#93 LAYOUT CONTRAST « C » 3.99:1 (needs 4.5:1, 12 sp)
+#93 > touche 241 1033
+#93 DOIGT dans:acid « アクセント »
+#94 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 97dc97973f | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#94 SON Son : rien ne joue.
+#94 > glisse 450 700 450 590
+#94 DOIGT rien
+#95 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 18c3a06f4d | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#95 SON Son : rien ne joue.
+#95 > touche 294 314
+#95 DOIGT acid_step_2 « A »
+#96 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 68f675b376 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#96 SON Son : rien ne joue.
+#96 > touche 822 1031
+#96 DOIGT dans:acid
+#97 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 99eb9b9b47 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#97 SON Son : rien ne joue.
+#97 LAYOUT CONTRAST « ↑ » 3.49:1 (needs 4.5:1, 11 sp)
+#97 > touche 603 314
+#97 DOIGT acid_step_5 « A »
+#98 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 03ce8be728 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#98 SON Son : rien ne joue.
+#98 LAYOUT CONTRAST « A » 3.63:1 (needs 4.5:1, 12 sp)
+#98 > touche 822 1031
+#98 DOIGT dans:acid
+#99 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 5ec6699a6a | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT CONTRAST « A » 3.92:1 (needs 4.5:1, 12 sp)
+#99 LAYOUT CONTRAST « ↑ » 2.28:1 (needs 4.5:1, 11 sp)
+#99 > glisse 450 590 450 700
+#99 DOIGT rien
+#100 ROUTE acid/tab_Sons | MODE pro | EMPREINTE e03da251fe | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#100 SON Son : rien ne joue.
+#100 LAYOUT CONTRAST « ↑ » 2.42:1 (needs 4.5:1, 11 sp)
+#100 > touche 237 288
+#100 DOIGT acid_bars_2 « 2 »
+#101 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 60bb925f02 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#101 SON Son : rien ne joue.
+#101 LAYOUT CONTRAST « A » 4.34:1 (needs 4.5:1, 12 sp)
+#101 LAYOUT CONTRAST « ⌒ » 2.67:1 (needs 4.5:1, 11 sp)
+#101 LAYOUT CONTRAST « ↑ » 2.44:1 (needs 4.5:1, 11 sp)
+#101 > touche 426 371
+#101 DOIGT acid_copy_page « コピー → 2 »
+#102 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 60bb925f02 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#102 SON Son : rien ne joue.
+#102 LAYOUT CONTRAST « コピー → 2 » 3.94:1 (needs 4.5:1, 14 sp)
+#102 > touche 208 371
+#102 DOIGT acid_page_1 « 2 »
+#103 ROUTE acid/tab_Sons | MODE pro | EMPREINTE f389ae9154 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#103 SON Son : rien ne joue.
+#103 > touche 500 602
+#103 DOIGT acid_step_28 « G »
+#104 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 7c36f3d7d5 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#104 SON Son : rien ne joue.
+#104 LAYOUT CONTRAST « G » 3.71:1 (needs 4.5:1, 12 sp)
+#104 > glisse 450 750 450 600
+#104 DOIGT rien
+#105 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 5390a4b9e3 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#105 SON Son : rien ne joue.
+#105 LAYOUT CONTRAST « G » 4.08:1 (needs 4.5:1, 12 sp)
+#105 > touche 741 841
+#105 DOIGT acid_key_10 « A# »
+#106 ROUTE acid/tab_Sons | MODE pro | EMPREINTE cd9ef1c8b4 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#106 SON Son : rien ne joue.
+#106 LAYOUT CONTRAST « A# » 4.40:1 (needs 4.5:1, 12 sp)
+#106 LAYOUT CONTRAST « A# » 1.60:1 (needs 4.5:1, 10 sp)
+#106 > touche 809 476
+#106 DOIGT acid_step_31 « E »
+#107 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 1a164b7615 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#107 SON Son : rien ne joue.
+#107 LAYOUT CONTRAST « E » 3.71:1 (needs 4.5:1, 12 sp)
+#107 > touche 98 991
+#107 DOIGT dans:acid « ノート »
+#108 ROUTE acid/tab_Sons | MODE pro | EMPREINTE c158b20028 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#108 SON Son : rien ne joue.
+#108 LAYOUT CONTRAST « ノート » 4.37:1 (needs 4.5:1, 14 sp)
+#108 > touche 843 1109
+#108 DOIGT tuto_fold
+#109 ROUTE tab_Sons | MODE pro | EMPREINTE cfa1b67fc1 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#109 SON Son : rien ne joue.
+#109 > touche 667 1128
+#109 DOIGT tuto_show «  見せて »
+#110 ROUTE acid/tab_Sons | MODE pro | EMPREINTE a2cbdb5767 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#110 SON Son : rien ne joue.
+#110 LAYOUT CONTRAST « ↑ » 2.48:1 (needs 4.5:1, 11 sp)
+#110 LAYOUT CONTRAST « 停止 » 3.91:1 (needs 4.5:1, 14 sp)
+#110 > attends 8
+#111 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 0d7c6dc29d | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#111 SON Son : rien ne joue.
+#111 > touche 500 1015
+#111 DOIGT acid_step_28 « A# »
+#112 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 0d7c6dc29d | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#112 SON Son : rien ne joue.
+#112 LAYOUT CONTRAST « A# » 3.71:1 (needs 4.5:1, 12 sp)
+#112 > glisse 450 850 450 450
+#112 DOIGT rien
+#113 ROUTE acid/tab_Sons | MODE pro | EMPREINTE 1440a44110 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#113 SON Son : rien ne joue.
+#113 LAYOUT CONTRAST « A# » 4.11:1 (needs 4.5:1, 12 sp)
+#113 LAYOUT CONTRAST « A# » 1.67:1 (needs 4.5:1, 10 sp)
+#113 > touche 843 1109
+#113 DOIGT tuto_fold
+#114 ROUTE tab_Sons | MODE pro | EMPREINTE fb440e7951 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#114 SON Son : rien ne joue.
+#114 > touche 823 1209
+#114 DOIGT tuto_next « 次へ  »
+#115 ROUTE tab_Sons | MODE pro | EMPREINTE fedfdd6f61 | project=p-0682a169 tuto=acid_techno/Pro active=true step=acid_do done=11 playing=false
+#115 SON Son : rien ne joue.
+#115 > touche 823 1209
+#115 DOIGT tuto_next « 次へ  »
+#116 ROUTE tab_Sons | MODE pro | EMPREINTE a3a40b0e45 | project=p-0682a169 tuto=acid_techno/Pro active=true step=groove_hear done=11 playing=false
+#116 SON Son : rien ne joue.
+#116 > touche 780 42
+#116 DOIGT top_play « このパートを再生 »
+#117 ROUTE tab_Sons | MODE pro | EMPREINTE 0a0c6fd107 | project=p-0682a169 tuto=acid_techno/Pro active=true step=groove_hear done=11 playing=true
+#117 SON Son : la musique du projet joue en boucle.
+#117 > attends 4
+#118 ROUTE tab_Sons | MODE pro | EMPREINTE b34abeeaf0 | project=p-0682a169 tuto=acid_techno/Pro active=true step=groove_hear done=11 playing=true
+#118 SON Son : la musique du projet joue en boucle.
+#118 > touche 780 42
+#118 DOIGT top_play « 停止 »
+#119 ROUTE tab_Sons | MODE pro | EMPREINTE a3a40b0e45 | project=p-0682a169 tuto=acid_techno/Pro active=true step=groove_hear done=11 playing=false
+#119 SON Son : rien ne joue.
+#119 > touche 450 1125
+#119 DOIGT tuto_listen «  例を聴く »
+#120 ROUTE tab_Sons | MODE pro | EMPREINTE 4529a2d197 | project=p-0682a169 tuto=acid_techno/Pro active=true step=groove_hear done=11 playing=false
+#120 SON Son : l'exemple du tuto joue (encore 3 s).
+#120 > attends 15
+#121 ROUTE tab_Sons | MODE pro | EMPREINTE 6e985ac6de | project=p-0682a169 tuto=acid_techno/Pro active=true step=groove_hear done=12 playing=false
+#121 SON Son : rien ne joue.
+#121 > touche 450 1125
+#121 DOIGT tuto_next_big « 次のステップ   »
+#122 ROUTE tab_Sons | MODE pro | EMPREINTE 1c1df29078 | project=p-0682a169 tuto=acid_techno/Pro active=true step=groove_name done=12 playing=false
+#122 SON Son : rien ne joue.
+#122 > touche 450 1044
+#122 DOIGT tuto_need «   パートに「グルーヴ」と名前を付ける »
+#123 ROUTE tab_Structure | MODE pro | EMPREINTE 0c2f6fd58b | project=p-0682a169 tuto=acid_techno/Pro active=true step=groove_name done=13 playing=false
+#123 SON Son : rien ne joue.
+#123 > touche 450 1125
+#123 DOIGT tuto_next_big « 次の章   »
+#124 ROUTE tab_Structure | MODE pro | EMPREINTE 8bf76e62fa | project=p-0682a169 tuto=acid_techno/Pro active=true step=brick done=13 playing=false
+#124 SON Son : rien ne joue.
+#124 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#124 LAYOUT CONTRAST « 12 » 4.28:1 (needs 4.5:1, 12 sp)
+#124 LAYOUT CONTRAST « 4 » 3.56:1 (needs 4.5:1, 12 sp)
+#124 > touche 450 1125
+#124 DOIGT tuto_mark «   わかった »
+#125 ROUTE tab_Structure | MODE pro | EMPREINTE 87e9219564 | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_intro done=14 playing=false
+#125 SON Son : rien ne joue.
+#125 LAYOUT CONTRAST « イントロ » 4.15:1 (needs 4.5:1, 12 sp)
+#125 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#125 > touche 450 1125
+#125 DOIGT tuto_listen «  例を聴く »
+#126 ROUTE tab_Structure | MODE pro | EMPREINTE e6a6428957 | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_intro done=14 playing=false
+#126 SON Son : l'exemple du tuto joue (encore 3 s).
+#126 > attends 15
+#127 ROUTE tab_Structure | MODE pro | EMPREINTE 1dec25554c | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_intro done=15 playing=false
+#127 SON Son : rien ne joue.
+#127 > touche 450 1125
+#127 DOIGT tuto_next_big « 次のステップ   »
+#128 ROUTE tab_Structure | MODE pro | EMPREINTE 71fc8e850c | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_drop done=15 playing=false
+#128 SON Son : rien ne joue.
+#128 LAYOUT CONTRAST « ドロップ » 3.09:1 (needs 4.5:1, 12 sp)
+#128 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#128 > touche 450 1125
+#128 DOIGT tuto_listen «  例を聴く »
+#129 ROUTE tab_Structure | MODE pro | EMPREINTE d8c7512299 | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_drop done=15 playing=false
+#129 SON Son : l'exemple du tuto joue (encore 3 s).
+#129 > attends 15
+#130 ROUTE tab_Structure | MODE pro | EMPREINTE bc2ab8f2e7 | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_drop done=16 playing=false
+#130 SON Son : rien ne joue.
+#130 > touche 450 1125
+#130 DOIGT tuto_next_big « 次のステップ   »
+#131 ROUTE tab_Structure | MODE pro | EMPREINTE 38c9f89ec8 | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_break done=16 playing=false
+#131 SON Son : rien ne joue.
+#131 LAYOUT CONTRAST « 12 » 2.53:1 (needs 4.5:1, 12 sp)
+#131 > touche 450 1125
+#131 DOIGT tuto_listen «  例を聴く »
+#132 ROUTE tab_Structure | MODE pro | EMPREINTE e6041fc0b1 | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_break done=16 playing=false
+#132 SON Son : l'exemple du tuto joue (encore 3 s).
+#132 > attends 15
+#133 ROUTE tab_Structure | MODE pro | EMPREINTE e8e523bb12 | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_break done=17 playing=false
+#133 SON Son : rien ne joue.
+#133 > touche 450 1125
+#133 DOIGT tuto_next_big « 次のステップ   »
+#134 ROUTE tab_Structure | MODE pro | EMPREINTE 0cabeba770 | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_phrases done=17 playing=false
+#134 SON Son : rien ne joue.
+#134 > touche 450 1125
+#134 DOIGT tuto_mark «   わかった »
+#135 ROUTE tab_Structure | MODE pro | EMPREINTE 587bc254f3 | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_phrases done=18 playing=false
+#135 SON Son : rien ne joue.
+#135 > touche 756 646
+#135 DOIGT tuto_chapters « チャプター »
+#136 ROUTE dialogue:tuto_chapter_list | MODE pro | EMPREINTE 5e3dbb443b | project=p-0682a169 tuto=acid_techno/Pro active=true step=map_phrases done=18 playing=false
+#136 SON Son : rien ne joue.
+#136 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 LAYOUT CONTRAST « 6 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 LAYOUT CONTRAST « 7 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 LAYOUT CONTRAST « 8 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 LAYOUT CONTRAST « 9 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 LAYOUT CONTRAST « 10 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 LAYOUT CONTRAST « 11 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 LAYOUT CONTRAST « 12 » 3.63:1 (needs 4.5:1, 16 sp)
+#136 > fin
+#136 FIN : fin

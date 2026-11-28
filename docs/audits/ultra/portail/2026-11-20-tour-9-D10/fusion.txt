@@ -1,0 +1,20 @@
+fusion: ca414c20e364c127183fe375215f8c2aa742c734
+branche: eq/tour-9-D10
+tete: 4c9a5ec19da85f719603d750ae8d55fe1d3b2a37
+relecture: docs/audits/ultra/tour-9-D10-relecture.md
+relu: d2e15849
+filtres: com.pocketstudio.app.ui.Tour9RenameWiredTest com.pocketstudio.app.ui.Tour9RenameFromChipTest com.pocketstudio.app.ui.TopBarTest
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu
+  t9-75-kit : oracle tenu
+  t9-d02-cases-grille : oracle tenu
+  t9-d06-pointilles-200 : oracle tenu
+  t9-d13-volume-cible-id : oracle tenu
+  t9-d13-volume-cible-nl : oracle tenu
+  t9-d14-lire-la-suite : oracle tenu
+  t9-s17-glisse-pointille : oracle tenu

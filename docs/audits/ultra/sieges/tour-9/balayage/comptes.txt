@@ -1,0 +1,18 @@
+== validation.tsv: 789 lignes
+  finition  deja-fait-faux                   22
+  finition  montre-moi-court                 5
+  finition  validee-1-sur-n                  3
+  finition  velocite-non-verifiee            1
+  grave     compte-faux                      1
+  grave     deja-fait-faux                   717
+  grave     velocite-non-verifiee            40
+  graves par tuto: techno 27, disco 26, house 25, tech_house 25, afro_house 25, uk_garage 24, liquid_dnb 24, deep_house 23, amapiano 23, drill 23, boom_bap 23, lofi 23, pop 23, detroit 22, jump_up 22, dubstep 22, minimal 22, speed_garage 22, afrobeats 22, dnb 21, synthwave 21, industrial_techno 20, trance 20, jungle 20, phonk 20, reggaeton 20, neurofunk 19, riddim 19, trap 19, hard_techno 18, grime 18, jersey_club 18, retro_techno 17, gabber 16, acid_house 10, acid_techno 9, acidcore 7
+== text.tsv: 241 lignes
+  finition  nom-cite-absent                  53
+  finition  trop-long-100                    188
+== screen.tsv: 65 lignes
+  finition  texte-coupe                      33
+  grave     consigne-depliee-cache-grille    6
+  grave     grille-cachee                    26
+  graves par tuto: techno 32
+  graves par langue: de 8, fr 8, ja 8, ar 4, hi 4

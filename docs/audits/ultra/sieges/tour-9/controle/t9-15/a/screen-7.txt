@@ -1,0 +1,28 @@
+Écran 7 (900x1509)
+dessin @ 450,754
+dessin @ 450,894
+texte « Tonalidad del tema » @ 399,966
+texte « Cerrar » @ 825,966
+texte « Tonalidad del tema: ninguna » @ 163,1032
+texte « Escala » @ 58,1077
+bouton « Mayor » @ 77,1143
+bouton « Menor » @ 194,1143
+bouton « Dórico » @ 315,1143
+bouton « Penta menor » @ 471,1143
+bouton « Penta mayor » @ 658,1143
+bouton « Blues » @ 805,1143
+bouton « Frigio » @ 74,1224
+bouton « Menor armónica » @ 243,1224
+texte « Tónica » @ 58,1290
+bouton « Do » @ 63,1356
+bouton « Do♯ » @ 151,1356
+bouton « Re » @ 239,1356
+bouton « Mi♭ » @ 326,1356
+bouton « Mi » @ 413,1356
+bouton « Fa » @ 500,1356
+bouton « Fa♯ » @ 587,1356
+bouton « Sol » @ 674,1356
+bouton « La♭ » @ 761,1356
+bouton « La » @ 63,1437
+bouton « Si♭ » @ 150,1437
+bouton « Si » @ 237,1437

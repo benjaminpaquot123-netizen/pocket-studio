@@ -1,0 +1,43 @@
+Écran 69 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ▶ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 98,123
+icône (flèches en boucle) « Drop 2 compás 1/8 » ▾ @ 271,123
+bouton (flèches en boucle) « Bucle » [allumé, état « activado »] @ 427,123
+bouton « ? » @ 543,123
+texte « Te toca: sube lo que debe oírse, baja lo que molesta. Toca ▶ para escuchar una pista sola. » [coupé] @ 297,169
+bouton « Batería ▸ » [état « cerrado »] @ 75,245
+curseur [coupé, état « Normal », à 80 %] @ 84,368
+texte « Bajo » @ 216,232
+curseur [coupé, état « Normal », à 80 %] @ 216,355
+texte « Acordes » @ 339,229
+curseur [coupé, état « −2 », à 71 %] @ 339,352
+texte « Melodía » @ 462,229
+curseur [coupé, état « −2 », à 71 %] @ 462,353
+texte « Salida » [coupé] @ 564,232
+curseur [coupé, état « −6 », à 60 %] @ 559,355
+texte « Exporta tu tema Capítulo 13/13 · Paso 1/1 · Fácil » @ 202,498
+icône (liste) « Capítulos » @ 439,499
+icône ⌄ @ 531,499
+texte « Te toca: comparte tu tema, la app lo convierte en un archivo de sonido. “M4A” hace un archivo ligero para tus amigos, “WAV” mantiene la calidad de estudio. » @ 294,679
+texte « ▸ ¿Por qué? » @ 294,823
+bouton (doigt qui touche) «   Lo hago yo » @ 294,892
+icône ← «  Anterior » @ 112,976
+icône « Siguiente  » → @ 466,976
+icône ↶ « Deshacer » @ 72,1061
+image ↷ @ 185,1048
+bouton ▶ « la canción » @ 304,1061
+texte « 120 Tempo » @ 424,1061
+icône ⋮ « Más » @ 527,1061
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » [sélectionné] @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 356,1248
+texte « ✎  Anotar » @ 454,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 160,1248

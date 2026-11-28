@@ -1,0 +1,12 @@
+Écran 84 (1035x1243)
+texte « BenStudio » @ 269,92
+texte « Wat wil je doen? » @ 310,182
+bouton ✓ « Doorgaan Pro Mijn project 1 80 maten · 3:29 · 8 delen Opgeslagen 1 min geleden » → @ 518,406
+bouton (étincelles) « Nieuw nummer Een stijl met één tik, of ‘Maak een nummer voor me’. » → @ 518,702
+bouton (dossier ouvert) « Mijn projecten Open een ander nummer, kopieer of hernoem het. » → @ 518,944
+bouton « Remix Sporen scheiden: drums, bas, zang en de rest. » (quatre vagues) → [coupé] @ 518,1082
+bouton « ↓ nog 6 » @ 843,1129
+texte « ●  REC » @ 726,1213
+texte « ✎  Noteren » @ 866,1213
+texte « ⋯ » @ 987,1213
+texte « Feedbackmodus » @ 341,1213

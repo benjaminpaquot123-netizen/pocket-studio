@@ -1,0 +1,13 @@
+fusion: a3f09d3a95000f9574031c2e3a66cc6a1e91d2c2
+branche: eq/tour-9-L9
+tete: b311cdb3b1f5a5c185e214de4344ff1d4b19d77c
+relecture: docs/audits/ultra/tour-9-L9-relecture.md
+relu: 37c5817544dbfdf4d50f94912c23d478af75f799
+filtres: *BenchTutoKitDownloadTest* *T9D17KitDisappearsTest* *Tour8PlusRowsFitTest* *Tour8GuideNoEmptyStepTest* *OrdinaryTestsLeaveNothingTest* *Coquille2SeatTest*
+rejeux :
+  t4-26-prise-clavier : oracle tenu
+  t6-da15-ecoute-passee : oracle tenu
+  t6-ec17-un-bout-courbe : oracle tenu
+  t6-ga14-phrases-batterie : oracle tenu
+  t6-ha19-cases-panneau : oracle tenu
+  t7-g1-guide-son : oracle tenu

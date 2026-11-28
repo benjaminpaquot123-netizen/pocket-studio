@@ -1,0 +1,74 @@
+Écran 65 (1035x1243)
+icône (dossier ouvert) ✓ « Meu projeto 1 Salvo » @ 299,42
+texte « Pro » @ 625,42
+icône ↶ @ 697,42
+icône ↷ [désactivé] @ 769,42
+bouton ● @ 841,42
+bouton ▶ « esta parte » @ 915,42
+icône (trois points reliés) @ 990,42
+bouton « 126  BPM » @ 73,114
+icône « Drop comp. 33/120 » ▾ @ 242,114
+bouton (flèches en boucle) « Loop » [état « desligado »] @ 887,114
+bouton « ? » @ 990,114
+image (courbe) @ 0,0
+bouton « ? » @ 468,195
+texte « Volumes » @ 241,196
+texte « Deslize um fader para o volume; toque no nome de uma faixa para ver os efeitos e as curvas dela. » @ 263,250
+texte « Bateria » @ 84,343
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 57,418
+bouton (casque) [état « desligado »] @ 111,418
+curseur [état « +0,0 dB », à 80 %] @ 84,589
+texte « +0,0 » @ 84,740
+image (étincelles) @ 76,772
+texte « 2 » @ 96,772
+texte « Acid 303 » @ 204,343
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 177,418
+bouton (casque) [état « desligado »] @ 231,418
+curseur [état « +0,0 dB », à 80 %] @ 204,589
+texte « +0,0 » @ 204,740
+texte « Acordes » @ 324,343
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 297,418
+bouton (casque) [état « desligado »] @ 351,418
+curseur [état « +0,0 dB », à 80 %] @ 324,589
+texte « +0,0 » @ 324,740
+image (étincelles) @ 300,772
+texte « 1 » @ 318,772
+image (courbe) @ 336,772
+texte « 1 » @ 354,772
+texte « Baixo » @ 444,343
+bouton (haut-parleur et ondes) [allumé, état « ligado »] @ 417,418
+bouton (casque) [état « desligado »] @ 471,418
+curseur [état « +0,0 dB », à 80 %] @ 444,589
+texte « +0,0 » @ 444,740
+texte « Curva nova: desenhe-a abaixo. » @ 722,171
+texte « Limpar » @ 843,231
+texte « Acordes » @ 635,214
+icône (poubelle) @ 945,231
+texte « Filtro Corte » @ 618,251
+texte « Abre (brilhante) ou fecha (abafado) o som: a varredura do filtro. » @ 879,316
+bouton (curseurs) «  Ver o ajuste » @ 675,402
+bouton « Loop » [sélectionné] @ 612,483
+bouton « Por parte » @ 743,483
+bouton « Música » @ 886,483
+bouton « Sobre a bateria · 1 comp. » [sélectionné] @ 712,564
+bouton « Sobre a parte inteira · 4 comp. » @ 740,645
+texte « A mesma curva a cada volta do loop (16 passos). » @ 771,717
+texte « Para mudar este ajuste numa parte da música (mais alto no começo…), escolha “Música”. » [coupé] @ 771,774
+icône (liste) « Capítulos » @ 892,844
+texte « Os efeitos Capítulo 11/14 · Etapa 2/2 · Pro » @ 431,844
+icône ⌃ @ 978,844
+icône « Sua vez: automatize o “Corte” da faixa “Acordes” no Break: “Automatizar um ajuste”, “Acordes”, “Filtro (varredura)”, “Por parte”, e desenhe uma curva que sobe até o fim do Break. Ler » ⌃ @ 517,943
+icône ↶ « Desfazer » @ 141,1027
+icône ↷ « Refazer » [désactivé] @ 317,1027
+bouton ▶ « a música » @ 494,1027
+texte « 126 Andamento » @ 681,1027
+icône (trois points reliés) « Compartilhar » @ 880,1027
+onglet (ligne brisée et points) « Estrutura » @ 99,1123
+onglet (touches de piano) « Sons » @ 309,1123
+onglet (curseurs) « Mix » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Mais » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Anotar » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Modo comentários » @ 385,1213

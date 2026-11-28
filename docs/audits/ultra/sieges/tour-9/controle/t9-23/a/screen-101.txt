@@ -1,0 +1,42 @@
+Écran 101 (900x1509)
+texte « Efekty · 808 » @ 207,72
+texte « Aktywne efekty: 1 z 8 » @ 256,160
+bouton « 1. Pompa » @ 306,230
+icône ⏻ @ 597,230
+icône ⌃ [désactivé] @ 669,230
+icône ⌄ [désactivé] @ 741,230
+icône ✕ @ 813,230
+bouton + «   Dodaj efekt » @ 450,312
+texte « Ustawione też na tym dźwięku: » @ 349,395
+texte « Brud » @ 405,454
+texte « 40% » @ 804,454
+curseur [état « 40% », à 40 %] @ 450,521
+texte « Gotowe klimaty » @ 200,600
+bouton « ? » @ 370,600
+bouton « Dla: Bas » [sélectionné] @ 152,676
+bouton ★ « Ulubione » @ 385,676
+bouton « Atmosfera » @ 639,676
+bouton « Kolor » [coupé] @ 810,676
+texte « Styl: » @ 91,760
+bouton « Acid » @ 208,760
+bouton « Techno » @ 381,760
+bouton « DnB » @ 550,760
+bouton « Dubstep » @ 727,760
+bouton « House » [coupé] @ 845,760
+bouton « Tłusty bas » @ 175,844
+bouton « Growl » @ 388,844
+bouton « Wob dubstep » @ 628,844
+bouton « Reese DnB » @ 178,916
+bouton « Pompa EDM » @ 454,916
+bouton « Pompa » @ 693,916
+bouton « Chrupiący » @ 173,988
+bouton « Przester » @ 409,988
+bouton « Bez efektu » @ 649,988
+texte « Dotknij klimatu, żeby go wypróbować: zawsze możesz wrócić przez Cofnij. » @ 450,1088
+texte « Przytrzymaj palec na klimacie, żeby go usłyszeć; puść, a twój dźwięk wróci. » @ 450,1204
+texte « Pad XY, góra-dół: » @ 209,1294
+bouton « ? » @ 397,1294
+bouton « Przestrzeń » [coupé, sélectionné] @ 178,1348
+bouton « Brud » [coupé] @ 384,1348
+bouton « Ruch » [coupé] @ 536,1348
+texte « Zamknij » @ 755,1433

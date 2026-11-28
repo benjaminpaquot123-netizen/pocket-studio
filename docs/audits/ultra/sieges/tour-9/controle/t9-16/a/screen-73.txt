@@ -1,0 +1,9 @@
+Écran 73 (588x1278)
+texte « Está listo » @ 121,388
+texte « Listo: Mi-canción-20261119-081454.m4a, también hay una copia en Música › BenStudio. » @ 294,521
+texte « Duración: 3 min 12 s » @ 157,627
+texte « Nivel: como la música en streaming (−14) » @ 283,669
+texte « Sin saturación. » @ 125,711
+texte « Archivo M4A: ligero, se reproduce en cualquier dispositivo. » @ 294,771
+texte « Ver mis archivos » @ 322,879
+texte « OK » @ 508,879

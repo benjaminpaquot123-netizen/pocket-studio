@@ -1,0 +1,10 @@
+lang=en
+device=foldable
+font=100
+mode=simple
+amenee=tuto:jungle:9
+gestes.max=167
+mission=tuto-facile
+profil=curieux
+niveau=0
+timeout.minutes=30

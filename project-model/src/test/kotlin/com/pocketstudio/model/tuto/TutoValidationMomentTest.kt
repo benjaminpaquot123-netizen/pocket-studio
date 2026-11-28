@@ -62,7 +62,7 @@ class TutoValidationMomentTest {
     }
 
     companion object {
-        /** The exceptions frozen by bloc 0 (tour 7); blocs 1 to 4 bring it to 0. */
-        const val FROZEN = 368
+        /** The exceptions left after blocs 1 to 4 and T0c (tour 8 garde-fous: lowered from 368 to the count, CI 387). */
+        const val FROZEN = 52
     }
 }

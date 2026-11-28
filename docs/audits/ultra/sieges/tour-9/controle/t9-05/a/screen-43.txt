@@ -1,0 +1,28 @@
+Écran 43 (540x1170)
+bouton (dossier ouvert) ✓ @ 110,42
+bouton « 간단 » @ 263,42
+bouton ● @ 351,42
+bouton ▶ « 이 파트 » @ 423,42
+icône ⋮ @ 495,42
+texte « 애시드 라인 (303) 3/11장 · 1/2단계 · 쉬움 » @ 198,215
+icône (liste) « 챕터 » @ 411,216
+icône ⌄ @ 483,216
+texte « 애시드 라인만 들어 보세요: 루프가 돌고, 어떤 노트는 소리치고(액센트) 어떤 노트는 미끄러져요. » @ 270,451
+texte « ▸ 왜요? » @ 270,614
+bouton ▶ «  예시 듣기 » @ 270,734
+icône ← «  이전 » @ 94,824
+icône « 다음  » → @ 445,824
+texte « 185 템포 » @ 376,933
+icône ↶ « 실행 취소 » @ 65,934
+image ↷ @ 180,915
+bouton ▶ « 곡 » @ 282,934
+icône ⋮ « 더보기 » @ 479,933
+onglet (lignes et note) « 내 곡 » @ 49,1050
+onglet (quatre carrés) « 리듬 » [sélectionné] @ 160,1050
+onglet (touches de piano) « 건반 » @ 271,1050
+onglet (curseurs) « 믹스 » @ 381,1050
+onglet (trois points reliés) « 공유 » @ 491,1050
+texte « 피드백 모드 » @ 123,1140
+texte « ●  REC » @ 289,1140
+texte « ✎  메모 » @ 400,1140
+texte « ⋯ » @ 492,1140

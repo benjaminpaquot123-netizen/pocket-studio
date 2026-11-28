@@ -1,0 +1,38 @@
+Écran 53 (1035x1243)
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 295,42
+bouton « Pro » @ 623,42
+icône ↶ @ 701,42
+icône ↷ [désactivé] @ 773,42
+bouton ● @ 845,42
+bouton ▶ « dit deel » @ 917,42
+icône (trois points reliés) @ 990,42
+icône « Intro maat 1/64 » ▾ @ 320,144
+bouton « 92  BPM » @ 100,144
+bouton (flèches en boucle) « Lus » [état « uit »] @ 878,144
+bouton « ? » @ 990,144
+texte « Zet je delen op volgorde Hoofdstuk 9/14 · Stap 2/2 · Pro » @ 424,246
+icône (liste) « Hoofdstukken » @ 885,246
+icône ⌄ @ 978,246
+texte « Nu jij: geef elk deel zijn lengte: Intro 4 maten, Couplet 16, Refrein 8, Outro 4. Tik op een deel, typ onder ‘Lengte’ het aantal maten en tik op ‘OK’. ‘Aanbevolen lengtes invullen’ doet het in één keer. » [coupé] @ 517,390
+bouton « Kit Boom bap downloaden (7 MB) » @ 470,510
+texte « Later » @ 961,510
+texte « ▸ Waarom? » @ 517,589
+icône « Verder lezen » ⌄ @ 517,652
+bouton ⊕ «   Aanbevolen lengtes invullen » @ 517,736
+bouton (œil) «  Laat zien » @ 517,822
+icône ← «  Vorige » @ 120,908
+icône « Volgende  » → @ 886,908
+icône ▶ « het nummer » @ 590,1012
+texte « 92 Tempo » @ 792,1011
+icône ↶ « Ongedaan maken » @ 152,1012
+icône ↷ « Opnieuw » [désactivé] @ 374,1011
+icône (trois points reliés) « Delen » @ 942,1011
+onglet (ligne brisée et points) « Structuur » [sélectionné] @ 99,1123
+onglet (touches de piano) « Klanken » @ 309,1123
+onglet (curseurs) « Mix » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Meer » @ 936,1123
+texte « ●  REC » @ 726,1213
+texte « ✎  Noteren » @ 866,1213
+texte « ⋯ » @ 987,1213
+texte « Feedbackmodus » @ 341,1213

@@ -1,0 +1,46 @@
+Écran 84 (540x1170)
+bouton (dossier ouvert) ✓ « Il mio progetto 1 Salvato » @ 100,42
+bouton « Semplice » @ 243,42
+bouton ● @ 332,42
+bouton ▶ « questa parte » @ 413,42
+icône ⋮ @ 495,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 495,114
+onglet « Acid 303 Linea di basso » @ 109,186
+bouton « Basso Synth » ⋮ @ 288,186
+icône ♪ « Suono » @ 434,186
+bouton + «  Traccia » [coupé] @ 513,186
+image → @ 529,187
+icône « Parte: A » ▾ @ 76,264
+texte « A tempo 50% » [coupé] @ 444,351
+bouton « Accordi » @ 106,351
+bouton « Basso fantasma » [sélectionné] @ 281,351
+bouton « Basso · battuta 2/8 ↑ Ancora 2 note tratteggiate da toccare Tocca qui » @ 270,432
+texte « batt. » @ 69,489
+bouton « 2 » @ 297,501
+dessin [coupé] @ 69,543
+dessin @ 69,568
+dessin @ 69,598
+dessin @ 69,628
+dessin @ 69,658
+dessin @ 69,688
+dessin [coupé] @ 69,713
+dessin [coupé] @ 297,628
+icône (liste) « Capitoli » @ 405,771
+texte « Il basso Capitolo 5/15 · Passo 3/3 · Facile » @ 192,771
+icône ⌃ @ 483,771
+icône « Tocca a te: tocca le 3 note della battuta 2, l'ultima più acuta. Leggi » ⌃ @ 270,870
+icône ↶ « Annulla » @ 64,954
+image ↷ @ 164,944
+bouton ▶ « il brano » @ 264,954
+texte « 174 Tempo » @ 370,954
+icône ⋮ « Altro » @ 476,954
+onglet (lignes et note) « Il mio brano » @ 49,1050
+onglet (quatre carrés) « Ritmo » @ 160,1050
+onglet (touches de piano) « Tastiera » [sélectionné] @ 271,1050
+onglet (curseurs) « Mix » @ 381,1050
+onglet (trois points reliés) « Condividi » @ 491,1050
+texte « ●  REC » @ 312,1140
+texte « ✎  Annota » @ 408,1140
+texte « ⋯ » @ 492,1140
+texte « Modalità feedback » @ 138,1140

@@ -1,0 +1,55 @@
+Écran 73 (1035x1243)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 358,42
+bouton « Simple » @ 758,42
+bouton ● @ 846,42
+bouton ▶ « this part » @ 918,42
+icône ⋮ @ 990,42
+bouton « 165  Tempo » @ 83,114
+icône « Intro bar 1/128 » ▾ @ 241,114
+bouton « ? » @ 990,114
+texte « Your turn: raise what should be heard, lower what gets in the way. Tap ▶ to hear a track on its own. » @ 520,173
+bouton « Drums ▸ » [état « closed »] @ 75,265
+curseur [état « Normal », à 80 %] @ 84,442
+texte « Normal » @ 84,599
+texte « Bass » @ 216,253
+curseur [état « Normal », à 80 %] @ 216,418
+texte « Normal » @ 216,575
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 194,607
+bouton ▶ [coupé] @ 245,607
+texte « Chords » @ 339,253
+curseur [état « −1 », à 73 %] @ 339,418
+texte « −1 » @ 339,575
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 317,607
+bouton ▶ [coupé] @ 368,607
+texte « Melody » @ 462,253
+curseur [état « −2 », à 69 %] @ 462,418
+texte « −2 » @ 462,575
+bouton (haut-parleur et ondes) [coupé, allumé, état « on »] @ 440,607
+bouton ▶ [coupé] @ 491,607
+texte « Output » @ 597,253
+curseur [état « −6 », à 60 %] @ 597,418
+texte « Press ▶ » @ 597,592
+texte « The mix: the volumes Chapter 14/15 · Done · Easy » @ 433,667
+icône (liste) « Chapters » @ 894,667
+icône ⌄ @ 978,667
+image (coupe) @ 57,771
+texte « Well done, chapter finished! » @ 235,757
+texte « Listen to your song as it is now, then go on to the next chapter: “Export your song”. » @ 461,785
+bouton « Next chapter   » → @ 517,859
+icône ← @ 57,943
+bouton ▶ «  Listen to my song » @ 327,943
+bouton ▶ «  Listen to the example » @ 788,943
+icône ↶ « Undo » @ 147,1027
+image ↷ @ 329,1017
+bouton ▶ « the song » @ 512,1027
+texte « 165 Tempo » @ 700,1027
+icône ⋮ « More » @ 889,1027
+onglet (lignes et note) « My song » @ 99,1123
+onglet (quatre carrés) « Rhythm » @ 309,1123
+onglet (touches de piano) « Keyboard » @ 518,1123
+onglet (curseurs) « Mix » [sélectionné] @ 727,1123
+onglet (trois points reliés) « Share » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Note » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Feedback mode » @ 385,1213

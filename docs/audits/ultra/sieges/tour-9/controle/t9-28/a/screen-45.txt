@@ -1,0 +1,66 @@
+Écran 45 (588x1278)
+icône « Proyekku 1 » ✓ @ 298,36
+bouton « Pro » @ 540,36
+bouton (dossier ouvert) @ 103,114
+bouton « D » ▾ @ 236,114
+icône ↶ @ 311,114
+bouton ● @ 383,114
+bouton ▶ « bagian ini » @ 463,114
+icône (trois points reliés) @ 543,114
+bouton « 175  BPM » @ 83,195
+icône « Drop birama 33/144 » ▾ @ 290,195
+bouton (flèches en boucle) [état « mati »] @ 462,195
+bouton « ? » @ 543,195
+onglet « Drum 16 pad » [sélectionné] @ 80,276
+onglet « Acid 303 Bassline » @ 245,276
+onglet « Vokal Mikrofon » @ 424,276
+onglet « Remix Pisahkan » [coupé] @ 541,276
+image → @ 577,277
+texte « Bagian: D · Drop » @ 129,345
+bouton « 1 » [coupé, état « pukulan, kekuatan 100 % »] @ 70,388
+bouton [coupé, état « kosong »] @ 133,388
+bouton [coupé, état « kosong »] @ 197,389
+bouton [coupé, état « kosong »] @ 261,389
+bouton « 2 » [coupé, état « kosong »] @ 325,389
+bouton [coupé, état « kosong »] @ 389,389
+bouton [coupé, état « kosong »] @ 453,389
+bouton [coupé, état « kosong »] @ 517,389
+bouton « 3 » [état « kosong »] @ 70,448
+bouton [état « kosong »] @ 133,448
+bouton [état « kosong »] @ 197,449
+bouton [état « kosong »] @ 261,449
+bouton « 4 » [état « kosong »] @ 325,449
+bouton [état « kosong »] @ 389,449
+bouton [état « kosong »] @ 453,449
+bouton [état « kosong »] @ 517,449
+bouton « Pukulan » [sélectionné] @ 121,534
+bouton « Roll » @ 256,534
+bouton « Pan » @ 362,534
+bouton « Pitch » @ 478,534
+bouton « Velocity » [coupé] @ 544,534
+texte « semua » @ 131,618
+texte « 1/2 » @ 228,618
+texte « 1/4 » @ 303,618
+texte « ◀ » @ 378,618
+texte « ▶ » @ 453,618
+texte « Isi » @ 56,618
+texte « Hapus » @ 98,690
+texte « Sentuh kotak untuk menambah pukulan, geser jari untuk mengecat beberapa. Tekan lama pukulan: kekuatan dan roll (×2 sampai ×8). » [coupé] @ 294,770
+texte « Transisi Bab 10/14 · Selesai · Pro » @ 222,852
+icône (liste) « Bab » @ 459,853
+icône ⌃ @ 531,853
+icône (coupe) « Bagus, bab selesai! » ⌃ @ 294,965
+icône ↶ « Urungkan » @ 79,1061
+icône ↷ « Ulangi » [désactivé] @ 194,1061
+bouton ▶ « lagu » @ 297,1061
+texte « 175 Tempo » @ 405,1061
+icône (trois points reliés) « Bagikan » @ 518,1061
+onglet (ligne brisée et points) « Struktur » @ 54,1158
+onglet (touches de piano) « Suara » [sélectionné] @ 174,1158
+onglet (curseurs) « Mix » @ 294,1158
+onglet (neuf points) « Live » @ 414,1158
+onglet ⋯ « Lainnya » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Catat » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode masukan » @ 162,1248

@@ -11,7 +11,11 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.swipe
 import androidx.compose.ui.test.swipeUp
+import androidx.compose.ui.unit.dp
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
 import com.pocketstudio.app.ui.SimpleTab
@@ -96,6 +100,16 @@ class SimpleMixTest {
 
     private fun volume(ch: Int) = h.vm.project.value.mixer.channels[ch].volume
 
+    /** Tour 9 F024 (option A): a fader is taken at its cap only; a slide up from there, as a finger does. */
+    private fun slideUpFromTheCap(tag: String) {
+        val node = compose.onNodeWithTag(tag)
+        val f = node.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo].current
+        node.performTouchInput {
+            val y = 6.dp.toPx() + (1f - f) * (height - 12.dp.toPx())
+            swipe(Offset(width / 2f, y), Offset(width / 2f, (y - height * 0.4f).coerceAtLeast(0f)), durationMillis = 300)
+        }
+    }
+
     @Test
     fun theSimpleModeHasAMixTabOnTheSameMixer() {
         start()
@@ -106,10 +120,20 @@ class SimpleMixTest {
         compose.onNodeWithTag("mix_out").performScrollTo().assertIsDisplayed()
         // A slide up on the 303's fader: its volume in the project goes up (the console's own), one undo step.
         val before = volume(1)
-        compose.onNodeWithTag("mix_fader_1").performTouchInput { swipeUp() }
+        slideUpFromTheCap("mix_fader_1")
         compose.waitForIdle()
         assertTrue("${volume(1)} > $before", volume(1) > before)
         h.vm.undo()
+        assertEquals(before, volume(1), 0f)
+    }
+
+    /** Tour 9 F024 « Faire défiler le Mix ne change aucun réglage »: a slide from the bottom of a fader, far from its cap. */
+    @Test
+    fun aSlideFromTheBottomOfAFaderNoLongerChangesItsVolume() {
+        start()
+        val before = volume(1)
+        compose.onNodeWithTag("mix_fader_1").performTouchInput { swipeUp() }
+        compose.waitForIdle()
         assertEquals(before, volume(1), 0f)
     }
 
@@ -147,7 +171,7 @@ class SimpleMixTest {
         assertEquals(before, h.vm.project.value.mixer)
         // Its own level: the pad's strip.
         val padBefore = volume(Mixer.padChannel(kick))
-        compose.onNodeWithTag("mix_pad_fader_$kick").performTouchInput { swipeUp() }
+        slideUpFromTheCap("mix_pad_fader_$kick")
         compose.waitForIdle()
         assertTrue(volume(Mixer.padChannel(kick)) > padBefore)
         // A track's ▶: that track alone.

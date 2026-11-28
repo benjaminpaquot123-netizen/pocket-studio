@@ -1,0 +1,57 @@
+Écran 60 (588x1278)
+icône (dossier ouvert) ✓ « Mi proyecto 1 Guardado » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ■ « esta parte » @ 463,42
+icône ⋮ @ 543,42
+bouton « 120  Tempo » @ 98,123
+icône (flèches en boucle) « Drop 2 compás 6/8 » ▾ @ 271,123
+bouton (flèches en boucle) « Bucle » [allumé, état « activado »] @ 427,123
+bouton « ? » @ 543,123
+icône (flèches en boucle) « Parte: F · Drop 2 » ▾ @ 159,198
+texte « Se repite en bucle mientras la editas. ⟳ Bucle, arriba, para volver a la canción. » @ 294,264
+texte « Compás 4/4 · Maracas » [coupé] @ 198,315
+bouton « 1 » [état « vacío »] @ 70,389
+bouton [état « vacío »] @ 133,389
+bouton [état « golpe, fuerza 100 % »] @ 197,390
+bouton [état « vacío »] @ 261,390
+bouton « 2 » [état « vacío »] @ 325,390
+bouton [état « vacío »] @ 389,390
+bouton [état « golpe, fuerza 100 % »] @ 453,390
+bouton [état « vacío »] @ 517,390
+bouton « 3 » [état « vacío »] @ 70,468
+bouton [état « vacío »] @ 133,468
+bouton [état « vacío »] @ 197,469
+bouton [état « vacío »] @ 261,469
+bouton « 4 » [état « vacío »] @ 325,469
+bouton [état « vacío »] @ 389,469
+bouton [état « vacío »] @ 453,469
+bouton [état « vacío »] @ 517,469
+texte « Rellenar » [coupé] @ 91,538
+texte « todo » [coupé] @ 186,532
+texte « 1/2 » [coupé] @ 269,532
+texte « 1/4 » [coupé] @ 344,532
+texte « ◀ » [coupé] @ 419,532
+texte « ▶ » [coupé] @ 494,532
+texte « Los efectos Capítulo 11/13 · Paso 1/1 · Fácil » @ 202,590
+icône (liste) « Capítulos » @ 439,591
+icône ⌄ @ 531,591
+texte « Escucha la reverb (el eco de una sala grande): el piano, primero sin y luego con. » @ 294,725
+texte « ▸ ¿Por qué? » @ 294,823
+bouton ▶ «  Escuchar el ejemplo » @ 294,892
+icône ← «  Anterior » @ 112,976
+icône « Siguiente  » → @ 466,976
+icône ↶ « Deshacer » @ 72,1061
+image ↷ @ 185,1048
+bouton ▶ « la canción » @ 304,1061
+texte « 120 Tempo » @ 424,1061
+icône ⋮ « Más » @ 527,1061
+onglet (lignes et note) « Mi canción » @ 54,1158
+onglet (quatre carrés) « Ritmo » [sélectionné] @ 174,1158
+onglet (touches de piano) « Teclado » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Compartir » @ 534,1158
+texte « ●  REC » @ 356,1248
+texte « ✎  Anotar » @ 454,1248
+texte « ⋯ » @ 540,1248
+texte « Modo comentarios » @ 160,1248

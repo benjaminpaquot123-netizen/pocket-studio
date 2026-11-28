@@ -1,0 +1,281 @@
+{
+ "name": "Copie",
+ "drums": {
+  "steps": 16,
+  "lanes": [
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   }
+  ]
+ },
+ "acid": {
+  "length": 16,
+  "steps": [
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   }
+  ]
+ },
+ "synthEngine": 0,
+ "synthTrackName": "Synthé",
+ "synthNotes": {
+  "steps": 16,
+  "notes": []
+ },
+ "tracks": [
+  {
+   "id": 1,
+   "name": "Piano",
+   "engine": 0,
+   "notes": {
+    "steps": 16,
+    "notes": []
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "drums": {
+    "steps": 16,
+    "lanes": [
+     {
+      "hits": {
+       "0": {
+        "velocity": 1.0
+       },
+       "8": {
+        "velocity": 1.0
+       }
+      }
+     },
+     {
+      "hits": {
+       "4": {
+        "velocity": 1.0
+       }
+      }
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     }
+    ]
+   },
+   "acid": {
+    "length": 16,
+    "steps": [
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     }
+    ]
+   },
+   "synthNotes": {
+    "steps": 16,
+    "notes": [
+     {
+      "start": 24,
+      "length": 48,
+      "pitch": 36,
+      "velocity": 0.8
+     },
+     {
+      "start": 168,
+      "length": 48,
+      "pitch": 36,
+      "velocity": 0.8
+     },
+     {
+      "start": 216,
+      "length": 48,
+      "pitch": 43,
+      "velocity": 0.8
+     },
+     {
+      "start": 312,
+      "length": 48,
+      "pitch": 41,
+      "velocity": 0.8
+     }
+    ]
+   },
+   "trackNotes": {}
+  }
+ ],
+ "song": [],
+ "audioTracks": [],
+ "style": null,
+ "guide": null
+}

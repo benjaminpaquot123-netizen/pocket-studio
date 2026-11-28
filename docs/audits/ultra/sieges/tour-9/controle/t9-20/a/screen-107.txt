@@ -1,0 +1,9 @@
+Écran 107 (588x1278)
+texte « Fertig » @ 111,240
+texte « Fertig: Mein-Song-20261119-080423.m4a, eine Kopie liegt auch in Musik › BenStudio. » @ 294,412
+texte « Dauer: 3 min 19 s » @ 189,556
+texte « Pegel: wie Streaming-Musik (−14) » @ 294,640
+texte « Keine Übersteuerung. » @ 232,724
+texte « M4A-Datei: leicht, läuft auf jedem Gerät. » @ 294,808
+texte « OK » @ 504,936
+texte « Meine Dateien ansehen » @ 310,1034

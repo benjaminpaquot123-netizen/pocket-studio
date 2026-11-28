@@ -1,0 +1,46 @@
+Écran 69 (540x1170)
+icône « Mijn project 1 » ✓ @ 274,36
+bouton « Pro » @ 492,36
+bouton (dossier ouvert) @ 86,114
+bouton « A » ▾ @ 202,114
+icône ↶ @ 278,114
+bouton ● @ 350,114
+bouton ▶ « dit deel » @ 422,114
+icône (trois points reliés) @ 495,114
+bouton « 92  BPM » @ 74,195
+bouton « ? » @ 495,195
+onglet « Drums 16 pads » [sélectionné] @ 87,276
+onglet « Acid 303 Baslijn » @ 260,276
+onglet « Zang Microfoon » [coupé] @ 438,276
+image → @ 529,277
+texte « Deel: A » @ 69,345
+bouton « Boom bap · Kick FX » @ 78,432
+bouton « Kick 2 » @ 206,432
+bouton « E-mu SP-1200 · Snare FX » @ 334,432
+bouton « Snare 2 » @ 462,432
+bouton « Clap FX » @ 78,522
+bouton « Akai MPC60 · Hi-hat L 30 » @ 206,522
+bouton « Boom bap · Open hi-hat R 30 » @ 334,522
+bouton « Lage tom » @ 462,522
+bouton « Midtom R 45 » @ 78,612
+bouton « Hoge tom » @ 206,612
+bouton « Rim R 50 » @ 334,612
+bouton « Koebel » @ 462,612
+texte « De drums Hoofdstuk 2/14 · Stap 5/8 · Pro » @ 176,726
+icône (liste) « Hoofdstukken » @ 389,727
+icône ⌃ @ 483,727
+icône « Nu jij: de snare ‘te laat’. Druk op de pad ‘E-mu SP-1200 · Snare’ lang op elke harde slag, dan ‘Verschuiving van slag’ op +10 ms: hij komt een haartje na de tel, nonchalant. Lees » ⌃ @ 270,857
+icône ↶ « Ongedaan maken » @ 57,953
+icône ↷ « Opnieuw » [désactivé] @ 157,953
+icône ▶ « het nummer » @ 276,953
+texte « 92 Tempo » @ 396,953
+icône (trois points reliés) « Delen » @ 489,953
+onglet (ligne brisée et points) « Structuur » @ 49,1050
+onglet (touches de piano) « Klanken » [sélectionné] @ 160,1050
+onglet (curseurs) « Mix » @ 271,1050
+onglet (neuf points) « Live » @ 381,1050
+onglet ⋯ « Meer » @ 491,1050
+texte « ●  REC » @ 297,1140
+texte « ✎  Noteren » @ 400,1140
+texte « ⋯ » @ 492,1140
+texte « Feedbackmodus » @ 130,1140

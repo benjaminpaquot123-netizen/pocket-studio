@@ -83,7 +83,8 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "このスタイルの本物のドラム音。曲にも例にも使う。なくても、内蔵の音でチュートリアルは動くよ。",
   "Téléchargement du kit… %d %%": "キットをダウンロード中… %d %%",
   "Mettre les sons du kit %s sur les pads": "キット %s の音をパッドに入れる",
-  "Télécharger le kit %1$s (%2$s)": "キット %1$s をダウンロード（%2$s）",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "キットを読み込めなかった。チュートリアルは内蔵の音のまま続くよ。",
+  "Télécharger le kit %1$s (%2$s)": "%1$s キットをダウンロード（%2$s）",
   "Recommencer le tuto": "チュートリアルをやり直す",
   "Passer à %d mesures": "%d 小節にする",
   "Créer la piste 808": "808 トラックを作る",
@@ -157,5 +158,10 @@
   "Posé : %s.": "置いたもの：%s。",
   "Il te manque ce que font les chapitres d'avant.": "前の章で作るものがまだありません。",
   "Aller au chapitre %d": "第%d章へ",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "曲にパート「%s」がありません。このステップはその中で行います。"
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "曲にパート「%s」がありません。このステップはその中で行います。",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "始める前に：パッドにはアプリのドラムの音が入っていて、このスタイル用に調整されている。スタイルのキットはまだパッドに入っていない：あとでそのカードが出てくるけど、「あとで」で大丈夫、チュートリアルはこの音で進む。設定することは何もないよ。",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303：小さなベースマシン。キュウキュウ、ウーとうなる音がアシッドの音です。",
+  "Accent : une note jouée plus fort que les autres.": "アクセント：ほかより強く鳴らす音。",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "スライド：音が跳ばずに次の音へすべっていくこと。",
+  "Glide : le son glisse doucement d'une note à l'autre.": "グライド：音がひとつの音から次の音へなめらかにすべること。"
 }

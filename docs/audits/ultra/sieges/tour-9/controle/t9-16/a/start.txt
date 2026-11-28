@@ -1,0 +1,10 @@
+lang=es
+device=phone
+font=130
+mode=simple
+amenee=tuto:deep_house:7
+gestes.max=150
+mission=tuto-facile
+profil=débutant motivé
+niveau=1
+timeout.minutes=30

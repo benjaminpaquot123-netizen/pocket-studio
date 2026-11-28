@@ -1,0 +1,46 @@
+Écran 65 (588x1278)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 124,42
+bouton « Simple » @ 294,42
+bouton ● @ 384,42
+bouton ▶ « cette partie » @ 463,42
+icône ⋮ @ 543,42
+bouton « 174  Tempo » @ 98,123
+icône « Intro mesure 1/128 » ▾ @ 315,123
+bouton « ? » @ 543,123
+bouton « Accords du morceau B · Intro Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ C · Montée Fa m  Fa m  Fa m  Sol♭ D · Drop Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ E · Break Fa m  Fa m  Fa m  Sol♭  Fa m  Fa m  Fa m  Sol♭ F · Drop 2 Si♭ m  Si♭ m  Si♭ m  Ré♭  Si♭ m  Si♭ m  Si♭ m  Ré♭ G · Fin Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m  Fa m Touche pour changer les accords de tout le morceau. » [coupé] @ 294,180
+icône ▶ « B · Intro 28 mes. » @ 186,252
+icône − [désactivé] @ 366,252
+icône + [désactivé] @ 438,252
+icône ⋮ @ 510,252
+icône ▶ « C · Montée 4 mes. » @ 186,348
+icône − [désactivé] @ 366,348
+icône + [désactivé] @ 438,348
+icône ⋮ @ 510,348
+icône ▶ « D · Drop 32 mes. » [coupé] @ 186,421
+icône − [désactivé, coupé] @ 366,427
+icône + [désactivé, coupé] @ 438,427
+icône ⋮ [coupé] @ 510,427
+texte « Les transitions Chapitre 12/15 · Étape 1/2 · Facile » @ 201,509
+icône (liste) « Chapitres » @ 438,510
+icône ⌄ @ 531,510
+texte « À toi : touche « Aller dans la partie « Montée » ». » @ 294,639
+texte « ▸ Pourquoi ? » @ 294,714
+bouton ⊕ «   Aller dans la partie « Montée » » @ 294,783
+bouton ▶ «  Écouter l'exemple » @ 154,881
+bouton (œil) «  Montre-moi » @ 433,881
+icône ← «  Précédent » @ 127,976
+icône « Suivant  » → @ 480,976
+icône ↶ « Annuler » @ 65,1061
+image ↷ @ 168,1048
+bouton ▶ « le morceau » @ 291,1061
+texte « 174 Tempo » @ 419,1061
+icône ⋮ « Plus » @ 524,1061
+onglet (lignes et note) « Mon morceau » [sélectionné] @ 54,1158
+onglet (quatre carrés) « Rythme » @ 174,1158
+onglet (touches de piano) « Clavier » @ 294,1158
+onglet (curseurs) « Mix » @ 414,1158
+onglet (trois points reliés) « Partager » @ 534,1158
+texte « ●  REC » @ 360,1248
+texte « ✎  Noter » @ 456,1248
+texte « ⋯ » @ 540,1248
+texte « Mode retours » @ 162,1248

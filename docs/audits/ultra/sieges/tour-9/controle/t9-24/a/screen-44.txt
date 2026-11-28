@@ -1,0 +1,35 @@
+Écran 44 (588x1278)
+dessin @ 294,36
+texte « Część 2 · A · Refren » @ 179,96
+texte « Zamknij » @ 504,108
+texte « 8 taktów  ·  grana razy: 3 » @ 151,129
+texte « Grana w utworze (razy: 3). Edytuj: » @ 195,174
+bouton (étincelles) « Tylko ta » @ 156,246
+bouton (crayon) « Wszystkie (3) » @ 432,246
+bouton (barres de son) « Przejście na końcu » @ 156,345
+bouton ❚❚ « Przerwa po · 4 takty » @ 432,345
+bouton ❚❚ « Przerwa po · 8 taktów » @ 156,444
+bouton (courbe qui monte) « Build-up przed · 4 takty » @ 432,444
+bouton (courbe qui monte) « Build-up przed · 8 taktów » @ 156,543
+bouton (haut-parleur et ondes) « Fade in » @ 432,543
+bouton (haut-parleur et une onde) « Fade out » @ 156,642
+bouton (drapeau) « Dodaj zakończenie » @ 432,642
+texte « Energia: 3 » @ 75,714
+bouton « 1 · pady » @ 87,780
+bouton « 2 · + bas » @ 228,780
+bouton « 3 · + perkusja » [sélectionné] @ 400,780
+bouton « 4 · na całego » @ 114,861
+texte « Długość » @ 66,927
+champ « takty » contenu « 8 » @ 268,1006
+icône ✕ @ 315,1013
+icône − [désactivé] @ 60,1006
+icône + @ 141,1006
+texte « OK » [désactivé] @ 403,1006
+texte « Część » @ 55,1085
+icône (crayon) « Zmień nazwę » @ 128,1151
+icône (curseurs) « Co gra » @ 306,1151
+icône ↑ « Przesuń w górę » @ 139,1223
+icône ↓ « Przesuń w dół » @ 368,1223
+icône (deux feuilles) « Duplikuj » [coupé] @ 102,1268
+icône + « Wstaw po » [coupé] @ 272,1268
+icône (poubelle) « Usuń » [coupé] @ 426,1268

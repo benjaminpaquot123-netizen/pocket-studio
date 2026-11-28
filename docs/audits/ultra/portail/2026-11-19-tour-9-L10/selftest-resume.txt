@@ -1,0 +1,491 @@
+357 verts, 0 rouges, 0 en quarantaine, 131 sautés
+sauté : BenchAmeneeLateKitCardTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=fr device=phone font=100] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=fr device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=hi device=phone360 font=130] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=ja device=phone font=100 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=pt-BR device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=tr device=phone font=130 mode=pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=fr device=phone font=100] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=fr device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=hi device=phone360 font=130] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=ja device=phone font=100 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=pt-BR device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=tr device=phone font=130 mode=pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=fr device=phone font=100] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=fr device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=hi device=phone360 font=130] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=ja device=phone font=100 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=pt-BR device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=tr device=phone font=130 mode=pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAssistantTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchFlagPathsTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchFlagTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchNetworkEndTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchPadLiveStopTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchPlaceAndPadLiveTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchPlayThenTabsTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchRecetteTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchReplayReadableTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchSeatOptionsTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchSelfTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchSeparationWaitTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTour1Test#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTour3Test#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTour4Test#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[techno Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[techno Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[detroit Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[detroit Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[acid_techno Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[acid_techno Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[hard_techno Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[hard_techno Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[industrial_techno Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[industrial_techno Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[retro_techno Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[retro_techno Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[acidcore Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[acidcore Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[trance Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[trance Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[house Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[house Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[deep_house Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[deep_house Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[tech_house Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[tech_house Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[acid_house Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[acid_house Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[uk_garage Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[uk_garage Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[dnb Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[dnb Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[jump_up Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[jump_up Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[dubstep Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[dubstep Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[minimal Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[minimal Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[gabber Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[gabber Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[afro_house Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[afro_house Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[speed_garage Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[speed_garage Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[amapiano Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[amapiano Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[disco Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[disco Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[liquid_dnb Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[liquid_dnb Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[neurofunk Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[neurofunk Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[jungle Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[jungle Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[riddim Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[riddim Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[trap Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[trap Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[drill Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[drill Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[phonk Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[phonk Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[boom_bap Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[boom_bap Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[grime Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[grime Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[jersey_club Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[jersey_club Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[lofi Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[lofi Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[reggaeton Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[reggaeton Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[afrobeats Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[afrobeats Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[synthwave Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[synthwave Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[pop Facile] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoAnchorTicksTest#drive[pop Pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchTutoKitDownloadTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneeLateKitCardTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=fr device=phone font=100] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=fr device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=hi device=phone360 font=130] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=ja device=phone font=100 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=pt-BR device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[premier-morceau lang=tr device=phone font=130 mode=pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=fr device=phone font=100] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=fr device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=hi device=phone360 font=130] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=ja device=phone font=100 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=pt-BR device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[remix lang=tr device=phone font=130 mode=pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=fr device=phone font=100] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=fr device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=hi device=phone360 font=130] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=ja device=phone font=100 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=pt-BR device=phone font=200 mode=simple] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesProfilesTest#drive[padlive lang=tr device=phone font=130 mode=pro] : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchAmeneesTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+sauté : BenchFlagPathsTest#drive : org.junit.AssumptionViolatedException: only with -Phuman.dir
+vert : BenchAmeneeLateKitCardTest#reggaetonChapter8OnPhone360
+vert : BenchAmeneeLateKitCardTest#liquidDnbChapter12OnPhone360
+vert : BenchAmeneeLateKitCardTest#theKitCardComingUnderTheFingerDoesNotRefuseTheAmenee
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=fr device=phone font=100]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=fr device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=hi device=phone360 font=130]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=ja device=phone font=100 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=pt-BR device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=tr device=phone font=130 mode=pro]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=fr device=phone font=100]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=fr device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=hi device=phone360 font=130]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=ja device=phone font=100 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=pt-BR device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=tr device=phone font=130 mode=pro]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=fr device=phone font=100]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=fr device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=hi device=phone360 font=130]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=ja device=phone font=100 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=pt-BR device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=tr device=phone font=130 mode=pro]
+vert : BenchAmeneesTest#remixStartsOnTheRemixPage
+vert : BenchAmeneesTest#aMidImportedPutsItsNotesIn
+vert : BenchAmeneesTest#fourTapsOnAnotherPadAreFourTouchesAndHeardFourTimes
+vert : BenchAmeneesTest#padLiveLightsStopsAndRecordsAsOnAPhone
+vert : BenchAmeneesTest#firstSongStartsInAnEmptyProjectInSimpleMode
+vert : BenchAmeneesTest#livePadsLightGoOutAndAreHeardAsPadLivesDo
+vert : BenchAmeneesTest#aTappedRhythmIsScored
+vert : BenchAmeneesTest#tutoAnchorAtChapterNineSwipesForNothing
+vert : BenchAmeneesTest#tutoAnchorStartsWithTheSkippedChaptersBuilt
+vert : BenchAmeneesTest#aTapDuringTheExampleIsNotCounted
+vert : BenchAmeneesTest#aTappedRhythmAtNinetyBpmIsScored
+vert : BenchAmeneesTest#padLiveStartsWithItsPadsReady
+vert : BenchAmeneesTest#tutoAnchorLandsOnItsChapterWhenItsRowIsCut
+vert : BenchAmeneesTest#aPackFillsThePageShown
+vert : BenchAmeneesTest#aZipImportedOutsideRemixAddsAProject
+vert : BenchAssistantTest#theAssistantsListensPlayAndTheGuidePlaysTheSongFromItsPart
+vert : BenchCoverTest#aCardBesideTheButtonCoversNothing
+vert : BenchCoverTest#aBottomBarButtonUnderAFullScreenBodyIsNotCovered
+vert : BenchCoverTest#aRingDrawnOverTheButtonLetsTheTouchThrough
+vert : BenchCoverTest#aCardDrawnOverTheButtonCoversIt
+vert : BenchCoverTest#theFingerFailsOnACoveredButtonAndSaysWhoCoversWhom
+vert : BenchEngineTest#thePlayHeadMovesWithTheTempo
+vert : BenchEngineTest#theGridsHeadTurnsWithTheDrumsUnderALongMelody
+vert : BenchEngineTest#aKnobMovedWithAutomationRecordWritesAPoint
+vert : BenchEngineTest#aMicTakeLeftRunningIsKeptWhenTheSongEnds
+vert : BenchEngineTest#aThreeMinuteRenderLastsThreeMinutes
+vert : BenchEngineTest#anM4aIsMadeAndShared
+vert : BenchEngineTest#anExportSizeIsSaidToBeTheBenchs
+vert : BenchEngineTest#aWavIsMadeAndShared
+vert : BenchEngineTest#aRenderLastsWhatIsAskedAndSoundsLikeItsProject
+vert : BenchEngineTest#thePlayHeadReadsTheEnginesClock
+vert : BenchEngineTest#exportProfile
+vert : BenchEngineTest#aKnobMovedWhileTheSongPlaysWritesOnTheSongsBar
+vert : BenchFlagFingerTest#aCoveredFingerLeavesItsFlag
+vert : BenchFlagFingerTest#aFingerOnAFreeTargetLeavesNoFlag
+vert : BenchFlagFingerTest#aFlagIsOneLineThatReadsBack
+vert : BenchFlagPathsTest#eachEndOfTheSeatLoopSaysItsVerdictAndEachFailureItsFlag
+vert : BenchFlagPathsTest#anAmeneeWhoseButtonIsNotThereSaysWhichOne
+vert : BenchFlagPathsTest#anAmeneeWhoseStateNeverComesSaysWhatItWaitedForAndAfterWhichTouch
+vert : BenchFlagTest#everyRefusedGestureOfTheLoopLeavesItsFlag
+vert : BenchFlagsTest#aFlagIsOneLineOfKeyValuePairsReadBackAsWritten
+vert : BenchFlagsTest#eachEndOfASeatHasItsVerdict
+vert : BenchFlagsTest#aValueNeverBreaksTheLine
+vert : BenchFlagsTest#aVerdictSaysOkOrFailWithThePlace
+vert : BenchMixFaderCoverTest#theBenchsFingerIsNotRefusedOnAStripsName
+vert : BenchMixFaderCoverTest#withoutTheBenchADragMovesTheFader
+vert : BenchMixFaderCoverTest#theBenchsFingerIsNotRefusedOnAFader
+vert : BenchMixFaderCoverTest#withoutTheBenchATouchOnAStripsNameOpensItsSheet
+vert : BenchNetworkEndTest#theEndWaitsForTheAppsNetworkWork
+vert : BenchNetworkEndTest#theEndWaitsThroughAStepOffTheNetworkBetweenTwoCalls
+vert : BenchPadLiveStopTest#padLivesStopAllIsInSightAndStopsTheTempoToo
+vert : BenchPadLiveTest#aLaunchArmedWaitsForItsLineAndIsReported
+vert : BenchPadLiveTest#aLaunchArmedWhileStoppedComesOnTheOne
+vert : BenchPadLiveTest#aLoopWaitsForItsGridAndATouchWhileItWaitsCancelsIt
+vert : BenchPadLiveTest#aPadTouchedDuringTheCountInStartsOnTheClocksBar
+vert : BenchPadLiveTest#aRowAloneStartsAtOnce
+vert : BenchPadLiveTest#leavingTheSongKeepsALaunchWaitingAndTheDrumsCountFromTheirLaunch
+vert : BenchPadLiveTest#aHitRetouchedSoundsAtOnce
+vert : BenchPadLiveTest#aRowWaitsForTheBarLineAndAgainStopsItsLoops
+vert : BenchPadLiveTest#theTransportsStartPutsThePadsOnItsBeat
+vert : BenchPlaceAndPadLiveTest#padLiveTouchedFromTheWelcomeOpensOnItsPads
+vert : BenchPlaceAndPadLiveTest#padLivesScreenTextNoLongerSaysThePadsStartWithoutTheGrid
+vert : BenchPlaceAndPadLiveTest#aPadHeldThenPosedFromTheLibraryHasTheSound
+vert : BenchPlaceAndPadLiveTest#padLiveOpenedOnAFreshPhoneHasItsPads
+vert : BenchPlaceAndPadLiveTest#padLiveOpenedAfterASongHasItsPads
+vert : BenchPlayThenTabsTest#recordWhileTheSongPlaysThenTabs
+vert : BenchPlayThenTabsTest#theSongOfPlayThenTabsBackAndStop
+vert : BenchPlayThenTabsTest#theBarCounterGoesOnWhileTheSongPlays
+vert : BenchPlayThenTabsTest#theGuidesListenThenATab
+vert : BenchPristineAfterLooseTypeTest#aRuleDeclaredAsATestRuleStillAnswersForItsLeaks
+vert : BenchPristineAfterTest#aBenchTestThatLeavesSomethingIsRedItselfAndPutsItBack
+vert : BenchPristineAfterTest#aBenchTestThatLeavesNothingIsGreen
+vert : BenchPristineAfterTest#putBackEndsAClosingSaveWaitingForTheMainThread
+vert : BenchPristineAfterTest#aClosingSaveWaitingForTheMainThreadIsLetEndNotNamed
+vert : BenchPristineRuleTest#aPristineSeatWritesNothing
+vert : BenchPristineRuleTest#aLeakBeforeASeatIsPutBackAndWrittenInItsJournalTheSeatRuns
+vert : BenchPristineRuleTest#aLeakBeforeABenchTestIsRedNamingTheTestBeforeOrOneWithoutTheRule
+vert : BenchPristineRuleTest#onTheBenchOnlyASeatsDriveIsSpared
+vert : BenchProjectsListTest#theProjectsListIsReadAndShownWithoutTheBench
+vert : BenchRecetteTest#proPartPickedWhilePlayingTakesOver
+vert : BenchRecetteTest#simpleSongCounterFollowsTheEnginePastTheFirstPart
+vert : BenchRecetteTest#simpleSongPlaysToItsEndAndStopsThere
+vert : BenchRecetteTest#theDemoGoesOnUnderTheModeStepUntilAModeIsChosen
+vert : BenchRecetteTest#theDemoStopsWhenTheNewProjectListIsLeft
+vert : BenchReplayReadableTest#aMovedButtonIsSaidInTheVerdict
+vert : BenchScreenTextOverlayTest#aPageDrawnOverTheScreenStillHidesWhatIsUnder
+vert : BenchScreenTextOverlayTest#aRingDrawnOverTheScreenHidesNothing
+vert : BenchScreenTextOverlayTest#aFingerDrawnOverTheScreenHidesNothing
+vert : BenchSeatOptionsTest#anEnglishSeatReadsTheLibrariesPlainWords
+vert : BenchSeatOptionsTest#aSeatThatDoesNotReadSeesBarsAndNoNames
+vert : BenchSeatOptionsTest#aTagOutOfTheThumbsReachIsTouchedInsideTheReach
+vert : BenchSeatOptionsTest#aProSeatIsInPro
+vert : BenchSeatOptionsTest#aTagCoveredByAnotherElementIsTouchedWhereItShows
+vert : BenchSeatOptionsTest#aTagClippedByItsScrollingParentIsTouchedOnItsShownPart
+vert : BenchSeatOptionsTest#anArabicSeatOnATabletAt130
+vert : BenchSeatOptionsTest#aTagPartlyOffTheScreenIsTouchedOnTheScreen
+vert : BenchSelfTest#aPadLiveLineSaysThePadsLightAsDrawn
+vert : BenchSelfTest#aBenchExceptionKeepsTheScreenErrorsAndTheStalls
+vert : BenchSelfTest#aTestExceptionIsNeverTheAppsCrash
+vert : BenchSelfTest#everyIconOfTheAppHasItsShape
+vert : BenchSelfTest#aBlankFirstScreenWithTheBenchAtRestIsShownAsItIs
+vert : BenchSelfTest#aBlankFirstScreenIsWaitedForOnlyWhenTheBenchIsBusy
+vert : BenchSelfTest#chipsTogglesAndDrawnMarksAreWrittenAsDrawn
+vert : BenchSelfTest#reachTagTouchesAVisibleElementInPlace
+vert : BenchSelfTest#theScreenInTextSaysWhatIsCutNotAnArrowTheAppDoesNotDraw
+vert : BenchSelfTest#theAppsClockStandsStillWhileTheTesterReads
+vert : BenchSelfTest#theScreenInTextWritesWhatIsDrawnNotTalkBacksNames
+vert : BenchSeparationWaitTest#twoWaitsOfThirtySecondsGiveTheSeparatedSong
+vert : BenchSeparationWaitTest#aStuckStandInGivesTheHandBackWithinTwentySeconds
+vert : BenchSeparationWaitTest#aBusyWorkerHoldsTheWaitUntilItsWorkIsOver
+vert : BenchShareTest#twoStemsLeaveAsTwoFiles
+vert : BenchShareTest#theBackGestureStopsItToo
+vert : BenchShareTest#theTutoSongGoesOutAsAWavFromTheSheet
+vert : BenchShareTest#fourStemsLeaveAsFourFiles
+vert : BenchShareTest#aDoubleTouchInFacileMakesOneSongAndOneMenu
+vert : BenchShareTest#theShareMenuSpeaksTheSeatsLanguage
+vert : BenchShareTest#annulerStopsAndClosesAtOnce
+vert : BenchShortSeatTest#aReplayedTouchOnAMovedButtonAimsAtItsTag
+vert : BenchShortSeatTest#aHalfDrawnTargetIsAimedAtInItsDrawnPart
+vert : BenchShortSeatTest#aChapterPastTheCourseIsRefusedWithItsCount
+vert : BenchShortSeatTest#aTouchOnATagDrawnInsideTheTargetIsOnTheTarget
+vert : BenchShortSeatTest#aScreenThatSticksAgainHasNoDiffNow
+vert : BenchShortSeatTest#theReplayGivesTheSeatBackWhenTheScreenNoLongerSticks
+vert : BenchShortSeatTest#aWrongTutoAmeneeIsSaidAndLeftOut
+vert : BenchShortSeatTest#aContainerTagWithManyButtonsIsNotReaimed
+vert : BenchShortSeatTest#anUntaggedButtonThatMovedGivesTheSeatBack
+vert : BenchShortSeatTest#aReplayWithNoBoundIsFaithfulWhenTheOriginIsPlayedOut
+vert : BenchShortSeatTest#handBackIsAnOption
+vert : BenchShortSeatTest#aTutoAmeneeNamesItsStyleAndChapter
+vert : BenchShortSeatTest#aSeatGivenBackEarlySaysTheLineAndIsNoFaithfulReplay
+vert : BenchShortSeatTest#aScreenWhoseWordsOnlyMovedIsTheOriginsForAReplayHandingBack
+vert : BenchShortSeatTest#theAuditScreensReadAreTestResources
+vert : BenchSnapshotPumpTest#a_aTestLeavesAStateTheBenchPutsBackOnceItIsOver
+vert : BenchSnapshotPumpTest#b_aStateWrittenInTheTestAfterItReachesItsReaders
+vert : BenchSongClockTest#absoluteStepRestartsAtTheSwap
+vert : BenchSongClockTest#transportStepIsMinusOneDuringTheCountIn
+vert : BenchSongClockTest#aTakeStillCountingInIsNotEndedByStop
+vert : BenchSongClockTest#aSongPlaysOnAndARestartArmedAheadWaitsForItsBar
+vert : BenchSongClockTest#aPartArmedDuringTheCountInWaitsForItsBarAfterIt
+vert : BenchSongClockTest#aTakeWaitsForTheTransportsOwnCountIn
+vert : BenchSongClockTest#theDrumPatternsStepFollowsTheSceneTakingOver
+vert : BenchSongClockTest#aMicTakeEndsWithTheSongsEnd
+vert : BenchSongClockTest#transportStepKeepsItsStepsAcrossATempoChange
+vert : BenchSongClockTest#aTakeArmedIsKeptWhenTheSongEnds
+vert : BenchSongClockTest#aTempoChangeKeepsTheStepsPlayed
+vert : BenchSongClockTest#aSongMarkComesTrueOnItsLineAndPutsTheSongThere
+vert : BenchSongClockTest#aNewArmReplacesTheOneWaitingAndANegativeOneCancelsIt
+vert : BenchSongClockTest#leavingTheSongTakesTheSongPositionAwayAtOnce
+vert : BenchSongClockTest#theSongsEndStopsTheTransportOnItsBarLine
+vert : BenchTour1Test#theLiveMetersRead
+vert : BenchTour1Test#aKeptPerformanceIsHeard
+vert : BenchTour1Test#theMicrophoneHearsAVoice
+vert : BenchTour1Test#theSongGoesOnAfterAnotherGesture
+vert : BenchTour1Test#notesAddedInThePianoRollAreNotNothingChanges
+vert : BenchTour1Test#theVideoIsMade
+vert : BenchTour1Test#theMixTabsExportRenders
+vert : BenchTour1Test#theMicrophoneRecordsFromTheCardAndTheTopDotInPro
+vert : BenchTour1Test#anAudioTrackTakeRecords
+vert : BenchTour1Test#padsPlayedThroughTheEngineAreHeard
+vert : BenchTour1Test#theMicrophoneRecordsFromTheTopDotAndTheCardInSimple
+vert : BenchTour1Test#nothingChangesIgnoresLooksAndLongWork
+vert : BenchTour3Test#padLiveRowsStartAndStopAndStopAllCutsThem
+vert : BenchTour3Test#theSongPlaysFromAPartAndFromItsStart
+vert : BenchTour4Test#howMuchOfTheKeyboardIsShown
+vert : BenchTour4Test#liveStopsReachTheirLaunchLineOnTheBench
+vert : BenchTour4Test#renameAfterTheClearButton
+vert : BenchTour4Test#theClearButtonKeepsTheFieldsFocus
+vert : BenchTour4Test#aMelodyTakeOnTheBenchKeepsItsKeys
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[techno Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[techno Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[detroit Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[detroit Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[acid_techno Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[acid_techno Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[hard_techno Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[hard_techno Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[industrial_techno Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[industrial_techno Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[retro_techno Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[retro_techno Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[acidcore Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[acidcore Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[trance Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[trance Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[house Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[house Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[deep_house Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[deep_house Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[tech_house Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[tech_house Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[acid_house Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[acid_house Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[uk_garage Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[uk_garage Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[dnb Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[dnb Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[jump_up Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[jump_up Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[dubstep Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[dubstep Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[minimal Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[minimal Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[gabber Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[gabber Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[afro_house Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[afro_house Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[speed_garage Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[speed_garage Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[amapiano Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[amapiano Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[disco Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[disco Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[liquid_dnb Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[liquid_dnb Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[neurofunk Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[neurofunk Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[jungle Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[jungle Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[riddim Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[riddim Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[trap Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[trap Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[drill Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[drill Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[phonk Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[phonk Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[boom_bap Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[boom_bap Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[grime Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[grime Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[jersey_club Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[jersey_club Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[lofi Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[lofi Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[reggaeton Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[reggaeton Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[afrobeats Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[afrobeats Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[synthwave Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[synthwave Pro]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[pop Facile]
+vert : BenchTutoAnchorTicksTest#theSkippedChaptersAreTicked[pop Pro]
+vert : BenchTutoKitDownloadTest#aKitDownloadedDuringAWaitStaysOnThePads
+vert : BenchTutoSliceEndTest#theJournalSaysTheChaptersOverWhileTheLastStepStaysShown
+vert : BenchTutoSliceEndTest#aChapterWithAStepLeftIsNotOver
+vert : Tour3AppProofTest#theSongPlaysFromAPartOrATakeWithAnEngine
+vert : Tour3AppProofTest#padLiveRowsAndStopAllGoToTheEngine
+vert : Tour3AppProofTest#withoutAnEngineNothingPlays
+vert : Tour4AppProofTest#aMelodyTakeAfterTheBarLineGoesToThePartShown
+vert : Tour4AppProofTest#aStopEndsTheTakeAtOnce
+vert : Tour4AppProofTest#aMelodyTakeWhileAnotherPartIsShownShowsItsNotes
+vert : Tour4AppProofTest#aMelodyTakeWhileTheMusicPlaysKeepsItsKeys
+vert : Tour4AppProofTest#liveStopAllAndATracksStopGoToTheEngineAndTheGridFollows
+vert : Tour4AppProofTest#aMelodyTakeDuringTheSongGoesToThePartHeard
+vert : Tour4AppProofTest#aFirstMelodyTakeGoesToMaMelodieNotToTheTrackSelectedBefore
+vert : Tour4AppProofTest#aMelodyTakeFromStoppedKeepsItsKeys
+vert : Tour4AppProofTest#aMelodyTakeAcrossTheBarLineKeepsItsThreeNotes
+vert : Tour4AppProofTest#withoutAnEngineTheKeysOfATakeAreNotKept
+vert : Tour5AppProof2Test#undoingALiveTakeGivesBackTheSongItReplaced
+vert : Tour5AppProof2Test#undoingALiveTakeArmedWhileStoppedGivesBackTheSong
+vert : Tour5AppProof2Test#shareSaysWhenTheRemixRunsPastTheSongEnd
+vert : Tour5AppProof2Test#undoingALiveTakeGivesBackTheSongItWentAfter
+vert : Tour5AppProof3Test#myExportsSaysTheFilesOwnSize
+vert : Tour5AppProof3Test#theClearButtonEmptiesTheFieldAndKeepsItsCursor
+vert : Tour5AppProof3Test#aPartPickedWhileTheSongPlaysTakesOverOnTheNextBar
+vert : Tour5AppProof3Test#theSongPlaysToItsEndAndItsCounterFollowsTheEngine
+vert : Tour5AppProof3Test#liveStopAllStopsTheSong
+vert : Tour5AppProof3Test#theKeysOfATakeLeftRunningAreThereWhenTheProjectOpensAgain
+vert : Tour5AppProof4Test#theSongStartedInItsMiddleCountsOn
+vert : Tour5AppProof4Test#theChallengesDotsNameTheirPad
+vert : Tour5AppProof4Test#theStreamingTargetIsMeasuredOnTheWholeExportedFile
+vert : Tour5AppProof4Test#theSimpleShareReportSaysTheLevelOnce
+vert : Tour5AppProof4Test#theSongsColumnMutedInTheLiveMutesItsChannel
+vert : Tour5AppProof4Test#aFourBarMelodyInAOneBarSceneLengthensEachPartOnIt
+vert : Tour5AppProof4Test#myExportsGivesEachFileItsTime
+vert : Tour5AppProofTest#myFilesListsAProjectZipSavedFromMyProjects
+vert : Tour5AppProofTest#shareFollowsTheLengthChosenInMix
+vert : Tour5AppProofTest#aScreenComposedAndClosedLeavesComposesDispatcherFree
+vert : Tour5AppProofTest#noChangedWarningRightAfterAMixExport
+vert : Tour5AppProofTest#noChangedWarningRightAfterSharing
+vert : Tour5AppProofTest#myExportsListsTheProjectZipJustSent
+vert : BenchAmeneeLateKitCardTest#reggaetonChapter8OnPhone360
+vert : BenchAmeneeLateKitCardTest#liquidDnbChapter12OnPhone360
+vert : BenchAmeneeLateKitCardTest#theKitCardComingUnderTheFingerDoesNotRefuseTheAmenee
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=fr device=phone font=100]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=fr device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=hi device=phone360 font=130]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=ja device=phone font=100 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=pt-BR device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[premier-morceau lang=tr device=phone font=130 mode=pro]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=fr device=phone font=100]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=fr device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=hi device=phone360 font=130]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=ja device=phone font=100 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=pt-BR device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[remix lang=tr device=phone font=130 mode=pro]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=fr device=phone font=100]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=fr device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=hi device=phone360 font=130]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=ja device=phone font=100 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=pt-BR device=phone font=200 mode=simple]
+vert : BenchAmeneesProfilesTest#theAmeneeIsReady[padlive lang=tr device=phone font=130 mode=pro]
+vert : BenchAmeneesTest#remixStartsOnTheRemixPage
+vert : BenchAmeneesTest#aMidImportedPutsItsNotesIn
+vert : BenchAmeneesTest#fourTapsOnAnotherPadAreFourTouchesAndHeardFourTimes
+vert : BenchAmeneesTest#padLiveLightsStopsAndRecordsAsOnAPhone
+vert : BenchAmeneesTest#firstSongStartsInAnEmptyProjectInSimpleMode
+vert : BenchAmeneesTest#livePadsLightGoOutAndAreHeardAsPadLivesDo
+vert : BenchAmeneesTest#aTappedRhythmIsScored
+vert : BenchAmeneesTest#tutoAnchorAtChapterNineSwipesForNothing
+vert : BenchAmeneesTest#tutoAnchorStartsWithTheSkippedChaptersBuilt
+vert : BenchAmeneesTest#aTapDuringTheExampleIsNotCounted
+vert : BenchAmeneesTest#aTappedRhythmAtNinetyBpmIsScored
+vert : BenchAmeneesTest#padLiveStartsWithItsPadsReady
+vert : BenchAmeneesTest#tutoAnchorLandsOnItsChapterWhenItsRowIsCut
+vert : BenchAmeneesTest#aPackFillsThePageShown
+vert : BenchAmeneesTest#aZipImportedOutsideRemixAddsAProject
+vert : BenchFlagPathsTest#eachEndOfTheSeatLoopSaysItsVerdictAndEachFailureItsFlag
+vert : BenchFlagPathsTest#anAmeneeWhoseButtonIsNotThereSaysWhichOne
+vert : BenchFlagPathsTest#anAmeneeWhoseStateNeverComesSaysWhatItWaitedForAndAfterWhichTouch
+vert : HiddenDefectsGuardTest#theFilterSweepJustAddedIsStillNamedInThePicker
+vert : HiddenDefectsGuardTest#showTheSettingBringsTheReverbSendIntoView
+vert : ChallengeControllerTest#tapsAtTheChallengesBeatAfterAMoiGiveThreeStars
+vert : ChallengeControllerTest#touchesCloserThanTheClapAreAllCountedAndSent
+vert : ChallengeControllerTest#aTouchOnTheBeatAfterTheExampleCounts
+vert : ChallengeControllerTest#fiveHundredMsTapsAreScoredOnTheProjectsTempo
+vert : ChallengeControllerTest#touchesWhileTheExampleIsHeardAreNotCounted
+vert : ChallengeControllerTest#touchesTooCloseAreSaidTooFast
+vert : ChallengeControllerTest#aHumanHandOnASoundingPadStillGetsThreeStars
+vert : ChallengeControllerTest#aTouchFarFromItsPlaceIsNotCountedANearOneIs
+vert : Tour3NameFieldIdleTest#aNameFieldInTheRenameWindowTakesTheNameTyped
+vert : Tour3NameFieldIdleTest#aSelectAllFieldTouchedThenTypedInRests
+vert : Tour3NameFieldIdleTest#aNameFieldTouchedThenTypedInRests
+vert : Tour3RenameEffectsIdleTest#aFlowEmittedOnAnIoThreadIsWrittenOnTheMainThread
+vert : Tour3RenameIdleTest#aProjectRenamedInSimpleModeKeepsItsNewName
+vert : Tour3StudioRenameIdleTest#aProjectRenamedInSimpleModeKeepsItsNewName
+machine : 10 Go disque, 14 Go mémoire, 0 démon(s), 0 orphelin
+code testé : bb2651be92b912ea3550b4e62226f9f4a92f63b5

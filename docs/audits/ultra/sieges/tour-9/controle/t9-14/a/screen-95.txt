@@ -1,0 +1,36 @@
+Écran 95 (1035x1243)
+image (courbe) @ 0,0
+icône (dossier ouvert) ✓ « Mijn project 1 Opgeslagen » @ 295,42
+bouton « Pro » @ 623,42
+icône ↶ @ 701,42
+icône ↷ [désactivé] @ 773,42
+bouton ● @ 845,42
+bouton ▶ « dit deel » @ 917,42
+icône (trois points reliés) @ 990,42
+texte « De mastering Hoofdstuk 13/14 · Stap 1/1 · Pro » @ 424,190
+icône (liste) « Hoofdstukken » @ 885,190
+icône ⌄ @ 978,190
+texte « Nu jij: zet in ‘Hoofduitgang’ het ‘Doelvolume’ op ‘Auto (stijl)’: het mikt op ongeveer −10 LUFS, minder luid dan trap. Boom bap houdt reliëf: geen clipper. » [coupé] @ 517,334
+bouton « Kit Boom bap downloaden (7 MB) » @ 470,454
+texte « Later » @ 961,454
+texte « ▸ Waarom? » @ 517,533
+icône « Verder lezen » ⌄ @ 517,596
+bouton (doigt qui touche) «   Ik doe het » @ 517,680
+bouton ▶ «  Luister naar het voorbeeld » @ 266,794
+bouton (œil) «  Laat zien » @ 768,794
+icône ← «  Vorige » @ 120,908
+icône « Volgende  » → @ 886,908
+icône ▶ « het nummer » @ 590,1012
+texte « 92 Tempo » @ 792,1011
+icône ↶ « Ongedaan maken » @ 152,1012
+icône ↷ « Opnieuw » [désactivé] @ 374,1011
+icône (trois points reliés) « Delen » @ 942,1011
+onglet (ligne brisée et points) « Structuur » @ 99,1123
+onglet (touches de piano) « Klanken » @ 309,1123
+onglet (curseurs) « Mix » [sélectionné] @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « Meer » @ 936,1123
+texte « ●  REC » @ 726,1213
+texte « ✎  Noteren » @ 866,1213
+texte « ⋯ » @ 987,1213
+texte « Feedbackmodus » @ 341,1213

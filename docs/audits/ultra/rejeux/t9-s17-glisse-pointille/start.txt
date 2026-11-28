@@ -1,0 +1,9 @@
+lang=pt-BR
+device=phone360
+font=130
+mode=pro
+amenee=tuto:detroit:5
+gestes.max=40
+mission=tuto-pro
+profil=pro
+niveau=4

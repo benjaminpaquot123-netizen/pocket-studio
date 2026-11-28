@@ -1,0 +1,47 @@
+Écran 87 (900x1509)
+icône (dossier ouvert) ✓ « My project 1 Saved » @ 198,42
+bouton « Simple » @ 440,42
+icône ↶ @ 529,42
+bouton ● @ 601,42
+bouton ▶ « this part » @ 678,42
+bouton ▶ « the song » @ 775,42
+icône ⋮ @ 855,42
+bouton « 112  Tempo » @ 136,144
+bouton « ? » @ 855,144
+onglet « Acid 303 Bass line » @ 128,262
+bouton « Chords FM Rhodes » ⋮ @ 402,262
+icône ♪ « Sound » @ 652,262
+bouton + «  Track » [coupé] @ 816,262
+image → @ 889,263
+icône « Part: A » ▾ @ 99,356
+texte « In time 50% » [coupé] @ 631,394
+texte « 100% » @ 114,439
+texte « Clear » @ 259,439
+texte « bar » @ 84,512
+bouton « 2 » @ 486,512
+bouton « 3 » [coupé] @ 853,512
+texte « F » [coupé] @ 84,551
+texte « E » @ 84,578
+texte « E♭ » @ 84,620
+texte « D » @ 84,662
+texte « D♭ » @ 84,704
+dessin [coupé] @ 492,635
+texte « The little piano phrase Chapter 4/12 · Step 1/1 · Easy » @ 357,791
+icône (liste) « Chapters » @ 750,791
+icône ⌄ @ 843,791
+texte « Your turn: tap “Create the Melody track”. » @ 426,903
+texte « ▸ Why? » @ 450,972
+bouton ⊕ «   Create the Melody track » @ 450,1049
+bouton ▶ «  Listen to the example » @ 232,1163
+bouton (œil) «  Show me » @ 667,1163
+icône ← «  Previous » @ 141,1277
+icône « Next  » → @ 796,1277
+onglet (lignes et note) « My song » @ 85,1389
+onglet (quatre carrés) « Rhythm » @ 268,1389
+onglet (touches de piano) « Keyboard » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Share » @ 815,1389
+texte « ●  REC » @ 637,1479
+texte « ✎  Note » @ 754,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback mode » @ 297,1479

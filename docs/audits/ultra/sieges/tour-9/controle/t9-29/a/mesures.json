@@ -1,0 +1,49 @@
+{
+  "siege": "a",
+  "niveau": "2",
+  "options": {
+    "lang": "hi",
+    "device": "phone360",
+    "font": "200",
+    "mode": "simple",
+    "amenee": "tuto:grime:1",
+    "gestes.max": "150",
+    "mission": "tuto-facile",
+    "profil": "moyen",
+    "niveau": "2",
+    "timeout.minutes": "30"
+  },
+  "mesures": {
+    "gestes": 120,
+    "images": 22,
+    "gestes_premier_son": 1,
+    "gestes_premier_partage": null,
+    "touchers_a_vide": 31,
+    "touchers_desactives": 0,
+    "retours": 1,
+    "retours_immediats": 1,
+    "ecrans": 133,
+    "ecrans_revisites": 33,
+    "defilements_sans_toucher": 3,
+    "appels_aide": 0,
+    "abandon": null,
+    "gels": 0,
+    "moteur_absent": 0,
+    "refus_pouce": 0,
+    "constats_layout": 192,
+    "plantage": false,
+    "fin": "fin",
+    "premier_ecran_s": {
+      "reel": 4.0,
+      "simule": 2.4,
+      "jvm": 9.4,
+      "travail_de_fond": false,
+      "vide": false,
+      "attente_banc": 0.0,
+      "verdict": "-"
+    }
+  },
+  "mission": "tuto-facile",
+  "resultat": "partielle",
+  "pourquoi": "« grime » en Facile : 10 étape(s), 2 chapitre(s) entier(s) sur 13"
+}

@@ -11,7 +11,7 @@
  "Ce chapitre n'est pas fini : il reste l'étape %d. Touche « Chapitres » pour y revenir.": "Dieses Kapitel ist noch nicht fertig: Schritt %d fehlt noch. Tippe auf „Kapitel“, um dorthin zurückzugehen.",
  "pad %s": "Pad %s",
  "%s : à régler ici": "%s: hier einstellen",
- "%s : ensuite": "%s: danach",
+ "%s : ensuite": "Danach: %s",
  "Encore : %s.": "Noch: %s.",
  "Pas dans l'ordre : le morceau commence par « %s ».": "Nicht in der Reihenfolge: Der Song beginnt mit „%s“.",
  "Pas dans l'ordre : après « %1$s » vient « %2$s ». Le menu ⋮ d'une partie la retire, ou en insère une autre après.": "Nicht in der Reihenfolge: Nach „%1$s“ kommt „%2$s“. Das ⋮-Menü eines Teils entfernt ihn oder fügt danach einen anderen ein.",
@@ -19,7 +19,7 @@
  "Touche encore « Suivant » pour la passer quand même.": "Tippe noch einmal auf „Weiter“, um ihn trotzdem zu überspringen.",
  "Partie « %s » créée : tout le Groove y joue.": "Teil „%s“ erstellt: der ganze Groove spielt darin.",
  "Partie « %1$s » créée (copie du Groove) : sans %2$s.": "Teil „%1$s“ erstellt (Kopie des Grooves): ohne %2$s.",
- "Sa basse est à toi d'écrire : les notes en pointillé.": "Seinen Bass schreibst du selbst: die gepunkteten Noten.",
- "Sa caisse claire accélère mesure après mesure, et son dernier temps se tait.": "Seine Snare wird Takt für Takt schneller, und ihr letzter Schlag verstummt.",
- "Son pad « %s » accélère mesure après mesure, et son dernier temps se tait.": "Sein Pad „%s“ wird Takt für Takt schneller, und sein letzter Schlag verstummt."
+ "Sa basse est à toi d'écrire : les notes en pointillé.": "Seinen Bass schreibst du selbst: die gestrichelten Noten.",
+ "Sa caisse claire accélère mesure après mesure.": "Seine Snare wird Takt für Takt schneller.",
+ "Son pad « %s » accélère mesure après mesure.": "Sein Pad „%s“ wird Takt für Takt schneller."
 }

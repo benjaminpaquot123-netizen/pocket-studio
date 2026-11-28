@@ -1,0 +1,60 @@
+Écran 26 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 288,42
+bouton « プロ » @ 609,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 122  BPM » @ 83,123
+bouton « ? » @ 990,123
+onglet « タイムライン » [désactivé] @ 129,210
+onglet « パート » [sélectionné] @ 299,210
+titre « 曲 » [état « 開いた状態 »] @ 99,303
+bouton « ? » @ 134,303
+texte « タイムラインはパートを順番に並べる。それぞれの長さは小節数。 順番に足してね。 » @ 263,391
+texte « 追加： » @ 84,478
+bouton « + A · グルーヴ » @ 170,547
+bouton « + B · イントロ » @ 169,628
+bouton « + C · ビルドアップ » @ 199,709
+bouton « + D · ドロップ » [coupé] @ 170,759
+titre « ブロック » [état « 開いた状態 »] @ 645,225
+bouton « ? » @ 718,225
+texte « ブロック＝パートのドラム、アシッド、ノート。曲のパートはブロックでできています。タップで編集、長押ししてドラッグで移動。 » @ 771,331
+bouton « 8 » [sélectionné] @ 679,452
+bouton « 16 » @ 764,452
+bouton « 24 » @ 855,452
+texte « 表示： » @ 592,452
+bouton « A グルーヴ 8 小節 » @ 600,542
+bouton « B イントロ 8 小節 » @ 714,542
+bouton « C ビルドアップ 4 小節 » @ 828,542
+bouton « D ドロップ 8 小節 » @ 942,542
+bouton « E ブレイク 8 小節 » @ 600,639
+bouton « F ドロップ 2 8 小節 » @ 714,639
+bouton « G 空 » @ 828,639
+bouton « H 空 » @ 942,639
+bouton (crayon) « 名前を変更 » [coupé] @ 600,727
+bouton + « 新規 » [coupé] @ 714,727
+bouton (deux feuilles) « 複製 » [coupé] @ 828,727
+bouton (poubelle et traits) « 空にする » [coupé] @ 942,727
+texte « パートを作ろう チャプター 11/17 · ステップ 5/6 · プロ » @ 425,811
+icône (liste) « チャプター » @ 885,811
+icône ⌃ @ 978,811
+image (œil) @ 51,924
+texte « 停止 » @ 967,924
+texte « 見てて、やってみせるね… » @ 499,924
+icône ↶ « 元に戻す » @ 149,1023
+icône ↷ « やり直す » [désactivé] @ 339,1023
+bouton ▶ « 曲 » @ 524,1023
+texte « 122 テンポ » @ 708,1023
+icône (trois points reliés) « シェア » @ 893,1023
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 99,1123
+onglet (touches de piano) « サウンド » @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+image (doigt qui touche) @ 203,235
+texte « ●  REC » @ 807,1213
+texte « ✎  メモ » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 385,1213

@@ -1,0 +1,29 @@
+Écran 87 (540x1170)
+texte « 效果 · 808 » @ 142,64
+texte « 已放置的效果：1 / 8 » @ 178,137
+bouton « 1. 抽吸 » @ 270,200
+icône ⏻ @ 237,272
+icône ⌃ [désactivé] @ 309,272
+icône ⌄ [désactivé] @ 381,272
+icône ✕ @ 453,272
+bouton + «   添加效果 » @ 270,350
+texte « 现成的氛围 » @ 122,422
+bouton « ? » @ 214,422
+bouton « 用于：贝斯 » [sélectionné] @ 146,492
+bouton ★ « 收藏 » @ 315,492
+bouton « 氛围 » @ 439,492
+bouton « Acid » @ 192,576
+bouton « Techno » @ 331,576
+bouton « DnB » [coupé] @ 452,576
+texte « 风格： » @ 89,576
+bouton « 肥厚贝斯 » @ 132,660
+bouton « Growl » @ 286,660
+bouton « Dubstep Wob » @ 167,732
+bouton « DnB Reese » @ 149,804
+bouton « EDM 抽吸 » @ 345,804
+bouton « 抽吸 » @ 104,876
+bouton « 脆 » @ 204,876
+bouton « 失真 » @ 305,876
+bouton « 无效果 » @ 118,948
+texte « 点一个氛围试试：随时可以用撤销回去。 » [coupé] @ 270,1011
+texte « 关闭 » @ 442,1098

@@ -398,7 +398,7 @@ private fun TrackCard(t: AudioTrack, ui: AudioTracksUi, actions: AudioTracksActi
             title = { Text(tr("Renommer la piste")) },
             // n° 26 (seat E b: « Audio 1Chitarra »): the name selected, so what is typed replaces it; its limit said.
             text = { com.pocketstudio.app.ui.NameField(name, { name = it }, 24, tr("Nom"), modifier = Modifier.testTag("audio_name_field")) },
-            confirmButton = { TextButton(onClick = { actions.rename(t.id, name); renaming = false }, enabled = name.isNotBlank()) { Text("OK") } },
+            confirmButton = { TextButton(onClick = { actions.rename(t.id, name); renaming = false }, enabled = name.isNotBlank()) { Text(tr("OK")) } },
             dismissButton = { TextButton(onClick = { renaming = false }) { Text(tr("Annuler")) } },
         )
     }

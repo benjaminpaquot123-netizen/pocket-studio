@@ -1,0 +1,72 @@
+Écran 51 (1035x1243)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 348,42
+bouton « Simple » @ 741,42
+bouton ● @ 831,42
+bouton ▶ « cette partie » @ 910,42
+icône ⋮ @ 990,42
+bouton « 105  Tempo » @ 98,123
+icône (flèches en boucle) « Pré-refrain mesure 3/8 » ▾ @ 307,123
+bouton « ? » @ 990,123
+icône « Partie : D · Pré-refrain » ▾ @ 183,198
+bouton « Grosse caisse 1 FX » @ 75,300
+bouton « Grosse caisse 2 » @ 200,300
+bouton « Caisse FX » @ 325,300
+bouton « Caisse 2 » @ 450,300
+bouton « Claquement de mains » @ 75,406
+bouton « Charley FX G 30 » @ 200,406
+bouton « Charley ouvert D 30 » @ 325,406
+bouton « Tom grave » @ 450,406
+bouton « Tom médium D 45 » @ 75,512
+bouton « Tom aigu » @ 200,512
+bouton « Bord de caisse D 50 » @ 325,512
+bouton « Cloche » @ 450,512
+bouton « Cymbale FX D 40 » @ 75,618
+bouton « Maracas G 50 » @ 200,618
+bouton « Conga » @ 325,618
+bouton « Laser » @ 450,618
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » [coupé] @ 381,721
+bouton « Kit : Studio » ▾ @ 130,730
+bouton « Suivre » [coupé] @ 618,244
+texte « Mesure 4/4 · Conga » @ 688,315
+bouton « 1 » [état « vide »] @ 575,395
+bouton [état « vide »] @ 632,394
+bouton [état « vide »] @ 688,394
+bouton [état « vide »] @ 744,394
+bouton « 2 » [état « vide »] @ 800,394
+bouton [état « vide »] @ 856,394
+bouton [état « vide »] @ 912,394
+bouton [état « vide »] @ 968,394
+bouton « 3 » [état « vide »] @ 575,465
+bouton [état « coup, force 100 % »] @ 632,464
+bouton [état « vide »] @ 688,464
+bouton [état « vide »] @ 744,464
+bouton « 4 » [état « vide »] @ 800,464
+bouton [état « vide »] @ 856,464
+bouton [état « vide »] @ 912,464
+bouton [état « vide »] @ 968,464
+texte « tout » @ 684,545
+texte « 1/2 » @ 763,545
+texte « 1/4 » @ 838,545
+texte « ◀ » @ 913,545
+texte « Remplir » @ 595,545
+texte « ▶ » @ 586,617
+texte « Effacer » @ 687,617
+texte « Touche une case pour ajouter un coup, glisse le doigt pour en peindre plusieurs. Appui long sur un coup : force et roulements (×2 à ×8). » [coupé] @ 771,716
+texte « Les transitions Chapitre 12/15 · Étape 1/3 · Facile » @ 424,817
+icône (liste) « Chapitres » @ 885,818
+icône ⌃ @ 978,818
+icône « À toi : dernière mesure, pad « Conga » : touche 3 cases à la suite juste avant le dernier temps. Lire » ⌃ @ 517,930
+bouton ■ « le morceau » @ 514,1026
+icône ↶ « Annuler » @ 139,1026
+image ↷ @ 317,1013
+texte « 105 Tempo » @ 717,1026
+icône ⋮ « Plus » @ 897,1026
+onglet (lignes et note) « Mon morceau » @ 99,1123
+onglet (quatre carrés) « Rythme » [sélectionné] @ 309,1123
+onglet (touches de piano) « Clavier » @ 518,1123
+onglet (curseurs) « Mix » @ 727,1123
+onglet (trois points reliés) « Partager » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  Noter » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « Mode retours » @ 385,1213

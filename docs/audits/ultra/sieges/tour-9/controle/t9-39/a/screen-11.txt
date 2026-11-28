@@ -1,0 +1,65 @@
+Écran 11 (900x1509)
+icône (dossier ouvert) ✓ « Mon projet 1 Sauvegardé » @ 283,42
+bouton « Simple » @ 608,42
+bouton ● @ 696,42
+bouton ▶ « cette partie » @ 775,42
+icône ⋮ @ 855,42
+bouton « 174  Tempo » @ 83,114
+bouton « ? » @ 855,114
+icône « Partie : A » ▾ @ 82,180
+bouton « Grosse caisse studio FX » @ 123,280
+bouton « Grosse caisse 2 » @ 341,280
+bouton « Drum & bass · Caisse FX » @ 559,280
+bouton « Caisse 2 » @ 777,280
+bouton « Claquement de mains FX » @ 123,379
+bouton « Drum & bass · Charley G 30 » @ 341,379
+bouton « Charley ouvert D 30 » @ 559,379
+bouton « Tom grave » @ 777,379
+bouton « Tom médium D 45 » @ 123,478
+bouton « Tom aigu » @ 341,478
+bouton « Drum & bass · Bord de caisse FX D 50 » @ 559,478
+bouton « Cloche » @ 777,478
+bouton « Cymbale FX D 40 » @ 123,577
+bouton « Maracas G 50 » @ 341,577
+bouton « Conga » @ 559,577
+bouton « Laser » @ 777,577
+bouton « Kit : Drum & bass » ▾ @ 144,666
+texte « Les pads sonnent, les cases gardent les coups. Appui long : changer le son. » @ 582,666
+titre « PAS : GROSSE CAISSE STUDIO » [état « Déplié »] @ 354,774
+bouton « ? » @ 423,774
+bouton « Tous les pads » @ 762,774
+texte « Grosse caisse studio » @ 156,858
+bouton « 1 » [état « vide »] @ 90,943
+bouton [état « vide »] @ 192,943
+bouton [état « vide »] @ 294,943
+bouton [état « vide »] @ 397,943
+bouton « 2 » [état « vide »] @ 500,943
+bouton [état « vide »] @ 603,943
+bouton [état « vide »] @ 706,943
+bouton [état « vide »] @ 809,943
+bouton « 3 » [état « vide »] @ 90,1024
+bouton [état « vide »] @ 192,1024
+bouton [état « vide »] @ 294,1024
+bouton [état « vide »] @ 397,1024
+bouton « 4 » [état « vide »] @ 500,1024
+bouton [état « vide »] @ 603,1024
+bouton [état « vide »] @ 706,1024
+bouton [état « vide »] @ 809,1024
+icône (liste) « Chapitres » @ 756,1110
+texte « La vitesse et la couleur du morceau Chapitre 1/15 · Fait · Facile » @ 363,1110
+icône ⌃ @ 843,1110
+icône (coupe) « Bravo, chapitre fini ! » ⌃ @ 450,1209
+icône ↶ « Annuler » @ 121,1293
+image ↷ @ 279,1283
+bouton ▶ « le morceau » @ 444,1293
+texte « 174 Tempo » @ 615,1293
+icône ⋮ « Plus » @ 779,1293
+onglet (lignes et note) « Mon morceau » @ 85,1389
+onglet (quatre carrés) « Rythme » [sélectionné] @ 268,1389
+onglet (touches de piano) « Clavier » @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Partager » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  Noter » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « Mode retours » @ 318,1479

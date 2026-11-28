@@ -1,0 +1,44 @@
+Écran 52 (1035x1243)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 288,42
+bouton « プロ » @ 609,42
+icône ↶ @ 686,42
+icône ↷ [désactivé] @ 758,42
+bouton ● @ 830,42
+bouton ▶ « このパート » @ 910,42
+icône (trois points reliés) @ 990,42
+bouton « 122  BPM » @ 83,123
+icône « イントロ 小節 1/56 » ▾ @ 254,123
+bouton (flèches en boucle) « ループ » [état « オフ »] @ 871,123
+bouton « ? » @ 990,123
+bouton « 曲のコード B · イントロ Am  Am  Am  Am  Am  Am  Am  Am C · ビルドアップ C  C  Am  Am D · ドロップ Am  Am  D  D  Am  Am  D  D E · ブレイク C  C  Am  Am  C  C  Am  Am F · ドロップ 2 Am  Am  D  D  Am  Am  D  D G · エンディング Am  Am  Am  Am  Am  Am  Am  Am タップで曲全体のコードを変更。 » [coupé] @ 263,180
+icône ▶ « B · イントロ × 2  ·  16 小節 » @ 155,297
+icône − @ 304,297
+icône + @ 376,297
+icône ⋮ @ 448,297
+icône ▶ « C · ビルドアップ × 1  ·  4 小節 » [coupé] @ 155,406
+titre « ブロック » [état « 開いた状態 »] @ 645,225
+bouton « ? » @ 718,225
+texte « ブロック＝パートのドラム、アシッド、ノート。曲のパートはブロックでできています。タップで編集、長押ししてドラッグで移動。 » @ 771,331
+texte « パートを並べよう チャプター 12/17 · ステップ 2/2 · プロ » @ 425,468
+icône (liste) « チャプター » @ 885,468
+icône ⌄ @ 978,468
+texte « あなたの番：各パートの長さを決めよう：イントロ 16、ビルドアップ 8、ドロップ 16、ブレイク 16、ドロップ 2 は16、エンディング 16。「おすすめの長さにする」で一気にできるよ。 » @ 517,603
+texte « ▸ なぜ？ » @ 517,701
+bouton ⊕ «   おすすめの長さにする » @ 517,770
+bouton (œil) «  見せて » @ 517,854
+icône ← «  前へ » @ 85,935
+icône « 次へ  » → @ 950,935
+icône ↶ « 元に戻す » @ 149,1023
+icône ↷ « やり直す » [désactivé] @ 339,1023
+bouton ▶ « 曲 » @ 524,1023
+texte « 122 テンポ » @ 708,1023
+icône (trois points reliés) « シェア » @ 893,1023
+onglet (ligne brisée et points) « 構成 » [sélectionné] @ 99,1123
+onglet (touches de piano) « サウンド » @ 309,1123
+onglet (curseurs) « ミックス » @ 518,1123
+onglet (neuf points) « Live » @ 727,1123
+onglet ⋯ « その他 » @ 936,1123
+texte « ●  REC » @ 807,1213
+texte « ✎  メモ » @ 903,1213
+texte « ⋯ » @ 987,1213
+texte « フィードバックモード » @ 385,1213

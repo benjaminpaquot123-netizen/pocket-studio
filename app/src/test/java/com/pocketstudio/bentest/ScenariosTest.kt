@@ -1,0 +1,757 @@
+package com.pocketstudio.bentest
+
+import androidx.compose.ui.geometry.Rect
+import com.pocketstudio.app.journey.Journey
+import com.pocketstudio.app.journey.JourneyDriver
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.TemporaryFolder
+import java.io.File
+
+/**
+ * « Scénarios »: each scenario's oracle on a made-up studio (the gestures change a project in memory
+ * and, when the studio saves, on its « disk »), healthy then with one fault at a time; then the
+ * report (scenarios.json, resume.md) read from a made-up logbook.
+ */
+class ScenariosTest {
+    @get:Rule
+    val tmp = TemporaryFolder()
+
+    /** A studio as the robot sees it: the tags of the screen it is on, and what a touch changes. */
+    private class Studio : JourneyDriver, Sonde, Appli {
+        var parties = 4
+        var effets = listOf(listOf("PUMP", "EQ", "COMP", "DRIVE"), listOf("PUMP"), emptyList(), emptyList())
+        var disque: ProjetVu.Disque? = null
+        var where = "studio"
+        var tab = "Structure"
+        var sheet = ""
+        var picker = false
+        var playing = false
+        var xruns = 0
+        val touched = ArrayList<String>()
+
+        // The faults.
+        var saves = true
+        var listed = true
+        var breakAdds = true
+        var chipShown = true
+        var liveSound = true
+        /** The engine reads NaN while it plays. */
+        var nan = false
+        /** The engine stops by itself after this many readings while the Live plays (tour 9, C2); null: never. */
+        var liveStopsAfter: Int? = null
+        private var liveReads = 0
+        var liveStops = true
+        var reopens = "p1"
+        var dropouts = false
+        var tempoMoves = true
+        var mutes = true
+        var undoShown = true
+        var undoWorks = true
+        var pads = true
+        var copies = true
+        var renames = true
+        var deletes = true
+        var stopsBehind = false
+        var canLeave = true
+
+        var tempo = 120.0
+        var muets = List(4) { false }
+        var solos = List(4) { false }
+        var volumes = List(4) { 0.8f }
+        var pans = List(4) { 0f }
+        var sliders = true
+        var livePads = 4
+        /** The Live grid tags its cells by track and row: here the drums of each row. */
+        fun padTags() = List(livePads) { "live_pad_drums_$it" }
+        val others = LinkedHashMap<String, ProjetVu.Disque>()
+        var menu: String? = null
+        var renaming: String? = null
+        var typed = ""
+        var behind = false
+        var montee = 0
+        private val undo = ArrayList<Triple<Int, List<List<String>>, Int>>()
+        private val redo = ArrayList<Triple<Int, List<List<String>>, Int>>()
+
+        private var id = "p1"
+
+        private fun save() {
+            if (saves) disque = ProjetVu.Disque("Mon morceau", parties, effets, tempo, muets, solos, volumes, pans, montee)
+        }
+
+        private fun change(work: () -> Unit) {
+            undo += Triple(parties, effets, montee)
+            redo.clear()
+            work()
+            save()
+        }
+
+        private fun back(from: ArrayList<Triple<Int, List<List<String>>, Int>>, to: ArrayList<Triple<Int, List<List<String>>, Int>>) {
+            if (!undoWorks || from.isEmpty()) return
+            to += Triple(parties, effets, montee)
+            val (p, e, m) = from.removeAt(from.size - 1)
+            parties = p; effets = e; montee = m
+            save()
+        }
+
+        init { save() }
+
+        private fun screen(): Set<String> = buildSet {
+            when (where) {
+                "projects" -> {
+                    add("projects"); add("projects_back"); if (listed) add("project_p1")
+                    (listOf(id) + others.keys).forEach { add("project_menu_$it") }
+                    menu?.let { addAll(listOf("texte:Dupliquer", "texte:Renommer", "project_delete_$it")) }
+                    if (renaming != null) addAll(listOf("project_name_field", "project_rename_ok"))
+                }
+                "launch" -> { add("launch"); add("launch_continue") }
+                else -> {
+                    addAll(listOf("space_bar", "tab_Mix", "tab_Live", "tab_Structure"))
+                    if (tab != "Live") addAll(listOf("top_projects", "thumb_play"))
+                    if (undoShown) add("top_undo")
+                    if (undoShown && redo.isNotEmpty()) add("top_redo")
+                    when (tab) {
+                        "Mix" -> {
+                            add("mixer")
+                            repeat(4) { add("strip_more_$it") }
+                            if (sheet.startsWith("strip")) {
+                                val ch = sheet.removePrefix("strip").toInt()
+                                addAll(listOf("strip_sheet", "strip_sheet_close", "fx_add_$ch", "sheet_mute_$ch", "sheet_solo_$ch", "sheet_volume_$ch", "sheet_pan_$ch"))
+                                if (chipShown) effets[ch].indices.forEach { add("fx_chip_${ch}_$it") }
+                                if (picker) { add("fx_picker_$ch"); com.pocketstudio.model.EffectType.entries.forEach { add("fx_pick_${ch}_${it.name}") } }
+                            }
+                        }
+                        "Live" -> { addAll(listOf("live_screen", "live_play", "live_stop_all")); if (pads) addAll(padTags()) }
+                        else -> {
+                            add("top_tempo"); add("structure_parts")
+                            if (sheet == "tempo") addAll(listOf("tempo_sheet", "tempo_plus", "tempo_minus", "tempo_half", "tempo_double", "tempo_close"))
+                            repeat(parties) { add("part_menu_$it") }
+                            if (sheet == "part") addAll(listOf("part_sheet", "part_break_4", "part_buildup_4", "part_ending", "part_insert_1", "part_remove_1", "part_duplicate_1"))
+                        }
+                    }
+                }
+            }
+        }
+
+        override fun count(tag: String, merged: Boolean) = if (tag in screen()) 1 else 0
+        override fun bounds(tag: String) = Rect(0f, 0f, 10f, 10f)
+        override fun scrollTo(tag: String) = Unit
+        override fun idle(ms: Long) = Thread.sleep(minOf(ms, 5))
+        override fun tags(pattern: Regex) = screen().filter { pattern.matches(it) }
+
+        override fun click(tag: String) {
+            touched += tag
+            when {
+                tag.startsWith("tab_") -> { tab = tag.removePrefix("tab_"); sheet = ""; picker = false }
+                tag == "top_projects" -> where = "projects"
+                tag == "projects_back" -> where = "launch"
+                tag == "launch_continue" -> { where = "studio"; id = reopens }
+                tag == "thumb_play" -> playing = !playing
+                tag == "live_play" -> if (!playing) playing = true else if (liveStops) playing = false
+                tag.startsWith("part_menu_") -> sheet = "part"
+                tag == "part_break_4" -> { sheet = ""; if (breakAdds) change { parties++ } }
+                // A Montée draws its curve before the part (buildUpBefore): no part more.
+                tag == "part_buildup_4" -> { sheet = ""; if (breakAdds) change { montee += 3 } }
+                tag in listOf("part_ending", "part_insert_1", "part_duplicate_1") -> { sheet = ""; if (breakAdds) change { parties++ } }
+                tag == "part_remove_1" -> { sheet = ""; if (breakAdds) change { parties-- } }
+                tag == "tempo_half" -> if (tempoMoves && tempo / 2 >= 30.0) { tempo /= 2; save() }
+                tag == "tempo_double" -> if (tempoMoves && tempo * 2 <= 300.0) { tempo *= 2; save() }
+                tag == "top_tempo" -> sheet = "tempo"
+                tag == "tempo_close" -> sheet = ""
+                tag == "tempo_plus" -> if (tempoMoves) { tempo += 1; save() }
+                tag == "tempo_minus" -> if (tempoMoves) { tempo -= 1; save() }
+                tag.startsWith("sheet_mute_") -> if (mutes) { val ch = tag.removePrefix("sheet_mute_").toInt(); muets = muets.mapIndexed { i, m -> if (i == ch) !m else m }; save() }
+                tag.startsWith("sheet_solo_") -> if (mutes) { val ch = tag.removePrefix("sheet_solo_").toInt(); solos = solos.mapIndexed { i, m -> if (i == ch) !m else m }; save() }
+                tag == "top_undo" -> back(undo, redo)
+                tag == "top_redo" -> back(redo, undo)
+                tag.startsWith("live_pad_") -> playing = true
+                tag == "live_stop_all" -> playing = false
+                tag.startsWith("project_menu_") -> menu = tag.removePrefix("project_menu_")
+                tag == "texte:Dupliquer" -> { if (copies) others["c${others.size + 1}"] = disque!!.copy(nom = "Mon morceau (copie)"); menu = null }
+                tag == "texte:Renommer" -> { renaming = menu; menu = null }
+                tag == "project_rename_ok" -> { val r = renaming!!; if (renames) others[r] = others.getValue(r).copy(nom = typed); renaming = null }
+                tag.startsWith("project_delete_") -> { if (deletes) others.remove(tag.removePrefix("project_delete_")); menu = null }
+                tag.startsWith("strip_more_") -> sheet = "strip" + tag.removePrefix("strip_more_")
+                tag == "strip_sheet_close" -> { sheet = ""; picker = false }
+                tag.startsWith("fx_add_") -> picker = !picker
+                tag.startsWith("fx_pick_") -> {
+                    val ch = tag.split('_')[2].toInt()
+                    val type = tag.split('_').drop(3).joinToString("_")
+                    change { effets = effets.mapIndexed { i, e -> if (i == ch) e + type else e } }
+                }
+            }
+        }
+
+        override fun lire(): Sonde.Lecture {
+            if (playing && dropouts) xruns++
+            if (behind && stopsBehind) playing = false
+            if (playing && tab == "Live" && liveStopsAfter != null && ++liveReads > liveStopsAfter!!) playing = false
+            val sound = playing && (tab != "Live" || liveSound)
+            return Sonde.Lecture(xruns, 0.2f, if (sound) 0.5f else 0f, playing && nan, true, playing, cpuWorst = 0.3f, gapWorst = 1f)
+        }
+
+        override fun ouvrirStudio() = Unit
+        override fun export() = Appli.ExportVu(false, emptyList(), null)
+        var shots = false
+        override fun capture(file: File): Boolean = shots && runCatching { file.writeText("jpg") }.isSuccess
+        override fun demander(question: String, maxMs: Long): Boolean? = null
+        override fun projet() = ProjetVu(id, "Mon morceau", parties, effets, disque, tempo, muets, solos, volumes, pans, montee, padTags())
+
+        /** A strip sheet's slider set (InAppDriver.regler). */
+        fun regler(tag: String, value: Float): Boolean {
+            if (!sliders || tag !in screen()) return false
+            val ch = tag.substringAfterLast('_').toInt()
+            if (tag.startsWith("sheet_volume_")) volumes = volumes.mapIndexed { i, v -> if (i == ch) value else v }
+            else pans = pans.mapIndexed { i, v -> if (i == ch) value else v }
+            save()
+            return true
+        }
+        override fun projets(): Map<String, ProjetVu.Disque> = buildMap { disque?.let { put(id, it) }; putAll(others) }
+        override fun arrierePlan(pendant: () -> Unit): Boolean {
+            if (!canLeave) return false
+            behind = true
+            try { pendant() } finally { behind = false }
+            return true
+        }
+        override fun relancerStudio(): Boolean {
+            if (!canLeave) return false
+            playing = false; where = "launch"; tab = "Structure"; sheet = ""
+            return true
+        }
+        override fun studioDevant(): Boolean = !behind
+    }
+
+    private fun carnet() = Carnet(tmp.newFile())
+
+    private fun scenarios(s: Studio, c: Carnet = carnet(), paquet: String = Scenarios.COMPLET) = Scenarios(
+        Journey(s), s, s, c, tmp.newFolder(), ecran = { emptyList() },
+        ecouteMs = 300, decrochagesMs = 300, sauvegardeMs = 300, liveMs = 300, liveEcouteMs = 60, effetEcouteMs = 60,
+        styleEcouteMs = 60, longueMs = 300, fondMs = 300, saisir = { tag, text -> tag in s.tags(Regex(".*")) && run { s.typed = text; true } },
+        regler = s::regler, paquet = paquet, courtMs = 60,
+    )
+
+    /** The scenarios [ids] played as the robot plays them, and their results. */
+    private fun played(s: Studio, vararg ids: String): List<Scenarios.Companion.Resultat> {
+        val c = carnet()
+        Passage(c, scenarios(s, c).etapes().filter { it.name in ids }, crashText = { null }).run()
+        return Scenarios.resultats(c.lines()).filter { it.scenario.id in ids }
+    }
+
+    private fun fails(with: String, work: () -> Unit) {
+        val t = runCatching(work).exceptionOrNull()
+        assertTrue("no failure, expected « $with »", t != null)
+        assertTrue(t!!.message, t.message.orEmpty().contains(with))
+    }
+
+    // --- The list ----------------------------------------------------------------------------------
+
+    @Test
+    fun theRunHasEveryLevelAndTheNamesToutTesterWritesItsLightsUnder() {
+        val steps = scenarios(Studio()).etapes()
+        assertEquals(Scenarios.LISTE.map { it.id }, steps.map { it.name })
+        assertEquals(steps.size, steps.map { it.name }.toSet().size)
+        for (level in listOf(Scenarios.NIVEAU_DEBUTANT, Scenarios.NIVEAU_MOYEN, Scenarios.NIVEAU_PRO, Scenarios.NIVEAU_MESURE)) {
+            assertTrue(level, Scenarios.LISTE.count { it.niveau == level } >= 15)
+            assertTrue(level, Scenarios.liste(Scenarios.RAPIDE).count { it.niveau == level } >= 4)
+        }
+        // The quick pack: the first 31; the full one: 102 more, by tables (2b and 2c last).
+        assertEquals(31, Scenarios.liste(Scenarios.RAPIDE).size)
+        assertEquals(133, Scenarios.LISTE.size)
+        assertEquals(Scenarios.liste(Scenarios.RAPIDE).map { it.id }, scenarios(Studio(), paquet = Scenarios.RAPIDE).etapes().map { it.name })
+        // Every style of the assistant has its scenario, and the exports' styles exist.
+        val styles = com.pocketstudio.model.StarterWizard.STYLES.map { it.id }
+        assertEquals(styles.toSet(), Scenarios.LISTE.filter { it.id.startsWith("style_") }.map { it.id.removePrefix("style_") }.toSet() + Scenarios.STYLE)
+        assertTrue(styles.containsAll(Scenarios.EXPORTS_STYLES.map { it.first } + ToutTester.GUIDE))
+        // Each one has its work and an oracle that names the precise result it reads.
+        assertEquals(emptyList<String>(), scenarios(Studio()).sansTravail())
+        for (s in Scenarios.LISTE) assertTrue(s.id, s.oracle.isNotBlank() && s.estimeS > 0 && s.estimeS * 1000L <= s.maxMs)
+        assertTrue(steps.map { it.name }.containsAll(listOf("export_m4a", "export_wav", "export_flac", "latence", "images", "style_dnb", "guide_house")))
+        // The quick run stays under 20 minutes on a phone (its estimate), the full one under its own limit.
+        val rapide = Scenarios.liste(Scenarios.RAPIDE).sumOf { it.estimeS }
+        assertTrue(rapide.toString(), rapide <= Scenarios.DUREE_MAX_S)
+        assertTrue(Scenarios.LISTE.sumOf { it.estimeS }.toString(), Scenarios.LISTE.sumOf { it.estimeS } <= Scenarios.DUREE_COMPLET_MAX_S)
+    }
+
+    // --- The project kept ----------------------------------------------------------------------------
+
+    @Test
+    fun theProjectIsReadBackFromTheDiskListedAndReopened() {
+        val s = Studio()
+        val text = scenarios(s).projet()
+        assertTrue(text, text.contains("relu sur le disque (4 parties)"))
+        assertEquals(listOf("top_projects", "projects_back", "launch_continue"), s.touched)
+        assertEquals("studio", s.where)
+    }
+
+    @Test
+    fun aProjectThatIsNotOnTheDiskOrNotListedOrNotReopenedFails() {
+        fails("aucun fichier de projet") { scenarios(Studio().apply { saves = false; disque = null }).projet() }
+        fails("le disque n'a pas le morceau ouvert") { scenarios(Studio().apply { disque = ProjetVu.Disque("Mon morceau", 2, effets) ; saves = false }).projet() }
+        val unlisted = Studio().apply { listed = false }
+        fails("n'est pas dans Mes projets") { scenarios(unlisted).projet() }
+        // Even failed, the robot is back in the studio for the next scenario.
+        assertEquals("studio", unlisted.where)
+        fails("ne rouvre pas le même morceau") { scenarios(Studio().apply { reopens = "p2" }).projet() }
+    }
+
+    // --- The structure -------------------------------------------------------------------------------
+
+    @Test
+    fun aBreakIsOnePartMoreInTheSongAndOnTheDisk() {
+        val s = Studio()
+        val text = scenarios(s).structure()
+        assertTrue(text, text.contains("4 parties, puis 5"))
+        assertEquals(listOf("tab_Structure", "part_menu_1", "part_break_4"), s.touched)
+        fails("le break ne s'ajoute pas") { scenarios(Studio().apply { breakAdds = false }).structure() }
+        fails("le break n'est pas enregistré : 4 parties sur le disque") { scenarios(Studio().apply { saves = false }).structure() }
+    }
+
+    // --- The effects ---------------------------------------------------------------------------------
+
+    @Test
+    fun anEffectGoesOnTheFirstStripWithRoomAndIsReadBackFromTheDisk() {
+        val s = Studio()
+        val c = carnet()
+        val text = scenarios(s, c).effets()
+        // Strip 1 is full (4 effects): the second one takes it.
+        assertTrue(text, text.contains("égaliseur ajouté à la piste 2"))
+        // Added, read back, heard, then taken off by « Annuler »: the strip as it was, on the disk too.
+        assertTrue(text, text.contains("retiré par « Annuler »"))
+        assertEquals(listOf("PUMP"), s.effets[1])
+        assertEquals(listOf("PUMP"), s.disque!!.effets[1])
+        assertTrue(s.touched.toString(), s.touched.containsAll(listOf("strip_more_1", "fx_add_1", "fx_pick_1_EQ", "strip_sheet_close")))
+        // The studio is left as a user leaves it: the sheet closed, the song stopped.
+        assertEquals("", s.sheet)
+        assertFalse(s.playing)
+        assertTrue(c.lines().any { it.kind == Carnet.FEU && it.step == Scenarios.EFFETS && it.text.startsWith("vert") })
+    }
+
+    @Test
+    fun anEffectNotShownOrNotSavedFails() {
+        fails("ne le montre pas") { scenarios(Studio().apply { chipShown = false }).effets() }
+        val unsaved = Studio().apply { saves = false }
+        fails("n'est pas enregistré sur le disque (piste 2)") { scenarios(unsaved).effets() }
+        assertEquals("", unsaved.sheet)
+    }
+
+    @Test
+    fun anEffectWithNoRoomIsNotMeasuredAndOneLeftBehindFails() {
+        // Every strip full: no strip 1 « quand même », the scenario says why it could not play.
+        val full = Studio().apply { effets = List(4) { List(ProjetVu.EFFETS_MAX) { "PUMP" } } }
+        val text = scenarios(full).effets()
+        assertTrue(text, text.startsWith("non mesuré"))
+        assertFalse(full.touched.toString(), full.touched.any { it.startsWith("fx_pick_") })
+        // « Annuler » that does not take the effect off: the strip is left dirty, so red, not a silent pass.
+        fails("l'effet reste sur la piste 2") { scenarios(Studio().apply { undoWorks = false }).effets() }
+        fails("les effets restent sur la piste 2") { scenarios(Studio().apply { undoWorks = false }).effetsPlusieurs() }
+        val left = played(Studio().apply { undoWorks = false }, "effet_chorus").only("effet_chorus")
+        assertEquals(Scenarios.ECHOUE, left.resultat)
+        assertTrue(left.detail, left.detail.contains("l'effet reste sur la piste"))
+        // No « Annuler » in the bar (the app's setting): not measured, never a false red (fresh review, grave).
+        for (id in listOf(Scenarios.EFFETS, Scenarios.EFFETS_PLUSIEURS, "effet_chorus")) {
+            val hidden = played(Studio().apply { undoShown = false }, id).only(id)
+            assertEquals(hidden.detail, Scenarios.NON_MESURE, hidden.resultat)
+            assertTrue(hidden.detail, hidden.detail.contains("pas de bouton « Annuler »"))
+            // A bad sound stays a red even when the effect cannot be taken off.
+            val bad = played(Studio().apply { undoShown = false; nan = true }, id).only(id)
+            assertEquals(bad.detail, Scenarios.ECHOUE, bad.resultat)
+            assertTrue(bad.detail, bad.detail.contains("NaN"))
+        }
+    }
+
+    // --- The Live ------------------------------------------------------------------------------------
+
+    @Test
+    fun theLivePlaysThenStops() {
+        val s = Studio()
+        val text = scenarios(s).live()
+        assertTrue(text, text.startsWith("le Live joue") && "sans s'arrêter" in text && text.endsWith("puis le robot l'arrête"))
+        assertEquals(listOf("tab_Live", "live_play", "live_play", "tab_Structure"), s.touched)
+        assertFalse(s.playing)
+    }
+
+    @Test
+    fun aLiveThatStopsByItselfBeforeTheRobotTouchesItFails() {
+        // Tour 9, C2: « le Live joue 4 s puis s'arrête » — red only when the engine stops before the robot's second ▶.
+        val s = Studio().apply { liveStopsAfter = 4 }
+        val e = runCatching { scenarios(s).live() }.exceptionOrNull()
+        assertTrue("the Live stopped by itself and the scenario passed", e is IllegalStateException)
+        assertTrue(e!!.message, "s'arrête tout seul" in e.message!! && "avant que le robot" in e.message!!)
+        assertEquals("the robot did not touch ▶ a second time", listOf("tab_Live", "live_play", "tab_Structure"), s.touched)
+    }
+
+    @Test
+    fun aSilentLiveOrOneThatNeverStopsFails() {
+        val silent = Studio().apply { liveSound = false }
+        fails("aucun son ne sort") { scenarios(silent).live() }
+        // Stopped and out of the Live all the same.
+        assertFalse(silent.playing)
+        assertEquals("Structure", silent.tab)
+        fails("le Live ne s'arrête pas") { scenarios(Studio().apply { liveStops = false }).live() }
+    }
+
+    // --- The dropouts --------------------------------------------------------------------------------
+
+    @Test
+    fun dropoutsTurnTheScenarioRedEvenWhenTheStepEnds() {
+        val clean = carnet()
+        scenarios(Studio(), clean).decrochages()
+        assertTrue(clean.lines().any { it.kind == Carnet.FEU && it.step == Scenarios.DECROCHAGES && it.text.startsWith("vert") })
+        val c = carnet()
+        val s = Studio().apply { dropouts = true }
+        Passage(c, scenarios(s, c).etapes().filter { it.name == Scenarios.DECROCHAGES }, crashText = { null }).run()
+        val r = Scenarios.resultats(c.lines()).first { it.scenario.id == Scenarios.DECROCHAGES }
+        assertEquals(Scenarios.ECHOUE, r.resultat)
+        assertTrue(r.detail, r.detail.contains("décrochage"))
+        assertTrue(r.mesures.toString(), r.mesures.any { it.first == "decrochages" && it.second.toInt() > 0 })
+    }
+
+    // --- A crash of the app --------------------------------------------------------------------------
+
+    /**
+     * The app dies in a scenario (its process killed: an exception on the main thread, the engine, an ANR):
+     * the robot's thread dies with it. Relaunched, the run notes that scenario as failed by a crash with its
+     * cause, the picture and the tags of the screen, and goes on with the next ones to the end; the report
+     * is written all the same.
+     */
+    @Test
+    fun aCrashInAScenarioIsItsFailureWithItsCluesAndTheRunGoesOn() {
+        val c = carnet()
+        // The first life of the app: « écrans » ended, « structure » began, then the process died.
+        c.add(Carnet.DEBUT, Scenarios.ECRANS)
+        c.add(Carnet.REUSSI, Scenarios.ECRANS, "5 écrans")
+        c.add(Carnet.DEBUT, Scenarios.STRUCTURE)
+        // The second life: the run picked up.
+        val s = Studio().apply { shots = true }
+        val captures = tmp.newFolder()
+        val sc = Scenarios(Journey(s), s, s, c, captures, ecouteMs = 300, decrochagesMs = 300, sauvegardeMs = 300, liveMs = 300, liveEcouteMs = 60, effetEcouteMs = 60)
+        val wanted = setOf(Scenarios.ECRANS, Scenarios.STRUCTURE, Scenarios.EFFETS, Scenarios.LIVE)
+        val crash = "Version 1.2.3 · thread main\njava.lang.IllegalStateException: boom\n\tat com.pocketstudio.app.Studio.play(Studio.kt:12)"
+        Passage(c, sc.etapes().filter { it.name in wanted }, crashText = { crash }, onCrash = sc::apresPlantage).run()
+        val lines = c.lines()
+        assertTrue(lines.any { it.kind == Carnet.PLANTAGE && it.step == Scenarios.STRUCTURE && it.text.contains("IllegalStateException: boom") })
+        // The clues of the crashed scenario: the screen as the robot finds it, and every tag on it.
+        val indice = lines.lastOrNull { it.step == Scenarios.STRUCTURE && it.kind == Carnet.NOTE && it.text.startsWith("indice;") }
+        assertTrue(lines.toString(), indice != null && indice.text.contains("capture=captures/echec-structure.jpg") && indice.text.contains("tags=captures/echec-structure-tags.txt"))
+        assertTrue(File(captures, "echec-structure-tags.txt").readText().contains("space_bar"))
+        // The run went on and ended.
+        for (next in listOf(Scenarios.EFFETS, Scenarios.LIVE)) assertTrue(next, lines.any { it.step == next && it.kind == Carnet.REUSSI })
+        assertTrue(lines.any { it.kind == Carnet.FINI })
+        // The report says it: failed by a crash, its cause and its clues.
+        val r = Scenarios.resultats(lines).associateBy { it.scenario.id }.getValue(Scenarios.STRUCTURE)
+        assertEquals(Scenarios.ECHOUE, r.resultat)
+        assertTrue(r.detail, r.detail.startsWith("plantage de l'appli") && r.detail.contains("boom"))
+        assertEquals("captures/echec-structure.jpg", r.indices.toMap()["capture"])
+        assertTrue(Scenarios.json(lines, about).contains("plantage de l'appli"))
+        assertTrue(Scenarios.resume(lines, about).contains("plantage de l'appli"))
+    }
+
+    @Test
+    fun aCrashWhoseCauseCannotBeReadStillSaysItCrashed() {
+        val c = carnet()
+        c.add(Carnet.DEBUT, Scenarios.LIVE)
+        val s = Studio()
+        val sc = scenarios(s, c)
+        Passage(c, sc.etapes().filter { it.name == Scenarios.LIVE }, crashText = { null }, onCrash = sc::apresPlantage).run()
+        val r = Scenarios.resultats(c.lines()).first { it.scenario.id == Scenarios.LIVE }
+        assertEquals(Scenarios.ECHOUE, r.resultat)
+        assertTrue(r.detail, r.detail.startsWith("plantage de l'appli") && r.detail.contains("cause non lue"))
+        // Without a picture, the tags all the same.
+        assertEquals("", r.indices.toMap()["capture"])
+        assertTrue(r.indices.toString(), r.indices.toMap()["tags"].orEmpty().endsWith("echec-live-tags.txt"))
+    }
+
+    // --- The scenarios added on 2026-11-22 -----------------------------------------------------------
+
+    @Test
+    fun theTempoGoesUpIsSavedAndComesBack() {
+        val s = Studio()
+        val text = scenarios(s).tempo()
+        assertTrue(text, text.contains("tempo 120.00 puis 121.00 bpm, enregistré"))
+        assertEquals(120.0, s.tempo, 0.0)
+        assertEquals("", s.sheet)
+        fails("le tempo ne change pas") { scenarios(Studio().apply { tempoMoves = false }).tempo() }
+        fails("le tempo n'est pas enregistré") { scenarios(Studio().apply { saves = false }).tempo() }
+        val playing = Studio()
+        assertTrue(scenarios(playing).tempoLecture().contains("125.00 bpm en jouant"))
+        assertFalse(playing.playing)
+    }
+
+    @Test
+    fun muteAndSoloAreSetSavedThenTakenOff() {
+        val s = Studio()
+        assertTrue(scenarios(s).muet().contains("« Muet » sur la piste 1 : mis, enregistré, puis enlevé"))
+        assertTrue(scenarios(s).solo().contains("« Solo » sur la piste 2"))
+        assertEquals(List(4) { false }, s.muets)
+        assertEquals(List(4) { false }, s.solos)
+        assertTrue(s.touched.containsAll(listOf("strip_more_0", "sheet_mute_0", "strip_more_1", "sheet_solo_1")))
+        fails("la piste 1 ne change pas") { scenarios(Studio().apply { mutes = false }).muet() }
+        fails("n'est pas enregistré sur le disque") { scenarios(Studio().apply { saves = false }).solo() }
+    }
+
+    @Test
+    fun undoTakesTheBreakOffAndRedoPutsItBack() {
+        val s = Studio()
+        assertTrue(scenarios(s).annulerRetablir().contains("annulé (4), rétabli (5), enregistré"))
+        assertEquals(5, s.disque!!.parties)
+        fails("« Annuler » ne retire pas le break") { scenarios(Studio().apply { undoWorks = false }).annulerRetablir() }
+        // No « Annuler » in the bar (a setting): not measured, never a false failure.
+        val c = carnet()
+        assertTrue(scenarios(Studio().apply { undoShown = false }, c).annulerRetablir().startsWith("non mesuré"))
+        assertTrue(c.lines().any { it.kind == Carnet.NOTE && it.text.startsWith(ToutTester.NON_MESURE) })
+        val fx = Studio()
+        assertTrue(scenarios(fx).annulerEffet().contains("COMPRESSOR ajouté à la piste 2 puis annulé"))
+        assertEquals(listOf("PUMP"), fx.disque!!.effets[1])
+    }
+
+    @Test
+    fun threeEffectsGoOnOneStripAndAreSaved() {
+        val s = Studio()
+        val text = scenarios(s).effetsPlusieurs()
+        assertTrue(text, text.contains("EQ, COMPRESSOR, FILTER sur la piste 2"))
+        // Taken off again by « Annuler », so the next scenarios find room.
+        assertEquals(listOf("PUMP"), s.effets[1])
+        assertEquals(listOf("PUMP"), s.disque!!.effets[1])
+        assertFalse(s.playing)
+        val full = Studio().apply { effets = List(4) { listOf("A", "B") } }
+        assertTrue(scenarios(full).effetsPlusieurs().startsWith("non mesuré"))
+    }
+
+    @Test
+    fun aPadOfTheLiveSoundsOrIsNotMeasured() {
+        val s = Studio()
+        assertTrue(scenarios(s).pads().contains("pad live_pad_drums_0 : le son sort"))
+        assertFalse(s.playing)
+        assertEquals("Structure", s.tab)
+        assertTrue(scenarios(Studio().apply { pads = false }).pads().startsWith("non mesuré"))
+        fails("aucun son ne sort") { scenarios(Studio().apply { liveSound = false }).pads() }
+    }
+
+    @Test
+    fun theRobotDuplicatesRenamesAndDeletesOnlyItsOwnCopy() {
+        val s = Studio()
+        val sc = scenarios(s)
+        assertTrue(sc.dupliquer().contains("copie « Mon morceau (copie) »"))
+        assertEquals(setOf("p1", "c1"), s.projets().keys)
+        assertTrue(sc.renommer().contains("relue sur le disque"))
+        assertEquals(Scenarios.NOM_ROBOT, s.others.getValue("c1").nom)
+        assertTrue(sc.supprimer().contains("copie du robot supprimée"))
+        assertEquals(setOf("p1"), s.projets().keys)
+        assertEquals("studio", s.where)
+        // The open song is never touched.
+        assertFalse(s.touched.contains("project_delete_p1"))
+        // Without its copy, the robot renames and deletes nothing: the user's projects are not its.
+        val user = Studio().apply { others["u1"] = ProjetVu.Disque("Ma chanson", 3, emptyList()) }
+        val fresh = scenarios(user)
+        assertTrue(fresh.renommer().startsWith("non mesuré"))
+        assertTrue(fresh.supprimer().startsWith("non mesuré"))
+        assertTrue(user.others.containsKey("u1"))
+        assertTrue(user.touched.none { it.startsWith("project_delete_") || it == "texte:Renommer" })
+        fails("aucune copie sur le disque") { scenarios(Studio().apply { copies = false }).dupliquer() }
+        val kept = Studio()
+        val k = scenarios(kept)
+        k.dupliquer()
+        kept.deletes = false
+        fails("encore sur le disque") { k.supprimer() }
+        assertEquals("studio", kept.where)
+    }
+
+    @Test
+    fun theStudioClosedAndOpenedAgainShowsTheSameSong() {
+        val s = Studio()
+        assertTrue(scenarios(s).reprise().contains("« Mon morceau », 4 parties"))
+        assertEquals("studio", s.where)
+        fails("rouvert sur") { scenarios(Studio().apply { reopens = "p2" }).reprise() }
+        assertTrue(scenarios(Studio().apply { canLeave = false }).reprise().startsWith("non mesuré"))
+    }
+
+    @Test
+    fun theMusicGoesOnBehindAnotherScreen() {
+        val s = Studio()
+        assertTrue(scenarios(s).arrierePlan().contains("studio revenu"))
+        assertFalse(s.playing)
+        fails("la musique s'arrête quand l'appli passe au fond") { scenarios(Studio().apply { stopsBehind = true }).arrierePlan() }
+        assertTrue(scenarios(Studio().apply { canLeave = false }).arrierePlan().startsWith("non mesuré"))
+    }
+
+    @Test
+    fun aNotMeasuredScenarioIsNeitherPassedNorFailedInTheReport() {
+        val c = carnet()
+        val sc = scenarios(Studio().apply { canLeave = false }, c)
+        Passage(c, sc.etapes().filter { it.name == Scenarios.ARRIERE_PLAN }, crashText = { null }).run()
+        val r = Scenarios.resultats(c.lines()).first { it.scenario.id == Scenarios.ARRIERE_PLAN }
+        assertEquals(Scenarios.NON_MESURE, r.resultat)
+    }
+
+    // --- The report ----------------------------------------------------------------------------------
+
+    /** A logbook: [id] to its lines after DEBUT (kind to text), one second each. */
+    // --- The full pack's tables ----------------------------------------------------------------------
+
+    private fun List<Scenarios.Companion.Resultat>.only(id: String) = first { it.scenario.id == id }
+
+    @Test
+    fun eachStripsMuteSoloVolumeAndPanAreSetSavedThenPutBack() {
+        val ids = Scenarios.LISTE.map { it.id }.filter { Regex("piste\\d_(muet|solo|volume|pan)").matches(it) }
+        assertEquals(14, ids.size)
+        val s = Studio()
+        val r = played(s, *ids.toTypedArray())
+        r.forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
+        // Put back as they were.
+        assertEquals(List(4) { 0.8f }, s.volumes)
+        assertEquals(List(4) { 0f }, s.pans)
+        assertEquals(List(4) { false }, s.muets)
+        // A slider that cannot be set from here: not measured; one not saved: failed.
+        assertEquals(Scenarios.NON_MESURE, played(Studio().apply { sliders = false }, "piste1_volume").only("piste1_volume").resultat)
+        assertEquals(Scenarios.ECHOUE, played(Studio().apply { saves = false }, "piste2_pan").only("piste2_pan").resultat)
+    }
+
+    @Test
+    fun eachEffectTypeGoesOnAStripIsSavedSoundsAndIsTakenOff() {
+        val ids = Scenarios.LISTE.map { it.id }.filter { it.startsWith("effet_") }
+        assertEquals(28, ids.size)
+        val s = Studio()
+        played(s, *ids.toTypedArray()).forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
+        assertEquals(listOf("PUMP"), s.effets[1])
+        assertFalse(s.playing)
+        // Too many long effects in the song already: the app refuses one more, so not measured.
+        val full = Studio().apply { effets = listOf(List(12) { "REVERB" }, emptyList(), emptyList(), emptyList()) }
+        assertEquals(Scenarios.NON_MESURE, played(full, "effet_reverb").only("effet_reverb").resultat)
+        assertEquals(Scenarios.ECHOUE, played(Studio().apply { saves = false }, "effet_chorus").only("effet_chorus").resultat)
+    }
+
+    @Test
+    fun extremeTemposMoveAreSavedPlayAndArePutBack() {
+        val s = Studio()
+        played(s, "tempo_bas", "tempo_haut", "tempo_haut_lecture").forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
+        assertEquals(120.0, s.tempo, 0.01)
+        assertEquals(Scenarios.ECHOUE, played(Studio().apply { tempoMoves = false }, "tempo_haut").only("tempo_haut").resultat)
+    }
+
+    @Test
+    fun aPartAddedRemovedOrDuplicatedIsSavedThenUndone() {
+        val ids = arrayOf("partie_inserer", "partie_retirer", "partie_dupliquer", "partie_montee", "partie_fin")
+        val s = Studio()
+        played(s, *ids).forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
+        assertEquals(4, s.parties)
+        assertEquals(0, s.montee)
+        assertEquals(Scenarios.ECHOUE, played(Studio().apply { undoWorks = false }, "partie_montee").only("partie_montee").resultat)
+        assertEquals(Scenarios.ECHOUE, played(Studio().apply { undoWorks = false }, "partie_fin").only("partie_fin").resultat)
+        assertEquals(Scenarios.NON_MESURE, played(Studio().apply { undoShown = false }, "partie_inserer").only("partie_inserer").resultat)
+    }
+
+    @Test
+    fun eachPadSoundsOrIsNotMeasuredWhenTheSongHasFewer() {
+        val r = played(Studio(), *(2..8).map { "pad_$it" }.toTypedArray())
+        // The made-up song has 4 pads: the 2nd to 4th sound, the others are not there.
+        (2..4).forEach { assertEquals(Scenarios.PASSE, r.only("pad_$it").resultat) }
+        (5..8).forEach { assertEquals(Scenarios.NON_MESURE, r.only("pad_$it").resultat) }
+    }
+
+    @Test
+    fun screensSwitchedWhilePlayingAndRepetitionsKeepTheMusic() {
+        val s = Studio()
+        played(s, "lecture_mix", "lecture_live", "lecture_va_et_vient", "jouer_arreter_10", "fond_reprise_5")
+            .forEach { assertEquals(it.scenario.id + " : " + it.detail, Scenarios.PASSE, it.resultat) }
+        assertFalse(s.playing)
+        assertEquals(Scenarios.ECHOUE, played(Studio().apply { liveSound = false }, "lecture_live").only("lecture_live").resultat)
+        assertEquals(Scenarios.ECHOUE, played(Studio().apply { stopsBehind = true }, "fond_reprise_5").only("fond_reprise_5").resultat)
+        assertEquals(Scenarios.NON_MESURE, played(Studio().apply { canLeave = false }, "fond_reprise_5").only("fond_reprise_5").resultat)
+    }
+
+    @Test
+    fun theQuickPackReportsOnlyItsOwnScenarios() {
+        val c = carnet()
+        Passage(c, scenarios(Studio(), c, Scenarios.RAPIDE).etapes().filter { it.name == Scenarios.TEMPO }, crashText = { null }).run()
+        val r = Scenarios.resultats(c.lines())
+        assertEquals(31, r.size)
+        assertEquals("1 passé, 0 échoué, 30 pas joués", Scenarios.verdict(c.lines()))
+    }
+
+    private fun logbook(vararg steps: Pair<String, List<Pair<String, String>>>): List<Carnet.Ligne> {
+        var at = 0L
+        val c = Carnet(tmp.newFile()) { at }
+        for ((id, lines) in steps) {
+            c.add(Carnet.DEBUT, id)
+            for ((kind, text) in lines) { at += 1000; c.add(kind, id, text) }
+        }
+        return c.lines()
+    }
+
+    private val about = listOf("version" to "1.2.3", "téléphone" to "Pixel")
+
+    private fun made() = logbook(
+        Scenarios.DEBUTANT to listOf(Carnet.FEU to "vert;", Carnet.REUSSI to "lecture par thumb_play"),
+        Scenarios.ECRANS to listOf(Carnet.REUSSI to "5 écrans"),
+        Scenarios.PROJET to listOf(Carnet.MESURE to "bilan;parties=4;sur_disque=true", Carnet.REUSSI to "relu"),
+        Scenarios.STRUCTURE to listOf(Carnet.ECHEC to "le break ne s'ajoute pas au morceau : 4 parties (avant : 4)"),
+        Scenarios.EFFETS to listOf(Carnet.FEU to "orange;saut à 3 s", Carnet.REUSSI to "égaliseur ajouté"),
+        Scenarios.EXPORT to listOf(Carnet.MESURE to "octets=120000;secondes=8.0;duree=4.1;attendue=10.0;crete=-1.2", Carnet.FEU to "vert;", Carnet.REUSSI to "fichier relu"),
+        Scenarios.LATENCE to listOf(Carnet.MESURE to "ms=41.0", Carnet.MESURE to "ms=38.5", Carnet.MESURE to "ms=52.0", Carnet.FEU to "vert;", Carnet.REUSSI to "41 ms"),
+        Scenarios.DECROCHAGES to listOf(Carnet.MESURE to "bilan;decrochages=2;pire_bloc=0.40", Carnet.FEU to "rouge;2 décrochage(s)", Carnet.REUSSI to "lecture"),
+    )
+
+    @Test
+    fun eachScenarioIsPassedFailedOrNotPlayed() {
+        val r = Scenarios.resultats(made()).associateBy { it.scenario.id }
+        assertEquals(Scenarios.PASSE, r.getValue(Scenarios.DEBUTANT).resultat)
+        assertEquals(Scenarios.PASSE, r.getValue(Scenarios.ECRANS).resultat)
+        assertEquals(Scenarios.ECHOUE, r.getValue(Scenarios.STRUCTURE).resultat)
+        assertTrue(r.getValue(Scenarios.STRUCTURE).detail.contains("le break ne s'ajoute pas"))
+        // Orange: it works, a number is to be watched; its reason is in the detail.
+        assertEquals(Scenarios.PASSE, r.getValue(Scenarios.EFFETS).resultat)
+        assertEquals(Feu.ORANGE, r.getValue(Scenarios.EFFETS).feu)
+        assertTrue(r.getValue(Scenarios.EFFETS).detail, r.getValue(Scenarios.EFFETS).detail.contains("saut à 3 s"))
+        assertEquals(Scenarios.PAS_JOUE, r.getValue(Scenarios.LIVE).resultat)
+        // A red number fails a step that ended.
+        assertEquals(Scenarios.ECHOUE, r.getValue(Scenarios.DECROCHAGES).resultat)
+        assertEquals(listOf("latence_ms" to "41.00", "mesures" to "3"), r.getValue(Scenarios.LATENCE).mesures)
+        assertEquals("120000", r.getValue(Scenarios.EXPORT).mesures.first { it.first == "octets" }.second)
+        assertEquals(3L, r.getValue(Scenarios.EXPORT).secondes)
+        assertEquals("6 passés, 2 échoués, ${Scenarios.LISTE.size - 8} pas joués", Scenarios.verdict(made()))
+    }
+
+    @Test
+    fun theJsonHasTheVerdictTheLevelsAndEachScenarioWithItsNumbers() {
+        val json = Scenarios.json(made(), about)
+        assertEquals(json.count { it == '{' }, json.count { it == '}' })
+        assertEquals(json.count { it == '[' }, json.count { it == ']' })
+        for (part in listOf(
+            "\"version\":\"1.2.3\"", "\"passage\":\"scenarios\"", "\"verdict\":\"6 passés, 2 échoués, ${Scenarios.LISTE.size - 8} pas joués\"", "\"tout_passe\":false",
+            "\"id\":\"structure\"", "\"resultat\":\"échoué\"", "\"niveau\":\"pro\"", "\"feu\":\"orange\"", "\"latence_ms\":41", "\"decrochages\":2", "\"sur_disque\":\"true\"",
+        )) assertTrue("$part in $json", json.replace(": ", ":").replace(" ", " ").contains(part) || json.replace("\": ", "\":").contains(part))
+        assertEquals(Scenarios.LISTE.size, Regex("\"id\"").findAll(json).count())
+    }
+
+    @Test
+    fun theSummaryIsInFrenchWithOneLineAScenario() {
+        val md = Scenarios.resume(made(), about)
+        assertTrue(md, md.contains("**Verdict : 6 passés, 2 échoués, ${Scenarios.LISTE.size - 8} pas joués**"))
+        assertTrue(md, md.contains("- Niveau débutant : 2 sur ${Scenarios.LISTE.count { it.niveau == Scenarios.NIVEAU_DEBUTANT }}"))
+        assertTrue(md, md.contains("- Niveau pro : 1 sur ${Scenarios.LISTE.count { it.niveau == Scenarios.NIVEAU_PRO }}"))
+        assertTrue(md, md.contains("| Moyen : ajouter un break à la structure | moyen | ❌ échoué |"))
+        assertTrue(md, md.contains("🟠 passé, à surveiller"))
+        assertTrue(md, md.contains("| Pro : jouer puis arrêter le Live | pro | pas joué |"))
+        assertTrue(md, md.contains("latence ms 41.00"))
+        assertEquals(Scenarios.LISTE.size, md.lines().count { it.startsWith("| ") && !it.startsWith("| Scénario") })
+    }
+
+    @Test
+    fun aRunWhereEverythingPassesSaysSo() {
+        val all = logbook(*Scenarios.LISTE.map { it.id to listOf(Carnet.REUSSI to "ok") }.toTypedArray())
+        assertEquals("${Scenarios.LISTE.size} passés, 0 échoué", Scenarios.verdict(all))
+        assertTrue(Scenarios.json(all, about).contains("\"tout_passe\":true") || Scenarios.json(all, about).contains("\"tout_passe\": true"))
+    }
+
+    @Test
+    fun theRedoPackHoldsTheFailedScenariosOnlyAndAllExist() {
+        val ids = Scenarios.LISTE.map { it.id }.toSet()
+        assertEquals(78, Scenarios.RATES_IDS.size)
+        assertTrue(Scenarios.RATES_IDS.all { it in ids })
+        assertEquals(Scenarios.RATES_IDS, Scenarios.liste(Scenarios.RATES).map { it.id }.toSet())
+        assertTrue("debutant" !in Scenarios.RATES_IDS)
+    }
+}

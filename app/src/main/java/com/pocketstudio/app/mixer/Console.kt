@@ -1,16 +1,18 @@
 package com.pocketstudio.app.mixer
 
-import com.pocketstudio.ui.ScaledBottomSheet
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitVerticalTouchSlopOrCancellation
+import androidx.compose.foundation.gestures.verticalDrag
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,10 +20,12 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.GraphicEq
@@ -39,7 +43,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -50,6 +53,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.contentDescription
@@ -65,16 +71,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pocketstudio.app.help.Glossary
 import com.pocketstudio.app.learn.spot
+import com.pocketstudio.app.ui.showcasePanel
 import com.pocketstudio.model.Channel
 import com.pocketstudio.model.i18n.tr
 import com.pocketstudio.ui.HelpDot
 import com.pocketstudio.ui.MonoStyle
 import com.pocketstudio.ui.Neon
-import com.pocketstudio.app.ui.showcasePanel
 import com.pocketstudio.ui.ProSlider
-import com.pocketstudio.ui.fadingHorizontalScroll
+import com.pocketstudio.ui.ScaledBottomSheet
+import com.pocketstudio.ui.fadingEdges
 import com.pocketstudio.ui.pillColors
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 /** The width of one strip of the console: a dozen of them side by side on a tablet, four or five on a phone. */
 internal val CONSOLE_STRIP_W = 76.dp
@@ -102,33 +110,59 @@ internal fun Console(
     faderHeight: Dp = CONSOLE_FADER_H,
     /** « Glisse un fader… » under the title (left out when the faders were lowered to fit). */
     hint: Boolean = faderHeight >= CONSOLE_FADER_H,
+    /** The pads' names as the project has them (by lane); the built-in kit's names by default. */
+    padNames: (Int) -> String = { com.pocketstudio.app.rhythm.DrumKitInfo.names.getOrElse(it) { "" } },
 ) {
     var sheetFor by rememberSaveable { mutableStateOf<Int?>(null) }
+    var padsOpen by rememberSaveable { mutableStateOf(false) }
     Column(
         Modifier.fillMaxWidth().showcasePanel(RoundedCornerShape(16.dp))
             .padding(vertical = 8.dp).testTag("console"),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Row(Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(tr("Volumes"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Neon.Cyan, modifier = Modifier.weight(1f))
+            // Tour 9: the card's title in the same colour as « Courbes et effets » below (readable under the help labels' veil).
+            Text(tr("Volumes"), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             HelpDot(Glossary.MUTE_SOLO)
+            // Tour 9 (D12): the pads' own effects and sends, one touch away from the Mix.
+            // As the HelpDot beside it: drawn no taller than the title (a 48 dp row pushed the first fader out of its pane
+            // lying down at 130 %), touched over 48 dp (Compose widens a small target's touch).
+            Row(
+                Modifier.weight(1f).wrapContentWidth(Alignment.End).clip(RoundedCornerShape(8.dp))
+                    .clickable(role = androidx.compose.ui.semantics.Role.Button) { padsOpen = true }
+                    .padding(horizontal = 8.dp, vertical = 4.dp).testTag("console_pads"),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = Neon.Cyan, modifier = Modifier.size(18.dp))
+                // One line, smaller before it wraps.
+                com.pocketstudio.ui.FitText(
+                    " " + tr("  Effets du pad").trim(), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface, textAlign = TextAlign.End, min = 10.sp,
+                )
+            }
         }
         if (hint) Text(
             tr("Glisse un fader pour le volume ; touche le nom d'une piste pour ses effets et ses courbes."),
             style = MaterialTheme.typography.bodySmall, color = Neon.TextSecondary, modifier = Modifier.padding(horizontal = 12.dp),
         )
-        Row(
-            Modifier.fillMaxWidth().fadingHorizontalScroll().padding(horizontal = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            strips.forEachIndexed { i, st ->
-                ConsoleStrip(
-                    st, channels.getOrElse(st.ch) { Channel() }, { meters().getOrElse(st.ch) { 0f } }, actions, moves[st.ch] ?: 0,
-                    open = { sheetFor = st.ch }, first = i == 0, faderHeight = faderHeight,
-                )
+        val scroll = rememberScrollState()
+        // The tab sits beside the strips, never over them: it covers no control and the row's own end stays faded.
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.weight(1f).fadingEdges(scroll).horizontalScroll(scroll).padding(horizontal = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                strips.forEachIndexed { i, st ->
+                    ConsoleStrip(
+                        st, channels.getOrElse(st.ch) { Channel() }, { meters().getOrElse(st.ch) { 0f } }, actions, moves[st.ch] ?: 0,
+                        open = { sheetFor = st.ch }, first = i == 0, faderHeight = faderHeight,
+                    )
+                }
             }
+            MoreTracksTab(scroll, "console_more_right")
         }
     }
+    if (padsOpen) PadSheet(channels, actions, padNames) { padsOpen = false }
     sheetFor?.let { ch ->
         val st = strips.firstOrNull { it.ch == ch }
         val c = channels.getOrNull(ch)
@@ -168,9 +202,10 @@ private fun ConsoleStrip(info: StripInfo, c: Channel, meter: () -> Float, action
                 .testTag("strip_more_$index"),
             contentAlignment = Alignment.Center,
         ) {
-            Text(
-                name, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center,
-                maxLines = 2, overflow = TextOverflow.Ellipsis, lineHeight = 14.sp,
+            // Tour 9 (F023, « Drum / s »): smaller before a word is cut in two, as the Mode simple's heads.
+            com.pocketstudio.ui.FitText(
+                name, style = MaterialTheme.typography.labelMedium.copy(lineHeight = 14.sp), fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center, maxLines = 2, min = 7.sp,
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -210,13 +245,6 @@ internal fun VerticalFader(
     // The travel's height in pixels (known once drawn) and the value under the finger while it slides
     // (kept apart from the value given back: a slide moves it by as much as the finger goes).
     val travel = remember { floatArrayOf(1f) }
-    val held = remember { floatArrayOf(Float.NaN) }
-    val state = rememberDraggableState { dy ->
-        val from = if (held[0].isNaN()) latest else held[0]
-        val now = (from - dy / travel[0]).coerceIn(0f, 1f)
-        held[0] = now
-        change(now)
-    }
     val off = Neon.SurfaceHigh
     val accent = Neon.Cyan
     val bar = com.pocketstudio.ui.rememberLevelBar(dissolve = 22.dp)
@@ -225,7 +253,8 @@ internal fun VerticalFader(
     val cap = Neon.TextPrimary
     Canvas(
         modifier.width(56.dp).height(height)
-            .draggable(state, Orientation.Vertical, onDragStarted = { held[0] = latest }, onDragStopped = { held[0] = Float.NaN })
+            .onSizeChanged { travel[0] = it.height.toFloat().coerceAtLeast(1f) }
+            .capDrag({ (1f - latest) * travel[0] }, { latest }, { from, dy -> change((from - dy / travel[0]).coerceIn(0f, 1f)) })
             .semantics {
                 contentDescription = description
                 stateDescription = faderDb(value)
@@ -260,6 +289,30 @@ internal fun VerticalFader(
 
 private val CAP_MARK = Color.Black.copy(alpha = 0.6f)
 
+/** F024: a finger that lands this close to a fader's cap takes it; anywhere else on the fader it scrolls the page. */
+internal val FADER_GRAB = 32.dp
+
+/**
+ * A fader's slide (F024, option A): only a finger landing within [FADER_GRAB] of the cap (at [capY], in pixels from the
+ * top) takes it; elsewhere nothing is consumed and the page scrolls. Once taken, [move] gets the value at the touch
+ * ([start]) and how far the finger went down since it touched: the cap follows the finger from the touch on (no dead
+ * zone, then no jump, S30).
+ */
+internal fun Modifier.capDrag(capY: () -> Float, start: () -> Float, move: (from: Float, dy: Float) -> Unit): Modifier =
+    pointerInput(Unit) {
+        awaitEachGesture {
+            val down = awaitFirstDown()
+            if (kotlin.math.abs(down.position.y - capY()) > FADER_GRAB.toPx()) return@awaitEachGesture
+            val first = awaitVerticalTouchSlopOrCancellation(down.id) { c, _ -> c.consume() } ?: return@awaitEachGesture
+            val from = start()
+            move(from, first.position.y - down.position.y)
+            verticalDrag(first.id) { c ->
+                c.consume()
+                move(from, c.position.y - down.position.y)
+            }
+        }
+    }
+
 /**
  * A strip's sheet: its volume and pan, M and S, its effects (the same box as under each sound),
  * « Ce qui bouge sur cette piste » and its curves.
@@ -272,16 +325,24 @@ private fun StripSheet(
     val name = com.pocketstudio.model.DefaultNames.shown(info.name)
     val index = info.ch
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    ScaledBottomSheet(onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("strip_sheet")) {
-        Column(
-            Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+    // Tour 9 (F025): the track's name stays above what scrolls (it went out at the top, « XY… »), whole on two lines at most.
+    ScaledBottomSheet(
+        onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("strip_sheet"), scrolls = true,
+        header = {
+            Row(Modifier.padding(horizontal = 16.dp).padding(bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(width = 4.dp, height = 22.dp).background(info.color ?: Neon.Cyan, RoundedCornerShape(2.dp)))
-                Text(name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp).weight(1f).testTag("strip_sheet_title"))
+                com.pocketstudio.ui.WholeWordsText(
+                    name, Modifier.padding(start = 8.dp).weight(1f).testTag("strip_sheet_title"), style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
                 TextButton(onClick = close, modifier = Modifier.testTag("strip_sheet_close")) { Text(tr("Fermer")) }
             }
+        },
+    ) {
+        Column(
+            Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(selected = c.mute, onClick = { actions.toggleMute(index) }, label = { Text(tr("Muet")) }, colors = pillColors(Neon.Red), modifier = Modifier.testTag("sheet_mute_$index"))
                 FilterChip(selected = c.solo, onClick = { actions.toggleSolo(index) }, label = { Text(tr("Solo")) }, colors = pillColors(), modifier = Modifier.testTag("sheet_solo_$index"))
@@ -313,7 +374,69 @@ private fun StripSheet(
                 }
             }
             Text(tr("Effets"), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("effects_$index"))
-            EffectsBox(index, c, actions)
+            androidx.compose.runtime.CompositionLocalProvider(LocalFxTrackName provides name) { EffectsBox(index, c, actions) }
+        }
+    }
+}
+
+/**
+ * Tour 9 (S34, seats 18 34: « Melodia » off-screen, nothing said): while more strips wait further on, an arrow
+ * stands on the row's far edge (as on the Live's columns), « Voir les autres pistes »; a touch brings the last
+ * ones in, and it goes.
+ */
+@Composable
+internal fun MoreTracksTab(scroll: androidx.compose.foundation.ScrollState, tag: String, modifier: Modifier = Modifier) {
+    if (!scroll.canScrollForward) return
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    Box(
+        modifier.size(32.dp, 56.dp).clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)).background(Neon.Cyan.copy(alpha = 0.9f))
+            .clickable(role = androidx.compose.ui.semantics.Role.Button) { scope.launch { scroll.animateScrollTo(scroll.maxValue) } }
+            .semantics { contentDescription = tr("Voir les autres pistes") }.testTag(tag),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Neon.OnAccent, modifier = Modifier.size(24.dp))
+    }
+}
+
+/**
+ * Tour 9 (D12, seats 18 49 59: « Envoi réverbe » on the pad « Caisse », not found from the Mix): the pads'
+ * effects and sends, a pad picked by its name, without leaving the Mix.
+ */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun PadSheet(channels: List<Channel>, actions: MixerActions, padNames: (Int) -> String, close: () -> Unit) {
+    var lane by rememberSaveable { mutableStateOf(0) }
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    // Tour 9 (F025, the same as a strip's sheet): the title stays above what scrolls.
+    ScaledBottomSheet(
+        onDismissRequest = close, sheetState = state, containerColor = Neon.Surface, modifier = Modifier.testTag("pad_sheet"), scrolls = true,
+        header = {
+            Row(Modifier.padding(horizontal = 16.dp).padding(bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                com.pocketstudio.ui.WholeWordsText(
+                    tr("  Effets du pad").trim(), Modifier.weight(1f).testTag("pad_sheet_head"), style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+                TextButton(onClick = close, modifier = Modifier.testTag("pad_sheet_close")) { Text(tr("Fermer")) }
+            }
+        },
+    ) {
+        Column(
+            Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                for (l in 0 until com.pocketstudio.model.DrumPattern.PAD_COUNT) {
+                    FilterChip(
+                        selected = l == lane, onClick = { lane = l }, label = { Text(tr("Pad %1\$d · %2\$s", l + 1, padNames(l)), maxLines = 1) },
+                        colors = pillColors(), modifier = Modifier.testTag("pad_fx_$l"),
+                    )
+                }
+            }
+            val ch = com.pocketstudio.model.Mixer.padChannel(lane)
+            Text(tr("Effets · %s", tr("pad %1\$d (%2\$s)", lane + 1, padNames(lane))), style = MaterialTheme.typography.titleSmall, modifier = Modifier.testTag("pad_sheet_title"))
+            androidx.compose.runtime.key(lane) {
+                androidx.compose.runtime.CompositionLocalProvider(LocalFxTrackName provides padNames(lane)) { EffectsBox(ch, channels.getOrElse(ch) { Channel() }, actions) }
+            }
         }
     }
 }

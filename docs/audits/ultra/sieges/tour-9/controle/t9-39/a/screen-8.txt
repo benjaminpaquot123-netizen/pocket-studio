@@ -1,0 +1,28 @@
+Écran 8 (900x1509)
+dessin @ 450,754
+dessin @ 450,894
+texte « Tonalité du morceau » @ 395,966
+texte « Fermer » @ 821,966
+texte « Tonalité du morceau : aucune » @ 170,1032
+texte « Gamme » @ 63,1077
+bouton « Majeure » @ 88,1143
+bouton « Mineure » @ 225,1143
+bouton « Dorienne » @ 368,1143
+bouton « Penta mineure » @ 546,1143
+bouton « Penta majeure » @ 754,1143
+bouton « Blues » @ 73,1224
+bouton « Phrygienne » @ 217,1224
+bouton « Mineure harmonique » @ 447,1224
+texte « Tonique » @ 65,1290
+bouton « Do » @ 63,1356
+bouton « Do♯ » @ 151,1356
+bouton « Ré » @ 239,1356
+bouton « Mi♭ » @ 326,1356
+bouton « Mi » @ 413,1356
+bouton « Fa » @ 500,1356
+bouton « Fa♯ » @ 587,1356
+bouton « Sol » @ 674,1356
+bouton « La♭ » @ 761,1356
+bouton « La » @ 63,1437
+bouton « Si♭ » @ 150,1437
+bouton « Si » @ 237,1437

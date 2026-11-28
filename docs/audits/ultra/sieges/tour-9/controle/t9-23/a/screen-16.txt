@@ -1,0 +1,30 @@
+Écran 16 (900x1509)
+dessin @ 450,467
+texte « Zamknij » @ 782,543
+texte « Tonacja utworu » @ 356,543
+texte « Tonacja utworu: G · Molowa harmoniczna » @ 404,626
+texte « Skala » @ 74,697
+bouton « Durowa » @ 118,776
+bouton « Molowa » @ 318,776
+bouton « Dorycka » @ 524,776
+bouton « Penta mol » @ 751,776
+bouton « Penta dur » @ 138,857
+bouton « Blues » @ 334,857
+bouton « Frygijska » @ 522,857
+bouton « Molowa harmoniczna » @ 261,938
+texte « Tonacja » @ 98,1017
+bouton « C » @ 63,1096
+bouton « C♯ » @ 156,1096
+bouton « D » @ 249,1096
+bouton « E♭ » @ 336,1096
+bouton « E » @ 423,1096
+bouton « F » @ 510,1096
+bouton « F♯ » @ 600,1096
+bouton « G » @ 690,1096
+bouton « A♭ » @ 778,1096
+bouton « A » @ 63,1177
+bouton « B♭ » @ 150,1177
+bouton « B » @ 237,1177
+image (rond coché) @ 58,1303
+texte « Udało się! Barwa utworu jest wybrana. » @ 472,1303
+bouton « Wróć do samouczka » @ 450,1433

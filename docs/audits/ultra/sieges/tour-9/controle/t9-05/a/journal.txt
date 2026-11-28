@@ -1,0 +1,570 @@
+#0 SIEGE lang=ko device=phone360 font=200 mode=simple theme=- fresh=non gestes.max=150 lit=oui main=both amenee=tuto:acidcore:1
+#0 PREMIER ECRAN reel_s=3.5 simule_s=2.4 jvm_s=8.5 travail=non vide=non attente_s=0.0
+#0 AMENEE tuto:acidcore:1
+#0 AMENEE > touche 270 989 (welcome_learn)
+#0 AMENEE > touche 270 561 (mode_card_simple)
+#0 AMENEE > touche 270 1079 (tuto_style_acidcore)
+#0 AMENEE prête (tuto_panel/tab_simple_Rythme)
+#1 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE edccd659f3 | project=p-35315ec2 tuto=acidcore/Facile active=true step=ref done=0 playing=false
+#1 SON Son : rien ne joue.
+#1 LAYOUT CUT « ? » drawn past its parent's edge (down, 32 dp shown of 42)
+#1 LAYOUT CONTRAST « ● » 3.42:1 (needs 4.5:1, 13 sp)
+#1 > touche 420 615
+#1 DOIGT tuto_text_more « 계속 읽기 »
+#2 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE edccd659f3 | project=p-35315ec2 tuto=acidcore/Facile active=true step=ref done=0 playing=false
+#2 SON Son : rien ne joue.
+#2 > touche 270 609
+#2 DOIGT tuto_text_more « 계속 읽기 »
+#3 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE edccd659f3 | project=p-35315ec2 tuto=acidcore/Facile active=true step=ref done=0 playing=false
+#3 SON Son : rien ne joue.
+#3 RIEN NE CHANGE (3 écrans identiques)
+#3 > touche 219 454
+#3 DOIGT tuto_kit_download « Acidcore 킷 다운로드 (4 MB) »
+#4 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d51623aa47 | project=p-35315ec2 tuto=acidcore/Facile active=true step=ref done=0 playing=false
+#4 SON Son : rien ne joue.
+#4 > attends 10
+#5 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b117e76983 | project=p-35315ec2 tuto=acidcore/Facile active=true step=ref done=0 playing=false
+#5 SON Son : rien ne joue.
+#5 > touche 270 734
+#5 DOIGT tuto_listen «  예시 듣기 »
+#6 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 7a1f30ad4c | project=p-35315ec2 tuto=acidcore/Facile active=true step=ref done=0 playing=false
+#6 SON Son : l'exemple du tuto joue (encore 7 s).
+#6 > touche 445 824
+#6 DOIGT tuto_next « 다음  »
+#7 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 4c9f1fc994 | project=p-35315ec2 tuto=acidcore/Facile active=true step=tempo done=1 playing=false
+#7 SON Son : rien ne joue.
+#7 LAYOUT OVERLAP « 120 » over « 1/11장 · 2/3단계 · 쉬움 » (54 x 34 dp)
+#7 LAYOUT OVERLAP « 곡의 빠르기와 색깔 » over the touchable « 간단 모드. 눌러서 모드를 바꾸세요. 모드 바꾸기 » (69 x 20 dp)
+#7 LAYOUT OVERLAP « 1/11장 · 2/3단계 · 쉬움 » over the touchable « 템포: 분당 120박 템포 바꾸기 » (120 x 48 dp)
+#7 > touche 270 650
+#7 DOIGT tuto_do «   직접 할게요 »
+#8 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE ee3c4bb294 | project=p-35315ec2 tuto=acidcore/Facile active=true step=tempo done=1 playing=false
+#8 SON Son : rien ne joue.
+#8 LAYOUT CUT « ? » lines cut (taller than its box)
+#8 LAYOUT OVERLAP « 템포 » over the touchable « 시트 닫기 » (64 x 51 dp)
+#8 LAYOUT OVERLAP « ? » over the touchable « 시트 닫기 » (13 x 18 dp)
+#8 LAYOUT OVERLAP « 닫기 » over the touchable « 시트 닫기 » (48 x 38 dp)
+#8 LAYOUT OVERLAP « 120 » over the touchable « 시트 닫기 » (96 x 61 dp)
+#8 LAYOUT OVERLAP «  BPM » over the touchable « 시트 닫기 » (70 x 42 dp)
+#8 LAYOUT OVERLAP « 70 » over the touchable « 시트 닫기 » (36 x 34 dp)
+#8 LAYOUT OVERLAP « 90 » over the touchable « 시트 닫기 » (36 x 34 dp)
+#8 LAYOUT OVERLAP « 120 » over the touchable « 시트 닫기 » (54 x 34 dp)
+#8 LAYOUT OVERLAP « 140 » over the touchable « 시트 닫기 » (54 x 34 dp)
+#8 LAYOUT OVERLAP « 174 » over the touchable « 시트 닫기 » (54 x 34 dp)
+#8 LAYOUT OVERLAP « ½ » over the touchable « 시트 닫기 » (25 x 42 dp)
+#8 LAYOUT OVERLAP « ×2 » over the touchable « 시트 닫기 » (36 x 42 dp)
+#8 LAYOUT OVERLAP « 1 » over the touchable « 시트 닫기 » (23 x 43 dp)
+#8 LAYOUT OVERLAP « 2 » over the touchable « 시트 닫기 » (23 x 43 dp)
+#8 LAYOUT OVERLAP « 3 » over the touchable « 시트 닫기 » (23 x 43 dp)
+#8 LAYOUT OVERLAP « 4 » over the touchable « 시트 닫기 » (23 x 43 dp)
+#8 LAYOUT OVERLAP « 5 » over the touchable « 시트 닫기 » (23 x 43 dp)
+#8 LAYOUT OVERLAP « 6 » over the touchable « 시트 닫기 » (23 x 43 dp)
+#8 LAYOUT OVERLAP « 7 » over the touchable « 시트 닫기 » (23 x 43 dp)
+#8 LAYOUT OVERLAP « 8 » over the touchable « 시트 닫기 » (23 x 43 dp)
+#8 LAYOUT OVERLAP « 9 » over the touchable « 시트 닫기 » (23 x 43 dp)
+#8 LAYOUT OVERLAP « 0 » over the touchable « 시트 닫기 » (23 x 43 dp)
+#8 LAYOUT OVERLAP « 확인 » over the touchable « 시트 닫기 » (64 x 51 dp)
+#8 LAYOUT OVERLAP « 박자에 맞춰 탭 » over the touchable « 시트 닫기 » (171 x 42 dp)
+#8 LAYOUT OVERLAP « 박마다 여기를 탭하세요. 템포가 따라와요. » over the touchable « 시트 닫기 » (249 x 72 dp)
+#8 > touche 103 657
+#8 DOIGT tempo_key_1 « 1 »
+#9 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE 2e81d3a2b9 | project=p-35315ec2 tuto=acidcore/Facile active=true step=tempo done=1 playing=false
+#9 SON Son : rien ne joue.
+#9 LAYOUT OVERLAP « 1 » over the touchable « 시트 닫기 » (32 x 61 dp)
+#9 LAYOUT OVERLAP « 40~300 사이 » over the touchable « 시트 닫기 » (156 x 38 dp)
+#9 > touche 270 831
+#9 DOIGT tempo_key_8 « 8 »
+#10 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE e74b7e5671 | project=p-35315ec2 tuto=acidcore/Facile active=true step=tempo done=1 playing=false
+#10 SON Son : rien ne joue.
+#10 LAYOUT OVERLAP « 18 » over the touchable « 시트 닫기 » (64 x 61 dp)
+#10 > touche 270 744
+#10 DOIGT tempo_key_5 « 5 »
+#11 ROUTE dialogue:tempo_sheet | MODE simple | EMPREINTE d75a34fb52 | project=p-35315ec2 tuto=acidcore/Facile active=true step=tempo done=1 playing=false
+#11 SON Son : rien ne joue.
+#11 LAYOUT OVERLAP « 185 » over the touchable « 시트 닫기 » (96 x 61 dp)
+#11 > touche 437 918
+#11 DOIGT tempo_key_ok « 확인 »
+#12 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 80fa2b6c25 | project=p-35315ec2 tuto=acidcore/Facile active=true step=tempo done=2 playing=false
+#12 SON Son : rien ne joue.
+#12 LAYOUT CUT « Roland TR-909 · 하이햇 » ellipsized (« … »)
+#12 LAYOUT CUT « Roland TR-909 · 오픈 하이햇 » ellipsized (« … »)
+#12 LAYOUT OVERLAP « Gabber · 큰북 1 » over « FX » (26 x 11 dp)
+#12 LAYOUT OVERLAP « 손뼉 » over « FX » (17 x 11 dp)
+#12 LAYOUT OVERLAP « Roland TR-909 · 하이햇 » over « L 30 » (40 x 4 dp)
+#12 LAYOUT OVERLAP « Roland TR-909 · 오픈 하이햇 » over « R 30 » (42 x 4 dp)
+#12 LAYOUT OVERLAP « 미드 탐 » over « R 45 » (44 x 9 dp)
+#12 LAYOUT OVERLAP « 북 테두리 » over « R 50 » (43 x 5 dp)
+#12 > touche 270 802
+#12 DOIGT tuto_next_folded « 성공 »
+#13 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b77a477d6f | project=p-35315ec2 tuto=acidcore/Facile active=true step=key done=2 playing=false
+#13 SON Son : rien ne joue.
+#13 LAYOUT OVERLAP « 185 » over « 1/11장 · 3/3단계 · 쉬움 » (54 x 34 dp)
+#13 LAYOUT OVERLAP « 1/11장 · 3/3단계 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 48 dp)
+#13 > touche 270 533
+#13 DOIGT tuto_text_more « 계속 읽기 »
+#14 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2b057d8c66 | project=p-35315ec2 tuto=acidcore/Facile active=true step=key done=2 playing=false
+#14 SON Son : rien ne joue.
+#14 > touche 270 650
+#14 DOIGT tuto_do «   직접 할게요 »
+#15 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE d3d9a548db | project=p-35315ec2 tuto=acidcore/Facile active=true step=key done=2 playing=false
+#15 SON Son : rien ne joue.
+#15 LAYOUT OVERLAP « 곡의 키 » over the touchable « 시트 닫기 » (103 x 51 dp)
+#15 LAYOUT OVERLAP « 곡의 키: 없음 » over the touchable « 시트 닫기 » (142 x 38 dp)
+#15 LAYOUT OVERLAP « 스케일 » over the touchable « 시트 닫기 » (72 x 38 dp)
+#15 LAYOUT OVERLAP « 메이저 » over the touchable « 시트 닫기 » (78 x 42 dp)
+#15 LAYOUT OVERLAP « 마이너 » over the touchable « 시트 닫기 » (78 x 42 dp)
+#15 LAYOUT OVERLAP « 도리안 » over the touchable « 시트 닫기 » (78 x 42 dp)
+#15 LAYOUT OVERLAP « 마이너 펜타 » over the touchable « 시트 닫기 » (138 x 42 dp)
+#15 LAYOUT OVERLAP « 메이저 펜타 » over the touchable « 시트 닫기 » (138 x 42 dp)
+#15 LAYOUT OVERLAP « 블루스 » over the touchable « 시트 닫기 » (78 x 42 dp)
+#15 LAYOUT OVERLAP « 프리지안 » over the touchable « 시트 닫기 » (104 x 42 dp)
+#15 LAYOUT OVERLAP « 하모닉 마이너 » over the touchable « 시트 닫기 » (164 x 42 dp)
+#15 LAYOUT OVERLAP « 키 » over the touchable « 시트 닫기 » (24 x 38 dp)
+#15 LAYOUT OVERLAP « C » over the touchable « 시트 닫기 » (21 x 42 dp)
+#15 LAYOUT OVERLAP « C♯ » over the touchable « 시트 닫기 » (36 x 42 dp)
+#15 LAYOUT OVERLAP « D » over the touchable « 시트 닫기 » (20 x 42 dp)
+#15 LAYOUT OVERLAP « E♭ » over the touchable « 시트 닫기 » (27 x 42 dp)
+#15 LAYOUT OVERLAP « E » over the touchable « 시트 닫기 » (17 x 42 dp)
+#15 LAYOUT OVERLAP « F » over the touchable « 시트 닫기 » (17 x 42 dp)
+#15 LAYOUT OVERLAP « F♯ » over the touchable « 시트 닫기 » (32 x 42 dp)
+#15 LAYOUT OVERLAP « G » over the touchable « 시트 닫기 » (21 x 42 dp)
+#15 LAYOUT OVERLAP « A♭ » over the touchable « 시트 닫기 » (29 x 42 dp)
+#15 LAYOUT OVERLAP « A » over the touchable « 시트 닫기 » (19 x 42 dp)
+#15 LAYOUT OVERLAP « B♭ » over the touchable « 시트 닫기 » (28 x 42 dp)
+#15 LAYOUT OVERLAP « B » over the touchable « 시트 닫기 » (18 x 42 dp)
+#15 > touche 120 777
+#15 DOIGT tuto_scale_Phrygian « 프리지안 »
+#16 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE 7ee46fc001 | project=p-35315ec2 tuto=acidcore/Facile active=true step=key done=2 playing=false
+#16 SON Son : rien ne joue.
+#16 LAYOUT OVERLAP « 곡의 키: C · 프리지안 » over the touchable « 시트 닫기 » (231 x 38 dp)
+#16 > touche 153 1017
+#16 DOIGT tuto_root_6 « F♯ »
+#17 ROUTE dialogue:tuto_key_sheet | MODE simple | EMPREINTE f75d375f3c | project=p-35315ec2 tuto=acidcore/Facile active=true step=key done=3 playing=false
+#17 SON Son : rien ne joue.
+#17 LAYOUT OVERLAP « 곡의 키: F♯ · 프리지안 » over the touchable « 시트 닫기 » (242 x 38 dp)
+#17 LAYOUT OVERLAP « 성공! 곡의 색깔을 골랐어요. » over the touchable « 시트 닫기 » (263 x 84 dp)
+#17 LAYOUT OVERLAP « 튜토리얼로 돌아가기 » over the touchable « 시트 닫기 » (224 x 20 dp)
+#17 > touche 270 1150
+#17 DOIGT tuto_key_continue « 튜토리얼로 돌아가기 »
+#18 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 23af87cc45 | project=p-35315ec2 tuto=acidcore/Facile active=true step=key done=3 playing=false
+#18 SON Son : rien ne joue.
+#18 LAYOUT CUT « R 40 » lines dropped (more lines than room)
+#18 LAYOUT OVERLAP « 심벌 » over « FX » (17 x 2 dp)
+#18 LAYOUT OVERLAP « 심벌 » over « R 40 » (12 x 2 dp)
+#18 > touche 270 802
+#18 DOIGT tuto_chapter_end_folded « 잘했어요, 챕터 완료! »
+#19 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 74c1d554df | project=p-35315ec2 tuto=acidcore/Facile active=true step=key done=3 playing=false
+#19 SON Son : rien ne joue.
+#19 > touche 270 740
+#19 DOIGT tuto_next_big « 다음 챕터   »
+#20 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 621d7fc044 | project=p-35315ec2 tuto=acidcore/Facile active=true step=ready done=3 playing=false
+#20 SON Son : rien ne joue.
+#20 > touche 270 734
+#20 DOIGT tuto_mark «   알겠어요 »
+#21 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE ba6d388e79 | project=p-35315ec2 tuto=acidcore/Facile active=true step=kick_do done=4 playing=false
+#21 SON Son : rien ne joue.
+#21 > touche 270 650
+#21 DOIGT tuto_do «   직접 할게요 »
+#22 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE a9b6d356f2 | project=p-35315ec2 tuto=acidcore/Facile active=true step=kick_do done=4 playing=false
+#22 SON Son : rien ne joue.
+#22 LAYOUT CUT « 여기 점선 칸이 4개 남았어요 » ellipsized (« … »)
+#22 LAYOUT CUT « 직접 해 보세요: “Gabber · 큰북 1” 패드에서 점선 칸을 탭하세요. 박마다 하나씩이에요. » ellipsized (« … »)
+#22 LAYOUT CONTRAST « 여기 점선 칸이 4개 남았어요 » 2.94:1 (needs 3.0:1, 14 sp)
+#22 LAYOUT CONTRAST « 1 » 2.75:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « 2 » 4.18:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « 3 » 4.18:1 (needs 4.5:1, 12 sp)
+#22 LAYOUT CONTRAST « 4 » 4.18:1 (needs 4.5:1, 12 sp)
+#22 > touche 67 356
+#22 DOIGT step_0 « 스텝 1 »
+#23 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 303a470f83 | project=p-35315ec2 tuto=acidcore/Facile active=true step=kick_do done=4 playing=false
+#23 SON Son : rien ne joue.
+#23 LAYOUT CUT « 여기 점선 칸이 3개 남았어요 » ellipsized (« … »)
+#23 LAYOUT CONTRAST « 여기 점선 칸이 3개 남았어요 » 2.94:1 (needs 3.0:1, 14 sp)
+#23 LAYOUT CONTRAST « 2 » 2.63:1 (needs 4.5:1, 12 sp)
+#23 > touche 298 356
+#23 DOIGT step_4 « 스텝 5 »
+#24 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 0711b3ad2c | project=p-35315ec2 tuto=acidcore/Facile active=true step=kick_do done=4 playing=false
+#24 SON Son : rien ne joue.
+#24 LAYOUT CUT « 여기 점선 칸이 2개 남았어요 » ellipsized (« … »)
+#24 LAYOUT CONTRAST « 여기 점선 칸이 2개 남았어요 » 2.94:1 (needs 3.0:1, 14 sp)
+#24 LAYOUT CONTRAST « 3 » 3.58:1 (needs 4.5:1, 12 sp)
+#24 > touche 67 427
+#24 DOIGT step_8 « 스텝 9 »
+#25 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 571a15e92a | project=p-35315ec2 tuto=acidcore/Facile active=true step=kick_do done=4 playing=false
+#25 SON Son : rien ne joue.
+#25 LAYOUT CUT « 여기 점선 칸이 1개 남았어요 » ellipsized (« … »)
+#25 LAYOUT CONTRAST « 여기 점선 칸이 1개 남았어요 » 2.94:1 (needs 3.0:1, 14 sp)
+#25 LAYOUT CONTRAST « 4 » 3.38:1 (needs 4.5:1, 12 sp)
+#25 > touche 298 427
+#25 DOIGT step_12 « 스텝 13 »
+#26 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE cd26e4394e | project=p-35315ec2 tuto=acidcore/Facile active=true step=kick_do done=5 playing=false
+#26 SON Son : rien ne joue.
+#26 > touche 270 802
+#26 DOIGT tuto_next_folded « 성공 »
+#27 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 136fd81115 | project=p-35315ec2 tuto=acidcore/Facile active=true step=open_hat_do done=5 playing=false
+#27 SON Son : rien ne joue.
+#27 > touche 270 650
+#27 DOIGT tuto_do «   직접 할게요 »
+#28 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE fd71e0f250 | project=p-35315ec2 tuto=acidcore/Facile active=true step=open_hat_do done=5 playing=false
+#28 SON Son : rien ne joue.
+#28 LAYOUT CUT « 직접 해 보세요: “Roland TR-909 · 오픈 하이햇” 패드에서 킥 사이의 점선 칸을 탭하세요. » ellipsized (« … »)
+#28 > touche 182 356
+#28 DOIGT step_2 « 스텝 3 »
+#29 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c6b45725db | project=p-35315ec2 tuto=acidcore/Facile active=true step=open_hat_do done=5 playing=false
+#29 SON Son : rien ne joue.
+#29 > touche 414 356
+#29 DOIGT step_6 « 스텝 7 »
+#30 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 575e5a6804 | project=p-35315ec2 tuto=acidcore/Facile active=true step=open_hat_do done=5 playing=false
+#30 SON Son : rien ne joue.
+#30 > touche 182 427
+#30 DOIGT step_10 « 스텝 11 »
+#31 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 24277dac92 | project=p-35315ec2 tuto=acidcore/Facile active=true step=open_hat_do done=5 playing=false
+#31 SON Son : rien ne joue.
+#31 > touche 414 427
+#31 DOIGT step_14 « 스텝 15 »
+#32 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 8da7d9452c | project=p-35315ec2 tuto=acidcore/Facile active=true step=open_hat_do done=6 playing=false
+#32 SON Son : rien ne joue.
+#32 > touche 270 802
+#32 DOIGT tuto_next_folded « 성공 »
+#33 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE bcec8000cb | project=p-35315ec2 tuto=acidcore/Facile active=true step=clap_do done=6 playing=false
+#33 SON Son : rien ne joue.
+#33 > touche 270 650
+#33 DOIGT tuto_do «   직접 할게요 »
+#34 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 3fa5b0ca71 | project=p-35315ec2 tuto=acidcore/Facile active=true step=clap_do done=6 playing=false
+#34 SON Son : rien ne joue.
+#34 LAYOUT CUT « 직접 해 보세요: “손뼉” 패드에서 점선 칸을 탭하세요. 2박과 4박이에요. » ellipsized (« … »)
+#34 LAYOUT CONTRAST « 2 » 2.32:1 (needs 4.5:1, 12 sp)
+#34 LAYOUT CONTRAST « 4 » 3.51:1 (needs 4.5:1, 12 sp)
+#34 > touche 298 308
+#34 DOIGT step_4 « 스텝 5 »
+#35 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 254c9221ed | project=p-35315ec2 tuto=acidcore/Facile active=true step=clap_do done=6 playing=false
+#35 SON Son : rien ne joue.
+#35 LAYOUT CONTRAST « 4 » 2.35:1 (needs 4.5:1, 12 sp)
+#35 > touche 298 378
+#35 DOIGT step_12 « 스텝 13 »
+#36 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 64d32eabef | project=p-35315ec2 tuto=acidcore/Facile active=true step=clap_do done=7 playing=false
+#36 SON Son : rien ne joue.
+#36 LAYOUT CONTRAST « 1 » 1.40:1 (needs 4.5:1, 12 sp)
+#36 LAYOUT CONTRAST « 2 » 3.39:1 (needs 4.5:1, 12 sp)
+#36 > touche 270 802
+#36 DOIGT tuto_next_folded « 성공 »
+#37 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE a0297892c1 | project=p-35315ec2 tuto=acidcore/Facile active=true step=drums_hear done=7 playing=false
+#37 SON Son : rien ne joue.
+#37 LAYOUT OVERLAP « 185 » over « 드럼 » (46 x 17 dp)
+#37 LAYOUT OVERLAP « 185 » over « 2/11장 · 5/5단계 · 쉬움 » (54 x 17 dp)
+#37 LAYOUT OVERLAP « 드럼 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (48 x 25 dp)
+#37 LAYOUT OVERLAP « 2/11장 · 5/5단계 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 23 dp)
+#37 > touche 270 650
+#37 DOIGT tuto_play_mine «   내 결과 듣기 »
+#38 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9cb5500d28 | project=p-35315ec2 tuto=acidcore/Facile active=true step=drums_hear done=7 playing=true
+#38 SON Son : la musique du projet joue en boucle.
+#38 LAYOUT OVERLAP « 2/11장 · 5/5단계 · 쉬움 » over the touchable « 파트부터 재생 » (91 x 35 dp)
+#38 > attends 4
+#39 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 9cb5500d28 | project=p-35315ec2 tuto=acidcore/Facile active=true step=drums_hear done=7 playing=true
+#39 SON Son : la musique du projet joue en boucle.
+#39 > touche 270 737
+#39 DOIGT tuto_listen «  예시 듣기 »
+#40 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 2df7648b04 | project=p-35315ec2 tuto=acidcore/Facile active=true step=drums_hear done=7 playing=false
+#40 SON Son : l'exemple du tuto joue (encore 3 s).
+#40 > attends 4
+#41 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 68655cb163 | project=p-35315ec2 tuto=acidcore/Facile active=true step=drums_hear done=8 playing=false
+#41 SON Son : rien ne joue.
+#41 LAYOUT OVERLAP « 185 » over « 2/11장 · 완료 · 쉬움 » (54 x 17 dp)
+#41 LAYOUT OVERLAP « 2/11장 · 완료 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 23 dp)
+#41 > touche 445 824
+#41 DOIGT tuto_listen «  예시 듣기 »
+#42 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE dbb049525e | project=p-35315ec2 tuto=acidcore/Facile active=true step=drums_hear done=8 playing=false
+#42 SON Son : l'exemple du tuto joue (encore 3 s).
+#42 > touche 270 743
+#42 DOIGT tuto_next_big « 다음 챕터   »
+#43 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE c1865acaf9 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_hear done=8 playing=false
+#43 SON Son : rien ne joue.
+#43 LAYOUT OVERLAP « 185 » over « 애시드 라인 (303) » (54 x 25 dp)
+#43 LAYOUT OVERLAP « 애시드 라인 (303) » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 31 dp)
+#43 > touche 270 734
+#43 DOIGT tuto_listen «  예시 듣기 »
+#44 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE b40628caa5 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_hear done=8 playing=false
+#44 SON Son : l'exemple du tuto joue (encore 3 s).
+#44 > attends 10
+#45 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE 11c4d1cf40 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_hear done=9 playing=false
+#45 SON Son : rien ne joue.
+#45 > touche 270 734
+#45 DOIGT tuto_next_big « 다음 단계   »
+#46 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d29decfbe3 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#46 SON Son : rien ne joue.
+#46 LAYOUT OVERLAP « 185 » over « 3/11장 · 2/2단계 · 쉬움 » (54 x 34 dp)
+#46 LAYOUT OVERLAP « 애시드 라인 (303) » over the touchable « 간단 모드. 눌러서 모드를 바꾸세요. 모드 바꾸기 » (69 x 20 dp)
+#46 LAYOUT OVERLAP « 3/11장 · 2/2단계 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 48 dp)
+#46 > touche 270 737
+#46 DOIGT tuto_show «  보여 주세요 »
+#47 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c177d6effd | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#47 SON Son : rien ne joue.
+#47 LAYOUT CUT « 보세요, 제가 해 볼게요… » ellipsized (« … »)
+#47 LAYOUT CONTRAST « 정지 » 3.91:1 (needs 4.5:1, 14 sp)
+#47 > attends 8
+#48 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d29decfbe3 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#48 SON Son : rien ne joue.
+#48 > touche 270 737
+#48 DOIGT tuto_show «  보여 주세요 »
+#49 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE c177d6effd | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#49 SON Son : rien ne joue.
+#49 > attends 3
+#50 ROUTE tab_simple_Rythme | MODE simple | EMPREINTE 9cd1781a66 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#50 SON Son : rien ne joue.
+#50 LAYOUT CUT « 됐어요. 원래대로 돌려놓는 중… » ellipsized (« … »)
+#50 > attends 2
+#51 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE d29decfbe3 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#51 SON Son : rien ne joue.
+#51 > touche 445 824
+#51 DOIGT tuto_next « 다음  »
+#52 ROUTE tuto_panel/tab_simple_Rythme | MODE simple | EMPREINTE fac980dd94 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#52 SON Son : rien ne joue.
+#52 > touche 271 1050
+#52 DOIGT tab_simple_Clavier « 건반 »
+#53 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 8837baee0e | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#53 SON Son : rien ne joue.
+#53 > touche 483 132
+#53 DOIGT tuto_fold
+#54 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c1b1673d7d | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#54 SON Son : rien ne joue.
+#54 LAYOUT CUT « 애시드 라인은 프로듀서 화면에서 한 칸씩 써요. “보여 주세요”를 탭하면 앱이 “Acid 303” 트랙에 대신 써 줘요. 그다음 “내 결과 듣기”로 들어 보세요. » ellipsized (« … »)
+#54 LAYOUT CONTRAST «  내 멜로디 녹음 » 2.78:1 (needs 4.5:1, 14 sp)
+#54 > touche 483 631
+#54 DOIGT tuto_fold
+#55 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 8837baee0e | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#55 SON Son : rien ne joue.
+#55 > touche 270 737
+#55 DOIGT tuto_show «  보여 주세요 »
+#56 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 2d2e712192 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#56 SON Son : rien ne joue.
+#56 > attends 2
+#57 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 3ccde27d36 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#57 SON Son : rien ne joue.
+#57 > attends 2
+#58 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE 30445e6689 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#58 SON Son : rien ne joue.
+#58 LAYOUT OVERLAP « 간단 » over « 애시드 라인 (303) » (48 x 15 dp)
+#58 LAYOUT OVERLAP «  템포 » over « 3/11장 · 2/2단계 · 쉬움 » (53 x 36 dp)
+#58 > attends 2
+#59 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 8837baee0e | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#59 SON Son : rien ne joue.
+#59 > touche 483 132
+#59 DOIGT tuto_fold
+#60 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c1b1673d7d | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#60 SON Son : rien ne joue.
+#60 > touche 500 458
+#60 DOIGT help_건반으로 녹음하기 « “건반으로 녹음하기”란 뭘까요? »
+#60 AIDE help_
+#61 ROUTE dialogue:« 건반으로 녹음하기 » | MODE simple | EMPREINTE 4ccb144d9c | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#61 SON Son : rien ne joue.
+#61 > touche 413 879
+#61 DOIGT #2061 « 알겠어요 »
+#62 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c1b1673d7d | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#62 SON Son : rien ne joue.
+#62 > touche 483 631
+#62 DOIGT tuto_fold
+#63 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 8837baee0e | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#63 SON Son : rien ne joue.
+#63 > touche 483 132
+#63 DOIGT tuto_fold
+#64 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c1b1673d7d | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#64 SON Son : rien ne joue.
+#64 > touche 263 42
+#64 DOIGT top_mode « 간단 모드. 눌러서 모드를 바꾸세요. »
+#65 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 589123cf55 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#65 SON Son : rien ne joue.
+#65 LAYOUT CONTRAST « 지금 모드 » 3.54:1 (needs 4.5:1, 13 sp)
+#65 > retour
+#65 RETOUR
+#66 ROUTE tab_simple_Clavier | MODE simple | EMPREINTE c1b1673d7d | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#66 SON Son : rien ne joue.
+#66 > touche 483 631
+#66 DOIGT tuto_fold
+#67 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 8837baee0e | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=9 playing=false
+#67 SON Son : rien ne joue.
+#67 > touche 445 824
+#67 DOIGT tuto_next « 다음  »
+#68 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 088d34b529 | project=p-35315ec2 tuto=acidcore/Facile active=true step=groove_hear done=9 playing=false
+#68 SON Son : rien ne joue.
+#68 LAYOUT OVERLAP « 185 » over « 첫 번째 파트: 그루브 » (54 x 25 dp)
+#68 LAYOUT OVERLAP « 첫 번째 파트: 그루브 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 31 dp)
+#68 > touche 445 824
+#68 DOIGT tuto_next « 다음  »
+#69 ROUTE tuto_panel/tab_simple_Clavier | MODE simple | EMPREINTE 1d4226e14e | project=p-35315ec2 tuto=acidcore/Facile active=true step=groove_name done=10 playing=false
+#69 SON Son : rien ne joue.
+#69 LAYOUT OVERLAP « 185 » over « 4/11장 · 2/2단계 · 쉬움 » (54 x 34 dp)
+#69 LAYOUT OVERLAP « 첫 번째 파트: 그루브 » over the touchable « 간단 모드. 눌러서 모드를 바꾸세요. 모드 바꾸기 » (69 x 27 dp)
+#69 LAYOUT OVERLAP « 4/11장 · 2/2단계 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 48 dp)
+#69 > touche 270 622
+#69 DOIGT tuto_need «   파트 이름을 “그루브”로 짓기 »
+#70 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 9d00aca100 | project=p-35315ec2 tuto=acidcore/Facile active=true step=groove_name done=11 playing=false
+#70 SON Son : rien ne joue.
+#70 LAYOUT OVERLAP « 185 » over « 4/11장 · 완료 · 쉬움 » (54 x 21 dp)
+#70 LAYOUT OVERLAP « 4/11장 · 완료 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 29 dp)
+#70 > touche 270 743
+#70 DOIGT tuto_next_big « 다음 챕터   »
+#71 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 7469b30c4c | project=p-35315ec2 tuto=acidcore/Facile active=true step=brick done=11 playing=false
+#71 SON Son : rien ne joue.
+#71 LAYOUT OVERLAP « 185 » over « 파트 이해하기 » (54 x 31 dp)
+#71 LAYOUT OVERLAP « 185 » over « 5/11장 · 1/5단계 · 쉬움 » (54 x 3 dp)
+#71 LAYOUT OVERLAP « 파트 이해하기 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 38 dp)
+#71 LAYOUT OVERLAP « 5/11장 · 1/5단계 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 9 dp)
+#71 > touche 270 734
+#71 DOIGT tuto_mark «   알겠어요 »
+#72 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 33ee30cce1 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_intro done=12 playing=false
+#72 SON Son : rien ne joue.
+#72 LAYOUT OVERLAP « 간단 » over « 파트 이해하기 » (13 x 9 dp)
+#72 LAYOUT OVERLAP « 185 » over « 5/11장 · 2/5단계 · 쉬움 » (54 x 34 dp)
+#72 LAYOUT OVERLAP « 파트 이해하기 » over the touchable « 간단 모드. 눌러서 모드를 바꾸세요. 모드 바꾸기 » (23 x 14 dp)
+#72 LAYOUT OVERLAP « 파트 이해하기 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 5 dp)
+#72 LAYOUT OVERLAP « 5/11장 · 2/5단계 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 43 dp)
+#72 LAYOUT CONTRAST « 16 » 2.79:1 (needs 4.5:1, 12 sp)
+#72 > touche 270 734
+#72 DOIGT tuto_listen «  예시 듣기 »
+#73 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 8ab82287d8 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_intro done=12 playing=false
+#73 SON Son : l'exemple du tuto joue (encore 3 s).
+#73 > attends 8
+#74 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 7a2d88705b | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_intro done=13 playing=false
+#74 SON Son : rien ne joue.
+#74 > touche 270 734
+#74 DOIGT tuto_next_big « 다음 단계   »
+#75 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 0e07850431 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_drop done=13 playing=false
+#75 SON Son : rien ne joue.
+#75 LAYOUT OVERLAP « 185 » over « 5/11장 · 3/5단계 · 쉬움 » (54 x 34 dp)
+#75 LAYOUT OVERLAP « 5/11장 · 3/5단계 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 43 dp)
+#75 LAYOUT CONTRAST « 32 » 2.08:1 (needs 4.5:1, 12 sp)
+#75 > touche 270 734
+#75 DOIGT tuto_listen «  예시 듣기 »
+#76 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE d861cc1506 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_drop done=13 playing=false
+#76 SON Son : l'exemple du tuto joue (encore 3 s).
+#76 > attends 8
+#77 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 0bc3e8d2e5 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_drop done=14 playing=false
+#77 SON Son : rien ne joue.
+#77 > touche 270 734
+#77 DOIGT tuto_next_big « 다음 단계   »
+#78 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 20f78b0008 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_break done=14 playing=false
+#78 SON Son : rien ne joue.
+#78 LAYOUT OVERLAP « 185 » over « 5/11장 · 4/5단계 · 쉬움 » (54 x 34 dp)
+#78 LAYOUT OVERLAP « 5/11장 · 4/5단계 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 43 dp)
+#78 > touche 270 734
+#78 DOIGT tuto_listen «  예시 듣기 »
+#79 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 250d0e46ce | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_break done=14 playing=false
+#79 SON Son : l'exemple du tuto joue (encore 3 s).
+#79 > attends 8
+#80 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 8760c13940 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_break done=15 playing=false
+#80 SON Son : rien ne joue.
+#80 > touche 270 734
+#80 DOIGT tuto_next_big « 다음 단계   »
+#81 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c730c5999d | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_phrases done=15 playing=false
+#81 SON Son : rien ne joue.
+#81 LAYOUT OVERLAP « 185 » over « 5/11장 · 5/5단계 · 쉬움 » (54 x 34 dp)
+#81 LAYOUT OVERLAP « 5/11장 · 5/5단계 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 43 dp)
+#81 > touche 483 141
+#81 DOIGT tuto_fold
+#82 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 01a3bf68d2 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_phrases done=15 playing=false
+#82 SON Son : rien ne joue.
+#82 LAYOUT CUT « + 새 파트 (A · 그루브 복사) » lines dropped (more lines than room)
+#82 LAYOUT CUT « 맵을 보세요: 칸마다 파트 하나이고, 마디 단위 길이가 적혀 있어요. 곡선은 에너지를 보여 줘요. » ellipsized (« … »)
+#82 > glisse 270 260 270 540
+#82 DOIGT add_part_0 « + A · 그루브 »
+#83 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE e650fe7315 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_phrases done=15 playing=false
+#83 SON Son : rien ne joue.
+#83 > touche 483 631
+#83 DOIGT tuto_fold
+#84 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE c730c5999d | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_phrases done=15 playing=false
+#84 SON Son : rien ne joue.
+#84 > touche 270 657
+#84 DOIGT tuto_text_more « 계속 읽기 »
+#85 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5ff6532d1a | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_phrases done=15 playing=false
+#85 SON Son : rien ne joue.
+#85 LAYOUT CONTRAST « 32 » 3.82:1 (needs 4.5:1, 12 sp)
+#85 > touche 270 734
+#85 DOIGT tuto_mark «   알겠어요 »
+#86 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 86bab3efa3 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_phrases done=16 playing=false
+#86 SON Son : rien ne joue.
+#86 LAYOUT OVERLAP « 185 » over « 5/11장 · 완료 · 쉬움 » (54 x 34 dp)
+#86 LAYOUT OVERLAP « 이 파트 » over the touchable « 챕터 » (31 x 3 dp)
+#86 LAYOUT OVERLAP « 5/11장 · 완료 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 37 dp)
+#86 > touche 411 115
+#86 DOIGT tuto_chapters « 챕터 »
+#87 ROUTE dialogue:tuto_chapter_list | MODE simple | EMPREINTE a7939e5412 | project=p-35315ec2 tuto=acidcore/Facile active=true step=map_phrases done=16 playing=false
+#87 SON Son : rien ne joue.
+#87 LAYOUT CONTRAST « 1 » 3.63:1 (needs 4.5:1, 16 sp)
+#87 LAYOUT CONTRAST « 2 » 3.63:1 (needs 4.5:1, 16 sp)
+#87 LAYOUT CONTRAST « 3 » 3.63:1 (needs 4.5:1, 16 sp)
+#87 LAYOUT CONTRAST « 4 » 3.63:1 (needs 4.5:1, 16 sp)
+#87 > touche 270 453
+#87 DOIGT tuto_chapter_2 « 3 »
+#88 ROUTE tab_simple_Morceau | MODE simple | EMPREINTE 2751206d3f | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_hear done=16 playing=false
+#88 SON Son : rien ne joue.
+#88 > touche 270 734
+#88 DOIGT tuto_next_big « 다음 단계   »
+#89 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE dd420f0543 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#89 SON Son : rien ne joue.
+#89 > touche 270 467
+#89 DOIGT tuto_why « ▸ 왜요? »
+#90 ROUTE tuto_panel/tab_simple_Morceau | MODE simple | EMPREINTE 5c10080381 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#90 SON Son : rien ne joue.
+#90 LAYOUT OVERLAP « 185 » over « 애시드 라인 (303) » (54 x 17 dp)
+#90 LAYOUT OVERLAP « 185 » over « 3/11장 · 2/2단계 · 쉬움 » (54 x 17 dp)
+#90 LAYOUT OVERLAP « 애시드 라인 (303) » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 25 dp)
+#90 LAYOUT OVERLAP « 3/11장 · 2/2단계 · 쉬움 » over the touchable « 템포: 분당 185박 템포 바꾸기 » (120 x 23 dp)
+#90 > touche 263 42
+#90 DOIGT top_mode « 간단 모드. 눌러서 모드를 바꾸세요. »
+#91 ROUTE dialogue:mode_switch | MODE simple | EMPREINTE 589123cf55 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#91 SON Son : rien ne joue.
+#91 > touche 270 950
+#91 DOIGT mode_card_pro « 프로 »
+#92 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 003cbb3629 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#92 SON Son : rien ne joue.
+#92 LAYOUT OVERLAP « 애시드 라인 (303) » over the touchable « 프로 모드. 눌러서 모드를 바꾸세요. 모드 바꾸기 » (56 x 38 dp)
+#92 LAYOUT OVERLAP « 3/11장 · 2/2단계 · 쉬움 » over the touchable « 프로 모드. 눌러서 모드를 바꾸세요. 모드 바꾸기 » (56 x 7 dp)
+#92 LAYOUT OVERLAP « 3/11장 · 2/2단계 · 쉬움 » over the touchable « 템포: 185 BPM 템포 바꾸기 » (132 x 47 dp)
+#92 > touche 270 701
+#92 DOIGT tuto_show «  보여 주세요 »
+#93 ROUTE tab_Structure | MODE pro | EMPREINTE a3f8087df2 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#93 SON Son : rien ne joue.
+#93 > attends 2
+#94 ROUTE tab_Structure | MODE pro | EMPREINTE 042302c010 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#94 SON Son : rien ne joue.
+#94 > attends 2
+#95 ROUTE tab_Structure | MODE pro | EMPREINTE 30e3740d95 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#95 SON Son : rien ne joue.
+#95 LAYOUT CUT « 됐어요! 이제 직접 해 보세요. » ellipsized (« … »)
+#95 > attends 2
+#96 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 003cbb3629 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#96 SON Son : rien ne joue.
+#96 > attends 2
+#97 ROUTE tuto_panel/tab_Structure | MODE pro | EMPREINTE 003cbb3629 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#97 SON Son : rien ne joue.
+#97 > touche 160 1032
+#97 DOIGT tab_Sons « 사운드 »
+#98 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE cfd5becd6f | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#98 SON Son : rien ne joue.
+#98 LAYOUT OVERLAP « 185 » over « 애시드 라인은 프로듀서 화면에서 한 칸씩 써요. “보여 주세요”를 탭하면 앱이 “Acid 303” 트랙에 대신 써 줘요. 그다음 “내 결과 듣기”로 들어 보세요. » (54 x 28 dp)
+#98 LAYOUT OVERLAP « 3/11장 · 2/2단계 · 쉬움 » over the touchable « 현재 파트: A · 그루브. 탭해서 파트를 바꿔요. 파트 바꾸기 » (52 x 36 dp)
+#98 LAYOUT OVERLAP « 챕터 » over the touchable « 이 파트 재생 이 파트 재생 » (30 x 23 dp)
+#98 LAYOUT OVERLAP « 애시드 라인은 프로듀서 화면에서 한 칸씩 써요. “보여 주세요”를 탭하면 앱이 “Acid 303” 트랙에 대신 써 줘요. 그다음 “내 결과 듣기”로 들어 보세요. » over the touchable « 템포: 185 BPM 템포 바꾸기 » (132 x 35 dp)
+#98 LAYOUT OVERLAP « 애시드 라인은 프로듀서 화면에서 한 칸씩 써요. “보여 주세요”를 탭하면 앱이 “Acid 303” 트랙에 대신 써 줘요. 그다음 “내 결과 듣기”로 들어 보세요. » over the touchable « 화면 이름표 » (33 x 35 dp)
+#98 > touche 483 96
+#98 DOIGT tuto_fold
+#99 ROUTE tab_Sons | MODE pro | EMPREINTE 5f1218e026 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#99 SON Son : rien ne joue.
+#99 LAYOUT CUT « A » ellipsized (« … »)
+#99 > touche 310 343
+#99 DOIGT sons_Acide « Acid 303 »
+#100 ROUTE tab_Sons | MODE pro | EMPREINTE 2106953107 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#100 SON Son : rien ne joue.
+#100 > touche 483 595
+#100 DOIGT tuto_fold
+#101 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE cfd5becd6f | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#101 SON Son : rien ne joue.
+#101 > touche 270 701
+#101 DOIGT tuto_show «  보여 주세요 »
+#102 ROUTE tab_Sons | MODE pro | EMPREINTE 936ac0c817 | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#102 SON Son : rien ne joue.
+#102 > attends 8
+#103 ROUTE tuto_panel/tab_Sons | MODE pro | EMPREINTE cfd5becd6f | project=p-35315ec2 tuto=acidcore/Facile active=true step=acid_show done=16 playing=false
+#103 SON Son : rien ne joue.
+#103 > fin
+#103 FIN : fin

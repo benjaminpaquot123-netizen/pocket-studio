@@ -1,0 +1,55 @@
+Écran 111 (900x1509)
+icône (dossier ouvert) ✓ « Mein Projekt 1 Gespeichert » @ 195,42
+bouton « Einfach » @ 436,42
+icône ↶ @ 526,42
+bouton ● @ 598,42
+bouton ▶ « dieser Teil » @ 677,42
+bouton ▶ « der Song » @ 775,42
+icône ⋮ @ 855,42
+bouton « 116  Tempo » @ 98,123
+bouton « ? » @ 855,123
+onglet « Acid 303 Bassline » @ 100,204
+bouton « Bass Gezupfter Bass » @ 315,204
+bouton « Akkorde Kurzer Sound » ⋮ @ 568,204
+icône ♪ « Sound » @ 777,205
+bouton + «  Spur » [coupé] @ 869,205
+image → @ 889,205
+icône « Teil: A » ▾ @ 77,283
+texte « Im Takt 50 % » [coupé] @ 526,323
+texte « 100 % » [coupé] @ 697,323
+texte « Löschen » @ 119,370
+texte « Akkorde · Takt 2/8 » @ 172,431
+bouton « Kopieren » @ 763,452
+texte « Pattern gesetzt! Der Rest wird kopiert: » @ 319,467
+texte « Takt » @ 84,513
+bouton « 2 » @ 486,521
+bouton « 3 » [coupé] @ 853,521
+texte « A♯ » [coupé] @ 84,556
+texte « A » @ 84,579
+texte « G♯ » @ 84,621
+texte « G » @ 84,663
+texte « F♯ » @ 84,705
+texte « F » @ 84,747
+texte « E » @ 84,789
+texte « D♯ » @ 84,831
+texte « D » [coupé] @ 84,854
+dessin [coupé] @ 492,705
+texte « Die Gitarre Kapitel 4/13 · Schritt 3/3 · Einfach » @ 366,906
+icône (liste) « Kapitel » @ 759,907
+icône ⌄ @ 843,907
+texte « Du bist dran: Tippe auf „Auf die nächsten Takte kopieren“. » @ 427,995
+texte « ▸ Warum? » @ 450,1047
+bouton ⊕ «   Auf die nächsten Takte kopieren » @ 450,1116
+bouton ▶ «  Beispiel anhören » @ 232,1200
+bouton (œil) «  Zeig's mir » @ 667,1200
+icône ← «  Zurück » @ 105,1281
+icône « Weiter  » → @ 798,1281
+onglet (lignes et note) « Mein Song » @ 85,1389
+onglet (quatre carrés) « Rhythmus » @ 268,1389
+onglet (touches de piano) « Tastatur » [sélectionné] @ 451,1389
+onglet (curseurs) « Mix » @ 633,1389
+onglet (trois points reliés) « Teilen » @ 815,1389
+texte « ●  REC » @ 652,1479
+texte « ✎  Notieren » @ 758,1479
+texte « ⋯ » @ 852,1479
+texte « Feedback-Modus » @ 308,1479

@@ -1,0 +1,80 @@
+Écran 47 (900x1509)
+icône (dossier ouvert) ✓ « マイプロジェクト 1 保存しました » @ 191,42
+bouton « プロ » @ 410,42
+bouton « A » ▾ @ 486,42
+icône ↶ @ 561,42
+icône ↷ [désactivé] @ 633,42
+bouton ● @ 705,42
+bouton ■ « このパート » @ 780,42
+icône (trois points reliés) @ 855,42
+bouton « 138  BPM » @ 73,114
+icône (flèches en boucle) « A 小節 1/1 » [désactivé] @ 218,114
+bouton « ? » @ 855,114
+onglet « ドラム 16パッド » [sélectionné] @ 79,183
+onglet « Acid 303 ベースライン » @ 239,183
+onglet « ボーカル マイク » @ 403,183
+onglet « リミックス 分離 » @ 562,183
+bouton + «  トラック » @ 746,183
+texte « パート：A » @ 69,243
+titre « ステップ：シンバル » [coupé, état « 開いた状態 »] @ 383,276
+bouton « ? » [coupé] @ 287,276
+bouton « 全パッド » [coupé] @ 791,277
+texte « シンバル » @ 96,349
+bouton « 1 » [état « 空 »] @ 90,434
+bouton [état « 空 »] @ 192,434
+bouton [état « ヒット、強さ 100 % »] @ 294,434
+bouton [état « 空 »] @ 397,434
+bouton « 2 » [état « 空 »] @ 500,434
+bouton [état « 空 »] @ 603,434
+bouton [état « ヒット、強さ 100 % »] @ 706,434
+bouton [état « 空 »] @ 809,434
+bouton « 3 » [état « 空 »] @ 90,515
+bouton [état « 空 »] @ 192,515
+bouton [état « ヒット、強さ 100 % »] @ 294,515
+bouton [état « 空 »] @ 397,515
+bouton « 4 » [état « 空 »] @ 500,515
+bouton [état « 空 »] @ 603,515
+bouton [état « ヒット、強さ 100 % »] @ 706,515
+bouton [état « 空 »] @ 809,515
+bouton « ヒット » [sélectionné] @ 98,601
+bouton « ロール » @ 217,601
+bouton « パン » @ 326,601
+bouton « ピッチ » @ 435,601
+bouton « ベロシティ » @ 575,601
+texte « すべて » @ 147,685
+texte « 1/2 » @ 229,685
+texte « 1/4 » @ 304,685
+texte « ◀ » @ 379,685
+texte « ▶ » @ 454,685
+texte « 消去 » @ 529,685
+texte « 埋める » @ 71,685
+texte « マスをタップでヒットを追加、指をすべらせてまとめて塗れます。ヒットを長押し：強さとロール（×2〜×8）。 » @ 450,760
+texte « 長さ » @ 63,836
+bouton « 1小節 » [sélectionné] @ 143,836
+bouton « 2 » @ 239,836
+bouton « 3 » @ 320,836
+bouton « 4 » @ 401,836
+icône (liste) « チャプター » @ 756,931
+texte « ドラム チャプター 2/12 · ステップ 6/7 · プロ » @ 363,931
+icône ⌄ @ 843,931
+image (coupe) @ 57,1036
+texte « よくできました、成功！ » @ 205,1021
+texte « 結果を聴いて、好きなときに「次のステップ」をタップしてね。 » @ 367,1051
+bouton « 次のステップ   » → @ 450,1125
+icône ← @ 57,1209
+bouton ■ «  停止 » @ 294,1209
+bouton ▶ «  例を聴く » @ 687,1209
+icône ↶ « 元に戻す » @ 124,1293
+icône ↷ « やり直す » [désactivé] @ 284,1293
+bouton ■ « 曲 » @ 444,1293
+texte « 138 テンポ » @ 610,1293
+icône (trois points reliés) « シェア » @ 776,1293
+onglet (ligne brisée et points) « 構成 » @ 85,1389
+onglet (touches de piano) « サウンド » [sélectionné] @ 268,1389
+onglet (curseurs) « ミックス » @ 451,1389
+onglet (neuf points) « Live » @ 633,1389
+onglet ⋯ « その他 » @ 815,1389
+texte « ●  REC » @ 672,1479
+texte « ✎  メモ » @ 768,1479
+texte « ⋯ » @ 852,1479
+texte « フィードバックモード » @ 318,1479

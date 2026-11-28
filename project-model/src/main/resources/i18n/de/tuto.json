@@ -83,6 +83,7 @@
   "Les vrais sons de batterie du style, pour ton morceau et pour les exemples. Sans eux, le tuto marche avec les sons intégrés.": "Die echten Drum-Sounds des Stils, für deinen Track und für die Beispiele. Ohne sie läuft das Tutorial mit den eingebauten Sounds.",
   "Téléchargement du kit… %d %%": "Kit wird geladen… %d %%",
   "Mettre les sons du kit %s sur les pads": "Die Sounds des Kits %s auf die Pads legen",
+  "Le kit n'a pas pu se charger : le tuto garde les sons intégrés.": "Das Kit konnte nicht geladen werden: Das Tutorial behält die eingebauten Sounds.",
   "Télécharger le kit %1$s (%2$s)": "Kit %1$s laden (%2$s)",
   "Recommencer le tuto": "Tutorial neu starten",
   "Passer à %d mesures": "Auf %d Takte umstellen",
@@ -101,8 +102,8 @@
   "Chapitre %1$d/%2$d · Étape %3$d/%4$d": "Kapitel %1$d/%2$d · Schritt %3$d/%4$d",
   "L'exemple ne s'entend pas : monte le volume du téléphone, puis touche encore « Écouter l'exemple ».": "Das Beispiel ist nicht zu hören: Dreh dein Handy lauter und tippe nochmal auf „Beispiel anhören“.",
   "Bravo, c'est réussi !": "Bravo, geschafft!",
-  "Écoute ton résultat, puis touche « Étape suivante » quand tu veux.": "Hör dir dein Ergebnis an und tippe dann auf „Nächster Schritt“, wann du willst.",
-  "Touche « Étape suivante » quand tu veux.": "Tippe auf „Nächster Schritt“, wann du willst.",
+  "Écoute ton résultat, puis touche « Étape suivante » quand tu veux.": "Hör dir dein Ergebnis an und tippe dann auf „Nächster Schritt“, wenn du so weit bist.",
+  "Touche « Étape suivante » quand tu veux.": "Tippe auf „Nächster Schritt“, wenn du so weit bist.",
   "Regarde, je le fais…": "Schau, ich mach's…",
   "Voilà ! À toi maintenant.": "Fertig! Jetzt bist du dran.",
   "Tuto fini : bravo !": "Tutorial geschafft: Bravo!",
@@ -157,5 +158,10 @@
   "Posé : %s.": "Gesetzt: %s.",
   "Il te manque ce que font les chapitres d'avant.": "Dir fehlt, was die früheren Kapitel bauen.",
   "Aller au chapitre %d": "Zu Kapitel %d gehen",
-  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "In deinem Song gibt es keinen Teil „%s“: Dieser Schritt wird darin gemacht."
+  "Il n'y a pas de partie « %s » dans ton morceau : cette étape se fait dedans.": "In deinem Song gibt es keinen Teil „%s“: Dieser Schritt wird darin gemacht.",
+  "Avant de commencer : tes pads ont les sons de batterie de l'appli, réglés pour ce style. Le kit du style n'est pas encore sur tes pads : sa carte te le propose plus loin, et « Plus tard » suffit, le tuto marche avec ces sons. Tu n'as rien à régler.": "Bevor es losgeht: Deine Pads haben die Drum-Sounds der App, passend für diesen Stil eingestellt. Das Kit des Stils ist noch nicht auf deinen Pads: Seine Karte bietet es dir später an, und „Später“ reicht, das Tutorial läuft mit diesen Sounds. Du musst nichts einstellen.",
+  "303 : une petite machine à basse, son son qui couine et grogne fait l'acid.": "303: eine kleine Bassmaschine; ihr quietschender, knurrender Sound macht Acid aus.",
+  "Accent : une note jouée plus fort que les autres.": "Akzent: eine Note, die lauter gespielt wird als die anderen.",
+  "Slide : la note glisse jusqu'à la suivante au lieu de sauter.": "Slide: Die Note gleitet zur nächsten, statt zu springen.",
+  "Glide : le son glisse doucement d'une note à l'autre.": "Glide: Der Klang gleitet sanft von einer Note zur anderen."
 }

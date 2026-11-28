@@ -1,0 +1,357 @@
+{
+ "name": "Copie",
+ "drums": {
+  "steps": 16,
+  "lanes": [
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   },
+   {
+    "hits": {}
+   }
+  ]
+ },
+ "acid": {
+  "length": 16,
+  "steps": [
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   },
+   {
+    "gate": false
+   }
+  ]
+ },
+ "synthEngine": 0,
+ "synthTrackName": "Synthé",
+ "synthNotes": {
+  "steps": 16,
+  "notes": []
+ },
+ "tracks": [
+  {
+   "id": 1,
+   "name": "Piano",
+   "engine": 0,
+   "notes": {
+    "steps": 16,
+    "notes": []
+   }
+  }
+ ],
+ "scenes": [
+  {
+   "drums": {
+    "steps": 16,
+    "lanes": [
+     {
+      "hits": {
+       "0": {
+        "velocity": 1.0
+       },
+       "4": {
+        "velocity": 1.0
+       },
+       "8": {
+        "velocity": 1.0
+       },
+       "12": {
+        "velocity": 1.0
+       }
+      }
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {
+       "4": {
+        "velocity": 1.0
+       },
+       "12": {
+        "velocity": 1.0
+       }
+      }
+     },
+     {
+      "hits": {
+       "0": {
+        "velocity": 1.0
+       },
+       "2": {
+        "velocity": 1.0
+       },
+       "4": {
+        "velocity": 1.0
+       },
+       "6": {
+        "velocity": 1.0
+       },
+       "8": {
+        "velocity": 1.0
+       },
+       "10": {
+        "velocity": 1.0
+       },
+       "12": {
+        "velocity": 1.0
+       },
+       "14": {
+        "velocity": 1.0
+       }
+      }
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     },
+     {
+      "hits": {}
+     }
+    ]
+   },
+   "acid": {
+    "length": 16,
+    "steps": [
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     },
+     {
+      "gate": false
+     }
+    ]
+   },
+   "synthNotes": {
+    "steps": 16,
+    "notes": [
+     {
+      "start": 0,
+      "length": 48,
+      "pitch": 48,
+      "velocity": 0.8
+     },
+     {
+      "start": 144,
+      "length": 48,
+      "pitch": 48,
+      "velocity": 0.8
+     },
+     {
+      "start": 192,
+      "length": 48,
+      "pitch": 55,
+      "velocity": 0.8
+     },
+     {
+      "start": 288,
+      "length": 96,
+      "pitch": 53,
+      "velocity": 0.8
+     }
+    ]
+   },
+   "trackNotes": {
+    "1": {
+     "steps": 16,
+     "notes": [
+      {
+       "start": 0,
+       "length": 192,
+       "pitch": 60,
+       "velocity": 0.8
+      },
+      {
+       "start": 0,
+       "length": 192,
+       "pitch": 64,
+       "velocity": 0.8
+      },
+      {
+       "start": 0,
+       "length": 192,
+       "pitch": 67,
+       "velocity": 0.8
+      },
+      {
+       "start": 192,
+       "length": 192,
+       "pitch": 57,
+       "velocity": 0.8
+      },
+      {
+       "start": 192,
+       "length": 192,
+       "pitch": 60,
+       "velocity": 0.8
+      },
+      {
+       "start": 192,
+       "length": 192,
+       "pitch": 64,
+       "velocity": 0.8
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "song": [],
+ "audioTracks": [],
+ "style": null,
+ "guide": null
+}

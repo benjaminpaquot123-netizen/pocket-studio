@@ -1,0 +1,29 @@
+Écran 88 (588x1278)
+icône (dossier ouvert) ✓ @ 456,42
+bouton « بسيط » @ 280,42
+bouton ● @ 191,42
+bouton ▶ « هذا الجزء » @ 118,42
+icône ⋮ @ 45,42
+image (rond coché) @ 0,0
+texte « صدّر مقطوعتك الفصل 13/13 · الخطوة 1/1 · سهل » @ 366,263
+icône (liste) « الفصول » @ 129,263
+icône ⌄ @ 57,263
+texte « دورك: شارك مقطوعتك: التطبيق يصنع منها ملفًا صوتيًا. «M4A» يصنع ملفًا خفيفًا لأصدقائك، و«WAV» يحفظ جودة الاستوديو. » @ 294,513
+texte « ▸ لماذا؟ » @ 294,687
+bouton (doigt qui touche) «   سأفعلها » @ 294,776
+icône ← «  السابق » @ 483,877
+icône « التالي  » → @ 98,877
+texte « 150 السرعة » @ 183,994
+icône ↶ « تراجع » @ 519,994
+image ↷ @ 413,966
+bouton ▶ « الأغنية » @ 302,995
+icône ⋮ « المزيد » @ 70,994
+onglet (touches de piano) « لوحة المفاتيح » @ 294,1136
+onglet (lignes et note) « أغنيتي » @ 534,1136
+onglet (quatre carrés) « الإيقاع » @ 414,1136
+onglet (curseurs) « المكس » @ 174,1136
+onglet (trois points reliés) « مشاركة » [sélectionné] @ 54,1136
+texte « وضع الملاحظات » @ 435,1248
+texte « ●  REC » @ 238,1248
+texte « ✎  دوّن » @ 133,1248
+texte « ⋯ » @ 48,1248

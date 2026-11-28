@@ -25,20 +25,26 @@ STOCK_STYLE = {"dnb": "dnb", "techno": "techno", "house": "house", "lo-fi": "lof
 FAM_TGT = {"stab": "stab", "pluck": "pluck", "nappe": "nappe", "accords": "accords",
            "boucle": "boucle-lead", "arpege": "boucle-synth", "ambiance": "fx-nappe",
            "effet": "fx-effet"}
-DESC = ["attack_ms", "decay20_s", "centroid_hz", "high4k", "low300", "dissonance",
+# Dissonance is not a target (blind critique: 71 % of the stock sits at the same
+# level, gaps are noise); high-band energy is read in dB.
+DESC = ["attack_ms", "decay20_s", "centroid_hz", "high4k_db", "low300",
         "n_peaks", "width_db", "flatness_db"]
+# Columns that say nothing for a family: the stock stab family is defined by
+# its brevity (circular for our loops), and stock "plucks" are long pads from
+# one pack (ignore duration/attack).
+SKIP = {"stab": {"decay20_s"}, "pluck": {"attack_ms", "decay20_s"}}
 LOG = {"attack_ms", "decay20_s", "centroid_hz"}
-FLOOR = {"attack_ms": 0.25, "decay20_s": 0.15, "centroid_hz": 0.12, "high4k": 0.006,
+FLOOR = {"attack_ms": 0.25, "decay20_s": 0.15, "centroid_hz": 0.12, "high4k_db": 3.0,
          "low300": 0.04, "dissonance": 0.012, "n_peaks": 3.0, "width_db": 1.5,
          "flatness_db": 2.0, "low_beat": 0.05, "lufs": 0.5}
 # What Benjamin kept, as target percentiles (zone-c-synthes.md, "gardé" vs "non").
 LEAN = {
-    "stab": {"decay20_s": 0.85, "low300": 0.2},
-    "pluck": {"centroid_hz": 0.85, "high4k": 0.85, "n_peaks": 0.75},
+    "stab": {"attack_ms": 0.25, "low300": 0.3},
+    "pluck": {"centroid_hz": 0.9, "high4k_db": 0.9},
     "accords": {"decay20_s": 0.5, "low300": 0.4},
-    "boucle": {"low300": 0.35, "dissonance": 0.75, "n_peaks": 0.7},
+    "boucle": {"low300": 0.35},
     "arpege": {"attack_ms": 0.2, "decay20_s": 0.6},
-    "nappe": {"attack_ms": 0.3, "decay20_s": 0.7, "dissonance": 0.5},
+    "nappe": {"attack_ms": 0.3, "decay20_s": 0.7},
     "ambiance": {},
     "effet": {"low300": 0.3, "low_beat": 0.75, "lufs": 0.85, "decay20_s": 0.65},
 }
@@ -61,7 +67,8 @@ def _rows():
 
 
 def _q(r, q, log):
-    ps = [float(r[k]) for k in ("p10", "p25", "p50", "p75", "p90")]
+    # "mono" = width below measurable (see zone-c-synthes.md)
+    ps = [-40.0 if r[k] == "mono" else float(r[k]) for k in ("p10", "p25", "p50", "p75", "p90")]
     if log:
         ps = [math.log(max(p, 1e-3)) for p in ps]
     return float(np.interp(q, QS, ps)), ps
@@ -81,7 +88,12 @@ def target(family, style):
     rows = _rows()
     t = {"_cell": f"{fam}/{st}", "_n": int(rows[(fam, st, "centroid_hz")]["sons"])}
     for d in DESC + EXTRA.get(family, []) + ["lufs"]:
+        if d in SKIP.get(family, ()):
+            continue
         r = rows[(fam, st, d)]
+        # n_peaks saturates at 60: useless as a target when the cell sits there
+        if d == "n_peaks" and float(r["p50"]) >= 58:
+            continue
         log = d in LOG
         c, ps = _q(r, LEAN.get(family, {}).get(d, 0.5), log)
         sd = max((ps[3] - ps[1]) / 1.349, FLOOR.get(d, 1e-6))
@@ -95,7 +107,10 @@ def measure(y):
     st = np.asarray(y, dtype=np.float32)
     if st.ndim == 1:
         st = st[:, None]
-    return cibles_desc.measure(st)
+    m = cibles_desc.measure(st)
+    if "high4k_db" not in m and m.get("high4k") is not None:
+        m["high4k_db"] = 10 * math.log10(max(m["high4k"], 1e-6))
+    return m
 
 
 def zscores(meas, t):

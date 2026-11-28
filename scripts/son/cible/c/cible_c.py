@@ -122,6 +122,13 @@ def pick(out, styles, families):
                 used[p] = used.get(p, 0) + 1
                 if len(chosen) == S.N_CAND:
                     break
+            # late styles: once the screened patches are used up, reuse the best ones
+            for p in order:
+                if len(chosen) >= S.N_CAND:
+                    break
+                if p not in chosen:
+                    chosen.append(p)
+                    used[p] = used.get(p, 0) + 1
             picks[(st, fam)] = chosen
     return picks
 

@@ -3,7 +3,7 @@
 Question : existe-t-il des kicks et des boucles de batterie gratuits, redistribuables, plus proches des cibles que ceux de l'appli ?
 
 Réponse courte :
-- **Kicks** : sur 9 styles, **6 ont un kick libre plus proche** que le meilleur kick de l'appli (house, DnB, dubstep, rave, hardstyle, trap). L'appli reste devant en techno et lofi, et à égalité sur « tous ».
+- **Kicks** : sur 9 styles, 6 ont un kick libre plus proche à la cible médiane (house, DnB, dubstep, rave, hardstyle, trap). Mais avec la règle complète (seuil 0,05, gagnant stable à p25, p50 et p75), **seuls 2 styles ont un kick libre nettement meilleur : dubstep et hardstyle**. Les 4 autres sont « serrés » : la règle dit de garder l'actuel. L'appli gagne nettement en techno ; lofi et « tous » sont serrés.
 - **Boucles** : l'appli n'en livre aucune. Nos boucles fabriquées (`eq/son-cible-a`) battent les boucles libres en techno, house, DnB, trap et lofi. Les boucles libres gagnent en boom-bap/hip-hop et couvrent seules dubstep, breakbeat, acoustique et percussions afro-latines.
 
 Tous les fichiers gardés ici sont **CC0** (groupe A) : aucune attribution n'est exigée, on la note quand même.
@@ -34,6 +34,29 @@ Tous les fichiers gardés ici sont **CC0** (groupe A) : aucune attribution n'est
 | hardstyle | hardstyle | pack gabber, kick 12 (0,564) | aucun | **Hard_Drum_Kick - Destroyer (0,489)** | [Freesound 536545](https://freesound.org/people/angelkunev/sounds/536545/), angelkunev, CC0 | 4 |
 | trap | tous | pack drill, kick 01 (0,110) | trap-kick-06 (0,336) | **Mushroom-kick (0,087)** | [Freesound 369043](https://freesound.org/people/Br4dzdestroyer/sounds/369043/), Br4dzdestroyer, CC0 | 1 |
 | tous | tous | pack techno, kick 12 (0,086) | edm-kick-03 (0,300) | Mushroom-kick (0,087) | idem | 0 : égalité |
+
+Test de solidité (règle complète de `REGLE-BATTERIE.md` : écart 2|v − T|/(p90 − p10), cible T prise au p25, au p50 et au p75, gain d'au moins 0,05 aux trois). Gain du libre sur l'appli, à p25 / p50 / p75 :
+
+| Style | Gain p25 | Gain p50 | Gain p75 | Verdict |
+| --- | --- | --- | --- | --- |
+| dubstep | +0,48 | +0,63 | +0,46 | **libre, sûr** |
+| hardstyle | +0,12 | +0,15 | +0,52 | **libre, sûr** |
+| house | +0,09 | +0,05 | −0,07 | serré : garder l'actuel |
+| DnB (JH_Kick_6_F) | +0,00 | +0,12 | +0,07 | serré : garder l'actuel |
+| rave | +0,02 | +0,06 | +0,11 | serré : garder l'actuel |
+| trap | +0,04 | +0,05 | −0,05 | serré : garder l'actuel |
+| techno | −0,07 | −0,09 | −0,07 | **appli, sûr** |
+| lofi | +0,03 | −0,07 | −0,11 | serré |
+| tous | −0,06 | −0,00 | +0,05 | serré |
+
+Relecture à l'aveugle (agent neuf, mesures refaites avec librosa) :
+- les calculs à la main redonnent les mêmes distances ;
+- le centroïde et la tenue −20 dB sont retrouvés à ±4 Hz et à l'identique ;
+- la planéité lue par librosa est 1,4 à 8 dB plus haute (définition différente) ;
+- « dubstep » est solide ;
+- « DnB » est dans le bruit : une fenêtre de 10 ms pour la tenue inverse le classement, et un pas de rolloff (10,8 Hz) vaut 0,5 d'écart en DnB ;
+- les cases DnB et dubstep ne reposent que sur 2 packs ;
+- les correspondances retro_techno → rave et gabber → hardstyle sont discutables.
 
 Remarques :
 - Nos kicks fabriqués sont loin derrière partout (0,18 à 0,69). Ça confirme l'abandon de la fabrication de kicks.

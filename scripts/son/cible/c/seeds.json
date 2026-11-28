@@ -1,0 +1,50 @@
+{
+ "_note": "Derived from Benjamin's choices on the synthes page: garder +1, bof -1, non -2 per (family, Surge factory patch); net > 0 seeds, net < 0 avoided.",
+ "eviter": {
+  "boucle": [
+   "Leads/Digi It",
+   "Leads/Later",
+   "Plucks/Nice Pluck 3",
+   "Plucks/Piano Remains 2"
+  ],
+  "nappe": [
+   "Pads/Ghost Pad",
+   "Pads/Robochoir 1"
+  ],
+  "pluck": [
+   "Plucks/Nice Pluck 3",
+   "Plucks/Piano Remains 2"
+  ]
+ },
+ "garder": {
+  "accords": [
+   "Pads/Computers In Space",
+   "Polysynths/Fonk",
+   "Polysynths/Hombre",
+   "Polysynths/Megasynth 2"
+  ],
+  "boucle": [
+   "Leads/Nastyfication",
+   "Plucks/ACME",
+   "Plucks/Pinkerton Tinfurter",
+   "Plucks/Ultra Violet"
+  ],
+  "nappe": [
+   "Pads/Assymetry"
+  ],
+  "pluck": [
+   "Plucks/ACME",
+   "Plucks/Man Machine",
+   "Plucks/Pinkerton Tinfurter",
+   "Plucks/Simple Waveguide",
+   "Plucks/Ultra Violet",
+   "Plucks/Woody"
+  ],
+  "stab": [
+   "Plucks/Messy",
+   "Polysynths/Notched Saws",
+   "Polysynths/Retrofit",
+   "Polysynths/Simplistic"
+  ]
+ }
+}

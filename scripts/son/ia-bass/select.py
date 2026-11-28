@@ -37,7 +37,7 @@ MAX_THRESHOLD = 3.0  # farther than this from the family: not kept, whatever the
 def target(fam, style):
     zone, sf, keys_kind, pref = P.FAMILIES[fam]["tgt"]
     T = TABLES[zone]
-    s = P.STOCK_STYLE[style]
+    s = "*" if fam in P.ALL_STYLE_ROW else P.STOCK_STYLE[style]
     row, used = (T[(sf, s)], s) if (sf, s) in T else (T[(sf, "*")], "*")
     tg = {k: (dict(v, p50=v[pref[k]]) if k in pref else v) for k, v in row.items()}
     keys = list(zb.LOOP if keys_kind == "loop" else zb.ONESHOT)

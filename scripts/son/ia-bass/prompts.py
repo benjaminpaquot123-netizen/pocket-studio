@@ -7,6 +7,9 @@ Targets come from eq/son-fin-essentia-01 @ faa70cb3a (zone-b-basses.tsv, zone-c-
 BPM = {"dubstep": 140, "dnb": 174}
 STYLE_WORDS = {"dubstep": ["dubstep", "140 bpm"], "dnb": ["drum and bass", "174 bpm"]}
 STOCK_STYLE = {"dubstep": "dubstep", "dnb": "dnb"}
+# families scored against the all-styles row: the dubstep reese row holds only 2 packs (35 sounds) and
+# the DnB one is missing, so both styles share the "*" row (52 sounds, 8 packs)
+ALL_STYLE_ROW = {"reese"}
 NOTES = ["F1", "E1", "G1", "D1", "A1", "F#1", "C2", "D#1"]
 
 # preferences = which percentile to aim at instead of p50 (same idea as cible.py PREF)

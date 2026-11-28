@@ -43,4 +43,4 @@
 - [ ] 2026-11-27 : après l'étude Fable sur la brillance (batterie), en discuter avec Benjamin, refaire toute la batterie, puis ouvrir une suite pour les autres instruments (basses, synthés, nappes, leads) en partant de ses conclusions.
 - [ ] 2026-11-27 : garder en stock tous les sons des packs reçus (même les copies), sans rien supprimer tant que Benjamin ne l'a pas autorisé.
 - [x] 2026-11-27 : quand le répertoire Kaamelott est fini, envoyer à Benjamin le texte à copier-coller dans une discussion Claude classique pour que la règle des répliques soit active partout.
-- [ ] 2026-11-27 : pour demain matin au plus tard, une nouvelle page privée avec plein d'exemples de nouveaux sons fabriqués, pour tous les gros styles, avec l'original à côté et les choix et notes comme d'habitude.
+- [x] 2026-11-27 : pour demain matin au plus tard, une nouvelle page privée avec plein d'exemples de nouveaux sons fabriqués, pour tous les gros styles, avec l'original à côté et les choix et notes comme d'habitude. (Tenu le 2026-11-28 à 1 h 40 belge : https://claude.ai/artifact/BTcz1koUeYHq4W289knahz)

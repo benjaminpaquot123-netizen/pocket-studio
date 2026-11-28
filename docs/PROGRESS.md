@@ -2,6 +2,13 @@
 
 Page courte, lue par le chef à chaque début de session. Tout ce qui date d'avant le 19 novembre 2026 est dans `docs/archive/PROGRESS-2026-10-18-a-2026-11-18.md` (historique, ne se suit pas).
 
+## Où on en est (2026-11-28, 1 h 40 belge)
+- Page « Nouveaux sons » publiée : https://claude.ai/artifact/BTcz1koUeYHq4W289knahz (373 sons neufs sur 670, 107 originaux, choix/notes en db comme « Sons de l'appli »).
+- Sons neufs : branches eq/son-neuf-{batterie-elec,batterie-acou,basses,synthes,claviers-fx} (manifestes docs/sons/neuf/*.json, scripts, aucun audio).
+- ADN Essentia corrigé et contre-lu à l'aveugle : eq/son-fin-essentia-01 tête 4cc3e8533 (tests 15/15).
+- Prochaine étape : lire les choix/notes de Benjamin (ArtifactData) sur la page, puis refaire les familles « bof/non » ; 808 encore à 1,6–1,8 σ, voix les plus loin.
+- Discussion de mesure session_014RxrDLNwkGzhCsQ7QUp4SL garde le stock : ne jamais l'archiver.
+
 ## Où on en est (2026-11-27, 22 h belge)
 - **2026-11-27, 22 h** : passage à Essentia (mesure) + librosa (contre-mesure) ; plan de production hors ligne choisi (`eq/son-fin-outils-existants` c2fc0270 : Surge XT + pycma, enregistrements libres, juges Essentia/CLAP/C2ST, intrus réussi si notre son est trouvé ≤ 19/30). La discussion de mesure (`session_014RxrDLNwkGzhCsQ7QUp4SL`, garde le stock de 21 Go, ne jamais l'archiver) corrige les défauts de la critique (`eq/son-fin-essentia-critique` 4941e540) et remesure les 10 414 sons sur `eq/son-fin-essentia-01`. Mode économie de quota. Répertoire Kaamelott entré (`docs/KAAMELOTT.md`). **Prochaine étape** : à son « fini », contrôler la branche (nom du vendeur, liens, sons, pas de mesure par son), ouvrir une revérification à l'aveugle des points corrigés, puis la production selon OUTILS-EXISTANTS.md. Rien dans l'appli sans le feu vert de Benjamin sur le résultat final.
 - **2026-11-27, 11 h 30** : batterie définitive arrêtée une deuxième fois par son garde-fou (même commit), décision chez Benjamin (il écrit « continue » dans la discussion du lot, ou on garde les cibles actuelles marquées douteuses). « Go » de Benjamin retiré par lui-même : rien dans l'appli. Cinq discussions de page au travail. **Prochaine étape** : inchangée pour la page (à chaque « fini », contrôle, reprise des sons, section « autres sons », critique à l'aveugle).

@@ -1,0 +1,1690 @@
+{
+ "model": "Stable Audio Open Small (Stability AI), ONNX export atauser001 rev 8f9544d, fp32, 8 steps",
+ "license": "Stability AI Community License (outputs usable; attribution 'Powered by Stability AI')",
+ "targets": "eq/son-fin-essentia-01 @ faa70cb3a (zone-a-kicks-boucles.tsv, zone-b-basses.tsv)",
+ "families": {
+  "techno-sub": {
+   "kind": "sub",
+   "style": "techno",
+   "candidates": 48,
+   "all_scores_raw": [
+    1.451,
+    1.584,
+    1.598,
+    1.634,
+    1.752,
+    1.758,
+    1.789,
+    1.795,
+    1.798,
+    1.802,
+    1.806,
+    1.837,
+    1.844,
+    1.884,
+    1.899,
+    1.902,
+    1.917,
+    1.925,
+    1.926,
+    1.936,
+    1.937,
+    1.944,
+    1.963,
+    1.987,
+    2.022,
+    2.036,
+    2.042,
+    2.084,
+    2.093,
+    2.093,
+    2.099,
+    2.112,
+    2.117,
+    2.124,
+    2.159,
+    2.167,
+    2.178,
+    2.215,
+    2.244,
+    2.256,
+    2.269,
+    2.29,
+    2.32,
+    2.322,
+    2.355,
+    2.356,
+    2.449,
+    2.579
+   ],
+   "kept": [
+    {
+     "file": "techno-sub-raw-01.mp3",
+     "proc": "raw",
+     "prompt": "techno sub bass hit A#0, very low, no harmonics",
+     "seed": 1046,
+     "cut_s": 1.0,
+     "score_array": 1.451,
+     "score_mp3": 1.165,
+     "worst": [
+      [
+       "lowflux",
+       -3.2
+      ],
+      [
+       "width_db",
+       1.9
+      ],
+      [
+       "decay20_s",
+       1.8
+      ],
+      [
+       "flatness_db",
+       1.0
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.0,
+      "peak_db": -1.2652,
+      "attack_ms": 169.6145,
+      "decay20_s": 0.5138,
+      "decay40_s": 0.8231,
+      "rms_db": -9.9686,
+      "crest_db": 8.7034,
+      "lufs": -10.5722,
+      "width_db": -94.2232,
+      "sub120": 0.9998,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 57.5434,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -103.5203,
+      "lowflux": 0.0157,
+      "low_beat": 0.5836,
+      "n_peaks": 4.0,
+      "dissonance": 0.4918,
+      "high4k_db": -89.5079
+     }
+    },
+    {
+     "file": "techno-sub-raw-02.mp3",
+     "proc": "raw",
+     "prompt": "deep techno sub bass one shot D1, short, rounded, 130 bpm",
+     "seed": 1025,
+     "cut_s": 1.0,
+     "score_array": 1.584,
+     "score_mp3": 1.344,
+     "worst": [
+      [
+       "low_beat",
+       -3.1
+      ],
+      [
+       "crest_db",
+       -2.6
+      ],
+      [
+       "width_db",
+       2.1
+      ],
+      [
+       "n_peaks",
+       -1.3
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.0,
+      "peak_db": -1.2654,
+      "attack_ms": 583.6735,
+      "decay20_s": 0.1397,
+      "decay40_s": 0.4141,
+      "rms_db": -7.6779,
+      "crest_db": 6.4125,
+      "lufs": -11.7204,
+      "width_db": -93.8053,
+      "sub120": 0.9998,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 38.9881,
+      "rolloff_hz": 53.833,
+      "flatness_db": -101.54,
+      "lowflux": 0.0818,
+      "low_beat": 0.1713,
+      "n_peaks": 3.0,
+      "dissonance": 0.4154,
+      "high4k_db": -86.5693
+     }
+    },
+    {
+     "file": "techno-sub-raw-03.mp3",
+     "proc": "raw",
+     "prompt": "industrial techno sub bass one shot B0, deep and clean",
+     "seed": 1007,
+     "cut_s": 0.5,
+     "score_array": 1.598,
+     "score_mp3": 1.384,
+     "worst": [
+      [
+       "crest_db",
+       -3.9
+      ],
+      [
+       "n_peaks",
+       -1.8
+      ],
+      [
+       "low_beat",
+       -1.7
+      ],
+      [
+       "width_db",
+       1.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 0.5,
+      "peak_db": -1.2651,
+      "attack_ms": 174.6032,
+      "decay20_s": 0.3193,
+      "decay40_s": 0.3193,
+      "rms_db": -5.9359,
+      "crest_db": 4.6709,
+      "lufs": -9.9414,
+      "width_db": -94.9815,
+      "sub120": 0.9996,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 46.858,
+      "rolloff_hz": 59.2163,
+      "flatness_db": -106.9893,
+      "lowflux": 0.0732,
+      "low_beat": 0.3267,
+      "n_peaks": 2.5,
+      "dissonance": 0.4462,
+      "high4k_db": -87.8105
+     }
+    },
+    {
+     "file": "techno-sub-raw-04.mp3",
+     "proc": "raw",
+     "prompt": "peak time techno sub bass note B0, punchy, mono",
+     "seed": 1047,
+     "cut_s": null,
+     "score_array": 1.634,
+     "score_mp3": 1.383,
+     "worst": [
+      [
+       "lowflux",
+       -3.0
+      ],
+      [
+       "width_db",
+       2.1
+      ],
+      [
+       "crest_db",
+       -2.0
+      ],
+      [
+       "low_beat",
+       -1.8
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.4763,
+      "peak_db": -1.2656,
+      "attack_ms": 9.9773,
+      "decay20_s": 0.0499,
+      "decay40_s": 2.4245,
+      "rms_db": -8.4736,
+      "crest_db": 7.2081,
+      "lufs": -11.5492,
+      "width_db": -93.5786,
+      "sub120": 0.9999,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 42.4013,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -98.4954,
+      "lowflux": 0.022,
+      "low_beat": 0.3199,
+      "n_peaks": 3.5,
+      "dissonance": 0.4806,
+      "high4k_db": -85.6085
+     }
+    },
+    {
+     "file": "techno-sub-raw-05.mp3",
+     "proc": "raw",
+     "prompt": "techno sub bass hit E1, very low, no harmonics",
+     "seed": 1010,
+     "cut_s": 1.6,
+     "score_array": 1.752,
+     "score_mp3": 1.578,
+     "worst": [
+      [
+       "lowflux",
+       -3.6
+      ],
+      [
+       "decay20_s",
+       2.7
+      ],
+      [
+       "n_peaks",
+       -2.2
+      ],
+      [
+       "width_db",
+       2.2
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.6,
+      "peak_db": -1.2645,
+      "attack_ms": 104.7619,
+      "decay20_s": 1.0426,
+      "decay40_s": 1.4916,
+      "rms_db": -9.8809,
+      "crest_db": 8.6164,
+      "lufs": -13.1035,
+      "width_db": -93.3705,
+      "sub120": 0.9987,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 41.4699,
+      "rolloff_hz": 43.0664,
+      "flatness_db": -107.833,
+      "lowflux": 0.0052,
+      "low_beat": 0.4982,
+      "n_peaks": 2.0,
+      "dissonance": 0.4108,
+      "high4k_db": -86.5627
+     }
+    },
+    {
+     "file": "techno-sub-raw-06.mp3",
+     "proc": "raw",
+     "prompt": "minimal techno sub bass hit E1, clean low sine, short decay",
+     "seed": 1002,
+     "cut_s": null,
+     "score_array": 1.758,
+     "score_mp3": 1.647,
+     "worst": [
+      [
+       "lowflux",
+       -3.6
+      ],
+      [
+       "decay20_s",
+       2.8
+      ],
+      [
+       "crest_db",
+       -2.3
+      ],
+      [
+       "n_peaks",
+       -2.2
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.0023,
+      "peak_db": -1.2641,
+      "attack_ms": 184.5805,
+      "decay20_s": 1.1524,
+      "decay40_s": 1.6413,
+      "rms_db": -8.0645,
+      "crest_db": 6.8004,
+      "lufs": -10.8784,
+      "width_db": -93.7578,
+      "sub120": 0.9987,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 40.9747,
+      "rolloff_hz": 43.0664,
+      "flatness_db": -116.6697,
+      "lowflux": 0.0042,
+      "low_beat": 0.6317,
+      "n_peaks": 2.0,
+      "dissonance": 0.3737,
+      "high4k_db": -92.1381
+     }
+    },
+    {
+     "file": "techno-sub-raw-07.mp3",
+     "proc": "raw",
+     "prompt": "hypnotic techno sub bass stab A#0, short sine pluck, 132 bpm",
+     "seed": 1030,
+     "cut_s": 2.2,
+     "score_array": 1.789,
+     "score_mp3": 1.597,
+     "worst": [
+      [
+       "lowflux",
+       -3.1
+      ],
+      [
+       "crest_db",
+       -2.9
+      ],
+      [
+       "n_peaks",
+       -2.2
+      ],
+      [
+       "dissonance",
+       -2.0
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.2,
+      "peak_db": -1.2661,
+      "attack_ms": 1287.0748,
+      "decay20_s": 0.4989,
+      "decay40_s": 0.6585,
+      "rms_db": -7.2168,
+      "crest_db": 5.9506,
+      "lufs": -9.1028,
+      "width_db": -94.7582,
+      "sub120": 0.9997,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 46.9643,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -103.4623,
+      "lowflux": 0.0191,
+      "low_beat": 0.6356,
+      "n_peaks": 2.0,
+      "dissonance": 0.3182,
+      "high4k_db": -87.2261
+     }
+    },
+    {
+     "file": "techno-sub-raw-08.mp3",
+     "proc": "raw",
+     "prompt": "techno sub bass hit A#0, very low, no harmonics",
+     "seed": 1022,
+     "cut_s": 1.0,
+     "score_array": 1.795,
+     "score_mp3": 1.667,
+     "worst": [
+      [
+       "lowflux",
+       -3.7
+      ],
+      [
+       "crest_db",
+       -2.4
+      ],
+      [
+       "decay20_s",
+       2.1
+      ],
+      [
+       "width_db",
+       2.0
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.0,
+      "peak_db": -1.2656,
+      "attack_ms": 24.9433,
+      "decay20_s": 0.6286,
+      "decay40_s": 0.9029,
+      "rms_db": -7.8701,
+      "crest_db": 6.6046,
+      "lufs": -8.5557,
+      "width_db": -93.9568,
+      "sub120": 0.9971,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 58.5738,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -95.4187,
+      "lowflux": 0.0024,
+      "low_beat": 0.7184,
+      "n_peaks": 3.0,
+      "dissonance": 0.3823,
+      "high4k_db": -85.2927
+     }
+    },
+    {
+     "file": "techno-sub-lp-01.mp3",
+     "proc": "lp",
+     "prompt": "warehouse techno low sub bass note B0, tight and deep",
+     "seed": 1015,
+     "cut_s": 2.2,
+     "score_array": 0.946,
+     "score_mp3": 0.958,
+     "worst": [
+      [
+       "lowflux",
+       -2.8
+      ],
+      [
+       "n_peaks",
+       -1.3
+      ],
+      [
+       "lufs",
+       -1.1
+      ],
+      [
+       "dissonance",
+       -0.9
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.2,
+      "peak_db": -1.2657,
+      "attack_ms": 219.5011,
+      "decay20_s": 0.1347,
+      "decay40_s": 1.4916,
+      "rms_db": -10.27,
+      "crest_db": 9.0043,
+      "lufs": -12.376,
+      "width_db": -159.5391,
+      "sub120": 0.9978,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 42.2097,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -125.8965,
+      "lowflux": 0.0284,
+      "low_beat": 0.6076,
+      "n_peaks": 3.0,
+      "dissonance": 0.4005,
+      "high4k_db": -97.7926
+     }
+    },
+    {
+     "file": "techno-sub-lp-02.mp3",
+     "proc": "lp",
+     "prompt": "industrial techno sub bass one shot F1, deep and clean",
+     "seed": 1043,
+     "cut_s": 2.2,
+     "score_array": 1.105,
+     "score_mp3": 1.116,
+     "worst": [
+      [
+       "lowflux",
+       -3.5
+      ],
+      [
+       "n_peaks",
+       -1.3
+      ],
+      [
+       "crest_db",
+       -1.1
+      ],
+      [
+       "decay20_s",
+       1.0
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.2,
+      "peak_db": -1.2651,
+      "attack_ms": 354.195,
+      "decay20_s": 0.2644,
+      "decay40_s": 1.8408,
+      "rms_db": -9.7419,
+      "crest_db": 8.4768,
+      "lufs": -12.0777,
+      "width_db": -160.1169,
+      "sub120": 0.9668,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 43.6926,
+      "rolloff_hz": 53.833,
+      "flatness_db": -129.501,
+      "lowflux": 0.0088,
+      "low_beat": 0.5146,
+      "n_peaks": 3.0,
+      "dissonance": 0.4828,
+      "high4k_db": -98.0318
+     }
+    },
+    {
+     "file": "techno-sub-lp-03.mp3",
+     "proc": "lp",
+     "prompt": "techno sub bass hit A#0, very low, no harmonics",
+     "seed": 1046,
+     "cut_s": 1.0,
+     "score_array": 1.123,
+     "score_mp3": 1.121,
+     "worst": [
+      [
+       "lowflux",
+       -3.5
+      ],
+      [
+       "decay20_s",
+       1.8
+      ],
+      [
+       "n_peaks",
+       -1.3
+      ],
+      [
+       "crest_db",
+       -0.8
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.0,
+      "peak_db": -1.2647,
+      "attack_ms": 169.6145,
+      "decay20_s": 0.5138,
+      "decay40_s": 0.8181,
+      "rms_db": -10.139,
+      "crest_db": 8.8743,
+      "lufs": -10.7393,
+      "width_db": -156.2738,
+      "sub120": 0.9999,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 57.4879,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -125.5022,
+      "lowflux": 0.0079,
+      "low_beat": 0.5751,
+      "n_peaks": 3.0,
+      "dissonance": 0.4922,
+      "high4k_db": -97.7399
+     }
+    },
+    {
+     "file": "techno-sub-lp-04.mp3",
+     "proc": "lp",
+     "prompt": "warehouse techno low sub bass note F1, tight and deep",
+     "seed": 1003,
+     "cut_s": null,
+     "score_array": 1.15,
+     "score_mp3": 1.157,
+     "worst": [
+      [
+       "lowflux",
+       -3.5
+      ],
+      [
+       "low_beat",
+       -2.2
+      ],
+      [
+       "decay20_s",
+       1.2
+      ],
+      [
+       "attack_ms",
+       -1.1
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.5,
+      "peak_db": -1.2651,
+      "attack_ms": 34.9206,
+      "decay20_s": 0.3143,
+      "decay40_s": 2.4544,
+      "rms_db": -11.4791,
+      "crest_db": 10.214,
+      "lufs": -11.7644,
+      "width_db": -158.9261,
+      "sub120": 0.9882,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 70.5751,
+      "rolloff_hz": 86.1328,
+      "flatness_db": -126.6717,
+      "lowflux": 0.0091,
+      "low_beat": 0.2764,
+      "n_peaks": 4.5,
+      "dissonance": 0.4793,
+      "high4k_db": -97.7093
+     }
+    },
+    {
+     "file": "techno-sub-lp-05.mp3",
+     "proc": "lp",
+     "prompt": "peak time techno sub bass note B0, punchy, mono",
+     "seed": 1047,
+     "cut_s": null,
+     "score_array": 1.228,
+     "score_mp3": 1.234,
+     "worst": [
+      [
+       "lowflux",
+       -3.0
+      ],
+      [
+       "crest_db",
+       -1.9
+      ],
+      [
+       "low_beat",
+       -1.8
+      ],
+      [
+       "attack_ms",
+       -1.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.4763,
+      "peak_db": -1.2647,
+      "attack_ms": 9.9773,
+      "decay20_s": 0.0499,
+      "decay40_s": 2.4245,
+      "rms_db": -8.6621,
+      "crest_db": 7.3974,
+      "lufs": -11.7325,
+      "width_db": -161.6641,
+      "sub120": 0.9999,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 42.4398,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -126.7012,
+      "lowflux": 0.0226,
+      "low_beat": 0.3152,
+      "n_peaks": 3.0,
+      "dissonance": 0.4548,
+      "high4k_db": -97.5533
+     }
+    },
+    {
+     "file": "techno-sub-lp-06.mp3",
+     "proc": "lp",
+     "prompt": "hypnotic techno sub bass stab E1, short sine pluck, 132 bpm",
+     "seed": 1018,
+     "cut_s": null,
+     "score_array": 1.256,
+     "score_mp3": 1.261,
+     "worst": [
+      [
+       "lowflux",
+       -3.4
+      ],
+      [
+       "decay20_s",
+       2.6
+      ],
+      [
+       "crest_db",
+       -1.6
+      ],
+      [
+       "rolloff_hz",
+       -1.2
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.8855,
+      "peak_db": -1.2641,
+      "attack_ms": 409.0703,
+      "decay20_s": 0.9778,
+      "decay40_s": 1.342,
+      "rms_db": -9.0603,
+      "crest_db": 7.7962,
+      "lufs": -11.6814,
+      "width_db": -159.9988,
+      "sub120": 0.9946,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 41.7799,
+      "rolloff_hz": 43.0664,
+      "flatness_db": -127.9443,
+      "lowflux": 0.0105,
+      "low_beat": 0.5545,
+      "n_peaks": 4.0,
+      "dissonance": 0.4563,
+      "high4k_db": -97.8672
+     }
+    },
+    {
+     "file": "techno-sub-lp-07.mp3",
+     "proc": "lp",
+     "prompt": "deep techno sub bass one shot D1, short, rounded, 130 bpm",
+     "seed": 1025,
+     "cut_s": 1.6,
+     "score_array": 1.273,
+     "score_mp3": 1.272,
+     "worst": [
+      [
+       "low_beat",
+       -3.3
+      ],
+      [
+       "crest_db",
+       -2.7
+      ],
+      [
+       "n_peaks",
+       -1.3
+      ],
+      [
+       "dissonance",
+       -1.3
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.6,
+      "peak_db": -1.2656,
+      "attack_ms": 578.6848,
+      "decay20_s": 0.1397,
+      "decay40_s": 1.0077,
+      "rms_db": -7.5178,
+      "crest_db": 6.2522,
+      "lufs": -11.0699,
+      "width_db": -160.9648,
+      "sub120": 0.9999,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 39.6035,
+      "rolloff_hz": 53.833,
+      "flatness_db": -125.3587,
+      "lowflux": 0.0837,
+      "low_beat": 0.1479,
+      "n_peaks": 3.0,
+      "dissonance": 0.3675,
+      "high4k_db": -98.0745
+     }
+    },
+    {
+     "file": "techno-sub-lp-08.mp3",
+     "proc": "lp",
+     "prompt": "industrial techno sub bass one shot B0, deep and clean",
+     "seed": 1007,
+     "cut_s": 0.5,
+     "score_array": 1.311,
+     "score_mp3": 1.305,
+     "worst": [
+      [
+       "crest_db",
+       -3.8
+      ],
+      [
+       "n_peaks",
+       -1.8
+      ],
+      [
+       "low_beat",
+       -1.6
+      ],
+      [
+       "dissonance",
+       -1.3
+      ]
+     ],
+     "measured": {
+      "dur_s": 0.5,
+      "peak_db": -1.2645,
+      "attack_ms": 174.6032,
+      "decay20_s": 0.3143,
+      "decay40_s": 0.3143,
+      "rms_db": -6.0297,
+      "crest_db": 4.7652,
+      "lufs": -10.0714,
+      "width_db": -157.3535,
+      "sub120": 0.9998,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 46.5738,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -126.7306,
+      "lowflux": 0.0804,
+      "low_beat": 0.3342,
+      "n_peaks": 2.5,
+      "dissonance": 0.3687,
+      "high4k_db": -97.7263
+     }
+    }
+   ]
+  },
+  "dnb-sub": {
+   "kind": "sub",
+   "style": "drum-and-bass",
+   "candidates": 48,
+   "all_scores_raw": [
+    0.488,
+    0.495,
+    0.496,
+    0.534,
+    0.537,
+    0.564,
+    0.572,
+    0.608,
+    0.627,
+    0.638,
+    0.642,
+    0.642,
+    0.645,
+    0.658,
+    0.661,
+    0.666,
+    0.689,
+    0.693,
+    0.699,
+    0.705,
+    0.71,
+    0.724,
+    0.725,
+    0.734,
+    0.738,
+    0.74,
+    0.741,
+    0.746,
+    0.75,
+    0.752,
+    0.756,
+    0.758,
+    0.762,
+    0.765,
+    0.767,
+    0.775,
+    0.777,
+    0.781,
+    0.797,
+    0.806,
+    0.844,
+    0.847,
+    0.881,
+    0.89,
+    0.9,
+    1.038,
+    1.041,
+    1.232
+   ],
+   "kept": [
+    {
+     "file": "dnb-sub-raw-01.mp3",
+     "proc": "raw",
+     "prompt": "minimal drum and bass sub bass note F1, pure low tone",
+     "seed": 1011,
+     "cut_s": 1.0,
+     "score_array": 0.488,
+     "score_mp3": 0.468,
+     "worst": [
+      [
+       "lufs",
+       -1.0
+      ],
+      [
+       "dissonance",
+       0.8
+      ],
+      [
+       "n_peaks",
+       0.7
+      ],
+      [
+       "low_beat",
+       -0.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.0,
+      "peak_db": -1.2649,
+      "attack_ms": 39.9093,
+      "decay20_s": 0.9528,
+      "decay40_s": 0.9578,
+      "rms_db": -9.1054,
+      "crest_db": 7.8404,
+      "lufs": -11.0151,
+      "width_db": -92.9208,
+      "sub120": 0.9578,
+      "low300": 0.9999,
+      "high4k": 0.0,
+      "centroid_hz": 63.092,
+      "rolloff_hz": 86.1328,
+      "flatness_db": -87.8919,
+      "lowflux": 0.0054,
+      "low_beat": 0.1713,
+      "n_peaks": 6.0,
+      "dissonance": 0.4932,
+      "high4k_db": -81.0219
+     }
+    },
+    {
+     "file": "dnb-sub-raw-02.mp3",
+     "proc": "raw",
+     "prompt": "dnb sub bass with slight saturation E1, single note",
+     "seed": 1010,
+     "cut_s": null,
+     "score_array": 0.495,
+     "score_mp3": 0.471,
+     "worst": [
+      [
+       "low_beat",
+       -1.0
+      ],
+      [
+       "crest_db",
+       -0.8
+      ],
+      [
+       "dissonance",
+       0.8
+      ],
+      [
+       "n_peaks",
+       0.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.5,
+      "peak_db": -1.2654,
+      "attack_ms": 987.7551,
+      "decay20_s": 1.4517,
+      "decay40_s": 1.4966,
+      "rms_db": -7.2063,
+      "crest_db": 5.9409,
+      "lufs": -7.7422,
+      "width_db": -86.0499,
+      "sub120": 0.9957,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 69.8729,
+      "rolloff_hz": 86.1328,
+      "flatness_db": -93.4233,
+      "lowflux": 0.0104,
+      "low_beat": 0.0683,
+      "n_peaks": 6.0,
+      "dissonance": 0.4919,
+      "high4k_db": -83.6568
+     }
+    },
+    {
+     "file": "dnb-sub-raw-03.mp3",
+     "proc": "raw",
+     "prompt": "drum and bass bassline sub note G1, 174 bpm, single held note",
+     "seed": 1020,
+     "cut_s": 2.2,
+     "score_array": 0.496,
+     "score_mp3": 0.48,
+     "worst": [
+      [
+       "low_beat",
+       -1.0
+      ],
+      [
+       "lufs",
+       -0.8
+      ],
+      [
+       "decay20_s",
+       -0.6
+      ],
+      [
+       "dissonance",
+       0.6
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.2,
+      "peak_db": -1.2649,
+      "attack_ms": 304.3084,
+      "decay20_s": 0.8032,
+      "decay40_s": 1.8907,
+      "rms_db": -7.9716,
+      "crest_db": 6.7066,
+      "lufs": -10.5201,
+      "width_db": -93.3469,
+      "sub120": 0.9864,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 52.7905,
+      "rolloff_hz": 96.8994,
+      "flatness_db": -94.0042,
+      "lowflux": 0.0203,
+      "low_beat": 0.0668,
+      "n_peaks": 5.0,
+      "dissonance": 0.476,
+      "high4k_db": -83.4058
+     }
+    },
+    {
+     "file": "dnb-sub-raw-04.mp3",
+     "proc": "raw",
+     "prompt": "halftime dnb sub bass A1, heavy and clean",
+     "seed": 1021,
+     "cut_s": null,
+     "score_array": 0.534,
+     "score_mp3": 0.589,
+     "worst": [
+      [
+       "n_peaks",
+       -1.7
+      ],
+      [
+       "flatness_db",
+       -1.0
+      ],
+      [
+       "crest_db",
+       -0.9
+      ],
+      [
+       "sub120",
+       0.4
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.5,
+      "peak_db": -1.2656,
+      "attack_ms": 69.8413,
+      "decay20_s": 2.0354,
+      "decay40_s": 2.4245,
+      "rms_db": -6.7887,
+      "crest_db": 5.5231,
+      "lufs": -7.6374,
+      "width_db": -94.857,
+      "sub120": 0.998,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 55.0414,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -113.0536,
+      "lowflux": 0.0045,
+      "low_beat": 0.3766,
+      "n_peaks": 2.5,
+      "dissonance": 0.3934,
+      "high4k_db": -91.2834
+     }
+    },
+    {
+     "file": "dnb-sub-raw-05.mp3",
+     "proc": "raw",
+     "prompt": "dnb sub bass with slight saturation E1, single note",
+     "seed": 1034,
+     "cut_s": null,
+     "score_array": 0.537,
+     "score_mp3": 0.581,
+     "worst": [
+      [
+       "crest_db",
+       -1.1
+      ],
+      [
+       "low_beat",
+       -1.0
+      ],
+      [
+       "flatness_db",
+       -0.8
+      ],
+      [
+       "centroid_hz",
+       -0.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.3628,
+      "peak_db": -1.2648,
+      "attack_ms": 498.8662,
+      "decay20_s": 1.7959,
+      "decay40_s": 1.8408,
+      "rms_db": -6.2528,
+      "crest_db": 4.988,
+      "lufs": -9.5477,
+      "width_db": -93.8339,
+      "sub120": 0.9974,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 45.4871,
+      "rolloff_hz": 53.833,
+      "flatness_db": -110.4303,
+      "lowflux": 0.0084,
+      "low_beat": 0.0525,
+      "n_peaks": 5.0,
+      "dissonance": 0.4756,
+      "high4k_db": -88.9589
+     }
+    },
+    {
+     "file": "dnb-sub-raw-06.mp3",
+     "proc": "raw",
+     "prompt": "drum and bass sub bass, sustained note C1, clean sine, 174 bpm",
+     "seed": 1024,
+     "cut_s": 2.2,
+     "score_array": 0.564,
+     "score_mp3": 0.549,
+     "worst": [
+      [
+       "crest_db",
+       -1.3
+      ],
+      [
+       "low_beat",
+       -1.1
+      ],
+      [
+       "dissonance",
+       0.8
+      ],
+      [
+       "n_peaks",
+       0.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.2,
+      "peak_db": -1.2652,
+      "attack_ms": 364.1723,
+      "decay20_s": 1.8308,
+      "decay40_s": 1.8358,
+      "rms_db": -5.8133,
+      "crest_db": 4.5481,
+      "lufs": -7.8627,
+      "width_db": -92.6998,
+      "sub120": 0.9968,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 54.3552,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -97.3899,
+      "lowflux": 0.0114,
+      "low_beat": 0.0379,
+      "n_peaks": 6.0,
+      "dissonance": 0.4962,
+      "high4k_db": -83.5067
+     }
+    },
+    {
+     "file": "dnb-sub-raw-07.mp3",
+     "proc": "raw",
+     "prompt": "drum and bass sub bass, sustained note G1, clean sine, 174 bpm",
+     "seed": 1012,
+     "cut_s": 2.2,
+     "score_array": 0.572,
+     "score_mp3": 0.556,
+     "worst": [
+      [
+       "crest_db",
+       -1.4
+      ],
+      [
+       "low_beat",
+       -1.1
+      ],
+      [
+       "rolloff_hz",
+       -0.7
+      ],
+      [
+       "n_peaks",
+       -0.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.2,
+      "peak_db": -1.2649,
+      "attack_ms": 209.5238,
+      "decay20_s": 1.9905,
+      "decay40_s": 1.9905,
+      "rms_db": -5.4903,
+      "crest_db": 4.2254,
+      "lufs": -7.955,
+      "width_db": -95.0762,
+      "sub120": 0.9902,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 49.9518,
+      "rolloff_hz": 53.833,
+      "flatness_db": -94.9755,
+      "lowflux": 0.0074,
+      "low_beat": 0.0419,
+      "n_peaks": 4.0,
+      "dissonance": 0.4515,
+      "high4k_db": -84.2394
+     }
+    },
+    {
+     "file": "dnb-sub-raw-08.mp3",
+     "proc": "raw",
+     "prompt": "minimal drum and bass sub bass note F1, pure low tone",
+     "seed": 1035,
+     "cut_s": 1.0,
+     "score_array": 0.608,
+     "score_mp3": 0.606,
+     "worst": [
+      [
+       "lufs",
+       -1.5
+      ],
+      [
+       "n_peaks",
+       -1.3
+      ],
+      [
+       "decay20_s",
+       -0.6
+      ],
+      [
+       "dissonance",
+       0.6
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.0,
+      "peak_db": -1.2649,
+      "attack_ms": 269.3878,
+      "decay20_s": 0.7283,
+      "decay40_s": 0.7283,
+      "rms_db": -9.9247,
+      "crest_db": 8.6598,
+      "lufs": -12.6664,
+      "width_db": -93.5562,
+      "sub120": 0.9923,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 50.6453,
+      "rolloff_hz": 75.3662,
+      "flatness_db": -98.6969,
+      "lowflux": 0.0061,
+      "low_beat": 0.2444,
+      "n_peaks": 3.0,
+      "dissonance": 0.4779,
+      "high4k_db": -84.7679
+     }
+    },
+    {
+     "file": "dnb-sub-lp-01.mp3",
+     "proc": "lp",
+     "prompt": "dnb sub bass with slight saturation E1, single note",
+     "seed": 1010,
+     "cut_s": null,
+     "score_array": 0.558,
+     "score_mp3": 0.562,
+     "worst": [
+      [
+       "flatness_db",
+       -1.4
+      ],
+      [
+       "low_beat",
+       -1.0
+      ],
+      [
+       "n_peaks",
+       -0.7
+      ],
+      [
+       "dissonance",
+       0.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.5,
+      "peak_db": -1.2654,
+      "attack_ms": 987.7551,
+      "decay20_s": 1.4517,
+      "decay40_s": 1.4966,
+      "rms_db": -8.5459,
+      "crest_db": 7.2805,
+      "lufs": -9.2416,
+      "width_db": -161.8506,
+      "sub120": 0.9965,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 69.6686,
+      "rolloff_hz": 86.1328,
+      "flatness_db": -125.6566,
+      "lowflux": 0.0118,
+      "low_beat": 0.0628,
+      "n_peaks": 4.0,
+      "dissonance": 0.4862,
+      "high4k_db": -97.7085
+     }
+    },
+    {
+     "file": "dnb-sub-lp-02.mp3",
+     "proc": "lp",
+     "prompt": "rollers dnb sub bass note D1, smooth and steady",
+     "seed": 1017,
+     "cut_s": null,
+     "score_array": 0.564,
+     "score_mp3": 0.57,
+     "worst": [
+      [
+       "flatness_db",
+       -1.4
+      ],
+      [
+       "sub120",
+       -0.7
+      ],
+      [
+       "n_peaks",
+       -0.7
+      ],
+      [
+       "dissonance",
+       0.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.5,
+      "peak_db": -1.2648,
+      "attack_ms": 289.3424,
+      "decay20_s": 1.756,
+      "decay40_s": 2.205,
+      "rms_db": -7.7629,
+      "crest_db": 6.4982,
+      "lufs": -9.8711,
+      "width_db": -162.651,
+      "sub120": 0.9362,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 57.8311,
+      "rolloff_hz": 75.3662,
+      "flatness_db": -125.2974,
+      "lowflux": 0.0151,
+      "low_beat": 0.1488,
+      "n_peaks": 4.0,
+      "dissonance": 0.4866,
+      "high4k_db": -97.812
+     }
+    },
+    {
+     "file": "dnb-sub-lp-03.mp3",
+     "proc": "lp",
+     "prompt": "rollers dnb sub bass note D1, smooth and steady",
+     "seed": 1041,
+     "cut_s": 1.0,
+     "score_array": 0.576,
+     "score_mp3": 0.579,
+     "worst": [
+      [
+       "flatness_db",
+       -1.4
+      ],
+      [
+       "low_beat",
+       -1.1
+      ],
+      [
+       "crest_db",
+       -0.8
+      ],
+      [
+       "dissonance",
+       0.8
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.0,
+      "peak_db": -1.2646,
+      "attack_ms": 209.5238,
+      "decay20_s": 0.7782,
+      "decay40_s": 0.7782,
+      "rms_db": -7.2777,
+      "crest_db": 6.0132,
+      "lufs": -9.0607,
+      "width_db": -159.1498,
+      "sub120": 0.992,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 59.9714,
+      "rolloff_hz": 75.3662,
+      "flatness_db": -125.9339,
+      "lowflux": 0.0176,
+      "low_beat": 0.0383,
+      "n_peaks": 5.0,
+      "dissonance": 0.4931,
+      "high4k_db": -97.5854
+     }
+    },
+    {
+     "file": "dnb-sub-lp-04.mp3",
+     "proc": "lp",
+     "prompt": "halftime dnb sub bass D1, heavy and clean",
+     "seed": 1033,
+     "cut_s": null,
+     "score_array": 0.594,
+     "score_mp3": 0.599,
+     "worst": [
+      [
+       "flatness_db",
+       -1.4
+      ],
+      [
+       "low_beat",
+       -1.1
+      ],
+      [
+       "crest_db",
+       -0.8
+      ],
+      [
+       "dissonance",
+       0.8
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.4984,
+      "peak_db": -1.2652,
+      "attack_ms": 693.424,
+      "decay20_s": 1.7959,
+      "decay40_s": 1.7959,
+      "rms_db": -7.1429,
+      "crest_db": 5.8777,
+      "lufs": -9.9608,
+      "width_db": -163.2625,
+      "sub120": 0.9885,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 49.4456,
+      "rolloff_hz": 75.3662,
+      "flatness_db": -125.5908,
+      "lowflux": 0.0137,
+      "low_beat": 0.0335,
+      "n_peaks": 5.0,
+      "dissonance": 0.4908,
+      "high4k_db": -97.7372
+     }
+    },
+    {
+     "file": "dnb-sub-lp-05.mp3",
+     "proc": "lp",
+     "prompt": "drum and bass sub bass, sustained note C1, clean sine, 174 bpm",
+     "seed": 1024,
+     "cut_s": null,
+     "score_array": 0.599,
+     "score_mp3": 0.601,
+     "worst": [
+      [
+       "flatness_db",
+       -1.4
+      ],
+      [
+       "crest_db",
+       -1.1
+      ],
+      [
+       "low_beat",
+       -1.1
+      ],
+      [
+       "dissonance",
+       0.8
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.5,
+      "peak_db": -1.2646,
+      "attack_ms": 364.1723,
+      "decay20_s": 2.1252,
+      "decay40_s": 2.1302,
+      "rms_db": -6.4144,
+      "crest_db": 5.1498,
+      "lufs": -8.4216,
+      "width_db": -164.0082,
+      "sub120": 0.9981,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 54.2057,
+      "rolloff_hz": 64.5996,
+      "flatness_db": -126.6083,
+      "lowflux": 0.0124,
+      "low_beat": 0.0338,
+      "n_peaks": 5.0,
+      "dissonance": 0.4931,
+      "high4k_db": -97.741
+     }
+    },
+    {
+     "file": "dnb-sub-lp-06.mp3",
+     "proc": "lp",
+     "prompt": "jungle sub bass note F1, deep 808-like sine, 170 bpm",
+     "seed": 1027,
+     "cut_s": null,
+     "score_array": 0.605,
+     "score_mp3": 0.607,
+     "worst": [
+      [
+       "flatness_db",
+       -1.4
+      ],
+      [
+       "crest_db",
+       -1.0
+      ],
+      [
+       "low_beat",
+       -0.9
+      ],
+      [
+       "rolloff_hz",
+       -0.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 2.4993,
+      "peak_db": -1.2648,
+      "attack_ms": 314.2857,
+      "decay20_s": 1.2671,
+      "decay40_s": 2.1701,
+      "rms_db": -6.6833,
+      "crest_db": 5.4185,
+      "lufs": -8.7423,
+      "width_db": -163.7222,
+      "sub120": 0.996,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 49.7028,
+      "rolloff_hz": 53.833,
+      "flatness_db": -127.1373,
+      "lowflux": 0.0094,
+      "low_beat": 0.0904,
+      "n_peaks": 4.0,
+      "dissonance": 0.4602,
+      "high4k_db": -97.8997
+     }
+    },
+    {
+     "file": "dnb-sub-lp-07.mp3",
+     "proc": "lp",
+     "prompt": "jungle sub bass note F1, deep 808-like sine, 170 bpm",
+     "seed": 1003,
+     "cut_s": 1.6,
+     "score_array": 0.618,
+     "score_mp3": 0.619,
+     "worst": [
+      [
+       "flatness_db",
+       -1.4
+      ],
+      [
+       "crest_db",
+       -1.1
+      ],
+      [
+       "low_beat",
+       -1.1
+      ],
+      [
+       "n_peaks",
+       -0.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.6,
+      "peak_db": -1.2651,
+      "attack_ms": 468.9342,
+      "decay20_s": 1.1224,
+      "decay40_s": 1.1224,
+      "rms_db": -6.2948,
+      "crest_db": 5.0297,
+      "lufs": -8.2296,
+      "width_db": -162.1945,
+      "sub120": 0.99,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 58.3208,
+      "rolloff_hz": 86.1328,
+      "flatness_db": -124.6647,
+      "lowflux": 0.0081,
+      "low_beat": 0.0249,
+      "n_peaks": 4.0,
+      "dissonance": 0.4792,
+      "high4k_db": -98.1483
+     }
+    },
+    {
+     "file": "dnb-sub-lp-08.mp3",
+     "proc": "lp",
+     "prompt": "minimal drum and bass sub bass note F1, pure low tone",
+     "seed": 1011,
+     "cut_s": 1.0,
+     "score_array": 0.637,
+     "score_mp3": 0.649,
+     "worst": [
+      [
+       "lufs",
+       -1.5
+      ],
+      [
+       "flatness_db",
+       -1.4
+      ],
+      [
+       "n_peaks",
+       -0.7
+      ],
+      [
+       "dissonance",
+       0.7
+      ]
+     ],
+     "measured": {
+      "dur_s": 1.0,
+      "peak_db": -1.2652,
+      "attack_ms": 109.7506,
+      "decay20_s": 0.883,
+      "decay40_s": 0.883,
+      "rms_db": -10.7859,
+      "crest_db": 9.5207,
+      "lufs": -12.784,
+      "width_db": -155.6272,
+      "sub120": 0.9712,
+      "low300": 1.0,
+      "high4k": 0.0,
+      "centroid_hz": 61.3841,
+      "rolloff_hz": 86.1328,
+      "flatness_db": -125.3296,
+      "lowflux": 0.0056,
+      "low_beat": 0.1562,
+      "n_peaks": 4.0,
+      "dissonance": 0.4845,
+      "high4k_db": -98.0246
+     }
+    }
+   ]
+  }
+ },
+ "note": "kicks dropped (Benjamin decision); script still contains the kick family"
+}

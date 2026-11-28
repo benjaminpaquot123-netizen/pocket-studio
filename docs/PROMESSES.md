@@ -45,3 +45,4 @@
 - [x] 2026-11-27 : quand le répertoire Kaamelott est fini, envoyer à Benjamin le texte à copier-coller dans une discussion Claude classique pour que la règle des répliques soit active partout.
 - [x] 2026-11-27 : pour demain matin au plus tard, une nouvelle page privée avec plein d'exemples de nouveaux sons fabriqués, pour tous les gros styles, avec l'original à côté et les choix et notes comme d'habitude. (Tenu le 2026-11-28 à 1 h 40 belge : https://claude.ai/artifact/BTcz1koUeYHq4W289knahz)
 - [ ] 2026-11-28 : refaire les mesures sur les phrases de basse, boucles, kicks, stabs, plucks, nappes, accords, sub et reese (au plus proche de ses packs), puis une page privée avec une multitude de variantes adaptées à chaque style.
+- [ ] 2026-11-28 : sons IA dubstep et drum and bass (wobbles, growls, reese, sons gras, effets qui partent dans tous les sens) sur une page à part.

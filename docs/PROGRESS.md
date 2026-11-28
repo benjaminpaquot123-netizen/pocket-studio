@@ -6,7 +6,8 @@ Page courte, lue par le chef à chaque début de session. Tout ce qui date d'ava
 - Page « Nouveaux sons » publiée : https://claude.ai/artifact/BTcz1koUeYHq4W289knahz (373 sons neufs sur 670, 107 originaux, choix/notes en db comme « Sons de l'appli »).
 - Sons neufs : branches eq/son-neuf-{batterie-elec,batterie-acou,basses,synthes,claviers-fx} (manifestes docs/sons/neuf/*.json, scripts, aucun audio).
 - ADN Essentia corrigé et contre-lu à l'aveugle : eq/son-fin-essentia-01 tête 4cc3e8533 (tests 15/15).
-- Prochaine étape : lire les choix/notes de Benjamin (ArtifactData) sur la page, puis refaire les familles « bof/non » ; 808 encore à 1,6–1,8 σ, voix les plus loin.
+- Retour de Benjamin (1 h 45) : trop de petits sons (clap, caisse, charleston) ; se concentrer sur kicks, synthés, mélodies et les effets qu'il a déjà gardés.
+- Prochaine étape : lire les choix/notes de Benjamin (ArtifactData) sur la page, puis refaire les familles « bof/non », en commençant par ces familles-là ; 808 encore à 1,6–1,8 σ, voix les plus loin.
 - Discussion de mesure session_014RxrDLNwkGzhCsQ7QUp4SL garde le stock : ne jamais l'archiver.
 
 ## Où on en est (2026-11-27, 22 h belge)

@@ -28,7 +28,8 @@ STYLE_ORDER = ["trap", "drill", "boom-bap", "lo-fi", "house", "techno", "edm", "
 STYLES = {k: STYLES[k] for k in STYLE_ORDER}
 
 # page family -> synthes phrase family
-PHRASE = {"stab": "stab", "pluck": "pluck", "nappe": "pad", "accords": "accords", "boucle": "lead"}
+PHRASE = {"stab": "stab", "pluck": "pluck", "nappe": "pad", "accords": "accords", "boucle": "lead",
+          "arpege": "arp", "ambiance": "pad"}
 FAMILIES = list(PHRASE)
 
 _RHYTHMS = {  # new styles, 16th grid over one bar

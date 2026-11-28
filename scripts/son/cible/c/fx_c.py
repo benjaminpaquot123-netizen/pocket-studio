@@ -15,7 +15,8 @@ import zlib
 
 import numpy as np
 
-import synthes as S
+import synthes as S  # noqa: E402
+import tgt_c  # noqa: E402
 
 SR = S.SR
 KINDS = ["montant", "descendant", "impact", "balayage"]
@@ -155,16 +156,16 @@ def evaluate(kind, style, variant, x, target):
     seed = zlib.crc32(f"{style}|{kind}|{variant}".encode()) % 100000
     y = synth(kind, duration(kind, style, variant), (np.clip(x[:4], -1, 1) + 1) / 2, seed,
               S.music.STYLES[style]["tonic"])
-    y = S.master(chain(y, x[4:], kind), target["lufs"][0] - 0.4)
+    y = S.master(chain(y, x[4:], kind), tgt_c.master_lufs(target))
     if y is None:
         return 99.0, None
-    return S.score(base.ess_measure(y, "fx", "fx"), target), y
+    return tgt_c.score(tgt_c.measure(y), target), y
 
 
 def job(a):
     import cma
     kind, style, variant, budget = a
-    target = S._W["adn"]["effet"]
+    target = tgt_c.target("effet", style)
     es_ = cma.CMAEvolutionStrategy(np.zeros(10), 0.35, {
         "bounds": [-1, 1], "popsize": 8, "maxfevals": budget, "verbose": -9,
         "seed": zlib.crc32(f"{style}|{kind}|{variant}".encode()) % 100000 + 1})
@@ -188,7 +189,7 @@ def job(a):
 
 def export_one(r, out):
     import base
-    target = S._W["adn"]["effet"]
+    target = tgt_c.target("effet", r["style"])
     _, y = evaluate(r["kind"], r["style"], r["variant"], np.asarray(r["x"]), target)
     name = f"{r['style']}-effet-{r['kind']}-{r['variant'] + 1:02d}.mp3"
     path = os.path.join(out, "mp3", name)
@@ -199,9 +200,9 @@ def export_one(r, out):
         if pk <= -0.95:
             break
         gain *= 10 ** ((-1.0 - pk - 0.05) / 20)
-    m = base.ess_measure(dec.copy(), "fx", "fx")
-    return dict(r, fichier=name, score_mp3=S.score(m, target), peak_db=pk,
-                z={k: round(v, 2) for k, v in S.zscores(m, target).items()}, ess=m)
+    m = tgt_c.measure(dec.copy())
+    return dict(r, fichier=name, score_mp3=tgt_c.score(m, target), peak_db=pk, cible=target["_cell"],
+                z={k: round(v, 2) for k, v in tgt_c.zscores(m, target).items()}, ess=m)
 
 
 def _job_export(a):

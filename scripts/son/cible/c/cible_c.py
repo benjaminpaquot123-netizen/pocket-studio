@@ -20,8 +20,11 @@ Audio stays in OUT (outside the repository).
 """
 import argparse
 import json
+import math
 import os
 import sys
+
+import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -31,19 +34,65 @@ import music_c  # noqa: E402
 import synthes as S  # noqa: E402
 
 S.music = music_c
-S.FAM_ADN = {
-    "stab": "melodic_loop/synth", "pluck": "melodic_loop/pluck", "nappe": "melodic_loop/pad",
-    "accords": os.environ.get("PS_CHORDS_ADN", "kit_stem/chords"), "boucle": "melodic_loop/lead",
-}
+import tgt_c  # noqa: E402
+
 S.FAM_CATEGORIES = {
     "stab": ["Polysynths", "Plucks", "Keys", "Chords"], "pluck": ["Plucks", "Keys"],
     "nappe": ["Pads", "Polysynths"], "accords": ["Polysynths", "Keys", "Pads", "Chords"],
-    "boucle": ["Leads", "Plucks", "Sequences"],
+    "boucle": ["Leads", "Sequences"], "arpege": ["Plucks", "Polysynths", "Sequences"],
+    "ambiance": ["Pads", "FX"],
 }
-S.FAMILY_TYPE = {k: v.split("/")[0] for k, v in S.FAM_ADN.items()}
-S.N_CAND, S.N_KEEP = 10, 8
+S.FAM_ADN = {k: tgt_c.FAM_TGT[k] for k in S.FAM_CATEGORIES}
+S.FAMILY_TYPE = {k: "c" for k in S.FAM_CATEGORIES}
+S.N_CAND, S.N_KEEP = 9, 8
+S.SCREEN_TOP = 16
+
+
+def _init():
+    import surgepy  # noqa: F401
+    _W = S._W
+    _W["surge"] = None
+    _W["patch"] = None
+    _W["adn"] = None
+
+
+def evaluate(patch, style, family, variant, x):
+    t = tgt_c.target(family, style)
+    ntw = len(S.SURGE_TWEAKS)
+    raw = S.render(patch, style, family, variant, x[:ntw])
+    y = S.master(S.fx(raw, x[ntw:]), tgt_c.master_lufs(t))
+    if y is None:
+        return 99.0, None, None
+    m = tgt_c.measure(y)
+    return tgt_c.score(m, t), m, y
+
+
+def job_export(a):
+    r, name, out = a
+    t = tgt_c.target(r["family"], r["style"])
+    x = np.asarray(r["x"])
+    ntw = len(S.SURGE_TWEAKS)
+    raw = S.render(r["patch"], r["style"], r["family"], r["variant"], x[:ntw])
+    y = S.master(S.fx(raw, x[ntw:]), tgt_c.master_lufs(t))
+    path = os.path.join(out, "mp3", name)
+    gain = 1.0
+    for _ in range(4):
+        dec = S.encode_mp3(y * gain, path)
+        pk = 20 * math.log10(max(np.abs(dec).max(), 1e-9))
+        if pk <= -0.95:
+            break
+        gain *= 10 ** ((-1.0 - pk - 0.05) / 20)
+    m = tgt_c.measure(dec.copy())
+    z = tgt_c.zscores(m, t)
+    return dict(r, fichier=name, score_mp3=tgt_c.score(m, t), peak_db=pk, cible=t["_cell"],
+                z={k: round(v, 2) for k, v in z.items()}, ess=m)
+
+
+S._init, S.evaluate, S.job_export = _init, evaluate, job_export
 
 SEEDS = json.load(open(os.path.join(HERE, "seeds.json")))
+for _k in ("garder", "eviter"):  # arpeggios were rated together with the loops
+    SEEDS[_k].setdefault("arpege", list(SEEDS[_k].get("boucle", [])))
 
 
 def _patch(name):

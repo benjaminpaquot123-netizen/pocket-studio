@@ -161,6 +161,8 @@ def one(rec):
     tg, keys, row = target(fam, style)
     best = None
     for tag, proc, a in variants(raw, fam, style):
+        if 20 * np.log10(OUT_PEAK / (np.sqrt(np.mean(a ** 2)) + 1e-12)) < 3.0:
+            continue  # crest under 3 dB: a square wave, not a bass (seen on driven sub drops)
         act = active_s(a)
         if act < MIN_ACTIVE.get(fam, 0.5):
             if best is None:
@@ -192,10 +194,27 @@ def one(rec):
     return dict(rec, **best)
 
 
-def to_mp3(a, path):
+def _enc(a, path):
     subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", "2", "-i", "-",
                     "-codec:a", "libmp3lame", "-b:a", "192k", path],
                    input=np.ascontiguousarray(a.astype(np.float32)).tobytes(), check=True)
+
+
+def _peak(path):
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", path, "-f", "f32le", "-"], capture_output=True,
+                         check=True).stdout
+    return float(np.abs(np.frombuffer(raw, np.float32)).max())
+
+
+def to_mp3(a, path):
+    """Encode, then scale down until the decoded MP3 peaks at -1 dBFS or less (dense saturated audio
+    overshoots full scale once encoded)."""
+    for _ in range(4):
+        _enc(a, path)
+        pk = _peak(path)
+        if pk <= OUT_PEAK * 1.0001:
+            return
+        a = a * (OUT_PEAK / pk) * 0.995
 
 
 def rnd(d):
@@ -259,6 +278,13 @@ def main():
             s, z = zb.distance(m, tg, keys)
             scored.append((float(s), z, m, tmp, r))
         scored.sort(key=lambda u: u[0])
+        far = [u for u in scored if u[0] > MAX_THRESHOLD]  # the threshold also holds after encoding
+        for u in far:
+            os.remove(u[3])
+            stats[f"{style}/{fam}"]["kept"] -= 1
+            stats[f"{style}/{fam}"]["rejected"]["trop loin après MP3"] = \
+                stats[f"{style}/{fam}"]["rejected"].get("trop loin après MP3", 0) + 1
+        scored = [u for u in scored if u[0] <= MAX_THRESHOLD]
         for k, (s, z, m, tmp, r) in enumerate(scored, 1):
             fn = f"{style}-{fam}-{k:02d}.mp3"
             os.replace(tmp, os.path.join(OUT, fn))

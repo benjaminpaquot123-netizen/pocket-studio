@@ -90,10 +90,11 @@
   "dubstep/growl": {
    "generated": 24,
    "rejected": {
-    "trop loin de la famille": 10
+    "trop loin de la famille": 10,
+    "trop loin après MP3": 1
    },
    "passed": 14,
-   "kept": 12,
+   "kept": 11,
    "all_scores": [
     1.488,
     1.64,
@@ -219,8 +220,8 @@
     2.091,
     2.15,
     2.157,
-    2.198,
     2.284,
+    2.286,
     2.315,
     2.34,
     2.374,
@@ -251,8 +252,8 @@
     1.937,
     1.942,
     1.994,
-    2.065,
     2.074,
+    2.09,
     2.12,
     2.204,
     2.309,
@@ -262,10 +263,11 @@
   "dubstep/neuro": {
    "generated": 24,
    "rejected": {
-    "trop loin de la famille": 16
+    "trop loin de la famille": 16,
+    "trop loin après MP3": 1
    },
    "passed": 8,
-   "kept": 4,
+   "kept": 3,
    "all_scores": [
     2.159,
     2.472,
@@ -280,9 +282,10 @@
   "dnb/neuro": {
    "generated": 24,
    "rejected": {
+    "silence": 1,
     "bruit sans hauteur": 1
    },
-   "passed": 23,
+   "passed": 22,
    "kept": 12,
    "all_scores": [
     0.701,
@@ -301,7 +304,6 @@
     1.034,
     1.197,
     1.226,
-    1.301,
     1.397,
     1.437,
     1.94,
@@ -380,18 +382,18 @@
     0.616,
     0.69,
     0.71,
-    0.722,
     0.724,
-    0.727,
-    0.739,
-    0.744,
-    0.754,
-    0.762,
     0.767,
-    0.788,
-    0.791,
+    0.774,
+    0.777,
+    0.812,
+    0.814,
+    0.817,
+    0.825,
     0.832,
-    0.855
+    0.855,
+    0.858,
+    0.878
    ]
   },
   "dnb/subdrop": {
@@ -406,25 +408,26 @@
     0.859,
     0.9,
     1.01,
-    1.211,
     1.226,
     1.269,
-    1.549,
+    1.35,
     1.563,
     1.576,
     1.62,
     1.627,
-    1.72,
-    1.834
+    1.641,
+    1.861,
+    1.889
    ]
   },
   "dubstep/impact": {
    "generated": 16,
    "rejected": {
-    "trop loin de la famille": 11
+    "trop loin de la famille": 11,
+    "trop loin après MP3": 2
    },
    "passed": 5,
-   "kept": 4,
+   "kept": 2,
    "all_scores": [
     2.488,
     2.875,
@@ -592,10 +595,11 @@
   "dubstep/foley": {
    "generated": 16,
    "rejected": {
-    "trop loin de la famille": 13
+    "trop loin de la famille": 13,
+    "trop loin après MP3": 1
    },
    "passed": 3,
-   "kept": 3,
+   "kept": 2,
    "all_scores": [
     0.948,
     1.771,
@@ -731,7 +735,7 @@
     "width_db"
    ],
    "score_array": 0.358,
-   "score_mp3": 0.412,
+   "score_mp3": 0.416,
    "worst": [
     [
      "low300",
@@ -747,7 +751,7 @@
     ],
     [
      "lufs",
-     -0.5
+     -0.6
     ]
    ],
    "voiced": 0.992,
@@ -759,25 +763,25 @@
    },
    "measured": {
     "dur_s": 5.5172,
-    "peak_db": -0.905,
+    "peak_db": -1.1793,
     "attack_ms": 2624.0363,
     "decay20_s": 2.8635,
     "decay40_s": 2.8735,
-    "rms_db": -13.0334,
-    "crest_db": 12.1284,
-    "lufs": -11.7048,
-    "width_db": -7.1001,
-    "sub120": 0.785,
+    "rms_db": -13.1711,
+    "crest_db": 11.9918,
+    "lufs": -11.8407,
+    "width_db": -7.0982,
+    "sub120": 0.7849,
     "low300": 0.9829,
     "high4k": 0.0,
-    "centroid_hz": 115.2058,
+    "centroid_hz": 115.2224,
     "rolloff_hz": 150.7324,
-    "flatness_db": -65.7219,
-    "lowflux": 0.0334,
+    "flatness_db": -65.6687,
+    "lowflux": 0.0333,
     "low_beat": 0.1687,
     "n_peaks": 12.5,
     "dissonance": 0.4997,
-    "high4k_db": -43.302
+    "high4k_db": -43.3148
    }
   },
   {
@@ -2631,7 +2635,7 @@
     "width_db"
    ],
    "score_array": 1.186,
-   "score_mp3": 1.118,
+   "score_mp3": 1.072,
    "worst": [
     [
      "lowflux",
@@ -2639,15 +2643,15 @@
     ],
     [
      "centroid_hz",
-     1.9
+     2.0
     ],
     [
      "low_beat",
      1.8
     ],
     [
-     "lufs",
-     1.3
+     "flatness_db",
+     0.7
     ]
    ],
    "voiced": 0.533,
@@ -2659,25 +2663,25 @@
    },
    "measured": {
     "dur_s": 1.3793,
-    "peak_db": 0.1869,
-    "attack_ms": 1017.6871,
-    "decay20_s": 0.2195,
-    "decay40_s": 0.3043,
-    "rms_db": -9.0361,
-    "crest_db": 9.2231,
-    "lufs": -8.2694,
-    "width_db": -4.93,
-    "sub120": 0.7968,
-    "low300": 0.9153,
+    "peak_db": -1.1967,
+    "attack_ms": 1002.7211,
+    "decay20_s": 0.2345,
+    "decay40_s": 0.3193,
+    "rms_db": -10.2718,
+    "crest_db": 9.0751,
+    "lufs": -9.4902,
+    "width_db": -4.8937,
+    "sub120": 0.7971,
+    "low300": 0.9155,
     "high4k": 0.0207,
-    "centroid_hz": 377.9754,
+    "centroid_hz": 383.8882,
     "rolloff_hz": 183.0322,
-    "flatness_db": -35.7987,
-    "lowflux": 0.0611,
-    "low_beat": 0.4303,
+    "flatness_db": -35.663,
+    "lowflux": 0.0604,
+    "low_beat": 0.43,
     "n_peaks": 10.0,
     "dissonance": 0.4993,
-    "high4k_db": -16.847
+    "high4k_db": -16.8484
    }
   },
   {
@@ -4897,166 +4901,10 @@
    "style": "dubstep",
    "family": "subdrop",
    "rank": 5,
-   "prompt": "sub drop, dubstep, 140 bpm, deep sine pitch falling down, long",
-   "seed": 2000,
-   "cut": "3.5 s",
-   "proc": "saturé",
-   "dur_s": 3.45,
-   "target": "zone-b-basses:sub-basse/*",
-   "keys": [
-    "attack_ms",
-    "decay20_s",
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "n_peaks",
-    "dissonance",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 0.722,
-   "score_mp3": 0.701,
-   "worst": [
-    [
-     "crest_db",
-     -2.3
-    ],
-    [
-     "rolloff_hz",
-     -0.7
-    ],
-    [
-     "n_peaks",
-     -0.7
-    ],
-    [
-     "attack_ms",
-     0.6
-    ]
-   ],
-   "voiced": 1.0,
-   "f0_hz": 46.3,
-   "librosa": {
-    "centroid_hz": 77.3616,
-    "rolloff_hz": 139.9658,
-    "flatness_db": -83.0865
-   },
-   "measured": {
-    "dur_s": 3.451,
-    "peak_db": -1.2647,
-    "attack_ms": 1880.7256,
-    "decay20_s": 1.4317,
-    "decay40_s": 1.5515,
-    "rms_db": -3.1014,
-    "crest_db": 1.8368,
-    "lufs": -5.7309,
-    "width_db": -89.5624,
-    "sub120": 0.9697,
-    "low300": 0.9996,
-    "high4k": 0.0,
-    "centroid_hz": 50.351,
-    "rolloff_hz": 53.833,
-    "flatness_db": -90.6515,
-    "lowflux": 0.0127,
-    "low_beat": 0.3629,
-    "n_peaks": 4.0,
-    "dissonance": 0.4023,
-    "high4k_db": -83.6772
-   }
-  },
-  {
-   "file": "dubstep-subdrop-06.mp3",
-   "style": "dubstep",
-   "family": "subdrop",
-   "rank": 6,
    "prompt": "808 sub drop, dubstep, 140 bpm, pitch dive, deep and clean",
-   "seed": 2013,
-   "cut": "2.9 s",
-   "proc": "saturé",
-   "dur_s": 2.86,
-   "target": "zone-b-basses:sub-basse/*",
-   "keys": [
-    "attack_ms",
-    "decay20_s",
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "n_peaks",
-    "dissonance",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 0.727,
-   "score_mp3": 0.709,
-   "worst": [
-    [
-     "crest_db",
-     -2.2
-    ],
-    [
-     "attack_ms",
-     -0.9
-    ],
-    [
-     "lufs",
-     0.8
-    ],
-    [
-     "rolloff_hz",
-     -0.7
-    ]
-   ],
-   "voiced": 0.895,
-   "f0_hz": 49.6,
-   "librosa": {
-    "centroid_hz": 77.8971,
-    "rolloff_hz": 134.5825,
-    "flatness_db": -82.8569
-   },
-   "measured": {
-    "dur_s": 2.8574,
-    "peak_db": -1.2654,
-    "attack_ms": 4.9887,
-    "decay20_s": 2.654,
-    "decay40_s": 2.8186,
-    "rms_db": -3.2231,
-    "crest_db": 1.9577,
-    "lufs": -5.3078,
-    "width_db": -91.2111,
-    "sub120": 0.9632,
-    "low300": 0.9996,
-    "high4k": 0.0,
-    "centroid_hz": 49.1325,
-    "rolloff_hz": 53.833,
-    "flatness_db": -90.7279,
-    "lowflux": 0.009,
-    "low_beat": 0.2126,
-    "n_peaks": 5.0,
-    "dissonance": 0.4148,
-    "high4k_db": -84.2752
-   }
-  },
-  {
-   "file": "dubstep-subdrop-07.mp3",
-   "style": "dubstep",
-   "family": "subdrop",
-   "rank": 7,
-   "prompt": "sub bass drop impact, dubstep, 140 bpm, descending sine",
-   "seed": 2003,
+   "seed": 2005,
    "cut": "2.0 s",
-   "proc": "saturé",
+   "proc": "brut",
    "dur_s": 2.0,
    "target": "zone-b-basses:sub-basse/*",
    "keys": [
@@ -5076,65 +4924,143 @@
     "low_beat",
     "width_db"
    ],
-   "score_array": 0.739,
-   "score_mp3": 0.716,
+   "score_array": 0.767,
+   "score_mp3": 0.731,
    "worst": [
     [
      "crest_db",
-     -2.1
+     -1.5
+    ],
+    [
+     "high4k_db",
+     1.4
+    ],
+    [
+     "n_peaks",
+     -1.3
+    ],
+    [
+     "centroid_hz",
+     -0.7
+    ]
+   ],
+   "voiced": 0.977,
+   "f0_hz": 49.0,
+   "librosa": {
+    "centroid_hz": 53.8337,
+    "rolloff_hz": 64.5996,
+    "flatness_db": -77.9861
+   },
+   "measured": {
+    "dur_s": 2.0,
+    "peak_db": -1.2634,
+    "attack_ms": 902.9478,
+    "decay20_s": 0.9678,
+    "decay40_s": 1.0626,
+    "rms_db": -5.3486,
+    "crest_db": 4.0852,
+    "lufs": -8.6762,
+    "width_db": -82.6529,
+    "sub120": 0.9974,
+    "low300": 1.0,
+    "high4k": 0.0,
+    "centroid_hz": 47.3966,
+    "rolloff_hz": 53.833,
+    "flatness_db": -84.402,
+    "lowflux": 0.0147,
+    "low_beat": 0.4109,
+    "n_peaks": 3.0,
+    "dissonance": 0.4183,
+    "high4k_db": -67.9833
+   }
+  },
+  {
+   "file": "dubstep-subdrop-06.mp3",
+   "style": "dubstep",
+   "family": "subdrop",
+   "rank": 6,
+   "prompt": "sub bass drop impact, dubstep, 140 bpm, descending sine",
+   "seed": 2003,
+   "cut": "2.0 s",
+   "proc": "brut",
+   "dur_s": 2.0,
+   "target": "zone-b-basses:sub-basse/*",
+   "keys": [
+    "attack_ms",
+    "decay20_s",
+    "centroid_hz",
+    "rolloff_hz",
+    "flatness_db",
+    "sub120",
+    "low300",
+    "high4k_db",
+    "lufs",
+    "crest_db",
+    "n_peaks",
+    "dissonance",
+    "lowflux",
+    "low_beat",
+    "width_db"
+   ],
+   "score_array": 0.774,
+   "score_mp3": 0.736,
+   "worst": [
+    [
+     "n_peaks",
+     -2.0
+    ],
+    [
+     "crest_db",
+     -1.1
     ],
     [
      "decay20_s",
-     -0.8
+     -0.9
     ],
     [
      "rolloff_hz",
      -0.7
-    ],
-    [
-     "lufs",
-     0.7
     ]
    ],
    "voiced": 0.977,
    "f0_hz": 51.3,
    "librosa": {
-    "centroid_hz": 80.9852,
-    "rolloff_hz": 150.7324,
-    "flatness_db": -82.25
+    "centroid_hz": 56.2922,
+    "rolloff_hz": 64.5996,
+    "flatness_db": -78.6914
    },
    "measured": {
     "dur_s": 2.0,
-    "peak_db": -1.2632,
-    "attack_ms": 1466.6667,
-    "decay20_s": 0.444,
-    "decay40_s": 0.5039,
-    "rms_db": -3.4251,
-    "crest_db": 2.1619,
-    "lufs": -5.6324,
-    "width_db": -89.633,
-    "sub120": 0.9748,
-    "low300": 0.9993,
+    "peak_db": -1.2637,
+    "attack_ms": 1461.678,
+    "decay20_s": 0.4091,
+    "decay40_s": 0.4889,
+    "rms_db": -6.4493,
+    "crest_db": 5.1857,
+    "lufs": -8.6987,
+    "width_db": -82.4459,
+    "sub120": 0.9997,
+    "low300": 1.0,
     "high4k": 0.0,
-    "centroid_hz": 54.6722,
+    "centroid_hz": 51.1135,
     "rolloff_hz": 53.833,
-    "flatness_db": -89.7983,
-    "lowflux": 0.0169,
-    "low_beat": 0.271,
-    "n_peaks": 4.0,
-    "dissonance": 0.4612,
-    "high4k_db": -83.2745
+    "flatness_db": -84.531,
+    "lowflux": 0.0167,
+    "low_beat": 0.3539,
+    "n_peaks": 2.0,
+    "dissonance": 0.3936,
+    "high4k_db": -76.2429
    }
   },
   {
-   "file": "dubstep-subdrop-08.mp3",
+   "file": "dubstep-subdrop-07.mp3",
    "style": "dubstep",
    "family": "subdrop",
-   "rank": 8,
+   "rank": 7,
    "prompt": "808 sub drop, dubstep, 140 bpm, pitch dive, deep and clean",
    "seed": 2009,
    "cut": "3.5 s",
-   "proc": "saturé",
+   "proc": "brut",
    "dur_s": 3.45,
    "target": "zone-b-basses:sub-basse/*",
    "keys": [
@@ -5154,66 +5080,66 @@
     "low_beat",
     "width_db"
    ],
-   "score_array": 0.744,
-   "score_mp3": 0.72,
+   "score_array": 0.777,
+   "score_mp3": 0.738,
    "worst": [
     [
+     "n_peaks",
+     -2.0
+    ],
+    [
      "crest_db",
-     -2.2
-    ],
-    [
-     "low_beat",
-     -0.9
-    ],
-    [
-     "lufs",
-     0.8
+     -1.2
     ],
     [
      "rolloff_hz",
      -0.7
+    ],
+    [
+     "flatness_db",
+     0.6
     ]
    ],
    "voiced": 1.0,
    "f0_hz": 51.6,
    "librosa": {
-    "centroid_hz": 83.6583,
-    "rolloff_hz": 139.9658,
-    "flatness_db": -83.4422
+    "centroid_hz": 58.5431,
+    "rolloff_hz": 64.5996,
+    "flatness_db": -79.2111
    },
    "measured": {
     "dur_s": 3.4534,
-    "peak_db": -1.266,
+    "peak_db": -1.2647,
     "attack_ms": 648.5261,
-    "decay20_s": 2.7787,
+    "decay20_s": 2.0054,
     "decay40_s": 2.7837,
-    "rms_db": -3.2165,
-    "crest_db": 1.9505,
-    "lufs": -5.0373,
-    "width_db": -88.9833,
-    "sub120": 0.9641,
-    "low300": 0.9996,
+    "rms_db": -5.9477,
+    "crest_db": 4.6831,
+    "lufs": -8.0864,
+    "width_db": -82.3243,
+    "sub120": 0.9996,
+    "low300": 1.0,
     "high4k": 0.0,
-    "centroid_hz": 56.8592,
+    "centroid_hz": 51.3101,
     "rolloff_hz": 53.833,
-    "flatness_db": -90.5318,
-    "lowflux": 0.0088,
-    "low_beat": 0.0983,
-    "n_peaks": 4.0,
-    "dissonance": 0.4374,
-    "high4k_db": -82.6649
+    "flatness_db": -84.6409,
+    "lowflux": 0.0101,
+    "low_beat": 0.1866,
+    "n_peaks": 2.0,
+    "dissonance": 0.3491,
+    "high4k_db": -76.1828
    }
   },
   {
-   "file": "dubstep-subdrop-09.mp3",
+   "file": "dubstep-subdrop-08.mp3",
    "style": "dubstep",
    "family": "subdrop",
-   "rank": 9,
+   "rank": 8,
    "prompt": "sub drop, dubstep, 140 bpm, deep sine pitch falling down, long",
-   "seed": 2008,
-   "cut": "3.0 s",
-   "proc": "saturé",
-   "dur_s": 3.0,
+   "seed": 2000,
+   "cut": "3.5 s",
+   "proc": "brut",
+   "dur_s": 3.45,
    "target": "zone-b-basses:sub-basse/*",
    "keys": [
     "attack_ms",
@@ -5232,54 +5158,132 @@
     "low_beat",
     "width_db"
    ],
-   "score_array": 0.754,
-   "score_mp3": 0.734,
+   "score_array": 0.812,
+   "score_mp3": 0.775,
    "worst": [
     [
-     "crest_db",
-     -2.4
+     "n_peaks",
+     -2.0
     ],
     [
-     "decay20_s",
+     "crest_db",
+     -1.4
+    ],
+    [
+     "centroid_hz",
      -0.7
     ],
     [
      "rolloff_hz",
      -0.7
-    ],
-    [
-     "lufs",
-     0.7
     ]
    ],
    "voiced": 1.0,
-   "f0_hz": 46.5,
+   "f0_hz": 46.3,
    "librosa": {
-    "centroid_hz": 77.6708,
-    "rolloff_hz": 139.9658,
-    "flatness_db": -83.185
+    "centroid_hz": 52.6659,
+    "rolloff_hz": 53.833,
+    "flatness_db": -79.1054
    },
    "measured": {
-    "dur_s": 3.0,
-    "peak_db": -1.2654,
-    "attack_ms": 2364.6259,
-    "decay20_s": 0.5488,
-    "decay40_s": 0.6136,
-    "rms_db": -2.8034,
-    "crest_db": 1.538,
-    "lufs": -5.5929,
-    "width_db": -91.1594,
-    "sub120": 0.965,
-    "low300": 0.9996,
+    "dur_s": 3.451,
+    "peak_db": -1.2648,
+    "attack_ms": 1875.737,
+    "decay20_s": 1.1923,
+    "decay40_s": 1.5215,
+    "rms_db": -5.6236,
+    "crest_db": 4.3588,
+    "lufs": -8.2095,
+    "width_db": -82.6205,
+    "sub120": 0.9996,
+    "low300": 1.0,
     "high4k": 0.0,
-    "centroid_hz": 50.8405,
+    "centroid_hz": 46.1433,
     "rolloff_hz": 53.833,
-    "flatness_db": -91.0752,
-    "lowflux": 0.0102,
-    "low_beat": 0.26,
-    "n_peaks": 5.0,
-    "dissonance": 0.4272,
-    "high4k_db": -84.7104
+    "flatness_db": -84.7644,
+    "lowflux": 0.0145,
+    "low_beat": 0.4821,
+    "n_peaks": 2.0,
+    "dissonance": 0.341,
+    "high4k_db": -76.4369
+   }
+  },
+  {
+   "file": "dubstep-subdrop-09.mp3",
+   "style": "dubstep",
+   "family": "subdrop",
+   "rank": 9,
+   "prompt": "sub bass drop impact, dubstep, 140 bpm, descending sine",
+   "seed": 2007,
+   "cut": "3.5 s",
+   "proc": "brut",
+   "dur_s": 3.47,
+   "target": "zone-b-basses:sub-basse/*",
+   "keys": [
+    "attack_ms",
+    "decay20_s",
+    "centroid_hz",
+    "rolloff_hz",
+    "flatness_db",
+    "sub120",
+    "low300",
+    "high4k_db",
+    "lufs",
+    "crest_db",
+    "n_peaks",
+    "dissonance",
+    "lowflux",
+    "low_beat",
+    "width_db"
+   ],
+   "score_array": 0.814,
+   "score_mp3": 0.78,
+   "worst": [
+    [
+     "n_peaks",
+     -2.0
+    ],
+    [
+     "crest_db",
+     -1.4
+    ],
+    [
+     "centroid_hz",
+     -0.8
+    ],
+    [
+     "attack_ms",
+     0.7
+    ]
+   ],
+   "voiced": 0.98,
+   "f0_hz": 45.5,
+   "librosa": {
+    "centroid_hz": 51.6632,
+    "rolloff_hz": 53.833,
+    "flatness_db": -79.127
+   },
+   "measured": {
+    "dur_s": 3.469,
+    "peak_db": -1.2646,
+    "attack_ms": 2489.3424,
+    "decay20_s": 0.9478,
+    "decay40_s": 0.9528,
+    "rms_db": -5.4671,
+    "crest_db": 4.2024,
+    "lufs": -8.8987,
+    "width_db": -82.5546,
+    "sub120": 0.9995,
+    "low300": 1.0,
+    "high4k": 0.0,
+    "centroid_hz": 45.0469,
+    "rolloff_hz": 53.833,
+    "flatness_db": -84.8704,
+    "lowflux": 0.0153,
+    "low_beat": 0.2637,
+    "n_peaks": 2.0,
+    "dissonance": 0.3802,
+    "high4k_db": -76.6758
    }
   },
   {
@@ -5290,7 +5294,7 @@
    "prompt": "sub drop, dubstep, 140 bpm, deep sine pitch falling down, long",
    "seed": 2012,
    "cut": "3.0 s",
-   "proc": "saturé",
+   "proc": "brut",
    "dur_s": 3.0,
    "target": "zone-b-basses:sub-basse/*",
    "keys": [
@@ -5310,54 +5314,54 @@
     "low_beat",
     "width_db"
    ],
-   "score_array": 0.762,
-   "score_mp3": 0.742,
+   "score_array": 0.817,
+   "score_mp3": 0.782,
    "worst": [
     [
-     "crest_db",
-     -2.3
+     "n_peaks",
+     -2.0
     ],
     [
-     "decay20_s",
-     -0.7
+     "crest_db",
+     -1.5
+    ],
+    [
+     "centroid_hz",
+     -0.8
     ],
     [
      "rolloff_hz",
      -0.7
-    ],
-    [
-     "lufs",
-     0.7
     ]
    ],
    "voiced": 0.977,
-   "f0_hz": 43.7,
+   "f0_hz": 43.9,
    "librosa": {
-    "centroid_hz": 76.7961,
-    "rolloff_hz": 129.1992,
-    "flatness_db": -82.9678
+    "centroid_hz": 51.2441,
+    "rolloff_hz": 53.833,
+    "flatness_db": -79.0426
    },
    "measured": {
     "dur_s": 3.0,
-    "peak_db": -1.2645,
-    "attack_ms": 2309.7506,
-    "decay20_s": 0.5787,
-    "decay40_s": 0.6635,
-    "rms_db": -2.9536,
-    "crest_db": 1.6891,
-    "lufs": -5.5417,
-    "width_db": -90.7788,
-    "sub120": 0.9726,
-    "low300": 0.9962,
+    "peak_db": -1.2651,
+    "attack_ms": 1526.5306,
+    "decay20_s": 1.2721,
+    "decay40_s": 1.4018,
+    "rms_db": -5.2389,
+    "crest_db": 3.9738,
+    "lufs": -8.1642,
+    "width_db": -82.8216,
+    "sub120": 0.9994,
+    "low300": 1.0,
     "high4k": 0.0,
-    "centroid_hz": 48.7918,
+    "centroid_hz": 43.916,
     "rolloff_hz": 53.833,
-    "flatness_db": -90.7565,
-    "lowflux": 0.0117,
-    "low_beat": 0.3436,
-    "n_peaks": 4.0,
-    "dissonance": 0.4248,
-    "high4k_db": -83.8638
+    "flatness_db": -84.8814,
+    "lowflux": 0.0143,
+    "low_beat": 0.4802,
+    "n_peaks": 2.0,
+    "dissonance": 0.3651,
+    "high4k_db": -76.4015
    }
   },
   {
@@ -7017,23 +7021,23 @@
     "width_db"
    ],
    "score_array": 0.908,
-   "score_mp3": 0.883,
+   "score_mp3": 0.892,
    "worst": [
     [
      "low_beat",
-     2.0
+     2.1
     ],
     [
      "width_db",
      1.6
     ],
     [
-     "n_peaks",
-     1.0
+     "lowflux",
+     -1.1
     ],
     [
-     "lowflux",
-     -1.0
+     "n_peaks",
+     1.0
     ]
    ],
    "voiced": 0.0,
@@ -7045,25 +7049,25 @@
    },
    "measured": {
     "dur_s": 4.5,
-    "peak_db": -0.7053,
+    "peak_db": -1.049,
     "attack_ms": 174.6032,
     "decay20_s": 0.2893,
     "decay40_s": 0.419,
-    "rms_db": -20.6695,
-    "crest_db": 19.9642,
-    "lufs": -12.8132,
-    "width_db": 1.3865,
+    "rms_db": -20.9989,
+    "crest_db": 19.9498,
+    "lufs": -13.1404,
+    "width_db": 1.3783,
     "sub120": 0.0055,
-    "low300": 0.1144,
-    "high4k": 0.0372,
-    "centroid_hz": 1801.0783,
-    "rolloff_hz": 2476.3184,
-    "flatness_db": -40.4257,
-    "lowflux": 0.0731,
-    "low_beat": 0.9607,
+    "low300": 0.1143,
+    "high4k": 0.0371,
+    "centroid_hz": 1807.7364,
+    "rolloff_hz": 2487.085,
+    "flatness_db": -40.2081,
+    "lowflux": 0.0722,
+    "low_beat": 0.964,
     "n_peaks": 60.0,
     "dissonance": 0.5,
-    "high4k_db": -14.2927
+    "high4k_db": -14.3117
    }
   },
   {
@@ -8311,7 +8315,7 @@
     "width_db"
    ],
    "score_array": 0.763,
-   "score_mp3": 0.94,
+   "score_mp3": 0.974,
    "worst": [
     [
      "flatness_db",
@@ -8323,7 +8327,7 @@
     ],
     [
      "rolloff_hz",
-     -1.3
+     -1.2
     ],
     [
      "width_db",
@@ -8339,25 +8343,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": 0.1108,
+    "peak_db": -1.0108,
     "attack_ms": 568.7075,
     "decay20_s": 0.0599,
     "decay40_s": 0.0998,
-    "rms_db": -8.6054,
-    "crest_db": 8.7162,
-    "lufs": -5.8804,
-    "width_db": -7.9545,
+    "rms_db": -9.7642,
+    "crest_db": 8.7534,
+    "lufs": -7.0294,
+    "width_db": -7.9276,
     "sub120": 0.2901,
-    "low300": 0.6731,
-    "high4k": 0.0979,
-    "centroid_hz": 985.0705,
-    "rolloff_hz": 1141.2598,
-    "flatness_db": -26.1844,
-    "lowflux": 0.0575,
-    "low_beat": 0.3657,
-    "n_peaks": 55.5,
-    "dissonance": 0.4933,
-    "high4k_db": -10.0936
+    "low300": 0.6726,
+    "high4k": 0.0982,
+    "centroid_hz": 996.3385,
+    "rolloff_hz": 1227.3926,
+    "flatness_db": -26.3128,
+    "lowflux": 0.0592,
+    "low_beat": 0.3675,
+    "n_peaks": 52.0,
+    "dissonance": 0.4931,
+    "high4k_db": -10.0787
    }
   },
   {
@@ -8385,11 +8389,11 @@
     "width_db"
    ],
    "score_array": 0.754,
-   "score_mp3": 1.043,
+   "score_mp3": 1.059,
    "worst": [
     [
      "crest_db",
-     1.9
+     1.7
     ],
     [
      "flatness_db",
@@ -8397,7 +8401,7 @@
     ],
     [
      "lufs",
-     -1.1
+     -1.5
     ],
     [
      "width_db",
@@ -8413,25 +8417,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.1071,
+    "peak_db": -1.2602,
     "attack_ms": 1526.5306,
     "decay20_s": 0.1846,
     "decay40_s": 0.1846,
-    "rms_db": -9.2202,
-    "crest_db": 9.113,
-    "lufs": -7.5036,
-    "width_db": -7.7678,
-    "sub120": 0.6278,
-    "low300": 0.6601,
+    "rms_db": -10.1624,
+    "crest_db": 8.9022,
+    "lufs": -8.4427,
+    "width_db": -7.7656,
+    "sub120": 0.6263,
+    "low300": 0.6587,
     "high4k": 0.0377,
-    "centroid_hz": 734.6563,
+    "centroid_hz": 731.7269,
     "rolloff_hz": 1421.1914,
-    "flatness_db": -26.9709,
-    "lowflux": 0.046,
-    "low_beat": 0.2639,
+    "flatness_db": -27.0357,
+    "lowflux": 0.0471,
+    "low_beat": 0.2647,
     "n_peaks": 60.0,
     "dissonance": 0.4999,
-    "high4k_db": -14.2312
+    "high4k_db": -14.2348
    }
   },
   {
@@ -8459,7 +8463,7 @@
     "width_db"
    ],
    "score_array": 0.988,
-   "score_mp3": 1.109,
+   "score_mp3": 1.112,
    "worst": [
     [
      "rolloff_hz",
@@ -8470,12 +8474,12 @@
      -1.9
     ],
     [
-     "centroid_hz",
-     -1.2
-    ],
-    [
      "low300",
      1.2
+    ],
+    [
+     "centroid_hz",
+     -1.1
     ]
    ],
    "voiced": 0.899,
@@ -8487,25 +8491,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.5186,
+    "peak_db": -1.1,
     "attack_ms": 618.5941,
     "decay20_s": 1.5066,
     "decay40_s": 1.6562,
-    "rms_db": -7.5156,
-    "crest_db": 6.9971,
-    "lufs": -5.7239,
-    "width_db": -13.1063,
-    "sub120": 0.5257,
-    "low300": 0.804,
-    "high4k": 0.0364,
-    "centroid_hz": 584.979,
-    "rolloff_hz": 662.146,
-    "flatness_db": -29.2184,
-    "lowflux": 0.0342,
-    "low_beat": 0.1598,
+    "rms_db": -8.3128,
+    "crest_db": 7.2128,
+    "lufs": -6.5149,
+    "width_db": -13.0991,
+    "sub120": 0.5263,
+    "low300": 0.8036,
+    "high4k": 0.0368,
+    "centroid_hz": 589.916,
+    "rolloff_hz": 667.5293,
+    "flatness_db": -29.0226,
+    "lowflux": 0.034,
+    "low_beat": 0.1607,
     "n_peaks": 59.0,
-    "dissonance": 0.4999,
-    "high4k_db": -14.386
+    "dissonance": 0.5,
+    "high4k_db": -14.346
    }
   },
   {
@@ -8513,6 +8517,80 @@
    "style": "dubstep",
    "family": "screech",
    "rank": 4,
+   "prompt": "tearout screech bass, dubstep, 140 bpm, aggressive, A1",
+   "seed": 2004,
+   "cut": "2 mesures",
+   "proc": "saturé",
+   "dur_s": 3.43,
+   "target": "zone-b-basses:phrase-de-basse/dubstep",
+   "keys": [
+    "centroid_hz",
+    "rolloff_hz",
+    "flatness_db",
+    "sub120",
+    "low300",
+    "high4k_db",
+    "lufs",
+    "crest_db",
+    "lowflux",
+    "low_beat",
+    "width_db"
+   ],
+   "score_array": 1.092,
+   "score_mp3": 1.387,
+   "worst": [
+    [
+     "crest_db",
+     2.5
+    ],
+    [
+     "sub120",
+     -1.9
+    ],
+    [
+     "lufs",
+     -1.8
+    ],
+    [
+     "lowflux",
+     1.7
+    ]
+   ],
+   "voiced": 0.101,
+   "f0_hz": 55.0,
+   "librosa": {
+    "centroid_hz": 1783.0647,
+    "rolloff_hz": 3768.3105,
+    "flatness_db": -9.8388
+   },
+   "measured": {
+    "dur_s": 3.4286,
+    "peak_db": -1.8495,
+    "attack_ms": 2584.127,
+    "decay20_s": 0.0948,
+    "decay40_s": 0.1098,
+    "rms_db": -11.5489,
+    "crest_db": 9.6994,
+    "lufs": -8.9824,
+    "width_db": -9.0049,
+    "sub120": 0.0505,
+    "low300": 0.1436,
+    "high4k": 0.1387,
+    "centroid_hz": 1633.0017,
+    "rolloff_hz": 3014.6484,
+    "flatness_db": -23.4531,
+    "lowflux": 0.0763,
+    "low_beat": 0.406,
+    "n_peaks": 60.0,
+    "dissonance": 0.5,
+    "high4k_db": -8.5807
+   }
+  },
+  {
+   "file": "dubstep-screech-05.mp3",
+   "style": "dubstep",
+   "family": "screech",
+   "rank": 5,
    "prompt": "tearout screech bass, dubstep, 140 bpm, aggressive, G1",
    "seed": 2016,
    "cut": "2 mesures",
@@ -8533,7 +8611,7 @@
     "width_db"
    ],
    "score_array": 1.405,
-   "score_mp3": 1.442,
+   "score_mp3": 1.449,
    "worst": [
     [
      "rolloff_hz",
@@ -8561,99 +8639,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.0522,
+    "peak_db": -1.1517,
     "attack_ms": 2005.4422,
     "decay20_s": 0.1397,
     "decay40_s": 0.1447,
-    "rms_db": -6.9178,
-    "crest_db": 6.8657,
-    "lufs": -5.5093,
-    "width_db": -9.0825,
-    "sub120": 0.6537,
-    "low300": 0.839,
-    "high4k": 0.0316,
-    "centroid_hz": 445.5597,
-    "rolloff_hz": 285.3149,
-    "flatness_db": -28.6963,
-    "lowflux": 0.0275,
-    "low_beat": 0.1182,
-    "n_peaks": 56.0,
-    "dissonance": 0.4998,
-    "high4k_db": -14.9988
-   }
-  },
-  {
-   "file": "dubstep-screech-05.mp3",
-   "style": "dubstep",
-   "family": "screech",
-   "rank": 5,
-   "prompt": "tearout screech bass, dubstep, 140 bpm, aggressive, A1",
-   "seed": 2004,
-   "cut": "2 mesures",
-   "proc": "saturé",
-   "dur_s": 3.43,
-   "target": "zone-b-basses:phrase-de-basse/dubstep",
-   "keys": [
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 1.092,
-   "score_mp3": 1.46,
-   "worst": [
-    [
-     "crest_db",
-     3.3
-    ],
-    [
-     "sub120",
-     -1.9
-    ],
-    [
-     "lowflux",
-     1.7
-    ],
-    [
-     "low300",
-     -1.5
-    ]
-   ],
-   "voiced": 0.101,
-   "f0_hz": 55.0,
-   "librosa": {
-    "centroid_hz": 1783.0647,
-    "rolloff_hz": 3768.3105,
-    "flatness_db": -9.8388
-   },
-   "measured": {
-    "dur_s": 3.4286,
-    "peak_db": 0.8664,
-    "attack_ms": 2584.127,
-    "decay20_s": 0.0948,
-    "decay40_s": 0.1098,
-    "rms_db": -9.6396,
-    "crest_db": 10.506,
-    "lufs": -7.0719,
-    "width_db": -8.9726,
-    "sub120": 0.0508,
-    "low300": 0.1436,
-    "high4k": 0.1385,
-    "centroid_hz": 1636.9864,
-    "rolloff_hz": 3014.6484,
-    "flatness_db": -23.5735,
-    "lowflux": 0.0755,
-    "low_beat": 0.4066,
-    "n_peaks": 60.0,
-    "dissonance": 0.5,
-    "high4k_db": -8.5851
+    "rms_db": -7.9149,
+    "crest_db": 6.7632,
+    "lufs": -6.5022,
+    "width_db": -9.0775,
+    "sub120": 0.653,
+    "low300": 0.8385,
+    "high4k": 0.0317,
+    "centroid_hz": 450.1264,
+    "rolloff_hz": 290.6982,
+    "flatness_db": -28.712,
+    "lowflux": 0.028,
+    "low_beat": 0.1172,
+    "n_peaks": 55.5,
+    "dissonance": 0.4997,
+    "high4k_db": -14.9847
    }
   },
   {
@@ -8681,7 +8685,7 @@
     "width_db"
    ],
    "score_array": 1.327,
-   "score_mp3": 1.531,
+   "score_mp3": 1.55,
    "worst": [
     [
      "width_db",
@@ -8689,7 +8693,7 @@
     ],
     [
      "crest_db",
-     2.2
+     2.4
     ],
     [
      "flatness_db",
@@ -8709,25 +8713,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": 0.0035,
+    "peak_db": -1.3971,
     "attack_ms": 618.5941,
     "decay20_s": 0.0449,
-    "decay40_s": 0.0549,
-    "rms_db": -9.3916,
-    "crest_db": 9.3951,
-    "lufs": -3.9037,
-    "width_db": -1.6276,
-    "sub120": 0.0924,
-    "low300": 0.1453,
-    "high4k": 0.0432,
-    "centroid_hz": 1632.6762,
-    "rolloff_hz": 2395.5688,
-    "flatness_db": -27.4709,
-    "lowflux": 0.0734,
-    "low_beat": 0.3522,
+    "decay40_s": 0.0599,
+    "rms_db": -11.0031,
+    "crest_db": 9.6059,
+    "lufs": -5.508,
+    "width_db": -1.6463,
+    "sub120": 0.0929,
+    "low300": 0.1456,
+    "high4k": 0.0435,
+    "centroid_hz": 1631.202,
+    "rolloff_hz": 2406.3354,
+    "flatness_db": -27.659,
+    "lowflux": 0.0726,
+    "low_beat": 0.353,
     "n_peaks": 60.0,
     "dissonance": 0.5,
-    "high4k_db": -13.6431
+    "high4k_db": -13.6183
    }
   },
   {
@@ -8755,7 +8759,7 @@
     "width_db"
    ],
    "score_array": 1.509,
-   "score_mp3": 1.619,
+   "score_mp3": 1.652,
    "worst": [
     [
      "rolloff_hz",
@@ -8763,7 +8767,7 @@
     ],
     [
      "flatness_db",
-     -2.3
+     -2.4
     ],
     [
      "centroid_hz",
@@ -8783,25 +8787,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.3747,
+    "peak_db": -1.2784,
     "attack_ms": 339.229,
     "decay20_s": 0.3741,
     "decay40_s": 0.434,
-    "rms_db": -7.322,
-    "crest_db": 6.9473,
-    "lufs": -6.5668,
-    "width_db": -10.8738,
-    "sub120": 0.6723,
-    "low300": 0.884,
+    "rms_db": -8.3267,
+    "crest_db": 7.0483,
+    "lufs": -7.5819,
+    "width_db": -10.9061,
+    "sub120": 0.6734,
+    "low300": 0.8844,
     "high4k": 0.0374,
-    "centroid_hz": 357.8575,
+    "centroid_hz": 355.7198,
     "rolloff_hz": 172.2656,
-    "flatness_db": -32.1318,
-    "lowflux": 0.0277,
-    "low_beat": 0.3225,
-    "n_peaks": 57.0,
+    "flatness_db": -32.6007,
+    "lowflux": 0.0274,
+    "low_beat": 0.323,
+    "n_peaks": 56.5,
     "dissonance": 0.4998,
-    "high4k_db": -14.267
+    "high4k_db": -14.2761
    }
   },
   {
@@ -8829,7 +8833,7 @@
     "width_db"
    ],
    "score_array": 1.559,
-   "score_mp3": 1.709,
+   "score_mp3": 1.706,
    "worst": [
     [
      "rolloff_hz",
@@ -8857,25 +8861,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.5709,
+    "peak_db": -1.0209,
     "attack_ms": 997.7324,
     "decay20_s": 0.7134,
     "decay40_s": 0.7134,
-    "rms_db": -7.1871,
-    "crest_db": 6.6162,
-    "lufs": -5.1362,
-    "width_db": -10.316,
-    "sub120": 0.4374,
-    "low300": 0.8926,
-    "high4k": 0.0317,
-    "centroid_hz": 408.7252,
+    "rms_db": -7.6563,
+    "crest_db": 6.6354,
+    "lufs": -5.6034,
+    "width_db": -10.3018,
+    "sub120": 0.4373,
+    "low300": 0.8927,
+    "high4k": 0.0319,
+    "centroid_hz": 415.3589,
     "rolloff_hz": 172.2656,
-    "flatness_db": -34.818,
+    "flatness_db": -34.6795,
     "lowflux": 0.025,
-    "low_beat": 0.1202,
-    "n_peaks": 53.0,
+    "low_beat": 0.1197,
+    "n_peaks": 54.0,
     "dissonance": 0.5,
-    "high4k_db": -14.9913
+    "high4k_db": -14.9674
    }
   },
   {
@@ -8903,7 +8907,7 @@
     "width_db"
    ],
    "score_array": 1.699,
-   "score_mp3": 1.761,
+   "score_mp3": 1.778,
    "worst": [
     [
      "rolloff_hz",
@@ -8911,7 +8915,7 @@
     ],
     [
      "flatness_db",
-     -2.5
+     -2.2
     ],
     [
      "sub120",
@@ -8931,25 +8935,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": 0.0122,
+    "peak_db": -1.3263,
     "attack_ms": 828.1179,
     "decay20_s": 0.878,
     "decay40_s": 0.878,
-    "rms_db": -6.4832,
-    "crest_db": 6.4953,
-    "lufs": -7.0507,
-    "width_db": -13.1922,
-    "sub120": 0.8748,
-    "low300": 0.9006,
-    "high4k": 0.0401,
-    "centroid_hz": 476.4476,
+    "rms_db": -7.531,
+    "crest_db": 6.2046,
+    "lufs": -8.1112,
+    "width_db": -13.2082,
+    "sub120": 0.8751,
+    "low300": 0.9008,
+    "high4k": 0.0396,
+    "centroid_hz": 473.3888,
     "rolloff_hz": 118.4326,
-    "flatness_db": -32.8757,
-    "lowflux": 0.0449,
-    "low_beat": 0.2559,
-    "n_peaks": 44.5,
-    "dissonance": 0.4997,
-    "high4k_db": -13.969
+    "flatness_db": -31.4456,
+    "lowflux": 0.044,
+    "low_beat": 0.2548,
+    "n_peaks": 43.5,
+    "dissonance": 0.4998,
+    "high4k_db": -14.0216
    }
   },
   {
@@ -8977,7 +8981,7 @@
     "width_db"
    ],
    "score_array": 1.758,
-   "score_mp3": 1.895,
+   "score_mp3": 1.893,
    "worst": [
     [
      "rolloff_hz",
@@ -9005,25 +9009,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.6081,
+    "peak_db": -1.0393,
     "attack_ms": 399.093,
     "decay20_s": 1.8658,
     "decay40_s": 2.0005,
-    "rms_db": -6.4836,
-    "crest_db": 5.8756,
-    "lufs": -4.9333,
-    "width_db": -7.3613,
-    "sub120": 0.4386,
-    "low300": 0.8485,
+    "rms_db": -6.926,
+    "crest_db": 5.8868,
+    "lufs": -5.3711,
+    "width_db": -7.357,
+    "sub120": 0.4382,
+    "low300": 0.8484,
     "high4k": 0.0085,
-    "centroid_hz": 228.501,
+    "centroid_hz": 226.5622,
     "rolloff_hz": 226.0986,
-    "flatness_db": -37.3021,
-    "lowflux": 0.0263,
-    "low_beat": 0.2232,
-    "n_peaks": 53.5,
+    "flatness_db": -37.1201,
+    "lowflux": 0.0259,
+    "low_beat": 0.2234,
+    "n_peaks": 53.0,
     "dissonance": 0.4998,
-    "high4k_db": -20.7223
+    "high4k_db": -20.703
    }
   },
   {
@@ -9031,80 +9035,6 @@
    "style": "dubstep",
    "family": "screech",
    "rank": 11,
-   "prompt": "screech bass, dubstep, 140 bpm, high pitched screaming bass, F#1",
-   "seed": 2018,
-   "cut": "1 mesure",
-   "proc": "saturé",
-   "dur_s": 1.71,
-   "target": "zone-b-basses:phrase-de-basse/dubstep",
-   "keys": [
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 1.971,
-   "score_mp3": 2.145,
-   "worst": [
-    [
-     "rolloff_hz",
-     -3.9
-    ],
-    [
-     "flatness_db",
-     -3.5
-    ],
-    [
-     "high4k_db",
-     -2.5
-    ],
-    [
-     "width_db",
-     -2.4
-    ]
-   ],
-   "voiced": 0.959,
-   "f0_hz": 46.5,
-   "librosa": {
-    "centroid_hz": 1473.4368,
-    "rolloff_hz": 3106.1646,
-    "flatness_db": -15.6288
-   },
-   "measured": {
-    "dur_s": 1.7143,
-    "peak_db": -0.7349,
-    "attack_ms": 823.1293,
-    "decay20_s": 0.873,
-    "decay40_s": 0.873,
-    "rms_db": -7.1479,
-    "crest_db": 6.4131,
-    "lufs": -6.2247,
-    "width_db": -19.2882,
-    "sub120": 0.6775,
-    "low300": 0.8841,
-    "high4k": 0.0076,
-    "centroid_hz": 322.4372,
-    "rolloff_hz": 161.499,
-    "flatness_db": -39.6439,
-    "lowflux": 0.0255,
-    "low_beat": 0.0963,
-    "n_peaks": 58.0,
-    "dissonance": 0.4999,
-    "high4k_db": -21.2061
-   }
-  },
-  {
-   "file": "dubstep-screech-12.mp3",
-   "style": "dubstep",
-   "family": "screech",
-   "rank": 12,
    "prompt": "riddim wub bass, dubstep, 140 bpm, triplet bounce, D1",
    "seed": 2017,
    "cut": "2 mesures",
@@ -9125,11 +9055,11 @@
     "width_db"
    ],
    "score_array": 2.024,
-   "score_mp3": 2.169,
+   "score_mp3": 2.166,
    "worst": [
     [
      "flatness_db",
-     -3.5
+     -3.4
     ],
     [
      "width_db",
@@ -9153,41 +9083,39 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.8151,
+    "peak_db": -1.0605,
     "attack_ms": 1920.6349,
     "decay20_s": 0.0948,
     "decay40_s": 0.2245,
-    "rms_db": -7.2285,
-    "crest_db": 6.4134,
-    "lufs": -6.3608,
-    "width_db": -21.8745,
-    "sub120": 0.4891,
-    "low300": 0.7215,
+    "rms_db": -7.4582,
+    "crest_db": 6.3977,
+    "lufs": -6.5838,
+    "width_db": -21.88,
+    "sub120": 0.4881,
+    "low300": 0.7209,
     "high4k": 0.0087,
-    "centroid_hz": 237.6712,
+    "centroid_hz": 238.5898,
     "rolloff_hz": 366.0645,
-    "flatness_db": -39.6165,
-    "lowflux": 0.0423,
+    "flatness_db": -39.3112,
+    "lowflux": 0.0426,
     "low_beat": 0.6182,
     "n_peaks": 60.0,
     "dissonance": 0.5,
-    "high4k_db": -20.5972
+    "high4k_db": -20.5973
    }
   },
   {
-   "file": "dnb-subdrop-01.mp3",
-   "style": "dnb",
-   "family": "subdrop",
-   "rank": 1,
-   "prompt": "808 sub drop, drum and bass, 174 bpm, pitch dive, deep and clean",
-   "seed": 2501,
-   "cut": "3.0 s",
+   "file": "dubstep-screech-12.mp3",
+   "style": "dubstep",
+   "family": "screech",
+   "rank": 12,
+   "prompt": "screech bass, dubstep, 140 bpm, high pitched screaming bass, F#1",
+   "seed": 2018,
+   "cut": "1 mesure",
    "proc": "saturé",
-   "dur_s": 3.0,
-   "target": "zone-b-basses:sub-basse/dnb",
+   "dur_s": 1.71,
+   "target": "zone-b-basses:phrase-de-basse/dubstep",
    "keys": [
-    "attack_ms",
-    "decay20_s",
     "centroid_hz",
     "rolloff_hz",
     "flatness_db",
@@ -9196,67 +9124,65 @@
     "high4k_db",
     "lufs",
     "crest_db",
-    "n_peaks",
-    "dissonance",
     "lowflux",
     "low_beat",
     "width_db"
    ],
-   "score_array": 0.757,
-   "score_mp3": 0.697,
+   "score_array": 1.971,
+   "score_mp3": 2.173,
    "worst": [
     [
-     "n_peaks",
-     -1.3
+     "rolloff_hz",
+     -3.9
     ],
     [
-     "low300",
-     -1.1
+     "flatness_db",
+     -3.6
     ],
     [
-     "crest_db",
-     -1.0
+     "high4k_db",
+     -2.5
     ],
     [
-     "low_beat",
-     1.0
+     "width_db",
+     -2.4
     ]
    ],
-   "voiced": 0.908,
+   "voiced": 0.959,
    "f0_hz": 46.5,
    "librosa": {
-    "centroid_hz": 416.1082,
-    "rolloff_hz": 231.4819,
-    "flatness_db": -35.2448
+    "centroid_hz": 1473.4368,
+    "rolloff_hz": 3106.1646,
+    "flatness_db": -15.6288
    },
    "measured": {
-    "dur_s": 3.0,
-    "peak_db": -0.5253,
-    "attack_ms": 1486.6213,
-    "decay20_s": 0.7084,
-    "decay40_s": 1.2771,
-    "rms_db": -6.3755,
-    "crest_db": 5.8502,
-    "lufs": -8.2729,
-    "width_db": -20.5281,
-    "sub120": 0.9444,
-    "low300": 0.9746,
-    "high4k": 0.0073,
-    "centroid_hz": 63.0611,
-    "rolloff_hz": 53.833,
-    "flatness_db": -44.9689,
-    "lowflux": 0.0184,
-    "low_beat": 0.4539,
-    "n_peaks": 3.0,
-    "dissonance": 0.4537,
-    "high4k_db": -21.3889
+    "dur_s": 1.7143,
+    "peak_db": -1.4593,
+    "attack_ms": 823.1293,
+    "decay20_s": 0.873,
+    "decay40_s": 0.873,
+    "rms_db": -7.8116,
+    "crest_db": 6.3522,
+    "lufs": -6.8903,
+    "width_db": -19.2499,
+    "sub120": 0.6778,
+    "low300": 0.8839,
+    "high4k": 0.0076,
+    "centroid_hz": 322.6374,
+    "rolloff_hz": 161.499,
+    "flatness_db": -40.5096,
+    "lowflux": 0.0256,
+    "low_beat": 0.0969,
+    "n_peaks": 58.0,
+    "dissonance": 0.4999,
+    "high4k_db": -21.1899
    }
   },
   {
-   "file": "dnb-subdrop-02.mp3",
+   "file": "dnb-subdrop-01.mp3",
    "style": "dnb",
    "family": "subdrop",
-   "rank": 2,
+   "rank": 1,
    "prompt": "808 sub drop, drum and bass, 174 bpm, pitch dive, deep and clean",
    "seed": 2513,
    "cut": "2.0 s",
@@ -9281,23 +9207,23 @@
     "width_db"
    ],
    "score_array": 0.765,
-   "score_mp3": 0.698,
+   "score_mp3": 0.697,
    "worst": [
     [
      "low_beat",
      1.3
     ],
     [
+     "crest_db",
+     -1.2
+    ],
+    [
      "decay20_s",
      -1.1
     ],
     [
-     "crest_db",
-     -1.1
-    ],
-    [
-     "sub120",
-     -0.9
+     "high4k_db",
+     0.9
     ]
    ],
    "voiced": 0.966,
@@ -9309,25 +9235,103 @@
    },
    "measured": {
     "dur_s": 2.0,
-    "peak_db": -0.4874,
+    "peak_db": -1.0972,
     "attack_ms": 1486.6213,
     "decay20_s": 0.4141,
     "decay40_s": 0.4689,
-    "rms_db": -6.2127,
-    "crest_db": 5.7253,
-    "lufs": -7.9319,
-    "width_db": -23.9771,
-    "sub120": 0.9372,
-    "low300": 0.9823,
-    "high4k": 0.0092,
-    "centroid_hz": 61.1816,
+    "rms_db": -6.7679,
+    "crest_db": 5.6707,
+    "lufs": -8.4912,
+    "width_db": -24.0361,
+    "sub120": 0.9375,
+    "low300": 0.9824,
+    "high4k": 0.009,
+    "centroid_hz": 61.3229,
     "rolloff_hz": 53.833,
-    "flatness_db": -48.7827,
-    "lowflux": 0.0345,
-    "low_beat": 0.4931,
+    "flatness_db": -48.7743,
+    "lowflux": 0.0344,
+    "low_beat": 0.4919,
     "n_peaks": 4.0,
-    "dissonance": 0.4339,
-    "high4k_db": -20.3841
+    "dissonance": 0.4356,
+    "high4k_db": -20.455
+   }
+  },
+  {
+   "file": "dnb-subdrop-02.mp3",
+   "style": "dnb",
+   "family": "subdrop",
+   "rank": 2,
+   "prompt": "808 sub drop, drum and bass, 174 bpm, pitch dive, deep and clean",
+   "seed": 2501,
+   "cut": "3.0 s",
+   "proc": "saturé",
+   "dur_s": 3.0,
+   "target": "zone-b-basses:sub-basse/dnb",
+   "keys": [
+    "attack_ms",
+    "decay20_s",
+    "centroid_hz",
+    "rolloff_hz",
+    "flatness_db",
+    "sub120",
+    "low300",
+    "high4k_db",
+    "lufs",
+    "crest_db",
+    "n_peaks",
+    "dissonance",
+    "lowflux",
+    "low_beat",
+    "width_db"
+   ],
+   "score_array": 0.757,
+   "score_mp3": 0.709,
+   "worst": [
+    [
+     "n_peaks",
+     -1.3
+    ],
+    [
+     "low300",
+     -1.1
+    ],
+    [
+     "crest_db",
+     -1.1
+    ],
+    [
+     "low_beat",
+     1.0
+    ]
+   ],
+   "voiced": 0.908,
+   "f0_hz": 46.5,
+   "librosa": {
+    "centroid_hz": 416.1082,
+    "rolloff_hz": 231.4819,
+    "flatness_db": -35.2448
+   },
+   "measured": {
+    "dur_s": 3.0,
+    "peak_db": -1.0836,
+    "attack_ms": 1486.6213,
+    "decay20_s": 0.7084,
+    "decay40_s": 1.2771,
+    "rms_db": -6.8966,
+    "crest_db": 5.813,
+    "lufs": -8.8049,
+    "width_db": -20.5434,
+    "sub120": 0.9445,
+    "low300": 0.9745,
+    "high4k": 0.0073,
+    "centroid_hz": 63.3492,
+    "rolloff_hz": 53.833,
+    "flatness_db": -45.0523,
+    "lowflux": 0.0194,
+    "low_beat": 0.4524,
+    "n_peaks": 3.0,
+    "dissonance": 0.4503,
+    "high4k_db": -21.3919
    }
   },
   {
@@ -9359,7 +9363,7 @@
     "width_db"
    ],
    "score_array": 0.859,
-   "score_mp3": 0.736,
+   "score_mp3": 0.726,
    "worst": [
     [
      "crest_db",
@@ -9374,8 +9378,8 @@
      0.7
     ],
     [
-     "lufs",
-     0.7
+     "width_db",
+     -0.6
     ]
    ],
    "voiced": 0.975,
@@ -9387,25 +9391,25 @@
    },
    "measured": {
     "dur_s": 2.7348,
-    "peak_db": -0.3912,
+    "peak_db": -1.1043,
     "attack_ms": 2399.5465,
     "decay20_s": 0.3143,
     "decay40_s": 0.3143,
-    "rms_db": -4.2662,
-    "crest_db": 3.8751,
-    "lufs": -7.236,
-    "width_db": -32.5344,
+    "rms_db": -4.917,
+    "crest_db": 3.8127,
+    "lufs": -7.9015,
+    "width_db": -32.5335,
     "sub120": 0.9722,
     "low300": 0.994,
-    "high4k": 0.003,
-    "centroid_hz": 51.7783,
+    "high4k": 0.0031,
+    "centroid_hz": 51.779,
     "rolloff_hz": 53.833,
-    "flatness_db": -52.018,
-    "lowflux": 0.0161,
-    "low_beat": 0.3697,
+    "flatness_db": -51.9916,
+    "lowflux": 0.0165,
+    "low_beat": 0.3696,
     "n_peaks": 4.5,
-    "dissonance": 0.4702,
-    "high4k_db": -25.1804
+    "dissonance": 0.471,
+    "high4k_db": -25.1314
    }
   },
   {
@@ -9648,84 +9652,6 @@
    "family": "subdrop",
    "rank": 7,
    "prompt": "deep sub boom drop, drum and bass, 174 bpm, falling low frequency",
-   "seed": 2514,
-   "cut": "3.0 s",
-   "proc": "saturé",
-   "dur_s": 3.0,
-   "target": "zone-b-basses:sub-basse/dnb",
-   "keys": [
-    "attack_ms",
-    "decay20_s",
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "n_peaks",
-    "dissonance",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 1.211,
-   "score_mp3": 1.199,
-   "worst": [
-    [
-     "crest_db",
-     -2.9
-    ],
-    [
-     "lufs",
-     2.0
-    ],
-    [
-     "high4k_db",
-     -1.7
-    ],
-    [
-     "width_db",
-     -1.6
-    ]
-   ],
-   "voiced": 1.0,
-   "f0_hz": 45.2,
-   "librosa": {
-    "centroid_hz": 74.5435,
-    "rolloff_hz": 134.5825,
-    "flatness_db": -83.5527
-   },
-   "measured": {
-    "dur_s": 3.0,
-    "peak_db": -1.2651,
-    "attack_ms": 1067.5737,
-    "decay20_s": 1.2721,
-    "decay40_s": 1.2871,
-    "rms_db": -3.9162,
-    "crest_db": 2.6511,
-    "lufs": -5.2769,
-    "width_db": -47.8179,
-    "sub120": 0.9604,
-    "low300": 0.9989,
-    "high4k": 0.0,
-    "centroid_hz": 49.4674,
-    "rolloff_hz": 53.833,
-    "flatness_db": -92.2126,
-    "lowflux": 0.0082,
-    "low_beat": 0.4349,
-    "n_peaks": 4.5,
-    "dissonance": 0.4189,
-    "high4k_db": -85.282
-   }
-  },
-  {
-   "file": "dnb-subdrop-08.mp3",
-   "style": "dnb",
-   "family": "subdrop",
-   "rank": 8,
-   "prompt": "deep sub boom drop, drum and bass, 174 bpm, falling low frequency",
    "seed": 2510,
    "cut": "3.0 s",
    "proc": "brut",
@@ -9799,10 +9725,10 @@
    }
   },
   {
-   "file": "dnb-subdrop-09.mp3",
+   "file": "dnb-subdrop-08.mp3",
    "style": "dnb",
    "family": "subdrop",
-   "rank": 9,
+   "rank": 8,
    "prompt": "808 sub drop, drum and bass, 174 bpm, pitch dive, deep and clean",
    "seed": 2505,
    "cut": "2.8 s",
@@ -9877,15 +9803,15 @@
    }
   },
   {
-   "file": "dnb-subdrop-10.mp3",
+   "file": "dnb-subdrop-09.mp3",
    "style": "dnb",
    "family": "subdrop",
-   "rank": 10,
-   "prompt": "sub bass drop impact, drum and bass, 174 bpm, descending sine",
-   "seed": 2503,
-   "cut": "2.7 s",
-   "proc": "saturé",
-   "dur_s": 2.74,
+   "rank": 9,
+   "prompt": "deep sub boom drop, drum and bass, 174 bpm, falling low frequency",
+   "seed": 2514,
+   "cut": "3.0 s",
+   "proc": "brut",
+   "dur_s": 3.0,
    "target": "zone-b-basses:sub-basse/dnb",
    "keys": [
     "attack_ms",
@@ -9904,54 +9830,132 @@
     "low_beat",
     "width_db"
    ],
-   "score_array": 1.549,
-   "score_mp3": 1.566,
+   "score_array": 1.35,
+   "score_mp3": 1.361,
    "worst": [
     [
-     "width_db",
-     -4.5
+     "dissonance",
+     -3.3
     ],
     [
-     "crest_db",
-     -3.2
+     "n_peaks",
+     -2.1
     ],
     [
      "high4k_db",
      -1.7
     ],
     [
-     "flatness_db",
-     -1.1
+     "width_db",
+     -1.7
     ]
    ],
-   "voiced": 0.983,
-   "f0_hz": 46.5,
+   "voiced": 1.0,
+   "f0_hz": 45.2,
    "librosa": {
-    "centroid_hz": 58.6079,
-    "rolloff_hz": 96.8994,
-    "flatness_db": -83.0119
+    "centroid_hz": 51.7569,
+    "rolloff_hz": 53.833,
+    "flatness_db": -80.4663
    },
    "measured": {
-    "dur_s": 2.7427,
-    "peak_db": -1.2657,
-    "attack_ms": 1361.9048,
-    "decay20_s": 1.317,
-    "decay40_s": 1.3619,
-    "rms_db": -3.4851,
-    "crest_db": 2.2194,
-    "lufs": -6.9882,
-    "width_db": -88.5187,
-    "sub120": 0.9839,
-    "low300": 0.9999,
+    "dur_s": 3.0,
+    "peak_db": -1.2651,
+    "attack_ms": 1067.5737,
+    "decay20_s": 1.2172,
+    "decay40_s": 1.2871,
+    "rms_db": -6.4076,
+    "crest_db": 5.1425,
+    "lufs": -7.7337,
+    "width_db": -48.4178,
+    "sub120": 0.999,
+    "low300": 1.0,
     "high4k": 0.0,
-    "centroid_hz": 45.4046,
+    "centroid_hz": 45.0281,
     "rolloff_hz": 53.833,
-    "flatness_db": -90.0343,
-    "lowflux": 0.0164,
-    "low_beat": 0.393,
-    "n_peaks": 4.0,
-    "dissonance": 0.427,
-    "high4k_db": -82.9169
+    "flatness_db": -86.6405,
+    "lowflux": 0.0104,
+    "low_beat": 0.4896,
+    "n_peaks": 2.0,
+    "dissonance": 0.3083,
+    "high4k_db": -79.1076
+   }
+  },
+  {
+   "file": "dnb-subdrop-10.mp3",
+   "style": "dnb",
+   "family": "subdrop",
+   "rank": 10,
+   "prompt": "sub drop, drum and bass, 174 bpm, deep sine pitch falling down, long",
+   "seed": 2512,
+   "cut": "2.0 s",
+   "proc": "brut",
+   "dur_s": 2.0,
+   "target": "zone-b-basses:sub-basse/dnb",
+   "keys": [
+    "attack_ms",
+    "decay20_s",
+    "centroid_hz",
+    "rolloff_hz",
+    "flatness_db",
+    "sub120",
+    "low300",
+    "high4k_db",
+    "lufs",
+    "crest_db",
+    "n_peaks",
+    "dissonance",
+    "lowflux",
+    "low_beat",
+    "width_db"
+   ],
+   "score_array": 1.563,
+   "score_mp3": 1.576,
+   "worst": [
+    [
+     "width_db",
+     -4.0
+    ],
+    [
+     "dissonance",
+     -2.9
+    ],
+    [
+     "n_peaks",
+     -2.1
+    ],
+    [
+     "crest_db",
+     -1.6
+    ]
+   ],
+   "voiced": 1.0,
+   "f0_hz": 45.7,
+   "librosa": {
+    "centroid_hz": 51.0681,
+    "rolloff_hz": 53.833,
+    "flatness_db": -78.1319
+   },
+   "measured": {
+    "dur_s": 2.0,
+    "peak_db": -1.2638,
+    "attack_ms": 518.8209,
+    "decay20_s": 1.317,
+    "decay40_s": 1.4367,
+    "rms_db": -6.1044,
+    "crest_db": 4.8406,
+    "lufs": -8.5777,
+    "width_db": -81.8841,
+    "sub120": 0.9999,
+    "low300": 1.0,
+    "high4k": 0.0,
+    "centroid_hz": 45.4356,
+    "rolloff_hz": 53.833,
+    "flatness_db": -83.9581,
+    "lowflux": 0.0088,
+    "low_beat": 0.2678,
+    "n_peaks": 2.0,
+    "dissonance": 0.3286,
+    "high4k_db": -75.5158
    }
   },
   {
@@ -10741,7 +10745,7 @@
     "width_db"
    ],
    "score_array": 0.895,
-   "score_mp3": 0.931,
+   "score_mp3": 0.915,
    "worst": [
     [
      "attack_ms",
@@ -10749,7 +10753,7 @@
     ],
     [
      "crest_db",
-     -1.5
+     -1.4
     ],
     [
      "rolloff_hz",
@@ -10769,25 +10773,25 @@
    },
    "measured": {
     "dur_s": 3.0,
-    "peak_db": -0.4532,
+    "peak_db": -1.0575,
     "attack_ms": 214.5125,
     "decay20_s": 2.659,
     "decay40_s": 2.7488,
-    "rms_db": -13.5244,
-    "crest_db": 13.0712,
-    "lufs": -8.4718,
-    "width_db": -3.8857,
+    "rms_db": -14.3161,
+    "crest_db": 13.2586,
+    "lufs": -9.2675,
+    "width_db": -3.9047,
     "sub120": 0.0002,
     "low300": 0.0016,
     "high4k": 0.0677,
-    "centroid_hz": 1742.3286,
-    "rolloff_hz": 1394.2749,
-    "flatness_db": -30.3078,
-    "lowflux": 0.0788,
-    "low_beat": 0.5866,
-    "n_peaks": 41.0,
+    "centroid_hz": 1755.0934,
+    "rolloff_hz": 1399.6582,
+    "flatness_db": -30.3607,
+    "lowflux": 0.0789,
+    "low_beat": 0.5803,
+    "n_peaks": 41.5,
     "dissonance": 0.5,
-    "high4k_db": -11.6948
+    "high4k_db": -11.6958
    }
   },
   {
@@ -10909,7 +10913,7 @@
     ],
     [
      "lowflux",
-     0.8
+     0.9
     ]
    ],
    "voiced": 0.731,
@@ -10921,25 +10925,25 @@
    },
    "measured": {
     "dur_s": 3.0,
-    "peak_db": 0.556,
+    "peak_db": -1.3075,
     "attack_ms": 1501.5873,
     "decay20_s": 1.3519,
     "decay40_s": 1.4617,
-    "rms_db": -15.4229,
-    "crest_db": 15.9789,
-    "lufs": -9.1911,
-    "width_db": -1.5536,
+    "rms_db": -17.2315,
+    "crest_db": 15.924,
+    "lufs": -11.0087,
+    "width_db": -1.5751,
     "sub120": 0.0003,
-    "low300": 0.0446,
-    "high4k": 0.2486,
-    "centroid_hz": 3336.8219,
-    "rolloff_hz": 12031.6772,
-    "flatness_db": -28.4688,
-    "lowflux": 0.0833,
-    "low_beat": 0.5071,
-    "n_peaks": 45.5,
+    "low300": 0.0447,
+    "high4k": 0.2481,
+    "centroid_hz": 3358.7393,
+    "rolloff_hz": 12026.2939,
+    "flatness_db": -28.5016,
+    "lowflux": 0.0848,
+    "low_beat": 0.5122,
+    "n_peaks": 44.5,
     "dissonance": 0.5,
-    "high4k_db": -6.0445
+    "high4k_db": -6.0536
    }
   },
   {
@@ -11197,7 +11201,7 @@
     "width_db"
    ],
    "score_array": 1.236,
-   "score_mp3": 1.25,
+   "score_mp3": 1.255,
    "worst": [
     [
      "attack_ms",
@@ -11225,25 +11229,25 @@
    },
    "measured": {
     "dur_s": 4.5,
-    "peak_db": -0.6387,
+    "peak_db": -1.0876,
     "attack_ms": 3427.2109,
     "decay20_s": 0.873,
     "decay40_s": 1.0277,
-    "rms_db": -17.522,
-    "crest_db": 16.8834,
-    "lufs": -10.5191,
-    "width_db": -1.0659,
+    "rms_db": -17.9325,
+    "crest_db": 16.845,
+    "lufs": -10.9327,
+    "width_db": -1.0695,
     "sub120": 0.0001,
     "low300": 0.0004,
-    "high4k": 0.2254,
-    "centroid_hz": 3842.5165,
-    "rolloff_hz": 11229.5654,
-    "flatness_db": -28.1909,
-    "lowflux": 0.0783,
-    "low_beat": 0.6958,
+    "high4k": 0.2245,
+    "centroid_hz": 3839.3604,
+    "rolloff_hz": 11191.8823,
+    "flatness_db": -28.0776,
+    "lowflux": 0.081,
+    "low_beat": 0.7001,
     "n_peaks": 40.5,
     "dissonance": 0.5,
-    "high4k_db": -6.4697
+    "high4k_db": -6.4872
    }
   },
   {
@@ -11425,7 +11429,7 @@
     "width_db"
    ],
    "score_array": 1.334,
-   "score_mp3": 1.326,
+   "score_mp3": 1.33,
    "worst": [
     [
      "attack_ms",
@@ -11453,25 +11457,25 @@
    },
    "measured": {
     "dur_s": 4.5,
-    "peak_db": -0.2731,
+    "peak_db": -1.3023,
     "attack_ms": 1930.6122,
     "decay20_s": 2.3746,
     "decay40_s": 2.5143,
-    "rms_db": -18.6096,
-    "crest_db": 18.3365,
-    "lufs": -11.842,
-    "width_db": -4.5832,
+    "rms_db": -19.7003,
+    "crest_db": 18.398,
+    "lufs": -12.9356,
+    "width_db": -4.59,
     "sub120": 0.0002,
     "low300": 0.012,
-    "high4k": 0.6032,
-    "centroid_hz": 8020.4272,
-    "rolloff_hz": 12855.3223,
-    "flatness_db": -24.8134,
-    "lowflux": 0.0853,
-    "low_beat": 0.6474,
-    "n_peaks": 50.5,
-    "dissonance": 0.4998,
-    "high4k_db": -2.1955
+    "high4k": 0.6027,
+    "centroid_hz": 7960.6251,
+    "rolloff_hz": 12860.7056,
+    "flatness_db": -24.8686,
+    "lowflux": 0.085,
+    "low_beat": 0.6496,
+    "n_peaks": 52.0,
+    "dissonance": 0.5,
+    "high4k_db": -2.1987
    }
   },
   {
@@ -11577,7 +11581,7 @@
     "width_db"
    ],
    "score_array": 1.261,
-   "score_mp3": 1.403,
+   "score_mp3": 1.41,
    "worst": [
     [
      "decay20_s",
@@ -11593,7 +11597,7 @@
     ],
     [
      "lowflux",
-     1.3
+     1.2
     ]
    ],
    "voiced": 0.0,
@@ -11605,25 +11609,25 @@
    },
    "measured": {
     "dur_s": 4.5,
-    "peak_db": -0.2465,
+    "peak_db": -1.0443,
     "attack_ms": 54.8753,
     "decay20_s": 0.1796,
     "decay40_s": 0.7034,
-    "rms_db": -19.7916,
-    "crest_db": 19.5451,
-    "lufs": -12.6265,
-    "width_db": 0.0957,
+    "rms_db": -20.6112,
+    "crest_db": 19.567,
+    "lufs": -13.4329,
+    "width_db": 0.0929,
     "sub120": 0.0001,
     "low300": 0.006,
-    "high4k": 0.1408,
-    "centroid_hz": 2103.3667,
-    "rolloff_hz": 3133.0811,
-    "flatness_db": -40.7945,
-    "lowflux": 0.0915,
-    "low_beat": 1.5261,
+    "high4k": 0.1416,
+    "centroid_hz": 2078.6304,
+    "rolloff_hz": 3165.3809,
+    "flatness_db": -41.1017,
+    "lowflux": 0.0905,
+    "low_beat": 1.5256,
     "n_peaks": 59.5,
     "dissonance": 0.5,
-    "high4k_db": -8.5141
+    "high4k_db": -8.4892
    }
   },
   {
@@ -11681,25 +11685,25 @@
    },
    "measured": {
     "dur_s": 3.0,
-    "peak_db": 0.6893,
+    "peak_db": -1.4879,
     "attack_ms": 1391.8367,
     "decay20_s": 0.0848,
     "decay40_s": 1.4517,
-    "rms_db": -18.3263,
-    "crest_db": 19.0156,
-    "lufs": -9.691,
-    "width_db": 1.3089,
+    "rms_db": -20.0243,
+    "crest_db": 18.5364,
+    "lufs": -11.3981,
+    "width_db": 1.2919,
     "sub120": 0.0006,
-    "low300": 0.0033,
-    "high4k": 0.217,
-    "centroid_hz": 3404.7458,
-    "rolloff_hz": 4608.1055,
-    "flatness_db": -21.7762,
-    "lowflux": 0.0813,
-    "low_beat": 0.5778,
+    "low300": 0.0032,
+    "high4k": 0.218,
+    "centroid_hz": 3438.4218,
+    "rolloff_hz": 4694.2383,
+    "flatness_db": -21.7936,
+    "lowflux": 0.0821,
+    "low_beat": 0.5751,
     "n_peaks": 60.0,
     "dissonance": 0.5,
-    "high4k_db": -6.6357
+    "high4k_db": -6.6151
    }
   },
   {
@@ -11803,7 +11807,7 @@
     "width_db"
    ],
    "score_array": 0.948,
-   "score_mp3": 1.162,
+   "score_mp3": 1.217,
    "worst": [
     [
      "flatness_db",
@@ -11818,8 +11822,8 @@
      -1.5
     ],
     [
-     "centroid_hz",
-     -1.2
+     "lufs",
+     -1.4
     ]
    ],
    "voiced": 0.0,
@@ -11831,25 +11835,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.5212,
+    "peak_db": -1.374,
     "attack_ms": 1496.5986,
     "decay20_s": 0.0399,
     "decay40_s": 0.1297,
-    "rms_db": -8.2685,
-    "crest_db": 7.7473,
-    "lufs": -5.8279,
-    "width_db": -9.5542,
-    "sub120": 0.4315,
-    "low300": 0.7382,
-    "high4k": 0.029,
-    "centroid_hz": 654.1683,
-    "rolloff_hz": 1329.6753,
-    "flatness_db": -29.1132,
-    "lowflux": 0.0642,
-    "low_beat": 0.3896,
+    "rms_db": -9.2198,
+    "crest_db": 7.8459,
+    "lufs": -6.7735,
+    "width_db": -9.5411,
+    "sub120": 0.4317,
+    "low300": 0.7374,
+    "high4k": 0.0289,
+    "centroid_hz": 661.2926,
+    "rolloff_hz": 1335.0586,
+    "flatness_db": -29.2012,
+    "lowflux": 0.0649,
+    "low_beat": 0.3918,
     "n_peaks": 60.0,
     "dissonance": 0.5,
-    "high4k_db": -15.3763
+    "high4k_db": -15.3928
    }
   },
   {
@@ -11877,7 +11881,7 @@
     "width_db"
    ],
    "score_array": 1.771,
-   "score_mp3": 1.893,
+   "score_mp3": 1.923,
    "worst": [
     [
      "rolloff_hz",
@@ -11905,99 +11909,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.556,
+    "peak_db": -1.0824,
     "attack_ms": 643.5374,
     "decay20_s": 0.9179,
     "decay40_s": 0.9478,
-    "rms_db": -7.1666,
-    "crest_db": 6.6106,
-    "lufs": -6.3167,
-    "width_db": -16.6974,
-    "sub120": 0.3793,
-    "low300": 0.8555,
-    "high4k": 0.0218,
-    "centroid_hz": 449.4693,
-    "rolloff_hz": 279.9316,
-    "flatness_db": -31.6745,
-    "lowflux": 0.0379,
-    "low_beat": 0.105,
-    "n_peaks": 57.5,
-    "dissonance": 0.4998,
-    "high4k_db": -16.6083
-   }
-  },
-  {
-   "file": "dubstep-foley-03.mp3",
-   "style": "dubstep",
-   "family": "foley",
-   "rank": 3,
-   "prompt": "organic bass, dubstep, 140 bpm, recorded objects mangled into a growl, D1",
-   "seed": 2009,
-   "cut": "1 mesure",
-   "proc": "brut",
-   "dur_s": 1.71,
-   "target": "zone-b-basses:basse-synthe/dubstep",
-   "keys": [
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 2.903,
-   "score_mp3": 3.083,
-   "worst": [
-    [
-     "rolloff_hz",
-     -6.6
-    ],
-    [
-     "flatness_db",
-     -3.9
-    ],
-    [
-     "high4k_db",
-     -3.9
-    ],
-    [
-     "lufs",
-     -3.7
-    ]
-   ],
-   "voiced": 0.932,
-   "f0_hz": 35.1,
-   "librosa": {
-    "centroid_hz": 1197.1791,
-    "rolloff_hz": 2664.7339,
-    "flatness_db": -22.6537
-   },
-   "measured": {
-    "dur_s": 1.7143,
-    "peak_db": -1.2249,
-    "attack_ms": 608.6168,
-    "decay20_s": 0.873,
-    "decay40_s": 0.888,
-    "rms_db": -8.5748,
-    "crest_db": 7.3499,
-    "lufs": -10.9031,
-    "width_db": -20.4977,
-    "sub120": 0.8557,
-    "low300": 0.898,
-    "high4k": 0.0045,
-    "centroid_hz": 200.5349,
-    "rolloff_hz": 75.3662,
-    "flatness_db": -40.8362,
-    "lowflux": 0.0541,
-    "low_beat": 0.1844,
-    "n_peaks": 28.5,
+    "rms_db": -7.7025,
+    "crest_db": 6.62,
+    "lufs": -6.8576,
+    "width_db": -16.7078,
+    "sub120": 0.3796,
+    "low300": 0.8556,
+    "high4k": 0.0217,
+    "centroid_hz": 443.8094,
+    "rolloff_hz": 274.5483,
+    "flatness_db": -31.8189,
+    "lowflux": 0.0389,
+    "low_beat": 0.1057,
+    "n_peaks": 60.0,
     "dissonance": 0.4999,
-    "high4k_db": -23.4242
+    "high4k_db": -16.6441
    }
   },
   {
@@ -12871,7 +12801,7 @@
     "width_db"
    ],
    "score_array": 1.344,
-   "score_mp3": 1.349,
+   "score_mp3": 1.361,
    "worst": [
     [
      "width_db",
@@ -12879,7 +12809,7 @@
     ],
     [
      "rolloff_hz",
-     -1.4
+     -1.5
     ],
     [
      "low300",
@@ -12899,25 +12829,25 @@
    },
    "measured": {
     "dur_s": 2.0,
-    "peak_db": -0.8163,
+    "peak_db": -1.0937,
     "attack_ms": 419.0476,
     "decay20_s": 1.4268,
     "decay40_s": 1.5415,
-    "rms_db": -7.5073,
-    "crest_db": 6.691,
-    "lufs": -6.6458,
-    "width_db": -18.9989,
-    "sub120": 0.6866,
-    "low300": 0.7866,
-    "high4k": 0.0295,
-    "centroid_hz": 359.391,
-    "rolloff_hz": 355.2979,
-    "flatness_db": -33.2034,
-    "lowflux": 0.0397,
+    "rms_db": -8.5703,
+    "crest_db": 7.4766,
+    "lufs": -7.7113,
+    "width_db": -19.0175,
+    "sub120": 0.6868,
+    "low300": 0.7868,
+    "high4k": 0.0293,
+    "centroid_hz": 361.5583,
+    "rolloff_hz": 322.998,
+    "flatness_db": -33.1537,
+    "lowflux": 0.0409,
     "low_beat": 0.2583,
     "n_peaks": 55.5,
     "dissonance": 0.4999,
-    "high4k_db": -15.297
+    "high4k_db": -15.3312
    }
   },
   {
@@ -13021,7 +12951,7 @@
     "width_db"
    ],
    "score_array": 1.506,
-   "score_mp3": 1.517,
+   "score_mp3": 1.522,
    "worst": [
     [
      "width_db",
@@ -13049,25 +12979,25 @@
    },
    "measured": {
     "dur_s": 3.4432,
-    "peak_db": -0.4843,
-    "attack_ms": 1202.2676,
-    "decay20_s": 2.215,
-    "decay40_s": 2.22,
-    "rms_db": -5.8285,
-    "crest_db": 5.3442,
-    "lufs": -6.8933,
-    "width_db": -11.8351,
-    "sub120": 0.8359,
+    "peak_db": -1.3207,
+    "attack_ms": 2544.2177,
+    "decay20_s": 0.873,
+    "decay40_s": 0.878,
+    "rms_db": -6.4932,
+    "crest_db": 5.1725,
+    "lufs": -7.5609,
+    "width_db": -11.844,
+    "sub120": 0.8363,
     "low300": 0.9799,
     "high4k": 0.0047,
-    "centroid_hz": 100.5763,
+    "centroid_hz": 100.0563,
     "rolloff_hz": 129.1992,
-    "flatness_db": -40.171,
-    "lowflux": 0.0282,
-    "low_beat": 0.1408,
+    "flatness_db": -40.2006,
+    "lowflux": 0.029,
+    "low_beat": 0.1404,
     "n_peaks": 10.0,
-    "dissonance": 0.4973,
-    "high4k_db": -23.2697
+    "dissonance": 0.4976,
+    "high4k_db": -23.2543
    }
   },
   {
@@ -13171,7 +13101,7 @@
     "width_db"
    ],
    "score_array": 1.531,
-   "score_mp3": 1.546,
+   "score_mp3": 1.547,
    "worst": [
     [
      "width_db",
@@ -13199,25 +13129,25 @@
    },
    "measured": {
     "dur_s": 2.0,
-    "peak_db": -0.548,
+    "peak_db": -1.0852,
     "attack_ms": 568.7075,
     "decay20_s": 0.1946,
     "decay40_s": 0.2295,
-    "rms_db": -5.2114,
-    "crest_db": 4.6634,
-    "lufs": -5.8532,
-    "width_db": -16.9544,
-    "sub120": 0.6621,
-    "low300": 0.9709,
+    "rms_db": -5.7078,
+    "crest_db": 4.6226,
+    "lufs": -6.353,
+    "width_db": -16.9375,
+    "sub120": 0.6618,
+    "low300": 0.971,
     "high4k": 0.0017,
-    "centroid_hz": 97.7109,
+    "centroid_hz": 97.5925,
     "rolloff_hz": 172.2656,
-    "flatness_db": -46.9401,
-    "lowflux": 0.0161,
+    "flatness_db": -46.4531,
+    "lowflux": 0.0159,
     "low_beat": 0.3457,
-    "n_peaks": 16.5,
+    "n_peaks": 17.0,
     "dissonance": 0.4994,
-    "high4k_db": -27.6217
+    "high4k_db": -27.644
    }
   },
   {
@@ -13424,25 +13354,25 @@
    },
    "measured": {
     "dur_s": 2.0,
-    "peak_db": -0.8099,
-    "attack_ms": 1701.1338,
-    "decay20_s": 0.1946,
-    "decay40_s": 0.2694,
-    "rms_db": -5.6851,
-    "crest_db": 4.8751,
-    "lufs": -6.241,
-    "width_db": -15.7359,
-    "sub120": 0.8767,
+    "peak_db": -1.0037,
+    "attack_ms": 448.9796,
+    "decay20_s": 1.4467,
+    "decay40_s": 1.5215,
+    "rms_db": -5.9949,
+    "crest_db": 4.9912,
+    "lufs": -6.5479,
+    "width_db": -15.7157,
+    "sub120": 0.8763,
     "low300": 0.9862,
     "high4k": 0.0042,
-    "centroid_hz": 112.6066,
+    "centroid_hz": 112.267,
     "rolloff_hz": 118.4326,
-    "flatness_db": -40.1275,
-    "lowflux": 0.0285,
-    "low_beat": 0.2203,
-    "n_peaks": 18.5,
+    "flatness_db": -40.3385,
+    "lowflux": 0.028,
+    "low_beat": 0.2212,
+    "n_peaks": 18.0,
     "dissonance": 0.4996,
-    "high4k_db": -23.7933
+    "high4k_db": -23.7733
    }
   },
   {
@@ -13471,11 +13401,11 @@
     "width_db"
    ],
    "score_array": 1.653,
-   "score_mp3": 1.658,
+   "score_mp3": 1.663,
    "worst": [
     [
      "width_db",
-     -3.9
+     -4.0
     ],
     [
      "centroid_hz",
@@ -13499,25 +13429,25 @@
    },
    "measured": {
     "dur_s": 2.0,
-    "peak_db": -0.4147,
+    "peak_db": -1.0369,
     "attack_ms": 1242.1769,
     "decay20_s": 0.6485,
     "decay40_s": 0.7234,
-    "rms_db": -5.2647,
-    "crest_db": 4.85,
-    "lufs": -6.626,
-    "width_db": -18.8827,
-    "sub120": 0.8072,
+    "rms_db": -5.8922,
+    "crest_db": 4.8553,
+    "lufs": -7.2509,
+    "width_db": -18.9326,
+    "sub120": 0.8071,
     "low300": 0.9726,
-    "high4k": 0.002,
-    "centroid_hz": 108.0145,
+    "high4k": 0.0019,
+    "centroid_hz": 108.059,
     "rolloff_hz": 172.2656,
-    "flatness_db": -42.2407,
-    "lowflux": 0.0283,
-    "low_beat": 0.2553,
+    "flatness_db": -41.9747,
+    "lowflux": 0.0281,
+    "low_beat": 0.2551,
     "n_peaks": 6.0,
-    "dissonance": 0.4938,
-    "high4k_db": -27.0796
+    "dissonance": 0.4939,
+    "high4k_db": -27.1289
    }
   },
   {
@@ -13546,7 +13476,7 @@
     "width_db"
    ],
    "score_array": 1.72,
-   "score_mp3": 1.729,
+   "score_mp3": 1.733,
    "worst": [
     [
      "width_db",
@@ -13574,25 +13504,25 @@
    },
    "measured": {
     "dur_s": 3.0,
-    "peak_db": -0.5957,
-    "attack_ms": 209.5238,
-    "decay20_s": 0.0798,
-    "decay40_s": 1.3469,
-    "rms_db": -10.4042,
-    "crest_db": 9.8085,
-    "lufs": -9.3694,
-    "width_db": -21.6858,
-    "sub120": 0.4549,
-    "low300": 0.7684,
-    "high4k": 0.0242,
-    "centroid_hz": 403.9477,
+    "peak_db": -1.1541,
+    "attack_ms": 199.5465,
+    "decay20_s": 0.0898,
+    "decay40_s": 1.3569,
+    "rms_db": -10.8486,
+    "crest_db": 9.6945,
+    "lufs": -9.8099,
+    "width_db": -21.6678,
+    "sub120": 0.4548,
+    "low300": 0.7686,
+    "high4k": 0.0241,
+    "centroid_hz": 403.7221,
     "rolloff_hz": 538.3301,
-    "flatness_db": -34.2162,
-    "lowflux": 0.0532,
-    "low_beat": 0.4576,
-    "n_peaks": 19.5,
+    "flatness_db": -34.6327,
+    "lowflux": 0.0533,
+    "low_beat": 0.4579,
+    "n_peaks": 19.0,
     "dissonance": 0.4988,
-    "high4k_db": -16.163
+    "high4k_db": -16.1842
    }
   },
   {
@@ -13696,7 +13626,7 @@
     "width_db"
    ],
    "score_array": 1.391,
-   "score_mp3": 1.423,
+   "score_mp3": 1.425,
    "worst": [
     [
      "sub120",
@@ -13724,25 +13654,25 @@
    },
    "measured": {
     "dur_s": 2.0,
-    "peak_db": -0.7828,
+    "peak_db": -1.0702,
     "attack_ms": 588.6621,
-    "decay20_s": 0.7483,
+    "decay20_s": 0.5238,
     "decay40_s": 1.3669,
-    "rms_db": -7.2999,
-    "crest_db": 6.5171,
-    "lufs": -5.8843,
-    "width_db": -3.2241,
-    "sub120": 0.9047,
+    "rms_db": -7.5696,
+    "crest_db": 6.4993,
+    "lufs": -6.1444,
+    "width_db": -3.2163,
+    "sub120": 0.9049,
     "low300": 0.9863,
-    "high4k": 0.0057,
-    "centroid_hz": 115.3814,
+    "high4k": 0.0056,
+    "centroid_hz": 115.4313,
     "rolloff_hz": 96.8994,
-    "flatness_db": -52.0714,
-    "lowflux": 0.0223,
-    "low_beat": 0.2298,
+    "flatness_db": -51.9388,
+    "lowflux": 0.0222,
+    "low_beat": 0.228,
     "n_peaks": 14.0,
     "dissonance": 0.4996,
-    "high4k_db": -22.4474
+    "high4k_db": -22.4825
    }
   },
   {
@@ -13771,7 +13701,7 @@
     "width_db"
    ],
    "score_array": 1.475,
-   "score_mp3": 1.48,
+   "score_mp3": 1.485,
    "worst": [
     [
      "width_db",
@@ -13799,25 +13729,25 @@
    },
    "measured": {
     "dur_s": 2.0,
-    "peak_db": -0.2403,
+    "peak_db": -1.2627,
     "attack_ms": 1057.5964,
     "decay20_s": 0.2694,
     "decay40_s": 0.9129,
-    "rms_db": -6.967,
-    "crest_db": 6.7268,
-    "lufs": -6.248,
-    "width_db": -18.1088,
-    "sub120": 0.5099,
-    "low300": 0.8986,
+    "rms_db": -7.7731,
+    "crest_db": 6.5104,
+    "lufs": -7.0553,
+    "width_db": -18.1333,
+    "sub120": 0.5095,
+    "low300": 0.8987,
     "high4k": 0.0134,
-    "centroid_hz": 168.7753,
+    "centroid_hz": 169.0791,
     "rolloff_hz": 150.7324,
-    "flatness_db": -39.0285,
-    "lowflux": 0.0469,
-    "low_beat": 0.2892,
-    "n_peaks": 45.5,
-    "dissonance": 0.4991,
-    "high4k_db": -18.7311
+    "flatness_db": -38.9553,
+    "lowflux": 0.047,
+    "low_beat": 0.289,
+    "n_peaks": 45.0,
+    "dissonance": 0.4985,
+    "high4k_db": -18.7273
    }
   },
   {
@@ -13846,7 +13776,7 @@
     "width_db"
    ],
    "score_array": 1.49,
-   "score_mp3": 1.504,
+   "score_mp3": 1.512,
    "worst": [
     [
      "width_db",
@@ -13874,25 +13804,25 @@
    },
    "measured": {
     "dur_s": 3.0,
-    "peak_db": -0.3937,
-    "attack_ms": 244.4444,
-    "decay20_s": 0.0549,
-    "decay40_s": 1.4417,
-    "rms_db": -9.3287,
-    "crest_db": 8.935,
-    "lufs": -9.7347,
-    "width_db": -15.7017,
-    "sub120": 0.7761,
-    "low300": 0.9712,
+    "peak_db": -1.2521,
+    "attack_ms": 1551.4739,
+    "decay20_s": 0.1147,
+    "decay40_s": 0.1347,
+    "rms_db": -9.9822,
+    "crest_db": 8.7301,
+    "lufs": -10.4005,
+    "width_db": -15.7314,
+    "sub120": 0.7763,
+    "low300": 0.9714,
     "high4k": 0.0088,
-    "centroid_hz": 147.643,
+    "centroid_hz": 146.1209,
     "rolloff_hz": 129.1992,
-    "flatness_db": -36.6117,
-    "lowflux": 0.0293,
-    "low_beat": 0.3526,
-    "n_peaks": 20.5,
-    "dissonance": 0.4996,
-    "high4k_db": -20.5318
+    "flatness_db": -36.5643,
+    "lowflux": 0.0297,
+    "low_beat": 0.353,
+    "n_peaks": 20.0,
+    "dissonance": 0.4995,
+    "high4k_db": -20.5702
    }
   },
   {
@@ -13921,7 +13851,7 @@
     "width_db"
    ],
    "score_array": 1.505,
-   "score_mp3": 1.514,
+   "score_mp3": 1.521,
    "worst": [
     [
      "width_db",
@@ -13949,25 +13879,25 @@
    },
    "measured": {
     "dur_s": 3.0,
-    "peak_db": -0.5567,
+    "peak_db": -1.0377,
     "attack_ms": 1721.0884,
     "decay20_s": 0.2844,
     "decay40_s": 1.2322,
-    "rms_db": -7.5114,
-    "crest_db": 6.9547,
-    "lufs": -8.5396,
-    "width_db": -15.514,
-    "sub120": 0.8023,
-    "low300": 0.9803,
+    "rms_db": -8.0012,
+    "crest_db": 6.9634,
+    "lufs": -9.0346,
+    "width_db": -15.5459,
+    "sub120": 0.8024,
+    "low300": 0.9804,
     "high4k": 0.0048,
-    "centroid_hz": 115.3891,
+    "centroid_hz": 115.2561,
     "rolloff_hz": 129.1992,
-    "flatness_db": -37.0994,
-    "lowflux": 0.0323,
-    "low_beat": 0.3283,
-    "n_peaks": 9.5,
-    "dissonance": 0.4961,
-    "high4k_db": -23.1743
+    "flatness_db": -37.301,
+    "lowflux": 0.0319,
+    "low_beat": 0.3284,
+    "n_peaks": 8.0,
+    "dissonance": 0.4951,
+    "high4k_db": -23.2303
    }
   },
   {
@@ -13996,7 +13926,7 @@
     "width_db"
    ],
    "score_array": 1.545,
-   "score_mp3": 1.548,
+   "score_mp3": 1.556,
    "worst": [
     [
      "width_db",
@@ -14024,25 +13954,25 @@
    },
    "measured": {
     "dur_s": 3.0,
-    "peak_db": -0.0346,
+    "peak_db": -1.3058,
     "attack_ms": 743.3107,
     "decay20_s": 0.5837,
     "decay40_s": 0.6186,
-    "rms_db": -5.93,
-    "crest_db": 5.8953,
-    "lufs": -6.5887,
-    "width_db": -17.594,
+    "rms_db": -6.9321,
+    "crest_db": 5.6263,
+    "lufs": -7.5956,
+    "width_db": -17.622,
     "sub120": 0.6979,
     "low300": 0.9715,
     "high4k": 0.0024,
-    "centroid_hz": 106.1059,
+    "centroid_hz": 105.9861,
     "rolloff_hz": 129.1992,
-    "flatness_db": -39.5331,
-    "lowflux": 0.0278,
-    "low_beat": 0.3384,
-    "n_peaks": 20.5,
+    "flatness_db": -39.5242,
+    "lowflux": 0.0275,
+    "low_beat": 0.3385,
+    "n_peaks": 20.0,
     "dissonance": 0.4995,
-    "high4k_db": -26.2429
+    "high4k_db": -26.281
    }
   },
   {
@@ -14099,25 +14029,25 @@
    },
    "measured": {
     "dur_s": 3.5481,
-    "peak_db": -0.8617,
+    "peak_db": -1.0203,
     "attack_ms": 2339.6825,
     "decay20_s": 1.0177,
     "decay40_s": 1.1673,
-    "rms_db": -5.4786,
-    "crest_db": 4.6169,
-    "lufs": -5.9202,
-    "width_db": -15.9562,
-    "sub120": 0.7115,
+    "rms_db": -5.66,
+    "crest_db": 4.6397,
+    "lufs": -6.0996,
+    "width_db": -15.9556,
+    "sub120": 0.7116,
     "low300": 0.9835,
     "high4k": 0.0012,
-    "centroid_hz": 88.2668,
+    "centroid_hz": 88.7717,
     "rolloff_hz": 129.1992,
-    "flatness_db": -50.2431,
-    "lowflux": 0.0132,
-    "low_beat": 0.1105,
-    "n_peaks": 11.0,
+    "flatness_db": -50.0148,
+    "lowflux": 0.013,
+    "low_beat": 0.1104,
+    "n_peaks": 10.5,
     "dissonance": 0.4987,
-    "high4k_db": -29.0891
+    "high4k_db": -29.0615
    }
   },
   {
@@ -14146,7 +14076,7 @@
     "width_db"
    ],
    "score_array": 1.676,
-   "score_mp3": 1.683,
+   "score_mp3": 1.702,
    "worst": [
     [
      "width_db",
@@ -14174,25 +14104,25 @@
    },
    "measured": {
     "dur_s": 2.0,
-    "peak_db": 1.5929,
+    "peak_db": -1.5592,
     "attack_ms": 873.0159,
     "decay20_s": 0.454,
     "decay40_s": 0.4989,
-    "rms_db": -8.655,
-    "crest_db": 10.2479,
-    "lufs": -7.5011,
-    "width_db": -17.8518,
-    "sub120": 0.4679,
-    "low300": 0.8083,
-    "high4k": 0.0358,
-    "centroid_hz": 404.7385,
+    "rms_db": -11.2899,
+    "crest_db": 9.7307,
+    "lufs": -10.1371,
+    "width_db": -17.8761,
+    "sub120": 0.4688,
+    "low300": 0.8089,
+    "high4k": 0.0362,
+    "centroid_hz": 398.0885,
     "rolloff_hz": 301.4648,
-    "flatness_db": -30.4023,
-    "lowflux": 0.0663,
-    "low_beat": 0.5236,
-    "n_peaks": 55.0,
-    "dissonance": 0.4973,
-    "high4k_db": -14.4621
+    "flatness_db": -30.5838,
+    "lowflux": 0.0676,
+    "low_beat": 0.523,
+    "n_peaks": 54.5,
+    "dissonance": 0.4951,
+    "high4k_db": -14.4084
    }
   },
   {
@@ -14221,7 +14151,7 @@
     "width_db"
    ],
    "score_array": 1.72,
-   "score_mp3": 1.731,
+   "score_mp3": 1.746,
    "worst": [
     [
      "low_beat",
@@ -14249,25 +14179,25 @@
    },
    "measured": {
     "dur_s": 4.5,
-    "peak_db": 0.3439,
+    "peak_db": -1.7194,
     "attack_ms": 2359.6372,
     "decay20_s": 0.2494,
     "decay40_s": 0.2644,
-    "rms_db": -8.6312,
-    "crest_db": 8.975,
-    "lufs": -8.2334,
-    "width_db": -11.8101,
-    "sub120": 0.6202,
-    "low300": 0.8673,
-    "high4k": 0.0191,
-    "centroid_hz": 450.5403,
+    "rms_db": -10.7632,
+    "crest_db": 9.0438,
+    "lufs": -10.3541,
+    "width_db": -11.8076,
+    "sub120": 0.6198,
+    "low300": 0.8671,
+    "high4k": 0.0193,
+    "centroid_hz": 454.298,
     "rolloff_hz": 279.9316,
-    "flatness_db": -30.271,
-    "lowflux": 0.0622,
-    "low_beat": 0.6401,
+    "flatness_db": -30.4183,
+    "lowflux": 0.0609,
+    "low_beat": 0.6395,
     "n_peaks": 7.0,
-    "dissonance": 0.4931,
-    "high4k_db": -17.2008
+    "dissonance": 0.4928,
+    "high4k_db": -17.1467
    }
   },
   {
@@ -14595,7 +14525,7 @@
     "width_db"
    ],
    "score_array": 1.413,
-   "score_mp3": 1.738,
+   "score_mp3": 1.746,
    "worst": [
     [
      "flatness_db",
@@ -14623,25 +14553,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.1072,
+    "peak_db": -1.0197,
     "attack_ms": 1242.1769,
     "decay20_s": 0.9029,
     "decay40_s": 0.9079,
-    "rms_db": -6.7171,
-    "crest_db": 6.6099,
-    "lufs": -4.4177,
-    "width_db": -4.7802,
-    "sub120": 0.4912,
-    "low300": 0.622,
+    "rms_db": -7.6456,
+    "crest_db": 6.6259,
+    "lufs": -5.3522,
+    "width_db": -4.7925,
+    "sub120": 0.4905,
+    "low300": 0.6214,
     "high4k": 0.0197,
-    "centroid_hz": 524.8183,
+    "centroid_hz": 518.9371,
     "rolloff_hz": 699.8291,
-    "flatness_db": -41.6941,
-    "lowflux": 0.0647,
-    "low_beat": 0.2504,
+    "flatness_db": -41.6522,
+    "lowflux": 0.0654,
+    "low_beat": 0.2506,
     "n_peaks": 22.5,
     "dissonance": 0.4996,
-    "high4k_db": -17.0656
+    "high4k_db": -17.0552
    }
   },
   {
@@ -14743,7 +14673,7 @@
     "width_db"
    ],
    "score_array": 2.224,
-   "score_mp3": 2.57,
+   "score_mp3": 2.576,
    "worst": [
     [
      "flatness_db",
@@ -14771,25 +14701,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.9406,
+    "peak_db": -1.0076,
     "attack_ms": 1222.2222,
     "decay20_s": 0.1197,
     "decay40_s": 0.3342,
-    "rms_db": -8.5094,
-    "crest_db": 7.5688,
-    "lufs": -7.3218,
-    "width_db": -18.4519,
-    "sub120": 0.5901,
-    "low300": 0.7743,
-    "high4k": 0.0097,
-    "centroid_hz": 316.8362,
+    "rms_db": -8.6125,
+    "crest_db": 7.6049,
+    "lufs": -7.4311,
+    "width_db": -18.4566,
+    "sub120": 0.5902,
+    "low300": 0.7742,
+    "high4k": 0.0096,
+    "centroid_hz": 316.8895,
     "rolloff_hz": 441.4307,
-    "flatness_db": -54.5864,
-    "lowflux": 0.0332,
-    "low_beat": 0.3811,
-    "n_peaks": 59.5,
+    "flatness_db": -54.3994,
+    "lowflux": 0.0331,
+    "low_beat": 0.3809,
+    "n_peaks": 60.0,
     "dissonance": 0.5,
-    "high4k_db": -20.1439
+    "high4k_db": -20.1583
    }
   },
   {
@@ -14797,80 +14727,6 @@
    "style": "dubstep",
    "family": "yoi",
    "rank": 4,
-   "prompt": "vowel bass, dubstep, 140 bpm, formant filter a-e-i-o-u, fat, E1",
-   "seed": 2001,
-   "cut": "2 mesures",
-   "proc": "saturé",
-   "dur_s": 3.43,
-   "target": "zone-b-basses:basse-synthe/dubstep",
-   "keys": [
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 2.244,
-   "score_mp3": 2.591,
-   "worst": [
-    [
-     "flatness_db",
-     -6.0
-    ],
-    [
-     "rolloff_hz",
-     -4.0
-    ],
-    [
-     "high4k_db",
-     -3.3
-    ],
-    [
-     "centroid_hz",
-     -2.5
-    ]
-   ],
-   "voiced": 0.628,
-   "f0_hz": 41.2,
-   "librosa": {
-    "centroid_hz": 851.8474,
-    "rolloff_hz": 2207.1533,
-    "flatness_db": -23.1117
-   },
-   "measured": {
-    "dur_s": 3.4286,
-    "peak_db": -0.9743,
-    "attack_ms": 1496.5986,
-    "decay20_s": 0.4839,
-    "decay40_s": 0.6336,
-    "rms_db": -8.2471,
-    "crest_db": 7.2728,
-    "lufs": -6.7569,
-    "width_db": -11.3162,
-    "sub120": 0.3639,
-    "low300": 0.7872,
-    "high4k": 0.0075,
-    "centroid_hz": 296.5774,
-    "rolloff_hz": 333.7646,
-    "flatness_db": -53.6091,
-    "lowflux": 0.0336,
-    "low_beat": 0.2866,
-    "n_peaks": 35.5,
-    "dissonance": 0.4998,
-    "high4k_db": -21.2471
-   }
-  },
-  {
-   "file": "dubstep-yoi-05.mp3",
-   "style": "dubstep",
-   "family": "yoi",
-   "rank": 5,
    "prompt": "vocal formant bass, dubstep, 140 bpm, oi oi vowel sweep, G1",
    "seed": 2009,
    "cut": "1 mesure",
@@ -14891,7 +14747,7 @@
     "width_db"
    ],
    "score_array": 2.237,
-   "score_mp3": 2.594,
+   "score_mp3": 2.582,
    "worst": [
     [
      "flatness_db",
@@ -14919,25 +14775,99 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.9526,
+    "peak_db": -1.1673,
     "attack_ms": 134.6939,
     "decay20_s": 0.4639,
     "decay40_s": 1.5714,
-    "rms_db": -9.2885,
-    "crest_db": 8.3359,
-    "lufs": -5.9266,
-    "width_db": -12.9787,
-    "sub120": 0.017,
-    "low300": 0.188,
+    "rms_db": -9.3845,
+    "crest_db": 8.2172,
+    "lufs": -6.0218,
+    "width_db": -12.9893,
+    "sub120": 0.0171,
+    "low300": 0.1883,
     "high4k": 0.0029,
-    "centroid_hz": 620.4761,
+    "centroid_hz": 622.6869,
     "rolloff_hz": 678.2959,
-    "flatness_db": -49.5797,
-    "lowflux": 0.0551,
-    "low_beat": 0.5423,
-    "n_peaks": 58.0,
-    "dissonance": 0.4849,
-    "high4k_db": -25.3609
+    "flatness_db": -49.3503,
+    "lowflux": 0.0552,
+    "low_beat": 0.5418,
+    "n_peaks": 58.5,
+    "dissonance": 0.4859,
+    "high4k_db": -25.364
+   }
+  },
+  {
+   "file": "dubstep-yoi-05.mp3",
+   "style": "dubstep",
+   "family": "yoi",
+   "rank": 5,
+   "prompt": "vowel bass, dubstep, 140 bpm, formant filter a-e-i-o-u, fat, E1",
+   "seed": 2001,
+   "cut": "2 mesures",
+   "proc": "saturé",
+   "dur_s": 3.43,
+   "target": "zone-b-basses:basse-synthe/dubstep",
+   "keys": [
+    "centroid_hz",
+    "rolloff_hz",
+    "flatness_db",
+    "sub120",
+    "low300",
+    "high4k_db",
+    "lufs",
+    "crest_db",
+    "lowflux",
+    "low_beat",
+    "width_db"
+   ],
+   "score_array": 2.244,
+   "score_mp3": 2.596,
+   "worst": [
+    [
+     "flatness_db",
+     -6.0
+    ],
+    [
+     "rolloff_hz",
+     -4.0
+    ],
+    [
+     "high4k_db",
+     -3.3
+    ],
+    [
+     "centroid_hz",
+     -2.5
+    ]
+   ],
+   "voiced": 0.628,
+   "f0_hz": 41.2,
+   "librosa": {
+    "centroid_hz": 851.8474,
+    "rolloff_hz": 2207.1533,
+    "flatness_db": -23.1117
+   },
+   "measured": {
+    "dur_s": 3.4286,
+    "peak_db": -1.0222,
+    "attack_ms": 1521.542,
+    "decay20_s": 0.459,
+    "decay40_s": 0.6086,
+    "rms_db": -8.3191,
+    "crest_db": 7.2969,
+    "lufs": -6.8292,
+    "width_db": -11.3023,
+    "sub120": 0.3644,
+    "low300": 0.7873,
+    "high4k": 0.0076,
+    "centroid_hz": 294.4275,
+    "rolloff_hz": 333.7646,
+    "flatness_db": -53.6747,
+    "lowflux": 0.0334,
+    "low_beat": 0.2869,
+    "n_peaks": 35.5,
+    "dissonance": 0.4998,
+    "high4k_db": -21.2199
    }
   },
   {
@@ -15187,7 +15117,7 @@
     "width_db"
    ],
    "score_array": 2.6,
-   "score_mp3": 2.746,
+   "score_mp3": 2.754,
    "worst": [
     [
      "width_db",
@@ -15195,7 +15125,7 @@
     ],
     [
      "flatness_db",
-     -3.8
+     -3.9
     ],
     [
      "rolloff_hz",
@@ -15215,25 +15145,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.9196,
+    "peak_db": -1.2112,
     "attack_ms": 19.9546,
     "decay20_s": 0.1696,
     "decay40_s": 0.1846,
-    "rms_db": -6.0228,
-    "crest_db": 5.1032,
-    "lufs": -4.7161,
-    "width_db": -83.9251,
-    "sub120": 0.1475,
-    "low300": 0.2689,
-    "high4k": 0.012,
-    "centroid_hz": 476.3083,
+    "rms_db": -6.4729,
+    "crest_db": 5.2617,
+    "lufs": -5.1672,
+    "width_db": -83.848,
+    "sub120": 0.1472,
+    "low300": 0.2686,
+    "high4k": 0.0119,
+    "centroid_hz": 476.6703,
     "rolloff_hz": 538.3301,
-    "flatness_db": -40.3175,
-    "lowflux": 0.0747,
-    "low_beat": 0.5668,
+    "flatness_db": -40.9194,
+    "lowflux": 0.074,
+    "low_beat": 0.5675,
     "n_peaks": 60.0,
     "dissonance": 0.5,
-    "high4k_db": -19.2027
+    "high4k_db": -19.2425
    }
   },
   {
@@ -15263,7 +15193,7 @@
     "width_db"
    ],
    "score_array": 1.447,
-   "score_mp3": 1.578,
+   "score_mp3": 1.611,
    "worst": [
     [
      "decay20_s",
@@ -15274,12 +15204,12 @@
      -2.1
     ],
     [
-     "rolloff_hz",
-     -2.0
-    ],
-    [
      "low_beat",
      2.0
+    ],
+    [
+     "rolloff_hz",
+     -1.9
     ]
    ],
    "voiced": 0.977,
@@ -15291,25 +15221,25 @@
    },
    "measured": {
     "dur_s": 1.0,
-    "peak_db": -0.2225,
+    "peak_db": -1.4106,
     "attack_ms": 628.5714,
     "decay20_s": 0.0399,
     "decay40_s": 0.3392,
-    "rms_db": -8.2633,
-    "crest_db": 8.0408,
-    "lufs": -5.4147,
-    "width_db": -10.7073,
-    "sub120": 0.6421,
-    "low300": 0.8399,
-    "high4k": 0.0459,
-    "centroid_hz": 744.7662,
-    "rolloff_hz": 1028.2104,
-    "flatness_db": -29.5955,
-    "lowflux": 0.0389,
-    "low_beat": 0.5677,
+    "rms_db": -9.4702,
+    "crest_db": 8.0596,
+    "lufs": -6.6351,
+    "width_db": -10.702,
+    "sub120": 0.6444,
+    "low300": 0.8414,
+    "high4k": 0.046,
+    "centroid_hz": 749.3483,
+    "rolloff_hz": 1060.5103,
+    "flatness_db": -29.9547,
+    "lowflux": 0.0396,
+    "low_beat": 0.5679,
     "n_peaks": 50.0,
-    "dissonance": 0.4991,
-    "high4k_db": -13.3786
+    "dissonance": 0.4993,
+    "high4k_db": -13.3748
    }
   },
   {
@@ -15339,7 +15269,7 @@
     "width_db"
    ],
    "score_array": 2.034,
-   "score_mp3": 2.111,
+   "score_mp3": 2.131,
    "worst": [
     [
      "rolloff_hz",
@@ -15351,7 +15281,7 @@
     ],
     [
      "flatness_db",
-     -2.5
+     -2.4
     ],
     [
      "low300",
@@ -15367,25 +15297,25 @@
    },
    "measured": {
     "dur_s": 1.0,
-    "peak_db": -0.3118,
+    "peak_db": -1.1562,
     "attack_ms": 643.5374,
     "decay20_s": 0.2844,
     "decay40_s": 0.3293,
-    "rms_db": -6.5839,
-    "crest_db": 6.2721,
-    "lufs": -6.6126,
-    "width_db": -14.4002,
-    "sub120": 0.7682,
-    "low300": 0.8723,
-    "high4k": 0.0262,
-    "centroid_hz": 291.4266,
+    "rms_db": -7.3088,
+    "crest_db": 6.1526,
+    "lufs": -7.3443,
+    "width_db": -14.382,
+    "sub120": 0.7684,
+    "low300": 0.8727,
+    "high4k": 0.0263,
+    "centroid_hz": 290.8164,
     "rolloff_hz": 145.3491,
-    "flatness_db": -32.0294,
-    "lowflux": 0.0219,
-    "low_beat": 0.1024,
+    "flatness_db": -31.6894,
+    "lowflux": 0.0213,
+    "low_beat": 0.1027,
     "n_peaks": 55.5,
     "dissonance": 0.4998,
-    "high4k_db": -15.8136
+    "high4k_db": -15.7953
    }
   },
   {
@@ -15415,18 +15345,18 @@
     "width_db"
    ],
    "score_array": 1.991,
-   "score_mp3": 2.137,
+   "score_mp3": 2.134,
    "worst": [
     [
      "rolloff_hz",
      -5.3
     ],
     [
-     "flatness_db",
-     -2.9
+     "decay20_s",
+     -2.8
     ],
     [
-     "decay20_s",
+     "flatness_db",
      -2.8
     ],
     [
@@ -15443,25 +15373,25 @@
    },
    "measured": {
     "dur_s": 1.7333,
-    "peak_db": -0.019,
+    "peak_db": -1.5869,
     "attack_ms": 618.5941,
     "decay20_s": 0.0599,
     "decay40_s": 0.1846,
-    "rms_db": -7.3224,
-    "crest_db": 7.3034,
-    "lufs": -5.3156,
-    "width_db": -13.673,
-    "sub120": 0.2428,
-    "low300": 0.8825,
-    "high4k": 0.0261,
-    "centroid_hz": 422.697,
+    "rms_db": -8.3271,
+    "crest_db": 6.7402,
+    "lufs": -6.3406,
+    "width_db": -13.64,
+    "sub120": 0.2435,
+    "low300": 0.882,
+    "high4k": 0.0263,
+    "centroid_hz": 425.8649,
     "rolloff_hz": 161.499,
-    "flatness_db": -34.8039,
-    "lowflux": 0.0409,
-    "low_beat": 0.4158,
+    "flatness_db": -34.1599,
+    "lowflux": 0.0416,
+    "low_beat": 0.4168,
     "n_peaks": 54.5,
-    "dissonance": 0.5,
-    "high4k_db": -15.8371
+    "dissonance": 0.499,
+    "high4k_db": -15.8047
    }
   },
   {
@@ -15491,7 +15421,7 @@
     "width_db"
    ],
    "score_array": 2.318,
-   "score_mp3": 2.459,
+   "score_mp3": 2.466,
    "worst": [
     [
      "rolloff_hz",
@@ -15499,7 +15429,7 @@
     ],
     [
      "flatness_db",
-     -3.5
+     -3.6
     ],
     [
      "centroid_hz",
@@ -15519,25 +15449,25 @@
    },
    "measured": {
     "dur_s": 1.0,
-    "peak_db": -0.8534,
+    "peak_db": -1.1173,
     "attack_ms": 628.5714,
     "decay20_s": 0.2694,
     "decay40_s": 0.3392,
-    "rms_db": -6.2177,
-    "crest_db": 5.3643,
-    "lufs": -5.9224,
-    "width_db": -16.7436,
-    "sub120": 0.7847,
-    "low300": 0.9504,
+    "rms_db": -6.5702,
+    "crest_db": 5.4528,
+    "lufs": -6.2739,
+    "width_db": -16.7545,
+    "sub120": 0.7848,
+    "low300": 0.9503,
     "high4k": 0.0106,
-    "centroid_hz": 212.6087,
+    "centroid_hz": 213.0596,
     "rolloff_hz": 129.1992,
-    "flatness_db": -38.5936,
-    "lowflux": 0.0186,
-    "low_beat": 0.1306,
-    "n_peaks": 58.0,
-    "dissonance": 0.4999,
-    "high4k_db": -19.7343
+    "flatness_db": -38.8316,
+    "lowflux": 0.0187,
+    "low_beat": 0.1318,
+    "n_peaks": 57.0,
+    "dissonance": 0.4998,
+    "high4k_db": -19.7327
    }
   },
   {
@@ -15567,7 +15497,7 @@
     "width_db"
    ],
    "score_array": 2.317,
-   "score_mp3": 2.47,
+   "score_mp3": 2.487,
    "worst": [
     [
      "rolloff_hz",
@@ -15575,7 +15505,7 @@
     ],
     [
      "flatness_db",
-     -3.5
+     -3.6
     ],
     [
      "high4k_db",
@@ -15595,25 +15525,25 @@
    },
    "measured": {
     "dur_s": 1.5,
-    "peak_db": -0.8082,
+    "peak_db": -1.1831,
     "attack_ms": 708.39,
     "decay20_s": 0.5737,
     "decay40_s": 0.6036,
-    "rms_db": -6.5021,
-    "crest_db": 5.6939,
-    "lufs": -6.8797,
-    "width_db": -10.5683,
+    "rms_db": -7.0169,
+    "crest_db": 5.8338,
+    "lufs": -7.4014,
+    "width_db": -10.5473,
     "sub120": 0.8262,
     "low300": 0.9173,
-    "high4k": 0.0071,
-    "centroid_hz": 190.0465,
+    "high4k": 0.0072,
+    "centroid_hz": 189.1058,
     "rolloff_hz": 139.9658,
-    "flatness_db": -38.6329,
-    "lowflux": 0.0217,
-    "low_beat": 0.1202,
-    "n_peaks": 57.0,
+    "flatness_db": -39.024,
+    "lowflux": 0.0223,
+    "low_beat": 0.1199,
+    "n_peaks": 55.5,
     "dissonance": 0.4998,
-    "high4k_db": -21.4645
+    "high4k_db": -21.4492
    }
   },
   {
@@ -15643,7 +15573,7 @@
     "width_db"
    ],
    "score_array": 2.602,
-   "score_mp3": 2.708,
+   "score_mp3": 2.722,
    "worst": [
     [
      "rolloff_hz",
@@ -15659,7 +15589,7 @@
     ],
     [
      "flatness_db",
-     -3.3
+     -3.4
     ]
    ],
    "voiced": 1.0,
@@ -15671,25 +15601,25 @@
    },
    "measured": {
     "dur_s": 1.5,
-    "peak_db": -0.7692,
+    "peak_db": -1.1069,
     "attack_ms": 603.6281,
     "decay20_s": 0.7932,
     "decay40_s": 0.8481,
-    "rms_db": -5.8116,
-    "crest_db": 5.0425,
-    "lufs": -7.6205,
-    "width_db": -14.0982,
-    "sub120": 0.9248,
+    "rms_db": -6.0828,
+    "crest_db": 4.9758,
+    "lufs": -7.8849,
+    "width_db": -14.0923,
+    "sub120": 0.9247,
     "low300": 0.9661,
     "high4k": 0.0065,
-    "centroid_hz": 125.8266,
+    "centroid_hz": 126.8194,
     "rolloff_hz": 75.3662,
-    "flatness_db": -37.4255,
-    "lowflux": 0.0237,
-    "low_beat": 0.1925,
+    "flatness_db": -37.5918,
+    "lowflux": 0.0228,
+    "low_beat": 0.1919,
     "n_peaks": 15.0,
     "dissonance": 0.4995,
-    "high4k_db": -21.8534
+    "high4k_db": -21.8846
    }
   },
   {
@@ -15719,7 +15649,7 @@
     "width_db"
    ],
    "score_array": 2.646,
-   "score_mp3": 2.709,
+   "score_mp3": 2.722,
    "worst": [
     [
      "rolloff_hz",
@@ -15747,25 +15677,25 @@
    },
    "measured": {
     "dur_s": 1.5,
-    "peak_db": -0.393,
+    "peak_db": -1.0331,
     "attack_ms": 818.1406,
     "decay20_s": 0.5887,
     "decay40_s": 0.6535,
-    "rms_db": -5.0211,
-    "crest_db": 4.6281,
-    "lufs": -6.4313,
-    "width_db": -16.642,
-    "sub120": 0.8706,
-    "low300": 0.9406,
+    "rms_db": -5.6697,
+    "crest_db": 4.6366,
+    "lufs": -7.0779,
+    "width_db": -16.664,
+    "sub120": 0.8703,
+    "low300": 0.9405,
     "high4k": 0.0057,
-    "centroid_hz": 129.4802,
+    "centroid_hz": 129.7211,
     "rolloff_hz": 86.1328,
-    "flatness_db": -36.9806,
-    "lowflux": 0.0204,
-    "low_beat": 0.1191,
-    "n_peaks": 17.5,
+    "flatness_db": -37.0417,
+    "lowflux": 0.0207,
+    "low_beat": 0.1206,
+    "n_peaks": 18.0,
     "dissonance": 0.4995,
-    "high4k_db": -22.422
+    "high4k_db": -22.4202
    }
   },
   {
@@ -15795,7 +15725,7 @@
     "width_db"
    ],
    "score_array": 2.682,
-   "score_mp3": 2.727,
+   "score_mp3": 2.746,
    "worst": [
     [
      "rolloff_hz",
@@ -15810,8 +15740,8 @@
      -3.4
     ],
     [
-     "flatness_db",
-     -2.7
+     "crest_db",
+     -2.8
     ]
    ],
    "voiced": 1.0,
@@ -15823,25 +15753,25 @@
    },
    "measured": {
     "dur_s": 1.559,
-    "peak_db": -0.3902,
+    "peak_db": -1.1374,
     "attack_ms": 673.4694,
     "decay20_s": 0.8481,
     "decay40_s": 0.863,
-    "rms_db": -4.3637,
-    "crest_db": 3.9735,
-    "lufs": -6.0681,
-    "width_db": -20.3392,
-    "sub120": 0.9029,
+    "rms_db": -5.0033,
+    "crest_db": 3.8659,
+    "lufs": -6.7117,
+    "width_db": -20.4048,
+    "sub120": 0.9034,
     "low300": 0.9748,
     "high4k": 0.0067,
-    "centroid_hz": 162.4093,
+    "centroid_hz": 162.5252,
     "rolloff_hz": 53.833,
-    "flatness_db": -33.7904,
-    "lowflux": 0.0154,
+    "flatness_db": -33.6306,
+    "lowflux": 0.0158,
     "low_beat": 0.0715,
     "n_peaks": 12.0,
-    "dissonance": 0.4969,
-    "high4k_db": -21.7282
+    "dissonance": 0.4968,
+    "high4k_db": -21.7511
    }
   },
   {
@@ -15871,7 +15801,7 @@
     "width_db"
    ],
    "score_array": 2.685,
-   "score_mp3": 2.871,
+   "score_mp3": 2.86,
    "worst": [
     [
      "rolloff_hz",
@@ -15879,7 +15809,7 @@
     ],
     [
      "flatness_db",
-     -5.0
+     -4.8
     ],
     [
      "centroid_hz",
@@ -15899,25 +15829,25 @@
    },
    "measured": {
     "dur_s": 2.2,
-    "peak_db": -0.3452,
+    "peak_db": -1.136,
     "attack_ms": 543.7642,
     "decay20_s": 1.0077,
     "decay40_s": 1.1723,
-    "rms_db": -4.6354,
-    "crest_db": 4.2902,
-    "lufs": -5.5335,
-    "width_db": -21.2703,
-    "sub120": 0.8699,
-    "low300": 0.9742,
+    "rms_db": -5.3302,
+    "crest_db": 4.1941,
+    "lufs": -6.232,
+    "width_db": -21.2251,
+    "sub120": 0.8698,
+    "low300": 0.9741,
     "high4k": 0.0127,
-    "centroid_hz": 120.0296,
+    "centroid_hz": 119.4503,
     "rolloff_hz": 118.4326,
-    "flatness_db": -47.7513,
-    "lowflux": 0.0307,
-    "low_beat": 0.1491,
+    "flatness_db": -46.5882,
+    "lowflux": 0.0314,
+    "low_beat": 0.1487,
     "n_peaks": 12.5,
     "dissonance": 0.4991,
-    "high4k_db": -18.9735
+    "high4k_db": -18.9556
    }
   },
   {
@@ -15925,82 +15855,6 @@
    "style": "dubstep",
    "family": "stab",
    "rank": 10,
-   "prompt": "fat bass stab, dubstep, 140 bpm, short distorted hit, C2",
-   "seed": 2012,
-   "cut": "1.7 s",
-   "proc": "saturé",
-   "dur_s": 1.73,
-   "target": "zone-b-basses:basse-synthe/dubstep",
-   "keys": [
-    "attack_ms",
-    "decay20_s",
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 2.715,
-   "score_mp3": 2.873,
-   "worst": [
-    [
-     "rolloff_hz",
-     -6.6
-    ],
-    [
-     "flatness_db",
-     -4.7
-    ],
-    [
-     "centroid_hz",
-     -3.9
-    ],
-    [
-     "high4k_db",
-     -3.8
-    ]
-   ],
-   "voiced": 1.0,
-   "f0_hz": 65.4,
-   "librosa": {
-    "centroid_hz": 1222.1731,
-    "rolloff_hz": 3391.4795,
-    "flatness_db": -24.449
-   },
-   "measured": {
-    "dur_s": 1.7299,
-    "peak_db": -0.4768,
-    "attack_ms": 653.5147,
-    "decay20_s": 1.0576,
-    "decay40_s": 1.0576,
-    "rms_db": -5.0152,
-    "crest_db": 4.5384,
-    "lufs": -4.748,
-    "width_db": -10.7605,
-    "sub120": 0.9068,
-    "low300": 0.9483,
-    "high4k": 0.0049,
-    "centroid_hz": 125.5322,
-    "rolloff_hz": 75.3662,
-    "flatness_db": -45.8854,
-    "lowflux": 0.0122,
-    "low_beat": 0.268,
-    "n_peaks": 12.0,
-    "dissonance": 0.4799,
-    "high4k_db": -23.0602
-   }
-  },
-  {
-   "file": "dubstep-stab-11.mp3",
-   "style": "dubstep",
-   "family": "stab",
-   "rank": 11,
    "prompt": "heavy bass shot, dubstep, 140 bpm, punchy, dirty, C2",
    "seed": 2019,
    "cut": "1.5 s",
@@ -16070,6 +15924,82 @@
     "n_peaks": 15.0,
     "dissonance": 0.4999,
     "high4k_db": -22.4534
+   }
+  },
+  {
+   "file": "dubstep-stab-11.mp3",
+   "style": "dubstep",
+   "family": "stab",
+   "rank": 11,
+   "prompt": "fat bass stab, dubstep, 140 bpm, short distorted hit, C2",
+   "seed": 2012,
+   "cut": "1.7 s",
+   "proc": "saturé",
+   "dur_s": 1.73,
+   "target": "zone-b-basses:basse-synthe/dubstep",
+   "keys": [
+    "attack_ms",
+    "decay20_s",
+    "centroid_hz",
+    "rolloff_hz",
+    "flatness_db",
+    "sub120",
+    "low300",
+    "high4k_db",
+    "lufs",
+    "crest_db",
+    "lowflux",
+    "low_beat",
+    "width_db"
+   ],
+   "score_array": 2.715,
+   "score_mp3": 2.912,
+   "worst": [
+    [
+     "rolloff_hz",
+     -6.6
+    ],
+    [
+     "flatness_db",
+     -4.9
+    ],
+    [
+     "centroid_hz",
+     -3.9
+    ],
+    [
+     "high4k_db",
+     -3.8
+    ]
+   ],
+   "voiced": 1.0,
+   "f0_hz": 65.4,
+   "librosa": {
+    "centroid_hz": 1222.1731,
+    "rolloff_hz": 3391.4795,
+    "flatness_db": -24.449
+   },
+   "measured": {
+    "dur_s": 1.7299,
+    "peak_db": -1.1779,
+    "attack_ms": 653.5147,
+    "decay20_s": 1.0576,
+    "decay40_s": 1.0576,
+    "rms_db": -5.5755,
+    "crest_db": 4.3976,
+    "lufs": -5.306,
+    "width_db": -10.7665,
+    "sub120": 0.9067,
+    "low300": 0.9483,
+    "high4k": 0.005,
+    "centroid_hz": 125.159,
+    "rolloff_hz": 75.3662,
+    "flatness_db": -47.1745,
+    "lowflux": 0.0121,
+    "low_beat": 0.2666,
+    "n_peaks": 12.0,
+    "dissonance": 0.4787,
+    "high4k_db": -23.0386
    }
   },
   {
@@ -16173,7 +16103,7 @@
     "width_db"
    ],
    "score_array": 1.488,
-   "score_mp3": 1.723,
+   "score_mp3": 1.74,
    "worst": [
     [
      "rolloff_hz",
@@ -16189,7 +16119,7 @@
     ],
     [
      "centroid_hz",
-     -1.7
+     -1.8
     ]
    ],
    "voiced": 0.838,
@@ -16201,25 +16131,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.9518,
+    "peak_db": -1.3732,
     "attack_ms": 349.2063,
     "decay20_s": 2.1551,
     "decay40_s": 2.2948,
-    "rms_db": -7.4277,
-    "crest_db": 6.4759,
-    "lufs": -6.1346,
-    "width_db": -16.733,
-    "sub120": 0.6155,
-    "low300": 0.6718,
-    "high4k": 0.0222,
-    "centroid_hz": 468.7505,
+    "rms_db": -7.8139,
+    "crest_db": 6.4407,
+    "lufs": -6.5247,
+    "width_db": -16.7337,
+    "sub120": 0.6163,
+    "low300": 0.6729,
+    "high4k": 0.0221,
+    "centroid_hz": 466.731,
     "rolloff_hz": 495.2637,
-    "flatness_db": -36.4917,
-    "lowflux": 0.0336,
-    "low_beat": 0.1792,
-    "n_peaks": 42.0,
+    "flatness_db": -36.5851,
+    "lowflux": 0.0338,
+    "low_beat": 0.1779,
+    "n_peaks": 40.5,
     "dissonance": 0.4996,
-    "high4k_db": -16.532
+    "high4k_db": -16.5464
    }
   },
   {
@@ -16247,7 +16177,7 @@
     "width_db"
    ],
    "score_array": 1.64,
-   "score_mp3": 2.015,
+   "score_mp3": 2.02,
    "worst": [
     [
      "flatness_db",
@@ -16258,11 +16188,11 @@
      -3.6
     ],
     [
-     "centroid_hz",
-     -2.0
+     "lufs",
+     -2.2
     ],
     [
-     "lufs",
+     "centroid_hz",
      -2.0
     ]
    ],
@@ -16275,25 +16205,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.6977,
+    "peak_db": -1.3792,
     "attack_ms": 1102.4943,
     "decay20_s": 1.0726,
     "decay40_s": 1.1125,
-    "rms_db": -8.628,
-    "crest_db": 7.9303,
-    "lufs": -7.8775,
-    "width_db": -9.7275,
-    "sub120": 0.6318,
-    "low300": 0.7577,
-    "high4k": 0.0278,
-    "centroid_hz": 406.3666,
+    "rms_db": -8.9685,
+    "crest_db": 7.5893,
+    "lufs": -8.2168,
+    "width_db": -9.7493,
+    "sub120": 0.6308,
+    "low300": 0.757,
+    "high4k": 0.0279,
+    "centroid_hz": 405.5752,
     "rolloff_hz": 409.1309,
-    "flatness_db": -41.8923,
-    "lowflux": 0.0513,
-    "low_beat": 0.2845,
-    "n_peaks": 44.5,
+    "flatness_db": -42.0459,
+    "lowflux": 0.0517,
+    "low_beat": 0.2859,
+    "n_peaks": 39.0,
     "dissonance": 0.4998,
-    "high4k_db": -15.5652
+    "high4k_db": -15.5414
    }
   },
   {
@@ -16321,7 +16251,7 @@
     "width_db"
    ],
    "score_array": 1.983,
-   "score_mp3": 2.197,
+   "score_mp3": 2.224,
    "worst": [
     [
      "rolloff_hz",
@@ -16329,7 +16259,7 @@
     ],
     [
      "flatness_db",
-     -3.6
+     -3.7
     ],
     [
      "low300",
@@ -16349,25 +16279,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.1796,
+    "peak_db": -1.2798,
     "attack_ms": 389.1156,
     "decay20_s": 1.756,
     "decay40_s": 1.776,
-    "rms_db": -6.5902,
-    "crest_db": 6.4106,
-    "lufs": -4.3446,
-    "width_db": -9.0581,
-    "sub120": 0.6061,
+    "rms_db": -7.5071,
+    "crest_db": 6.2273,
+    "lufs": -5.2599,
+    "width_db": -9.0576,
+    "sub120": 0.6063,
     "low300": 0.8929,
-    "high4k": 0.033,
-    "centroid_hz": 427.4165,
+    "high4k": 0.0331,
+    "centroid_hz": 430.4107,
     "rolloff_hz": 161.499,
-    "flatness_db": -38.8891,
-    "lowflux": 0.0288,
-    "low_beat": 0.1161,
-    "n_peaks": 50.5,
+    "flatness_db": -39.7036,
+    "lowflux": 0.0285,
+    "low_beat": 0.115,
+    "n_peaks": 52.5,
     "dissonance": 0.5,
-    "high4k_db": -14.8152
+    "high4k_db": -14.807
    }
   },
   {
@@ -16375,6 +16305,80 @@
    "style": "dubstep",
    "family": "growl",
    "rank": 4,
+   "prompt": "growl bass, dubstep, 140 bpm, FM growl, aggressive, F1",
+   "seed": 2000,
+   "cut": "1 mesure",
+   "proc": "saturé",
+   "dur_s": 1.71,
+   "target": "zone-b-basses:basse-synthe/dubstep",
+   "keys": [
+    "centroid_hz",
+    "rolloff_hz",
+    "flatness_db",
+    "sub120",
+    "low300",
+    "high4k_db",
+    "lufs",
+    "crest_db",
+    "lowflux",
+    "low_beat",
+    "width_db"
+   ],
+   "score_array": 2.432,
+   "score_mp3": 2.527,
+   "worst": [
+    [
+     "rolloff_hz",
+     -4.7
+    ],
+    [
+     "high4k_db",
+     -3.3
+    ],
+    [
+     "flatness_db",
+     -3.2
+    ],
+    [
+     "centroid_hz",
+     -3.1
+    ]
+   ],
+   "voiced": 1.0,
+   "f0_hz": 43.9,
+   "librosa": {
+    "centroid_hz": 1222.0377,
+    "rolloff_hz": 3176.1475,
+    "flatness_db": -18.6869
+   },
+   "measured": {
+    "dur_s": 1.7143,
+    "peak_db": -1.1411,
+    "attack_ms": 294.3311,
+    "decay20_s": 1.4118,
+    "decay40_s": 1.4118,
+    "rms_db": -5.4844,
+    "crest_db": 4.3434,
+    "lufs": -6.8315,
+    "width_db": -16.0953,
+    "sub120": 0.7983,
+    "low300": 0.9103,
+    "high4k": 0.0078,
+    "centroid_hz": 210.7579,
+    "rolloff_hz": 220.7153,
+    "flatness_db": -36.7671,
+    "lowflux": 0.0455,
+    "low_beat": 0.1116,
+    "n_peaks": 11.5,
+    "dissonance": 0.4985,
+    "high4k_db": -21.0669
+   }
+  },
+  {
+   "file": "dubstep-growl-05.mp3",
+   "style": "dubstep",
+   "family": "growl",
+   "rank": 5,
    "prompt": "metallic growl bass, dubstep, 140 bpm, comb filter, heavy, F1",
    "seed": 2014,
    "cut": "2 mesures",
@@ -16395,7 +16399,7 @@
     "width_db"
    ],
    "score_array": 2.389,
-   "score_mp3": 2.516,
+   "score_mp3": 2.528,
    "worst": [
     [
      "rolloff_hz",
@@ -16403,11 +16407,11 @@
     ],
     [
      "flatness_db",
-     -3.7
+     -3.6
     ],
     [
      "centroid_hz",
-     -3.3
+     -3.2
     ],
     [
      "high4k_db",
@@ -16423,32 +16427,32 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": 0.0178,
+    "peak_db": -1.1374,
     "attack_ms": 778.2313,
     "decay20_s": 1.5465,
     "decay40_s": 1.5814,
-    "rms_db": -5.5385,
-    "crest_db": 5.5563,
-    "lufs": -5.5193,
-    "width_db": -12.9317,
-    "sub120": 0.6357,
+    "rms_db": -6.6108,
+    "crest_db": 5.4734,
+    "lufs": -6.5883,
+    "width_db": -12.9402,
+    "sub120": 0.6346,
     "low300": 0.9423,
     "high4k": 0.0085,
-    "centroid_hz": 186.7716,
+    "centroid_hz": 187.8414,
     "rolloff_hz": 183.0322,
-    "flatness_db": -39.5546,
-    "lowflux": 0.0334,
-    "low_beat": 0.0735,
-    "n_peaks": 16.0,
-    "dissonance": 0.4992,
-    "high4k_db": -20.6998
+    "flatness_db": -39.0708,
+    "lowflux": 0.0336,
+    "low_beat": 0.074,
+    "n_peaks": 15.5,
+    "dissonance": 0.4991,
+    "high4k_db": -20.7042
    }
   },
   {
-   "file": "dubstep-growl-05.mp3",
+   "file": "dubstep-growl-06.mp3",
    "style": "dubstep",
    "family": "growl",
-   "rank": 5,
+   "rank": 6,
    "prompt": "metallic growl bass, dubstep, 140 bpm, comb filter, heavy, E1",
    "seed": 2008,
    "cut": "1 mesure",
@@ -16469,7 +16473,7 @@
     "width_db"
    ],
    "score_array": 2.398,
-   "score_mp3": 2.528,
+   "score_mp3": 2.536,
    "worst": [
     [
      "rolloff_hz",
@@ -16497,99 +16501,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.8985,
+    "peak_db": -1.2107,
     "attack_ms": 603.6281,
     "decay20_s": 1.0875,
     "decay40_s": 1.0875,
-    "rms_db": -6.8295,
-    "crest_db": 5.931,
-    "lufs": -6.2631,
-    "width_db": -21.4465,
-    "sub120": 0.6007,
-    "low300": 0.9554,
+    "rms_db": -7.2844,
+    "crest_db": 6.0736,
+    "lufs": -6.7172,
+    "width_db": -21.4839,
+    "sub120": 0.6004,
+    "low300": 0.9553,
     "high4k": 0.015,
-    "centroid_hz": 241.134,
+    "centroid_hz": 241.1378,
     "rolloff_hz": 129.1992,
-    "flatness_db": -35.4389,
-    "lowflux": 0.0265,
-    "low_beat": 0.1551,
-    "n_peaks": 36.5,
+    "flatness_db": -35.5328,
+    "lowflux": 0.0281,
+    "low_beat": 0.1542,
+    "n_peaks": 38.5,
     "dissonance": 0.5,
-    "high4k_db": -18.2508
-   }
-  },
-  {
-   "file": "dubstep-growl-06.mp3",
-   "style": "dubstep",
-   "family": "growl",
-   "rank": 6,
-   "prompt": "growl bass, dubstep, 140 bpm, FM growl, aggressive, F1",
-   "seed": 2000,
-   "cut": "1 mesure",
-   "proc": "saturé",
-   "dur_s": 1.71,
-   "target": "zone-b-basses:basse-synthe/dubstep",
-   "keys": [
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 2.432,
-   "score_mp3": 2.533,
-   "worst": [
-    [
-     "rolloff_hz",
-     -4.7
-    ],
-    [
-     "flatness_db",
-     -3.5
-    ],
-    [
-     "high4k_db",
-     -3.3
-    ],
-    [
-     "centroid_hz",
-     -3.0
-    ]
-   ],
-   "voiced": 1.0,
-   "f0_hz": 43.9,
-   "librosa": {
-    "centroid_hz": 1222.0377,
-    "rolloff_hz": 3176.1475,
-    "flatness_db": -18.6869
-   },
-   "measured": {
-    "dur_s": 1.7143,
-    "peak_db": -0.3714,
-    "attack_ms": 374.1497,
-    "decay20_s": 1.332,
-    "decay40_s": 1.332,
-    "rms_db": -4.8113,
-    "crest_db": 4.4399,
-    "lufs": -6.1727,
-    "width_db": -16.1078,
-    "sub120": 0.7988,
-    "low300": 0.9104,
-    "high4k": 0.0077,
-    "centroid_hz": 212.2065,
-    "rolloff_hz": 220.7153,
-    "flatness_db": -38.237,
-    "lowflux": 0.0452,
-    "low_beat": 0.1113,
-    "n_peaks": 11.0,
-    "dissonance": 0.4984,
-    "high4k_db": -21.1218
+    "high4k_db": -18.2363
    }
   },
   {
@@ -16839,15 +16769,15 @@
     "width_db"
    ],
    "score_array": 2.543,
-   "score_mp3": 2.78,
+   "score_mp3": 2.785,
    "worst": [
     [
      "rolloff_hz",
-     -4.9
+     -4.8
     ],
     [
      "flatness_db",
-     -4.6
+     -4.7
     ],
     [
      "high4k_db",
@@ -16867,25 +16797,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.6683,
+    "peak_db": -1.1668,
     "attack_ms": 488.8889,
     "decay20_s": 1.1773,
     "decay40_s": 1.1773,
-    "rms_db": -5.6819,
-    "crest_db": 5.0137,
-    "lufs": -5.4091,
-    "width_db": -18.2444,
-    "sub120": 0.4966,
-    "low300": 0.9024,
+    "rms_db": -6.24,
+    "crest_db": 5.0732,
+    "lufs": -5.9668,
+    "width_db": -18.2469,
+    "sub120": 0.4958,
+    "low300": 0.9023,
     "high4k": 0.0034,
-    "centroid_hz": 176.4501,
-    "rolloff_hz": 204.5654,
-    "flatness_db": -45.1284,
-    "lowflux": 0.028,
+    "centroid_hz": 176.7639,
+    "rolloff_hz": 209.9487,
+    "flatness_db": -45.545,
+    "lowflux": 0.0281,
     "low_beat": 0.3106,
-    "n_peaks": 51.5,
+    "n_peaks": 52.0,
     "dissonance": 0.4999,
-    "high4k_db": -24.6886
+    "high4k_db": -24.635
    }
   },
   {
@@ -16913,7 +16843,7 @@
     "width_db"
    ],
    "score_array": 2.649,
-   "score_mp3": 2.794,
+   "score_mp3": 2.806,
    "worst": [
     [
      "rolloff_hz",
@@ -16941,99 +16871,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.7559,
+    "peak_db": -1.2134,
     "attack_ms": 74.8299,
     "decay20_s": 1.6163,
     "decay40_s": 1.6163,
-    "rms_db": -4.997,
-    "crest_db": 4.241,
-    "lufs": -5.8194,
-    "width_db": -17.1733,
+    "rms_db": -5.2899,
+    "crest_db": 4.0765,
+    "lufs": -6.1121,
+    "width_db": -17.1544,
     "sub120": 0.711,
-    "low300": 0.9421,
+    "low300": 0.9423,
     "high4k": 0.0058,
-    "centroid_hz": 147.9587,
+    "centroid_hz": 147.6922,
     "rolloff_hz": 161.499,
-    "flatness_db": -40.9725,
-    "lowflux": 0.029,
-    "low_beat": 0.19,
+    "flatness_db": -40.6536,
+    "lowflux": 0.0291,
+    "low_beat": 0.191,
     "n_peaks": 17.5,
     "dissonance": 0.4996,
-    "high4k_db": -22.3488
-   }
-  },
-  {
-   "file": "dubstep-growl-12.mp3",
-   "style": "dubstep",
-   "family": "growl",
-   "rank": 12,
-   "prompt": "dirty growl bass one note, dubstep, 140 bpm, monster growl, D#1",
-   "seed": 2013,
-   "cut": "2 mesures",
-   "proc": "saturé",
-   "dur_s": 3.43,
-   "target": "zone-b-basses:basse-synthe/dubstep",
-   "keys": [
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 2.809,
-   "score_mp3": 3.024,
-   "worst": [
-    [
-     "rolloff_hz",
-     -5.8
-    ],
-    [
-     "flatness_db",
-     -4.5
-    ],
-    [
-     "centroid_hz",
-     -3.5
-    ],
-    [
-     "high4k_db",
-     -3.1
-    ]
-   ],
-   "voiced": 0.696,
-   "f0_hz": 39.1,
-   "librosa": {
-    "centroid_hz": 743.8803,
-    "rolloff_hz": 1970.2881,
-    "flatness_db": -26.0707
-   },
-   "measured": {
-    "dur_s": 3.4286,
-    "peak_db": -0.7493,
-    "attack_ms": 409.0703,
-    "decay20_s": 1.7361,
-    "decay40_s": 1.756,
-    "rms_db": -5.5135,
-    "crest_db": 4.7642,
-    "lufs": -5.3385,
-    "width_db": -22.8703,
-    "sub120": 0.8501,
-    "low300": 0.9793,
-    "high4k": 0.0088,
-    "centroid_hz": 163.3903,
-    "rolloff_hz": 118.4326,
-    "flatness_db": -44.3669,
-    "lowflux": 0.0211,
-    "low_beat": 0.0824,
-    "n_peaks": 16.5,
-    "dissonance": 0.4998,
-    "high4k_db": -20.5696
+    "high4k_db": -22.3618
    }
   },
   {
@@ -17041,80 +16897,6 @@
    "style": "dubstep",
    "family": "wobble",
    "rank": 1,
-   "prompt": "wobble bass with triplet rhythm, dubstep, 140 bpm, rolling and fat, F1",
-   "seed": 2015,
-   "cut": "4 mesures",
-   "proc": "saturé",
-   "dur_s": 6.86,
-   "target": "zone-b-basses:phrase-de-basse/dubstep",
-   "keys": [
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 1.934,
-   "score_mp3": 2.15,
-   "worst": [
-    [
-     "flatness_db",
-     -3.8
-    ],
-    [
-     "rolloff_hz",
-     -3.4
-    ],
-    [
-     "centroid_hz",
-     -2.5
-    ],
-    [
-     "low_beat",
-     2.5
-    ]
-   ],
-   "voiced": 0.72,
-   "f0_hz": 46.3,
-   "librosa": {
-    "centroid_hz": 799.26,
-    "rolloff_hz": 1921.8384,
-    "flatness_db": -23.2221
-   },
-   "measured": {
-    "dur_s": 6.8571,
-    "peak_db": -0.6457,
-    "attack_ms": 2274.8299,
-    "decay20_s": 0.1048,
-    "decay40_s": 0.1497,
-    "rms_db": -7.166,
-    "crest_db": 6.5203,
-    "lufs": -8.2801,
-    "width_db": -15.1981,
-    "sub120": 0.5663,
-    "low300": 0.8977,
-    "high4k": 0.0086,
-    "centroid_hz": 190.9911,
-    "rolloff_hz": 226.0986,
-    "flatness_db": -41.7084,
-    "lowflux": 0.0368,
-    "low_beat": 0.5544,
-    "n_peaks": 52.0,
-    "dissonance": 0.4997,
-    "high4k_db": -20.6476
-   }
-  },
-  {
-   "file": "dubstep-wobble-02.mp3",
-   "style": "dubstep",
-   "family": "wobble",
-   "rank": 2,
    "prompt": "fast wobble bass, dubstep, 140 bpm, sixteenth note LFO, aggressive, G1",
    "seed": 2002,
    "cut": "4 mesures",
@@ -17135,7 +16917,7 @@
     "width_db"
    ],
    "score_array": 1.965,
-   "score_mp3": 2.162,
+   "score_mp3": 2.158,
    "worst": [
     [
      "flatness_db",
@@ -17163,25 +16945,99 @@
    },
    "measured": {
     "dur_s": 6.8571,
-    "peak_db": -0.7486,
+    "peak_db": -1.0212,
     "attack_ms": 3412.2449,
     "decay20_s": 0.8281,
     "decay40_s": 0.9578,
-    "rms_db": -5.946,
-    "crest_db": 5.1974,
-    "lufs": -5.6983,
-    "width_db": -14.8036,
-    "sub120": 0.4731,
-    "low300": 0.5677,
+    "rms_db": -6.2415,
+    "crest_db": 5.2202,
+    "lufs": -5.9933,
+    "width_db": -14.8012,
+    "sub120": 0.473,
+    "low300": 0.5676,
     "high4k": 0.0049,
-    "centroid_hz": 271.7515,
+    "centroid_hz": 271.8083,
     "rolloff_hz": 398.3643,
-    "flatness_db": -46.1448,
-    "lowflux": 0.0822,
-    "low_beat": 0.4397,
+    "flatness_db": -46.1335,
+    "lowflux": 0.0814,
+    "low_beat": 0.4393,
     "n_peaks": 24.0,
-    "dissonance": 0.4917,
-    "high4k_db": -23.1091
+    "dissonance": 0.4851,
+    "high4k_db": -23.1282
+   }
+  },
+  {
+   "file": "dubstep-wobble-02.mp3",
+   "style": "dubstep",
+   "family": "wobble",
+   "rank": 2,
+   "prompt": "wobble bass with triplet rhythm, dubstep, 140 bpm, rolling and fat, F1",
+   "seed": 2015,
+   "cut": "4 mesures",
+   "proc": "saturé",
+   "dur_s": 6.86,
+   "target": "zone-b-basses:phrase-de-basse/dubstep",
+   "keys": [
+    "centroid_hz",
+    "rolloff_hz",
+    "flatness_db",
+    "sub120",
+    "low300",
+    "high4k_db",
+    "lufs",
+    "crest_db",
+    "lowflux",
+    "low_beat",
+    "width_db"
+   ],
+   "score_array": 1.934,
+   "score_mp3": 2.172,
+   "worst": [
+    [
+     "flatness_db",
+     -3.8
+    ],
+    [
+     "rolloff_hz",
+     -3.4
+    ],
+    [
+     "centroid_hz",
+     -2.5
+    ],
+    [
+     "low_beat",
+     2.5
+    ]
+   ],
+   "voiced": 0.72,
+   "f0_hz": 46.3,
+   "librosa": {
+    "centroid_hz": 799.26,
+    "rolloff_hz": 1921.8384,
+    "flatness_db": -23.2221
+   },
+   "measured": {
+    "dur_s": 6.8571,
+    "peak_db": -1.1047,
+    "attack_ms": 2274.8299,
+    "decay20_s": 0.1048,
+    "decay40_s": 0.1497,
+    "rms_db": -7.5687,
+    "crest_db": 6.464,
+    "lufs": -8.6816,
+    "width_db": -15.2017,
+    "sub120": 0.5662,
+    "low300": 0.8975,
+    "high4k": 0.0086,
+    "centroid_hz": 190.4994,
+    "rolloff_hz": 226.0986,
+    "flatness_db": -42.0536,
+    "lowflux": 0.0363,
+    "low_beat": 0.5542,
+    "n_peaks": 50.0,
+    "dissonance": 0.4997,
+    "high4k_db": -20.6348
    }
   },
   {
@@ -17209,7 +17065,7 @@
     "width_db"
    ],
    "score_array": 1.857,
-   "score_mp3": 2.193,
+   "score_mp3": 2.212,
    "worst": [
     [
      "flatness_db",
@@ -17217,7 +17073,7 @@
     ],
     [
      "rolloff_hz",
-     -3.2
+     -3.3
     ],
     [
      "high4k_db",
@@ -17237,25 +17093,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.8186,
+    "peak_db": -1.2291,
     "attack_ms": 1711.1111,
     "decay20_s": 0.8281,
     "decay40_s": 1.7111,
-    "rms_db": -7.7571,
-    "crest_db": 6.9385,
-    "lufs": -6.9177,
-    "width_db": -9.7171,
-    "sub120": 0.5007,
-    "low300": 0.8663,
-    "high4k": 0.0063,
-    "centroid_hz": 212.1539,
-    "rolloff_hz": 258.3984,
-    "flatness_db": -50.5589,
-    "lowflux": 0.0456,
-    "low_beat": 0.1992,
+    "rms_db": -8.0953,
+    "crest_db": 6.8662,
+    "lufs": -7.2565,
+    "width_db": -9.7134,
+    "sub120": 0.5008,
+    "low300": 0.8662,
+    "high4k": 0.0062,
+    "centroid_hz": 212.103,
+    "rolloff_hz": 247.6318,
+    "flatness_db": -50.6618,
+    "lowflux": 0.0452,
+    "low_beat": 0.1997,
     "n_peaks": 52.5,
     "dissonance": 0.4998,
-    "high4k_db": -22.035
+    "high4k_db": -22.07
    }
   },
   {
@@ -17283,11 +17139,11 @@
     "width_db"
    ],
    "score_array": 1.972,
-   "score_mp3": 2.211,
+   "score_mp3": 2.222,
    "worst": [
     [
      "flatness_db",
-     -4.9
+     -4.8
     ],
     [
      "rolloff_hz",
@@ -17298,7 +17154,7 @@
      2.5
     ],
     [
-     "high4k_db",
+     "centroid_hz",
      -2.4
     ]
    ],
@@ -17311,25 +17167,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.3179,
+    "peak_db": -1.2156,
     "attack_ms": 1267.1202,
     "decay20_s": 0.2993,
     "decay40_s": 2.1601,
-    "rms_db": -8.316,
-    "crest_db": 7.9981,
-    "lufs": -8.2193,
-    "width_db": -12.0645,
+    "rms_db": -9.0365,
+    "crest_db": 7.8209,
+    "lufs": -8.9402,
+    "width_db": -12.0619,
     "sub120": 0.5977,
-    "low300": 0.765,
+    "low300": 0.7651,
     "high4k": 0.0082,
-    "centroid_hz": 223.6809,
+    "centroid_hz": 222.9793,
     "rolloff_hz": 339.1479,
-    "flatness_db": -49.1255,
-    "lowflux": 0.0543,
-    "low_beat": 0.5602,
+    "flatness_db": -48.9429,
+    "lowflux": 0.0544,
+    "low_beat": 0.5604,
     "n_peaks": 29.5,
-    "dissonance": 0.495,
-    "high4k_db": -20.8715
+    "dissonance": 0.4951,
+    "high4k_db": -20.8733
    }
   },
   {
@@ -17357,7 +17213,7 @@
     "width_db"
    ],
    "score_array": 2.063,
-   "score_mp3": 2.25,
+   "score_mp3": 2.292,
    "worst": [
     [
      "rolloff_hz",
@@ -17365,7 +17221,7 @@
     ],
     [
      "flatness_db",
-     -3.2
+     -3.3
     ],
     [
      "centroid_hz",
@@ -17385,25 +17241,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.3289,
+    "peak_db": -1.0411,
     "attack_ms": 279.3651,
     "decay20_s": 0.449,
     "decay40_s": 0.4739,
-    "rms_db": -8.6551,
-    "crest_db": 8.3262,
-    "lufs": -9.0067,
-    "width_db": -18.5657,
+    "rms_db": -9.3677,
+    "crest_db": 8.3266,
+    "lufs": -9.7206,
+    "width_db": -18.5764,
     "sub120": 0.763,
     "low300": 0.8819,
     "high4k": 0.006,
-    "centroid_hz": 140.2654,
+    "centroid_hz": 140.1641,
     "rolloff_hz": 193.7988,
-    "flatness_db": -37.9149,
+    "flatness_db": -38.7736,
     "lowflux": 0.0428,
-    "low_beat": 0.4896,
-    "n_peaks": 46.5,
+    "low_beat": 0.4894,
+    "n_peaks": 47.0,
     "dissonance": 0.4997,
-    "high4k_db": -22.1859
+    "high4k_db": -22.1904
    }
   },
   {
@@ -17411,80 +17267,6 @@
    "style": "dubstep",
    "family": "wobble",
    "rank": 6,
-   "prompt": "talking bass, dubstep, 140 bpm, vowel formant wobble, yapping, E1",
-   "seed": 2016,
-   "cut": "4 mesures",
-   "proc": "saturé",
-   "dur_s": 6.86,
-   "target": "zone-b-basses:phrase-de-basse/dubstep",
-   "keys": [
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 2.054,
-   "score_mp3": 2.317,
-   "worst": [
-    [
-     "width_db",
-     3.7
-    ],
-    [
-     "crest_db",
-     3.3
-    ],
-    [
-     "low_beat",
-     3.3
-    ],
-    [
-     "rolloff_hz",
-     -2.8
-    ]
-   ],
-   "voiced": 0.581,
-   "f0_hz": 41.2,
-   "librosa": {
-    "centroid_hz": 792.3923,
-    "rolloff_hz": 1550.3906,
-    "flatness_db": -22.1978
-   },
-   "measured": {
-    "dur_s": 6.8571,
-    "peak_db": -0.0396,
-    "attack_ms": 5008.6168,
-    "decay20_s": 0.0698,
-    "decay40_s": 1.8259,
-    "rms_db": -10.6076,
-    "crest_db": 10.568,
-    "lufs": -5.9697,
-    "width_db": 0.6151,
-    "sub120": 0.3948,
-    "low300": 0.654,
-    "high4k": 0.0129,
-    "centroid_hz": 447.0993,
-    "rolloff_hz": 376.8311,
-    "flatness_db": -34.2997,
-    "lowflux": 0.0703,
-    "low_beat": 0.6485,
-    "n_peaks": 13.0,
-    "dissonance": 0.4977,
-    "high4k_db": -18.8899
-   }
-  },
-  {
-   "file": "dubstep-wobble-07.mp3",
-   "style": "dubstep",
-   "family": "wobble",
-   "rank": 7,
    "prompt": "talking wobble bass, dubstep, 140 bpm, wah wah speaking bass, filthy, G1",
    "seed": 2017,
    "cut": "2 mesures",
@@ -17505,11 +17287,11 @@
     "width_db"
    ],
    "score_array": 2.017,
-   "score_mp3": 2.339,
+   "score_mp3": 2.33,
    "worst": [
     [
      "flatness_db",
-     -5.7
+     -5.6
     ],
     [
      "high4k_db",
@@ -17533,25 +17315,99 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.9486,
+    "peak_db": -1.1762,
     "attack_ms": 3322.449,
     "decay20_s": 0.0948,
     "decay40_s": 0.0948,
-    "rms_db": -7.9359,
-    "crest_db": 6.9874,
-    "lufs": -6.8652,
-    "width_db": -4.812,
-    "sub120": 0.58,
-    "low300": 0.7479,
+    "rms_db": -8.1289,
+    "crest_db": 6.9527,
+    "lufs": -7.0601,
+    "width_db": -4.8102,
+    "sub120": 0.5804,
+    "low300": 0.7482,
     "high4k": 0.0043,
-    "centroid_hz": 292.1969,
+    "centroid_hz": 293.1074,
     "rolloff_hz": 366.0645,
-    "flatness_db": -54.6544,
-    "lowflux": 0.0567,
+    "flatness_db": -54.2743,
+    "lowflux": 0.0569,
     "low_beat": 0.3566,
     "n_peaks": 15.5,
-    "dissonance": 0.4977,
-    "high4k_db": -23.6638
+    "dissonance": 0.4979,
+    "high4k_db": -23.6603
+   }
+  },
+  {
+   "file": "dubstep-wobble-07.mp3",
+   "style": "dubstep",
+   "family": "wobble",
+   "rank": 7,
+   "prompt": "talking bass, dubstep, 140 bpm, vowel formant wobble, yapping, E1",
+   "seed": 2016,
+   "cut": "4 mesures",
+   "proc": "saturé",
+   "dur_s": 6.86,
+   "target": "zone-b-basses:phrase-de-basse/dubstep",
+   "keys": [
+    "centroid_hz",
+    "rolloff_hz",
+    "flatness_db",
+    "sub120",
+    "low300",
+    "high4k_db",
+    "lufs",
+    "crest_db",
+    "lowflux",
+    "low_beat",
+    "width_db"
+   ],
+   "score_array": 2.054,
+   "score_mp3": 2.332,
+   "worst": [
+    [
+     "width_db",
+     3.7
+    ],
+    [
+     "crest_db",
+     3.4
+    ],
+    [
+     "low_beat",
+     3.3
+    ],
+    [
+     "rolloff_hz",
+     -2.8
+    ]
+   ],
+   "voiced": 0.581,
+   "f0_hz": 41.2,
+   "librosa": {
+    "centroid_hz": 792.3923,
+    "rolloff_hz": 1550.3906,
+    "flatness_db": -22.1978
+   },
+   "measured": {
+    "dur_s": 6.8571,
+    "peak_db": -1.0012,
+    "attack_ms": 5008.6168,
+    "decay20_s": 0.0698,
+    "decay40_s": 1.8259,
+    "rms_db": -11.6177,
+    "crest_db": 10.6165,
+    "lufs": -6.976,
+    "width_db": 0.6203,
+    "sub120": 0.3949,
+    "low300": 0.6542,
+    "high4k": 0.0129,
+    "centroid_hz": 452.3655,
+    "rolloff_hz": 376.8311,
+    "flatness_db": -34.2477,
+    "lowflux": 0.0701,
+    "low_beat": 0.6483,
+    "n_peaks": 13.0,
+    "dissonance": 0.4978,
+    "high4k_db": -18.8841
    }
   },
   {
@@ -17653,7 +17509,7 @@
     "width_db"
    ],
    "score_array": 2.338,
-   "score_mp3": 2.551,
+   "score_mp3": 2.543,
    "worst": [
     [
      "flatness_db",
@@ -17681,25 +17537,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.999,
+    "peak_db": -1.011,
     "attack_ms": 3302.4943,
     "decay20_s": 0.1197,
     "decay40_s": 0.1247,
-    "rms_db": -6.1864,
-    "crest_db": 5.1874,
-    "lufs": -7.1603,
-    "width_db": -16.2917,
+    "rms_db": -6.231,
+    "crest_db": 5.22,
+    "lufs": -7.2034,
+    "width_db": -16.2642,
     "sub120": 0.6609,
-    "low300": 0.9412,
+    "low300": 0.9411,
     "high4k": 0.002,
-    "centroid_hz": 130.0717,
+    "centroid_hz": 130.6257,
     "rolloff_hz": 150.7324,
-    "flatness_db": -46.5122,
-    "lowflux": 0.0453,
-    "low_beat": 0.4201,
-    "n_peaks": 53.5,
+    "flatness_db": -46.337,
+    "lowflux": 0.0452,
+    "low_beat": 0.4202,
+    "n_peaks": 53.0,
     "dissonance": 0.4994,
-    "high4k_db": -27.0817
+    "high4k_db": -27.0549
    }
   },
   {
@@ -17727,7 +17583,7 @@
     "width_db"
    ],
    "score_array": 2.336,
-   "score_mp3": 2.582,
+   "score_mp3": 2.588,
    "worst": [
     [
      "flatness_db",
@@ -17755,25 +17611,25 @@
    },
    "measured": {
     "dur_s": 6.8571,
-    "peak_db": -0.9123,
+    "peak_db": -1.2002,
     "attack_ms": 4250.3401,
     "decay20_s": 2.6041,
     "decay40_s": 2.6041,
-    "rms_db": -5.4831,
-    "crest_db": 4.5707,
-    "lufs": -6.2537,
-    "width_db": -9.0192,
-    "sub120": 0.7831,
-    "low300": 0.8159,
+    "rms_db": -5.7308,
+    "crest_db": 4.5306,
+    "lufs": -6.5063,
+    "width_db": -9.0232,
+    "sub120": 0.783,
+    "low300": 0.8158,
     "high4k": 0.001,
-    "centroid_hz": 163.4034,
+    "centroid_hz": 163.6933,
     "rolloff_hz": 425.2808,
-    "flatness_db": -51.461,
-    "lowflux": 0.0554,
-    "low_beat": 0.1726,
-    "n_peaks": 28.5,
+    "flatness_db": -51.4634,
+    "lowflux": 0.0555,
+    "low_beat": 0.1724,
+    "n_peaks": 28.0,
     "dissonance": 0.4997,
-    "high4k_db": -30.1341
+    "high4k_db": -30.1286
    }
   },
   {
@@ -17801,7 +17657,7 @@
     "width_db"
    ],
    "score_array": 2.471,
-   "score_mp3": 2.599,
+   "score_mp3": 2.607,
    "worst": [
     [
      "width_db",
@@ -17809,7 +17665,7 @@
     ],
     [
      "flatness_db",
-     -3.5
+     -3.6
     ],
     [
      "high4k_db",
@@ -17829,25 +17685,25 @@
    },
    "measured": {
     "dur_s": 6.8571,
-    "peak_db": -0.9808,
+    "peak_db": -1.0935,
     "attack_ms": 878.0045,
     "decay20_s": 0.3342,
     "decay40_s": 0.3941,
-    "rms_db": -6.6945,
-    "crest_db": 5.7137,
-    "lufs": -6.412,
-    "width_db": -82.0063,
-    "sub120": 0.4548,
-    "low300": 0.7262,
+    "rms_db": -6.7594,
+    "crest_db": 5.6659,
+    "lufs": -6.4759,
+    "width_db": -82.0095,
+    "sub120": 0.4552,
+    "low300": 0.7264,
     "high4k": 0.0048,
-    "centroid_hz": 252.3263,
+    "centroid_hz": 252.5223,
     "rolloff_hz": 392.981,
-    "flatness_db": -40.0978,
-    "lowflux": 0.055,
-    "low_beat": 0.4163,
-    "n_peaks": 57.5,
+    "flatness_db": -40.3621,
+    "lowflux": 0.0551,
+    "low_beat": 0.4162,
+    "n_peaks": 58.0,
     "dissonance": 0.5,
-    "high4k_db": -23.2005
+    "high4k_db": -23.1953
    }
   },
   {
@@ -17949,7 +17805,7 @@
     "width_db"
    ],
    "score_array": 2.595,
-   "score_mp3": 2.656,
+   "score_mp3": 2.665,
    "worst": [
     [
      "flatness_db",
@@ -17977,25 +17833,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.7348,
+    "peak_db": -1.2363,
     "attack_ms": 678.458,
     "decay20_s": 0.0299,
     "decay40_s": 2.7488,
-    "rms_db": -5.9816,
-    "crest_db": 5.2468,
-    "lufs": -6.2738,
-    "width_db": -11.8493,
-    "sub120": 0.6548,
+    "rms_db": -6.4238,
+    "crest_db": 5.1874,
+    "lufs": -6.7094,
+    "width_db": -11.829,
+    "sub120": 0.6546,
     "low300": 0.9345,
-    "high4k": 0.0029,
-    "centroid_hz": 144.2973,
+    "high4k": 0.0028,
+    "centroid_hz": 144.142,
     "rolloff_hz": 204.5654,
-    "flatness_db": -62.5251,
-    "lowflux": 0.0452,
-    "low_beat": 0.4043,
-    "n_peaks": 30.0,
-    "dissonance": 0.4995,
-    "high4k_db": -25.4184
+    "flatness_db": -62.8361,
+    "lowflux": 0.0455,
+    "low_beat": 0.4045,
+    "n_peaks": 29.5,
+    "dissonance": 0.4997,
+    "high4k_db": -25.4746
    }
   },
   {
@@ -18023,7 +17879,7 @@
     "width_db"
    ],
    "score_array": 2.492,
-   "score_mp3": 2.728,
+   "score_mp3": 2.731,
    "worst": [
     [
      "flatness_db",
@@ -18051,25 +17907,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.8482,
+    "peak_db": -1.0602,
     "attack_ms": 1511.5646,
     "decay20_s": 0.0599,
     "decay40_s": 0.0848,
-    "rms_db": -6.4166,
-    "crest_db": 5.5684,
-    "lufs": -7.5121,
-    "width_db": -15.6592,
-    "sub120": 0.7852,
-    "low300": 0.8933,
+    "rms_db": -6.6136,
+    "crest_db": 5.5533,
+    "lufs": -7.7097,
+    "width_db": -15.665,
+    "sub120": 0.785,
+    "low300": 0.893,
     "high4k": 0.0024,
-    "centroid_hz": 135.8005,
+    "centroid_hz": 135.9049,
     "rolloff_hz": 150.7324,
-    "flatness_db": -53.6612,
-    "lowflux": 0.0429,
+    "flatness_db": -53.6087,
+    "lowflux": 0.0425,
     "low_beat": 0.5064,
     "n_peaks": 38.0,
     "dissonance": 0.4993,
-    "high4k_db": -26.1409
+    "high4k_db": -26.1609
    }
   },
   {
@@ -18245,7 +18101,7 @@
     "width_db"
    ],
    "score_array": 2.159,
-   "score_mp3": 2.35,
+   "score_mp3": 2.376,
    "worst": [
     [
      "rolloff_hz",
@@ -18253,7 +18109,7 @@
     ],
     [
      "flatness_db",
-     -3.6
+     -3.7
     ],
     [
      "high4k_db",
@@ -18273,25 +18129,25 @@
    },
    "measured": {
     "dur_s": 3.4286,
-    "peak_db": -0.609,
+    "peak_db": -1.2666,
     "attack_ms": 708.39,
     "decay20_s": 1.4467,
     "decay40_s": 1.4467,
-    "rms_db": -6.7533,
-    "crest_db": 6.1444,
-    "lufs": -6.1612,
-    "width_db": -15.9059,
-    "sub120": 0.5651,
-    "low300": 0.912,
+    "rms_db": -7.1933,
+    "crest_db": 5.9267,
+    "lufs": -6.6013,
+    "width_db": -15.901,
+    "sub120": 0.5648,
+    "low300": 0.9117,
     "high4k": 0.0117,
-    "centroid_hz": 254.5289,
+    "centroid_hz": 255.4116,
     "rolloff_hz": 204.5654,
-    "flatness_db": -39.2004,
-    "lowflux": 0.0265,
-    "low_beat": 0.1399,
+    "flatness_db": -39.6328,
+    "lowflux": 0.0261,
+    "low_beat": 0.1394,
     "n_peaks": 22.0,
-    "dissonance": 0.4997,
-    "high4k_db": -19.3182
+    "dissonance": 0.4998,
+    "high4k_db": -19.3323
    }
   },
   {
@@ -18319,7 +18175,7 @@
     "width_db"
    ],
    "score_array": 2.472,
-   "score_mp3": 2.682,
+   "score_mp3": 2.709,
    "worst": [
     [
      "rolloff_hz",
@@ -18331,7 +18187,7 @@
     ],
     [
      "centroid_hz",
-     -2.8
+     -2.9
     ],
     [
      "low300",
@@ -18347,25 +18203,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.3665,
+    "peak_db": -1.0975,
     "attack_ms": 404.0816,
     "decay20_s": 1.2721,
     "decay40_s": 1.2721,
-    "rms_db": -5.8421,
-    "crest_db": 5.4756,
-    "lufs": -6.1449,
-    "width_db": -14.5818,
-    "sub120": 0.8856,
-    "low300": 0.9649,
-    "high4k": 0.0227,
-    "centroid_hz": 238.9103,
+    "rms_db": -6.5189,
+    "crest_db": 5.4214,
+    "lufs": -6.817,
+    "width_db": -14.5791,
+    "sub120": 0.8852,
+    "low300": 0.9648,
+    "high4k": 0.0229,
+    "centroid_hz": 236.8852,
     "rolloff_hz": 118.4326,
-    "flatness_db": -42.5783,
-    "lowflux": 0.0288,
-    "low_beat": 0.1328,
-    "n_peaks": 24.0,
+    "flatness_db": -42.982,
+    "lowflux": 0.0281,
+    "low_beat": 0.1348,
+    "n_peaks": 21.0,
     "dissonance": 0.4997,
-    "high4k_db": -16.4388
+    "high4k_db": -16.395
    }
   },
   {
@@ -18393,7 +18249,7 @@
     "width_db"
    ],
    "score_array": 2.663,
-   "score_mp3": 2.791,
+   "score_mp3": 2.796,
    "worst": [
     [
      "rolloff_hz",
@@ -18404,11 +18260,11 @@
      -4.7
     ],
     [
-     "flatness_db",
-     -3.7
+     "centroid_hz",
+     -3.6
     ],
     [
-     "centroid_hz",
+     "flatness_db",
      -3.6
     ]
    ],
@@ -18421,99 +18277,25 @@
    },
    "measured": {
     "dur_s": 1.7143,
-    "peak_db": -0.7693,
+    "peak_db": -1.1097,
     "attack_ms": 1581.4059,
     "decay20_s": 0.1297,
     "decay40_s": 0.1297,
-    "rms_db": -6.036,
-    "crest_db": 5.2668,
-    "lufs": -6.1179,
-    "width_db": -14.4832,
-    "sub120": 0.5439,
-    "low300": 0.9511,
+    "rms_db": -6.3101,
+    "crest_db": 5.2004,
+    "lufs": -6.3892,
+    "width_db": -14.4716,
+    "sub120": 0.5434,
+    "low300": 0.9508,
     "high4k": 0.0024,
-    "centroid_hz": 146.7568,
+    "centroid_hz": 146.7171,
     "rolloff_hz": 183.0322,
-    "flatness_db": -39.3384,
-    "lowflux": 0.0192,
-    "low_beat": 0.1103,
-    "n_peaks": 27.0,
+    "flatness_db": -39.101,
+    "lowflux": 0.0188,
+    "low_beat": 0.1112,
+    "n_peaks": 27.5,
     "dissonance": 0.4996,
-    "high4k_db": -26.1958
-   }
-  },
-  {
-   "file": "dubstep-neuro-04.mp3",
-   "style": "dubstep",
-   "family": "neuro",
-   "rank": 4,
-   "prompt": "filthy bass, dubstep, 140 bpm, heavy distortion, fat low end, E1",
-   "seed": 2001,
-   "cut": "2 mesures",
-   "proc": "saturé",
-   "dur_s": 3.43,
-   "target": "zone-b-basses:basse-synthe/dubstep",
-   "keys": [
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 2.88,
-   "score_mp3": 3.054,
-   "worst": [
-    [
-     "rolloff_hz",
-     -5.8
-    ],
-    [
-     "centroid_hz",
-     -4.2
-    ],
-    [
-     "flatness_db",
-     -4.2
-    ],
-    [
-     "high4k_db",
-     -3.4
-    ]
-   ],
-   "voiced": 0.642,
-   "f0_hz": 41.5,
-   "librosa": {
-    "centroid_hz": 899.3834,
-    "rolloff_hz": 2767.0166,
-    "flatness_db": -26.5885
-   },
-   "measured": {
-    "dur_s": 3.4286,
-    "peak_db": -0.7551,
-    "attack_ms": 279.3651,
-    "decay20_s": 1.7161,
-    "decay40_s": 1.751,
-    "rms_db": -5.5008,
-    "crest_db": 4.7456,
-    "lufs": -7.2661,
-    "width_db": -17.5926,
-    "sub120": 0.8986,
-    "low300": 0.9778,
-    "high4k": 0.007,
-    "centroid_hz": 105.2989,
-    "rolloff_hz": 118.4326,
-    "flatness_db": -42.3967,
-    "lowflux": 0.019,
-    "low_beat": 0.1604,
-    "n_peaks": 9.0,
-    "dissonance": 0.4991,
-    "high4k_db": -21.5791
+    "high4k_db": -26.2084
    }
   },
   {
@@ -18619,7 +18401,7 @@
     "width_db"
    ],
    "score_array": 2.876,
-   "score_mp3": 2.9,
+   "score_mp3": 2.898,
    "worst": [
     [
      "rolloff_hz",
@@ -18647,177 +18429,25 @@
    },
    "measured": {
     "dur_s": 2.0,
-    "peak_db": -0.6314,
+    "peak_db": -1.5528,
     "attack_ms": 633.5601,
     "decay20_s": 0.2494,
     "decay40_s": 1.2821,
-    "rms_db": -9.3625,
-    "crest_db": 8.7311,
-    "lufs": -6.7403,
-    "width_db": -5.8797,
-    "sub120": 0.7514,
-    "low300": 0.8309,
-    "high4k": 0.1292,
-    "centroid_hz": 251.9676,
+    "rms_db": -10.295,
+    "crest_db": 8.7421,
+    "lufs": -7.6695,
+    "width_db": -5.8799,
+    "sub120": 0.7507,
+    "low300": 0.8304,
+    "high4k": 0.1294,
+    "centroid_hz": 248.1928,
     "rolloff_hz": 64.5996,
-    "flatness_db": -35.5431,
-    "lowflux": 0.0538,
-    "low_beat": 0.7161,
-    "n_peaks": 9.0,
-    "dissonance": 0.4967,
-    "high4k_db": -8.8866
-   }
-  },
-  {
-   "file": "dubstep-impact-03.mp3",
-   "style": "dubstep",
-   "family": "impact",
-   "rank": 3,
-   "prompt": "distorted impact hit, dubstep, 140 bpm, heavy low end",
-   "seed": 2015,
-   "cut": "2.9 s",
-   "proc": "brut",
-   "dur_s": 2.87,
-   "target": "zone-c-synthes:fx-effet/dubstep",
-   "keys": [
-    "attack_ms",
-    "decay20_s",
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 2.929,
-   "score_mp3": 3.011,
-   "worst": [
-    [
-     "sub120",
-     5.8
-    ],
-    [
-     "rolloff_hz",
-     -4.0
-    ],
-    [
-     "low300",
-     4.0
-    ],
-    [
-     "decay20_s",
-     -3.5
-    ]
-   ],
-   "voiced": 0.371,
-   "f0_hz": 30.0,
-   "librosa": {
-    "centroid_hz": 1498.4409,
-    "rolloff_hz": 2557.0679,
-    "flatness_db": -14.8375
-   },
-   "measured": {
-    "dur_s": 2.8677,
-    "peak_db": -1.2807,
-    "attack_ms": 1386.8481,
-    "decay20_s": 0.1197,
-    "decay40_s": 0.424,
-    "rms_db": -12.5461,
-    "crest_db": 11.2655,
-    "lufs": -12.9646,
-    "width_db": -10.1437,
-    "sub120": 0.8599,
-    "low300": 0.9044,
-    "high4k": 0.0175,
-    "centroid_hz": 448.1736,
-    "rolloff_hz": 226.0986,
-    "flatness_db": -45.0356,
-    "lowflux": 0.0502,
-    "low_beat": 0.4974,
-    "n_peaks": 55.0,
-    "dissonance": 0.5,
-    "high4k_db": -17.5769
-   }
-  },
-  {
-   "file": "dubstep-impact-04.mp3",
-   "style": "dubstep",
-   "family": "impact",
-   "rank": 4,
-   "prompt": "distorted impact hit, dubstep, 140 bpm, heavy low end",
-   "seed": 2007,
-   "cut": "3.4 s",
-   "proc": "brut",
-   "dur_s": 3.44,
-   "target": "zone-c-synthes:fx-effet/dubstep",
-   "keys": [
-    "attack_ms",
-    "decay20_s",
-    "centroid_hz",
-    "rolloff_hz",
-    "flatness_db",
-    "sub120",
-    "low300",
-    "high4k_db",
-    "lufs",
-    "crest_db",
-    "lowflux",
-    "low_beat",
-    "width_db"
-   ],
-   "score_array": 2.875,
-   "score_mp3": 3.161,
-   "worst": [
-    [
-     "decay20_s",
-     -5.4
-    ],
-    [
-     "sub120",
-     5.1
-    ],
-    [
-     "width_db",
-     -5.0
-    ],
-    [
-     "low300",
-     3.9
-    ]
-   ],
-   "voiced": 0.383,
-   "f0_hz": 46.3,
-   "librosa": {
-    "centroid_hz": 1224.5262,
-    "rolloff_hz": 2304.0527,
-    "flatness_db": -16.6546
-   },
-   "measured": {
-    "dur_s": 3.4423,
-    "peak_db": -1.2207,
-    "attack_ms": 1486.6213,
-    "decay20_s": 0.0249,
-    "decay40_s": 0.9728,
-    "rms_db": -13.5132,
-    "crest_db": 12.2925,
-    "lufs": -12.2431,
-    "width_db": -16.2352,
-    "sub120": 0.7616,
-    "low300": 0.8824,
-    "high4k": 0.0228,
-    "centroid_hz": 401.3461,
-    "rolloff_hz": 387.5977,
-    "flatness_db": -32.7216,
-    "lowflux": 0.0524,
-    "low_beat": 0.8478,
-    "n_peaks": 60.0,
-    "dissonance": 0.4999,
-    "high4k_db": -16.4256
+    "flatness_db": -35.3825,
+    "lowflux": 0.0517,
+    "low_beat": 0.7168,
+    "n_peaks": 8.0,
+    "dissonance": 0.4961,
+    "high4k_db": -8.8799
    }
   }
  ]

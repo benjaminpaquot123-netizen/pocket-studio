@@ -61,5 +61,8 @@
 | --- | --- | --- | --- |
 | [FDK AAC](https://github.com/nu774/fdkaac) (`fdkaac`) | paquet système Ubuntu 24.04 | Licence FDK AAC (Fraunhofer) | Matrice des exports (`scripts/export-matrix.sh`) : encodage M4A de contrôle |
 | [FFmpeg](https://ffmpeg.org) | 6.1.1 (paquet système) | LGPL-2.1+/GPL-2+ | Relecture des fichiers exportés, décodage MP3 du contrôle sur vraie chanson |
-| [Essentia](https://essentia.upf.edu) (`essentia`, pip) | 2.1b6.dev1389 (dernière sur PyPI) | AGPL-3.0-only | Mesure de toute la base de sons hors appli (`scripts/son/essentia/base.py`), venv isolé, rien dans l'APK |
-| [librosa](https://librosa.org) (pip) | 1.0.1 (dernière sur PyPI) | ISC | Contre-mesure des mesures Essentia (`scripts/son/essentia/base.py`), hors appli |
+| [Essentia](https://essentia.upf.edu) (`essentia`, pip) | 2.1b6.dev1389 (dernière sur PyPI) | AGPL-3.0-only | Mesure de toute la base de sons hors appli (`scripts/son/essentia/base.py`), venv isolé, rien dans l'APK ; note des nouveaux sons de synthé (`scripts/son/neuf/synthes/`) |
+| [librosa](https://librosa.org) (pip) | 1.0.1 (dernière sur PyPI) | ISC | Contre-mesure des mesures Essentia (`scripts/son/essentia/base.py`), hors appli ; contre-mesure des nouveaux sons de synthé |
+| [Surge XT](https://github.com/surge-synthesizer/surge) (`surgepy`, compilé depuis les sources, petit ajout `setTempo` : `scripts/son/neuf/synthes/surgepy-settempo.patch`) | main 223f049 (2026-11-26) | GPL-3.0-or-later, presets d'usine compris | Rendu des nouveaux sons de synthé et nappes (`scripts/son/neuf/synthes/`) à partir des presets d'usine, hors appli |
+| [pycma](https://github.com/CMA-ES/pycma) (`cma`, pip) | 4.6.0 | BSD-3-Clause | Réglage fin (CMA-ES) des nouveaux sons de synthé vers l'ADN de leur famille, hors appli |
+| [pedalboard](https://github.com/spotify/pedalboard) (pip) | 0.9.26 | GPL-3.0 | Chaîne d'effets et limiteur des nouveaux sons de synthé, hors appli |

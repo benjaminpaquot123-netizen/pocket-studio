@@ -1,0 +1,12 @@
+diff --git a/src/surge-python/surgepy.cpp b/src/surge-python/surgepy.cpp
+index e6a853c..3b73df7 100644
+--- a/src/surge-python/surgepy.cpp
++++ b/src/surge-python/surgepy.cpp
+@@ -1829,6 +1829,7 @@ PYBIND11_MODULE(surgepy, m)
+         .def("getNumInputs", &SurgeSynthesizer::getNumInputs)
+         .def("getNumOutputs", &SurgeSynthesizer::getNumOutputs)
+         .def("getBlockSize", &SurgeSynthesizer::getBlockSize)
++        .def("setTempo", [](SurgeSynthesizerWithPythonExtensions &s, double bpm) { s.time_data.tempo = bpm; }, "Set the host tempo used by tempo-synced parameters", py::arg("bpm"))
+         .def("getFactoryDataPath", &SurgeSynthesizerWithPythonExtensions::factoryDataPath)
+         .def("getUserDataPath", &SurgeSynthesizerWithPythonExtensions::userDataPath)
+         .def("getSampleRate",
